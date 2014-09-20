@@ -29,13 +29,16 @@ gem 'spring',        group: :development
 gem 'rspec'
 gem 'rspec-rails'
 
-gem 'whenever'
+gem 'whenever', require: false
 
 # if you actually parse html
 gem 'nokogiri'
 
 # for depoyment
 gem 'capistrano'
+
+# allow http to https redirections
+gem 'open_uri_redirections', require: "open_uri_redirections"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

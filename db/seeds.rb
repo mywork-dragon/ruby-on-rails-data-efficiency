@@ -6,7 +6,6 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-
 File.readlines(Rails.root + "db/bizible/companies.txt").each do |l|
   l.strip!
   Company.create(
