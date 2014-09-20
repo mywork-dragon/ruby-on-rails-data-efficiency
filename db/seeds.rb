@@ -40,3 +40,24 @@ Matcher.create(
   match_type: :regex,
   match_string: "olark.identify\(([^)]+)\)"
 )
+
+# optimizely, personal capital
+Matcher.create(
+  service: Service.find_by_name("Kissmetrics"),
+  match_type: :regex,
+  match_string: "i.kissmetrics.com\/i.js"
+)
+
+# NBC
+Matcher.create(
+  service: Service.find_by_name("Omniture"),
+  match_type: :regex,
+  match_string: '<a href="http:\/\/www.omniture.com" title="Web Analytics"><img src="\/([^.]+)" height="1" width="1" alt="" \/><\/a>'
+)
+
+# traklight
+Matcher.create(
+  service: Service.find_by_name("Traklight"),
+  match_type: :regex,
+  match_string: "https:\/\/js.hscta.net\/cta\/current.js"
+)
