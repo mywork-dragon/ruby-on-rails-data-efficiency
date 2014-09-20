@@ -6,7 +6,7 @@ class Matcher < ActiveRecord::Base
     if regex?
       content =~ Regexp.new(match_string)
     elsif string?
-      content.includes(match_string)
+      content.include?(match_string)
     end
   end
 
