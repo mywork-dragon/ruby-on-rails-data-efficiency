@@ -31,10 +31,10 @@ class ScrapeService
     end
 
     # now look for possible matches from just name
-    @services.select{|x| !matched_services.include?(x.id) && x.possible_match?(content)}.each do |possible_match|
-      puts "found a possible match! #{company.name} is using #{possible_match.name}"
-      company.installations.create!(service: possible_match, scraped_result: result, status: :possible)
-    end
+    # @services.select{|x| !matched_services.include?(x.id) && x.possible_match?(content)}.each do |possible_match|
+    #   puts "found a possible match! #{company.name} is using #{possible_match.name}"
+    #   company.installations.create!(service: possible_match, scraped_result: result, status: :possible)
+    # end
 
   rescue Exception => e
     if e.message.include?("getaddrinfo: nodename nor servname provided, or not known") ||
