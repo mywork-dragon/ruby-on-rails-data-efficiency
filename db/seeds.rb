@@ -60,3 +60,10 @@ Matcher.create(
   match_type: :regex,
   match_string: "https:\/\/js.hscta.net\/cta\/current.js"
 )
+
+# http://www.emimusicpub.com/
+Matcher.create(
+  service: Service.find_by_name("Marketo"),
+  match_type: :string,
+  match_string: "http://munchkin.marketo.net"
+)
