@@ -69,9 +69,13 @@ class ScrapeService
   
 
   class << self
-    def scrape_all
+    # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
+    def scrape_all(percentage = 100, page_number = 0)
+      count = Company.active.count
+      start_num = (count * percentage * page_number * 1.0 / 100).ceil
+      end_num = (count * percentage * (page_number + 1) * 1.0 / 100).floor
       scrape_service = ScrapeService.new
-      Company.active.find_each do |c|
+      Company.active.limit(end_num - start_num + 1).offset(start_num).each do |c|
         begin
           puts "scraping company #{c.name}"
           scrape_service.scrape(c)
