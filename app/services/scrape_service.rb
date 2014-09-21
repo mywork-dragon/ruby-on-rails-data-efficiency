@@ -40,6 +40,7 @@ class ScrapeService
     content = open(url).read
     service_names = []
     matched_services_in_content(content).each do |match|
+      next if match == nil
       service_name = Service.find(match).name
       puts "found a match! #{url} is using #{service_name}"
       service_names << service_name
