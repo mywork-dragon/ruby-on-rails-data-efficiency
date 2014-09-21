@@ -34,6 +34,8 @@ class ScrapeService
     ScrapedResult.create(company: company, url: company.website, raw_html: e.message.truncate(1024), status: :fail)
   end
   
+  # Scrape a single URL and don't save the results to the DB
+  # @author Jason Lew
   def scrape_test(url)
     content = open(url).read
     service_names = []
@@ -71,6 +73,8 @@ class ScrapeService
       ScrapeService.new.scrape(company)
     end
     
+    # Scrape a single URL and don't save the results to the DB
+    # @author Jason Lew
     def scrape_test(url)
       ScrapeService.new.scrape_test(url)
     end
