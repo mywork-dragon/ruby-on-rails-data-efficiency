@@ -40,7 +40,7 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
-      execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s SIGUSR2"
+      execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
   end
 
