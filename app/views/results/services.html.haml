@@ -1,0 +1,5 @@
+%h1 Found matches for the following services
+%ul
+  - @services.each do |s|
+    %li
+      = link_to s.name, service_result_path(service_id: s.id)

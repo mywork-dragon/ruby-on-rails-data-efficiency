@@ -54,4 +54,10 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   get 'ping' => 'application#ping'
+  get 'companies' => 'results#companies'
+  get 'services' => 'results#services'
+  get 'company_result/:company_id' => 'results#company_result', as: :company_result
+  get 'service_result/:service_id' => 'results#service_result', as: :service_result
+
+  
 end

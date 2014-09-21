@@ -1,0 +1,5 @@
+%h1 Found matches for the following companies
+%ul
+  - @companies.each do |c|
+    %li
+      = link_to c.name, company_result_path(company_id: c.id)

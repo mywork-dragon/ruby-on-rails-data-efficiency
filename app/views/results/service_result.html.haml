@@ -1,0 +1,17 @@
+%h1 Service #{@service.name}
+- if @matched['confirmed'].present?
+  %h2 Confirmed matches
+  %ul
+    - @matched['confirmed'].each do |match|
+      %li
+        %a{href: company_result_path(company_id: match.company_id)}
+          = match.company.name
+          (last matched at #{match.created_at})
+- if @matched['possible'].present?
+  %h2 Possible matches
+  %ul
+    - @matched['possible'].each do |match|
+      %li
+        %a{href: company_result_path(company_id: match.company_id)}
+          = match.company.name
+          (last matched at #{match.created_at})
