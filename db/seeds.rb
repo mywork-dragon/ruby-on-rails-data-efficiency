@@ -55,9 +55,9 @@ Matcher.create(
   match_string: '<a href="http:\/\/www.omniture.com" title="Web Analytics"><img src="\/([^.]+)" height="1" width="1" alt="" \/><\/a>'
 )
 
-# traklight
+# Traklight
 Matcher.create(
-  service: Service.find_by_name("Traklight"),
+  service: Service.find_by_name("Hubspot"),
   match_type: :regex,
   match_string: "https:\/\/js.hscta.net\/cta\/current.js"
 )
@@ -93,4 +93,9 @@ Matcher.create(
   match_string: "LiveAgentTracker."
 )
 
-
+# http://www.emimusicpub.com/
+Matcher.create(
+  service: Service.find_by_name("Marketo"),
+  match_type: :string,
+  match_string: "http://munchkin.marketo.net"
+)

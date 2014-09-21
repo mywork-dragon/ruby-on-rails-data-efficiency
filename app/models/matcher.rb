@@ -4,7 +4,7 @@ class Matcher < ActiveRecord::Base
 
   def match?(content)
     if regex?
-      content =~ Regexp.new(match_string)
+      (content =~ Regexp.new(match_string)).nil?? false:true
     elsif string?
       content.include?(match_string)
     end
