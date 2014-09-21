@@ -20,7 +20,7 @@ class ScrapeService
     end
 
     result = ScrapedResult.create!(company: company, url: company.website, raw_html: content.truncate(1024), status: :success)
-    matched_service = matched_services_in_content(content)
+    matched_services = matched_services_in_content(content)
     matched_services.each do |match|
       puts "found a match! #{company.name} is using #{match}"
       company.installations.create!(service_id: match, scraped_result: result)
