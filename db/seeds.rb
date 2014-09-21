@@ -40,6 +40,7 @@ Matcher.create(
   match_string: "olark.identify\(([^)]+)\)"
 )
 
+
 # optimizely, personal capital
 Matcher.create(
   service: Service.find_by_name("Kissmetrics"),
@@ -60,3 +61,36 @@ Matcher.create(
   match_type: :regex,
   match_string: "https:\/\/js.hscta.net\/cta\/current.js"
 )
+
+# http://businessfactors.com/
+Matcher.create(
+  service: Service.find_by_name("LiveChat"),
+  match_type: :string,
+  match_string: "cdn.livechatinc.com"
+)
+
+Matcher.create(
+  service: Service.find_by_name("SnapEngage"),
+  match_type: :string,
+  match_string: "code.snapengage.com"
+)
+
+Matcher.create(
+  service: Service.find_by_name("Zopim"),
+  match_type: :string,
+  match_string: "window.$zopim"
+)
+
+Matcher.create(
+  service: Service.find_by_name("Google Tag Manager"),
+  match_type: :string,
+  match_string: "googletagmanager.com/gtm.js"
+)
+
+Matcher.create(
+  service: Service.find_by_name("Live Agent"),
+  match_type: :string,
+  match_string: "LiveAgentTracker."
+)
+
+
