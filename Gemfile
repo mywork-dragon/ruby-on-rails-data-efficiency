@@ -45,7 +45,7 @@ gem 'open_uri_redirections', require: "open_uri_redirections"
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-gem 'unicorn'
+gem 'unicorn', group: :production
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
