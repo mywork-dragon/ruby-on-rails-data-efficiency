@@ -99,3 +99,31 @@ Matcher.create(
   match_type: :string,
   match_string: "http://munchkin.marketo.net"
 )
+
+# from Pardot website http://www.pardot.com/faqs/campaigns/tracking-code/
+Matcher.create(
+  service: Service.find_by_name("Pardot"),
+  match_type: :string,
+  match_string: ".pardot.com/pd.js"
+)
+
+# https://www.hightail.com
+Matcher.create(
+  service: Service.find_by_name("Silverpop"),
+  match_type: :string,
+  match_string: "com.silverpop.brandeddomains"
+)
+
+# http://sitescout.com 
+Matcher.create(
+  service: Service.find_by_name("Eloqua"),
+  match_type: :string,
+  match_string: "img.en25.com/i/elqCfg.min.js"
+)
+
+# https://www.kajabiapp.com
+Matcher.create(
+  service: Service.find_by_name("Snapengage"),
+  match_type: :string,
+  match_string: "code.snapengage.com/js"
+)
