@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140920201458) do
+ActiveRecord::Schema.define(version: 20140921065047) do
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20140920201458) do
     t.datetime "updated_at"
   end
 
+  add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
   create_table "installations", force: true do |t|
@@ -29,11 +30,13 @@ ActiveRecord::Schema.define(version: 20140920201458) do
     t.integer  "scraped_result_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status"
   end
 
-  add_index "installations", ["company_id"], name: "index_installations_on_company_id", using: :btree
+  add_index "installations", ["company_id", "created_at"], name: "index_installations_on_company_id_and_created_at", using: :btree
   add_index "installations", ["scraped_result_id"], name: "index_installations_on_scraped_result_id", using: :btree
-  add_index "installations", ["service_id"], name: "index_installations_on_service_id", using: :btree
+  add_index "installations", ["service_id", "created_at"], name: "index_installations_on_service_id_and_created_at", using: :btree
+  add_index "installations", ["status", "created_at"], name: "index_installations_on_status_and_created_at", using: :btree
 
   create_table "matchers", force: true do |t|
     t.integer  "service_id"

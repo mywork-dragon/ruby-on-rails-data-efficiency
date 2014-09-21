@@ -3,6 +3,7 @@ class ScrapeService
 
   def initialize
     @matchers = Matcher.all
+    @services = Service.all
   end
 
   def scrape(company)
@@ -19,18 +20,30 @@ class ScrapeService
       content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
     end
 
+    # store raw scrape result
     result = ScrapedResult.create!(company: company, url: company.website, raw_html: content.truncate(1024), status: :success)
+
+    # stored matched services from matcher
     matched_services = matched_services_in_content(content)
     matched_services.each do |match|
       puts "found a match! #{company.name} is using #{match}"
-      company.installations.create!(service_id: match, scraped_result: result)
+      company.installations.create!(service_id: match, scraped_result: result, status: :confirmed)
     end
+
+    # now look for possible matches from just name
+    @services.select{|x| !matched_services.include?(x.id) && x.possible_match?(content)}.each do |possible_match|
+      puts "found a possible match! #{company.name} is using #{possible_match.name}"
+      company.installations.create!(service: possible_match, scraped_result: result, status: :possible)
+    end
+
   rescue Exception => e
     if e.message.include?("getaddrinfo: nodename nor servname provided, or not known") ||
         e.message.include?("404 Not Found")
       # this means we can't reach the server at all, we should probably pause the company
       company.paused!
     end
+    puts "problem #{e.message}"
+    pp e.backtrace
     ScrapedResult.create(company: company, url: company.website, raw_html: e.message.truncate(1024), status: :fail)
   end
   
