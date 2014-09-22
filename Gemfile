@@ -17,6 +17,8 @@ gem 'therubyracer',  platforms: :ruby
 gem 'haml'
 gem 'haml-rails'
 
+gem 'foundation-rails', '5.4.3.1'
+
 # bootstrap css, read here https://github.com/twbs/bootstrap-sass
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
