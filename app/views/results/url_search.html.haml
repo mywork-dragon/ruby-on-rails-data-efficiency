@@ -1,8 +1,14 @@
 .row
-  .large-4.columns .....1
-  .large-4.columns .....2
-  .large-4.columns .....3
-%h1 Enter an url to test
+  .small-4
+  .small-4.large-centered.columns.end
+    %h4.text-center Enter a URL to test:
 = form_tag url_search_result_path, :method => "post" do
-  = text_field_tag :url
-  = submit_tag "Submit"
+  .row
+    .small-4
+    .small-4.large-centered.columns.end 
+      = text_field_tag :url
+  .row
+    .small-4
+    .small-4.large-centered.columns.end 
+      .text-center
+        = submit_tag "Submit"
