@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   get 'services' => 'results#services'
   get 'company_result/:company_id' => 'results#company_result', as: :company_result
   get 'service_result/:service_id' => 'results#service_result', as: :service_result
-
+  get 'url_search' => 'results#url_search'
+  post 'url_search' => 'results#url_search_result', as: :url_search_result
   
 end

@@ -1,0 +1,4 @@
+%h1 Enter an url to test
+= form_tag url_search_result_path, :method => "post" do
+  = text_field_tag :url
+  = submit_tag "Submit"

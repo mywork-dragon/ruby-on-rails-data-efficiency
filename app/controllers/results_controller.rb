@@ -21,4 +21,14 @@ class ResultsController < ApplicationController
     @matched = @company.installations.group(:service_id).select("distinct service_id, max(created_at) as created_at, status").includes(:service).group_by(&:status)
   end
 
+  def url_search
+    
+  end
+
+  def url_search_result
+    url = params[:url]
+    url = url.match(/^http[s]*:\/\//) ? url : "http://" + url
+    @results = ScrapeService.scrape_test(url)
+  end
+
 end
