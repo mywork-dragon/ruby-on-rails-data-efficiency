@@ -25,6 +25,12 @@ Dir[Rails.root + "db/bizible/services/*.txt"].each do |f|
   end
 end
 
+# feeds(\d)*.feedburner.com\/
+Matcher.create(
+  service: Service.find_by_name("FeedBurner"),
+  match_type: :regex,
+  match_string: 'feeds(\d)*.feedburner.com\/'
+)
 
 # # cbs
 # Matcher.create(
