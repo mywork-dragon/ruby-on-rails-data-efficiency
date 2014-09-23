@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "/var/log/varys/cron.log"
+set :output, "/var/log/varys/cron/cron.log"
 
 2.times do |i|
   every 1.day, :at => '1:00am' do
