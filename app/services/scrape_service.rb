@@ -64,7 +64,13 @@ class ScrapeService
   
   # Content from the headless browser
   def content_from_headless_browser(url)
-    content = %x(./phantomjs netlog.js #{url})
+    phantomjs = nil
+    if(Rails.env.production?)
+      phantomjs = './phantomjs/linux/phantomjs'
+    else
+      phantomjs = './phantomjs/mac_os/phantomjs'
+    end
+    %x(#{phantomjs} netlog.js #{url})
   end
   
   private
