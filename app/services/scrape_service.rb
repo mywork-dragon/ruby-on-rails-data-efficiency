@@ -50,7 +50,7 @@ class ScrapeService
   # Scrape a single URL and don't save the results to the DB
   # @author Jason Lew
   def scrape_test(url)
-    # content = open(url).read
+    #content = open(url).read
     content = content_from_headless_browser(url)
     service_names = []
     matched_services_in_content(content).each do |match|

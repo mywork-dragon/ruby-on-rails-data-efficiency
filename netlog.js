@@ -10,18 +10,22 @@ if (system.args.length === 1) {
 
     page.onResourceRequested = function (req) {
       console.log(req.url + "\n");
-        // console.log('requested: ' + JSON.stringify(req, undefined, 4));
+      // console.log('requested: ' + JSON.stringify(req, undefined, 4));
     };
 
     page.onResourceReceived = function (req) {
       console.log(req.url + "\n");
-        // console.log('received: ' + JSON.stringify(res, undefined, 4));
+        // console.log('received: ' + JSON.stringify(req, undefined, 4));
     };
 
     page.open(address, function (status) {
         if (status !== 'success') {
-            console.log('FAIL to load the address');
+            console.log('Cannot load the address!');
+            phantom.exit();
+        } else {
+            window.setTimeout(function () {
+                phantom.exit();
+            }, 10000); // ms of how long to wiat
         }
-        phantom.exit();
     });
 }
