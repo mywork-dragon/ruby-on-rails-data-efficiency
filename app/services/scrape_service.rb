@@ -9,7 +9,7 @@ class ScrapeService
   def scrape(company)
     website = company.website
 
-    content = content_from__source_and_headless_browser(website)
+    content = content_from_source_and_headless_browser(website)
 
     # store raw scrape result
     result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), status: :success)
