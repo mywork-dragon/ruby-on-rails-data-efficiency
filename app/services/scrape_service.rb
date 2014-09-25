@@ -7,23 +7,12 @@ class ScrapeService
   end
 
   def scrape(company)
-    # allow http to https and https to http redirections
-    # content = open(company.website,
-    #   allow_redirections: :all,
-    #   # hong's own user agent in chrome, you should probably fake the one from IE
-    #   "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
-    # ).read
-    #
-    # # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
-    # content.force_encoding(Encoding::UTF_8)
-    # if !content.valid_encoding?
-    #   content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
-    # end
+    website = company.website
 
-    content = content_from_headless_browser(company.website)
+    content = content_from_headless_browser(website)
 
     # store raw scrape result
-    result = ScrapedResult.create!(company: company, url: company.website, raw_html: content.truncate(1024), status: :success)
+    result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), status: :success)
 
     # stored matched services from matcher
     matched_services = matched_services_in_content(content)
@@ -62,6 +51,22 @@ class ScrapeService
     end
     
     service_names
+  end
+  
+  def content_from_source(url)
+    #allow http to https and https to http redirections
+    content = open(url,
+      allow_redirections: :all,
+      # hong's own user agent in chrome, you should probably fake the one from IE
+      "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
+    ).read
+
+    # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
+    content.force_encoding(Encoding::UTF_8)
+    if !content.valid_encoding?
+      content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
+    end
+    content
   end
   
   # Content from the headless browser
