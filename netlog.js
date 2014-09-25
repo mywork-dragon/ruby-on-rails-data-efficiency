@@ -15,7 +15,7 @@ if (system.args.length === 1) {
 
     page.onResourceReceived = function (req) {
       console.log(req.url + "\n");
-        // console.log('received: ' + JSON.stringify(req, undefined, 4));
+      // console.log('received: ' + JSON.stringify(req, undefined, 4));
     };
 
     page.open(address, function (status) {

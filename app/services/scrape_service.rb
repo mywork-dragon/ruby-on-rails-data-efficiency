@@ -9,7 +9,7 @@ class ScrapeService
   def scrape(company)
     website = company.website
 
-    content = content_from_headless_browser(website)
+    content = content_from__source_and_headless_browser(website)
 
     # store raw scrape result
     result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), status: :success)
@@ -42,7 +42,8 @@ class ScrapeService
   # @author Jason Lew
   def scrape_test(url)
     #content = open(url).read
-    content = content_from_headless_browser(url)
+    content = content_from_source_and_headless_browser(url)
+    #content = content_from_headless_browser(url)
     service_names = []
     matched_services_in_content(content).each do |match|
       service_name = Service.find(match).name
@@ -50,7 +51,11 @@ class ScrapeService
       service_names << service_name
     end
     
-    service_names
+    service_names.sort_by{|word| word.downcase}
+  end
+  
+  def content_from_source_and_headless_browser(url)
+    content_from_source(url) + "\n" + content_from_headless_browser(url)
   end
   
   def content_from_source(url)

@@ -26,9 +26,9 @@ class ResultsController < ApplicationController
   end
 
   def url_search_result
-    url = params[:url]
-    url = url.match(/^http[s]*:\/\//) ? url : "http://" + url
-    @results = ScrapeService.scrape_test(url)
+    @url = params[:url]
+    @url = @url.match(/^http[s]*:\/\//) ? @url : "http://" + @url
+    @results = ScrapeService.scrape_test(@url)
   end
 
 end

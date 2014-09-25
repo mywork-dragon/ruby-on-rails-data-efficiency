@@ -1,4 +1,4 @@
-%h1 Results for #{params[:url]}
+%h1= "Found #{@results.count} results for #{@url}"
 %ul
   - @results.each do |r|
     %li
