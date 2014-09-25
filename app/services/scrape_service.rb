@@ -8,17 +8,19 @@ class ScrapeService
 
   def scrape(company)
     # allow http to https and https to http redirections
-    content = open(company.website, 
-      allow_redirections: :all,
-      # hong's own user agent in chrome, you should probably fake the one from IE
-      "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
-    ).read
+    # content = open(company.website,
+    #   allow_redirections: :all,
+    #   # hong's own user agent in chrome, you should probably fake the one from IE
+    #   "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
+    # ).read
+    #
+    # # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
+    # content.force_encoding(Encoding::UTF_8)
+    # if !content.valid_encoding?
+    #   content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
+    # end
 
-    # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
-    content.force_encoding(Encoding::UTF_8)
-    if !content.valid_encoding?
-      content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
-    end
+    content = content_from_headless_browser(company.website)
 
     # store raw scrape result
     result = ScrapedResult.create!(company: company, url: company.website, raw_html: content.truncate(1024), status: :success)
@@ -105,7 +107,11 @@ class ScrapeService
     # Scrape a single URL and don't save the results to the DB
     # @author Jason Lew
     def scrape_test(url)
-      ScrapeService.new.scrape_test(url)
+      service_names = ScrapeService.new.scrape_test(url)
+      puts "Services:"
+      pp service_names
+      puts "Number of services: #{service_names.count}"
+      service_names
     end
   end
 
