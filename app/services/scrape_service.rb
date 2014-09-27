@@ -1,9 +1,11 @@
 require 'open-uri'
 class ScrapeService
 
-  def initialize
+  def initialize(options = {})
     @matchers = Matcher.all
     @services = Service.all
+    
+    @scrape_job = options[:scrape_job]
   end
 
   def scrape(company)
@@ -12,13 +14,13 @@ class ScrapeService
     content = content_from_source_and_headless_browser(website)
 
     # store raw scrape result
-    result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), status: :success)
+    result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), scrape_job: @scrape_job, status: :success)
 
     # stored matched services from matcher
     matched_services = matched_services_in_content(content)
     matched_services.each do |match|
       puts "found a match! #{company.name} is using #{match}"
-      company.installations.create!(service_id: match, scraped_result: result, status: :confirmed)
+      company.installations.create!(service_id: match, scraped_result: result, scrape_job: @scrape_job, status: :confirmed)
     end
 
     # now look for possible matches from just name
@@ -94,11 +96,14 @@ class ScrapeService
 
   class << self
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
-    def scrape_all(percentage = 100, page_number = 0)
+    def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+      scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+      
       count = Company.active.count
       start_num = (count * percentage * page_number * 1.0 / 100).ceil
       end_num = (count * percentage * (page_number + 1) * 1.0 / 100).floor
-      scrape_service = ScrapeService.new
+      scrape_service = ScrapeService.new(scrape_job: scrape_job)
       Company.active.limit(end_num - start_num + 1).offset(start_num).each do |c|
         begin
           puts "scraping company #{c.name}"
