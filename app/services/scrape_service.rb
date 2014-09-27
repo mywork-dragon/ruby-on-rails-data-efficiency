@@ -37,7 +37,7 @@ class ScrapeService
     end
     puts "problem #{e.message}"
     pp e.backtrace
-    ScrapedResult.create(company: company, url: company.website, raw_html: e.message.truncate(1024), status: :fail)
+    ScrapedResult.create(company: company, url: company.website, raw_html: e.message.truncate(1024), scrape_job: @scrape_job,  status: :fail)
   end
   
   # Scrape a single URL and don't save the results to the DB
