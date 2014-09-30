@@ -58,6 +58,9 @@ class ScrapeService
   
   def content_from_source_and_headless_browser(url)
     content_from_source, url_redirected_to = content_from_source(url)
+    
+    return nil if url_redirected_to = nil
+    
     content_from_headless_browser = content_from_headless_browser(url_redirected_to)
     
     if content_from_source.nil?
