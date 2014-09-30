@@ -57,8 +57,8 @@ class ScrapeService
   end
   
   def content_from_source_and_headless_browser(url)
-    content_from_source = content_from_source(url)
-    content_from_headless_browser = content_from_headless_browser(url)
+    content_from_source, url_redirected_to = content_from_source(url)
+    content_from_headless_browser = content_from_headless_browser(url_redirected_to)
     
     if content_from_source.nil?
       content_from_source = ""
@@ -72,12 +72,21 @@ class ScrapeService
   
   def content_from_source(url)
     begin
+      content = nil
+      url_redirected_to = nil
+      
       #allow http to https and https to http redirections
-      content = open(url,
+      open(url,
         allow_redirections: :all,
         # hong's own user agent in chrome, you should probably fake the one from IE
         "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
-      ).read
+      ) do |response|
+        url_redirected_to = response.base_uri.to_s
+        puts "Redirected to #{url_redirected_to}"
+        
+        content = response.read
+      end
+      
       
       # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
       content.force_encoding(Encoding::UTF_8)
@@ -95,7 +104,7 @@ class ScrapeService
         pp e.backtrace
         content = nil
       ensure
-        return content
+        return content, url_redirected_to
     end
   end
   
