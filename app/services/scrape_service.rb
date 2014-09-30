@@ -63,7 +63,7 @@ class ScrapeService
     if content_from_source.nil?
       content_from_source = ""
       return nil if content_from_headless_browser.nil?
-    elsif content_from_browser.nil?
+    elsif content_from_headless_browser.nil?
       content_from_headless_browser = "" 
     end
     
