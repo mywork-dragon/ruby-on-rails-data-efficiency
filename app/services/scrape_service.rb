@@ -12,6 +12,11 @@ class ScrapeService
     website = company.website
 
     content = content_from_source_and_headless_browser(website)
+    
+    if content.nil?
+      ScrapedResult.create(company: company, url: company.website, raw_html: "Error: Could not connect to site", scrape_job: @scrape_job,  status: :fail)
+      return
+    end
 
     # store raw scrape result
     result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), scrape_job: @scrape_job, status: :success)
@@ -28,24 +33,19 @@ class ScrapeService
     #   puts "found a possible match! #{company.name} is using #{possible_match.name}"
     #   company.installations.create!(service: possible_match, scraped_result: result, status: :possible)
     # end
-
-  rescue Exception => e
-    if e.message.include?("getaddrinfo: nodename nor servname provided, or not known") ||
-        e.message.include?("404 Not Found")
-      # this means we can't reach the server at all, we should probably pause the company
-      company.paused!
-    end
-    puts "problem #{e.message}"
-    pp e.backtrace
-    ScrapedResult.create(company: company, url: company.website, raw_html: e.message.truncate(1024), scrape_job: @scrape_job,  status: :fail)
+    
   end
   
   # Scrape a single URL and don't save the results to the DB
   # @author Jason Lew
   def scrape_test(url)
-    #content = open(url).read
     content = content_from_source_and_headless_browser(url)
-    #content = content_from_headless_browser(url)
+    
+    if content.blank?
+      puts "Error: No Conent"
+      return
+    end
+    
     service_names = []
     matched_services_in_content(content).each do |match|
       service_name = Service.find(match).name
@@ -57,23 +57,46 @@ class ScrapeService
   end
   
   def content_from_source_and_headless_browser(url)
-    content_from_source(url) + "\n" + content_from_headless_browser(url)
+    content_from_source = content_from_source(url)
+    content_from_headless_browser = content_from_headless_browser(url)
+    
+    if content_from_source.nil?
+      content_from_source = ""
+      return nil if content_from_headless_browser.nil?
+    elsif content_from_browser.nil?
+      content_from_headless_browser = "" 
+    end
+    
+    content_from_source + "\n" + content_from_headless_browser
   end
   
   def content_from_source(url)
-    #allow http to https and https to http redirections
-    content = open(url,
-      allow_redirections: :all,
-      # hong's own user agent in chrome, you should probably fake the one from IE
-      "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
-    ).read
-
-    # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
-    content.force_encoding(Encoding::UTF_8)
-    if !content.valid_encoding?
-      content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
+    begin
+      #allow http to https and https to http redirections
+      content = open(url,
+        allow_redirections: :all,
+        # hong's own user agent in chrome, you should probably fake the one from IE
+        "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
+      ).read
+      
+      # check the content's encoding and force it to utf8, discard the invalid characters in utf-8
+      content.force_encoding(Encoding::UTF_8)
+      if !content.valid_encoding?
+        content.encode!(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: '')
+      end
+    
+      rescue Exception => e
+        if e.message.include?("getaddrinfo: nodename nor servname provided, or not known") ||
+            e.message.include?("404 Not Found")
+          # this means we can't reach the server at all, we should probably pause the company
+          #company.paused!
+        end
+        puts "problem #{e.message}"
+        pp e.backtrace
+        content = nil
+      ensure
+        return content
     end
-    content
   end
   
   # Content from the headless browser
@@ -84,7 +107,13 @@ class ScrapeService
     else
       phantomjs = './phantomjs/mac_os/phantomjs'
     end
-    %x(#{phantomjs} netlog.js #{url})
+    phantom_output = %x(#{phantomjs} netlog.js #{url})
+    
+    if phantom_output.include?("Cannot load the address!")
+      return nil
+    end
+    
+    phantom_output
   end
   
   private
