@@ -8,14 +8,14 @@ if (system.args.length === 1) {
 } else {
     address = system.args[1];
 
-    console.log('before onResourceRequested')
+    console.log('before onResourceRequested');
 
     page.onResourceRequested = function (req) {
       //console.log(req.url + "\n");
       // console.log('requested: ' + JSON.stringify(req, undefined, 4));
     };
 
-    console.log('before onResourceReceived')
+    console.log('before onResourceReceived');
 
     page.onResourceReceived = function (req) {
       //console.log(req.url + "\n");
@@ -25,6 +25,7 @@ if (system.args.length === 1) {
     console.log('before open')
 
     page.open(address, function (status) {
+      console.log('opened');
         if (status !== 'success') {
             console.log('Cannot load the address!');
             phantom.exit(0);
