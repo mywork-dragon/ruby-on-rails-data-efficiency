@@ -24,7 +24,7 @@ if (system.args.length === 1) {
             phantom.exit();
         } else {
             window.setTimeout(function () {
-                phantom.exit();
+                phantom.exit(0);
             }, 10000); // ms of how long to wiat
         }
     });

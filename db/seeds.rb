@@ -32,6 +32,19 @@ Matcher.create(
   match_string: 'feeds(\d)*.feedburner.com\/'
 )
 
+# feeds(\d)*.feedburner.com\/
+Matcher.create(
+  service: Service.find_by_name("Signal.co"),
+  match_type: :string,
+  match_string: 's.btstatic.com/tag'
+)
+
+Matcher.create(
+  service: Service.find_by_name("Signal.co"),
+  match_type: :string,
+  match_string: 's.thebrighttag.com'
+)
+
 # # cbs
 # Matcher.create(
 #   service: Service.find_by_name("Optimizely"),

@@ -41,8 +41,10 @@ class ScrapeService
   def scrape_test(url)
     content = content_from_source_and_headless_browser(url)
     
+    # puts "***CONTENT***\n#{content}"
+    
     if content.blank?
-      puts "Error: No Conent"
+      puts "Error: No Content"
       return
     end
     
