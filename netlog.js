@@ -21,7 +21,7 @@ if (system.args.length === 1) {
     page.open(address, function (status) {
         if (status !== 'success') {
             console.log('Cannot load the address!');
-            phantom.exit();
+            phantom.exit(0);
         } else {
             window.setTimeout(function () {
                 phantom.exit(0);
