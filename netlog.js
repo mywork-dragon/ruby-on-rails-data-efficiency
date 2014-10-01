@@ -8,15 +8,21 @@ if (system.args.length === 1) {
 } else {
     address = system.args[1];
 
+    console.log('before onResourceRequested')
+
     page.onResourceRequested = function (req) {
       //console.log(req.url + "\n");
       // console.log('requested: ' + JSON.stringify(req, undefined, 4));
     };
 
+    console.log('before onResourceReceived')
+
     page.onResourceReceived = function (req) {
       //console.log(req.url + "\n");
       // console.log('received: ' + JSON.stringify(req, undefined, 4));
     };
+
+    console.log('before open')
 
     page.open(address, function (status) {
         if (status !== 'success') {
