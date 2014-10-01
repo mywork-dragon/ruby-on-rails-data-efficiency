@@ -22,7 +22,7 @@ if (system.args.length === 1) {
       // console.log('received: ' + JSON.stringify(req, undefined, 4));
     };
 
-    console.log('before open')
+    console.log('before open');
 
     page.open(address, function (status) {
       console.log('opened');
@@ -30,7 +30,7 @@ if (system.args.length === 1) {
             console.log('Cannot load the address!');
             phantom.exit(0);
         } else {
-          console.log('Loaded the address')
+          console.log('Loaded the address');
             window.setTimeout(function () {
               console.log('Timeout expired. Time to exit.')
                 phantom.exit(0);
