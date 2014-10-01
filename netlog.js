@@ -1,6 +1,8 @@
 var page = require('webpage').create(),
     system = require('system'),
     address;
+    
+page.settings.resourceTimeout = 20000; // 20 seconds
 
 if (system.args.length === 1) {
     console.log('Usage: netlog.js <some URL>');
