@@ -32,7 +32,7 @@ if (system.args.length === 1) {
         } else {
           console.log('Loaded the address');
             window.setTimeout(function () {
-              console.log('Timeout expired. Time to exit.')
+              console.log('Timeout expired. Time to exit.');
                 phantom.exit(0);
             }, 10000); // ms of how long to wait
         }
