@@ -15,55 +15,62 @@ File.readlines(Rails.root + "db/bizible/companies.txt").each do |l|
   )
 end
 
-Dir[Rails.root + "db/bizible/services/*.txt"].each do |f|
-  category = File.basename(f, ".*").titlecase
-  File.readlines(f).each do |l|
-    Service.create(
-      name: l.strip,
-      category: category
-    )
-  end
-end
+# Dir[Rails.root + "db/bizible/services/*.txt"].each do |f|
+#   category = File.basename(f, ".*").titlecase
+#   File.readlines(f).each do |l|
+#     Service.create(
+#       name: l.strip,
+#       category: category
+#     )
+#   end
+# end
 
 # feeds(\d)*.feedburner.com\/
+service = Service.create(name: "FeedBurner")
 Matcher.create(
-  service: Service.find_by_name("FeedBurner"),
+  service: service,
   match_type: :regex,
   match_string: 'feeds(\d)*.feedburner.com\/'
 )
 
+service = Service.create(name: "Signal.co")
 Matcher.create(
-  service: Service.find_by_name("Signal.co"),
+  service: service,
   match_type: :string,
   match_string: 's.btstatic.com/tag'
 )
 
+service = Service.create(name: "Signal.co")
 Matcher.create(
-  service: Service.find_by_name("Signal.co"),
+  service: service,
   match_type: :string,
   match_string: 's.thebrighttag.com'
 )
 
+service = Service.create(name: "Sitecatalyst")
 Matcher.create(
-  service: Service.find_by_name("Sitecatalyst"),
+  service: service,
   match_type: :string,
   match_string: 'SiteCatalyst code'
 )
 
+service = Service.create(name: "Acquisio")
 Matcher.create(
-  service: Service.find_by_name("Acquisio"),
+  service: service,
   match_type: :string,
   match_string: 'js.acq.io'
 )
 
+service = Service.create(name: "Ifbyphone")
 Matcher.create(
-  service: Service.find_by_name("Ifbyphone"),
+  service: service,
   match_type: :string,
   match_string: 'secure.ifbyphone.com/js'
 )
 
+service = Service.create(name: "DaddyAnalytics")
 Matcher.create(
-  service: Service.find_by_name("DaddyAnalytics"),
+  service: service,
   match_type: :string,
   match_string: 'cdn.daddyanalytics.com/w2/daddy.js'
 )
