@@ -54,16 +54,18 @@ class BizibleJob1
   end
 
   def run(file_path)
-    puts "run"
+    #puts "run"
     
     CSV.open(file_path, "w+") do |csv|
       
       csv << ["Company Name"] + @services_hash.keys
       
-      #File.readlines(Rails.root + "db/bizible/companies.txt").each do |l|
+      #File.readlines(Rails.root + "db/bizible/companies.txt").each_with_index do |l, i|
         #company_name = l.strip!
       dummy_company_names = ["optimizely.com", "bizo.com", "bluenile.com", "delta.com"]
-      dummy_company_names.each do |company_name|
+      dummy_company_names.each_with_index do |company_name, i|
+        puts "Company #{i}"
+        
         #for each line
         c = Company.find_by_name(company_name)
         
@@ -99,7 +101,7 @@ class BizibleJob1
           if others.count > 0
             found_service = true
             
-            puts "others: #{others}"
+            #puts "others: #{others}"
             
             all_others = [csv_line.last] + others
             csv_line.delete_at(csv_line.count - 1)
