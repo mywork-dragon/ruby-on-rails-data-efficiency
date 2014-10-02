@@ -98,10 +98,9 @@ class BizibleJob1
             end
           end
           
-          if others.count > 0
+          if others.count > 0 && category == "Other"
             found_service = true
             
-            #puts "others: #{others}"
             
             all_others = [csv_line.last] + others
             csv_line.delete_at(csv_line.count - 1)
