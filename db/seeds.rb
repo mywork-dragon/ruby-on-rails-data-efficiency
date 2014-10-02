@@ -32,7 +32,6 @@ Matcher.create(
   match_string: 'feeds(\d)*.feedburner.com\/'
 )
 
-# feeds(\d)*.feedburner.com\/
 Matcher.create(
   service: Service.find_by_name("Signal.co"),
   match_type: :string,
@@ -43,6 +42,30 @@ Matcher.create(
   service: Service.find_by_name("Signal.co"),
   match_type: :string,
   match_string: 's.thebrighttag.com'
+)
+
+Matcher.create(
+  service: Service.find_by_name("Sitecatalyst"),
+  match_type: :string,
+  match_string: 'SiteCatalyst code'
+)
+
+Matcher.create(
+  service: Service.find_by_name("Acquisio"),
+  match_type: :string,
+  match_string: 'js.acq.io'
+)
+
+Matcher.create(
+  service: Service.find_by_name("Ifbyphone"),
+  match_type: :string,
+  match_string: 'secure.ifbyphone.com/js'
+)
+
+Matcher.create(
+  service: Service.find_by_name("DaddyAnalytics"),
+  match_type: :string,
+  match_string: 'cdn.daddyanalytics.com/w2/daddy.js'
 )
 
 # # cbs
