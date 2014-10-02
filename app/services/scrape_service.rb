@@ -13,13 +13,19 @@ class ScrapeService
 
     content = content_from_source_and_headless_browser(website)
     
+    #puts "content: #{content}"
+    
+    company_id = company.id
+    scrape_job_id = @scrape_job.id if @scrape_job
+      
     if content.nil?
-      ScrapedResult.create(company: company, url: company.website, raw_html: "Error: Could not connect to site", scrape_job: @scrape_job,  status: :fail)
+      #puts "content is nil"
+      ScrapedResult.create!(company_id: company_id, url: website, raw_html: "Error: Could not connect to site", scrape_job_id: scrape_job_id,  status: :fail)
       return
     end
 
     # store raw scrape result
-    result = ScrapedResult.create!(company: company, url: website, raw_html: content.truncate(1024), scrape_job: @scrape_job, status: :success)
+    result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
 
     # stored matched services from matcher
     matched_services = matched_services_in_content(content)
@@ -45,7 +51,7 @@ class ScrapeService
     
     if content.blank?
       puts "Error: No Content"
-      return
+      return []
     end
     
     service_names = []
