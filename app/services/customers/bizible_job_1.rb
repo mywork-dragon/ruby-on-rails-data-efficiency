@@ -4,13 +4,13 @@ class ScrapeService
   end
 
   def run
-    scrape_job = ScrapeJob.find_by_notes("notes")
-    installations = scrape_job.installations
-    
-    #open file
-      
-      #for each line
-      Installation = 
+    # scrape_job = ScrapeJob.find_by_notes("notes")
+    # installations = scrape_job.installations
+    #
+    # #open file
+    #
+    #   #for each line
+    #   Installation =
   end
   
   class << self
