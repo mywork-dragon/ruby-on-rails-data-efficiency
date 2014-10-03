@@ -86,7 +86,9 @@ class ScrapeService
       content_from_headless_browser = "" 
     end
     
-    content_from_source + "\n" + content_from_headless_browser
+    content = content_from_source + "\n" + content_from_headless_browser
+    
+    content.scrub
   end
   
   def content_from_source(url)
