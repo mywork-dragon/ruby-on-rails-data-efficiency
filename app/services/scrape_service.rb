@@ -16,7 +16,7 @@ class ScrapeService
     #puts "content: #{content}"
     
     company_id = company.id
-    scrape_job_id = @scrape_job.id if @scrape_job
+    scrape_job_id = @scrape_job.id if @scrape_job 
       
     if content.nil?
       #puts "content is nil"
@@ -24,8 +24,16 @@ class ScrapeService
       return
     end
 
-    # store raw scrape result
-    result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
+    result = nil
+    
+    begin
+      # store raw scrape result
+      result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
+    rescue Exception => e
+      if e.message.include?("Mysql2::Error: Incorrect string value")
+       result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "Error: Mysql2::Error: Incorrect string value", scrape_job_id: scrape_job_id, status: :success) 
+      end
+    end 
 
     # stored matched services from matcher
     matched_services = matched_services_in_content(content)
