@@ -24,17 +24,19 @@ class ScrapeService
       return
     end
 
-    result = nil
+    result = ScrapedResult.create!(company_id: company_id, url: website, scrape_job_id: scrape_job_id, status: :success)
     
-    begin
-      # store raw scrape result
-      # result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
-      result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "", scrape_job_id: scrape_job_id, status: :success)
-    rescue Exception => e
-      if e.message.include?("Mysql2::Error: Incorrect string value")
-       result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "Error: Mysql2::Error: Incorrect string value", scrape_job_id: scrape_job_id, status: :success) 
-      end
-    end 
+    # result = nil
+    
+    # begin
+    #   # store raw scrape result
+    #   # result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
+    #   result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "", scrape_job_id: scrape_job_id, status: :success)
+    # rescue Exception => e
+    #   if e.message.include?("Mysql2::Error: Incorrect string value")
+    #    result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "Error: Mysql2::Error: Incorrect string value", scrape_job_id: scrape_job_id, status: :success)
+    #   end
+    # end
 
     # stored matched services from matcher
     matched_services = matched_services_in_content(content)
@@ -89,7 +91,7 @@ class ScrapeService
     
     content = content_from_source + "\n" + content_from_headless_browser
     
-    content.scrub
+    #content.scrub
   end
   
   def content_from_source(url)
