@@ -28,7 +28,8 @@ class ScrapeService
     
     begin
       # store raw scrape result
-      result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
+      # result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: content.truncate(1024), scrape_job_id: scrape_job_id, status: :success)
+      result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "", scrape_job_id: scrape_job_id, status: :success)
     rescue Exception => e
       if e.message.include?("Mysql2::Error: Incorrect string value")
        result = ScrapedResult.create!(company_id: company_id, url: website, raw_html: "Error: Mysql2::Error: Incorrect string value", scrape_job_id: scrape_job_id, status: :success) 
