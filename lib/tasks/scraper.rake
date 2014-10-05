@@ -7,6 +7,7 @@ namespace 'scraper' do
   
   desc 'Scrape special'
   task :scrape_special => [:environment] do
+    puts "scrape special task"
     ScrapeService.scrape_special()
   end
 end
