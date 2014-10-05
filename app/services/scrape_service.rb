@@ -102,6 +102,7 @@ class ScrapeService
       #allow http to https and https to http redirections
       open(url,
         allow_redirections: :all,
+        read_timeout: 20,
         # hong's own user agent in chrome, you should probably fake the one from IE
         "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36"
       ) do |response|
