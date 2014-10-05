@@ -181,19 +181,15 @@ class ScrapeService
     def scrape_special
       puts "scrape_special"
       
-      scrape_job_id = 15
-      
-      scrape_job = ScrapeJob.find(scrape_job_id)
-  
+      scrape_job = ScrapeJob.find(15)
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       
       i = 1
 
       while(i <= 8211)
-        sr = ScrapedResult.where(scrape_job_id: scrape_job_id, company_id: i).first
+        sr = ScrapedResult.where(scrape_job_id: 15, company_id: i).first
         if sr.nil?
           puts "COULD NOT FIND. company_id: #{i}"
-          
           c = Company.find(i)
           begin
             puts "scraping company #{c.name}"
