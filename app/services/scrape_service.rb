@@ -184,7 +184,7 @@ class ScrapeService
       scrape_job = ScrapeJob.find(15)
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       
-      i = 1
+      i = 5392
 
       while(i <= 8211)
         sr = ScrapedResult.where(scrape_job_id: 15, company_id: i).first
