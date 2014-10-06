@@ -104,7 +104,6 @@ class BizibleJob1
           end
           
           if others.count > 0 && category == "Other"
-            found_service = true
             
             
             all_others = nil
@@ -118,8 +117,13 @@ class BizibleJob1
             # puts "all_others: #{all_others}"
             # puts "col to delete index: #{csv_line.count - 1}"
             # puts "col to delete: #{csv_line[csv_line.count - 1]}"
-
+            
+            csv_line.delete_at(csv_line.count - 1) if found_service
+            
             csv_line << all_others.join(", ")
+            
+            
+            found_service = true
           end
           
           csv_line << "" if !found_service
