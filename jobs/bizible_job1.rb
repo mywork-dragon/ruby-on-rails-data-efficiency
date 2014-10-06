@@ -62,9 +62,13 @@ class BizibleJob1
       
       File.readlines(Rails.root + "db/bizible/companies.txt").each_with_index do |l, i|
         company_name = l.strip!
+        
       #dummy_company_names = ["optimizely.com", "bizo.com", "bluenile.com", "delta.com"]
-      #dummy_company_names.each_with_index do |company_name, i|
+      # dummy_company_names = ["accessdevelopment.com", "accenture.com", "acumensolutions.com"]
+      # dummy_company_names.each_with_index do |company_name, i|
         puts "Company #{i}"
+        
+        break if i == 200
         
         #for each line
         c = Company.find_by_name(company_name)
@@ -81,9 +85,9 @@ class BizibleJob1
             #puts "service_name: #{service_name}"
             service = Service.find_by_name(service_name_in_db(service_name))
             #puts "service: #{service.name}"
-            # i = Installation.where(company: c, scrape_job: scrape_job, service: service).first
+            i = Installation.where(company: c, scrape_job_id: 15, service: service).first
             #puts "company: #{c.name}, service: #{service.name}"
-            i = Installation.where(company: c, service: service).first
+            #i = Installation.where(company: c, service: service).first
             
             #puts "installation: #{i}\n\n"
             
@@ -93,6 +97,7 @@ class BizibleJob1
                 found_service = true
                 csv_line << service_name
               else
+                #puts "adding #{service_name} to others"
                 others << service_name
               end
             end
@@ -102,8 +107,18 @@ class BizibleJob1
             found_service = true
             
             
-            all_others = [csv_line.last] + others
-            csv_line.delete_at(csv_line.count - 1)
+            all_others = nil
+            if csv_line.last.blank?
+              all_others = others
+            else
+              all_others = [csv_line.last] + others
+            end
+            
+            # puts "others: #{others}"
+            # puts "all_others: #{all_others}"
+            # puts "col to delete index: #{csv_line.count - 1}"
+            # puts "col to delete: #{csv_line[csv_line.count - 1]}"
+
             csv_line << all_others.join(", ")
           end
           
