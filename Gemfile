@@ -56,6 +56,8 @@ gem 'open_uri_redirections', require: "open_uri_redirections"
 # Use unicorn as the app server
 gem 'unicorn', group: :production
 
+gem 'spidr', '0.4.1'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
