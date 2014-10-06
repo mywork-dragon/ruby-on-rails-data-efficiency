@@ -60,10 +60,10 @@ class BizibleJob1
       
       csv << ["Company Name"] + @services_hash.keys
       
-      #File.readlines(Rails.root + "db/bizible/companies.txt").each_with_index do |l, i|
-        #company_name = l.strip!
-      dummy_company_names = ["optimizely.com", "bizo.com", "bluenile.com", "delta.com"]
-      dummy_company_names.each_with_index do |company_name, i|
+      File.readlines(Rails.root + "db/bizible/companies.txt").each_with_index do |l, i|
+        company_name = l.strip!
+      #dummy_company_names = ["optimizely.com", "bizo.com", "bluenile.com", "delta.com"]
+      #dummy_company_names.each_with_index do |company_name, i|
         puts "Company #{i}"
         
         #for each line
