@@ -68,7 +68,7 @@ class BizibleJob1
       # dummy_company_names.each_with_index do |company_name, i|
         puts "Company #{i}"
         
-        break if i == 200
+        #break if i == 200
         
         #for each line
         c = Company.find_by_name(company_name)
@@ -121,7 +121,6 @@ class BizibleJob1
             csv_line.delete_at(csv_line.count - 1) if found_service
             
             csv_line << all_others.join(", ")
-            
             
             found_service = true
           end
