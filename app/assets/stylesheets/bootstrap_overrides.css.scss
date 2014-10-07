@@ -1,24 +1,24 @@
 .navbar.navbar-static-top {
   margin-bottom: 0px;
-  background-color: black;
+  background-color: rgb(245, 245, 245);
   
 }
 
 .navbar-brand {
-    color: white !important;
+    color: rgb(51, 51, 51) !important;
 }
 
 .nav{
   a {
-    color: white !important;
+    color: rgb(51, 51, 51) !important;
   }
   
-  a:hover { color: black !important; 
-  }
+//  a:hover { color: black !important;
+//  }
 }
 
 
-//
-//.jumbotron {
-//  margin-top: 0px;
-//}
+
+.jumbotron {
+  background-color: #202021 !important;
+}
