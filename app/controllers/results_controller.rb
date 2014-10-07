@@ -1,5 +1,7 @@
 class ResultsController < ApplicationController
 
+  http_basic_authenticate_with :name => "mister", :password => "stocking"
+
   def companies
     company_ids = Installation.select("distinct company_id").map(&:company_id)
     @companies = Company.where(id: company_ids)
