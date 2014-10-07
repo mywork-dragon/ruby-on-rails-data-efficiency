@@ -1,7 +1,17 @@
 .navbar.navbar-static-top {
   margin-bottom: 0px;
   background-color: black;
+  
 }
+
+.navbar-static-top .navbar-brand {
+    color: red;
+}
+
+ul.nav a:link { color: white !important; 
+}
+
+
 //
 //.jumbotron {
 //  margin-top: 0px;
