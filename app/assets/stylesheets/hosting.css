@@ -762,7 +762,7 @@ margin-bottom: -20px;
 	right:30px;
 	display:none;
 	text-indent:-9999px;
-	background: url('app/assets/images/icon_top.png') no-repeat;
+	background: url('../images/icon_top.png') no-repeat;
 }
 /*==========16. VERSION 2==============*/
 
@@ -781,7 +781,10 @@ margin-bottom: -20px;
 	background-color: #01A9D8
 }
 
-.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
-	color: #01A9D8 !important;
+.btn-success:hover, .btn-success:active {
+	background-color: #01b5e7 !important;
 }
 
+.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
+	color: #01A9D8;
+}
