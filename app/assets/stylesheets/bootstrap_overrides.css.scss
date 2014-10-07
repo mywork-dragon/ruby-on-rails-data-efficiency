@@ -8,13 +8,15 @@
     color: white !important;
 }
 
-
-//ul.nav a:link { color: white !important;
-//}
-
-.nav a {
-  color: white !important;
+.nav{
+  a {
+    color: white !important;
+  }
+  
+  a:hover { color: black !important; 
+  }
 }
+
 
 //
 //.jumbotron {
