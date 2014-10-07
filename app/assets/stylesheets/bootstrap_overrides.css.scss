@@ -4,13 +4,17 @@
   
 }
 
-.navbar-static-top .navbar-brand {
-    color: red;
+.navbar-brand {
+    color: white !important;
 }
 
-ul.nav a:link { color: white !important; 
-}
 
+//ul.nav a:link { color: white !important;
+//}
+
+.nav a {
+  color: white !important;
+}
 
 //
 //.jumbotron {
