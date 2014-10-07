@@ -1,3 +1,18 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.founder_row {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+#welcome_div {
+  background-color: red;
+}
+
+.team_pic {
+  -webkit-border-radius:125px;
+  -moz-border-radius:125px;
+  border-radius:125px;
+}

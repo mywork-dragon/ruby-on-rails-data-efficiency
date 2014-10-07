@@ -11,7 +11,9 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li class="active"><a href="#">Home</a></li>
+        <li>
+          <%= link_to("Home", controller: "welcome", action: "index")%>
+        </li>
         <li>
           <%= link_to("Team", controller: "welcome", action: "team")%>
         </li>
