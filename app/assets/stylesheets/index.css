@@ -11,14 +11,14 @@ body {
     	linear,
     	left top,
     	left bottom,
-    	color-stop(0, #0062FF),
-    	color-stop(1, #FFFFFF)
+    	color-stop(0, #003B94),
+    	color-stop(1, #000000)
     );
-    background-image: -o-linear-gradient(bottom, #0062FF 0%, #FFFFFF 100%);
-    background-image: -moz-linear-gradient(bottom, #0062FF 0%, #FFFFFF 100%);
-    background-image: -webkit-linear-gradient(bottom, #0062FF 0%, #FFFFFF 100%);
-    background-image: -ms-linear-gradient(bottom, #0062FF 0%, #FFFFFF 100%);
-    background-image: linear-gradient(to bottom, #0062FF 0%, #FFFFFF 100%);
+    background-image: -o-linear-gradient(bottom, #003B94 0%, #000000 100%);
+    background-image: -moz-linear-gradient(bottom, #003B94 0%, #000000 100%);
+    background-image: -webkit-linear-gradient(bottom, #003B94 0%, #000000 100%);
+    background-image: -ms-linear-gradient(bottom, #003B94 0%, #000000 100%);
+    background-image: linear-gradient(to bottom, #003B94 0%, #000000 100%);
     
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -33,6 +33,7 @@ body {
 .headline h1 {
     font-size: 130px;
     color: white;
+    text-shadow: 2px 2px #a1a1a1;
 /*    background: #fff;*/
 /*    background: rgba(255,255,255,0.9);*/
 }
