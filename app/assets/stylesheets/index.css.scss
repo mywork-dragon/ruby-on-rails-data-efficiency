@@ -1,0 +1,25 @@
+
+
+//p.feature_description {
+////	margin-left: -10px;
+//	padding-left: -50px;
+//	border: 1px solid;
+//}
+
+.container#contact {
+	position: relative;
+//	border: 1px solid;
+	img#techstars_logo {
+		width: 100px;
+		position: absolute;
+//		left: 10px;
+		right: 0px;
+		bottom: 30px;
+	}
+}
+
+#submit_contact_btn {
+	border-radius: 5px;
+//	font-size: 2px;
+	font-style: italic;
+}

@@ -240,7 +240,8 @@ p {
 	padding:10px 20px 0 0;
 }
 .features p {
-	padding-left: 80px;
+/*	padding-left: 80px;*/
+	padding-left: 45px;
 }
 /*==========4. FEATURES LAYOUT==============*/
 
@@ -780,7 +781,7 @@ margin-bottom: -20px;
 /* ========= OVERRIDES ========= */
 
 .btn-success {
-	background-color: #01A9D8
+	background-color: #01A9D8;
 }
 
 .btn-success:hover, .btn-success:active {
