@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get '/team', to: 'welcome#team'
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
+  post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

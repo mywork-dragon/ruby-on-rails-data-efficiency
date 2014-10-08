@@ -39,32 +39,37 @@
       </div>
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <form action="https://yourwebsite.com/whmcs/domainchecker.php" method="post">
-            <input type="hidden" name="direct" value="true" />
-            <div class="row">
-              <div class="col-sm-12 form-group">
-                <!-- <div class="input-group"> -->
-                  <input class="form-control" type="text" name="domain" size="20" placeholder="Type in a URL to try it out" />
-                  <!-- <span class="input-group-btn">
-                  <select class="btn btn-default" name="ext">
-                    <option selected>.com</option>
-                    <option>.net</option>
-                    <option>.org</option>
-                    <option>.biz</option>
-                    <option>.com.au</option>
-                    <option>.net.au</option>
-                    <option>.info</option>
-                    <option>.asia</option>
-                    <option>.co.nz</option>
-                    <option>.org.au</option>
-                  </select>
-                  <!-- </span> --> 
-              </div>
+          <!-- <form action="https://yourwebsite.com/whmcs/domainchecker.php" method="post"> -->
+            <%= form_tag(controller: "welcome", action: "try_it_out", method: "post") do %>
+              <div class="form-group">
+
+              <input type="hidden" name="direct" value="true" />
+              <div class="row">
+                <div class="col-sm-12 form-group">
+                  <!-- <div class="input-group"> -->
+                    <!-- <input class="form-control" type="text" name="domain" size="20" placeholder="Type in a URL to try it out" /> -->
+                    <%= text_field_tag("domain", nil, size: "20", placeholder: "Type in a URL to try it out", class: "form-control") %>
+                    <!-- <span class="input-group-btn">
+                    <select class="btn btn-default" name="ext">
+                      <option selected>.com</option>
+                      <option>.net</option>
+                      <option>.org</option>
+                      <option>.biz</option>
+                      <option>.com.au</option>
+                      <option>.net.au</option>
+                      <option>.info</option>
+                      <option>.asia</option>
+                      <option>.co.nz</option>
+                      <option>.org.au</option>
+                    </select>
+                    <!-- </span> --> 
+                </div>
             </div>
             <div class="submitbtn">
-              <input type="submit" class="btn btn-success btn-lg" value="Test it out!" />
+              <!-- <input type="submit" class="btn btn-success btn-lg" value="Test it out!" /> -->
+              <%= submit_tag("Test it out!", class: "btn btn-success btn-lg")%>
             </div>
-          </form>
+          <% end %>
         </div>
       </div>
     </div>
@@ -167,7 +172,7 @@
     <div class="col-md-3">
     </div>
     <div class="col-md-6">
-      <%= form_tag(controller: "welcome", action: "contact_us", method: "post", id: "phpcontactform") do %>
+      <%= form_tag(controller: "welcome", action: "contact_us", method: "post") do %>
         <div class="form-group">
           <%= text_field_tag("name", nil, placeholder: "Full Name", class: "form-control") %>
         </div>

@@ -19,4 +19,7 @@ class WelcomeController < ApplicationController
     redirect_to action: :index
   end
   
+  def try_it_out
+  end
+  
 end
