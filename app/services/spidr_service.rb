@@ -34,20 +34,15 @@ class SpidrService
       
       data = Nokogiri::HTML(open(url))
       
-      tr_techs = data.css(".company_url")
+      company_url_classes = data.css(".company_url")
       
-      puts "tr_techs: #{tr_techs}"
-
-      # tr_techs.each do |tr_tech|
-      #   puts "tr_tech: #{tr_tech}"
-      #   # company_name = tr_tech.css('td')[1].child.child
-      #   #
-      #   # company_names << company_name
-      # end
+      puts "company_url_classes: #{company_url_classes}"
       
-      tr_tech = tr_techs.first
+      company_url_class = company_url_classes.first
       
-      puts tr_tech.child
+      company_url = company_url_class.child
+      
+      puts "url: #{company_url}"
     end
     
   end
