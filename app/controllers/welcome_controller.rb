@@ -20,6 +20,12 @@ class WelcomeController < ApplicationController
   end
   
   def try_it_out
+    @url = params[:url]
+    
+    render 'demo'
+  end
+  
+  def demo
   end
   
 end
