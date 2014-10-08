@@ -30,8 +30,8 @@
   <div class="container">
     <div class="domain">
       <div>
-        <h1><br>The Engineer's Approach to Lead Gen</h1>
-        <h3>MightySignal scours the Internet for hidden signals that companies leave behind, allowing sales teams to target their best possible leads.</h3>
+        <h1><br>The engineer's approach<br/>to lead generation</h1>
+        <h3>Finding signals on the web that are invisible to salespeople, but visible to engineers.</h3>
       </div>
       <!-- <div class="row PageHead">
         <div class="col-md-12">
@@ -96,27 +96,27 @@
   <div class="row PageHead">
     <div class="col-md-12">
       <h1 id="about">About Us</h1>
-      <h3>MightySignal is the next generation of lead generation.</h3>
+      <h3>Started by engineers, MightySignal tells B2B SaaS sales teams who are most likely to buy their product.</h3>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-6 features"><!-- <img src="images/setup_icon.png" alt="icon" class="img-responsive"> -->
-      <h4><i class="glyphicon glyphicon-cloud-download"></i>&nbsp&nbsp Big Data. Accurate Data.</h4>
-      <p>Our algorithms search all around the Internet with precision, picking up pieces of data that companies leave behind. We know more about companies than they know about themselves.</p>
+      <h4><i class="glyphicon glyphicon-cloud-download"></i>&nbsp&nbsp Gathering and indexing signals</h4>
+      <p class="feature_description">Companies leave fingerprints across the web that indicate what services they currently pay for, and what they are likely buy. </p>
     </div>
     <div class="col-sm-6 features"> <!-- <img src="images/backup_icon.png" alt="icon" class="img-responsive"> -->
-      <h4><i class="glyphicon glyphicon-retweet"></i>&nbsp&nbsp Integration with Existing Tools</h4>
-      <p>Whether it's your CRM or Marketing Automation Software, MightySignal integrates with your existing tools. Your data is always fresh, and you don't have to worry about updating it manually.</p>
+      <h4><i class="glyphicon glyphicon-retweet"></i>&nbsp&nbsp CRM Integration</h4>
+      <p class="feature_description">We integrate directly with Salesforce (more CRMs to come). No need for a new platform.</p>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-6 features"> <!-- <img src="images/git_icon.png" alt="icon" class="img-responsive"> -->
-      <h4><i class="glyphicon glyphicon-fire"></i>&nbsp&nbsp Predictive Lead Gen</h4>
-      <p>Using your company's previous behavior as well as our extensive data, we give you the hottest leads possible.</p>
+      <h4><i class="glyphicon glyphicon-fire"></i>&nbsp&nbsp Predictive Sales</h4>
+      <p class="feature_description">Based on your wins and losses, we find companies of similar profiles that will have high close rate.</p>
     </div>
     <div class="col-sm-6 features"> <!-- <img src="images/script_icon.png" alt="icon" class="img-responsive"> -->
       <h4><i class="glyphicon glyphicon-star"></i>&nbsp&nbsp Only the Beginning</h4>
-      <p>This is only the beginning. In the coming months, we'll start indexing all kinds of different signals around the Internet. </p>
+      <p class="feature_description">As we speak, MightySignal is cataloguing the endless signals companies leave. We know more about companies than they know about themselves, and we know the ones that you should be closing.</p>
     </div>
   </div>
 </div>
@@ -125,10 +125,12 @@
 <!--============== Contact us ==============-->
 <a class="anchor" id="contact_anchor"></a>
 <div class="container" id="contact">
+	<%= image_tag 'techstars_logo.png', id: 'techstars_logo'%>
+	
   <div class="row PageHead">
     <div class="col-md-12">
-      <h1>Contact Us</h1>
-      <h3>Drop us a line. We're here to help you.</h3>
+      <h1>Contact us</h1>
+      <h3>We are live! Fill this out and we'll be in touch.</h3>
     </div>
   </div>
   <!-- <div class="row ContactUs">
@@ -170,7 +172,7 @@
         </div>
         <div class="form-group text-center">
           <p>
-            <%= submit_tag("Send Message", class: "btn btn-success btn-lg")%>
+            <%= submit_tag("Submit", class: "btn btn-success btn-lg", id: "submit_contact_btn")%>
           </p>
           <span class="loading"></span>
         </div>
