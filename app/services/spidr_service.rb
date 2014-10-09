@@ -37,7 +37,7 @@ class SpidrService
           company = Company.find_by_website(company_url_with_http)
           
           if company.nil?
-            company = Company.create(name: , website: company_url_with_http, status: :active)
+            #company = Company.create(name: , website: company_url_with_http, status: :active)
           else
             puts "company already in DB"
           end
