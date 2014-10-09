@@ -28,13 +28,20 @@ class SpidrService
           puts "could not find company URL"
         else
           #urls << company_url
-          puts "FOUND! URL: #{company_url}"
-          
-          
-          
-          company_url_with_http = company_url.match(/^http[s]*:\/\//) ? company_url : "http://" + company_url
-          
-          company = Company.find_by_website(company_url_with_http)
+          # puts "FOUND! URL: #{company_url}"
+          #
+          # name = ""
+          #
+          # regex = /^http[s]*:\/\//
+          #
+          # if company_url.match(regex)
+          #   name = company_url.gsub()
+          # else
+          # end
+          #
+          # company_url_with_http = company_url.match(/^http[s]*:\/\//) ? company_url : "http://" + company_url
+          #
+          # company = Company.find_by_website(company_url_with_http)
           
           if company.nil?
             #company = Company.create(name: , website: company_url_with_http, status: :active)
