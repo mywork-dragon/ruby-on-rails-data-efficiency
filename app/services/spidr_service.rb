@@ -14,7 +14,7 @@ class SpidrService
   def run_angellist(url)
     
     i = 0
-    cutoff = 50
+    cutoff = -1
     
     #urls = []
     
