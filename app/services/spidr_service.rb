@@ -16,7 +16,7 @@ class SpidrService
     i = 0
     cutoff = 50
     
-    urls = []
+    #urls = []
     
     Spidr.site(url) do |spider|
       spider.every_url do |url|
@@ -27,8 +27,20 @@ class SpidrService
         if company_url.nil?
           puts "could not find company URL"
         else
-          urls << company_url
+          #urls << company_url
           puts "FOUND! URL: #{company_url}"
+          
+          
+          
+          company_url_with_http = company_url.match(/^http[s]*:\/\//) ? company_url : "http://" + company_url
+          
+          company = Company.find_by_website(company_url_with_http)
+          
+          if company.nil?
+            company = Company.create(name: , website: company_url_with_http, status: :active)
+          else
+            puts "company already in DB"
+          end
         end
         
         puts ""
@@ -36,12 +48,13 @@ class SpidrService
         i += 1
         
         if i == cutoff
-          return urls
+          #return urls
+          return
         end
       end
     end
     
-    urls
+    #urls
   end
   
   def company_url_from_angellist_url(url)
