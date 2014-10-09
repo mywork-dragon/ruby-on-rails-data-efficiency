@@ -60,7 +60,7 @@ class BizibleJob1
       
       csv << ["Company Name"] + @services_hash.keys
       
-      File.readlines(Rails.root + "db/bizible/companies.txt").each_with_index do |l, i|
+      File.readlines(Rails.root + "db/bizible/companies_with_duplicates.txt").each_with_index do |l, i|
         company_name = l.strip!
         
       #dummy_company_names = ["optimizely.com", "bizo.com", "bluenile.com", "delta.com"]
