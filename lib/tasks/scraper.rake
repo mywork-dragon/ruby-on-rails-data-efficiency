@@ -13,7 +13,7 @@ namespace 'scraper' do
   
   desc 'Scrape AngelList'
   task :scrape_angellist => [:environment] do
-    SpiderService.run_angellist
+    SpidrService.run_angellist
   end
   
 end
