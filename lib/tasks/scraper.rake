@@ -10,4 +10,10 @@ namespace 'scraper' do
     puts "scrape special task"
     ScrapeService.scrape_special()
   end
+  
+  desc 'Scrape AngelList'
+  task :scrape_angellist => [:environment] do
+    SpiderService.run_angellist
+  end
+  
 end
