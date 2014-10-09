@@ -27,24 +27,34 @@ class SpidrService
         if company_url.nil?
           puts "could not find company URL"
         else
-          #urls << company_url
-          # puts "FOUND! URL: #{company_url}"
-          #
-          # name = ""
-          #
-          # regex = /^http[s]*:\/\//
-          #
-          # if company_url.match(regex)
-          #   name = company_url.gsub()
-          # else
-          # end
-          #
-          # company_url_with_http = company_url.match(/^http[s]*:\/\//) ? company_url : "http://" + company_url
-          #
-          # company = Company.find_by_website(company_url_with_http)
-          
+          # urls << company_url
+          puts "FOUND! URL: #{company_url}"
+
+          name = ""
+
+          regex = /^http[s]*:\/\//
+
+          if company_url.match(regex)
+            name = company_url.gsub(regex, "")
+            company_url_with_http = company_url
+          else
+            name = company_url
+            company_url_with_http = "http://" + company_url
+          end
+
+          puts "company_url_with_http: #{company_url_with_http}"
+
+          company = Company.find_by_website(company_url_with_http)
+
           if company.nil?
-            #company = Company.create(name: , website: company_url_with_http, status: :active)
+            created = Company.create(name: name, website: company_url_with_http, status: :active)
+            
+            if created
+              puts "Added #{name} (#{company_url_with_http} to DB)"
+            else
+              puts "Error adding #{name} (#{company_url_with_http}) to DB"
+            end
+            
           else
             puts "company already in DB"
           end
