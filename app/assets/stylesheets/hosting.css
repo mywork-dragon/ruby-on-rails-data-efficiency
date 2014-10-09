@@ -72,7 +72,8 @@ p {
 	color: #fff;
 	/*text-align: center;
 	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);*/
-	background: url("/assets/header-bg.jpg") no-repeat #232a31; /* Old browsers */
+	background: url("header-bg.jpg") no-repeat #232a31; /* Old browsers */
+/*	background-color: #232a31;*/
 	height:630px;
 	background-size:cover;
 	overflow:hidden;
@@ -533,6 +534,7 @@ address {
 	position: relative;
 	color: #fff;
 	background:url(../images/header-bg.jpg) no-repeat #232a31;
+/*	background-color: #232a31;*/
 	background-size:cover;
 	overflow:hidden;
 	margin-top:80px;
@@ -765,7 +767,7 @@ margin-bottom: -20px;
 	right:30px;
 	display:none;
 	text-indent:-9999px;
-	background: url('../images/icon_top.png') no-repeat;
+	background: url('../assets/icon_top.png') no-repeat;
 }
 /*==========16. VERSION 2==============*/
 

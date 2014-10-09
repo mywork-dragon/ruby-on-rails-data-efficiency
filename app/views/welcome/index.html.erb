@@ -26,9 +26,13 @@
 </nav>
 
 <!--==============HEADER =================-->
-<div class="jumbotron masthead vertical-center"> 
+<div class="jumbotron masthead vertical-center" id="large-header"> 
+	
   <div class="container">
-    <div class="domain">
+		<canvas id="demo-canvas"></canvas>
+		
+    <div class="domain" id="engineer_message">
+			
       <div>
         <h1><br>The engineer's approach<br/>to lead generation</h1>
         <h3>Finding signals on the web that are invisible to salespeople, but visible to engineers.</h3>
@@ -55,7 +59,9 @@
           <% end %>
       </div>
     </div> -->
+	
   </div>
+	
 </div>
   
   <!--==============Hero Unit=================-->
@@ -71,13 +77,15 @@
         </li>
         <li>
           <div class="slide2">
-            <p><img src="images/server1.png" alt="server" class="img-responsive center-block"></p>
+						<p><%= image_tag 'server1.png', alt: 'server', class: 'img-responsive center-block' %></p>
+            <!-- <p><img src="images/server1.png" alt="server" class="img-responsive center-block"></p> -->
             <h1>Dedicated and VIP Hosting</h1>
           </div>
         </li>
         <li>
           <div class="slide3">
-            <p class="pull-left"><img src="images/server2.png" alt="server" class="img-responsive"></p>
+            <p class="pull-left"><%= image_tag 'server2.png', alt: 'server', class: 'img-responsive'%></p>						
+            <!-- <p class="pull-left"><img src="images/server2.png" alt="server" class="img-responsive"></p> -->
             <h1>Managed Hosting</h1>
             <h3>Flathost is a bootstrap based responsive minimal, flat and afforable hosting template with easy customization and great support </h3>
           </div>
@@ -294,11 +302,11 @@
 
 <!--==============QUERY LIBRARY=================--> 
 
-<script src="js/jquery.easing.1.2.js"></script> 
+<!-- <script src="jquery.easing.1.2.js"></script>  -->
 
 <!--==============BOOTSTRAP JS=================--> 
 
-<script src="js/bootstrap.min.js"></script> 
+<!-- <script src="js/bootstrap.min.js"></script>  -->
 
 <!--==========ONE PAGE SCROLLING SCRIPTS STARTS===============--> 
 
