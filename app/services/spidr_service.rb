@@ -75,19 +75,25 @@ class SpidrService
   end
   
   def company_url_from_angellist_url(url)
-    data = Nokogiri::HTML(open(url))
+    
+    begin
+      data = Nokogiri::HTML(open(url))
   
-    company_url_classes = data.css(".company_url")
+      company_url_classes = data.css(".company_url")
   
-    if company_url_classes.blank?
+      if company_url_classes.blank?
+        return nil
+      end
+  
+      #puts "company_url_classes: #{company_url_classes}"
+  
+      company_url_class = company_url_classes.first
+  
+      return company_url = company_url_class.child.to_s
+    rescue Exception => e
+      puts "Exception: #{e.message}"
       return nil
     end
-  
-    #puts "company_url_classes: #{company_url_classes}"
-  
-    company_url_class = company_url_classes.first
-  
-    company_url = company_url_class.child.to_s
   end
   
   class << self
