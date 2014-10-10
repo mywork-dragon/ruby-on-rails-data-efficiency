@@ -60,6 +60,8 @@ p {
 }
 .navbar-default .navbar-toggle {
 	border-color: #808080;
+  
+  background-color: white !important;
 }
 .navbar-toggle {
 	margin-top: 20px;
@@ -67,6 +69,11 @@ p {
 .navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
 	max-height: 370px;
 }
+
+/*.navbar.navbar-default.navbar-fixed-top {
+  background-color: white;
+}*/
+
 .jumbotron {
 	position: relative;
 	color: #fff;
@@ -798,5 +805,5 @@ a.anchor{display: block; position: relative; top: -75px; visibility: hidden;}
 
 .navbar-brand {
   height: 80px !important;
-  padding: 0px;
+  padding: 10px;
 }
