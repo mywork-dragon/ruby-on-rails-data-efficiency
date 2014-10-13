@@ -88,32 +88,25 @@
    page.evaluate(function() {
      // console.log("I AM HERE")
      
-     moreLength = 0;
+     var moreLength = 0;
      
-     do {
+     // do {
        
        var more = $(".more");
-       // console.log($(".results").html());
-       console.log($('html')[0].outerHTML);
-       var moreLength = more.length;
+       console.log($(".results").html());
+       //console.log($('html')[0].outerHTML);
+       moreLength = more.length;
        
        more.click();
        
-     } while (moreLength != 0)
-     
-     // var more = $(".more");
-     //
-     // if(more.length == 0)
-     // {
-     //   phantom.state = finish;
-     // }
-     // else
-     // {
-     //   more.click();
-     //
-     //   phantom.state = clickMore;
-     // }
+       console.log("clicked more");
+       
+       console.log($(".results").html());
+       
+     // } while (moreLength != 0)
    });
+   
+   phantom.exit();
  }
  
  function finish() {
