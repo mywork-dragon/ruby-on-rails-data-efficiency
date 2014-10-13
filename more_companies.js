@@ -101,12 +101,13 @@
        
        console.log("clicked more");
        
-       console.log($(".results").html());
-       
+       setTimeout(function(){
+         console.log($(".results").html());
+       }, 5000);
      // } while (moreLength != 0)
    });
    
-   phantom.exit();
+   // phantom.exit();
  }
  
  function finish() {

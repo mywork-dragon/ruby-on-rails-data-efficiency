@@ -1,0 +1,5075 @@
+open success
+console> Do you have a great idea that would make AngelList better?  Want to implement it?  We’re always hiring: https://angel.co/angellist/jobs
+============================================
+Step "0"
+============================================
+console> The page at https://angel.co/companies ran insecure content from http://code.jquery.com/jquery-1.11.1.min.js.
+
+console> 
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base header" style="">
+<div class="company column">
+Company
+<div class="column_slider">
+<div class="slide_columns left disabled">
+<span class="fontello-left-dir"></span>
+</div>
+</div>
+</div>
+<div class="column selected signal sortable" data-column="signal">
+Signal
+</div>
+<div class="column joined sortable" data-column="joined">
+Joined
+</div>
+<div class="column location" data-column="location">
+Location
+</div>
+<div class="column hidden_column market" data-column="market">
+Market
+</div>
+<div class="column hidden_column website" data-column="website">
+Website
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+Employees
+</div>
+<div class="column hidden_column stage" data-column="stage">
+Stage
+</div>
+<div class="column hidden_column raised sortable" data-column="raised">
+Total Raised
+</div>
+<div class="column_slider">
+<div class="slide_columns">
+<span class="fontello-right-dir"></span>
+</div>
+</div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/aardvark?utm_source=companies" class="startup-link" data-id="32024" data-type="Startup" title="Aardvark"><img alt="Aardvark" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32024-ba8ba2f7770cfa136df9b442d5afaf13-thumb_jpg.jpg?buster=1326842290"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/aardvark?utm_source=companies" class="startup-link" data-id="32024" data-type="Startup">Aardvark</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/search">Search</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://vark.com/" rel="nofollow" target="_blank">vark.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$56,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appbistro?utm_source=companies" class="startup-link" data-id="32042" data-type="Startup" title="Appbistro"><img alt="Appbistro" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32042-198e83a44522c7aab5bb1d94421067b7-thumb_jpg.jpg?buster=1326842308"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appbistro?utm_source=companies" class="startup-link" data-id="32042" data-type="Startup">Appbistro</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/developer-apis">Developer APIs</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.appbistro.com" rel="nofollow" target="_blank">appbistro.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appjet?utm_source=companies" class="startup-link" data-id="32043" data-type="Startup" title="Appjet"><img alt="Appjet" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32043-27a1ff1acb5b2533f107ebe41b840aca-thumb_jpg.jpg?buster=1406517804"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appjet?utm_source=companies" class="startup-link" data-id="32043" data-type="Startup">Appjet</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/curated-web">Curated Web</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://appjet.com/" rel="nofollow" target="_blank">appjet.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$715,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/asana?utm_source=companies" class="startup-link" data-id="32050" data-type="Startup" title="Asana"><img alt="Asana" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32050-a9808112a1474ca453fbe2c1081b7792-thumb_jpg.jpg?buster=1326842314"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/asana?utm_source=companies" class="startup-link" data-id="32050" data-type="Startup">Asana</a>
+</div>
+<div class="pitch">
+Teamwork without email
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/task-management">Task Management</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.asana.com" rel="nofollow" target="_blank">asana.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$38,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/automattic?utm_source=companies" class="startup-link" data-id="32055" data-type="Startup" title="Automattic"><img alt="Automattic" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32055-5346c3e7002d05af4225eb01b38af1b1-thumb_jpg.jpg?buster=1326842319"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/automattic?utm_source=companies" class="startup-link" data-id="32055" data-type="Startup">Automattic</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/forums">Forums</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://automattic.com" rel="nofollow" target="_blank">automattic.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series C
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$315,600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/bazaarvoice?utm_source=companies" class="startup-link" data-id="32058" data-type="Startup" title="Bazaarvoice"><img alt="Bazaarvoice" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32058-0e7b679093ab5724b2b3146b4382c5ed-thumb_jpg.jpg?buster=1326842322"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/bazaarvoice?utm_source=companies" class="startup-link" data-id="32058" data-type="Startup">Bazaarvoice</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/austin">Austin</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/networking">Networking</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.bazaarvoice.com" rel="nofollow" target="_blank">bazaarvoice.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+IPO
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$140,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/betaworks?utm_source=companies" class="startup-link" data-id="32061" data-type="Startup" title="Betaworks"><img alt="Betaworks" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32061-55de567227c5128b8f689b1ba0c69ab1-thumb_jpg.jpg?buster=1404139329"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/betaworks?utm_source=companies" class="startup-link" data-id="32061" data-type="Startup">Betaworks</a>
+</div>
+<div class="pitch">
+Betaworks is a company of builders. Investments: <a class="at_mention_link" data-id="32139" data-mention="true" data-name="digg" data-slug_id="204173" data-type="Startup" href="https://angel.co/digg" title="Digg"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Digg</span></a> <a class="at_mention_link" data-id="33188" data-mention="true" data-name="kickstarter" data-slug_id="206275" data-type="Startup" href="https://angel.co/kickstarter" title="Kickstarter"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Kickstarter</span></a> <a class="at_mention_link" data-id="32504" data-mention="true" data-name="tumblr" data-slug_id="204904" data-type="Startup" href="https://angel.co/tumblr" title="Tumblr"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Tumblr</span></a> <a class="at_mention_link" data-id="32510" data-mention="true" data-name="twitter" data-slug_id="204917" data-type="Startup" href="https://angel.co/twitter" title="Twitter"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Twitter</span></a>
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Feb ’13
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/big-data">Big Data</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.betaworks.com" rel="nofollow" target="_blank">betaworks.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$47,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/bit-ly?utm_source=companies" class="startup-link" data-id="32067" data-type="Startup" title="Bit.ly"><img alt="Bit.ly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32067-6b963ba06095df8d0db297a3ed875e02-thumb_jpg.jpg?buster=1326842331"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/bit-ly?utm_source=companies" class="startup-link" data-id="32067" data-type="Startup">Bit.ly</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://bit.ly" rel="nofollow" target="_blank">bit.ly</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/blekko?utm_source=companies" class="startup-link" data-id="32068" data-type="Startup" title="Blekko"><img alt="Blekko" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32068-d1e4561b7be68fd24f3bde1f51f49744-thumb_jpg.jpg?buster=1343859172"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/blekko?utm_source=companies" class="startup-link" data-id="32068" data-type="Startup">Blekko</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/redwood-city">Redwood City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/search">Search</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://blekko.com" rel="nofollow" target="_blank">blekko.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$60,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/blippy?utm_source=companies" class="startup-link" data-id="32071" data-type="Startup" title="Blippy"><img alt="Blippy" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32071-97af403d226ec30e0a246bbe90aa9707-thumb_jpg.jpg?buster=1326842336"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/blippy?utm_source=companies" class="startup-link" data-id="32071" data-type="Startup">Blippy</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Mar ’14
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/palo-alto">Palo Alto</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/mobile-2">Mobile</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://blippy.com" rel="nofollow" target="_blank">blippy.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$12,931,223
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/brightroll?utm_source=companies" class="startup-link" data-id="32080" data-type="Startup" title="BrightRoll"><img alt="BrightRoll" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32080-8cc9bf21718302ca0cd8ac44fc4dcf00-thumb_jpg.jpg?buster=1344011082"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/brightroll?utm_source=companies" class="startup-link" data-id="32080" data-type="Startup">BrightRoll</a>
+</div>
+<div class="pitch">
+BrightRoll is the largest independent video ad platform for reaching audiences at scale.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Mar ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/online-video-advertising">Online Video Advertising</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.brightroll.com/" rel="nofollow" target="_blank">brightroll.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+201-500
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$50,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/adaptly?utm_source=companies" class="startup-link" data-id="60" data-type="Startup" title="Adaptly"><img alt="Adaptly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/60-612f0f37d34a76c71433b4dfc6e518ed-thumb_jpg.jpg?buster=1324935948"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/adaptly?utm_source=companies" class="startup-link" data-id="60" data-type="Startup">Adaptly</a>
+</div>
+<div class="pitch">
+The Easiest Way to Advertise Across The Social Web.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jul ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/social-media-marketing">Social Media Marketing</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.adaptly.com" rel="nofollow" target="_blank">adaptly.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$13,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/draft-previously-starstreet-com?utm_source=companies" class="startup-link" data-id="63" data-type="Startup" title="Draft (previously StarStreet.com)"><img alt="Draft (previously StarStreet.com)" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/63-75f1974a84adcdfbb41af089c113d7da-thumb_jpg.jpg?buster=1410810557"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/draft-previously-starstreet-com?utm_source=companies" class="startup-link" data-id="63" data-type="Startup">Draft (previously StarStreet.com)</a>
+</div>
+<div class="pitch">
+Real money fantasy sports games
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jul ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/mobile-games-1">Mobile Games</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://playdraft.com" rel="nofollow" target="_blank">playdraft.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$2,100,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/graphicly?utm_source=companies" class="startup-link" data-id="112" data-type="Startup" title="Graphicly"><img alt="Graphicly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/112-ca8d9c02de847c6086442d66c47c4472-thumb_jpg.jpg?buster=1315771015"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/graphicly?utm_source=companies" class="startup-link" data-id="112" data-type="Startup">Graphicly</a>
+</div>
+<div class="pitch">
+an automated ebook publishing and distribution platform
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/content-creators">Content Creators</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.graphicly.com" rel="nofollow" target="_blank">graphicly.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$9,237,500
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appstores?utm_source=companies" class="startup-link" data-id="119" data-type="Startup" title="Appstores"><img alt="Appstores" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/119-54491b775cf038d4ee41f779f0b459a0-thumb_jpg.jpg?buster=1315771007"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appstores?utm_source=companies" class="startup-link" data-id="119" data-type="Startup">Appstores</a>
+</div>
+<div class="pitch">
+App Distribution Platform
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/distribution">Distribution</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://appstores.com" rel="nofollow" target="_blank">appstores.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,155,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/ecomom?utm_source=companies" class="startup-link" data-id="179" data-type="Startup" title="ecomom"><img alt="ecomom" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/179-dabf1b8030b1a2c738e3cc3f5955c0a5-thumb_jpg.jpg?buster=1315770986"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/ecomom?utm_source=companies" class="startup-link" data-id="179" data-type="Startup">ecomom</a>
+</div>
+<div class="pitch">
+It's all good
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’14
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/kids">Kids</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.ecomom.com" rel="nofollow" target="_blank">ecomom.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$15,700,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/backtype?utm_source=companies" class="startup-link" data-id="194" data-type="Startup" title="BackType"><img alt="BackType" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/194-dc3e7239d7c0d1a32692772dcf99eafc-thumb_jpg.jpg?buster=1315770983"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/backtype?utm_source=companies" class="startup-link" data-id="194" data-type="Startup">BackType</a>
+</div>
+<div class="pitch">
+Acquired by Twitter
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/advertising">Advertising</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.backtype.com/" rel="nofollow" target="_blank">backtype.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,315,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/stipple?utm_source=companies" class="startup-link" data-id="236" data-type="Startup" title="Stipple"><img alt="Stipple" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/236-3c2701145c4c6027c5d6ff75c7451cab-thumb_jpg.jpg?buster=1315770968"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/stipple?utm_source=companies" class="startup-link" data-id="236" data-type="Startup">Stipple</a>
+</div>
+<div class="pitch">
+Native advertising for the visual web
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/independent-music-labels">Independent Music Labels</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://stipple.com" rel="nofollow" target="_blank">stipple.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$12,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/pinterest?utm_source=companies" class="startup-link" data-id="281" data-type="Startup" title="Pinterest"><img alt="Pinterest" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/281-b4cb685d7b58fc51f60794ec6db2608d-thumb_jpg.jpg?buster=1357198089"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/pinterest?utm_source=companies" class="startup-link" data-id="281" data-type="Startup">Pinterest</a>
+</div>
+<div class="pitch">
+A Universal Social Catalog
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/curated-web">Curated Web</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.pinterest.com" rel="nofollow" target="_blank">pinterest.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$762,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/socialize?utm_source=companies" class="startup-link" data-id="287" data-type="Startup" title="Socialize"><img alt="Socialize" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/287-936a024f121d9bc7dbafa80705bb5352-thumb_jpg.jpg?buster=1315770958"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/socialize?utm_source=companies" class="startup-link" data-id="287" data-type="Startup">Socialize</a>
+</div>
+<div class="pitch">
+Identify and reward your most influential users with our drop-in social platform.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/interest-graph">Interest Graph</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.GetSocialize.com" rel="nofollow" target="_blank">GetSocialize.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class="more" data-page="2">More</div>
+
+console> clicked more
+alert!!> http://code.jquery.com/jquery-1.11.1.min.js
+console> 
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base header" style="">
+<div class="company column">
+Company
+<div class="column_slider">
+<div class="slide_columns left disabled">
+<span class="fontello-left-dir"></span>
+</div>
+</div>
+</div>
+<div class="column selected signal sortable" data-column="signal">
+Signal
+</div>
+<div class="column joined sortable" data-column="joined">
+Joined
+</div>
+<div class="column location" data-column="location">
+Location
+</div>
+<div class="column hidden_column market" data-column="market">
+Market
+</div>
+<div class="column hidden_column website" data-column="website">
+Website
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+Employees
+</div>
+<div class="column hidden_column stage" data-column="stage">
+Stage
+</div>
+<div class="column hidden_column raised sortable" data-column="raised">
+Total Raised
+</div>
+<div class="column_slider">
+<div class="slide_columns">
+<span class="fontello-right-dir"></span>
+</div>
+</div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/aardvark?utm_source=companies" class="startup-link" data-id="32024" data-type="Startup" title="Aardvark"><img alt="Aardvark" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32024-ba8ba2f7770cfa136df9b442d5afaf13-thumb_jpg.jpg?buster=1326842290"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/aardvark?utm_source=companies" class="startup-link" data-id="32024" data-type="Startup">Aardvark</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/search">Search</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://vark.com/" rel="nofollow" target="_blank">vark.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$56,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appbistro?utm_source=companies" class="startup-link" data-id="32042" data-type="Startup" title="Appbistro"><img alt="Appbistro" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32042-198e83a44522c7aab5bb1d94421067b7-thumb_jpg.jpg?buster=1326842308"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appbistro?utm_source=companies" class="startup-link" data-id="32042" data-type="Startup">Appbistro</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/developer-apis">Developer APIs</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.appbistro.com" rel="nofollow" target="_blank">appbistro.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appjet?utm_source=companies" class="startup-link" data-id="32043" data-type="Startup" title="Appjet"><img alt="Appjet" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32043-27a1ff1acb5b2533f107ebe41b840aca-thumb_jpg.jpg?buster=1406517804"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appjet?utm_source=companies" class="startup-link" data-id="32043" data-type="Startup">Appjet</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/curated-web">Curated Web</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://appjet.com/" rel="nofollow" target="_blank">appjet.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$715,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/asana?utm_source=companies" class="startup-link" data-id="32050" data-type="Startup" title="Asana"><img alt="Asana" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32050-a9808112a1474ca453fbe2c1081b7792-thumb_jpg.jpg?buster=1326842314"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/asana?utm_source=companies" class="startup-link" data-id="32050" data-type="Startup">Asana</a>
+</div>
+<div class="pitch">
+Teamwork without email
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/task-management">Task Management</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.asana.com" rel="nofollow" target="_blank">asana.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$38,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/automattic?utm_source=companies" class="startup-link" data-id="32055" data-type="Startup" title="Automattic"><img alt="Automattic" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32055-5346c3e7002d05af4225eb01b38af1b1-thumb_jpg.jpg?buster=1326842319"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/automattic?utm_source=companies" class="startup-link" data-id="32055" data-type="Startup">Automattic</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/forums">Forums</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://automattic.com" rel="nofollow" target="_blank">automattic.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series C
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$315,600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/bazaarvoice?utm_source=companies" class="startup-link" data-id="32058" data-type="Startup" title="Bazaarvoice"><img alt="Bazaarvoice" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32058-0e7b679093ab5724b2b3146b4382c5ed-thumb_jpg.jpg?buster=1326842322"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/bazaarvoice?utm_source=companies" class="startup-link" data-id="32058" data-type="Startup">Bazaarvoice</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/austin">Austin</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/networking">Networking</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.bazaarvoice.com" rel="nofollow" target="_blank">bazaarvoice.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+IPO
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$140,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/betaworks?utm_source=companies" class="startup-link" data-id="32061" data-type="Startup" title="Betaworks"><img alt="Betaworks" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32061-55de567227c5128b8f689b1ba0c69ab1-thumb_jpg.jpg?buster=1404139329"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/betaworks?utm_source=companies" class="startup-link" data-id="32061" data-type="Startup">Betaworks</a>
+</div>
+<div class="pitch">
+Betaworks is a company of builders. Investments: <a class="at_mention_link" data-id="32139" data-mention="true" data-name="digg" data-slug_id="204173" data-type="Startup" href="https://angel.co/digg" title="Digg"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Digg</span></a> <a class="at_mention_link" data-id="33188" data-mention="true" data-name="kickstarter" data-slug_id="206275" data-type="Startup" href="https://angel.co/kickstarter" title="Kickstarter"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Kickstarter</span></a> <a class="at_mention_link" data-id="32504" data-mention="true" data-name="tumblr" data-slug_id="204904" data-type="Startup" href="https://angel.co/tumblr" title="Tumblr"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Tumblr</span></a> <a class="at_mention_link" data-id="32510" data-mention="true" data-name="twitter" data-slug_id="204917" data-type="Startup" href="https://angel.co/twitter" title="Twitter"><span class="at_mention_symbol">@</span><span class="at_mention_slug">Twitter</span></a>
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Feb ’13
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/big-data">Big Data</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.betaworks.com" rel="nofollow" target="_blank">betaworks.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$47,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/bit-ly?utm_source=companies" class="startup-link" data-id="32067" data-type="Startup" title="Bit.ly"><img alt="Bit.ly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32067-6b963ba06095df8d0db297a3ed875e02-thumb_jpg.jpg?buster=1326842331"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/bit-ly?utm_source=companies" class="startup-link" data-id="32067" data-type="Startup">Bit.ly</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://bit.ly" rel="nofollow" target="_blank">bit.ly</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/blekko?utm_source=companies" class="startup-link" data-id="32068" data-type="Startup" title="Blekko"><img alt="Blekko" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32068-d1e4561b7be68fd24f3bde1f51f49744-thumb_jpg.jpg?buster=1343859172"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/blekko?utm_source=companies" class="startup-link" data-id="32068" data-type="Startup">Blekko</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/redwood-city">Redwood City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/search">Search</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://blekko.com" rel="nofollow" target="_blank">blekko.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$60,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/blippy?utm_source=companies" class="startup-link" data-id="32071" data-type="Startup" title="Blippy"><img alt="Blippy" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32071-97af403d226ec30e0a246bbe90aa9707-thumb_jpg.jpg?buster=1326842336"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/blippy?utm_source=companies" class="startup-link" data-id="32071" data-type="Startup">Blippy</a>
+</div>
+<div class="pitch">
+
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Mar ’14
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/palo-alto">Palo Alto</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/mobile-2">Mobile</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://blippy.com" rel="nofollow" target="_blank">blippy.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$12,931,223
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/brightroll?utm_source=companies" class="startup-link" data-id="32080" data-type="Startup" title="BrightRoll"><img alt="BrightRoll" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/32080-8cc9bf21718302ca0cd8ac44fc4dcf00-thumb_jpg.jpg?buster=1344011082"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/brightroll?utm_source=companies" class="startup-link" data-id="32080" data-type="Startup">BrightRoll</a>
+</div>
+<div class="pitch">
+BrightRoll is the largest independent video ad platform for reaching audiences at scale.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Mar ’12
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/online-video-advertising">Online Video Advertising</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.brightroll.com/" rel="nofollow" target="_blank">brightroll.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+201-500
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$50,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/adaptly?utm_source=companies" class="startup-link" data-id="60" data-type="Startup" title="Adaptly"><img alt="Adaptly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/60-612f0f37d34a76c71433b4dfc6e518ed-thumb_jpg.jpg?buster=1324935948"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/adaptly?utm_source=companies" class="startup-link" data-id="60" data-type="Startup">Adaptly</a>
+</div>
+<div class="pitch">
+The Easiest Way to Advertise Across The Social Web.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jul ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/social-media-marketing">Social Media Marketing</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.adaptly.com" rel="nofollow" target="_blank">adaptly.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$13,200,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/draft-previously-starstreet-com?utm_source=companies" class="startup-link" data-id="63" data-type="Startup" title="Draft (previously StarStreet.com)"><img alt="Draft (previously StarStreet.com)" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/63-75f1974a84adcdfbb41af089c113d7da-thumb_jpg.jpg?buster=1410810557"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/draft-previously-starstreet-com?utm_source=companies" class="startup-link" data-id="63" data-type="Startup">Draft (previously StarStreet.com)</a>
+</div>
+<div class="pitch">
+Real money fantasy sports games
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jul ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/mobile-games-1">Mobile Games</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://playdraft.com" rel="nofollow" target="_blank">playdraft.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$2,100,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/graphicly?utm_source=companies" class="startup-link" data-id="112" data-type="Startup" title="Graphicly"><img alt="Graphicly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/112-ca8d9c02de847c6086442d66c47c4472-thumb_jpg.jpg?buster=1315771015"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/graphicly?utm_source=companies" class="startup-link" data-id="112" data-type="Startup">Graphicly</a>
+</div>
+<div class="pitch">
+an automated ebook publishing and distribution platform
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/content-creators">Content Creators</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.graphicly.com" rel="nofollow" target="_blank">graphicly.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$9,237,500
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/appstores?utm_source=companies" class="startup-link" data-id="119" data-type="Startup" title="Appstores"><img alt="Appstores" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/119-54491b775cf038d4ee41f779f0b459a0-thumb_jpg.jpg?buster=1315771007"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/appstores?utm_source=companies" class="startup-link" data-id="119" data-type="Startup">Appstores</a>
+</div>
+<div class="pitch">
+App Distribution Platform
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/distribution">Distribution</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://appstores.com" rel="nofollow" target="_blank">appstores.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,155,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/ecomom?utm_source=companies" class="startup-link" data-id="179" data-type="Startup" title="ecomom"><img alt="ecomom" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/179-dabf1b8030b1a2c738e3cc3f5955c0a5-thumb_jpg.jpg?buster=1315770986"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/ecomom?utm_source=companies" class="startup-link" data-id="179" data-type="Startup">ecomom</a>
+</div>
+<div class="pitch">
+It's all good
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’14
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/kids">Kids</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.ecomom.com" rel="nofollow" target="_blank">ecomom.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$15,700,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/backtype?utm_source=companies" class="startup-link" data-id="194" data-type="Startup" title="BackType"><img alt="BackType" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/194-dc3e7239d7c0d1a32692772dcf99eafc-thumb_jpg.jpg?buster=1315770983"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/backtype?utm_source=companies" class="startup-link" data-id="194" data-type="Startup">BackType</a>
+</div>
+<div class="pitch">
+Acquired by Twitter
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/advertising">Advertising</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.backtype.com/" rel="nofollow" target="_blank">backtype.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,315,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/stipple?utm_source=companies" class="startup-link" data-id="236" data-type="Startup" title="Stipple"><img alt="Stipple" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/236-3c2701145c4c6027c5d6ff75c7451cab-thumb_jpg.jpg?buster=1315770968"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/stipple?utm_source=companies" class="startup-link" data-id="236" data-type="Startup">Stipple</a>
+</div>
+<div class="pitch">
+Native advertising for the visual web
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/independent-music-labels">Independent Music Labels</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://stipple.com" rel="nofollow" target="_blank">stipple.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$12,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/pinterest?utm_source=companies" class="startup-link" data-id="281" data-type="Startup" title="Pinterest"><img alt="Pinterest" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/281-b4cb685d7b58fc51f60794ec6db2608d-thumb_jpg.jpg?buster=1357198089"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/pinterest?utm_source=companies" class="startup-link" data-id="281" data-type="Startup">Pinterest</a>
+</div>
+<div class="pitch">
+A Universal Social Catalog
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/curated-web">Curated Web</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.pinterest.com" rel="nofollow" target="_blank">pinterest.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$762,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/socialize?utm_source=companies" class="startup-link" data-id="287" data-type="Startup" title="Socialize"><img alt="Socialize" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/287-936a024f121d9bc7dbafa80705bb5352-thumb_jpg.jpg?buster=1315770958"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/socialize?utm_source=companies" class="startup-link" data-id="287" data-type="Startup">Socialize</a>
+</div>
+<div class="pitch">
+Identify and reward your most influential users with our drop-in social platform.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/interest-graph">Interest Graph</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.GetSocialize.com" rel="nofollow" target="_blank">GetSocialize.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frs86 _a _jm" data-_tn="companies/results"><div class="results">
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/styleseat?utm_source=companies" class="startup-link" data-id="312" data-type="Startup" title="StyleSeat"><img alt="StyleSeat" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/312-1387954138544b98c1c629996e2cc60a-thumb_jpg.jpg?buster=1374003806"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/styleseat?utm_source=companies" class="startup-link" data-id="312" data-type="Startup">StyleSeat</a>
+</div>
+<div class="pitch">
+Largest and fastest growing marketplace in the $78B beauty and wellness industry
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Aug ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/lead-generation">Lead Generation</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.styleseat.com" rel="nofollow" target="_blank">styleseat.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$15,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/ostrovok?utm_source=companies" class="startup-link" data-id="433" data-type="Startup" title="Ostrovok"><img alt="Ostrovok" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/433-a6478ebdc66db0b8f3def86d9090de61-thumb_jpg.jpg?buster=1315770917"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/ostrovok?utm_source=companies" class="startup-link" data-id="433" data-type="Startup">Ostrovok</a>
+</div>
+<div class="pitch">
+Travel booking platform for Russia
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Sep ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/russia">Russia</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/online-travel">Online Travel</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://ostrovok.ru" rel="nofollow" target="_blank">ostrovok.ru</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series C
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$50,600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/thumb?utm_source=companies" class="startup-link" data-id="469" data-type="Startup" title="Thumb"><img alt="Thumb" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/469-28fda1af5475bf1ea9a64cafce995a6a-thumb_jpg.jpg?buster=1353527236"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/thumb?utm_source=companies" class="startup-link" data-id="469" data-type="Startup">Thumb</a>
+</div>
+<div class="pitch">
+Leading mobile social network that helps people get instant opinions
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Sep ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/opinions">Opinions</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.thumb.it" rel="nofollow" target="_blank">thumb.it</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$6,000,600
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/artsy?utm_source=companies" class="startup-link" data-id="516" data-type="Startup" title="Artsy"><img alt="Artsy" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/516-6f81e587aba9e57bcfe8a9eace707290-thumb_jpg.jpg?buster=1397676864"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/artsy?utm_source=companies" class="startup-link" data-id="516" data-type="Startup">Artsy</a>
+</div>
+<div class="pitch">
+Spotify for the Art World
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Sep ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/art">Art</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://artsy.net" rel="nofollow" target="_blank">artsy.net</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$25,960,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/miso-media?utm_source=companies" class="startup-link" data-id="630" data-type="Startup" title="Miso Media"><img alt="Miso Media" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/630-827f69c1ab2d83292b9fde1f4ed19038-thumb_jpg.jpg?buster=1315770861"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/miso-media?utm_source=companies" class="startup-link" data-id="630" data-type="Startup">Miso Media</a>
+</div>
+<div class="pitch">
+Provide the optimal user experience for music education using today’s emerging technology
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/los-angeles">Los Angeles</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/musical-instruments">Musical Instruments</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.misomedia.com" rel="nofollow" target="_blank">misomedia.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$3,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/gengo-1?utm_source=companies" class="startup-link" data-id="674" data-type="Startup" title="Gengo"><img alt="Gengo" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/674-d6cd215ac3f32a91f5f3fc05a58d4754-thumb_jpg.jpg?buster=1354436809"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/gengo-1?utm_source=companies" class="startup-link" data-id="674" data-type="Startup">Gengo</a>
+</div>
+<div class="pitch">
+The Platform for Global Companies
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/tokyo">Tokyo</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/crowdsourcing">Crowdsourcing</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://gengo.com" rel="nofollow" target="_blank">gengo.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$18,800,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/miso?utm_source=companies" class="startup-link" data-id="688" data-type="Startup" title="Miso"><img alt="Miso" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/688-0dec893ee0988e32fdf0cad8cf886233-thumb_jpg.jpg?buster=1315770847"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/miso?utm_source=companies" class="startup-link" data-id="688" data-type="Startup">Miso</a>
+</div>
+<div class="pitch">
+The Ultimate TV Companion
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/twitter-applications">Twitter Applications</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://gomiso.com" rel="nofollow" target="_blank">gomiso.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$5,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/cardmunch?utm_source=companies" class="startup-link" data-id="720" data-type="Startup" title="CardMunch"><img alt="CardMunch" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/720-fd7d1abacd573b68505cf26391bc9ac5-thumb_jpg.jpg?buster=1315770837"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/cardmunch?utm_source=companies" class="startup-link" data-id="720" data-type="Startup">CardMunch</a>
+</div>
+<div class="pitch">
+Business cards solved. (Human-powered 100% accurate mobile business card transcription)
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/palo-alto">Palo Alto</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/contact-management">Contact Management</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.cardmunch.com" rel="nofollow" target="_blank">cardmunch.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/boostctr?utm_source=companies" class="startup-link" data-id="787" data-type="Startup" title="BoostCTR"><img alt="BoostCTR" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/787-9ea368758553a3d45dd7a0fd36cb4303-thumb_jpg.jpg?buster=1315770821"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/boostctr?utm_source=companies" class="startup-link" data-id="787" data-type="Startup">BoostCTR</a>
+</div>
+<div class="pitch">
+Crowdsourced PPC Ads
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/crowdsourcing">Crowdsourcing</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.boostctr.com" rel="nofollow" target="_blank">boostctr.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$11,640,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/humanoid?utm_source=companies" class="startup-link" data-id="813" data-type="Startup" title="Humanoid"><img alt="Humanoid" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/813-dee9832dc76814506c31776e335189ab-thumb_jpg.jpg?buster=1320945988"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/humanoid?utm_source=companies" class="startup-link" data-id="813" data-type="Startup">Humanoid</a>
+</div>
+<div class="pitch">
+Labor in the Cloud. 
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Jan ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/crowdsourcing">Crowdsourcing</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://getHumanoid.com" rel="nofollow" target="_blank">getHumanoid.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$600,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/insightsquared?utm_source=companies" class="startup-link" data-id="873" data-type="Startup" title="InsightSquared"><img alt="InsightSquared" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/873-2c0b5d1316ca1d8f61aee210506aae22-thumb_jpg.jpg?buster=1405021416"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/insightsquared?utm_source=companies" class="startup-link" data-id="873" data-type="Startup">InsightSquared</a>
+</div>
+<div class="pitch">
+The #1 Salesforce Analytics app for data-driven business executives and their teams
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/cambridge-ma">Cambridge, MA</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/small-and-medium-businesses">Small and Medium Businesses</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.insightsquared.com" rel="nofollow" target="_blank">insightsquared.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+51-200
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$13,500,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/skillshare?utm_source=companies" class="startup-link" data-id="900" data-type="Startup" title="Skillshare"><img alt="Skillshare" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/900-0737f07726eed63c303b2107addac8c2-thumb_jpg.jpg?buster=1360938251"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/skillshare?utm_source=companies" class="startup-link" data-id="900" data-type="Startup">Skillshare</a>
+</div>
+<div class="pitch">
+Skillshare is a global learning community for classes. 
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/marketplaces">Marketplaces</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://skillshare.com" rel="nofollow" target="_blank">skillshare.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$10,750,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/pantheon?utm_source=companies" class="startup-link" data-id="907" data-type="Startup" title="Pantheon"><img alt="Pantheon" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/907-cbdae2927a54d2281280f41e954e8a3d-thumb_jpg.jpg?buster=1373481595"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/pantheon?utm_source=companies" class="startup-link" data-id="907" data-type="Startup">Pantheon</a>
+</div>
+<div class="pitch">
+Building a big bad-ass platform that will run 30% of the Internet
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/web-cms">Web CMS</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://getpantheon.com" rel="nofollow" target="_blank">getpantheon.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series B
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$27,800,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/internmatch?utm_source=companies" class="startup-link" data-id="917" data-type="Startup" title="InternMatch"><img alt="InternMatch" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/917-0bf28f9b11c239a77926353a545c4502-thumb_jpg.jpg?buster=1368135092"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/internmatch?utm_source=companies" class="startup-link" data-id="917" data-type="Startup">InternMatch</a>
+</div>
+<div class="pitch">
+InternMatch helps employers connect with the best college talent
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Oct ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/college-recruiting">College Recruiting</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.internmatch.com" rel="nofollow" target="_blank">internmatch.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$9,055,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/massive-health?utm_source=companies" class="startup-link" data-id="946" data-type="Startup" title="Massive Health"><img alt="Massive Health" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/946-fc1035e04f81a21eed7ea0ddca7f3e34-thumb_jpg.jpg?buster=1315770749"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/massive-health?utm_source=companies" class="startup-link" data-id="946" data-type="Startup">Massive Health</a>
+</div>
+<div class="pitch">
+Using mobile applications and social leverage / games to monitor and control diabetes
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Nov ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/interface-design">Interface Design</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://massivehealth.com/" rel="nofollow" target="_blank">massivehealth.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$2,250,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/wanderfly?utm_source=companies" class="startup-link" data-id="954" data-type="Startup" title="Wanderfly"><img alt="Wanderfly" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/954-13fdc4ab72232e61a8f2360ff3593c81-thumb_jpg.jpg?buster=1331147063"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/wanderfly?utm_source=companies" class="startup-link" data-id="954" data-type="Startup">Wanderfly</a>
+</div>
+<div class="pitch">
+Visual travel discovery
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Nov ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/new-york-ny-1">New York City</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/lifestyle-products">Lifestyle Products</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.wanderfly.com" rel="nofollow" target="_blank">wanderfly.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Acquired
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$1,400,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/crowdbooster?utm_source=companies" class="startup-link" data-id="1003" data-type="Startup" title="Crowdbooster"><img alt="Crowdbooster" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/1003-b2af262fa091903b0db94c9d585e51f1-thumb_jpg.jpg?buster=1339192745"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/crowdbooster?utm_source=companies" class="startup-link" data-id="1003" data-type="Startup">Crowdbooster</a>
+</div>
+<div class="pitch">
+Optimized social media marketing (YC S2010)
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Nov ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/palo-alto">Palo Alto</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/big-data">Big Data</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.crowdbooster.com/" rel="nofollow" target="_blank">crowdbooster.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+1-10
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Seed
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/mindsnacks?utm_source=companies" class="startup-link" data-id="1023" data-type="Startup" title="MindSnacks"><img alt="MindSnacks" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/1023-0e4f9d4a79828f0964a70720d695d2d7-thumb_jpg.jpg?buster=1318013229"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/mindsnacks?utm_source=companies" class="startup-link" data-id="1023" data-type="Startup">MindSnacks</a>
+</div>
+<div class="pitch">
+Mobile educational games
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Nov ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/educational-games">Educational Games</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.mindsnacks.com" rel="nofollow" target="_blank">mindsnacks.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$7,700,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/storenvy?utm_source=companies" class="startup-link" data-id="1115" data-type="Startup" title="Storenvy"><img alt="Storenvy" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/1115-dc5cd13c746b17071b7099469a0a6af8-thumb_jpg.jpg?buster=1360782164"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/storenvy?utm_source=companies" class="startup-link" data-id="1115" data-type="Startup">Storenvy</a>
+</div>
+<div class="pitch">
+We bring unique, original, and authentic stores to life and introduce them to the world.
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Apr ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/san-francisco">San Francisco</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/e-commerce-platforms">E-Commerce Platforms</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.storenvy.com" rel="nofollow" target="_blank">storenvy.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+11-50
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$6,525,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class=" dc59 frw44 _a _jm" data-_tn="companies/row"><div class="base startup">
+<div class="company column">
+<div class="g-lockup">
+<div class="photo">
+<a href="https://angel.co/impermium?utm_source=companies" class="startup-link" data-id="1232" data-type="Startup" title="Impermium"><img alt="Impermium" class="angel_image" src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/1232-e076e9eebfc6850367bb849a4f93c671-thumb_jpg.jpg?buster=1315770644"></a>
+</div>
+<div class="text">
+<div class="name">
+<a href="https://angel.co/impermium?utm_source=companies" class="startup-link" data-id="1232" data-type="Startup">Impermium</a>
+</div>
+<div class="pitch">
+Anti-spam for the Social Web
+</div>
+</div>
+</div>
+</div>
+<div class="column selected signal" data-column="signal">
+<div class="h_desc">
+Signal
+</div>
+<div class="value">
+<img alt="Signal4" src="//d2h3sltx127pvt.cloudfront.net/assets/icons/signal4-d62bf185aa5c531973f07c11fdd6bf4e.png">
+</div>
+</div>
+<div class="column joined" data-column="joined">
+<div class="h_desc">
+Joined
+</div>
+<div class="value">
+Nov ’10
+</div>
+</div>
+<div class="column location" data-column="location">
+<div class="h_desc">
+Location
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/silicon-valley">Silicon Valley</a></div>
+</div>
+</div>
+<div class="column hidden_column market" data-column="market">
+<div class="h_desc">
+Market
+</div>
+<div class="value">
+<div class="tag"><a href="https://angel.co/spam-filtering">Spam Filtering</a></div>
+</div>
+</div>
+<div class="column hidden_column website" data-column="website">
+<div class="h_desc">
+Website
+</div>
+<div class="value">
+<div class="website"><a href="http://www.impermium.com" rel="nofollow" target="_blank">impermium.com</a></div>
+</div>
+</div>
+<div class="column company_size hidden_column" data-column="company_size">
+<div class="h_desc">
+Employees
+</div>
+<div class="value">
+-
+</div>
+</div>
+<div class="column hidden_column stage" data-column="stage">
+<div class="h_desc">
+Stage
+</div>
+<div class="value">
+Series A
+</div>
+</div>
+<div class="column hidden_column raised" data-column="raised">
+<div class="h_desc">
+Total Raised
+</div>
+<div class="value">
+$9,000,000
+</div>
+</div>
+<div class="empty_slider"></div>
+</div>
+</div>
+<div class="more" data-page="3">More</div>
+</div>
+</div>
+
