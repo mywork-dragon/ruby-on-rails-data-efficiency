@@ -97,7 +97,8 @@
        //console.log($('html')[0].outerHTML);
        
        $('.value').find(".website").each(function() {
-          console.log($(this).html());
+          // console.log($(this).html());
+          console.log($(this).text());
        });
        
        moreLength = more.length;
@@ -107,8 +108,9 @@
        console.log("clicked more");
        
        setTimeout(function(){
-         $('.startup-link').each(function() {
-            console.log($(this).html());
+         $('.value').find(".website").each(function() {
+            // console.log($(this).html());
+            console.log($(this).text());
          });
        }, 5000);
      // } while (moreLength != 0)
