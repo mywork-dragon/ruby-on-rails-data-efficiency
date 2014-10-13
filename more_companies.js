@@ -76,26 +76,39 @@
      } 
  
      // Save screenshot for debugging purposes
-     page.render("more_companies_screenshots/step" + stepIndex++ + ".png");
+     // page.render("more_companies_screenshots/step" + stepIndex++ + ".png");
    }
  });
  
  function clickMore() {
    page.evaluate(function() {
-     console.log("I AM HERE")
+     // console.log("I AM HERE")
      
-     var more = $(".more");
-   
-     if(more.length == 0)
-     {
-       phantom.state = finish;
-     }
-     else
-     {
+     moreLength = 0;
+     
+     do {
+       
+       var more = $(".more");
+       // console.log($(".results").html());
+       console.log($('html')[0].outerHTML);
+       var moreLength = more.length;
+       
        more.click();
-   
-       phantom.state = clickMore;
-     }
+       
+     } while (moreLength != 0)
+     
+     // var more = $(".more");
+     //
+     // if(more.length == 0)
+     // {
+     //   phantom.state = finish;
+     // }
+     // else
+     // {
+     //   more.click();
+     //
+     //   phantom.state = clickMore;
+     // }
    });
  }
  
