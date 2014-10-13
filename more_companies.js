@@ -109,24 +109,54 @@
      //   });
      // }, 5000);
      
+     var foundSitesForThisRound = false;
+     var waitingForMore = false;
+     var run = 0;
+     
      var interval = setInterval(function(){
        
-       var more2 = $(".more");
-       
-       var moreText = more2.text()
-       
-       console.log(moreText);
-       
-       if(moreText.indexOf("More") == -1)
+       if(foundSitesForThisRound == false)
        {
-         console.log("Loading...")
+         console.log("***********************************Run " + run);
+         run ++;
+         
+         var more = $(".more");
+       
+         $('.value').find(".website").each(function() {
+            console.log($(this).text());
+         });
+       
+         foundSitesForThisRound = true;
+       
+         more.click();
+         
+         waitingForMore = true;
        }
-       else
+       
+       if(waitingForMore == true)
        {
-         console.log("FOUND MORE LINK")
-         clearInterval(interval);
+         var more2 = $(".more");
+       
+         var moreText = more2.text()
+       
+         console.log(moreText);
+       
+         if(moreText.indexOf("More") == -1)
+         {
+           console.log("Loading...")
+         }
+         else
+         {
+           console.log("FOUND MORE LINK")
+           
+           waitingForMore = false;
+           foundSitesForThisRound = false;
+           // clearInterval(interval);
+         }
        }
-     }, 100);
+       
+       
+       }, 1000);
    });
    
    // phantom.exit();
