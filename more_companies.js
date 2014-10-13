@@ -93,8 +93,13 @@
      // do {
        
        var more = $(".more");
-       console.log($(".results").html());
+       // console.log($(".results").html());
        //console.log($('html')[0].outerHTML);
+       
+       $('.value').find(".website").each(function() {
+          console.log($(this).html());
+       });
+       
        moreLength = more.length;
        
        more.click();
@@ -102,7 +107,9 @@
        console.log("clicked more");
        
        setTimeout(function(){
-         console.log($(".results").html());
+         $('.startup-link').each(function() {
+            console.log($(this).html());
+         });
        }, 5000);
      // } while (moreLength != 0)
    });
