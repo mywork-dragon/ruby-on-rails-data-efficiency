@@ -89,31 +89,44 @@
      // console.log("I AM HERE")
      
      var moreLength = 0;
+       
+     var more = $(".more");
      
-     // do {
+     $('.value').find(".website").each(function() {
+        // console.log($(this).html());
+        console.log($(this).text());
+     });
+     
+     moreLength = more.length;
+     
+     more.click();
+     
+     console.log("clicked more");
+     
+     // setTimeout(function(){
+     //   $('.value').find(".website").each(function() {
+     //      console.log($(this).text());
+     //   });
+     // }, 5000);
+     
+     var interval = setInterval(function(){
        
-       var more = $(".more");
-       // console.log($(".results").html());
-       //console.log($('html')[0].outerHTML);
+       var more2 = $(".more");
        
-       $('.value').find(".website").each(function() {
-          // console.log($(this).html());
-          console.log($(this).text());
-       });
+       var moreText = more2.text()
        
-       moreLength = more.length;
+       console.log(moreText);
        
-       more.click();
-       
-       console.log("clicked more");
-       
-       setTimeout(function(){
-         $('.value').find(".website").each(function() {
-            // console.log($(this).html());
-            console.log($(this).text());
-         });
-       }, 5000);
-     // } while (moreLength != 0)
+       if(moreText.indexOf("More") == -1)
+       {
+         console.log("Loading...")
+       }
+       else
+       {
+         console.log("FOUND MORE LINK")
+         clearInterval(interval);
+       }
+     }, 100);
    });
    
    // phantom.exit();
