@@ -58,25 +58,29 @@
  // Callback is executed each time a page is loaded...
  page.open(url, function (status) {
    if (status === 'success') {
-     // State is initially empty. State is persisted between page loads and can be used for identifying which page we're on.
-     console.log('============================================');
-     console.log('Step "' + stepIndex + '"');
-     console.log('============================================');
+     
+     console.log("open success");
+     window.setTimeout(function () {
+       // State is initially empty. State is persisted between page loads and can be used for identifying which page we're on.
+       console.log('============================================');
+       console.log('Step "' + stepIndex + '"');
+       console.log('============================================');
  
-     // Inject jQuery for scraping (you need to save jquery-1.6.1.min.js in the same folder as this file)
-     // page.injectJs('jquery-1.6.1.min.js');
-     page.includeJs("http://code.jquery.com/jquery-1.11.1.min.js");
+       // Inject jQuery for scraping (you need to save jquery-1.6.1.min.js in the same folder as this file)
+       // page.injectJs('jquery-1.6.1.min.js');
+       page.includeJs("http://code.jquery.com/jquery-1.11.1.min.js");
  
-     // Our "event loop"
-     if(!phantom.state){
-       // initialize();
-       clickMore();
-     } else {
-       phantom.state();
-     } 
+       // Our "event loop"
+       if(!phantom.state){
+         // initialize();
+         clickMore();
+       } else {
+         phantom.state();
+       } 
  
-     // Save screenshot for debugging purposes
-     // page.render("more_companies_screenshots/step" + stepIndex++ + ".png");
+       // Save screenshot for debugging purposes
+       // page.render("more_companies_screenshots/step" + stepIndex++ + ".png");
+     }, 10000); // Change timeout as required to allow sufficient time 
    }
  });
  
