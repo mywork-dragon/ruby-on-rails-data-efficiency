@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get 'demo' => 'welcome#demo', as: :demo
   
+  get 'status' => 'welcome#status'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

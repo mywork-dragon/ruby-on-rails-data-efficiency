@@ -28,4 +28,8 @@ class WelcomeController < ApplicationController
   def demo
   end
   
+  def status
+    
+  end
+  
 end
