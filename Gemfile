@@ -58,6 +58,8 @@ gem 'unicorn', group: :production
 
 gem 'spidr', '0.4.1'
 
+gem 'PageRankr', '4.2.1'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
