@@ -7,8 +7,13 @@
 //   });
 // });
 
-$('#theDropdown').ddslick({
-  onSelected: function(selectedData){
-    console.log("Selected");
-  }
+$(document).ready(function(){
+  console.log("ready")
+  $('#theDropdown').ddslick({
+    width: 200,
+    onSelected: function(selectedData){
+      console.log("Selected");
+    }
+  });
 });
+
