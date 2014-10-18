@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  // console.log("document ready");
 	$('.carousel').slick({
     dots: true,
     slidesToShow: 1
@@ -7,7 +8,7 @@ $(document).ready(function(){
 });
 
 $('#myDropdown').ddslick({
-    onSelected: function(selectedData){
-        //callback function: do something with selectedData;
-    }   
+  onSelected: function(selectedData){
+    console.log("Selected");
+  }
 });
