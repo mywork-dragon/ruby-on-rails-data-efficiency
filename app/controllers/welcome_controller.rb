@@ -29,7 +29,9 @@ class WelcomeController < ApplicationController
   end
   
   def status
-    
+    @bizible_logo = view_context.image_path('bizible_logo.png')
+    @placements_io_logo = view_context.image_path('placements_io_logo.png')
+    @adroll_logo = view_context.image_path('adroll_logo.png')
   end
   
 end

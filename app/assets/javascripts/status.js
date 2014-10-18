@@ -8,9 +8,9 @@
 // });
 
 $(document).ready(function(){
-  console.log("ready")
-  $('#theDropdown').ddslick({
-    width: 200,
+  selectText: "Choose a customer to pretend to be.",
+  $('#companies-dropdown').ddslick({
+    width: 300,
     onSelected: function(selectedData){
       console.log("Selected");
     }
