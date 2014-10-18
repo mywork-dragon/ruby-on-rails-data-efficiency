@@ -12,7 +12,9 @@
 /   %div
 /     Slide 4
 
-= render 'html_select'
+/ = render 'html_select'
+
+= select_tag(:company_id, options_for_select(["Bizible", "GoChime", "Placements.io"], "Bizible"))
 
 / = render 'slick_example'
   
