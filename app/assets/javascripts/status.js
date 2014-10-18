@@ -10,7 +10,7 @@
 $(document).ready(function(){
   selectText: "Choose a customer to pretend to be.",
   $('#companies-dropdown').ddslick({
-    width: 300,
+    width: 400,
     onSelected: function(selectedData){
       console.log("Selected");
     }
