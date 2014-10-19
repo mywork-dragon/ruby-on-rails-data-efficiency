@@ -34,7 +34,7 @@ class WelcomeController < ApplicationController
   def submit_demo
     puts "submit_demo params: #{params}"
     
-    redirect_to 'demo2'
+    redirect_to action: :demo2
   end
   
   def demo2

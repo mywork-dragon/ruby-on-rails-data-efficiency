@@ -20,8 +20,8 @@
   = select_tag(:company_id, options_for_select([["Bizible", {'data-imagesrc'=> @bizible_logo,  'data-description' => "You are the VP of Sales."}], ["Placements.io", {'data-imagesrc'=> @placements_io_logo,  'data-description' => "You are the VP of Sales."}], ["AdRoll", {'data-imagesrc'=> @adroll_logo, 'data-description' => "tou are the head of Sales Operations."}]]))
   
 = form_tag('/submit_demo') do
-  = hidden_field_tag('company', "", id: 'company-field')
-  = submit_tag("", style: "display: none;")
+  = hidden_field_tag('company_index', "", id: 'company-field')
+  = submit_tag("Next")
 
 / = render 'slick_example'
   
