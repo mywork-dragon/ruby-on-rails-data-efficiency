@@ -31,4 +31,14 @@ class WelcomeController < ApplicationController
     @adroll_logo = view_context.image_path('adroll_logo.png')
   end
   
+  def submit_demo
+    puts "submit_demo params: #{params}"
+    
+    redirect_to 'demo2'
+  end
+  
+  def demo2
+    
+  end
+  
 end

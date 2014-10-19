@@ -12,8 +12,12 @@ $(document).ready(function(){
   $('#companies-dropdown').ddslick({
     width: 400,
     onSelected: function(selectedData){
-      console.log("Selected");
+      var index = selectedData.selectedIndex;
+      console.log("selectedIndex: ", index);
+      $("#company-field").val(selectedData.selectedIndex);
     }
   });
 });
+
+
 
