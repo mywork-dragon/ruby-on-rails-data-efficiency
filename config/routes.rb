@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'demo' => 'welcome#demo'
   post 'submit_demo' => "welcome#submit_demo"
   
-  get 'demo2' => 'welcome#demo2'
+  post 'demo2' => 'welcome#demo2'
   get 'demo3' => 'welcome#demo3'
   
   # Example of regular route:

@@ -39,6 +39,18 @@ class WelcomeController < ApplicationController
   
   def demo2
     
+    company_index = params['company_index'].to_i
+    
+    puts "params: #{params}"
+    puts "company_index: #{company_index}"
+    
+    case company_index
+    when 0
+      @you_are = "Your name is Dave. You are the director of sales at Bizible."
+      puts "ZERO"
+      
+    end
+    
   end
   
 end
