@@ -48,7 +48,8 @@ class WelcomeController < ApplicationController
     when 0
       @you_are = "Your name is Dave. You are the director of sales at Bizible."
       puts "ZERO"
-      
+      @pic_path = 'dave_bizible.jpg'
+      @logo_path = 'bizible_logo.png'
     end
     
   end
