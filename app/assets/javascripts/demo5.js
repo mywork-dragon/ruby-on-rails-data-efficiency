@@ -21,11 +21,26 @@
 
 $(document).ready(function(){
 
+  var percentFinished = 0;
   
-  progress(65, $("#progressBar"))
+  progress(percentFinished, $("#progressBar"));
+  
+  var samplingInterval = 1000; //ms
+  var totalTime = 10;  //s
   
   $("#services-form").submit(function(event){
     console.log("submit pressed");
+    
+    interval = setInterval(function(){
+      percentFinished += (totalTime*1000)/samplingInterval;
+      
+      progress(percentFinished, $("#progressBar"));
+      
+      if(percentFinished >= 100)
+      {
+        clearInterval(interval);
+      }
+    }, samplingInterval);
     
     var data = {
       "jq key": "jq value"

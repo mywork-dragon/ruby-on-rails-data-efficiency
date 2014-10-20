@@ -69,7 +69,7 @@ class WelcomeController < ApplicationController
   def services
     url = params['url']
     
-    sleep(3.0)
+    sleep(10.0)
     
     json = {key: "value"}
     
