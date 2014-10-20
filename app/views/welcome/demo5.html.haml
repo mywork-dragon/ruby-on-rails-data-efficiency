@@ -1,5 +1,5 @@
 %h3 Curious to see what services another company is using? Just input a URL below, and MightySignal will do a live inspection of the site!
-= form_tag url_search_result_path, :method => "post" do
+= form_tag nil, method: "post", id: "services-form"  do
   .row
     .small-4
     .small-4.large-centered.columns.end 
@@ -8,6 +8,7 @@
     .small-4
     .small-4.large-centered.columns.end 
       .text-center
-        = submit_tag "Submit"
+        = submit_tag "Submit", id: "servicesSubmitButton"
 #progressBar
   %div
+#servicesUsing

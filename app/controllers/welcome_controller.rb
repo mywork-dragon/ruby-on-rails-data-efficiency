@@ -66,5 +66,15 @@ class WelcomeController < ApplicationController
   def demo5
   end
   
+  def services
+    url = params['url']
+    
+    sleep(3.0)
+    
+    json = {key: "value"}
+    
+    render json: json
+  end
+  
   
 end

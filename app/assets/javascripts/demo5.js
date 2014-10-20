@@ -21,10 +21,33 @@
 
 $(document).ready(function(){
 
+  
   progress(65, $("#progressBar"))
+  
+  $("#services-form").submit(function(event){
+    console.log("submit pressed");
+    return false;
+  });
 });
 
 function progress(percent, $element) {
     var progressBarWidth = percent * $element.width() / 100;
     $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
 }
+
+// var data = {
+//   "jq key": "jq value"
+// };
+//
+// $.ajax({
+//
+//   url: "/services",
+//   data: data,
+//
+//   success: function(data, response) {
+//     var url = data.key;
+//
+//     $('#servicesUsing').html("<div>" + url + "</div>")
+//   }
+//
+// })
