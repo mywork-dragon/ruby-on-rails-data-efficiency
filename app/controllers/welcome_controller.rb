@@ -54,8 +54,14 @@ class WelcomeController < ApplicationController
   end
   
   def demo3
-    @currently = "You have literally thousands of leads, but you don't know which ones to pursue first. You know that companies that use Marketo and AdWords are prime targets for you to sell to, and you wish that there was some way to know which of your leads uses these services."
+    @currently = "You have literally thousands of leads, but you don't know which ones to pursue first. You know that companies that use Marketo and AdWords are prime targets for you to sell to, and you wish that there were some way to know which of your leads uses these services."
     @image_path = 'demo_csv_before.png'
   end
+  
+  def demo4
+    @now = "Enter MightySignal. We figure out what services your leads are using. Now you know exactly whom you should be selling to."
+    @image_path = 'demo_csv_after.png'
+  end
+  
   
 end
