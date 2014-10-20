@@ -63,5 +63,8 @@ class WelcomeController < ApplicationController
     @image_path = 'demo_csv_after.png'
   end
   
+  def demo5
+  end
+  
   
 end
