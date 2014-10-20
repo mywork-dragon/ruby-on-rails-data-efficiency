@@ -21,7 +21,7 @@
 
 $(document).ready(function(){
 
-  progress(99, $("#progressBar"))
+  progress(65, $("#progressBar"))
 });
 
 function progress(percent, $element) {
