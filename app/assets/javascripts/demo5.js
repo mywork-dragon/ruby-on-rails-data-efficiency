@@ -26,6 +26,24 @@ $(document).ready(function(){
   
   $("#services-form").submit(function(event){
     console.log("submit pressed");
+    
+    var data = {
+      "jq key": "jq value"
+    };
+
+    $.ajax({
+
+      url: "/services",
+      data: data,
+
+      success: function(data, response) {
+        var url = data.key;
+
+        $('#servicesUsing').html("<div>" + url + "</div>")
+      }
+
+    })
+
     return false;
   });
 });
@@ -35,19 +53,3 @@ function progress(percent, $element) {
     $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
 }
 
-// var data = {
-//   "jq key": "jq value"
-// };
-//
-// $.ajax({
-//
-//   url: "/services",
-//   data: data,
-//
-//   success: function(data, response) {
-//     var url = data.key;
-//
-//     $('#servicesUsing').html("<div>" + url + "</div>")
-//   }
-//
-// })
