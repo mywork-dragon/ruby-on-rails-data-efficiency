@@ -25,14 +25,17 @@ $(document).ready(function(){
   
   progress(percentFinished, $("#progressBar"));
   
-  var samplingInterval = 1000; //ms
+  var samplingInterval = 500; //ms
   var totalTime = 10;  //s
+  
+  var percentInterval = samplingInterval/(totalTime*10.0);
+  console.log("percentInterval: " + percentInterval);
   
   $("#services-form").submit(function(event){
     console.log("submit pressed");
     
     interval = setInterval(function(){
-      percentFinished += (totalTime*1000)/samplingInterval;
+      percentFinished += percentInterval;
       
       progress(percentFinished, $("#progressBar"));
       
