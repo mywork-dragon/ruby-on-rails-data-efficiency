@@ -31,8 +31,12 @@ $(document).ready(function(){
   var percentInterval = samplingInterval/(totalTime*10.0);
   console.log("percentInterval: " + percentInterval);
   
+  $("#progressBar").hide();
+  
   $("#services-form").submit(function(event){
     console.log("submit pressed");
+    
+    $("#progressBar").show();
     
     $("#servicesSubmitButton").prop('disabled', true);
     $('#servicesUsing').html("")
