@@ -1,6 +1,9 @@
-.col-xs-2
-.col-xs-8
-  %h3 Curious to see what services another company is using? Just input a URL below, and MightySignal will do a live inspection of the site!
+.col-xs-1
+.col-xs-10
+  %h4#curious.text-center 
+    Curious to see what services another company is using? 
+    %br 
+    Just input a URL below, and MightySignal will do a live inspection of the site!
 = form_tag nil, method: "post", id: "services-form"  do
   .row
     .col-xs-4
@@ -11,6 +14,8 @@
     .col-xs-4.center-block
       .text-center
         = submit_tag "Submit", id: "servicesSubmitButton"
-#progressBar
-  %div
-#servicesUsing
+.row
+  #progressBar
+    %div
+.row
+  #servicesUsing
