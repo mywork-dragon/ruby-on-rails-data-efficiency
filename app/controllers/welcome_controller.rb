@@ -100,7 +100,8 @@ class WelcomeController < ApplicationController
   end
   
   def demo_get_companies
-    service_id = params['service_id']
+    service_name = params['service_name']
+    service_id = Service.find_by_name(service_name).id
     
     total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count
     
