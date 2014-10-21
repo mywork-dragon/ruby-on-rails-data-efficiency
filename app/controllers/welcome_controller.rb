@@ -71,7 +71,7 @@ class WelcomeController < ApplicationController
     
   end
   
-  def demo6
+  def demo_companies
     @services = [
                   Service.find_by_name("Marketo"), 
                   Service.find_by_name("Google AdWords Conversion"),

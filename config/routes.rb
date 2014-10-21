@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   get 'demo3' => 'welcome#demo3'
   get 'demo4' => 'welcome#demo4'
   get 'demo_services' => 'welcome#demo_services'
-  get 'demo6' => 'welcome#demo6'
+  get 'demo_companies' => 'welcome#demo_companies'
   get 'demo_get_services' => 'welcome#demo_get_services'
   get 'demo_get_companies' => 'welcome#demo_get_companies'
   

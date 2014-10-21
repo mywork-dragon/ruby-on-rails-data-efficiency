@@ -1,0 +1,15 @@
+.row
+  .col-xs-1
+  .col-xs-10
+    %h4#you-can-see.text-center 
+      You can also see all companies that use a particular service.
+      %br 
+      Check out one of the options from the dropdown below!
+
+.row
+  .col-xs-4
+  .col-xs-4.center-block
+    = select_tag "select-services", options_from_collection_for_select(@services, "id", "name")
+  .col-xs-4
+
+#companies-using
