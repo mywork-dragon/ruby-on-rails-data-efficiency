@@ -1,3 +1,5 @@
 %h3 Not only can you see what services a company is using, but you can see all companies that use a particular service. Check out one of the options from the dropdown below!
 
 = select_tag "select-services", options_from_collection_for_select(@services, "id", "name")
+
+#companies-using
