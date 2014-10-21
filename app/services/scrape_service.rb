@@ -217,6 +217,23 @@ class ScrapeService
     # Scrape a single URL and don't save the results to the DB
     # @author Jason Lew
     def scrape_test(url)
+      regex_http = /^http[s]*:\/\//
+
+      #strip http
+      if url.match(regex_http)
+        url.gsub!(regex_http, "")
+      end
+      
+      regex_www = /^www./
+      #strip www
+      if url.match(regex_www)
+        url.gsub!(regex_www, "")
+      end
+      
+      url = "http://" + url
+      
+      puts "url: #{url}"
+      
       service_names = ScrapeService.new.scrape_test(url)
       puts "Services:"
       pp service_names

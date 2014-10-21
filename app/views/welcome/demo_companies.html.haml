@@ -1,0 +1,23 @@
+.row
+  .col-xs-10
+    = link_to(image_tag("mighty_signal_logo.png", class: "mighty-signal-logo-demo-image"), "http://mightysignal.com")
+  .col-xs-2
+    #go-to-companies-demo
+      =link_to("Go to Services Demo", demo_services_path)
+
+.row
+  .col-xs-1
+  .col-xs-10
+    %h3#you-can-see.text-center 
+      These are the companies that use:
+
+.row
+  .col-xs-4
+  .col-xs-4.center-block
+    = select_tag "select-services", options_from_collection_for_select(@services, "id", "name")
+  .col-xs-4
+
+.row
+  .col-xs-3
+  .col-xs-6
+    #companies-using

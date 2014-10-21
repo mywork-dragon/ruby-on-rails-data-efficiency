@@ -1,0 +1,57 @@
+/*.ui-widget-header {
+            background: #cedc98;
+            border: 1px solid #DDDDDD;
+            color: #333333;
+            font-weight: bold;
+}
+
+#progressbar-2 {
+  height: 50px;
+}*/
+
+#go-to-companies-demo{
+  margin-top: 5px;
+}
+
+#curious {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-weight: 200;
+}
+
+#progressBar {
+        width: 300px;
+        height: 22px;
+        border: 1px solid #111;
+        background-color: #E0E0E0;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+}
+ 
+#progressBar div {
+        height: 100%;
+        color: #fff;
+        text-align: right;
+        line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+        width: 0;
+        background-color: #0099ff;
+}
+
+#servicesSubmitButton {
+  font-family: inherit;
+  font-size: 100%;
+  padding: .5em 1em;
+  color: #444;
+  color: rgba(0,0,0,.8);
+  border: 1px solid #999;
+  border: 0 rgba(0,0,0,0);
+  background-color: #E6E6E6;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+#servicesUsing
+{
+  margin-top: 20px;
+}

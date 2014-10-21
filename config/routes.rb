@@ -7,7 +7,17 @@ Rails.application.routes.draw do
   get '/team', to: 'welcome#team'
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
-  get 'demo' => 'welcome#demo', as: :demo
+  
+  get 'demo' => 'welcome#demo'
+  post 'submit_demo' => "welcome#submit_demo"
+  
+  get 'demo_you_are' => 'welcome#demo_you_are'
+  get 'demo3' => 'welcome#demo3'
+  get 'demo4' => 'welcome#demo4'
+  get 'demo_services' => 'welcome#demo_services'
+  get 'demo_companies' => 'welcome#demo_companies'
+  get 'demo_get_services' => 'welcome#demo_get_services'
+  get 'demo_get_companies' => 'welcome#demo_get_companies'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
