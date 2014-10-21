@@ -68,6 +68,15 @@ class WelcomeController < ApplicationController
   end
   
   def demo6
+    @services = [
+                  Service.find_by_name("Marketo"), 
+                  Service.find_by_name("Google AdWords Conversion"),
+                  Service.find_by_name("Optimizely"),
+                  Service.find_by_name("Google Analytics"),
+                  Service.find_by_name("KissMetrics"),
+                  Service.find_by_name("AdRoll")
+    ]
+    
   end
   
   def services
@@ -78,6 +87,26 @@ class WelcomeController < ApplicationController
     json = {services: services}
     
     render json: json
+  end
+  
+  def companies
+    service_id = params['service_id']
+    
+    total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count
+    
+    is = Installation.where(scrape_job_id: 15, service_id: service_id).limit(50)
+    
+    @company_urls = []
+    
+    is.each do |i|
+      @company_urls << i.company.website
+    end
+    
+    @count = total_count - 50
+    
+    @count = 0 if total_count < 0
+    
+    
   end
   
   
