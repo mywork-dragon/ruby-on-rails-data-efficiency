@@ -35,6 +35,7 @@ $(document).ready(function(){
     console.log("submit pressed");
     
     $("#servicesSubmitButton").prop('disabled', true);
+    $('#servicesUsing').html("")
     
     percentFinished = 0;
     progress(percentFinished, $("#progressBar"));
@@ -65,8 +66,17 @@ $(document).ready(function(){
 
       success: function(data, response) {
         var services = data.services;
+        
+        var list = "<ul>";
+        
+        var servicesLength = services.length;
+        for (var i = 0; i < servicesLength; i++) {
+          list += "<li>" + services[i] + "</li>";
+        }
+        
+        list += "</ul>"
 
-        $('#servicesUsing').html("<div>" + services + "</div>")
+        $('#servicesUsing').html("<div><ul>" + list + "</ul></div>")
       }
 
     })
