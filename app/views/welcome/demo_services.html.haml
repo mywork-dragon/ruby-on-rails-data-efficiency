@@ -1,9 +1,15 @@
-.col-xs-1
-.col-xs-10
-  %h3#curious.text-center 
-    Curious to see what services another company is using? 
-    %br 
-    Just input a URL below, and MightySignal will do a live inspection of the site!
+.row
+  .col-xs-10
+  .col-xs-2
+    #go-to-companies-demo
+      =link_to("Go to Companies Demo", demo_companies_path)
+.row
+  .col-xs-1
+  .col-xs-10
+    %h3#curious.text-center 
+      Curious to see what services another company is using? 
+      %br 
+      Just input a URL below, and MightySignal will do a live inspection of the site!
 = form_tag nil, method: "post", id: "services-form"  do
   .row
     .col-xs-4

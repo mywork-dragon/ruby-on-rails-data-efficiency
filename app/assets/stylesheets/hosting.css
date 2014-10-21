@@ -41,12 +41,12 @@ body {
 	background:#FFF;
 	position:relative;
 }
-a {
-	color:#2cc76a;
-}
-a:hover, a:focus {
-	color:#1eb45a;
-}
+/*a {
+  color:#2cc76a;
+}*/
+/*a:hover, a:focus {
+  color:#1eb45a;
+}*/
 h1, h2, h3, h4 {
 	font-weight:bold;
 }
