@@ -80,11 +80,12 @@ class WelcomeController < ApplicationController
                       "KissMetrics",
                       "AdRoll",
                       "HubSpot",
-                      "Omniture",
                       "Criteo"
     ]
     
     @services = service_names.map{|service_name| Service.find_by_name(service_name)}
+    
+    puts "@services: #{@services}"
     
   end
   
