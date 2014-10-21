@@ -69,9 +69,9 @@ class WelcomeController < ApplicationController
   def services
     url = params['url']
     
-    sleep(10.0)
+    services = ScrapeService.scrape_test(url)
     
-    json = {key: "value"}
+    json = {services: services}
     
     render json: json
   end

@@ -53,7 +53,7 @@ $(document).ready(function(){
     }, samplingInterval);
     
     var data = {
-      "jq key": "jq value"
+      "url": $("#services-url-tag").val()
     };
 
     $.ajax({
@@ -62,9 +62,9 @@ $(document).ready(function(){
       data: data,
 
       success: function(data, response) {
-        var url = data.key;
+        var services = data.services;
 
-        $('#servicesUsing').html("<div>" + url + "</div>")
+        $('#servicesUsing').html("<div>" + services + "</div>")
       }
 
     })
