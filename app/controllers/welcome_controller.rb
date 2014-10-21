@@ -26,9 +26,11 @@ class WelcomeController < ApplicationController
   end
   
   def demo
-    @bizible_logo = view_context.image_path('bizible_logo.png')
-    @placements_io_logo = view_context.image_path('placements_io_logo.png')
-    @adroll_logo = view_context.image_path('adroll_logo.png')
+    redirect_to :demo_you_are
+    
+    # @bizible_logo = view_context.image_path('bizible_logo.png')
+    # @placements_io_logo = view_context.image_path('placements_io_logo.png')
+    # @adroll_logo = view_context.image_path('adroll_logo.png')
   end
   
   def submit_demo
@@ -37,12 +39,14 @@ class WelcomeController < ApplicationController
     redirect_to action: :demo2
   end
   
-  def demo2
+  def demo_you_are
     
-    company_index = params['company_index'].to_i
+    # company_index = params['company_index'].to_i
+    #
+    # puts "params: #{params}"
+    # puts "company_index: #{company_index}"
     
-    puts "params: #{params}"
-    puts "company_index: #{company_index}"
+    company_index = 0
     
     case company_index
     when 0

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'demo' => 'welcome#demo'
   post 'submit_demo' => "welcome#submit_demo"
   
-  post 'demo2' => 'welcome#demo2'
+  get 'demo_you_are' => 'welcome#demo_you_are'
   get 'demo3' => 'welcome#demo3'
   get 'demo4' => 'welcome#demo4'
   get 'demo5' => 'welcome#demo5'
