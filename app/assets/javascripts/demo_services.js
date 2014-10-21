@@ -26,7 +26,7 @@ $(document).ready(function(){
   progress(percentFinished, $("#progressBar"));
   
   var samplingInterval = 500; //ms
-  var totalTime = 15;  //s
+  var totalTime = 20;  //s
   
   var percentInterval = samplingInterval/(totalTime*10.0);
   console.log("percentInterval: " + percentInterval);
