@@ -34,6 +34,11 @@ $(document).ready(function(){
   $("#services-form").submit(function(event){
     console.log("submit pressed");
     
+    $("#servicesSubmitButton").prop('disabled', true);
+    
+    percentFinished = 0;
+    progress(percentFinished, $("#progressBar"));
+    
     interval = setInterval(function(){
       percentFinished += percentInterval;
       
@@ -42,6 +47,8 @@ $(document).ready(function(){
       if(percentFinished >= 100)
       {
         clearInterval(interval);
+        
+        $("#servicesSubmitButton").prop('disabled', false);
       }
     }, samplingInterval);
     
