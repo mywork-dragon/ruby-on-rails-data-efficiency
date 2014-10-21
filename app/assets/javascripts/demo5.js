@@ -26,7 +26,7 @@ $(document).ready(function(){
   progress(percentFinished, $("#progressBar"));
   
   var samplingInterval = 500; //ms
-  var totalTime = 10;  //s
+  var totalTime = 13;  //s
   
   var percentInterval = samplingInterval/(totalTime*10.0);
   console.log("percentInterval: " + percentInterval);
@@ -75,6 +75,8 @@ $(document).ready(function(){
 
 function progress(percent, $element) {
     var progressBarWidth = percent * $element.width() / 100;
-    $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
+    // $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
+    
+    $element.find('div').animate({ width: progressBarWidth }, 500);
 }
 
