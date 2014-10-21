@@ -42,13 +42,15 @@ $(document).ready(function(){
     interval = setInterval(function(){
       percentFinished += percentInterval;
       
-      progress(percentFinished, $("#progressBar"));
-      
       if(percentFinished >= 100)
       {
         clearInterval(interval);
         
         $("#servicesSubmitButton").prop('disabled', false);
+      }
+      else
+      {
+        progress(percentFinished, $("#progressBar"));
       }
     }, samplingInterval);
     
