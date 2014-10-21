@@ -120,6 +120,8 @@ class WelcomeController < ApplicationController
     
     #json = {company_urls: ["http://espn.com"]*50, count: 12345}
     
+    puts "json: #{json}"
+    
     render json: json
   end
   
