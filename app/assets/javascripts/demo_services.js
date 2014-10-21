@@ -26,7 +26,7 @@ $(document).ready(function(){
   progress(percentFinished, $("#progressBar"));
   
   var samplingInterval = 500; //ms
-  var totalTime = 13;  //s
+  var totalTime = 15;  //s
   
   var percentInterval = samplingInterval/(totalTime*10.0);
   console.log("percentInterval: " + percentInterval);
@@ -61,22 +61,35 @@ $(document).ready(function(){
 
     $.ajax({
 
-      url: "/demo_services",
+      url: "/demo_get_services",
       data: data,
 
       success: function(data, response) {
         var services = data.services;
         
-        var list = "<ul>";
+        clearInterval(interval);
+        percentFinished = 100;
+        progress(percentFinished, $("#progressBar"));
+        $("#servicesSubmitButton").prop('disabled', false);
         
         var servicesLength = services.length;
-        for (var i = 0; i < servicesLength; i++) {
-          list += "<li>" + services[i] + "</li>";
-        }
         
-        list += "</ul>"
+        if(servicesLength == 0)
+        {
+          $('#servicesUsing').html("<div><h3>No services found.</h3></div>")
+        }
+        else
+        {
+          var list = "<ul>";
+        
+          for (var i = 0; i < servicesLength; i++) {
+            list += "<li>" + services[i] + "</li>";
+          }
+        
+          list += "</ul>"
 
-        $('#servicesUsing').html("<div><ul>" + list + "</ul></div>")
+          $('#servicesUsing').html("<div><ul>" + list + "</ul></div>")
+        }
       }
 
     })

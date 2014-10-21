@@ -16,7 +16,7 @@ $(document).ready(function(){
     
     $.ajax({
 
-      url: "/demo_companies",
+      url: "/demo_get_companies",
       data: data,
 
       success: function(data, response) {

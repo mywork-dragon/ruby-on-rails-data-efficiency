@@ -83,7 +83,7 @@ class WelcomeController < ApplicationController
     
   end
   
-  def demo_services
+  def demo_get_services
     url = params['url']
     
     services = ScrapeService.scrape_test(url)
@@ -93,7 +93,7 @@ class WelcomeController < ApplicationController
     render json: json
   end
   
-  def demo_companies
+  def demo_get_companies
     service_id = params['service_id']
     
     total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count

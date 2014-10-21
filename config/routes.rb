@@ -14,10 +14,10 @@ Rails.application.routes.draw do
   get 'demo_you_are' => 'welcome#demo_you_are'
   get 'demo3' => 'welcome#demo3'
   get 'demo4' => 'welcome#demo4'
-  get 'demo5' => 'welcome#demo5'
-  get 'demo6' => 'welcome#demo6'
   get 'demo_services' => 'welcome#demo_services'
-  get 'demo_companies' => 'welcome#demo_companies'
+  get 'demo6' => 'welcome#demo6'
+  get 'demo_get_services' => 'welcome#demo_get_services'
+  get 'demo_get_companies' => 'welcome#demo_get_companies'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
