@@ -72,14 +72,19 @@ class WelcomeController < ApplicationController
   end
   
   def demo_companies
-    @services = [
-                  Service.find_by_name("Marketo"), 
-                  Service.find_by_name("Google AdWords Conversion"),
-                  Service.find_by_name("Optimizely"),
-                  Service.find_by_name("Google Analytics"),
-                  Service.find_by_name("KissMetrics"),
-                  Service.find_by_name("AdRoll")
+    service_names = [
+                      "Marketo",
+                      "Google AdWords Conversion",
+                      "Optimizely",
+                      "Google Analytics",
+                      "KissMetrics",
+                      "AdRoll",
+                      "HubSpot",
+                      "Omniture",
+                      "Criteo"
     ]
+    
+    @services = service_names.map{|service_name| Service.find_by_name(service_name)}
     
   end
   
@@ -110,9 +115,9 @@ class WelcomeController < ApplicationController
     
     count = 0 if total_count < 0
     
-    # json = {company_urls: company_urls, count: count}
+    json = {company_urls: company_urls, count: count}
     
-    json = {company_urls: ["http://espn.com"]*50, count: 12345}
+    #json = {company_urls: ["http://espn.com"]*50, count: 12345}
     
     render json: json
   end

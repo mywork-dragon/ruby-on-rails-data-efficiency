@@ -27,8 +27,8 @@ $(document).ready(function(){
         
         var list = "<ul>";
         
-        var length = companies.length;
-        for (var i = 0; i < length; i++) {
+        var companiesLength = companies.length;
+        for (var i = 0; i < companiesLength; i++) {
           var company = companies[i];
           var link = '<a href=' + '"' + company + '">' + company + '</a>'
           list += "<li>" + link + "</li>";
