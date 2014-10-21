@@ -16,7 +16,8 @@ Rails.application.routes.draw do
   get 'demo4' => 'welcome#demo4'
   get 'demo5' => 'welcome#demo5'
   get 'demo6' => 'welcome#demo6'
-  get 'services' => 'welcome#services'
+  get 'demo_services' => 'welcome#demo_services'
+  get 'demo_companies' => 'welcome#demo_companies'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

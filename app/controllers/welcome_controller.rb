@@ -79,7 +79,7 @@ class WelcomeController < ApplicationController
     
   end
   
-  def services
+  def demo_services
     url = params['url']
     
     services = ScrapeService.scrape_test(url)
@@ -89,24 +89,28 @@ class WelcomeController < ApplicationController
     render json: json
   end
   
-  def companies
+  def demo_companies
     service_id = params['service_id']
     
     total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count
     
     is = Installation.where(scrape_job_id: 15, service_id: service_id).limit(50)
     
-    @company_urls = []
+    company_urls = []
     
     is.each do |i|
-      @company_urls << i.company.website
+      company_urls << i.company.website
     end
     
-    @count = total_count - 50
+    count = total_count - 50
     
-    @count = 0 if total_count < 0
+    count = 0 if total_count < 0
     
+    # json = {company_urls: company_urls, count: count}
     
+    json = {company_urls: ["http://espn.com"]*50, count: 12345}
+    
+    render json: json
   end
   
   

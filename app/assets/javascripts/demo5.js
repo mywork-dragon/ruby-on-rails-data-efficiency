@@ -61,7 +61,7 @@ $(document).ready(function(){
 
     $.ajax({
 
-      url: "/services",
+      url: "/demo_services",
       data: data,
 
       success: function(data, response) {
