@@ -105,7 +105,9 @@ class WelcomeController < ApplicationController
     
     total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count
     
-    is = Installation.where(scrape_job_id: 15, service_id: service_id).limit(50)
+    limit = 100
+    
+    is = Installation.where(scrape_job_id: 15, service_id: service_id).limit(limit)
     
     company_urls = []
     
@@ -113,7 +115,7 @@ class WelcomeController < ApplicationController
       company_urls << i.company.website
     end
     
-    count = total_count - 50
+    count = total_count - limit
     
     count = 0 if total_count < 0
     
