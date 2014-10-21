@@ -64,6 +64,10 @@ class WelcomeController < ApplicationController
   end
   
   def demo5
+    
+  end
+  
+  def demo6
   end
   
   def services
