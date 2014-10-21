@@ -29,7 +29,9 @@ $(document).ready(function(){
         
         var length = companies.length;
         for (var i = 0; i < length; i++) {
-          list += "<li>" + companies[i] + "</li>";
+          var company = companies[i];
+          var link = '<a href=' + '"' + company + '">' + company + '</a>'
+          list += "<li>" + link + "</li>";
         }
         
         if(count > 0)
