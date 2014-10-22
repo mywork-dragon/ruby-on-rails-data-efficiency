@@ -25,6 +25,8 @@ class AlexaService
       end
     end
     
+    puts "DONE!"
+    
   end
 
   
