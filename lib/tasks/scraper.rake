@@ -16,4 +16,10 @@ namespace 'scraper' do
     SpidrService.run_angellist
   end
   
+  desc 'Add Alexa Companies'
+  task :add_alexa => [:environment] do
+    AlexaService.run("/home/webapps/varys/current/db/alexa/top-1m_10_21_14.csv")
+  end
+  
+  
 end
