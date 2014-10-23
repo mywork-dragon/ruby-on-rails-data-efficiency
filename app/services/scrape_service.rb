@@ -171,7 +171,6 @@ class ScrapeService
       start_num = (count * percentage * page_number * 1.0 / 100).ceil
       end_num = (count * percentage * (page_number + 1) * 1.0 / 100).floor
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
-      #Company.active.limit(end_num - start_num + 1).offset(start_num).each do |c|
       Company.limit(end_num - start_num + 1).offset(start_num).each do |c|
         begin
           puts "scraping company #{c.name}"

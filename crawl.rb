@@ -6,7 +6,7 @@ if(ARGV.length != 2)
 end
 
 notes = ARGV[0]
-num_processes = ARGV[1]
+num_processes = ARGV[1].to_i
 
 puts "notes: #{notes}"
 puts "num_processes: #{num_processes}"
@@ -19,6 +19,11 @@ puts "num_processes: #{num_processes}"
 notes_filename = friendly_filename(notes)
 puts "notes_filename: #{notes_filename}"
 
+num_process.times do |process_num|
+  
+  command = "nohup bundle exec rake scraper:scrape_all SCRAPE_PERCENTAGE=50 SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=notes RAILS_ENV=production > /dev/null 2>&1"
+  
+end
 
 
 # nohup bundle exec rake scraper:scrape_all SCRAPE_PERCENTAGE=50 SCRAPE_PAGE_NUMBER=0 SCRAPE_JOB_NOTES=notes RAILS_ENV=production > /dev/null 2>&1
