@@ -12,18 +12,24 @@ directory_name = friendly_filename(notes)
 
 directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
 
-# Dir.mkdir(directory_path)
+Dir.mkdir(directory_path)
 
 num_processes.times do |process_num|
   
   log_path = "#{directory_path}/#{process_num}.log"
   command = "nohup bundle exec rake scraper:scrape_all SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
   
-  puts "log_path: #{log_path}"
-  puts "command: #{command}"
-  puts ""
+  # puts "log_path: #{log_path}"
+  # puts "command: #{command}"
+  # puts ""
   
-  # `#{command}`
+  success = system(command)
+  
+  if success
+    puts "Process #{process_num} running!"
+  else
+    puts "Error: Process #{process_num} failed to run."
+  end
   
 end
 
