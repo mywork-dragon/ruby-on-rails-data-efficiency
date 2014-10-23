@@ -29,7 +29,11 @@ class AlexaService
           else
             puts "Error adding #{name} (#{url}) to DB"
           end
+        else
+          puts "#{name} is already in the DB" 
         end
+        
+        puts ""
         
       
         
