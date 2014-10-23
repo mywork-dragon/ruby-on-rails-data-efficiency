@@ -9,7 +9,7 @@ class AlexaService
     open(csv_path) do |csv|
       csv.each_line do |line|
         
-        values = line.split(",")
+        values = line.strip.split(",")
         
         name = values[1]
         url = "http://" + name
