@@ -11,7 +11,7 @@ class AlexaService
         
         values = line.split(",")
         
-        name = values[1].strip
+        name = values[1].to_s.strip
         url = "http://" + name
       
         company = Company.find_by_name(name)
@@ -25,6 +25,8 @@ class AlexaService
             puts "Error adding #{name} (#{url}) to DB"
           end
         end
+        
+      
         
       end
     end
