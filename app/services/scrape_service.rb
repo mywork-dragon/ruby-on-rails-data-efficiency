@@ -165,31 +165,28 @@ class ScrapeService
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
     def scrape_all(processes = 1, page_number = 0, scrape_job_notes)
-      # scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-      # scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+      scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
 
       count = Company.active.count
-      count = 123456  #temp
+      count = 8  #temp
       
-      percentage = 100.0/processes
+      limit = (count*1.0/processes).ceil
+      offset = page_number*limit
+
+      # puts "limit: #{limit}"
+      # puts "offset: #{offset}"
       
-      start_num = (count * percentage * page_number * 1.0 / 100).ceil
-      end_num = (count * percentage * (page_number + 1) * 1.0 / 100).floor
-      
-      
-      puts "start_num: #{start_num}"
-      puts "end_num: #{end_num}"
-      
-      # scrape_service = ScrapeService.new(scrape_job: scrape_job)
-      # Company.limit(end_num - start_num + 1).offset(start_num).each do |c|
-      #   begin
-      #     puts "scraping company #{c.name}"
-      #     scrape_service.scrape(c)
-      #   rescue
-      #     puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
-      #     pp $!.backtrace
-      #   end
-      # end
+      scrape_service = ScrapeService.new(scrape_job: scrape_job)
+      Company.limit(limit).offset(offset).each do |c|
+        begin
+          puts "scraping company #{c.name}"
+          scrape_service.scrape(c)
+        rescue
+          puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
+          pp $!.backtrace
+        end
+      end
     end
     
     def scrape_special
