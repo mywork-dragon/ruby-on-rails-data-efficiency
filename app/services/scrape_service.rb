@@ -171,7 +171,7 @@ class ScrapeService
       count = Company.active.count
       count = 123456  #temp
       
-      percentage = 1.0/processes*100.0
+      percentage = 100.0/processes
       
       start_num = (count * percentage * page_number * 1.0 / 100).ceil
       end_num = (count * percentage * (page_number + 1) * 1.0 / 100).floor
