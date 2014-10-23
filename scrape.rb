@@ -17,7 +17,7 @@ directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
 num_processes.times do |process_num|
   
   log_path = "#{directory_path}/#{process_num}.log"
-  command = "nohup bundle exec rake scraper:scrape_all SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{notes}\" RAILS_ENV=production > #{log_path} &"
+  command = "nohup bundle exec rake scraper:scrape_all SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
   
   puts "log_path: #{log_path}"
   puts "command: #{command}"
