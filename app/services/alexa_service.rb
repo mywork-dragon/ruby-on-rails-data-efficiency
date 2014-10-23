@@ -13,9 +13,9 @@ class AlexaService
         
         values = line.split(",")
         
-        name = values[1].to_s.strip
+        name = values[1].strip
         
-        puts "name: #{name}"
+        # puts "name: #{name}"
         
         url = "http://" + name
       
@@ -25,15 +25,15 @@ class AlexaService
           created = Company.create(name: name, website: url, status: :active)
 
           if created
-            puts "Added #{name} (#{url} to DB)"
+            # puts "Added #{name} (#{url} to DB)"
           else
-            puts "Error adding #{name} (#{url}) to DB"
+            # puts "Error adding #{name} (#{url}) to DB"
           end
         else
-          puts "#{name} is already in the DB" 
+          # puts "#{name} is already in the DB"
         end
         
-        puts ""
+        # puts ""
         
       
         
