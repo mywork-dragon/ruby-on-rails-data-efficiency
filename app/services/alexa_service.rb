@@ -14,6 +14,9 @@ class AlexaService
         values = line.split(",")
         
         name = values[1].to_s.strip
+        
+        puts "name: #{name}"
+        
         url = "http://" + name
       
         company = Company.find_by_name(name)
