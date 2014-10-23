@@ -6,6 +6,8 @@ class AlexaService
   
   def run(csv_path)
     
+    puts "run"
+    
     open(csv_path) do |csv|
       csv.each_line do |line|
         
