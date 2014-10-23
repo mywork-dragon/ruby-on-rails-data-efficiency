@@ -23,6 +23,6 @@ set :output, "/var/log/varys/cron/cron.log"
 
 2.times do |i|
   every 1.day, :at => '1:00am' do
-    rake "scraper:scrape_all SCRAPE_PERCENTAGE=50 SCRAPE_PAGE_NUMBER=#{i}"
+    rake "scraper:scrape_all SCRAPE_PROCESSES=1 SCRAPE_PAGE_NUMBER=#{i}"
   end
 end
