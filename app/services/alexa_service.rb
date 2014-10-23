@@ -9,9 +9,9 @@ class AlexaService
     open(csv_path) do |csv|
       csv.each_line do |line|
         
-        values = line.strip.split(",")
+        values = line.split(",")
         
-        name = values[1]
+        name = values[1].strip
         url = "http://" + name
       
         company = Company.find_by_name(name)
