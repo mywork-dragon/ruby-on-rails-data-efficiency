@@ -169,7 +169,6 @@ class ScrapeService
       scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
 
       count = Company.active.count
-      count = 8  #temp
       
       limit = (count*1.0/processes).ceil
       offset = page_number*limit

@@ -8,6 +8,7 @@ class AlexaService
     
     open(csv_path) do |csv|
       csv.each_line do |line|
+        
         values = line.split(",")
         
         name = values[1]
@@ -24,6 +25,7 @@ class AlexaService
             puts "Error adding #{name} (#{url}) to DB"
           end
         end
+        
       end
     end
     
