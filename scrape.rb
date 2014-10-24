@@ -1,24 +1,22 @@
 if(ARGV.length < 2)
-  puts "You need 2 arguments."
-  puts "1st argument: Notes (must be unique)"
-  puts "2nd argument: Max Number of Processes"
-  puts "3rd argument: {count: 12345}"
+  puts "1st arg: Notes (must be unique)"
+  puts "2nd arg: Max Number of Processes"
+  puts "3rd arg (opt.): Number of Companies to Scrape"
   abort
 end
 
 notes = ARGV[0]
 num_processes = ARGV[1].to_i
-options = ARGV[2]
+count = ARGV[2]
 
-scrape_option = :scrape_all
+scrape_option = nil
 
-count = 0
-
-if options
-  count = options["count"]
-  if count
-    scrape_option = :scrape_some
-  end
+if count == "all"
+  scrape_option = :scrape_all
+elsif count.to_i.to_s == count #is a number
+  scrape_option = :scrape_some
+else
+  puts "3rd argument must be a number or \"all\""
 end
 
 
