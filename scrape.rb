@@ -1,7 +1,7 @@
 if(ARGV.length < 2)
   puts "1st arg: Notes (must be unique)"
   puts "2nd arg: Max Number of Processes"
-  puts "3rd arg (opt.): Number of Companies to Scrape"
+  puts "3rd arg (opt): Number of Companies to Scrape"
   abort
 end
 
@@ -17,6 +17,7 @@ elsif count.to_i.to_s == count #is a number
   scrape_option = :scrape_some
 else
   puts "3rd argument must be a number or \"all\""
+  abort
 end
 
 
@@ -31,9 +32,18 @@ num_processes.times do |process_num|
   log_path = "#{directory_path}/#{process_num}.log"
   
   scrape_count_env = ""
-  scrape_count_env = "SCRAPE_COUNT=#{count} " if scrape_option == :scrape_some
+  rake_task = ""
+  if scrape_option == :scrape_some
+    scrape_count_env = "SCRAPE_COUNT=#{count} "
+    rake_task = "scrape_some"
+  else
+    rake_task = "scrape_all"
+  else
+    
+  end
   
-  command = "nohup bundle exec rake scraper:scrape_all #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
+  
+  command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
   
   # puts "log_path: #{log_path}"
   # puts "command: #{command}"

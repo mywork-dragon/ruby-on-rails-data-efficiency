@@ -253,7 +253,9 @@ class ScrapeService
     
       def create_or_find_scrape_job(scrape_job_notes)
         scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-        ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+        scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+        
+        scrape_job
       end
       
       def do_scraping(scrape_job, limit, offset)
