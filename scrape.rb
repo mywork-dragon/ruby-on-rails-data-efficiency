@@ -38,8 +38,6 @@ num_processes.times do |process_num|
     rake_task = "scrape_some"
   else
     rake_task = "scrape_all"
-  else
-    
   end
   
   
