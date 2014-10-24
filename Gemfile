@@ -64,6 +64,8 @@ gem 'spidr', '0.4.1'
 
 gem 'PageRankr', '4.2.1'
 
+gem 'newrelic_rpm'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
