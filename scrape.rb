@@ -23,6 +23,8 @@ end
 
 directory_name = friendly_filename(notes)
 
+scrape_job_creation_success = system "bundle exec rake scraper:create_scrape_job SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production"
+
 directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
 
 Dir.mkdir(directory_path)

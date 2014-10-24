@@ -162,10 +162,19 @@ class ScrapeService
   
 
   class << self
+    def create_scrape_job(scrape_job_notes)
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+      
+      raise "A scrape_job with that name already exists." if scrape_job.nil?
+      
+      ScrapeJob.create!(notes: scrape_job_notes) 
+    end
+    
+    
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
     def scrape_all(processes = 1, page_number = 0, scrape_job_notes)
-      scrape_job = ScrapeService.create_or_find_scrape_job(scrape_job_notes)
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
 
       count = Company.count
       
@@ -176,7 +185,7 @@ class ScrapeService
     end
     
     def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes)
-      scrape_job = ScrapeService.create_or_find_scrape_job(scrape_job_notes)
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
       
       company_count = Company.count
       
@@ -213,13 +222,6 @@ class ScrapeService
         end
         i += 1
       end 
-    end
-
-    def create_or_find_scrape_job(scrape_job_notes)
-      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-      scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
-      
-      scrape_job
     end
     
     def do_scraping(scrape_job, limit, offset)
