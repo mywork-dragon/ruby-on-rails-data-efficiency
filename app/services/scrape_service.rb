@@ -165,7 +165,7 @@ class ScrapeService
     def create_scrape_job(scrape_job_notes)
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
       
-      raise "A scrape_job with that name already exists." if scrape_job.nil?
+      raise "A scrape_job with that name already exists." if scrape_job
       
       ScrapeJob.create!(notes: scrape_job_notes) 
     end

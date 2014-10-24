@@ -25,6 +25,8 @@ directory_name = friendly_filename(notes)
 
 scrape_job_creation_success = system "bundle exec rake scraper:create_scrape_job SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production"
 
+abort if !scrape_job_creation_success
+
 directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
 
 Dir.mkdir(directory_path)
@@ -43,7 +45,7 @@ num_processes.times do |process_num|
   end
   
   
-  command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
+  command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production &> #{log_path} &"
   
   # puts "log_path: #{log_path}"
   # puts "command: #{command}"
