@@ -218,6 +218,26 @@ class ScrapeService
       end 
     end
 
+    def create_or_find_scrape_job(scrape_job_notes)
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+      scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+      
+      scrape_job
+    end
+    
+    def do_scraping(scrape_job, limit, offset)
+      scrape_service = ScrapeService.new(scrape_job: scrape_job)
+      Company.limit(limit).offset(offset).each do |c|
+        begin
+          puts "scraping company #{c.name}"
+          scrape_service.scrape(c)
+        rescue
+          puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
+          pp $!.backtrace
+        end
+      end
+    end
+
     def scrape(company)
       ScrapeService.new.scrape(company)
     end
@@ -248,28 +268,6 @@ class ScrapeService
       puts "Number of services: #{service_names.count}"
       service_names
     end
-    
-    private
-    
-      def create_or_find_scrape_job(scrape_job_notes)
-        scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-        scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
-        
-        scrape_job
-      end
-      
-      def do_scraping(scrape_job, limit, offset)
-        scrape_service = ScrapeService.new(scrape_job: scrape_job)
-        Company.limit(limit).offset(offset).each do |c|
-          begin
-            puts "scraping company #{c.name}"
-            scrape_service.scrape(c)
-          rescue
-            puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
-            pp $!.backtrace
-          end
-        end
-      end
     
   end
 
