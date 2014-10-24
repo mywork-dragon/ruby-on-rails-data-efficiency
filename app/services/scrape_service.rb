@@ -165,27 +165,30 @@ class ScrapeService
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
     def scrape_all(processes = 1, page_number = 0, scrape_job_notes)
-      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-      scrape_job = ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+      scrape_job = ScrapeService.create_or_find_scrape_job(scrape_job_notes)
 
-      count = Company.active.count
+      count = Company.count
       
       limit = (count*1.0/processes).ceil
       offset = page_number*limit
-
-      # puts "limit: #{limit}"
-      # puts "offset: #{offset}"
       
-      scrape_service = ScrapeService.new(scrape_job: scrape_job)
-      Company.limit(limit).offset(offset).each do |c|
-        begin
-          puts "scraping company #{c.name}"
-          scrape_service.scrape(c)
-        rescue
-          puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
-          pp $!.backtrace
-        end
-      end
+      ScrapeService.do_scraping(scrape_job, limit, offset)
+    end
+    
+    def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes)
+      scrape_job = ScrapeService.create_or_find_scrape_job(scrape_job_notes)
+      
+      company_count = Company.count
+      
+      scrape_count = company_count if scrape_count > company_count
+      
+      limit = (scrape_count*1.0/processes).ceil
+      offset = page_number*limit
+      
+      ScrapeService.do_scraping(scrape_job, limit, offset)
+    end
+    
+    def scrape_some
     end
     
     def scrape_special
@@ -245,6 +248,27 @@ class ScrapeService
       puts "Number of services: #{service_names.count}"
       service_names
     end
+    
+    private
+    
+      def create_or_find_scrape_job(scrape_job_notes)
+        scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+        ScrapeJob.create!(notes: scrape_job_notes) if scrape_job.nil?
+      end
+      
+      def do_scraping(scrape_job, limit, offset)
+        scrape_service = ScrapeService.new(scrape_job: scrape_job)
+        Company.limit(limit).offset(offset).each do |c|
+          begin
+            puts "scraping company #{c.name}"
+            scrape_service.scrape(c)
+          rescue
+            puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
+            pp $!.backtrace
+          end
+        end
+      end
+    
   end
 
 end
