@@ -188,9 +188,6 @@ class ScrapeService
       ScrapeService.do_scraping(scrape_job, limit, offset)
     end
     
-    def scrape_some
-    end
-    
     def scrape_special
       puts "scrape_special"
       
