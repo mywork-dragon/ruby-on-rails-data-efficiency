@@ -103,11 +103,13 @@ class WelcomeController < ApplicationController
     service_name = params['service_name']
     service_id = Service.find_by_name(service_name).id
     
-    total_count = Installation.where(scrape_job_id: 15, service_id: service_id).count
+    scrape_job_id = 33
+    
+    total_count = Installation.where(scrape_job_id: scrape_job_id, service_id: service_id).count
     
     limit = 100
     
-    is = Installation.where(scrape_job_id: 15, service_id: service_id).limit(limit)
+    is = Installation.where(scrape_job_id: scrape_job_id, service_id: service_id).limit(limit)
     
     company_urls = []
     
