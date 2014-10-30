@@ -8,7 +8,7 @@ class SalesforceController < ApplicationController
           :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
           :client_secret => '3173051852013251576'
           
-    # client.create('Merchandise', Name: 'Dumdum')
+    @blah = client.create('Merchandise__c', Name: 'Dumdum', Price__c: '123', Quantity__c: '44')
     
     @out = client.query("select Id, Name from Merchandise__c").first.Name
   end
