@@ -8,4 +8,11 @@ class ApplicationController < ActionController::Base
   def ping
     render :json => {success: true}
   end
+  
+  private
+    def current_salesforce_user
+      @current_salesforce_user ||= SalesforceUser.find(session[:user_id]) if session[:user_id]
+    end
+    helper_method :current_salesforce_user
+      
 end
