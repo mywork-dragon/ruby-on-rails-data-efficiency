@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
   
   get 'salesforce' => 'sessions#salesforce'
+  get 'run_test' => 'salesforce#run_test'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
