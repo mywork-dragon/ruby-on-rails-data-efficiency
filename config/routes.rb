@@ -26,8 +26,6 @@ Rails.application.routes.draw do
   get 'salesforce' => 'sessions#salesforce'
   get 'run_test' => 'salesforce#run_test'
   
-  post 'test_sf_post' => 'salesforce#test_sf_post'
-  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

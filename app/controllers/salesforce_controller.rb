@@ -13,12 +13,4 @@ class SalesforceController < ApplicationController
   #   @out = client.query("select Id, Name from Merchandise__c").first.Name
   # end
   #
-  
-  def test_sf_post
-    puts "test_sf_post called"
-    
-    json = {"test_sf_post_called" => "success"}
-    
-    render json: json
-  end
 end
