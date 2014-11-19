@@ -66,9 +66,6 @@ gem 'PageRankr', '4.2.1'
 
 gem 'newrelic_rpm'
 
-gem 'restforce'
-gem 'omniauth-salesforce'
-
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

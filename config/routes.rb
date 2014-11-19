@@ -19,12 +19,6 @@ Rails.application.routes.draw do
   get 'demo_get_services' => 'welcome#demo_get_services'
   get 'demo_get_companies' => 'welcome#demo_get_companies'
   
-  match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
-  match 'auth/failure', to: redirect('/'), via: [:get, :post]
-  match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
-  
-  get 'salesforce' => 'sessions#salesforce'
-  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
