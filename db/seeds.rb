@@ -75,19 +75,6 @@ Matcher.create(
   match_string: 'cdn.daddyanalytics.com/w2/daddy.js'
 )
 
-service = Service.create(name: "Inside Social")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'cdn1.insidesoci.al'
-)
-
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'cdn.insidesocial.com'
-)
-
 # # cbs
 # Matcher.create(
 #   service: Service.find_by_name("Optimizely"),
