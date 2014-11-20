@@ -1,5 +1,7 @@
 class SalesforceController < ApplicationController
   
+  protect_from_forgery except: :test_sf_post
+  
   # def run_test
   #   current_user = current_salesforce_user
   #   client = Restforce.new :oauth_token => current_user.oauth_token,
