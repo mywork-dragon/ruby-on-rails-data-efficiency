@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   get 'demo_get_services' => 'welcome#demo_get_services'
   get 'demo_get_companies' => 'welcome#demo_get_companies'
   
+  post 'test_sf_post' => 'salesforce#test_sf_post'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
