@@ -57,7 +57,7 @@ class ScrapeService
   
   # Scrape a single URL and don't save the results to the DB
   # @author Jason Lew
-  def scrape_test(url)
+  def scrape_without_save(url)
     content = content_from_source_and_headless_browser(url)
     
     # puts "***CONTENT***\n#{content}"
@@ -243,7 +243,7 @@ class ScrapeService
     
     # Scrape a single URL and don't save the results to the DB
     # @author Jason Lew
-    def scrape_test(url)
+    def scrape_without_save(url)
       regex_http = /^http[s]*:\/\//
 
       #strip http
@@ -261,7 +261,7 @@ class ScrapeService
       
       puts "url: #{url}"
       
-      service_names = ScrapeService.new.scrape_test(url)
+      service_names = ScrapeService.new.scrape_without_save(url)
       puts "Services:"
       pp service_names
       puts "Number of services: #{service_names.count}"

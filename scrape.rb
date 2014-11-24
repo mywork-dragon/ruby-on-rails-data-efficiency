@@ -32,9 +32,9 @@ directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
 Dir.mkdir(directory_path)
 
 num_processes.times do |process_num|
-  
+
   log_path = "#{directory_path}/#{process_num}.log"
-  
+
   scrape_count_env = ""
   rake_task = ""
   if scrape_option == :scrape_some
@@ -43,26 +43,26 @@ num_processes.times do |process_num|
   else
     rake_task = "scrape_all"
   end
-  
-  
+
+
   command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
-  
+
   # puts "log_path: #{log_path}"
   # puts "command: #{command}"
   # puts ""
-  
+
   success = system(command)
-  
+
   if success
     puts "Process #{process_num} running!"
   else
     puts "Error: Process #{process_num} failed to run."
   end
-  
+
 end
 
 BEGIN {
-  
+
   def friendly_filename(filename)
       filename.gsub(/[^\w\s_-]+/, '')
               .gsub(/(^|\b\s)\s+($|\s?\b)/, '\\1\\2')

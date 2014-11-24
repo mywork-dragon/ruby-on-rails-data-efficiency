@@ -30,7 +30,7 @@ class ResultsController < ApplicationController
   def url_search_result
     @url = params[:url]
     @url = @url.match(/^http[s]*:\/\//) ? @url : "http://" + @url
-    @results = ScrapeService.scrape_test(@url)
+    @results = ScrapeService.scrape_without_save(@url)
   end
 
 end

@@ -92,7 +92,7 @@ class WelcomeController < ApplicationController
   def demo_get_services
     url = params['url']
     
-    services = ScrapeService.scrape_test(url)
+    services = ScrapeService.scrape_without_save(url)
     
     json = {services: services}
     
