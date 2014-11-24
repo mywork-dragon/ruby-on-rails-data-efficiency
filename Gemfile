@@ -69,6 +69,8 @@ gem 'newrelic_rpm'
 gem 'restforce'
 gem 'omniauth-salesforce'
 
+gem 'httparty', '0.13.3'
+
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
