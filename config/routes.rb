@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get 'demo_get_companies' => 'welcome#demo_get_companies'
   
   post 'test_sf_post' => 'salesforce#test_sf_post'
+  post 'test_get_token' => 'salesforce#test_get_token'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
