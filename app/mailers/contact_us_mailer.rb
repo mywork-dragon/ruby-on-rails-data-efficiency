@@ -2,7 +2,9 @@ class ContactUsMailer < ActionMailer::Base
   default from: "mailman@mightysignal.com"
   
   def contact_us_email(options={})
-      @name = options[:name]
+      @first_name = options[:first_name]
+      @last_name = options[:last_name]
+      @company = options[:company]
       @email = options[:email]
       @phone = options[:phone]
       @message = options[:message]

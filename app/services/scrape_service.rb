@@ -53,6 +53,7 @@ class ScrapeService
     #   company.installations.create!(service: possible_match, scraped_result: result, status: :possible)
     # end
     
+    matched_services
   end
   
   # Scrape a single URL and don't save the results to the DB
