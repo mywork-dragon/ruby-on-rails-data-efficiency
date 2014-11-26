@@ -24,8 +24,6 @@ class SalesforceController < ApplicationController
     render json: json
   end
   
-  def create
-  
   def test_get_token
     puts "test_get_token"
     
