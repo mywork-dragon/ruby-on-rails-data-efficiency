@@ -1,11 +1,11 @@
 class MightySignalSalesforceService
 
   def client
-    client = Restforce.new :username => 'j@mightysignal.com',
-      :password       => 'asLSKF28247NSKF27FHSF2sf228393cmcmc',
-      :security_token => 'yXBgql1B0JUPu0GohhJDJWizg',
-      :client_id      => '3MVG9fMtCkV6eLhfXRLFXm5bB33M9zWRtcxVATBCSngDb2p.Nv6k4VP34XD5I8alebb7tPULNIWLVn2W1Jrs3',
-      :client_secret  => '3251786618628033245'
+    client = Restforce.new :username => 'jasonlew@mightysignal.com',
+      :password       => 'saAHSaslfnKAJSNFKJ2147682647KJSAHKFJH128947',
+      :security_token => '',
+      :client_id      => '',
+      :client_secret  => ''
   end
 
   class << self
