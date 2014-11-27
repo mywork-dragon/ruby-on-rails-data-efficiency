@@ -14,9 +14,10 @@ class WelcomeController < ApplicationController
     email = params['email']
     company = params['company']
     phone = params['phone']
+    crm = params['crm']
     message = params['message']
     
-    ContactUsMailer.contact_us_email(first_name: first_name, last_name: last_name, company: company, email: email, phone: phone, message: message).deliver
+    ContactUsMailer.contact_us_email(first_name: first_name, last_name: last_name, company: company, email: email, phone: phone, crm: crm, message: message).deliver
     
     redirect_to action: :index
   end

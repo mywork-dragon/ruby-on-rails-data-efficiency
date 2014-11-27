@@ -7,6 +7,7 @@ class ContactUsMailer < ActionMailer::Base
       @company = options[:company]
       @email = options[:email]
       @phone = options[:phone]
+      @crm = options[:crm]
       @message = options[:message]
       mail(to: "founders@mightysignal.com", reply_to: @email, subject: 'MightySignal Interest')
   end
