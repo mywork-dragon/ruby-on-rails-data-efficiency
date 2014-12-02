@@ -21,12 +21,12 @@ class MightySignalSalesforceService
       email = options[:email]
       phone = options[:phone]
       message = options[:message]
-      # crm = options[:crm]
+      crm = options[:crm]
       
-      client = self.client
-      
-      client.create('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 
-                      'Email' => email, 'Phone' => phone, 'Description' => message)
+      # client.create('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company,
+                      # 'Email' => email, 'Phone' => phone, 'Description' => message)
+
+      client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm)
     
     end
     
