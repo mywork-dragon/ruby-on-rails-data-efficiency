@@ -3,9 +3,9 @@ class MightySignalSalesforceService
   def client
     client = Restforce.new :username => 'jasonlew@mightysignal.com',
       :password       => 'saAHSaslfnKAJSNFKJ2147682647KJSAHKFJH128947',
-      :security_token => '',
-      :client_id      => '',
-      :client_secret  => ''
+      :security_token => 'PN1W6fcEY2Pa7DI44l2Ubc5b',
+      :client_id      => '3MVG9fMtCkV6eLhcIlf3UM3DhI0qHjleFYx1eiGwILdwEf8djU26Vnqjd3mu1Kxs0Z258R99eC0sfRJHG548g',
+      :client_secret  => '6384884061761347258'
   end
 
   class << self
@@ -21,6 +21,7 @@ class MightySignalSalesforceService
       email = options[:email]
       phone = options[:phone]
       message = options[:message]
+      # crm = options[:crm]
       
       client = self.client
       
@@ -30,7 +31,7 @@ class MightySignalSalesforceService
     end
     
     def read_dummy
-      out = client.query("select Id, LastName from Lead").first.LastName
+      out = client.query("select Id, LastName from Lead ORDER BY CreatedDate DESC").first
     end
   
   end
