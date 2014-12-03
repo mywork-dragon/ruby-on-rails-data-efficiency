@@ -24,10 +24,10 @@ class MightySignalSalesforceService
       phone = options[:phone]
       message = options[:message]
       crm = options[:crm]
+      lead_source = options[:lead_source]
 
-      result = client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm)
+      client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm, 'LeadSource' => lead_source)
     
-      puts "client.create! result: #{result}"
     end
     
     def read_dummy

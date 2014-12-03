@@ -17,9 +17,9 @@ class WelcomeController < ApplicationController
     crm = params['crm']
     message = params['message']
     
-    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message)
+    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message).merge({lead_source: "Web"})
     
-    #MightySignalSalesforceService.create_lead(lead_options)
+    MightySignalSalesforceService.create_lead(lead_options)
     
     ContactUsMailer.contact_us_email(lead_options).deliver
     
