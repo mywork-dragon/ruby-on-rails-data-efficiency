@@ -1,3 +1,5 @@
+require 'restforce'
+
 class MightySignalSalesforceService
 
   def client
