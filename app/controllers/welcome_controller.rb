@@ -17,7 +17,11 @@ class WelcomeController < ApplicationController
     crm = params['crm']
     message = params['message']
     
-    ContactUsMailer.contact_us_email(first_name: first_name, last_name: last_name, company: company, email: email, phone: phone, crm: crm, message: message).deliver
+    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message)
+    
+    MightySignalSalesforceService.create_lead(lead_options)
+    
+    ContactUsMailer.contact_us_email(lead_options).deliver
     
     redirect_to action: :index
   end
