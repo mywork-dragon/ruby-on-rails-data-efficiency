@@ -1,4 +1,4 @@
-require 'restforce'
+# require 'restforce'
 
 class MightySignalSalesforceService
 
