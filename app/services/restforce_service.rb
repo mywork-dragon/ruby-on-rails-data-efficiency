@@ -1,3 +1,5 @@
+require 'Restforce'
+
 class RestforceService
 
   def client
