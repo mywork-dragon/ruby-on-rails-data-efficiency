@@ -25,8 +25,9 @@ class MightySignalSalesforceService
       message = options[:message]
       crm = options[:crm]
 
-      client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm)
+      result = client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm)
     
+      puts "client.create! result: #{result}"
     end
     
     def read_dummy
