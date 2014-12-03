@@ -19,7 +19,7 @@ class WelcomeController < ApplicationController
     
     lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message)
     
-    MightySignalSalesforceService.create_lead(lead_options)
+    #MightySignalSalesforceService.create_lead(lead_options)
     
     ContactUsMailer.contact_us_email(lead_options).deliver
     
