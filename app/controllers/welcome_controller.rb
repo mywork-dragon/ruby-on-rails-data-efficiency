@@ -19,6 +19,11 @@ class WelcomeController < ApplicationController
     
     lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message).merge({lead_source: "Web"})
     
+    if company.blank?
+      email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+      lead_options[:company] = email.match(email_regex).to_s[1..-1]
+    end
+    
     MightySignalSalesforceService.create_lead(lead_options)
     
     ContactUsMailer.contact_us_email(lead_options).deliver
