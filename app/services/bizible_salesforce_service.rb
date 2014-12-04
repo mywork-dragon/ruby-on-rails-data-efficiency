@@ -19,8 +19,7 @@ class BizibleSalesforceService
 
     @services_hash['Call Tracking'] = ['Mongoose', 'Ifbyphone']
 
-    @other_api_name = "Other"
-    @services_hash[@other_api_name] = ['Facebook conversion', 'AdRoll conversion', 'DemandBase', 'Bizo',
+    @services_hash["Other"] = ['Facebook conversion', 'AdRoll conversion', 'DemandBase', 'Bizo',
                                 'Doubleclick', 'Twitter conversion tracking', 'Lead Lander',
                                 'Radiumone', 'captora', 'DaddyAnalytics', 'BlueKai',
                                 'LinkedIn Conversion Tracking']
@@ -144,7 +143,7 @@ class BizibleSalesforceService
     
     
     object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
-    client.update!(object_name, object_params)
+    #client.update!(object_name, object_params)
     
   end
 
@@ -153,6 +152,8 @@ class BizibleSalesforceService
     ret = Hash.new
 
     others = [] #others overflow
+    
+    other_api_name = @api_hash['Other'][object_type]
 
     services_hash = nil
     
@@ -195,25 +196,25 @@ class BizibleSalesforceService
         end
       end
 
-      if others.count > 0 && api_name == @other_api_name  #TODO: change
+      if others.count > 0 && api_name == other_api_name  #TODO: change
         
         all_others = nil  #other overflow plus those categorized as Other
-        if ret[@other_api_name].nil?
+        if ret[other_api_name].nil?
           all_others = others
         else
-          all_others = [ret[@other_api_name]] + others
+          all_others = [ret[other_api_name]] + others
         end
 
-        # puts "others: #{others}"
-        # puts "all_others: #{all_others}"
+        puts "others: #{others}"
+        puts "all_others: #{all_others}"
         # puts "col to delete index: #{csv_line.count - 1}"
         # puts "col to delete: #{csv_line[csv_line.count - 1]}"
 
-        ret[@other_api_name] = nil if found_service
+        ret[other_api_name] = nil if found_service
         
-        ret[@other_api_name] = "" if ret[@other_api_name].nil?
+        ret[other_api_name] = "" if ret[other_api_name].nil?
 
-        ret[@other_api_name] << all_others.join(", ")
+        ret[other_api_name] << all_others.join(", ")
 
         found_service = true
       end
