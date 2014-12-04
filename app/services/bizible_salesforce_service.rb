@@ -25,16 +25,16 @@ class BizibleSalesforceService
                                 'Radiumone', 'captora', 'DaddyAnalytics', 'BlueKai',
                                 'LinkedIn Conversion Tracking']
                                 
-    api_hash = {}
-    api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Marketing_Automation__c"}
-    api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opp: 'Web_Chat_Software__c'}
-    api_hash['Tag Management'] = {lead: 'Intel_Tag_Manager__c', opp: 'Intel_Tag_Manager__c'}
-    api_hash['Conversion Tracking'] = {lead: 'Intel_Adwords_Conversion_Tag__c', opp: 'Intel_Adwords_Conversion_Tag__c'}
-    api_hash['Analytics'] = {lead: 'Intel_Analytics_Tag__c', opp: ""}
-    api_hash['A/B Testing'] = {lead: 'Intel_A_B_Testing__c', opp: ""}
-    api_hash['Bid Management'] = {lead: 'Intel_Bid_Management__c', opp: 'Intel_Bid_Management__c'}
-    api_hash['Call Tracking'] = {lead: 'Intel_Call_Tracking__c', opp: 'Intel_Call_Tracking__c'}
-    api_hash['Other'] = {lead: 'Intel_Other_Tech__c', opp: "Intel_Other_Tech__c"}
+    @api_hash = {}
+    @api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Marketing_Automation__c"}
+    @api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opp: 'Web_Chat_Software__c'}
+    @api_hash['Tag Management'] = {lead: 'Intel_Tag_Manager__c', opp: 'Intel_Tag_Manager__c'}
+    @api_hash['Conversion Tracking'] = {lead: 'Intel_Adwords_Conversion_Tag__c', opp: 'Intel_Adwords_Conversion_Tag__c'}
+    @api_hash['Analytics'] = {lead: 'Intel_Analytics_Tag__c', opp: ""}
+    @api_hash['A/B Testing'] = {lead: 'Intel_A_B_Testing__c', opp: ""}
+    @api_hash['Bid Management'] = {lead: 'Intel_Bid_Management__c', opp: 'Intel_Bid_Management__c'}
+    @api_hash['Call Tracking'] = {lead: 'Intel_Call_Tracking__c', opp: 'Intel_Call_Tracking__c'}
+    @api_hash['Other'] = {lead: 'Intel_Other_Tech__c', opp: "Intel_Other_Tech__c"}
     
     sf_object_type = options[:object_type]
     
@@ -43,7 +43,7 @@ class BizibleSalesforceService
     
     #puts "@lead_services_hash: #{@lead_services_hash}"
     
-    api_hash.each do |key, value|
+    @api_hash.each do |key, value|
       @lead_services_hash[value[:lead]] = @services_hash[key]
       @opps_services_hash[value[:opps]] = @services_hash[key]
     end                            
@@ -95,7 +95,7 @@ class BizibleSalesforceService
   def hydrate_object(object_type, options={})
     id = options[:id]
     email = options[:email]
-    website = options[:website]
+    #website = options[:website]
 
     #url = UrlManpulator.url_with_http_only(website)
     
@@ -129,6 +129,10 @@ class BizibleSalesforceService
     puts "found_service_names: #{found_service_names}"
 
     salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(object_type, found_service_names)
+    
+    #AdWords is Boolean
+    salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]] = "1" if salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]]
+    
 
     object_name = nil
     if(object_type == :lead)
@@ -136,8 +140,11 @@ class BizibleSalesforceService
     elsif(object_type == :opp)
       object_name = "Opportunity"
     end
-      object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
-    client.update!(object_name, object_params)
+    
+    
+    
+    object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
+    # client.update!(object_name, object_params)
     
   end
 
