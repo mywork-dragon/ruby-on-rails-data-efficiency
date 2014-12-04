@@ -25,7 +25,7 @@ class BizibleSalesforceService
                                 'Radiumone', 'captora', 'DaddyAnalytics', 'BlueKai',
                                 'LinkedIn Conversion Tracking']
                                 
-    
+    api_hash = {}
     api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: ""}
     api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opp: ""}
     api_hash['Tag Management'] = {lead: 'Intel_Analytics_Tag__c', opp: ""}
@@ -36,11 +36,16 @@ class BizibleSalesforceService
     api_hash['Call Tracking'] = {lead: 'Intel_Call_Tracking__c', opp: ""}
     api_hash['Other'] = {lead: 'Intel_Other_Tech__c', opp: ""}
     
-    sf_object_type = :lead
+    sf_object_type = options[:object_type]
+    
+    @lead_services_hash = Hash.new
+    @opps_services_hash = Hash.new
+    
+    puts "@lead_services_hash: #{@lead_services_hash}"
     
     api_hash.each do |key, value|
-      api_name = value[sf_object_type]
-      @services_hash[api_name] = @services_hash.delete(key)
+      @lead_services_hash[value[:lead]] = @services_hash[key]
+      @opps_services_hash[value[:opps]] = @services_hash[key]
     end                            
     
     @services_hash[:new_key] = @services_hash.delete :old_key
@@ -79,7 +84,15 @@ class BizibleSalesforceService
       :client_secret  => '3173051852013251576'
   end
 
-  def hydrate_lead(options={})
+  def hydrate_lead(options)
+    hydrate_object(:lead, options)
+  end
+  
+  def hydrate_opp(options)
+    hydrate_object(:opp, options)
+  end
+
+  def hydrate_object(object_type, options={})
     id = options[:id]
     email = options[:email]
     website = options[:website]
@@ -115,20 +128,28 @@ class BizibleSalesforceService
     
     puts "found_service_names: #{found_service_names}"
 
-    salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(found_service_names)
+    salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(object_type, found_service_names)
 
     # salesforce_api_name_service_name_hash.each do |api_name, service_name|
     #
     # end
   end
 
-  def salesforce_api_name_service_name_hash(found_service_names)
+  def salesforce_api_name_service_name_hash(object_type, found_service_names)
 
     ret = Hash.new
 
     others = [] #others overflow
 
-    @services_hash.each do |api_name, service_names|
+    services_hash = nil
+    
+    if(object_type == :lead)
+      services_hash = @lead_services_hash
+    elsif(object_type == :opp)
+      services_hash = @opp_services_hash
+    end
+    
+    services_hash.each do |api_name, service_names|
 
       found_service = false #for thie api_name
       service_names.each do |service_name|
@@ -196,7 +217,7 @@ class BizibleSalesforceService
       RestforceService.new.client
     end
 
-    def hydrate_lead(options={})
+    def hydrate_lead(options={})      
       BizibleSalesforceService.new.hydrate_lead(options)
     end
 
