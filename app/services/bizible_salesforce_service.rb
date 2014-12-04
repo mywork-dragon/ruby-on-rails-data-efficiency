@@ -19,7 +19,8 @@ class BizibleSalesforceService
 
     @services_hash['Call Tracking'] = ['Mongoose', 'Ifbyphone']
 
-    @services_hash['Other'] = ['Facebook conversion', 'AdRoll conversion', 'DemandBase', 'Bizo',
+    @other_api_name = "Other"
+    @services_hash[@other_api_name] = ['Facebook conversion', 'AdRoll conversion', 'DemandBase', 'Bizo',
                                 'Doubleclick', 'Twitter conversion tracking', 'Lead Lander',
                                 'Radiumone', 'captora', 'DaddyAnalytics', 'BlueKai',
                                 'LinkedIn Conversion Tracking']
@@ -91,7 +92,7 @@ class BizibleSalesforceService
     service_ids.each do |service_id|
       found_service_names << Service.find(service_id).name
     end
-
+    
     puts "found_service_names: #{found_service_names}"
 
     salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(found_service_names)
@@ -105,24 +106,23 @@ class BizibleSalesforceService
 
     ret = Hash.new
 
-    others = []
+    others = [] #others overflow
 
     @services_hash.each do |api_name, service_names|
 
-      found_service = false
+      found_service = false #for thie api_name
       service_names.each do |service_name|
         puts "service_name: #{service_name}"
         
-        if (service_name_in_db = @service_name_in_db_hash[service_name])
-          service_name = service_name_in_db
-        end
+        service_name_in_db = @service_name_in_db_hash[service_name]
+        service_name_in_db = service_name if service_name_in_db.nil?
         
-        puts "service_name_in_db: #{service_name}"
+        puts "service_name_in_db: #{service_name_in_db}"
         puts ""
         #service = Service.find_by_name(service_name_in_db(service_name))
 
         #i = Installation.where(company: c, scrape_job_id: 15, service: service).first
-        service_on_page = found_service_names.include?(service_name)
+        service_on_page = found_service_names.include?(service_name_in_db)
 
         #puts "company: #{c.name}, service: #{service.name}"
         #i = Installation.where(company: c, service: service).first
@@ -130,7 +130,7 @@ class BizibleSalesforceService
         #puts "installation: #{i}\n\n"
 
         if service_on_page
-          puts "found service #{service_name}"
+          puts "found service #{service_name_in_db}"
           if !found_service
             found_service = true
             ret[api_name] = service_name
@@ -141,13 +141,13 @@ class BizibleSalesforceService
         end
       end
 
-      if others.count > 0 && api_name == "Other"  #TODO: change
+      if others.count > 0 && api_name == @other_api_name  #TODO: change
         
-        all_others = nil
-        if ret["Other"].nil?
+        all_others = nil  #other overflow plus those categorized as Other
+        if ret[@other_api_name].nil?
           all_others = others
         else
-          all_others = ret["Other"] + others
+          all_others = [ret[@other_api_name]] + others
         end
 
         # puts "others: #{others}"
@@ -155,9 +155,11 @@ class BizibleSalesforceService
         # puts "col to delete index: #{csv_line.count - 1}"
         # puts "col to delete: #{csv_line[csv_line.count - 1]}"
 
-        ret['Other'] = nil if found_service
+        ret[@other_api_name] = nil if found_service
+        
+        ret[@other_api_name] = "" if ret[@other_api_name].nil?
 
-        ret['Others'] << all_others.join(", ")
+        ret[@other_api_name] << all_others.join(", ")
 
         found_service = true
       end
