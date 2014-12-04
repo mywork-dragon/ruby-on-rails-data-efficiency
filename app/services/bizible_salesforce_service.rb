@@ -131,7 +131,7 @@ class BizibleSalesforceService
     salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(object_type, found_service_names)
     
     #AdWords is Boolean
-    salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]] = "1" if salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]]
+    salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]] = "true" if salesforce_api_name_service_name_hash[@api_hash['Conversion Tracking'][object_type]]
     
 
     object_name = nil
@@ -144,7 +144,7 @@ class BizibleSalesforceService
     
     
     object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
-    # client.update!(object_name, object_params)
+    client.update!(object_name, object_params)
     
   end
 
