@@ -19,6 +19,8 @@ class SalesforceController < ApplicationController
   def test_sf_post
     puts "test_sf_post called"
     
+    BizibleSalesforceService.hydrate_lead(params.slice(:id, :email, :company))
+    
     json = {"test_sf_post_called" => "success"}
     
     render json: json
