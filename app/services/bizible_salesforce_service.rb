@@ -63,47 +63,66 @@ class BizibleSalesforceService
     email = options[:email]
     website = options[:website]
 
-    url = UrlService.url_with_http_only(website)
+    #url = UrlManpulator.url_with_http_only(website)
+    
+    name = email.split("@").last
+    website = "http://" + name
 
-    company = Company.find_by_website(url)
+    return if (website =~ URI::regexp).nil?
+
+    company = Company.find_by_website(website)
 
     if company.nil?
-      created = Company.create(name: name, website: url, status: :active)
+      created = Company.create(name: name, website: website, status: :active)
 
       if created
-        puts "Added #{name} (#{company_url_with_http} to DB)"
+        puts "Added #{name} (#{website} to DB)"
       else
-        puts "Error adding #{name} (#{company_url_with_http}) to DB"
+        puts "Error adding #{name} (#{website}) to DB"
       end
 
     else
       puts "company already in DB"
     end
 
-    services = ScrapeService.scrape(company)
-
-    salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(service)
-
-    salesforce_api_name_service_name_hash.each do |api_name, service_name|
-
+    service_ids = ScrapeService.scrape(company)
+    
+    found_service_names = []
+    service_ids.each do |service_id|
+      found_service_names << Service.find(service_id).name
     end
+
+    puts "found_service_names: #{found_service_names}"
+
+    salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(found_service_names)
+
+    # salesforce_api_name_service_name_hash.each do |api_name, service_name|
+    #
+    # end
   end
 
-  def salesforce_api_name_service_name_hash(services)
+  def salesforce_api_name_service_name_hash(found_service_names)
 
     ret = Hash.new
+
+    others = []
 
     @services_hash.each do |api_name, service_names|
 
       found_service = false
       service_names.each do |service_name|
-        #puts "service_name: #{service_name}"
+        puts "service_name: #{service_name}"
+        
+        if (service_name_in_db = @service_name_in_db_hash[service_name])
+          service_name = service_name_in_db
+        end
+        
+        puts "service_name_in_db: #{service_name}"
+        puts ""
         #service = Service.find_by_name(service_name_in_db(service_name))
-        puts "service: #{service.name}"
 
         #i = Installation.where(company: c, scrape_job_id: 15, service: service).first
-        service_on_page = #service in services
-
+        service_on_page = found_service_names.include?(service_name)
 
         #puts "company: #{c.name}, service: #{service.name}"
         #i = Installation.where(company: c, service: service).first
@@ -111,7 +130,7 @@ class BizibleSalesforceService
         #puts "installation: #{i}\n\n"
 
         if service_on_page
-          puts "found service #{service_name} for company #{c.name}"
+          puts "found service #{service_name}"
           if !found_service
             found_service = true
             ret[api_name] = service_name
@@ -123,8 +142,7 @@ class BizibleSalesforceService
       end
 
       if others.count > 0 && api_name == "Other"  #TODO: change
-
-
+        
         all_others = nil
         if ret["Other"].nil?
           all_others = others

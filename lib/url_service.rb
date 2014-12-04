@@ -1,6 +1,6 @@
 # Manipulates URLs
 # @author Jason Lew
-class UrlService
+class UrlManipulator
   
   class << self
     
