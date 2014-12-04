@@ -24,6 +24,26 @@ class BizibleSalesforceService
                                 'Doubleclick', 'Twitter conversion tracking', 'Lead Lander',
                                 'Radiumone', 'captora', 'DaddyAnalytics', 'BlueKai',
                                 'LinkedIn Conversion Tracking']
+                                
+    
+    api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opportunity: ""}
+    api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opportunity: ""}
+    api_hash['Tag Management'] = {lead: 'Intel_Analytics_Tag__c', opportunity: ""}
+    api_hash['Conversion Tracking'] = {lead: 'Intel_Adwords_Conversion_Tag__c', opportunity: ""}
+    api_hash['Analytics'] = {lead: 'Intel_Analytics_Tag__c', opportunity: ""}
+    api_hash['A/B Testing'] = {lead: 'Intel_A_B_Testing__c', opportunity: ""}
+    api_hash['Bid Management'] = {lead: 'Intel_Bid_Management__c', opportunity: ""}
+    api_hash['Call Tracking'] = {lead: 'Intel_Call_Tracking__c', opportunity: ""}
+    api_hash['Other'] = {lead: 'Intel_Other_Tech__c', opportunity: ""}
+    
+    
+    
+    api_hash.each do |key, value|
+      api_name = value[sf_object_type]
+      @services_hash[api_name] = @services_hash.delete(key)
+    end                            
+    
+    @services_hash[:new_key] = @services_hash.delete :old_key
 
     @service_name_in_db_hash = {
       'Act On' => 'Act-On Beacon',
