@@ -47,8 +47,6 @@ class BizibleSalesforceService
       @lead_services_hash[value[:lead]] = @services_hash[key]
       @opps_services_hash[value[:opps]] = @services_hash[key]
     end                            
-    
-    @services_hash[:new_key] = @services_hash.delete :old_key
 
     @service_name_in_db_hash = {
       'Act On' => 'Act-On Beacon',
@@ -77,7 +75,9 @@ class BizibleSalesforceService
   end
 
   def client
-    client = Restforce.new :username => 'jason@mightysignal.com',
+    return @client if @client
+    
+    @client = Restforce.new :username => 'jason@mightysignal.com',
       :password       => 'knKnsjnsansaf23764KSJANFssas',
       :security_token => 'vZyFBHo9FHpqRWjDUhsIrjzdM',
       :client_id      => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
@@ -130,9 +130,15 @@ class BizibleSalesforceService
 
     salesforce_api_name_service_name_hash = salesforce_api_name_service_name_hash(object_type, found_service_names)
 
-    # salesforce_api_name_service_name_hash.each do |api_name, service_name|
-    #
-    # end
+    object_name = nil
+    if(object_type == :lead)
+      object_name = "Lead"
+    elsif(object_type == :opp)
+      object_name = "Opportunity"
+    end
+      object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
+    client.update!(object_name, object_params)
+    
   end
 
   def salesforce_api_name_service_name_hash(object_type, found_service_names)
