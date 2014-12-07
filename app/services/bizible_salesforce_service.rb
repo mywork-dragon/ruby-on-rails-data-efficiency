@@ -142,7 +142,7 @@ class BizibleSalesforceService
     
     
     
-    object_params = {Id: id}.merge(salesforce_api_name_service_name_hash)
+    object_params = {Id: id, MightySignal_Last_Updated__c: current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
     client.update!(object_name, object_params)
     
   end
@@ -226,13 +226,10 @@ class BizibleSalesforceService
   end
   
   def current_date_time_sf_format
-    #MightySignal_Last_Updated__c
-    
     d = DateTime.now
                               #=> #<DateTime: 2007-11-19T08:37:48-0600 ...>
-    d.strftime("Printed on %m/%d/%Y")   #=> "Printed on 11/19/2007"
+    #d.strftime("Printed on %m/%d/%Y")   #=> "Printed on 11/19/2007"
     d.strftime("%Y:%m:%dT%H:%M:%S%:z")
-    
   end
 
   class << self
