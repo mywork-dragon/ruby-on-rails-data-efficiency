@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   
   post 'test_sf_post' => 'salesforce#test_sf_post'
   post 'test_get_token' => 'salesforce#test_get_token'
+  post 'bizible_hydrate_lead'=> 'bizible_salesforce_controller#hydrate_lead'
+  post 'bizible_hydrate_opp'=> 'bizible_salesforce_controller#hydrate_opp'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
