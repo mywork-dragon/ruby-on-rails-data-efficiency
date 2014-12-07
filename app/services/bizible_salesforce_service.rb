@@ -224,6 +224,15 @@ class BizibleSalesforceService
     ret
 
   end
+  
+  def current_date_time_sf_format
+    #MightySignal_Last_Updated__c
+    
+    d = DateTime.now
+                              #=> #<DateTime: 2007-11-19T08:37:48-0600 ...>
+    d.strftime("Printed on %m/%d/%Y")   #=> "Printed on 11/19/2007"
+    
+  end
 
   class << self
 
