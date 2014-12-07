@@ -231,6 +231,7 @@ class BizibleSalesforceService
     d = DateTime.now
                               #=> #<DateTime: 2007-11-19T08:37:48-0600 ...>
     d.strftime("Printed on %m/%d/%Y")   #=> "Printed on 11/19/2007"
+    d.strftime("%Y:%m:%dT%H:%M:%SZ")
     
   end
 
