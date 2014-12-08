@@ -27,7 +27,7 @@ scrape_job_creation_success = system "bundle exec rake scraper:create_scrape_job
 
 abort if !scrape_job_creation_success
 
-directory_path = "/home/ubuntu/scrape_logs/#{directory_name}"
+directory_path = "/home/deploy/scrape_logs/#{directory_name}"
 
 Dir.mkdir(directory_path)
 
