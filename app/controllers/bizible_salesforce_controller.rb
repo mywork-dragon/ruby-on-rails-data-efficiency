@@ -5,6 +5,8 @@ class BizibleSalesforceController < ApplicationController
   def hydrate_lead
     puts "bizible_sf_hydrate_lead called"
     
+    return if params[:key] != 'bQWCyOXh2Q_tWX7FUXj_mg'
+    
     json = {"bizible_sf_hydrate_lead" => "success"}
     
     render json: json
@@ -15,6 +17,8 @@ class BizibleSalesforceController < ApplicationController
   
   def hydrate_opp
     puts "bizible_sf_hydrate_opp called"
+    
+    return if params[:key] != 'ACTf3xNG_d6nl54DHDp5wA'
     
     json = {"bizible_sf_hydrate_opp" => "success"}
     
