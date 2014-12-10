@@ -92,7 +92,7 @@ service = Service.create(name: "Salesforce")
 Matcher.create(
   service: service,
   match_type: :string,
-  match_string: 'action="https://www.salesforce.com/servlet/servlet.WebToLead?'
+  match_string: 'https://www.salesforce.com/servlet/servlet.WebToLead?'
 )
 
 # # cbs
