@@ -1,4 +1,4 @@
-class BizibleSalesforceService
+class BizibleSalesforceService < SalesforceService
 
   def initialize(options={})
     @services_hash = Hash.new
@@ -223,11 +223,6 @@ class BizibleSalesforceService
 
     ret
 
-  end
-  
-  def current_date_time_sf_format
-    d = DateTime.now
-    d.strftime("%Y-%m-%dT%H:%M:%S%:z")
   end
 
   class << self
