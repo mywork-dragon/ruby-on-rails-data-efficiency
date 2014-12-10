@@ -88,6 +88,13 @@ Matcher.create(
   match_string: 'cdn.insidesocial.com'
 )
 
+service = Service.create(name: "Salesforce")
+Matcher.create(
+  service: service,
+  match_type: :string,
+  match_string: '<form action="https://www.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">'
+)
+
 # # cbs
 # Matcher.create(
 #   service: Service.find_by_name("Optimizely"),
