@@ -98,9 +98,6 @@ class BizibleSalesforceService
   def hydrate_object(object_type, options={})
     id = options[:id]
     email = options[:email]
-    #website = options[:website]
-
-    #url = UrlManpulator.url_with_http_only(website)
     
     name = email.split("@").last
     website = "http://" + name
@@ -110,9 +107,9 @@ class BizibleSalesforceService
     company = Company.find_by_website(website)
 
     if company.nil?
-      created = Company.create(name: name, website: website, status: :active)
+      company = Company.create(name: name, website: website, status: :active)
 
-      if created
+      if company
         puts "Added #{name} (#{website} to DB)"
       else
         puts "Error adding #{name} (#{website}) to DB"

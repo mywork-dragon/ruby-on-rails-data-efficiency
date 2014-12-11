@@ -1,5 +1,3 @@
-# require 'Restforce'
-
 class MightySignalSalesforceService
   
   include SalesforceService
@@ -17,29 +15,72 @@ class MightySignalSalesforceService
       :client_id      => '3MVG9fMtCkV6eLhcIlf3UM3DhI0qHjleFYx1eiGwILdwEf8djU26Vnqjd3mu1Kxs0Z258R99eC0sfRJHG548g',
       :client_secret  => '6384884061761347258'
   end
+  
+  def hydrate_lead(options)
+    hydrate_object(:lead, options)
+  end
+  
+  def hydrate_opp(options)
+    hydrate_object(:opp, options)
+  end
+  
+  def hydrate_object(object_type, options={})
+    id = options[:id]
+    email = options[:email]
+  
+    name = email.split("@").last
+    website = "http://" + name
+
+    return if (website =~ URI::regexp).nil?
+
+    company = Company.find_by_website(website)
+
+    if company.nil?
+      company = Company.create(name: name, website: website, status: :active)
+
+      if company
+        puts "Added #{name} (#{website} to DB)"
+      else
+        puts "Error adding #{name} (#{website}) to DB"
+      end
+
+    else
+      puts "company already in DB"
+    end
+
+    service_ids = ScrapeService.scrape(company)
+  
+    found_service_names = []
+    service_ids.each do |service_id|
+      found_service_names << Service.find(service_id).name
+    end
+  
+    puts "found_service_names: #{found_service_names}"
+    
+    found_service_names_s = found_service_names.sort_by{|word| word.downcase}.join("\n")
+
+    object_name = nil
+    if(object_type == :lead)
+      object_name = "Lead"
+    elsif(object_type == :opp)
+      object_name = "Opportunity"
+    end
+  
+    api_hash = {MightySignal_Signals__c: found_service_names_s, MightySignal_Signal_Count__c: found_service_names.count.to_s}
+  
+    object_params = {Id: id, MightySignal_Last_Updated__c: current_date_time_sf_format}.merge(api_hash)
+    client.update!(object_name, object_params)
+  
+  end
 
   class << self
-
-    def client
-      MightySignalSalesforceService.new.client
+    
+    def hydrate_lead(options={})      
+      self.new.hydrate_lead(options)
     end
     
-    def create_lead(options={})
-      first_name = options[:first_name]
-      last_name = options[:last_name]
-      company = options[:company]
-      email = options[:email]
-      phone = options[:phone]
-      message = options[:message]
-      crm = options[:crm]
-      lead_source = options[:lead_source]
-
-      client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm, 'LeadSource' => lead_source)
-    
-    end
-    
-    def read_dummy
-      out = client.query("select Id, LastName from Lead ORDER BY CreatedDate DESC").first
+    def hydrate_opp(options={})      
+      self.new.hydrate_opp(options)
     end
   
   end
