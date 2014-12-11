@@ -1,6 +1,10 @@
-class BizibleSalesforceService < SalesforceService
+class BizibleSalesforceService
+
+  include SalesforceService
 
   def initialize(options={})
+    super(options)
+    
     @services_hash = Hash.new
 
     @services_hash['Marketing Automation'] = ['Marketo', 'Pardot', 'Hubspot', 'Act On', 'Eloqua', 'Silverpop']
