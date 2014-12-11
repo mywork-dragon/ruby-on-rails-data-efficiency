@@ -72,11 +72,28 @@ class MightySignalSalesforceService
     client.update!(object_name, object_params)
   
   end
+  
+  def hydrate_all_leads
+    all_leads.each do |lead|
+      id = lead.Id
+      email = lead.Email
+      
+      hydrate_lead(id: id, email: email)
+    end
+  end
+  
+  def all_leads
+    client.query("select Id, Email from Lead")
+  end
 
   class << self
     
     def hydrate_lead(options={})      
       self.new.hydrate_lead(options)
+    end
+    
+    def hydrate_all_leads
+      self.new.hydrate_all_leads
     end
     
     def hydrate_opp(options={})      
