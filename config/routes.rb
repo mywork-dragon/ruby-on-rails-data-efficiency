@@ -24,6 +24,9 @@ Rails.application.routes.draw do
   post 'bizible_hydrate_lead'=> 'bizible_salesforce#hydrate_lead'
   post 'bizible_hydrate_opp'=> 'bizible_salesforce#hydrate_opp'
   
+  post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
+  post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

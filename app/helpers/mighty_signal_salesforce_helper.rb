@@ -1,0 +1,2 @@
+module MightySignalSalesforceHelper
+end
