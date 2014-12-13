@@ -32,5 +32,10 @@ namespace 'scraper' do
     AlexaService.run("/home/webapps/varys/current/db/alexa/top-1m_10_21_14_short.csv")
   end
   
+  desc 'MightySignalSalesforceService.hydrate_all_leads'
+  task :hal => [:environment] do
+    MightySignalSalesforceService.hydrate_all_leads
+  end
+  
   
 end

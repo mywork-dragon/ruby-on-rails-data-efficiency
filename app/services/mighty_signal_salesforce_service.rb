@@ -28,7 +28,7 @@ class MightySignalSalesforceService
     id = options[:id]
     email = options[:email]
     
-    if email.nil?
+    if email.blank?
       puts "no email"
       return
     end
