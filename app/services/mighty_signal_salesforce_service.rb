@@ -27,6 +27,11 @@ class MightySignalSalesforceService
   def hydrate_object(object_type, options={})
     id = options[:id]
     email = options[:email]
+    
+    if email.nil?
+      puts "no email"
+      return
+    end
   
     name = email.split("@").last
     website = "http://" + name
