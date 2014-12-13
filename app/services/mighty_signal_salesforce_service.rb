@@ -50,6 +50,11 @@ class MightySignalSalesforceService
 
     service_ids = ScrapeService.scrape(company)
   
+    if service_ids.blank?
+      puts "no services found"
+      return
+    end
+  
     found_service_names = []
     service_ids.each do |service_id|
       found_service_names << Service.find(service_id).name
