@@ -34,7 +34,7 @@ namespace 'scraper' do
   
   desc 'MightySignalSalesforceService.hydrate_all_leads'
   task :hal => [:environment] do
-    MightySignalSalesforceService.hydrate_all_leads
+    MightySignalSalesforceService.new.hydrate_all_leads
   end
   
   
