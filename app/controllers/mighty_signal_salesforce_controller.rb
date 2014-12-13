@@ -1,5 +1,7 @@
 class MightySignalSalesforceController < ApplicationController
 
+  protect_from_forgery except: [:hydrate_lead, :hydrate_opp]
+
   def hydrate_lead
     return if params[:key] != 'Xb06g1lmGWmRiWzrcA3MUA'
     
