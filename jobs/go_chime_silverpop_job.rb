@@ -17,7 +17,7 @@ class GoChimeSilverpopJob
       
       installations.each do |i|
         company_name = i.company.name
-        csv << ["company_name"]
+        csv << [company_name]
       end
       
     end
