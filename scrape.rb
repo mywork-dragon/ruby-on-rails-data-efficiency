@@ -1,9 +1,12 @@
 if(ARGV.length < 2)
   puts "1st arg: Notes (must be unique)"
   puts "2nd arg: Max Number of Processes"
-  puts "3rd arg (opt): Number of Companies to Scrape"
+  puts "3rd arg: Number of Companies to Scrape"
+  puts "4th arg (opt): source_only"
   abort
 end
+
+options = {}
 
 notes = ARGV[0]
 num_processes = ARGV[1].to_i
@@ -20,6 +23,8 @@ else
   abort
 end
 
+source_only = "false"
+source_only = "true " if ARGV[3] == "source_only"
 
 directory_name = friendly_filename(notes)
 
@@ -45,7 +50,7 @@ num_processes.times do |process_num|
   end
 
 
-  command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" RAILS_ENV=production > #{log_path} &"
+  command = "nohup bundle exec rake scraper:#{rake_task} #{scrape_count_env}SCRAPE_PROCESSES=#{num_processes} SCRAPE_PAGE_NUMBER=#{process_num} SCRAPE_JOB_NOTES=\"#{directory_name}\" SOURCE_ONLY=#{source_only} RAILS_ENV=production > #{log_path} &"
 
   # puts "log_path: #{log_path}"
   # puts "command: #{command}"

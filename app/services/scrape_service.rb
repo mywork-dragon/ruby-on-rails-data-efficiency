@@ -180,6 +180,9 @@ class ScrapeService
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
     def scrape_all(processes = 1, page_number = 0, scrape_job_notes = nil, options = {})
+      puts "scrape_all options: #{options}"
+      return
+      
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
 
       count = Company.count
