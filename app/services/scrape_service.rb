@@ -10,7 +10,7 @@ class ScrapeService
     @scrape_job = options[:scrape_job]
   end
 
-  def scrape(company, options={})
+  def scrape(company, options = {})
     website = company.website
 
     content = nil
@@ -99,9 +99,7 @@ class ScrapeService
       content_from_headless_browser = "" 
     end
     
-    content = content_from_source + "\n" + content_from_headless_browser
-    
-    #content.scrub
+    content_from_source + "\n" + content_from_headless_browser
   end
   
   def content_from_source(url)
@@ -181,7 +179,7 @@ class ScrapeService
     
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
-    def scrape_all(processes = 1, page_number = 0, scrape_job_notes, options={})
+    def scrape_all(processes = 1, page_number = 0, scrape_job_notes = nil, options = {})
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
 
       count = Company.count
@@ -192,7 +190,7 @@ class ScrapeService
       ScrapeService.do_scraping(scrape_job, limit, offset, options)
     end
     
-    def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes, options={})
+    def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes = nil, options = {})
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
       
       company_count = Company.count
@@ -232,7 +230,7 @@ class ScrapeService
       end 
     end
     
-    def do_scraping(scrape_job, limit, offset, options={})
+    def do_scraping(scrape_job, limit, offset, options = {})
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       Company.limit(limit).offset(offset).each do |c|
         begin
@@ -245,7 +243,7 @@ class ScrapeService
       end
     end
 
-    def scrape(company, options={})
+    def scrape(company, options = {})
       ScrapeService.new.scrape(company, options)
     end
     
