@@ -10,10 +10,17 @@ class ScrapeService
     @scrape_job = options[:scrape_job]
   end
 
-  def scrape(company)
+  def scrape(company, options={})
     website = company.website
 
-    content = content_from_source_and_headless_browser(website)
+    content = nil
+    
+    if options[:source_only]
+      content = content_from_source(website)
+    else
+      content = content_from_source_and_headless_browser(website)
+    end
+    
     
     #puts "content: #{content}"
     
@@ -174,7 +181,7 @@ class ScrapeService
     
     # pass in a percentage, (like 50 for scraping 50%), and a page_number (0 means the first 50%, 1 means the second 50%)
     # def scrape_all(percentage = 100, page_number = 0, scrape_job_notes)
-    def scrape_all(processes = 1, page_number = 0, scrape_job_notes)
+    def scrape_all(processes = 1, page_number = 0, scrape_job_notes, options={})
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
 
       count = Company.count
@@ -182,10 +189,10 @@ class ScrapeService
       limit = (count*1.0/processes).ceil
       offset = page_number*limit
       
-      ScrapeService.do_scraping(scrape_job, limit, offset)
+      ScrapeService.do_scraping(scrape_job, limit, offset, options)
     end
     
-    def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes)
+    def scrape_some(scrape_count, processes = 1, page_number = 0, scrape_job_notes, options={})
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
       
       company_count = Company.count
@@ -195,7 +202,7 @@ class ScrapeService
       limit = (scrape_count*1.0/processes).ceil
       offset = page_number*limit
       
-      ScrapeService.do_scraping(scrape_job, limit, offset)
+      ScrapeService.do_scraping(scrape_job, limit, offset, options)
     end
     
     def scrape_special
@@ -225,12 +232,12 @@ class ScrapeService
       end 
     end
     
-    def do_scraping(scrape_job, limit, offset)
+    def do_scraping(scrape_job, limit, offset, options={})
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       Company.limit(limit).offset(offset).each do |c|
         begin
           puts "scraping company #{c.name}"
-          scrape_service.scrape(c)
+          scrape_service.scrape(c, options)
         rescue
           puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
           pp $!.backtrace
@@ -238,8 +245,8 @@ class ScrapeService
       end
     end
 
-    def scrape(company)
-      ScrapeService.new.scrape(company)
+    def scrape(company, options={})
+      ScrapeService.new.scrape(company, options)
     end
     
     # Scrape a single URL and don't save the results to the DB

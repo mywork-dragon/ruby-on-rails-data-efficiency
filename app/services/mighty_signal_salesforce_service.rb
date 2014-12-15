@@ -96,7 +96,25 @@ class MightySignalSalesforceService
     client.query("select Id, Email from Lead")
   end
 
+  def create_lead(options={})
+    first_name = options[:first_name]
+    last_name = options[:last_name]
+    company = options[:company]
+    email = options[:email]
+    phone = options[:phone]
+    message = options[:message]
+    crm = options[:crm]
+    lead_source = options[:lead_source]
+
+    client.create!('Lead', 'FirstName' => first_name, 'LastName' => last_name, 'Company' => company, 'Email' => email, 'Phone' => phone, 'Message__c' => message, 'CRM__C' => crm, 'LeadSource' => lead_source)
+  end
+  
+
   class << self
+    
+    def create_lead(options={})
+      self.new.create_lead(options)
+    end
     
     def hydrate_lead(options={})      
       self.new.hydrate_lead(options)
