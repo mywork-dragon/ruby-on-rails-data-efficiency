@@ -16,7 +16,7 @@ class ScrapeService
     content = nil
     
     if options[:source_only]
-      content = content_from_source(website)
+      content = content_from_source(website).first
     else
       content = content_from_source_and_headless_browser(website)
     end
