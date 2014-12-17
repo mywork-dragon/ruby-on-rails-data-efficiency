@@ -27,5 +27,8 @@ class BizibleSalesforceController < ApplicationController
     BizibleSalesforceService.hydrate_opp(params[:opportunity])
     
   end
+  
+  def salesforce_credentials
+  end
 
 end
