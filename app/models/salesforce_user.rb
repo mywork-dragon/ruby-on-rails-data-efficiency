@@ -1,6 +1,8 @@
 class SalesforceUser < ActiveRecord::Base
 
   def self.from_omniauth(auth)
+    puts "auth: #{auth}"
+    
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
       user.provider = auth.provider
       user.uid = auth.uid
