@@ -1,6 +1,6 @@
 class SalesforceSessionsController < ApplicationController
   def create
-    user = SalesforceUser.from_omniauth(env["omniauth.auth"])
+    user = OauthUser.from_omniauth(env["omniauth.auth"])
     session[:user_id] = user.id
     redirect_to root_url
   end

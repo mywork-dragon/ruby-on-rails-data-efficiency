@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141217003444) do
+ActiveRecord::Schema.define(version: 20141217015259) do
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 20141217003444) do
 
   add_index "matchers", ["service_id"], name: "index_matchers_on_service_id", using: :btree
 
-  create_table "salesforce_users", force: true do |t|
+  create_table "oauth_users", force: true do |t|
     t.string   "provider"
     t.string   "uid"
     t.string   "name"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20141217003444) do
     t.string   "instance_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "email"
   end
 
   create_table "scrape_jobs", force: true do |t|

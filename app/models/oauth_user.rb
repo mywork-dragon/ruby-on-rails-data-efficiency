@@ -1,4 +1,4 @@
-class SalesforceUser < ActiveRecord::Base
+class OauthUser < ActiveRecord::Base
 
   def self.from_omniauth(auth)
     puts "auth: #{auth}"
@@ -10,6 +10,7 @@ class SalesforceUser < ActiveRecord::Base
       user.oauth_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.instance_url = auth.credentials.instance_url
+      user.email = auth.extra.email
       user.save!
     end
   end
