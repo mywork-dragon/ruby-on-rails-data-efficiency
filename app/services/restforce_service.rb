@@ -1,19 +1,28 @@
-#require 'Restforce'
-
 class RestforceService
 
   def client
-    client = Restforce.new :username => 'jason@mightysignal.com',
-      :password       => 'knKnsjnsansaf23764KSJANFssas',
-      :security_token => 'vZyFBHo9FHpqRWjDUhsIrjzdM',
-      :client_id      => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
-      :client_secret  => '3173051852013251576'
+    # client = Restforce.new :username => 'jason@mightysignal.com',
+    #   :password       => 'knKnsjnsansaf23764KSJANFssas',
+    #   :security_token => 'vZyFBHo9FHpqRWjDUhsIrjzdM',
+    #   :client_id      => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
+    #   :client_secret  => '3173051852013251576'
     
     # client = Restforce.new :oauth_token => 'oauth token',
     #   :refresh_token => 'refresh token',
     #   :instance_url  => 'http://localhost:3000/auth/salesforce/callback',
     #   :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',  #Consumer Key
     #   :client_secret => '3173051852013251576' #Consumer Secret
+    
+    su = OauthUser.find(3ru)
+    
+    # client = Restforce.new :oauth_token => su.oauth_token,
+    #   :instance_url  => su.instance_url
+    
+    client = Restforce.new :oauth_token => su.oauth_token,
+      :refresh_token => su.refresh_token,
+      :instance_url  => su.instance_url,
+      :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
+      :client_secret => '3173051852013251576'
   end
 
   class << self

@@ -19,10 +19,15 @@ Rails.application.routes.draw do
   get 'demo_get_services' => 'welcome#demo_get_services'
   get 'demo_get_companies' => 'welcome#demo_get_companies'
   
+  match 'auth/:provider/callback', to: 'salesforce_sessions#create', via: [:get, :post]
+  match 'auth/failure', to: redirect('/'), via: [:get, :post]
+  match 'signout', to: 'salesforce_sessions#destroy', as: 'signout', via: [:get, :post]
+  
   post 'test_sf_post' => 'salesforce#test_sf_post'
   post 'test_get_token' => 'salesforce#test_get_token'
   post 'bizible_hydrate_lead'=> 'bizible_salesforce#hydrate_lead'
   post 'bizible_hydrate_opp'=> 'bizible_salesforce#hydrate_opp'
+  get 'bizible_salesforce_credentials' => 'bizible_salesforce#salesforce_credentials'
   
   post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
   post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
