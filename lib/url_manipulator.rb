@@ -5,20 +5,11 @@ class UrlManipulator
   class << self
     
     def url_with_http_only(url)
-      regex = /^http[s]*:\/\//
-
-      if url.match(regex)
-        url_with_http = url
-      else
-        url_with_http = "http://" + url
-      end
-
-      url_with_http
-      
+      "http://" + self.url_with_base_only(url)
     end
     
     def url_with_base_only(url)
-      regex = /^http[s]*:\/\//
+      regex = /^(http[s]*:\/\/)*(www.)*/
 
       if url.match(regex)
         name = url.gsub(regex, "")
