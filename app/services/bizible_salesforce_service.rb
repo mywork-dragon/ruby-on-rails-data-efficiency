@@ -29,12 +29,12 @@ class BizibleSalesforceService
                                 'LinkedIn Conversion Tracking']
                                 
     @api_hash = {}
-    @api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Marketing_Automation__c"}
+    @api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Intel_Marketing_Automation__c"}
     @api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opp: 'Web_Chat_Software__c'}
     @api_hash['Tag Management'] = {lead: 'Intel_Tag_Manager__c', opp: 'Intel_Tag_Manager__c'}
     @api_hash['Conversion Tracking'] = {lead: 'Intel_Adwords_Conversion_Tag__c', opp: 'Intel_Adwords_Conversion_Tag__c'}
-    @api_hash['Analytics'] = {lead: 'Intel_Analytics_Tag__c', opp: ""}
-    @api_hash['A/B Testing'] = {lead: 'Intel_A_B_Testing__c', opp: ""}
+    @api_hash['Analytics'] = {lead: 'Intel_Analytics_Tag__c', opp: "Intel_Analytics_Tag__c"}
+    @api_hash['A/B Testing'] = {lead: 'Intel_A_B_Testing__c', opp: "Intel_A_B_Testing__c"}
     @api_hash['Bid Management'] = {lead: 'Intel_Bid_Management__c', opp: 'Intel_Bid_Management__c'}
     @api_hash['Call Tracking'] = {lead: 'Intel_Call_Tracking__c', opp: 'Intel_Call_Tracking__c'}
     @api_hash['Other'] = {lead: 'Intel_Other_Tech__c', opp: "Intel_Other_Tech__c"}
@@ -42,13 +42,13 @@ class BizibleSalesforceService
     sf_object_type = options[:object_type]
     
     @lead_services_hash = Hash.new
-    @opps_services_hash = Hash.new
+    @opp_services_hash = Hash.new
     
     #puts "@lead_services_hash: #{@lead_services_hash}"
     
     @api_hash.each do |key, value|
       @lead_services_hash[value[:lead]] = @services_hash[key]
-      @opps_services_hash[value[:opps]] = @services_hash[key]
+      @opp_services_hash[value[:opp]] = @services_hash[key]
     end                            
 
     @service_name_in_db_hash = {
@@ -115,7 +115,7 @@ class BizibleSalesforceService
     website = options[:website]
     name = options[:name]
     
-    company = Company.find_by_website(website)
+    company = Company.find_by_name(name)
 
     if company.nil?
       company = Company.create(name: name, website: website, status: :active)
