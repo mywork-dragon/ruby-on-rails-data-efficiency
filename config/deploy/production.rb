@@ -4,7 +4,7 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, ['54.85.3.24', '54.164.24.87']
+role :app, ['54.85.3.24', '54.164.24.87', '54.88.39.109']
 role :web, '54.85.3.24'
 role :db,  '54.85.3.24'
 
@@ -17,6 +17,7 @@ role :db,  '54.85.3.24'
 
 server '54.85.3.24', user: 'deploy', roles: %w{web app db}
 server '54.164.24.87', user: 'deploy'
+server '54.88.39.109', user: 'deploy'
 
 # Custom SSH Options
 # ==================

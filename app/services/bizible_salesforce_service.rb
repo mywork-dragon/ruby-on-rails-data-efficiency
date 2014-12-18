@@ -235,6 +235,10 @@ class BizibleSalesforceService
     def hydrate_lead(options={})      
       BizibleSalesforceService.new.hydrate_lead(options)
     end
+    
+    def hydrate_opp(options={})      
+      BizibleSalesforceService.new.hydrate_opp(options)
+    end
 
 
   end
