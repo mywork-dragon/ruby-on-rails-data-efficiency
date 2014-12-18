@@ -95,7 +95,7 @@ class BizibleSalesforceService
 
     return if (website =~ URI::regexp).nil?
     
-    hydrate_object(:lead, {id: options[:id], website: website})
+    hydrate_object(:lead, {id: options[:id], website: website, name: name})
   end
   
   def hydrate_opp(options)
