@@ -99,13 +99,22 @@ class BizibleSalesforceService
   end
   
   def hydrate_opp(options)
-    hydrate_object(:opp, options)
+    website = options[:website]
+    
+    name = UrlManipulator.url_with_base_only(website)
+    
+    website = UrlManipulator.url_with_http_only(website)
+    
+    return if (website =~ URI::regexp).nil?
+    
+    hydrate_object(:opp, {id: options[:id], website: website, name: name})
   end
 
   def hydrate_object(object_type, options={})
     id = options[:id]
     website = options[:website]
-
+    name = options[:name]
+    
     company = Company.find_by_website(website)
 
     if company.nil?
