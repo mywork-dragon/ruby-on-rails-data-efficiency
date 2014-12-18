@@ -39,8 +39,7 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
+      # We just need to restart web server, not app server
     end
   end
 
@@ -48,10 +47,7 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+      execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
   end
 
