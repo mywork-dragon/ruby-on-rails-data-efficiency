@@ -88,7 +88,14 @@ class BizibleSalesforceService
   end
 
   def hydrate_lead(options)
-    hydrate_object(:lead, options)
+    email = options[:email]
+    
+    name = email.split("@").last
+    website = "http://" + name
+
+    return if (website =~ URI::regexp).nil?
+    
+    hydrate_object(:lead, {id: options[:id], website: website})
   end
   
   def hydrate_opp(options)
@@ -97,12 +104,7 @@ class BizibleSalesforceService
 
   def hydrate_object(object_type, options={})
     id = options[:id]
-    email = options[:email]
-    
-    name = email.split("@").last
-    website = "http://" + name
-
-    return if (website =~ URI::regexp).nil?
+    website = options[:website]
 
     company = Company.find_by_website(website)
 
