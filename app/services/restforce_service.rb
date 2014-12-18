@@ -13,7 +13,7 @@ class RestforceService
     #   :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',  #Consumer Key
     #   :client_secret => '3173051852013251576' #Consumer Secret
     
-    su = OauthUser.find(3ru)
+    su = OauthUser.find(3)
     
     # client = Restforce.new :oauth_token => su.oauth_token,
     #   :instance_url  => su.instance_url
