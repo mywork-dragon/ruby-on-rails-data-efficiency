@@ -1,6 +1,8 @@
 class BizibleSalesforceController < ApplicationController
 
   protect_from_forgery except: [:hydrate_lead, :hydrate_opp]
+  
+  force_ssl only: :salesforce_credentials
 
   def hydrate_lead
     puts "bizible_sf_hydrate_lead called"
