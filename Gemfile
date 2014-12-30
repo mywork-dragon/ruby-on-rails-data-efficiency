@@ -71,6 +71,8 @@ gem 'omniauth-salesforce'
 
 gem 'httparty', '0.13.3'
 
+gem 'sidekiq'
+
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

@@ -31,6 +31,7 @@ class BizibleSalesforceController < ApplicationController
   end
   
   def salesforce_credentials
+    puts "salesfor"
   end
 
 end
