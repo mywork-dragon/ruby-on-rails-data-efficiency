@@ -9,7 +9,7 @@ end
 
 git_status = `git status -uno`.strip
 
-if git_status != ""
+if !git_status.include?("Your branch is up-to-date with 'origin/master'.\n\nnothing to commit (use -u to show untracked files)")
   puts git_status
   abort
 end
