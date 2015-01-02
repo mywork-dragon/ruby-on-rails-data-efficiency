@@ -8,6 +8,6 @@ class CompanyTest < ActiveSupport::TestCase
   end
 
     test "should be valid" do
-      assert !@company.valid?
+      assert @company.valid?
     end
 end
