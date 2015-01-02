@@ -21,7 +21,7 @@ class BizibleOptimizelyJob
         filename = "optimizely_and_pardot.csv"
       end
       
-      CSV.open(file_path, "w+") do |csv|
+      CSV.open(directory_path + '/' + filename, "w+") do |csv|
         srs.each do |sr|
           csv << sr.company.name
         end
