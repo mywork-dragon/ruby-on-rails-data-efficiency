@@ -13,4 +13,4 @@ last_line.split(", ")
 if !last_line.include?('0 failures')
   abort
 end
-%x(cap production deploy)
+system('cap production deploy')
