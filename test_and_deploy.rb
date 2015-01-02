@@ -15,4 +15,5 @@ if !last_line.include?('0 failures')
   abort
 end
 
+puts ""
 system('cap production deploy')
