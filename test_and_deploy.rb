@@ -1,9 +1,16 @@
 #!/usr/bin/env ruby
 
-current_branch = `git branch | sed -n '/\* /s///p'`
+current_branch = `git branch | sed -n '/\* /s///p'`.strip
 
 if current_branch != "master"
   puts "Your current branch needs to be \"master\" to deploy."
+  abort
+end
+
+git_status = `git status -uno`.strip
+
+if git_status != ""
+  puts git_status
   abort
 end
 
