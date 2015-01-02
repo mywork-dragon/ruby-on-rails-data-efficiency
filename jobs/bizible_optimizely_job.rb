@@ -23,7 +23,9 @@ class BizibleOptimizelyJob
       
       CSV.open(directory_path + '/' + filename, "w+") do |csv|
         srs.each do |sr|
-          csv << sr.company.name
+          company_name = sr.company_name
+          csv << company_name
+          puts company_name
         end
       end
     end
@@ -35,7 +37,7 @@ class BizibleOptimizelyJob
   class << self
 
     def run(directory_path)
-      BizibleJob1.new.run(directory_path)
+      BizibleOptimizelyJob.new.run(directory_path)
     end
 
   end
