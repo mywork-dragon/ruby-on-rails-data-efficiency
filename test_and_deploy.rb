@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+current_branch = `git branch | sed -n '/\* /s///p'`
+
+if current_branch != "master"
+  "Your current branch needs to be \"master\" to deploy."
+  abort
+end
+
 test_cmd = 'rake test'
  
 last_line = nil
