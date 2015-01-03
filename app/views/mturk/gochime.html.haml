@@ -1,17 +1,22 @@
-- @companies.each do |c|
-  LinkedIn URL:
-  %input{name: "linkedin"}
-  %br
-  First Name:
-  %input{name: "first_name"}
-  %br
-  Last Name:
-  %input{name: "last_name"}
-  %br
-  Title:
-  %input{name: "title"}
-  %br
-  %input{type: "hidden", name: "company", value: c}
-  
-  %br
-  %br
+%table
+  - @companies.each do |c|
+    %tr
+      %td LinkedIn URL:
+      %td
+        %input{name: "linkedin"}
+    %tr
+      %td First Name:
+      %td 
+        %input{name: "first_name"}
+    %tr
+      %td Last Name:
+      %td 
+        %input{name: "last_name"}
+    %tr
+      %td Title:
+      %td 
+        %input{name: "title"}
+    %tr
+      %td
+      %td
+        %input{type: "hidden", name: "company", value: c}
