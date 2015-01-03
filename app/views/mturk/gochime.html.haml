@@ -1,22 +1,26 @@
 %table
   - @companies.each do |c|
-    %tr
-      %td LinkedIn URL:
-      %td
-        %input{name: "linkedin"}
-    %tr
-      %td First Name:
-      %td 
-        %input{name: "first_name"}
-    %tr
-      %td Last Name:
-      %td 
-        %input{name: "last_name"}
-    %tr
-      %td Title:
-      %td 
-        %input{name: "title"}
-    %tr
-      %td
-      %td
-        %input{type: "hidden", name: "company", value: c}
+    - 3.times do |n|
+      %tr
+        %td
+          %h3= "#{c} - Person #{n}"
+      %tr
+        %td LinkedIn URL:
+        %td
+          %input{name: "linkedin"}
+      %tr
+        %td First Name:
+        %td 
+          %input{name: "first_name"}
+      %tr
+        %td Last Name:
+        %td 
+          %input{name: "last_name"}
+      %tr
+        %td Title:
+        %td 
+          %input{name: "title"}
+      %tr
+        %td
+        %td
+          %input{type: "hidden", name: "company", value: c}
