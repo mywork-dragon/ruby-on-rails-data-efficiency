@@ -32,6 +32,8 @@ Rails.application.routes.draw do
   post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
   post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
   
+  get 'mturk' => 'mturk#gochime'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

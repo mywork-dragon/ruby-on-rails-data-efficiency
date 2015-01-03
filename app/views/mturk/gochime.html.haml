@@ -1,0 +1,16 @@
+= @companies.each do |c|
+  LinkedIn URL:
+  %input{name: "linkedin"}
+
+  First Name:
+  %input{name: "first_name"}
+  
+  Last Name:
+  %input{name: "last_name"}
+  
+  Title:
+  %input{name: "title"}
+  
+  %input{type: "hidden", name: "company", value: c}
+  
+  %br
