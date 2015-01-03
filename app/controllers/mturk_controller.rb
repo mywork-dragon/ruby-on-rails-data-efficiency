@@ -1,7 +1,7 @@
 class MturkController < ApplicationController
 
   def gochime
-    installations = Installation.where(scrape_job_id: 43, service_id: 141).limit(10)
+    installations = Installation.where(scrape_job_id: 43, service_id: 141)
     
     @companies = []
     
