@@ -25,7 +25,7 @@ end.close # Without close, you won't be able to access $?
 #puts "The command's exit code was: #{$?.exitstatus}"
 
 last_line.split(", ")
-if !last_line.include?('0 failures')
+if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
 
