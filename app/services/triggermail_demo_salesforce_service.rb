@@ -110,7 +110,7 @@ class TriggermailDemoSalesforceService
 
   def salesforce_api_name_service_name_hash(object_type, found_service_names)
 
-    ret = {"Marketing_Automation__c" => [], "Tag_Manager__c" => [], "OtherSignals__c" => []}
+    ret = {"Marketing_Automation__c" => [], "Tag_Manager__c" => [], "Other_Signals__c" => []}
 
     not_other = []
 
@@ -133,7 +133,7 @@ class TriggermailDemoSalesforceService
 
     end
     
-    ret["OtherSignals__c"] << found_service_names - not_other
+    ret["Other_Signals__c"] << found_service_names - not_other
     
     ret.each do |api_name, service_names|
       ret[api_name] = service_names.join(", ")
