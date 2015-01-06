@@ -9,7 +9,7 @@ class TriggermailDemoSalesforceService
 
     @services_hash['Marketing Automation'] = ['Marketo', 'Pardot', 'Hubspot', 'Act-On Beacon', 'Eloqua', 'Silverpop']
     
-    @services_hash['General Marketing Tech'] = ['My Buys']
+    @services_hash['General Marketing Tech'] = ['MyBuys']
 
     @services_hash['Tag Management'] = ['Tealium', 'Ensighten', 'Adobe Tag Container', 'Signal.co', 'Google Tag Manager']
 
