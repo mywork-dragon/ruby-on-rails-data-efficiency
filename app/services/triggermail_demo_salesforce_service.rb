@@ -112,6 +112,8 @@ class TriggermailDemoSalesforceService
 
     ret = {"Marketing_Automation__c" => [], "Tag_Manager__c" => [], "Other__c" => []}
 
+    not_other = []
+
     services_hash = nil
     
     if(object_type == :lead)
@@ -124,21 +126,18 @@ class TriggermailDemoSalesforceService
 
       service_names.each do |service_name|
         if found_service_names.include?(service_name)
-          puts "api_name: #{api_name}"
-          puts "ret: #{ret}"
           ret[api_name] << service_name
-        else
-          ret["Other__c"] << service_name
+          not_other << service_name
         end
       end
 
     end
     
+    ret["Other__c"] << found_service_names - not_other
+    
     ret.each do |api_name, service_names|
       ret[api_name] = service_names.join(", ")
     end
-    
-    puts "ret: #{ret}"
     
     ret
 
