@@ -34,9 +34,9 @@ class TriggermailDemoSalesforceService
     
     @client = Restforce.new :username => 'jason_triggermail@mightysignal.com',
       :password       => 'alskfnclkansf12422',
-      :security_token => '',
-      :client_id      => '',
-      :client_secret  => ''
+      :security_token => 'myKlAxydIqstRnXJlCwoU46c',
+      :client_id      => '3MVG9fMtCkV6eLheWeuPjSg0j18ozUv5a1UaTfM9Fm5zoj3xJuPtrfum0nWZlK6LE62.jQLrR6Y_fnxJBS.7i',
+      :client_secret  => '8577635590104229957'
   end
 
   def hydrate_lead(options)
@@ -104,7 +104,7 @@ class TriggermailDemoSalesforceService
     
     
     object_params = {Id: id, MightySignal_Last_Updated__c: current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
-    # client.update!(object_name, object_params)
+    client.update!(object_name, object_params)
     
   end
 

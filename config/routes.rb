@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   post 'bizible_hydrate_opp'=> 'bizible_salesforce#hydrate_opp'
   get 'bizible_salesforce_credentials' => 'bizible_salesforce#salesforce_credentials'
   
+  post 'triggermail_demo_hydrate_lead'=> 'triggermail_demo_salesforce#hydrate_lead'
+  
   post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
   post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
   
