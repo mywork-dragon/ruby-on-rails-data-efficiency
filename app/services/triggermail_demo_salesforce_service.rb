@@ -8,6 +8,8 @@ class TriggermailDemoSalesforceService
     @services_hash = Hash.new
 
     @services_hash['Marketing Automation'] = ['Marketo', 'Pardot', 'Hubspot', 'Act-On Beacon', 'Eloqua', 'Silverpop']
+    
+    @services_hash['General Marketing Tech'] = ['My Buys']
 
     @services_hash['Tag Management'] = ['Tealium', 'Ensighten', 'Adobe Tag Container', 'Signal.co', 'Google Tag Manager']
 
@@ -15,6 +17,7 @@ class TriggermailDemoSalesforceService
     @api_hash = {}
     @api_hash['Marketing Automation'] = {lead: 'Marketing_Automation__c', opp: "Marketing_Automation__c"}
     @api_hash['Tag Management'] = {lead: 'Tag_Manager__c', opp: 'Tag_Manager__c'}
+    @api_hash['General Marketing Tech'] = {lead: 'General_Marketing_Tech__c', opp: 'General_Marketing_Tech__c'}
     
     sf_object_type = options[:object_type]
     
@@ -110,7 +113,7 @@ class TriggermailDemoSalesforceService
 
   def salesforce_api_name_service_name_hash(object_type, found_service_names)
 
-    ret = {"Marketing_Automation__c" => [], "Tag_Manager__c" => [], "Other_Signals__c" => []}
+    ret = {"Marketing_Automation__c" => [], "Tag_Manager__c" => [], "General_Marketing_Tech__c" => [], "Other_Signals__c" => []}
 
     not_other = []
 
