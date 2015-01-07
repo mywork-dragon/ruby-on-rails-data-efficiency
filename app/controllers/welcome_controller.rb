@@ -24,7 +24,7 @@ class WelcomeController < ApplicationController
       lead_options[:company] = email.match(email_regex).to_s[1..-1]
     end
     
-    MightySignalSalesforceService.create_lead(lead_options)
+    #MightySignalSalesforceService.create_lead(lead_options)  #temp out as SF is down
     
     ContactUsMailer.contact_us_email(lead_options).deliver
     

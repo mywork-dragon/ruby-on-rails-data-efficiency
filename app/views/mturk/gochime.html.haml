@@ -1,0 +1,33 @@
+%table
+  - @companies.each do |c|
+    - 2.times do |n|
+      %tr
+        %td
+          %h4= "#{c} -- Person ##{n+1}"
+      %tr
+        %td LinkedIn URL:
+        %td
+          %input{name: "linkedin"}
+      %tr
+        %td Email:
+        %td 
+          %input{name: "email"}
+      %tr
+        %td First Name:
+        %td 
+          %input{name: "first_name"}
+      %tr
+        %td Last Name:
+        %td 
+          %input{name: "last_name"}
+      %tr
+        %td Title:
+        %td 
+          %input{name: "title"}
+      %tr
+        %td
+        %td
+          %input{type: "hidden", name: "company", value: c}
+    %tr
+      %td
+      %td
