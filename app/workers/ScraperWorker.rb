@@ -3,6 +3,6 @@ class ScraperWorker
   include MyIp
 
   def perform(name, count)
-    puts 'Doing hard work'
+    Company.create!(name: "ababksjbfakjbsfkjabskfjbakjsbf124124.edu", url: "http://ababksjbfakjbsfkjabskfjbakjsbf124124.edu", status: :active)
   end
 end
