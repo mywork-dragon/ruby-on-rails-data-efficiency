@@ -166,9 +166,13 @@ class BizibleSalesforceService
     last_updated_api_name = "MightySignal_Last_Updated__c"
     
     if @demo
+      demo_hash = Hash.new
+      
       salesforce_api_name_service_name_hash.each do |key, value|
-        salesforce_api_name_service_name_hash["MightySignalBiz__" + key] = salesforce_api_name_service_name_hash.delete(key)
+        demo_hash["MightySignalBiz__" + key] = value
       end
+      
+      salesforce_api_name_service_name_hash = demo_hash
       
       last_updated_api_name = "MightySignalBiz__MightySignal_Last_Updated__c"
     end
