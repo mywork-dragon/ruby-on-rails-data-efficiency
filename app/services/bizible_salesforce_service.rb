@@ -5,6 +5,8 @@ class BizibleSalesforceService
   def initialize(options={})
     super(options)
     
+    @demo = true
+    
     @services_hash = Hash.new
 
     @services_hash['Marketing Automation'] = ['Marketo', 'Pardot', 'Hubspot', 'Act On', 'Eloqua', 'Silverpop']
@@ -161,6 +163,11 @@ class BizibleSalesforceService
       object_name = "Opportunity"
     end
     
+    if @demo
+      salesforce_api_name_service_name_hash.each do |key, value|
+        key = "MightySignalBiz__" + key
+      end
+    end
     
     
     object_params = {Id: id, MightySignal_Last_Updated__c: current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
