@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   post 'test_get_token' => 'salesforce#test_get_token'
   post 'bizible_hydrate_lead'=> 'bizible_salesforce#hydrate_lead'
   post 'bizible_hydrate_opp'=> 'bizible_salesforce#hydrate_opp'
-  get 'bizible_salesforce_credentials' => 'bizible_salesforce#salesforce_credentials'
+  get 'customer_salesforce_credentials' => 'customer_salesforce#salesforce_credentials'
   
   post 'triggermail_demo_hydrate_lead'=> 'triggermail_demo_salesforce#hydrate_lead'
   
