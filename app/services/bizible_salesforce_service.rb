@@ -260,7 +260,7 @@ class BizibleSalesforceService
   class << self
 
     def client
-      RestforceService.new.client
+      BizibleSalesforceService.new.client
     end
 
     def hydrate_lead(options={})      
@@ -269,6 +269,17 @@ class BizibleSalesforceService
     
     def hydrate_opp(options={})      
       BizibleSalesforceService.new.hydrate_opp(options)
+    end
+    
+    def run_test
+      client = self.client
+
+      leads = client.query("SELECT Id, Name, LastModifiedDate FROM Lead ORDER BY LastModifiedDate DESC LIMIT 10")
+  
+      leads.each do |lead|
+        puts lead.Name
+      end
+    
     end
 
 
