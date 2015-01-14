@@ -13,7 +13,7 @@ class BizibleSalesforceController < ApplicationController
     
     render json: json
     
-    BizibleSalesforceService.hydrate_lead(params[:lead])
+    #BizibleSalesforceService.hydrate_lead(params[:lead])
     
   end
   
@@ -26,7 +26,7 @@ class BizibleSalesforceController < ApplicationController
     
     render json: json
     
-    BizibleSalesforceService.hydrate_opp(params[:opportunity])
+    #BizibleSalesforceService.hydrate_opp(params[:opportunity])
     
   end
   
