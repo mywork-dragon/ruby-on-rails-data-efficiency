@@ -1,0 +1,2 @@
+module TriggermailSalesforceHelper
+end

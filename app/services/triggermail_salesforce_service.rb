@@ -1,4 +1,5 @@
-class TriggermailSalesforceService
+# test
+class TriggermailDemoSalesforceService
 
   include SalesforceService
 
@@ -15,23 +16,21 @@ class TriggermailSalesforceService
 
                                 
     @api_hash = {}
-    @api_hash['Marketing Automation'] = {lead: 'Marketing_Automation__c', contact: "Marketing_Automation__c", account: "Marketing_Automation__c"}
-    @api_hash['Tag Management'] = {lead: 'Tag_Manager__c', contact: 'Tag_Manager__c', account: 'Tag_Manager__c'}
-    @api_hash['General Marketing Tech'] = {lead: 'General_Marketing_Tech__c', contact: 'General_Marketing_Tech__c', account: 'General_Marketing_Tech__c'}
+    @api_hash['Marketing Automation'] = {lead: 'Marketing_Automation__c', opp: "Marketing_Automation__c"}
+    @api_hash['Tag Management'] = {lead: 'Tag_Manager__c', opp: 'Tag_Manager__c'}
+    @api_hash['General Marketing Tech'] = {lead: 'General_Marketing_Tech__c', opp: 'General_Marketing_Tech__c'}
     
     sf_object_type = options[:object_type]
     
     @lead_services_hash = Hash.new
     @opp_services_hash = Hash.new
-    @account_services_hash = Hash.new
     
     @api_hash.each do |key, value|
       @lead_services_hash[value[:lead]] = @services_hash[key]
-      @opp_services_hash[value[:contact]] = @services_hash[key]
-      @account_services_hash[value[:account]] = @services_hash[key]
+      @opp_services_hash[value[:opp]] = @services_hash[key]
     end                            
     
-    #puts "@lead_services_hash: #{@lead_services_hash}"
+    puts "@lead_services_hash: #{@lead_services_hash}"
   end
 
   def client
@@ -55,7 +54,7 @@ class TriggermailSalesforceService
     hydrate_object(:lead, {id: options[:id], website: website, name: name})
   end
   
-  def hydrate_contact(options)
+  def hydrate_opp(options)
     website = options[:website]
     
     name = UrlManipulator.url_with_base_only(website)
@@ -64,19 +63,7 @@ class TriggermailSalesforceService
     
     return if (website =~ URI::regexp).nil?
     
-    hydrate_object(:contact, {id: options[:id], website: website, name: name})
-  end
-  
-  def hydrate_account(options)
-    website = options[:website]
-    
-    name = UrlManipulator.url_with_base_only(website)
-    
-    website = UrlManipulator.url_with_http_only(website)
-    
-    return if (website =~ URI::regexp).nil?
-    
-    hydrate_object(:account, {id: options[:id], website: website, name: name})
+    hydrate_object(:opp, {id: options[:id], website: website, name: name})
   end
 
   def hydrate_object(object_type, options={})
@@ -116,8 +103,6 @@ class TriggermailSalesforceService
       object_name = "Lead"
     elsif(object_type == :opp)
       object_name = "Opportunity"
-    elsif(object_type == :account)
-      object_name = "Account"
     end
     
     
@@ -168,12 +153,8 @@ class TriggermailSalesforceService
       self.new.hydrate_lead(options)
     end
     
-    def hydrate_contact(options={})      
-      self.new.hydrate_contact(options)
-    end
-    
-    def hydrate_account(options={})
-      self.new.hydrate_account(options)
+    def hydrate_opp(options={})      
+      self.new.hydrate_opp(options)
     end
 
 

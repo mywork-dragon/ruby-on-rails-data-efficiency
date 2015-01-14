@@ -31,6 +31,8 @@ Rails.application.routes.draw do
   
   post 'triggermail_demo_hydrate_lead'=> 'triggermail_demo_salesforce#hydrate_lead'
   
+  post 'triggermail_hydrate_lead'=> 'triggermail_salesforce#hydrate_lead'
+  
   post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
   post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
   

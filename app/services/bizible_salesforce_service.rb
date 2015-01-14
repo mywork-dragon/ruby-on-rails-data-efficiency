@@ -163,8 +163,6 @@ class BizibleSalesforceService
       object_name = "Opportunity"
     end
     
-    last_updated_api_name = "MightySignal_Last_Updated__c"
-    
     if @demo
       demo_hash = Hash.new
       
@@ -173,12 +171,10 @@ class BizibleSalesforceService
       end
       
       salesforce_api_name_service_name_hash = demo_hash
-      
-      last_updated_api_name = "MightySignalBiz__MightySignal_Last_Updated__c"
     end
     
     
-    object_params = {Id: id, last_updated_api_name => current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
+    object_params = {Id: id, "MightySignalBiz__MightySignal_Last_Updated__c" => current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
     client.update!(object_name, object_params)
     
   end
