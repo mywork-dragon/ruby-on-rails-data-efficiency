@@ -5,7 +5,7 @@ class BizibleSalesforceService
   def initialize(options={})
     super(options)
     
-    @demo = true
+    @demo = false
     
     @services_hash = Hash.new
 
