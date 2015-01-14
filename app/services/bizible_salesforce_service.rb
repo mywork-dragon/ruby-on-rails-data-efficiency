@@ -82,19 +82,19 @@ class BizibleSalesforceService
   def client
     return @client if @client
     
-    @client = Restforce.new :username => 'jason@mightysignal.com',
-      :password       => 'knKnsjnsansaf23764KSJANFssas',
-      :security_token => 'vZyFBHo9FHpqRWjDUhsIrjzdM',
-      :client_id      => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
-      :client_secret  => '3173051852013251576'
+    # @client = Restforce.new :username => 'jason@mightysignal.com',
+    #   :password       => 'knKnsjnsansaf23764KSJANFssas',
+    #   :security_token => 'vZyFBHo9FHpqRWjDUhsIrjzdM',
+    #   :client_id      => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',
+    #   :client_secret  => '3173051852013251576'
   
-    # su = OauthUser.find_by_email("aaron@bizible.com")
+    su = OauthUser.find_by_email("aaron@bizible.com")
 
-  # client = Restforce.new :oauth_token => su.oauth_token,
-  #   :refresh_token => su.refresh_token,
-  #   :instance_url  => su.instance_url,
-  #   :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',  #need to fix
-  #   :client_secret => '3173051852013251576' #need to fix
+  @client = Restforce.new :oauth_token => su.oauth_token,
+    :refresh_token => su.refresh_token,
+    :instance_url  => su.instance_url,
+    :client_id     => '3MVG9fMtCkV6eLhfvfGZ559QaTiFUS_ZTpnvTn5pfL9_NAInaNgoW0AcvlslIJ1Xd6tOX7JfkJoo6bB55flRl',  #need to fix
+    :client_secret => '3173051852013251576' #need to fix
   
   end
 
