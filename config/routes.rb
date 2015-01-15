@@ -8,16 +8,16 @@ Rails.application.routes.draw do
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   
-  get 'demo' => 'welcome#demo'
-  post 'submit_demo' => "welcome#submit_demo"
-  
-  get 'demo_you_are' => 'welcome#demo_you_are'
-  get 'demo3' => 'welcome#demo3'
-  get 'demo4' => 'welcome#demo4'
-  get 'demo_services' => 'welcome#demo_services'
-  get 'demo_companies' => 'welcome#demo_companies'
-  get 'demo_get_services' => 'welcome#demo_get_services'
-  get 'demo_get_companies' => 'welcome#demo_get_companies'
+  # get 'demo' => 'welcome#demo'
+  # post 'submit_demo' => "welcome#submit_demo"
+  #
+  # get 'demo_you_are' => 'welcome#demo_you_are'
+  # get 'demo3' => 'welcome#demo3'
+  # get 'demo4' => 'welcome#demo4'
+  # get 'demo_services' => 'welcome#demo_services'
+  # get 'demo_companies' => 'welcome#demo_companies'
+  # get 'demo_get_services' => 'welcome#demo_get_services'
+  # get 'demo_get_companies' => 'welcome#demo_get_companies'
   
   match 'auth/:provider/callback', to: 'salesforce_sessions#create', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
