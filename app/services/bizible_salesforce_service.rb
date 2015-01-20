@@ -288,8 +288,9 @@ class BizibleSalesforceService
     
     end
     
-    def hydrate_10_opportunities
-      opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
+    def hydrate_opportunities
+      #opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
+      opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC")
       
       opps.each_with_index do |opp, index|
         puts "Company ##{index}"
