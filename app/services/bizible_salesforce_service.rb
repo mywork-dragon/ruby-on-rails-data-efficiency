@@ -292,8 +292,10 @@ class BizibleSalesforceService
       #opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
       opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC")
       
+      opps_count = opps.count
+      
       opps.each_with_index do |opp, index|
-        puts "Company ##{index}"
+        puts "Company ##{index + 1} of #{opps_count}"
         begin
            BizibleSalesforceService.hydrate_opp(id: opp.Id, website: opp.Website__c, name: opp.name)
     

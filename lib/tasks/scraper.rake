@@ -37,5 +37,10 @@ namespace 'scraper' do
     MightySignalSalesforceService.hydrate_all_leads
   end
   
+  desc 'BizibleSalesforceService.hydrate_opportunities'
+  task :bizible_all_opps => [:environment] do
+    BizibleSalesforceService.hydrate_opportunities
+  end
+  
   
 end
