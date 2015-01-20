@@ -287,6 +287,14 @@ class BizibleSalesforceService
       end
     
     end
+    
+    def hydrate_10_opportunities
+      opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
+      
+      opps.each do |opp|
+        BizibleSalesforceService.hydrate_opp(opp.Id, website: opp.Website__c, name: opp.name)
+      end
+    end
 
   end
 
