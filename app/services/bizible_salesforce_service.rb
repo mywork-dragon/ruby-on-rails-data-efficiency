@@ -256,6 +256,12 @@ class BizibleSalesforceService
     ret
 
   end
+  
+  def opportunities
+    client = self.client
+    
+    opps = client.query("SELECT Id, Name, CreatedDate, Website__c, FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
+  end
 
   class << self
 
@@ -281,7 +287,6 @@ class BizibleSalesforceService
       end
     
     end
-
 
   end
 
