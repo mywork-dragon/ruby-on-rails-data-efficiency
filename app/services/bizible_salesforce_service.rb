@@ -31,7 +31,7 @@ class BizibleSalesforceService
                                 'LinkedIn Conversion Tracking']
                                 
     @api_hash = {}
-    @api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Intel_Marketing_Automation__c"}
+    @api_hash['Marketing Automation'] = {lead: 'Intel_Marketing_Automation__c', opp: "Marketing_Automation__c"}
     @api_hash['Live Chat'] = {lead: 'Intel_Live_Chat__c', opp: 'Web_Chat_Software__c'}
     @api_hash['Tag Management'] = {lead: 'Intel_Tag_Manager__c', opp: 'Intel_Tag_Manager__c'}
     @api_hash['Conversion Tracking'] = {lead: 'Intel_Adwords_Conversion_Tag__c', opp: 'Intel_Adwords_Conversion_Tag__c'}
