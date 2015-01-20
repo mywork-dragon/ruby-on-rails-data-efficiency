@@ -199,13 +199,13 @@ class BizibleSalesforceService
 
       found_service = false #for thie api_name
       service_names.each do |service_name|
-        puts "service_name: #{service_name}"
+        #puts "service_name: #{service_name}"
         
         service_name_in_db = @service_name_in_db_hash[service_name]
         service_name_in_db = service_name if service_name_in_db.nil?
         
-        puts "service_name_in_db: #{service_name_in_db}"
-        puts ""
+        #puts "service_name_in_db: #{service_name_in_db}"
+        #puts ""
         #service = Service.find_by_name(service_name_in_db(service_name))
 
         #i = Installation.where(company: c, scrape_job_id: 15, service: service).first
@@ -291,7 +291,8 @@ class BizibleSalesforceService
     def hydrate_10_opportunities
       opps = client.query("SELECT Id, Name, CreatedDate, Website__c FROM Opportunity ORDER BY CreatedDate DESC LIMIT 10")
       
-      opps.each do |opp|
+      opps.each_with_index do |opp, index|
+        puts "Company ##{index}"
         begin
            BizibleSalesforceService.hydrate_opp(id: opp.Id, website: opp.Website__c, name: opp.name)
     
