@@ -90,20 +90,17 @@ class BizibleJob2 < BizibleJob1
       self.new.create_csv(file_path)
     end
 
-    def scrape(processes = 1, page_number, scrape_job_notes = nil, options = {})
-        scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
-
-        #count = 8836
-      
-        at_a_time = 884
+    def scrape(processes = 1, page_number = 0, scrape_job_notes = nil, options = {})
+      scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
     
-        company_range = []
-        10.times do |n|
-          company_range[n] = ((n*at_a_time)..(n*at_a_time + at_a_time - 1))
-        end
-      
-        self.do_scraping(scrape_job, company_range[page_number], options)
+      at_a_time = 884
+  
+      company_range = []
+      10.times do |n|
+        company_range[n] = ((n*at_a_time)..(n*at_a_time + at_a_time - 1))
       end
+    
+      self.do_scraping(scrape_job, company_range[page_number], options)
     end
     
     def do_scraping(scrape_job, range, options = {})
