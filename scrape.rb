@@ -47,7 +47,7 @@ num_processes.times do |process_num|
   if scrape_option == :scrape_some
     scrape_count_env = "SCRAPE_COUNT=#{count} "
     rake_task = "scrape_some"
-  elsif scrape_option = :scrape_custom
+  elsif scrape_option == :scrape_custom
     rake_task = "scrape_bizible_job2"
   else
     rake_task = "scrape_all"
