@@ -17,7 +17,7 @@ namespace 'scraper' do
   
   desc 'Scrape for Bizible Job 2'
   task :scrape_bizible_job2 => [:environment] do
-    BizibleJob2.scrape_all((ENV["SCRAPE_PROCESSES"]).to_i, (ENV["SCRAPE_PAGE_NUMBER"]).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"]=="true")
+    BizibleJob2.scrape((ENV["SCRAPE_PROCESSES"]).to_i, (ENV["SCRAPE_PAGE_NUMBER"]).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"]=="true")
   end
   
   
