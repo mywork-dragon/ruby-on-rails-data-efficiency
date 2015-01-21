@@ -2,19 +2,20 @@ require 'csv'
 
 class BizibleJob2 < BizibleJob1
 
-  def run(file_path)
+  def create_csv(file_path)
     
     CSV.open(file_path, "w+") do |csv|
       
       csv << ["Company Name"] + @services_hash.keys
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
+      #10 processes => 884 at a time
+       
+      
+      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt")[company_range[page]].each_with_index do |l, i|
         company_name = l.strip!
 
         puts "Company: #{company_name}"
-        
-        next
-        
+
         #break if i == 200
         
         #for each line
@@ -86,9 +87,65 @@ class BizibleJob2 < BizibleJob1
   class << self
   
     def run(file_path)
-      self.new.run(file_path)
+      self.new.create_csv(file_path)
     end
+
+    def scrape(processes = 1, page_number, scrape_job_notes = nil, options = {})
+        scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
+
+        #count = 8836
+      
+        at_a_time = 884
+    
+        company_range = []
+        10.times do |n|
+          company_range[n] = ((n*at_a_time)..(n*at_a_time + at_a_time - 1))
+        end
+      
+        self.do_scraping(scrape_job, company_range[page_number], options)
+      end
+    end
+    
+    def do_scraping(scrape_job, range, options = {})
+      scrape_service = ScrapeService.new(scrape_job: scrape_job)
+      
+      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt")[range].each_with_index do |l, i|
+        company_name = l.strip!
+        
+        name = UrlManipulator.url_with_base_only(company_name)
+        website = UrlManipulator.url_with_http_only(company_name)
+        
+        company = Company.find_by_name(name)
+
+        if company.nil?
+          company = Company.create(name: name, website: website, status: :active)
+
+          if company
+            puts "Added #{name} (#{website} to DB)"
+          else
+            puts "Error adding #{name} (#{website}) to DB"
+            next
+          end
+
+        else
+          puts "company already in DB"
+        end
+        
+        begin
+          puts "scraping company #{c.name}"
+          scrape_service.scrape(c, options)
+        rescue
+          puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
+          pp $!.backtrace
+        end
+      end
+      
+    end
+    
+    
+    
   
   end
+
 end
 

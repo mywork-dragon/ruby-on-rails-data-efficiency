@@ -276,4 +276,6 @@ class ScrapeService
     
   end
 
+
+  
 end

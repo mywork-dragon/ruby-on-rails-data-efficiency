@@ -7,12 +7,17 @@ namespace 'scraper' do
 
   desc 'Scrape all companies'
   task :scrape_all => [:environment] do
-    ScrapeService.scrape_all((ENV["SCRAPE_PROCESSES"] || 100).to_i, (ENV["SCRAPE_PAGE_NUMBER"] || 0).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"])
+    ScrapeService.scrape_all((ENV["SCRAPE_PROCESSES"] || 100).to_i, (ENV["SCRAPE_PAGE_NUMBER"] || 0).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"]=="true")
   end
   
   desc 'Scrape some companies'
   task :scrape_some => [:environment] do
     ScrapeService.scrape_some(ENV["SCRAPE_COUNT"].to_i, (ENV["SCRAPE_PROCESSES"] || 100).to_i, (ENV["SCRAPE_PAGE_NUMBER"] || 0).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"]=="true")
+  end
+  
+  desc 'Scrape for Bizible Job 2'
+  task :scrape_bizible_job2 => [:environment] do
+    BizibleJob2.scrape_all((ENV["SCRAPE_PROCESSES"]).to_i, (ENV["SCRAPE_PAGE_NUMBER"]).to_i, ENV["SCRAPE_JOB_NOTES"], source_only: ENV["SOURCE_ONLY"]=="true")
   end
   
   

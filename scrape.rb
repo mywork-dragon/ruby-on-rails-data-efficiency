@@ -18,6 +18,8 @@ if count == "all"
   scrape_option = :scrape_all
 elsif count.to_i.to_s == count #is a number
   scrape_option = :scrape_some
+elsif count == "custom"
+  scrape_option = :scrape_custom
 else
   puts "3rd argument must be a number or \"all\""
   abort
@@ -45,6 +47,8 @@ num_processes.times do |process_num|
   if scrape_option == :scrape_some
     scrape_count_env = "SCRAPE_COUNT=#{count} "
     rake_task = "scrape_some"
+  elsif scrape_option = :scrape_custom
+    rake_task = "scrape_bizible_job2"
   else
     rake_task = "scrape_all"
   end

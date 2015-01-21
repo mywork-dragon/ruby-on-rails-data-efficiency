@@ -14,7 +14,7 @@ if !git_status.include?("Your branch is up-to-date with 'origin/master'.\n\nnoth
   abort
 end
 
-test_cmd = 'rake test'
+test_cmd = 'rake test:all'
  
 last_line = nil
 IO.popen(test_cmd).each do |line|
