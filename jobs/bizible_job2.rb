@@ -129,10 +129,10 @@ class BizibleJob2 < BizibleJob1
         end
         
         begin
-          puts "scraping company #{c.name}"
-          scrape_service.scrape(c, options)
+          puts "scraping company #{company.name}"
+          scrape_service.scrape(company, options)
         rescue
-          puts "failed to scrape company #{c.name}, strange huh? #{$!.message}"
+          puts "failed to scrape company #{company.name}, strange huh? #{$!.message}"
           pp $!.backtrace
         end
       end
