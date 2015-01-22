@@ -11,11 +11,9 @@ class BizibleJob2 < BizibleJob1
       #10 processes => 884 at a time
        
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt")[company_range[page]].each_with_index do |l, i|
-        company_name = l.strip!
-
-        puts "Company: #{company_name}"
-
+      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
+        puts "Company #{i}"
+        
         #break if i == 200
         
         #for each line
@@ -33,7 +31,7 @@ class BizibleJob2 < BizibleJob1
             #puts "service_name: #{service_name}"
             service = Service.find_by_name(service_name_in_db(service_name))
             #puts "service: #{service.name}"
-            i = Installation.where(company: c, scrape_job_id: 15, service: service).first
+            i = Installation.where(company: c, scrape_job_id: 48, service: service).first
             #puts "company: #{c.name}, service: #{service.name}"
             #i = Installation.where(company: c, service: service).first
             
@@ -77,7 +75,6 @@ class BizibleJob2 < BizibleJob1
         end
         
         csv << csv_line
-      end
       
     end
       
