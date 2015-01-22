@@ -135,7 +135,7 @@ class TriggermailSalesforceService
     
     
     object_params = {Id: id, MightySignalTM__MightySignal_Last_Updated__c: current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
-    # client.update!(object_name, object_params)
+    client.update!(object_name, object_params)
     
   end
 
