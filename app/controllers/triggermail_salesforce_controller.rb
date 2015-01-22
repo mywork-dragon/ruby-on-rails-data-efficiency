@@ -13,7 +13,7 @@ class TriggermailSalesforceController < ApplicationController
     
     render json: json
     
-    TriggermailSalesforceService.hydrate_lead(params[:lead])
+    #TriggermailSalesforceService.hydrate_lead(params[:lead])
     
   end
   
