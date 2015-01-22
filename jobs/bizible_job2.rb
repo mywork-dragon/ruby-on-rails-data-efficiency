@@ -12,13 +12,13 @@ class BizibleJob2 < BizibleJob1
        
       
       File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
-        company_name = l.strip
+        company_url = l.strip
         
         puts "Company #{i}: #{l}"
         
         #break if i == 200
         
-        #for each line
+        company_name = UrlManipulator.url_with_base_only(company_url)
         c = Company.find_by_name(company_name)
         
         csv_line = [company_name]
