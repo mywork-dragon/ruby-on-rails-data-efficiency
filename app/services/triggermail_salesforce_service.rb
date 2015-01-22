@@ -187,6 +187,17 @@ class TriggermailSalesforceService
     def hydrate_account(options={})      
       self.new.hydrate_account(options)
     end
+    
+    def run_test
+      client = self.client
+
+      leads = client.query("SELECT Id, Name, LastModifiedDate FROM Lead ORDER BY LastModifiedDate DESC LIMIT 10")
+  
+      leads.each do |lead|
+        puts lead.Name
+      end
+    
+    end
 
 
   end
