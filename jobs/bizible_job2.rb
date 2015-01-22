@@ -14,7 +14,7 @@ class BizibleJob2 < BizibleJob1
       File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
         company_name = l.strip
         
-        puts "Company #{i}: "
+        puts "Company #{i}: #{l}"
         
         #break if i == 200
         
@@ -26,7 +26,7 @@ class BizibleJob2 < BizibleJob1
         
         @services_hash.each do |category, service_names|
           
-          #puts "service_names: #{service_names}"
+          puts "service_names: #{service_names}"
           
           found_service = false
           service_names.each do |service_name|
