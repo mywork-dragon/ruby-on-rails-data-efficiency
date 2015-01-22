@@ -189,7 +189,7 @@ class TriggermailSalesforceService
     end
     
     def run_test
-      client = self.client
+      client = self.new.client
 
       leads = client.query("SELECT Id, Name, LastModifiedDate FROM Lead ORDER BY LastModifiedDate DESC LIMIT 10")
   
