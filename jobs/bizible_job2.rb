@@ -75,7 +75,7 @@ class BizibleJob2 < BizibleJob1
         end
         
         csv << csv_line
-      
+      end
     end
       
   end
@@ -135,9 +135,6 @@ class BizibleJob2 < BizibleJob1
       end
       
     end
-    
-    
-    
   
   end
 
