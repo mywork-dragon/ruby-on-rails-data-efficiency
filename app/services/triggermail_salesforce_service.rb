@@ -44,19 +44,19 @@ class TriggermailSalesforceService
   def client
     return @client if @client
     
-    @client = Restforce.new :username => 'jason_triggermail@mightysignal.com',
-      :password       => 'alskfnclkansf12422',
-      :security_token => 'myKlAxydIqstRnXJlCwoU46c',
-      :client_id      => '3MVG9fMtCkV6eLheWeuPjSg0j18ozUv5a1UaTfM9Fm5zoj3xJuPtrfum0nWZlK6LE62.jQLrR6Y_fnxJBS.7i',
-      :client_secret  => '8577635590104229957'
+    # @client = Restforce.new :username => 'jason_triggermail@mightysignal.com',
+    #   :password       => 'alskfnclkansf12422',
+    #   :security_token => 'myKlAxydIqstRnXJlCwoU46c',
+    #   :client_id      => '3MVG9fMtCkV6eLheWeuPjSg0j18ozUv5a1UaTfM9Fm5zoj3xJuPtrfum0nWZlK6LE62.jQLrR6Y_fnxJBS.7i',
+    #   :client_secret  => '8577635590104229957'
       
-    # su = OauthUser.find_by_email("max@triggermail.com")
-    #
-    # @client = Restforce.new :oauth_token => su.oauth_token,
-    #   :refresh_token => su.refresh_token,
-    #   :instance_url  => su.instance_url,
-    #   :client_id     => '3MVG9fMtCkV6eLheWeuPjSg0j18ozUv5a1UaTfM9Fm5zoj3xJuPtrfum0nWZlK6LE62.jQLrR6Y_fnxJBS.7i',  #need to fix
-    #   :client_secret => '8577635590104229957'
+    su = OauthUser.find_by_email("max@triggermail.io")
+
+    @client = Restforce.new :oauth_token => su.oauth_token,
+      :refresh_token => su.refresh_token,
+      :instance_url  => su.instance_url,
+      :client_id     => '3MVG9fMtCkV6eLheWeuPjSg0j18ozUv5a1UaTfM9Fm5zoj3xJuPtrfum0nWZlK6LE62.jQLrR6Y_fnxJBS.7i',  #need to fix
+      :client_secret => '8577635590104229957'
   end
 
   def hydrate_lead(options)
