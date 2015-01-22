@@ -12,9 +12,9 @@ class BizibleJob2 < BizibleJob1
        
       
       File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
-        puts "Company #{i}"
-        
         company_name = l.strip
+        
+        puts "Company #{i}: "
         
         #break if i == 200
         
@@ -37,7 +37,7 @@ class BizibleJob2 < BizibleJob1
             #puts "company: #{c.name}, service: #{service.name}"
             #i = Installation.where(company: c, service: service).first
             
-            #puts "installation: #{i}\n\n"
+            puts "installation: #{i}\n\n"
             
             if i
               #puts "found service #{service_name} for company #{c.name}"
@@ -61,8 +61,8 @@ class BizibleJob2 < BizibleJob1
               all_others = [csv_line.last] + others
             end
             
-            # puts "others: #{others}"
-            # puts "all_others: #{all_others}"
+            puts "others: #{others}"
+            puts "all_others: #{all_others}"
             # puts "col to delete index: #{csv_line.count - 1}"
             # puts "col to delete: #{csv_line[csv_line.count - 1]}"
             
