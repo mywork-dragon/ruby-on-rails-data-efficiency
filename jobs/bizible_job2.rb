@@ -14,6 +14,8 @@ class BizibleJob2 < BizibleJob1
       File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
         puts "Company #{i}"
         
+        company_name = l.strip
+        
         #break if i == 200
         
         #for each line
