@@ -11,7 +11,7 @@ class BizibleJob2 < BizibleJob1
       #10 processes => 884 at a time
        
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt").each_with_index do |l, i|
+      File.readlines(Rails.root + "db/bizible/bizible_job2_edu_companies.txt").each_with_index do |l, i|
         company_url = l.strip
         
         puts "Company #{i}: #{l}"
@@ -105,7 +105,7 @@ class BizibleJob2 < BizibleJob1
     def do_scraping(scrape_job, range, options = {})
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_companies.txt")[range].each_with_index do |l, i|
+      File.readlines(Rails.root + "db/bizible/bizible_job2_edu_companies.txt")[range].each_with_index do |l, i|
         company_name = l.strip!
         
         name = UrlManipulator.url_with_base_only(company_name)
