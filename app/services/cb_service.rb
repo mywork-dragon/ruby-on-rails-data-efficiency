@@ -1,6 +1,7 @@
 class CbService
 
   SITE = 'crunchbase.com/organization'
+  
   NUMBER_OF_RESULTS = 30
   
   
@@ -20,8 +21,10 @@ class CbService
       url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
     
       puts "Google URL: #{url}"
-    
+        
       page = open(url)
+    
+      url_cache = nil
 
       html = Nokogiri::HTML(page)
     
@@ -32,8 +35,16 @@ class CbService
 
         if(url.match(org_regex))
           puts url
+          
+          url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
+      
+          puts "Cache URL: #{url_cache}"
+          
+          break
         end
       end
+      
+      url_cache
     end 
     
     def cb_funding(cb_url)
@@ -61,6 +72,10 @@ class CbService
       
       companies.each do |company|
         cb_urls << self.cb_url(company)
+      end
+      
+      cb_urls.each do |cb_url|
+        cb_funding(cb_url)
       end
       
       
