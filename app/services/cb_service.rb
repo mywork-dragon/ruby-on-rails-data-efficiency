@@ -25,7 +25,11 @@ class CbService
     html.search("cite").each do |cite|
       url = cite.inner_text
 
-      puts url
+      org_regex = /crunchbase.com\/organization\/[^\/]*\z/
+
+      if(url.match(org_regex))
+        puts url
+      end
     end
   end 
 
