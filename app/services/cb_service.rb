@@ -59,14 +59,18 @@ class CbService
       
       puts "funding_class: #{funding_class}"
       
-      funding = funding_class.child
+      funding = funding_class.children[1]
       
-      puts funding
+      puts "\nfunding: #{funding}"
+      
+      funding
     end
     
     
     def test
-      companies = ["Instagram"]
+      #companies = ["Instagram", "Snapchat", "Pinterest", "Datanyze", "Marketo"]
+      
+      companies = ["500Friends", "Iterable", "MightySignal", "Secret"]
       
       cb_urls = []
       
@@ -74,8 +78,16 @@ class CbService
         cb_urls << self.cb_url(company)
       end
       
+      fundings = []
+      
       cb_urls.each do |cb_url|
-        cb_funding(cb_url)
+        fundings << cb_funding(cb_url)
+      end
+      
+      puts ""
+      
+      companies.each_with_index do |company, i|
+        puts "#{company}: #{fundings[i]}"
       end
       
       
