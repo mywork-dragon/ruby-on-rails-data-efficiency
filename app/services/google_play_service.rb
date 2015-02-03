@@ -70,7 +70,7 @@ class CbService
     def test
       #companies = ["Instagram", "Snapchat", "Pinterest", "Datanyze", "Marketo"]
       
-      companies = ["Bizible", "Shippable", "Apsalar", "Urban Airship", "Dealflicks", "Apptentive", "Mozio"]
+      companies = ["Bizible", "Shippable", "Apsalar"]
       
       cb_urls = []
       
