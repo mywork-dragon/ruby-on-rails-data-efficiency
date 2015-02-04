@@ -54,13 +54,13 @@ class CbService
       page = open(cb_url)
       html = Nokogiri::HTML(page)
       
-      $puts html
+      #puts html
       
       funding_classes = html.css(".funding_amount")
       
       funding_class = funding_classes.first
       
-      $puts "funding_class: #{funding_class}"
+      #puts "funding_class: #{funding_class}"
       
       funding = funding_class.children[1]
       
