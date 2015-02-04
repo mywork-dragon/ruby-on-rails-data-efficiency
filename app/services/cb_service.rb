@@ -13,9 +13,12 @@ class CbService
 
   class << self
     
-    def cb_url(company_name)
+    # Get the crunchbase URL
+    # @author Jason Lew
+    # @param company_name Example: bizible or bizible.com (the latter is much better)
+    def cb_url(company_name_or_url)
 
-      query = company_name
+      query = company_name_or_url
       query_url_safe = CGI::escape(query)
 
       url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
@@ -47,23 +50,30 @@ class CbService
       url_cache
     end 
     
-    def cb_funding(cb_url)
+    def cb_funding_from_cb_url(cb_url)
       page = open(cb_url)
       html = Nokogiri::HTML(page)
       
-      puts html
+      $puts html
       
       funding_classes = html.css(".funding_amount")
       
       funding_class = funding_classes.first
       
-      puts "funding_class: #{funding_class}"
+      $puts "funding_class: #{funding_class}"
       
       funding = funding_class.children[1]
       
       puts "\nfunding: #{funding}"
       
       funding
+    end
+    
+    # Get the crunchbase URL
+    # @author Jason Lew
+    # @param company_name Example: bizible or bizible.com (the latter is much better)
+    def cb_funding(company_name_or_url)
+      cb_funding_from_cb_url(cb_url(company_name_or_url))
     end
     
     
@@ -81,7 +91,7 @@ class CbService
       fundings = []
       
       cb_urls.each do |cb_url|
-        fundings << cb_funding(cb_url)
+        fundings << cb_funding_from_cb_url(cb_url)
       end
       
       puts ""
