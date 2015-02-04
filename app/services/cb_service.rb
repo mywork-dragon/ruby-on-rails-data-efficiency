@@ -62,7 +62,7 @@ class CbService
       
       #puts "funding_class: #{funding_class}"
       
-      funding = funding_class.children[1]
+      funding = funding_class.children[1].to_s
       
       puts "\nfunding: #{funding}"
       
