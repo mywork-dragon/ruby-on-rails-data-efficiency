@@ -156,8 +156,7 @@ class LeadHydrationDemoSalesforceService
     
     #funding
     begin
-       #funding = CbService.cb_funding(name)
-       funding = "the funding"
+       funding = CbService.cb_funding(name)
        object_params.merge!('Funding_Raised__c' => funding)
     rescue Exception => e
       puts "problem finding funding... #{e.message}"
