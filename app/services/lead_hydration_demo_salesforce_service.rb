@@ -155,13 +155,8 @@ class LeadHydrationDemoSalesforceService
     object_params = {Id: id, "MightySignal_Last_Updated__c" => current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
     
     #funding
-    begin
-       funding = CbService.cb_funding(name)
-       object_params.merge!('Funding_Raised__c' => funding)
-    rescue Exception => e
-      Rails.logger.info "problem finding funding... #{e.message}"
-      Rails.logger.info e.backtrace
-    end
+     funding = CbService.cb_funding(name)
+     object_params.merge!('Funding_Raised__c' => funding)
     
     Rails.logger.info "object_params: #{object_params}"
     
