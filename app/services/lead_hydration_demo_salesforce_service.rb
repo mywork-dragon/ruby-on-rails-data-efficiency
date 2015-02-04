@@ -153,6 +153,16 @@ class LeadHydrationDemoSalesforceService
     end
     
     object_params = {Id: id, "MightySignal_Last_Updated__c" => current_date_time_sf_format}.merge(salesforce_api_name_service_name_hash)
+    
+    #funding
+    begin
+       funding = CbService.cb_funding(name)
+       object_params.merge!('Funding_Raised__c' => funding)
+    rescue Exception => e
+      puts "problem finding funding... #{e.message}"
+      pp e.backtrace
+    end
+    
     client.update!(object_name, object_params)
     
   end
