@@ -163,7 +163,7 @@ class LeadHydrationDemoSalesforceService
       pp e.backtrace
     end
     
-    puts "object_params: #{object_params}"
+    Rails.logger.info "object_params: #{object_params}"
     
     client.update!(object_name, object_params)
     
