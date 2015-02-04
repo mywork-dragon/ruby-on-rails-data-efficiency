@@ -159,8 +159,8 @@ class LeadHydrationDemoSalesforceService
        funding = CbService.cb_funding(name)
        object_params.merge!('Funding_Raised__c' => funding)
     rescue Exception => e
-      puts "problem finding funding... #{e.message}"
-      pp e.backtrace
+      Rails.logger.info "problem finding funding... #{e.message}"
+      Rails.logger.info e.backtrace
     end
     
     Rails.logger.info "object_params: #{object_params}"
