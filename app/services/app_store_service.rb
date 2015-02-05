@@ -5,20 +5,27 @@ class AppStoreService
     def app_store_attributes(app_store_url)
       ret = {}
       
-      url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
-      
-      page = open(url_cache)
-      html = Nokogiri::HTML(page)
+      html = app_store_html(app_store_url)
       
       ret[:price] = price(html)
       ret[:company_url] = company_url(html)
       ret[:category] = category(html)
       ret[:updated] = updated(html)
+      ret[:size] = size(html)
       
       ret
+      
+      size(html)
     end
     
-    private
+    #private
+    
+    def app_store_html(app_store_url)
+      url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
+      
+      page = open(url_cache)
+      Nokogiri::HTML(page)
+    end 
     
     # In dollas
     # @author Jason Lew
@@ -43,6 +50,13 @@ class AppStoreService
     
     def updated(html)
       Date.parse(html.css(".release-date").children[1].text)
+    end
+    
+    # In B
+    # @author Jason Lew
+    def size(html)
+      size_text = html.css('li').select{|li| li.text.match(/Size: /)}.first.children[1].text
+      Filesize.from(size_text).to_i
     end
     
   end
