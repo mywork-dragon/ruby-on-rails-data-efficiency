@@ -11,6 +11,7 @@ class AppStoreService
       html = Nokogiri::HTML(page)
       
       ret[:company_url] = company_url(html)
+      ret[:category] = category(html)
       
       ret
     end
@@ -21,6 +22,10 @@ class AppStoreService
       url = html.css(".app-links").children.first['href']
       
       UrlManipulator.url_with_http_only(url)
+    end
+    
+    def category(html)
+      html.css(".genre").children[1].text
     end
     
   end
