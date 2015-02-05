@@ -10,6 +10,7 @@ class AppStoreService
       page = open(url_cache)
       html = Nokogiri::HTML(page)
       
+      ret[:price] = price(html)
       ret[:company_url] = company_url(html)
       ret[:category] = category(html)
       ret[:updated] = updated(html)
@@ -18,6 +19,17 @@ class AppStoreService
     end
     
     private
+    
+    # In dollas
+    # @author Jason Lew
+    def price(html)
+      price = 0.0
+      price_text = html.css(".price").text.gsub("$", "")
+      
+      price = price_text.to_f unless price_text.strip == "Free"
+      
+      price
+    end
     
     def company_url(html)
       url = html.css(".app-links").children.first['href']
