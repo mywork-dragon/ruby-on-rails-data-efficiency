@@ -12,6 +12,7 @@ class AppStoreService
       
       ret[:company_url] = company_url(html)
       ret[:category] = category(html)
+      ret[:updated] = updated(html)
       
       ret
     end
@@ -26,6 +27,10 @@ class AppStoreService
     
     def category(html)
       html.css(".genre").children[1].text
+    end
+    
+    def updated(html)
+      Date.parse(html.css(".release-date").children[1].text)
     end
     
   end
