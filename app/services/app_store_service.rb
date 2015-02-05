@@ -12,10 +12,9 @@ class AppStoreService
       ret[:category] = category(html)
       ret[:updated] = updated(html)
       ret[:size] = size(html)
+      ret[:languages] = languages(html)
       
       ret
-      
-      size(html)
     end
     
     #private
@@ -57,6 +56,11 @@ class AppStoreService
     def size(html)
       size_text = html.css('li').select{|li| li.text.match(/Size: /)}.first.children[1].text
       Filesize.from(size_text).to_i
+    end
+    
+    def languages(html)
+      languages_text = html.css('li').select{|li| li.text.match(/Languages: /)}.first.children[1].text
+      languages_text.split(', ')
     end
     
   end
