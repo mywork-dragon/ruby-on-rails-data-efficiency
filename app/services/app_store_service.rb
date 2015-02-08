@@ -8,13 +8,17 @@ class AppStoreService
       html = app_store_html(app_store_url)
       
       ret[:price] = price(html)
-      ret[:company_url] = company_url(html)
+      ret[:seller_url] = seller_url(html)
       ret[:category] = category(html)
       ret[:updated] = updated(html)
       ret[:size] = size(html)
       ret[:languages] = languages(html)
+      ret[:seller] = seller(html)
+      #ret[:ratings] = ratings(html)
       
       ret
+      
+      #ratings(html)
     end
     
     #private
@@ -37,7 +41,7 @@ class AppStoreService
       price
     end
     
-    def company_url(html)
+    def seller_url(html)
       url = html.css(".app-links").children.first['href']
       
       UrlManipulator.url_with_http_only(url)
@@ -62,6 +66,17 @@ class AppStoreService
       languages_text = html.css('li').select{|li| li.text.match(/Languages: /)}.first.children[1].text
       languages_text.split(', ')
     end
+    
+    def seller(html)
+      html.css('li').select{|li| li.text.match(/Seller: /)}.first.children[1].text
+    end
+    
+    # def ratings(html)
+    #   # html.css('.rating-star').count + 0.5*html.css('rating-star half').count
+    #   customer_ratings = html.css('.customer-ratings')
+    #   rating_count = customer_ratings.css
+    #   rating
+    # end
     
   end
 end
