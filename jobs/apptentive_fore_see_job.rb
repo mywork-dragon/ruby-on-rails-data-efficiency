@@ -22,7 +22,7 @@ class ApptentiveForeSeeJob
       puts result
     end
       
-    results.sort_by!(|result| result[:alexa])
+    results.sort_by!{|result| result[:alexa]}
       
     filename = "ForeSee.csv"
     
