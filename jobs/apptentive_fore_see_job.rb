@@ -10,6 +10,7 @@ class ApptentiveForeSeeJob
     
     srs.each do |sr|
       company_name = sr.company.name
+      result = {}
       
       result[:company] = company_name
       
