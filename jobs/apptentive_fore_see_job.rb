@@ -30,7 +30,7 @@ class ApptentiveForeSeeJob
       csv << ['Company', 'Global Alexa Ranking', 'Google Page Rank']
       
       results.each do |result|
-        line = result[:company], result[:alexa], ranks[:google]]
+        line = [result[:company], result[:alexa], ranks[:google]]
         csv << line
         puts line
       end
