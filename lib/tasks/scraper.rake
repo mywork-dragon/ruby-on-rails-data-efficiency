@@ -48,8 +48,8 @@ namespace 'scraper' do
   end
   
   desc 'ApptentiveForeSeeJob'
-  task :apptentive_foresee_job => [:environment] do
-    ApptentiveForeseeJob.run('/home/deploy')
+  task :apptentive_fore_see_job => [:environment] do
+    ApptentiveForeSeeJob.run('/home/deploy')
   end
   
   
