@@ -16,7 +16,6 @@ class ApptentiveForeSeeJob
       
       ranks = PageRankr.ranks(company_name)
       result[:alexa] = ranks[:alexa_global]
-      result[:google] = ranks[:google]
       
       results << result
       
@@ -28,10 +27,10 @@ class ApptentiveForeSeeJob
     filename = "ForeSee.csv"
     
     CSV.open(directory_path + '/' + filename, "w+") do |csv|
-      csv << ['Company', 'Global Alexa Ranking', 'Google Page Rank']
+      csv << ['Company', 'Alexa Ranking']
       
       results.each do |result|
-        line = [result[:company], result[:alexa], ranks[:google]]
+        line = [result[:company], result[:alexa]]
         csv << line
         puts line
       end
