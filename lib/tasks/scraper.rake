@@ -47,5 +47,10 @@ namespace 'scraper' do
     BizibleSalesforceService.hydrate_opportunities
   end
   
+  desc 'ApptentiveForeSeeJob'
+  task :apptentive_foresee_job => [:environment] do
+    ApptentiveForeseeJob.run('/home/deploy')
+  end
+  
   
 end
