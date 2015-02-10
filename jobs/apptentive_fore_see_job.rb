@@ -14,8 +14,12 @@ class ApptentiveForeSeeJob
       
       result[:company] = company_name
       
-      ranks = PageRankr.ranks(company_name)
-      result[:alexa] = ranks[:alexa_global]
+      result[:alexa] = ""
+      
+      timeout(20) do
+        ranks = PageRankr.ranks(company_name)
+        result[:alexa] = ranks[:alexa_global]
+      end
       
       results << result
       
