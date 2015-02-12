@@ -14,24 +14,22 @@ class ApptentiveForeSeeJob
       
       result[:company] = company_name
       
-      begin
-        timeout(20) do
-          ranks = PageRankr.ranks(company_name)
-          result[:alexa] = ranks[:alexa_global]
-        end
-      rescue Timeout::Error
-        puts 'Timeout::Error'
-        result[:alexa] = ""
-      end
-      
-      
-      
+      # begin
+      #   timeout(20) do
+      #     ranks = PageRankr.ranks(company_name)
+      #     result[:alexa] = ranks[:alexa_global]
+      #   end
+      # rescue Timeout::Error
+      #   puts 'Timeout::Error'
+      #   result[:alexa] = ""
+      # end
+      #
       results << result
       
       puts result
     end
       
-    results.sort_by!{|result| result[:alexa]}
+    #results.sort_by!{|result| result[:alexa]}
       
     filename = "ForeSee.csv"
     
@@ -39,7 +37,8 @@ class ApptentiveForeSeeJob
       csv << ['Company', 'Alexa Ranking']
       
       results.each do |result|
-        line = [result[:company], result[:alexa]]
+        # line = [result[:company], result[:alexa]]
+        line = [result[:company]]
         csv << line
         puts line
       end
