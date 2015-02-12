@@ -13,7 +13,7 @@ class ApptentiveForeSeeJob
       
       srs.each do |sr|
         company = sr.company.name
-        alexa = PageRankr.ranks(company, :alexa_global)
+        alexa = PageRankr.ranks(company, :alexa_global)[:alexa_global]
         
         line = [company, alexa]
         
