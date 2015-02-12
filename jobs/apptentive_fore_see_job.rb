@@ -5,44 +5,25 @@ class ApptentiveForeSeeJob
   def run(directory_path)
     
     srs = ScrapedResult.includes(:installations).where(scrape_job_id: 45, installations: {service_id: 226})
-
-    results = []
     
-    srs.each do |sr|
-      company_name = sr.company.name
-      result = {}
-      
-      result[:company] = company_name
-      
-      # begin
-      #   timeout(20) do
-      #     ranks = PageRankr.ranks(company_name)
-      #     result[:alexa] = ranks[:alexa_global]
-      #   end
-      # rescue Timeout::Error
-      #   puts 'Timeout::Error'
-      #   result[:alexa] = ""
-      # end
-      #
-      results << result
-      
-      puts result
-    end
-      
-    #results.sort_by!{|result| result[:alexa]}
-      
     filename = "ForeSee.csv"
     
     CSV.open(directory_path + '/' + filename, "w+") do |csv|
       csv << ['Company', 'Alexa Ranking']
       
-      results.each do |result|
-        # line = [result[:company], result[:alexa]]
-        line = [result[:company]]
+      srs.each do |sr|
+        company = sr.company.name
+        alexa = PageRankr.ranks(company, :alexa_global)
+        
+        line = [company, alexa]
+        
         csv << line
+      
         puts line
       end
     end
+    
+    
     
   end
 
