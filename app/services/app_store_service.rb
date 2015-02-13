@@ -7,6 +7,7 @@ class AppStoreService
       
       html = app_store_html(app_store_url)
       
+      ret[:title] = title(html)
       ret[:price] = price(html)
       ret[:seller_url] = seller_url(html)
       ret[:category] = category(html)
@@ -29,6 +30,10 @@ class AppStoreService
       page = open(url_cache)
       Nokogiri::HTML(page)
     end 
+    
+    def title(html)
+      html.css('#title.intro').css('.left').children[1].children.first.text
+    end
     
     # In dollas
     # @author Jason Lew
