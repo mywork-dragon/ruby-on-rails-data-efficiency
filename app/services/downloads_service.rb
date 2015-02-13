@@ -26,7 +26,24 @@ class DownloadsService
     # In dollas
     # @author Jason Lew
     def downloads(html)
-      html.at_css('.downloads').at_css('.amount').children[1].text.strip
+      dl_s = html.at_css('.downloads').at_css('.amount').children[1].text.strip
+      
+      return nil if dl_s.blank?
+      
+      regex_thousands = /^(\d)*(\.)*(\d)*[Kk]{1}$/x
+      
+      if dl_s.match(regex_thousands)
+        num = dl_s.gsub(/[Kk]/, "").to_f
+        return (num*1000).to_i
+      else
+        regex_millions = /^(\d)*(\.)*(\d)*[Mm]{1}$/x
+        if dl_s.match(regex_millions)
+          num = dl_s.gsub(/[Mm]/, "").to_f
+          return (num*1000000).to_i
+        else
+          return dl_s.to_i
+        end
+      end
     end
 
   end
