@@ -9,6 +9,11 @@ class IosAppService
       downloads_attributes = DownloadsService.downloads_attributes(attributes[:title])
       attributes.merge!(downloads_attributes)
       
+      seller_url = attributes[:seller_url]
+      funding = CbService.cb_funding(seller_url) if seller_url
+      
+      attributes.merge!({funding: funding})
+      
       
     end
     
