@@ -47,9 +47,12 @@ class AppStoreService
     end
     
     def seller_url(html)
-      url = html.css(".app-links").children.first['href']
-      
-      UrlManipulator.url_with_http_only(url)
+      begin
+        url = html.css(".app-links").children.first['href']
+        UrlManipulator.url_with_http_only(url)
+      rescue
+        nil
+      end
     end
     
     def category(html)
@@ -68,8 +71,13 @@ class AppStoreService
     end
     
     def languages(html)
-      languages_text = html.css('li').select{|li| li.text.match(/Languages: /)}.first.children[1].text
-      languages_text.split(', ')
+      begin
+        languages_text = html.css('li').select{|li| li.text.match(/Languages*: /)}.first.children[1].text
+        languages_text.split(', ')
+      rescue 
+        nil
+      end
+      
     end
     
     def seller(html)
