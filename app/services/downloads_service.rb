@@ -1,8 +1,20 @@
 class DownloadsService
+
+SITE = 'xyo.net/iphone-app'
   
   class << self
   
-    def downloads_attributes(url)
+    def downloads_attributes(title)
+      query_url_safe = CGI::escape(title)
+
+      url = "http://www.google.com/search?num=30&q=#{query_url_safe}+site:#{SITE}"
+        
+      page = open(url)
+
+      html = Nokogiri::HTML(page)
+    
+      url = html.search("cite").first.inner_text
+      
       ret = {}
       
       html = downloads_html(url)
