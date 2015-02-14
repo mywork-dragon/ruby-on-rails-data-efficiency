@@ -40,6 +40,10 @@ Rails.application.routes.draw do
   
   get 'mturk' => 'mturk#gochime'
   
+  if Rails.env.development?
+    get 'app_info' => 'app#app_info'
+  end
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
