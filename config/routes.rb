@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   
   if Rails.env.development?
     get 'app_info' => 'app#app_info'
+    get 'app_info_get_signals' => 'app#app_info_get_signals'
   end
   
   # Example of regular route:

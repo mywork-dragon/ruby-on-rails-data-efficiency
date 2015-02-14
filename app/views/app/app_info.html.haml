@@ -6,11 +6,11 @@
   .col-xs-10
     %h3#input.text-center 
       Input an app's App Store or Google Play URL:
-= form_tag nil, method: nil, id: "services-form"  do
+= form_tag nil, method: nil, id: "app-form"  do
   .row
     .col-xs-4
     .col-xs-4.center-block
-      = text_field_tag :url, "", id: "url-tag"
+      = text_field_tag :url, "", id: "app-url-tag"
   .row
     .col-xs-4
     .col-xs-4.center-block
@@ -22,4 +22,4 @@
 .row
   .col-xs-4
   .col-xs-4
-    #servicesUsing
+    #app-signals
