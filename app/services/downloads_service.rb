@@ -13,7 +13,16 @@ SITE = 'xyo.net/iphone-app'
 
       html = Nokogiri::HTML(page)
     
-      url = html.search("cite").first.inner_text
+      url = nil
+    
+      html.search("cite").map{|x| x.inner_text}.each do |link|
+        if link.match(SITE)
+          url = link
+          break
+        end
+      end
+      
+      puts "XYO URL: #{url}"
       
       ret = {}
       
@@ -30,6 +39,7 @@ SITE = 'xyo.net/iphone-app'
     
     def downloads_html(url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
+      puts "url_cache: #{url_cache}"
       
       page = open(url_cache)
       Nokogiri::HTML(page)

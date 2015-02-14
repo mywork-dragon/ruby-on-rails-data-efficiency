@@ -7,9 +7,13 @@ class AppController < ApplicationController
   def app_info_get_signals
     url = params['url']
     
-    services = ('a'..'z').to_a
+    attributes = IosAppService.attributes(url)
     
-    json = {services: services}
+    signals = attributes.map{|key, value| "#{key}: #{value}" }
+    
+    json = {signals: signals}
+    
+    puts "json: #{json}"
     
     render json: json
   end

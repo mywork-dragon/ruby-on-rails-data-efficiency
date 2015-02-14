@@ -48,16 +48,16 @@ $(document).ready(function(){
       data: data,
 
       success: function(data, response) {
-        var services = data.services;
+        var signals = data.signals;
         
         clearInterval(interval);
         percentFinished = 100;
         progress(percentFinished, $("#progressBar"));
         $("#show-signals-button").prop('disabled', false);
         
-        var servicesLength = services.length;
+        var signalsLength = signals.length;
         
-        if(servicesLength == 0)
+        if(signalsLength == 0)
         {
           $('#app-signals').html("<div><h3>No signals found.</h3></div>")
         }
@@ -65,8 +65,8 @@ $(document).ready(function(){
         {
           var list = "<ul>";
         
-          for (var i = 0; i < servicesLength; i++) {
-            list += "<li>" + services[i] + "</li>";
+          for (var i = 0; i < signalsLength; i++) {
+            list += "<li>" + signals[i] + "</li>";
           }
         
           list += "</ul>"
