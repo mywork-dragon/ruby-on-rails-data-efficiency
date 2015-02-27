@@ -11,8 +11,10 @@ class BizibleJob2 < BizibleJob1
       #10 processes => 884 at a time
        
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_edu_companies.txt").each_with_index do |l, i|
+      File.readlines(Rails.root + "db/bizible/bizible_job2_linkedin_2nd_degree_with_duplicates.txt").each_with_index do |l, i|
         company_url = l.strip
+        
+        csv_line << [] if company_url.blank?
         
         puts "Company #{i}: #{l}"
         
