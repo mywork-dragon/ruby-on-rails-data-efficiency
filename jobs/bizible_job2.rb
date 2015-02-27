@@ -14,7 +14,10 @@ class BizibleJob2 < BizibleJob1
       File.readlines(Rails.root + "db/bizible/bizible_job2_linkedin_2nd_degree_with_duplicates.txt").each_with_index do |l, i|
         company_url = l.strip
         
-        csv << [] if company_url.blank?
+        if company_url.blank?
+          csv << []
+          next
+        end
         
         puts "Company #{i}: #{l}"
         
