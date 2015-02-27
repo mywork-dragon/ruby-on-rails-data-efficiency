@@ -23,7 +23,7 @@ class CbService
 
       url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
     
-      puts "Google URL: #{url}"
+      #puts "Google URL: #{url}"
         
       page = open(url)
     
@@ -37,11 +37,11 @@ class CbService
         org_regex = /crunchbase.com\/organization\/[^\/]*\z/
 
         if(url.match(org_regex))
-          puts url
+          #puts url
           
           url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
       
-          puts "Cache URL: #{url_cache}"
+          #puts "Cache URL: #{url_cache}"
           
           break
         end
@@ -62,11 +62,11 @@ class CbService
       
       #puts "funding_class: #{funding_class}"
       
-      funding = funding_class.children[1].to_s
-      
-      puts "\nfunding: #{funding}"
-      
-      funding
+      begin
+        funding_class.children[1].to_s
+      rescue
+        nil
+      end
     end
     
     # Get the crunchbase URL
@@ -94,7 +94,7 @@ class CbService
         fundings << cb_funding_from_cb_url(cb_url)
       end
       
-      puts ""
+      #puts ""
       
       companies.each_with_index do |company, i|
         puts "#{company}: #{fundings[i]}"

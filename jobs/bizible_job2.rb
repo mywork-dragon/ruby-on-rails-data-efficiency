@@ -92,7 +92,7 @@ class BizibleJob2 < BizibleJob1
     def scrape(processes = 1, page_number = 0, scrape_job_notes = nil, options = {})
       scrape_job = ScrapeJob.find_by_notes(scrape_job_notes)
     
-      at_a_time = 884
+      at_a_time = 16
   
       company_range = []
       10.times do |n|
@@ -105,7 +105,7 @@ class BizibleJob2 < BizibleJob1
     def do_scraping(scrape_job, range, options = {})
       scrape_service = ScrapeService.new(scrape_job: scrape_job)
       
-      File.readlines(Rails.root + "db/bizible/bizible_job2_clickz_live_companies.txt")[range].each_with_index do |l, i|
+      File.readlines(Rails.root + "db/bizible/bizible_job2_linkedin_2nd_degree.txt")[range].each_with_index do |l, i|
         company_name = l.strip!
         
         name = UrlManipulator.url_with_base_only(company_name)

@@ -1,0 +1,25 @@
+.row
+  .col-xs-12
+    = link_to(image_tag("mighty_signal_logo.png", class: "mighty-signal-logo-demo-image"), "http://mightysignal.com")
+.row
+  .col-xs-1
+  .col-xs-10
+    %h3#input.text-center 
+      Input an app's App Store or Google Play URL:
+= form_tag nil, method: nil, id: "app-form"  do
+  .row
+    .col-xs-4
+    .col-xs-4.center-block
+      = text_field_tag :url, "", id: "app-url-tag"
+  .row
+    .col-xs-4
+    .col-xs-4.center-block
+      .text-center
+        = submit_tag "Show Signals", id: "show-signals-button"
+.row
+  #progressBar
+    %div
+.row
+  .col-xs-4
+  .col-xs-4
+    #app-signals
