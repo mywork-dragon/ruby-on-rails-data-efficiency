@@ -35,7 +35,7 @@ class BizibleJob2 < BizibleJob1
             #puts "service_name: #{service_name}"
             service = Service.find_by_name(service_name_in_db(service_name))
             #puts "service: #{service.name}"
-            i = Installation.where(company: c, scrape_job_id: 49, service: service).first
+            i = Installation.where(company: c, scrape_job_id: 52, service: service).first
             #puts "company: #{c.name}, service: #{service.name}"
             #i = Installation.where(company: c, service: service).first
             
