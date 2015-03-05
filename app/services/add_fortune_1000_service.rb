@@ -15,7 +15,7 @@ class AddFortune1000Service
         end
         
         c.name = row[0]
-        c.fortune1000_rank = row[1].to_i
+        c.fortune_1000_rank = row[1].to_i
         c.ceo_name = row[3]
         c.street_address = row[5]
         c.city = row[6]
