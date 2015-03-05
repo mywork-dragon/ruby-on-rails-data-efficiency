@@ -8,6 +8,5 @@ class Company < ActiveRecord::Base
   def website_domain
     website.gsub(/\Ahttp:\/\//, "")
   end
-    
-  
+      
 end
