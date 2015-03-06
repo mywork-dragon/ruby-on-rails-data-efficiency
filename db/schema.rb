@@ -11,7 +11,73 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305085202) do
+ActiveRecord::Schema.define(version: 20150306221548) do
+
+  create_table "android_app_download_ranges", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "android_app_release_id"
+    t.integer  "min"
+    t.integer  "max"
+  end
+
+  create_table "android_app_releases", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "category"
+    t.integer  "price"
+    t.integer  "size"
+    t.date     "updated"
+    t.string   "seller_url"
+    t.string   "support_url"
+    t.string   "version"
+    t.date     "released"
+    t.string   "recommended_age"
+    t.text     "description"
+    t.string   "link"
+    t.integer  "app_id"
+    t.boolean  "current_version"
+    t.integer  "previous_release_id"
+    t.integer  "google_plus_likes"
+    t.boolean  "top_dev"
+    t.boolean  "in_app_purchases"
+    t.string   "required_android_version"
+    t.string   "content_rating"
+  end
+
+  create_table "android_app_review_snapshots", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "android_app_release_id"
+    t.float    "average",                limit: 24
+    t.integer  "total"
+    t.integer  "stars5"
+    t.integer  "stars4"
+    t.integer  "stars3"
+    t.integer  "stars2"
+    t.integer  "stars1"
+  end
+
+  create_table "android_apps", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "android_in_app_purchase_ranges", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "android_app_release_id"
+    t.integer  "min"
+    t.integer  "max"
+  end
+
+  create_table "apps", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "company_id"
+    t.string   "name"
+  end
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -25,6 +91,11 @@ ActiveRecord::Schema.define(version: 20150305085202) do
     t.string   "city"
     t.string   "zip_code"
     t.string   "state"
+    t.integer  "employee_count"
+    t.string   "industry"
+    t.string   "type"
+    t.integer  "funding"
+    t.integer  "inc_5000_rank"
   end
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
@@ -61,6 +132,48 @@ ActiveRecord::Schema.define(version: 20150305085202) do
   add_index "installations", ["scraped_result_id"], name: "index_installations_on_scraped_result_id", using: :btree
   add_index "installations", ["service_id", "created_at"], name: "index_installations_on_service_id_and_created_at", using: :btree
   add_index "installations", ["status", "created_at"], name: "index_installations_on_status_and_created_at", using: :btree
+
+  create_table "ios_app_releases", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "category"
+    t.integer  "price"
+    t.integer  "size"
+    t.date     "updated"
+    t.string   "seller_url"
+    t.string   "support_url"
+    t.string   "version"
+    t.date     "released"
+    t.string   "recommended_age"
+    t.text     "description"
+    t.string   "link"
+    t.integer  "app_id"
+    t.boolean  "current_version"
+    t.integer  "previous_release_id"
+    t.boolean  "in_app_purchases"
+    t.string   "required_ios_version"
+    t.integer  "downloads"
+  end
+
+  create_table "ios_apps", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ios_in_app_purchases", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.integer  "ios_app_release_id"
+    t.integer  "price"
+  end
+
+  create_table "languages", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+  end
 
   create_table "matchers", force: true do |t|
     t.integer  "service_id"
