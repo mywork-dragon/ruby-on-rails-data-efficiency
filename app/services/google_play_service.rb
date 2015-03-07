@@ -149,7 +149,7 @@ class GooglePlayService
       html.css('.inapp-msg').text == "Offers in-app purchases"
     end
 
-    # Returns string of price range if in app purchases available, nil not
+    # Returns string of price range if in app purchases available, nil not (in cents)
     def in_app_cost(html)
       cost_array = app_info_helper(html, /In-app Products/)
       if cost_array.nil?
@@ -159,9 +159,9 @@ class GooglePlayService
       cost_array = cost_array.gsub('$','').split(" ")
 
       if cost_array.length > 3
-        return [cost_array[0].to_f, cost_array[2].to_f]
+        return ((cost_array[0].to_f*100.to_i)..(cost_array[2].to_f*100.to_i)) #TODO 
       else
-        return [cost_array[0].to_f]
+        return ((cost_array[0].to_f*100).to_i..(cost_array[0].to_f*100).to_i) #TODO
       end
     end
 
@@ -194,7 +194,9 @@ class GooglePlayService
         return nil
       end
 
-      installs_array.gsub(',','').gsub(' -','').split(" ").map { |num| num.to_i }
+      installs_array_parsed = installs_array.gsub(',','').gsub(' -','').split(" ").map { |num| num.to_i }
+      
+      (installs_array_parsed.first..installs_array_parsed.last)
     end
 
     # Returns a string containing the content rating, or nil if data not available
