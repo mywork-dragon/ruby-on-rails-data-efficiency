@@ -12,6 +12,7 @@ class GooglePlayService
         return nil
       end
 
+      ret[:app_id] = app_id(google_play_url)
       ret[:title] = title(html)
       ret[:price] = price(html)
       ret[:seller] = seller(html)
@@ -35,6 +36,10 @@ class GooglePlayService
 
 
     #private
+    
+    def app_id(google_play_url)
+      google_play_url.match(/id=.*\z/)[0].split("&").first.gsub(/\Aid=/, "")
+    end
 
     def google_play_html(google_play_url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{google_play_url}"
