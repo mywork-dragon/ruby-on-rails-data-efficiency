@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150309215133) do
+ActiveRecord::Schema.define(version: 20150309234115) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.string   "type"
     t.integer  "funding"
     t.integer  "inc_5000_rank"
+    t.string   "app_store_identifier"
   end
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree

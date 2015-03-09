@@ -17,6 +17,7 @@ class AppStoreService
       ret[:size] = size(html)
       ret[:languages] = languages(html)
       ret[:seller] = seller(html)
+      ret[:developer_app_store_identifier] = developer_app_store_identifier(html)
       #ret[:ratings] = ratings(html)
       
       ret
@@ -97,6 +98,11 @@ class AppStoreService
     def seller(html)
       html.css('li').select{|li| li.text.match(/Seller: /)}.first.children[1].text
     end
+    
+    def developer_app_store_identifier(html)
+      html.css("#title > div.right > a").first['href'].match(/\/id\d+/)[0].gsub("/id", "")
+    end
+    
     
     # def ratings(html)
     #   # html.css('.rating-star').count + 0.5*html.css('rating-star half').count
