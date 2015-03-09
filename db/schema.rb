@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150309053226) do
+ActiveRecord::Schema.define(version: 20150309215133) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -30,14 +30,11 @@ ActiveRecord::Schema.define(version: 20150309053226) do
     t.integer  "size"
     t.date     "updated"
     t.string   "seller_url"
-    t.string   "support_url"
     t.string   "version"
     t.date     "released"
-    t.string   "recommended_age"
     t.text     "description"
     t.string   "link"
-    t.integer  "app_id"
-    t.boolean  "current_version"
+    t.integer  "android_app_id"
     t.integer  "previous_release_id"
     t.integer  "google_plus_likes"
     t.boolean  "top_dev"
@@ -62,7 +59,7 @@ ActiveRecord::Schema.define(version: 20150309053226) do
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "app_id"
+    t.string   "app_identifier"
   end
 
   create_table "android_in_app_purchase_ranges", force: true do |t|
@@ -149,8 +146,7 @@ ActiveRecord::Schema.define(version: 20150309053226) do
     t.string   "recommended_age"
     t.text     "description"
     t.string   "link"
-    t.integer  "app_id"
-    t.boolean  "current_version"
+    t.integer  "ios_app_id"
     t.integer  "previous_release_id"
     t.boolean  "in_app_purchases"
     t.string   "required_ios_version"
@@ -160,7 +156,7 @@ ActiveRecord::Schema.define(version: 20150309053226) do
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "app_id"
+    t.integer  "app_identifier"
   end
 
   create_table "ios_in_app_purchases", force: true do |t|

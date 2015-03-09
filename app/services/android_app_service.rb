@@ -12,9 +12,6 @@ class AndroidAppService
     
     def run(google_play_url)
       
-      li "hi" 
-      return
-      
       attrs = GooglePlayService.google_play_attributes(google_play_url)
       
       # seller_url = attributes[:seller_url]
@@ -24,19 +21,41 @@ class AndroidAppService
       
       attrs
       
-      app_id = attrs[:app_id]
-      app = AndroidApp.find_by_app_id(app_id)
+      app_identifier = attrs[:app_identifier]
+      app = AndroidApp.find_by_app_identifier(app_identifier)
       
       if app.nil?
-        app = AndroidApp.create(app_id: app_id)
+        app = AndroidApp.create(app_identifier: app_identifier)
+        li "Created new app with identifier #{app_identifier}"
       end 
       
       version = attrs[:current_version]
       
       aar = AndroidAppRelease.find_by_version(version)
       
-      return if aar
+      if aar
+        ld "AndroidAppRelease #{version} already in DB"
+        return
+      end
       
+      aar = AndroidAppRelease.new(
+              name: attrs[:title], 
+              category: attrs[:category], 
+              price: attrs[:price],
+              size: attrs[:size], 
+              updated: attrs[:updated], 
+              seller_url: attrs[:seller_url], 
+              version: attrs[:current_version],
+              description: attrs[:description], 
+              link: google_play_url,
+              google_plus_likes: attrs[:google_plus_likes], 
+              top_dev: attrs[:top_dev],
+              in_app_purchases: attrs[:in_app_purchases], 
+              required_android_version: attrs[:required_android_version],
+              content_rating: attrs[:content_rating])
+              
+    aar.app = app
+    aar.save
     end
     
   end

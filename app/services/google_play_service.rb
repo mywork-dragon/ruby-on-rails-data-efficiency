@@ -12,7 +12,7 @@ class GooglePlayService
         return nil
       end
 
-      ret[:app_id] = app_id(google_play_url)
+      ret[:app_identifier] = app_identifier(google_play_url)
       ret[:title] = title(html)
       ret[:price] = price(html)
       ret[:seller] = seller(html)
@@ -24,7 +24,7 @@ class GooglePlayService
       ret[:top_dev] = top_dev(html)
       ret[:in_app] = in_app(html)
       ret[:in_app_cost] = in_app_cost(html)
-      ret[:android_version_req] = android_version_req(html)
+      ret[:required_android_version] = required_android_version(html)
       ret[:current_version] = current_version(html)
       ret[:installs] = installs(html)
       ret[:content_rating] = content_rating(html)
@@ -37,7 +37,7 @@ class GooglePlayService
 
     #private
     
-    def app_id(google_play_url)
+    def app_identifier(google_play_url)
       google_play_url.match(/id=.*\z/)[0].split("&").first.gsub(/\Aid=/, "")
     end
 
@@ -177,7 +177,7 @@ class GooglePlayService
     end
 
     # Returns string of Android version required or "Varies with device"
-    def android_version_req(html)
+    def required_android_version(html)
       result = app_info_helper(html, /Requires Android/).gsub(/[^0-9.]/,'')
 
       if result.length < 1
