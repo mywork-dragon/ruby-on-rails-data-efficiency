@@ -12,6 +12,13 @@ class UrlManipulator
       regex = /^(http[s]*:\/\/)*(www.)*/
       url.match(regex) ? url.gsub(regex, "") : url
     end
+    
+    # Will get http://www.dropbox.com from:
+    # https://www.google.com/url?q=http://www.dropbox.com&sa=D&usg=AFQjCNHkUkIvFbMV_t27v7cTn2Rd8cyuVw
+    # @author Patrick Ellis
+    def url_from_google_play(url)
+      url.split('://')[2].split('&sa=D&usg=')[0]
+    end
   
   end
   

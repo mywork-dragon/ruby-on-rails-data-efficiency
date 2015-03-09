@@ -19,7 +19,7 @@ class GooglePlayService
       ret[:category] = category(html)
       ret[:updated] = updated(html)
       ret[:size] = size(html)
-      ret[:gplus_likes] = gplus_likes(html)
+      ret[:google_plus_likes] = google_plus_likes(html)
       ret[:top_dev] = top_dev(html)
       ret[:in_app] = in_app(html)
       ret[:in_app_cost] = in_app_cost(html)
@@ -84,7 +84,7 @@ class GooglePlayService
     def seller_url(html)
       begin
         url = html.css(".dev-link").first['href']
-        url = UrlManipulator.google_url_removal(url)
+        url = UrlManipulator.url_from_google_play(url)
         UrlManipulator.url_with_http_only(url)
       rescue
         nil
@@ -113,7 +113,7 @@ class GooglePlayService
     end
 
     # Returns number GPlus "likes" as a integer, returns -1 if GPlus info span empty
-    def gplus_likes(html)
+    def google_plus_likes(html)
 
       # Finds link to Google Plus iframe on main Google Play Store page
       gplus_iframe_urls = html.css("div.plusone-container > div > iframe")
@@ -162,12 +162,12 @@ class GooglePlayService
         min = (cost_array[0].to_f*100.0).to_i
         max = (cost_array[2].to_f*100.0).to_i
         
-        return min..max #TODO 
+        return min..max
       else
         min = (cost_array[0].to_f*100).to_i
         max = min
         
-        return min..max #TODO
+        return min..max
       end
     end
 
