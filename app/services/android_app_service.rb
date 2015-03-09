@@ -4,6 +4,14 @@ class AndroidAppService
   
     def attributes(google_play_url)
       
+
+      
+      
+    end
+    
+    
+    def run(google_play_url)
+      
       attrs = GooglePlayService.google_play_attributes(google_play_url)
       
       # seller_url = attributes[:seller_url]
@@ -21,8 +29,12 @@ class AndroidAppService
       end 
       
       version = attrs[:current_version]
+      
+      aar = AndroidAppRelease.find_by_version(version)
+      
+      return if aar
+      
     end
-    
     
   end
 end
