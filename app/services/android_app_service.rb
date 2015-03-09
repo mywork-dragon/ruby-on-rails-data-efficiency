@@ -22,10 +22,10 @@ class AndroidAppService
       attrs
       
       app_identifier = attrs[:app_identifier]
-      app = AndroidApp.find_by_app_identifier(app_identifier)
+      aa = AndroidApp.find_by_app_identifier(app_identifier)
       
-      if app.nil?
-        app = AndroidApp.create(app_identifier: app_identifier)
+      if aa.nil?
+        aa = AndroidApp.create(app_identifier: app_identifier)
         li "Created new app with identifier #{app_identifier}"
       end 
       
@@ -45,7 +45,7 @@ class AndroidAppService
               size: attrs[:size], 
               updated: attrs[:updated], 
               seller_url: attrs[:seller_url], 
-              version: attrs[:current_version],
+              version: version,
               description: attrs[:description], 
               link: google_play_url,
               google_plus_likes: attrs[:google_plus_likes], 
@@ -54,7 +54,7 @@ class AndroidAppService
               required_android_version: attrs[:required_android_version],
               content_rating: attrs[:content_rating])
               
-    aar.app = app
+    aar.android_app = aa
     aar.save
     end
     
