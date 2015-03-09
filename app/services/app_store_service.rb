@@ -9,6 +9,7 @@ class AppStoreService
       
       ret[:title] = title(html)
       ret[:description] = description(html)
+      ret[:whats_new] = whats_new(html)
       ret[:price] = price(html)
       ret[:seller_url] = seller_url(html)
       ret[:category] = category(html)
@@ -37,7 +38,15 @@ class AppStoreService
     end
     
     def description(html)
-      html.css("div.center-stack > .product-review > p").text
+      html.css("div.center-stack > .product-review > p")[0].text
+    end
+    
+    def whats_new(html)
+      begin
+        html.css("div.center-stack > .product-review > p")[1].text
+      rescue
+        nil
+      end
     end
     
     # In cents
