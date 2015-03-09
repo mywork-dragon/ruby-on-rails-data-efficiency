@@ -159,9 +159,15 @@ class GooglePlayService
       cost_array = cost_array.gsub('$','').split(" ")
 
       if cost_array.length > 3
-        return ((cost_array[0].to_f*100.to_i)..(cost_array[2].to_f*100.to_i)) #TODO 
+        min = (cost_array[0].to_f*100.0).to_i
+        max = (cost_array[2].to_f*100.0).to_i
+        
+        return min..max #TODO 
       else
-        return ((cost_array[0].to_f*100).to_i..(cost_array[0].to_f*100).to_i) #TODO
+        min = (cost_array[0].to_f*100).to_i
+        max = min
+        
+        return min..max #TODO
       end
     end
 
