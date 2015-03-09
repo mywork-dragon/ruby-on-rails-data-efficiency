@@ -55,6 +55,11 @@ class AndroidAppService
               content_rating: attrs[:content_rating])
               
     aar.android_app = aa
+    
+    if in_app_cost = attrs[:in_app_cost]
+      aiipr = AndroidInAppPurchaseRange.create(min: in_app_cost.min, max: in_app_cost.max)
+    end
+    
     aar.save
     end
     
