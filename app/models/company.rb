@@ -1,6 +1,7 @@
 class Company < ActiveRecord::Base
   has_many :installations
   has_many :scraped_results
+  has_many :apps
   enum status: [ :active, :paused ]
   
   # The domain only of the website (minus the 'http://')

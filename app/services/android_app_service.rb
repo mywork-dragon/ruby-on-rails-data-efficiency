@@ -4,16 +4,23 @@ class AndroidAppService
   
     def attributes(google_play_url)
       
-      attributes = GooglePlayService.google_play_attributes(google_play_url)
+      attrs = GooglePlayService.google_play_attributes(google_play_url)
       
       # seller_url = attributes[:seller_url]
       # funding = CbService.cb_funding(seller_url) if seller_url
       #
       # attributes.merge!({funding: funding})
       
-      attributes
+      attrs
       
+      app_id = attrs[:app_id]
+      app = AndroidApp.find_by_app_id(app_id)
       
+      if app.nil?
+        app = AndroidApp.create(app_id: app_id)
+      end 
+      
+      version = attrs[:current_version]
     end
     
     
