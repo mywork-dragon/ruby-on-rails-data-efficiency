@@ -8,6 +8,7 @@ class AppStoreService
       html = app_store_html(app_store_url)
       
       ret[:title] = title(html)
+      ret[:description] = description(html)
       ret[:price] = price(html)
       ret[:seller_url] = seller_url(html)
       ret[:category] = category(html)
@@ -35,7 +36,11 @@ class AppStoreService
       html.css('#title.intro').css('.left').children[1].children.first.text
     end
     
-    # In dollas
+    def description(html)
+      html.css("div.center-stack > .product-review > p").text
+    end
+    
+    # In cents
     # @author Jason Lew
     def price(html)
       price = 0.0
@@ -43,7 +48,7 @@ class AppStoreService
       
       price = price_text.to_f unless price_text.strip == "Free"
       
-      price
+      price*100.to_i
     end
     
     def seller_url(html)
