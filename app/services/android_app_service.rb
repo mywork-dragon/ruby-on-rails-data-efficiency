@@ -12,6 +12,9 @@ class AndroidAppService
     
     def run(google_play_url)
       
+      li "hi" 
+      return
+      
       attrs = GooglePlayService.google_play_attributes(google_play_url)
       
       # seller_url = attributes[:seller_url]
