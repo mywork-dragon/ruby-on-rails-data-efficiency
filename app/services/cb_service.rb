@@ -15,7 +15,7 @@ class CbService
     
     # Get the crunchbase URL
     # @author Jason Lew
-    # @param company_name Example: bizible or bizible.com (the latter is much better)
+    # @param company_name_or_url Example: bizible or bizible.com (the latter is much better)
     def cb_url(company_name_or_url)
 
       query = company_name_or_url
