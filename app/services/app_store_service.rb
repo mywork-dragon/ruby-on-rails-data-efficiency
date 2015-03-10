@@ -112,14 +112,21 @@ class AppStoreService
     
     def ratings(html)
       ratings = html.css("#left-stack > div.extra-list.customer-ratings > div.rating")
-      
-      current_version_s = ratings.first["aria-label"]
-      all_versions_s = ratings[1]["aria-label"]
-      
-      current_version_split = current_version_s.split(", ")
-      current_version_hash = {}
-      current_version_hash[:stars] = count_stars(current_version_split[0])
-      current_version_hash[:ratings] = count_ratings(current_version_split[1])
+
+      if ratings.count == 1
+        all_versions_s = ratings.first["aria-label"]
+      else
+        current_version_s = ratings.first["aria-label"]
+        all_versions_s = ratings[1]["aria-label"]
+      end
+
+
+      if current_version_s
+        current_version_split = current_version_s.split(", ")
+        current_version_hash = {}
+        current_version_hash[:stars] = count_stars(current_version_split[0])
+        current_version_hash[:ratings] = count_ratings(current_version_split[1])
+      end
       
       all_versions_split = all_versions_s.split(", ")
       all_versions_hash = {}
