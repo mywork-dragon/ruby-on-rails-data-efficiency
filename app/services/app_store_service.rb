@@ -31,7 +31,8 @@ class AppStoreService
     def app_store_html(app_store_url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
       
-      page = open(url_cache)
+      #page = open(url_cache)
+      page = open(app_store_url)
       Nokogiri::HTML(page)
     end 
     
@@ -126,7 +127,6 @@ class AppStoreService
       all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
       
       {current: current_version_hash, all: all_versions_hash}
-      
     end
     
     # 3 and a half stars --> 3.5
