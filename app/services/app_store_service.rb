@@ -18,6 +18,7 @@ class AppStoreService
       ret[:languages] = languages(html)
       ret[:seller] = seller(html)
       ret[:developer_app_store_identifier] = developer_app_store_identifier(html)
+      ret[:in_app_purchases] = in_app_purchases(html)
       #ret[:ratings] = ratings(html)
       
       ret
@@ -103,6 +104,10 @@ class AppStoreService
       html.css("#title > div.right > a").first['href'].match(/\/id\d+/)[0].gsub("/id", "")
     end
     
+    def in_app_purchases(html)
+      lis = html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
+      lis.map{|li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i}}
+    end
     
     # def ratings(html)
     #   # html.css('.rating-star').count + 0.5*html.css('rating-star half').count
