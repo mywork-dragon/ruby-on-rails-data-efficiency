@@ -125,7 +125,7 @@ class AppStoreService
       all_versions_hash[:stars] = count_stars(all_versions_split[0])
       all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
       
-      [current_version_hash, all_versions_hash]
+      {current: current_version_hash, all: all_versions_hash}
       
     end
     
