@@ -19,7 +19,7 @@ class AppStoreService
       ret[:seller] = seller(html)
       ret[:developer_app_store_identifier] = developer_app_store_identifier(html)
       ret[:in_app_purchases] = in_app_purchases(html)
-      #ret[:ratings] = ratings(html)
+      ret[:ratings] = ratings(html)
       
       ret
       
@@ -109,12 +109,35 @@ class AppStoreService
       lis.map{|li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i}}
     end
     
-    # def ratings(html)
-    #   # html.css('.rating-star').count + 0.5*html.css('rating-star half').count
-    #   customer_ratings = html.css('.customer-ratings')
-    #   rating_count = customer_ratings.css
-    #   rating
-    # end
+    def ratings(html)
+      ratings = html.css("#left-stack > div.extra-list.customer-ratings > div.rating")
+      
+      current_version_s = ratings.first["aria-label"]
+      all_versions_s = ratings[1]["aria-label"]
+      
+      current_version_split = current_version_s.split(", ")
+      current_version_hash = {}
+      current_version_hash[:stars] = count_stars(current_version_split[0])
+      current_version_hash[:ratings] = count_ratings(current_version_split[1])
+      
+      all_versions_split = all_versions_s.split(", ")
+      all_versions_hash = {}
+      all_versions_hash[:stars] = count_stars(all_versions_split[0])
+      all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
+      
+      [current_version_hash, all_versions_hash]
+      
+    end
+    
+    # 3 and a half stars --> 3.5
+    # @author Jason Lew
+    def count_stars(s)
+      s.gsub("stars", "").strip.gsub(" and a half", ".5").to_f
+    end
+    
+    def count_ratings(s)
+      s.gsub("Ratings", "").strip.to_i
+    end
     
   end
 end
