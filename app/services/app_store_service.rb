@@ -12,6 +12,7 @@ class AppStoreService
       ret[:whats_new] = whats_new(html)
       ret[:price] = price(html)
       ret[:seller_url] = seller_url(html) 
+      ret[:contact_url] = contact_url(html)
       ret[:category] = category(html)
       ret[:updated] = updated(html)
       ret[:size] = size(html)
@@ -36,7 +37,8 @@ class AppStoreService
     end
 
     def title(html)
-      html.css('#title.intro').css('.left').children[1].children.first.text
+      # html.css('#title').css('.left').children[1].children.first.text
+      html.css('#title')
     end
 
     def description(html)
@@ -66,6 +68,14 @@ class AppStoreService
       begin
         url = html.css(".app-links").children.first['href']
         UrlManipulator.url_with_http_only(url)
+      rescue
+        nil
+      end
+    end
+
+    def contact_url(html)
+      begin
+        html.css(".app-links").children[1]['href']
       rescue
         nil
       end
@@ -112,9 +122,10 @@ class AppStoreService
     def ratings(html)
       ratings = html.css("#left-stack > div.extra-list.customer-ratings > div.rating")
 
+      
       if ratings.count == 1
         all_versions_s = ratings.first["aria-label"]
-      else
+      elsif ratings.count >= 2
         current_version_s = ratings.first["aria-label"]
         all_versions_s = ratings[1]["aria-label"]
       end
@@ -127,11 +138,13 @@ class AppStoreService
         current_version_hash[:ratings] = count_ratings(current_version_split[1])
       end
 
-      all_versions_split = all_versions_s.split(", ")
-      all_versions_hash = {}
-      all_versions_hash[:stars] = count_stars(all_versions_split[0])
-      all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
-
+      if all_versions_s
+        all_versions_split = all_versions_s.split(", ")
+        all_versions_hash = {}
+        all_versions_hash[:stars] = count_stars(all_versions_split[0])
+        all_versions_hash[:ratings] = count_ratings(all_versions_split[1])
+      end
+      
       {current: current_version_hash, all: all_versions_hash}
     end
     
@@ -145,6 +158,30 @@ class AppStoreService
     
     def editors_choice(html)
       html.css(".editorial-badge").present?
+    end
+    
+    def test
+      # links = %w(
+      #   https://itunes.apple.com/us/app/a$$hole-by-martin-kihn/id389377362?mt=8
+      #   https://itunes.apple.com/us/app/adan-zye/id576204516?mt=8
+      #   https://itunes.apple.com/us/app/kindle-read-books-ebooks-magazines/id302584613?mt=8
+      #   https://itunes.apple.com/us/app/audiobooks-from-audible/id379693831?mt=8
+      #   https://itunes.apple.com/us/app/nook/id373582546?mt=8
+      #   https://itunes.apple.com/us/app/wattpad-free-books-ebook-reader/id306310789?mt=8
+      #   https://itunes.apple.com/us/app/overdrive-library-ebooks-audiobooks/id366869252?mt=8
+      #   https://itunes.apple.com/us/app/goodreads-book-recommendations/id355833469?mt=8
+      # )
+      
+      page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
+      html = Nokogiri::HTML(page)
+      
+      links = html.css("a").select{|a| a['href'].match('https://itunes.apple.com/us/app') }.map{|a| a['href']}
+      
+      links.each do |link|
+        li "link: #{link}"
+        li app_store_attributes(link)
+        li ""
+      end
     end
     
     private
