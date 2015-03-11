@@ -35,7 +35,7 @@ class AppStoreService
     
     def app_store_json(id)
       page = open("https://itunes.apple.com/lookup?id=#{id}")
-      JSON.load(page)
+      JSON.load(page)['results'].first
     end
 
     def app_store_html(id)
