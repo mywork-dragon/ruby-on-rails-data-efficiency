@@ -1,6 +1,8 @@
 # Scraping helper functions
 # @author Jason Lew
 class ScrapeHelper
+
+  puts "ScrapeHelper"
   
   class << self
     

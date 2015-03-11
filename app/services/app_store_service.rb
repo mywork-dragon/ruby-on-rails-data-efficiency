@@ -39,8 +39,7 @@ class AppStoreService
     end
 
     def description(html)
-      desc_element = html.css("div.center-stack > .product-review > p")[0]
-      ScrapeHelper.node_to_text_replacing_brs(desc_element)
+      desc_element = html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
     end
 
     def whats_new(html)
