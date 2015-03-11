@@ -5,7 +5,7 @@ class AppStoreService
     # Attributes hash
     # @author Jason Lew
     # @param id The App Store identifier
-    def app_store_attributes(id)
+    def attributes(id)
       ret = {}
       
       json = app_store_json(id)
@@ -13,8 +13,8 @@ class AppStoreService
       html = app_store_html(id)
 
       ret[:title] = title(html)
-      ret[:description] = description(html)
-      ret[:whats_new] = whats_new(html)
+      ret[:description] = description(json)
+      ret[:release_notes] = release_notes(html)
       ret[:price] = price(html)
       ret[:seller_url] = seller_url(html) 
       ret[:contact_url] = contact_url(html)
@@ -34,7 +34,7 @@ class AppStoreService
     end
     
     def app_store_json(id)
-      page = open("https://itunes.apple.com/lookup?id=#{id}")
+      page = open("https://itunes.apple.com/lookup?id=#{id}&limit=1")
       JSON.load(page)['results'].first
     end
 
@@ -48,16 +48,27 @@ class AppStoreService
       Nokogiri::HTML(page)
     end
 
-    def title(html)
+    def title_json(json)
+      json['trackName']
+    end
+
+    def title_html(html)
       html.css('#title > div.left > h1').text
     end
 
-    def description(html)
-      # html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
-      html.css("div.center-stack > .product-review > p")
+    def description_json(json)
+      json['description']
+    end
+    
+    def description_html(html)
+      html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
     end
 
-    def whats_new(html)
+    def release_notes_json(json)
+      json['releaseNotes']
+    end
+
+    def release_notes_html(html)
       begin
         html.css("div.center-stack > .product-review > p")[1].text
       rescue
@@ -67,7 +78,13 @@ class AppStoreService
 
     # In cents
     # @author Jason Lew
-    def price(html)
+    def price_json(json)
+      (json['price'].to_f*100.0).to_i
+    end
+
+    # In cents
+    # @author Jason Lew
+    def price_html(html)
       price = 0.0
       price_text = html.css(".price").text.gsub("$", "")
 
@@ -76,16 +93,20 @@ class AppStoreService
       price*100.to_i
     end
 
-    def seller_url(html)
+    def seller_url_json(json)
+      json['sellerUrl']
+    end
+
+    def seller_url_html(html)
       begin
         url = html.css(".app-links").children.first['href']
-        UrlManipulator.url_with_http_only(url)
       rescue
         nil
       end
     end
 
-    def contact_url(html)
+    # Only available in HTML 
+    def contact_url_html(html)
       begin
         html.css(".app-links").children[1]['href']
       rescue
@@ -93,17 +114,35 @@ class AppStoreService
       end
     end
 
-    def category(html)
-      html.css(".genre").children[1].text
+    def categories_json(json)
+      primary = json['primaryGenreName']
+      all_cats = json['genres']
+      
+      secondary = all_cats - [secondary]
+      
+      secondary = nil if secondary.blank?
+      
+      {primary: primary, secondary: secondary}
     end
 
-    def updated(html)
+    def categories_html(html)
+      primary = html.css(".genre").children[1].text
+      {primary: primary}
+    end
+
+    # Only available in HTML
+    def updated_html(html)
       Date.parse(html.css(".release-date").children[1].text)
+    end
+
+    #In B
+    def size_json(json)
+      json['fileSizeBytes']
     end
 
     # In B
     # @author Jason Lew
-    def size(html)
+    def size_html(html)
       size_text = html.css('li').select{|li| li.text.match(/Size: /)}.first.children[1].text
       Filesize.from(size_text).to_i
     end
@@ -215,6 +254,7 @@ class AppStoreService
       def compatibility_text(html)
         html.css('#left-stack > div.lockup.product.application > p > span.app-requirements').first.parent.children[1].text
       end
+
 
   end
 end
