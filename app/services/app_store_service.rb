@@ -21,10 +21,9 @@ class AppStoreService
       ret[:in_app_purchases] = in_app_purchases(html)
       ret[:ratings] = ratings(html)
       ret[:recommended_age] = recommended_age(html)
+      ret[:required_ios_version] = required_ios_version(html)
 
       ret
-
-      #ratings(html)
     end
 
     def app_store_html(app_store_url)
@@ -140,6 +139,10 @@ class AppStoreService
       html.css("#left-stack > div.lockup.product.application > div.app-rating > a").text.gsub("Rated ", '')
     end
     
+    def required_ios_version(html)
+      compatibility_text(html).match(/Requires iOS (\d)+.(\d)/)[0].gsub('Requires iOS ', '').to_f
+    end
+    
     private
     
       # 3 and a half stars --> 3.5
@@ -150,6 +153,10 @@ class AppStoreService
 
       def count_ratings(s)
         s.gsub("Ratings", "").strip.to_i
+      end
+
+      def compatibility_text(html)
+        html.css('#left-stack > div.lockup.product.application > p > span.app-requirements').first.parent.children[1].text
       end
 
   end
