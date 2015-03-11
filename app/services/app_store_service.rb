@@ -20,13 +20,12 @@ class AppStoreService
       ret[:developer_app_store_identifier] = developer_app_store_identifier(html)
       ret[:in_app_purchases] = in_app_purchases(html)
       ret[:ratings] = ratings(html)
+      ret[:recommended_age] = recommended_age(html)
 
       ret
 
       #ratings(html)
     end
-
-    #private
 
     def app_store_html(app_store_url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
@@ -41,8 +40,8 @@ class AppStoreService
     end
 
     def description(html)
-      desc_node = html.css("div.center-stack > .product-review > p")[0]
-      ScrapeHelper.node_to_text_replacing_brs(desc_node)
+      desc_element = html.css("div.center-stack > .product-review > p")[0]
+      ScrapeHelper.node_to_text_replacing_brs(desc_element)
     end
 
     def whats_new(html)
@@ -136,16 +135,22 @@ class AppStoreService
 
       {current: current_version_hash, all: all_versions_hash}
     end
-
-    # 3 and a half stars --> 3.5
-    # @author Jason Lew
-    def count_stars(s)
-      s.gsub("stars", "").strip.gsub(" and a half", ".5").to_f
+    
+    def recommended_age(html)
+      html.css("#left-stack > div.lockup.product.application > div.app-rating > a").text.gsub("Rated ", '')
     end
+    
+    private
+    
+      # 3 and a half stars --> 3.5
+      # @author Jason Lew
+      def count_stars(s)
+        s.gsub("stars", "").strip.gsub(" and a half", ".5").to_f
+      end
 
-    def count_ratings(s)
-      s.gsub("Ratings", "").strip.to_i
-    end
+      def count_ratings(s)
+        s.gsub("Ratings", "").strip.to_i
+      end
 
   end
 end
