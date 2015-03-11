@@ -80,9 +80,12 @@ class AppStoreService
     app_store_url = "https://itunes.apple.com/us/app/id#{id}"
     
     url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
+    
+    url = app_store_url
 
-    #page = open(url_cache)
-    page = open(app_store_url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
+    li "url: #{url}"
+
+    page = open(url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
     Nokogiri::HTML(page)
   end
 
