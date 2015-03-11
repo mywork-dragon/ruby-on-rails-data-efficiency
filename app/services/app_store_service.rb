@@ -2,10 +2,15 @@ class AppStoreService
 
   class << self
 
-    def app_store_attributes(app_store_url)
+    # Attributes hash
+    # @author Jason Lew
+    # @param id The App Store identifier
+    def app_store_attributes(id)
       ret = {}
+      
+      json = app_store_json(id)
 
-      html = app_store_html(app_store_url)
+      html = app_store_html(id)
 
       ret[:title] = title(html)
       ret[:description] = description(html)
@@ -27,8 +32,15 @@ class AppStoreService
 
       ret
     end
+    
+    def app_store_json(id)
+      page = open("https://itunes.apple.com/lookup?id=#{id}")
+      JSON.load(page)
+    end
 
-    def app_store_html(app_store_url)
+    def app_store_html(id)
+      app_store_url = "https://itunes.apple.com/us/app/melt-voice-your-important/id#{id}"
+      
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
 
       #page = open(url_cache)
@@ -37,13 +49,12 @@ class AppStoreService
     end
 
     def title(html)
-      # html.css('#title').css('.left').children[1].children.first.text
       html.css('#title > div.left > h1').text
     end
 
     def description(html)
-      return nil
-      desc_element = html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
+      # html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
+      html.css("div.center-stack > .product-review > p")
     end
 
     def whats_new(html)
@@ -161,7 +172,7 @@ class AppStoreService
       html.css(".editorial-badge").present?
     end
     
-    def test
+    def test(options={})
       # links = %w(
       #   https://itunes.apple.com/us/app/a$$hole-by-martin-kihn/id389377362?mt=8
       #   https://itunes.apple.com/us/app/adan-zye/id576204516?mt=8
@@ -178,7 +189,11 @@ class AppStoreService
       
       links = html.css("a").select{|a| a['href'].match('https://itunes.apple.com/us/app') }.map{|a| a['href']}
       
-      links.each do |link|
+      limit = options[:limit]
+      
+      links.each_with_index do |link, i|
+        break if i == limit
+        
         li "link: #{link}"
         li app_store_attributes(link)
         li ""
