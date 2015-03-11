@@ -5,64 +5,61 @@ class AppStoreService
   # @author Jason Lew
   # @param id The App Store identifier
   def attributes(id)
-    ret = {}
-    
     @json = app_store_json(id)
     @html = app_store_html(id)
     
-    if json 
-      title_json
-      description_json
-      release_notes_json
-      price_json
-      seller_url_json
-      categories_json
-      size_json(json)
-      seller_json(json)
-      developer_app_store_identifier_json(json)
-      ratings_json(json)
-      recommended_age_json(json)
-      required_ios_version_json
-    elsif
-      title_html(html)
-      description_html(html)
-      release_notes_html(html)
-      price_html(html)
-      seller_url_html(html)
-      categories_html(html)
-      size_html(html)
-      seller_html(html)
-      developer_app_store_identifier_html(html)
-      ratings_html(html)
-      recommended_age_html(html)
-      required_ios_version_html
+    methods = []
+    
+    if @json
+      methods += %w(
+        title_json
+        description_json
+        release_notes_json
+        price_json
+        seller_url_json
+        categories_json
+        size_json
+        seller_json
+        developer_app_store_identifier_json
+        ratings_json
+        recommended_age_json
+        required_ios_version_json
+      )
+    else
+      methods += %w(
+        title_html
+        description_html
+        release_notes_html
+        price_html
+        seller_url_html
+        categories_html
+        size_html
+        seller_html
+        developer_app_store_identifier_html
+        ratings_html
+        recommended_age_html
+        required_ios_version_html
+      )
     end
     
     # Must use HTML for these
-    contact_url_html(html)
-    updated_html(html)
-    languages_html(html)
-    in_app_purchases_html(html)
-    editors_choice_html
-
-    ret[:title] = title(html)
-    ret[:description] = description(json)
-    ret[:release_notes] = release_notes(html)
-    ret[:price] = price(html)
-    ret[:seller_url] = seller_url(html) 
-    ret[:contact_url] = contact_url(html)
-    ret[:category] = category(html)
-    ret[:updated] = updated(html)
-    ret[:size] = size(html)
-    ret[:languages] = languages(html)
-    ret[:seller] = seller(html)
-    ret[:developer_app_store_identifier] = developer_app_store_identifier(html)
-    ret[:in_app_purchases] = in_app_purchases(html)
-    ret[:ratings] = ratings(html)
-    ret[:recommended_age] = recommended_age(html)
-    ret[:required_ios_version] = required_ios_version(html)
-    ret[:editors_choice] = editors_choice(html)
-
+    methods += %w(
+      contact_url_html
+      updated_html
+      languages_html
+      in_app_purchases_html
+      editors_choice_html
+    )
+    
+    ret = {}
+    
+    # Go through the list of methods, call each one, and store it in ret
+    # The key in ret is the method minus _json or _html at the end
+    methods.each do |method|
+      key = method.gsub(/_html\z/, '').gsub(/_json\z/, '').to_sym
+      ret[key] = send(method.to_sym)
+    end
+    
     ret
   end
   
