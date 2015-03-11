@@ -22,6 +22,7 @@ class AppStoreService
       ret[:ratings] = ratings(html)
       ret[:recommended_age] = recommended_age(html)
       ret[:required_ios_version] = required_ios_version(html)
+      ret[:editors_choice] = editors_choice(html)
 
       ret
     end
@@ -140,6 +141,10 @@ class AppStoreService
     
     def required_ios_version(html)
       compatibility_text(html).match(/Requires iOS (\d)+.(\d)/)[0].gsub('Requires iOS ', '').to_f
+    end
+    
+    def editors_choice(html)
+      html.css(".editorial-badge").present?
     end
     
     private
