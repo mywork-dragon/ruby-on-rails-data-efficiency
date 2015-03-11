@@ -4,13 +4,13 @@ class AppStoreService
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
-  def attributes(id)
+  def attributes(id, options={})
     @json = app_store_json(id)
     @html = app_store_html(id)
     
     methods = []
     
-    if @json
+    if @json || options[:html_only]
       methods += %w(
         title_json
         description_json
@@ -77,12 +77,12 @@ class AppStoreService
   end
 
   def app_store_html(id)
-    app_store_url = "https://itunes.apple.com/us/app/melt-voice-your-important/id#{id}"
+    app_store_url = "https://itunes.apple.com/us/app/id#{id}"
     
     url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
 
     #page = open(url_cache)
-    page = open(app_store_url)
+    page = open(app_store_url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
     Nokogiri::HTML(page)
   end
 
@@ -170,7 +170,8 @@ class AppStoreService
 
   # Only available in HTML
   def updated_html
-    Date.parse(@html.css(".release-date").children[1].text)
+    date_text = @html.css(".release-date").children[1].text
+    Date.parse(date_text)
   end
 
   #In B
@@ -321,15 +322,19 @@ class AppStoreService
       page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
       html = Nokogiri::HTML(page)
     
-      links = html.css("a").select{|a| a['href'].match('https://itunes.apple.com/us/app') }.map{|a| a['href']}
+      app_prefix = 'https://itunes.apple.com/us/app/'
+      links = html.css("a").select{|a| a['href'].match(app_prefix) }.map{|a| a['href']}
+      puts links
+      
+      ids = links.map{|link| link.match(/\/id\d*/)[0].gsub('/id', '')}
     
       limit = options[:limit]
-    
-      links.each_with_index do |link, i|
+
+      ids.each_with_index do |id, i|
         break if i == limit
-      
-        li "link: #{link}"
-        li app_store_attributes(link)
+
+        li "link: #{app_prefix}id#{id}"
+        li attributes(id)
         li ""
       end
     end
