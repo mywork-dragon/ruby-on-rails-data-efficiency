@@ -38,10 +38,11 @@ class AppStoreService
 
     def title(html)
       # html.css('#title').css('.left').children[1].children.first.text
-      html.css('#title')
+      html.css('#title > div.left > h1').text
     end
 
     def description(html)
+      return nil
       desc_element = html.css("div.center-stack > .product-review > p")[0].text_replacing_brs
     end
 
