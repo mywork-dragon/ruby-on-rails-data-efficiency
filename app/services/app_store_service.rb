@@ -8,6 +8,8 @@ class AppStoreService
     @json = app_store_json(id)
     @html = app_store_html(id)
     
+    #ld "@html: #{@html}"
+    
     methods = []
     
     if @json || options[:html_only]
@@ -25,7 +27,7 @@ class AppStoreService
         recommended_age_json
         required_ios_version_json
       )
-    else
+    elsif @html
       methods += %w(
         title_html
         description_html
@@ -43,13 +45,15 @@ class AppStoreService
     end
     
     # Must use HTML for these
-    methods += %w(
-      contact_url_html
-      updated_html
-      languages_html
-      in_app_purchases_html
-      editors_choice_html
-    )
+    if @html
+      methods += %w(
+        contact_url_html
+        updated_html
+        languages_html
+        in_app_purchases_html
+        editors_choice_html
+      )
+    end
     
     ret = {}
     
@@ -86,7 +90,14 @@ class AppStoreService
     li "url: #{url}"
 
     page = open(url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
-    Nokogiri::HTML(page)
+    html = Nokogiri::HTML(page)
+    
+    if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
+      le "Taken to Connecting page"
+      return nil
+    end
+    
+    html
   end
 
   def title_json
