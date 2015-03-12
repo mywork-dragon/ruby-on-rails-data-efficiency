@@ -4,78 +4,64 @@ class CbService
   
   NUMBER_OF_RESULTS = 30
   
+  # Bizible.com
+  def attributes(domain, options={})    
+    query_url_safe = CGI::escape(domain)
+
+    url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
   
-
-  def initialize
-    
-  end
-  
-
-  class << self
-    
-    # Get the crunchbase URL
-    # @author Jason Lew
-    # @param company_name_or_url Example: bizible or bizible.com (the latter is much better)
-    def cb_url(company_name_or_url)
-
-      query = company_name_or_url
-      query_url_safe = CGI::escape(query)
-
-      url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
-    
-      #puts "Google URL: #{url}"
-        
-      page = open(url)
-    
-      url_cache = nil
-
-      html = Nokogiri::HTML(page)
-    
-      html.search("cite").each do |cite|
-        url = cite.inner_text
-
-        org_regex = /crunchbase.com\/organization\/[^\/]*\z/
-
-        if(url.match(org_regex))
-          #puts url
-          
-          url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
+    #puts "Google URL: #{url}"
       
-          #puts "Cache URL: #{url_cache}"
-          
+    page = open(url)
+  
+    url_cache = nil
+
+    html = Nokogiri::HTML(page)
+  
+    html.search("cite").each do |cite|
+      url = cite.inner_text
+      if(url.match(/crunchbase.com\/organization\/[^\/]*\z/))
+        #puts url
+        
+        url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
+        
+        page = open(url_cache)
+        html = Nokogiri::HTML(page)
+        
+        puts company_url = html.css("li.homepage").children[0]['href']
+        
+        if UrlManipulator.url_with_base_only(company_url).match(domain)
+          @html = html
           break
         end
       end
-      
-      url_cache
-    end 
-    
-    def cb_funding_from_cb_url(cb_url)
-      page = open(cb_url)
-      html = Nokogiri::HTML(page)
-      
-      #puts html
-      
-      funding_classes = html.css(".funding_amount")
-      
-      funding_class = funding_classes.first
-      
-      #puts "funding_class: #{funding_class}"
-      
-      begin
-        funding_class.children[1].to_s
-      rescue
-        nil
-      end
     end
     
-    # Get the crunchbase URL
-    # @author Jason Lew
-    # @param company_name Example: bizible or bizible.com (the latter is much better)
-    def cb_funding(company_name_or_url)
-      cb_funding_from_cb_url(cb_url(company_name_or_url))
+    if @html.nil?
+      li "Could not find CB page for #{domain}"
+      return
     end
     
+    ret = {}
+    
+    ret[:funding] = funding
+    
+    ret
+  end
+
+  def funding
+    begin
+      funding_classes = @html.css(".funding_amount").first.children[1].text
+    rescue
+      nil
+    end
+  end
+
+  class << self
+    
+    def attributes(domain, options={})  
+      self.new.attributes(domain, options)
+    end
     
     def test
       #companies = ["Instagram", "Snapchat", "Pinterest", "Datanyze", "Marketo"]
