@@ -30,7 +30,9 @@ class CbService
         
         puts company_url = html.css("li.homepage").children[0]['href']
         
-        if UrlManipulator.url_with_base_only(company_url).match(domain)
+        # closed = html.css("div.details.definition-list").children.map(&:text).include?('Closed:')
+        
+        if UrlManipulator.url_with_base_only(company_url.downcase).include?(domain.downcase)
           @html = html
           break
         end
