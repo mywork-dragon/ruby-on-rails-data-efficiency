@@ -1,159 +1,129 @@
-#!/usr/bin/ruby
+class AppStoreIdsService
 
-require "rubygems"
-require "typhoeus"
-require "nokogiri"
-require "open-uri"
-require "set"
+  # helper method - opens url, returning Nokogiri object
+  def open_url(url)
 
-# helper method - opens url, returning Nokogiri object
-def openUrl(url)
+    page = open(url)
 
-  page = open(url)
+    Nokogiri::HTML(page)
 
-  Nokogiri::HTML(page)
-
-  # Rescues error if issue opening URL
-  rescue => e
-    case e
-      when OpenURI::HTTPError
-        puts "HTTPError - could not open page"
-        return nil
-      when URI::InvalidURIError
-        puts "InvalidURIError - could not open page"
-        return nil
-      else
-        raise e
+    # Rescues error if issue opening URL
+    rescue => e
+      case e
+        when OpenURI::HTTPError
+          puts "HTTPError - could not open page"
+          return nil
+        when URI::InvalidURIError
+          puts "InvalidURIError - could not open page"
+          return nil
+        else
+          raise e
+    end
   end
-end
 
-# scrapes Apple Appstore, returning Set of all unique app ids as Integers
-# example:
-# find & converts app link: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
-# into "550882015", rutrning Set of all these ids
-def scrape_appstore()
+  # scrapes Apple Appstore, returning Set of all unique app ids as Integers
+  # example:
+  # find & converts app link: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
+  # into "550882015", rutrning Set of all these ids
+  def scrape_app_store
 
-    appIds = Set.new
+    app_ids = Set.new # @patrick Ruby style usually uses underscore naming conventions for local vars :)
 
     # url string param for each category of app
-    appUrlIds = [
-=begin
-        "ios-books/id6018",
-        "ios-business/id6000",
-=end
-        "ios-catalogs/id6022",
-=begin
-        "ios-education/id6017",
-        "ios-entertainment/id6016",
-        "ios-finance/id6015",
-        "ios-food-drink/id6023",
-        "ios-games/id6014",
-        "ios-health-fitness/id6013",
-        "ios-lifestyle/id6012",
-        "ios-medical/id6020",
-        "ios-music/id6011",
-        "ios-navigation/id6010",
-        "ios-news/id6009",
-        "ios-newsstand/id6021",
-        "ios-photo-video/id6008",
-        "ios-productivity/id6007",
-        "ios-reference/id6006",
-        "ios-social-networking/id6005",
-        "ios-sports/id6004",
-        "ios-travel/id6003",
-        "ios-utilities/id6002",
-        "ios-weather/id6001"
-=end
-    ]
+    # @patrick You can use this syntax when you have a bunch a string literals with no spaces
+    app_url_ids = %w(
+        ios-books/id6018
+        ios-business/id6000
+        ios-catalogs/id6022
+        ios-education/id6017
+        ios-entertainment/id6016
+        ios-finance/id6015
+        ios-food-drink/id6023
+        ios-games/id6014
+        ios-health-fitness/id6013
+        ios-lifestyle/id6012
+        ios-medical/id6020
+        ios-music/id6011
+        ios-navigation/id6010
+        ios-news/id6009
+        ios-newsstand/id6021
+        ios-photo-video/id6008
+        ios-productivity/id6007
+        ios-reference/id6006
+        ios-social-networking/id6005
+        ios-sports/id6004
+        ios-travel/id6003
+        ios-utilities/id6002
+        ios-weather/id6001
+    )
+
+    app_url_ids = app_url_ids[(2..2)] #for debug, only run catalogs for now
 
     # url string param for each sub group of app category
-    appUrlLetters = [
-        "A"
-=begin
-        ,
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-        "*"
-=end
-    ]
+    app_url_letters = ('A'..'Z').to_a + ['*'] # @patrick you can create the alphabet using a Ruby range
+    app_url_letters.select!{ |l| l == 'A' } # for debug, only run letter A for now
 
     # for each category of app
-    appUrlIds.each { |appid|
+    app_url_ids.each do |app_id|
 
-        # for each beginning letter of app name in category
-        appUrlLetters.each { |appletter|
+      # for each beginning letter of app name in category
+      app_url_letters.each do |app_letter|
+        
+        last_page = false
 
-            lastPage = false
+        page_num = 0
+        
+        while !last_page 
 
-            pageNum = 0
+          page_num += 1
 
-            while !lastPage 
+          puts "SCRAPING    CATEGORY: " + app_id + "    SUB GROUP: " + app_letter + "    PAGE: " + page_num.to_s + "..."
+             
+           # Compiles link for page of app list
+           # Example: https://itunes.apple.com/us/genre/ios-weather/id6001?mt=8&letter=C&page=2
+           dom = open_url("https://itunes.apple.com/us/genre/" + app_id + "?letter=" + app_letter + "&page=" + page_num.to_s)
 
-                pageNum += 1
+            if dom != nil
 
-                puts "SCRAPING    CATEGORY: " + appid + "    SUB GROUP: " + appletter + "    PAGE: " + pageNum.to_s + "..."
+              # wrapper for #selectedcontent columns
+              results = dom.css("#selectedcontent > div.column")
 
-                # Compiles link for page of app list
-                # Example: https://itunes.apple.com/us/genre/ios-weather/id6001?mt=8&letter=C&page=2
-                dom = openUrl("https://itunes.apple.com/us/genre/" + appid + "?letter=" + appletter + "&page=" + pageNum.to_s)
+              # iterate over each of the result wrapper elements
+              results.each do |result|
 
-                if dom != nil
+              links = result.css("ul > li").css("a")
 
-                    # wrapper for #selectedcontent columns
-                    results = dom.css("#selectedcontent > div.column")
+              # if number of app links on page is 1 or 0, last page has been reached
+              if links.length < 2
+                  last_page = true # stops loop upon next iteration
+              end
 
-                    # iterate over each of the result wrapper elements
-                    results.each { |result|
-
-                        links = result.css("ul > li").css("a")
-
-                        # if number of app links on page is 1 or 0, last page has been reached
-                        if links.length < 2
-                            lastPage = true # stops loop upon next iteration
-                        end
-
-                        # finds the href link inside the <a> and strips out the id, casting it to an Integer
-                        # Before: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
-                        # After: 550882015
-                        links.map { |link|
-                            appIds << link['href'].gsub('?mt=8','').split('id').last.to_i
-                        }
-
-                    }
-
-                end
-
+              # finds the href link inside the <a> and strips out the id, casting it to an Integer
+              # Before: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
+              # After: 550882015
+              links.map { |link| app_ids << link['href'].gsub('?mt=8','').split('id').last.to_i } #@patrick Usually use brackets on one line and "do...end" on multiple lines (for readability)
+              
             end
+            
+          end
+          
+        end
+        
+      end
+      
+    end
 
-        }
+    puts app_ids.inspect
 
-    }
-
-    puts appIds.inspect
+  end
+  
+  class << self
+    
+    def scrape_app_store
+      self.new.scrape_app_store
+    end
+    
+  end
 
 end
 
-scrape_appstore()
