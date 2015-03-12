@@ -28,7 +28,7 @@ class CbService
         page = open(url_cache)
         html = Nokogiri::HTML(page)
         
-        puts company_url = html.css("li.homepage").children[0]['href']
+        company_url = html.css("li.homepage").children[0]['href']
         
         # closed = html.css("div.details.definition-list").children.map(&:text).include?('Closed:')
         
@@ -47,12 +47,35 @@ class CbService
     ret = {}
     
     ret[:funding] = funding
+    ret[:funding_text] = funding_text
     ret[:ipo] = ipo
     
     ret
   end
 
   def funding
+    text = funding_text
+    
+    return nil if text.nil?
+    
+    text.downcase!
+    
+    conversion = {' thousand' => 1e3, ' million' => 1e6, ' billion' => 1e9}
+    
+    ret = nil
+    
+    conversion.each do |key, value|
+      if text.include?(key)
+        text.gsub!(key, '')
+        ret = text.to_f*value
+        break
+      end
+    end
+    
+    ret.to_i
+  end
+  
+  def funding_text
     begin
       funding_classes = @html.css(".funding_amount").first.children[1].text
     rescue
