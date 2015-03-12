@@ -348,8 +348,8 @@ class AppStoreService
         break if i == limit
 
         li "link: #{app_prefix}id#{id}"
-        #li attributes(id)
-        attributes(id)
+        li attributes(id)
+        #attributes(id)
         li ""
       end
     end
