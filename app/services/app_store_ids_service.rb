@@ -113,7 +113,7 @@ class AppStoreIdsService
       
     end
 
-    puts app_ids.inspect
+    app_ids.to_a
 
   end
   
