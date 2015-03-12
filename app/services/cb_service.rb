@@ -47,6 +47,7 @@ class CbService
     ret = {}
     
     ret[:funding] = funding
+    ret[:ipo] = ipo
     
     ret
   end
@@ -57,6 +58,10 @@ class CbService
     rescue
       nil
     end
+  end
+  
+  def ipo
+    @html.css('.overview-stats').children.map(&:text).include?('IPO / Stock')
   end
 
   class << self
