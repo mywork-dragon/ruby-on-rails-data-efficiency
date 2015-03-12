@@ -87,7 +87,7 @@ class AppStoreService
     
     url = app_store_url
 
-    li "url: #{url}"
+    #li "url: #{url}"
 
     page = open(url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
     html = Nokogiri::HTML(page)
@@ -348,7 +348,8 @@ class AppStoreService
         break if i == limit
 
         li "link: #{app_prefix}id#{id}"
-        li attributes(id)
+        #li attributes(id)
+        attributes(id)
         li ""
       end
     end
