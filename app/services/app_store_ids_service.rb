@@ -32,29 +32,29 @@ class AppStoreIdsService
     # url string param for each category of app
     # @patrick You can use this syntax when you have a bunch a string literals with no spaces
     app_url_ids = %w(
-        ios-books/id6018
-        ios-business/id6000
-        ios-catalogs/id6022
-        ios-education/id6017
-        ios-entertainment/id6016
-        ios-finance/id6015
-        ios-food-drink/id6023
-        ios-games/id6014
-        ios-health-fitness/id6013
-        ios-lifestyle/id6012
-        ios-medical/id6020
-        ios-music/id6011
-        ios-navigation/id6010
-        ios-news/id6009
-        ios-newsstand/id6021
-        ios-photo-video/id6008
-        ios-productivity/id6007
-        ios-reference/id6006
-        ios-social-networking/id6005
-        ios-sports/id6004
-        ios-travel/id6003
-        ios-utilities/id6002
-        ios-weather/id6001
+      ios-books/id6018
+      ios-business/id6000
+      ios-catalogs/id6022
+      ios-education/id6017
+      ios-entertainment/id6016
+      ios-finance/id6015
+      ios-food-drink/id6023
+      ios-games/id6014
+      ios-health-fitness/id6013
+      ios-lifestyle/id6012
+      ios-medical/id6020
+      ios-music/id6011
+      ios-navigation/id6010
+      ios-news/id6009
+      ios-newsstand/id6021
+      ios-photo-video/id6008
+      ios-productivity/id6007
+      ios-reference/id6006
+      ios-social-networking/id6005
+      ios-sports/id6004
+      ios-travel/id6003
+      ios-utilities/id6002
+      ios-weather/id6001
     )
 
     app_url_ids = app_url_ids[(2..2)] #for debug, only run catalogs for now
