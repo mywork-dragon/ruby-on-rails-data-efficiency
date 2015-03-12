@@ -6,14 +6,26 @@ SITE = 'xyo.net/iphone-app'
   
     def downloads_attributes(app_attrs={})
       
-      if app_attrs[:description]
-        query_url_safe = CGI::escape(app_attrs[:description])
-      else
-        query_url_safe = CGI::escape(app_attrs[:title])
+      # if app_attrs[:description]
+      #   query_url_safe = CGI::escape(app_attrs[:description])
+      # else
+      #   query_url_safe = CGI::escape(app_attrs[:title])
+      # end
+      
+      description = app_attrs[:description]
+      
+      google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
+      
+      google_special_chars.each do |c|
+        description.gsub!(c, '')
       end
+      
+      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description)
       
 
       url = "http://www.google.com/search?num=30&q=site:#{SITE}+#{query_url_safe}"
+      
+      li "url: #{url}"
         
       page = open(url)
 

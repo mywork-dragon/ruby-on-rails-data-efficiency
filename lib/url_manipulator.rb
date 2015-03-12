@@ -13,6 +13,10 @@ class UrlManipulator
       url.match(regex) ? url.gsub(regex, "") : url
     end
     
+    def url_with_domain_only(url)
+      url_with_base_only(url).gsub(/\/.*\z/, '')
+    end
+    
     # Will get http://www.dropbox.com from:
     # https://www.google.com/url?q=http://www.dropbox.com&sa=D&usg=AFQjCNHkUkIvFbMV_t27v7cTn2Rd8cyuVw
     # @author Patrick Ellis

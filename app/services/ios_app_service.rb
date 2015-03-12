@@ -10,7 +10,7 @@ class IosAppService
       attributes.merge!(downloads_attributes)
       
       seller_url = attributes[:seller_url]
-      seller_domain = UrlManipulator.url_with_base_only(seller_url)
+      seller_domain = UrlManipulator.url_with_domain_only(seller_url)
       funding = CbService.attributes(seller_domain)
       
       attributes.merge!({funding: funding})
