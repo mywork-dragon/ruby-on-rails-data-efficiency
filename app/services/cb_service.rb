@@ -10,7 +10,7 @@ class CbService
 
     url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
   
-    ld "Google URL: #{url}"
+    #ld "Google URL: #{url}"
       
     page = open(url)
   
@@ -49,6 +49,7 @@ class CbService
     ret[:funding] = funding
     ret[:funding_text] = funding_text
     ret[:ipo] = ipo
+    ret[:acquired] = acquired
     
     ret
   end
@@ -85,6 +86,10 @@ class CbService
   
   def ipo
     @html.css('.overview-stats').children.map(&:text).include?('IPO / Stock')
+  end
+  
+  def acquired
+    @html.css('.overview-stats').children.map(&:text).any?{|s| s.match(/\AAcquired/)}
   end
 
   class << self
