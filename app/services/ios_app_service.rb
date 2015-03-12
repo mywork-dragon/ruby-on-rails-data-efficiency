@@ -6,7 +6,7 @@ class IosAppService
       
       attributes = AppStoreService.attributes(app_store_id)
       
-      downloads_attributes = DownloadsService.downloads_attributes(attributes[:title])
+      downloads_attributes = DownloadsService.downloads_attributes(title: attributes[:title], description: attributes[:description])
       attributes.merge!(downloads_attributes)
       
       seller_url = attributes[:seller_url]

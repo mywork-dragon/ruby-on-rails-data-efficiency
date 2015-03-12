@@ -4,10 +4,16 @@ SITE = 'xyo.net/iphone-app'
   
   class << self
   
-    def downloads_attributes(title)
-      query_url_safe = CGI::escape(title)
+    def downloads_attributes(app_attrs={})
+      
+      if app_attrs[:description]
+        query_url_safe = CGI::escape(app_attrs[:description])
+      else
+        query_url_safe = CGI::escape(app_attrs[:title])
+      end
+      
 
-      url = "http://www.google.com/search?num=30&q=#{query_url_safe}+site:#{SITE}"
+      url = "http://www.google.com/search?num=30&q=site:#{SITE}+#{query_url_safe}"
         
       page = open(url)
 
@@ -16,13 +22,13 @@ SITE = 'xyo.net/iphone-app'
       url = nil
     
       html.search("cite").map{|x| x.inner_text}.each do |link|
-        if link.match(SITE)
+        if link.include?(SITE)
           url = link
           break
         end
       end
       
-      puts "XYO URL: #{url}"
+      #li "XYO URL: #{url}"
       
       ret = {}
       
