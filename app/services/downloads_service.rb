@@ -1,6 +1,7 @@
 class DownloadsService
 
 SITE = 'xyo.net/iphone-app'
+GOOGLE_WORD_LIMIT = 32
   
   class << self
   
@@ -20,12 +21,15 @@ SITE = 'xyo.net/iphone-app'
         description.gsub!(c, '')
       end
       
-      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description)
+      description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
       
+      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description_truncated)
+      
+      full_query = "site:#{SITE}+#{query_url_safe}"
 
-      url = "http://www.google.com/search?num=30&q=site:#{SITE}+#{query_url_safe}"
+      url = "http://www.google.com/search?num=30&q=#{full_query}"
       
-      #li "url: #{url}"
+      li "url: #{url}"
         
       page = open(url)
 
