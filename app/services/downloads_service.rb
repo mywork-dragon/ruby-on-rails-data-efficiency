@@ -25,7 +25,7 @@ SITE = 'xyo.net/iphone-app'
 
       url = "http://www.google.com/search?num=30&q=site:#{SITE}+#{query_url_safe}"
       
-      li "url: #{url}"
+      #li "url: #{url}"
         
       page = open(url)
 
@@ -41,6 +41,8 @@ SITE = 'xyo.net/iphone-app'
       end
       
       #li "XYO URL: #{url}"
+      
+      return {downloads: nil} if url.nil?
       
       ret = {}
       

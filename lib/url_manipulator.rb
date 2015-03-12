@@ -14,7 +14,13 @@ class UrlManipulator
     end
     
     def url_with_domain_only(url)
-      url_with_base_only(url).gsub(/\/.*\z/, '')
+      ret = url_with_base_only(url).gsub(/\/.*\z/, '')  #remove stuff after .com
+      
+      if match = ret.match(/\..*\..*/)
+        ret = match[0].gsub(/\A./, '') 
+      end
+        
+      ret
     end
     
     # Will get http://www.dropbox.com from:

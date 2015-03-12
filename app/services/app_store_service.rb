@@ -12,7 +12,9 @@ class AppStoreService
     
     methods = []
     
-    if @json || options[:html_only]
+    html_only = options[:html_only]
+    
+    if @json && !html_only
       methods += %w(
         title_json
         description_json
@@ -27,7 +29,7 @@ class AppStoreService
         recommended_age_json
         required_ios_version_json
       )
-    elsif @html
+    elsif @html || html_only
       methods += %w(
         title_html
         description_html
@@ -47,7 +49,7 @@ class AppStoreService
     # Must use HTML for these
     if @html
       methods += %w(
-        contact_url_html
+        support_url_html
         updated_html
         languages_html
         in_app_purchases_html
@@ -151,16 +153,18 @@ class AppStoreService
 
   def seller_url_html
     begin
-      @html.css(".app-links").children.first['href']
+      children = @html.css(".app-links").children
+      children.select{|c| c.text.match(/Site\z/)}.first['href']
     rescue
       nil
     end
   end
 
   # Only available in HTML 
-  def contact_url_html
+  def support_url_html
     begin
-      @html.css(".app-links").children[1]['href']
+      children = @html.css(".app-links").children
+      children.select{|c| c.text.match(/Support\z/)}.first['href']
     rescue
       nil
     end
@@ -317,8 +321,8 @@ class AppStoreService
     # Attributes hash
     # @author Jason Lew
     # @param id The App Store identifier
-    def attributes(id)
-      self.new.attributes(id)
+    def attributes(id, options={})
+      self.new.attributes(id, options)
     end
     
     def test(options={})
