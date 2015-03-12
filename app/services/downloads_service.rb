@@ -40,7 +40,7 @@ SITE = 'xyo.net/iphone-app'
         end
       end
       
-      #li "XYO URL: #{url}"
+      ld "XYO URL: #{url}"
       
       return {downloads: nil} if url.nil?
       
@@ -59,7 +59,7 @@ SITE = 'xyo.net/iphone-app'
     
     def downloads_html(url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
-      puts "url_cache: #{url_cache}"
+      #puts "url_cache: #{url_cache}"
       
       page = open(url_cache)
       Nokogiri::HTML(page)

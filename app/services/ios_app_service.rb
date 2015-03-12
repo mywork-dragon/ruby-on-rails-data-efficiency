@@ -10,6 +10,7 @@ class IosAppService
       attributes.merge!(downloads_attributes)
       
       if cb_url = url_for_cb(attributes)
+        # li "cb_url: #{cb_url}"
         seller_domain = UrlManipulator.url_with_domain_only(cb_url)
         funding = CbService.attributes(seller_domain)
       
@@ -23,6 +24,8 @@ class IosAppService
     
     def url_for_cb(attributes)
       seller_url = attributes[:seller_url]
+      return seller_url if seller_url
+      
       support_url = attributes[:support_url]
       
       if seller_url.nil?
