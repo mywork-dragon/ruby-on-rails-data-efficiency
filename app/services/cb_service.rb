@@ -89,7 +89,7 @@ class CbService
   end
   
   def acquired
-    @html.css('.overview-stats').children.map(&:text).any?{|s| s.match(/\AAcquired/)}
+    @html.css('.overview-stats').children.map(&:text).any?{ |s| s.match(/\AAcquired/) }
   end
 
   class << self

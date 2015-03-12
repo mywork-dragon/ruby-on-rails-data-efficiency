@@ -154,7 +154,7 @@ class AppStoreService
   def seller_url_html
     begin
       children = @html.css(".app-links").children
-      children.select{|c| c.text.match(/Site\z/)}.first['href']
+      children.select{ |c| c.text.match(/Site\z/) }.first['href']
     rescue
       nil
     end
@@ -164,7 +164,7 @@ class AppStoreService
   def support_url_html
     begin
       children = @html.css(".app-links").children
-      children.select{|c| c.text.match(/Support\z/)}.first['href']
+      children.select{ |c| c.text.match(/Support\z/) }.first['href']
     rescue
       nil
     end
@@ -200,14 +200,14 @@ class AppStoreService
   # In B
   # @author Jason Lew
   def size_html
-    size_text = @html.css('li').select{|li| li.text.match(/Size: /)}.first.children[1].text
+    size_text = @html.css('li').select{ |li| li.text.match(/Size: /) }.first.children[1].text
     Filesize.from(size_text).to_i
   end
 
   # Only using HTML (abbreviations available in JSON)
   def languages_html
     begin
-      languages_text = @html.css('li').select{|li| li.text.match(/Languages*: /)}.first.children[1].text
+      languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
       languages_text.split(', ')
     rescue
       nil
@@ -220,7 +220,7 @@ class AppStoreService
   end
   
   def seller_html
-    @html.css('li').select{|li| li.text.match(/Seller: /)}.first.children[1].text
+    @html.css('li').select{ |li| li.text.match(/Seller: /) }.first.children[1].text
   end
 
   def developer_app_store_identifier_json
@@ -234,7 +234,7 @@ class AppStoreService
   # HTML only
   def in_app_purchases_html
     lis = @html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
-    lis.map{|li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i}}
+    lis.map{ |li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
   end
 
   def ratings_json
@@ -341,7 +341,7 @@ class AppStoreService
       html = Nokogiri::HTML(page)
     
       app_prefix = 'https://itunes.apple.com/us/app/'
-      links = html.css("a").select{|a| a['href'].match(app_prefix) }.map{|a| a['href']}
+      links = html.css("a").select{ |a| a['href'].match(app_prefix) }.map{|a| a['href']}
       puts links
       
       ids = links.map{|link| link.match(/\/id\d*/)[0].gsub('/id', '')}
