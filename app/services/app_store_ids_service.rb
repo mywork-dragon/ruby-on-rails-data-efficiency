@@ -58,11 +58,11 @@ class AppStoreIdsService
       ios-weather/id6001
     )
 
-    app_url_ids = app_url_ids[(2..2)] #for debug, only run catalogs for now
+    #app_url_ids = app_url_ids[(2..2)] #for debug, only run catalogs for now
 
     # url string param for each sub group of app category
     app_url_letters = ('A'..'Z').to_a + ['*']
-    app_url_letters.select!{ |l| l == 'A' } # for debug, only run letter A for now
+    #app_url_letters.select!{ |l| l == 'A' } # for debug, only run letter A for now
 
     # for each category of app
     app_url_ids.each do |app_id|
