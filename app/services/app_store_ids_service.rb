@@ -1,5 +1,10 @@
 class AppStoreIdsService
 
+  def initialize(options={})
+    @apps_found_count = 0
+    @apps_added_count = 0
+  end
+
   # helper method - opens url, returning Nokogiri object
   def open_url(url)
 
@@ -27,7 +32,6 @@ class AppStoreIdsService
   # into "550882015", rutrning Set of all these ids
   def scrape_app_store
     # url string param for each category of app
-    # @patrick You can use this syntax when you have a bunch a string literals with no spaces
     app_url_ids = %w(
       ios-books/id6018
       ios-business/id6000
@@ -57,7 +61,7 @@ class AppStoreIdsService
     app_url_ids = app_url_ids[(2..2)] #for debug, only run catalogs for now
 
     # url string param for each sub group of app category
-    app_url_letters = ('A'..'Z').to_a + ['*'] # @patrick you can create the alphabet using a Ruby range
+    app_url_letters = ('A'..'Z').to_a + ['*']
     app_url_letters.select!{ |l| l == 'A' } # for debug, only run letter A for now
 
     # for each category of app
@@ -100,7 +104,7 @@ class AppStoreIdsService
               # finds the href link inside the <a> and strips out the id, casting it to an Integer
               # Before: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
               # After: 550882015
-              links.map { |link| app_ids << link['href'].gsub('?mt=8','').split('id').last.to_i } #@patrick Usually use brackets on one line and "do...end" on multiple lines (for readability)
+              links.map { |link| app_ids << link['href'].gsub('?mt=8','').split('id').last.to_i }
             
             end
             
@@ -113,12 +117,37 @@ class AppStoreIdsService
       end
       
     end
+    
+    li ""
+    li "apps found: #{@apps_found_count}"
+    li "apps added: #{@apps_added_count}"
 
   end
   
+  # Pass array of app ids to add to db
   def add_to_db(app_ids)
     li "app_ids to add: #{app_ids}"
     li "count: #{app_ids.count}"
+    
+    app_ids.each do |app_id|
+      @apps_found_count += 1
+      
+      ios_app = IosApp.find_by_app_identifier(app_id)
+      
+      if ios_app.nil?
+        ios_app = IosApp.new(app_identifier: app_id)
+        app = App.create
+        ios_app.app = app
+        success = ios_app.save
+        
+        @apps_added_count += 1 if success
+      else
+        li "IosApp #{app_id} already in db"
+      end
+      
+    end
+    
+    
   end
   
   class << self
