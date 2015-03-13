@@ -26,9 +26,6 @@ class AppStoreIdsService
   # find & converts app link: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
   # into "550882015", rutrning Set of all these ids
   def scrape_app_store
-
-    app_ids = Set.new # @patrick Ruby style usually uses underscore naming conventions for local vars :)
-
     # url string param for each category of app
     # @patrick You can use this syntax when you have a bunch a string literals with no spaces
     app_url_ids = %w(
@@ -69,6 +66,8 @@ class AppStoreIdsService
       # for each beginning letter of app name in category
       app_url_letters.each do |app_letter|
         
+        app_ids = Set.new
+        
         last_page = false
 
         page_num = 0
@@ -79,9 +78,9 @@ class AppStoreIdsService
 
           puts "SCRAPING    CATEGORY: " + app_id + "    SUB GROUP: " + app_letter + "    PAGE: " + page_num.to_s + "..."
              
-           # Compiles link for page of app list
-           # Example: https://itunes.apple.com/us/genre/ios-weather/id6001?mt=8&letter=C&page=2
-           dom = open_url("https://itunes.apple.com/us/genre/" + app_id + "?letter=" + app_letter + "&page=" + page_num.to_s)
+            # Compiles link for page of app list
+            # Example: https://itunes.apple.com/us/genre/ios-weather/id6001?mt=8&letter=C&page=2
+            dom = open_url("https://itunes.apple.com/us/genre/" + app_id + "?letter=" + app_letter + "&page=" + page_num.to_s)
 
             if dom != nil
 
@@ -102,10 +101,12 @@ class AppStoreIdsService
               # Before: "https://itunes.apple.com/us/app/clearweather-color-forecast/id550882015?mt=8"
               # After: 550882015
               links.map { |link| app_ids << link['href'].gsub('?mt=8','').split('id').last.to_i } #@patrick Usually use brackets on one line and "do...end" on multiple lines (for readability)
-              
+            
             end
             
           end
+          
+          add_to_db(app_ids.to_a)
           
         end
         
@@ -113,8 +114,11 @@ class AppStoreIdsService
       
     end
 
-    app_ids.to_a
-
+  end
+  
+  def add_to_db(app_ids)
+    li "app_ids to add: #{app_ids}"
+    li "count: #{app_ids.count}"
   end
   
   class << self
