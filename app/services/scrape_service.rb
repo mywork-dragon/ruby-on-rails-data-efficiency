@@ -146,7 +146,7 @@ class ScrapeService
   # Content from the headless browser
   def content_from_headless_browser(url)
     phantomjs = nil
-    if(Rails.env.production?)
+    if Rails.env.production?
       phantomjs = './phantomjs/linux/phantomjs'
     else
       phantomjs = './phantomjs/mac_os/phantomjs'
