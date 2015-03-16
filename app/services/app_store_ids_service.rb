@@ -79,7 +79,7 @@ class AppStoreIdsService
     end
   
     def perform(app_id, app_letter)
-      SidekiqTester.create!(test_string: "#{app_id} #{app_letter}", ip: MyIp.ip)
+      #SidekiqTester.create!(test_string: "#{app_id} #{app_letter}", ip: MyIp.ip)
       
       app_ids = Set.new
     
