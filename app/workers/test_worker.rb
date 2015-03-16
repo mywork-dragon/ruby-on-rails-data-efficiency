@@ -2,6 +2,6 @@ class TestWorker
   include Sidekiq::Worker
 
   def perform(string)
-    SidekiqTester.create!(test_string: string, MyIp.ip)
+    SidekiqTester.create!(test_string: string, ip: MyIp.ip)
   end
 end
