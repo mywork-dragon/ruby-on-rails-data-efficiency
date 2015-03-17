@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150316052207) do
+ActiveRecord::Schema.define(version: 20150317220113) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -174,6 +174,20 @@ ActiveRecord::Schema.define(version: 20150316052207) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
+  end
+
+  create_table "m_turk_workers", force: true do |t|
+    t.string   "aws_identifier"
+    t.integer  "age"
+    t.string   "gender"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "iphone"
+    t.string   "ios_version"
+    t.string   "heroku_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "matchers", force: true do |t|
