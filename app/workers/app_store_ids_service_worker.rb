@@ -47,6 +47,26 @@ class AppStoreIdsServiceWorker
     end
   end
   
+  def open_url(url)
+
+    page = open(url)
+
+    Nokogiri::HTML(page)
+
+    # Rescues error if issue opening URL
+    rescue => e
+      case e
+        when OpenURI::HTTPError
+          puts "HTTPError - could not open page"
+          return nil
+        when URI::InvalidURIError
+          puts "InvalidURIError - could not open page"
+          return nil
+        else
+          raise e
+    end
+  end
+  
   # Pass array of app ids to add to db
   def add_to_db(app_ids)
   

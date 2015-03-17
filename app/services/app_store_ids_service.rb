@@ -2,26 +2,30 @@ class AppStoreIdsService
 
   class << self
 
-    # helper method - opens url, returning Nokogiri object
-    def open_url(url)
-
-      page = open(url)
-
-      Nokogiri::HTML(page)
-
-      # Rescues error if issue opening URL
-      rescue => e
-        case e
-          when OpenURI::HTTPError
-            puts "HTTPError - could not open page"
-            return nil
-          when URI::InvalidURIError
-            puts "InvalidURIError - could not open page"
-            return nil
-          else
-            raise e
-      end
+    def test
+      AppStoreIdsServiceWorkerz
     end
+
+    # helper method - opens url, returning Nokogiri object
+    # def open_url(url)
+    #
+    #   page = open(url)
+    #
+    #   Nokogiri::HTML(page)
+    #
+    #   # Rescues error if issue opening URL
+    #   rescue => e
+    #     case e
+    #       when OpenURI::HTTPError
+    #         puts "HTTPError - could not open page"
+    #         return nil
+    #       when URI::InvalidURIError
+    #         puts "InvalidURIError - could not open page"
+    #         return nil
+    #       else
+    #         raise e
+    #   end
+    # end
 
     # scrapes Apple Appstore, returning Set of all unique app ids as Integers
     # example:
