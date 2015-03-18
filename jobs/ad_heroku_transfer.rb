@@ -98,8 +98,8 @@ class AdHerokuTransfer
       add_ads(options[:ads_json_file])
     end
     
-    def create_csv(path)
-      CSV.open(path, "w+") do |csv|
+    def create_csv
+      CSV.open('home/deploy/fb_ads_with_data.csv', "w+") do |csv|
         columns = %w(
           title_json
           description_json
