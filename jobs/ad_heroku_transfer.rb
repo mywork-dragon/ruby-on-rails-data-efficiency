@@ -98,20 +98,40 @@ class AdHerokuTransfer
       add_ads(options[:ads_json_file])
     end
     
-    def hydrate_apps
-      
-      IosApp.includes(:fb_ad_appearances).where.not(fb_ad_appearances: {id: nil}).find_each do |ios_app|
-       delay.hydrate_app(ios_app.id) 
-      end
-      
-      
+    def create_csv(path)
+      CSV.open(path, "w+") do |csv|
+        columns = %w(
+          title_json
+          description_json
+          release_notes_json
+          price_json
+          seller_url_json
+          categories_json
+          size_json
+          seller_json
+          developer_app_store_identifier_json
+          ratings_json
+          recommended_age_json
+          required_ios_version_json
+          support_url_html
+          updated_html
+          languages_html
+          in_app_purchases_html
+          editors_choice_html
+        )
+        
+        csv << columns
+        puts columns
+
+        IosApp.includes(:fb_ad_appearances).where.not(fb_ad_appearances: {id: nil}).find_each do |ios_app|
+           attributes = IosAppService.attributes(ios_app.app_identifier)
+           puts attributes
+           csv << attributes.values
+        end
+        
+      end      
     end
     
-    def hydrate_app(ios_app_id)
-      
-      
-      
-    end
     
   end
 
