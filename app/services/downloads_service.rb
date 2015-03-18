@@ -29,7 +29,7 @@ GOOGLE_WORD_LIMIT = 32
 
       url = "http://www.google.com/search?num=30&q=#{full_query}"
       
-      li "url: #{url}"
+      #li "url: #{url}"
         
       page = open(url)
 
@@ -44,7 +44,7 @@ GOOGLE_WORD_LIMIT = 32
         end
       end
       
-      ld "XYO URL: #{url}"
+      #ld "XYO URL: #{url}"
       
       return {downloads: nil} if url.nil?
       

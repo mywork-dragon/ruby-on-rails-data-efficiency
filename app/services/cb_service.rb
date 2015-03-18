@@ -10,7 +10,7 @@ class CbService
 
     url = "http://www.google.com/search?num=#{NUMBER_OF_RESULTS}&q=#{query_url_safe}+site:#{SITE}"
   
-    ld "Google URL: #{url}"
+    #ld "Google URL: #{url}"
       
     page = open(url)
   
@@ -21,7 +21,7 @@ class CbService
     html.search("cite").each do |cite|
       url = cite.inner_text
       if(url.match(/crunchbase.com\/organization\/[^\/]*\z/))
-        ld url
+        #ld url
         
         url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
         

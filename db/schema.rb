@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317220113) do
+ActiveRecord::Schema.define(version: 20150318001444) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -116,6 +116,16 @@ ActiveRecord::Schema.define(version: 20150317220113) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "fb_ad_appearances", force: true do |t|
+    t.string   "aws_assignment_identifier"
+    t.string   "hit_identifier"
+    t.integer  "heroku_identifier"
+    t.integer  "m_turk_worker_id"
+    t.integer  "ios_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"
