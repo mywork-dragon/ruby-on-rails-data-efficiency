@@ -47,7 +47,7 @@ class AdHerokuTransfer
       puts "aa: #{aa}"
       
       if aa
-        li "FbAddAppearance #{aa} already in DB"
+        li "FbAdAppearance #{aa} already in DB"
       else
         aa = FbAdAppearance.new(
           aws_assignment_identifier: aws_assignment_identifier,
@@ -93,12 +93,16 @@ class AdHerokuTransfer
     # run(ads_json_file: path_to_ads_json, workers_json_file: path_to_workers_json)
     # @author Jason Lew
     def run(options={})
-      if options[:ads_json_file].nil? || options[:workers_json_file]
+      if options[:ads_json_file].nil? || options[:workers_json_file].nil?
         raise "Need keys :ads_json_file and :workers_json_file"
       end
       
-      add_workers(options[:ads_json_file])
-      add_ads(options[:workers_json_file])
+      options.each do |key, value|
+        raise "File #{value} does not exist" if !File.exist?(value)
+      end
+      
+      add_workers(options[:workers_json_file])
+      add_ads(options[:ads_json_file])
     end
     
   end
