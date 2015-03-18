@@ -21,7 +21,6 @@ class SyntaxTest < ActiveSupport::TestCase
   test "Ruby classes should have valid syntax" do
     @class_files.each do |file|
       output = `ruby -c #{file}`.strip
-      puts "output: #{output}"
       assert (output == "Syntax OK"), "#{file} failed the syntax test"
     end
   end
