@@ -83,7 +83,6 @@ class AdHerokuTransfer
       nil
     end
     
-    
     # run(ads_json_file: path_to_ads_json, workers_json_file: path_to_workers_json)
     # @author Jason Lew
     def run(options={})
@@ -97,6 +96,21 @@ class AdHerokuTransfer
     
       add_workers(options[:workers_json_file])
       add_ads(options[:ads_json_file])
+    end
+    
+    def hydrate_apps
+      
+      IosApp.includes(:fb_ad_appearances).where.not(fb_ad_appearances: {id: nil}).find_each do |ios_app|
+       delay.hydrate_app(ios_app.id) 
+      end
+      
+      
+    end
+    
+    def hydrate_app(ios_app_id)
+      
+      
+      
     end
     
   end
