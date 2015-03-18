@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150318042058) do
+ActiveRecord::Schema.define(version: 20150318043737) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -127,6 +127,9 @@ ActiveRecord::Schema.define(version: 20150318042058) do
     t.datetime "updated_at"
   end
 
+  add_index "fb_ad_appearances", ["aws_assignment_identifier"], name: "index_fb_ad_appearances_on_aws_assignment_identifier", using: :btree
+  add_index "fb_ad_appearances", ["hit_identifier"], name: "index_fb_ad_appearances_on_hit_identifier", using: :btree
+
   create_table "installations", force: true do |t|
     t.integer  "company_id"
     t.integer  "service_id"
@@ -201,6 +204,8 @@ ActiveRecord::Schema.define(version: 20150318042058) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "m_turk_workers", ["aws_identifier"], name: "index_m_turk_workers_on_aws_identifier", using: :btree
 
   create_table "matchers", force: true do |t|
     t.integer  "service_id"
