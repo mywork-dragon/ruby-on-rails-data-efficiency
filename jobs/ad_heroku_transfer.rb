@@ -42,50 +42,47 @@ class AdHerokuTransfer
     
       json.each do |ad_hash|
         
-        delay(queue: 'critical').perform(ad_hash)
+        aws_assignment_identifier = ad_hash['aws_assignment_id']
+        ios_app_app_identifier = ad_hash['app_store_id']
+    
+        aa = FbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, ios_app: IosApp.find_by_app_identifier(ios_app_app_identifier)).first
+    
+        puts "aa: #{aa}"
+    
+        if aa
+          li "FbAdAppearance #{aa} already in DB"
+        else
+          aa = FbAdAppearance.new(
+            aws_assignment_identifier: aws_assignment_identifier,
+            hit_identifier: ad_hash['hit_id'],
+            heroku_identifier: ad_hash['heroku_id'] 
+          )
+      
+      
+          aws_worker_identifier = ad_hash['aws_worker_id']
+          m_turk_worker = MTurkWorker.find_by_aws_identifier(aws_worker_identifier)
+          aa.m_turk_worker = m_turk_worker
+      
+          ios_app = IosApp.find_by_app_identifier(ios_app_app_identifier)
+      
+          if ios_app.nil?
+        
+            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier) 
+            app = App.create
+            ios_app.app = app
+            ios_app.save!
+          end
+      
+          aa.ios_app = ios_app
+      
+          aa.save!
+        end
       
       end
     
       nil
     end
     
-    def perform(ad_hash)
-      aws_assignment_identifier = ad_hash['aws_assignment_id']
-      ios_app_app_identifier = ad_hash['app_store_id']
-    
-      aa = FbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, ios_app: IosApp.find_by_app_identifier(ios_app_app_identifier)).first
-    
-      puts "aa: #{aa}"
-    
-      if aa
-        li "FbAdAppearance #{aa} already in DB"
-      else
-        aa = FbAdAppearance.new(
-          aws_assignment_identifier: aws_assignment_identifier,
-          hit_identifier: ad_hash['hit_id'],
-          heroku_identifier: ad_hash['heroku_id'] 
-        )
-      
-      
-        aws_worker_identifier = ad_hash['aws_worker_id']
-        m_turk_worker = MTurkWorker.find_by_aws_identifier(aws_worker_identifier)
-        aa.m_turk_worker = m_turk_worker
-      
-        ios_app = IosApp.find_by_app_identifier(ios_app_app_identifier)
-      
-        if ios_app.nil?
-        
-          ios_app = IosApp.create!(app_identifier: ios_app_app_identifier) 
-          app = App.create
-          ios_app.app = app
-          ios_app.save!
-        end
-      
-        aa.ios_app = ios_app
-      
-        aa.save!
-      end
-    end
     
     # run(ads_json_file: path_to_ads_json, workers_json_file: path_to_workers_json)
     # @author Jason Lew
