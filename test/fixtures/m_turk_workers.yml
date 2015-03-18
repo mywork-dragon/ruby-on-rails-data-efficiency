@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  worker_identifier: 1
+  aws_identifier: MyString
   age: 1
   gender: MyString
   city: MyString
@@ -12,7 +12,7 @@ one:
   heroku_identifier: MyString
 
 two:
-  worker_identifier: 1
+  aws_identifier: MyString
   age: 1
   gender: MyString
   city: MyString
