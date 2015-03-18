@@ -7,6 +7,7 @@ namespace 'apps' do
   
   desc 'Ad Heroku transfer CSV'
   task :ad_heroku_transfer_csv => [:environment] do
+    AdHerokuTransfer.create_csv
   end
   
 end
