@@ -65,7 +65,7 @@ GOOGLE_WORD_LIMIT = 32
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
       #puts "url_cache: #{url_cache}"
       
-      page = open(url_cache, "User-Agent" => UserAgent.random_web)
+      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
       Nokogiri::HTML(page)
     end 
     
