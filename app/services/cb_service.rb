@@ -12,7 +12,7 @@ class CbService
   
     #ld "Google URL: #{url}"
       
-    page = open(url, "User-Agent" => UserAgent.random_web)
+    page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
   
     url_cache = nil
 

@@ -31,7 +31,7 @@ GOOGLE_WORD_LIMIT = 32
       
       #li "url: #{url}"
         
-      page = open(url, "User-Agent" => UserAgent.random_web)
+      page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
 
       html = Nokogiri::HTML(page)
     
