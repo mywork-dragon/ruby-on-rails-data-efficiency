@@ -91,7 +91,7 @@ class AppStoreService
 
     #li "url: #{url}"
 
-    page = open(url, "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36")
+    page = open(url, "User-Agent" => UserAgent.random_web)
     html = Nokogiri::HTML(page)
     
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
