@@ -57,15 +57,17 @@ class Ec2Launcher
       security_group = resource.security_groups.find{|sg| sg.group_name == security_group_name }
       puts "Using security group: #{security_group.group_name}" 
  
-      return
- 
       # create the instance (and launch it)
-      instance = ec2.instances.create(:image_id        => image.id, 
-                                      :instance_type   => instance_type,
-                                      :count           => 1,
-                                      :security_groups => security_group,
-                                      :key_pair        => key_pair)
+      instance = resource.create_instances( :image_id        => image.id, 
+                                            :instance_type   => instance_type,
+                                            :min_count       => 1,
+                                            :max_count       => 1,
+                                            :security_group_ids => [security_group.id],
+                                            :key_name        => key_pair.name
+                                          )
       puts "Launching machine ..."
+ 
+      return
  
       # wait until battle station is fully operational
       sleep 1 until instance.status != :pending
