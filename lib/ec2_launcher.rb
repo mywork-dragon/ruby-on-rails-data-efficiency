@@ -21,9 +21,9 @@ class Ec2Launcher
  
       ec2                 = Aws::EC2::Client.new(credentials: creds, region: 'us-east-1')            # choose region here
       ami_name            = '*ubuntu-lucid-10.04-amd64-server-20110719'  # which AMI to search for and use
-      key_pair_name       = 'varys'                         # key pair name
+      key_pair_name       = 'varys'                                      # key pair name
       private_key_file    = "#{ENV['HOME']}/.ssh/matt-housetrip-aws.pem" # path to your private key
-      security_group_name = 'housetrip-basic'                            # security group name
+      security_group_name = 'varys'                                      # security group name
       instance_type       = 't1.micro'                                   # machine instance type (must be approriate for chosen AMI)
       ssh_username        = 'ubuntu'                                     # default user name for ssh'ing
  
@@ -33,23 +33,12 @@ class Ec2Launcher
       
       #return
  
-      image = resource.images(filters: [{:name=>"image-id",:values=>["ami-fb8e9292"]}]).first
+      image = resource.images(filters: [{:name=>"image-id",:values=>["ami-84562dec"]}]).first
       
       #image = images.find{ |image| image.name.include('ubuntu') }.first
  
       puts "image: #{image}"
       
-      # ec2.images.filter("root-device-type", "ebs").filter('name', ami_name).first
-      #
-      # if image
-      #   puts "Using AMI: #{image.id}"
-      # else
-      #   raise "No image found matching #{ami_name}"
-      # end
-      #
-      
-      
- 
       # find or create a key pair
       
       key_pair = nil
@@ -64,11 +53,11 @@ class Ec2Launcher
       # puts key_pair = resource.key_pairs[key_pair_name]
       puts "Using keypair #{key_pair.name}"
  
-      return
- 
       # find security group
-      security_group = ec2.security_groups.find{|sg| sg.name == security_group_name }
-      puts "Using security group: #{security_group.name}" 
+      security_group = resource.security_groups.find{|sg| sg.group_name == security_group_name }
+      puts "Using security group: #{security_group.group_name}" 
+ 
+      return
  
       # create the instance (and launch it)
       instance = ec2.instances.create(:image_id        => image.id, 
