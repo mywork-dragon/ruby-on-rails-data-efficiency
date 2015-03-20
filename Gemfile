@@ -75,6 +75,8 @@ gem 'sidekiq'
 
 gem 'filesize'
 
+gem 'aws-sdk', '~> 2'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
