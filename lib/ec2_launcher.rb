@@ -16,34 +16,47 @@ class Ec2Launcher
       end
       
       
-      return
-      
-      AWS.config(:access_key_id     => ENV['HT_DEV_AWS_ACCESS_KEY_ID'],
-                 :secret_access_key => ENV['HT_DEV_AWS_SECRET_ACCESS_KEY'])
-                 
+      #Aws.config(access_key_id: access_key_id, secret_access_key: secret_access_key)
+      creds = Aws::Credentials.new(access_key_id, secret_access_key)          
  
-      ec2                 = AWS::EC2.new.regions['eu-west-1']            # choose region here
+      ec2                 = Aws::EC2::Client.new(credentials: creds, region: 'us-east-1')            # choose region here
       ami_name            = '*ubuntu-lucid-10.04-amd64-server-20110719'  # which AMI to search for and use
-      key_pair_name       = 'matt-housetrip-aws'                         # key pair name
+      key_pair_name       = 'varys'                         # key pair name
       private_key_file    = "#{ENV['HOME']}/.ssh/matt-housetrip-aws.pem" # path to your private key
       security_group_name = 'housetrip-basic'                            # security group name
       instance_type       = 't1.micro'                                   # machine instance type (must be approriate for chosen AMI)
       ssh_username        = 'ubuntu'                                     # default user name for ssh'ing
  
-      # find the AMI based on name (memoize so only 1 api call made for image)
-      image = AWS.memoize do
-        ec2.images.filter("root-device-type", "ebs").filter('name', ami_name).first
-      end
+      #puts ec2.describe_instances
+      
+      #return
  
-      if image
-        puts "Using AMI: #{image.id}"
-      else
-        raise "No image found matching #{ami_name}"
-      end
+      # ec2.images.filter("root-device-type", "ebs").filter('name', ami_name).first
+      #
+      # if image
+      #   puts "Using AMI: #{image.id}"
+      # else
+      #   raise "No image found matching #{ami_name}"
+      # end
+      #
+      
+      resource = Aws::EC2::Resource.new(client: ec2)
  
       # find or create a key pair
-      key_pair = ec2.key_pairs[key_pair_name]
-      puts "Using keypair #{key_pair.name}, fingerprint: #{key_pair.fingerprint}"
+      
+      key_pair = nil
+      
+      key_pairs = resource.key_pairs
+      key_pairs.each do |kp|
+        if kp.name == key_pair_name
+          key_pair = kp
+          break
+        end
+      end
+      # puts key_pair = resource.key_pairs[key_pair_name]
+      puts "Using keypair #{key_pair.name}"
+ 
+      return
  
       # find security group
       security_group = ec2.security_groups.find{|sg| sg.name == security_group_name }
