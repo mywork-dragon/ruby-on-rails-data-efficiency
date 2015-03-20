@@ -27,10 +27,18 @@ class Ec2Launcher
       instance_type       = 't1.micro'                                   # machine instance type (must be approriate for chosen AMI)
       ssh_username        = 'ubuntu'                                     # default user name for ssh'ing
  
+      resource = Aws::EC2::Resource.new(client: ec2)
+ 
       #puts ec2.describe_instances
       
       #return
  
+      image = resource.images(filters: [{:name=>"image-id",:values=>["ami-fb8e9292"]}]).first
+      
+      #image = images.find{ |image| image.name.include('ubuntu') }.first
+ 
+      puts "image: #{image}"
+      
       # ec2.images.filter("root-device-type", "ebs").filter('name', ami_name).first
       #
       # if image
@@ -40,7 +48,7 @@ class Ec2Launcher
       # end
       #
       
-      resource = Aws::EC2::Resource.new(client: ec2)
+      
  
       # find or create a key pair
       
