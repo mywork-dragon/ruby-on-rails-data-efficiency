@@ -21,9 +21,9 @@ class Ec2Launcher
  
       ec2                 = Aws::EC2::Client.new(credentials: creds, region: 'us-east-1')            # choose region here
       ami_name            = '*ubuntu-lucid-10.04-amd64-server-20110719'  # which AMI to search for and use
-      key_pair_name       = 'varys'                                      # key pair name
+      key_pair_name       = 'proxy'                                      # key pair name
       private_key_file    = "#{ENV['HOME']}/.ssh/matt-housetrip-aws.pem" # path to your private key
-      security_group_name = 'varys'                                      # security group name
+      security_group_name = 'proxy'                                      # security group name
       instance_type       = 't1.micro'                                   # machine instance type (must be approriate for chosen AMI)
       ssh_username        = 'ubuntu'                                     # default user name for ssh'ing
  
