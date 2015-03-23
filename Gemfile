@@ -44,7 +44,6 @@ gem 'spring',        group: :development
 
 gem 'whenever', require: false
 
-# if you actually parse html
 gem 'nokogiri'
 
 # for depoyment
