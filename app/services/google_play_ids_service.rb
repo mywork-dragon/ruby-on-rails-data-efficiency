@@ -107,27 +107,17 @@ class GooglePlayIdsService
             # Regex parses HTML document, finding the pagTok (page token)
             pag_token_array = apps_page_dom.to_html.match(/GAEi+.+\:S\:.{11}\\42/)
 
-            puts pag_token
-
-            puts pag_token_array.inspect
-
             if pag_token_array != nil
               # Cleans up pagTok, returning ready-for-use string
-              pag_token = pag_token_array[0].gsub(':S:','%3AS%3A').gsub('\\42','').gsub('\\u003d','')
+              pag_token = pag_token_array[0].gsub(':S:','%3AS%3A').gsub('\\42','').gsub('\\u003d','').split(',').last
             else
               pag_token = nil
             end
 
-            puts pag_token
-
             page_url = "https://play.google.com/store/search?q=" + app_category + "&c=apps&start=0&num=0&numChildren=0&pagTok=" + pag_token + "&ipf=1&xhr=1"
-
-            puts page_url
-
+            
             # Open initial page
             apps_page_dom = open_url(page_url)
-
-            puts apps_page_dom
 
           end
 
