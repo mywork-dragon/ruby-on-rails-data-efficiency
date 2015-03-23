@@ -3,7 +3,7 @@ require 'test_helper'
 class SyntaxTest < ActiveSupport::TestCase
   
   def setup
-    directories = ['/app/models/*.rb', '/app/controllers/*.rb', 'app/services/*.rb', 'jobs/*.rb']
+    directories = ['/app/models/*.rb', '/app/controllers/*.rb', 'app/services/*.rb', 'app/workers/*.rb' 'jobs/*.rb']
   
     @class_files = []
   

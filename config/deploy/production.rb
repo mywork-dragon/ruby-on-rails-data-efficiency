@@ -4,9 +4,17 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, ['54.85.3.24', '54.164.24.87', '54.88.39.109']
-role :web, '54.85.3.24'
-role :db,  '54.85.3.24'
+web_server = '54.85.3.24'
+
+scraper_servers = %w(
+  54.164.24.87
+  54.88.39.109
+  54.86.80.102
+)
+
+role :app, [web_server] + scraper_servers
+role :web, web_server
+role :db,  web_server
 
 
 # Extended Server Syntax
@@ -15,9 +23,11 @@ role :db,  '54.85.3.24'
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '54.85.3.24', user: 'deploy', roles: %w{web app db}
-server '54.164.24.87', user: 'deploy'
-server '54.88.39.109', user: 'deploy'
+server web_server, user: 'deploy', roles: %w{web app db}
+
+scraper_servers.each do |scraper_server|
+  server scraper_server, user: 'deploy'
+end
 
 # Custom SSH Options
 # ==================

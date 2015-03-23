@@ -1,28 +1,52 @@
 class DownloadsService
 
 SITE = 'xyo.net/iphone-app'
+GOOGLE_WORD_LIMIT = 32
   
   class << self
   
-    def downloads_attributes(title)
-      query_url_safe = CGI::escape(title)
+    def downloads_attributes(app_attrs={})
+      
+      # if app_attrs[:description]
+      #   query_url_safe = CGI::escape(app_attrs[:description])
+      # else
+      #   query_url_safe = CGI::escape(app_attrs[:title])
+      # end
+      
+      description = app_attrs[:description]
+      
+      google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
+      
+      google_special_chars.each do |c|
+        description.gsub!(c, '')
+      end
+      
+      description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
+      
+      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description_truncated)
+      
+      full_query = "site:#{SITE}+#{query_url_safe}"
 
-      url = "http://www.google.com/search?num=30&q=#{query_url_safe}+site:#{SITE}"
+      url = "http://www.google.com/search?num=30&q=#{full_query}"
+      
+      #li "url: #{url}"
         
-      page = open(url)
+      page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
 
       html = Nokogiri::HTML(page)
     
       url = nil
     
       html.search("cite").map{|x| x.inner_text}.each do |link|
-        if link.match(SITE)
+        if link.include?(SITE)
           url = link
           break
         end
       end
       
-      puts "XYO URL: #{url}"
+      #ld "XYO URL: #{url}"
+      
+      return {downloads: nil} if url.nil?
       
       ret = {}
       
@@ -39,9 +63,9 @@ SITE = 'xyo.net/iphone-app'
     
     def downloads_html(url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
-      puts "url_cache: #{url_cache}"
+      #puts "url_cache: #{url_cache}"
       
-      page = open(url_cache)
+      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
       Nokogiri::HTML(page)
     end 
     

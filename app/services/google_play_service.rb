@@ -44,7 +44,7 @@ class GooglePlayService
     def google_play_html(google_play_url)
       url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{google_play_url}"
 
-      page = open(url_cache)
+      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
 
       Nokogiri::HTML(page)
 

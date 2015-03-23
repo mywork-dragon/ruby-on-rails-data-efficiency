@@ -96,7 +96,7 @@ class ScrapeService
       content_from_source = ""
       return nil if content_from_headless_browser.nil?
     elsif content_from_headless_browser.nil?
-      content_from_headless_browser = "" 
+      content_from_headless_browser = ""
     end
     
     content_from_source + "\n" + content_from_headless_browser
@@ -146,7 +146,7 @@ class ScrapeService
   # Content from the headless browser
   def content_from_headless_browser(url)
     phantomjs = nil
-    if(Rails.env.production?)
+    if Rails.env.production?
       phantomjs = './phantomjs/linux/phantomjs'
     else
       phantomjs = './phantomjs/mac_os/phantomjs'

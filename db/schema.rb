@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150309215133) do
+ActiveRecord::Schema.define(version: 20150318055042) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "app_identifier"
+    t.integer  "app_id"
   end
 
   create_table "android_in_app_purchase_ranges", force: true do |t|
@@ -94,6 +95,7 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.string   "type"
     t.integer  "funding"
     t.integer  "inc_5000_rank"
+    t.string   "app_store_identifier"
   end
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
@@ -114,6 +116,19 @@ ActiveRecord::Schema.define(version: 20150309215133) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "fb_ad_appearances", force: true do |t|
+    t.string   "aws_assignment_identifier"
+    t.string   "hit_identifier"
+    t.integer  "heroku_identifier"
+    t.integer  "m_turk_worker_id"
+    t.integer  "ios_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "fb_ad_appearances", ["aws_assignment_identifier"], name: "index_fb_ad_appearances_on_aws_assignment_identifier", using: :btree
+  add_index "fb_ad_appearances", ["hit_identifier"], name: "index_fb_ad_appearances_on_hit_identifier", using: :btree
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"
@@ -150,14 +165,17 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.integer  "previous_release_id"
     t.boolean  "in_app_purchases"
     t.string   "required_ios_version"
-    t.integer  "downloads"
   end
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "app_identifier"
+    t.integer  "app_id"
+    t.integer  "downloads"
   end
+
+  add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
 
   create_table "ios_in_app_purchases", force: true do |t|
     t.datetime "created_at"
@@ -172,6 +190,22 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.datetime "updated_at"
     t.string   "name"
   end
+
+  create_table "m_turk_workers", force: true do |t|
+    t.string   "aws_identifier"
+    t.integer  "age"
+    t.string   "gender"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "iphone"
+    t.string   "ios_version"
+    t.string   "heroku_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "m_turk_workers", ["aws_identifier"], name: "index_m_turk_workers_on_aws_identifier", using: :btree
 
   create_table "matchers", force: true do |t|
     t.integer  "service_id"
@@ -218,6 +252,13 @@ ActiveRecord::Schema.define(version: 20150309215133) do
     t.string   "name"
     t.string   "website"
     t.string   "category"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sidekiq_testers", force: true do |t|
+    t.string   "test_string"
+    t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
