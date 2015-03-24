@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150318055042) do
+ActiveRecord::Schema.define(version: 20150324035721) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 20150318055042) do
     t.string   "app_identifier"
     t.integer  "app_id"
   end
+
+  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
 
   create_table "android_in_app_purchase_ranges", force: true do |t|
     t.datetime "created_at"
@@ -228,6 +230,21 @@ ActiveRecord::Schema.define(version: 20150318055042) do
     t.datetime "updated_at"
     t.string   "email"
   end
+
+  create_table "proxies", force: true do |t|
+    t.boolean  "active"
+    t.string   "publicIp"
+    t.string   "privateIp"
+    t.datetime "lastUsed"
+    t.boolean  "busy"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "proxies", ["active"], name: "index_proxies_on_active", using: :btree
+  add_index "proxies", ["busy"], name: "index_proxies_on_busy", using: :btree
+  add_index "proxies", ["lastUsed"], name: "index_proxies_on_lastUsed", using: :btree
+  add_index "proxies", ["privateIp"], name: "index_proxies_on_privateIp", using: :btree
 
   create_table "scrape_jobs", force: true do |t|
     t.text     "notes"
