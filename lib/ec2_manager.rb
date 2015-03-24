@@ -58,12 +58,14 @@ class Ec2Manager
       puts "Using security group: #{security_group.group_name}" 
  
       # create the instance (and launch it)
-      instance = resource.create_instances( :image_id        => image.id, 
-                                            :instance_type   => instance_type,
-                                            :min_count       => 1,
-                                            :max_count       => 1,
-                                            :security_group_ids => [security_group.id],
-                                            :key_name        => key_pair.name
+      instance = resource.create_instances( 
+                                            image_id: image.id, 
+                                            instance_type: instance_type,
+                                            min_count: 1,
+                                            max_count: 1,
+                                            security_group_ids: [security_group.id],
+                                            key_name: key_pair.name,
+                                            monitoring: {enabled: true} 
                                           )
       puts "Launching machine ..."
  
