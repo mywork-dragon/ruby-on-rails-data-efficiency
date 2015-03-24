@@ -3,7 +3,7 @@ class GooglePlayIdsService
   class << self
 
     # scrapes Google Play store
-    def scrape_app_store
+    def scrape_google_play
 
       # url string param for each category of app
       # @patrick You can use this syntax when you have a bunch a string literals with no spaces
