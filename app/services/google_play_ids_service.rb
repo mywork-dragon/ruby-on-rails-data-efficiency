@@ -49,7 +49,7 @@ class GooglePlayIdsService
       # for each category of app
       app_categories.each do |app_category|
 
-        AppStoreIdsServiceWorker.perform_async(app_category)
+        GooglePlayIdsServiceWorker.perform_async(app_category)
 
       end
 

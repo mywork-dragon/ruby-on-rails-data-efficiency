@@ -1,4 +1,4 @@
-class PlayStoreIdsServiceWorker
+class GooglePlayIdsServiceWorker
   include Sidekiq::Worker
 
   # helper method - opens url, returning Nokogiri object
@@ -24,7 +24,7 @@ class PlayStoreIdsServiceWorker
 
   def perform(app_category)
 
-    app_ids = Set.new # @patrick Ruby style usually uses underscore naming conventions for local vars :)
+    app_ids = Set.new
 
     logger.info "SCRAPING    CATEGORY: " + app_category + "..."
 
@@ -35,7 +35,7 @@ class PlayStoreIdsServiceWorker
 
       pag_token = ""
 
-      while pag_token != nil
+      while pag_token != nil  #becomes nil when hit the end of async loading
 
         # wrapper for #selectedcontent columns
         app_cards = apps_page_dom.css("div.card-list > div.card")
