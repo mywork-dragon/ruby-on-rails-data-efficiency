@@ -2,27 +2,6 @@ class GooglePlayIdsService
 
   class << self
 
-    # helper method - opens url, returning Nokogiri object
-    def open_url(url)
-
-      page = open(url)
-
-      Nokogiri::HTML(page)
-
-    # Rescues error if issue opening URL
-    rescue => e
-      case e
-        when OpenURI::HTTPError
-          puts "HTTPError - could not open page"
-          return nil
-        when URI::InvalidURIError
-          puts "InvalidURIError - could not open page"
-          return nil
-        else
-          raise e
-      end
-    end
-
     # scrapes Google Play store
     def scrape_app_store
 

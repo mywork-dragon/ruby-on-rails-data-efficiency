@@ -1,6 +1,27 @@
 class PlayStoreIdsServiceWorker
   include Sidekiq::Worker
 
+  # helper method - opens url, returning Nokogiri object
+  def open_url(url)
+
+    page = open(url)
+
+    Nokogiri::HTML(page)
+
+      # Rescues error if issue opening URL
+  rescue => e
+    case e
+      when OpenURI::HTTPError
+        puts "HTTPError - could not open page"
+        return nil
+      when URI::InvalidURIError
+        puts "InvalidURIError - could not open page"
+        return nil
+      else
+        raise e
+    end
+  end
+
   def perform(app_category)
 
     app_ids = Set.new # @patrick Ruby style usually uses underscore naming conventions for local vars :)
