@@ -67,7 +67,7 @@ class GooglePlayIdsService
 
       # adds alphabet nodes to array
       app_categories += ('A'..'Z').to_a
-      app_categories.select!{ |l| l == 'E' } # for debug, only run letter A for now
+      app_categories.select!{ |l| l == 'Z' } # for debug, only run letter A for now
 
       # for each category of app
       app_categories.each do |app_category|
@@ -86,7 +86,7 @@ class GooglePlayIdsService
           pag_token = ""
 
           while pag_token != nil
-            
+
             # wrapper for #selectedcontent columns
             app_cards = apps_page_dom.css("div.card-list > div.card")
 
@@ -115,18 +115,18 @@ class GooglePlayIdsService
               # Cleans up pagTok, returning ready-for-use string
               pag_token = pag_token_array[0].gsub(':S:','%3AS%3A').gsub("\\42",'').gsub("\\u003d",'').gsub("\\", "=").split(',').last
 
+              puts pag_token
+
+              page_url = "https://play.google.com/store/search?q=" + app_category + "&c=apps&start=0&num=0&numChildren=0&pagTok=" + pag_token + "&ipf=1&xhr=1"
+
+              puts page_url
+
+              # Open initial page
+              apps_page_dom = open_url(page_url)
+
             else
               pag_token = nil
             end
-
-            puts pag_token
-
-            page_url = "https://play.google.com/store/search?q=" + app_category + "&c=apps&start=0&num=0&numChildren=0&pagTok=" + pag_token + "&ipf=1&xhr=1"
-
-            puts page_url
-
-            # Open initial page
-            apps_page_dom = open_url(page_url)
 
           end
 
