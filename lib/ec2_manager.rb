@@ -1,8 +1,8 @@
-class Ec2Launcher
+class Ec2Manager
 
   class << self
   
-    def run
+    def launch
       access_key_id = nil
       secret_access_key = nil
       
