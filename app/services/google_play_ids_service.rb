@@ -40,11 +40,11 @@ class GooglePlayIdsService
           RACING
       )
 
-      app_categories = app_categories[(2..2)] #for debug, only run catalogs for now
+      #app_categories = app_categories[(2..2)]
 
       # adds alphabet nodes to array
       app_categories += ('A'..'Z').to_a
-      app_categories.select!{ |l| l == 'A' || l == 'B' } # for debug, only run letter A for now
+      #app_categories.select!{ |l| l == 'A' || l == 'B' } # for debug, only run letter A for now
 
       # for each category of app
       app_categories.each do |app_category|

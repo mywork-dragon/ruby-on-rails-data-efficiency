@@ -72,6 +72,7 @@ class GooglePlayIdsServiceWorker
 
     end
 
+    logger.info "app_ids: #{app_ids.to_a}"
     add_to_db(app_ids.to_a)
 
   end
@@ -85,8 +86,8 @@ class GooglePlayIdsServiceWorker
 
       if android_app.nil?
         android_app = AndroidApp.new(app_identifier: app_id)
-        app = App.create
-        android_app.app = app
+        # app = App.create
+        # android_app.app = app
         success = android_app.save
 
         if success
