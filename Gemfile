@@ -76,6 +76,8 @@ gem 'filesize'
 
 gem 'aws-sdk', '~> 2'
 
+gem 'socksify'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

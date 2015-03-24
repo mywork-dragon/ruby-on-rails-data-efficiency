@@ -1,5 +1,7 @@
 class Ec2Manager
 
+  PROXY_PRIVATE_KEY_PATH = '/Users/jason/penpals/important_stuff/proxy.pem'
+
   class << self
   
     def launch(options={})
@@ -60,24 +62,18 @@ class Ec2Manager
                                             security_group_ids: [security_group.id],
                                             key_name: key_pair.name,
                                             monitoring: {enabled: true} 
-                                          )
+                                          ).first
       puts "Launching machine ..."
  
-      return
+      sleep 0.25  #make sure it's running
+      instance.wait_until_running
  
-      # wait until battle station is fully operational
-      sleep 1 until instance.status != :pending
-      puts "Launched instance #{instance.id}, status: #{instance.status}, public dns: #{instance.dns_name}, public ip: #{instance.ip_address}"
-      exit 1 unless instance.status == :running
- 
-      # machine is ready, ssh to it and run a commmand
-      puts "Launched: You can SSH to it with;"
-      puts "ssh -i #{private_key_file} #{ssh_username}@#{instance.ip_address}"
-      puts "Remember to terminate after your'e done!"
+      puts "Running at public IP #{instance.public_ip_address}, private IP #{instance.private_ip_address}!"
            
       # clean up with the following (terminates the machine)
       # instance.delete
       
+      instance
     end
     
     def launch_proxy(options={})
@@ -85,13 +81,31 @@ class Ec2Manager
       region = 'us-east-1'
       region = options[region] if options[region]
       
-      launch(
-              image_id: 'ami-84562dec',
-              instance_type: 't1.micro',
-              region: region,
-              key_pair_name: 'proxy', 
-              security_group_name: 'proxy', 
-            )
+      instance = launch(
+                        image_id: 'ami-84562dec',
+                        instance_type: 't1.micro',
+                        region: region,
+                        key_pair_name: 'proxy', 
+                        security_group_name: 'proxy'
+                      )
+      
+      public_ip = instance.public_ip_address
+      
+      puts "SSHing into proxy (Public IP #{public_ip})"      
+      `ssh -i #{PROXY_PRIVATE_KEY_PATH} ubuntu@#{public_ip}`
+    
+      `sudo su`
+
+      puts "Installing tinyproxy..."
+      `sudo apt-get install tinyproxy`
+      
+      puts 'Editing tinyproxy configuration...'
+      `sed -i -e 's/Allow\ 127.0.0.1/#Allow\ 127.0.0.1/g' /etc/tinyproxy.conf`
+      
+      puts 'Restarting tinyproxy...'
+      `sudo service tinyproxy restart`
+      
+      puts 'Proxy is ready!'
     end
   
   end
