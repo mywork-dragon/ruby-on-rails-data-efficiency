@@ -2,7 +2,7 @@ class Ec2Manager
 
   class << self
   
-    def launch
+    def launch(options={})
       access_key_id = nil
       secret_access_key = nil
       
@@ -19,23 +19,17 @@ class Ec2Manager
       #Aws.config(access_key_id: access_key_id, secret_access_key: secret_access_key)
       creds = Aws::Credentials.new(access_key_id, secret_access_key)          
  
-      ec2                 = Aws::EC2::Client.new(credentials: creds, region: 'us-east-1')            # choose region here
-      ami_name            = '*ubuntu-lucid-10.04-amd64-server-20110719'  # which AMI to search for and use
-      key_pair_name       = 'proxy'                                      # key pair name
-      private_key_file    = "#{ENV['HOME']}/.ssh/matt-housetrip-aws.pem" # path to your private key
-      security_group_name = 'proxy'                                      # security group name
-      instance_type       = 't1.micro'                                   # machine instance type (must be approriate for chosen AMI)
+      ec2                 = Aws::EC2::Client.new(credentials: creds, region: options[:region])            # choose region here
+      image_id            = options[:image_id]                            # which AMI to search for and use
+      key_pair_name       = options[:key_pair_name]                      # key pair name
+      security_group_name = options[:security_group_name]                # security group name
+      instance_type       = options[:instance_type]                                  # machine instance type (must be approriate for chosen AMI)
       ssh_username        = 'ubuntu'                                     # default user name for ssh'ing
  
       resource = Aws::EC2::Resource.new(client: ec2)
  
-      #puts ec2.describe_instances
-      
-      #return
- 
-      image = resource.images(filters: [{:name=>"image-id",:values=>["ami-84562dec"]}]).first
-      
-      #image = images.find{ |image| image.name.include('ubuntu') }.first
+      image = resource.images(filters: [{:name=>"image-id",:values=>[image_id]}]).first
+
  
       puts "image: #{image}"
       
@@ -84,6 +78,20 @@ class Ec2Manager
       # clean up with the following (terminates the machine)
       # instance.delete
       
+    end
+    
+    def launch_proxy(options={})
+      
+      region = 'us-east-1'
+      region = options[region] if options[region]
+      
+      launch(
+              image_id: 'ami-84562dec',
+              instance_type: 't1.micro',
+              region: region,
+              key_pair_name: 'proxy', 
+              security_group_name: 'proxy', 
+            )
     end
   
   end
