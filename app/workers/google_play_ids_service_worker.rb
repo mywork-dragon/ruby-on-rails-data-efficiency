@@ -72,7 +72,7 @@ class GooglePlayIdsServiceWorker
 
     end
 
-    logger.info "app_ids: #{app_ids.to_a}"
+    logger.info "category: #{app_category}app_ids: #{app_ids.to_a}"
     add_to_db(app_ids.to_a)
 
   end
@@ -97,7 +97,7 @@ class GooglePlayIdsServiceWorker
         end
 
       else
-        logger.info "IosApp #{app_id} already in db"
+        logger.info "AndroidApp #{app_id} already in db"
       end
 
     end
