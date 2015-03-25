@@ -13,10 +13,10 @@ class TorTest
       response.body
     end
     
-    def run_remote(ip='172.31.40.124', port=80)
+    def run_remote(ip)
       uri = URI.parse('http://wtfismyip.com/json/')
       response = nil
-      Net::HTTP.SOCKSProxy('172.31.40.124', port).start(uri.host, uri.port) do |http|
+      Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
         response = http.get(uri.path)
       end
       
