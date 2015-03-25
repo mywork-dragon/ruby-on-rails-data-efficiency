@@ -89,23 +89,23 @@ class Ec2Manager
                         security_group_name: 'proxy'
                       )
       
-      public_ip = instance.public_ip_address
-      
-      puts "SSHing into proxy (Public IP #{public_ip})"      
-      `ssh -i #{PROXY_PRIVATE_KEY_PATH} ubuntu@#{public_ip}`
-    
-      `sudo su`
-
-      puts "Installing tinyproxy..."
-      `sudo apt-get install tinyproxy`
-      
-      puts 'Editing tinyproxy configuration...'
-      `sed -i -e 's/Allow\ 127.0.0.1/#Allow\ 127.0.0.1/g' /etc/tinyproxy.conf`
-      
-      puts 'Restarting tinyproxy...'
-      `sudo service tinyproxy restart`
-      
-      puts 'Proxy is ready!'
+      # public_ip = instance.public_ip_address
+      #
+      # puts "SSHing into proxy (Public IP #{public_ip})"
+      # `ssh -i #{PROXY_PRIVATE_KEY_PATH} ubuntu@#{public_ip}`
+      #
+      # `sudo su`
+      #
+      # puts "Installing tinyproxy..."
+      # `sudo apt-get install tinyproxy`
+      #
+      # puts 'Editing tinyproxy configuration...'
+      # `sed -i -e 's/Allow\ 127.0.0.1/#Allow\ 127.0.0.1/g' /etc/tinyproxy.conf`
+      #
+      # puts 'Restarting tinyproxy...'
+      # `sudo service tinyproxy restart`
+      #
+      # puts 'Proxy is ready!'
     end
   
   end
