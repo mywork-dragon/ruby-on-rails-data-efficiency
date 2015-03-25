@@ -35,26 +35,23 @@ class TorTest
       response.body
     end
     
-    def get2(url, ip='172.31.41.122', limit=10)
+    def get2(url, uri_str, ip='172.31.41.122', limit=10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
       uri = URI.parse(url)
-      response = nil
-      Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
+      response = Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
         http.use_ssl = true if uri.scheme == 'https'
         
         req = http.get(uri.path, 'User-Agent' => UserAgent.random_web)
-        
-        response = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
-        case response
-        when Net::HTTPSuccess     then response
-        when Net::HTTPRedirection then fetch(response['location'], limit - 1)
-        else
-          response.error!
-        end
       end
       
-      response.body
+      case response
+      when Net::HTTPSuccess     then response.body
+      when Net::HTTPRedirection then get2(response['location'], limit - 1)
+      else
+        response.error!
+      end
+      
     end
     
     # def fetch(uri_str, limit = 10)
