@@ -44,7 +44,6 @@ gem 'spring',        group: :development
 
 gem 'whenever', require: false
 
-# if you actually parse html
 gem 'nokogiri'
 
 # for depoyment
@@ -74,6 +73,10 @@ gem 'httparty', '0.13.3'
 gem 'sidekiq'
 
 gem 'filesize'
+
+gem 'aws-sdk', '~> 2'
+
+gem 'socksify'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
