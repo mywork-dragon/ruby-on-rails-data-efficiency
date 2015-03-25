@@ -23,7 +23,7 @@ class TorTest
       response.body
     end
     
-    def get(url)
+    def get(url, ip='172.31.41.122')
       uri = URI.parse(url)
       response = nil
       Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
