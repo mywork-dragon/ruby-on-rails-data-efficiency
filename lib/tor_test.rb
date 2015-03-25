@@ -23,6 +23,16 @@ class TorTest
       response.body
     end
     
+    def get(url)
+      uri = URI.parse(url)
+      response = nil
+      Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
+        response = http.get(uri.path)
+      end
+      
+      response.body
+    end
+    
   end
   
 end
