@@ -35,13 +35,15 @@ class TorTest
       response.body
     end
     
-    def get2(url, uri_str, ip='172.31.41.122', limit=10)
+    def get2(url, ip='172.31.41.122', limit=10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
       uri = URI.parse(url)
-      response = Net::HTTP.SOCKSProxy(ip, 9050).start(uri.host, uri.port) do |http|
-        http.use_ssl = true if uri.scheme == 'https'
-        
+      
+      socks_proxy = Net::HTTP.SOCKSProxy(ip, 9050)
+      socks_proxy.use_ssl = true if uri.scheme == 'https'
+      
+      response = socks_proxy.start(uri.host, uri.port) do |http|
         req = http.get(uri.path, 'User-Agent' => UserAgent.random_web)
       end
       
