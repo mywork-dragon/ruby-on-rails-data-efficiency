@@ -51,7 +51,7 @@ class TorTest
       
       case response
       when Net::HTTPSuccess     then response.body
-      when Net::HTTPRedirection then get2(response['location'], limit - 1)
+      when Net::HTTPRedirection then get2(response['location'], ip, limit - 1)
       else
         response.error!
       end
