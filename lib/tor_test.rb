@@ -57,6 +57,7 @@ class TorTest
         puts "Redirected to: #{location}"
         get2(location, ip, limit - 1)
       else
+        puts "response: #{response}"
         response.error!
       end
       
