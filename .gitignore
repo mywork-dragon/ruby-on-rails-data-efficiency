@@ -20,3 +20,7 @@
 
 # Ignore RubyMine files
 /.idea/
+
+/public/dashboard/bower_components
+
+/public/dashboard/node_modules
