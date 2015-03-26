@@ -40,10 +40,12 @@ class TorTest
       
       uri = URI.parse(url)
       
-      socks_proxy = Net::HTTP.SOCKSProxy(ip, 9050)
-      socks_proxy.use_ssl = true if uri.scheme == 'https'
+      sp = Net::HTTP.SOCKSProxy(ip, 9050).new(uri.host, uri.port)
+      sp.use_ssl = true if uri.scheme == 'https'
       
-      response = socks_proxy.start(uri.host, uri.port) do |http|
+      response = sp.start do |http|
+        
+        
         req = http.get(uri.path, 'User-Agent' => UserAgent.random_web)
       end
       
