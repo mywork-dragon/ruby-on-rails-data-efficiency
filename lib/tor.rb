@@ -1,3 +1,5 @@
+require 'socksify/http'
+
 class Tor
 
   class << self
@@ -53,6 +55,18 @@ class Tor
         response.error!
       end
       
+    end
+    
+    def test
+      a = ['http://optimizely.com','http://dropbox.com', 'http://yahoo.com', 'http://snapchat.com', 'http://marketo.com']
+      
+      o = []
+      
+      a.each do |url|
+        o << Tor.open(url)
+      end
+      
+      o
     end
     
     
