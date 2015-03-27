@@ -2,7 +2,7 @@
 
 one:
   active: false
-  publi_ip: MyString
+  public_ip: MyString
   private_ip: MyString
   last_used: 2015-03-23 17:07:08
   busy: false
