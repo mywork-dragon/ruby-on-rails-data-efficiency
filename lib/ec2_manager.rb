@@ -167,5 +167,15 @@ class Ec2Manager
     end
   
   end
+  
+  def add_proxies_to_db(a)
+    
+    a.each do |h|
+      
+      p = Proxy.create!(private_ip: h[:private_ip], public_ip: h[:public_ip], active: true, busy: false)
+      
+    end
+    
+  end
 
 end
