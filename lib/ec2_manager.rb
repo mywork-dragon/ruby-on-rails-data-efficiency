@@ -70,7 +70,7 @@ class Ec2Manager
                                           ).first
       puts "Launching machine ..."
  
-      sleep 0.25  #make sure it's running
+      sleep 5.0  #make sure it's running
       instance.wait_until_running
  
       instance.load
@@ -139,6 +139,31 @@ class Ec2Manager
   #       puts 'Exiting SSH session...'
       end
       
+    end
+    
+    # Launch proxies
+    # @param number Number of proxies to launch
+    def launch_proxies(number)
+      
+      ret = []
+      
+      number.times do |n|
+        
+        puts "Proxy #{n+1} of #{number}..."
+        
+        begin
+          instance = launch_proxy
+          ret << {public_ip: instance.public_ip_address, private_ip: instance.private_ip_address}
+        rescue
+          puts "Caught Exception. Stopping here."
+          break
+        end
+        
+        puts ''
+        
+      end
+      
+      ret
     end
   
   end
