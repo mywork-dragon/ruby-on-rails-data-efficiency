@@ -253,6 +253,7 @@ DEPENDENCIES
   jquery-turbolinks
   jquery-ui-rails
   mysql2
+  net-ssh
   newrelic_rpm
   nokogiri
   omniauth-salesforce

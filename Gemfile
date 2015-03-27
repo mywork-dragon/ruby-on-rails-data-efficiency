@@ -78,6 +78,8 @@ gem 'aws-sdk', '~> 2'
 
 gem 'socksify'
 
+gem 'net-ssh'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
