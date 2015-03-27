@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327221032) do
+ActiveRecord::Schema.define(version: 20150327233405) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -236,13 +236,11 @@ ActiveRecord::Schema.define(version: 20150327221032) do
     t.string   "public_ip"
     t.string   "private_ip"
     t.datetime "last_used"
-    t.boolean  "busy"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "proxies", ["active"], name: "index_proxies_on_active", using: :btree
-  add_index "proxies", ["busy"], name: "index_proxies_on_busy", using: :btree
   add_index "proxies", ["last_used"], name: "index_proxies_on_last_used", using: :btree
   add_index "proxies", ["private_ip"], name: "index_proxies_on_private_ip", using: :btree
 

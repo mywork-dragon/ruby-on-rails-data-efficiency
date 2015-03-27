@@ -6,22 +6,31 @@ class Tor
     
     def open(url)
       
-      #get the non-busy server that was used last and is active
       proxy = next_proxy
-      proxy.busy = true
+      proxy.last_used = DateTime.now
       proxy.save
       
       page = open_using_proxy(url, proxy.private_ip)
       
-      proxy.last_used = DateTime.now
-      proxy.busy = false
-      proxy.save
-      
       page
     end
     
+    def test
+      a = ['http://optimizely.com','http://dropbox.com', 'http://yahoo.com', 'http://snapchat.com', 'http://marketo.com']
+      
+      o = []
+      
+      a.each do |url|
+        o << Tor.open(url)
+      end
+      
+      o
+    end
+    
+    private
+    
     def next_proxy
-      Proxy.order(last_used: :desc).limit(1).first
+      Proxy.order(last_used: :asc).limit(1).first
     end
     
     def open_using_proxy(url, ip, limit=10)
@@ -49,26 +58,13 @@ class Tor
       when Net::HTTPRedirection  
         location = response['location']
         #puts "Redirected to: #{location}"
-        get2(location, ip, limit - 1)
+        open_using_proxy(location, ip, limit - 1)
       else
         #puts "response: #{response}"
         response.error!
       end
       
     end
-    
-    def test
-      a = ['http://optimizely.com','http://dropbox.com', 'http://yahoo.com', 'http://snapchat.com', 'http://marketo.com']
-      
-      o = []
-      
-      a.each do |url|
-        o << Tor.open(url)
-      end
-      
-      o
-    end
-    
     
   end
 
