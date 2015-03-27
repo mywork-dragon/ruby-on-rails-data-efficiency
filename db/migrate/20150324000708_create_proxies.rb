@@ -2,9 +2,9 @@ class CreateProxies < ActiveRecord::Migration
   def change
     create_table :proxies do |t|
       t.boolean :active
-      t.string :publicIp
-      t.string :privateIp
-      t.datetime :lastUsed
+      t.string :public_ip
+      t.string :private_ip
+      t.datetime :last_used
       t.boolean :busy
 
       t.timestamps
