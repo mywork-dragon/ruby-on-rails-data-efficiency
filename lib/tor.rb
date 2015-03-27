@@ -15,12 +15,10 @@ class Tor
       page
     end
     
-    def test
-      a = ['http://optimizely.com','http://dropbox.com', 'http://yahoo.com', 'http://snapchat.com', 'http://marketo.com']
-      
+    def test(urls=['https://itunes.apple.com/us/app/dropbox/id327630330?mt=8','https://itunes.apple.com/us/app/tinder/id547702041?mt=8', 'https://itunes.apple.com/us/app/league-date-intelligently/id893653132?mt=8', 'https://play.google.com/store/apps/details?id=com.ubercab&hl=en', 'https://play.google.com/store/apps/details?id=com.supercell.clashofclans&hl=en'])
       o = []
       
-      a.each do |url|
+      url.each do |url|
         o << Tor.open(url)
       end
       
@@ -35,8 +33,6 @@ class Tor
     
     def open_using_proxy(url, ip, limit=10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
-      
-      puts "Using Proxy #{ip}"
       
       uri = URI.parse(url)
       
