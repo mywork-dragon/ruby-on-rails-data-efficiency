@@ -1,7 +1,7 @@
 class Ec2Manager
 
   PROXY_PRIVATE_KEY_PATH = '/Users/jason/penpals/important_stuff/proxy.pem'
-  TOR_SETUP_SCRIPT_PATH = '/Users/jason/penpals/important_stuff/tor_setup.sh'
+  TOR_SETUP_SCRIPT_PATH = './server/tor_setup.sh'
 
   class << self
   
