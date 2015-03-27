@@ -25,6 +25,8 @@ class Tor
     def open_using_proxy(url, ip, limit=10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
+      puts "Using Proxy #{ip}"
+      
       uri = URI.parse(url)
       
       sp = Net::HTTP.SOCKSProxy(ip, 9050).new(uri.host, uri.port)
