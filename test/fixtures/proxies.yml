@@ -2,14 +2,14 @@
 
 one:
   active: false
-  publicIp: MyString
-  privateIp: MyString
-  lastUsed: 2015-03-23 17:07:08
+  publi_ip: MyString
+  private_ip: MyString
+  last_used: 2015-03-23 17:07:08
   busy: false
 
 two:
   active: false
-  publicIp: MyString
-  privateIp: MyString
-  lastUsed: 2015-03-23 17:07:08
+  public_ip: MyString
+  private_ip: MyString
+  last_used: 2015-03-23 17:07:08
   busy: false
