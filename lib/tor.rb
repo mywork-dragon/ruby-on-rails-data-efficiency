@@ -32,7 +32,7 @@ class Tor
     private
     
     def next_proxy
-      Proxy.order(last_used: :asc).limit(1).first
+      Proxy.order(last_used: :asc).limit(5).sample
     end
     
     def get_using_proxy(url, ip, limit=10)
