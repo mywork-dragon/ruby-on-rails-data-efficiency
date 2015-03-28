@@ -6,6 +6,10 @@ class Tor
     
     def get(url)
       
+      if !Rails.env.production?
+        return open(url, UserAgent.random_web)
+      end
+      
       proxy = next_proxy
       proxy.last_used = DateTime.now
       proxy.save
@@ -53,7 +57,7 @@ class Tor
         response.body
       when Net::HTTPRedirection  
         location = response['location']
-        puts "Redirected to: #{location}"
+        #puts "Redirected to: #{location}"
         get_using_proxy(location, ip, limit - 1)
       else
         response.error!

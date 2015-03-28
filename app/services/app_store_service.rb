@@ -73,7 +73,7 @@ class AppStoreService
   # Returns nil if cannot get JSON
   def app_store_json(id)
     begin
-      page = open("https://itunes.apple.com/lookup?id=#{id}&limit=1")
+      page = Tor.get("https://itunes.apple.com/lookup?id=#{id}&limit=1")
       loaded_json = JSON.load(page)
       loaded_json['results'].first
     rescue
@@ -90,8 +90,9 @@ class AppStoreService
     url = app_store_url
 
     #li "url: #{url}"
-
-    page = open(url, "User-Agent" => UserAgent.random_web)
+    
+    page = Tor.get(url)
+    
     html = Nokogiri::HTML(page)
     
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
@@ -336,6 +337,8 @@ class AppStoreService
       #   https://itunes.apple.com/us/app/overdrive-library-ebooks-audiobooks/id366869252?mt=8
       #   https://itunes.apple.com/us/app/goodreads-book-recommendations/id355833469?mt=8
       # )
+    
+      url = 
     
       page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
       html = Nokogiri::HTML(page)
