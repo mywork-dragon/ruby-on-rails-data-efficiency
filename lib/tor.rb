@@ -41,8 +41,8 @@ class Tor
       
       req = Net::HTTP::Get.new(uri)
 
-      req['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36"
-      req['Accept'] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+      req['User-Agent'] = UserAgent.random_web
+      req['Accept'] = URI.encode('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
       
       response = sp.start {|http|
         http.request(req)
