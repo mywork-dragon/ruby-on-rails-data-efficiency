@@ -2,8 +2,12 @@
 <div class="page page-table" data-ng-controller="tableCtrl">
 
     <section class="panel panel-default table-dynamic">
-        <div class="panel-heading"><strong><i class="fa fa-search panel-ico"></i>Search</strong></div>
 
+        <div class="table-filters">
+            <div class="row">
+                <span><i class="fa fa-search"></i></span>
+            </div>
+        </div>
         <div class="table-filters">
             <div class="row">
                 <div class="col-sm-4 col-xs-6">
@@ -15,13 +19,49 @@
                                data-ng-keyup="search()">
                     </form>
                 </div>
-                <div class="col-sm-3 col-xs-6 filter-result-info">
-                    <span>
-                        Showing {{filteredStores.length}}/{{stores.length}} entries
-                    </span>
-                </div>
             </div>
         </div>
+
+        <div class="panel-heading">
+
+           <span class="ui-select">
+                <select>
+                    <option>App Downloads</option>
+                    <option>Enterprise Software</option>
+                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Mobile Priority</option>
+                    <option>Enterprise Software</option>
+                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Industry</option>
+                    <option>Enterprise Software</option>
+                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Funding</option>
+                    <option>Enterprise Software</option>
+                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Company Size</option>
+                    <option>Enterprise Software</option>
+                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+
+        </div>
+
 
     </section>
 

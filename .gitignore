@@ -24,3 +24,5 @@
 /public/dashboard/bower_components
 
 /public/dashboard/node_modules
+
+/public/dashboard/dist
