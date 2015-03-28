@@ -63,7 +63,13 @@ class AppStoreService
     # The key in ret is the method minus _json or _html at the end
     methods.each do |method|
       key = method.gsub(/_html\z/, '').gsub(/_json\z/, '').to_sym
-      ret[key] = send(method.to_sym)
+      
+      begin
+        ret[key] = send(method.to_sym)
+      rescue
+        ret[key] = nil
+      end
+      
     end
     
     ret
@@ -124,11 +130,7 @@ class AppStoreService
   end
 
   def release_notes_html
-    begin
-      @html.css("div.center-stack > .product-review > p")[1].text
-    rescue
-      nil
-    end
+    @html.css("div.center-stack > .product-review > p")[1].text
   end
 
   # In cents
@@ -153,22 +155,14 @@ class AppStoreService
   end
 
   def seller_url_html
-    begin
-      children = @html.css(".app-links").children
-      children.select{ |c| c.text.match(/Site\z/) }.first['href']
-    rescue
-      nil
-    end
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Site\z/) }.first['href']
   end
 
   # Only available in HTML 
   def support_url_html
-    begin
-      children = @html.css(".app-links").children
-      children.select{ |c| c.text.match(/Support\z/) }.first['href']
-    rescue
-      nil
-    end
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Support\z/) }.first['href']
   end
 
   def categories_json
@@ -207,13 +201,8 @@ class AppStoreService
 
   # Only using HTML (abbreviations available in JSON)
   def languages_html
-    begin
-      languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
-      languages_text.split(', ')
-    rescue
-      nil
-    end
-
+    languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
+    languages_text.split(', ')
   end
 
   def seller_json
