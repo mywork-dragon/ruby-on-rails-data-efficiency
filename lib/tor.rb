@@ -7,7 +7,7 @@ class Tor
     def get(url)
       
       if !Rails.env.production?
-        return open(url, UserAgent.random_web)
+        return open(url, 'User-Agent' => UserAgent.random_web)
       end
       
       proxy = next_proxy
