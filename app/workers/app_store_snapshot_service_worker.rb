@@ -21,6 +21,7 @@ class AppStoreSnapshotServiceWorker
       name
       description
       release_notes
+      version
       price
       size
       seller
