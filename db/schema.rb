@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330053336) do
+ActiveRecord::Schema.define(version: 20150330062810) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 20150330053336) do
     t.boolean  "in_app_purchases"
     t.string   "required_ios_version"
     t.integer  "ios_snapshot_job_id"
+    t.text     "release_notes"
   end
 
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
