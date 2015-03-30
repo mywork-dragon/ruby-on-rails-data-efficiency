@@ -6,7 +6,8 @@ class AppStoreSnapshotService
       
       j = IosAppSnapshotJob.create!(notes: notes)
       
-      IosAppSnapshot.find_in_batches(batch_size: 100).limit(500) do |ios_app_snapshots|
+      IosAppSnapshot.find_in_batches(batch_size: 100) do |ios_app_snapshots|
+        sleep 5
         puts ios_app_snapshot_ids = ios_app_snapshots.map(&:id)
         # AppStoreSnapshotServiceWorker.perform_async
       end
