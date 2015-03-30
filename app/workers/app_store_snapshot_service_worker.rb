@@ -28,6 +28,7 @@ class AppStoreIdsServiceWorker
       required_ios_version
       released
       editors_choice
+      developer_app_store_identifier
     )
     
     single_column_attributes.each do |sca|
@@ -52,11 +53,6 @@ class AppStoreIdsServiceWorker
     end
     categories_snapshot_secondary.save
     
-    
-    
-    
-    
-    a[:developer_app_store_identifier]
     a[:ratings]
     
     seller_url = a[:seller_url]

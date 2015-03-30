@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330065107) do
+ActiveRecord::Schema.define(version: 20150330080501) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -138,6 +138,17 @@ ActiveRecord::Schema.define(version: 20150330065107) do
     t.datetime "updated_at"
   end
 
+  create_table "ios_app_categories_snapshots", force: true do |t|
+    t.integer  "ios_app_category_id"
+    t.integer  "ios_app_snapshot_id"
+    t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_categories_snapshots", ["ios_app_category_id"], name: "index_ios_app_categories_snapshots_on_ios_app_category_id", using: :btree
+  add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id"], name: "index_ios_app_categories_snapshots_on_ios_app_snapshot_id", using: :btree
+
   create_table "ios_app_snapshot_jobs", force: true do |t|
     t.text     "notes"
     t.datetime "created_at"
@@ -166,8 +177,14 @@ ActiveRecord::Schema.define(version: 20150330065107) do
     t.integer  "ios_snapshot_job_id"
     t.text     "release_notes"
     t.string   "seller"
+    t.integer  "developer_app_store_identifier"
+    t.decimal  "ratings_current_stars",          precision: 10, scale: 0
+    t.integer  "ratings_current_count"
+    t.decimal  "ratings_all_stars",              precision: 10, scale: 0
+    t.integer  "ratings_all_count"
   end
 
+  add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_snapshot_job_id", using: :btree
 
