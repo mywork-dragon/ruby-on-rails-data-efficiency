@@ -3,9 +3,9 @@
 one:
   ios_app_category_id: 1
   ios_app_snapshot_id: 1
-  type: 
+  kind: 
 
 two:
   ios_app_category_id: 1
   ios_app_snapshot_id: 1
-  type: 
+  kind: 
