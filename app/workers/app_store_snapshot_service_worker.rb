@@ -18,11 +18,14 @@ class AppStoreSnapshotServiceWorker
   
   def save_attributes(options={})
     ios_app = IosApp.find(options[:ios_app_id])
-    a = AppStoreService.attributes(ios_app.app_identifier)
     
     s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id], status: :success)
     
     begin
+      
+      a = AppStoreService.attributes(ios_app.app_identifier)
+      
+      raise 'AppStoreService.attributes is empty' if a.empty?
     
       single_column_attributes = %w(
         name
@@ -97,8 +100,10 @@ class AppStoreSnapshotServiceWorker
     
       s.save!
     
-    rescue
+    rescue => e
       s.status = :failure
+      s.exception = e.message
+      s.exception_backtrace = e.backtrace
       s.save
     end
     
