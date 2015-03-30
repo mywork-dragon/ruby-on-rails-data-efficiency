@@ -11,30 +11,34 @@ class AppStoreIdsServiceWorker
       
       s = IosAppSnapshot.new
       
-      s.name = a[:title]
+      single_column_attributes = %w(
+        name
+        description
+        release_notes
+        price
+        seller_url
+        size
+        seller
+        recommended_age
+        required_ios_version
+        released
+        editors_choice
+      )
       
-      s.description = a[:description]
+      single_column_attributes.each do |sca|
+        s.send("#{sca}=", a[sca.to_sym])
+      end
       
-      a[:release_notes]
       
-      
-      a[:price]
-      a[:seller_url]
       a[:categories]
-      a[:size]
-      a[:seller_url]
-      a[:categories]
-      a[:size]
-      a[:seller]
       a[:developer_app_store_identifier]
       a[:ratings]
-      a[:recommended_age]
-      a[:required_ios_version]
-      a[:support]
-      a[:updated]
+      
+      support_url = a[:support_url]
+      s.support_url = support_url
+      
       a[:languages]
       a[:in_app_purchases]
-      a[:editors_choice]
       
       s.save
     end

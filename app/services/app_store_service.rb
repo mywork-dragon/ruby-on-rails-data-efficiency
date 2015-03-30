@@ -16,7 +16,7 @@ class AppStoreService
     
     if @json && !html_only
       methods += %w(
-        title_json
+        name_json
         description_json
         release_notes_json
         price_json
@@ -31,7 +31,7 @@ class AppStoreService
       )
     elsif @html || html_only
       methods += %w(
-        title_html
+        name_html
         description_html
         release_notes_html
         price_html
@@ -50,7 +50,7 @@ class AppStoreService
     if @html
       methods += %w(
         support_url_html
-        updated_html
+        released_html
         languages_html
         in_app_purchases_html
         editors_choice_html
@@ -109,11 +109,11 @@ class AppStoreService
     html
   end
 
-  def title_json
+  def name_json
     @json['trackName']
   end
 
-  def title_html
+  def name_html
     @html.css('#title > div.left > h1').text
   end
 
@@ -182,7 +182,7 @@ class AppStoreService
   end
 
   # Only available in HTML
-  def updated_html
+  def released_html
     date_text = @html.css(".release-date").children[1].text
     Date.parse(date_text)
   end
