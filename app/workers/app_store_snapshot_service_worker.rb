@@ -73,6 +73,7 @@ class AppStoreIdsServiceWorker
     
     if support_url = a[:support_url]
        s.support_url = support_url
+       #TODO: add logic around company
     end
    
     
@@ -82,7 +83,11 @@ class AppStoreIdsServiceWorker
       end
     end
     
-    a[:in_app_purchases]
+    if in_app_purchases = a[:in_app_purchases]
+      in_app_purchases.each do |in_app_purchase|
+        InAppPurchase.create(title: in_app_purchase[:title], in_app_purchase[:price], ios_app_snapshot: s)
+      end
+    end
     
     s.save
   end
