@@ -34,8 +34,28 @@ class AppStoreIdsServiceWorker
       s.send("#{sca}=", a[sca.to_sym])
     end
     
+    # Categories
     
-    a[:categories]
+    categories = a[:categories]
+    
+    categories_snapshot_primary = IosAppCategoriesSnapshot.new
+    categories_snapshot_primary.ios_app_snapshot = s
+    categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
+    categories.type = :primary
+    categories_snapshot_primary.save
+    
+    categories_snapshot_secondary = IosAppCategoriesSnapshot.new
+    categories[:secondary].each do |secondary_category|
+      categories_snapshot_secondary.ios_app_snapshot = s
+      categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
+      categories.type = :secondary
+    end
+    categories_snapshot_secondary.save
+    
+    
+    
+    
+    
     a[:developer_app_store_identifier]
     a[:ratings]
     
