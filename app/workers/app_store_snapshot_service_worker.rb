@@ -13,6 +13,7 @@ class AppStoreSnapshotServiceWorker
   
   def perform
     logger.info "in perform"
+    SidekigTester.create!(test_string: 'in perform')
   end
   
   def save_attributes(options={})
