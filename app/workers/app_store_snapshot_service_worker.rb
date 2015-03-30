@@ -1,4 +1,4 @@
-class AppStoreIdsServiceWorker
+class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
   def perform(ios_app_snapshot_job_id, ios_app_ids)
@@ -41,14 +41,14 @@ class AppStoreIdsServiceWorker
       categories_snapshot_primary = IosAppCategoriesSnapshot.new
       categories_snapshot_primary.ios_app_snapshot = s
       categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
-      categories.type = :primary
+      categories_snapshot_primary.type = :primary
       categories_snapshot_primary.save
     
       categories_snapshot_secondary = IosAppCategoriesSnapshot.new
       categories[:secondary].each do |secondary_category|
         categories_snapshot_secondary.ios_app_snapshot = s
         categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-        categories.type = :secondary
+        categories_snapshot_primary.type = :secondary
       end
       categories_snapshot_secondary.save
     end
@@ -85,7 +85,7 @@ class AppStoreIdsServiceWorker
     
     if in_app_purchases = a[:in_app_purchases]
       in_app_purchases.each do |in_app_purchase|
-        InAppPurchase.create(title: in_app_purchase[:title], in_app_purchase[:price], ios_app_snapshot: s)
+        InAppPurchase.create(title: in_app_purchase[:title], price: in_app_purchase[:price], ios_app_snapshot: s)
       end
     end
     

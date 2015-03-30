@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330081910) do
+ActiveRecord::Schema.define(version: 20150330083427) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(version: 20150330081910) do
     t.integer  "previous_release_id"
     t.boolean  "in_app_purchases"
     t.string   "required_ios_version"
-    t.integer  "ios_snapshot_job_id"
+    t.integer  "ios_app_snapshot_job_id"
     t.text     "release_notes"
     t.string   "seller"
     t.integer  "developer_app_store_identifier"
@@ -186,7 +186,17 @@ ActiveRecord::Schema.define(version: 20150330081910) do
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
-  add_index "ios_app_snapshots", ["ios_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_snapshot_job_id", using: :btree
+  add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
+
+  create_table "ios_app_snapshots_languages", force: true do |t|
+    t.integer  "ios_app_snapshot_id"
+    t.integer  "language_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_languages_on_ios_app_snapshot_id", using: :btree
+  add_index "ios_app_snapshots_languages", ["language_id"], name: "index_ios_app_snapshots_languages_on_language_id", using: :btree
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
