@@ -44,14 +44,14 @@ class AppStoreSnapshotServiceWorker
         categories_snapshot_primary = IosAppCategoriesSnapshot.new
         categories_snapshot_primary.ios_app_snapshot = s
         categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
-        categories_snapshot_primary.type = :primary
+        categories_snapshot_primary.kind = :primary
         categories_snapshot_primary.save!
     
         categories_snapshot_secondary = IosAppCategoriesSnapshot.new
         categories[:secondary].each do |secondary_category|
           categories_snapshot_secondary.ios_app_snapshot = s
           categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-          categories_snapshot_secondary.type = :secondary
+          categories_snapshot_secondary.kind = :secondary
         end
         categories_snapshot_secondary.save!
       end

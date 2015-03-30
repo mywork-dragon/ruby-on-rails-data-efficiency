@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330094230) do
+ActiveRecord::Schema.define(version: 20150330102939) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(version: 20150330094230) do
   create_table "ios_app_categories_snapshots", force: true do |t|
     t.integer  "ios_app_category_id"
     t.integer  "ios_app_snapshot_id"
-    t.string   "type"
+    t.string   "kind"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
