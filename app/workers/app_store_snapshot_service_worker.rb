@@ -56,8 +56,6 @@ class AppStoreSnapshotServiceWorker
         categories_snapshot_secondary.save!
       end
     
-    
-    
       if ratings = a[:ratings]
         ratings_current = ratings[:current]
         s.ratings_current_count = ratings_current[:count]
