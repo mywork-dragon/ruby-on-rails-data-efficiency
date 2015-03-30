@@ -32,36 +32,56 @@ class AppStoreIdsServiceWorker
     )
     
     single_column_attributes.each do |sca|
-      s.send("#{sca}=", a[sca.to_sym])
+      value = a[sca.to_sym]
+      s.send("#{sca}=", value) if value
     end
     
     # Categories
+    if categories = a[:categories]
+      categories_snapshot_primary = IosAppCategoriesSnapshot.new
+      categories_snapshot_primary.ios_app_snapshot = s
+      categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
+      categories.type = :primary
+      categories_snapshot_primary.save
     
-    categories = a[:categories]
-    
-    categories_snapshot_primary = IosAppCategoriesSnapshot.new
-    categories_snapshot_primary.ios_app_snapshot = s
-    categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
-    categories.type = :primary
-    categories_snapshot_primary.save
-    
-    categories_snapshot_secondary = IosAppCategoriesSnapshot.new
-    categories[:secondary].each do |secondary_category|
-      categories_snapshot_secondary.ios_app_snapshot = s
-      categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-      categories.type = :secondary
+      categories_snapshot_secondary = IosAppCategoriesSnapshot.new
+      categories[:secondary].each do |secondary_category|
+        categories_snapshot_secondary.ios_app_snapshot = s
+        categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
+        categories.type = :secondary
+      end
+      categories_snapshot_secondary.save
     end
-    categories_snapshot_secondary.save
     
-    a[:ratings]
     
-    seller_url = a[:seller_url]
-    s.seller_url = seller_url
     
-    support_url = a[:support_url]
-    s.support_url = support_url
+    if ratings = a[:ratings]
+      ratings_current = ratings[:current]
+      s.ratings_current_count = ratings_current[:count]
+      s.ratings_current_stars = ratings_current[:stars]
+      
+      ratings_all = ratings[:all]
+      s.ratings_all_count = ratings_all[:count]
+      s.ratings_all_stars = ratings_all[:stars]
+    end
     
-    a[:languages]
+    if seller_url = a[:seller_url]
+      s.seller_url = seller_url
+      #TODO: add logic around company
+    end
+    
+    
+    if support_url = a[:support_url]
+       s.support_url = support_url
+    end
+   
+    
+    if languages = a[:languages]
+      languages.each do |language_name|
+        s.languages << Language.find_or_create_by(name: language_name)
+      end
+    end
+    
     a[:in_app_purchases]
     
     s.save

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330080501) do
+ActiveRecord::Schema.define(version: 20150330081910) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -211,6 +211,8 @@ ActiveRecord::Schema.define(version: 20150330080501) do
     t.datetime "updated_at"
     t.string   "name"
   end
+
+  add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
 
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"

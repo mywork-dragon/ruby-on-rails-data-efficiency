@@ -169,16 +169,14 @@ class AppStoreService
     primary = @json['primaryGenreName']
     all_cats = @json['genres']
     
-    secondary = all_cats - [secondary]
-    
-    secondary = nil if secondary.blank?
+    secondary = all_cats - [primary]
     
     {primary: primary, secondary: secondary}
   end
 
   def categories_html
     primary = @html.css(".genre").children[1].text
-    {primary: primary}
+    {primary: primary, secondary: []}
   end
 
   # Only available in HTML
@@ -230,11 +228,11 @@ class AppStoreService
   def ratings_json
     current_version_hash = {}
     current_version_hash[:stars] = @json['averageUserRatingForCurrentVersion']
-    current_version_hash[:ratings] = @json['userRatingCountForCurrentVersion']
+    current_version_hash[:count] = @json['userRatingCountForCurrentVersion']
     
     all_versions_hash = {}
     all_versions_hash[:stars] = @json['averageUserRating']
-    all_versions_hash[:ratings] = @json['userRatingCount']
+    all_versions_hash[:count] = @json['userRatingCount']
     
     
     {current: current_version_hash, all: all_versions_hash}
