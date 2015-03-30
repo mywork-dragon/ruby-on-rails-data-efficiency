@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330083427) do
+ActiveRecord::Schema.define(version: 20150330091714) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -159,29 +159,25 @@ ActiveRecord::Schema.define(version: 20150330083427) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.string   "category"
     t.integer  "price"
     t.integer  "size"
-    t.date     "updated"
     t.string   "seller_url"
     t.string   "support_url"
     t.string   "version"
     t.date     "released"
     t.string   "recommended_age"
     t.text     "description"
-    t.string   "link"
     t.integer  "ios_app_id"
-    t.integer  "previous_release_id"
-    t.boolean  "in_app_purchases"
     t.string   "required_ios_version"
     t.integer  "ios_app_snapshot_job_id"
     t.text     "release_notes"
     t.string   "seller"
     t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",          precision: 10, scale: 0
+    t.decimal  "ratings_current_stars",          precision: 3,  scale: 2
     t.integer  "ratings_current_count"
     t.decimal  "ratings_all_stars",              precision: 10, scale: 0
     t.integer  "ratings_all_count"
+    t.boolean  "editors_choice"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
@@ -212,7 +208,7 @@ ActiveRecord::Schema.define(version: 20150330083427) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.integer  "ios_app_release_id"
+    t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
 

@@ -6,16 +6,16 @@ class AppStoreSnapshotServiceWorker
     ios_app_ids.each do |ios_app_id|
       next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
       
-      save_attributes(ios_app_id)
+      save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
     end
     
   end
   
-  def save_attributes(ios_app_id)
-    ios_app = IosApp.find(ios_app_id)
+  def save_attributes(options={})
+    ios_app = IosApp.find(options[:ios_app_id])
     a = AppStoreService.attributes(ios_app.app_identifier)
     
-    s = IosAppSnapshot.create(ios_app: ios_app)
+    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id])
     
     single_column_attributes = %w(
       name
@@ -48,7 +48,7 @@ class AppStoreSnapshotServiceWorker
       categories[:secondary].each do |secondary_category|
         categories_snapshot_secondary.ios_app_snapshot = s
         categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-        categories_snapshot_primary.type = :secondary
+        categories_snapshot_secondary.type = :secondary
       end
       categories_snapshot_secondary.save
     end
@@ -85,7 +85,7 @@ class AppStoreSnapshotServiceWorker
     
     if in_app_purchases = a[:in_app_purchases]
       in_app_purchases.each do |in_app_purchase|
-        InAppPurchase.create(title: in_app_purchase[:title], price: in_app_purchase[:price], ios_app_snapshot: s)
+        IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
       end
     end
     

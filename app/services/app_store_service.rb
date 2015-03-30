@@ -19,6 +19,7 @@ class AppStoreService
         name_json
         description_json
         release_notes_json
+        version_json
         price_json
         seller_url_json
         categories_json
@@ -34,6 +35,7 @@ class AppStoreService
         name_html
         description_html
         release_notes_html
+        version_html
         price_html
         seller_url_html
         categories_html
@@ -133,6 +135,14 @@ class AppStoreService
     @html.css("div.center-stack > .product-review > p")[1].text
   end
 
+  def version_json
+    @json['version']
+  end
+  
+  def version_html
+    size_text = @html.css('li').select{ |li| li.text.match(/Version: /) }.first.children[1].text
+  end
+
   # In cents
   # @author Jason Lew
   def price_json
@@ -222,7 +232,7 @@ class AppStoreService
   # HTML only
   def in_app_purchases_html
     lis = @html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
-    lis.map{ |li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
+    lis.map{ |li| {name: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
   end
 
   def ratings_json
