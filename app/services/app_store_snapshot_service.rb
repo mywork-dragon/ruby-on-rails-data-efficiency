@@ -14,8 +14,14 @@ class AppStoreSnapshotService
       
     end
     
-    def run_app()
-      
+    def test
+      # j = IosAppSnapshotJob.create!(notes: notes)
+#
+#       ios_app_ids = [389377362, 801207885, 509978909, 946286572, 355074115]
+#
+#       AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_ids)
+
+      AppStoreSnapshotServiceWorker
     end
   
   end
