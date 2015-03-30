@@ -1,7 +1,11 @@
 class IosAppSnapshot < ActiveRecord::Base
 
-  has_many :languages
+  has_many :ios_app_snapshots_languages
+  has_many :languages, through: :ios_app_snapshots_languages
+  
   belongs_to :ios_app
   belongs_to :ios_app_snapshot_job
+  has_many :ios_app_categories, through: :ios_app_categories_snapshots
   
+  enum status: [:failure, :success]
 end

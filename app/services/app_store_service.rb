@@ -16,9 +16,10 @@ class AppStoreService
     
     if @json && !html_only
       methods += %w(
-        title_json
+        name_json
         description_json
         release_notes_json
+        version_json
         price_json
         seller_url_json
         categories_json
@@ -31,9 +32,10 @@ class AppStoreService
       )
     elsif @html || html_only
       methods += %w(
-        title_html
+        name_html
         description_html
         release_notes_html
+        version_html
         price_html
         seller_url_html
         categories_html
@@ -50,7 +52,7 @@ class AppStoreService
     if @html
       methods += %w(
         support_url_html
-        updated_html
+        released_html
         languages_html
         in_app_purchases_html
         editors_choice_html
@@ -109,11 +111,11 @@ class AppStoreService
     html
   end
 
-  def title_json
+  def name_json
     @json['trackName']
   end
 
-  def title_html
+  def name_html
     @html.css('#title > div.left > h1').text
   end
 
@@ -131,6 +133,14 @@ class AppStoreService
 
   def release_notes_html
     @html.css("div.center-stack > .product-review > p")[1].text
+  end
+
+  def version_json
+    @json['version']
+  end
+  
+  def version_html
+    size_text = @html.css('li').select{ |li| li.text.match(/Version: /) }.first.children[1].text
   end
 
   # In cents
@@ -169,20 +179,18 @@ class AppStoreService
     primary = @json['primaryGenreName']
     all_cats = @json['genres']
     
-    secondary = all_cats - [secondary]
-    
-    secondary = nil if secondary.blank?
+    secondary = all_cats - [primary]
     
     {primary: primary, secondary: secondary}
   end
 
   def categories_html
     primary = @html.css(".genre").children[1].text
-    {primary: primary}
+    {primary: primary, secondary: []}
   end
 
   # Only available in HTML
-  def updated_html
+  def released_html
     date_text = @html.css(".release-date").children[1].text
     Date.parse(date_text)
   end
@@ -224,17 +232,17 @@ class AppStoreService
   # HTML only
   def in_app_purchases_html
     lis = @html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
-    lis.map{ |li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
+    lis.map{ |li| {name: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
   end
 
   def ratings_json
     current_version_hash = {}
     current_version_hash[:stars] = @json['averageUserRatingForCurrentVersion']
-    current_version_hash[:ratings] = @json['userRatingCountForCurrentVersion']
+    current_version_hash[:count] = @json['userRatingCountForCurrentVersion']
     
     all_versions_hash = {}
     all_versions_hash[:stars] = @json['averageUserRating']
-    all_versions_hash[:ratings] = @json['userRatingCount']
+    all_versions_hash[:count] = @json['userRatingCount']
     
     
     {current: current_version_hash, all: all_versions_hash}
