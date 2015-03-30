@@ -15,82 +15,99 @@ class AppStoreSnapshotServiceWorker
     ios_app = IosApp.find(options[:ios_app_id])
     a = AppStoreService.attributes(ios_app.app_identifier)
     
-    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id])
+    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id], status: :success)
     
-    single_column_attributes = %w(
-      name
-      description
-      release_notes
-      version
-      price
-      size
-      seller
-      recommended_age
-      required_ios_version
-      released
-      editors_choice
-      developer_app_store_identifier
-    )
+    begin
     
-    single_column_attributes.each do |sca|
-      value = a[sca.to_sym]
-      s.send("#{sca}=", value) if value
-    end
+      single_column_attributes = %w(
+        name
+        description
+        release_notes
+        version
+        price
+        size
+        seller
+        recommended_age
+        required_ios_version
+        released
+        editors_choice
+        developer_app_store_identifier
+      )
     
-    # Categories
-    if categories = a[:categories]
-      categories_snapshot_primary = IosAppCategoriesSnapshot.new
-      categories_snapshot_primary.ios_app_snapshot = s
-      categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
-      categories_snapshot_primary.type = :primary
-      categories_snapshot_primary.save
-    
-      categories_snapshot_secondary = IosAppCategoriesSnapshot.new
-      categories[:secondary].each do |secondary_category|
-        categories_snapshot_secondary.ios_app_snapshot = s
-        categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-        categories_snapshot_secondary.type = :secondary
+      single_column_attributes.each do |sca|
+        value = a[sca.to_sym]
+        s.send("#{sca}=", value) if value
       end
-      categories_snapshot_secondary.save
-    end
+    
+      # Categories
+      if categories = a[:categories]
+        categories_snapshot_primary = IosAppCategoriesSnapshot.new
+        categories_snapshot_primary.ios_app_snapshot = s
+        categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
+        categories_snapshot_primary.type = :primary
+        categories_snapshot_primary.save!
+    
+        categories_snapshot_secondary = IosAppCategoriesSnapshot.new
+        categories[:secondary].each do |secondary_category|
+          categories_snapshot_secondary.ios_app_snapshot = s
+          categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
+          categories_snapshot_secondary.type = :secondary
+        end
+        categories_snapshot_secondary.save!
+      end
     
     
     
-    if ratings = a[:ratings]
-      ratings_current = ratings[:current]
-      s.ratings_current_count = ratings_current[:count]
-      s.ratings_current_stars = ratings_current[:stars]
+      if ratings = a[:ratings]
+        ratings_current = ratings[:current]
+        s.ratings_current_count = ratings_current[:count]
+        s.ratings_current_stars = ratings_current[:stars]
       
-      ratings_all = ratings[:all]
-      s.ratings_all_count = ratings_all[:count]
-      s.ratings_all_stars = ratings_all[:stars]
-    end
+        ratings_all = ratings[:all]
+        s.ratings_all_count = ratings_all[:count]
+        s.ratings_all_stars = ratings_all[:stars]
+      end
     
-    if seller_url = a[:seller_url]
-      s.seller_url = seller_url
-      #TODO: add logic around company
-    end
+      if seller_url = a[:seller_url]
+        s.seller_url = seller_url
+        #TODO: add logic around company
+      end
     
     
-    if support_url = a[:support_url]
-       s.support_url = support_url
-       #TODO: add logic around company
-    end
+      if support_url = a[:support_url]
+         s.support_url = support_url
+         #TODO: add logic around company
+      end
    
     
-    if languages = a[:languages]
-      languages.each do |language_name|
-        s.languages << Language.find_or_create_by(name: language_name)
+      if languages = a[:languages]
+        languages.each do |language_name|
+          s.languages << Language.find_or_create_by(name: language_name)
+        end
       end
+    
+      if in_app_purchases = a[:in_app_purchases]
+        in_app_purchases.each do |in_app_purchase|
+          IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
+        end
+      end
+    
+      s.save!
+    
+    rescue
+      s.status = :failure
+      s.save
     end
     
-    if in_app_purchases = a[:in_app_purchases]
-      in_app_purchases.each do |in_app_purchase|
-        IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
-      end
-    end
+    s
+  end
+  
+  def test_save_attributes
+    ids = [389377362, 801207885, 509978909, 946286572, 355074115]
     
-    s.save
+    ios_app_ids = ids.map{ |id| IosApp.find_or_create_by(app_identifier: id) }
+    
+    perform(-1, ios_app_ids)
   end
   
 end
