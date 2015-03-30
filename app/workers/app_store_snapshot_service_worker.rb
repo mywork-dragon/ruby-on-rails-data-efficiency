@@ -1,20 +1,20 @@
 class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
-  # def perform(ios_app_snapshot_job_id, ios_app_ids)
-  #
-  #   ios_app_ids.each do |ios_app_id|
-  #     next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
-  #
-  #     save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
-  #   end
-  #
-  # end
-  
-  def perform
-    logger.info "in perform"
-    SidekiqTester.create!(test_string: 'in perform', ip: MyIp.ip)
+  def perform(ios_app_snapshot_job_id, ios_app_ids)
+
+    ios_app_ids.each do |ios_app_id|
+      next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
+
+      save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
+    end
+
   end
+  
+  # def perform
+  #   logger.info "in perform"
+  #   SidekiqTester.create!(test_string: 'in perform', ip: MyIp.ip)
+  # end
   
   def save_attributes(options={})
     ios_app = IosApp.find(options[:ios_app_id])
