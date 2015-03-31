@@ -78,136 +78,140 @@
     <section class="panel panel-default table-dynamic">
         <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Results</strong></div>
 
-        <table class="table table-bordered table-striped table-responsive">
-            <thead>
-                <tr>
-                    <th><div class="th">
-                        App Name
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('name') "
-                              data-ng-class="{active: row == 'name'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-name') "
-                              data-ng-class="{active: row == '-name'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Company
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('price') "
-                              data-ng-class="{active: row == 'price'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-price') "
-                              data-ng-class="{active: row == '-price'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Mobile Priority
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('sales') "
-                              data-ng-class="{active: row == 'sales'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-sales') "
-                              data-ng-class="{active: row == '-sales'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Downloads
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Genre
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Last Updated
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Average Update Timespan
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Company Size
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Funding
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Reported Ad Spend
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Country
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Details
-                        <span class="glyphicon glyphicon-chevron-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="glyphicon glyphicon-chevron-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-ng-repeat="store in currentPageStores">
-                    <td>{{store.name}}</td>
-                    <td>{{store.company}}</td>
-                    <td>{{store.priority}}</td>
-                    <td>{{store.downloads}}</td>
-                    <td>{{store.genre}}</td>
-                    <td>{{store.lastUpdated}}</td>
-                    <td>{{store.averageUpdate}}</td>
-                    <td>{{store.companySize}}</td>
-                    <td>{{store.funding}}</td>
-                    <td>{{store.adSpend}}</td>
-                    <td>{{store.country}}</td>
-                    <td>{{store.details}}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="results-table-wrapper">
+
+            <table class="table table-bordered table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th><div class="th">
+                            App Name
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('name') "
+                                  data-ng-class="{active: row == 'name'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-name') "
+                                  data-ng-class="{active: row == '-name'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Company
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('price') "
+                                  data-ng-class="{active: row == 'price'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-price') "
+                                  data-ng-class="{active: row == '-price'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Mobile Priority
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('sales') "
+                                  data-ng-class="{active: row == 'sales'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-sales') "
+                                  data-ng-class="{active: row == '-sales'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Downloads
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Genre
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Last Updated
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Average Update Timespan
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Company Size
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Funding
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Reported Ad Spend
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Country
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Details
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="store in currentPageStores">
+                        <td>{{store.name}}</td>
+                        <td>{{store.company}}</td>
+                        <td>{{store.priority}}</td>
+                        <td>{{store.downloads}}</td>
+                        <td>{{store.genre}}</td>
+                        <td>{{store.lastUpdated}}</td>
+                        <td>{{store.averageUpdate}}</td>
+                        <td>{{store.companySize}}</td>
+                        <td>{{store.funding}}</td>
+                        <td>{{store.adSpend}}</td>
+                        <td>{{store.country}}</td>
+                        <td>{{store.details}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
 
         <footer class="table-footer">
             <div class="row">

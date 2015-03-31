@@ -596,9 +596,12 @@ pre {
 
 .table-dynamic .table-filters {
   margin: 10px 0;
-  padding: 8px;
+  padding: 8px; }
+
+#dashboard-tag-display {
   padding-top: 25px;
-  padding-left: 30px;}
+  padding-left: 30px;
+}
 
 .table-dynamic .filter-result-info {
   padding: 7px; }
@@ -609,11 +612,12 @@ pre {
 
 .table-dynamic .table-bordered thead th {
   position: relative;
-  padding: 0; }
+  padding: 0;
+  vertical-align: middle;
+  height: 75px; }
 
 .table-dynamic .table-bordered thead th > .th {
-  position: relative;
-  padding: 8px 20px 8px 8px; }
+  padding: 8px 25px 8px 8px; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up, .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
   position: absolute;
@@ -627,11 +631,11 @@ pre {
   color: #0393dd; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up {
-  top: 4px;
+  top: 24px;
   right: 5px; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
-  top: 18px;
+  top: 38px;
   right: 6px; }
 
 .table-dynamic .table-footer {
@@ -1258,7 +1262,7 @@ input.input-dark:focus {
 .ui-select {
   position: relative;
   display: inline-block;
-  margin: 0 0 2px 1.2%;
+  margin: 0 0 2px 5px;
   width: auto;
   height: auto;
   border: 1px solid #cbd5dd;
@@ -1272,8 +1276,8 @@ input.input-dark:focus {
   z-index: 99;
   display: block;
   position: relative;
-  padding: 10px 15px 10px 10px;
-  min-width: 200px;
+  padding: 5px 13px 5px 8px;
+  min-width: 168px;
   width: 120%;
   border: none;
   outline: none;
@@ -4737,6 +4741,10 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 .panel > .table:last-child > tbody:last-child > tr:last-child td:last-child, .panel > .table:last-child > tbody:last-child > tr:last-child th:last-child, .panel > .table:last-child > tfoot:last-child > tr:last-child td:last-child, .panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child, .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child, .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child, .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child, .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
   border-bottom-right-radius: -1; }
 
+#results-table-wrapper {
+    overflow: scroll;
+}
+
 .panel-group .panel {
   margin-bottom: 0;
   -webkit-border-radius: 0px;
@@ -4761,7 +4769,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 .panel-default > .panel-heading {
   color: #3F4245;
-  background-color: #ececec;
+  background-color: #F9F9F9;
   border: none;
   font-size: 12px;
   text-transform: uppercase;

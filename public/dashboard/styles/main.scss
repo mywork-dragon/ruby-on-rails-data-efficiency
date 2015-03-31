@@ -650,10 +650,10 @@ $text-colors:(
 .table-dynamic .table-bordered thead th {
   position: relative;
   padding: 0;
+  vertical-align: middle;
 }
 
 .table-dynamic .table-bordered thead th>.th {
-  position: relative;
   padding: 8px 20px 8px 8px;
 }
 
@@ -4836,7 +4836,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 .panel-default>.panel-heading {
   color: #3F4245;
-  background-color: #ececec;
+  background-color: #F9F9F9;
   border: none;
   font-size:12px;
   text-transform:uppercase;
