@@ -7,6 +7,8 @@ GOOGLE_WORD_LIMIT = 32
   
     def downloads_attributes(app_attrs={})
       
+      @app_identifier = app_attrs[:app_identifier]
+      
       # if app_attrs[:description]
       #   query_url_safe = CGI::escape(app_attrs[:description])
       # else
@@ -31,10 +33,11 @@ GOOGLE_WORD_LIMIT = 32
       
       #li "url: #{url}"
         
-      page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
+      page = Tor.open(url)
 
-      html = Nokogiri::HTML(page)
-    
+      @html = Nokogiri::HTML(page)
+      html = @html
+      
       url = nil
     
       html.search("cite").map{|x| x.inner_text}.each do |link|
@@ -52,6 +55,10 @@ GOOGLE_WORD_LIMIT = 32
       
       html = downloads_html(url)
       
+      
+      
+      return {downloads: nil} unless page_has_link_to_app? 
+      
       ret[:downloads] = downloads(html)
       
       ret
@@ -68,6 +75,14 @@ GOOGLE_WORD_LIMIT = 32
       page = open(url_cache, 'User-Agent' => UserAgent.random_web)
       Nokogiri::HTML(page)
     end 
+    
+    def page_has_link_to_app?(html)
+      @html.css('a.install.button').each do |node|
+        return true if node['href'].include?("id#{@app_identifier}")
+      end
+      
+      false
+    end
     
     # In dollas
     # @author Jason Lew
