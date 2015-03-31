@@ -67,7 +67,13 @@ class AppStoreService
       key = method.gsub(/_html\z/, '').gsub(/_json\z/, '').to_sym
       
       begin
-        ret[key] = send(method.to_sym)
+        attribute = send(method.to_sym)
+        
+        if attribute.class == String
+          attribute = I18n.transliterate(attribute)
+        end
+        
+        ret[key] = attribute
       rescue
         ret[key] = nil
       end
