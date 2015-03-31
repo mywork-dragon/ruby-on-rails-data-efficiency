@@ -601,6 +601,13 @@ pre {
 #dashboard-tag-display {
   padding-top: 25px;
   padding-left: 30px;
+  clear: both;
+}
+
+#dashboard-tag-display .fa-search {
+  float: left;
+  margin-top: 27px;
+  margin-right: 10px;
 }
 
 .table-dynamic .filter-result-info {
@@ -1262,7 +1269,7 @@ input.input-dark:focus {
 .ui-select {
   position: relative;
   display: inline-block;
-  margin: 0 0 2px 5px;
+  margin: 0 0 5px 5px;
   width: auto;
   height: auto;
   border: 1px solid #cbd5dd;
@@ -1276,8 +1283,8 @@ input.input-dark:focus {
   z-index: 99;
   display: block;
   position: relative;
-  padding: 5px 13px 5px 8px;
-  min-width: 168px;
+  padding: 5px 33px 5px 8px;
+  max-width: 160px;
   width: 120%;
   border: none;
   outline: none;
@@ -2230,20 +2237,14 @@ input.input-dark:focus {
   word-wrap: break-word;
   cursor: text;
   display: block;
-  width: 100%;
+  float: left;
   min-height: 34px;
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857;
   color: #767676;
   background-color: #fff;
-  background-image: none;
-  border: 1px solid #cbd5dd;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -o-border-radius: 0px;
-  border-radius: 0px; }
+  background-image: none; }
 
 .ui-tags-input .tags.focused {
   outline: none; }

@@ -1071,7 +1071,7 @@ angular.module("app.form.validation", []).controller("wizardFormCtrl", ["$scope"
 
 angular.module("app.ui.form.ctrls", []).controller("TagsDemoCtrl", ["$scope",
         function($scope) {
-            $scope.tags = ["foo", "bar"];
+            $scope.tags = ["Mobile Priority: High", "Country: USA", "Reported Ad Spend: $1K - $10K"];
         }
     ]).controller("DatepickerDemoCtrl", ["$scope",
         function($scope) {
@@ -1250,7 +1250,11 @@ angular.module("app.tables", []).controller("tableCtrl", ["$scope", "$filter",
             return $scope.filteredStores = $filter("filter")($scope.stores, $scope.searchKeywords), $scope.onFilterChange();
         }, $scope.order = function(rowName) {
             return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredStores = $filter("orderBy")($scope.stores, rowName), $scope.onOrderChange()) : void 0;
-        }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageStores = [], (init = function() {
+        }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageStores = [],
+            $scope.tags = [
+                "foo",
+                "bar"
+            ], (init = function() {
             return $scope.search(), $scope.select($scope.currentPage);
         }), $scope.search();
     }
