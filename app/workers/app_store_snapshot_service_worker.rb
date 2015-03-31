@@ -27,7 +27,7 @@ class AppStoreSnapshotServiceWorker
   def save_attributes(options={})
     ios_app = IosApp.find(options[:ios_app_id])
     
-    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id], status: :success)
+    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id])
     
     try = 0
     
@@ -114,15 +114,16 @@ class AppStoreSnapshotServiceWorker
       s.save!
     
     rescue => e
-      if (try += 1) >= MAX_TRIES
+      ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      if (try += 1) < MAX_TRIES
         retry
       else
         s.status = :failure
-        s.exception = e.message
-        s.exception_backtrace = e.backtrace
-        s.save
+        s.save!
       end
-      
+    else
+      s.status = :success
+      s.save!
     end
     
     s

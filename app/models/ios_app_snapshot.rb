@@ -6,6 +6,8 @@ class IosAppSnapshot < ActiveRecord::Base
   belongs_to :ios_app
   belongs_to :ios_app_snapshot_job
   has_many :ios_app_categories, through: :ios_app_categories_snapshots
+
+  has_many :ios_app_snapshot_exceptions
   
   enum status: [:failure, :success]
 end
