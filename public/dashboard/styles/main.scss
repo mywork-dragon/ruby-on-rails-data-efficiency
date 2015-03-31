@@ -633,6 +633,11 @@ $text-colors:(
   padding: 8px;
 }
 
+.table-dynamic #dashboard-tag-display {
+  padding-left: 30px;
+  padding-top: 25px;
+}
+
 .table-dynamic .filter-result-info {
   padding: 7px;
 }
@@ -1636,9 +1641,9 @@ $input-colors:(
   }
 }
 
-.panel-default>.panel-heading {
+.panel-default > .panel-heading {
   background-image: none;
-
+  background-color: #F9F9F9;
 }
 
 .ui-accordion .panel {

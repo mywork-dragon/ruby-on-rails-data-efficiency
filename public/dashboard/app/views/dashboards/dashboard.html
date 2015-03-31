@@ -3,7 +3,7 @@
 
     <section class="panel panel-default table-dynamic">
 
-        <div class="table-filters">
+        <div id="dashboard-tag-display" class="table-filters">
             <div class="row">
                 <span><i class="fa fa-search"></i></span>
             </div>
@@ -26,37 +26,47 @@
 
            <span class="ui-select">
                 <select>
-                    <option>App Downloads</option>
-                    <option>Enterprise Software</option>
-                    <option>Direct to Consumer</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select>
                     <option>Mobile Priority</option>
-                    <option>Enterprise Software</option>
-                    <option>Direct to Consumer</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select>
-                    <option>Industry</option>
-                    <option>Enterprise Software</option>
-                    <option>Direct to Consumer</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select>
-                    <option>Funding</option>
-                    <option>Enterprise Software</option>
-                    <option>Direct to Consumer</option>
                 </select>
             </span>
             <span class="ui-select">
                 <select>
                     <option>Company Size</option>
-                    <option>Enterprise Software</option>
-                    <option>Direct to Consumer</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Reported Ad Spend</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Funding</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Country</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>SDKs</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Vertical</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Downloads</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Updates</option>
                 </select>
             </span>
 
@@ -72,7 +82,7 @@
             <thead>
                 <tr>
                     <th><div class="th">
-                        Store Name
+                        App Name
                         <span class="glyphicon glyphicon-chevron-up"
                               data-ng-click=" order('name') "
                               data-ng-class="{active: row == 'name'}"></span>
@@ -81,7 +91,7 @@
                               data-ng-class="{active: row == '-name'}"></span>
                     </div></th>
                     <th><div class="th">
-                        Price
+                        Company
                         <span class="glyphicon glyphicon-chevron-up"
                               data-ng-click=" order('price') "
                               data-ng-class="{active: row == 'price'}"></span>
@@ -90,7 +100,7 @@
                               data-ng-class="{active: row == '-price'}"></span>
                     </div></th>
                     <th><div class="th">
-                        Sales (in 30 days)
+                        Mobile Priority
                         <span class="glyphicon glyphicon-chevron-up"
                               data-ng-click=" order('sales') "
                               data-ng-class="{active: row == 'sales'}"></span>
@@ -99,7 +109,79 @@
                               data-ng-class="{active: row == '-sales'}"></span>
                     </div></th>
                     <th><div class="th">
-                        Rating
+                        Downloads
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Genre
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Last Updated
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Average Update Timespan
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Company Size
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Funding
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Reported Ad Spend
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Country
+                        <span class="glyphicon glyphicon-chevron-up"
+                              data-ng-click=" order('rating') "
+                              data-ng-class="{active: row == 'rating'}"></span>
+                        <span class="glyphicon glyphicon-chevron-down"
+                              data-ng-click=" order('-rating') "
+                              data-ng-class="{active: row == '-rating'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Details
                         <span class="glyphicon glyphicon-chevron-up"
                               data-ng-click=" order('rating') "
                               data-ng-class="{active: row == 'rating'}"></span>
@@ -112,9 +194,17 @@
             <tbody>
                 <tr data-ng-repeat="store in currentPageStores">
                     <td>{{store.name}}</td>
-                    <td>{{store.price}}</td>
-                    <td>{{store.sales}}</td>
-                    <td>{{store.rating}}</td>
+                    <td>{{store.company}}</td>
+                    <td>{{store.priority}}</td>
+                    <td>{{store.downloads}}</td>
+                    <td>{{store.genre}}</td>
+                    <td>{{store.lastUpdated}}</td>
+                    <td>{{store.averageUpdate}}</td>
+                    <td>{{store.companySize}}</td>
+                    <td>{{store.funding}}</td>
+                    <td>{{store.adSpend}}</td>
+                    <td>{{store.country}}</td>
+                    <td>{{store.details}}</td>
                 </tr>
             </tbody>
         </table>
