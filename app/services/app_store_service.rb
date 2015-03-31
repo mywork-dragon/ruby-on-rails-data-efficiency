@@ -56,6 +56,7 @@ class AppStoreService
         languages_html
         in_app_purchases_html
         editors_choice_html
+        image_urls_html
       )
     end
     
@@ -302,6 +303,12 @@ class AppStoreService
   # HTML Only 
   def editors_choice_html
     @html.css(".editorial-badge").present?
+  end
+  
+  def image_urls_html
+    node = @html.css('#left-stack').css('.artwork').css('div > img').first
+    
+    return {size_350x350: node['src-swap-high-dpi'], size_175x175: node['src-swap']}
   end
   
   private
