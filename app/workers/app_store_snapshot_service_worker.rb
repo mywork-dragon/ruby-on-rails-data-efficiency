@@ -1,6 +1,9 @@
 class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
+  # accounting for retries ourself, so disable sidekiq retries
+  sidekiq_options retry: false
+  
   MAX_TRIES = 3
   
   # def perform(ios_app_snapshot_job_id, ios_app_ids)
