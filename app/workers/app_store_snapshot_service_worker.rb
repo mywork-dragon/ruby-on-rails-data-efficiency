@@ -1,6 +1,8 @@
 class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
+  MAX_TRIES = 3
+  
   # def perform(ios_app_snapshot_job_id, ios_app_ids)
   #
   #   ios_app_ids.each do |ios_app_id|
@@ -26,6 +28,8 @@ class AppStoreSnapshotServiceWorker
     ios_app = IosApp.find(options[:ios_app_id])
     
     s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id], status: :success)
+    
+    try = 0
     
     begin
       
@@ -71,13 +75,16 @@ class AppStoreSnapshotServiceWorker
       end
     
       if ratings = a[:ratings]
-        ratings_current = ratings[:current]
-        s.ratings_current_count = ratings_current[:count]
-        s.ratings_current_stars = ratings_current[:stars]
+        if ratings_current = ratings[:current]
+          s.ratings_current_count = ratings_current[:count]
+          s.ratings_current_stars = ratings_current[:stars]
+        end
+        
       
-        ratings_all = ratings[:all]
-        s.ratings_all_count = ratings_all[:count]
-        s.ratings_all_stars = ratings_all[:stars]
+        if ratings_all = ratings[:all]
+          s.ratings_all_count = ratings_all[:count]
+          s.ratings_all_stars = ratings_all[:stars]
+        end
       end
     
       if seller_url = a[:seller_url]
@@ -107,10 +114,15 @@ class AppStoreSnapshotServiceWorker
       s.save!
     
     rescue => e
-      s.status = :failure
-      s.exception = e.message
-      s.exception_backtrace = e.backtrace
-      s.save
+      if (try += 1) >= MAX_TRIES
+        retry
+      else
+        s.status = :failure
+        s.exception = e.message
+        s.exception_backtrace = e.backtrace
+        s.save
+      end
+      
     end
     
     s
