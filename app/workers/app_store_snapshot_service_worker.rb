@@ -1,13 +1,19 @@
 class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
-  def perform(ios_app_snapshot_job_id, ios_app_ids)
-
-    ios_app_ids.each do |ios_app_id|
-      next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
-
-      save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
-    end
+  # def perform(ios_app_snapshot_job_id, ios_app_ids)
+  #
+  #   ios_app_ids.each do |ios_app_id|
+  #     next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
+  #
+  #     save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
+  #   end
+  #
+  # end
+  
+  def perform(ios_app_snapshot_job_id, ios_app_id)
+    
+    save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
 
   end
   
