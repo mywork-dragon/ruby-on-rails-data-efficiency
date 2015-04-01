@@ -7,12 +7,10 @@ class AaService
     # @param id The App Store identifier
     def attributes(id, options={})
       @html_updates = aa_html_updates(id)
-      #@html_countries = aa_html_countries(id)
         
       ret = {}
     
       ret[:updates] = updates
-      #ret[:countries] = countries
     
       ret
     end
@@ -25,8 +23,6 @@ class AaService
     
     def aa_html_countries(id)
       page = Tor.get("https://www.appannie.com/apps/ios/app/#{id}/app-ranking")
-    
-      Nokogiri::HTML(page)
     end
     
     def updates
@@ -38,7 +34,7 @@ class AaService
       ret = []
       
       versions.each_with_index do |v, i|
-        puts v_text = v.text
+        v_text = v.text
         
         version = v_text.gsub(/ \(.*\)/, '').strip
         
@@ -67,10 +63,6 @@ class AaService
       ret
       
       
-    end
-    
-    def countries
-      ranks_node = @html_countries.css('ranks')
     end
   
     
