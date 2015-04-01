@@ -113,6 +113,18 @@ class AppStoreSnapshotServiceWorker
           IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
         end
       end
+      
+      if icon_urls = a[:icon_urls]
+        
+        if size_350x350 = icon_urls[:size_350x350]
+          s.icon_url_350x350 = size_350x350
+        end
+        
+        if size_175x175 = icon_urls[:size_175x175]
+          s.icon_url_175x175 = size_175x175
+        end
+        
+      end
     
       s.save!
     

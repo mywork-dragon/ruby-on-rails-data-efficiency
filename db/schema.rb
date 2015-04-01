@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331180528) do
+ActiveRecord::Schema.define(version: 20150331235641) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -192,6 +192,8 @@ ActiveRecord::Schema.define(version: 20150331180528) do
     t.integer  "status"
     t.text     "exception_backtrace"
     t.text     "exception"
+    t.string   "icon_url_350x350"
+    t.string   "icon_url_175x175"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
