@@ -33,7 +33,8 @@ class AaService
         v_text = v.text
         
         version = v_text.gsub(/ \(.*\)/, '').strip
-        date = v_text.match(/\(.*\)/)[0].gsub('(', '').gsub(')', '').strip
+        date_as_text = v_text.match(/\(.*\)/)[0].gsub('(', '').gsub(')', '').strip
+        date = Date.parse(date_as_text)
         
         n_text = notes.to_a.fetch(i, nil)
         
