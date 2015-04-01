@@ -119,11 +119,9 @@ class AppStoreSnapshotServiceWorker
         if size_350x350 = icon_urls[:size_350x350]
           s.icon_url_350x350 = size_350x350
         end
-        
         if size_175x175 = icon_urls[:size_175x175]
           s.icon_url_175x175 = size_175x175
         end
-        
       end
     
       s.save!
