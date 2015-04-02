@@ -52,27 +52,37 @@ namespace :deploy do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
   end
-  
-  #For capistrano 3
-  namespace :sidekiq do
-    task :quiet do
-      # Horrible hack to get PID without having to use terrible PID files
-      # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
-      execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
-    end
-    task :restart do
-      execute :sudo, :initctl, :restart, :workers
-    end
-  end
-
-  after 'deploy:starting', 'sidekiq:quiet'
-  after 'deploy:reverted', 'sidekiq:restart'
-  after 'deploy:published', 'sidekiq:restart'
 
 end
 
-# Capistrano::Configuration::Namespaces::Namespace.class_eval do
-#   def capture(*args)
-#     parent.capture *args
+namespace :sidekiq do
+  task :quiet do
+    on roles(:scraper) do
+      # Horrible hack to get PID without having to use terrible PID files
+      puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
+      #execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
+    end
+    
+  end
+  task :restart do
+    on roles(:scraper) do
+      execute :sudo, :initctl, :restart, :workers
+    end
+  end
+end
+
+#For capistrano 3
+# namespace :sidekiq do
+#   task :quiet do
+#     # Horrible hack to get PID without having to use terrible PID files
+#     # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
+#     execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
+#   end
+#   task :restart do
+#     execute :sudo, :initctl, :restart, :workers
 #   end
 # end
+
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'

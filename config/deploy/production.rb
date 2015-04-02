@@ -15,6 +15,7 @@ scraper_servers = %w(
 role :app, [web_server] + scraper_servers
 role :web, web_server
 role :db,  web_server
+role :scraper, scraper_servers
 
 
 # Extended Server Syntax
@@ -26,7 +27,7 @@ role :db,  web_server
 server web_server, user: 'deploy', roles: %w{web app db}
 
 scraper_servers.each do |scraper_server|
-  server scraper_server, user: 'deploy'
+  server scraper_server, user: 'deploy', roles: %w{app scraper  }
 end
 
 # Custom SSH Options
