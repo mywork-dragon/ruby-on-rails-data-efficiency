@@ -46,7 +46,7 @@ gem 'whenever', require: false
 
 gem 'nokogiri'
 
-# for depoyment
+# for deployment
 gem 'capistrano'
 gem 'capistrano-rails'
 
