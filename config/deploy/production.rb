@@ -29,6 +29,22 @@ scraper_servers.each do |scraper_server|
   server scraper_server, user: 'deploy'
 end
 
+
+# For capistrano 3
+namespace :sidekiq do
+  task :quiet do
+    # Horrible hack to get PID without having to use terrible PID files
+    puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :") 
+  end
+  task :restart do
+    execute :sudo, :initctl, :restart, :workers
+  end
+end
+
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'
+
 # Custom SSH Options
 # ==================
 # You may pass any option but keep in mind that net/ssh understands a
