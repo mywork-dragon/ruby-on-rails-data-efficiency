@@ -36,6 +36,8 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 
 namespace :deploy do
 
+  capture 'ls'
+
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -60,18 +62,18 @@ end
 # end
 
 
-#For capistrano 3
-namespace :sidekiq do
-  task :quiet do
-    # Horrible hack to get PID without having to use terrible PID files
-    puts SSHKit.capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
-  end
-  task :restart do
-    execute :sudo, :initctl, :restart, :workers
-  end
-end
-
-after 'deploy:starting', 'sidekiq:quiet'
-after 'deploy:reverted', 'sidekiq:restart'
-after 'deploy:published', 'sidekiq:restart'
+# #For capistrano 3
+# namespace :sidekiq do
+#   task :quiet do
+#     # Horrible hack to get PID without having to use terrible PID files
+#     puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
+#   end
+#   task :restart do
+#     execute :sudo, :initctl, :restart, :workers
+#   end
+# end
+#
+# after 'deploy:starting', 'sidekiq:quiet'
+# after 'deploy:reverted', 'sidekiq:restart'
+# after 'deploy:published', 'sidekiq:restart'
 
