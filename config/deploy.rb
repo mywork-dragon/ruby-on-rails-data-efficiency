@@ -53,6 +53,12 @@ namespace :deploy do
 
 end
 
+Capistrano::Configuration::Namespaces::Namespace.class_eval do
+  def capture(*args)
+    parent.capture *args
+  end
+end
+
 
 # For capistrano 3
 namespace :sidekiq do
