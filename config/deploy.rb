@@ -38,8 +38,6 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 
 namespace :deploy do
 
-  capture 'ls'
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
