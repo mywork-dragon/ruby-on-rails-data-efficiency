@@ -266,6 +266,7 @@ DEPENDENCIES
   socksify
   spidr (= 0.4.1)
   spring
+  sshkit
   therubyracer
   turbolinks
   uglifier (>= 1.3.0)
