@@ -49,7 +49,6 @@ gem 'nokogiri'
 # for deployment
 gem 'capistrano'
 gem 'capistrano-rails'
-gem 'sshkit'
 
 # allow http to https redirections
 gem 'open_uri_redirections', require: "open_uri_redirections"
