@@ -27,7 +27,7 @@ role :scraper, scraper_servers
 server web_server, user: 'deploy', roles: %w{web app db}
 
 scraper_servers.each do |scraper_server|
-  server scraper_server, user: 'deploy', roles: %w{app scraper  }
+  server scraper_server, user: 'deploy'
 end
 
 # Custom SSH Options
