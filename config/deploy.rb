@@ -34,6 +34,8 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+puts "HOLLER: #{self.class}"
+
 namespace :deploy do
 
   desc 'Restart application'
@@ -50,8 +52,6 @@ namespace :deploy do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
   end
-  
-  capture "ls"
 
 end
 
