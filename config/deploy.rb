@@ -55,34 +55,22 @@ namespace :deploy do
 
 end
 
-namespace :sidekiq do
-  task :quiet do
-    on roles(:scraper) do
-      # Horrible hack to get PID without having to use terrible PID files
-      puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
-      #execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
-    end
-    
-  end
-  task :restart do
-    on roles(:scraper) do
-      execute :sudo, :initctl, :restart, :workers
-    end
-  end
-end
-
-#For capistrano 3
 # namespace :sidekiq do
 #   task :quiet do
-#     # Horrible hack to get PID without having to use terrible PID files
-#     # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
-#     execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
+#     on roles(:scraper) do
+#       # Horrible hack to get PID without having to use terrible PID files
+#       puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
+#       #execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
+#     end
+#
 #   end
 #   task :restart do
-#     execute :sudo, :initctl, :restart, :workers
+#     on roles(:scraper) do
+#       execute :sudo, :initctl, :restart, :workers
+#     end
 #   end
 # end
-
-after 'deploy:starting', 'sidekiq:quiet'
-after 'deploy:reverted', 'sidekiq:restart'
-after 'deploy:published', 'sidekiq:restart'
+#
+# after 'deploy:starting', 'sidekiq:quiet'
+# after 'deploy:reverted', 'sidekiq:restart'
+# after 'deploy:published', 'sidekiq:restart'
