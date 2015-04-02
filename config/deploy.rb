@@ -62,7 +62,7 @@ end
 # end
 
 
-For capistrano 3
+#For capistrano 3
 namespace :sidekiq do
   task :quiet do
     # Horrible hack to get PID without having to use terrible PID files
