@@ -59,8 +59,7 @@ end
 #   task :quiet do
 #     on roles(:scraper) do
 #       # Horrible hack to get PID without having to use terrible PID files
-#       puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")
-#       #execute "kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :"
+#       puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
 #     end
 #
 #   end
