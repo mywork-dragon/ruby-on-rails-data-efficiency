@@ -37,7 +37,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 # set :keep_releases, 5
 
 set :sidekiq_role, :scraper
-set :sidekiq_log, 'home/deploy/sidekiq.log'
+set :sidekiq_log, '/home/deploy/sidekiq.log'
 
 namespace :deploy do
 
