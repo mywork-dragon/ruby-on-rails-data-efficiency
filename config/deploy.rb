@@ -23,6 +23,7 @@ set :deploy_to, '/home/webapps/varys'
 
 # Default value for :pty is false
 set :pty, true
+default_run_options[:pty] = true
 
 
 # Default value for :linked_files is []
