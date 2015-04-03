@@ -15,7 +15,7 @@ scraper_servers = %w(
 role :app, [web_server] + scraper_servers
 role :web, web_server
 role :db,  web_server
-# role :scraper, scraper_servers
+role :scraper, scraper_servers
 
 
 # Extended Server Syntax
@@ -24,7 +24,7 @@ role :db,  web_server
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server web_server, user: 'deploy', roles: %w{web app db}
+server web_server, user: 'deploy'
 
 scraper_servers.each do |scraper_server|
   server scraper_server, user: 'deploy'
