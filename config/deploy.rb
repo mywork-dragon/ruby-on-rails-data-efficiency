@@ -22,7 +22,7 @@ set :deploy_to, '/home/webapps/varys'
 # set :log_level, :debug
 
 # Default value for :pty is false
-set :pty, true
+set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/secrets.yml}
@@ -55,23 +55,23 @@ namespace :deploy do
 
 end
 
-namespace :sidekiq do
-  task :quiet do
-    on roles(:scraper) do
-      # Horrible hack to get PID without having to use terrible PID files
-      # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
-      puts capture("kill -USR1 $(initctl status workers | grep /running | awk '{print $NF}') || :")\
-    end
-
-  end
-  task :restart do
-    on roles(:scraper) do
-      # execute :sudo, :initctl, :restart, :workers
-      execute :initctl, :restart, :workers
-    end
-  end
-end
-
-after 'deploy:starting', 'sidekiq:quiet'
-after 'deploy:reverted', 'sidekiq:restart'
-after 'deploy:published', 'sidekiq:restart'
+# namespace :sidekiq do
+#   task :quiet do
+#     on roles(:scraper) do
+#       # Horrible hack to get PID without having to use terrible PID files
+#       # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
+#       puts capture("kill -USR1 $(initctl status workers | grep /running | awk '{print $NF}') || :")\
+#     end
+#
+#   end
+#   task :restart do
+#     on roles(:scraper) do
+#       # execute :sudo, :initctl, :restart, :workers
+#       execute :initctl, :restart, :workers
+#     end
+#   end
+# end
+#
+# after 'deploy:starting', 'sidekiq:quiet'
+# after 'deploy:reverted', 'sidekiq:restart'
+# after 'deploy:published', 'sidekiq:restart'
