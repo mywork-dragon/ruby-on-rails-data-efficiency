@@ -23,8 +23,6 @@ set :deploy_to, '/home/webapps/varys'
 
 # Default value for :pty is false
 set :pty, true
-default_run_options[:pty] = true
-
 
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/secrets.yml}
@@ -61,7 +59,8 @@ namespace :sidekiq do
   task :quiet do
     on roles(:scraper) do
       # Horrible hack to get PID without having to use terrible PID files
-      puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
+      # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
+      puts capture("kill -USR1 $(initctl status workers | grep /running | awk '{print $NF}') || :")\
     end
 
   end
