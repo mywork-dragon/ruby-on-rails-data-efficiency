@@ -24,6 +24,7 @@ set :deploy_to, '/home/webapps/varys'
 # Default value for :pty is false
 set :pty, true
 
+
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/secrets.yml}
 
