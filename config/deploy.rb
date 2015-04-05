@@ -40,6 +40,7 @@ set :sidekiq_monit_default_hooks, false
 
 set :sidekiq_role, :scraper
 set :sidekiq_log, '/home/deploy/sidekiq.log'
+set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
 
