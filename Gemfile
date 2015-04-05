@@ -80,7 +80,7 @@ gem 'socksify'
 
 gem 'net-ssh'
 
-gem 'capistrano-sidekiq', group: :development
+gem 'capistrano-sidekiq'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
