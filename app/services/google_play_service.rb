@@ -7,12 +7,12 @@ class GooglePlayService
 
       @html = google_play_html(app_identifier)
 
+      ret = {}
+
       # Checks if DOM is intact, exits method returning nil if not
       if @html.nil? || @html.at_css('.document-title').nil?
-        return nil
+        return ret
       end
-      
-      ret = {}
       
       methods = %w(
         title
@@ -45,8 +45,8 @@ class GooglePlayService
           end
         
           ret[key] = attribute
-          #rescue
-          #ret[key] = nil
+        rescue
+          ret[key] = nil
         end
       
       end
