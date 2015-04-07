@@ -14,9 +14,9 @@ class GooglePlaySnapshotServce
     end
     
     def apps_per_minute(ios_app_snapshot_job_id, sample_seconds=10)
-      IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
+      AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count
       sleep sample_seconds
-      b = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count 
+      b = AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count 
       60.0/sample_seconds*(b-a)
     end
     
@@ -29,11 +29,11 @@ class GooglePlaySnapshotServce
     end
     
     def hours_per_job(ios_app_snapshot_job_id, sample_seconds=10)
-      IosApp.count * (1.0 / apps_per_hour(ios_app_snapshot_job_id, sample_seconds))
+      AndroidApp.count * (1.0 / apps_per_hour(ios_app_snapshot_job_id, sample_seconds))
     end
     
     def test
-      100.times{ AppStoreSnapshotServiceWorker.perform_async }
+      100.times{ GooglePlaySnapshotServiceWorker.perform_async }
     end
   
   end
