@@ -5,31 +5,51 @@ class GooglePlayService
     def attributes(app_identifier)
       ret = {}
 
-      html = google_play_html(app_identifier)
+      @html = google_play_html(app_identifier)
 
       # Checks if DOM is intact, exits method returning nil if not
-      if html.nil? || html.at_css('.document-title').nil?
+      if @html.nil? || @html.at_css('.document-title').nil?
         return nil
       end
-
-      ret[:title] = title(html)
-      ret[:price] = price(html)
-      ret[:seller] = seller(html)
-      ret[:seller_url] = seller_url(html)
-      ret[:category] = category(html)
-      ret[:updated] = updated(html)
-      ret[:size] = size(html)
-      ret[:google_plus_likes] = google_plus_likes(html)
-      ret[:top_dev] = top_dev(html)
-      ret[:in_app] = in_app(html)
-      ret[:in_app_cost] = in_app_cost(html)
-      ret[:required_android_version] = required_android_version(html)
-      ret[:current_version] = current_version(html)
-      ret[:installs] = installs(html)
-      ret[:content_rating] = content_rating(html)
-      ret[:user_rating_avg] = user_rating_avg(html)
-      ret[:num_user_reviews] = num_user_reviews(html)
-      ret[:similar_apps] = similar_apps(html)
+      
+      ret = {}
+      
+      methods = %w(
+        title
+        price
+        seller
+        seller_url
+        category
+        updated
+        size
+        top_dev
+        in_app
+        in_app_cost
+        required_android_version
+        current_version
+        installs
+        content_rating
+        user_rating_avg
+        num_user_reviews
+        similar_apps
+      )
+      
+      methods.each do |method|
+        key = method.to_sym
+      
+        begin
+          attribute = send(method.to_sym)
+        
+          if attribute.class == String
+            attribute = I18n.transliterate(attribute)
+          end
+        
+          ret[key] = attribute
+          #rescue
+          #ret[key] = nil
+        end
+      
+      end
 
       ret
     end
@@ -57,8 +77,8 @@ class GooglePlayService
     end
 
     # Returns string corresponding with supplied regex or nil if data not available
-    def app_info_helper(html, regex)
-      app_info_div = html.css('div.details-section-contents > div.meta-info')
+    def app_info_helper(regex)
+      app_info_div = @html.css('div.details-section-contents > div.meta-info')
       in_app_cost_div = app_info_div.select{|div| div.children.children.text.match(regex)}
       if in_app_cost_div.length < 1
         return nil
@@ -67,24 +87,24 @@ class GooglePlayService
     end
 
 
-    def title(html)
-      html.at_css('.document-title').text.strip
+    def title
+      @html.at_css('.document-title').text.strip
     end
 
     # Returns price in dollars as float, 0.0 if product is free
     # NOTE: User must not be logged into Google Play account while using this - "Installed" app will register as free
-    def price(html)
+    def price
       # Regular Expression strips string of all characters besides digits and decimal points
-      html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+      @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
     end
 
-    def seller(html)
-      html.at_css('a.document-subtitle > span').text
+    def seller
+      @html.at_css('a.document-subtitle > span').text
     end
 
-    def seller_url(html)
+    def seller_url
       begin
-        url = html.css(".dev-link").first['href']
+        url = @html.css(".dev-link").first['href']
         url = UrlManipulator.url_from_google_play(url)
         UrlManipulator.url_with_http_only(url)
       rescue
@@ -92,17 +112,17 @@ class GooglePlayService
       end
     end
 
-    def category(html)
-      html.at_css(".category").text.strip
+    def category
+      @html.at_css(".category").text.strip
     end
 
-    def updated(html)
-      Date.parse(html.css("div.details-section-contents > div.meta-info > div.content").text)
+    def updated
+      Date.parse(@html.css("div.details-section-contents > div.meta-info > div.content").text)
     end
 
     # Outputs file size as an integer in B, unless size stated as "Varies with device" in which -1 is returned
-    def size(html)
-      size_text = html.css("div.details-section-contents > div:nth-child(2) > div.content").text.strip
+    def size
+      size_text = @html.css("div.details-section-contents > div:nth-child(2) > div.content").text.strip
 
       if size_text == "Varies with device"
         size_text = -1
@@ -114,16 +134,16 @@ class GooglePlayService
     end
 
     # Returns number GPlus "likes" as a integer, returns -1 if GPlus info span empty
-    def google_plus_likes(html)
+    def google_plus_likes
 
       # Finds link to Google Plus iframe on main Google Play Store page
-      gplus_iframe_urls = html.css("div.plusone-container > div > iframe")
+      gplus_iframe_urls = @html.css("div.plusone-container > div > iframe")
 
       if gplus_iframe_urls.length < 1
         return -1
       end
 
-      gplus_iframe = Nokogiri::HTML(open(gplus_iframe_urls.first['src']))
+      gplus_iframe = Tor.open(gplus_iframe_urls.first['src'])
 
       if gplus_iframe.css(".A8").text == ""
         return -1
@@ -135,8 +155,8 @@ class GooglePlayService
     end
 
     # Returns true if author is a "Top Developer", false if not
-    def top_dev(html)
-      badge_title = html.css('.badge-title')
+    def top_dev
+      badge_title = @html.css('.badge-title')
 
       if badge_title.nil?
         return false
@@ -146,13 +166,13 @@ class GooglePlayService
     end
 
     # Returns true if app offers in-app purchases, false if not
-    def in_app(html)
-      html.css('.inapp-msg').text == "Offers in-app purchases"
+    def in_app
+      @html.css('.inapp-msg').text == "Offers in-app purchases"
     end
 
     # Returns string of price range if in app purchases available, nil not (in cents)
-    def in_app_cost(html)
-      cost_array = app_info_helper(html, /In-app Products/)
+    def in_app_cost
+      cost_array = app_info_helper(/In-app Products/)
       if cost_array.nil?
         return nil
       end
@@ -173,8 +193,8 @@ class GooglePlayService
     end
 
     # Returns string of Android version required or "Varies with device"
-    def required_android_version(html)
-      result = app_info_helper(html, /Requires Android/).gsub(/[^0-9.]/,'')
+    def required_android_version
+      result = app_info_helper(/Requires Android/).gsub(/[^0-9.]/,'')
 
       if result.length < 1
         return "Varies with device"
@@ -184,8 +204,8 @@ class GooglePlayService
     end
 
     # Returns string of current (app) version required or "Varies with device"
-    def current_version(html)
-      result = app_info_helper(html, /Current Version/).gsub(/[^0-9.]/,'')
+    def current_version
+      result = app_info_helper(/Current Version/).gsub(/[^0-9.]/,'')
 
       if result.length < 1
         return "Varies with device"
@@ -195,8 +215,8 @@ class GooglePlayService
     end
 
     # Returns string of range detailing how many installs the app has, returns nil if data not available
-    def installs(html)
-      installs_array = app_info_helper(html, /Installs/)
+    def installs
+      installs_array = app_info_helper(/Installs/)
       if installs_array.nil?
         return nil
       end
@@ -207,25 +227,25 @@ class GooglePlayService
     end
 
     # Returns a string containing the content rating, or nil if data not available
-    def content_rating(html)
-      app_info_helper(html, /Content Rating/)
+    def content_rating
+      app_info_helper(/Content Rating/)
     end
 
     # Returns float of app review rating (out of 5)
-    def user_rating_avg(html)
-      html.css('div.rating-box > div.score-container > div.score').text.to_f
+    def user_rating_avg
+      @html.css('div.rating-box > div.score-container > div.score').text.to_f
     end
 
     # Returns integer of total number of app reviews
-    def num_user_reviews(html)
-      html.css('.reviews-stats > .reviews-num').text.gsub(/[^0-9]/,'').to_i
+    def num_user_reviews
+      @html.css('.reviews-stats > .reviews-num').text.gsub(/[^0-9]/,'').to_i
     end
 
     # Finds all listed "similar" apps on Play store
-    def similar_apps(html)
+    def similar_apps
       cards = Array.new
 
-      html.css('.card.no-rationale').each do |card|
+      @html.css('.card.no-rationale').each do |card|
         cards.push(card.css('a.card-click-target').first['href'].split('id=').last)
       end
 
