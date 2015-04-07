@@ -2,17 +2,16 @@ class GooglePlayService
 
   class << self
 
-    def google_play_attributes(google_play_url)
+    def attributes(app_identifier)
       ret = {}
 
-      html = google_play_html(google_play_url)
+      html = google_play_html(app_identifier)
 
       # Checks if DOM is intact, exits method returning nil if not
       if html.nil? || html.at_css('.document-title').nil?
         return nil
       end
 
-      ret[:app_identifier] = app_identifier(google_play_url)
       ret[:title] = title(html)
       ret[:price] = price(html)
       ret[:seller] = seller(html)
@@ -37,15 +36,11 @@ class GooglePlayService
 
 
     #private
-    
-    def app_identifier(google_play_url)
-      google_play_url.match(/id=.*\z/)[0].split("&").first.gsub(/\Aid=/, "")
-    end
 
-    def google_play_html(google_play_url)
-      url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{google_play_url}"
-
-      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
+    def google_play_html(app_identifier)
+      url = "https://play.google.com/store/apps/details?id=#{app_identifier}"
+      
+      page = Tor.get(url)
 
       Nokogiri::HTML(page)
 
