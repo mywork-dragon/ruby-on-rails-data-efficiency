@@ -21,8 +21,11 @@
 
 set :output, "/var/log/varys/cron/cron.log"
 
-2.times do |i|
-  every 1.day, :at => '1:00am' do
-    rake "scraper:scrape_all SCRAPE_PROCESSES=1 SCRAPE_PAGE_NUMBER=#{i}"
-  end
-end
+# every 30.seconds, roles: [:scraper] do
+# end
+
+# 2.times do |i|
+#   every 1.day, :at => '1:00am' do
+#     rake "scraper:scrape_all SCRAPE_PROCESSES=1 SCRAPE_PAGE_NUMBER=#{i}"
+#   end
+# end

@@ -44,6 +44,8 @@ set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
 
+set :whenever_roles, [:scraper]
+
 namespace :deploy do
 
   desc 'Restart application'
