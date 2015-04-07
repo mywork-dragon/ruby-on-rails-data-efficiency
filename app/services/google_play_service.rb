@@ -30,6 +30,7 @@ class GooglePlayService
       ret[:content_rating] = content_rating(html)
       ret[:user_rating_avg] = user_rating_avg(html)
       ret[:num_user_reviews] = num_user_reviews(html)
+      ret[:similar_apps] = similar_apps(html)
 
       ret
     end
@@ -223,6 +224,17 @@ class GooglePlayService
     # Returns integer of total number of app reviews
     def num_user_reviews(html)
       html.css('.reviews-stats > .reviews-num').text.gsub(/[^0-9]/,'').to_i
+    end
+
+    # Finds all listed "similar" apps on Play store
+    def similar_apps(html)
+      cards = Array.new
+
+      html.css('.card.no-rationale').each do |card|
+        cards.push(card.css('a.card-click-target').first['href'].split('id=').last)
+      end
+
+      cards
     end
   end
 end
