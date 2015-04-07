@@ -20,3 +20,8 @@
 
 # Ignore RubyMine files
 /.idea/
+
+# Ignore RVM files
+/.ruby-gemset*
+/.ruby-version*
+
