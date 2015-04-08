@@ -40,6 +40,14 @@ Rails.application.routes.draw do
   
   get 'mturk' => 'mturk#gochime'
   
+  #endpoints for front-end, Angular app
+  post 'filter_ios_apps' => 'app_controller#filter_ios_apps'
+  post 'filter_android_apps' => 'app_controller#filter_android_apps'
+  post 'get_ios_app' => 'app_controller#get_ios_app'
+  post 'get_android_app' => 'app_controller#get_android_app'
+  post 'get_company' => 'app_controller#get_company'
+  #end endpoints for Angular app
+  
   if Rails.env.development?
     get 'app_info' => 'app#app_info'
     get 'app_info_get_signals' => 'app#app_info_get_signals'
