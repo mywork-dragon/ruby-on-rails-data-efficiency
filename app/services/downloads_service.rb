@@ -5,7 +5,9 @@ GOOGLE_WORD_LIMIT = 32
   
   class << self
   
-    def downloads_attributes(app_attrs={})
+    def attributes(app_attrs={})
+      
+      @app_identifier = app_attrs[:app_identifier]
       
       # if app_attrs[:description]
       #   query_url_safe = CGI::escape(app_attrs[:description])
@@ -27,19 +29,19 @@ GOOGLE_WORD_LIMIT = 32
       
       full_query = "site:#{SITE}+#{query_url_safe}"
 
-      url = "http://www.google.com/search?num=30&q=#{full_query}"
+      url = "https://www.google.com/search?num=30&q=#{full_query}"
       
       #li "url: #{url}"
         
-      page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
+      page = Tor.get(url)
 
       html = Nokogiri::HTML(page)
-    
+      
       url = nil
     
       html.search("cite").map{|x| x.inner_text}.each do |link|
         if link.include?(SITE)
-          url = link
+          url = "http://#{link}"
           break
         end
       end
@@ -50,9 +52,13 @@ GOOGLE_WORD_LIMIT = 32
       
       ret = {}
       
-      html = downloads_html(url)
+      @html = downloads_html(url)
       
-      ret[:downloads] = downloads(html)
+      
+      
+      return {downloads: nil} unless page_has_link_to_app? 
+      
+      ret[:downloads] = downloads
       
       ret
       
@@ -62,17 +68,23 @@ GOOGLE_WORD_LIMIT = 32
     #private
     
     def downloads_html(url)
-      url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
-      #puts "url_cache: #{url_cache}"
-      
-      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
+      puts "url: #{url}"
+      page = Tor.get(url)
       Nokogiri::HTML(page)
     end 
     
+    def page_has_link_to_app?
+      @html.css('a.install.button').each do |node|
+        return true if node['href'].include?("id#{@app_identifier}")
+      end
+      
+      false
+    end
+    
     # In dollas
     # @author Jason Lew
-    def downloads(html)
-      dl_s = html.at_css('.downloads').at_css('.amount').children[1].text.strip
+    def downloads
+      dl_s = @html.at_css('.downloads').at_css('.amount').children[1].text.strip
       
       return nil if dl_s.blank?
       

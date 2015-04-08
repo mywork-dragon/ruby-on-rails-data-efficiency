@@ -46,7 +46,7 @@ gem 'whenever', require: false
 
 gem 'nokogiri'
 
-# for depoyment
+# for deployment
 gem 'capistrano'
 gem 'capistrano-rails'
 
@@ -79,6 +79,8 @@ gem 'aws-sdk', '~> 2'
 gem 'socksify'
 
 gem 'net-ssh'
+
+gem 'capistrano-sidekiq'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

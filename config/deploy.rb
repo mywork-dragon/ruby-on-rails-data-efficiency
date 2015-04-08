@@ -1,3 +1,5 @@
+require 'sshkit/dsl'
+
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
@@ -20,7 +22,7 @@ set :deploy_to, '/home/webapps/varys'
 # set :log_level, :debug
 
 # Default value for :pty is false
-# set :pty, true
+set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/secrets.yml}
@@ -33,6 +35,16 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
+
+set :sidekiq_monit_default_hooks, false
+
+set :sidekiq_role, :scraper
+set :sidekiq_log, '/home/deploy/sidekiq.log'
+set :sidekiq_pid, '/home/deploy/sidekiq.pid'
+
+set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
+
+set :whenever_roles, [:scraper]
 
 namespace :deploy do
 
@@ -52,3 +64,24 @@ namespace :deploy do
   end
 
 end
+
+# namespace :sidekiq do
+#   task :quiet do
+#     on roles(:scraper) do
+#       # Horrible hack to get PID without having to use terrible PID files
+#       # puts capture("kill -USR1 $(sudo initctl status workers | grep /running | awk '{print $NF}') || :")\
+#       puts capture("kill -USR1 $(initctl status workers | grep /running | awk '{print $NF}') || :")\
+#     end
+#
+#   end
+#   task :restart do
+#     on roles(:scraper) do
+#       # execute :sudo, :initctl, :restart, :workers
+#       execute :initctl, :restart, :workers
+#     end
+#   end
+# end
+#
+# after 'deploy:starting', 'sidekiq:quiet'
+# after 'deploy:reverted', 'sidekiq:restart'
+# after 'deploy:published', 'sidekiq:restart'
