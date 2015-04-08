@@ -15,7 +15,8 @@ class GooglePlayService
       end
       
       methods = %w(
-        title
+        name
+        description
         price
         seller
         seller_url
@@ -87,8 +88,12 @@ class GooglePlayService
     end
 
 
-    def title
+    def name
       @html.at_css('.document-title').text.strip
+    end
+
+    def description
+      @html.at_css('div.id-app-orig-desc').text
     end
 
     # Returns price in dollars as float, 0.0 if product is free
