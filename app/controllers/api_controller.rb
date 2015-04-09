@@ -17,9 +17,11 @@ class ApiController < ApplicationController
     appId = params['appId']
     ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
+    newest_app_snapshot = ios_app.get_newest_app_snapshot
+    newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
       'appId' => appId,
-      'appName' => ios_app.newest_snapshot.name,
+      'appName' => newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
       'companyName' => company.present? ? company.name : nil,
       'companyId' => company.present? ? company.id : nil,
       'mobilePriority' => nil, #look into how we're calculating mobile priority
@@ -34,7 +36,7 @@ class ApiController < ApplicationController
         'state' => company.present? ? company.state : nil,
         'country' => company.present? ? company.country : nil
       },
-      'downloads' => ios_app.downloads,
+      'downloads' => newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
       'lastUpdated' => nil, #not available yet; look in released
       'updateFreq' => nil, #not available yet; hold off on this
       'appIcon' => {
