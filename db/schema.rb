@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409165532) do
+ActiveRecord::Schema.define(version: 20150409170151) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -102,6 +102,16 @@ ActiveRecord::Schema.define(version: 20150409165532) do
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "company_websites", force: true do |t|
+    t.integer  "company_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "company_websites", ["company_id"], name: "index_company_websites_on_company_id", using: :btree
+  add_index "company_websites", ["website_id"], name: "index_company_websites_on_website_id", using: :btree
 
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
@@ -328,5 +338,13 @@ ActiveRecord::Schema.define(version: 20150409165532) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "websites", force: true do |t|
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
 end

@@ -1,0 +1,6 @@
+class CompanyWebsite < ActiveRecord::Base
+
+  belongs_to :company
+  belongs_to :website
+
+end
