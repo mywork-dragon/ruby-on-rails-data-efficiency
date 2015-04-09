@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409195557) do
+ActiveRecord::Schema.define(version: 20150409200204) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20150409195557) do
     t.integer  "funding"
     t.integer  "inc_5000_rank"
     t.string   "app_store_identifier"
+    t.string   "country"
   end
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
@@ -233,16 +234,6 @@ ActiveRecord::Schema.define(version: 20150409195557) do
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_languages_on_ios_app_snapshot_id", using: :btree
   add_index "ios_app_snapshots_languages", ["language_id"], name: "index_ios_app_snapshots_languages_on_language_id", using: :btree
 
-  create_table "ios_app_websites", force: true do |t|
-    t.integer  "ios_app_id"
-    t.integer  "website_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "ios_app_websites", ["ios_app_id"], name: "index_ios_app_websites_on_ios_app_id", using: :btree
-  add_index "ios_app_websites", ["website_id"], name: "index_ios_app_websites_on_website_id", using: :btree
-
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -251,6 +242,16 @@ ActiveRecord::Schema.define(version: 20150409195557) do
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
+
+  create_table "ios_apps_websites", force: true do |t|
+    t.integer  "ios_app_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
+  add_index "ios_apps_websites", ["website_id"], name: "index_ios_apps_websites_on_website_id", using: :btree
 
   create_table "ios_in_app_purchases", force: true do |t|
     t.datetime "created_at"
