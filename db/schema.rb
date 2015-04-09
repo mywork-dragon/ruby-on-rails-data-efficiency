@@ -11,13 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409184741) do
+ActiveRecord::Schema.define(version: 20150409192122) do
 
-  create_table "android_app_releases", force: true do |t|
+  create_table "android_app_snapshots", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.string   "category"
     t.integer  "price"
     t.integer  "size"
     t.date     "updated"
@@ -25,14 +24,15 @@ ActiveRecord::Schema.define(version: 20150409184741) do
     t.string   "version"
     t.date     "released"
     t.text     "description"
-    t.string   "link"
     t.integer  "android_app_id"
-    t.integer  "previous_release_id"
     t.integer  "google_plus_likes"
     t.boolean  "top_dev"
     t.boolean  "in_app_purchases"
     t.string   "required_android_version"
     t.string   "content_rating"
+    t.string   "seller"
+    t.decimal  "ratings_all_stars",        precision: 3, scale: 2
+    t.integer  "ratings_all_count"
   end
 
   create_table "android_apps", force: true do |t|
@@ -43,14 +43,6 @@ ActiveRecord::Schema.define(version: 20150409184741) do
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
-
-  create_table "android_in_app_purchase_ranges", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "android_app_release_id"
-    t.integer  "min"
-    t.integer  "max"
-  end
 
   create_table "apps", force: true do |t|
     t.datetime "created_at"
@@ -136,6 +128,14 @@ ActiveRecord::Schema.define(version: 20150409184741) do
   end
 
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
+
+  create_table "ios_app_languages", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+  end
+
+  add_index "ios_app_languages", ["name"], name: "index_ios_app_languages_on_name", using: :btree
 
   create_table "ios_app_snapshot_exceptions", force: true do |t|
     t.integer  "ios_app_snapshot_id"
@@ -224,14 +224,6 @@ ActiveRecord::Schema.define(version: 20150409184741) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
-
-  create_table "languages", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-  end
-
-  add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
 
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"

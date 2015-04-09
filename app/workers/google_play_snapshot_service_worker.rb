@@ -34,14 +34,11 @@ class GooglePlaySnapshotServiceWorker
       price
       seller
       seller_url
-      updated
+      released
       size
       top_dev
-      in_app_purchases_range
-      
       required_android_version
       version
-      
       content_rating
       ratings_all_stars
       ratings_all_count

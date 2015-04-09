@@ -21,7 +21,7 @@ class GooglePlayService
         seller
         seller_url
         category
-        updated
+        released
         size
         top_dev
         in_app_purchases
@@ -121,7 +121,7 @@ class GooglePlayService
       @html.at_css(".category").text.strip
     end
 
-    def updated
+    def released
       Date.parse(@html.css("div.details-section-contents > div.meta-info > div.content").text)
     end
 
