@@ -19,8 +19,8 @@ class ApiController < ApplicationController
       'appName' => ios_app.newest_snapshot.name,
       'companyName' => company.present? ? company.name : nil,
       'companyId' => company.present? ? company.id : nil,
-      'mobilePriority' => , #look into how we're calculating mobile priority
-      'adSpend' => , #get need to merge ad spend data
+      'mobilePriority' => nil, #look into how we're calculating mobile priority
+      'adSpend' => nil, #get need to merge ad spend data
       'fortuneRank' => company.present? ? company.fortune_1000_rank : nil, #check with Jason if we have this; look into fortune 1000
       'funding' => company.present? ? company.funding : nil,
       'countriesDeployed' => nil, #not part of initial launch
