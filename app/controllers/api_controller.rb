@@ -31,7 +31,7 @@ class ApiController < ApplicationController
         'state' => company.present? ? company.state : nil,
         'country' => company.present? ? company.country : nil
       },
-      'downloads' => ios_app.downloads, 
+      'downloads' => ios_app.downloads,
       'lastUpdated' => nil, #not available yet; look in released
       'updateFreq' => nil, #not available yet; hold off on this
       'appIcon' => {
@@ -39,7 +39,7 @@ class ApiController < ApplicationController
         'small' => ios_app.icon_url_175x175
       },
       'companyWebsites' => ios_app.get_website_urls, #this is an array
-      'appIdentifier' => ios_app
+      'appIdentifier' => ios_app.id
     }
     render json: app_json
   end
