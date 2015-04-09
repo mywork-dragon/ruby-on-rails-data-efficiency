@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AndroidInAppPurchaseRangeTest < ActiveSupport::TestCase
+class AndroidAppSnapshotExceptionTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

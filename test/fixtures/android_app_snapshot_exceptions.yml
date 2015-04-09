@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  android_app_snapshot_id: 1
+  name: MyText
+  backtrace: MyText
+  try: 1
+
+two:
+  android_app_snapshot_id: 1
+  name: MyText
+  backtrace: MyText
+  try: 1
