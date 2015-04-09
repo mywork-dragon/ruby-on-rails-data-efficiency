@@ -4,6 +4,6 @@ class Website < ActiveRecord::Base
   has_many :ios_apps_websites
   has_many :ios_apps, through: :ios_apps_websites
   
-  enum :kind [:primary, :social]
+  enum kind: [:primary, :social]
 
 end
