@@ -11,15 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409175355) do
-
-  create_table "android_app_download_ranges", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "android_app_release_id"
-    t.integer  "min"
-    t.integer  "max"
-  end
+ActiveRecord::Schema.define(version: 20150409184741) do
 
   create_table "android_app_releases", force: true do |t|
     t.datetime "created_at"
@@ -41,19 +33,6 @@ ActiveRecord::Schema.define(version: 20150409175355) do
     t.boolean  "in_app_purchases"
     t.string   "required_android_version"
     t.string   "content_rating"
-  end
-
-  create_table "android_app_review_snapshots", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "android_app_release_id"
-    t.float    "average",                limit: 24
-    t.integer  "total"
-    t.integer  "stars5"
-    t.integer  "stars4"
-    t.integer  "stars3"
-    t.integer  "stars2"
-    t.integer  "stars1"
   end
 
   create_table "android_apps", force: true do |t|
@@ -218,6 +197,16 @@ ActiveRecord::Schema.define(version: 20150409175355) do
 
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_languages_on_ios_app_snapshot_id", using: :btree
   add_index "ios_app_snapshots_languages", ["language_id"], name: "index_ios_app_snapshots_languages_on_language_id", using: :btree
+
+  create_table "ios_app_websites", force: true do |t|
+    t.integer  "ios_app_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_websites", ["ios_app_id"], name: "index_ios_app_websites_on_ios_app_id", using: :btree
+  add_index "ios_app_websites", ["website_id"], name: "index_ios_app_websites_on_website_id", using: :btree
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
