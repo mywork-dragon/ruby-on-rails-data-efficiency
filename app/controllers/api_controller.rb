@@ -12,7 +12,7 @@ class ApiController < ApplicationController
   # Input: appId (the key for the app in our database; not the appIdentifier)
   def get_ios_app
     appId = params['appId']
-    ios_app = IosApp.includes(:ios_app_snapshots, app: :company).find(appId)
+    ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
     app_json = {
       'appId' => appId,
@@ -45,7 +45,7 @@ class ApiController < ApplicationController
   end
   
   def get_android_app
-    
+
   end
   
   def get_company
