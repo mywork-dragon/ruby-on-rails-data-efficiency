@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331235641) do
+ActiveRecord::Schema.define(version: 20150409175355) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -149,6 +149,15 @@ ActiveRecord::Schema.define(version: 20150331235641) do
   add_index "ios_app_categories_snapshots", ["ios_app_category_id"], name: "index_ios_app_categories_snapshots_on_ios_app_category_id", using: :btree
   add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id"], name: "index_ios_app_categories_snapshots_on_ios_app_snapshot_id", using: :btree
 
+  create_table "ios_app_download_snapshots", force: true do |t|
+    t.integer  "downloads"
+    t.integer  "ios_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
+
   create_table "ios_app_snapshot_exceptions", force: true do |t|
     t.integer  "ios_app_snapshot_id"
     t.text     "name"
@@ -215,7 +224,6 @@ ActiveRecord::Schema.define(version: 20150331235641) do
     t.datetime "updated_at"
     t.integer  "app_identifier"
     t.integer  "app_id"
-    t.integer  "downloads"
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
@@ -320,5 +328,19 @@ ActiveRecord::Schema.define(version: 20150331235641) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "websites", force: true do |t|
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "kind"
+    t.integer  "company_id"
+    t.integer  "ios_app_id"
+  end
+
+  add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
+  add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
+  add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
+  add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
 end
