@@ -1,4 +1,7 @@
 class ApiController < ApplicationController
+  
+  skip_before_filter  :verify_authenticity_token
+  
   def filter_ios_apps
     # results = []
     # IosApps.where
