@@ -16,8 +16,9 @@ class GooglePlaySnapshotServiceWorker
   
   def save_attributes(options={})
     android_app = AndroidApp.find(options[:android_app_id])
+    android_app_snapshot_job_id = options[:android_app_snapshot_job_id]
     
-    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_id: options[:android_app_snapshot_job_id])
+    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_id: android_app_snapshot_job_id)
     
     try = 0
     
@@ -28,84 +29,69 @@ class GooglePlaySnapshotServiceWorker
       raise 'GooglePlayService.attributes is empty' if a.empty?
     
       single_column_attributes = %w(
-        name
-        description
-        price
+      name
+      description
+      price
+      seller
+      seller_url
+      updated
+      size
+      top_dev
+      in_app_purchases_range
+      
+      required_android_version
+      version
+      
+      content_rating
+      ratings_all_stars
+      ratings_all_count
       )
     
       single_column_attributes.each do |sca|
         value = a[sca.to_sym]
         s.send("#{sca}=", value) if value
       end
-    
-      # Categories
-      if categories = a[:categories]
-        categories_snapshot_primary = IosAppCategoriesSnapshot.new
-        categories_snapshot_primary.ios_app_snapshot = s
-        categories_snapshot_primary.ios_app_category = IosAppCategory.find_or_create_by(name: categories[:primary])
+      
+      # non single column
+      # category
+      # in_app_purchases_range
+      # installs
+      # similar_apps
+      
+      if category = a[:category]
+        categories_snapshot_primary = AndroidAppCategoriesSnapshot.new
+        categories_snapshot_primary.android_app_snapshot = s
+        categories_snapshot_primary.android_app_category = AndroidAppCategory.find_or_create_by(name: category)
         categories_snapshot_primary.kind = :primary
         categories_snapshot_primary.save!
-    
-        categories_snapshot_secondary = IosAppCategoriesSnapshot.new
-        categories[:secondary].each do |secondary_category|
-          categories_snapshot_secondary.ios_app_snapshot = s
-          categories_snapshot_secondary.ios_app_category = IosAppCategory.find_or_create_by(name: secondary_category)
-          categories_snapshot_secondary.kind = :secondary
-        end
-        categories_snapshot_secondary.save!
       end
     
-      if ratings = a[:ratings]
-        if ratings_current = ratings[:current]
-          s.ratings_current_count = ratings_current[:count]
-          s.ratings_current_stars = ratings_current[:stars]
-        end
-        
-      
-        if ratings_all = ratings[:all]
-          s.ratings_all_count = ratings_all[:count]
-          s.ratings_all_stars = ratings_all[:stars]
-        end
-      end
-    
-      if seller_url = a[:seller_url]
-        s.seller_url = seller_url
-        #TODO: add logic around company
-      end
-    
-    
-      if support_url = a[:support_url]
-         s.support_url = support_url
-         #TODO: add logic around company
-      end
-   
-    
-      if languages = a[:languages]
-        languages.each do |language_name|
-          s.languages << Language.find_or_create_by(name: language_name)
-        end
-      end
-    
-      if in_app_purchases = a[:in_app_purchases]
-        in_app_purchases.each do |in_app_purchase|
-          IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
-        end
-      end
-      
-      if icon_urls = a[:icon_urls]
-        
-        if size_350x350 = icon_urls[:size_350x350]
-          s.icon_url_350x350 = size_350x350
-        end
-        if size_175x175 = icon_urls[:size_175x175]
-          s.icon_url_175x175 = size_175x175
-        end
-      end
-    
+      if iapr = a[:in_app_purchases_range]
+        s.in_app_purchase_min = iapr.min
+        s.in_app_purchase_max = iapr.max
       s.save!
+      
+      if installs = a[:installs]
+        s.installs_min = installs.min
+        s.installs_max = installs.max
+      end
+      
+      #don't get similar apps in development
+      if !Rails.env.development?
+        if similar_apps = a[:similar_apps]
+          similar_apps.each do |app_identifier|
+            
+            #create the app
+            android_app = AndroidApp.create!(app_identifier: app_identifier)
+            
+            perform_async(android_app_snapshot_job_id, android_app.id)
+          end
+        end
+      end
+      
     
     rescue => e
-      ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      ise = AndroidAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
       if (try += 1) < MAX_TRIES
         retry
       else

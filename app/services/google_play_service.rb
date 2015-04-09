@@ -24,14 +24,14 @@ class GooglePlayService
         updated
         size
         top_dev
-        in_app
-        in_app_cost
+        in_app_purchases
+        in_app_purchases_range
         required_android_version
-        current_version
+        version
         installs
         content_rating
-        user_rating_avg
-        num_user_reviews
+        ratings_all_stars
+        ratings_all_count
         similar_apps
       )
       
@@ -171,12 +171,12 @@ class GooglePlayService
     end
 
     # Returns true if app offers in-app purchases, false if not
-    def in_app
+    def in_app_purchases
       @html.css('.inapp-msg').text == "Offers in-app purchases"
     end
 
     # Returns string of price range if in app purchases available, nil not (in cents)
-    def in_app_cost
+    def in_app_purchases_range
       cost_array = app_info_helper(/In-app Products/)
       if cost_array.nil?
         return nil
@@ -209,7 +209,7 @@ class GooglePlayService
     end
 
     # Returns string of current (app) version required or "Varies with device"
-    def current_version
+    def version
       result = app_info_helper(/Current Version/).gsub(/[^0-9.]/,'')
 
       if result.length < 1
@@ -237,12 +237,12 @@ class GooglePlayService
     end
 
     # Returns float of app review rating (out of 5)
-    def user_rating_avg
+    def ratings_all_stars
       @html.css('div.rating-box > div.score-container > div.score').text.to_f
     end
-
+    
     # Returns integer of total number of app reviews
-    def num_user_reviews
+    def ratings_all_count
       @html.css('.reviews-stats > .reviews-num').text.gsub(/[^0-9]/,'').to_i
     end
 
