@@ -12,4 +12,17 @@ class IosApp < ActiveRecord::Base
     end
   end
   
+  def get_company
+    self.websites.each do |w|
+      if w.company.present?
+        return w.company
+      end
+    end
+    return nil
+  end
+  
+  def get_website_urls
+    self.websites.to_a.map{|w| w.url}
+  end
+  
 end
