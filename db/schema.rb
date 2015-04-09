@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409192122) do
+ActiveRecord::Schema.define(version: 20150409193014) do
+
+  create_table "android_app_snapshot_exceptions", force: true do |t|
+    t.integer  "android_app_snapshot_id"
+    t.text     "name"
+    t.text     "backtrace"
+    t.integer  "try"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_app_snapshot_exceptions", ["android_app_snapshot_id"], name: "index_android_app_snapshot_exceptions_on_android_app_snapshot_id", using: :btree
 
   create_table "android_app_snapshots", force: true do |t|
     t.datetime "created_at"
