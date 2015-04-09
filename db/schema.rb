@@ -11,7 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409193224) do
+ActiveRecord::Schema.define(version: 20150409195557) do
+
+  create_table "android_app_categories", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_app_categories", ["name"], name: "index_android_app_categories_on_name", using: :btree
+
+  create_table "android_app_categories_snapshots", force: true do |t|
+    t.integer  "android_app_category_id"
+    t.integer  "android_app_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_app_categories_snapshots", ["android_app_category_id"], name: "index_android_app_category_id", using: :btree
+  add_index "android_app_categories_snapshots", ["android_app_snapshot_id"], name: "index_android_app_snapshot_id", using: :btree
 
   create_table "android_app_snapshot_exceptions", force: true do |t|
     t.integer  "android_app_snapshot_id"
