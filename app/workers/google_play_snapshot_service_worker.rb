@@ -66,7 +66,8 @@ class GooglePlaySnapshotServiceWorker
       if iapr = a[:in_app_purchases_range]
         s.in_app_purchase_min = iapr.min
         s.in_app_purchase_max = iapr.max
-      s.save!
+      end
+      
 
       if installs = a[:installs]
         s.installs_min = installs.min
@@ -86,6 +87,7 @@ class GooglePlaySnapshotServiceWorker
         end
       end
 
+    s.save!
 
     rescue => e
       ise = AndroidAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
