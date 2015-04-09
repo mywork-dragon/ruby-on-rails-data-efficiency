@@ -1,5 +1,5 @@
 class IosAppDownloadSnapshot < ActiveRecord::Base
 
-  belongs_to: ios_app
+  belongs_to :ios_app
   
 end
