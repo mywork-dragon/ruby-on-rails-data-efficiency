@@ -11,7 +11,7 @@ class GooglePlayService
 
       # Checks if DOM is intact, exits method returning nil if not
       if @html.nil? || @html.at_css('.document-title').nil?
-        return ret
+        return {}
       end
       
       methods = %w(
