@@ -4,5 +4,5 @@ class IosApp < ActiveRecord::Base
   belongs_to :app
   has_many :fb_ad_appearances
   has_many :ios_app_download_snapshots
-    
+  has_many :websites
 end

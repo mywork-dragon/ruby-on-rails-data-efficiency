@@ -1,3 +1,6 @@
 class Website < ActiveRecord::Base
-  has_many :companies, through: :company_websites
+  belongs_to :company
+  belongs_to :ios_app
+  
+  enum :kind [:primary, :secondary]
 end
