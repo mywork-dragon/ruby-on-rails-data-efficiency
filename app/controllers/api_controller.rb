@@ -40,8 +40,8 @@ class ApiController < ApplicationController
       'lastUpdated' => nil, #not available yet; look in released
       'updateFreq' => nil, #not available yet; hold off on this
       'appIcon' => {
-        'large' => ios_app.icon_url_350x350,
-        'small' => ios_app.icon_url_175x175
+        'large' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+        'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
       },
       'companyWebsites' => ios_app.get_website_urls, #this is an array
       'appIdentifier' => ios_app.id
