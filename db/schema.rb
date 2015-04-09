@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409170151) do
+ActiveRecord::Schema.define(version: 20150409175355) do
 
   create_table "android_app_download_ranges", force: true do |t|
     t.datetime "created_at"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20150409170151) do
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
+<<<<<<< HEAD
   create_table "company_websites", force: true do |t|
     t.integer  "company_id"
     t.integer  "website_id"
@@ -129,6 +130,8 @@ ActiveRecord::Schema.define(version: 20150409170151) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+=======
+>>>>>>> master
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
     t.string   "hit_identifier"
@@ -359,8 +362,14 @@ ActiveRecord::Schema.define(version: 20150409170151) do
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "kind"
+    t.integer  "company_id"
+    t.integer  "ios_app_id"
   end
 
+  add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
+  add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
+  add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
 end
