@@ -110,17 +110,6 @@ ActiveRecord::Schema.define(version: 20150409200204) do
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
-<<<<<<< HEAD
-  create_table "company_websites", force: true do |t|
-    t.integer  "company_id"
-    t.integer  "website_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "company_websites", ["company_id"], name: "index_company_websites_on_company_id", using: :btree
-  add_index "company_websites", ["website_id"], name: "index_company_websites_on_website_id", using: :btree
-
   create_table "delayed_jobs", force: true do |t|
     t.integer  "priority",   default: 0, null: false
     t.integer  "attempts",   default: 0, null: false
@@ -137,8 +126,6 @@ ActiveRecord::Schema.define(version: 20150409200204) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
-=======
->>>>>>> master
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
     t.string   "hit_identifier"
