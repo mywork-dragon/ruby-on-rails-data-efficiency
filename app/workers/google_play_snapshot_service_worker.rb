@@ -83,7 +83,7 @@ class GooglePlaySnapshotServiceWorker
             if android_app.nil?
               android_app = AndroidApp.create!(app_identifier: app_identifier)
 
-              perform_async(android_app_snapshot_job_id, android_app.id)
+              GooglePlaySnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id)
             end
 
           end
