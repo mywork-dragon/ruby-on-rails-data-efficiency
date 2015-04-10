@@ -100,7 +100,8 @@ class GooglePlayService
     # NOTE: User must not be logged into Google Play account while using this - "Installed" app will register as free
     def price
       # Regular Expression strips string of all characters besides digits and decimal points
-      @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+      price_dollars = @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+      (price_dollars*100.0).to_i
     end
 
     def seller
