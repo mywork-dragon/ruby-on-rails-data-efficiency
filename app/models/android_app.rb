@@ -19,7 +19,7 @@ class AndroidApp < ActiveRecord::Base
           # if there are any more left, they are duplicates
           # so delete all of them
           duplicates.each do |double| 
-            puts "double: #{double}"
+            puts "double: #{double.app_identifier}"
             double.destroy # duplicates can now be destroyed
           end
         end
