@@ -1,5 +1,6 @@
 class GooglePlaySnapshotService
   
+  
   class << self
 
     def run(notes, options={})
@@ -21,15 +22,15 @@ class GooglePlaySnapshotService
     end
 
     def apps_per_hour(android_app_snapshot_job_id, sample_seconds=10)
-      apps_per_minute(ios_app_snapshot_job_id, sample_seconds)*60.0
+      apps_per_minute(android_app_snapshot_job_id, sample_seconds)*60.0
     end
 
     def apps_per_day(android_app_snapshot_job_id, sample_seconds=10)
-      apps_per_hour(ios_app_snapshot_job_id, sample_seconds)*24.0
+      apps_per_hour(android_app_snapshot_job_id, sample_seconds)*24.0
     end
 
     def hours_per_job(android_app_snapshot_job_id, sample_seconds=10)
-      AndroidApp.count * (1.0 / apps_per_hour(ios_app_snapshot_job_id, sample_seconds))
+      AndroidApp.count * (1.0 / apps_per_hour(android_app_snapshot_job_id, sample_seconds))
     end
 
   end
