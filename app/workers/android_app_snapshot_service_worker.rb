@@ -81,9 +81,10 @@ class AndroidAppSnapshotServiceWorker
             android_app = AndroidApp.find_by_app_identifier(app_identifier)
             
             if android_app.nil?
-              android_app = AndroidApp.create!(app_identifier: app_identifier)
+              android_app = AndroidApp.new(app_identifier: app_identifier)
+              success = android_app.save
 
-              AndroidAppSnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id)
+              AndroidAppSnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id) if success
             end
 
           end
