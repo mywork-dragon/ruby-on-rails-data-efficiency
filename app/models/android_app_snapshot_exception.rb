@@ -7,7 +7,7 @@ class AndroidAppSnapshotException < ActiveRecord::Base
     
     def most_common(android_app_snapshot_job_id=nil, options={})
       limit = options[:limit]
-      limit = 25 if limit.nil?
+      limit = 5 if limit.nil?
       
       if android_app_snapshot_job_id
         return self.where(android_app_snapshot_job_id: android_app_snapshot_job_id).group(:name).order('count_id DESC').limit(limit).count(:id)
