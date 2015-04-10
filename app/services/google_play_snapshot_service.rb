@@ -1,4 +1,4 @@
-class AndroidAppSnapshotService
+class GooglePlaySnapshotService
   
   class << self
 
@@ -8,7 +8,7 @@ class AndroidAppSnapshotService
 
       AndroidApp.find_each.with_index do |android_app, index|
         li "App ##{index}" if index%10000 == 0
-        AndroidAppSnapshotServiceWorker.perform_async(j.id, android_app.id)
+        GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
 
     end
