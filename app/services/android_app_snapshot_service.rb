@@ -1,4 +1,4 @@
-class GooglePlaySnapshotService
+class AndroidAppSnapshotService
   
   class << self
 
