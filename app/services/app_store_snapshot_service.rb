@@ -26,15 +26,15 @@ class AppStoreSnapshotService
       60.0/sample_seconds*(b-a)
     end
     
-    def apps_per_hour(ios_app_snapshot_job_id, sample_seconds=10)
+    def apps_per_hour(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
       apps_per_minute(ios_app_snapshot_job_id, sample_seconds)*60.0
     end
     
-    def apps_per_day(ios_app_snapshot_job_id, sample_seconds=10)
+    def apps_per_day(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
       apps_per_hour(ios_app_snapshot_job_id, sample_seconds)*24.0
     end
     
-    def hours_per_job(ios_app_snapshot_job_id, sample_seconds=10)
+    def hours_per_job(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
       IosApp.count * (1.0 / apps_per_hour(ios_app_snapshot_job_id, sample_seconds))
     end
     
