@@ -94,7 +94,7 @@ class AndroidAppSnapshotServiceWorker
     s.save!
 
     rescue => e
-      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)
       if (try += 1) < MAX_TRIES
         retry
       else

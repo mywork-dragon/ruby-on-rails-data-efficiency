@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150410071441) do
+ActiveRecord::Schema.define(version: 20150410181813) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -39,9 +39,11 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.integer  "try"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "android_app_snapshot_job_id"
   end
 
   add_index "android_app_snapshot_exceptions", ["android_app_snapshot_id"], name: "index_android_app_snapshot_exceptions_on_android_app_snapshot_id", using: :btree
+  add_index "android_app_snapshot_exceptions", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
 
   create_table "android_app_snapshot_jobs", force: true do |t|
     t.text     "notes"
@@ -199,9 +201,11 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.integer  "try"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ios_app_snapshot_job_id"
   end
 
   add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_id"], name: "index_ios_app_snapshot_exceptions_on_ios_app_snapshot_id", using: :btree
+  add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshot_job_id", using: :btree
 
   create_table "ios_app_snapshot_jobs", force: true do |t|
     t.text     "notes"

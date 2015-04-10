@@ -126,12 +126,12 @@ class GooglePlayService
       Date.parse(date_text)
     end
 
-    # Outputs file size as an integer in B, unless size stated as "Varies with device" in which -1 is returned
+    # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
     def size
       size_text = @html.css("div.details-section-contents > div:nth-child(2) > div.content").text.strip
 
       if size_text == "Varies with device"
-        size_text = -1
+        size_text = nil
       else
         size_text = Filesize.from(size_text + "iB").to_i # iB added to string to interface with filesize Gem convention
       end

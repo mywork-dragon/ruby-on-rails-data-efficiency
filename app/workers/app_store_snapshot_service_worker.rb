@@ -127,7 +127,7 @@ class AppStoreSnapshotServiceWorker
       s.save!
     
     rescue => e
-      ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
       if (try += 1) < MAX_TRIES
         retry
       else
