@@ -22,7 +22,7 @@ class AndroidAppSnapshotServiceWorker
 
     begin
 
-      puts a = GooglePlayService.attributes(android_app.app_identifier)
+      a = GooglePlayService.attributes(android_app.app_identifier)
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 

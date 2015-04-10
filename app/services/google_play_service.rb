@@ -122,7 +122,8 @@ class GooglePlayService
     end
 
     def released
-      Date.parse(@html.css("div.details-section-contents > div.meta-info > div.content").text)
+      date_text = @html.css('div.content').find{|c| c['itemprop'] == 'datePublished'}.text
+      Date.parse(date_text)
     end
 
     # Outputs file size as an integer in B, unless size stated as "Varies with device" in which -1 is returned
@@ -148,7 +149,7 @@ class GooglePlayService
         return -1
       end
 
-      gplus_iframe = Tor.open(gplus_iframe_urls.first['src'])
+      gplus_iframe = Tor.get(gplus_iframe_urls.first['src'])
 
       if gplus_iframe.css(".A8").text == ""
         return -1
