@@ -18,7 +18,7 @@ class GooglePlaySnapshotServiceWorker
     android_app = AndroidApp.find(options[:android_app_id])
     android_app_snapshot_job_id = options[:android_app_snapshot_job_id]
 
-    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_id: android_app_snapshot_job_id)
+    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
     try = 0
 
@@ -89,14 +89,14 @@ class GooglePlaySnapshotServiceWorker
 
     s.save!
 
-    rescue => e
-      ise = AndroidAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
-      if (try += 1) < MAX_TRIES
-        retry
-      else
-        s.status = :failure
-        s.save!
-      end
+    # rescue => e
+    #   ise = AndroidAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+    #   if (try += 1) < MAX_TRIES
+    #     retry
+    #   else
+    #     s.status = :failure
+    #     s.save!
+    #   end
     else
       s.status = :success
       s.save!
