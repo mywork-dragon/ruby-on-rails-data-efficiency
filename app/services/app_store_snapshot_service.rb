@@ -20,7 +20,7 @@ class AppStoreSnapshotService
     end
     
     def apps_per_minute(ios_app_snapshot_job_id, sample_seconds=10)
-      IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
+      a = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
       sleep sample_seconds
       b = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count 
       60.0/sample_seconds*(b-a)
