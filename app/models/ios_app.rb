@@ -1,5 +1,7 @@
 class IosApp < ActiveRecord::Base
 
+  validates :app_identifier, uniqueness: true
+
   has_many :ios_app_snapshots
   belongs_to :app
   has_many :fb_ad_appearances

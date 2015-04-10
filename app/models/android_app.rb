@@ -1,5 +1,7 @@
 class AndroidApp < ActiveRecord::Base
 
+  validates :app_identifier, uniqueness: true
+
   has_many :android_app_snapshots
   belongs_to :app
   
