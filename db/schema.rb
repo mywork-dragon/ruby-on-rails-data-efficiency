@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409200204) do
+ActiveRecord::Schema.define(version: 20150410071441) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150409200204) do
     t.integer  "android_app_snapshot_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "kind"
   end
 
   add_index "android_app_categories_snapshots", ["android_app_category_id"], name: "index_android_app_category_id", using: :btree
@@ -66,9 +67,17 @@ ActiveRecord::Schema.define(version: 20150409200204) do
     t.string   "required_android_version"
     t.string   "content_rating"
     t.string   "seller"
-    t.decimal  "ratings_all_stars",        precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",           precision: 3, scale: 2
     t.integer  "ratings_all_count"
+    t.integer  "status"
+    t.integer  "android_app_snapshot_job_id"
+    t.integer  "in_app_purchase_min"
+    t.integer  "in_app_purchase_max"
+    t.integer  "installs_min"
+    t.integer  "installs_max"
   end
+
+  add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -78,6 +87,16 @@ ActiveRecord::Schema.define(version: 20150409200204) do
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+
+  create_table "android_apps_websites", force: true do |t|
+    t.integer  "android_app_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_apps_websites", ["android_app_id"], name: "index_android_apps_websites_on_android_app_id", using: :btree
+  add_index "android_apps_websites", ["website_id"], name: "index_android_apps_websites_on_website_id", using: :btree
 
   create_table "apps", force: true do |t|
     t.datetime "created_at"
@@ -109,22 +128,6 @@ ActiveRecord::Schema.define(version: 20150409200204) do
 
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
-
-  create_table "delayed_jobs", force: true do |t|
-    t.integer  "priority",   default: 0, null: false
-    t.integer  "attempts",   default: 0, null: false
-    t.text     "handler",                null: false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"

@@ -6,8 +6,6 @@ class GooglePlaySnapshotServiceWorker
 
   MAX_TRIES = 3
 
-  # end
-
   def perform(android_app_snapshot_job_id, android_app_id)
 
     save_attributes(android_app_id: android_app_id, android_app_snapshot_job_id: android_app_snapshot_job_id)
@@ -18,13 +16,13 @@ class GooglePlaySnapshotServiceWorker
     android_app = AndroidApp.find(options[:android_app_id])
     android_app_snapshot_job_id = options[:android_app_snapshot_job_id]
 
-    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_id: android_app_snapshot_job_id)
+    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
     try = 0
 
     begin
 
-      a = GooglePlayService.attributes(android_app.app_identifier)
+      puts a = GooglePlayService.attributes(android_app.app_identifier)
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
@@ -42,6 +40,7 @@ class GooglePlaySnapshotServiceWorker
       content_rating
       ratings_all_stars
       ratings_all_count
+      in_app_purchases
       )
 
       single_column_attributes.each do |sca|
@@ -79,10 +78,14 @@ class GooglePlaySnapshotServiceWorker
         if similar_apps = a[:similar_apps]
           similar_apps.each do |app_identifier|
 
-            #create the app
-            android_app = AndroidApp.create!(app_identifier: app_identifier)
+            android_app = AndroidApp.find_by_app_identifier(app_identifier)
+            
+            if android_app.nil?
+              android_app = AndroidApp.create!(app_identifier: app_identifier)
 
-            perform_async(android_app_snapshot_job_id, android_app.id)
+              GooglePlaySnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id)
+            end
+
           end
         end
       end
@@ -90,7 +93,7 @@ class GooglePlaySnapshotServiceWorker
     s.save!
 
     rescue => e
-      ise = AndroidAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
       if (try += 1) < MAX_TRIES
         retry
       else
@@ -108,7 +111,7 @@ class GooglePlaySnapshotServiceWorker
   def test_save_attributes
     ids = [389377362, 801207885, 509978909, 946286572, 355074115]
 
-    ios_app_ids = ids.map{ |id| AndroidApp.find_or_create_by(app_identifier: id) }
+    android_app_ids = ids.map{ |id| AndroidApp.find_or_create_by(app_identifier: id) }
 
     perform(-1, ios_app_ids)
   end
