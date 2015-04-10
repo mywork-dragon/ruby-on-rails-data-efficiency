@@ -6,8 +6,6 @@ class GooglePlaySnapshotServiceWorker
 
   MAX_TRIES = 3
 
-  # end
-
   def perform(android_app_snapshot_job_id, android_app_id)
 
     save_attributes(android_app_id: android_app_id, android_app_snapshot_job_id: android_app_snapshot_job_id)
@@ -24,7 +22,7 @@ class GooglePlaySnapshotServiceWorker
 
     begin
 
-      a = GooglePlayService.attributes(android_app.app_identifier)
+      puts a = GooglePlayService.attributes(android_app.app_identifier)
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
@@ -42,6 +40,7 @@ class GooglePlaySnapshotServiceWorker
       content_rating
       ratings_all_stars
       ratings_all_count
+      in_app_purchases
       )
 
       single_column_attributes.each do |sca|
