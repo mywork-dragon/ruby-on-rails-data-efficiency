@@ -26,7 +26,7 @@ class ApiController < ApplicationController
       
     end
     
-    if @app_filters.['adSpend'].present?
+    if @app_filters['adSpend'].present?
       
     end
     
@@ -115,7 +115,7 @@ class ApiController < ApplicationController
           'state' => company.present? ? company.state : nil,
           'country' => company.present? ? company.country : nil
         }
-      }
+      },
       'mobilePriority' => nil, 
       'adSpend' => nil, 
       'countriesDeployed' => nil, #not part of initial launch
