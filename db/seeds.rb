@@ -56,7 +56,7 @@ if Rails.env.development?
     android_app1.websites << site
     android_app2.websites << site
     if i % 100 == 0
-      puts "#{i/200}/20 of the way done"
+      puts "#{i/100}/20 of the way done"
     end
   end
 end
