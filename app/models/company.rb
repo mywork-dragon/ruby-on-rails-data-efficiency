@@ -5,8 +5,8 @@ class Company < ActiveRecord::Base
   has_many :websites
   enum status: [ :active, :paused ]
   
-  scope :get_fortune_1000, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 1000)
-  scope :get_fortune_500, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 500)
+  # scope :get_fortune_1000, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 1000)
+  # scope :get_fortune_500, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 500)
   
   # The domain only of the website (minus the 'http://')
   # @author Jason Lew
