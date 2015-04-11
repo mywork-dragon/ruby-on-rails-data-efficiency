@@ -152,7 +152,7 @@ class ApiController < ApplicationController
         'android_apps' => company.get_android_apps.map{|app| app.id}
       }
     end
-    render json: company_json
+    render json: @company_json
   end
 
 end
