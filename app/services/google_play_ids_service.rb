@@ -57,14 +57,25 @@ class GooglePlayIdsService
     
     def add_from_json(file)
       n = 0
+      new_apps = 0
+      
       File.foreach(file) do |line|
+        puts "App: #{n}, New Apps: #{new_apps}" if n%10000 == 0
+        
         hash = JSON.load(line)
         
         url = hash['Url']
         
         ai = url.gsub('https://play.google.com/store/apps/details?id=', '').strip
         
-        AndroidApp.find_or_create_by(app_identifier: ai)
+        aa =  AndroidApp.find_by_app_identifier(ai)
+        
+        if aa.nil?
+          AndroidApp.create(app_identifier: ai)
+          new_apps += 1
+        end
+        
+        n += 1
       end
     end
 
