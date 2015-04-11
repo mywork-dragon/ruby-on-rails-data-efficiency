@@ -26,7 +26,7 @@ class Tor
       es = []
       
       Proxy.all.each do |proxy|
-        single_server_result = check_server(url)
+        single_server_result = check_server(url, proxy)
         es << single_server_result unless single_server_result.nil?
       end
       
@@ -35,7 +35,7 @@ class Tor
       es
     end
     
-    def check_server(url)
+    def check_server(url, proxy)
       begin
         page = get_using_proxy(url, proxy.private_ip) 
       

@@ -100,7 +100,8 @@ class GooglePlayService
     # NOTE: User must not be logged into Google Play account while using this - "Installed" app will register as free
     def price
       # Regular Expression strips string of all characters besides digits and decimal points
-      @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+      price_dollars = @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+      (price_dollars*100.0).to_i
     end
 
     def seller
@@ -122,15 +123,16 @@ class GooglePlayService
     end
 
     def released
-      Date.parse(@html.css("div.details-section-contents > div.meta-info > div.content").text)
+      date_text = @html.css('div.content').find{|c| c['itemprop'] == 'datePublished'}.text
+      Date.parse(date_text)
     end
 
-    # Outputs file size as an integer in B, unless size stated as "Varies with device" in which -1 is returned
+    # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
     def size
       size_text = @html.css("div.details-section-contents > div:nth-child(2) > div.content").text.strip
 
       if size_text == "Varies with device"
-        size_text = -1
+        size_text = nil
       else
         size_text = Filesize.from(size_text + "iB").to_i # iB added to string to interface with filesize Gem convention
       end
@@ -148,7 +150,7 @@ class GooglePlayService
         return -1
       end
 
-      gplus_iframe = Tor.open(gplus_iframe_urls.first['src'])
+      gplus_iframe = Tor.get(gplus_iframe_urls.first['src'])
 
       if gplus_iframe.css(".A8").text == ""
         return -1

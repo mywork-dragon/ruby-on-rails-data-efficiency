@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150410071441) do
+ActiveRecord::Schema.define(version: 20150410233846) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -39,9 +39,11 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.integer  "try"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "android_app_snapshot_job_id"
   end
 
   add_index "android_app_snapshot_exceptions", ["android_app_snapshot_id"], name: "index_android_app_snapshot_exceptions_on_android_app_snapshot_id", using: :btree
+  add_index "android_app_snapshot_exceptions", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
 
   create_table "android_app_snapshot_jobs", force: true do |t|
     t.text     "notes"
@@ -54,7 +56,7 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "price"
-    t.integer  "size"
+    t.integer  "size",                        limit: 8
     t.date     "updated"
     t.string   "seller_url"
     t.string   "version"
@@ -67,14 +69,14 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.string   "required_android_version"
     t.string   "content_rating"
     t.string   "seller"
-    t.decimal  "ratings_all_stars",           precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",                     precision: 3, scale: 2
     t.integer  "ratings_all_count"
     t.integer  "status"
     t.integer  "android_app_snapshot_job_id"
     t.integer  "in_app_purchase_min"
     t.integer  "in_app_purchase_max"
-    t.integer  "installs_min"
-    t.integer  "installs_max"
+    t.integer  "installs_min",                limit: 8
+    t.integer  "installs_max",                limit: 8
   end
 
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
@@ -192,7 +194,7 @@ ActiveRecord::Schema.define(version: 20150410071441) do
   add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id"], name: "index_ios_app_categories_snapshots_on_ios_app_snapshot_id", using: :btree
 
   create_table "ios_app_download_snapshots", force: true do |t|
-    t.integer  "downloads"
+    t.integer  "downloads",  limit: 8
     t.integer  "ios_app_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -215,9 +217,11 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.integer  "try"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ios_app_snapshot_job_id"
   end
 
   add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_id"], name: "index_ios_app_snapshot_exceptions_on_ios_app_snapshot_id", using: :btree
+  add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshot_job_id", using: :btree
 
   create_table "ios_app_snapshot_jobs", force: true do |t|
     t.text     "notes"
@@ -230,7 +234,7 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "price"
-    t.integer  "size"
+    t.integer  "size",                           limit: 8
     t.string   "seller_url"
     t.string   "support_url"
     t.string   "version"
@@ -243,9 +247,9 @@ ActiveRecord::Schema.define(version: 20150410071441) do
     t.text     "release_notes"
     t.string   "seller"
     t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",          precision: 3, scale: 2
+    t.decimal  "ratings_current_stars",                    precision: 3, scale: 2
     t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",              precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",                        precision: 3, scale: 2
     t.integer  "ratings_all_count"
     t.boolean  "editors_choice"
     t.integer  "status"

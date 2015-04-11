@@ -1,4 +1,4 @@
-class AndroidAppSnapshotServiceWorker
+class GooglePlaySnapshotServiceWorker
   include Sidekiq::Worker
 
   # accounting for retries ourself, so disable sidekiq retries
@@ -22,7 +22,7 @@ class AndroidAppSnapshotServiceWorker
 
     begin
 
-      puts a = GooglePlayService.attributes(android_app.app_identifier)
+      a = GooglePlayService.attributes(android_app.app_identifier)
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
@@ -81,9 +81,10 @@ class AndroidAppSnapshotServiceWorker
             android_app = AndroidApp.find_by_app_identifier(app_identifier)
             
             if android_app.nil?
-              android_app = AndroidApp.create!(app_identifier: app_identifier)
+              android_app = AndroidApp.new(app_identifier: app_identifier)
+              success = android_app.save
 
-              AndroidAppSnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id)
+              GooglePlaySnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id) if success
             end
 
           end
@@ -93,7 +94,7 @@ class AndroidAppSnapshotServiceWorker
     s.save!
 
     rescue => e
-      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try)
+      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)
       if (try += 1) < MAX_TRIES
         retry
       else
