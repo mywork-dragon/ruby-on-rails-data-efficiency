@@ -69,9 +69,9 @@ class GooglePlaySnapshotServiceWorker
       end
       
 
-      if installs = a[:installs]
-        s.installs_min = installs.min
-        s.installs_max = installs.max
+      if downloads = a[:downloads]
+        s.downloads_min = downloads.min
+        s.downloads_max = downloads.max
       end
 
       #don't get similar apps in development

@@ -3,8 +3,10 @@ class AndroidApp < ActiveRecord::Base
   validates :app_identifier, uniqueness: true
   belongs_to :app
   
-  has_many :android_apps_snapshots
-  has_many :websites, through: :android_apps_snapshots
+  has_many :android_app_snapshots
+  # has_many :websites, through: :android_apps_snapshots
+  has_many :android_apps_websites
+  has_many :websites, through: :android_apps_websites
 
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|

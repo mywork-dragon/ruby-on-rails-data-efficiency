@@ -82,7 +82,9 @@ gem 'net-ssh', '2.9.1'
 
 gem 'capistrano-sidekiq', '0.5.2'
 
-gem 'kaminari'
+gem 'kaminari', '0.16.3'
+
+gem 'faker', '1.4.3'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
