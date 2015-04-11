@@ -97,7 +97,7 @@ class ApiController < ApplicationController
     android_app = AndroidApp.includes(:android_app_snapshots).find(appId)
     company = android_app.get_company
     newest_app_snapshot = android_app.get_newest_app_snapshot
-    newest_download_snapshot = android_app.get_newest_download_snapshot
+    # newest_download_snapshot = android_app.get_newest_download_snapshot
     
     app_json = {
       'appId' => appId,
@@ -119,7 +119,7 @@ class ApiController < ApplicationController
       'mobilePriority' => nil, 
       'adSpend' => nil, 
       'countriesDeployed' => nil, #not part of initial launch
-      'downloads' => newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      'downloads' => newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
       'lastUpdated' => newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
       'updateFreq' => nil, 
       'appIcon' => {
