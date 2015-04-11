@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ios_app_download_snapshot_id: 1
+  name: MyText
+  backtrace: MyText
+  try: 1
+  ios_app_download_snapshot_job_id: 1
+
+two:
+  ios_app_download_snapshot_id: 1
+  name: MyText
+  backtrace: MyText
+  try: 1
+  ios_app_download_snapshot_job_id: 1
