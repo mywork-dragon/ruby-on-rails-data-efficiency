@@ -54,6 +54,19 @@ class GooglePlayIdsService
       end
 
     end
+    
+    def add_from_json(file)
+      n = 0
+      File.foreach(file) do |line|
+        hash = JSON.load(line)
+        
+        url = hash['Url']
+        
+        ai = url.gsub('https://play.google.com/store/apps/details?id=', '').strip
+        
+        AndroidApp.find_or_create_by(app_identifier: ai)
+      end
+    end
 
   end
 
