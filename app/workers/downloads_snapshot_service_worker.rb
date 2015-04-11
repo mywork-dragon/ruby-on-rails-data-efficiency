@@ -22,7 +22,7 @@ class DownloadsSnapshotServiceWorker
 
     begin
 
-      a = DownloadsService.attributes(app_identifier: ios_app.app_identifier, description: ios_app.description)
+      a = DownloadsService.attributes(app_identifier: ios_app.app_identifier, description: ios_app.description, name: ios_app.name)
 
       raise 'DownloadsService.attributes is empty' if a.empty?
       

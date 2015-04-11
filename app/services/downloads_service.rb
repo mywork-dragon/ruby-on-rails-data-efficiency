@@ -8,46 +8,47 @@ GOOGLE_WORD_LIMIT = 32
     def attributes(app_attrs={})
       
       @app_identifier = app_attrs[:app_identifier]
+      name = app_attrs[:name]
       
-      # if app_attrs[:description]
-      #   query_url_safe = CGI::escape(app_attrs[:description])
-      # else
-      #   query_url_safe = CGI::escape(app_attrs[:title])
+      query = CGI::escape(name.gsub(/[^0-9a-z ]/i, ''))
+  
+      return url = app_xyo_url(query)
+
+      
+      # description = app_attrs[:description]
+      # name = app_attrs[:name]
+      #
+      # google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
+      #
+      # google_special_chars.each do |c|
+      #   description.gsub!(c, '')
+      #   name.gsub!(c, '')
       # end
-      
-      description = app_attrs[:description]
-      
-      google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
-      
-      google_special_chars.each do |c|
-        description.gsub!(c, '')
-      end
-      
-      description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
-      
-      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description_truncated)
-      
-      full_query = "site:#{SITE}+#{query_url_safe}"
-
-      url = "https://www.google.com/search?num=30&q=#{full_query}"
-      
-      #li "url: #{url}"
-        
-      page = Tor.get(url)
-
-      html = Nokogiri::HTML(page)
-      
-      url = nil
-    
-      html.search("cite").map{|x| x.inner_text}.each do |link|
-        if link.include?(SITE)
-          url = "http://#{link}"
-          break
-        end
-      end
-      
-      #ld "XYO URL: #{url}"
-      
+      #
+      # description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
+      #
+      # query_url_safe = CGI::escape(name + ' ' + description_truncated)
+      #
+      # full_query = "site:#{SITE}+#{query_url_safe}"
+      #
+      # url = "https://www.google.com/search?num=30&q=#{full_query}"
+      #
+      # li "url: #{url}"
+      #
+      # page = Tor.get(url)
+      #
+      # html = Nokogiri::HTML(page)
+      #
+      # url = nil
+      #
+      # html.search("cite").map{|x| x.inner_text}.each do |link|
+      #   if link.include?(SITE)
+      #     url = "http://#{link}"
+      #     break
+      #   end
+      # end
+      #
+      #
       return {} if url.nil?
       
       ret = {}
@@ -56,7 +57,7 @@ GOOGLE_WORD_LIMIT = 32
       
       @html = downloads_html(url)
       
-      return {} if downloads_html.nil? || !page_has_link_to_app?
+      return {} if @html.nil? || !page_has_link_to_app?
       begin
         ret[:downloads] = downloads
       rescue
@@ -67,6 +68,22 @@ GOOGLE_WORD_LIMIT = 32
     end
     
     #private
+    
+    def app_xyo_url(query)
+      page = Tor.get("http://xyo.net/iphone/#{query}/")
+      html = Nokogiri::HTML(page)
+      app_boxes = html.css('.search-suggestion > .app-box')
+      
+      links = []
+      
+      app_boxes.each do |app_box|
+        links << app_box['href']
+      end
+      
+      return nil if links.blank?
+       
+      links.first
+    end
     
     def downloads_html(url)
       begin
