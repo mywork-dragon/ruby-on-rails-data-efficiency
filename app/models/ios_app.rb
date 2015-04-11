@@ -14,7 +14,7 @@ class IosApp < ActiveRecord::Base
     newest_snapshot = get_newest_app_snapshot
     if newest_snapshot.released > 3.months.ago
       return "H"
-    elsif newest_snapshot < 6.months.ago
+    elsif newest_snapshot.released < 6.months.ago
       return 'L'
     else
       return 'M'
