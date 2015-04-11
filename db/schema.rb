@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150410233846) do
+ActiveRecord::Schema.define(version: 20150411204141) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 20150410233846) do
     t.integer  "in_app_purchase_max"
     t.integer  "installs_min",                limit: 8
     t.integer  "installs_max",                limit: 8
+    t.string   "icon_url_300x300"
   end
 
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
