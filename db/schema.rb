@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150411221122) do
+ActiveRecord::Schema.define(version: 20150411223140) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -203,10 +203,12 @@ ActiveRecord::Schema.define(version: 20150411221122) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ios_app_download_snapshot_job_id"
+    t.integer  "status"
   end
 
   add_index "ios_app_download_snapshots", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
+  add_index "ios_app_download_snapshots", ["status"], name: "index_ios_app_download_snapshots_on_status", using: :btree
 
   create_table "ios_app_languages", force: true do |t|
     t.datetime "created_at"

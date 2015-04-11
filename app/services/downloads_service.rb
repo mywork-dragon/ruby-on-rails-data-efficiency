@@ -48,7 +48,7 @@ GOOGLE_WORD_LIMIT = 32
       
       #ld "XYO URL: #{url}"
       
-      return {downloads: nil} if url.nil?
+      return {} if url.nil?
       
       ret = {}
       
@@ -56,13 +56,11 @@ GOOGLE_WORD_LIMIT = 32
       
       
       
-      return {downloads: nil} unless page_has_link_to_app? 
+      return {} unless page_has_link_to_app? 
       
       ret[:downloads] = downloads
       
       ret
-      
-      #ratings(html)
     end
     
     #private
