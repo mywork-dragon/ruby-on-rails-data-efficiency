@@ -33,6 +33,7 @@ class GooglePlayService
         ratings_all_stars
         ratings_all_count
         similar_apps
+        icon_url_300x300
       )
       
       methods.each do |method|
@@ -257,6 +258,10 @@ class GooglePlayService
       end
 
       cards
+    end
+    
+    def icon_url_300x300
+      @html.css('div.details-info > div.cover-container > img')
     end
   end
 end

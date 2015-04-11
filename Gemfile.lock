@@ -246,11 +246,11 @@ DEPENDENCIES
   autoprefixer-rails
   aws-sdk (~> 2)
   bootstrap-sass (= 3.2.0)
-  capistrano
-  capistrano-rails
-  capistrano-sidekiq
+  capistrano (= 3.2.1)
+  capistrano-rails (= 1.1.2)
+  capistrano-sidekiq (= 0.5.2)
   coffee-rails (~> 4.0.0)
-  filesize
+  filesize (= 0.0.4)
   foundation-rails (= 5.4.3.1)
   haml
   haml-rails
@@ -260,18 +260,18 @@ DEPENDENCIES
   jquery-turbolinks
   jquery-ui-rails
   kaminari
-  mysql2
-  net-ssh
+  mysql2 (= 0.3.17)
+  net-ssh (= 2.9.1)
   newrelic_rpm
-  nokogiri
-  omniauth-salesforce
+  nokogiri (= 1.6.4.1)
+  omniauth-salesforce (= 1.0.5)
   open_uri_redirections
   rails (= 4.1.6)
-  restforce
+  restforce (= 1.5.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
-  sidekiq
-  socksify
+  sidekiq (= 3.3.0)
+  socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
   therubyracer
