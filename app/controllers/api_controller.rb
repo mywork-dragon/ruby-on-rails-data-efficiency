@@ -3,8 +3,51 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   
   def filter_ios_apps
-    # results = []
-    # IosApps.where
+    @app_filters = params[:app]
+    @company_filters = params[:company]
+    @companies
+    @apps
+    
+    if @company_filters['fortune'].present? #pass ranks as an integer
+      @companies = Company.where(:fortune_1000_rank > params['fortune'].to_i)
+    end
+    
+    if @company_filters['funding'].present? #start out with just 
+      relation_set = @companies.blank? ? Company : @companies
+      @companies = relation_set.where(:funding > @company_filters['funding'].to_i)
+    end
+    
+    if @company_filters['country'].present?
+      relation_set = @companies.blank? ? Company : @companies
+      @companies = relation_set.where(country: @company_filters['country'])
+    end
+    
+    if @app_filters['mobilePriority'].present?
+      
+    end
+    
+    if @app_filters['adSpend'].present?
+      
+    end
+    
+    if @app_filters['countriesDeployed'].present?
+      
+    end
+    
+    if @app_filters['downloads'].present?
+      relation_set = @apps.blank? ? IosApp : @apps
+      @apps = relation_set.where(:downloads > @app_filters['downloads'].to_i)
+    end
+    
+    if @app_filters['lastUpdate'].present?
+      relation_set = @apps.blank? ? IosApp : @apps
+    end
+    
+    if @app_filters['updateFrequency'].present?
+      
+    end
+    
+
   end
   
   def filter_android_apps
@@ -59,20 +102,23 @@ class ApiController < ApplicationController
     app_json = {
       'appId' => appId,
       'appName' => newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      'companyName' => company.present? ? company.name : nil,
-      'companyId' => company.present? ? company.id : nil,
+      'company' => {
+        'name' => company.present? ? company.name : nil,
+        'id' => company.present? ? company.id : nil,
+        'fortuneRank' => company.present? ? company.fortune_1000_rank : nil, 
+        'funding' => company.present? ? company.funding : nil,
+        'websites' => ios_app.get_website_urls, #this is an array
+        'location' => {
+          'streetAddress' => company.present? ? company.street_address : nil,
+          'city' => company.present? ? company.city : nil,
+          'zipCode' => company.present? ? company.zip_code : nil,
+          'state' => company.present? ? company.state : nil,
+          'country' => company.present? ? company.country : nil
+        }
+      },
       'mobilePriority' => nil, 
       'adSpend' => nil, 
-      'fortuneRank' => company.present? ? company.fortune_1000_rank : nil, 
-      'funding' => company.present? ? company.funding : nil,
       'countriesDeployed' => nil, #not part of initial launch
-      'countryHq' => {
-        'streetAddress' => company.present? ? company.street_address : nil,
-        'city' => company.present? ? company.city : nil,
-        'zipCode' => company.present? ? company.zip_code : nil,
-        'state' => company.present? ? company.state : nil,
-        'country' => company.present? ? company.country : nil
-      },
       'downloads' => newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
       'lastUpdated' => newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
       'updateFreq' => nil, 
@@ -80,17 +126,33 @@ class ApiController < ApplicationController
         'large' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
         'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
       },
-      'companyWebsites' => ios_app.get_website_urls, #this is an array
       'appIdentifier' => ios_app.id
     }
     render json: app_json
   end
   
   def get_company
-    
+    companyId = params['companyId']
+    company = Company.includes(:websites).find(companyId)
+    @company_json = {}
+    if company.present?
+      @company_json = {
+        'companyId' => companyId,
+        'websites' => company.websites.to_a.map{|w| w.url},
+        'funding' => company.funding,
+        'location' => {
+          'streetAddress' => company.street_address,
+          'city' => company.city,
+          'zipCode' => company.zip_code,
+          'state' => company.state,
+          'country' => company.country
+        },
+        'fortuneRank' => company.fortune_1000_rank,
+        'ios_apps' => company.get_ios_apps.map{|app| app.id},
+        'android_apps' => company.get_android_apps.map{|app| app.id}
+      }
+    end
+    render json: company_json
   end
-  
-  def app_info
-    
-  end
+
 end

@@ -82,6 +82,8 @@ gem 'net-ssh'
 
 gem 'capistrano-sidekiq'
 
+gem 'kaminari'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
