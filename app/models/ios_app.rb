@@ -21,11 +21,9 @@ class IosApp < ActiveRecord::Base
     end
   end
   
-  
-  
   def get_newest_app_snapshot
     self.ios_app_snapshots.max_by do |snapshot|
-      snapshot.updated_at
+      snapshot.created_at
     end
   end
   
