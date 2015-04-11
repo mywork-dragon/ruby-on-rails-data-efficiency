@@ -28,7 +28,7 @@ class GooglePlayService
         in_app_purchases_range
         required_android_version
         version
-        installs
+        downloads
         content_rating
         ratings_all_stars
         ratings_all_count
@@ -223,7 +223,7 @@ class GooglePlayService
     end
 
     # Returns string of range detailing how many installs the app has, returns nil if data not available
-    def installs
+    def downloads
       installs_array = app_info_helper(/Installs/)
       if installs_array.nil?
         return nil
