@@ -23,6 +23,8 @@ var app = angular.module("app", ["ngRoute", "ngAnimate", "ui.bootstrap", "easypi
                 templateUrl: "app/views/dashboards/dashboard.html"
             }).when("/dashboard/dashboard", {
                 templateUrl: "app/views/dashboards/dashboard.html"
+            }).when("/dashboard/app-details", {
+                templateUrl: "app/views/app-details.html"
             }).otherwise({
                 redirectTo: "/404"
             });

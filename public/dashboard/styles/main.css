@@ -4744,6 +4744,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 #results-table-wrapper {
     overflow: scroll;
+    font-size: 12px;
 }
 
 .panel-group .panel {

@@ -482,7 +482,7 @@
                 <tbody>
                     <tr data-ng-repeat="store in currentPageStores">
                         <td>{{store.name}}</td>
-                        <td>{{store.company}}</td>
+                        <td><a href="#">{{store.company}}</a></td>
                         <td>{{store.priority}}</td>
                         <td>{{store.downloads}}</td>
                         <td>{{store.genre}}</td>
@@ -492,7 +492,7 @@
                         <td>{{store.funding}}</td>
                         <td>{{store.adSpend}}</td>
                         <td>{{store.country}}</td>
-                        <td>{{store.details}}</td>
+                        <td><a href="/dashboard/app-details">{{store.details}}</a></td>
                     </tr>
                 </tbody>
             </table>
