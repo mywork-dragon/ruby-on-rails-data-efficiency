@@ -5,7 +5,7 @@ class AaService
     # Attributes hash
     # @author Jason Lew
     # @param id The App Store identifier
-    def attributes(id, options={})
+    def attributes_ios(id, options={})
       @html_updates = aa_html_updates(id)
         
       ret = {}
