@@ -41,6 +41,7 @@ class GooglePlaySnapshotServiceWorker
       ratings_all_stars
       ratings_all_count
       in_app_purchases
+      icon_url_300x300
       )
 
       single_column_attributes.each do |sca|

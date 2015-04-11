@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 # Use mysql as the database for Active Record
-gem 'mysql2'
+gem 'mysql2', '0.3.17'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -44,11 +44,11 @@ gem 'spring',        group: :development
 
 gem 'whenever', require: false
 
-gem 'nokogiri'
+gem 'nokogiri', '1.6.4.1'
 
 # for deployment
-gem 'capistrano'
-gem 'capistrano-rails'
+gem 'capistrano', '3.2.1'
+gem 'capistrano-rails', '1.1.2'
 
 # allow http to https redirections
 gem 'open_uri_redirections', require: "open_uri_redirections"
@@ -65,22 +65,22 @@ gem 'PageRankr', '4.2.1'
 
 gem 'newrelic_rpm'
 
-gem 'restforce'
-gem 'omniauth-salesforce'
+gem 'restforce', '1.5.0'
+gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq'
+gem 'sidekiq', '3.3.0'
 
-gem 'filesize'
+gem 'filesize', '0.0.4'
 
 gem 'aws-sdk', '~> 2'
 
-gem 'socksify'
+gem 'socksify', '1.6.0'
 
-gem 'net-ssh'
+gem 'net-ssh', '2.9.1'
 
-gem 'capistrano-sidekiq'
+gem 'capistrano-sidekiq', '0.5.2'
 
 gem 'kaminari', '0.16.3'
 
