@@ -132,6 +132,22 @@ ActiveRecord::Schema.define(version: 20150411224348) do
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
+  create_table "delayed_jobs", force: true do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
     t.string   "hit_identifier"
@@ -178,37 +194,14 @@ ActiveRecord::Schema.define(version: 20150411224348) do
   add_index "ios_app_categories_snapshots", ["ios_app_category_id"], name: "index_ios_app_categories_snapshots_on_ios_app_category_id", using: :btree
   add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id"], name: "index_ios_app_categories_snapshots_on_ios_app_snapshot_id", using: :btree
 
-  create_table "ios_app_download_snapshot_exceptions", force: true do |t|
-    t.integer  "ios_app_download_snapshot_id"
-    t.text     "name"
-    t.text     "backtrace"
-    t.integer  "try"
-    t.integer  "ios_app_download_snapshot_job_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "ios_app_download_snapshot_exceptions", ["ios_app_download_snapshot_id"], name: "index_on_ios_app_download_snapshot_id", using: :btree
-  add_index "ios_app_download_snapshot_exceptions", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
-
-  create_table "ios_app_download_snapshot_jobs", force: true do |t|
-    t.string   "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "ios_app_download_snapshots", force: true do |t|
-    t.integer  "downloads",                        limit: 8
+    t.integer  "downloads",  limit: 8
     t.integer  "ios_app_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_app_download_snapshot_job_id"
-    t.integer  "status"
   end
 
-  add_index "ios_app_download_snapshots", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
-  add_index "ios_app_download_snapshots", ["status"], name: "index_ios_app_download_snapshots_on_status", using: :btree
 
   create_table "ios_app_languages", force: true do |t|
     t.datetime "created_at"
