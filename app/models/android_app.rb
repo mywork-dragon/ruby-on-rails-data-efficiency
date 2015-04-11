@@ -14,6 +14,9 @@ class AndroidApp < ActiveRecord::Base
     end
   end
   
+  def get_website_urls
+    self.websites.map{|w| w.url}
+  end
   
   def get_company
     self.websites.each do |w|

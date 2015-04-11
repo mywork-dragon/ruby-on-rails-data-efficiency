@@ -107,7 +107,7 @@ class ApiController < ApplicationController
         'id' => company.present? ? company.id : nil,
         'fortuneRank' => company.present? ? company.fortune_1000_rank : nil, 
         'funding' => company.present? ? company.funding : nil,
-        'websites' => ios_app.get_website_urls, #this is an array
+        'websites' => android_app.get_website_urls, #this is an array
         'location' => {
           'streetAddress' => company.present? ? company.street_address : nil,
           'city' => company.present? ? company.city : nil,
@@ -123,10 +123,10 @@ class ApiController < ApplicationController
       'lastUpdated' => newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
       'updateFreq' => nil, 
       'appIcon' => {
-        'large' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-        'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+        'large' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+        # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
       },
-      'appIdentifier' => ios_app.id
+      'appIdentifier' => android_app.id
     }
     render json: app_json
   end
