@@ -10,6 +10,16 @@ class IosApp < ActiveRecord::Base
   has_many :websites, through: :ios_apps_websites
     
   
+  def get_mobile_priority
+    if released > 3.months.ago
+      return "H"
+    elsif released < 6.months.ago
+      return 'L'
+    else
+      return 'M'
+    end
+  end
+  
   def get_newest_app_snapshot
     self.ios_app_snapshots.max_by do |snapshot|
       snapshot.updated_at
