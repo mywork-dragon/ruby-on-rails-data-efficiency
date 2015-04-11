@@ -52,23 +52,29 @@ GOOGLE_WORD_LIMIT = 32
       
       ret = {}
       
+      
+      
       @html = downloads_html(url)
       
-      
-      
-      return {} unless page_has_link_to_app? 
-      
-      ret[:downloads] = downloads
-      
+      return {} if downloads_html.nil? || !page_has_link_to_app?
+      begin
+        ret[:downloads] = downloads
+      rescue
+        return {}
+      end
+
       ret
     end
     
     #private
     
     def downloads_html(url)
-      puts "url: #{url}"
-      page = Tor.get(url)
-      Nokogiri::HTML(page)
+      begin
+        page = Tor.get(url)
+        Nokogiri::HTML(page)
+      rescue
+        return nil
+      end
     end 
     
     def page_has_link_to_app?

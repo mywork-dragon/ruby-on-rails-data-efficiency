@@ -6,3 +6,4 @@ class AddStatusToIosAppDownloadSnapshots < ActiveRecord::Migration
     
   end
 end
+ 
