@@ -75,6 +75,8 @@ GEM
     connection_pool (2.1.0)
     erubis (2.7.0)
     execjs (2.2.2)
+    faker (1.4.3)
+      i18n (~> 0.5)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.9.1)
@@ -250,6 +252,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-sidekiq
   coffee-rails (~> 4.0.0)
+  faker (= 1.4.3)
   filesize
   foundation-rails (= 5.4.3.1)
   haml
@@ -259,7 +262,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
-  kaminari
+  kaminari (= 0.16.3)
   mysql2
   net-ssh
   newrelic_rpm
