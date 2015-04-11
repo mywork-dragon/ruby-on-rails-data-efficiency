@@ -3,9 +3,51 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   
   def filter_ios_apps
-    # results = []
-    # IosApps.where
+    @app_filters = params[:app]
+    @company_filters = params[:company]
+    @companies
+    @apps
     
+    if @company_filters['fortune'].present? #pass ranks as an integer
+      @companies = Company.where(:fortune_1000_rank > params['fortune'].to_i)
+    end
+    
+    if @company_filters['funding'].present? #start out with just 
+      relation_set = @companies.blank? ? Company : @companies
+      @companies = relation_set.where(:funding > @company_filters['funding'].to_i)
+    end
+    
+    if @company_filters['country'].present?
+      relation_set = @companies.blank? ? Company : @companies
+      @companies = relation_set.where(country: @company_filters['country'])
+    end
+    
+    if @app_filters['mobilePriority'].present?
+      
+    end
+    
+    if @app_filters.['adSpend'].present?
+      
+    end
+    
+    if @app_filters['countriesDeployed'].present?
+      
+    end
+    
+    if @app_filters['downloads'].present?
+      relation_set = @apps.blank? ? IosApp : @apps
+      @apps = relation_set.where(:downloads > @app_filters['downloads'].to_i)
+    end
+    
+    if @app_filters['lastUpdate'].present?
+      relation_set = @apps.blank? ? IosApp : @apps
+    end
+    
+    if @app_filters['updateFrequency'].present?
+      
+    end
+    
+
   end
   
   def filter_android_apps
