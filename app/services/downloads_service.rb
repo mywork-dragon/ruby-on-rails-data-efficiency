@@ -23,8 +23,8 @@ GOOGLE_WORD_LIMIT = 32
       return {} if @html.nil? || !page_has_link_to_app?
       begin
         ret[:downloads] = downloads
-      rescue
-        return {}
+      # rescue
+      #   return {}
       end
 
       ret
@@ -52,8 +52,8 @@ GOOGLE_WORD_LIMIT = 32
       begin
         page = Tor.get(url)
         Nokogiri::HTML(page)
-      rescue
-        return nil
+      # rescue
+      #   return nil
       end
     end 
     
