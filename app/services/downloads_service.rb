@@ -12,48 +12,11 @@ GOOGLE_WORD_LIMIT = 32
       
       query = CGI::escape(name.gsub(/[^0-9a-z ]/i, ''))
   
-      return url = app_xyo_url(query)
+      url = app_xyo_url(query)
 
-      
-      # description = app_attrs[:description]
-      # name = app_attrs[:name]
-      #
-      # google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
-      #
-      # google_special_chars.each do |c|
-      #   description.gsub!(c, '')
-      #   name.gsub!(c, '')
-      # end
-      #
-      # description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
-      #
-      # query_url_safe = CGI::escape(name + ' ' + description_truncated)
-      #
-      # full_query = "site:#{SITE}+#{query_url_safe}"
-      #
-      # url = "https://www.google.com/search?num=30&q=#{full_query}"
-      #
-      # li "url: #{url}"
-      #
-      # page = Tor.get(url)
-      #
-      # html = Nokogiri::HTML(page)
-      #
-      # url = nil
-      #
-      # html.search("cite").map{|x| x.inner_text}.each do |link|
-      #   if link.include?(SITE)
-      #     url = "http://#{link}"
-      #     break
-      #   end
-      # end
-      #
-      #
       return {} if url.nil?
       
       ret = {}
-      
-      
       
       @html = downloads_html(url)
       
