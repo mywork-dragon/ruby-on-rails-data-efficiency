@@ -14,13 +14,15 @@ GOOGLE_WORD_LIMIT = 32
   
       url = app_xyo_url(query)
 
-      return {} if url.nil?
+      #temp
+
+      # return {} if url.nil?
       
       ret = {}
       
       @html = downloads_html(url)
       
-      return {} if @html.nil? || !page_has_link_to_app?
+      #return {} if @html.nil? || !page_has_link_to_app?
       begin
         ret[:downloads] = downloads
       # rescue
@@ -43,7 +45,9 @@ GOOGLE_WORD_LIMIT = 32
         links << app_box['href']
       end
       
-      return nil if links.blank?
+      raise "No links found\n\nHTML:\n#{html}" if links.empty?    
+        
+      return nil if links.empty?
        
       links.first
     end
@@ -62,7 +66,9 @@ GOOGLE_WORD_LIMIT = 32
         return true if node['href'].include?("id#{@app_identifier}")
       end
       
-      false
+      raise "Page does not have link to app\n\nHTML:\n#{@html}"
+      
+      #false
     end
     
     # In dollas
@@ -70,7 +76,8 @@ GOOGLE_WORD_LIMIT = 32
     def downloads
       dl_s = @html.at_css('.downloads').at_css('.amount').children[1].text.strip
       
-      return nil if dl_s.blank?
+      raise "Could not find downloads\n\nHTML:\n#{@html}"
+      #return nil if dl_s.blank?
       
       regex_thousands = /^(\d)*(\.)*(\d)*[Kk]{1}$/x
       
@@ -86,6 +93,8 @@ GOOGLE_WORD_LIMIT = 32
           return dl_s.to_i
         end
       end
+      
+      raise "End of downloads method"
     end
 
   end
