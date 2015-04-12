@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150411224348) do
+ActiveRecord::Schema.define(version: 20150411223140) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -75,8 +75,8 @@ ActiveRecord::Schema.define(version: 20150411224348) do
     t.integer  "android_app_snapshot_job_id"
     t.integer  "in_app_purchase_min"
     t.integer  "in_app_purchase_max"
-    t.integer  "downloads_min",               limit: 8
-    t.integer  "downloads_max",               limit: 8
+    t.integer  "installs_min",                limit: 8
+    t.integer  "installs_max",                limit: 8
     t.string   "icon_url_300x300"
   end
 

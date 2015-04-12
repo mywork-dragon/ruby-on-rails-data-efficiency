@@ -14,7 +14,7 @@ class GooglePlaySnapshotService
 
     end
 
-    def apps_per_minute(android_app_snapshot_job_id, sample_seconds=10)
+    def apps_per_minute(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
       a = AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count
       sleep sample_seconds
       b = AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count
