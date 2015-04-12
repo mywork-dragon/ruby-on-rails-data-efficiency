@@ -13,21 +13,14 @@ GOOGLE_WORD_LIMIT = 32
       query = CGI::escape(name.gsub(/[^0-9a-z ]/i, ''))
   
       url = app_xyo_url(query)
-
-      #temp
-
-      # return {} if url.nil?
       
       ret = {}
       
       @html = downloads_html(url)
       
-      #return {} if @html.nil? || !page_has_link_to_app?
-      begin
-        ret[:downloads] = downloads
-      # rescue
-      #   return {}
-      end
+      raise "Page doesn't have link to app" if !page_has_link_to_app?
+      
+      ret[:downloads] = downloads
 
       ret
     end
@@ -45,20 +38,14 @@ GOOGLE_WORD_LIMIT = 32
         links << app_box['href']
       end
       
-      raise "No links found\n\nHTML:\n#{html}" if links.empty?    
-        
-      return nil if links.empty?
+      raise "No links found" if links.empty?    
        
       links.first
     end
     
     def downloads_html(url)
-      begin
-        page = Tor.get(url)
-        Nokogiri::HTML(page)
-      # rescue
-      #   return nil
-      end
+      page = Tor.get(url)
+      Nokogiri::HTML(page)
     end 
     
     def page_has_link_to_app?
@@ -66,9 +53,7 @@ GOOGLE_WORD_LIMIT = 32
         return true if node['href'].include?("id#{@app_identifier}")
       end
       
-      raise "Page does not have link to app\n\nHTML:\n#{@html}"
-      
-      #false
+      false
     end
     
     # In dollas
@@ -76,8 +61,7 @@ GOOGLE_WORD_LIMIT = 32
     def downloads
       dl_s = @html.at_css('.downloads').at_css('.amount').children[1].text.strip
       
-      raise "Could not find downloads\n\nHTML:\n#{@html}" if dl_s.blank?
-      #return nil if dl_s.blank?
+      raise "Could not find downloads" if dl_s.blank?
       
       regex_thousands = /^(\d)*(\.)*(\d)*[Kk]{1}$/x
       
