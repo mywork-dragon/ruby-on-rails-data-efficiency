@@ -76,7 +76,7 @@ GOOGLE_WORD_LIMIT = 32
     def downloads
       dl_s = @html.at_css('.downloads').at_css('.amount').children[1].text.strip
       
-      raise "Could not find downloads\n\nHTML:\n#{@html}"
+      raise "Could not find downloads\n\nHTML:\n#{@html}" if dl_s.blank?
       #return nil if dl_s.blank?
       
       regex_thousands = /^(\d)*(\.)*(\d)*[Kk]{1}$/x
