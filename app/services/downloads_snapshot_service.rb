@@ -14,9 +14,9 @@ class DownloadsSnapshotService
     end
     
     def apps_per_minute(ios_app_download_snapshot_job_id=IosAppDownloadSnapshotJob, sample_seconds=10)
-      a = IosAppDownloadSnapshot.where(ios_app_download_snapshot_job_id: ios_app_download_snapshot_job_id:).count
+      a = IosAppDownloadSnapshot.where(ios_app_download_snapshot_job_id: ios_app_download_snapshot_job_id).count
       sleep sample_seconds
-      b = IosAppDownloadSnapshot.where(ios_app_download_snapshot_job_id: ios_app_download_snapshot_job_id:).count
+      b = IosAppDownloadSnapshot.where(ios_app_download_snapshot_job_id: ios_app_download_snapshot_job_id).count
       60.0/sample_seconds*(b-a)
     end
 
