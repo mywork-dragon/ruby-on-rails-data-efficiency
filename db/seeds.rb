@@ -15,7 +15,7 @@ if Rails.env.development?
     AndroidAppCategory.find_or_create_by(name: cat)
   end
 
-  puts "creating ios and android apps, and creating one snapshot for each..."
+  puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..500
     name = Faker::App.name
     
@@ -24,6 +24,8 @@ if Rails.env.development?
     ios_app.ios_app_snapshots << ios_app_snapshot
     ios_cat = IosAppCategory.all.sample
     ios_cat.ios_app_snapshots << ios_app_snapshot
+    download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(100..1000000))
+    ios_app.ios_app_download_snapshots << download_snapshot
     
     android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
     android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), android_app_id: AndroidApp.all.sample.id, icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), description: Faker::Lorem.paragraph, google_plus_likes: rand(10..1000), ratings_all_stars: rand(0..5), ratings_all_count: rand(10..100), downloads_min: rand(0..100), downloads_max: rand(100..1000000))
