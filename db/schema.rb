@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150411224348) do
+ActiveRecord::Schema.define(version: 20150412092720) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -242,7 +242,7 @@ ActiveRecord::Schema.define(version: 20150411224348) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "price"
-    t.integer  "size",                           limit: 8
+    t.integer  "size",                            limit: 8
     t.string   "seller_url"
     t.string   "support_url"
     t.string   "version"
@@ -255,9 +255,9 @@ ActiveRecord::Schema.define(version: 20150411224348) do
     t.text     "release_notes"
     t.string   "seller"
     t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",                    precision: 3, scale: 2
+    t.decimal  "ratings_current_stars",                     precision: 3,  scale: 2
     t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",                        precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",                         precision: 3,  scale: 2
     t.integer  "ratings_all_count"
     t.boolean  "editors_choice"
     t.integer  "status"
@@ -265,6 +265,7 @@ ActiveRecord::Schema.define(version: 20150411224348) do
     t.text     "exception"
     t.string   "icon_url_350x350"
     t.string   "icon_url_175x175"
+    t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
