@@ -1,5 +1,12 @@
 'use strict';
 
+angular.module("app.ui.form.ctrls", []).controller("TagsDemoCtrl", ["$scope",
+  function($scope) {
+    $scope.tags = ["Mobile Priority: High", "Country: USA", "Reported Ad Spend: $1K - $10K"];
+  }
+]);
+
+
 angular.module("app.tables", []).controller("tableCtrl", ["$scope", "$filter",
   function($scope, $filter) {
     var init;
@@ -129,3 +136,4 @@ angular.module("app.tables", []).controller("tableCtrl", ["$scope", "$filter",
     }), $scope.search();
   }
 ]);
+
