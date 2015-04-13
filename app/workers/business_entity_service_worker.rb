@@ -25,7 +25,7 @@ class BusinessEntityServiceWorker
         
         exsiting_website = Website.where(url: url, ios_app: ios_app)
         
-        ios_app.websites << w if existing.website.nil?
+        ios_app.websites << w if existing_website.nil?
         
       end
       
