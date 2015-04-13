@@ -24,7 +24,7 @@ if Rails.env.development?
     ios_app.ios_app_snapshots << ios_app_snapshot
     ios_cat = IosAppCategory.all.sample
     ios_cat.ios_app_snapshots << ios_app_snapshot
-    download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(100..1000000))
+    download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(1e2..1e6))
     ios_app.ios_app_download_snapshots << download_snapshot
     
     android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
@@ -44,21 +44,27 @@ if Rails.env.development?
   end
 
   puts "creating websites, and linking them to companies, ios apps, and android apps..."
-  for i in 1..2000
-    site = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
-    company = Company.all.sample
-    ios_app1 = IosApp.all.sample
-    ios_app2 = IosApp.all.sample
-    android_app1 = AndroidApp.all.sample
-    android_app2 = AndroidApp.all.sample
   
-    company.websites << site
-    ios_app1.websites << site
-    ios_app2.websites << site
-    android_app1.websites << site
-    android_app2.websites << site
+  for i in 0..2000
+    website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
+    ios_app = IosApp.includes(websites: :company).all.sample
+    company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
+    company.websites << website
+    ios_app.websites << website    
     if i % 100 == 0
-      puts "#{i/100}/20 of the way done"
+      puts "#{i/100}/40 of the way done"
     end
   end
+  
+  for i in 0..2000
+    website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
+    android_app = AndroidApp.includes(websites: :company).all.sample
+    company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
+    company.websites << website
+    android_app.websites << website
+    if i % 100 == 0
+      puts "#{(i+2000)/100}/40 of the way done"
+    end
+  end
+
 end
