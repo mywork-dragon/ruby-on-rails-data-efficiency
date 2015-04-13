@@ -5,7 +5,7 @@
 
     <div id="dashboard-tag-display" class="table-filters">
       <div><i class="fa fa-search"></i></div>
-      <div class="row" data-ng-controller="TagsDemoCtrl">
+      <div class="row" data-ng-controller="MainCtrl">
         <tags-input ng-model="tags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
           <ul class="tag-list"><!-- ngRepeat: tag in tagList.items track by track(tag) -->
             <li class="tag-item ng-scope" ng-repeat="tag in tagList.items track by track(tag)" ng-class="{ selected: tag == tagList.selected }">

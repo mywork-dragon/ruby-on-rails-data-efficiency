@@ -6,10 +6,11 @@
 
 angular
   .module('appApp', [
-    'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'app.directives',
+    'app.chart.directives',
+    'app.ui.form.directives'
   ])
   .run(function () {
 
@@ -24,11 +25,13 @@ angular
 
     })
   .config(function ($routeProvider) {
-    $routeProvider
+     $routeProvider
       .when('/', {
-        templateUrl: 'views/dashboard.html',
+        templateUrl: '../app/views/dashboard.html',
+        controller: 'MainCtrl'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/views/404.html'
       });
   });
+
