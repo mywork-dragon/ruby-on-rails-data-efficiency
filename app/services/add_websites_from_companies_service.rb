@@ -16,9 +16,11 @@ class AddWebsitesFromCompaniesService
     end
   
     def run_rest
-      Company.find_each.with_index do |c, index|
-        li "Company #{index}" if index%10000 == 0
-        AddWebsitesFromCompaniesServiceWorker.perform_async(c.id)
+      Company.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"
+        ids = batch.map{|c| c.id}
+    
+        AddWebsitesFromCompaniesServiceWorker.perform_async(ids)
       end
     end
   end
