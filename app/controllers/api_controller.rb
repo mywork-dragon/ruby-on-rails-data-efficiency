@@ -5,6 +5,8 @@ class ApiController < ApplicationController
   def filter_ios_apps
     @app_filters = params[:app]
     @company_filters = params[:company]
+    pageSize = params[:pageSize] || 50
+    pageNum = params[:pageNum] || 1
     @companies = nil
     @apps = nil
     
@@ -15,8 +17,11 @@ class ApiController < ApplicationController
       end
     
       if @company_filters['funding'].present? #start out with just 
-        tmp =  Company.where("funding >= #{@company_filters['funding']}")
-        @companies.blank? ? @companies = tmp : @companies.concat(tmp)
+        if @companies.blank?
+          @companies = Company.where("funding >= #{@company_filters['funding']}")
+        else
+          @companies = @companies.where("funding >= #{@company_filters['funding']}")
+        end
       end
     
       if @company_filters['countryHq'].present?
@@ -41,12 +46,21 @@ class ApiController < ApplicationController
       end
     
       if @app_filters['lastUpdate'].present?
-
+        
       end
     
       if @app_filters['categories'].present?
         relation_set = @apps.blank? ? IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company) : @apps
-        @apps = relation_set.joins(:ios_app_categories).where("ios_app_categories.name IN (#{@app_filters.categories.join(',')})")
+        categories_query_array = []
+        for cat in @app_filters['categories']
+          categories_query_array << "name=\'#{cat}\'"
+        end
+        categories_query_string = categories_query_array.join(" OR ")
+        category_ids = IosAppCategory.where(categories_query_string).pluck(:id)
+        snapshot_ids = IosAppCategoriesSnapshot.where("ios_app_category_id IN (#{category_ids.join(',')})").pluck(:ios_app_snapshot_id)
+        app_ids = IosAppSnapshot.where("id IN (#{snapshot_ids.join(',')})").pluck(:ios_app_id)
+        @apps = relation_set.where("id IN (#{app_ids.join(',')})")
+        # @apps = relation_set.joins(:ios_app_categories).where("ios_app_categories.name IN (#{@app_filters.categories.join(',')})")
       end
       
     end
@@ -54,12 +68,10 @@ class ApiController < ApplicationController
     #find apps and companies based on customKeywords, searching in the name
     if params[:customKeywords].present?
       keyword_query_array = []
-      puts params[:customKeywords]
       for keyword in params[:customKeywords]
         keyword_query_array << "name LIKE \'%#{keyword}%\'"
       end
       keyword_query_string = keyword_query_array.join(' OR ')
-      puts keyword_query_string
       
       if @company_filters.present?
         @companies = @companies.where(keyword_query_string)
@@ -81,7 +93,7 @@ class ApiController < ApplicationController
     end
     
     #join the apps the were found by @apps_filters, and the apps that belong to companies found by @company_filters
-    results = nil
+    results = []
     if @company_filters.present? && @app_filters.present?
       company_ids = @companies.map{|c| c.id}
       company_website_ids = Website.where("company_id IN (#{company_ids.join(',')})").pluck(:id)  
@@ -90,10 +102,12 @@ class ApiController < ApplicationController
     elsif @company_filters.blank? && @app_filters.present?
       results = @apps
     elsif @company_filters.present? && @app_filters.blank?
-      company_ids = @companies.map{|c| c.id}
-      company_website_ids = Website.where("company_id IN (#{company_ids.join(',')})").pluck(:id)  
-      ios_app_website_ids = IosAppsWebsite.includes(website: :company).where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)
-      results = IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company).where("ios_apps.id IN (#{ios_app_website_ids.join(',')})")
+      if @companies.present?
+        company_ids = @companies.map{|c| c.id}
+        company_website_ids = Website.where("company_id IN (#{company_ids.join(',')})").pluck(:id)  
+        ios_app_website_ids = IosAppsWebsite.includes(website: :company).where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)
+        results = IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company).where("ios_apps.id IN (#{ios_app_website_ids.join(',')})")
+      end
     elsif params[:customKeywords].present?
       company_website_ids = Website.where("company_id IN (#{@companies.pluck(:id).join(',')})").pluck(:id)
       company_app_ids = IosAppsWebsite.where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)
@@ -101,12 +115,10 @@ class ApiController < ApplicationController
       app_ids = @apps.pluck(:id)
       results_ids = company_app_ids + app_ids
       results = IosApp.where("id IN (#{results_ids.join(',')})")
-    else
-      results = []
     end
     
     results_json = []
-    results.each do |app|
+    results.page(pageNum).per(pageSize).each do |app|
       company = app.get_company
       newest_app_snapshot = app.get_newest_app_snapshot
       newest_download_snapshot = app.get_newest_download_snapshot
