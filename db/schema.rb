@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150412092720) do
+ActiveRecord::Schema.define(version: 20150413083956) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20150412092720) do
     t.string   "country"
   end
 
+  add_index "companies", ["fortune_1000_rank"], name: "index_companies_on_fortune_1000_rank", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
