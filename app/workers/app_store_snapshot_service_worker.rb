@@ -84,7 +84,7 @@ class AppStoreSnapshotServiceWorker
           s.ratings_current_stars = ratings_current[:stars]
           
           if released = a[:released]
-            days_ago = (Date.today - released).to_i
+            days_ago = (Date.tomorrow - released).to_i
             s.ratings_per_day_current_release = ratings_current/(days_ago.to_f)
           end
           
