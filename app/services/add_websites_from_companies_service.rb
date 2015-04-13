@@ -4,13 +4,10 @@ class AddWebsitesFromCompanies
     cs = Company.where.not(fortune_1000_rank: nil)
     
     cs.each do |c|
-      w = Website.new(url: url)
-      success = w.save
+      w = Website.find_or_create_by(url: c.website)
       
-      if success
-        w.company = c
-        w.save
-      end
+      w.company = c
+      w.save
       
     end
     
