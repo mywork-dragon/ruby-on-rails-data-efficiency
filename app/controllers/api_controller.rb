@@ -66,20 +66,18 @@ class ApiController < ApplicationController
       else
         @companies = Company.where(keyword_query_string)
       end
-      # puts @companies
       
       if @app_filters.present?
         app_ids = @apps.pluck(:id)
-        app_snapshots = IosAppSnapshot.where("ios_app_id IN (?)", app_ids)
+        app_snapshots = IosAppSnapshot.where("ios_app_id IN (#{app_ids.join(',')})")
         snapshots_w_keyword = app_snapshots.where(keyword_query_string)
         snapshots_w_keyword_app_ids = snapshots_w_keyword_app_ids.pluck(:ios_app_id)
-        @apps = @apps.where("id IN (?)", snapshots_w_keyword_app_ids.join(','))
+        @apps = @apps.where("id IN (#{snapshots_w_keyword_app_ids.join(',')})")
       else
         snapshots_w_keyword_app_ids = IosAppSnapshot.where(keyword_query_string).pluck(:ios_app_id)
         puts "app_snapshots: #{snapshots_w_keyword_app_ids.count}"
         @apps = IosApp.where("id IN (#{snapshots_w_keyword_app_ids.join(',')})")
       end
-      # puts @apps
     end
     
     #join the apps the were found by @apps_filters, and the apps that belong to companies found by @company_filters
