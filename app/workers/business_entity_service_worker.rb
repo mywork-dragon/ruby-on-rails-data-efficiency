@@ -9,9 +9,20 @@ class BusinessEntityServiceWorker
       
       return if ss.nil?
     
-      urls = [ss.seller_url, ss.support_url].map{|url| url}
+      urls = [ss.seller_url, ss.support_url].select{|url| url}
       
-      urls.each do |url|
+      urls.each do |raw_url|
+        url = UrlManipulator.url_with_http_only(raw_url)
+        
+        w = Website.find_by_url(url)
+        
+        if w.nil?
+          c = Company.create(name: ss.seller)
+          w = Website.create(url: url, company: c)
+        end
+        
+        ss.ios_app.websites << w
+        
       end
       
     end
