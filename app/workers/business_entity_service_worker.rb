@@ -21,7 +21,11 @@ class BusinessEntityServiceWorker
           w = Website.create(url: url, company: c)
         end
         
-        ss.ios_app.websites << w
+        ios_app = ss.ios_app
+        
+        exsiting_website = Website.where(url: url, ios_app: ios_app)
+        
+        ios_app.websites << w if existing.website.nil?
         
       end
       
