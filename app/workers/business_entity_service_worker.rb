@@ -17,7 +17,7 @@ class BusinessEntityServiceWorker
         w = Website.find_by_url(url)
         
         if w.nil?
-          c = Company.create(name: ss.seller)
+          c = Company.find_or_create_by(name: ss.seller)
           w = Website.create(url: url, company: c)
         end
         
