@@ -3,118 +3,113 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   
   def filter_ios_apps
-    @app_filters = params[:app]
-    @company_filters = params[:company]
+    app_filters = params[:app]
+    company_filters = params[:company]
     pageSize = params[:pageSize] || 50
     pageNum = params[:pageNum] || 1
-    @companies = nil
-    @apps = nil
+    sort_by = params[:sortBy] || 'name'
+    order_by = params[:orderBy] || 'ASC'
+    company_results = nil
+    companies_filtered = false
+    app_results = nil
+    apps_filtered = false
     
     #filter for companies
-    if @company_filters.present?
-      if @company_filters['fortuneRank'].present? #pass ranks as an integer
-        @companies = Company.where("fortune_1000_rank <= #{@company_filters['fortuneRank'].to_s}")
+    if company_filters.present?
+      if company_filters[:fortuneRank].present? #pass ranks as an integer
+        company_results = FilterService.companies_above_fortune_rank(company_filters[:fortuneRank])
+        companies_filtered = true
       end
     
-      if @company_filters['funding'].present? #start out with just 
-        if @companies.blank?
-          @companies = Company.where("funding >= #{@company_filters['funding']}")
+      if company_filters[:funding].present? #start out with just 
+        funded_companies = FilterService.companies_above_funding(company_filters[:funding])
+        if companies_filtered
+          company_results = company_results.merge(funded_companies)
         else
-          @companies = @companies.where("funding >= #{@company_filters['funding']}")
+          company_results = funded_companies
+          companies_filtered = true
         end
       end
-    
-      if @company_filters['countryHq'].present?
-        relation_set = @companies.blank? ? Company : @companies
-        @companies = relation_set.where("country = #{@company_filters['country']}")
+      
+      if company_filters[:countries].present?
+        companies_in_countries = FilterService.companies_in_countries(company_filters[:countries])
+        if companies_filtered
+          company_results = company_results.merge(companies_in_countries)
+        else
+          company_results = companies_in_countries
+          companies_filtered = true
+        end
       end
     end
     
     #filter for apps 
-    if @app_filters.present?
-      if @app_filters['mobilePriority'].present?
+    if app_filters.present?
+      if app_filters[:mobilePriority].present?
         
       end
     
-      if @app_filters['adSpend'].present?
+      if app_filters[:adSpend].present?
+        
+      end
       
-      end
-    
-      if @app_filters['downloads'].present?
-        relation_set = @apps.blank? ? IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company) : @apps
-        @apps = relation_set.joins(:ios_app_download_snapshots).where("downloads > #{@app_filters['downloads'].to_i}")
-      end
-    
-      if @app_filters['lastUpdate'].present?
-        
-      end
-    
-      if @app_filters['categories'].present?
-        relation_set = @apps.blank? ? IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company) : @apps
-        categories_query_array = []
-        for cat in @app_filters['categories']
-          categories_query_array << "name=\'#{cat}\'"
+      if app_filters[:userBases].present?
+        apps_with_user_bases = FilterService.apps_with_user_bases(app_filters[:userBases])
+        if apps_filtered
+          app_results = app_results.merge(apps_with_user_bases)
+        else
+          app_results = apps_with_user_bases
+          apps_filtered = true
         end
-        categories_query_string = categories_query_array.join(" OR ")
-        category_ids = IosAppCategory.where(categories_query_string).pluck(:id)
-        snapshot_ids = IosAppCategoriesSnapshot.where("ios_app_category_id IN (#{category_ids.join(',')})").pluck(:ios_app_snapshot_id)
-        app_ids = IosAppSnapshot.where("id IN (#{snapshot_ids.join(',')})").pluck(:ios_app_id)
-        @apps = relation_set.where("id IN (#{app_ids.join(',')})")
-        # @apps = relation_set.joins(:ios_app_categories).where("ios_app_categories.name IN (#{@app_filters.categories.join(',')})")
+      end
+    
+      if app_filters[:updatedMonthsAgo]
+        apps_updated_months_ago = FilterService.apps_updated_months_ago(app_filters[:updatedMonthsAgo].to_i)
+        if apps_filtered
+          app_results = app_results.merge(apps_updated_months_ago)
+        else
+          app_results = apps_updated_months_ago
+          apps_filtered = true
+        end
+      end
+    
+      if app_filters[:categories].present?
+        apps_in_categories = FilterService.apps_in_categories(app_filters[:categories])
+        if apps_filtered
+          app_results = app_results.merge(apps_in_categories)
+        else
+          app_results = apps_in_categories
+          apps_filtered = true
+        end
       end
       
     end
     
     #find apps and companies based on customKeywords, searching in the name
     if params[:customKeywords].present?
-      keyword_query_array = []
-      for keyword in params[:customKeywords]
-        keyword_query_array << "name LIKE \'%#{keyword}%\'"
-      end
-      keyword_query_string = keyword_query_array.join(' OR ')
+      companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
+      company_results = companies_filtered ? company_results.merge(companies_with_keywords) : companies_with_keywords
       
-      if @company_filters.present?
-        @companies = @companies.where(keyword_query_string)
-      else
-        @companies = Company.where(keyword_query_string)
-      end
-      
-      if @app_filters.present?
-        app_ids = @apps.pluck(:id)
-        app_snapshots = IosAppSnapshot.where("ios_app_id IN (#{app_ids.join(',')})")
-        snapshots_w_keyword = app_snapshots.where(keyword_query_string)
-        snapshots_w_keyword_app_ids = snapshots_w_keyword_app_ids.pluck(:ios_app_id)
-        @apps = @apps.where("id IN (#{snapshots_w_keyword_app_ids.join(',')})")
-      else
-        snapshots_w_keyword_app_ids = IosAppSnapshot.where(keyword_query_string).pluck(:ios_app_id)
-        puts "app_snapshots: #{snapshots_w_keyword_app_ids.count}"
-        @apps = IosApp.where("id IN (#{snapshots_w_keyword_app_ids.join(',')})")
-      end
+      apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
+      app_results = apps_filtered ? company_results.merge(apps_with_keywords) : apps_with_keywords
     end
     
-    #join the apps the were found by @apps_filters, and the apps that belong to companies found by @company_filters
+    #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
     results = []
-    if @company_filters.present? && @app_filters.present?
-      company_ids = @companies.map{|c| c.id}
-      company_website_ids = Website.where("company_id IN (#{company_ids.join(',')})").pluck(:id)  
-      ios_app_website_ids = IosAppsWebsite.includes(website: :company).where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)    
-      results = @apps.where("ios_apps.id IN (#{ios_app_website_ids.join(',')})")
-    elsif @company_filters.blank? && @app_filters.present?
-      results = @apps
-    elsif @company_filters.present? && @app_filters.blank?
-      if @companies.present?
-        company_ids = @companies.map{|c| c.id}
-        company_website_ids = Website.where("company_id IN (#{company_ids.join(',')})").pluck(:id)  
-        ios_app_website_ids = IosAppsWebsite.includes(website: :company).where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)
-        results = IosApp.includes(:ios_app_snapshots, :ios_app_download_snapshots, websites: :company).where("ios_apps.id IN (#{ios_app_website_ids.join(',')})")
-      end
+    
+    if companies_filtered && apps_filtered
+      company_apps = FilterService.apps_of_companies(company_results)
+      results = app_results.merge(company_apps)
+    elsif !companies_filtered && apps_filtered
+      results = app_results
+    elsif companies_filtered && !apps_filtered
+      results = FilterService.apps_of_companies(company_results)
     elsif params[:customKeywords].present?
-      company_website_ids = Website.where("company_id IN (#{@companies.pluck(:id).join(',')})").pluck(:id)
-      company_app_ids = IosAppsWebsite.where("website_id IN (#{company_website_ids.join(',')})").pluck(:ios_app_id)
-      company_app_ids = IosApp.where("id IN (#{company_app_ids.join(',')})").pluck(:id)
-      app_ids = @apps.pluck(:id)
-      results_ids = company_app_ids + app_ids
-      results = IosApp.where("id IN (#{results_ids.join(',')})")
+      app_result_ids = app_results.pluck(:id)
+      company_app_result_ids = FilterService.apps_of_companies(company_results).pluck(:id)
+      all_app_ids = (app_result_ids + company_app_result_ids).uniq
+      results = IosApp.where(id: all_app_ids)
+    else
+      results = IosApp.where("id=-1") #must return Relation object
     end
     
     results_json = []
@@ -129,7 +124,7 @@ class ApiController < ApplicationController
           countriesDeployed: nil,
           mobilePriority: nil,
           downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
-          lastUpdated: nil,
+          lastUpdated: newest_app_snapshot.released,
           adSpend: nil,
         },
         company: {
@@ -239,19 +234,19 @@ class ApiController < ApplicationController
     @company_json = {}
     if company.present?
       @company_json = {
-        'id' => companyId,
-        'websites' => company.websites.to_a.map{|w| w.url},
-        'funding' => company.funding,
-        'location' => {
-          'streetAddress' => company.street_address,
-          'city' => company.city,
-          'zipCode' => company.zip_code,
-          'state' => company.state,
-          'country' => company.country
+        id: companyId,
+        websites: company.websites.to_a.map{|w| w.url},
+        funding: company.funding,
+        location: {
+          streetAddress: company.street_address,
+          city: company.city,
+          zipCode: company.zip_code,
+          state: company.state,
+          country: company.country
         },
-        'fortuneRank' => company.fortune_1000_rank,
-        'iosApps' => company.get_ios_apps.map{|app| app.id},
-        'androidApps' => company.get_android_apps.map{|app| app.id}
+        fortuneRank: company.fortune_1000_rank,
+        iosApps: company.get_ios_apps.map{|app| app.id},
+        androidApps: company.get_android_apps.map{|app| app.id}
       }
     end
     render json: @company_json
