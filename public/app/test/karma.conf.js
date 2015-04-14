@@ -43,8 +43,6 @@ module.exports = function(config) {
       'bower_components/morrisjs/morris.js',
       'bower_components/flot/jquery.flot.js',
       'bower_components/jquery.sparkline.build/dist/jquery.sparkline.js',
-      'bower_components/requirejs/require.js',
-      'bower_components/easypie/dist/jquery.easypiechart.js',
       'bower_components/slimScroll/jquery.slimscroll.min.js',
       // endbower
       'app/scripts/**/*.js',
