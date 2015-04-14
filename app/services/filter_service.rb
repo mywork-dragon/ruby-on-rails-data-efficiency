@@ -60,7 +60,6 @@ class FilterService
     def apps_updated_months_ago(months_ago)
       ios_app_ids = IosAppSnapshot.where(released: (Date.today - months_ago.months)..(Date.today + 1.day)).pluck(:ios_app_id)
       if ios_app_ids.present?
-        # return IosApp.where("id IN (#{ios_app_ids.join(',')})")
         return IosApp.where(id: ios_app_ids)
       else
         return IosApp.where("id=-1")
