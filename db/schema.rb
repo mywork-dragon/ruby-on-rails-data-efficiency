@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150412092720) do
+ActiveRecord::Schema.define(version: 20150414061033) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -125,28 +125,14 @@ ActiveRecord::Schema.define(version: 20150412092720) do
     t.string   "type"
     t.integer  "funding"
     t.integer  "inc_5000_rank"
-    t.string   "app_store_identifier"
     t.string   "country"
+    t.integer  "app_store_identifier"
   end
 
+  add_index "companies", ["app_store_identifier"], name: "index_app_store_identifier", using: :btree
+  add_index "companies", ["fortune_1000_rank"], name: "index_companies_on_fortune_1000_rank", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
-
-  create_table "delayed_jobs", force: true do |t|
-    t.integer  "priority",   default: 0, null: false
-    t.integer  "attempts",   default: 0, null: false
-    t.text     "handler",                null: false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"

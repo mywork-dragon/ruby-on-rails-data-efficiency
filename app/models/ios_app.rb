@@ -46,6 +46,10 @@ class IosApp < ActiveRecord::Base
     self.websites.to_a.map{|w| w.url}
   end
   
+  def name
+    ios_app_snapshots.last.name
+  end
+  
   class << self
     
     def dedupe
