@@ -1,11 +1,11 @@
 
-<div class="page page-table" data-ng-controller="tableCtrl">
+<div class="page page-table" data-ng-controller="TableCtrl">
 
   <section class="panel panel-default table-dynamic">
 
     <div id="dashboard-tag-display" class="table-filters">
       <div><i class="fa fa-search"></i></div>
-      <div class="row" data-ng-controller="MainCtrl">
+      <div class="row" data-ng-controller="TagsDemoCtrl">
         <tags-input ng-model="tags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
           <ul class="tag-list"><!-- ngRepeat: tag in tagList.items track by track(tag) -->
             <li class="tag-item ng-scope" ng-repeat="tag in tagList.items track by track(tag)" ng-class="{ selected: tag == tagList.selected }">
@@ -500,7 +500,7 @@
     </div>
 
     <footer class="table-footer">
-      <div class="row">
+      <div class="row" data-ng-controller="TableCtrl">
         <div class="col-md-6 page-num-info">
                     <span>
                         Show

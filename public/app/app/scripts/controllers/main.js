@@ -9,11 +9,6 @@
  */
 angular.module('appApp')
   .controller('MainCtrl', ["$scope", "$location", function ($scope, $location) {
-    $scope.tags = [
-      'Mobile Priority: High',
-      'Country: USA',
-      'Reported Ad Spend: $1K - $10K'
-    ];
     $scope.checkIfOwnPage = function() {
 
       return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
@@ -29,7 +24,30 @@ angular.module('appApp')
       widgets_number: 13
     };
   }])
-  .controller("tableCtrl", ["$scope", "$filter",
+  .controller("TagsDemoCtrl", ["$scope",
+    function($scope) {
+      $scope.tags = ["Mobile Priority: High", "Country: USA", "Reported Ad Spend: $1K - $10K"];
+    }
+  ])
+  .controller("PaginationDemoCtrl", ["$scope",
+    function($scope) {
+      $scope.totalItems = 64;
+      $scope.currentPage = 4;
+
+      $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+      };
+
+      $scope.pageChanged = function() {
+        console.log('Page changed to: ' + $scope.currentPage);
+      };
+
+      $scope.maxSize = 5;
+      $scope.bigTotalItems = 175;
+      $scope.bigCurrentPage = 1;
+    }
+  ])
+  .controller("TableCtrl", ["$scope", "$filter",
     function($scope, $filter) {
       var init;
       return $scope.stores = [{

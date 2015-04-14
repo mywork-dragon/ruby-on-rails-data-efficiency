@@ -8,6 +8,7 @@ angular
   .module('appApp', [
     'ngRoute',
     'ngSanitize',
+    'ngTagsInput',
     'app.directives',
     'app.chart.directives',
     'app.ui.form.directives'
@@ -27,7 +28,7 @@ angular
   .config(function ($routeProvider) {
      $routeProvider
       .when('/', {
-        templateUrl: '../app/views/dashboard.html',
+        templateUrl: '/views/dashboard.html',
         controller: 'MainCtrl'
       })
       .otherwise({

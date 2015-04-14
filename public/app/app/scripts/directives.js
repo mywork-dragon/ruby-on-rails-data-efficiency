@@ -312,7 +312,7 @@ angular.module("app.directives", []).directive("imgHolder", [
                             case "/":
                                 return $element.addClass("body-home");
                             case "/404":
-                            case "/pages/500":
+                            case "/app.ui.ctrlses/500":
                             case "/pages/signin":
                             case "/pages/signup":
                             case "/pages/forgot":
