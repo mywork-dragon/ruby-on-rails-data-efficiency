@@ -17,8 +17,11 @@ class BusinessEntityIosServiceWorker
         w = Website.find_by_url(url)
         
         if w.nil?
-          c = Company.find_or_create_by(name: ss.seller)
+          c = Company.create(name: ss.seller)
           w = Website.create(url: url, company: c)
+        elsif w.company.nil?
+          w.company = Company.create(name: ss.seller)
+          w.save
         end
         
         ios_app = ss.ios_app
