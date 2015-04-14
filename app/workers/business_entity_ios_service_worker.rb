@@ -11,16 +11,21 @@ class BusinessEntityIosServiceWorker
     
       urls = [ss.seller_url, ss.support_url].select{|url| url}
       
-      urls.each do |raw_url|
-        url = UrlManipulator.url_with_http_only(raw_url)
+      urls.each do |url|
+        if url_is_social?(url)
+          kind = :social
+        else
+          url = UrlManipulator.url_with_http_and_domain(url)
+          kind = :primary
+        end
         
         w = Website.find_by_url(url)
         
         if w.nil?
-          c = Company.create(name: ss.seller)
-          w = Website.create(url: url, company: c)
+          c = Company.create(name: I18n.transliterate(ss.seller))
+          w = Website.create(url: url, company: c, kind: kind)
         elsif w.company.nil?
-          w.company = Company.create(name: ss.seller)
+          w.company = Company.create(name: I18n.transliterate(ss.seller))
           w.save
         end
         
