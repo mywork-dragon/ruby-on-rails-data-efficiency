@@ -11,7 +11,8 @@ angular
     'ngTagsInput',
     'app.directives',
     'app.chart.directives',
-    'app.ui.form.directives'
+    'app.ui.form.directives',
+    "ui.bootstrap"
   ])
   .run(function () {
 
