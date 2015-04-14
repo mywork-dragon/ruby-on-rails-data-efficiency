@@ -53,17 +53,12 @@ class FilterService
         # return IosApp.where("id IN (#{ios_app_ids.join(',')})")
         return IosApp.where(id: ios_app_ids)
       else
-        return IosApp.where("id=-1") #have to return Relation object, even if it is blank
+        return IosApp.where(id: nil).where("id IS NOT ?", nil) #have to return Relation object, even if it is blank
       end
     end
   
     def apps_updated_months_ago(months_ago)
-      ios_app_ids = IosAppSnapshot.where(released: (Date.today - months_ago.months)..(Date.today + 1.day)).pluck(:ios_app_id)
-      if ios_app_ids.present?
-        return IosApp.where(id: ios_app_ids)
-      else
-        return IosApp.where("id=-1")
-      end
+      IosApp.joins(:ios_app_snapshots).where({ios_app_snapshots: {released: (Date.today - months_ago.months)..(Date.today + 1.day)}})
     end
     
     def apps_in_categories(categories)
@@ -97,6 +92,11 @@ class FilterService
     def apps_of_snapshots(snapshots)
       app_ids = snapshots.pluck(:ios_app_id)
       return IosApp.where(id: app_ids)
+    end
+    
+    def ios_app_union(relation1, relation2)
+      app_ids = relation1.pluck(:id) + relation2.pluck(:id)
+      IosApp.where(id: app_ids.uniq)
     end
   end
 end
