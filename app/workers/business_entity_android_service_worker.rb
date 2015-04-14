@@ -1,5 +1,29 @@
-class BusinessEntityIosServiceWorker
+class BusinessEntityAndroidServiceWorker
   include Sidekiq::Worker
+
+  def perform(android_snapshot_ids)
+    android_snapshot_ids.each do |android_snapshot_id|
+      ss = AndroidAppSnapshot.find(android_snapshot_id)
+      
+      return if ss.nil?
+      
+      url = ss.seller_url
+      
+      if url_is_social?(url)
+        kind = :social
+      else
+        url = UrlHelper.url_with_http_and_domain(url)
+        kind = :primary
+      end
+      
+      w = Website.find_by_url(url)
+      
+      if w.nil?
+        
+        c = Company.find_by_google_play_identifier
+        
+    end
+  end
 
   def perform(ios_app_snapshot_ids)
     
@@ -12,7 +36,7 @@ class BusinessEntityIosServiceWorker
       urls = [ss.seller_url, ss.support_url].select{|url| url}
       
       urls.each do |url|
-        if UrlHelper.social?(url)
+        if url_is_social?(url)
           kind = :social
         else
           url = UrlHelper.url_with_http_and_domain(url)

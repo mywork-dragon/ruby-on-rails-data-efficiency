@@ -34,6 +34,7 @@ class GooglePlayService
         ratings_all_count
         similar_apps
         icon_url_300x300
+        developer_google_play_identifier
       )
       
       methods.each do |method|
@@ -112,8 +113,8 @@ class GooglePlayService
     def seller_url
       begin
         url = @html.css(".dev-link").first['href']
-        url = UrlManipulator.url_from_google_play(url)
-        UrlManipulator.url_with_http_only(url)
+        url = UrlHelper.url_from_google_play(url)
+        UrlHelper.url_with_http_only(url)
       rescue
         nil
       end
@@ -262,6 +263,11 @@ class GooglePlayService
     
     def icon_url_300x300
       @html.css('div.details-info > div.cover-container > img').first['src']
+    end
+    
+    def developer_google_play_identifier
+      link = @html.css('a.title-link.id-track-click').first['href']
+      link.gsub('/store/apps/developer?id=', '').strip
     end
   end
 end
