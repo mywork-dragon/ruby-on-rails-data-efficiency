@@ -23,6 +23,10 @@ class UrlManipulator
       ret
     end
     
+    def url_with_http_and_domain(url)
+      'http://' + url_with_domain_only(url)
+    end
+    
     # Will get http://www.dropbox.com from:
     # https://www.google.com/url?q=http://www.dropbox.com&sa=D&usg=AFQjCNHkUkIvFbMV_t27v7cTn2Rd8cyuVw
     # @author Patrick Ellis
