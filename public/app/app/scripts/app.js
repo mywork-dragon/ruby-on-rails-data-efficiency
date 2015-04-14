@@ -30,8 +30,14 @@ angular
         templateUrl: '/views/dashboard.html',
         controller: 'MainCtrl'
       })
+       .when('/app/:id', {
+         templateUrl: 'views/app-details.html'
+       })
+       .when('/company/:id', {
+         templateUrl: 'views/company-details.html'
+       })
       .otherwise({
-        redirectTo: '/views/404.html'
+        redirectTo: '/'
       });
   });
 
