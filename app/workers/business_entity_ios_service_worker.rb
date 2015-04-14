@@ -23,7 +23,7 @@ class BusinessEntityIosServiceWorker
         
         ios_app = ss.ios_app
         
-        exsiting_website = Website.where(url: url, ios_app: ios_app)
+        existing_website = Website.where(url: url, ios_app: ios_app)
         
         ios_app.websites << w if existing_website.nil?
         
