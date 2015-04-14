@@ -9,7 +9,7 @@ class BusinessEntityAndroidServiceWorker
 
       url = ss.seller_url
 
-      if url_is_social?(url)
+      if UrlHelper.social?(url)
         kind = :social
       else
         url = UrlHelper.url_with_http_and_domain(url)
