@@ -1,4 +1,4 @@
-class BusinessEntityServiceIosWorker
+class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
   def perform(ios_app_snapshot_ids)

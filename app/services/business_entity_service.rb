@@ -7,7 +7,7 @@ class BusinessEntityService
         li "Batch #{index}"
         ios_app_snapshot_ids = batch.map{|ias| ias.id}
         
-        BusinessEntityServiceIosWorker.perform_async(ios_app_snapshot_ids)
+        BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
       end
     end
     
