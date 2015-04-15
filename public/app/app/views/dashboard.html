@@ -7,24 +7,16 @@
     <div id="dashboard-tag-display" class="table-filters">
       <div><i class="fa fa-search"></i></div>
       <div class="row">
-        <tags-input ng-model="tags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
-          <ul class="tag-list"></ul>
-        </tags-input>
+        <div class="col-md-9">
+          <tags-input ng-model="tags" add-on-enter="true" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+            <ul class="tag-list"></ul>
+          </tags-input>
+        </div>
+        <div class="col-md-1" id="searchResultsControl">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
       </div>
     </div>
-
-    <!--
-        <div id="dashboard-tag-display" class="table-filters">
-          <div><i class="fa fa-search"></i></div>
-          <div class="row">
-            <div ng-model="searchTags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
-              <ul class="tag-list" ng-repeat="tag in searchTags">
-                <li class="tag-item">{{tag.parameter}} : {{tag.value}}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-    -->
 
     <div class="panel-heading">
 
