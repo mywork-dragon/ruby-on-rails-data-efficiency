@@ -13,7 +13,6 @@ class IosApp < ActiveRecord::Base
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
-  # after_update :set_user_base, if: :newest_ios_app_snapshot_id_changed?
   
   
   def get_newest_app_snapshot
@@ -51,9 +50,9 @@ class IosApp < ActiveRecord::Base
   
   def set_mobile_priority
     begin
-      if fb_ad_appearances.present? || newest_ios_app_snapshot.released > 3.months.ago
+      if fb_ad_appearances.present? || newest_ios_app_snapshot.released > 2.months.ago
         mobile_priority = :high
-      elsif newest_ios_app_snapshot.released > 6.months.ago
+      elsif newest_ios_app_snapshot.released > 4.months.ago
         mobile_priority = :medium
       else
         mobile_priority = :low
