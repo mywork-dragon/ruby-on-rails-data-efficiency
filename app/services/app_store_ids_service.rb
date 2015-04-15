@@ -2,10 +2,6 @@ class AppStoreIdsService
 
   class << self
 
-    def test
-      AppStoreIdsServiceWorkerz
-    end
-
     # helper method - opens url, returning Nokogiri object
     # def open_url(url)
     #

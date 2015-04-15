@@ -1,6 +1,6 @@
 # Manipulates URLs
 # @author Jason Lew
-class UrlManipulator
+class UrlHelper
   
   class << self
     
@@ -25,6 +25,23 @@ class UrlManipulator
     
     def url_with_http_and_domain(url)
       'http://' + url_with_domain_only(url)
+    end
+    
+    def social?(url)
+      social_regexes_strings = %w(
+        facebook.com\/.+
+        plus.google.com\/+.*
+        twitter.com\/.+
+        pinterest.com\/.+
+        facebook.com\/.+
+        instagram.com\/.+
+      )
+    
+      social_regexes = social_regexes_strings.map{|s| Regexp.new(s)}
+    
+      regex = Regexp.union(social_regexes)
+    
+      !url.match(regex).nil?
     end
     
     # Will get http://www.dropbox.com from:

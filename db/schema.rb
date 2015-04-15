@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150414061033) do
+ActiveRecord::Schema.define(version: 20150414202247) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20150414061033) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "price"
-    t.integer  "size",                        limit: 8
+    t.integer  "size",                             limit: 8
     t.date     "updated"
     t.string   "seller_url"
     t.string   "version"
@@ -69,18 +69,20 @@ ActiveRecord::Schema.define(version: 20150414061033) do
     t.string   "required_android_version"
     t.string   "content_rating"
     t.string   "seller"
-    t.decimal  "ratings_all_stars",                     precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",                          precision: 3, scale: 2
     t.integer  "ratings_all_count"
     t.integer  "status"
     t.integer  "android_app_snapshot_job_id"
     t.integer  "in_app_purchase_min"
     t.integer  "in_app_purchase_max"
-    t.integer  "downloads_min",               limit: 8
-    t.integer  "downloads_max",               limit: 8
+    t.integer  "downloads_min",                    limit: 8
+    t.integer  "downloads_max",                    limit: 8
     t.string   "icon_url_300x300"
+    t.string   "developer_google_play_identifier"
   end
 
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
+  add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -127,10 +129,12 @@ ActiveRecord::Schema.define(version: 20150414061033) do
     t.integer  "inc_5000_rank"
     t.string   "country"
     t.integer  "app_store_identifier"
+    t.string   "google_play_identifier"
   end
 
   add_index "companies", ["app_store_identifier"], name: "index_app_store_identifier", using: :btree
   add_index "companies", ["fortune_1000_rank"], name: "index_companies_on_fortune_1000_rank", using: :btree
+  add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
