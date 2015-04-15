@@ -14,9 +14,7 @@ class ApiController < ApplicationController
     #filter for companies
     company_results  = Company
     if company_filters
-      company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
-      company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
-      company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
+      company_results = FilterService.filter_companies(company_filters)
       companies_filtered = true
     end
     
@@ -118,6 +116,15 @@ class ApiController < ApplicationController
   end
   
   def filter_android_apps
+    app_filters = params[:app]
+    company_filters = params[:company]
+    pageSize = params[:pageSize] || 50
+    pageNum = params[:pageNum] || 1
+    sort_by = params[:sortBy] || 'name'
+    order_by = params[:orderBy] || 'ASC'
+    companies_filtered = false
+    
+    
     
   end
   

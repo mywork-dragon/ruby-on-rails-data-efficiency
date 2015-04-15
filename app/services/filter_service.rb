@@ -1,6 +1,14 @@
 class FilterService
   class << self
   
+    def filter_companies(company_filters)
+      company_results  = Company
+      company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
+      company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
+      company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
+      
+    end
+  
     def companies_above_fortune_rank(fortune_rank)
       Company.where("fortune_1000_rank <= #{fortune_rank}")
     end
