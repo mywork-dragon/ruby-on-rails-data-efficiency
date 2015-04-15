@@ -13,7 +13,7 @@ class IosApp < ActiveRecord::Base
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
-  after_update :set_user_base, if: :newest_ios_app_snapshot_id_changed?
+  # after_update :set_user_base, if: :newest_ios_app_snapshot_id_changed?
   
   
   def get_newest_app_snapshot
@@ -70,15 +70,16 @@ class IosApp < ActiveRecord::Base
   ########################
   
   def set_user_base
+    logger.info "updating user base"
     begin
-      if newest_ios_app_snapshot.ratings_per_day_current_release >= 7 || newest_ios_app_snapshot.ratings_all_count >= 50e3
-        user_base = :elite
-      elsif newest_ios_app_snapshot.ratings_per_day_current_release >= 1 || newest_ios_app_snapshot.ratings_all_count >= 10e3
-        user_base = :strong
-      elsif newest_ios_app_snapshot.ratings_per_day_current_release >= 0.1 || newest_ios_app_snapshot.ratings_all_count >= 100
-        user_base = :moderate
+      if self.newest_ios_app_snapshot.ratings_per_day_current_release >= 7 || self.newest_ios_app_snapshot.ratings_all_count >= 50e3
+        self.user_base = :elite
+      elsif self.newest_ios_app_snapshot.ratings_per_day_current_release >= 1 || self.newest_ios_app_snapshot.ratings_all_count >= 10e3
+        self.user_base = :strong
+      elsif self.newest_ios_app_snapshot.ratings_per_day_current_release >= 0.1 || self.newest_ios_app_snapshot.ratings_all_count >= 100
+        self.user_base = :moderate
       else
-        user_base = :weak
+        self.user_base = :weak
       end
       self.save
     rescue => e
