@@ -10,17 +10,8 @@ class IosApp < ActiveRecord::Base
   has_many :websites, through: :ios_apps_websites
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
+  after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
   
-  def get_mobile_priority
-    newest_snapshot = get_newest_app_snapshot
-    if newest_snapshot.released > 3.months.ago
-      return "H"
-    elsif newest_snapshot.released < 6.months.ago
-      return 'L'
-    else
-      return 'M'
-    end
-  end
   
   def get_newest_app_snapshot
     self.ios_app_snapshots.max_by do |snapshot|
@@ -51,8 +42,58 @@ class IosApp < ActiveRecord::Base
     ios_app_snapshots.last.name
   end
   
+  ###############################
+  # Mobile priority methods
+  ###############################
+  
+  def set_mobile_priority
+    begin
+      if fb_ad_appearances.present? || newest_ios_app_snapshot.released > 3.months.ago
+        set_mobile_priority_high
+      elsif newest_ios_app_snapshot.released > 6.months.ago
+        set_mobile_priority_moderate
+      else
+        set_mobile_priority_low
+      end
+    rescue Exception => e
+      logger.info "Warning: couldn't update mobile priority for IosApp with id #{self.id}"
+      logger.info e
+    end
+  end
+  
+  def set_mobile_priority_high
+    self.mobile_priority = 'high'
+    self.save
+  end
+  
+  def set_mobile_priority_medium
+    self.mobile_priority = 'medium'
+    self.save
+  end
+  
+  def set_mobile_priority_low
+    self.mobile_priority = 'low'
+    self.save
+  end
+  
+  def mobile_priority_high?
+    self.mobile_priority == 'high'
+  end
+  
+  def mobile_priority_medium?
+    self.mobile_priority == 'medium'
+  end
+  
+  def mobile_priority_low?
+    self.mobile_priority == 'low'
+  
+  
+  ########################
+  # User Base methods       
+  ########################
+  
   def set_user_base
-    if newest_ios_app_snapshot
+    begin
       if newest_ios_app_snapshot.ratings_per_day_current_release >= 7 || newest_ios_app_snapshot.ratings_all_count >= 50e3
         set_user_base_elite
       elsif newest_ios_app_snapshot.ratings_per_day_current_release >= 1 || newest_ios_app_snapshot.ratings_all_count >= 10e3
@@ -62,8 +103,9 @@ class IosApp < ActiveRecord::Base
       else
         set_user_base_weak
       end
-    else
-      logger.info "Warning: IosApp with id #{self.id} doesn't have newest ios_app_snapshot"
+    rescue Exception => e
+      logger.info "Warning: couldn't update user_base for IosApp with id #{self.id}"
+      logger.info e
     end
   end
   
@@ -102,6 +144,10 @@ class IosApp < ActiveRecord::Base
   def user_base_weak?
     self.user_base == 'weak'
   end
+  
+  ########################
+  # End user base methods       
+  ########################
   
   class << self
     

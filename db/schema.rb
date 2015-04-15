@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150415192435) do
+ActiveRecord::Schema.define(version: 20150415200503) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -91,9 +91,11 @@ ActiveRecord::Schema.define(version: 20150415192435) do
     t.integer  "app_id"
     t.integer  "newest_android_app_snapshot_id"
     t.string   "user_base"
+    t.string   "mobile_priority"
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+  add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
 
   create_table "android_apps_websites", force: true do |t|
@@ -298,9 +300,11 @@ ActiveRecord::Schema.define(version: 20150415192435) do
     t.integer  "app_id"
     t.integer  "newest_ios_app_snapshot_id"
     t.string   "user_base"
+    t.string   "mobile_priority"
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
+  add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
   add_index "ios_apps", ["newest_ios_app_snapshot_id"], name: "index_ios_apps_on_newest_ios_app_snapshot_id", using: :btree
 
   create_table "ios_apps_websites", force: true do |t|
