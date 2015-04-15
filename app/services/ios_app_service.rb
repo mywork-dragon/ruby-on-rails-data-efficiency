@@ -11,7 +11,7 @@ class IosAppService
       
       if cb_url = url_for_cb(attributes)
         # li "cb_url: #{cb_url}"
-        seller_domain = UrlManipulator.url_with_domain_only(cb_url)
+        seller_domain = UrlHelper.url_with_domain_only(cb_url)
         funding = CbService.attributes(seller_domain)
       
         attributes.merge!({funding: funding})

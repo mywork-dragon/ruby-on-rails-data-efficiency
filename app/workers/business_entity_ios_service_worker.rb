@@ -12,10 +12,10 @@ class BusinessEntityIosServiceWorker
       urls = [ss.seller_url, ss.support_url].select{|url| url}
       
       urls.each do |url|
-        if url_is_social?(url)
+        if UrlHelper.social?(url)
           kind = :social
         else
-          url = UrlManipulator.url_with_http_and_domain(url)
+          url = UrlHelper.url_with_http_and_domain(url)
           kind = :primary
         end
         
@@ -39,23 +39,6 @@ class BusinessEntityIosServiceWorker
       
     end
     
-  end
-  
-  def url_is_social?(url)
-    social_regexes_strings = %w(
-      facebook.com\/.+
-      plus.google.com\/+.*
-      twitter.com\/.+
-      pinterest.com\/.+
-      facebook.com\/.+
-      instagram.com\/.+
-    )
-    
-    social_regexes = social_regexes_strings.map{|s| Regexp.new(s)}
-    
-    regex = Regexp.union(social_regexes)
-    
-    !url.match(regex).nil?
   end
   
 end

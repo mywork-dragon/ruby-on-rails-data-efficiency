@@ -37,7 +37,7 @@ class AdHerokuTransfer
     
     end
 
-    def add_ads(json_file)
+    def add_ads_ios(json_file)
       json = JSON.parse(IO.read(json_file))
     
       json.each do |ad_hash|
@@ -45,14 +45,14 @@ class AdHerokuTransfer
         aws_assignment_identifier = ad_hash['aws_assignment_id']
         ios_app_app_identifier = ad_hash['app_store_id']
     
-        aa = FbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, ios_app: IosApp.find_by_app_identifier(ios_app_app_identifier)).first
+        aa = IosFbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, ios_app: IosApp.find_by_app_identifier(ios_app_app_identifier)).first
     
         puts "aa: #{aa}"
     
         if aa
-          li "FbAdAppearance #{aa} already in DB"
+          li "IosFbAdAppearance #{aa} already in DB"
         else
-          aa = FbAdAppearance.new(
+          aa = IosFbAdAppearance.new(
             aws_assignment_identifier: aws_assignment_identifier,
             hit_identifier: ad_hash['hit_id'],
             heroku_identifier: ad_hash['heroku_id'] 
@@ -66,11 +66,7 @@ class AdHerokuTransfer
           ios_app = IosApp.find_by_app_identifier(ios_app_app_identifier)
       
           if ios_app.nil?
-        
-            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier) 
-            app = App.create
-            ios_app.app = app
-            ios_app.save!
+            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier)
           end
       
           aa.ios_app = ios_app
@@ -95,7 +91,7 @@ class AdHerokuTransfer
       end
     
       add_workers(options[:workers_json_file])
-      add_ads(options[:ads_json_file])
+      add_ads_ios(options[:ads_json_file])
     end
     
     def create_csv
@@ -123,7 +119,7 @@ class AdHerokuTransfer
         csv << columns
         puts columns
 
-        IosApp.includes(:fb_ad_appearances).where.not(fb_ad_appearances: {id: nil}).find_each do |ios_app|
+        IosApp.includes(:ios_fb_ad_appearances).where.not(ios_fb_ad_appearances: {id: nil}).find_each do |ios_app|
            attributes = IosAppService.attributes(ios_app.app_identifier)
            puts attributes
            csv << attributes.values

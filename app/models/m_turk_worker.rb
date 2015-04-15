@@ -1,6 +1,6 @@
 class MTurkWorker < ActiveRecord::Base
 
-  has_many :fb_ad_appearances
+  has_many :ios_fb_ad_appearances
   
 
 end
