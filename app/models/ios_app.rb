@@ -11,10 +11,10 @@ class IosApp < ActiveRecord::Base
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   
-  def update_newest_ios_app_snapshot
-    self.newest_ios_app_snapshot = self.ios_app_snapshots.max_by{|s| s.created_at}
-    self.save
-  end
+  # def update_newest_ios_app_snapshot
+  #   self.newest_ios_app_snapshot = self.ios_app_snapshots.max_by{|s| s.created_at}
+  #   self.save
+  # end
   
   def get_mobile_priority
     newest_snapshot = get_newest_app_snapshot

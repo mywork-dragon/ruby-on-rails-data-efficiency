@@ -10,10 +10,10 @@ class AndroidApp < ActiveRecord::Base
 
   belongs_to :newest_android_app_snapshot, class_name: 'AndroidAppSnapshot', foreign_key: 'newest_android_app_snapshot_id'
   
-  def update_newest_ios_app_snapshot
-    self.newest_newest_app_snapshot = self.android_app_snapshots.max_by{|s| s.created_at}
-    self.save
-  end
+  # def update_newest_ios_app_snapshot
+  #   self.newest_newest_app_snapshot = self.android_app_snapshots.max_by{|s| s.created_at}
+  #   self.save
+  # end
 
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
