@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FbAdAppearanceTest < ActiveSupport::TestCase
+class IosFbAdAppearanceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
