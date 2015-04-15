@@ -37,7 +37,7 @@
                   <option value="500000">Above $500K</option>
                   <option value="5000000">Above $5M</option>
                   <option value="50000000">Above $50M</option>
-                  <option value="5000000">Above $100M / IPO</option>
+                  <option value="100000000">Above $100M / IPO</option>
                 </select>
             </span>
             <span class="ui-select">
@@ -87,6 +87,7 @@
             </span>
             <span class="ui-select">
                 <select>
+                  <option>Country</option>
                   <option value="AF">Afghanistan</option>
                   <option value="AX">Åland Islands</option>
                   <option value="AL">Albania</option>
@@ -338,15 +339,6 @@
                   <option value="ZW">Zimbabwe</option>
                 </select>
             </span>
-            <span class="ui-select">
-                <select>
-                  <option>Average Update</option>
-                  <option>0 - 30 Days</option>
-                  <option>30 - 90 Days</option>
-                  <option>90 - 180 Days</option>
-                  <option>180 Days +</option>
-                </select>
-            </span>
 
     </div>
 
@@ -389,7 +381,7 @@
                                   data-ng-class="{active: row == '-sales'}"></span>
           </div></th>
           <th><div class="th">
-            Downloads
+            User Base Size
                             <span class="glyphicon glyphicon-chevron-up"
                                   data-ng-click=" order('rating') "
                                   data-ng-class="{active: row == 'rating'}"></span>
