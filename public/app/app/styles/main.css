@@ -602,6 +602,7 @@ pre {
   padding-top: 25px;
   padding-left: 30px;
   clear: both;
+  height: 100px;
 }
 
 #dashboard-tag-display .fa-search {

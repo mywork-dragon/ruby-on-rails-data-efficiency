@@ -1,38 +1,52 @@
 
 <div class="page page-table" data-ng-controller="TableCtrl">
 
-  <section class="panel panel-default table-dynamic">
+  <section class="panel panel-default table-dynamic" ng-controller="FilterCtrl">
+
 
     <div id="dashboard-tag-display" class="table-filters">
       <div><i class="fa fa-search"></i></div>
-      <div class="row" data-ng-controller="TagsDemoCtrl">
+      <div class="row">
         <tags-input ng-model="tags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
-          <ul class="tag-list"><!-- ngRepeat: tag in tagList.items track by track(tag) --></ul>
+          <ul class="tag-list"></ul>
         </tags-input>
       </div>
     </div>
 
+    <!--
+        <div id="dashboard-tag-display" class="table-filters">
+          <div><i class="fa fa-search"></i></div>
+          <div class="row">
+            <div ng-model="searchTags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+              <ul class="tag-list" ng-repeat="tag in searchTags">
+                <li class="tag-item">{{tag.parameter}} : {{tag.value}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    -->
+
     <div class="panel-heading">
 
            <span class="ui-select">
-                <select>
-                  <option>Mobile Priority</option>
+                <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority')">
+                  <option value="">Mobile Priority</option>
                   <option value="L">Low</option>
                   <option value="M">Medium</option>
                   <option value="H">High</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Fortune Rank</option>
+                <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank')">
+                  <option value="">Fortune Rank</option>
                   <option value="500">Fortune 500</option>
                   <option value="1000">Fortune 1000</option>
                   <option value="5000">Fortune 5000</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Funding</option>
+                <select ng-model="funding" ng-change="onFilterChange('funding', funding, 'Funding')">
+                  <option value="">Funding</option>
                   <option value="0">Any Amount</option>
                   <option value="500000">Above $500K</option>
                   <option value="5000000">Above $5M</option>
@@ -41,15 +55,15 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Reported Ad Spend</option>
+                <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend')">
+                  <option value="">Reported Ad Spend</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>User Base Size</option>
+                <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size')">
+                  <option value="">User Base Size</option>
                   <option value="Weak">Weak</option>
                   <option value="Moderate">Moderate</option>
                   <option value="Strong">Strong</option>
@@ -57,8 +71,8 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Last Updated</option>
+                <select ng-model="updatedMonthsAgo" ng-change="onFilterChange('updatedMonthsAgo', updatedMonthsAgo, 'Last Updated')">
+                  <option value="">Last Updated</option>
                   <option value="1">Within 1 Month</option>
                   <option value="3">Within 3 Months</option>
                   <option value="6">Within 6 Months</option>
@@ -66,8 +80,8 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Category</option>
+                <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category')">
+                  <option value="">Category</option>
                   <option>Entertainment</option>
                   <option>Books</option>
                   <option>Education</option>
@@ -86,8 +100,8 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select>
-                  <option>Country</option>
+                <select ng-model="country" ng-change="onFilterChange('country', country, 'Country')">
+                  <option value="">Country</option>
                   <option value="AF">Afghanistan</option>
                   <option value="AX">Åland Islands</option>
                   <option value="AL">Albania</option>

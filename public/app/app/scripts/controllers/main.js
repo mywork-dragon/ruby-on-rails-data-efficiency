@@ -15,9 +15,19 @@ angular.module('appApp')
 
     };
   }])
-  .controller("TagsDemoCtrl", ["$scope",
+
+  .controller("FilterCtrl", ["$scope",
     function($scope) {
-      $scope.tags = ["Mobile Priority: High", "Country: USA", "Reported Ad Spend: $1K - $10K"];
+      // $scope.tags = ["Mobile Priority: High", "Country: USA", "Reported Ad Spend: $1K - $10K"];
+      $scope.tags = [];
+      $scope.onFilterChange = function(parameter, value, displayName) {
+        console.log(parameter + value);
+        $scope.tags.push({
+          parameter: parameter,
+          value: value,
+          text: displayName + ': ' + value
+        });
+      }
     }
   ])
   .controller("TableCtrl", ["$scope", "$filter",
@@ -348,11 +358,7 @@ angular.module('appApp')
         return $scope.filteredStores = $filter("filter")($scope.stores, $scope.searchKeywords), $scope.onFilterChange();
       }, $scope.order = function(rowName) {
         return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredStores = $filter("orderBy")($scope.stores, rowName), $scope.onOrderChange()) : void 0;
-      }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageStores = [],
-        $scope.tags = [
-          "foo",
-          "bar"
-        ], (init = function() {
+      }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageStores = [], (init = function() {
         return $scope.search(), $scope.select($scope.currentPage);
       }), $scope.search();
     }
