@@ -10,5 +10,4 @@ class AndroidAppSnapshot < ActiveRecord::Base
   
   enum status: [:failure, :success]
   
-  has_one :newest_android_app, class_name: 'AndroidApp', foreign_key: 'newest_android_app_snapshot_id'
 end
