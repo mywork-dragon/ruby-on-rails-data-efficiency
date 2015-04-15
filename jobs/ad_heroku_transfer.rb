@@ -37,7 +37,7 @@ class AdHerokuTransfer
     
     end
 
-    def add_ads(json_file)
+    def add_ads_ios(json_file)
       json = JSON.parse(IO.read(json_file))
     
       json.each do |ad_hash|
@@ -66,11 +66,7 @@ class AdHerokuTransfer
           ios_app = IosApp.find_by_app_identifier(ios_app_app_identifier)
       
           if ios_app.nil?
-        
-            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier) 
-            app = App.create
-            ios_app.app = app
-            ios_app.save!
+            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier)
           end
       
           aa.ios_app = ios_app
@@ -95,7 +91,7 @@ class AdHerokuTransfer
       end
     
       add_workers(options[:workers_json_file])
-      add_ads(options[:ads_json_file])
+      add_ads_ios(options[:ads_json_file])
     end
     
     def create_csv
