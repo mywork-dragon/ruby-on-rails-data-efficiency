@@ -11,4 +11,6 @@ class IosAppSnapshot < ActiveRecord::Base
   
   enum status: [:failure, :success]
   
+  has_one :newest_ios_app, class_name: 'IosApp', foreign_key: 'newest_ios_app_snapshot_id'
+  
 end
