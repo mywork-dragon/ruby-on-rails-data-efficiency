@@ -611,6 +611,15 @@ pre {
   margin-right: 10px;
 }
 
+#dashboardSearchBox {
+  font-weight: 500;
+  width: 160px;
+}
+
+#dashboardSearchBox > input {
+  padding: 3px;
+}
+
 #searchResultsControl {
   float: right;
   margin-top: 15px;
