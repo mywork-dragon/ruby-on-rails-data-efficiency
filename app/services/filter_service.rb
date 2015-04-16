@@ -55,7 +55,7 @@ class FilterService
     
     def apps_of_companies(companies)
       if companies.present?
-        return IosApp.joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
+        return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
       else
         return IosApp.where(id: nil).where('id IS NOT ?', nil)
       end
