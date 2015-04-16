@@ -1,4 +1,4 @@
 class IosAppSnapshotsLanguage < ActiveRecord::Base
   belongs_to :ios_app_snapshot
-  belongs_to :language
+  belongs_to :ios_app_languages
 end
