@@ -24,11 +24,11 @@ class FilterService
       
       if app_filters[:userBases]
         user_bases = []
-        user_bases << :elite if app_filters[:userBases].include?("Elite")
-        user_bases << :strong if app_filters[:userBases].include?("Strong")
-        user_bases << :moderate if app_filters[:userBases].include?("Moderate")
-        user_bases << :weak if app_filters[:userBases].include?("Weak")
-        results = where(user_base: user_bases)
+        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("Elite")
+        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("Strong")
+        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("Moderate")
+        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("Weak")
+        results = results.where(user_base: user_bases)
       end
       
       if app_filters[:updatedMonthsAgo]
@@ -42,17 +42,15 @@ class FilterService
     end
     
     def apps_with_keywords(keywords)
-      name_query_array = keywords.map{|k| "name LIKE \'%#{k}%\'"}
+      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
-      snapshots = IosAppSnapshot.where(name_query_string)
-      return FilterService.apps_of_snapshots(snapshots)
+      return IosApp.joins(:newest_ios_app_snapshot).where(name_query_string)
     end
     
     def companies_with_keywords(keywords)
       name_query_array = keywords.map{|k| "name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
-      companies = Company.where(name_query_string)
-      return FilterService.apps_of_companies(companies)
+      return Company.where(name_query_string)
     end
     
     def apps_of_companies(companies)
