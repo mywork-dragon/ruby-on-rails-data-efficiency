@@ -13,6 +13,7 @@ class ApiController < ApplicationController
     #filter for companies
     company_results = FilterService.filter_companies(company_filters) if company_filters
     
+    
     #filter for apps 
     app_results = FilterService.filter_ios_apps(app_filters) if app_filters
     
@@ -24,15 +25,15 @@ class ApiController < ApplicationController
       apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
       app_results = app_filters.present? ? app_results.merge(apps_with_keywords) : apps_with_keywords
     end
-    
+        
     #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
     results = IosApp.where(id: nil).where("id IS NOT ?", nil) 
-    if params[:company] && params[:app]
+    if params[:company].present? && params[:app].present?
       company_apps = FilterService.apps_of_companies(company_results)
       results = app_results.merge(company_apps)
-    elsif !params[:company] && params[:app]
+    elsif !params[:company].present? && params[:app].present?
       results = app_results
-    elsif params[:company] && !params[:app]
+    elsif params[:company].present? && !params[:app].present?
       results = FilterService.apps_of_companies(company_results)
     elsif params[:customKeywords].present?
       app_result_ids = app_results.pluck(:id)
@@ -40,58 +41,44 @@ class ApiController < ApplicationController
       all_app_ids = (app_result_ids + company_app_result_ids).uniq
       results = IosApp.where(id: all_app_ids)
     end
-    
+    logger.info "GOT HERE"
+    logger.info "results count: #{results.count}"
     results_json = []
-    # case sort_by
-    # when 'appName'
-    #   results = results.order("ios_app_snapshots.name #{order_by}")
-    # when 'companyName'
-    #   results = results.order("companies.name #{order_by}")
-    # when 'fortuneRank'
-    #   results = results.order("companies.fortune_1000_rank #{order_by}")
-    # when 'mobilePriority'
-    #   results = results.order("mobile_priority #{order_by}")
-    # when 'userBase'
-    #   results = results.order("user_base #{order_by}")
-    # when 'lastUpdated'
-    #   results = results.order("ios_app_snapshots.released #{order_by}")
-    # when 'categories'
-    #   results = results.order("ios_app_snapshots.ios_app_categories_snapshots.ios_app_categories #{order_by}")
+    # results.each do |app|
+    #   li "constructing json hash for #{app.name}"
+    #   company = app.get_company
+    #   li "company: #{company.name} #{company.id}" if company.present?
+    #   newest_snapshot = app.newest_ios_app_snapshot
+    #   li "snapshot: #{newest_snapshot.name} #{newest_snapshot.id}" if newest_snapshot.present?
+    #   app_hash = {
+    #     app: {
+    #       id: app.id,
+    #       name: newest_snapshot.present? ? newest_snapshot.name : nil,
+    #       mobilePriority: app.mobile_priority,
+    #       userBase: app.user_base,
+    #       lastUpdated: newest_snapshot.present? ? newest_snapshot.released : nil,
+    #       adSpend: app.ios_fb_ad_appearances.present?,
+    #       categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
+    #     },
+    #     company: {
+    #       id: company.present? ? company.id : nil,
+    #       name: company.present? ? company.name : nil,
+    #       fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+    #       funding: company.present? ? company.funding : nil,
+    #       location: {
+    #         streetAddress: company.present? ? company.street_address : nil,
+    #         city: company.present? ? company.city : nil,
+    #         zipCode: company.present? ? company.zip_code : nil,
+    #         state: company.present? ? company.state : nil,
+    #         country: company.present? ? company.country : nil
+    #       }
+    #     }
+    #   }
+    #   # li "app_hash: #{app_hash}"
+    #   results_json << app_hash
+    #   # li "results_json: #{results_json}"
     # end
-    li "results class"
-    li results.class
-    li "results"
-    li results
-    results.page(pageNum).per(pageSize).each do |app|
-      company = app.get_company
-      newest_snapshot = app.newest_ios_app_snapshot
-      app_hash = {
-        app: {
-          id: app.id, 
-          name: newest_snapshot.present? ? newest_snapshot.name : nil,
-          mobilePriority: app.mobile_priority,
-          userBase: app.user_base,
-          lastUpdated: newest_snapshot.released,
-          adSpend: app.ios_fb_ad_appearances.present?,
-          categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
-        },
-        company: {
-          id: company.present? ? company.id : nil,
-          name: company.present? ? company.name : nil,
-          fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-          funding: company.present? ? company.funding : nil,
-          location: {
-            streetAddress: company.present? ? company.street_address : nil,
-            city: company.present? ? company.city : nil,
-            zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
-          }
-        }
-      }
-      results_json << app_hash
-    end
-    
+    li "finished loop"
     render json: results_json
   end
   

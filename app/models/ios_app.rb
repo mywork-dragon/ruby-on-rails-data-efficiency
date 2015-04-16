@@ -29,7 +29,7 @@ class IosApp < ActiveRecord::Base
   
   def get_company
     self.websites.each do |w|
-      if w.company.present?
+      if w.kind == 'primary' && w.company.present?
         return w.company
       end
     end
@@ -41,7 +41,11 @@ class IosApp < ActiveRecord::Base
   end
   
   def name
-    ios_app_snapshots.last.name
+    if newest_ios_app_snapshot.present?
+      return newest_ios_app_snapshot.name
+    else
+      return nil
+    end
   end
   
   ###############################

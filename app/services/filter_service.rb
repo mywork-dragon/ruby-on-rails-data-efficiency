@@ -2,16 +2,15 @@ class FilterService
   class << self
   
     def filter_companies(company_filters)
-      puts "FILTERING COMPANIES"
       company_results  = Company
-      company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
+      company_results = company_results.where("fortune_1000_rank <= ?", company_filters[:fortuneRank].to_i) if company_filters[:fortuneRank]
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
       company_results
     end
     
     def filter_ios_apps(app_filters)
-      results = IosApp
+      results = IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)
       if app_filters[:mobilePriority]
         mobile_priorities = []
         mobile_priorities << :high if app_filters[:mobilePriority].include?("High")
@@ -37,14 +36,13 @@ class FilterService
       if app_filters[:categories]
         results = results.joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', app_filters[:categories].join(','))
       end
-      
       results
     end
     
     def apps_with_keywords(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
-      return IosApp.joins(:newest_ios_app_snapshot).where(name_query_string)
+      return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where(name_query_string)
     end
     
     def companies_with_keywords(keywords)
@@ -55,7 +53,7 @@ class FilterService
     
     def apps_of_companies(companies)
       if companies.present?
-        return IosApp.where(ios_apps_websites: {website: :company}).where(companies: companies)
+        return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
       else
         return IosApp.where(id: nil).where('id IS NOT ?', nil)
       end
