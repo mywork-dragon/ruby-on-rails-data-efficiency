@@ -42,9 +42,8 @@ class ApiController < ApplicationController
       results = IosApp.where(id: all_app_ids)
     end
     logger.info "GOT HERE"
-    logger.info "results: #{results.map{|r| r.id}}"  
     results_json = []
-    results.page(pageNum).per(pageSize).each do |app|
+    results.each do |app|
       li "constructing json hash for #{app.name}"
       company = app.get_company
       li "company: #{company.name} #{company.id}" if company.present?
