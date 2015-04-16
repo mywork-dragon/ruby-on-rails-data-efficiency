@@ -137,10 +137,15 @@ class AppStoreSnapshotServiceWorker
         end
       end
     
+      puts "#0"
+    
       s.save!
+      
+      puts "#1"
       
       #set user base
       if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
+        puts "#2"
         if ratings_per_day_current_release >= 7 || ratings_all_count >= 50e3
           user_base = :elite
         elsif ratings_per_day_current_release >= 1 || ratings_all_count >= 10e3
@@ -151,8 +156,12 @@ class AppStoreSnapshotServiceWorker
           user_base = :weak
         end
         
+        puts "#3"
+        
         ios_app.user_base = user_base
       end
+      
+      puts "#4"
       
       #set mobile priority
       if released = a[:released]
@@ -164,14 +173,21 @@ class AppStoreSnapshotServiceWorker
           mobile_priority = :low
         end
         
+        puts "#5"
+        
         ios_app.mobile_priority = mobile_priority
       end
+      
+      puts "#6"
       
       #update newest snapshot
       ios_app.newest_ios_app_snapshot = s
       
+      puts "#7"
+      
       ios_app.save
       
+      puts "#8"
     
     rescue => e
       ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
