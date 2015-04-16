@@ -5,7 +5,10 @@ class WelcomeController < ApplicationController
   end
   
   def team
-    
+    15.times do |t|
+      @time = t + 1
+      sleep 1
+    end
   end
   
   def contact_us
