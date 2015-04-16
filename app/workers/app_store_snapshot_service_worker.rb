@@ -117,7 +117,7 @@ class AppStoreSnapshotServiceWorker
     
       if languages = a[:languages]
         languages.each do |language_name|
-          s.languages << IosAppLanguage.find_or_create_by(name: language_name)
+          s.ios_app_languages << IosAppLanguage.find_or_create_by(name: language_name)
         end
       end
     
