@@ -41,43 +41,43 @@ class ApiController < ApplicationController
       all_app_ids = (app_result_ids + company_app_result_ids).uniq
       results = IosApp.where(id: all_app_ids)
     end
-    logger.info "GOT HERE"
+    # logger.info "GOT HERE"
     logger.info "results count: #{results.count}"
     results_json = []
-    # results.each do |app|
-    #   li "constructing json hash for #{app.name}"
-    #   company = app.get_company
-    #   li "company: #{company.name} #{company.id}" if company.present?
-    #   newest_snapshot = app.newest_ios_app_snapshot
-    #   li "snapshot: #{newest_snapshot.name} #{newest_snapshot.id}" if newest_snapshot.present?
-    #   app_hash = {
-    #     app: {
-    #       id: app.id,
-    #       name: newest_snapshot.present? ? newest_snapshot.name : nil,
-    #       mobilePriority: app.mobile_priority,
-    #       userBase: app.user_base,
-    #       lastUpdated: newest_snapshot.present? ? newest_snapshot.released : nil,
-    #       adSpend: app.ios_fb_ad_appearances.present?,
-    #       categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
-    #     },
-    #     company: {
-    #       id: company.present? ? company.id : nil,
-    #       name: company.present? ? company.name : nil,
-    #       fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-    #       funding: company.present? ? company.funding : nil,
-    #       location: {
-    #         streetAddress: company.present? ? company.street_address : nil,
-    #         city: company.present? ? company.city : nil,
-    #         zipCode: company.present? ? company.zip_code : nil,
-    #         state: company.present? ? company.state : nil,
-    #         country: company.present? ? company.country : nil
-    #       }
-    #     }
-    #   }
-    #   # li "app_hash: #{app_hash}"
-    #   results_json << app_hash
-    #   # li "results_json: #{results_json}"
-    # end
+    results.each do |app|
+      li "constructing json hash for #{app.name}"
+      company = app.get_company
+      li "company: #{company.name} #{company.id}" if company.present?
+      newest_snapshot = app.newest_ios_app_snapshot
+      li "snapshot: #{newest_snapshot.name} #{newest_snapshot.id}" if newest_snapshot.present?
+      app_hash = {
+        app: {
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released : nil,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
+        },
+        company: {
+          id: company.present? ? company.id : nil,
+          name: company.present? ? company.name : nil,
+          fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+          funding: company.present? ? company.funding : nil,
+          location: {
+            streetAddress: company.present? ? company.street_address : nil,
+            city: company.present? ? company.city : nil,
+            zipCode: company.present? ? company.zip_code : nil,
+            state: company.present? ? company.state : nil,
+            country: company.present? ? company.country : nil
+          }
+        }
+      }
+      # li "app_hash: #{app_hash}"
+      results_json << app_hash
+      # li "results_json: #{results_json}"
+    end
     li "finished loop"
     render json: results_json
   end
