@@ -44,7 +44,7 @@ class ApiController < ApplicationController
     # logger.info "GOT HERE"
     logger.info "results count: #{results.count}"
     results_json = []
-    results.each do |app|
+    results.limit(10).each do |app|
       li "constructing json hash for #{app.name}"
       company = app.get_company
       li "company: #{company.name} #{company.id}" if company.present?

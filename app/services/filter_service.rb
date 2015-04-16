@@ -31,7 +31,7 @@ class FilterService
       end
       
       if app_filters[:updatedMonthsAgo]
-        results = results.joins(:newest_ios_app_snapshot).where('released > ?', app_filters[:updatedMonthsAgo].to_i.months.ago.to_date)
+        results = results.joins(:newest_ios_app_snapshot).where('released > ?', app_filters[:updatedMonthsAgo].to_i.months.ago.to_date).limit(10)
       end
       if app_filters[:categories]
         results = results.joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', app_filters[:categories].join(','))
