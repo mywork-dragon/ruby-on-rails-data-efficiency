@@ -90,10 +90,14 @@ ActiveRecord::Schema.define(version: 20150415210711) do
     t.string   "app_identifier"
     t.integer  "app_id"
     t.integer  "newest_android_app_snapshot_id"
+    t.integer  "user_base"
+    t.integer  "mobile_priority"
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+  add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
+  add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 
   create_table "android_apps_websites", force: true do |t|
     t.integer  "android_app_id"
@@ -283,10 +287,14 @@ ActiveRecord::Schema.define(version: 20150415210711) do
     t.integer  "app_identifier"
     t.integer  "app_id"
     t.integer  "newest_ios_app_snapshot_id"
+    t.integer  "user_base"
+    t.integer  "mobile_priority"
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
+  add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
   add_index "ios_apps", ["newest_ios_app_snapshot_id"], name: "index_ios_apps_on_newest_ios_app_snapshot_id", using: :btree
+  add_index "ios_apps", ["user_base"], name: "index_ios_apps_on_user_base", using: :btree
 
   create_table "ios_apps_websites", force: true do |t|
     t.integer  "ios_app_id"

@@ -11,16 +11,9 @@ class IosApp < ActiveRecord::Base
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   
-  def get_mobile_priority
-    newest_snapshot = get_newest_app_snapshot
-    if newest_snapshot.released > 3.months.ago
-      return "H"
-    elsif newest_snapshot.released < 6.months.ago
-      return 'L'
-    else
-      return 'M'
-    end
-  end
+  enum mobile_priority: [:high, :medium, :low]
+  enum user_base: [:elite, :strong, :moderate, :weak]
+  
   
   def get_newest_app_snapshot
     self.ios_app_snapshots.max_by do |snapshot|
@@ -49,6 +42,49 @@ class IosApp < ActiveRecord::Base
   
   def name
     ios_app_snapshots.last.name
+  end
+  
+  ###############################
+  # Mobile priority methods
+  ###############################
+  
+  def set_mobile_priority
+    begin
+      if fb_ad_appearances.present? || newest_ios_app_snapshot.released > 2.months.ago
+        mobile_priority = :high
+      elsif newest_ios_app_snapshot.released > 4.months.ago
+        mobile_priority = :medium
+      else
+        mobile_priority = :low
+      end
+      self.save
+    rescue => e
+      logger.info "Warning: couldn't update mobile priority for IosApp with id #{self.id}"
+      logger.info e
+    end
+  end
+  
+  ########################
+  # User Base methods       
+  ########################
+  
+  def set_user_base
+    logger.info "updating user base"
+    begin
+      if self.newest_ios_app_snapshot.ratings_per_day_current_release >= 7 || self.newest_ios_app_snapshot.ratings_all_count >= 50e3
+        self.user_base = :elite
+      elsif self.newest_ios_app_snapshot.ratings_per_day_current_release >= 1 || self.newest_ios_app_snapshot.ratings_all_count >= 10e3
+        self.user_base = :strong
+      elsif self.newest_ios_app_snapshot.ratings_per_day_current_release >= 0.1 || self.newest_ios_app_snapshot.ratings_all_count >= 100
+        self.user_base = :moderate
+      else
+        self.user_base = :weak
+      end
+      self.save
+    rescue => e
+      logger.info "Warning: couldn't update user_base for IosApp with id #{self.id}"
+      logger.info e
+    end
   end
   
   class << self
