@@ -30,7 +30,8 @@ class AppStoreSnapshotServiceWorker
   def save_attributes(options={})
     ios_app = IosApp.find(options[:ios_app_id])
     
-    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id])
+    ios_app_snapshot_job_id = options[:ios_app_snapshot_job_id]
+    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
     
     try = 0
     
