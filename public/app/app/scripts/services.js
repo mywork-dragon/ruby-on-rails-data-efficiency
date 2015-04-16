@@ -11,7 +11,7 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
     postDashboardSearch: function(text) {
       console.log(text);
       /*
-      $http({
+       postDashboardSearch: $http({
         method: 'POST',
         url: 'https://www.example.com/api/v1/page',
         params: 'limit=10, sort_by=created:desc'

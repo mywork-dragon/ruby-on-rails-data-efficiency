@@ -30,13 +30,41 @@ angular.module('appApp')
       }
     }
   ])
-  .controller("TableCtrl", ["$scope", "$filter", "apiService",
-    function($scope, $filter, apiService) {
+  .controller("TableCtrl", ["$scope", "$filter",
+    function($scope, $filter) {
       var init;
       return $scope.apps = [
         {
-          id: 19849301,
+          id: 39849301,
           name: "TEST APP",
+          countriesDeployed: [
+            "US",
+            "UK",
+            "IN"
+          ],
+          mobilePriority: "Low",
+          userBases: [
+            "Elite",
+            "Strong"
+          ],
+          lastUpdated: "2015-03-21",
+          adSpend: true,
+          company: {
+            id: 123456789,
+            name: "Coffee, Inc.",
+            fortuneRank: 234,
+            funding: 12000000,
+            location: {
+              streetAddress: "123 Main St.",
+              city: "Gig Harbor",
+              zipCode: "98333",
+              state: "",
+              country: "US"
+            }
+          }
+        }, {
+          id: 19849301,
+          name: "APP",
           countriesDeployed: [
             "US",
             "UK",
@@ -47,11 +75,11 @@ angular.module('appApp')
             "Elite",
             "Strong"
           ],
-          lastUpdated: "Nov 3, 2014",
+          lastUpdated: "2014-03-30",
           adSpend: true,
           company: {
             id: 123456789,
-            name: "Corporation, Inc.",
+            name: "Piacitelli, Inc.",
             fortuneRank: 234,
             funding: 5670000,
             location: {
@@ -63,8 +91,8 @@ angular.module('appApp')
             }
           }
         }, {
-          id: 19849301,
-          name: "TEST APP",
+          id: 29849301,
+          name: "Patrick's App",
           countriesDeployed: [
             "US",
             "UK",
@@ -75,13 +103,13 @@ angular.module('appApp')
             "Elite",
             "Strong"
           ],
-          lastUpdated: "Nov 3, 2014",
-          adSpend: true,
+          lastUpdated: "2015-03-30",
+          adSpend: false,
           company: {
             id: 123456789,
             name: "Corporation, Inc.",
             fortuneRank: 234,
-            funding: 5670000,
+            funding: 3450000,
             location: {
               streetAddress: "123 Main St.",
               city: "Gig Harbor",
@@ -90,50 +118,32 @@ angular.module('appApp')
               country: "US"
             }
           }
-        }, {
-          id: 19849301,
-          name: "TEST APP",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "High",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "Nov 3, 2014",
-          adSpend: true,
-          company: {
-            id: 123456789,
-            name: "Corporation, Inc.",
-            fortuneRank: 234,
-            funding: 5670000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "US"
-            }
-          }
-        }], $scope.searchKeywords = "", $scope.filteredApps = [], $scope.row = "", $scope.select = function(page) {
-        var end, start;
-        return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
-      }, $scope.onFilterChange = function() {
-        return $scope.select(1), $scope.currentPage = 1, $scope.row = "";
-      }, $scope.onNumPerPageChange = function() {
-        return $scope.select(1), $scope.currentPage = 1;
-      }, $scope.onOrderChange = function() {
-        return $scope.select(1), $scope.currentPage = 1;
-      }, $scope.search = function() {
-        return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
-      }, $scope.order = function(rowName) {
-        return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($scope.apps, rowName), $scope.onOrderChange()) : void 0;
-      }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
-        return $scope.search(), $scope.select($scope.currentPage);
-      }), $scope.search();
+        }],
+        $scope.searchKeywords = "",
+        $scope.filteredApps = [],
+        $scope.row = "",
+        $scope.select = function(page) {
+          var end, start;
+          return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
+        },
+        $scope.onFilterChange = function() {
+          return $scope.select(1), $scope.currentPage = 1, $scope.row = "";
+        },
+        $scope.onNumPerPageChange = function() {
+          return $scope.select(1), $scope.currentPage = 1;
+        },
+        $scope.onOrderChange = function() {
+          return $scope.select(1), $scope.currentPage = 1;
+        },
+        $scope.search = function() {
+          return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
+        },
+        $scope.order = function(rowName) {
+          return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($scope.apps, rowName), $scope.onOrderChange()) : void 0;
+        },
+        $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
+          return $scope.search(), $scope.select($scope.currentPage);
+        }), $scope.search();
     }
   ]);
 
