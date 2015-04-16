@@ -41,7 +41,7 @@ class ApiController < ApplicationController
       all_app_ids = (app_result_ids + company_app_result_ids).uniq
       results = IosApp.where(id: all_app_ids)
     end
-    
+    logger.info "GOT HERE"
     logger.info "results: #{results.map{|r| r.id}}"  
     results_json = []
     results.page(pageNum).per(pageSize).each do |app|
