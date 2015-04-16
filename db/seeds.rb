@@ -20,18 +20,22 @@ if Rails.env.development?
     name = Faker::App.name
     
     ios_app = IosApp.find_or_create_by(app_identifier: i)
-    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), ios_app_id: IosApp.all.sample.id, icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100), ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500))
-    ios_app.ios_app_snapshots << ios_app_snapshot
+    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100), ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500))
+    ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/(Date.tomorrow - ios_app_snapshot.released).to_f
+    ios_app.newest_ios_app_snapshot = ios_app_snapshot
+    ios_app.save
+    ios_app.set_mobile_priority
+    ios_app.set_user_base
     ios_cat = IosAppCategory.all.sample
     ios_cat.ios_app_snapshots << ios_app_snapshot
-    download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(1e2..1e6))
-    ios_app.ios_app_download_snapshots << download_snapshot
+    # download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(1e2..1e6))
+    # ios_app.ios_app_download_snapshots << download_snapshot
     
-    android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
-    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), android_app_id: AndroidApp.all.sample.id, icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), description: Faker::Lorem.paragraph, google_plus_likes: rand(10..1000), ratings_all_stars: rand(0..5), ratings_all_count: rand(10..100), downloads_min: rand(0..100), downloads_max: rand(100..1000000))
-    android_app.android_app_snapshots << android_app_snapshot
-    android_cat = AndroidAppCategory.all.sample
-    android_cat.android_app_snapshots << android_app_snapshot
+    # android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
+    # android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), android_app_id: AndroidApp.all.sample.id, icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), description: Faker::Lorem.paragraph, google_plus_likes: rand(10..1000), ratings_all_stars: rand(0..5), ratings_all_count: rand(10..100), downloads_min: rand(0..100), downloads_max: rand(100..1000000))
+    # android_app.android_app_snapshots << android_app_snapshot
+    # android_cat = AndroidAppCategory.all.sample
+    # android_cat.android_app_snapshots << android_app_snapshot
   end
 
   puts "creating companies..."
@@ -46,7 +50,7 @@ if Rails.env.development?
   puts "creating websites, and linking them to companies, ios apps, and android apps..."
   
   for i in 0..2000
-    website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name)
     ios_app = IosApp.includes(websites: :company).all.sample
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
     company.websites << website
@@ -56,15 +60,15 @@ if Rails.env.development?
     end
   end
   
-  for i in 0..2000
-    website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
-    android_app = AndroidApp.includes(websites: :company).all.sample
-    company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
-    company.websites << website
-    android_app.websites << website
-    if i % 100 == 0
-      puts "#{(i+2000)/100}/40 of the way done"
-    end
-  end
+  # for i in 0..2000
+  #   website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
+  #   android_app = AndroidApp.includes(websites: :company).all.sample
+  #   company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
+  #   company.websites << website
+  #   android_app.websites << website
+  #   if i % 100 == 0
+  #     puts "#{(i+2000)/100}/40 of the way done"
+  #   end
+  # end
 
 end

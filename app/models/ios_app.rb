@@ -50,12 +50,12 @@ class IosApp < ActiveRecord::Base
   
   def set_mobile_priority
     begin
-      if fb_ad_appearances.present? || newest_ios_app_snapshot.released > 2.months.ago
-        mobile_priority = :high
+      if ios_fb_ad_appearances.present? || newest_ios_app_snapshot.released > 2.months.ago
+        self.mobile_priority = :high
       elsif newest_ios_app_snapshot.released > 4.months.ago
-        mobile_priority = :medium
+        self.mobile_priority = :medium
       else
-        mobile_priority = :low
+        self.mobile_priority = :low
       end
       self.save
     rescue => e

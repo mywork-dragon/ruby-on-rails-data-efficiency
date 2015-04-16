@@ -9,69 +9,30 @@ class ApiController < ApplicationController
     pageNum = params[:pageNum] || 1
     sort_by = params[:sortBy] || 'name'
     order_by = params[:orderBy] || 'ASC'
-    companies_filtered = false
     
     #filter for companies
-    company_results  = Company
-    if company_filters
-      company_results = FilterService.filter_companies(company_filters)
-      companies_filtered = true
-    end
+    company_results = FilterService.filter_companies(company_filters) if company_filters
     
     #filter for apps 
-    app_results = IosApp.where(id: nil).where('id IS NOT ?', nil) #default blank relation
-    apps_filtered = false
-    if app_filters
-      #add for mobilePriority and adSpend
-      if app_filters[:userBases]
-        apps_with_user_bases = FilterService.apps_with_user_bases(app_filters[:userBases])
-        if apps_filtered
-          app_results = app_results.merge(apps_with_user_bases)
-        else
-          app_results = apps_with_user_bases
-          apps_filtered = true
-        end
-      end
-      
-      if app_filters[:updatedMonthsAgo]
-        apps_updated_months_ago = FilterService.apps_updated_months_ago(app_filters[:updatedMonthsAgo].to_i)
-        if apps_filtered
-          app_results = app_results.merge(apps_updated_months_ago)
-        else
-          app_results = apps_updated_months_ago
-          apps_filtered = true
-        end
-      end
-
-      if app_filters[:categories]
-        apps_in_categories = FilterService.apps_in_categories(app_filters[:categories])
-        if apps_filtered
-          app_results = app_results.merge(apps_in_categories)
-        else
-          app_results = apps_in_categories
-          apps_filtered = true
-        end
-      end
-
-    end
+    app_results = FilterService.filter_ios_apps(app_filters) if app_filters
     
     #find apps and companies based on customKeywords, searching in the name
     if params[:customKeywords].present?
       companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
-      company_results = companies_filtered ? company_results.merge(companies_with_keywords) : companies_with_keywords
-      
+      company_results = company_filters.present? ? company_results.merge(companies_with_keywords) : companies_with_keywords
+
       apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
-      app_results = apps_filtered ? company_results.merge(apps_with_keywords) : apps_with_keywords
+      app_results = app_filters.present? ? app_results.merge(apps_with_keywords) : apps_with_keywords
     end
     
     #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
-    results = IosApp.where(id: nil).where("id IS NOT ?", nil)
-    if companies_filtered && apps_filtered
+    results = IosApp.where(id: nil).where("id IS NOT ?", nil) 
+    if params[:company] && params[:app]
       company_apps = FilterService.apps_of_companies(company_results)
       results = app_results.merge(company_apps)
-    elsif !companies_filtered && apps_filtered
+    elsif !params[:company] && params[:app]
       results = app_results
-    elsif companies_filtered && !apps_filtered
+    elsif params[:company] && !params[:app]
       results = FilterService.apps_of_companies(company_results)
     elsif params[:customKeywords].present?
       app_result_ids = app_results.pluck(:id)
@@ -81,19 +42,38 @@ class ApiController < ApplicationController
     end
     
     results_json = []
+    # case sort_by
+    # when 'appName'
+    #   results = results.order("ios_app_snapshots.name #{order_by}")
+    # when 'companyName'
+    #   results = results.order("companies.name #{order_by}")
+    # when 'fortuneRank'
+    #   results = results.order("companies.fortune_1000_rank #{order_by}")
+    # when 'mobilePriority'
+    #   results = results.order("mobile_priority #{order_by}")
+    # when 'userBase'
+    #   results = results.order("user_base #{order_by}")
+    # when 'lastUpdated'
+    #   results = results.order("ios_app_snapshots.released #{order_by}")
+    # when 'categories'
+    #   results = results.order("ios_app_snapshots.ios_app_categories_snapshots.ios_app_categories #{order_by}")
+    # end
+    li "results class"
+    li results.class
+    li "results"
+    li results
     results.page(pageNum).per(pageSize).each do |app|
       company = app.get_company
-      newest_app_snapshot = app.get_newest_app_snapshot
-      newest_download_snapshot = app.get_newest_download_snapshot
+      newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {
         app: {
           id: app.id, 
-          name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-          countriesDeployed: nil,
-          mobilePriority: nil,
-          downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
-          lastUpdated: newest_app_snapshot.released,
-          adSpend: nil,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          lastUpdated: newest_snapshot.released,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
         },
         company: {
           id: company.present? ? company.id : nil,
