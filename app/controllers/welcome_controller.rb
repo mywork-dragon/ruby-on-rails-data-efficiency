@@ -5,9 +5,9 @@ class WelcomeController < ApplicationController
   end
   
   def team
-    15.times do |t|
+    20.times do |t|
       @time = t + 1
-      li "@time: #{@time}"
+      #li "@time: #{@time}"
       sleep 1
     end
   end
