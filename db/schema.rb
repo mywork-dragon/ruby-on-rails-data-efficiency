@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416195722) do
+ActiveRecord::Schema.define(version: 20150416201419) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -305,6 +305,7 @@ ActiveRecord::Schema.define(version: 20150416195722) do
     t.datetime "updated_at"
   end
 
+  add_index "ios_apps_websites", ["ios_app_id", "website_id"], name: "index_ios_apps_websites_on_ios_app_id_and_website_id", using: :btree
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id"], name: "index_ios_apps_websites_on_website_id", using: :btree
 
@@ -424,6 +425,7 @@ ActiveRecord::Schema.define(version: 20150416195722) do
   end
 
   add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
+  add_index "websites", ["id", "company_id"], name: "index_websites_on_id_and_company_id", using: :btree
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
