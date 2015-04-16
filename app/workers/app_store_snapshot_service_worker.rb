@@ -185,7 +185,7 @@ class AppStoreSnapshotServiceWorker
       
       puts "#7"
       
-      ios_app.save
+      ios_app.save!
       
       puts "#8"
     
