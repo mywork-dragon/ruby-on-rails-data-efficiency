@@ -11,7 +11,7 @@ class FilterService
     
     def company_apps_query(company_filters)
       query = []
-      query << 'company_results.where("fortune_1000_rank <= ?", company_filters[:fortuneRank].to_i)' if company_filters[:fortuneRank]
+      query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
       return query
