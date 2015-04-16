@@ -82,12 +82,13 @@ class AppStoreSnapshotServiceWorker
     
       if ratings = a[:ratings]
         if ratings_current = ratings[:current]
-          s.ratings_current_count = ratings_current[:count]
+          ratings_current_count = ratings_current[:count].to_i
+          s.ratings_current_count = ratings_current_count
           s.ratings_current_stars = ratings_current[:stars]
           
           if released = a[:released]
             days_ago = (Date.tomorrow - released).to_i
-            ratings_per_day_current_release = ratings_current/(days_ago.to_f)
+            ratings_per_day_current_release = ratings_current_count/(days_ago.to_f)
             s.ratings_per_day_current_release = ratings_per_day_current_release
           end
           
@@ -116,7 +117,7 @@ class AppStoreSnapshotServiceWorker
     
       if languages = a[:languages]
         languages.each do |language_name|
-          s.languages << IosAppLanguage.find_or_create_by(name: language_name)
+          s.ios_app_languages << IosAppLanguage.find_or_create_by(name: language_name)
         end
       end
     
@@ -136,10 +137,15 @@ class AppStoreSnapshotServiceWorker
         end
       end
     
+      puts "#0"
+    
       s.save!
+      
+      puts "#1"
       
       #set user base
       if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
+        puts "#2"
         if ratings_per_day_current_release >= 7 || ratings_all_count >= 50e3
           user_base = :elite
         elsif ratings_per_day_current_release >= 1 || ratings_all_count >= 10e3
@@ -150,8 +156,12 @@ class AppStoreSnapshotServiceWorker
           user_base = :weak
         end
         
+        puts "#3"
+        
         ios_app.user_base = user_base
       end
+      
+      puts "#4"
       
       #set mobile priority
       if released = a[:released]
@@ -163,14 +173,21 @@ class AppStoreSnapshotServiceWorker
           mobile_priority = :low
         end
         
+        puts "#5"
+        
         ios_app.mobile_priority = mobile_priority
       end
+      
+      puts "#6"
       
       #update newest snapshot
       ios_app.newest_ios_app_snapshot = s
       
-      ios_app.save
+      puts "#7"
       
+      ios_app_save_success = ios_app.save
+      
+      puts "#8, #{ios_app_save_success}"
     
     rescue => e
       ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
