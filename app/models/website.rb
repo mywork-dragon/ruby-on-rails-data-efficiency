@@ -7,7 +7,7 @@ class Website < ActiveRecord::Base
   has_many :android_apps_websites
   has_many :android_apps, through: :android_apps_websites
   
-  enum kind: [:primary, :social]
+  enum kind: [:primary, :secondary]
   
   validates :url, uniqueness: true
 

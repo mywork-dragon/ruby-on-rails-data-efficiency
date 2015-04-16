@@ -12,8 +12,8 @@ class BusinessEntityIosServiceWorker
       urls = [ss.seller_url, ss.support_url].select{|url| url}
       
       urls.each do |url|
-        if UrlHelper.social?(url)
-          kind = :social
+        if UrlHelper.secondary_site?(url)
+          kind = :secondary
         else
           url = UrlHelper.url_with_http_and_domain(url)
           kind = :primary
