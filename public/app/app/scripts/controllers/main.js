@@ -80,14 +80,14 @@ angular.module('appApp')
           company: {
             id: 123456789,
             name: "Piacitelli, Inc.",
-            fortuneRank: 234,
+            fortuneRank: 98,
             funding: 5670000,
             location: {
               streetAddress: "123 Main St.",
               city: "Gig Harbor",
               zipCode: "98333",
               state: "",
-              country: "US"
+              country: "IN"
             }
           }
         }, {
@@ -108,14 +108,14 @@ angular.module('appApp')
           company: {
             id: 123456789,
             name: "Corporation, Inc.",
-            fortuneRank: 234,
+            fortuneRank: 498,
             funding: 3450000,
             location: {
               streetAddress: "123 Main St.",
               city: "Gig Harbor",
               zipCode: "98333",
               state: "",
-              country: "US"
+              country: "CA"
             }
           }
         }],
