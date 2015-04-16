@@ -42,12 +42,14 @@ class FilterService
     end
     
     def apps_with_keywords(keywords)
+      li "filtering for apps via keywords"
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
       return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where(name_query_string)
     end
     
     def companies_with_keywords(keywords)
+      li "filtering for companies via keywords"
       name_query_array = keywords.map{|k| "name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
       return Company.where(name_query_string)

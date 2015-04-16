@@ -24,6 +24,7 @@ class ApiController < ApplicationController
     
     #find apps and companies based on customKeywords, searching in the name
     if params[:customKeywords].present?
+      li "custom keyword filtering"
       companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
       company_results = company_filters.present? ? company_results.merge(companies_with_keywords) : companies_with_keywords
 
