@@ -27,19 +27,21 @@ class UrlHelper
       'http://' + url_with_domain_only(url)
     end
     
-    def social?(url)
-      social_regexes_strings = %w(
+    def secondary_site?(url)
+      app_page_regexes_strings = %w(
         facebook.com\/.+
+        sites.google.com\/+.*
         plus.google.com\/+.*
         twitter.com\/.+
         pinterest.com\/.+
         facebook.com\/.+
         instagram.com\/.+
+        apple.com\/.+
       )
     
-      social_regexes = social_regexes_strings.map{|s| Regexp.new(s)}
+      app_page_regexes = app_page_regexes_strings.map{|s| Regexp.new(s)}
     
-      regex = Regexp.union(social_regexes)
+      regex = Regexp.union(app_page_regexes)
     
       !url.match(regex).nil?
     end
