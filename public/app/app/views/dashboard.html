@@ -347,7 +347,6 @@
             </span>
             <span id="dashboardSearchBox">
                 <input placeholder="Custom tag..." ng-model="customKeyword" ng-enter="onFilterChange('customKeyword', customKeyword, 'Custom')">
-                </select>
             </span>
 
     </div>
@@ -456,17 +455,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-ng-repeat="store in currentPageStores">
-          <td>{{store.name}}</td>
-          <td><a href="#">{{store.company}}</a></td>
-          <td>{{store.priority}}</td>
-          <td>{{store.downloads}}</td>
-          <td>{{store.genre}}</td>
-          <td>{{store.lastUpdated}}</td>
-          <td>{{store.fortuneRank}}</td>
-          <td>{{store.funding}}</td>
-          <td>{{store.country}}</td>
-          <td><a href="/dashboard/app-details">{{store.details}}</a></td>
+        <tr data-ng-repeat="app in apps">
+          <td>{{app.name}}</td>
+          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td>{{app.priority}}</td>
+          <td>{{app.downloads}}</td>
+          <td>{{app.genre}}</td>
+          <td>{{app.lastUpdated}}</td>
+          <td>{{app.fortuneRank}}</td>
+          <td>{{app.funding}}</td>
+          <td>{{app.country}}</td>
+          <td><a href="/app/app.id">{{app.details}}</a></td>
         </tr>
         </tbody>
       </table>
@@ -488,7 +487,7 @@
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="currentPage"
-                      total-items="filteredStores.length"
+                      total-items="filteredApps.length"
                       max-size="4"
                       ng-change="select(currentPage)"
                       items-per-page="numPerPage"

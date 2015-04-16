@@ -33,7 +33,7 @@ angular.module('appApp')
   .controller("TableCtrl", ["$scope", "$filter",
     function($scope, $filter) {
       var init;
-      return $scope.stores = [{
+      return $scope.apps = [{
         name: "Instagram",
         company: "Instagram, Inc.",
         priority: "High",
@@ -45,8 +45,44 @@ angular.module('appApp')
         funding: "Acquired for $1B",
         adSpend: "$1K - $10K",
         country: "USA",
-        details: "Details",
-      }, {
+        details: "Details"
+      },
+
+
+
+        {
+          id: 19849301,
+          name: "Test App",
+          countriesDeployed: [
+            "US",
+            "UK",
+            "IN"
+          ],
+          mobilePriority: "High",
+          userBases: [
+            "Elite",
+            "Strong"
+          ],
+          lastUpdated: "Nov 3, 2014",
+          adSpend: true,
+          company: {
+            id: 123456789,
+            name: "Corporation, Inc.",
+            fortuneRank: 234,
+            funding: 5670000,
+            location: {
+              streetAddress: "123 Main St.",
+              city: "Gig Harbor",
+              zipCode: "98333",
+              state: "",
+              country: "US"
+            }
+          }
+        },
+
+
+
+        {
         name: "Snapchat",
         company: "Snapchat, Inc.",
         priority: "High",
@@ -58,7 +94,7 @@ angular.module('appApp')
         funding: "Acquired for $1B",
         adSpend: "$1K - $10K",
         country: "USA",
-        details: "Details",
+        details: "Details"
       }, {
         name: "Netflix",
         company: "Netflix, Inc.",
@@ -71,7 +107,7 @@ angular.module('appApp')
         funding: "Public",
         adSpend: "$100K - $1M",
         country: "USA",
-        details: "Details",
+        details: "Details"
       }, {
         name: "King of Thieves",
         company: "ZeptoLab",
@@ -345,9 +381,9 @@ angular.module('appApp')
         adSpend: "$1K - $10K",
         country: "USA",
         details: "Details",
-      }], $scope.searchKeywords = "", $scope.filteredStores = [], $scope.row = "", $scope.select = function(page) {
+      }], $scope.searchKeywords = "", $scope.filteredApps = [], $scope.row = "", $scope.select = function(page) {
         var end, start;
-        return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.currentPageStores = $scope.filteredStores.slice(start, end);
+        return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
       }, $scope.onFilterChange = function() {
         return $scope.select(1), $scope.currentPage = 1, $scope.row = "";
       }, $scope.onNumPerPageChange = function() {
@@ -355,10 +391,10 @@ angular.module('appApp')
       }, $scope.onOrderChange = function() {
         return $scope.select(1), $scope.currentPage = 1;
       }, $scope.search = function() {
-        return $scope.filteredStores = $filter("filter")($scope.stores, $scope.searchKeywords), $scope.onFilterChange();
+        return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
       }, $scope.order = function(rowName) {
-        return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredStores = $filter("orderBy")($scope.stores, rowName), $scope.onOrderChange()) : void 0;
-      }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageStores = [], (init = function() {
+        return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($scope.apps, rowName), $scope.onOrderChange()) : void 0;
+      }, $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
         return $scope.search(), $scope.select($scope.currentPage);
       }), $scope.search();
     }
