@@ -9,50 +9,21 @@ class ApiController < ApplicationController
     pageNum = params[:pageNum] || 1
     sort_by = params[:sortBy] || 'name'
     order_by = params[:orderBy] || 'ASC'
-    company_results = nil
     companies_filtered = false
-    app_results = nil
-    apps_filtered = false
     
     #filter for companies
-    if company_filters.present?
-      if company_filters[:fortuneRank].present? #pass ranks as an integer
-        company_results = FilterService.companies_above_fortune_rank(company_filters[:fortuneRank])
-        companies_filtered = true
-      end
-    
-      if company_filters[:funding].present? #start out with just 
-        funded_companies = FilterService.companies_above_funding(company_filters[:funding])
-        if companies_filtered
-          company_results = company_results.merge(funded_companies)
-        else
-          company_results = funded_companies
-          companies_filtered = true
-        end
-      end
-      
-      if company_filters[:countries].present?
-        companies_in_countries = FilterService.companies_in_countries(company_filters[:countries])
-        if companies_filtered
-          company_results = company_results.merge(companies_in_countries)
-        else
-          company_results = companies_in_countries
-          companies_filtered = true
-        end
-      end
+    company_results  = Company
+    if company_filters
+      company_results = FilterService.filter_companies(company_filters)
+      companies_filtered = true
     end
     
     #filter for apps 
-    if app_filters.present?
-      if app_filters[:mobilePriority].present?
-        
-      end
-    
-      if app_filters[:adSpend].present?
-        
-      end
-      
-      if app_filters[:userBases].present?
+    app_results = IosApp.where(id: nil).where('id IS NOT ?', nil) #default blank relation
+    apps_filtered = false
+    if app_filters
+      #add for mobilePriority and adSpend
+      if app_filters[:userBases]
         apps_with_user_bases = FilterService.apps_with_user_bases(app_filters[:userBases])
         if apps_filtered
           app_results = app_results.merge(apps_with_user_bases)
@@ -61,7 +32,7 @@ class ApiController < ApplicationController
           apps_filtered = true
         end
       end
-    
+      
       if app_filters[:updatedMonthsAgo]
         apps_updated_months_ago = FilterService.apps_updated_months_ago(app_filters[:updatedMonthsAgo].to_i)
         if apps_filtered
@@ -71,8 +42,8 @@ class ApiController < ApplicationController
           apps_filtered = true
         end
       end
-    
-      if app_filters[:categories].present?
+
+      if app_filters[:categories]
         apps_in_categories = FilterService.apps_in_categories(app_filters[:categories])
         if apps_filtered
           app_results = app_results.merge(apps_in_categories)
@@ -81,7 +52,7 @@ class ApiController < ApplicationController
           apps_filtered = true
         end
       end
-      
+
     end
     
     #find apps and companies based on customKeywords, searching in the name
@@ -94,8 +65,7 @@ class ApiController < ApplicationController
     end
     
     #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
-    results = []
-    
+    results = IosApp.where(id: nil).where("id IS NOT ?", nil)
     if companies_filtered && apps_filtered
       company_apps = FilterService.apps_of_companies(company_results)
       results = app_results.merge(company_apps)
@@ -108,8 +78,6 @@ class ApiController < ApplicationController
       company_app_result_ids = FilterService.apps_of_companies(company_results).pluck(:id)
       all_app_ids = (app_result_ids + company_app_result_ids).uniq
       results = IosApp.where(id: all_app_ids)
-    else
-      results = IosApp.where("id=-1") #must return Relation object
     end
     
     results_json = []
@@ -148,6 +116,15 @@ class ApiController < ApplicationController
   end
   
   def filter_android_apps
+    app_filters = params[:app]
+    company_filters = params[:company]
+    pageSize = params[:pageSize] || 50
+    pageNum = params[:pageNum] || 1
+    sort_by = params[:sortBy] || 'name'
+    order_by = params[:orderBy] || 'ASC'
+    companies_filtered = false
+    
+    
     
   end
   

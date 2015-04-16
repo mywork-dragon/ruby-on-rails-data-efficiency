@@ -1,6 +1,39 @@
 class FilterService
   class << self
   
+    def filter_companies(company_filters)
+      company_results  = Company
+      company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
+      company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
+      company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
+    end
+    
+    def filter_ios_apps(app_filters)
+      results = IosApp
+      if app_filters[:mobilePriority]
+        mobile_priorities = []
+        mobile_priorities << :high if app_filters[:mobilePriority].include?("High")
+        mobile_priorities << :medium if app_filters[:mobilePriority].include?("Medium")
+        mobile_priorities << :low if app_filters[:mobilePriority].include?("Low")
+        results = results.where(mobile_priority: priority_enums)
+      end
+      
+      results = results.joins(:ios_fb_ad_appearances) if app_filters[:adSpend]
+      
+      if app_filters[:userBases]
+        user_bases = []
+        user_bases << :elite if app_filters[:userBases].include?("Elite")
+        user_bases << :strong if app_filters[:userBases].include?("Strong")
+        user_bases << :moderate if app_filters[:userBases].include?("Moderate")
+        user_bases << :weak if app_filters[:userBases].include?("Weak")
+        results = where(user_base: user_bases)
+      end
+      
+      results = results.joins(:newest_ios_app_snapshot).where('released > ?', app_filters[:updatedMonthsAgo].to_i.months.ago.to_date) if app_filters[:updatedMonthsAgo]
+      # results = results.joins(:newest_ios_app_snapshot => {:ios_app_categories_snapshots => :ios_app_categories}).where('ios_app_categories.name IN (?)', app_filters[:categories].join(',')) if app_filters[:updatedMonthsAgo]
+      
+    end
+  
     def companies_above_fortune_rank(fortune_rank)
       Company.where("fortune_1000_rank <= #{fortune_rank}")
     end
@@ -53,18 +86,12 @@ class FilterService
         # return IosApp.where("id IN (#{ios_app_ids.join(',')})")
         return IosApp.where(id: ios_app_ids)
       else
-        return IosApp.where("id=-1") #have to return Relation object, even if it is blank
+        return IosApp.where(id: nil).where("id IS NOT ?", nil) #have to return Relation object, even if it is blank
       end
     end
   
     def apps_updated_months_ago(months_ago)
-      ios_app_ids = IosAppSnapshot.where(released: (Date.today - months_ago.months)..(Date.today + 1.day)).pluck(:ios_app_id)
-      if ios_app_ids.present?
-        # return IosApp.where("id IN (#{ios_app_ids.join(',')})")
-        return IosApp.where(id: ios_app_ids)
-      else
-        return IosApp.where("id=-1")
-      end
+      IosApp.joins(:ios_app_snapshots).where({ios_app_snapshots: {released: (Date.today - months_ago.months)..(Date.today + 1.day)}})
     end
     
     def apps_in_categories(categories)
@@ -98,6 +125,11 @@ class FilterService
     def apps_of_snapshots(snapshots)
       app_ids = snapshots.pluck(:ios_app_id)
       return IosApp.where(id: app_ids)
+    end
+    
+    def ios_app_union(relation1, relation2)
+      app_ids = relation1.pluck(:id) + relation2.pluck(:id)
+      IosApp.where(id: app_ids.uniq)
     end
   end
 end
