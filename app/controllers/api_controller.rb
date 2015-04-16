@@ -45,8 +45,11 @@ class ApiController < ApplicationController
     results_json = []
 
     results.page(pageNum).per(pageSize).each do |app|
+      li "constructing json hash for #{app.name}"
       company = app.get_company
+      li "company: #{company.name} #{company.id}" if company.present?
       newest_snapshot = app.newest_ios_app_snapshot
+      li "snapshot: #{newest_snapshot.name} #{newest_snapshot.id}" if newest_snapshot.present?
       app_hash = {
         app: {
           id: app.id, 
@@ -71,7 +74,9 @@ class ApiController < ApplicationController
           }
         }
       }
+      li "app_hash: #{app_hash}"
       results_json << app_hash
+      li "results_json: #{results_json}"
     end
     
     render json: results_json
