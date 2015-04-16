@@ -111,30 +111,30 @@ class ApiController < ApplicationController
     newest_app_snapshot = ios_app.get_newest_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
-      'id' => appId,
-      'name' => newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      'mobilePriority' => nil, 
-      'adSpend' => nil, 
-      'countriesDeployed' => nil, #not part of initial launch
-      'downloads' => newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
-      'lastUpdated' => newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
-      'appIdentifier' => ios_app.id,
-      'appIcon' => {
-        'large' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-        'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+      id: appId,
+      name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+      mobilePriority: nil, 
+      adSpend: nil, 
+      countriesDeployed: nil, #not part of initial launch
+      downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+      appIdentifier: ios_app.id,
+      appIcon: {
+        large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+        small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
       },
-      'company' => {
-        'name' => company.present? ? company.name : nil,
-        'id' => company.present? ? company.id : nil,
-        'fortuneRank' => company.present? ? company.fortune_1000_rank : nil, 
-        'funding' => company.present? ? company.funding : nil,
-        'websites' => ios_app.get_website_urls,
-        'location' => {
-          'streetAddress' => company.present? ? company.street_address : nil,
-          'city' => company.present? ? company.city : nil,
-          'zipCode' => company.present? ? company.zip_code : nil,
-          'state' => company.present? ? company.state : nil,
-          'country' => company.present? ? company.country : nil
+      company: {
+        name: company.present? ? company.name : nil,
+        id: company.present? ? company.id : nil,
+        fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
+        funding: company.present? ? company.funding : nil,
+        websites: ios_app.get_website_urls,
+        location: {
+          streetAddress: company.present? ? company.street_address : nil,
+          city: company.present? ? company.city : nil,
+          zipCode: company.present? ? company.zip_code : nil,
+          state: company.present? ? company.state : nil,
+          country: company.present? ? company.country : nil
         }
       }
     }
@@ -151,8 +151,8 @@ class ApiController < ApplicationController
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: nil, 
-      adSpend: nil, 
+      mobilePriority: app.mobile_priority, 
+      adSpend: app.ios_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
       downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
