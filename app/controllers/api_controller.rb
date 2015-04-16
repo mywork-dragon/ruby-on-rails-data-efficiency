@@ -5,8 +5,8 @@ class ApiController < ApplicationController
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    pageSize = params[:pageSize] || 50
-    pageNum = params[:pageNum] || 1
+    pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
+    pageNum = params[:pageNum].present? ? params[:pageNum].to_i : 1
     sort_by = params[:sortBy] || 'appName'
     order_by = params[:orderBy] || 'ASC'
     
