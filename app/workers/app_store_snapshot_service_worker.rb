@@ -185,9 +185,9 @@ class AppStoreSnapshotServiceWorker
       
       puts "#7"
       
-      ios_app.save!
+      ios_app_save_success = ios_app.save
       
-      puts "#8"
+      puts "#8, #{ios_app_save_success}"
     
     rescue => e
       ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
