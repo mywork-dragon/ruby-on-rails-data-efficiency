@@ -30,7 +30,8 @@ class AppStoreSnapshotServiceWorker
   def save_attributes(options={})
     ios_app = IosApp.find(options[:ios_app_id])
     
-    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: options[:ios_app_snapshot_job_id])
+    ios_app_snapshot_job_id = options[:ios_app_snapshot_job_id]
+    s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
     
     try = 0
     
@@ -81,20 +82,22 @@ class AppStoreSnapshotServiceWorker
     
       if ratings = a[:ratings]
         if ratings_current = ratings[:current]
-          ratings_current = ratings_current[:count]
-          s.ratings_current_count = ratings_current
+          s.ratings_current_count = ratings_current[:count]
           s.ratings_current_stars = ratings_current[:stars]
           
           if released = a[:released]
             days_ago = (Date.tomorrow - released).to_i
-            s.ratings_per_day_current_release = ratings_current/(days_ago.to_f)
+            ratings_per_day_current_release = ratings_current/(days_ago.to_f)
+            s.ratings_per_day_current_release = ratings_per_day_current_release
           end
           
         end
         
       
         if ratings_all = ratings[:all]
-          s.ratings_all_count = ratings_all[:count]
+          ratings_all_count = ratings_all[:count].to_i #store in memory bc we need it later
+          s.ratings_all_count = ratings_all_count
+          
           s.ratings_all_stars = ratings_all[:stars]
         end
       end
@@ -134,6 +137,40 @@ class AppStoreSnapshotServiceWorker
       end
     
       s.save!
+      
+      #set user base
+      if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
+        if ratings_per_day_current_release >= 7 || ratings_all_count >= 50e3
+          user_base = :elite
+        elsif ratings_per_day_current_release >= 1 || ratings_all_count >= 10e3
+          user_base = :strong
+        elsif ratings_per_day_current_release >= 0.1 || ratings_all_count >= 100
+          user_base = :moderate
+        else
+          user_base = :weak
+        end
+        
+        ios_app.user_base = user_base
+      end
+      
+      #set mobile priority
+      if released = a[:released]
+        if ios_app.ios_fb_ad_appearances.present? || released > 2.months.ago
+          mobile_priority = :high
+        elsif released > 4.months.ago
+          mobile_priority = :medium
+        else
+          mobile_priority = :low
+        end
+        
+        ios_app.mobile_priority = mobile_priority
+      end
+      
+      #update newest snapshot
+      ios_app.newest_ios_app_snapshot = s
+      
+      ios_app.save
+      
     
     rescue => e
       ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
