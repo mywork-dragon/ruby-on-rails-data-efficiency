@@ -16,8 +16,9 @@ angular.module('appApp')
     };
   }])
 
-  .controller("FilterCtrl", ["$scope",
-    function($scope) {
+  .controller("FilterCtrl", ["$scope", "apiService",
+    function($scope, apiService) {
+      $scope.submitSearch = apiService.postDashboardSearch;
       $scope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName) {
         console.log(parameter + value);
@@ -35,7 +36,7 @@ angular.module('appApp')
       return $scope.apps = [
         {
           id: 19849301,
-          name: apiService.postDashboardSearch("TEST APP"),
+          name: "TEST APP",
           countriesDeployed: [
             "US",
             "UK",
@@ -63,7 +64,7 @@ angular.module('appApp')
           }
         }, {
           id: 19849301,
-          name: apiService.postDashboardSearch("TEST APP"),
+          name: "TEST APP",
           countriesDeployed: [
             "US",
             "UK",
@@ -91,7 +92,7 @@ angular.module('appApp')
           }
         }, {
           id: 19849301,
-          name: apiService.postDashboardSearch("TEST APP"),
+          name: "TEST APP",
           countriesDeployed: [
             "US",
             "UK",

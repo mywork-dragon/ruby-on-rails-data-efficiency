@@ -8,8 +8,8 @@
 angular.module("appApp").factory("apiService", ['$http', function($http) {
 
   return {
-    postDashboardSearch: function(searchRequest) {
-      return searchRequest;
+    postDashboardSearch: function(text) {
+      console.log(text);
       /*
       $http({
         method: 'POST',
