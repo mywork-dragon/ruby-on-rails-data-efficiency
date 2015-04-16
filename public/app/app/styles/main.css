@@ -623,8 +623,9 @@ pre {
 
 #searchResultsControl {
   float: right;
+  position: absolute;
+  right: 40px;
   margin-top: 15px;
-  margin-right: 20px;
 }
 
 .table-dynamic .filter-result-info {
