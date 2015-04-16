@@ -42,24 +42,8 @@ class ApiController < ApplicationController
     end
     
     results_json = []
-    # case sort_by
-    # when 'appName'
-    #   results = results.order("ios_app_snapshots.name #{order_by}")
-    # when 'companyName'
-    #   results = results.order("companies.name #{order_by}")
-    # when 'fortuneRank'
-    #   results = results.order("companies.fortune_1000_rank #{order_by}")
-    # when 'mobilePriority'
-    #   results = results.order("mobile_priority #{order_by}")
-    # when 'userBase'
-    #   results = results.order("user_base #{order_by}")
-    # when 'lastUpdated'
-    #   results = results.order("ios_app_snapshots.released #{order_by}")
-    # when 'categories'
-    #   results = results.order("ios_app_snapshots.ios_app_categories_snapshots.ios_app_categories #{order_by}")
-    # end
 
-    results.each do |app|
+    results.page(pageNum).per(pageSize).each do |app|
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {

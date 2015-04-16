@@ -11,7 +11,7 @@ class FilterService
     end
     
     def filter_ios_apps(app_filters)
-      results = IosApp
+      results = IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)
       if app_filters[:mobilePriority]
         mobile_priorities = []
         mobile_priorities << :high if app_filters[:mobilePriority].include?("High")
@@ -44,7 +44,7 @@ class FilterService
     def apps_with_keywords(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
-      return IosApp.joins(:newest_ios_app_snapshot).where(name_query_string)
+      return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where(name_query_string)
     end
     
     def companies_with_keywords(keywords)
