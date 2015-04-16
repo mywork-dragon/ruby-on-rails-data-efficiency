@@ -3,7 +3,6 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   
   def filter_ios_apps
-    li "filtering ios apps now"
     app_filters = params[:app]
     company_filters = params[:company]
     pageSize = params[:pageSize] || 50
@@ -14,33 +13,25 @@ class ApiController < ApplicationController
     #filter for companies
     company_results = FilterService.filter_companies(company_filters) if company_filters
     
-    # li "finished filtering for companies"
     
     #filter for apps 
     app_results = FilterService.filter_ios_apps(app_filters) if app_filters
     
-    # li "finished filtering for apps"
-    # li "app_results: #{app_results.count}" if app_results.present?
-    
     #find apps and companies based on customKeywords, searching in the name
     if params[:customKeywords].present?
-      li "custom keyword filtering"
       companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
       company_results = company_filters.present? ? company_results.merge(companies_with_keywords) : companies_with_keywords
 
       apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
       app_results = app_filters.present? ? app_results.merge(apps_with_keywords) : apps_with_keywords
     end
-    
-    # li "finished custom keyword filtering"
-    
+        
     #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
     results = IosApp.where(id: nil).where("id IS NOT ?", nil) 
     if params[:company].present? && params[:app].present?
       company_apps = FilterService.apps_of_companies(company_results)
       results = app_results.merge(company_apps)
     elsif !params[:company].present? && params[:app].present?
-      li "no company_filters; yes app_filters"
       results = app_results
     elsif params[:company].present? && !params[:app].present?
       results = FilterService.apps_of_companies(company_results)
@@ -51,9 +42,7 @@ class ApiController < ApplicationController
       results = IosApp.where(id: all_app_ids)
     end
     
-    li "finished populating results"
-    li "results = #{results.count}"
-    
+    logger.info "results: #{results.map{|r| r.id}}"  
     results_json = []
     results.page(pageNum).per(pageSize).each do |app|
       li "constructing json hash for #{app.name}"
