@@ -58,11 +58,8 @@ class ApiController < ApplicationController
     # when 'categories'
     #   results = results.order("ios_app_snapshots.ios_app_categories_snapshots.ios_app_categories #{order_by}")
     # end
-    li "results class"
-    li results.class
-    li "results"
-    li results
-    results.page(pageNum).per(pageSize).each do |app|
+
+    results.each do |app|
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {

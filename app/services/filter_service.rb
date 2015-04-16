@@ -4,7 +4,7 @@ class FilterService
     def filter_companies(company_filters)
       puts "FILTERING COMPANIES"
       company_results  = Company
-      company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
+      company_results = company_results.where("fortune_1000_rank <= ?", company_filters[:fortuneRank].to_i) if company_filters[:fortuneRank]
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
       company_results
@@ -55,7 +55,7 @@ class FilterService
     
     def apps_of_companies(companies)
       if companies.present?
-        return IosApp.where(ios_apps_websites: {website: :company}).where(companies: companies)
+        return IosApp.joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
       else
         return IosApp.where(id: nil).where('id IS NOT ?', nil)
       end
