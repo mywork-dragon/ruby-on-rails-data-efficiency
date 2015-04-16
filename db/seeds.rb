@@ -50,7 +50,7 @@ if Rails.env.development?
   puts "creating websites, and linking them to companies, ios apps, and android apps..."
   
   for i in 0..2000
-    website = Website.find_or_create_by(url: Faker::Internet.domain_name)
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
     ios_app = IosApp.includes(websites: :company).all.sample
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
     company.websites << website
