@@ -7,44 +7,52 @@ class ApiController < ApplicationController
     company_filters = params[:company]
     pageSize = params[:pageSize] || 50
     pageNum = params[:pageNum] || 1
-    sort_by = params[:sortBy] || 'name'
+    sort_by = params[:sortBy] || 'appName'
     order_by = params[:orderBy] || 'ASC'
     
     #filter for companies
-    company_results = FilterService.filter_companies(company_filters) if company_filters
-    
-    
-    #filter for apps 
-    app_results = FilterService.filter_ios_apps(app_filters) if app_filters
+    queries = []
+    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
+    # company_results = FilterService.filter_companies(company_filters) if company_filters
+    queries.concat(FilterService.company_apps_query(company_filters)) if company_filters.present?
+    queries.concat(FilterService.apps_query(app_filters)) if app_filters.present?
+    # app_results = FilterService.filter_ios_apps(app_filters) if app_filters
     
     #find apps and companies based on customKeywords, searching in the name
-    if params[:customKeywords].present?
-      companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
-      company_results = company_filters.present? ? company_results.merge(companies_with_keywords) : companies_with_keywords
-
-      apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
-      app_results = app_filters.present? ? app_results.merge(apps_with_keywords) : apps_with_keywords
-    end
+    # if params[:customKeywords].present?
+    #   companies_with_keywords = FilterService.companies_with_keywords(params[:customKeywords])
+    #   company_results = company_filters.present? ? company_results.merge(companies_with_keywords) : companies_with_keywords
+    #
+    #   apps_with_keywords = FilterService.apps_with_keywords(params[:customKeywords])
+    #   app_results = app_filters.present? ? app_results.merge(apps_with_keywords) : apps_with_keywords
+    # end
+    queries << FilterService.app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
         
     #join the apps the were found by app_results_filters, and the apps that belong to companies found by company_filters
-    results = IosApp.where(id: nil).where("id IS NOT ?", nil) 
-    if params[:company].present? && params[:app].present?
-      company_apps = FilterService.apps_of_companies(company_results)
-      results = app_results.merge(company_apps)
-    elsif !params[:company].present? && params[:app].present?
-      results = app_results
-    elsif params[:company].present? && !params[:app].present?
-      results = FilterService.apps_of_companies(company_results)
-    elsif params[:customKeywords].present?
-      app_result_ids = app_results.pluck(:id)
-      company_app_result_ids = FilterService.apps_of_companies(company_results).pluck(:id)
-      all_app_ids = (app_result_ids + company_app_result_ids).uniq
-      results = IosApp.where(id: all_app_ids)
-    end
+    # results = IosApp.where(id: nil).where("id IS NOT ?", nil)
+    # if params[:company].present? && params[:app].present?
+    #   company_apps = FilterService.apps_of_companies(company_results)
+    #   results = app_results.merge(company_apps)
+    # elsif !params[:company].present? && params[:app].present?
+    #   results = app_results
+    # elsif params[:company].present? && !params[:app].present?
+    #   results = FilterService.apps_of_companies(company_results)
+    # elsif params[:customKeywords].present?
+    #   app_result_ids = app_results.pluck(:id)
+    #   company_app_result_ids = FilterService.apps_of_companies(company_results).pluck(:id)
+    #   all_app_ids = (app_result_ids + company_app_result_ids).uniq
+    #   results = IosApp.where(id: all_app_ids)
+    # end
     # logger.info "GOT HERE"
-    logger.info "results count: #{results.count}"
+    # logger.info "results count: #{results.count}"
+    # results_json = []
+    
+    # queries << FilterService.sort_order_query(sort_by, order_by)
+    
+    query = queries.join('.')
+    results = IosApp.instance_eval("self.#{query}.limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
     results_json = []
-    results.limit(10).each do |app|
+    results.each do |app|
       li "constructing json hash for #{app.name}"
       company = app.get_company
       li "company: #{company.name} #{company.id}" if company.present?
@@ -78,7 +86,6 @@ class ApiController < ApplicationController
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    li "finished loop"
     render json: results_json
   end
   
