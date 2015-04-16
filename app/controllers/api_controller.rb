@@ -3,6 +3,7 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   
   def filter_ios_apps
+    li "filtering ios apps now"
     app_filters = params[:app]
     company_filters = params[:company]
     pageSize = params[:pageSize] || 50
