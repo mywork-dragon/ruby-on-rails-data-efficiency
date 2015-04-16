@@ -6,6 +6,31 @@ class FilterService
       company_results = company_results.where("fortune_1000_rank < ?", company_filters[:fortuneRank]) if company_filters[:fortuneRank]
       company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
+    end
+    
+    def filter_ios_apps(app_filters)
+      results = IosApp
+      if app_filters[:mobilePriority]
+        mobile_priorities = []
+        mobile_priorities << :high if app_filters[:mobilePriority].include?("High")
+        mobile_priorities << :medium if app_filters[:mobilePriority].include?("Medium")
+        mobile_priorities << :low if app_filters[:mobilePriority].include?("Low")
+        results = results.where(mobile_priority: priority_enums)
+      end
+      
+      results = results.joins(:ios_fb_ad_appearances) if app_filters[:adSpend]
+      
+      if app_filters[:userBases]
+        user_bases = []
+        user_bases << :elite if app_filters[:userBases].include?("Elite")
+        user_bases << :strong if app_filters[:userBases].include?("Strong")
+        user_bases << :moderate if app_filters[:userBases].include?("Moderate")
+        user_bases << :weak if app_filters[:userBases].include?("Weak")
+        results = where(user_base: user_bases)
+      end
+      
+      results = results.joins(:newest_ios_app_snapshot).where('released > ?', app_filters[:updatedMonthsAgo].to_i.months.ago.to_date) if app_filters[:updatedMonthsAgo]
+      results = results.joins(:newest_ios_app_snapshot => {:ios_app_categories_snapshots => :ios_app_categories}).where('ios_app_categories.name IN (?)', app_filters[:categories].join(',')) if app_filters[:updatedMonthsAgo]
       
     end
   
