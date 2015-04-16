@@ -82,8 +82,7 @@ class AppStoreSnapshotServiceWorker
     
       if ratings = a[:ratings]
         if ratings_current = ratings[:current]
-          ratings_current = ratings_current[:count]
-          s.ratings_current_count = ratings_current
+          s.ratings_current_count = ratings_current[:count]
           s.ratings_current_stars = ratings_current[:stars]
           
           if released = a[:released]
@@ -96,7 +95,7 @@ class AppStoreSnapshotServiceWorker
         
       
         if ratings_all = ratings[:all]
-          ratings_all_count = ratings_all[:count] #store in memory bc we need it later
+          ratings_all_count = ratings_all[:count].to_i #store in memory bc we need it later
           s.ratings_all_count = ratings_all_count
           
           s.ratings_all_stars = ratings_all[:stars]
