@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AndroidFbAdAppearancesTest < ActiveSupport::TestCase
+class AndroidFbAdAppearanceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
