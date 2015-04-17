@@ -85,16 +85,16 @@ class AdHerokuTransfer
       json.each do |ad_hash|
         
         aws_assignment_identifier = ad_hash['aws_assignment_id']
-        ios_app_app_identifier = ad_hash['app_store_id']
+        android_app_app_identifier = ad_hash['link'].gsub('https://play.google.com/store/apps/details?id=', "").strip
     
-        aa = IosFbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, ios_app: IosApp.find_by_app_identifier(ios_app_app_identifier)).first
+        aa = AndroidFbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, android_app: AndroidApp.find_by_app_identifier(android_app_app_identifier)).first
     
         puts "aa: #{aa}"
     
         if aa
-          li "IosFbAdAppearance #{aa} already in DB"
+          li "AndroidFbAdAppearance #{aa} already in DB"
         else
-          aa = IosFbAdAppearance.new(
+          aa = AndroidFbAdAppearance.new(
             aws_assignment_identifier: aws_assignment_identifier,
             hit_identifier: ad_hash['hit_id'],
             heroku_identifier: ad_hash['heroku_id'] 
@@ -105,13 +105,13 @@ class AdHerokuTransfer
           m_turk_worker = MTurkWorker.find_by_aws_identifier(aws_worker_identifier)
           aa.m_turk_worker = m_turk_worker
       
-          ios_app = IosApp.find_by_app_identifier(ios_app_app_identifier)
+          android_app = AndroidApp.find_by_app_identifier(android_app_app_identifier)
       
-          if ios_app.nil?
-            ios_app = IosApp.create!(app_identifier: ios_app_app_identifier)
+          if android_app.nil?
+            android_app = AndroidApp.create!(app_identifier: android_app_app_identifier)
           end
       
-          aa.ios_app = ios_app
+          aa.android_app = android_app
       
           aa.save!
         end
@@ -136,6 +136,7 @@ class AdHerokuTransfer
       add_ads_ios(options[:ads_json_file])
     end
     
+    #not used
     def create_csv
       CSV.open('/home/deploy/fb_ads_with_data.csv', "w+") do |csv|
         columns = %w(
