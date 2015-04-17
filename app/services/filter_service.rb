@@ -42,8 +42,8 @@ class FilterService
         queries << "where(user_base: #{user_bases})"
       end
       
-      if app_filters[:updatedMonthsAgo]
-        queries << "joins(:newest_ios_app_snapshot).where('released > ?', #{app_filters[:updatedMonthsAgo].to_i.months.ago.to_date})"
+      if app_filters[:updatedDaysAgo]
+        queries << "joins(:newest_ios_app_snapshot).where('released > ?', #{app_filters[:updatedDaysAgo].to_i.days.ago.to_date})"
       end
       
       if app_filters[:categories]

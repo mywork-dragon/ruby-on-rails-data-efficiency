@@ -1,0 +1,528 @@
+
+<div class="page page-table" data-ng-controller="tableCtrl">
+
+    <section class="panel panel-default table-dynamic">
+
+        <div id="dashboard-tag-display" class="table-filters">
+            <div><i class="fa fa-search"></i></div>
+            <div class="row" data-ng-controller="TagsDemoCtrl">
+                <tags-input ng-model="tags" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+                    <ul class="tag-list"><!-- ngRepeat: tag in tagList.items track by track(tag) -->
+                        <li class="tag-item ng-scope" ng-repeat="tag in tagList.items track by track(tag)" ng-class="{ selected: tag == tagList.selected }">
+                            <span class="ng-binding">foo</span>
+                            <a class="remove-button ng-binding" ng-click="tagList.remove($index)">×</a>
+                        </li><!-- end ngRepeat: tag in tagList.items track by track(tag) -->
+                        <li class="tag-item ng-scope" ng-repeat="tag in tagList.items track by track(tag)" ng-class="{ selected: tag == tagList.selected }">
+                            <span class="ng-binding">bar</span>
+                            <a class="remove-button ng-binding" ng-click="tagList.remove($index)">×</a>
+                        </li><!-- end ngRepeat: tag in tagList.items track by track(tag) -->
+                    </ul>
+                </tags-input>
+            </div>
+        </div>
+
+        <div class="panel-heading">
+
+           <span class="ui-select">
+                <select>
+                    <option>Mobile Priority</option>
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Company Size</option>
+                    <option>1-9</option>
+                    <option>10 - 99</option>
+                    <option>100 - 999</option>
+                    <option>1K - 10K</option>
+                    <option>10K +</option>
+                    <option>Fortune 1000</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Reported Ad Spend</option>
+                    <option>$0 - $1K</option>
+                    <option>$1K - $10K/month</option>
+                    <option>$10K - $100K/month</option>
+                    <option>$100K/month +</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Public / Acquired</option>
+                    <option>$0 - $1M</option>
+                    <option>$1M - $10M</option>
+                    <option>$10M - $100M</option>
+                    <option>$100M +</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Country</option>
+                    <option>Afghanistan</option>
+                    <option>Albania</option>
+                    <option>Algeria</option>
+                    <option>American Samoa</option>
+                    <option>Andorra</option>
+                    <option>Angola</option>
+                    <option>Anguilla</option>
+                    <option>Antarctica</option>
+                    <option>Antigua and Barbuda</option>
+                    <option>Argentina</option>
+                    <option>Armenia</option>
+                    <option>Aruba</option>
+                    <option>Australia</option>
+                    <option>Austria</option>
+                    <option>Azerbaijan</option>
+                    <option>Bahamas</option>
+                    <option>Bahrain</option>
+                    <option>Bangladesh</option>
+                    <option>Barbados</option>
+                    <option>Belarus</option>
+                    <option>Belgium</option>
+                    <option>Belize</option>
+                    <option>Benin</option>
+                    <option>Bermuda</option>
+                    <option>Bhutan</option>
+                    <option>Bolivia</option>
+                    <option>Bosnia and Herzegovina</option>
+                    <option>Botswana</option>
+                    <option>Bouvet Island</option>
+                    <option>Brazil</option>
+                    <option>British Indian Ocean Territory</option>
+                    <option>Brunei Darussalam</option>
+                    <option>Bulgaria</option>
+                    <option>Burkina Faso</option>
+                    <option>Burundi</option>
+                    <option>Cambodia</option>
+                    <option>Cameroon</option>
+                    <option>Canada</option>
+                    <option>Cape Verde</option>
+                    <option>Cayman Islands</option>
+                    <option>Central African Republic</option>
+                    <option>Chad</option>
+                    <option>Chile</option>
+                    <option>China</option>
+                    <option>Christmas Island</option>
+                    <option>Cocos Islands</option>
+                    <option>Colombia</option>
+                    <option>Comoros</option>
+                    <option>Congo</option>
+                    <option>Congo, Democratic Republic of the</option>
+                    <option>Cook Islands</option>
+                    <option>Costa Rica</option>
+                    <option>Cote d'Ivoire</option>
+                    <option>Croatia</option>
+                    <option>Cuba</option>
+                    <option>Cyprus</option>
+                    <option>Czech Republic</option>
+                    <option>Denmark</option>
+                    <option>Djibouti</option>
+                    <option>Dominica</option>
+                    <option>Dominican Republic</option>
+                    <option>Ecuador</option>
+                    <option>Egypt</option>
+                    <option>El Salvador</option>
+                    <option>Equatorial Guinea</option>
+                    <option>Eritrea</option>
+                    <option>Estonia</option>
+                    <option>Ethiopia</option>
+                    <option>Falkland Islands</option>
+                    <option>Faroe Islands</option>
+                    <option>Fiji</option>
+                    <option>Finland</option>
+                    <option>France</option>
+                    <option>French Guiana</option>
+                    <option>French Polynesia</option>
+                    <option>Gabon</option>
+                    <option>Gambia</option>
+                    <option>Georgia</option>
+                    <option>Germany</option>
+                    <option>Ghana</option>
+                    <option>Gibraltar</option>
+                    <option>Greece</option>
+                    <option>Greenland</option>
+                    <option>Grenada</option>
+                    <option>Guadeloupe</option>
+                    <option>Guam</option>
+                    <option>Guatemala</option>
+                    <option>Guinea</option>
+                    <option>Guinea-Bissau</option>
+                    <option>Guyana</option>
+                    <option>Haiti</option>
+                    <option>Heard Island and McDonald Islands</option>
+                    <option>Honduras</option>
+                    <option>Hong Kong</option>
+                    <option>Hungary</option>
+                    <option>Iceland</option>
+                    <option>India</option>
+                    <option>Indonesia</option>
+                    <option>Iran</option>
+                    <option>Iraq</option>
+                    <option>Ireland</option>
+                    <option>Israel</option>
+                    <option>Italy</option>
+                    <option>Jamaica</option>
+                    <option>Japan</option>
+                    <option>Jordan</option>
+                    <option>Kazakhstan</option>
+                    <option>Kenya</option>
+                    <option>Kiribati</option>
+                    <option>Kuwait</option>
+                    <option>Kyrgyzstan</option>
+                    <option>Laos</option>
+                    <option>Latvia</option>
+                    <option>Lebanon</option>
+                    <option>Lesotho</option>
+                    <option>Liberia</option>
+                    <option>Libya</option>
+                    <option>Liechtenstein</option>
+                    <option>Lithuania</option>
+                    <option>Luxembourg</option>
+                    <option>Macao</option>
+                    <option>Madagascar</option>
+                    <option>Malawi</option>
+                    <option>Malaysia</option>
+                    <option>Maldives</option>
+                    <option>Mali</option>
+                    <option>Malta</option>
+                    <option>Marshall Islands</option>
+                    <option>Martinique</option>
+                    <option>Mauritania</option>
+                    <option>Mauritius</option>
+                    <option>Mayotte</option>
+                    <option>Mexico</option>
+                    <option>Micronesia</option>
+                    <option>Moldova</option>
+                    <option>Monaco</option>
+                    <option>Mongolia</option>
+                    <option>Montenegro</option>
+                    <option>Montserrat</option>
+                    <option>Morocco</option>
+                    <option>Mozambique</option>
+                    <option>Myanmar</option>
+                    <option>Namibia</option>
+                    <option>Nauru</option>
+                    <option>Nepal</option>
+                    <option>Netherlands</option>
+                    <option>Netherlands Antilles</option>
+                    <option>New Caledonia</option>
+                    <option>New Zealand</option>
+                    <option>Nicaragua</option>
+                    <option>Niger</option>
+                    <option>Nigeria</option>
+                    <option>Norfolk Island</option>
+                    <option>North Korea</option>
+                    <option>Norway</option>
+                    <option>Oman</option>
+                    <option>Pakistan</option>
+                    <option>Palau</option>
+                    <option>Palestinian Territory</option>
+                    <option>Panama</option>
+                    <option>Papua New Guinea</option>
+                    <option>Paraguay</option>
+                    <option>Peru</option>
+                    <option>Philippines</option>
+                    <option>Pitcairn</option>
+                    <option>Poland</option>
+                    <option>Portugal</option>
+                    <option>Puerto Rico</option>
+                    <option>Qatar</option>
+                    <option>Romania</option>
+                    <option>Russian Federation</option>
+                    <option>Rwanda</option>
+                    <option>Saint Helena</option>
+                    <option>Saint Kitts and Nevis</option>
+                    <option>Saint Lucia</option>
+                    <option>Saint Pierre and Miquelon</option>
+                    <option>Saint Vincent and the Grenadines</option>
+                    <option>Samoa</option>
+                    <option>San Marino</option>
+                    <option>Sao Tome and Principe</option>
+                    <option>Saudi Arabia</option>
+                    <option>Senegal</option>
+                    <option>Serbia</option>
+                    <option>Seychelles</option>
+                    <option>Sierra Leone</option>
+                    <option>Singapore</option>
+                    <option>Slovakia</option>
+                    <option>Slovenia</option>
+                    <option>Solomon Islands</option>
+                    <option>Somalia</option>
+                    <option>South Africa</option>
+                    <option>South Georgia</option>
+                    <option>South Korea</option>
+                    <option>Spain</option>
+                    <option>Sri Lanka</option>
+                    <option>Sudan</option>
+                    <option>Suriname</option>
+                    <option>Svalbard and Jan Mayen</option>
+                    <option>Swaziland</option>
+                    <option>Sweden</option>
+                    <option>Switzerland</option>
+                    <option>Syrian Arab Republic</option>
+                    <option>Taiwan</option>
+                    <option>Tajikistan</option>
+                    <option>Tanzania</option>
+                    <option>Thailand</option>
+                    <option>The Former Yugoslav Republic of Macedonia</option>
+                    <option>Timor-Leste</option>
+                    <option>Togo</option>
+                    <option>Tokelau</option>
+                    <option>Tonga</option>
+                    <option>Trinidad and Tobago</option>
+                    <option>Tunisia</option>
+                    <option>Turkey</option>
+                    <option>Turkmenistan</option>
+                    <option>Tuvalu</option>
+                    <option>Uganda</option>
+                    <option>Ukraine</option>
+                    <option>United Arab Emirates</option>
+                    <option>United Kingdom</option>
+                    <option>United States</option>
+                    <option>United States Minor Outlying Islands</option>
+                    <option>Uruguay</option>
+                    <option>Uzbekistan</option>
+                    <option>Vanuatu</option>
+                    <option>Vatican City</option>
+                    <option>Venezuela</option>
+                    <option>Vietnam</option>
+                    <option>Virgin Islands, British</option>
+                    <option>Virgin Islands, U.S.</option>
+                    <option>Wallis and Futuna</option>
+                    <option>Western Sahara</option>
+                    <option>Yemen</option>
+                    <option>Zambia</option>
+                    <option>Zimbabwe</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>SDKs</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Vertical</option>
+                    <option>Entertainment</option>
+                    <option>Books</option>
+                    <option>Education</option>
+                    <option>Games</option>
+                    <option>Family</option>
+                    <option>Trivia</option>
+                    <option>Travel</option>
+                    <option>Reference</option>
+                    <option>Lifestyle</option>
+                    <option>Utilities</option>
+                    <option>Business</option>
+                    <option>Catalogs</option>
+                    <option>Music</option>
+                    <option>Photo & Video</option>
+                    <option>News</option>
+
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Downloads</option>
+                    <option>0 - 1K</option>
+                    <option>1K - 10K</option>
+                    <option>10K - 100K</option>
+                    <option>100K - 10M</option>
+                    <option>10M - 100M</option>
+                    <option>100M +</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Last Updated</option>
+                    <option>0 - 30 Days</option>
+                    <option>30 - 90 Days</option>
+                    <option>90 - 180 Days</option>
+                    <option>180 Days +</option>
+                </select>
+            </span>
+            <span class="ui-select">
+                <select>
+                    <option>Average Update</option>
+                    <option>0 - 30 Days</option>
+                    <option>30 - 90 Days</option>
+                    <option>90 - 180 Days</option>
+                    <option>180 Days +</option>
+                </select>
+            </span>
+
+        </div>
+
+
+    </section>
+
+    <section class="panel panel-default table-dynamic">
+        <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Results</strong></div>
+
+        <div id="results-table-wrapper">
+
+            <table class="table table-bordered table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th><div class="th">
+                            App Name
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('name') "
+                                  data-ng-class="{active: row == 'name'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-name') "
+                                  data-ng-class="{active: row == '-name'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Company
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('price') "
+                                  data-ng-class="{active: row == 'price'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-price') "
+                                  data-ng-class="{active: row == '-price'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Mobile Priority
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('sales') "
+                                  data-ng-class="{active: row == 'sales'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-sales') "
+                                  data-ng-class="{active: row == '-sales'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Downloads
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Genre
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Last Updated
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Average Update Timespan
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Company Size
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Funding
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Reported Ad Spend
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Country
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                        <th><div class="th">
+                            Details
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('rating') "
+                                  data-ng-class="{active: row == 'rating'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-rating') "
+                                  data-ng-class="{active: row == '-rating'}"></span>
+                        </div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="store in currentPageStores">
+                        <td>{{store.name}}</td>
+                        <td><a href="#">{{store.company}}</a></td>
+                        <td>{{store.priority}}</td>
+                        <td>{{store.downloads}}</td>
+                        <td>{{store.genre}}</td>
+                        <td>{{store.lastUpdated}}</td>
+                        <td>{{store.averageUpdate}}</td>
+                        <td>{{store.companySize}}</td>
+                        <td>{{store.funding}}</td>
+                        <td>{{store.adSpend}}</td>
+                        <td>{{store.country}}</td>
+                        <td><a href="/dashboard/app-details">{{store.details}}</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <footer class="table-footer">
+            <div class="row">
+                <div class="col-md-6 page-num-info">
+                    <span>
+                        Show 
+                        <select data-ng-model="numPerPage"
+                                data-ng-options="num for num in numPerPageOpt"
+                                data-ng-change="onNumPerPageChange()">
+                        </select> 
+                        entries per page
+                    </span>
+                </div>
+                <div class="col-md-6 text-right pagination-container">
+                    <pagination class="pagination-sm"
+                                ng-model="currentPage"
+                                total-items="filteredStores.length"
+                                max-size="4"
+                                ng-change="select(currentPage)"
+                                items-per-page="numPerPage"
+                                rotate="false"
+                                boundary-links="true"></pagination>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+</div>
