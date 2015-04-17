@@ -33,9 +33,6 @@ angular.module('appApp')
 
         return $http({
           method: 'POST',
-          headers: {
-            'Content-Type': 'json'
-          },
           url: 'http://localhost:3000/api/filter_ios_apps',
           data: requestData
         }).success(function(data) {
@@ -57,92 +54,7 @@ angular.module('appApp')
   .controller("TableCtrl", ["$scope", "$filter", "$rootScope",
     function($scope, $filter, $rootScope) {
       var init;
-      return $rootScope.apps = [
-        {
-          id: 39849301,
-          name: "TEST APP",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "Low",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2015-03-21",
-          adSpend: true,
-          company: {
-            id: 123456789,
-            name: "Coffee, Inc.",
-            fortuneRank: 234,
-            funding: 12000000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "US"
-            }
-          }
-        }, {
-          id: 19849301,
-          name: "APP",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "High",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2014-03-30",
-          adSpend: true,
-          company: {
-            id: 123456789,
-            name: "Piacitelli, Inc.",
-            fortuneRank: 98,
-            funding: 5670000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "IN"
-            }
-          }
-        }, {
-          id: 29849301,
-          name: "Patrick's App",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "High",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2015-03-30",
-          adSpend: false,
-          company: {
-            id: 123456789,
-            name: "Corporation, Inc.",
-            fortuneRank: 498,
-            funding: 3450000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "CA"
-            }
-          }
-        }],
+      return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
