@@ -59,8 +59,8 @@ class FilterService
     end
     
     def app_keywords_query(keywords)
-      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
-      query = "joins(:newest_ios_app_snapshot).where(#{name_query_array.join(' OR ')})"
+      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \"%#{k}%\""}
+      query = "joins(:newest_ios_app_snapshot).where(\'#{name_query_array.join(' OR ')}\')"
       return query
       
     end
