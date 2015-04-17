@@ -2,14 +2,16 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
   
-  before_filter :disable_cors
+  # before_filter :disable_cors
+  #
+  # def disable_cors
+  #   puts "blah"
+  #   headers['Access-Control-Allow-Origin'] = '*'
+  #   headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+  #   headers['Access-Control-Request-Method'] = '*'
+  #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  # end
   
-  def disable_cors
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
-    headers['Access-Control-Request-Method'] = '*'
-    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  end
   
   def filter_ios_apps
     app_filters = params[:app]
