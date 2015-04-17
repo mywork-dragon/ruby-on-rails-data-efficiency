@@ -3872,8 +3872,8 @@ fieldset[disabled] .btn-danger.active {
   position: absolute;
   top: 0px;
   bottom: 0;
-  left: -270px;
-  width: 270px;
+  left: -220px;
+  width: 220px;
   padding: 0;
   background-color: #383d43;
   -webkit-overflow-scrolling: touch;
@@ -4017,13 +4017,13 @@ fieldset[disabled] .btn-danger.active {
   left: 0; }
 
 .on-canvas .top-header .top-nav {
-  margin-left: 270px; }
+  margin-left: 220px; }
 
 @media (min-width: 768px) {
   .on-canvas .top-header .top-nav {
     margin-left: 0; } }
 .on-canvas #content {
-  left: 270px; }
+  left: 220px; }
 
 .slimScrollDiv {
   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
@@ -4078,7 +4078,7 @@ fieldset[disabled] .btn-danger.active {
     position: absolute;
     left: 100%;
     top: 0;
-    width: 270px;
+    width: 220px;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     -ms-border-radius: 0px;
@@ -4141,14 +4141,14 @@ fieldset[disabled] .btn-danger.active {
 @media (min-width: 768px) {
   .top-header .logo {
     display: inline-block;
-    width: 270px;
+    width: 220px;
     background-color: #0393dd;
     color: #ffffff;
     border-right: none; }
 
   #nav-container .logo {
     display: inline-block;
-    width: 270px;
+    width: 220px;
     background-color: #0393dd;
     color: #ffffff;
     border-right: none; }
@@ -4244,7 +4244,7 @@ fieldset[disabled] .btn-danger.active {
 
 @media (min-width: 768px) {
   .top-header .top-nav {
-    padding: 0 0 0 270px; }
+    padding: 0 0 0 220px; }
 
   .nav-min .top-header .top-nav {
     padding: 0 0 0 60px; } }
@@ -6957,7 +6957,7 @@ label {
   #content {
     top: 80px;
     width: auto;
-    left: 270px; } }
+    left: 220px; } }
 .body-special #content {
   z-index: 2;
   top: 0;
