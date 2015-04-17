@@ -11,14 +11,14 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,700,600,400' rel='stylesheet' type='text/css'>
 
     <!-- Include Jquery in the vendor folder -->
-    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="./bower_components/jquery/dist/jquery.min.js"></script>
 
     <!-- Theme's own CSS file -->
-    <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../bower_components/weather-icons/css/weather-icons.min.css">
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="./bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./bower_components/weather-icons/css/weather-icons.min.css">
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/app/app/styles/main.css">
 
   </head>
   <body data-ng-app="appApp" id="app" data-custom-background="" data-off-canvas-nav="" data-ng-controller="MainCtrl">
@@ -27,13 +27,13 @@
       <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
 
 
-        <aside data-ng-include=" 'views/navigation.html' " id="nav-container"></aside>
+        <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container"></aside>
       </div>
 
       <div class="view-container">
 
         <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
-          <section data-ng-include=" 'views/header.html' " id="header" class="top-header"></section>
+          <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
 
         <section data-ng-view="" id="content" class="animate-fade-up"></section>
@@ -54,46 +54,46 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-animate/angular-animate.js"></script>
-    <script src="../bower_components/angular-route/angular-route.js"></script>
-    <script src="../bower_components/underscore/underscore.js"></script>
-    <script src="../bower_components/lodash/dist/lodash.compat.js"></script>
-    <script src="../bower_components/angular-wizard/dist/angular-wizard.js"></script>
-    <script src="../bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../bower_components/rangy/rangy-core.min.js"></script>
-    <script src="../bower_components/rangy/rangy-cssclassapplier.min.js"></script>
-    <script src="../bower_components/rangy/rangy-selectionsaverestore.min.js"></script>
-    <script src="../bower_components/rangy/rangy-serializer.min.js"></script>
-    <script src="../bower_components/textAngular/src/textAngular.js"></script>
-    <script src="../bower_components/textAngular/src/textAngular-sanitize.js"></script>
-    <script src="../bower_components/textAngular/src/textAngularSetup.js"></script>
-    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="../bower_components/chartjs/Chart.js"></script>
-    <script src="../bower_components/raphael/raphael.js"></script>
-    <script src="../bower_components/mocha/mocha.js"></script>
-    <script src="../bower_components/morrisjs/morris.js"></script>
-    <script src="../bower_components/flot/jquery.flot.js"></script>
-    <script src="../bower_components/jquery.sparkline.build/dist/jquery.sparkline.js"></script>
-    <script src="../bower_components/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="./bower_components/jquery/dist/jquery.js"></script>
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/angular-animate/angular-animate.js"></script>
+    <script src="./bower_components/angular-route/angular-route.js"></script>
+    <script src="./bower_components/underscore/underscore.js"></script>
+    <script src="./bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="./bower_components/angular-wizard/dist/angular-wizard.js"></script>
+    <script src="./bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+    <script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./bower_components/rangy/rangy-core.min.js"></script>
+    <script src="./bower_components/rangy/rangy-cssclassapplier.min.js"></script>
+    <script src="./bower_components/rangy/rangy-selectionsaverestore.min.js"></script>
+    <script src="./bower_components/rangy/rangy-serializer.min.js"></script>
+    <script src="./bower_components/textAngular/src/textAngular.js"></script>
+    <script src="./bower_components/textAngular/src/textAngular-sanitize.js"></script>
+    <script src="./bower_components/textAngular/src/textAngularSetup.js"></script>
+    <script src="./bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="./bower_components/chartjs/Chart.js"></script>
+    <script src="./bower_components/raphael/raphael.js"></script>
+    <script src="./bower_components/mocha/mocha.js"></script>
+    <script src="./bower_components/morrisjs/morris.js"></script>
+    <script src="./bower_components/flot/jquery.flot.js"></script>
+    <script src="./bower_components/jquery.sparkline.build/dist/jquery.sparkline.js"></script>
+    <script src="./bower_components/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="../app/scripts/app.js"></script>
-    <script src="scripts/directives.js"></script>
-    <script src="scripts/controllers/main.js"></script>
-    <script src="scripts/services.js"></script>
+    <script src="./app/scripts/app.js"></script>
+    <script src="/app/app/scripts/directives.js"></script>
+    <script src="/app/app/scripts/controllers/main.js"></script>
+    <script src="/app/app/scripts/services.js"></script>
     <!-- endbuild -->
 
     <!-- Custom Scripts -->
-    <script src="js/extras.js"></script>
-    <script src="js/gmap.js"></script>
-    <script src="js/other_charts.js"></script>
-    <script src="js/bootstrap-angular.min.js"></script>
+    <script src="/app/app/js/extras.js"></script>
+    <script src="/app/app/js/gmap.js"></script>
+    <script src="/app/app/js/other_charts.js"></script>
+    <script src="/app/app/js/bootstrap-angular.min.js"></script>
 
   </body>
 </html>

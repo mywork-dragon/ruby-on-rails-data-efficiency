@@ -24,7 +24,7 @@ angular.module('appApp')
           headers: {
             'Content-Type': 'json'
           },
-          url: 'http://localhost:3000/api/filter_ios_apps',
+          url: 'http://mightysignal.com/api/filter_ios_apps',
           data: {app: {adSpend: true}}
         }).success(function(data) {
           console.log(data);
