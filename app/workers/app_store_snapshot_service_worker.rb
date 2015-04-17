@@ -6,16 +6,6 @@ class AppStoreSnapshotServiceWorker
   
   MAX_TRIES = 3
   
-  # def perform(ios_app_snapshot_job_id, ios_app_ids)
-  #
-  #   ios_app_ids.each do |ios_app_id|
-  #     next unless IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id, ios_app_id: ios_app_id).blank?
-  #
-  #     save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
-  #   end
-  #
-  # end
-  
   def perform(ios_app_snapshot_job_id, ios_app_id)
     
     save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
@@ -137,11 +127,7 @@ class AppStoreSnapshotServiceWorker
         end
       end
     
-      puts "#0"
-    
       s.save!
-      
-      puts "#1"
       
       #set user base
       if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
@@ -156,12 +142,9 @@ class AppStoreSnapshotServiceWorker
           user_base = :weak
         end
         
-        puts "#3"
-        
         ios_app.user_base = user_base
       end
       
-      puts "#4"
       
       #set mobile priority
       if released = a[:released]
@@ -173,21 +156,13 @@ class AppStoreSnapshotServiceWorker
           mobile_priority = :low
         end
         
-        puts "#5"
-        
         ios_app.mobile_priority = mobile_priority
       end
-      
-      puts "#6"
       
       #update newest snapshot
       ios_app.newest_ios_app_snapshot = s
       
-      puts "#7"
-      
       ios_app_save_success = ios_app.save
-      
-      puts "#8, #{ios_app_save_success}"
     
     rescue => e
       ise = IosAppSnapshotException.create(ios_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
