@@ -51,7 +51,8 @@ angular.module('appApp')
 
         return $http({
           method: 'POST',
-          url: 'http://localhost:3000/api/filter_ios_apps',
+          url: 'http://mightysignal.com/api/filter_ios_apps',
+					//url: 'http://localhost:3000/api/filter_ios_apps',
           data: requestData
         }).success(function(data) {
           console.log(data);
