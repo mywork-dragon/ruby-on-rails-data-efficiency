@@ -29,7 +29,35 @@ angular.module('appApp')
           } else {
             requestData[tag.parameter] = tag.value
           }
+
+          switch(tag) {
+            case 'mobilePriority':
+              requestData[app][tag.parameter] = [tag.value];
+              break;
+            case 'adSpend':
+              requestData[app][tag.parameter] = tag.value;
+              break;
+            case 'userBases':
+              requestData[app][tag.parameter] = [tag.value];
+              break;
+            case 'updatedDaysAgo':
+              requestData[app][tag.parameter] = tag.value;
+              break;
+            case 'categories':
+              requestData[app][tag.parameter] = [tag.value];
+              break;
+            case 'fortuneRank':
+              requestData[company][tag.parameter] = tag.value;
+              break;
+            case 'customKeywords':
+              requestData[tag.parameter] = [tag.value];
+              break;
+          }
+
+
         });
+
+        requestData = {"app": requestData};
 
         return $http({
           method: 'POST',
