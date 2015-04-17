@@ -37,16 +37,6 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="funding" ng-change="onFilterChange('funding', funding, 'Funding')">
-                  <option value="">Funding</option>
-                  <option value="0">Any Amount</option>
-                  <option value="500000">Above $500K</option>
-                  <option value="5000000">Above $5M</option>
-                  <option value="50000000">Above $50M</option>
-                  <option value="100000000">Above $100M / IPO</option>
-                </select>
-            </span>
-            <span class="ui-select">
                 <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend')">
                   <option value="">Reported Ad Spend</option>
                   <option value="true">Yes</option>
@@ -145,7 +135,7 @@
                                   data-ng-class="{active: row == '-userBases'}"></span>
           </div></th>
           <th><div class="th">
-            Genre
+            Categories
                             <span class="glyphicon glyphicon-chevron-up"
                                   data-ng-click=" order('rating') "
                                   data-ng-class="{active: row == 'rating'}"></span>
@@ -172,30 +162,20 @@
                                   data-ng-class="{active: row == '-company.fortuneRank'}"></span>
           </div></th>
           <th><div class="th">
-            Funding
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('company.funding') "
-                                  data-ng-class="{active: row == 'company.funding'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-company.funding') "
-                                  data-ng-class="{active: row == '-company.funding'}"></span>
-          </div></th>
-          <th><div class="th">
             Details
           </div></th>
         </tr>
         </thead>
         <tbody>
         <tr data-ng-repeat="app in $root.apps">
-          <td>{{app.name}}</td>
+          <td>{{app.app.name}}</td>
           <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-          <td>{{app.mobilePriority}}</td>
-          <td>{{app.userBases.join(', ')}}</td>
-          <td></td>
-          <td>{{app.lastUpdated}}</td>
+          <td>{{app.app.mobilePriority}}</td>
+          <td>{{app.app.userBases.join(', ')}}</td>
+          <td>{{app.app.categories}}</td>
+          <td>{{app.app.lastUpdated}}</td>
           <td>{{app.company.fortuneRank}}</td>
-          <td>{{app.company.funding | currency : "$" : 0}}</td>
-          <td><a href="/app/{{app.id}}">Details</a></td>
+          <td><a href="/app/{{app.app.id}}">Details</a></td>
         </tr>
         </tbody>
       </table>
