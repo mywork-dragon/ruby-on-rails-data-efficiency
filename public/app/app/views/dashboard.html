@@ -63,22 +63,8 @@
             </span>
             <span class="ui-select">
                 <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category')">
-                  <option value="">Category</option>
-                  <option>Entertainment</option>
-                  <option>Books</option>
-                  <option>Education</option>
-                  <option>Games</option>
-                  <option>Family</option>
-                  <option>Trivia</option>
-                  <option>Travel</option>
-                  <option>Reference</option>
-                  <option>Lifestyle</option>
-                  <option>Utilities</option>
-                  <option>Business</option>
-                  <option>Catalogs</option>
-                  <option>Music</option>
-                  <option>Photo & Video</option>
-                  <option>News</option>
+                  <option value="">Categories</option>
+                  <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
                 </select>
             </span>
             <span id="dashboardSearchBox">
@@ -171,8 +157,8 @@
           <td>{{app.app.name}}</td>
           <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
           <td>{{app.app.mobilePriority}}</td>
-          <td>{{app.app.userBases.join(', ')}}</td>
-          <td>{{app.app.categories}}</td>
+          <td>{{app.app.userBase}}</td>
+          <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated}}</td>
           <td>{{app.company.fortuneRank}}</td>
           <td><a href="/app/{{app.app.id}}">Details</a></td>
