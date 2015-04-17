@@ -35,10 +35,10 @@ class FilterService
       
       if app_filters[:userBases]
         user_bases = []
-        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("Elite")
-        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("Strong")
-        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("Moderate")
-        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("Weak")
+        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
+        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
+        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
+        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
         queries << "where(user_base: #{user_bases})"
       end
       
