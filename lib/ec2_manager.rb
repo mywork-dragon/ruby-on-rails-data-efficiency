@@ -1,6 +1,7 @@
 class Ec2Manager
 
   PROXY_PRIVATE_KEY_PATH = '/Users/jason/penpals/important_stuff/proxy.pem'
+  TOR_SETUP_SCRIPT_PATH = './server/tor_setup.sh'
 
   class << self
   
@@ -19,7 +20,7 @@ class Ec2Manager
       
       
       #Aws.config(access_key_id: access_key_id, secret_access_key: secret_access_key)
-      creds = Aws::Credentials.new(access_key_id, secret_access_key)          
+      creds = Aws::Credentials.new(access_key_id, secret_access_key)        
  
       ec2                 = Aws::EC2::Client.new(credentials: creds, region: options[:region])            # choose region here
       image_id            = options[:image_id]                            # which AMI to search for and use
@@ -53,6 +54,8 @@ class Ec2Manager
       security_group = resource.security_groups.find{|sg| sg.group_name == security_group_name }
       puts "Using security group: #{security_group.group_name}" 
  
+      user_data = Base64.encode64(File.open(TOR_SETUP_SCRIPT_PATH, 'rb') { |f| f.read })
+ 
       # create the instance (and launch it)
       instance = resource.create_instances( 
                                             image_id: image.id, 
@@ -61,12 +64,16 @@ class Ec2Manager
                                             max_count: 1,
                                             security_group_ids: [security_group.id],
                                             key_name: key_pair.name,
-                                            monitoring: {enabled: true} 
+                                            monitoring: {enabled: true},
+                                            user_data: user_data
+                                            
                                           ).first
       puts "Launching machine ..."
  
-      sleep 0.25  #make sure it's running
+      sleep 5.0  #make sure it's running
       instance.wait_until_running
+ 
+      instance.load
  
       puts "Running at public IP #{instance.public_ip_address}, private IP #{instance.private_ip_address}!"
            
@@ -88,26 +95,88 @@ class Ec2Manager
                         key_pair_name: 'proxy', 
                         security_group_name: 'proxy'
                       )
+                      
+      #configure_proxy_with_tor(instance.instance.ip_address)
       
-      # public_ip = instance.public_ip_address
-      #
-      # puts "SSHing into proxy (Public IP #{public_ip})"
-      # `ssh -i #{PROXY_PRIVATE_KEY_PATH} ubuntu@#{public_ip}`
-      #
-      # `sudo su`
-      #
-      # puts "Installing tinyproxy..."
-      # `sudo apt-get install tinyproxy`
-      #
-      # puts 'Editing tinyproxy configuration...'
-      # `sed -i -e 's/Allow\ 127.0.0.1/#Allow\ 127.0.0.1/g' /etc/tinyproxy.conf`
-      #
-      # puts 'Restarting tinyproxy...'
-      # `sudo service tinyproxy restart`
-      #
-      # puts 'Proxy is ready!'
+      instance
+    end
+    
+    def configure_proxy_with_tor(public_ip)
+      
+      Net::SSH.start(public_ip, 'ubuntu', keys: [PROXY_PRIVATE_KEY_PATH]) do|ssh|
+        ssh.request_pty
+        puts ssh.exec!('who')
+        
+        puts 'Becoming the superuser...'
+        puts ssh.exec!('sudo su')
+  #
+  #       puts 'Adding TOR sources for APT...'
+  #       add_tor_sources_cmd = %q(sudo cat <<EOF >> /etc/apt/sources.list
+  # deb http://deb.torproject.org/torproject.org trusty main
+  # deb-src http://deb.torproject.org/torproject.org trusty main
+  # EOF)
+  #       ssh.exec!(add_tor_sources_cmd)
+  #
+  #       ssh.exec 'gpg --keyserver keys.gnupg.net --recv 886DDD89'
+  #       ssh.exec 'gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -'
+  #
+  #       puts 'Installing TOR...'
+  #       ssh.exec 'apt-get update'
+  #       ssh.exec 'apt-get install tor deb.torproject.org-keyring -y'
+  #
+  #       puts 'Editing TOR configuration...'
+  #       edit_tor_config_cmd = %q(cat <<EOF >> /etc/tor/torrc
+  # ExitNodes {us}
+  #
+  # SocksListenAddress `hostname -I`
+  # SocksPolicy accept *
+  # EOF)
+  #       ssh.exec(edit_tor_config_cmd)
+  #
+  #       puts 'Restarting TOR...'
+  #       ssh.exec 'service tor restart'
+  #
+  #       puts 'Exiting SSH session...'
+      end
+      
+    end
+    
+    # Launch proxies
+    # @param number Number of proxies to launch
+    def launch_proxies(number)
+      
+      ret = []
+      
+      number.times do |n|
+        
+        puts "Proxy #{n+1} of #{number}..."
+        
+        begin
+          instance = launch_proxy
+          ret << {public_ip: instance.public_ip_address, private_ip: instance.private_ip_address}
+        rescue
+          puts "Caught Exception. Stopping here."
+          break
+        end
+        
+        puts ''
+        
+      end
+      
+      ret
+    end
+  
+    def add_proxies_to_db(a)
+    
+      a.each do |h|
+      
+        p = Proxy.create!(private_ip: h[:private_ip], public_ip: h[:public_ip], active: true, busy: false)
+      
+      end
+    
     end
   
   end
+  
 
 end

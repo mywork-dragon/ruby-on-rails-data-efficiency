@@ -23,7 +23,7 @@ class BizibleJob2 < BizibleJob1
         
         #break if i == 200
         
-        company_name = UrlManipulator.url_with_base_only(company_url)
+        company_name = UrlHelper.url_with_base_only(company_url)
         c = Company.find_by_name(company_name)
         
         csv_line = [company_name]
@@ -113,8 +113,8 @@ class BizibleJob2 < BizibleJob1
       File.readlines(Rails.root + "db/bizible/bizible_job2_linkedin_2nd_degree.txt")[range].each_with_index do |l, i|
         company_name = l.strip!
         
-        name = UrlManipulator.url_with_base_only(company_name)
-        website = UrlManipulator.url_with_http_only(company_name)
+        name = UrlHelper.url_with_base_only(company_name)
+        website = UrlHelper.url_with_http_only(company_name)
         
         company = Company.find_by_name(name)
 

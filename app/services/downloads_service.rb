@@ -5,76 +5,63 @@ GOOGLE_WORD_LIMIT = 32
   
   class << self
   
-    def downloads_attributes(app_attrs={})
+    def attributes(app_attrs={})
       
-      # if app_attrs[:description]
-      #   query_url_safe = CGI::escape(app_attrs[:description])
-      # else
-      #   query_url_safe = CGI::escape(app_attrs[:title])
-      # end
+      @app_identifier = app_attrs[:app_identifier]
+      name = app_attrs[:name]
       
-      description = app_attrs[:description]
-      
-      google_special_chars = ['"', '+', '&', '$', '#', '-', '_']
-      
-      google_special_chars.each do |c|
-        description.gsub!(c, '')
-      end
-      
-      description_truncated = description.split[0...(GOOGLE_WORD_LIMIT - 1)].join(' ')  # -1 because using site
-      
-      query_url_safe = CGI::escape(app_attrs[:title] + ' ' + description_truncated)
-      
-      full_query = "site:#{SITE}+#{query_url_safe}"
-
-      url = "http://www.google.com/search?num=30&q=#{full_query}"
-      
-      #li "url: #{url}"
-        
-      page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
-
-      html = Nokogiri::HTML(page)
-    
-      url = nil
-    
-      html.search("cite").map{|x| x.inner_text}.each do |link|
-        if link.include?(SITE)
-          url = link
-          break
-        end
-      end
-      
-      #ld "XYO URL: #{url}"
-      
-      return {downloads: nil} if url.nil?
+      query = CGI::escape(name.gsub(/[^0-9a-z ]/i, ''))
+  
+      url = app_xyo_url(query)
       
       ret = {}
       
-      html = downloads_html(url)
+      @html = downloads_html(url)
       
-      ret[:downloads] = downloads(html)
+      raise "Page doesn't have link to app" if !page_has_link_to_app?
       
+      ret[:downloads] = downloads
+
       ret
-      
-      #ratings(html)
     end
     
     #private
     
-    def downloads_html(url)
-      url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{url}"
-      #puts "url_cache: #{url_cache}"
+    def app_xyo_url(query)
+      page = Tor.get("http://xyo.net/iphone/#{query}/")
+      html = Nokogiri::HTML(page)
+      app_boxes = html.css('.search-suggestion > .app-box')
       
-      page = open(url_cache, 'User-Agent' => UserAgent.random_web)
+      links = []
+      
+      app_boxes.each do |app_box|
+        links << app_box['href']
+      end
+      
+      raise "No links found" if links.empty?    
+       
+      links.first
+    end
+    
+    def downloads_html(url)
+      page = Tor.get(url)
       Nokogiri::HTML(page)
     end 
     
+    def page_has_link_to_app?
+      @html.css('a.install.button').each do |node|
+        return true if node['href'].include?("id#{@app_identifier}")
+      end
+      
+      false
+    end
+    
     # In dollas
     # @author Jason Lew
-    def downloads(html)
-      dl_s = html.at_css('.downloads').at_css('.amount').children[1].text.strip
+    def downloads
+      dl_s = @html.at_css('.downloads').at_css('.amount').children[1].text.strip
       
-      return nil if dl_s.blank?
+      raise "Could not find downloads" if dl_s.blank?
       
       regex_thousands = /^(\d)*(\.)*(\d)*[Kk]{1}$/x
       
@@ -90,6 +77,8 @@ GOOGLE_WORD_LIMIT = 32
           return dl_s.to_i
         end
       end
+      
+      raise "End of downloads method"
     end
 
   end

@@ -10,4 +10,9 @@ namespace 'apps' do
     AdHerokuTransfer.create_csv
   end
   
+  # desc 'Snapshot iOS apps'
+  # task :snapshot_ios_apps => [:environment] do
+  #   AppStoreSnapshotService.run
+  # end
+  
 end

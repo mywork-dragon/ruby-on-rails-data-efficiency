@@ -32,7 +32,7 @@ class CbService
         
         # closed = html.css("div.details.definition-list").children.map(&:text).include?('Closed:')
         
-        if UrlManipulator.url_with_base_only(company_url.downcase).include?(domain.downcase)
+        if UrlHelper.url_with_base_only(company_url.downcase).include?(domain.downcase)
           @html = html
           break
         end

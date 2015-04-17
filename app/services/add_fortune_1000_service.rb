@@ -6,7 +6,7 @@ class AddFortune1000Service
       
       CSV.foreach("db/fortune/fortune1000-2014.csv", headers: true) do |row|
         
-        website = UrlManipulator.url_with_http_only(row[4])
+        website = UrlHelper.url_with_http_only(row[4])
         c = Company.find_by_website(website)
         
         if c.nil?

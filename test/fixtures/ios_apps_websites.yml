@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ios_app_id: 1
+  website_id: 1
+
+two:
+  ios_app_id: 1
+  website_id: 1

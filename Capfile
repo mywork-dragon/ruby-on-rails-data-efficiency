@@ -23,6 +23,9 @@ require 'capistrano/deploy'
 
 require 'capistrano/rails'
 
+require 'capistrano/sidekiq'
+require 'capistrano/sidekiq/monit' #to require monit tasks # Only for capistrano3
+
 require "whenever/capistrano"
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.

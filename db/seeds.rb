@@ -6,193 +6,69 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-File.readlines(Rails.root + "db/bizible/companies.txt").each do |l|
-  l.strip!
-  Company.create(
-    name: l,
-    website: l.match(/^http[s]*:\/\//) ? l : "http://" + l,
-    status: :active
-  )
+if Rails.env.development?
+
+  puts "creating categories..."
+  categories = ["Games", "Lifestyle", "Shopping", "Social", "Entertainment", "News", "Education", "Medical", "Productivity", "Music", "Photography"]
+  categories.each do |cat|
+    IosAppCategory.find_or_create_by(name: cat)
+    AndroidAppCategory.find_or_create_by(name: cat)
+  end
+
+  puts "creating ios and android apps, and creating snapshots for each..."
+  for i in 1..500
+    name = Faker::App.name
+    
+    ios_app = IosApp.find_or_create_by(app_identifier: i)
+    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100), ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500))
+    ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/(Date.tomorrow - ios_app_snapshot.released).to_f
+    ios_app.newest_ios_app_snapshot = ios_app_snapshot
+    ios_app.save
+    ios_app.set_mobile_priority
+    ios_app.set_user_base
+    ios_cat = IosAppCategory.all.sample
+    ios_cat.ios_app_snapshots << ios_app_snapshot
+    # download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(1e2..1e6))
+    # ios_app.ios_app_download_snapshots << download_snapshot
+    
+    # android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
+    # android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), android_app_id: AndroidApp.all.sample.id, icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), description: Faker::Lorem.paragraph, google_plus_likes: rand(10..1000), ratings_all_stars: rand(0..5), ratings_all_count: rand(10..100), downloads_min: rand(0..100), downloads_max: rand(100..1000000))
+    # android_app.android_app_snapshots << android_app_snapshot
+    # android_cat = AndroidAppCategory.all.sample
+    # android_cat.android_app_snapshots << android_app_snapshot
+  end
+
+  puts "creating companies..."
+  for i in 1..1500
+    if i <= 1000
+      Company.create(name: Faker::Company.name, fortune_1000_rank: i, street_address: Faker::Address.street_address, city: Faker::Address.city, zip_code: Faker::Address.zip_code, state: Faker::Address.state_abbr, country: Faker::Address.country, funding: rand(0..100000000))
+    else
+      Company.create(name: Faker::Company.name, street_address: Faker::Address.street_address, city: Faker::Address.city, zip_code: Faker::Address.zip_code, state: Faker::Address.state_abbr, country: Faker::Address.country, funding: rand(0..100000000))
+    end
+  end
+
+  puts "creating websites, and linking them to companies, ios apps, and android apps..."
+  
+  for i in 0..2000
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
+    ios_app = IosApp.includes(websites: :company).all.sample
+    company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
+    company.websites << website
+    ios_app.websites << website    
+    if i % 100 == 0
+      puts "#{i/100}/40 of the way done"
+    end
+  end
+  
+  # for i in 0..2000
+  #   website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
+  #   android_app = AndroidApp.includes(websites: :company).all.sample
+  #   company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
+  #   company.websites << website
+  #   android_app.websites << website
+  #   if i % 100 == 0
+  #     puts "#{(i+2000)/100}/40 of the way done"
+  #   end
+  # end
+
 end
-
-# Dir[Rails.root + "db/bizible/services/*.txt"].each do |f|
-#   category = File.basename(f, ".*").titlecase
-#   File.readlines(f).each do |l|
-#     Service.create(
-#       name: l.strip,
-#       category: category
-#     )
-#   end
-# end
-
-# feeds(\d)*.feedburner.com\/
-service = Service.create(name: "FeedBurner")
-Matcher.create(
-  service: service,
-  match_type: :regex,
-  match_string: 'feeds(\d)*.feedburner.com\/'
-)
-
-service = Service.create(name: "Signal.co")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 's.btstatic.com/tag'
-)
-
-service = Service.create(name: "Signal.co")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 's.thebrighttag.com'
-)
-
-service = Service.create(name: "Sitecatalyst")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'SiteCatalyst code'
-)
-
-service = Service.create(name: "Acquisio")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'js.acq.io'
-)
-
-service = Service.create(name: "Ifbyphone")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'secure.ifbyphone.com/js'
-)
-
-service = Service.create(name: "DaddyAnalytics")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'cdn.daddyanalytics.com/w2/daddy.js'
-)
-
-service = Service.create(name: "Inside Social")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'cdn1.insidesoci.al'
-)
-
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'cdn.insidesocial.com'
-)
-
-service = Service.create(name: "Salesforce")
-Matcher.create(
-  service: service,
-  match_type: :string,
-  match_string: 'salesforce.com/servlet/servlet.WebToLead'
-)
-
-# # cbs
-# Matcher.create(
-#   service: Service.find_by_name("Optimizely"),
-#   match_type: :regex,
-#   match_string: "cdn.optimizely.com\/js\/([^.]+).js"
-# )
-#
-# # adroll
-# Matcher.create(
-#   service: Service.find_by_name("Olark"),
-#   match_type: :regex,
-#   match_string: "olark.identify\(([^)]+)\)"
-# )
-#
-#
-# # optimizely, personal capital
-# Matcher.create(
-#   service: Service.find_by_name("Kissmetrics"),
-#   match_type: :regex,
-#   match_string: "i.kissmetrics.com\/i.js"
-# )
-#
-# # NBC
-# Matcher.create(
-#   service: Service.find_by_name("Omniture"),
-#   match_type: :regex,
-#   match_string: '<a href="http:\/\/www.omniture.com" title="Web Analytics"><img src="\/([^.]+)" height="1" width="1" alt="" \/><\/a>'
-# )
-#
-# # Traklight
-# Matcher.create(
-#   service: Service.find_by_name("Hubspot"),
-#   match_type: :regex,
-#   match_string: "https:\/\/js.hscta.net\/cta\/current.js"
-# )
-#
-# # http://businessfactors.com/
-# Matcher.create(
-#   service: Service.find_by_name("LiveChat"),
-#   match_type: :string,
-#   match_string: "cdn.livechatinc.com"
-# )
-#
-# Matcher.create(
-#   service: Service.find_by_name("SnapEngage"),
-#   match_type: :string,
-#   match_string: "code.snapengage.com"
-# )
-#
-# Matcher.create(
-#   service: Service.find_by_name("Zopim"),
-#   match_type: :string,
-#   match_string: "window.$zopim"
-# )
-#
-# Matcher.create(
-#   service: Service.find_by_name("Google Tag Manager"),
-#   match_type: :string,
-#   match_string: "googletagmanager.com/gtm.js"
-# )
-#
-# Matcher.create(
-#   service: Service.find_by_name("Live Agent"),
-#   match_type: :string,
-#   match_string: "LiveAgentTracker."
-# )
-#
-# # http://www.emimusicpub.com/
-# Matcher.create(
-#   service: Service.find_by_name("Marketo"),
-#   match_type: :string,
-#   match_string: "http://munchkin.marketo.net"
-# )
-#
-# # from Pardot website http://www.pardot.com/faqs/campaigns/tracking-code/
-# Matcher.create(
-#   service: Service.find_by_name("Pardot"),
-#   match_type: :string,
-#   match_string: ".pardot.com/pd.js"
-# )
-#
-# # https://www.hightail.com
-# Matcher.create(
-#   service: Service.find_by_name("Silverpop"),
-#   match_type: :string,
-#   match_string: "com.silverpop.brandeddomains"
-# )
-#
-# # http://sitescout.com
-# Matcher.create(
-#   service: Service.find_by_name("Eloqua"),
-#   match_type: :string,
-#   match_string: "img.en25.com/i/elqCfg.min.js"
-# )
-#
-# # https://www.kajabiapp.com
-# Matcher.create(
-#   service: Service.find_by_name("Snapengage"),
-#   match_type: :string,
-#   match_string: "code.snapengage.com/js"
-# )

@@ -101,9 +101,9 @@ class LeadHydrationDemoSalesforceService
   def hydrate_opp(options)
     website = options[:website]
     
-    name = UrlManipulator.url_with_base_only(website)
+    name = UrlHelper.url_with_base_only(website)
     
-    website = UrlManipulator.url_with_http_only(website)
+    website = UrlHelper.url_with_http_only(website)
     
     return if (website =~ URI::regexp).nil?
     

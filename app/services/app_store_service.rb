@@ -16,9 +16,10 @@ class AppStoreService
     
     if @json && !html_only
       methods += %w(
-        title_json
+        name_json
         description_json
         release_notes_json
+        version_json
         price_json
         seller_url_json
         categories_json
@@ -31,9 +32,10 @@ class AppStoreService
       )
     elsif @html || html_only
       methods += %w(
-        title_html
+        name_html
         description_html
         release_notes_html
+        version_html
         price_html
         seller_url_html
         categories_html
@@ -50,10 +52,11 @@ class AppStoreService
     if @html
       methods += %w(
         support_url_html
-        updated_html
+        released_html
         languages_html
         in_app_purchases_html
         editors_choice_html
+        icon_urls_html
       )
     end
     
@@ -63,7 +66,19 @@ class AppStoreService
     # The key in ret is the method minus _json or _html at the end
     methods.each do |method|
       key = method.gsub(/_html\z/, '').gsub(/_json\z/, '').to_sym
-      ret[key] = send(method.to_sym)
+      
+      begin
+        attribute = send(method.to_sym)
+        
+        if attribute.class == String
+          attribute = I18n.transliterate(attribute)
+        end
+        
+        ret[key] = attribute
+      rescue
+        ret[key] = nil
+      end
+      
     end
     
     ret
@@ -73,7 +88,7 @@ class AppStoreService
   # Returns nil if cannot get JSON
   def app_store_json(id)
     begin
-      page = open("https://itunes.apple.com/lookup?id=#{id}&limit=1")
+      page = Tor.get("https://itunes.apple.com/lookup?id=#{id}&limit=1")
       loaded_json = JSON.load(page)
       loaded_json['results'].first
     rescue
@@ -90,8 +105,9 @@ class AppStoreService
     url = app_store_url
 
     #li "url: #{url}"
-
-    page = open(url, "User-Agent" => UserAgent.random_web)
+    
+    page = Tor.get(url)
+    
     html = Nokogiri::HTML(page)
     
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
@@ -102,11 +118,11 @@ class AppStoreService
     html
   end
 
-  def title_json
+  def name_json
     @json['trackName']
   end
 
-  def title_html
+  def name_html
     @html.css('#title > div.left > h1').text
   end
 
@@ -123,11 +139,15 @@ class AppStoreService
   end
 
   def release_notes_html
-    begin
-      @html.css("div.center-stack > .product-review > p")[1].text
-    rescue
-      nil
-    end
+    @html.css("div.center-stack > .product-review > p")[1].text
+  end
+
+  def version_json
+    @json['version']
+  end
+  
+  def version_html
+    size_text = @html.css('li').select{ |li| li.text.match(/Version: /) }.first.children[1].text
   end
 
   # In cents
@@ -152,42 +172,32 @@ class AppStoreService
   end
 
   def seller_url_html
-    begin
-      children = @html.css(".app-links").children
-      children.select{ |c| c.text.match(/Site\z/) }.first['href']
-    rescue
-      nil
-    end
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Site\z/) }.first['href']
   end
 
   # Only available in HTML 
   def support_url_html
-    begin
-      children = @html.css(".app-links").children
-      children.select{ |c| c.text.match(/Support\z/) }.first['href']
-    rescue
-      nil
-    end
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Support\z/) }.first['href']
   end
 
   def categories_json
     primary = @json['primaryGenreName']
     all_cats = @json['genres']
     
-    secondary = all_cats - [secondary]
-    
-    secondary = nil if secondary.blank?
+    secondary = all_cats - [primary]
     
     {primary: primary, secondary: secondary}
   end
 
   def categories_html
     primary = @html.css(".genre").children[1].text
-    {primary: primary}
+    {primary: primary, secondary: []}
   end
 
   # Only available in HTML
-  def updated_html
+  def released_html
     date_text = @html.css(".release-date").children[1].text
     Date.parse(date_text)
   end
@@ -206,13 +216,8 @@ class AppStoreService
 
   # Only using HTML (abbreviations available in JSON)
   def languages_html
-    begin
-      languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
-      languages_text.split(', ')
-    rescue
-      nil
-    end
-
+    languages_text = @html.css('li').select{ |li| li.text.match(/Languages*: /) }.first.children[1].text
+    languages_text.split(', ')
   end
 
   def seller_json
@@ -234,17 +239,17 @@ class AppStoreService
   # HTML only
   def in_app_purchases_html
     lis = @html.css("#left-stack > div.extra-list.in-app-purchases > ol > li")
-    lis.map{ |li| {title: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
+    lis.map{ |li| {name: li.css("span.in-app-title").text, price: (li.css("span.in-app-price").text.gsub("$", "").to_f*100).to_i} }
   end
 
   def ratings_json
     current_version_hash = {}
     current_version_hash[:stars] = @json['averageUserRatingForCurrentVersion']
-    current_version_hash[:ratings] = @json['userRatingCountForCurrentVersion']
+    current_version_hash[:count] = @json['userRatingCountForCurrentVersion']
     
     all_versions_hash = {}
     all_versions_hash[:stars] = @json['averageUserRating']
-    all_versions_hash[:ratings] = @json['userRatingCount']
+    all_versions_hash[:count] = @json['userRatingCount']
     
     
     {current: current_version_hash, all: all_versions_hash}
@@ -300,6 +305,16 @@ class AppStoreService
     @html.css(".editorial-badge").present?
   end
   
+  def icon_urls_html
+    node = @html.css('#left-stack').css('.artwork').css('div > img').first
+    
+    ret = {size_350x350: nil, size_175x175: nil}
+    
+    ret = {size_350x350: node['src-swap-high-dpi'], size_175x175: node['src-swap']} if node
+    
+    ret
+  end
+  
   private
   
     # 3 and a half stars --> 3.5
@@ -336,6 +351,8 @@ class AppStoreService
       #   https://itunes.apple.com/us/app/overdrive-library-ebooks-audiobooks/id366869252?mt=8
       #   https://itunes.apple.com/us/app/goodreads-book-recommendations/id355833469?mt=8
       # )
+    
+      url = 
     
       page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
       html = Nokogiri::HTML(page)

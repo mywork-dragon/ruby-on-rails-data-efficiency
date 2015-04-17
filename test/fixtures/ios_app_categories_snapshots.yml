@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ios_app_category_id: 1
+  ios_app_snapshot_id: 1
+  kind: 
+
+two:
+  ios_app_category_id: 1
+  ios_app_snapshot_id: 1
+  kind: 
