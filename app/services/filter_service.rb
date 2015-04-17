@@ -51,6 +51,7 @@ class FilterService
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
       
+      
       return queries
       # query = queries.join('.')
       # puts "Query: #{query}"
@@ -64,16 +65,18 @@ class FilterService
       
     end
     
-    # def sort_order_query(sort_by, order_by)
-    #   query = nil
-    #   case sort_by
-    #   when 'appName'
-    #
-    #   when 'fortuneRank'
-    #
-    #   when ''
-    #   end
-    # end
+    def sort_order_query(sort_by, order_by)
+      case sort_by
+      when 'appName'
+        return "order(\'ios_app_snapshots.name #{order_by}\')"
+      when 'fortuneRank'
+        return "order(\'companies.fortune_1000_rank #{order_by}\')"
+      when 'lastUpdated'
+        return "order(\'ios_app_snapshots.released #{order_by}\')"
+      when 'companyName'
+        return "order(\'companies.name #{order_by}\')"
+      end
+    end
     
     def apps_with_keywords(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
