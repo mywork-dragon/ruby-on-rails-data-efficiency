@@ -46,7 +46,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-          adSpend: app.ios_fb_ad_appearances.count,
+          adSpend: app.ios_fb_ad_appearances.present?,
           categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
         },
         company: {
