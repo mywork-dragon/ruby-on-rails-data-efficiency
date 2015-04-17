@@ -61,6 +61,9 @@ namespace :deploy do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
+    on roles(:web) do
+      execute '(cd /home/webapps/varys/current/public/app && bower install)'
+    end
   end
 
 end
