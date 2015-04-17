@@ -47,7 +47,7 @@ class ApiController < ApplicationController
     # logger.info "results count: #{results.count}"
     # results_json = []
     
-    # queries << FilterService.sort_order_query(sort_by, order_by)
+    queries << FilterService.sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
     results = IosApp.instance_eval("self.#{query}.limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
