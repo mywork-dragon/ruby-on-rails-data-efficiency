@@ -27,7 +27,7 @@ angular
   .config(function ($routeProvider) {
      $routeProvider
       .when('/', {
-        templateUrl: '/views/dashboard.html',
+        templateUrl: './views/dashboard.html',
         controller: 'MainCtrl'
       })
        .when('/app/:id', {

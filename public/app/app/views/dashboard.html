@@ -449,7 +449,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-ng-repeat="app in apps">
+        <tr data-ng-repeat="app in $root.apps">
           <td>{{app.name}}</td>
           <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
           <td>{{app.mobilePriority}}</td>

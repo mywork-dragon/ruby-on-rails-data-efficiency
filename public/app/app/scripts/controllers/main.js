@@ -16,9 +16,21 @@ angular.module('appApp')
     };
   }])
 
-  .controller("FilterCtrl", ["$scope", "apiService",
-    function($scope, apiService) {
-      $scope.submitSearch = apiService.postDashboardSearch;
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
+    function($scope, apiService, $http, $rootScope) {
+      $scope.submitSearch = function(tags) {
+        return $http({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'json'
+          },
+          url: 'http://localhost:3000/api/filter_ios_apps',
+          data: {app: {adSpend: true}}
+        }).success(function(data) {
+          console.log(data);
+          $rootScope.apps = data;
+        });
+      };
       $scope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName) {
         console.log(parameter + value);
@@ -30,10 +42,10 @@ angular.module('appApp')
       }
     }
   ])
-  .controller("TableCtrl", ["$scope", "$filter",
-    function($scope, $filter) {
+  .controller("TableCtrl", ["$scope", "$filter", "$rootScope",
+    function($scope, $filter, $rootScope) {
       var init;
-      return $scope.apps = [
+      return $rootScope.apps = [
         {
           id: 39849301,
           name: "TEST APP",
