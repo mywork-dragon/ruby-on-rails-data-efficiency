@@ -23,7 +23,7 @@ angular
 
         $http({
           method: 'GET',
-          url: 'http://mightysignal.com/api/get_ios_categories'
+          url: 'http://localhost:3000/api/get_ios_categories'
         }).success(function(data) {
           console.log(data);
           $rootScope.categoryFilterOptions = data;
