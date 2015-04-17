@@ -35,7 +35,7 @@ class ApiController < ApplicationController
     queries << FilterService.sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
+    results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').where('ios_app_snapshots.name IS NOT NULL').limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
     results_json = []
     results.each do |app|
       company = app.get_company
