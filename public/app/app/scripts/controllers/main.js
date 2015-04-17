@@ -16,19 +16,43 @@ angular.module('appApp')
     };
   }])
 
-  //localhost:3000/app/app -- note to jason: go here to reproduce error
-
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       $scope.submitSearch = function(tags) {
+
+        var requestData = {app:{}, company:{}};
+
+        tags.forEach(function(tag) {
+          switch(tag.parameter) {
+            case 'mobilePriority':
+              requestData['app'][tag.parameter] = [tag.value];
+              break;
+            case 'adSpend':
+              requestData['app'][tag.parameter] = tag.value;
+              break;
+            case 'userBases':
+              requestData['app'][tag.parameter] = [tag.value];
+              break;
+            case 'updatedDaysAgo':
+              requestData['app'][tag.parameter] = tag.value;
+              break;
+            case 'categories':
+              requestData['app'][tag.parameter] = [tag.value];
+              break;
+            case 'fortuneRank':
+              requestData['company'][tag.parameter] = tag.value;
+              break;
+            case 'customKeywords':
+              requestData[tag.parameter] = [tag.value];
+              break;
+          }
+
+        });
+
         return $http({
           method: 'POST',
-          headers: {
-            'Content-Type': 'json'
-          },
-          //url: 'http://localhost:3000/api/filter_ios_apps',
           url: 'http://mightysignal.com/api/filter_ios_apps',
-          data: {app: {adSpend: true}}
+          data: requestData
         }).success(function(data) {
           console.log(data);
           $rootScope.apps = data;
@@ -48,117 +72,32 @@ angular.module('appApp')
   .controller("TableCtrl", ["$scope", "$filter", "$rootScope",
     function($scope, $filter, $rootScope) {
       var init;
-      return $rootScope.apps = [
-        {
-          id: 39849301,
-          name: "TEST APP",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "Low",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2015-03-21",
-          adSpend: true,
-          company: {
-            id: 123456789,
-            name: "Coffee, Inc.",
-            fortuneRank: 234,
-            funding: 12000000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "US"
-            }
-          }
-        }, {
-          id: 19849301,
-          name: "APP",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "High",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2014-03-30",
-          adSpend: true,
-          company: {
-            id: 123456789,
-            name: "Piacitelli, Inc.",
-            fortuneRank: 98,
-            funding: 5670000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "IN"
-            }
-          }
-        }, {
-          id: 29849301,
-          name: "Patrick's App",
-          countriesDeployed: [
-            "US",
-            "UK",
-            "IN"
-          ],
-          mobilePriority: "High",
-          userBases: [
-            "Elite",
-            "Strong"
-          ],
-          lastUpdated: "2015-03-30",
-          adSpend: false,
-          company: {
-            id: 123456789,
-            name: "Corporation, Inc.",
-            fortuneRank: 498,
-            funding: 3450000,
-            location: {
-              streetAddress: "123 Main St.",
-              city: "Gig Harbor",
-              zipCode: "98333",
-              state: "",
-              country: "CA"
-            }
-          }
-        }],
+      return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
         $scope.select = function(page) {
           var end, start;
-          return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
+          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
         },
         $scope.onFilterChange = function() {
-          return $scope.select(1), $scope.currentPage = 1, $scope.row = "";
+          return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";
         },
         $scope.onNumPerPageChange = function() {
-          return $scope.select(1), $scope.currentPage = 1;
+          return $scope.select(1), $rootScope.currentPage = 1;
         },
         $scope.onOrderChange = function() {
-          return $scope.select(1), $scope.currentPage = 1;
+          return $scope.select(1), $rootScope.currentPage = 1;
         },
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
         $scope.order = function(rowName) {
-          return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($scope.apps, rowName), $scope.onOrderChange()) : void 0;
+          return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($rootScope.apps, rowName), $scope.onOrderChange()) : void 0;
         },
-        $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
-          return $scope.search(), $scope.select($scope.currentPage);
-        }), $scope.search();
+        $scope.numPerPageOpt = [10, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[1], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
+        return $scope.search(), $scope.select($rootScope.currentPage);
+      }), $scope.search();
     }
   ]);
 

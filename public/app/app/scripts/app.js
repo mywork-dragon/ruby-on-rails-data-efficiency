@@ -12,7 +12,7 @@ angular
     'app.directives',
     "ui.bootstrap"
   ])
-  .run(function () {
+  .run(function ($http, $rootScope) {
 
       $(document).ready(function(){
 
@@ -20,6 +20,14 @@ angular
           $('.page-loading-overlay').addClass("loaded");
           $('.load_circle_wrapper').addClass("loaded");
         },1000);
+
+        $http({
+          method: 'GET',
+          url: 'http://mightysignal.com/api/get_ios_categories'
+        }).success(function(data) {
+          console.log(data);
+          $rootScope.categoryFilterOptions = data;
+        });
 
       });
 

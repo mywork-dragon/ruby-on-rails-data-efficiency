@@ -25,9 +25,9 @@ class FilterService
       # queries << 'includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)'
       if app_filters[:mobilePriority]
         mobile_priorities = []
-        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("High")
-        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("Medium")
-        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("Low")
+        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
+        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
+        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
@@ -35,10 +35,10 @@ class FilterService
       
       if app_filters[:userBases]
         user_bases = []
-        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("Elite")
-        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("Strong")
-        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("Moderate")
-        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("Weak")
+        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
+        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
+        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
+        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
         queries << "where(user_base: #{user_bases})"
       end
       
@@ -59,8 +59,8 @@ class FilterService
     end
     
     def app_keywords_query(keywords)
-      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
-      query = "joins(:newest_ios_app_snapshot).where(#{name_query_array.join(' OR ')})"
+      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \"%#{k}%\""}
+      query = "joins(:newest_ios_app_snapshot).where(\'#{name_query_array.join(' OR ')}\')"
       return query
       
     end

@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   post 'api/get_ios_app' => 'api#get_ios_app'
   post 'api/get_android_app' => 'api#get_android_app'
   post 'api/get_company' => 'api#get_company'
+  get 'api/get_ios_categories' => 'api#get_ios_categories'
 
   
   if Rails.env.development?
