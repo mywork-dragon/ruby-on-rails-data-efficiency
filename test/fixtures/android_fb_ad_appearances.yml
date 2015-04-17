@@ -4,12 +4,12 @@ one:
   aws_assignment_identifier: MyString
   hit_identifier: MyString
   m_turk_worker_id: 1
-  ios_app_id: 1
+  android_app_id: 1
   heroku_identifier: MyString
 
 two:
   aws_assignment_identifier: MyString
   hit_identifier: MyString
   m_turk_worker_id: 1
-  ios_app_id: 1
+  android_app_id: 1
   heroku_identifier: MyString
