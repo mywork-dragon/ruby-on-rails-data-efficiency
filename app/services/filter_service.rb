@@ -25,9 +25,9 @@ class FilterService
       # queries << 'includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)'
       if app_filters[:mobilePriority]
         mobile_priorities = []
-        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("High")
-        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("Medium")
-        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("Low")
+        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
+        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
+        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
