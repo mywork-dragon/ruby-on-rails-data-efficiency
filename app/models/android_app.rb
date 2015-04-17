@@ -3,6 +3,8 @@ class AndroidApp < ActiveRecord::Base
   validates :app_identifier, uniqueness: true
   belongs_to :app
   
+  has_many :android_fb_ad_appearances
+  
   has_many :android_app_snapshots
   # has_many :websites, through: :android_apps_snapshots
   has_many :android_apps_websites
