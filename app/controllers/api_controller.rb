@@ -43,7 +43,7 @@ class ApiController < ApplicationController
           name: newest_snapshot.present? ? newest_snapshot.name : nil,
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
-          lastUpdated: newest_snapshot.present? ? newest_snapshot.released : nil,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.count,
           categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
         },
@@ -88,7 +88,7 @@ class ApiController < ApplicationController
       adSpend: nil, 
       countriesDeployed: nil, #not part of initial launch
       downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
-      lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+      lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
       appIdentifier: ios_app.id,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
