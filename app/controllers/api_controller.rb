@@ -25,11 +25,12 @@ class ApiController < ApplicationController
     queries = []
     queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
 
+    queries << FilterService.app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
+
     queries.concat(FilterService.company_apps_query(company_filters)) if company_filters.present?
 
     queries.concat(FilterService.apps_query(app_filters)) if app_filters.present?
 
-    queries << FilterService.app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
     
     queries << FilterService.sort_order_query(sort_by, order_by)
     
@@ -46,7 +47,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-          adSpend: app.ios_fb_ad_appearances.count,
+          adSpend: app.ios_fb_ad_appearances.present?,
           categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
         },
         company: {
@@ -174,6 +175,10 @@ class ApiController < ApplicationController
       }
     end
     render json: @company_json
+  end
+
+  def get_ios_categories
+    render json: IosAppCategory.select(:name).all.to_a.map{|cat| cat.name}
   end
 
 end

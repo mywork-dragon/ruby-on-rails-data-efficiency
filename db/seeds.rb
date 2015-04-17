@@ -56,7 +56,7 @@ if Rails.env.development?
     company.websites << website
     ios_app.websites << website    
     if i % 100 == 0
-      puts "#{i/100}/40 of the way done"
+      puts "#{i/100}/20 of the way done"
     end
   end
   
@@ -70,5 +70,11 @@ if Rails.env.development?
   #     puts "#{(i+2000)/100}/40 of the way done"
   #   end
   # end
+
+  for i in 0..100
+    ad = IosFbAdAppearance.create
+    app = IosApp.all.sample
+    app.ios_fb_ad_appearances << ad
+  end
 
 end
