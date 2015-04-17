@@ -20,44 +20,34 @@ angular.module('appApp')
     function($scope, apiService, $http, $rootScope) {
       $scope.submitSearch = function(tags) {
 
-        var requestData = {};
+        var requestData = {app:{}, company:{}};
 
         tags.forEach(function(tag) {
-
-          if (tag.parameter == 'mobilePriority' || tag.parameter == 'userBases' || tag.parameter == 'categories' || tag.parameter == 'customKeywords') {
-            requestData[tag.parameter] = [tag.value];
-          } else {
-            requestData[tag.parameter] = tag.value
-          }
-
-          switch(tag) {
+          switch(tag.parameter) {
             case 'mobilePriority':
-              requestData[app][tag.parameter] = [tag.value];
+              requestData['app'][tag.parameter] = [tag.value];
               break;
             case 'adSpend':
-              requestData[app][tag.parameter] = tag.value;
+              requestData['app'][tag.parameter] = tag.value;
               break;
             case 'userBases':
-              requestData[app][tag.parameter] = [tag.value];
+              requestData['app'][tag.parameter] = [tag.value];
               break;
             case 'updatedDaysAgo':
-              requestData[app][tag.parameter] = tag.value;
+              requestData['app'][tag.parameter] = tag.value;
               break;
             case 'categories':
-              requestData[app][tag.parameter] = [tag.value];
+              requestData['app'][tag.parameter] = [tag.value];
               break;
             case 'fortuneRank':
-              requestData[company][tag.parameter] = tag.value;
+              requestData['company'][tag.parameter] = tag.value;
               break;
             case 'customKeywords':
               requestData[tag.parameter] = [tag.value];
               break;
           }
 
-
         });
-
-        requestData = {"app": requestData};
 
         return $http({
           method: 'POST',
@@ -105,7 +95,7 @@ angular.module('appApp')
         $scope.order = function(rowName) {
           return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($rootScope.apps, rowName), $scope.onOrderChange()) : void 0;
         },
-        $scope.numPerPageOpt = [10, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[0], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
+        $scope.numPerPageOpt = [10, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[1], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
         return $scope.search(), $scope.select($rootScope.currentPage);
       }), $scope.search();
     }

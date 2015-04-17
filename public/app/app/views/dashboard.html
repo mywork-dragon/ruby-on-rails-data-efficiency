@@ -40,7 +40,6 @@
                 <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend')">
                   <option value="">Reported Ad Spend</option>
                   <option value="true">Yes</option>
-                  <option value="false">No</option>
                 </select>
             </span>
             <span class="ui-select">
@@ -112,6 +111,15 @@
                                   data-ng-class="{active: row == '-mobilePriority'}"></span>
           </div></th>
           <th><div class="th">
+            Ad Spend
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" order('adSpend') "
+                                  data-ng-class="{active: row == 'adSpend'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" order('-adSpend') "
+                                  data-ng-class="{active: row == '-adSpend'}"></span>
+          </div></th>
+          <th><div class="th">
             User Base Size
                             <span class="glyphicon glyphicon-chevron-up"
                                   data-ng-click=" order('userBases') "
@@ -157,6 +165,7 @@
           <td>{{app.app.name}}</td>
           <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
           <td>{{app.app.mobilePriority}}</td>
+          <td>{{app.app.adSpend}}</td>
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated}}</td>
@@ -171,14 +180,16 @@
     <footer class="table-footer">
       <div class="row">
         <div class="col-md-6 page-num-info">
-                    <span>
-                        Show
-                        <select data-ng-model="numPerPage"
-                                data-ng-options="num for num in numPerPageOpt"
-                                data-ng-change="onNumPerPageChange()">
-                        </select>
-                        entries per page
-                    </span>
+          <!--
+                      <span>
+                          Show
+                          <select data-ng-model="numPerPage"
+                                  data-ng-options="num for num in numPerPageOpt"
+                                  data-ng-change="onNumPerPageChange()">
+                          </select>
+                          entries per page
+                      </span>
+          -->
         </div>
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
