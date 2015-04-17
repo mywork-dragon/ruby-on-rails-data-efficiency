@@ -26,3 +26,6 @@
 /public/dashboard/node_modules
 
 /public/dashboard/dist
+
+/public/app/bower_components
+/public/app/node_modules
