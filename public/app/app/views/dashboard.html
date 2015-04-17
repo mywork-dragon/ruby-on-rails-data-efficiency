@@ -56,14 +56,14 @@
             <span class="ui-select">
                 <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size')">
                   <option value="">User Base Size</option>
-                  <option value="Weak">Weak</option>
-                  <option value="Moderate">Moderate</option>
-                  <option value="Strong">Strong</option>
-                  <option value="Elite">Elite</option>
+                  <option value="weak">Weak</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="strong">Strong</option>
+                  <option value="elite">Elite</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="updatedMonthsAgo" ng-change="onFilterChange('updatedMonthsAgo', updatedMonthsAgo, 'Last Updated')">
+                <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated')">
                   <option value="">Last Updated</option>
                   <option value="1">Within 1 Month</option>
                   <option value="3">Within 3 Months</option>
@@ -92,7 +92,7 @@
                 </select>
             </span>
             <span id="dashboardSearchBox">
-                <input placeholder="Custom tag..." ng-model="customKeyword" ng-enter="onFilterChange('customKeyword', customKeyword, 'Custom')">
+                <input placeholder="Custom tag..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
             </span>
 
     </div>

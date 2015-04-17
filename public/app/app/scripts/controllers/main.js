@@ -19,13 +19,25 @@ angular.module('appApp')
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       $scope.submitSearch = function(tags) {
+
+        var requestData = {};
+
+        tags.forEach(function(tag) {
+
+          if (tag.parameter == 'mobilePriority' || tag.parameter == 'userBases' || tag.parameter == 'categories' || tag.parameter == 'customKeywords') {
+            requestData[tag.parameter] = [tag.value];
+          } else {
+            requestData[tag.parameter] = tag.value
+          }
+        });
+
         return $http({
           method: 'POST',
           headers: {
             'Content-Type': 'json'
           },
           url: 'http://localhost:3000/api/filter_ios_apps',
-          data: {app: {adSpend: true}}
+          data: requestData
         }).success(function(data) {
           console.log(data);
           $rootScope.apps = data;
@@ -136,26 +148,26 @@ angular.module('appApp')
         $scope.row = "",
         $scope.select = function(page) {
           var end, start;
-          return start = (page - 1) * $scope.numPerPage, end = start + $scope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
+          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
         },
         $scope.onFilterChange = function() {
-          return $scope.select(1), $scope.currentPage = 1, $scope.row = "";
+          return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";
         },
         $scope.onNumPerPageChange = function() {
-          return $scope.select(1), $scope.currentPage = 1;
+          return $scope.select(1), $rootScope.currentPage = 1;
         },
         $scope.onOrderChange = function() {
-          return $scope.select(1), $scope.currentPage = 1;
+          return $scope.select(1), $rootScope.currentPage = 1;
         },
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
         $scope.order = function(rowName) {
-          return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($scope.apps, rowName), $scope.onOrderChange()) : void 0;
+          return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($rootScope.apps, rowName), $scope.onOrderChange()) : void 0;
         },
-        $scope.numPerPageOpt = [10, 50, 100, 200], $scope.numPerPage = $scope.numPerPageOpt[0], $scope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
-          return $scope.search(), $scope.select($scope.currentPage);
-        }), $scope.search();
+        $scope.numPerPageOpt = [10, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[0], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
+        return $scope.search(), $scope.select($rootScope.currentPage);
+      }), $scope.search();
     }
   ]);
 
