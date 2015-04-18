@@ -16,8 +16,8 @@ class ApiController < ApplicationController
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
-    pageNum = params[:pageNum].present? ? params[:pageNum].to_i : 1
+    page_size = params[:pageSize].present? ? params[:pageSize].to_i : 50
+    page_num = params[:pageNum].present? ? params[:pageNum].to_i : 1
     sort_by = params[:sortBy] || 'appName'
     order_by = params[:orderBy] || 'ASC'
     
@@ -35,7 +35,7 @@ class ApiController < ApplicationController
     queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').where('ios_app_snapshots.name IS NOT NULL').limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
+    results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').where('ios_app_snapshots.name IS NOT NULL').limit(#{page_size}).offset(#{(page_num-1) * page_size})")
     results_json = []
     results.each do |app|
       company = app.get_company
