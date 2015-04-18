@@ -19,45 +19,11 @@ angular.module('appApp')
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       $scope.submitSearch = function(tags) {
-
-        var requestData = {app:{}, company:{}};
-
-        tags.forEach(function(tag) {
-          switch(tag.parameter) {
-            case 'mobilePriority':
-              requestData['app'][tag.parameter] = [tag.value];
-              break;
-            case 'adSpend':
-              requestData['app'][tag.parameter] = tag.value;
-              break;
-            case 'userBases':
-              requestData['app'][tag.parameter] = [tag.value];
-              break;
-            case 'updatedDaysAgo':
-              requestData['app'][tag.parameter] = tag.value;
-              break;
-            case 'categories':
-              requestData['app'][tag.parameter] = [tag.value];
-              break;
-            case 'fortuneRank':
-              requestData['company'][tag.parameter] = tag.value;
-              break;
-            case 'customKeywords':
-              requestData[tag.parameter] = [tag.value];
-              break;
-          }
-
-        });
-
-        return $http({
-          method: 'POST',
-          url: 'http://mightysignal.com/api/filter_ios_apps',
-					//url: 'http://localhost:3000/api/filter_ios_apps',
-          data: requestData
-        }).success(function(data) {
-          console.log(data);
-          $rootScope.apps = data;
-        });
+        apiService.searchRequestPost(tags)
+          .success(function(data) {
+            console.log(data);
+            $rootScope.apps = data;
+          });
       };
       $scope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName) {
@@ -70,16 +36,21 @@ angular.module('appApp')
       }
     }
   ])
-  .controller("TableCtrl", ["$scope", "$filter", "$rootScope",
-    function($scope, $filter, $rootScope) {
+  .controller("TableCtrl", ["$scope", "apiService", "$filter", "$rootScope",
+    function($scope, apiService, $filter, $rootScope) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
-        $scope.select = function(page) {
-
-          $scope.submitSearch(tags)
+        $scope.select = function(page, tags) {
+/*
+          apiService.searchRequestPost(tags)
+            .success(function(data) {
+              console.log(data);
+              $rootScope.apps = data;
+            });
+            */
 
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
