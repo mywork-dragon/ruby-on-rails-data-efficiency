@@ -34,13 +34,14 @@ class ApiController < ApplicationController
     # queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    query += ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
-    query = "self." + query
-    li "query: #{query}"
+    query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
+    puts "query: #{query}"
+    
     results_count = IosApp.instance_eval("#{query}.length")
-    puts "results_count: #{results_count}"
-    order_query = FilterService.ios_sort_order_query(sort_by, order_by)
-    results = IosApp.instance_eval("#{query}.limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
+    query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
+    query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
+    # query += ".#{order_query}"
+    results = IosApp.instance_eval(query)
     results_json = []
     results.each do |app|
       company = app.get_company
