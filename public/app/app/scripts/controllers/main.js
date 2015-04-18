@@ -78,8 +78,11 @@ angular.module('appApp')
         $scope.filteredApps = [],
         $scope.row = "",
         $scope.select = function(page) {
+
+          $scope.submitSearch(tags)
+
           var end, start;
-          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage, $scope.apps = $scope.filteredApps.slice(start, end);
+          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
         },
         $scope.onFilterChange = function() {
           return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";
@@ -96,7 +99,7 @@ angular.module('appApp')
         $scope.order = function(rowName) {
           return $scope.row !== rowName ? ($scope.row = rowName, $scope.filteredApps = $filter("orderBy")($rootScope.apps, rowName), $scope.onOrderChange()) : void 0;
         },
-        $scope.numPerPageOpt = [10, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[1], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
+        $scope.numPerPageOpt = [20, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[1], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
         return $scope.search(), $scope.select($rootScope.currentPage);
       }), $scope.search();
     }
