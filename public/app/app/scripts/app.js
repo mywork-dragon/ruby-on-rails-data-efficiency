@@ -25,7 +25,6 @@ angular
           method: 'GET',
           url: 'http://localhost:3000/api/get_ios_categories'
         }).success(function(data) {
-          console.log(data);
           $rootScope.categoryFilterOptions = data;
         });
 
