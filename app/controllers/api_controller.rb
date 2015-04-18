@@ -35,7 +35,7 @@ class ApiController < ApplicationController
     
     query = queries.join('.')
     query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
-    li "query right before count: #{query}"
+    # li "query right before count: #{query}"
     results_count = IosApp.instance_eval("#{query}.count.length")
     li "results_count: #{results_count}"
     query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
@@ -43,6 +43,7 @@ class ApiController < ApplicationController
     # query += ".#{order_query}"
     li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
+    li "finished full eval to get results"
     results_json = []
     results.each do |app|
       company = app.get_company
@@ -67,6 +68,7 @@ class ApiController < ApplicationController
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
+    li "finished creating hashes"
     # render json: {results: results_json, resultsCount: results_count}
     render json: results_json
   end
