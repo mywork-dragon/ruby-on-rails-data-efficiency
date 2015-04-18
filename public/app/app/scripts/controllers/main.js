@@ -48,9 +48,7 @@ angular.module('appApp')
         $scope.row = "",
         $scope.select = function(page, tags) {
 
-          var pageDetails = {page: page, numPerPage: $rootScope.numPerPage};
-
-          apiService.searchRequestPost($rootScope.tags, pageDetails)
+          apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage)
             .success(function(data) {
               console.log(data);
               $rootScope.apps = data.results;

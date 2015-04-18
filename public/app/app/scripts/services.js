@@ -3,7 +3,7 @@
 angular.module("appApp").factory("apiService", ['$http', function($http) {
 
   return {
-    searchRequestPost: function(tags, pageDetails) {
+    searchRequestPost: function(tags, currentPage, numPerPage) {
 
       var requestData = {app: {}, company: {}};
 
@@ -38,12 +38,12 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
 
       }
 
-      if (pageDetails) {
-        console.log('PAGE DETAILS');
-        console.log(pageDetails);
-      } else {
-        console.log('NO PAGE DETAILS');
+      if (currentPage && numPerPage) {
+        requestData.pageNum = currentPage;
+        requestData.pageSize = numPerPage;
       }
+
+      console.log(requestData);
 
       return $http({
         method: 'POST',
