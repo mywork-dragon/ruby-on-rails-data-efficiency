@@ -79,6 +79,48 @@ class AdHerokuTransfer
       nil
     end
     
+    def add_ads_android(json_file)
+      json = JSON.parse(IO.read(json_file))
+    
+      json.each do |ad_hash|
+        
+        aws_assignment_identifier = ad_hash['aws_assignment_id']
+        android_app_app_identifier = ad_hash['link'].gsub('https://play.google.com/store/apps/details?id=', "").strip
+    
+        aa = AndroidFbAdAppearance.where(aws_assignment_identifier: aws_assignment_identifier, android_app: AndroidApp.find_by_app_identifier(android_app_app_identifier)).first
+    
+        puts "aa: #{aa}"
+    
+        if aa
+          li "AndroidFbAdAppearance #{aa} already in DB"
+        else
+          aa = AndroidFbAdAppearance.new(
+            aws_assignment_identifier: aws_assignment_identifier,
+            hit_identifier: ad_hash['hit_id'],
+            heroku_identifier: ad_hash['heroku_id'] 
+          )
+      
+      
+          aws_worker_identifier = ad_hash['aws_worker_id']
+          m_turk_worker = MTurkWorker.find_by_aws_identifier(aws_worker_identifier)
+          aa.m_turk_worker = m_turk_worker
+      
+          android_app = AndroidApp.find_by_app_identifier(android_app_app_identifier)
+      
+          if android_app.nil?
+            android_app = AndroidApp.create!(app_identifier: android_app_app_identifier)
+          end
+      
+          aa.android_app = android_app
+      
+          aa.save!
+        end
+      
+      end
+    
+      nil
+    end
+    
     # run(ads_json_file: path_to_ads_json, workers_json_file: path_to_workers_json)
     # @author Jason Lew
     def run(options={})
@@ -94,6 +136,7 @@ class AdHerokuTransfer
       add_ads_ios(options[:ads_json_file])
     end
     
+    #not used
     def create_csv
       CSV.open('/home/deploy/fb_ads_with_data.csv', "w+") do |csv|
         columns = %w(

@@ -9,7 +9,7 @@ class FilterService
       company_results
     end
     
-    def company_apps_query(company_filters)
+    def company_ios_apps_query(company_filters)
       query = []
       query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
@@ -17,7 +17,7 @@ class FilterService
       return query
     end
     
-    def apps_query(app_filters)
+    def ios_apps_query(app_filters)
       limit = 10 #TODO: pass this as parameter later
       queries = []
       first_object = IosApp
@@ -43,7 +43,7 @@ class FilterService
       end
       
       if app_filters[:updatedDaysAgo]
-        queries << "joins(:newest_ios_app_snapshot).where('released > ?', #{app_filters[:updatedDaysAgo].to_i.days.ago.to_date})"
+        queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', #{app_filters[:updatedDaysAgo].to_i.days.ago.to_date})"
       end
       
       if app_filters[:categories]
@@ -58,14 +58,12 @@ class FilterService
       # first_object.instance_eval("self.#{query}.limit(#{limit})")
     end
     
-    def app_keywords_query(keywords)
+    def ios_app_keywords_query(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \"%#{k}%\""}
-      query = "joins(:newest_ios_app_snapshot).where(\'#{name_query_array.join(' OR ')}\')"
-      return query
-      
+      "joins(:newest_ios_app_snapshot).where(\'#{name_query_array.join(' OR ')}\')"
     end
     
-    def sort_order_query(sort_by, order_by)
+    def ios_sort_order_query(sort_by, order_by)
       case sort_by
       when 'appName'
         return "order(\'ios_app_snapshots.name #{order_by}\')"
@@ -78,7 +76,7 @@ class FilterService
       end
     end
     
-    def apps_with_keywords(keywords)
+    def ios_apps_with_keywords(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
       name_query_string = name_query_array.join(' OR ')
       return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where(name_query_string)
@@ -90,7 +88,7 @@ class FilterService
       return Company.where(name_query_string)
     end
     
-    def apps_of_companies(companies)
+    def ios_apps_of_companies(companies)
       if companies.present?
         return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
       else
@@ -98,7 +96,7 @@ class FilterService
       end
     end
     
-    def apps_of_snapshots(snapshots)
+    def ios_apps_of_snapshots(snapshots)
       app_ids = snapshots.pluck(:ios_app_id)
       return IosApp.where(id: app_ids)
     end

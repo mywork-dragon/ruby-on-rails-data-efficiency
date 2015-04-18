@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416201419) do
+ActiveRecord::Schema.define(version: 20150417233819) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -108,6 +108,22 @@ ActiveRecord::Schema.define(version: 20150416201419) do
 
   add_index "android_apps_websites", ["android_app_id"], name: "index_android_apps_websites_on_android_app_id", using: :btree
   add_index "android_apps_websites", ["website_id"], name: "index_android_apps_websites_on_website_id", using: :btree
+
+  create_table "android_fb_ad_appearances", force: true do |t|
+    t.string   "aws_assignment_identifier"
+    t.string   "hit_identifier"
+    t.integer  "m_turk_worker_id"
+    t.integer  "android_app_id"
+    t.string   "heroku_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_fb_ad_appearances", ["android_app_id"], name: "index_android_fb_ad_appearances_on_android_app_id", using: :btree
+  add_index "android_fb_ad_appearances", ["aws_assignment_identifier"], name: "index_android_fb_ad_appearances_on_aws_assignment_identifier", using: :btree
+  add_index "android_fb_ad_appearances", ["heroku_identifier"], name: "index_android_fb_ad_appearances_on_heroku_identifier", using: :btree
+  add_index "android_fb_ad_appearances", ["hit_identifier"], name: "index_android_fb_ad_appearances_on_hit_identifier", using: :btree
+  add_index "android_fb_ad_appearances", ["m_turk_worker_id"], name: "index_android_fb_ad_appearances_on_m_turk_worker_id", using: :btree
 
   create_table "apps", force: true do |t|
     t.datetime "created_at"
@@ -268,6 +284,7 @@ ActiveRecord::Schema.define(version: 20150416201419) do
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
+  add_index "ios_app_snapshots", ["ios_app_id", "name"], name: "index_ios_app_snapshots_on_ios_app_id_and_name", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
@@ -321,6 +338,8 @@ ActiveRecord::Schema.define(version: 20150416201419) do
 
   add_index "ios_fb_ad_appearances", ["aws_assignment_identifier"], name: "index_ios_fb_ad_appearances_on_aws_assignment_identifier", using: :btree
   add_index "ios_fb_ad_appearances", ["hit_identifier"], name: "index_ios_fb_ad_appearances_on_hit_identifier", using: :btree
+  add_index "ios_fb_ad_appearances", ["ios_app_id"], name: "index_ios_fb_ad_appearances_on_ios_app_id", using: :btree
+  add_index "ios_fb_ad_appearances", ["m_turk_worker_id"], name: "index_ios_fb_ad_appearances_on_m_turk_worker_id", using: :btree
 
   create_table "ios_in_app_purchases", force: true do |t|
     t.datetime "created_at"

@@ -93,7 +93,40 @@ class GooglePlaySnapshotServiceWorker
         end
       end
 
-    s.save!
+      s.save!
+
+      #set user base
+      if defined?(downloads)
+        if downloads.max >= 5e6
+          user_base = :elite
+        elsif downloads.max >= 500e3
+          user_base = :strong
+        elsif downloads.max >= 50e3
+          user_base = :moderate
+        else
+          user_base = :weak
+        end
+        
+        android_app.user_base = user_base
+      end
+
+      #set mobile priority
+      if released = a[:released]
+        if android_app.android_fb_ad_appearances.present? || released > 2.months.ago
+          mobile_priority = :high
+        elsif released > 4.months.ago
+          mobile_priority = :medium
+        else
+          mobile_priority = :low
+        end
+        
+        android_app.mobile_priority = mobile_priority
+      end
+
+      #update newest snapshot
+      android_app.newest_android_app_snapshot = s
+      
+      android_app_save_success = android_app.save
 
     rescue => e
       ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)

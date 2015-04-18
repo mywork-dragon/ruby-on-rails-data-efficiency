@@ -3,6 +3,8 @@ class AndroidApp < ActiveRecord::Base
   validates :app_identifier, uniqueness: true
   belongs_to :app
   
+  has_many :android_fb_ad_appearances
+  
   has_many :android_app_snapshots
   # has_many :websites, through: :android_apps_snapshots
   has_many :android_apps_websites
@@ -10,6 +12,9 @@ class AndroidApp < ActiveRecord::Base
 
   belongs_to :newest_android_app_snapshot, class_name: 'AndroidAppSnapshot', foreign_key: 'newest_android_app_snapshot_id'  
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
+  
+  enum mobile_priority: [:high, :medium, :low]
+  enum user_base: [:elite, :strong, :moderate, :weak]
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
