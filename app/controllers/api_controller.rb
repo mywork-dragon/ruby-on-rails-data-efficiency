@@ -25,14 +25,14 @@ class ApiController < ApplicationController
     queries = []
     queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
 
-    queries << FilterService.app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
+    queries << FilterService.iosapp_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
 
-    queries.concat(FilterService.company_apps_query(company_filters)) if company_filters.present?
+    queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
 
-    queries.concat(FilterService.apps_query(app_filters)) if app_filters.present?
+    queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
 
     
-    queries << FilterService.sort_order_query(sort_by, order_by)
+    queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
     results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').where('ios_app_snapshots.name IS NOT NULL').limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
