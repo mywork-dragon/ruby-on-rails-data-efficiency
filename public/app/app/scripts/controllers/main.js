@@ -18,18 +18,18 @@ angular.module('appApp')
 
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
-      $scope.submitSearch = function(tags) {
-        apiService.searchRequestPost(tags)
+      $scope.submitSearch = function() {
+        apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
             console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
           });
       };
-      $scope.tags = [];
+      $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName) {
         console.log(parameter + value);
-        $scope.tags.push({
+        $rootScope.tags.push({
           parameter: parameter,
           value: value,
           text: displayName + ': ' + value
@@ -45,13 +45,15 @@ angular.module('appApp')
         $scope.filteredApps = [],
         $scope.row = "",
         $scope.select = function(page, tags) {
-/*
-          apiService.searchRequestPost(tags)
+
+          var pageDetails = {page: page, numPerPage: $rootScope.numPerPage};
+
+          apiService.searchRequestPost($rootScope.tags, pageDetails)
             .success(function(data) {
               console.log(data);
-              $rootScope.apps = data;
+              $rootScope.apps = data.results;
+              $rootScope.numApps = data.resultsCount;
             });
-            */
 
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
