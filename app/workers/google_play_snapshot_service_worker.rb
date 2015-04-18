@@ -101,7 +101,7 @@ class GooglePlaySnapshotServiceWorker
           user_base = :elite
         elsif downloads.max >= 500e3
           user_base = :strong
-        elsif downloads.max >= 100e3
+        elsif downloads.max >= 50e3
           user_base = :moderate
         else
           user_base = :weak
@@ -120,7 +120,7 @@ class GooglePlaySnapshotServiceWorker
           mobile_priority = :low
         end
         
-        android.mobile_priority = mobile_priority
+        android_app.mobile_priority = mobile_priority
       end
 
       #update newest snapshot
