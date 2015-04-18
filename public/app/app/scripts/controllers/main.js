@@ -19,11 +19,13 @@ angular.module('appApp')
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       $scope.submitSearch = function() {
+        $rootScope.dashboardSearchButtonDisabled = "true";
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
             console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
+            $rootScope.dashboardSearchButtonDisabled = "false";
           });
       };
       $rootScope.tags = [];
@@ -53,6 +55,7 @@ angular.module('appApp')
               console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
+              $rootScope.dashboardSearchButtonDisabled = "false";
             });
 
           var end, start;
