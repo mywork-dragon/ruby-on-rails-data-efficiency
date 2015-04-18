@@ -10,6 +10,7 @@ class FilterService
     end
     
     def company_ios_apps_query(company_filters)
+      li "filtering companies"
       query = []
       query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
@@ -18,6 +19,7 @@ class FilterService
     end
     
     def ios_apps_query(app_filters)
+      li "filtering ios apps"
       limit = 10 #TODO: pass this as parameter later
       queries = []
       first_object = IosApp

@@ -23,21 +23,25 @@ class ApiController < ApplicationController
     
     #filter for companies
     queries = []
-    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
-
+    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot)"
+    
     queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
 
     queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
 
     queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
-
     
-    queries << FilterService.ios_sort_order_query(sort_by, order_by)
+    # queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    results_count = IosApp.instance_eval("self.#{query}.where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id').count.length")
-    puts "results_count: #{results_count}"
-    results = IosApp.instance_eval("self.#{query}.where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id').limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})")
+    query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
+    puts "query: #{query}"
+    
+    results_count = IosApp.instance_eval("#{query}.length")
+    query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
+    query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
+    # query += ".#{order_query}"
+    results = IosApp.instance_eval(query)
     results_json = []
     results.each do |app|
       company = app.get_company
