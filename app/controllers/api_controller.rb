@@ -37,15 +37,16 @@ class ApiController < ApplicationController
     query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
     # li "query right before count: #{query}"
     results_count = IosApp.instance_eval("#{query}.count.length")
-    li "results_count: #{results_count}"
+    # li "results_count: #{results_count}"
     query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
     query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
     # query += ".#{order_query}"
-    li "query right before full eval: #{query}"
+    # li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
-    li "finished full eval to get results"
+    li "FINISHED FULL EVAL TO GET RESULTS"
     results_json = []
     results.each do |app|
+      li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {
@@ -65,6 +66,7 @@ class ApiController < ApplicationController
         }
       }
       # li "app_hash: #{app_hash}"
+      li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
