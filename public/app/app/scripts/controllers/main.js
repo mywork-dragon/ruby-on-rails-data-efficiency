@@ -16,8 +16,8 @@ angular.module('appApp')
     };
   }])
 
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
-    function($scope, apiService, $http, $rootScope) {
+  .controller("FilterCtrl", ["$scope", "$http", "$rootScope",
+    function($scope, $http, $rootScope) {
       $scope.submitSearch = function(tags) {
 
         var requestData = {app:{}, company:{}};
@@ -52,7 +52,7 @@ angular.module('appApp')
         return $http({
           method: 'POST',
           url: 'http://mightysignal.com/api/filter_ios_apps',
-					//url: 'http://localhost:3000/api/filter_ios_apps',
+					// url: 'http://localhost:3000/api/filter_ios_apps',
           data: requestData
         }).success(function(data) {
           console.log(data);
