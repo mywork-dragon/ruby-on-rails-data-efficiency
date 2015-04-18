@@ -25,7 +25,7 @@ class ApiController < ApplicationController
     queries = []
     queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
 
-    queries << FilterService.iosapp_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
+    queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
 
     queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
 
