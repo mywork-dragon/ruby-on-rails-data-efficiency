@@ -39,8 +39,9 @@ class ApiController < ApplicationController
     
     results_count = IosApp.instance_eval("#{query}.length")
     query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
-    # query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
+    query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
     # query += ".#{order_query}"
+    li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
     results_json = []
     results.each do |app|
