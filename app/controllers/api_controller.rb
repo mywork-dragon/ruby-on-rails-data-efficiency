@@ -26,9 +26,13 @@ class ApiController < ApplicationController
     queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot)"
     
     queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
-
-    queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
-
+    
+    if company_filters.present?
+      queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
+    else
+      queries << "joins(websites: :company)"
+    end
+    
     queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
     
     # queries << FilterService.ios_sort_order_query(sort_by, order_by)
@@ -46,7 +50,7 @@ class ApiController < ApplicationController
     li "FINISHED FULL EVAL TO GET RESULTS"
     # li "#{results.to_a.map{|r| r.id}}"
     li "RESULTS CLASS: #{results.class}"
-    li "RESULTS COUNT: #{results.count}"
+    li "RESULTS COUNT: #{results.count.length}"
     results_json = []
     results.each do |app|
       li "CREATING HASH FOR #{app.id}"
