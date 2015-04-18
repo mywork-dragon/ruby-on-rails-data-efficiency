@@ -62,7 +62,8 @@ class ApiController < ApplicationController
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    render json: {results: results_json, resultsCount: results_count}
+    # render json: {results: results_json, resultsCount: results_count}
+    render json: results_json
   end
   
   def filter_android_apps
