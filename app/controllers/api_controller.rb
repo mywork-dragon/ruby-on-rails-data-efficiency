@@ -44,7 +44,9 @@ class ApiController < ApplicationController
     # li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
     li "FINISHED FULL EVAL TO GET RESULTS"
-    li "#{results.to_a.map{|r| r.id}}"
+    # li "#{results.to_a.map{|r| r.id}}"
+    li "RESULTS CLASS: #{results.class}"
+    li "RESULTS COUNT: #{results.count}"
     results_json = []
     results.each do |app|
       li "CREATING HASH FOR #{app.id}"
