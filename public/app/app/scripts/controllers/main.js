@@ -22,7 +22,8 @@ angular.module('appApp')
         apiService.searchRequestPost(tags)
           .success(function(data) {
             console.log(data);
-            $rootScope.apps = data;
+            $rootScope.apps = data.results;
+            $rootScope.numApps = data.resultsCount;
           });
       };
       $scope.tags = [];
