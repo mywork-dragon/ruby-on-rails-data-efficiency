@@ -50,13 +50,13 @@ class ApiController < ApplicationController
     # query += ".#{order_query}"
     # li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
-    li "FINISHED FULL EVAL TO GET RESULTS"
+    # li "FINISHED FULL EVAL TO GET RESULTS"
     # li "#{results.to_a.map{|r| r.id}}"
-    li "RESULTS CLASS: #{results.class}"
-    li "RESULTS COUNT: #{results.count.length}"
+    # li "RESULTS CLASS: #{results.class}"
+    # li "RESULTS COUNT: #{results.count.length}"
     results_json = []
     results.each do |app|
-      li "CREATING HASH FOR #{app.id}"
+      # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {
@@ -76,11 +76,11 @@ class ApiController < ApplicationController
         }
       }
       # li "app_hash: #{app_hash}"
-      li "HASH: #{app_hash}"
+      # li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    li "finished creating hashes"
+    # li "finished creating hashes"
     # render json: {results: results_json, resultsCount: results_count}
     render json: results_json
   end
