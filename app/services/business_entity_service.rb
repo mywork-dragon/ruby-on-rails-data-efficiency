@@ -19,6 +19,20 @@ class BusinessEntityService
         BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids)
       end
     end
+    
+    def run_ios_remove_f1000
+      IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000).find_each.with_index do |ios_app, index|
+        li "##{index}: IosApp id=#{ios_app.id}"
+        
+        ios_app.ios_apps.websites.delete_all
+      end
+    end
+    
+    def run_ios_fix_f1000
+      IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000).find_in_batches(batch_size: 1000).with_index do |batch, index|
+        
+      end
+    end
   
     
   
