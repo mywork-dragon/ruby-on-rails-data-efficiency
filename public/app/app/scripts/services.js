@@ -9,25 +9,41 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
         tags.forEach(function (tag) {
           switch (tag.parameter) {
             case 'mobilePriority':
-              requestData['app'][tag.parameter] = [tag.value];
+              if(requestData['app'][tag.parameter]) {
+                requestData['app'][tag.parameter].push(tag.value);
+              } else {
+                requestData['app'][tag.parameter] = [tag.value];
+              }
               break;
             case 'adSpend':
               requestData['app'][tag.parameter] = tag.value;
               break;
             case 'userBases':
-              requestData['app'][tag.parameter] = [tag.value];
+              if(requestData['app'][tag.parameter]) {
+                requestData['app'][tag.parameter].push(tag.value);
+              } else {
+                requestData['app'][tag.parameter] = [tag.value];
+              }
               break;
             case 'updatedDaysAgo':
               requestData['app'][tag.parameter] = tag.value;
               break;
             case 'categories':
-              requestData['app'][tag.parameter] = [tag.value];
+              if(requestData['app'][tag.parameter]) {
+                requestData['app'][tag.parameter].push(tag.value);
+              } else {
+                requestData['app'][tag.parameter] = [tag.value];
+              }
               break;
             case 'fortuneRank':
               requestData['company'][tag.parameter] = tag.value;
               break;
             case 'customKeywords':
-              requestData[tag.parameter] = [tag.value];
+              if(requestData[tag.parameter]) {
+                requestData[tag.parameter].push(tag.value);
+              } else {
+                requestData[tag.parameter] = [tag.value];
+              }
               break;
           }
         });
