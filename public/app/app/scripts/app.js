@@ -39,10 +39,12 @@ angular
         controller: 'MainCtrl'
       })
        .when('/app/:id', {
-         templateUrl: '/app/app/views/app-details.html'
+         templateUrl: '/app/app/views/app-details.html',
+         controller: 'AppDetailsCtrl'
        })
        .when('/company/:id', {
-         templateUrl: '/app/app/views/company-details.html'
+         templateUrl: '/app/app/views/company-details.html',
+         controller: 'CompanyDetailsCtrl'
        })
       .otherwise({
         redirectTo: '/'

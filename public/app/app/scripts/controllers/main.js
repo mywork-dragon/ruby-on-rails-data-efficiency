@@ -94,6 +94,38 @@ angular.module('appApp')
         return $scope.search(), $scope.select($rootScope.currentPage);
       }), $scope.search();
     }
+  ])
+  .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
+    $scope.load = function() {
+      return $http({
+        method: 'POST',
+        //url: 'http://mightysignal.com/api/get_ios_app',
+        url: 'http://localhost:3000/api/get_ios_app',
+        params: {id: $routeParams.id}
+      }).success(function(data) {
+        $scope.appData = data;
+        console.log(data);
+      });
+    };
+
+    $scope.load();
+  }
+  ])
+  .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
+    $scope.load = function() {
+      return $http({
+        method: 'POST',
+        //url: 'http://mightysignal.com/api/get_company',
+        url: 'http://localhost:3000/api/get_company',
+        params: {id: $routeParams.id}
+      }).success(function(data) {
+        $scope.companyData = data;
+        console.log(data);
+      });
+    };
+
+    $scope.load();
+  }
   ]);
 
 
