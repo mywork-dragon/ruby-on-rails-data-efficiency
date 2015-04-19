@@ -110,9 +110,10 @@ angular.module('appApp')
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
-        $scope.numPerPageOpt = [20, 50, 100, 200], $rootScope.numPerPage = $scope.numPerPageOpt[1], $rootScope.currentPage = 1, $scope.currentPageApps = [], (init = function() {
-        return $scope.search(), $scope.select($rootScope.currentPage);
-      }), $scope.search();
+        $scope.numPerPageOpt = [20, 50, 100, 200],
+        $rootScope.numPerPage = $scope.numPerPageOpt[1],
+        $rootScope.currentPage = 1,
+        $scope.currentPageApps = []
     }
   ])
   .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
