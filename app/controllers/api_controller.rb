@@ -23,7 +23,7 @@ class ApiController < ApplicationController
     
     #filter for companies
     queries = []
-    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot)"
+    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
     
     queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
     
@@ -38,7 +38,7 @@ class ApiController < ApplicationController
     # queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
+    query = "self." + query + ".group('ios_apps.id')"
     # li "query right before count: #{query}"
     
     #results_count = IosApp.instance_eval("#{query}.count.length")
@@ -109,12 +109,13 @@ class ApiController < ApplicationController
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: nil, 
-      adSpend: nil, 
+      mobilePriority: ios_app.mobile_priority, 
+      adSpend: ios_app.ios_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
-      downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      userBase: ios_app.user_base,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
-      appIdentifier: ios_app.id,
+      appIdentifier: ios_app.app_identifier,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
         small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -163,7 +164,7 @@ class ApiController < ApplicationController
         fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
         funding: company.present? ? company.funding : nil,
         websites: android_app.get_website_urls, #this is an array
-        locatoin: {
+        location: {
           streetAddress: company.present? ? company.street_address : nil,
           city: company.present? ? company.city : nil,
           zipCode: company.present? ? company.zip_code : nil,
@@ -177,7 +178,7 @@ class ApiController < ApplicationController
   
   def get_company
     companyId = params['id']
-    company = Company.includes(:websites).find(companyId)
+    company = Company.includes(websites: {ios_apps: :newest_ios_app_snapshot}).find(companyId)
     @company_json = {}
     if company.present?
       @company_json = {
@@ -192,7 +193,19 @@ class ApiController < ApplicationController
           country: company.country
         },
         fortuneRank: company.fortune_1000_rank,
-        iosApps: company.get_ios_apps.map{|app| app.id},
+        iosApps: company.get_ios_apps.map{|app| {
+          id: app.id,
+          name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          userBase: app.user_base,
+          lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+          appIdentifier: app.app_identifier,
+          appIcon: {
+            large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
+            small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
+          }
+        }},
         androidApps: company.get_android_apps.map{|app| app.id}
       }
     end
