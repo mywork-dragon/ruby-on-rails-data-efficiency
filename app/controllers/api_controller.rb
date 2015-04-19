@@ -40,8 +40,11 @@ class ApiController < ApplicationController
     query = queries.join('.')
     query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
     # li "query right before count: #{query}"
-    results_count = IosApp.instance_eval("#{query}.count.length")
+    
+    #results_count = IosApp.instance_eval("#{query}.count.length")
+    results_count = 5e6 #dummy the count
     # li "results_count: #{results_count}"
+    
     query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
     query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
     # query += ".#{order_query}"
