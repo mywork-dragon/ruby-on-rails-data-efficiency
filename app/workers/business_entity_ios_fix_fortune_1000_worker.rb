@@ -1,5 +1,7 @@
 class BusinessEntityIosFixFortune1000Worker
   include Sidekiq::Worker
+  
+  sidekiq_options retry: false
  
   def perform(ios_app_id)
     ios_app = IosApp.find(ios_app_id)
@@ -8,18 +10,13 @@ class BusinessEntityIosFixFortune1000Worker
     ss_dasi = ss.developer_app_store_identifier
     
     if company = Company.find_by_app_store_identifier(ss_dasi)
-      ios_app.websites << c.websites.first
+      ios_app.websites << company.websites.first
       ios_app.save
     else
-      urls = [ss.seller_url, ss.support_url].select{|url| url}
+      urls = [ss.seller_url, ss.support_url].select{|url| url.present?}
       
-      url.each do |url|
-        if UrlHelper.secondary_site?(url)
-          kind = :secondary
-        else
-          url = UrlHelper.url_with_http_and_domain(url)
-          kind = :primary
-        end
+      urls.each do |url|
+        url = UrlHelper.url_with_http_and_domain(url)
         
         website = Website_find_by_url(url)
         company = website.company

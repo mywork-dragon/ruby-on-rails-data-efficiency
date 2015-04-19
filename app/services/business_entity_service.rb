@@ -32,20 +32,18 @@ class BusinessEntityService
     # special purpose
     def run_ios_fix_f1000
       #get ids from CSV
-      
       ios_app_ids = []
       
       CSV.foreach('db/fortune_1000_to_repop.csv', headers: true) do |row|
         ios_app_ids << row[0].to_i
       end
       
-      puts ios_app_ids
+      li ios_app_ids
       
-      return
-      
-      ios_apps.each_with_index do |ios_app, index|
+      ios_app_ids.each_with_index do |ios_app_id, index|
+        li "App #{index}, id=#{ios_app_id}"
         
-        BusinessEntityIosFixFortune1000Worker.perform_async(ios_app.id)
+        BusinessEntityIosFixFortune1000Worker.perform_async(ios_app_id)
         
       end
     end
