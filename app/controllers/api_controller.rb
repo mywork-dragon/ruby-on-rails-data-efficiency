@@ -23,7 +23,7 @@ class ApiController < ApplicationController
     
     #filter for companies
     queries = []
-    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot)"
+    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
     
     queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
     
@@ -38,7 +38,7 @@ class ApiController < ApplicationController
     # queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    query = "self." + query + ".where('ios_app_snapshots.name IS NOT NULL').group('ios_apps.id')"
+    query = "self." + query + ".group('ios_apps.id')"
     # li "query right before count: #{query}"
     results_count = IosApp.instance_eval("#{query}.count.length")
     # li "results_count: #{results_count}"
