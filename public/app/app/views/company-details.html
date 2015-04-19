@@ -16,6 +16,8 @@
                   <li>{{companyData.location.zipCode}}</li>
                   <li ng-repeat="website in companyData.websites"><a href="{{website}}">{{website}}</a></li>
                   <li>LinkedIn Links</li>
+                  <li><a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+sales">LinkedIn Link - Sales</a></li>
+                  <li><a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a></li>
                 </ul>
             </div>
         </section>
@@ -25,7 +27,7 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li ng-repeat="app in companyData.iosApps"><a href="#/app/{{app}}">{{app}}</a></li>
+                  <li ng-repeat="app in companyData.iosApps"><a ng-href="#/app/{{app}}">{{app}}</a></li>
                 </ul>
               <div id="searchResultsControl">
                 <button type="submit" class="btn btn-primary" ng-click="getCompany(tags)">Search</button>

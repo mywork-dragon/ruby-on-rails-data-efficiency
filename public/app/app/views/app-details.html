@@ -21,10 +21,12 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li>Name: {{appDetails.company.name}}</li>
-                  <li ng-repeat="website in appDetails.company.websites"><a href="{{website}}">{{website}}</a></li>
+                  <li>Name: {{appData.company.name}}</li>
+                  <li ng-repeat="website in appData.company.websites"><a href="{{website}}">{{website}}</a></li>
                   <li>LinkedIn Links</li>
-                  <li><a href="#/company/{{appData.company.id}}">Click Here</a> for more company details</li>
+                  <li><a ng-href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+sales">LinkedIn Link - Sales</a></li>
+                  <li><a ng-href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a></li>
+                  <li><a ng-href="#/company/{{appData.company.id}}">Click Here</a> for more company details</li>
                 </ul>
               <div id="searchResultsControl">
                 <button type="submit" class="btn btn-primary" ng-click="getApp(tags)">Search</button>

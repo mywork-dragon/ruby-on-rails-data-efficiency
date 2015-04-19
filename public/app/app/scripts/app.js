@@ -10,7 +10,8 @@ angular
     'ngSanitize',
     'ngTagsInput',
     'app.directives',
-    "ui.bootstrap"
+    "ui.bootstrap",
+    "rt.encodeuri"
   ])
   .run(function ($http, $rootScope) {
 
