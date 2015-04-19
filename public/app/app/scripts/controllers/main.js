@@ -120,8 +120,8 @@ angular.module('appApp')
     $scope.load = function() {
       return $http({
         method: 'POST',
-        //url: 'http://mightysignal.com/api/get_ios_app',
-        url: 'http://localhost:3000/api/get_ios_app',
+        url: 'http://mightysignal.com/api/get_ios_app',
+        // url: 'http://localhost:3000/api/get_ios_app',
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
