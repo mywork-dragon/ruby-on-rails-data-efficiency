@@ -18,6 +18,7 @@ angular.module('appApp')
 
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
+      // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
         $rootScope.dashboardSearchButtonDisabled = "true";
         apiService.searchRequestPost($rootScope.tags)
@@ -26,6 +27,9 @@ angular.module('appApp')
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = "false";
+            $rootScope.currentPage = 1;
+            $rootScope.resultsSortCategory = 'appName';
+            $rootScope.resultsOrderBy = 'ASC';
           });
       };
       $rootScope.tags = [];
@@ -46,18 +50,33 @@ angular.module('appApp')
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
+        // When table's paging options are selected
         $scope.select = function(page, tags) {
-
-          apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage)
+          apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
               console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = "false";
+              $rootScope.currentPage = page;
             });
 
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
+        },
+        // When orderby/sort arrows on dashboard table are clicked
+        $scope.sortApps = function(category, order) {
+          var firstPage = 1;
+          apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
+            .success(function(data) {
+              console.log(data);
+              $rootScope.apps = data.results;
+              $rootScope.numApps = data.resultsCount;
+              $rootScope.dashboardSearchButtonDisabled = "false";
+              $rootScope.currentPage = 1;
+              $rootScope.resultsSortCategory = category;
+              $rootScope.resultsOrderBy = order;
+            });
         },
         $scope.onFilterChange = function() {
           return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";

@@ -3,12 +3,9 @@
 angular.module("appApp").factory("apiService", ['$http', function($http) {
 
   return {
-    searchRequestPost: function(tags, currentPage, numPerPage) {
-
+    searchRequestPost: function(tags, currentPage, numPerPage, category, order) {
       var requestData = {app: {}, company: {}};
-
       if(tags) {
-
         tags.forEach(function (tag) {
           switch (tag.parameter) {
             case 'mobilePriority':
@@ -33,9 +30,7 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
               requestData[tag.parameter] = [tag.value];
               break;
           }
-
         });
-
       }
 
       if (currentPage && numPerPage) {
@@ -43,7 +38,10 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
         requestData.pageSize = numPerPage;
       }
 
-      console.log(requestData);
+      if (category && order) {
+        requestData.sortBy = category;
+        requestData.orderBy = order;
+      }
 
       return $http({
         method: 'POST',
