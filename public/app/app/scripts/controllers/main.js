@@ -19,13 +19,13 @@ angular.module('appApp')
     function($scope, apiService, $http, $rootScope) {
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
-        $rootScope.dashboardSearchButtonDisabled = "true";
+        $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
             console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
-            $rootScope.dashboardSearchButtonDisabled = "false";
+            $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
@@ -56,7 +56,7 @@ angular.module('appApp')
               console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = "false";
+              $rootScope.dashboardSearchButtonDisabled = false;
               $rootScope.currentPage = page;
             });
 
@@ -71,7 +71,7 @@ angular.module('appApp')
               console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = "false";
+              $rootScope.dashboardSearchButtonDisabled = false;
               $rootScope.currentPage = 1;
               $rootScope.resultsSortCategory = category;
               $rootScope.resultsOrderBy = order;
