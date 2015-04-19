@@ -24,7 +24,7 @@ class BusinessEntityService
       IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000).find_each.with_index do |ios_app, index|
         li "##{index}: IosApp id=#{ios_app.id}"
         
-        ios_app.ios_apps.websites.delete_all
+        ios_app.ios_apps_websites.delete_all
       end
     end
     
