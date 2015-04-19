@@ -39,7 +39,8 @@ angular.module('appApp')
           value: value,
           text: displayName + ': ' + value
         });
-      }
+        $scope[parameter] = "";
+      };
     }
   ])
   .controller("TableCtrl", ["$scope", "apiService", "$filter", "$rootScope",
