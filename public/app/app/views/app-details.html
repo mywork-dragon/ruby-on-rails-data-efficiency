@@ -5,14 +5,13 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>App Details</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li>Name</li>
-                  <li>Mobile Priority Score</li>
-                  <li>Ad Spend</li>
-                  <li>Countries Deployed</li>
-                  <li>Downloads</li>
-                  <li>Last Updated</li>
+                  <li>IMG: <img ng-src="{{appData.appIcon.large}}" /></li>
+                  <li>Name: {{appData.name}}</li>
+                  <li>Mobile Priority: {{appData.mobilePriority}}</li>
+                  <li>Ad Spend: {{appData.adSpend}}</li>
+                  <li>Last Updated: {{appData.lastUpdated}}</li>
+                  <li>User Base</li>
                   <li>App Store Link | Play Store Link</li>
-                  <li>App Icon</li>
                 </ul>
             </div>
         </section>
@@ -22,10 +21,10 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li>Name</li>
-                  <li>Website</li>
+                  <li>Name: {{appDetails.company.name}}</li>
+                  <li ng-repeat="website in appDetails.company.websites"><a href="{{website}}">{{website}}</a></li>
                   <li>LinkedIn Links</li>
-                  <li>Link to Company Page</li>
+                  <li><a href="#/company/{{appDetails.company.id}}">Click Here</a> for more company details</li>
                 </ul>
               <div id="searchResultsControl">
                 <button type="submit" class="btn btn-primary" ng-click="getApp(tags)">Search</button>

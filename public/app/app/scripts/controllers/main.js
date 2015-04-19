@@ -15,7 +15,6 @@ angular.module('appApp')
 
     };
   }])
-
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       // When main Dashboard surch button is clicked
