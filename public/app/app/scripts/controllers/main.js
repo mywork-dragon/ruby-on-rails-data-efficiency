@@ -148,5 +148,3 @@ angular.module('appApp')
     $scope.load();
   }
   ]);
-
-
