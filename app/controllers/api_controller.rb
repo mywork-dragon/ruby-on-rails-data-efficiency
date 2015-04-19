@@ -213,7 +213,7 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).all.to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).all.order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
