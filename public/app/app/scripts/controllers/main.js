@@ -32,14 +32,34 @@ angular.module('appApp')
           });
       };
       $rootScope.tags = [];
-      $scope.onFilterChange = function(parameter, value, displayName) {
-        console.log(parameter + value);
-        $rootScope.tags.push({
-          parameter: parameter,
-          value: value,
-          text: displayName + ': ' + value
-        });
-        $scope[parameter] = "";
+      $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
+        if(limitToOneFilter) {
+          var tagUpdated = false;
+          $rootScope.tags.forEach(function (tag) {
+            // If replacing pre existing tag of limitToOneFilter = true category
+            if (tag.parameter == parameter) {
+              tag.value = value;
+              tag.text = displayName + ': ' + value;
+              tagUpdated = true;
+            }
+          });
+          // If first tag of limitToOneFilter = true category
+          if (!tagUpdated) {
+            $rootScope.tags.push({
+              parameter: parameter,
+              value: value,
+              text: displayName + ': ' + value
+            });
+          }
+        // If first or pre existing tag of limitToOneFilter = false category
+        } else {
+          $rootScope.tags.push({
+            parameter: parameter,
+            value: value,
+            text: displayName + ': ' + value
+          });
+        }
+        $scope[parameter] = ""; // Resets HTML select on view to default option
       };
     }
   ])
