@@ -20,6 +20,7 @@ class BusinessEntityService
       end
     end
     
+    # special purpose
     def run_ios_remove_f1000
       IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000).find_each.with_index do |ios_app, index|
         li "##{index}: IosApp id=#{ios_app.id}"
@@ -28,8 +29,23 @@ class BusinessEntityService
       end
     end
     
+    # special purpose
     def run_ios_fix_f1000
-      IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000).find_in_batches(batch_size: 1000).with_index do |batch, index|
+      #get ids from CSV
+      
+      ios_app_ids = []
+      
+      CSV.foreach('db/fortune_1000_to_repop.csv', headers: true) do |row|
+        ios_app_ids << row[0].to_i
+      end
+      
+      puts ios_app_ids
+      
+      return
+      
+      ios_apps.each_with_index do |ios_app, index|
+        
+        BusinessEntityIosFixFortune1000Worker.perform_async(ios_app.id)
         
       end
     end
