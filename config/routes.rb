@@ -47,7 +47,8 @@ Rails.application.routes.draw do
   post 'api/get_android_app' => 'api#get_android_app'
   post 'api/get_company' => 'api#get_company'
   get 'api/get_ios_categories' => 'api#get_ios_categories'
-
+  get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
+  
   
   if Rails.env.development?
     get 'app_info' => 'app#app_info'

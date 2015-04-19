@@ -12,6 +12,25 @@ class ApiController < ApplicationController
   #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   # end
   
+  def download_fortune_1000_csv
+    apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
+    puts apps.count
+    f1000_csv = CSV.generate do |csv|
+      csv << ['App ID', 'App Name', 'Company Name', 'Company ID', 'Support URL', 'Seller URL', 'Website URLs', 'Website IDs']
+      apps.each do |app|
+        if app.newest_ios_app_snapshot.present? && app.get_company.present?
+          row = [app.id, app.newest_ios_app_snapshot.name, app.get_company.name, app.get_company.id, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.seller_url, app.websites.map{|w| w.url}.join(', '), app.websites.map{|w| w.id}]
+          csv << row
+        end
+      end
+    end
+    # puts f1000_csv
+    # render send_data: f1000_csv
+    # return f1000_csv
+    respond_to do |format|
+      format.csv { send_data f1000_csv }
+    end
+  end
   
   def filter_ios_apps
     app_filters = params[:app]
@@ -50,13 +69,13 @@ class ApiController < ApplicationController
     # query += ".#{order_query}"
     # li "query right before full eval: #{query}"
     results = IosApp.instance_eval(query)
-    li "FINISHED FULL EVAL TO GET RESULTS"
+    # li "FINISHED FULL EVAL TO GET RESULTS"
     # li "#{results.to_a.map{|r| r.id}}"
-    li "RESULTS CLASS: #{results.class}"
-    li "RESULTS COUNT: #{results.count.length}"
+    # li "RESULTS CLASS: #{results.class}"
+    # li "RESULTS COUNT: #{results.count.length}"
     results_json = []
     results.each do |app|
-      li "CREATING HASH FOR #{app.id}"
+      # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {
@@ -76,11 +95,11 @@ class ApiController < ApplicationController
         }
       }
       # li "app_hash: #{app_hash}"
-      li "HASH: #{app_hash}"
+      # li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    li "finished creating hashes"
+    # li "finished creating hashes"
     # render json: {results: results_json, resultsCount: results_count}
     render json: results_json
   end
@@ -104,7 +123,7 @@ class ApiController < ApplicationController
     appId = params['id']
     ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
-    newest_app_snapshot = ios_app.get_newest_app_snapshot
+    newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
       id: appId,
@@ -213,7 +232,7 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).all.to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).all.order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
