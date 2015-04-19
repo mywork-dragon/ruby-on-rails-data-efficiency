@@ -104,7 +104,7 @@ class ApiController < ApplicationController
     appId = params['id']
     ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
-    newest_app_snapshot = ios_app.get_newest_app_snapshot
+    newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
       id: appId,
