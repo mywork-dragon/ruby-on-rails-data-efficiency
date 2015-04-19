@@ -24,7 +24,7 @@
                   <li>Name: {{appDetails.company.name}}</li>
                   <li ng-repeat="website in appDetails.company.websites"><a href="{{website}}">{{website}}</a></li>
                   <li>LinkedIn Links</li>
-                  <li><a href="#/company/{{appDetails.company.id}}">Click Here</a> for more company details</li>
+                  <li><a href="#/company/{{appData.company.id}}">Click Here</a> for more company details</li>
                 </ul>
               <div id="searchResultsControl">
                 <button type="submit" class="btn btn-primary" ng-click="getApp(tags)">Search</button>

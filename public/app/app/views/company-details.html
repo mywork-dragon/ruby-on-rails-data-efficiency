@@ -5,10 +5,16 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Company Details</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li>Name</li>
-                  <li>Fortune Rank</li>
-                  <li>Funding</li>
-                  <li>Location</li>
+                  <li>Name: {{companyData.name}}</li>
+                  <li>Fortune Rank: {{companyData.fortuneRank}}</li>
+                  <li>Funding: {{companyData.funding | currency}}</li>
+                  <li>Location:</li>
+                    <li>{{companyData.location.city}}</li>
+                  <li>{{companyData.location.country}}</li>
+                  <li>{{companyData.location.state}}</li>
+                  <li>{{companyData.location.streetAddress}}</li>
+                  <li>{{companyData.location.zipCode}}</li>
+                  <li ng-repeat="website in companyData.websites"><a href="{{website}}">{{website}}</a></li>
                   <li>LinkedIn Links</li>
                 </ul>
             </div>
@@ -19,9 +25,7 @@
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
             <div class="panel-body">
                 <ul>
-                  <li>App 1</li>
-                  <li>App 2</li>
-                  <li>App 3</li>
+                  <li ng-repeat="app in companyData.iosApps"><a href="#/app/{{app}}">{{app}}</a></li>
                 </ul>
               <div id="searchResultsControl">
                 <button type="submit" class="btn btn-primary" ng-click="getCompany(tags)">Search</button>
