@@ -245,7 +245,7 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Categories:"').order('name asc').to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
