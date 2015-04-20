@@ -29,6 +29,9 @@ angular.module('appApp')
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
+          })
+          .error(function() {
+            $rootScope.dashboardSearchButtonDisabled = false;
           });
       };
       $rootScope.tags = [];
@@ -79,6 +82,9 @@ angular.module('appApp')
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
               $rootScope.currentPage = page;
+            })
+            .error(function() {
+              $rootScope.dashboardSearchButtonDisabled = false;
             });
 
           var end, start;
@@ -96,6 +102,9 @@ angular.module('appApp')
               $rootScope.currentPage = 1;
               $rootScope.resultsSortCategory = category;
               $rootScope.resultsOrderBy = order;
+            })
+            .error(function() {
+              $rootScope.dashboardSearchButtonDisabled = false;
             });
         },
         $scope.onFilterChange = function() {
