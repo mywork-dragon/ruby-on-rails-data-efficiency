@@ -4918,6 +4918,27 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   -o-border-radius: 0px;
   border-radius: 0px; }
 
+.well.companyAssociatedApp {
+  background: #f9f9f9;
+  padding: 10px;
+}
+
+.well.companyAssociatedApp:hover {
+  background: #fcfcfc;
+}
+
+.well.companyAssociatedApp h5 {
+  display: inline;
+}
+
+.well.companyAssociatedApp img {
+  width: 50px;
+}
+
+img#appDetailsPageAppLogo {
+  width: 100px;
+}
+
 .modal-content {
   background-color: #fff;
   border: 1px solid #999;
