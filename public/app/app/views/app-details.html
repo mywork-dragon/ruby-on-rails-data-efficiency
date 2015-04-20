@@ -4,15 +4,25 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>App Details</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>IMG: <img ng-src="{{appData.appIcon.large}}" /></li>
-                  <li>Name: {{appData.name}}</li>
-                  <li>Mobile Priority: {{appData.mobilePriority}}</li>
-                  <li>Ad Spend: {{appData.adSpend}}</li>
-                  <li>Last Updated: {{appData.lastUpdated}}</li>
-                  <li>User Base</li>
-                  <li>App Store Link | Play Store Link</li>
-                </ul>
+              <table class="table table-striped">
+                <tbody>
+                <tr>
+                  <td><strong>Name:</strong> {{appData.name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Mobile Priority:</strong> {{appData.mobilePriority}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Ad Spend:</strong> {{appData.adSpend}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Last Updated:</strong> {{appData.lastUpdated}}</td>
+                </tr>
+                <tr>
+                  <td><strong>App Logo:</strong><br /><img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" /></td>
+                </tr>
+                </tbody>
+              </table>
             </div>
         </section>
     </div>
@@ -20,17 +30,17 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>Name: {{appData.company.name}}</li>
-                  <li ng-repeat="website in appData.company.websites"><a href="{{website}}">{{website}}</a></li>
-                  <li>LinkedIn Links</li>
-                  <li><a ng-href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+sales">LinkedIn Link - Sales</a></li>
-                  <li><a ng-href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a></li>
-                  <li><a ng-href="#/company/{{appData.company.id}}">Click Here</a> for more company details</li>
-                </ul>
-              <div id="searchResultsControl">
-                <button type="submit" class="btn btn-primary" ng-click="getApp(tags)">Search</button>
-              </div>
+              <P>
+                <strong>Company Name:</strong> {{appData.company.name}}<br />
+              </P>
+              <P>
+                <strong>LinkedIn Links:</strong><br />
+                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+sales">LinkedIn Link - Sales</a><br />
+                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a>
+              </P>
+              <P>
+                <a href="#/company/{{appData.company.id}}" ><strong>More Company Details</strong></a><br />
+              </P>
             </div>
         </section>
     </div>

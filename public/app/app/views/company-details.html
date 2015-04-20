@@ -4,21 +4,40 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Company Details</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>Name: {{companyData.name}}</li>
-                  <li>Fortune Rank: {{companyData.fortuneRank}}</li>
-                  <li>Funding: {{companyData.funding | currency}}</li>
-                  <li>Location:</li>
-                    <li>{{companyData.location.city}}</li>
-                  <li>{{companyData.location.country}}</li>
-                  <li>{{companyData.location.state}}</li>
-                  <li>{{companyData.location.streetAddress}}</li>
-                  <li>{{companyData.location.zipCode}}</li>
-                  <li ng-repeat="website in companyData.websites"><a href="{{website}}">{{website}}</a></li>
-                  <li>LinkedIn Links</li>
-                  <li><a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+sales">LinkedIn Link - Sales</a></li>
-                  <li><a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a></li>
-                </ul>
+              <table class="table table-striped">
+                <tbody>
+                <tr>
+                  <td><strong>Name:</strong> {{companyData.name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Fortune Rank:</strong> {{companyData.fortuneRank}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Funding:</strong> {{companyData.funding | currency}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Location:</strong>
+                    <p>
+                      {{companyData.location.streetAddress}}<br />
+                    {{companyData.location.city}}, {{companyData.location.state}}, {{companyData.location.country}} {{companyData.location.zipCode}}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Website(s):</strong><br />
+                    <span ng-repeat="website in companyData.websites"><a href="http://{{website}}">{{website}}</a><br /></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>LinkedIn Links:</strong><br />
+                    <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+sales">LinkedIn Link - Sales</a><br />
+                    <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
             </div>
         </section>
     </div>
@@ -26,12 +45,12 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li ng-repeat="app in companyData.iosApps"><a ng-href="#/app/{{app}}">{{app}}</a></li>
-                </ul>
-              <div id="searchResultsControl">
-                <button type="submit" class="btn btn-primary" ng-click="getCompany(tags)">Search</button>
-              </div>
+              <a ng-repeat="app in companyData.iosApps" href="#/app/{{app.id}}">
+                <div class="well companyAssociatedApp" >
+                  <img ng-src="{{app.appIcon.small}}" />
+                  <h5>{{app.name}}</h5>
+                </div>
+              </a>
             </div>
         </section>
     </div>
