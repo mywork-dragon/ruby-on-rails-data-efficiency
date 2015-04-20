@@ -20,9 +20,9 @@ class ApiController < ApplicationController
     user = User.find_by_email
     
     # must check for user, then valid password, then valid token, in that order
-    return json: {authorized: true} if user && user.valid_password?(password) && AuthService.token_valid?(token)
+    render json: {authorized: true} if user && user.valid_password?(password) && AuthService.token_valid?(token)
     
-    json: {authorized: false}
+    render json: {authorized: false}
   end
   
   def download_fortune_1000_csv

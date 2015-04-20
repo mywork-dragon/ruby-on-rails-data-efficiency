@@ -288,6 +288,7 @@ ActiveRecord::Schema.define(version: 20150420005431) do
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
+  add_index "ios_app_snapshots", ["name"], name: "index_ios_app_snapshots_on_name", using: :btree
   add_index "ios_app_snapshots", ["released"], name: "index_ios_app_snapshots_on_released", using: :btree
 
   create_table "ios_app_snapshots_languages", force: true do |t|
