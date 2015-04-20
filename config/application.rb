@@ -38,8 +38,6 @@ module Varys
     #   end
     # end
     
-    require 'devise'
-    
   end
 end
 
