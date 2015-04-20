@@ -86,6 +86,8 @@ gem 'kaminari', '0.16.3'
 
 gem 'faker', '1.4.3'
 
+gem 'jwt', '1.0.0'
+
 #cors
 gem 'rack-cors', :require => 'rack/cors'
 
