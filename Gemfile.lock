@@ -45,6 +45,7 @@ GEM
       multi_xml (~> 0.5)
     aws-sdk-resources (2.0.31)
       aws-sdk-core (= 2.0.31)
+    bcrypt (3.1.10)
     bootstrap-sass (3.2.0.0)
       sass (~> 3.2)
     builder (3.2.2)
@@ -248,6 +249,7 @@ DEPENDENCIES
   PageRankr (= 4.2.1)
   autoprefixer-rails
   aws-sdk (~> 2)
+  bcrypt (= 3.1.10)
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)

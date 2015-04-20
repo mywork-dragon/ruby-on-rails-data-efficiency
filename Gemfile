@@ -91,6 +91,8 @@ gem 'jwt', '1.0.0'
 #cors
 gem 'rack-cors', :require => 'rack/cors'
 
+gem 'bcrypt', '3.1.10'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

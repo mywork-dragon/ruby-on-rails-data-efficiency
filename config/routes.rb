@@ -55,6 +55,8 @@ Rails.application.routes.draw do
     get 'app_info_get_signals' => 'app#app_info_get_signals'
   end
   
+  post 'auth' => 'auth#authenticate'
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

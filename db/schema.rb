@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420193026) do
+ActiveRecord::Schema.define(version: 20150420204648) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -430,6 +430,13 @@ ActiveRecord::Schema.define(version: 20150420193026) do
   create_table "sidekiq_testers", force: true do |t|
     t.string   "test_string"
     t.string   "ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "email"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
