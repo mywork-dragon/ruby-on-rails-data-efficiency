@@ -26,6 +26,10 @@ module Varys
     #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
     
+    #turn of auto-generation of stylesheet and Javscripts
+    config.generators.stylesheets = false
+    config.generators.javascripts = false
+    
     #cors
     # config.middleware.insert_before 0, "Rack::Cors" do
     #   allow do
