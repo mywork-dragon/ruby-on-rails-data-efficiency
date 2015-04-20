@@ -86,8 +86,6 @@ gem 'kaminari', '0.16.3'
 
 gem 'faker', '1.4.3'
 
-gem 'devise', '3.4.1'
-
 #cors
 gem 'rack-cors', :require => 'rack/cors'
 
