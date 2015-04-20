@@ -26,7 +26,7 @@ module Varys
     #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
     
-    #turn of auto-generation of stylesheet and Javscripts
+    #turn of auto-generation of stylesheet and Javascripts
     config.generators.stylesheets = false
     config.generators.javascripts = false
     
