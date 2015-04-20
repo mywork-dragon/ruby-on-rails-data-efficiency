@@ -47,7 +47,7 @@ class FilterService
       end
       
       if app_filters[:categories]
-        cats_with_quotes = app_filters[:categories].map{|c| "\'#{c}\'"}
+        cats_with_quotes = app_filters[:categories].map{|c| "\"#{c}\""}
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
       
