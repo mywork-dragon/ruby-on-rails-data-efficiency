@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
 
   class << self
     
-    
     # Get the user by credentials, else return nil
     # @author Jason Lew
     # @note Be careful editing this method
