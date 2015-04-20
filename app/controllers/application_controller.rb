@@ -8,4 +8,10 @@ class ApplicationController < ActionController::Base
   def ping
     render :json => {success: true}
   end
+  
+  protected
+  
+  def
+    
+  end
 end
