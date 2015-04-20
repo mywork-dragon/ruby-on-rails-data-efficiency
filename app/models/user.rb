@@ -8,4 +8,25 @@ class User < ActiveRecord::Base
     AuthToken.encode(payload)
   end
 
+  class << self
+    
+    
+    # Get the user by credentials, else return nil
+    # @author Jason Lew
+    # @note Be careful editing this method
+    def find_by_credentials(email, password)
+      
+      user = User.find_by_email(email)
+      
+      return nil if user.nil?
+      
+      return user if user.authenticate(password)
+      
+      nil
+    end
+    
+  end
+
+
+
 end
