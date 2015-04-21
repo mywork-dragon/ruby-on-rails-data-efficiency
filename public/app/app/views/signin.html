@@ -8,19 +8,9 @@
         </div>
     </div>
 
-    <div class="main-body">
+    <div class="main-body" data-ng-controller="LoginCtrl">
         <div class="container">
             <div class="form-container">
-
-                <section class="row signin-social text-center">
-                    <a href="javascript:;" class="btn btn-twitter" tooltip-placement="top" tooltip="Signin with twitter" tooltip-append-to-body="true"><i class="fa fa-twitter"></i></a>
-                    <div class="space"></div>
-                    <a href="javascript:;" class="btn btn-facebook" tooltip-placement="top" tooltip="Signin with facebook" tooltip-append-to-body="true"><i class="fa fa-facebook"></i></a>
-                    <div class="space"></div>
-                    <a href="javascript:;" class="btn btn-google-plus" tooltip-placement="top" tooltip="Signin with google" tooltip-append-to-body="true"><i class="fa fa-google-plus"></i></a>
-                </section>
-
-                <span class="line-thru">OR</span>
 
                 <form class="form-horizontal">
                     <fieldset>
@@ -32,6 +22,7 @@
                                 <input type="email"
                                        class="form-control"
                                        placeholder="Email"
+                                       ng-model="user.email"
                                        >
                             </div>
                         </div>
@@ -43,22 +34,22 @@
                                 <input type="password"
                                        class="form-control"
                                        placeholder="password"
+                                       ng-model="user.password"
                                        >
                             </div>
                         </div>
                         <div class="form-group">
                         </div>
                         <div class="form-group">
-                            <a href="signin.html#/" class="btn btn-primary btn-lg btn-block">Log in</a>
+                            <a class="btn btn-primary btn-lg btn-block" ng-click="onLoginButtonClick()">Log in</a>
                         </div>
                     </fieldset>
                 </form>
 
                 <section>
                     <p class="text-center"><a href="signin.html#/pages/forgot">Forgot your password?</a></p>
-                    <p class="text-center text-muted text-small">Don't have an account yet? <a href="signin.html#/pages/signup">Sign up</a></p>
                 </section>
-                
+
             </div>
         </div>
     </div>

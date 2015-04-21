@@ -15,14 +15,14 @@ angular.module('appApp')
 
     };
   }])
-  .controller('HeaderCtrl', ['$scope', '$auth', function($scope, $auth) {
+  .controller('LoginCtrl', ['$scope', '$auth', function($scope, $auth) {
     $scope.onLoginButtonClick = function() {
-      $auth.submitLogin($scope.loginForm)
+      $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
-          // handle success response
+          console.log('LOGIN SUCCESS!');
         })
         .catch(function(resp) {
-          // handle error response
+          console.log('LOGIN FAILED!');
         });
     };
   }])
