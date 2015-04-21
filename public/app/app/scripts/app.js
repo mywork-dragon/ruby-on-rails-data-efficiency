@@ -60,7 +60,7 @@ angular
       apiUrl: '/auth',
       tokenValidationPath: '/auth/validate_token',
       signOutUrl: '/auth/sign_out',
-      emailSignInPath: '/auth/sign_in',
+      emailSignInPath: '/',
     });
   });
 
