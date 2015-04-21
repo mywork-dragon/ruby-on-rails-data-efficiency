@@ -31,7 +31,7 @@ angular
           $rootScope.categoryFilterOptions = data;
         });
 
-        $rootScope.isAuthenticated = localStorage.getItem('userToken') != null;
+        $rootScope.isAuthenticated = localStorage.getItem('ms_custom_auth_token') != null;
 
         console.log($rootScope.isAuthenticated);
 
