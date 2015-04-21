@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420210830) do
+ActiveRecord::Schema.define(version: 20150420204458) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -182,6 +182,8 @@ ActiveRecord::Schema.define(version: 20150420210830) do
     t.datetime "updated_at"
   end
 
+  add_index "ios_app_categories", ["name"], name: "index_ios_app_categories_on_name", using: :btree
+
   create_table "ios_app_categories_snapshots", force: true do |t|
     t.integer  "ios_app_category_id"
     t.integer  "ios_app_snapshot_id"
@@ -288,6 +290,7 @@ ActiveRecord::Schema.define(version: 20150420210830) do
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
+  add_index "ios_app_snapshots", ["name"], name: "index_ios_app_snapshots_on_name", using: :btree
   add_index "ios_app_snapshots", ["released"], name: "index_ios_app_snapshots_on_released", using: :btree
 
   create_table "ios_app_snapshots_languages", force: true do |t|
@@ -433,15 +436,6 @@ ActiveRecord::Schema.define(version: 20150420210830) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "users", force: true do |t|
-    t.string   "email"
-    t.string   "password_digest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
   create_table "websites", force: true do |t|
     t.string   "url"
