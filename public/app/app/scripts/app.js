@@ -31,7 +31,7 @@ angular
           $rootScope.categoryFilterOptions = data;
         });
 
-        $rootScope.isAuthenticated = $auth.validateUser();
+        $rootScope.isAuthenticated = localStorage.getItem('userToken') != null;
 
         console.log($rootScope.isAuthenticated);
 
