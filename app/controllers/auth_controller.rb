@@ -8,8 +8,10 @@ class AuthController < ApplicationController
     user = User.find_by_credentials(params[:email], params[:password]) # you'll need to implement this
     
     if user
+      li "authenticated"
       render json: { auth_token: user.generate_auth_token }
     else
+      li "authentication error"
       render json: { error: 'Invalid username or password' }, status: :unauthorized
     end
   end
