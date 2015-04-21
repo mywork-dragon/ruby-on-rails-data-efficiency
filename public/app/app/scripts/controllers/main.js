@@ -31,6 +31,11 @@ angular.module('appApp')
           console.log('LOGIN SUCCESS!');
           localStorage.setItem('custom_auth_token', resp.email);
           mixpanel.identify(resp.email);
+          
+          mixpanel.people.set({
+              "$email": resp.email
+          });
+          
           $rootScope.checkIfUserAuthenticated();
           location.reload();
         })
