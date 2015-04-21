@@ -8,7 +8,7 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", function ($scope, $location) {
+  .controller('MainCtrl', ["$scope", "$location", "$rootScope", function ($scope, $location, $rootScope) {
 
     $scope.checkIfOwnPage = function() {
 
@@ -16,17 +16,27 @@ angular.module('appApp')
 
     };
 
+    $rootScope.checkIfUserAuthenticated = function() {
+      $scope.isAuthenticated = localStorage.getItem('ms_custom_auth_token') != null;
+      console.log($scope.isAuthenticated);
+    };
+
+    $rootScope.checkIfUserAuthenticated();
+
   }])
-  .controller('LoginCtrl', ['$scope', '$auth', function($scope, $auth) {
+  .controller('LoginCtrl', ['$scope', '$auth', '$rootScope', function($scope, $auth, $rootScope) {
     $scope.onLoginButtonClick = function() {
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
           console.log('LOGIN SUCCESS!');
           localStorage.setItem('ms_custom_auth_token', resp);
+          $rootScope.checkIfUserAuthenticated();
+          location.reload();
         })
         .catch(function(resp) {
           console.log('LOGIN FAILED!');
         });
+
     };
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",

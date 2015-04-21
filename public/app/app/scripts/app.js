@@ -25,17 +25,11 @@ angular
 
         $http({
           method: 'GET',
-          url: 'http://localhost:3000/api/get_ios_categories'
-					//url: 'http://mightysignal.com/api/get_ios_categories'
+          //url: 'http://localhost:3000/api/get_ios_categories'
+					url: 'http://mightysignal.com/api/get_ios_categories'
         }).success(function(data) {
           $rootScope.categoryFilterOptions = data;
         });
-
-        $rootScope.isAuthenticated = localStorage.getItem('ms_custom_auth_token') != null;
-
-        $rootScope.$apply();
-
-        console.log($rootScope.isAuthenticated);
 
       });
 
