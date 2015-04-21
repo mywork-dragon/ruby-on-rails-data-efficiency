@@ -7098,4 +7098,8 @@ label {
   100% {
     transform: rotateZ(360deg); } }
 
+#textAngular-editableFix-010203040506070809 {
+  opacity: 0;
+}
+
 /*# sourceMappingURL=main.css.map */

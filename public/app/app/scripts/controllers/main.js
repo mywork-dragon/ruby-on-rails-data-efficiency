@@ -9,11 +9,13 @@
  */
 angular.module('appApp')
   .controller('MainCtrl', ["$scope", "$location", function ($scope, $location) {
+
     $scope.checkIfOwnPage = function() {
 
       return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
 
     };
+
   }])
   .controller('LoginCtrl', ['$scope', '$auth', function($scope, $auth) {
     $scope.onLoginButtonClick = function() {

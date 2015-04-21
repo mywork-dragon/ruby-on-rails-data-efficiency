@@ -14,7 +14,7 @@ angular
     "rt.encodeuri",
     'ng-token-auth'
   ])
-  .run(function ($http, $rootScope) {
+  .run(function ($http, $rootScope, $auth) {
 
       $(document).ready(function(){
 
@@ -30,6 +30,10 @@ angular
         }).success(function(data) {
           $rootScope.categoryFilterOptions = data;
         });
+
+        $rootScope.isAuthenticated = $auth.validateUser();
+
+        console.log($rootScope.isAuthenticated);
 
       });
 
@@ -48,9 +52,6 @@ angular
          templateUrl: '/app/app/views/company-details.html',
          controller: 'CompanyDetailsCtrl'
        })
-       .when('/login', {
-         templateUrl: '/app/app/views/signin.html'
-       })
       .otherwise({
         redirectTo: '/'
       });
@@ -58,9 +59,8 @@ angular
   .config(function($authProvider) {
     $authProvider.configure({
       apiUrl: '/auth',
-      tokenValidationPath: '/auth/validate_token',
-      signOutUrl: '/auth/sign_out',
-      emailSignInPath: '/',
+      tokenValidationPath: '/validate_token',
+      emailSignInPath: '/login'
     });
   });
 
