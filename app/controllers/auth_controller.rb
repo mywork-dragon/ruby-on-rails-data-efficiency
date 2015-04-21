@@ -14,13 +14,14 @@ class AuthController < ApplicationController
     end
   end
   
+  # don't use this yet
   def validate_token
-    token = params[:]
-    decoded_auth_token = AuthToken.decode(http_auth_header_content)
-    
-    render true if decoded_auth_token && User.find(decoded_auth_token[:user_id]) && !decoded_auth_token 
-    
-    return false
+    # token = params[:]
+    # decoded_auth_token = AuthToken.decode(http_auth_header_content)
+    #
+    # render true if decoded_auth_token && User.find(decoded_auth_token[:user_id]) && !decoded_auth_token
+    #
+    # return false
   end
   
 end
