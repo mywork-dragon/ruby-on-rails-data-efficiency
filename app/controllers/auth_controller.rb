@@ -1,10 +1,11 @@
 class AuthController < ApplicationController
+  skip_before_filter  :verify_authenticity_token
   #skip_before_action :authenticate_request # this will be implemented later
   
   def authenticate
-    user = User.find_by_credentials(params[:email], params[:password]) # you'll need to implement this
+    li 'AuthController.authenticate'
     
-    li "user: #{user}"
+    user = User.find_by_credentials(params[:email], params[:password]) # you'll need to implement this
     
     if user
       render json: { auth_token: user.generate_auth_token }
