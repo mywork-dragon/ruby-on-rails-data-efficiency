@@ -22,6 +22,7 @@ angular.module('appApp')
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
           console.log('LOGIN SUCCESS!');
+          localStorage.setItem('ms_custom_auth_token', resp);
         })
         .catch(function(resp) {
           console.log('LOGIN FAILED!');
