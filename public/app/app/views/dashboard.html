@@ -139,15 +139,15 @@
         </thead>
         <tbody>
         <tr data-ng-repeat="app in $root.apps">
-          <td>{{app.app.name}}</td>
-          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td><a href="#/app/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.app.mobilePriority}}</td>
           <td>{{app.app.adSpend}}</td>
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated}}</td>
           <td>{{app.company.fortuneRank}}</td>
-          <td><a href="#/app/{{app.app.id}}">Details</a></td>
+          <td><a href="#/app/{{app.app.id}}" target="_blank">Details</a></td>
         </tr>
         </tbody>
       </table>
