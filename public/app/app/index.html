@@ -27,11 +27,11 @@
   </head>
   <body data-ng-app="appApp" id="app" data-custom-background="" data-off-canvas-nav="" data-ng-controller="MainCtrl">
 
-    <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print" ng-hide="$root.isAuthenticated.$$state.value.reason != 'unauthorized'">
+    <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print" ng-hide="$root.isAuthenticated">
       <aside data-ng-include=" '/app/app/views/signin.html' "></aside>
     </div>
 
-    <div ng-show="$root.isAuthenticated.$$state.value.reason != 'unauthorized'">
+    <div ng-show="$root.isAuthenticated">
 
       <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
         <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container" ></aside>
