@@ -17,7 +17,7 @@ angular.module('appApp')
     };
 
     $rootScope.checkIfUserAuthenticated = function() {
-      $scope.isAuthenticated = localStorage.getItem('ms_custom_auth_token') != null;
+      $scope.isAuthenticated = localStorage.getItem('custom_auth_token') != null;
       console.log($scope.isAuthenticated);
     };
 
@@ -29,7 +29,8 @@ angular.module('appApp')
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
           console.log('LOGIN SUCCESS!');
-          localStorage.setItem('ms_custom_auth_token', resp);
+          localStorage.setItem('custom_auth_token', resp.email);
+          mixpanel.identify(resp.email);
           $rootScope.checkIfUserAuthenticated();
           location.reload();
         })
