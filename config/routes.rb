@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -55,6 +54,8 @@ Rails.application.routes.draw do
     get 'app_info' => 'app#app_info'
     get 'app_info_get_signals' => 'app#app_info_get_signals'
   end
+  
+  post 'auth' => 'auth#authenticate'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
