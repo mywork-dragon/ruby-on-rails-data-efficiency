@@ -11,7 +11,8 @@ angular
     'ngTagsInput',
     'app.directives',
     "ui.bootstrap",
-    "rt.encodeuri"
+    "rt.encodeuri",
+    'ng-token-auth'
   ])
   .run(function ($http, $rootScope) {
 
@@ -35,10 +36,10 @@ angular
     })
   .config(function ($routeProvider) {
      $routeProvider
-      .when('/', {
-        templateUrl: '/app/app/views/dashboard.html',
-        controller: 'MainCtrl'
-      })
+       .when('/', {
+         templateUrl: '/app/app/views/dashboard.html',
+         controller: 'MainCtrl'
+       })
        .when('/app/:id', {
          templateUrl: '/app/app/views/app-details.html',
          controller: 'AppDetailsCtrl'
@@ -47,8 +48,19 @@ angular
          templateUrl: '/app/app/views/company-details.html',
          controller: 'CompanyDetailsCtrl'
        })
+       .when('/login', {
+         templateUrl: '/app/app/views/signin.html'
+       })
       .otherwise({
         redirectTo: '/'
       });
+  })
+  .config(function($authProvider) {
+    $authProvider.configure({
+      apiUrl: '/auth',
+      tokenValidationPath: '/auth/validate_token',
+      signOutUrl: '/auth/sign_out',
+      emailSignInPath: '/auth/sign_in',
+    });
   });
 

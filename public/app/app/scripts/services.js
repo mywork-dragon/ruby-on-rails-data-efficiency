@@ -64,3 +64,26 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
     }
   };
 }]);
+
+
+/*
+angular.module("appApp").factory("AuthService", ['$http', '$q', '$rootScope', 'AuthToken', 'AuthEvents', function($http, $q, $rootScope, AuthToken, AuthEvents) {
+  return {
+    login: function(email, password) {
+      var d = $q.defer();
+      $http.post('/auth', {
+        email: email,
+        password: password
+      }).success(function(resp) {
+        AuthToken.set(resp.auth_token);
+        $rootScope.$broadcast(AuthEvents.loginSuccess);
+        d.resolve(resp.user);
+      }).error(function(resp) {
+        $rootScope.$broadcast(AuthEvents.loginFailed);
+        d.reject(resp.error);
+      });
+      return d.promise;
+    }
+  };
+}]);
+*/

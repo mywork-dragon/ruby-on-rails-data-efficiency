@@ -15,6 +15,17 @@ angular.module('appApp')
 
     };
   }])
+  .controller('HeaderCtrl', ['$scope', '$auth', function($scope, $auth) {
+    $scope.onLoginButtonClick = function() {
+      $auth.submitLogin($scope.loginForm)
+        .then(function(resp) {
+          // handle success response
+        })
+        .catch(function(resp) {
+          // handle error response
+        });
+    };
+  }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
       // When main Dashboard surch button is clicked
