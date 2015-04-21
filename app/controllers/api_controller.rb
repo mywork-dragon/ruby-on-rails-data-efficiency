@@ -12,6 +12,19 @@ class ApiController < ApplicationController
   #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   # end
   
+  def auth
+    email = params[:email]
+    password = params[:password]
+    token = param[:token]
+    
+    user = User.find_by_email
+    
+    # must check for user, then valid password, then valid token, in that order
+    render json: {authorized: true} if user && user.valid_password?(password) && AuthService.token_valid?(token)
+    
+    render json: {authorized: false}
+  end
+  
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
     puts apps.count
