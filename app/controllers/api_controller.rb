@@ -1,6 +1,7 @@
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
+  before_action :set_current_user, :authenticate_request
   
   # before_filter :disable_cors
   #
@@ -11,19 +12,6 @@ class ApiController < ApplicationController
   #   headers['Access-Control-Request-Method'] = '*'
   #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   # end
-  
-  def auth
-    email = params[:email]
-    password = params[:password]
-    token = param[:token]
-    
-    user = User.find_by_email
-    
-    # must check for user, then valid password, then valid token, in that order
-    render json: {authorized: true} if user && user.valid_password?(password) && AuthService.token_valid?(token)
-    
-    render json: {authorized: false}
-  end
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -245,7 +233,7 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).all.order('name asc').to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
