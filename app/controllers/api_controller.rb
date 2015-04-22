@@ -204,6 +204,7 @@ class ApiController < ApplicationController
     if company.present?
       @company_json = {
         id: companyId,
+        name: company.name,
         websites: company.websites.to_a.map{|w| w.url},
         funding: company.funding,
         location: {
