@@ -6702,6 +6702,10 @@ label {
   font-weight: bold;
   color: #0393dd; }
 
+.page-signin .logo img {
+  width: 175px;
+}
+
 .page-signin .logo a, .page-signup .logo a, .page-forgot .logo a {
   color: #0393dd; }
 

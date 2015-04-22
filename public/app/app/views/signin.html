@@ -3,7 +3,7 @@
     <div class="signin-header">
         <div class="container text-center">
             <section class="logo">
-                <a href="signin.html#/"><i class="fa fa-2x fa-slack"></i></a>
+                <img ng-src="/app/app/images/mighty_signal_logo.png"></img>
             </section>
         </div>
     </div>
@@ -12,7 +12,7 @@
         <div class="container">
             <div class="form-container">
 
-                <form class="form-horizontal">
+                <form class="form-horizontal" ng-enter="onLoginButtonClick()">
                     <fieldset>
                         <div class="form-group">
                             <div class="input-group input-group-lg">
@@ -45,10 +45,6 @@
                         </div>
                     </fieldset>
                 </form>
-
-                <section>
-                    <p class="text-center"><a href="signin.html#/pages/forgot">Forgot your password?</a></p>
-                </section>
 
             </div>
         </div>
