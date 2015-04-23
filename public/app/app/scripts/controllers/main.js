@@ -169,11 +169,6 @@ angular.module('appApp')
   .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
     $scope.load = function() {
 
-      mixpanel.track(
-        "App Page Viewed",
-        { "appid": $routeParams.id }
-      );
-
       return $http({
         method: 'POST',
         url: 'http://mightysignal.com/api/get_ios_app',
@@ -186,15 +181,17 @@ angular.module('appApp')
     };
 
     $scope.load();
+
+    mixpanel.track(
+      "App Page Viewed", {
+        "appid": $routeParams.id,
+        "appname": $scope.appData.name
+      }
+    );
   }
   ])
   .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
     $scope.load = function() {
-
-      mixpanel.track(
-        "Company Page Viewed",
-        { "appid": $routeParams.id }
-      );
 
       return $http({
         method: 'POST',
@@ -208,5 +205,12 @@ angular.module('appApp')
     };
 
     $scope.load();
+
+    mixpanel.track(
+      "Company Page Viewed", {
+        "companyid": $routeParams.id,
+        "companyname": $scope.companyData.name
+      }
+    );
   }
   ]);
