@@ -18,7 +18,6 @@ angular.module('appApp')
 
     $rootScope.checkIfUserAuthenticated = function() {
       $scope.isAuthenticated = localStorage.getItem('custom_auth_token') != null;
-      console.log($scope.isAuthenticated);
     };
 
     $rootScope.checkIfUserAuthenticated();
@@ -47,8 +46,20 @@ angular.module('appApp')
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
+
+      mixpanel.track(
+        "Search Page Viewed",
+        { "userauthenticated": $scope.isAuthenticated }
+      );
+
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
+
+        mixpanel.track(
+          "Search Submitted",
+          { "tags": $rootScope.tags }
+        );
+
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
@@ -157,6 +168,12 @@ angular.module('appApp')
   ])
   .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
     $scope.load = function() {
+
+      mixpanel.track(
+        "App Page Viewed",
+        { "appid": $routeParams.id }
+      );
+
       return $http({
         method: 'POST',
         url: 'http://mightysignal.com/api/get_ios_app',
@@ -173,6 +190,12 @@ angular.module('appApp')
   ])
   .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
     $scope.load = function() {
+
+      mixpanel.track(
+        "Company Page Viewed",
+        { "appid": $routeParams.id }
+      );
+
       return $http({
         method: 'POST',
         url: 'http://mightysignal.com/api/get_company',
