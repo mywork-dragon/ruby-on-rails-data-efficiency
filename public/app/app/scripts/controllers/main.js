@@ -116,6 +116,14 @@ angular.module('appApp')
         $scope.row = "",
         // When table's paging options are selected
         $scope.select = function(page, tags) {
+
+          mixpanel.track(
+            "Table Page Changed", {
+              "page": page,
+              "tags": tags
+            }
+          );
+          
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
               console.log(data);
