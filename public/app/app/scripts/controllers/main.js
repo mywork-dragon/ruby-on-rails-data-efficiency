@@ -192,7 +192,7 @@ angular.module('appApp')
 
     mixpanel.track(
       "App Page Viewed", {
-        "appid": $routeParams.id,
+        "appid": $routeParams.id
         //"appname": $scope.appData.name  //was breaking
       }
     );
@@ -216,7 +216,7 @@ angular.module('appApp')
 
     mixpanel.track(
       "Company Page Viewed", {
-        "companyid": $routeParams.id,
+        "companyid": $routeParams.id
         //"companyname": $scope.companyData.name  //was breaking
       }
     );
