@@ -190,12 +190,12 @@ angular.module('appApp')
 
     $scope.load();
 
-    // mixpanel.track(
-    //   "App Page Viewed", {
-    //     "appid": $routeParams.id,
-    //     "appname": $scope.appData.name
-    //   }
-    // );
+    mixpanel.track(
+      "App Page Viewed", {
+        "appid": $routeParams.id,
+        //"appname": $scope.appData.name  //was breaking
+      }
+    );
   }
   ])
   .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
@@ -214,11 +214,11 @@ angular.module('appApp')
 
     $scope.load();
 
-    // mixpanel.track(
-    //   "Company Page Viewed", {
-    //     "companyid": $routeParams.id,
-    //     "companyname": $scope.companyData.name
-    //   }
-    // );
+    mixpanel.track(
+      "Company Page Viewed", {
+        "companyid": $routeParams.id,
+        //"companyname": $scope.companyData.name  //was breaking
+      }
+    );
   }
   ]);
