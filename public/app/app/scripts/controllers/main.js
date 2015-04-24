@@ -46,7 +46,6 @@ angular.module('appApp')
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
-
       mixpanel.track(
         "Search Page Viewed",
         { "userauthenticated": $scope.isAuthenticated }
@@ -123,7 +122,7 @@ angular.module('appApp')
               "tags": tags
             }
           );
-          
+
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
               console.log(data);

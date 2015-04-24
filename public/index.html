@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"148f727ec5","applicationID":"7715739","transactionName":"cVsITUIMWQpRQ0lDBF5XCVRVTFwIUFQe","queueTime":0,"applicationTime":917,"agent":"js-agent.newrelic.com/nr-632.min.js"}</script>
+    <script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var o=n[t]={exports:{}};e[t][0].call(o.exports,function(n){var o=e[t][1][n];return r(o?o:n)},o,o.exports)}return n[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<t.length;o++)r(t[o]);return r}({QJf3ax:[function(e,n){function t(e){function n(n,t,a){e&&e(n,t,a),a||(a={});for(var u=c(n),f=u.length,s=i(a,o,r),p=0;f>p;p++)u[p].apply(s,t);return s}function a(e,n){f[e]=c(e).concat(n)}function c(e){return f[e]||[]}function u(){return t(n)}var f={};return{on:a,emit:n,create:u,listeners:c,_events:f}}function r(){return{}}var o="nr@context",i=e("gos");n.exports=t()},{gos:"7eSDFh"}],ee:[function(e,n){n.exports=e("QJf3ax")},{}],3:[function(e,n){function t(e){return function(){r(e,[(new Date).getTime()].concat(i(arguments)))}}var r=e("handle"),o=e(1),i=e(2);"undefined"==typeof window.newrelic&&(newrelic=window.NREUM);var a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(e,n){window.NREUM[n]=t("api-"+n)}),n.exports=window.NREUM},{1:12,2:13,handle:"D5DuLP"}],"7eSDFh":[function(e,n){function t(e,n,t){if(r.call(e,n))return e[n];var o=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,n,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return e[n]=o,o}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],gos:[function(e,n){n.exports=e("7eSDFh")},{}],handle:[function(e,n){n.exports=e("D5DuLP")},{}],D5DuLP:[function(e,n){function t(e,n,t){return r.listeners(e).length?r.emit(e,n,t):(o[e]||(o[e]=[]),void o[e].push(n))}var r=e("ee").create(),o={};n.exports=t,t.ee=r,r.q=o},{ee:"QJf3ax"}],id:[function(e,n){n.exports=e("XL7HBI")},{}],XL7HBI:[function(e,n){function t(e){var n=typeof e;return!e||"object"!==n&&"function"!==n?-1:e===window?0:i(e,o,function(){return r++})}var r=1,o="nr@id",i=e("gos");n.exports=t},{gos:"7eSDFh"}],G9z0Bl:[function(e,n){function t(){var e=d.info=NREUM.info,n=f.getElementsByTagName("script")[0];if(e&&e.licenseKey&&e.applicationID&&n){c(p,function(n,t){n in e||(e[n]=t)});var t="https"===s.split(":")[0]||e.sslForHttp;d.proto=t?"https://":"http://",a("mark",["onload",i()]);var r=f.createElement("script");r.src=d.proto+e.agent,n.parentNode.insertBefore(r,n)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=e("handle"),c=e(1),u=(e(2),window),f=u.document,s=(""+location).split("?")[0],p={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-632.min.js"},d=n.exports={offset:i(),origin:s,features:{}};f.addEventListener?(f.addEventListener("DOMContentLoaded",o,!1),u.addEventListener("load",t,!1)):(f.attachEvent("onreadystatechange",r),u.attachEvent("onload",t)),a("mark",["firstbyte",i()])},{1:12,2:3,handle:"D5DuLP"}],loader:[function(e,n){n.exports=e("G9z0Bl")},{}],12:[function(e,n){function t(e,n){var t=[],o="",i=0;for(o in e)r.call(e,o)&&(t[i]=n(o,e[o]),i+=1);return t}var r=Object.prototype.hasOwnProperty;n.exports=t},{}],13:[function(e,n){function t(e,n,t){n||(n=0),"undefined"==typeof t&&(t=e?e.length:0);for(var r=-1,o=t-n||0,i=Array(0>o?0:o);++r<o;)i[r]=e[n+r];return i}n.exports=t},{}]},{},["G9z0Bl"]);</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MightySignal</title>
+
+    <link href="/assets/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+
+    <link data-turbolinks-track="true" href="/assets/bootstrap.min.css" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/codrops_demo.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/flexslider.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/foundation_and_overrides.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/hosting.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/normalize.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/main.css" media="all" rel="stylesheet" />
+    <script data-turbolinks-track="true" src="/assets/jquery.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/EasePack.min.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/TweenLite.min.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/demo-1.js?body=1"></script>
+
+    <meta content="authenticity_token" name="csrf-param" />
+    <meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" />
+</head>
+
+<body id="home" data-spy="scroll" data-target=".navbar-collapse" data-offset="100">
+
+<!--==============Logo & Menu Bar=================-->
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+            <img alt="logo" class="navbar-brand" href="#" src="/assets/mighty_signal_logo_white.png" />
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="#home">HOME</a></li>
+                <li class="hidden-sm"><a href="#about_anchor">ABOUT</a></li>
+                <li class="hidden-sm"><a href="#contact_anchor">CONTACT</a></li>
+                <li class="hidden-sm"><a href="/app/app">LOGIN</a></li>
+                <!-- <li><a href="whmcs/register.php" role="button" class="btn btn-success">Sign Up</a></li> -->
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</nav>
+
+<!--==============HEADER =================-->
+<div class="jumbotron masthead vertical-center" id="large-header">
+
+    <div class="container">
+        <canvas id="demo-canvas"></canvas>
+
+        <div class="domain" id="engineer_message">
+
+            <div id="heading">
+                <h1>The Engineer's Approach<br/>to Lead Generation</h1>
+                <h3>Finding signals on the web that are invisible to salespeople, but visible to engineers.</h3>
+            </div>
+            <!-- <div class="row PageHead">
+              <div class="col-md-12">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2">
+                  <form accept-charset="UTF-8" action="/try_it_out?method=post" method="post"><div style="display:none"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /></div>
+                    <div class="form-group">
+
+                      <input type="hidden" name="direct" value="true" />
+                      <div class="row">
+                        <div class="col-sm-12 form-group">
+                          <input class="form-control" id="url" name="url" placeholder="Type in a URL to try it out" size="20" spellcheck="false" type="text" />
+                        </div>
+                      </div>
+                    </div>
+                  <div class="submitbtn">
+                    <input class="btn btn-success btn-lg" name="commit" type="submit" value="Test it out!" />
+                  </div>
+      </form>      </div>
+          </div> -->
+
+        </div>
+
+    </div>
+
+    <!--==============Hero Unit=================-->
+    <div class="container">
+        <div class="flexslider">
+            <ul class="slides">
+                <li>
+                    <div class="hero-unit">
+                        <h1>One page Hosting Solution</h1>
+                        <h3>Flathost is a bootstrap based responsive minimal, flat and afforable hosting template with easy customization and great support</h3>
+                        <div class="slider-actions text-center"> <a href="#" class="btn btn-success btn-lg">Explore Features </a> <a href="#" class="btn btn-primary btn-lg">Plans and Pricing </a> </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="slide2">
+                        <p><img alt="server" class="img-responsive center-block" src="/assets/server1.png" /></p>
+                        <!-- <p><img src="images/server1.png" alt="server" class="img-responsive center-block"></p> -->
+                        <h1>Dedicated and VIP Hosting</h1>
+                    </div>
+                </li>
+                <li>
+                    <div class="slide3">
+                        <p class="pull-left"><img alt="server" class="img-responsive" src="/assets/server2.png" /></p>
+                        <!-- <p class="pull-left"><img src="images/server2.png" alt="server" class="img-responsive"></p> -->
+                        <h1>Managed Hosting</h1>
+                        <h3>Flathost is a bootstrap based responsive minimal, flat and afforable hosting template with easy customization and great support </h3>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--==============Content Area=================-->
+
+<div class="container">
+
+    <!--============== Other Features ==============-->
+    <a class="anchor" id="about_anchor"></a>
+    <div class="row PageHead">
+        <div class="col-md-12">
+            <h1 id="about">About Us</h1>
+            <h3>Started by engineers, MightySignal tells B2B SaaS sales teams who are most likely to buy their product.</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 features"><!-- <img src="images/setup_icon.png" alt="icon" class="img-responsive"> -->
+            <h4><!-- <i class="glyphicon glyphicon-cloud-download"> --></i>&nbsp&nbsp&nbsp&nbsp&nbsp  Gathering and indexing signals</h4>
+            <p class="feature_description">Companies leave fingerprints across the web that indicate what services they currently pay for, and what they are likely to buy. </p>
+        </div>
+        <div class="col-sm-6 features"> <!-- <img src="images/backup_icon.png" alt="icon" class="img-responsive"> -->
+            <h4><!-- <i class="glyphicon glyphicon-retweet"> --></i>&nbsp&nbsp&nbsp&nbsp&nbsp CRM Integration</h4>
+            <p class="feature_description">We integrate directly with Salesforce (more CRMs to come). No need for a new platform.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 features"> <!-- <img src="images/git_icon.png" alt="icon" class="img-responsive"> -->
+            <h4><!-- <i class="glyphicon glyphicon-fire"> --></i>&nbsp&nbsp&nbsp&nbsp&nbsp Predictive Sales</h4>
+            <p class="feature_description">Based on your wins and losses, we find companies of similar profiles that will have high close rates.</p>
+        </div>
+        <div class="col-sm-6 features"> <!-- <img src="images/script_icon.png" alt="icon" class="img-responsive"> -->
+            <h4><!-- <i class="glyphicon glyphicon-star"> --></i>&nbsp&nbsp&nbsp&nbsp&nbsp Only the Beginning</h4>
+            <p class="feature_description">As we speak, MightySignal is cataloguing the endless signals companies leave. We know more about companies than they know about themselves, and we know the ones that you should be closing.</p>
+        </div>
+    </div>
+</div>
+<!--Container Closed-->
+
+<!--============== Contact us ==============-->
+<a class="anchor" id="contact_anchor"></a>
+<div class="container" id="contact">
+    <img alt="Techstars logo" id="techstars_logo" src="/assets/techstars_logo.png" />
+
+    <div class="row PageHead">
+        <div class="col-md-12">
+            <h1>Contact us</h1>
+            <h3>We are live! Fill this out and we'll be in touch.</h3>
+        </div>
+    </div>
+    <!-- <div class="row ContactUs">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-sm-12">
+            <h4> Australia </h4>
+            <address>
+            <strong>Flat Host Pty Ltd</strong><br>
+            13/2 Elizabeth Street<br>
+            Melbourne VIC 30007<br>
+            Australia<br>
+            <abbr title="Phone">P:</abbr> +61 3 8376 6284<br>
+            <br>
+            </address>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 mapwrap">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3151.835837652496!2d144.955431!3d-37.817313999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xedc33f230d1355b1!2sEnvato+Pty+Ltd!5e0!3m2!1sen!2sin!4v1408780745585" width="100%" height="250" frameborder="0" style="border:0"></iframe>
+          </div>
+        </div>
+      </div> -->
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-6">
+        <form accept-charset="UTF-8" action="/contact_us?method=post" method="post"><div style="display:none"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /></div>
+            <div class="form-group">
+                <input class="form-control" id="first_name" name="first_name" placeholder="First Name" type="text" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="last_name" name="last_name" placeholder="Last Name" type="text" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="company" name="company" placeholder="Company" type="text" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="email" name="email" placeholder="Email" type="email" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="phone" name="phone" placeholder="Phone Number" type="text" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="crm" name="crm" placeholder="What CRM do you use?" type="text" />
+            </div>
+            <div class="form-group">
+          <textarea class="form-control" id="message" name="message" placeholder="Your Message">
+</textarea>
+            </div>
+            <div class="form-group text-center">
+                <p>
+                    <input class="btn btn-success btn-lg" id="submit_contact_btn" name="commit" type="submit" value="Submit" />
+                </p>
+                <span class="loading"></span>
+            </div>
+        </form>
+        <!-- <form class="form" id="phpcontactform">
+          <div class="form-group">
+            <input class="form-control" type="text" placeholder="Full Name" name="name" id="name">
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="email" placeholder="Email" name="email" id="email">
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" placeholder="Mobile Number" name="mobile" id="mobile">
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" rows="10" name="message" placeholder="Your Message" id="message"></textarea>
+          </div>
+          <div class="form-group">
+            <p>
+              <input class="btn btn-success btn-lg" type="submit" value="Send Message" />
+            </p>
+            <span class="loading"></span> </div>
+        </form> -->
+    </div>
+    <div class="col-md-3">
+    </div>
+</div>
+</div>
+
+<!--============== Footer ==============-->
+
+<div class="footer">
+  <div class="container">
+    <div class="row footerlinks">
+      <div class="col-sm-4 col-md-2">
+        <p>CALL US</p>
+      </div>
+      <div class="col-sm-4 col-md-2">
+        <p>FOLLOW US</p>
+      </div>
+      <div class="col-sm-4 col-md-2">
+        <p>COMPANY</p>
+      </div>
+      <div class="col-sm-4 col-md-2">
+        <p>EMAIL US</p>
+      </div>
+      <div class="col-sm-4 col-md-2">
+        <p>LEGAL TERMS</p>
+      </div>
+      <div class="col-sm-4 col-md-2">
+        <p>Live Chat</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--==============MODAL LOGIN=================-->
+
+<!-- Modal -->
+<div class="modal fade LoginSignup" id="Login" tabindex="-1" role="dialog" aria-labelledby="LoginLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Login</h3>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="https://www.yourwebsite.com/client/dologin.php">
+                    <div class="form-group">
+                        <input class="form-control input-lg" type="text" name="username" size="50" placeholder="Email ID"/>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control input-lg" type="password" name="password" size="20" placeholder="Password"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Login to my Account" class="btn btn-success btn-lg"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!--===Back to top======-->
+<a href="#" class="scrollup">Scroll</a>
+
+
+<!--==========ONE PAGE SCROLLING SCRIPTS STARTS===============-->
+
+<script>
+    $(function() {
+        $('.nav li a').bind('click',function(event){
+            var $anchor2 = $(this).parent();
+            var $anchor = $(this);
+            $('.nav  li').removeClass('active');
+            $anchor2.addClass('active');
+
+            $('html, body').stop().animate({
+                scrollTop: $($anchor.attr('href')).offset().top - 80
+            }, 1500,'easeInOutExpo');
+            event.preventDefault();
+        });
+    });
+</script>
+
+<!--=============ONE PAGE SCROLLING SCRIPTS ENDS============-->
+
+<!--=============BACK TO TOP STARTS============-->
+
+<script>
+    $(document).ready(function(){
+
+        $(window).scroll(function(){
+            if ($(this).scrollTop() > 800) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
+
+        $('.scrollup').click(function(){
+            $("html, body").animate({ scrollTop: 0 }, 600);
+            return false;
+        });
+
+    });
+</script>
+
+<!--=============BACK TO TOP ENDS============-->
+
+<script src="//cdn.TheNameOfAnImaginaryCompany.com/js/287941242.js"></script>
+
+</body>
+</html>
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-55537278-1', 'mightysignal.com');
+    ga('send', 'pageview');
+
+</script>
+</html>
