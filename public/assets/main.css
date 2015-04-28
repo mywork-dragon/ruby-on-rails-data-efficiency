@@ -52,3 +52,55 @@ form .form-group {
 #features p.teamMemberTitle {
     margin-bottom: 8px;
 }
+
+/* Social Icons */
+
+.icons a {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin: 10px;
+    vertical-align: middle;
+    -o-transition: all .3s;
+    -moz-transition: all .3s;
+    -webkit-transition: all .3s;
+    -ms-transition: all .3s;
+}
+
+.icons a.twitter { background: url("images/social/twitter.png") left top no-repeat; }
+.icons a.dribbble { background: url("images/social/dribbble.png") left top no-repeat; }
+.icons a.rss { background: url("images/social/rss.png") left top no-repeat; }
+.icons a.pinterest { background: url("images/social/pinterest.png") left top no-repeat; }
+.icons a.digg { background: url("images/social/digg.png") left top no-repeat; }
+.icons a.flickr { background: url("images/social/flickr.png") left top no-repeat; }
+.icons a.forrst { background: url("images/social/forrst.png") left top no-repeat; }
+.icons a.vimeo { background: url("images/social/vimeo.png") left top no-repeat; }
+.icons a.reddit { background: url("images/social/reddit.png") left top no-repeat; }
+.icons a.linkedin { background: url("images/social/linkedin.png") left top no-repeat; }
+.icons a.facebook { background: url("images/social/facebook.png") left top no-repeat; }
+.icons a.paypal { background: url("images/social/paypal.png") left top no-repeat; }
+.icons a.stumbleupon { background: url("images/social/stumbleupon.png") left top no-repeat; }
+.icons a.email { background: url("images/social/email.png") left top no-repeat; }
+.icons a.deviantart { background: url("images/social/deviantart.png") left top no-repeat; }
+.icons a.netvibes { background: url("images/social/netvibes.png") left top no-repeat; }
+.icons a.yahoo { background: url("images/social/yahoo.png") left top no-repeat; }
+.icons a.github { background: url("images/social/github.png") left top no-repeat; }
+.icons a.addthis { background: url("images/social/addthis.png") left top no-repeat; }
+.icons a.behance { background: url("images/social/behance.png") left top no-repeat; }
+.icons a.blogger { background: url("images/social/blogger.png") left top no-repeat; }
+.icons a.slashdot { background: url("images/social/slashdot.png") left top no-repeat; }
+.icons a.technorati { background: url("images/social/technorati.png") left top no-repeat; }
+.icons a.googleplus { background: url("images/social/googleplus.png") left top no-repeat; }
+.icons a.apple { background: url("images/social/apple.png") left top no-repeat; }
+.icons a.myspace { background: url("images/social/myspace.png") left top no-repeat; }
+.icons a.sharethis { background: url("images/social/sharethis.png") left top no-repeat; }
+.icons a.yelp { background: url("images/social/yelp.png") left top no-repeat; }
+.icons a.delicious { background: url("images/social/delicious.png") left top no-repeat; }
+.icons a.lastfm { background: url("images/social/lastfm.png") left top no-repeat; }
+.icons a.youtube { background: url("images/social/youtube.png") left top no-repeat; }
+.icons a.skype { background: url("images/social/skype.png") left top no-repeat; }
+.icons a.tumblr { background: url("images/social/tumblr.png") left top no-repeat; }
+.icons a.aim { background: url("images/social/aim.png") left top no-repeat; }
+.icons a.google { background: url("images/social/google.png") left top no-repeat; }
+
+.icons a:hover { background-position: left -34px; }
