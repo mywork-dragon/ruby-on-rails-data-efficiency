@@ -19,9 +19,10 @@ class WelcomeController < ApplicationController
     company = params['company']
     phone = params['phone']
     crm = params['crm']
+    sdk = params['sdk']
     message = params['message']
     
-    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :message).merge({lead_source: "Web"})
+    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message).merge({lead_source: "Web"})
     
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
