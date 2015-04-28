@@ -13,7 +13,7 @@
 /* line 21, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
 #submit_contact_btn {
     border-radius: 5px;
-    font-style: italic;
+    padding: 12px 23px;
 }
 
 /* line 27, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
@@ -32,3 +32,23 @@
     font-weight: 100;
 }
 
+form .form-group {
+    margin-bottom: 10px;
+}
+
+#features img {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    width: 250px;
+}
+
+#features .caption h4 {
+    margin-bottom: 0px;
+    margin-top: 5px;
+}
+
+#features p.teamMemberTitle {
+    margin-bottom: 8px;
+}

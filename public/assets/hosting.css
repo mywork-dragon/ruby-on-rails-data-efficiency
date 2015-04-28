@@ -211,9 +211,6 @@ p {
 }
 /*==========2. MAIN FEATURES==============*/
 
-.mainFeatures {
-	margin-top:50px;
-}
 .img-thumbnail {
 	border:0;
 	padding:20px 0;
@@ -230,18 +227,26 @@ p {
 .PageHead {
 	margin-top:50px;
 }
+
+.PageHead h1 {
+	font-weight: 200;
+	font-size: 42pt;
+	margin-bottom: 25px;
+}
 .PageHead h1, .PageHead h3 {
 	text-align:center;
 }
 .PageHead h3 {
 	color: #9AA5AA;
-	font-weight: normal;
+	font-weight: 200;
 	margin-bottom: 20px;
 	margin-top: 10px;
+	font-size: 18pt;
 }
 .features {
 	margin:25px 0;
 	float:left;
+	text-align: center;
 }
 .features img {
 	float:left;
@@ -249,7 +254,6 @@ p {
 }
 .features p {
 /*	padding-left: 80px;*/
-	padding-left: 45px;
 }
 /*==========4. FEATURES LAYOUT==============*/
 
@@ -470,7 +474,7 @@ p {
 	position: relative;
 	background-size:cover;
 	overflow:hidden;
-	margin-top: 125px;
+	margin-top: 150px;
 	text-align: center;
 }
 .domain h1 {
@@ -479,7 +483,7 @@ p {
 }
 .domain h3 {
 	color:#D5D5D5;
-	margin-bottom: 40px;
+	margin-bottom: 42px;
 }
 .input-append, .input-prepend {
 	display:inline;
@@ -511,13 +515,13 @@ p {
 	margin-top:25px;
 }
 .ContactUs input[type=text], .ContactUs input[type=email] {
-	height:50px;
+	height:40px;
+	margin-bottom: 10px;
 }
 .ContactUs textarea {
-	height:150px;
+	height:90px;
 }
 .ContactUs .btn {
-	width:100%;
 	margin:5px 0;
 	-webkit-box-sizing:border-box;
 	-moz-box-sizing:border-box;
