@@ -547,7 +547,7 @@ address {
 .footer {
 	position: relative;
 	color: #fff;
-	background:url(../images/header-bg.jpg) no-repeat #232a31;
+	background-color: #232a31;
 /*	background-color: #232a31;*/
 	background-size:cover;
 	overflow:hidden;
