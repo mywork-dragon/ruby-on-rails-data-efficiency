@@ -10,9 +10,6 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,700,600,400' rel='stylesheet' type='text/css'>
 
-    <!-- Include Jquery in the vendor folder -->
-    <script src="/app/bower_components/jquery/dist/jquery.min.js"></script>
-
     <!-- Theme's own CSS file -->
     <link rel="stylesheet" href="/app/bower_components/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/app/bower_components/weather-icons/css/weather-icons.min.css">
@@ -20,7 +17,27 @@
     <link rel="stylesheet" href="/app/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/app/app/styles/main.css">
 
-    <!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+    <!-- Include Jquery in the vendor folder -->
+    <script src="/app/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      if(localStorage.getItem('custom_auth_token') != null) {
+        ga('create', 'UA-55537278-1', {'userId': localStorage.getItem('custom_auth_token')});
+      } else {
+        ga('create', 'UA-55537278-1', 'auto');
+      }
+
+      ga('send', 'pageview');
+    </script>
+
+    <!-- Mixpanel -->
+    <script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
     for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
     mixpanel.init("6a96c6c2b8cb2ad6de06ad54957b2f2a");</script><!-- end Mixpanel -->
 
