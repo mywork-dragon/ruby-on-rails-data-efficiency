@@ -23,6 +23,10 @@
     left: 0px;
 }
 
+#headerLogo {
+    width: 140px;
+}
+
 /* line 34, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
 #engineer_message h1 {
     font-weight: 100;

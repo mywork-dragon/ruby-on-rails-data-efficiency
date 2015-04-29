@@ -57,6 +57,7 @@ p {
 
 .navbar-header {
 	min-height:80px;
+	z-index: 99999;
 }
 .navbar-default .navbar-toggle {
 	border-color: #808080;
@@ -813,7 +814,7 @@ a.anchor{
     position: relative;
     top: -75px;
     visibility: hidden;
-    margin-top: 250px;
+    margin-top: 150px;
 }
 
 .navbar-brand {
