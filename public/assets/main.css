@@ -37,11 +37,11 @@ form .form-group {
 }
 
 #features img {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 40px;
     margin-bottom: 5px;
-    width: 250px;
+    width: 350px;
 }
 
 #features .caption h4 {
@@ -51,6 +51,14 @@ form .form-group {
 
 #features p.teamMemberTitle {
     margin-bottom: 8px;
+}
+
+.mainProfileImage {
+
+}
+
+.secondProfileImage {
+    display: none;
 }
 
 /* Social Icons */
@@ -65,6 +73,7 @@ form .form-group {
     -moz-transition: all .3s;
     -webkit-transition: all .3s;
     -ms-transition: all .3s;
+    margin-top: 0px;
 }
 
 .icons a.twitter { background: url("images/social/twitter.png") left top no-repeat; }

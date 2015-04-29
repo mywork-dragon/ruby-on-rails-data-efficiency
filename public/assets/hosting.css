@@ -243,6 +243,9 @@ p {
 	margin-top: 10px;
 	font-size: 18pt;
 }
+#features {
+	text-align: center;
+ }
 .features {
 	margin:25px 0;
 	float:left;
