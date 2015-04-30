@@ -1303,7 +1303,7 @@ input.input-dark:focus {
   position: relative;
   padding: 5px 33px 5px 8px;
   max-width: 160px;
-  width: 120%;
+  width: 100%;
   border: none;
   outline: none;
   background: transparent;
@@ -7107,3 +7107,11 @@ label {
 }
 
 /*# sourceMappingURL=main.css.map */
+
+/* CUSTOM STYLES */
+
+i.infoTooltipIcon {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 15px;
+}
