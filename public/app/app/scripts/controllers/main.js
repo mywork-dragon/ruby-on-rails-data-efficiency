@@ -51,6 +51,11 @@ angular.module('appApp')
         { "userauthenticated": $scope.isAuthenticated }
       );
 
+      /* Initializes all Bootstrap tooltips */
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
 

@@ -18,11 +18,13 @@ angular
 
       $(document).ready(function(){
 
+        /* Disables loading spinner */
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
           $('.load_circle_wrapper').addClass("loaded");
         },1000);
 
+        /* Populates "Categories" dropdown with list of categories */
         $http({
           method: 'GET',
           //url: 'http://localhost:3000/api/get_ios_categories'
