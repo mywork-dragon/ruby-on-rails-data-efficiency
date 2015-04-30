@@ -8,7 +8,7 @@
       <div><i class="fa fa-search"></i></div>
       <div class="row">
         <div class="col-md-11">
-          <tags-input ng-model="tags" add-on-enter="true" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+          <tags-input ng-model="tags" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
             <ul class="tag-list"></ul>
           </tags-input>
         </div>
@@ -21,8 +21,8 @@
     <div class="panel-heading">
 
           <div class="btn-group">
-            <button type="button" class="btn btn-primary">iOS</button>
-            <button type="button" class="btn btn-bordered-primary">Android</button>
+            <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-bordered-primary'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
+            <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-bordered-primary'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
           </div>
 
           <span class="dashboard-tag-filter-selects">

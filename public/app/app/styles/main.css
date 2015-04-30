@@ -7114,6 +7114,8 @@ i.infoTooltipIcon {
   margin-left: 5px;
   margin-right: 5px;
   font-size: 15px;
+  position: relative;
+  top: 2px;
 }
 
 .dashboard-tag-filter-selects {

@@ -118,6 +118,7 @@ angular.module('appApp')
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
+        $scope.appPlatform = "ios",
         // When table's paging options are selected
         $scope.select = function(page, tags) {
 
@@ -143,6 +144,9 @@ angular.module('appApp')
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
         },
+        $scope.changeAppPlatform = function(platform) {
+          $scope.appPlatform = platform;
+        };
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
           var firstPage = 1;
