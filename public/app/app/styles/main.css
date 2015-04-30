@@ -7125,3 +7125,6 @@ i.infoTooltipIcon {
   top: 2px;
 }
 
+:focus {
+  outline: 0;
+}
