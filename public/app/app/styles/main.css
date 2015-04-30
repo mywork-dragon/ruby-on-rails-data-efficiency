@@ -7115,3 +7115,10 @@ i.infoTooltipIcon {
   margin-right: 5px;
   font-size: 15px;
 }
+
+.dashboard-tag-filter-selects {
+  margin-left: 4px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
