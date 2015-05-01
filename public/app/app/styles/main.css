@@ -4920,7 +4920,8 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 .well.companyAssociatedApp {
   background: #f9f9f9;
-  padding: 10px;
+  padding: 0px;
+  margin-bottom: 7px;
 }
 
 .well.companyAssociatedApp:hover {
