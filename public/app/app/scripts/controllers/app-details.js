@@ -10,7 +10,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.appData = data;
-      console.log(data);
     });
   };
 
@@ -19,7 +18,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   mixpanel.track(
     "App Page Viewed", {
       "appid": $routeParams.id
-      //"appname": $scope.appData.name  //was breaking
     }
   );
 }

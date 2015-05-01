@@ -27,7 +27,6 @@ angular.module('appApp')
     $scope.onLoginButtonClick = function() {
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
-          console.log('LOGIN SUCCESS!');
           localStorage.setItem('custom_auth_token', resp.email);
           mixpanel.identify(resp.email);
 
@@ -39,7 +38,6 @@ angular.module('appApp')
           location.reload();
         })
         .catch(function(resp) {
-          console.log('LOGIN FAILED!');
         });
 
     };
@@ -54,7 +52,7 @@ angular.module('appApp')
       /* Initializes all Bootstrap tooltips */
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-      })
+      });
 
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
@@ -131,7 +129,6 @@ angular.module('appApp')
 
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
@@ -152,7 +149,6 @@ angular.module('appApp')
           var firstPage = 1;
           apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;

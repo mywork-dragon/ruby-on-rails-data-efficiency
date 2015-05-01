@@ -10,7 +10,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.companyData = data;
-      console.log(data);
     });
   };
 
@@ -19,7 +18,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
   mixpanel.track(
     "Company Page Viewed", {
       "companyid": $routeParams.id
-      //"companyname": $scope.companyData.name  //was breaking
     }
   );
 }

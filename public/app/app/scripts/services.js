@@ -2,6 +2,8 @@
 
 angular.module("appApp").factory("apiService", ['$http', function($http) {
   return {
+
+    /* Translates tag object values into a request object that matches format of back end api endpoints */
     searchRequestPost: function(tags, currentPage, numPerPage, category, order) {
       var requestData = {app: {}, company: {}};
       if(tags) {
@@ -64,26 +66,3 @@ angular.module("appApp").factory("apiService", ['$http', function($http) {
     }
   };
 }]);
-
-
-/*
-angular.module("appApp").factory("AuthService", ['$http', '$q', '$rootScope', 'AuthToken', 'AuthEvents', function($http, $q, $rootScope, AuthToken, AuthEvents) {
-  return {
-    login: function(email, password) {
-      var d = $q.defer();
-      $http.post('/auth', {
-        email: email,
-        password: password
-      }).success(function(resp) {
-        AuthToken.set(resp.auth_token);
-        $rootScope.$broadcast(AuthEvents.loginSuccess);
-        d.resolve(resp.user);
-      }).error(function(resp) {
-        $rootScope.$broadcast(AuthEvents.loginFailed);
-        d.reject(resp.error);
-      });
-      return d.promise;
-    }
-  };
-}]);
-*/
