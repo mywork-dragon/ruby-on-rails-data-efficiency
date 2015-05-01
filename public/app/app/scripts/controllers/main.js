@@ -146,7 +146,7 @@ angular.module('appApp')
         },
         $scope.changeAppPlatform = function(platform) {
           $scope.appPlatform = platform;
-        };
+        },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
           var firstPage = 1;
