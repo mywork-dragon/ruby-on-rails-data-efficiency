@@ -108,6 +108,9 @@ class FilterService
       return queries
     end
     
+    def filter_ios_apps
+    end
+    
     def android_app_queries(app_filters)
     end
     
