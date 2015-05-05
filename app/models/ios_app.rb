@@ -14,13 +14,6 @@ class IosApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
   
-  
-  def get_newest_app_snapshot
-    self.ios_app_snapshots.max_by do |snapshot|
-      snapshot.created_at
-    end
-  end
-  
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|
       snapshot.updated_at
@@ -28,8 +21,11 @@ class IosApp < ActiveRecord::Base
   end
   
   def get_company
+    support_url = newest_ios_app_snapshot.present? ? newest_ios_app_snapshot.support_url : nil
+    seller_url = newest_ios_app_snapshot.present? ? newest_ios_app_snapshot.seller_url : nil
+    
     self.websites.each do |w|
-      if w.kind == 'primary' && w.company.present?
+      if w.company.present? #&& /sites.google.com/.match(support_url).blank? && /sites.google.com/.match(seller_url).blank?
         return w.company
       end
     end

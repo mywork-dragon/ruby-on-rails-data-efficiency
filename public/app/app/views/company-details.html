@@ -4,13 +4,40 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Company Details</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>Name</li>
-                  <li>Fortune Rank</li>
-                  <li>Funding</li>
-                  <li>Location</li>
-                  <li>LinkedIn Links</li>
-                </ul>
+              <table class="table table-striped">
+                <tbody>
+                <tr>
+                  <td><strong>Name:</strong> {{companyData.name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Fortune Rank:</strong> {{companyData.fortuneRank}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Funding:</strong> {{companyData.funding | currency}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Location:</strong>
+                    <p>
+                      {{companyData.location.streetAddress}}<br />
+                    {{companyData.location.city}}, {{companyData.location.state}}, {{companyData.location.country}} {{companyData.location.zipCode}}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Website(s):</strong><br />
+                    <span ng-repeat="website in companyData.websites"><a href="http://{{website}}">{{website}}</a><br /></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>LinkedIn Links:</strong><br />
+                    <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+sales">LinkedIn Link - Sales</a><br />
+                    <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{companyData.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
             </div>
         </section>
     </div>
@@ -18,14 +45,12 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>App 1</li>
-                  <li>App 2</li>
-                  <li>App 3</li>
-                </ul>
-              <div id="searchResultsControl">
-                <button type="submit" class="btn btn-primary" ng-click="getCompany(tags)">Search</button>
-              </div>
+              <a ng-repeat="app in companyData.iosApps" href="#/app/{{app.id}}">
+                <div class="well companyAssociatedApp" >
+                  <img ng-src="{{app.appIcon.small}}" />
+                  <h5>{{app.name}}</h5>
+                </div>
+              </a>
             </div>
         </section>
     </div>

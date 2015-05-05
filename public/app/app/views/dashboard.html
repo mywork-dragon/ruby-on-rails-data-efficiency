@@ -13,7 +13,7 @@
           </tags-input>
         </div>
         <div id="searchResultsControl">
-          <button type="submit" class="btn btn-primary" ng-click="submitSearch(tags)">Search</button>
+          <button type="submit" class="btn btn-primary" ng-click="submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Search</button>
         </div>
       </div>
     </div>
@@ -21,29 +21,29 @@
     <div class="panel-heading">
 
            <span class="ui-select">
-                <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority')">
+                <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
                   <option value="">Mobile Priority</option>
                   <option value="L">Low</option>
                   <option value="M">Medium</option>
                   <option value="H">High</option>
                 </select>
             </span>
+            <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" title="Fortune Rank is a function of date of last update and user base size."></i>
             <span class="ui-select">
-                <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank')">
+                <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
                   <option value="">Fortune Rank</option>
                   <option value="500">Fortune 500</option>
                   <option value="1000">Fortune 1000</option>
-                  <option value="5000">Fortune 5000</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend')">
+                <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
                   <option value="">Reported Ad Spend</option>
                   <option value="true">Yes</option>
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size')">
+                <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
                   <option value="">User Base Size</option>
                   <option value="weak">Weak</option>
                   <option value="moderate">Moderate</option>
@@ -52,8 +52,9 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated')">
+                <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
                   <option value="">Last Updated</option>
+                  <option value="7">Within 7 Days</option>
                   <option value="30">Within 1 Month</option>
                   <option value="90">Within 3 Months</option>
                   <option value="180">Within 6 Months</option>
@@ -61,13 +62,13 @@
                 </select>
             </span>
             <span class="ui-select">
-                <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category')">
+                <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
                   <option value="">Categories</option>
                   <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
                 </select>
             </span>
             <span id="dashboardSearchBox">
-                <input placeholder="Custom tag..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
+                <input placeholder="App name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
             </span>
 
     </div>
@@ -86,74 +87,51 @@
           <th><div class="th">
             App Name
                             <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('name') "
-                                  data-ng-class="{active: row == 'name'}"></span>
+                                  data-ng-click=" sortApps('appName', 'ASC') "
+                                  data-ng-class="{active: row == 'appName'}"></span>
                             <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-name') "
-                                  data-ng-class="{active: row == '-name'}"></span>
+                                  data-ng-click=" sortApps('appName', 'DESC') "
+                                  data-ng-class="{active: row == '-appName'}"></span>
           </div></th>
           <th><div class="th">
             Company
                             <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('company.name') "
-                                  data-ng-class="{active: row == 'company.name'}"></span>
+                                  data-ng-click=" sortApps('companyName', 'ASC') "
+                                  data-ng-class="{active: row == 'companyName'}"></span>
                             <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-company.name') "
-                                  data-ng-class="{active: row == '-company.name'}"></span>
+                                  data-ng-click=" sortApps('companyName', 'DESC') "
+                                  data-ng-class="{active: row == '-companyName'}"></span>
           </div></th>
           <th><div class="th">
             Mobile Priority
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('mobilePriority') "
-                                  data-ng-class="{active: row == 'mobilePriority'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-mobilePriority') "
-                                  data-ng-class="{active: row == '-mobilePriority'}"></span>
           </div></th>
           <th><div class="th">
             Ad Spend
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('adSpend') "
-                                  data-ng-class="{active: row == 'adSpend'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-adSpend') "
-                                  data-ng-class="{active: row == '-adSpend'}"></span>
           </div></th>
           <th><div class="th">
             User Base Size
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('userBases') "
-                                  data-ng-class="{active: row == 'userBases'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-userBases') "
-                                  data-ng-class="{active: row == '-userBases'}"></span>
           </div></th>
           <th><div class="th">
             Categories
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('rating') "
-                                  data-ng-class="{active: row == 'rating'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-rating') "
-                                  data-ng-class="{active: row == '-rating'}"></span>
+
           </div></th>
           <th><div class="th">
             Last Updated
                             <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('lastUpdated') "
+                                  data-ng-click=" sortApps('lastUpdated', 'ASC') "
                                   data-ng-class="{active: row == 'lastUpdated'}"></span>
                             <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-lastUpdated') "
+                                  data-ng-click=" sortApps('lastUpdated', 'DESC') "
                                   data-ng-class="{active: row == '-lastUpdated'}"></span>
           </div></th>
           <th><div class="th">
             Fortune Rank
                             <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" order('company.fortuneRank') "
-                                  data-ng-class="{active: row == 'company.fortuneRank'}"></span>
+                                  data-ng-click=" sortApps('fortuneRank', 'ASC') "
+                                  data-ng-class="{active: row == 'fortuneRank'}"></span>
                             <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" order('-company.fortuneRank') "
-                                  data-ng-class="{active: row == '-company.fortuneRank'}"></span>
+                                  data-ng-click=" sortApps('fortuneRank', 'DESC') "
+                                  data-ng-class="{active: row == '-fortuneRank'}"></span>
           </div></th>
           <th><div class="th">
             Details
@@ -162,15 +140,15 @@
         </thead>
         <tbody>
         <tr data-ng-repeat="app in $root.apps">
-          <td>{{app.app.name}}</td>
-          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td><a href="#/app/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.app.mobilePriority}}</td>
           <td>{{app.app.adSpend}}</td>
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated}}</td>
           <td>{{app.company.fortuneRank}}</td>
-          <td><a href="/app/{{app.app.id}}">Details</a></td>
+          <td><a href="#/app/{{app.app.id}}" target="_blank">Details</a></td>
         </tr>
         </tbody>
       </table>
@@ -194,9 +172,9 @@
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="currentPage"
-                      total-items="filteredApps.length"
+                      total-items="numApps"
                       max-size="4"
-                      ng-change="select(currentPage)"
+                      ng-change="select(currentPage, tags)"
                       items-per-page="numPerPage"
                       rotate="false"
                       boundary-links="true"></pagination>

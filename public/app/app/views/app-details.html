@@ -4,16 +4,25 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>App Details</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>Name</li>
-                  <li>Mobile Priority Score</li>
-                  <li>Ad Spend</li>
-                  <li>Countries Deployed</li>
-                  <li>Downloads</li>
-                  <li>Last Updated</li>
-                  <li>App Store Link | Play Store Link</li>
-                  <li>App Icon</li>
-                </ul>
+              <table class="table table-striped">
+                <tbody>
+                <tr>
+                  <td><strong>Name:</strong> {{appData.name}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Mobile Priority:</strong> {{appData.mobilePriority}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Ad Spend:</strong> {{appData.adSpend}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Last Updated:</strong> {{appData.lastUpdated}}</td>
+                </tr>
+                <tr>
+                  <td><strong>App Logo:</strong><br /><img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" /></td>
+                </tr>
+                </tbody>
+              </table>
             </div>
         </section>
     </div>
@@ -21,15 +30,17 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
             <div class="panel-body">
-                <ul>
-                  <li>Name</li>
-                  <li>Website</li>
-                  <li>LinkedIn Links</li>
-                  <li>Link to Company Page</li>
-                </ul>
-              <div id="searchResultsControl">
-                <button type="submit" class="btn btn-primary" ng-click="getApp(tags)">Search</button>
-              </div>
+              <P>
+                <strong>Company Name:</strong> {{appData.company.name}}<br />
+              </P>
+              <P>
+                <strong>LinkedIn Links:</strong><br />
+                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+sales">LinkedIn Link - Sales</a><br />
+                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a>
+              </P>
+              <P>
+                <a href="#/company/{{appData.company.id}}" ><strong>More Company Details</strong></a><br />
+              </P>
             </div>
         </section>
     </div>

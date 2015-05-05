@@ -801,7 +801,13 @@ margin-bottom: -20px;
 	color: #01A9D8;
 }
 
-a.anchor{display: block; position: relative; top: -75px; visibility: hidden;}
+a.anchor{
+    display: block;
+    position: relative;
+    top: -75px;
+    visibility: hidden;
+    margin-top: 250px;
+}
 
 .navbar-brand {
   height: 80px !important;

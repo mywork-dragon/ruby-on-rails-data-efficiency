@@ -2,6 +2,8 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
   
+  #before_action :set_current_user, :authenticate_request #add this back later to verify every request -- jlew
+  
   # before_filter :disable_cors
   #
   # def disable_cors
@@ -12,32 +14,70 @@ class ApiController < ApplicationController
   #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   # end
   
+  def download_fortune_1000_csv
+    apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
+    puts apps.count
+    f1000_csv = CSV.generate do |csv|
+      csv << ['App ID', 'App Name', 'Company Name', 'Company ID', 'Support URL', 'Seller URL', 'Website URLs', 'Website IDs']
+      apps.each do |app|
+        if app.newest_ios_app_snapshot.present? && app.get_company.present?
+          row = [app.id, app.newest_ios_app_snapshot.name, app.get_company.name, app.get_company.id, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.seller_url, app.websites.map{|w| w.url}.join(', '), app.websites.map{|w| w.id}]
+          csv << row
+        end
+      end
+    end
+    # puts f1000_csv
+    # render send_data: f1000_csv
+    # return f1000_csv
+    respond_to do |format|
+      format.csv { send_data f1000_csv }
+    end
+  end
   
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    page_size = params[:pageSize].present? ? params[:pageSize].to_i : 50
-    page_num = params[:pageNum].present? ? params[:pageNum].to_i : 1
+    pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
+    pageNum = params[:pageNum].present? ? params[:pageNum].to_i : 1
     sort_by = params[:sortBy] || 'appName'
     order_by = params[:orderBy] || 'ASC'
     
     #filter for companies
     queries = []
-    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)"
-
-    queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
-
-    queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
-
-    queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
-
+    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
     
-    queries << FilterService.ios_sort_order_query(sort_by, order_by)
+    queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
+    
+    if company_filters.present?
+      queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
+    else
+      queries << "joins(websites: :company)"
+    end
+    
+    queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
+    
+    # queries << FilterService.ios_sort_order_query(sort_by, order_by)
     
     query = queries.join('.')
-    results = IosApp.instance_eval("self.#{query}.group('ios_apps.id').where('ios_app_snapshots.name IS NOT NULL').limit(#{page_size}).offset(#{(page_num-1) * page_size})")
+    query = "self." + query + ".group('ios_apps.id')"
+    # li "query right before count: #{query}"
+    
+    results_count = IosApp.instance_eval("#{query}.count.length")
+    # results_count = 5e6 #dummy the count
+    # li "results_count: #{results_count}"
+    
+    query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
+    query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
+    # query += ".#{order_query}"
+    # li "query right before full eval: #{query}"
+    results = IosApp.instance_eval(query)
+    # li "FINISHED FULL EVAL TO GET RESULTS"
+    # li "#{results.to_a.map{|r| r.id}}"
+    # li "RESULTS CLASS: #{results.class}"
+    # li "RESULTS COUNT: #{results.count.length}"
     results_json = []
     results.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
       app_hash = {
@@ -57,10 +97,13 @@ class ApiController < ApplicationController
         }
       }
       # li "app_hash: #{app_hash}"
+      # li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    render json: results_json
+    # li "finished creating hashes"
+    render json: {results: results_json, resultsCount: results_count}
+    # render json: results_json
   end
   
   def filter_android_apps
@@ -82,17 +125,18 @@ class ApiController < ApplicationController
     appId = params['id']
     ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
-    newest_app_snapshot = ios_app.get_newest_app_snapshot
+    newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: nil, 
-      adSpend: nil, 
+      mobilePriority: ios_app.mobile_priority, 
+      adSpend: ios_app.ios_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
-      downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+      userBase: ios_app.user_base,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
-      appIdentifier: ios_app.id,
+      appIdentifier: ios_app.app_identifier,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
         small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -141,7 +185,7 @@ class ApiController < ApplicationController
         fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
         funding: company.present? ? company.funding : nil,
         websites: android_app.get_website_urls, #this is an array
-        locatoin: {
+        location: {
           streetAddress: company.present? ? company.street_address : nil,
           city: company.present? ? company.city : nil,
           zipCode: company.present? ? company.zip_code : nil,
@@ -155,11 +199,12 @@ class ApiController < ApplicationController
   
   def get_company
     companyId = params['id']
-    company = Company.includes(:websites).find(companyId)
+    company = Company.includes(websites: {ios_apps: :newest_ios_app_snapshot}).find(companyId)
     @company_json = {}
     if company.present?
       @company_json = {
         id: companyId,
+        name: company.name,
         websites: company.websites.to_a.map{|w| w.url},
         funding: company.funding,
         location: {
@@ -170,7 +215,19 @@ class ApiController < ApplicationController
           country: company.country
         },
         fortuneRank: company.fortune_1000_rank,
-        iosApps: company.get_ios_apps.map{|app| app.id},
+        iosApps: company.get_ios_apps.map{|app| {
+          id: app.id,
+          name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          userBase: app.user_base,
+          lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+          appIdentifier: app.app_identifier,
+          appIcon: {
+            large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
+            small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
+          }
+        }},
         androidApps: company.get_android_apps.map{|app| app.id}
       }
     end
@@ -178,7 +235,7 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).all.to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
