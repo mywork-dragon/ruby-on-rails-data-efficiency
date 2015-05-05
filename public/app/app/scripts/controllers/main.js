@@ -8,7 +8,7 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "$rootScope", function ($scope, $location, $rootScope) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "$auth", function ($scope, $location, authService, $auth) {
 
     $scope.checkIfOwnPage = function() {
 
@@ -16,25 +16,21 @@ angular.module('appApp')
 
     };
 
-    $rootScope.checkIfUserAuthenticated = function() {
-      $scope.isAuthenticated = localStorage.getItem('custom_auth_token') != null;
-    };
+    $scope.isAuthenticated = authService.isAuthenticated();
 
-    $rootScope.checkIfUserAuthenticated();
-
-  }])
-  .controller('LoginCtrl', ['$scope', '$auth', '$rootScope', function($scope, $auth, $rootScope) {
+    /* Login specific logic */
     $scope.onLoginButtonClick = function() {
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
           localStorage.setItem('custom_auth_token', resp.email);
+
           mixpanel.identify(resp.email);
 
           mixpanel.people.set({
               "$email": resp.email
           });
 
-          $rootScope.checkIfUserAuthenticated();
+          $scope.isAuthenticated = authService.isAuthenticated();
           location.reload();
         })
         .catch(function(resp) {
