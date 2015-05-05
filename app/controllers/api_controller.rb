@@ -106,6 +106,9 @@ class ApiController < ApplicationController
     # render json: results_json
   end
   
+  def filter_ios_apps_2
+  end
+  
   def filter_android_apps
     app_filters = params[:app]
     company_filters = params[:company]

@@ -68,6 +68,46 @@ class FilterService
       # first_object.instance_eval("self.#{query}.limit(#{limit})")
     end
     
+    def ios_apps_query_2
+      limit = 10 #TODO: pass this as parameter later
+      queries = []
+      first_object = IosApp
+      
+      # queries << 'includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)'
+      if app_filters[:mobilePriority]
+        mobile_priorities = []
+        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
+        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
+        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
+        queries << "where(mobile_priority: #{mobile_priorities})"
+      end
+      
+      queries << 'joins(:ios_fb_ad_appearances)' if app_filters[:adSpend]
+      
+      if app_filters[:userBases]
+        user_bases = []
+        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
+        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
+        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
+        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
+        queries << "where(user_base: #{user_bases})"
+      end
+      
+      if app_filters[:updatedDaysAgo]
+        queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', \"#{app_filters[:updatedDaysAgo].to_i.days.ago.to_date}\")"
+      end
+      
+      if app_filters[:categories]
+        cats_with_quotes = app_filters[:categories].map{|c| "\"#{c}\""}
+        li cats_with_quotes
+        li cats_with_quotes.join(',')
+        queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
+      end
+      
+      
+      return queries
+    end
+    
     def android_app_queries(app_filters)
     end
     
