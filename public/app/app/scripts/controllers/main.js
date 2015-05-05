@@ -65,16 +65,30 @@ angular.module('appApp')
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
-            console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
+            mixpanel.track(
+              "Search Request Successful",
+              {
+                "tags": $rootScope.tags,
+                "numOfApps": data.resultsCount
+              }
+            );
           })
-          .error(function() {
+          .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
+            mixpanel.track(
+              "Search Request Failed",
+              {
+                "tags": $rootScope.tags,
+                "errorMessage": data,
+                "errorStatus": status
+              }
+            );
           });
       };
       $rootScope.tags = [];
