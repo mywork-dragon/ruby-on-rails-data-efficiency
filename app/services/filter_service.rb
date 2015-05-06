@@ -14,23 +14,19 @@ class FilterService
     def company_ios_apps_query(company_filters)
       query = []
       query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
-      # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
-      # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
-      return query
+      query
     end
     
     # @author Jason Lew
     def company_android_apps_query(company_filters)
       query = []
       query << "joins(android_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
+      query
     end
     
     def ios_apps_query(app_filters)
-      limit = 10 #TODO: pass this as parameter later
       queries = []
-      first_object = IosApp
-      
-      # queries << 'includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company)'
+
       if app_filters[:mobilePriority]
         mobile_priorities = []
         mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
@@ -61,20 +57,15 @@ class FilterService
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
       
-      
-      return queries
-      # query = queries.join('.')
-      # puts "Query: #{query}"
-      # first_object.instance_eval("self.#{query}.limit(#{limit})")
+      queries
     end
     
-    def filter_ios_apps(app_filters:, company_filters:, custom_keywords: nil,  page_size: 50, page_num: 1, sort_by: 'appName', order_by: 'ASC')
+    def filter_ios_apps(app_filters: nil, company_filters: nil, custom_keywords: nil,  page_size: 50, page_num: 1, sort_by: 'appName', order_by: 'ASC')
       
       # individual parts of the giant query which will be executed at the end
       # all elements of the array will be chained together
       parts = []
       
-      # base query
       parts << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
       
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
@@ -92,14 +83,13 @@ class FilterService
       parts_count = parts + ".group('ios_apps.id')"
       
       parts_count << "group('ios_apps.id')"
-      
       parts_count << 'count.length'
       
-      #the query for count
+      # the query for count; will be run at the end
       query_count = parts_count.join('.')
       
       # add limit and offset
-      parts << ".limit(#{page_size}).offset(#{(page_num - 1) * page_size})"
+      parts << "limit(#{page_size}).offset(#{(page_num - 1) * page_size})"
       
       parts << ios_sort_order_query(sort_by, order_by)
       
