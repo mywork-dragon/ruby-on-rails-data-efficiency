@@ -726,7 +726,7 @@ var fm = (function ($) {
 			radio_button_list_labels : ["1", "2", "3", "4", "5"],
 			radio_button_list_title : "How would you rate my site?",
 			name_placeholder : "",
-			email_placeholder : "",
+			email_placeholder : "Email",
 			message_placeholder : "",
 			name_pattern : "",
 			name_required : false,
