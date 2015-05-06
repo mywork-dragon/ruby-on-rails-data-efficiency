@@ -60,7 +60,7 @@ class FilterService
       queries
     end
     
-    def filter_ios_apps(app_filters: nil, company_filters: nil, custom_keywords: nil,  page_size: 50, page_num: 1, sort_by: 'appName', order_by: 'ASC')
+    def filter_ios_apps(app_filters: nil, company_filters: nil, custom_keywords: nil, page_size: 50, page_num: 1, sort_by: 'appName', order_by: 'ASC')
       
       # individual parts of the giant query which will be executed at the end
       # all elements of the array will be chained together
@@ -79,10 +79,11 @@ class FilterService
       # add app filters
       parts << ios_apps_query(app_filters) if app_filters.present?
       
-      # branch off parts for a first query to count the apps
-      parts_count = parts + ".group('ios_apps.id')"
+      parts << "group('ios_apps.id')"
       
-      parts_count << "group('ios_apps.id')"
+      # branch off parts for a first query to count the apps
+      parts_count = Array.new(parts)
+      
       parts_count << 'count.length'
       
       # the query for count; will be run at the end
@@ -97,9 +98,9 @@ class FilterService
       
       #run the query for count
       results_count = IosApp.instance_eval("self.#{query_count}")
-      
+
       #run the main query
-      results= IosApp.instance_eval("self.#{query}")
+      results = IosApp.instance_eval("self.#{query}")
       
       {results_count: results_count, results: results}
     end
