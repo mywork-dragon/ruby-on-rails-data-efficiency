@@ -125,36 +125,7 @@
     <script src="/app/app/js/other_charts.js"></script>
     <script src="/app/app/js/bootstrap-angular.min.js"></script>
     <script src="/app/app/js/jquery.feedback_me.js"></script>
-
-  <script>
-    $(document).ready(function() {
-
-      /* User feedback widget initialization - feedback_me */
-      fm_options = {
-        bootstrap: true,
-        name_placeholder: "Full name",
-        name_required: true,
-        show_email : true,
-        message_placeholder: "Any feedback, questions or bugs?",
-        feedback_url: "send_feedback_bootstrap",
-        position : "right-bottom",
-        custom_params: {
-          csrf: "my_secret_token",
-          user_id: "john_doe",
-          feedback_type: "bootstarp"
-        },
-        delayed_options: {
-          success_color: "#5cb85c",
-          fail_color: "#d2322d",
-          delay_success_milliseconds: 3500,
-          send_success: "Thanks for your feedback!"
-        }
-      };
-      //init feedback_me plugin
-      fm.init(fm_options);
-
-    });
-  </script>
+    <script src="/app/app/js/main.js"></script>
 
   </body>
 </html>
