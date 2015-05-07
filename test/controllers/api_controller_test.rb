@@ -15,7 +15,7 @@ class ApiControllerTest < ActionController::TestCase
   
   test "Should filter correctly for Mobile Priority" do
     post(:filter_ios_apps, {'app' => {'mobilePriority' => "H"}})
-    puts "response: #{@response}"
+    puts "response: #{@response.body}"
     assert true
   end
 end
