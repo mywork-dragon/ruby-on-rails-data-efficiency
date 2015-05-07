@@ -8,7 +8,7 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "$rootScope", function ($scope, $location, $rootScope) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "$auth", function ($scope, $location, authService, $auth) {
 
     $scope.checkIfOwnPage = function() {
 
@@ -16,30 +16,24 @@ angular.module('appApp')
 
     };
 
-    $rootScope.checkIfUserAuthenticated = function() {
-      $scope.isAuthenticated = localStorage.getItem('custom_auth_token') != null;
-    };
+    $scope.isAuthenticated = authService.isAuthenticated();
 
-    $rootScope.checkIfUserAuthenticated();
-
-  }])
-  .controller('LoginCtrl', ['$scope', '$auth', '$rootScope', function($scope, $auth, $rootScope) {
+    /* Login specific logic */
     $scope.onLoginButtonClick = function() {
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
-          console.log('LOGIN SUCCESS!');
           localStorage.setItem('custom_auth_token', resp.email);
+
           mixpanel.identify(resp.email);
 
           mixpanel.people.set({
               "$email": resp.email
           });
 
-          $rootScope.checkIfUserAuthenticated();
+          $scope.isAuthenticated = authService.isAuthenticated();
           location.reload();
         })
         .catch(function(resp) {
-          console.log('LOGIN FAILED!');
         });
 
     };
@@ -54,7 +48,7 @@ angular.module('appApp')
       /* Initializes all Bootstrap tooltips */
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-      })
+      });
 
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
@@ -67,16 +61,30 @@ angular.module('appApp')
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
-            console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
+            mixpanel.track(
+              "Search Request Successful",
+              {
+                "tags": $rootScope.tags,
+                "numOfApps": data.resultsCount
+              }
+            );
           })
-          .error(function() {
+          .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
+            mixpanel.track(
+              "Search Request Failed",
+              {
+                "tags": $rootScope.tags,
+                "errorMessage": data,
+                "errorStatus": status
+              }
+            );
           });
       };
       $rootScope.tags = [];
@@ -118,6 +126,7 @@ angular.module('appApp')
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
+        $scope.appPlatform = "ios",
         // When table's paging options are selected
         $scope.select = function(page, tags) {
 
@@ -130,7 +139,6 @@ angular.module('appApp')
 
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
@@ -143,12 +151,14 @@ angular.module('appApp')
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
         },
+        $scope.changeAppPlatform = function(platform) {
+          $scope.appPlatform = platform;
+        },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
           var firstPage = 1;
           apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
@@ -177,52 +187,4 @@ angular.module('appApp')
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }
-  ])
-  .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
-    $scope.load = function() {
-
-      return $http({
-        method: 'POST',
-        url: 'http://mightysignal.com/api/get_ios_app',
-        // url: 'http://localhost:3000/api/get_ios_app',
-        params: {id: $routeParams.id}
-      }).success(function(data) {
-        $scope.appData = data;
-        console.log(data);
-      });
-    };
-
-    $scope.load();
-
-    mixpanel.track(
-      "App Page Viewed", {
-        "appid": $routeParams.id
-        //"appname": $scope.appData.name  //was breaking
-      }
-    );
-  }
-  ])
-  .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
-    $scope.load = function() {
-
-      return $http({
-        method: 'POST',
-        url: 'http://mightysignal.com/api/get_company',
-        // url: 'http://localhost:3000/api/get_company',
-        params: {id: $routeParams.id}
-      }).success(function(data) {
-        $scope.companyData = data;
-        console.log(data);
-      });
-    };
-
-    $scope.load();
-
-    mixpanel.track(
-      "Company Page Viewed", {
-        "companyid": $routeParams.id
-        //"companyname": $scope.companyData.name  //was breaking
-      }
-    );
-  }
   ]);

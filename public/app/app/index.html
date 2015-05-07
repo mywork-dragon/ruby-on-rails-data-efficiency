@@ -26,13 +26,10 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
+      ga('create', 'UA-55537278-1', 'auto');
       if(localStorage.getItem('custom_auth_token') != null) {
-        ga('create', 'UA-55537278-1', {'userId': localStorage.getItem('custom_auth_token')});
-      } else {
-        ga('create', 'UA-55537278-1', 'auto');
+        ga('set', '&uid', localStorage.getItem('custom_auth_token'));
       }
-
       ga('send', 'pageview');
     </script>
 
@@ -114,6 +111,8 @@
     <script src="/app/app/scripts/directives.js"></script>
     <script src="/app/app/scripts/services.js"></script>
     <script src="/app/app/scripts/controllers/main.js"></script>
+    <script src="/app/app/scripts/controllers/app-details.js"></script>
+    <script src="/app/app/scripts/controllers/company-details.js"></script>
     <!-- endbuild -->
 
     <!-- Custom Scripts -->
@@ -121,6 +120,23 @@
     <script src="/app/app/js/gmap.js"></script>
     <script src="/app/app/js/other_charts.js"></script>
     <script src="/app/app/js/bootstrap-angular.min.js"></script>
+    <script src="/app/app/js/main.js"></script>
+
+    /* Feedback Widget */
+    <script id="_webengage_script_tag" type="text/javascript">
+      var _weq = _weq || {};
+      _weq['webengage.licenseCode'] = '826170d6';
+      _weq['webengage.widgetVersion'] = "4.0";
+
+      (function(d){
+        var _we = d.createElement('script');
+        _we.type = 'text/javascript';
+        _we.async = true;
+        _we.src = (d.location.protocol == 'https:' ? "https://ssl.widgets.webengage.com" : "http://cdn.widgets.webengage.com") + "/js/widget/webengage-min-v-4.0.js";
+        var _sNode = d.getElementById('_webengage_script_tag');
+        _sNode.parentNode.insertBefore(_we, _sNode);
+      })(document);
+    </script>
 
   </body>
 </html>
