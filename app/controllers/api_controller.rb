@@ -34,18 +34,6 @@ class ApiController < ApplicationController
     end
   end
   
-  # not tested yet
-  def filter_ios_apps_v2
-    app_filters = params[:app]
-    company_filters = params[:company]
-    pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
-    pageNum = params[:pageNum].present? ? params[:pageNum].to_i : 1
-    sort_by = params[:sortBy] || 'appName'
-    order_by = params[:orderBy] || 'ASC'
-    
-    
-  end
-  
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
@@ -170,9 +158,9 @@ class ApiController < ApplicationController
       # li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
-      
-      render json: {results: results_json, resultsCount: results_count}
     end
+    
+    render json: {results: results_json, resultsCount: results_count}
   end
   
   def filter_android_apps
