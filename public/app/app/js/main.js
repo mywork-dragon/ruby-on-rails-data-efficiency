@@ -1,6 +1,7 @@
+/*
 $(document).ready(function() {
 
-  /* User feedback widget initialization - feedback_me */
+  // User feedback widget initialization - feedback_me
   fm_options = {
     bootstrap: true,
     name_placeholder: "Full name",
@@ -21,3 +22,4 @@ $(document).ready(function() {
   fm.init(fm_options);
 
 });
+*/
