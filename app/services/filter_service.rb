@@ -151,7 +151,50 @@ class FilterService
       {results_count: results_count, results: results}
     end
     
-    
+    def filter_android_apps(app_filters: nil, company_filters: nil, custom_keywords: nil, page_size: 50, page_num: 1, sort_by: 'appName', order_by: 'ASC')
+      
+      # individual parts of the giant query which will be executed at the end
+      # all elements of the array will be chained together
+      parts = []
+      
+      parts << "includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')"
+      
+      parts << android_app_keywords_query(custom_keywords) if custom_keywords.present?
+      
+      if company_filters.present?
+        parts << company_android_apps_query(company_filters) if company_filters.present?
+      else
+        parts << "joins(websites: :company)"
+      end
+      
+      # add app filters
+      parts << android_apps_query(app_filters) if app_filters.present?
+      
+      parts << "group('android_apps.id')"
+      
+      # branch off parts for a first query to count the apps
+      parts_count = Array.new(parts)
+      
+      parts_count << 'count.length'
+      
+      # the query for count; will be run at the end
+      query_count = parts_count.join('.')
+      
+      # add limit and offset
+      parts << "limit(#{page_size}).offset(#{(page_num - 1) * page_size})"
+      
+      parts << android_sort_order_query(sort_by, order_by)
+      
+      query = parts.join('.')
+      
+      #run the query for count
+      results_count = AndroidApp.instance_eval("self.#{query_count}")
+
+      #run the main query
+      results = AndroidApp.instance_eval("self.#{query}")
+      
+      {results_count: results_count, results: results}
+    end
     
     def ios_app_keywords_query(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \"%#{k}%\""}
