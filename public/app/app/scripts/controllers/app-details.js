@@ -15,10 +15,12 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.load();
 
+  /* -------- Mixpanel Analytics Start -------- */
   mixpanel.track(
     "App Page Viewed", {
       "appid": $routeParams.id
     }
   );
+  /* -------- Mixpanel Analytics End -------- */
 }
 ]);

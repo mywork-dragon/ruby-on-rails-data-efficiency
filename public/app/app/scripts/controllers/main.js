@@ -24,11 +24,18 @@ angular.module('appApp')
         .then(function(resp) {
           localStorage.setItem('custom_auth_token', resp.email);
 
+          /* -------- Mixpanel Analytics Start -------- */
           mixpanel.identify(resp.email);
 
           mixpanel.people.set({
               "$email": resp.email
           });
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Login Success"
+          );
+          /* -------- Mixpanel Analytics End -------- */
 
           $scope.isAuthenticated = authService.isAuthenticated();
           location.reload();
@@ -40,10 +47,13 @@ angular.module('appApp')
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
+
+      /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "Search Page Viewed",
         { "userauthenticated": $scope.isAuthenticated }
       );
+      /* -------- Mixpanel Analytics End -------- */
 
       /* Initializes all Bootstrap tooltips */
       $(function () {
@@ -53,10 +63,7 @@ angular.module('appApp')
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
 
-        mixpanel.track(
-          "Search Submitted",
-          { "tags": $rootScope.tags }
-        );
+        var submitSearchStartTime = new Date().getTime();
 
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
@@ -67,13 +74,28 @@ angular.module('appApp')
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
+
+            var submitSearchEndTime = new Date().getTime();
+
+            var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
+
+            /* -------- Mixpanel Analytics Start -------- */
+            var searchQueryPairs = {};
+            var searchQueryFields = [];
+            $rootScope.tags.forEach(function(tag) {
+              searchQueryPairs[tag.parameter] = tag.value;
+              searchQueryFields.push(tag.parameter);
+              searchQueryPairs['tags'] = searchQueryFields;
+              searchQueryPairs['numOfApps'] = data.resultsCount;
+              searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
+            });
+
             mixpanel.track(
               "Search Request Successful",
-              {
-                "tags": $rootScope.tags,
-                "numOfApps": data.resultsCount
-              }
+              searchQueryPairs
             );
+            /* -------- Mixpanel Analytics End -------- */
+
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -89,6 +111,19 @@ angular.module('appApp')
       };
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
+
+        /* -------- Mixpanel Analytics Start -------- */
+        var mixpanelProperties = {};
+
+        mixpanelProperties['parameter'] = parameter;
+        mixpanelProperties[parameter] = value;
+
+        mixpanel.track(
+          "Filter Added",
+          mixpanelProperties
+        );
+        /* -------- Mixpanel Analytics End -------- */
+
         if(limitToOneFilter) {
           var tagUpdated = false;
           $rootScope.tags.forEach(function (tag) {
@@ -130,12 +165,14 @@ angular.module('appApp')
         // When table's paging options are selected
         $scope.select = function(page, tags) {
 
+          /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Table Page Changed", {
               "page": page,
               "tags": tags
             }
           );
+          /* -------- Mixpanel Analytics End -------- */
 
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
@@ -156,6 +193,17 @@ angular.module('appApp')
         },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
+
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Table Sorting Changed", {
+              "category": category,
+              "order": order
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+
           var firstPage = 1;
           apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
             .success(function(data) {
