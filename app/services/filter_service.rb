@@ -13,14 +13,24 @@ class FilterService
     # @author Shane Wey
     def company_ios_apps_query(company_filters)
       query = []
-      query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
+      
+      if fortune_rank_s = company_filters[:fortuneRank]
+        fortune_rank = fortune_rank_s.to_i  #convert to i for safety
+        query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
+      end
+      
       query
     end
     
     # @author Jason Lew
     def company_android_apps_query(company_filters)
       query = []
-      query << "joins(android_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{company_filters[:fortuneRank].to_i})" if company_filters[:fortuneRank]
+      
+      if fortune_rank_s = company_filters[:fortuneRank]
+        fortune_rank = fortune_rank_s.to_i  #convert to i for safety
+        query << "joins(android_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
+      end
+      
       query
     end
     
@@ -55,6 +65,42 @@ class FilterService
         li cats_with_quotes
         li cats_with_quotes.join(',')
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
+      end
+      
+      queries
+    end
+    
+    def android_app_query(app_filters)
+      queries = []
+
+      if app_filters[:mobilePriority]
+        mobile_priorities = []
+        mobile_priorities << AndroidApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
+        mobile_priorities << AndroidApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
+        mobile_priorities << AndroidApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
+        queries << "where(mobile_priority: #{mobile_priorities})"
+      end
+      
+      queries << 'joins(:android_fb_ad_appearances)' if app_filters[:adSpend]
+      
+      if app_filters[:userBases]
+        user_bases = []
+        user_bases << AndroidApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
+        user_bases << AndroidApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
+        user_bases << AndroidApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
+        user_bases << AndroidApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
+        queries << "where(user_base: #{user_bases})"
+      end
+      
+      if app_filters[:updatedDaysAgo]
+        queries << "joins(:newest_android_app_snapshot).where('android_app_snapshots.released > ?', \"#{app_filters[:updatedDaysAgo].to_i.days.ago.to_date}\")"
+      end
+      
+      if app_filters[:categories]
+        cats_with_quotes = app_filters[:categories].map{|c| "\"#{c}\""}
+        li cats_with_quotes
+        li cats_with_quotes.join(',')
+        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
       
       queries
@@ -105,8 +151,7 @@ class FilterService
       {results_count: results_count, results: results}
     end
     
-    def android_app_queries(app_filters)
-    end
+    
     
     def ios_app_keywords_query(keywords)
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \"%#{k}%\""}
