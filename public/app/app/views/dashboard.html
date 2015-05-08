@@ -35,7 +35,7 @@
                     <option value="H">High</option>
                   </select>
               </span>
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" title="Mobile Priority is a function of date of last update and user base size."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');" title="Mobile Priority is a function of date of last update and user base size."></i>
               <span class="ui-select">
                   <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
                     <option value="">Fortune Rank</option>
