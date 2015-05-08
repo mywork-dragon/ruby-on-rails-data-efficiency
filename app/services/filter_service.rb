@@ -70,7 +70,7 @@ class FilterService
       queries
     end
     
-    def android_app_query(app_filters)
+    def android_apps_query(app_filters)
       queries = []
 
       if app_filters[:mobilePriority]
