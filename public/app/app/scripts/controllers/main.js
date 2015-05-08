@@ -30,6 +30,11 @@ angular.module('appApp')
           mixpanel.people.set({
               "$email": resp.email
           });
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Login Success"
+          );
           /* -------- Mixpanel Analytics End -------- */
 
           $scope.isAuthenticated = authService.isAuthenticated();
@@ -42,10 +47,13 @@ angular.module('appApp')
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
+
+      /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "Search Page Viewed",
         { "userauthenticated": $scope.isAuthenticated }
       );
+      /* -------- Mixpanel Analytics End -------- */
 
       /* Initializes all Bootstrap tooltips */
       $(function () {
