@@ -5,8 +5,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     return $http({
       method: 'POST',
-      url: 'http://mightysignal.com/api/get_ios_app',
-      // url: 'http://localhost:3000/api/get_ios_app',
+      url: API_URI_BASE + 'api/get_ios_app',
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.appData = data;

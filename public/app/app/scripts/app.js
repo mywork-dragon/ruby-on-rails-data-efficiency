@@ -4,6 +4,10 @@
  * Main module of the application.
  */
 
+/* Constants */
+var API_URI_BASE = "http://mightysignal.com/";
+// var API_URI_BASE = "http://localhost:3000/";
+
 angular
   .module('appApp', [
     'ngRoute',
@@ -27,8 +31,7 @@ angular
         /* Populates "Categories" dropdown with list of categories */
         $http({
           method: 'GET',
-          //url: 'http://localhost:3000/api/get_ios_categories'
-					url: 'http://mightysignal.com/api/get_ios_categories'
+					url: API_URI_BASE + 'api/get_ios_categories'
         }).success(function(data) {
           $rootScope.categoryFilterOptions = data;
         });
