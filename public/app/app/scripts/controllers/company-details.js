@@ -5,8 +5,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
 
     return $http({
       method: 'POST',
-      url: 'http://mightysignal.com/api/get_company',
-      // url: 'http://localhost:3000/api/get_company',
+      url: API_URI_BASE + 'api/get_company',
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.companyData = data;

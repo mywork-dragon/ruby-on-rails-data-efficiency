@@ -59,8 +59,7 @@ angular.module("appApp")
         }
         return $http({
           method: 'POST',
-          url: 'http://mightysignal.com/api/filter_ios_apps',
-          // url: 'http://localhost:3000/api/filter_ios_apps',
+          url: API_URI_BASE + 'api/filter_ios_apps',
           data: requestData
         });
       }

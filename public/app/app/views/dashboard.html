@@ -146,6 +146,7 @@
           </div></th>
         </tr>
         </thead>
+
         <tbody>
         <tr data-ng-repeat="app in $root.apps">
           <td><a href="#/app/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
@@ -160,6 +161,15 @@
         </tr>
         </tbody>
       </table>
+
+      <div id="dashboardTableStatusMessage" data-ng-hide="$root.numApps > 0">
+        <h5 data-ng-hide="$root.dashboardSearchButtonDisabled">No Results</h5>
+        <div data-ng-hide="!$root.dashboardSearchButtonDisabled" id="wrap_spinner">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
