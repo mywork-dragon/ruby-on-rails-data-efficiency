@@ -13,6 +13,22 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
     });
   };
 
+  /* LinkedIn Link Button Logic */
+  $scope.onLinkedinButtonClick = function(linkedinLinkType) {
+    var linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.appData.company.name) + "+" + linkedinLinkType;
+
+    /* -------- Mixpanel Analytics Start -------- */
+    mixpanel.track(
+      "LinkedIn Link Clicked", {
+        "companyName": $scope.appData.company.name,
+        "companyPosition": linkedinLinkType
+      }
+    );
+    /* -------- Mixpanel Analytics End -------- */
+
+    $window.open(linkedinLink, '_blank');
+  };
+
   $scope.load();
 
   /* -------- Mixpanel Analytics Start -------- */
