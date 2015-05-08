@@ -30,5 +30,9 @@ class ApiControllerTest < ActionController::TestCase
   #   assert true
   # end
   
+  # test 'should fail' do
+  #   assert false
+  # end
+  #
     
 end
