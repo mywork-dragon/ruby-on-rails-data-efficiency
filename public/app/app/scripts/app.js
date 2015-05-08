@@ -5,8 +5,8 @@
  */
 
 /* Constants */
-var API_URI_BASE = "http://mightysignal.com/";
-// var API_URI_BASE = "http://localhost:3000/";
+// var API_URI_BASE = "http://mightysignal.com/";
+var API_URI_BASE = "http://" + location.host + "/";
 
 angular
   .module('appApp', [
@@ -25,7 +25,7 @@ angular
         /* Disables loading spinner */
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
-          $('.load_circle_wrapper').addClass("loaded");
+          $('#app > .load_circle_wrapper').addClass("loaded");
         },1000);
 
         /* Populates "Categories" dropdown with list of categories */
