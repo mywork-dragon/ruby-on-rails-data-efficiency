@@ -4920,7 +4920,8 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 .well.companyAssociatedApp {
   background: #f9f9f9;
-  padding: 10px;
+  padding: 0px;
+  margin-bottom: 7px;
 }
 
 .well.companyAssociatedApp:hover {
@@ -7114,4 +7115,17 @@ i.infoTooltipIcon {
   margin-left: 5px;
   margin-right: 5px;
   font-size: 15px;
+  position: relative;
+  top: 2px;
+}
+
+.dashboard-tag-filter-selects {
+  margin-left: 4px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
+
+:focus {
+  outline: 0;
 }
