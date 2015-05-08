@@ -7139,3 +7139,8 @@ i.infoTooltipIcon {
   padding-top: 55px;
   text-align: center;
 }
+
+.dashboard-tag-filter-selects > .tooltip {
+  text-transform: none;
+  font-size: 90%;
+}

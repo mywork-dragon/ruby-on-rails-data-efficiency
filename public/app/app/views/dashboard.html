@@ -34,22 +34,27 @@
                     <option value="M">Medium</option>
                     <option value="H">High</option>
                   </select>
-              </span>
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');" title="Mobile Priority is a function of date of last update and user base size."></i>
-              <span class="ui-select">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');"
+                 title="Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed."></i>
+             <span class="ui-select">
                   <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
                     <option value="">Fortune Rank</option>
                     <option value="500">Fortune 500</option>
                     <option value="1000">Fortune 1000</option>
                   </select>
-              </span>
-              <span class="ui-select">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');"
+                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000."></i>
+             <span class="ui-select">
                   <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
-                    <option value="">Reported Ad Spend</option>
+                    <option value="">Advertising on Facebook</option>
                     <option value="true">Yes</option>
                   </select>
-              </span>
-              <span class="ui-select">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');"
+                 title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget."></i>
+             <span class="ui-select">
                   <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
                     <option value="">User Base Size</option>
                     <option value="weak">Weak</option>
@@ -57,8 +62,10 @@
                     <option value="strong">Strong</option>
                     <option value="elite">Elite</option>
                   </select>
-              </span>
-              <span class="ui-select">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('User Base Size');"
+                 title="User Base Size: an estimate of how many active users an app has."></i>
+             <span class="ui-select">
                   <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
                     <option value="">Last Updated</option>
                     <option value="7">Within 7 Days</option>
@@ -67,16 +74,22 @@
                     <option value="180">Within 6 Months</option>
                     <option value="360">Within 12 Months</option>
                   </select>
-              </span>
-              <span class="ui-select">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Last Updated');"
+               title="Last Updated: length of time from last update to app."></i>
+             <span class="ui-select">
                   <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
                     <option value="">Categories</option>
                     <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
                   </select>
-              </span>
-              <span id="dashboardSearchBox">
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Categories');"
+               title="Categories: the category/genre of the app (same as iOS App Store categories)."></i>
+             <span id="dashboardSearchBox">
                   <input placeholder="App name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
-              </span>
+             </span>
+             <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" onmouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');"
+                title="Custom Keyword: searches all app names for a match to the supplied keyword."></i>
             </span>
 
     </div>
