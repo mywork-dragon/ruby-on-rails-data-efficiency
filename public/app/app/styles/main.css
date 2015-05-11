@@ -7144,3 +7144,13 @@ i.infoTooltipIcon {
   text-transform: none;
   font-size: 90%;
 }
+
+.modal-body h4 {
+  border-bottom: none;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
+}
+
+.modal-body p {
+  margin-bottom: 20px;
+}
