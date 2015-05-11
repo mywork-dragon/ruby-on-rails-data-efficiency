@@ -33,14 +33,6 @@ class ApiController < ApplicationController
       format.csv { send_data f1000_csv }
     end
   end
-
-  def save_user_feedback
-    name = params[:name]
-    message = params[:message]
-    email = params[:email]
-
-    render json: {name: name, message: message, email: email}
-  end
   
   def filter_ios_apps_old
     app_filters = params[:app]
@@ -364,6 +356,10 @@ class ApiController < ApplicationController
 
   def get_ios_categories
     render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+  end
+  
+  def get_android_categories
+    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
 end
