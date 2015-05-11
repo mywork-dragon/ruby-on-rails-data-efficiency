@@ -39,8 +39,8 @@ if Rails.env.development?
   end
 
   puts "creating companies..."
-  for i in 1..1500
-    if i <= 1000
+  for i in 1..500
+    if i <= 300
       Company.create(name: Faker::Company.name, fortune_1000_rank: i, street_address: Faker::Address.street_address, city: Faker::Address.city, zip_code: Faker::Address.zip_code, state: Faker::Address.state_abbr, country: Faker::Address.country, funding: rand(0..100000000))
     else
       Company.create(name: Faker::Company.name, street_address: Faker::Address.street_address, city: Faker::Address.city, zip_code: Faker::Address.zip_code, state: Faker::Address.state_abbr, country: Faker::Address.country, funding: rand(0..100000000))
@@ -49,7 +49,7 @@ if Rails.env.development?
 
   puts "creating websites, and linking them to companies, ios apps, and android apps..."
   
-  for i in 0..2000
+  for i in 0..500
     website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
     ios_app = IosApp.includes(websites: :company).all.sample
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
