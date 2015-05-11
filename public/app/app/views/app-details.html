@@ -34,9 +34,9 @@
                 <strong>Company Name:</strong> {{appData.company.name}}<br />
               </P>
               <P>
-                <strong>LinkedIn Links:</strong><br />
-                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+sales">LinkedIn Link - Sales</a><br />
-                <a href="https://www.linkedin.com/vsearch/f?type=all&keywords={{appData.company.name | encodeUri}}+marketing">LinkedIn Link - Marketing</a>
+                <strong>LinkedIn Profiles:</strong><br />
+                <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales</button>
+                <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing</button>
               </P>
               <P>
                 <a href="#/company/{{appData.company.id}}" ><strong>More Company Details</strong></a><br />

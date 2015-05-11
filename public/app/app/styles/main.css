@@ -639,7 +639,7 @@ pre {
   position: relative;
   padding: 0;
   vertical-align: middle;
-  height: 75px; }
+  height: 50px; }
 
 .table-dynamic .table-bordered thead th > .th {
   padding: 8px 25px 8px 8px; }
@@ -656,11 +656,11 @@ pre {
   color: #0393dd; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up {
-  top: 24px;
+  top: 10px;
   right: 5px; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
-  top: 38px;
+  top: 25px;
   right: 6px; }
 
 .table-dynamic .table-footer {
@@ -1302,7 +1302,7 @@ input.input-dark:focus {
   display: block;
   position: relative;
   padding: 5px 33px 5px 8px;
-  max-width: 160px;
+  max-width: 200px;
   width: 100%;
   border: none;
   outline: none;
@@ -7128,4 +7128,29 @@ i.infoTooltipIcon {
 
 :focus {
   outline: 0;
+}
+
+#dashboardTableStatusMessage {
+  width: 50px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  vertical-align: middle;
+  padding-top: 55px;
+  text-align: center;
+}
+
+.dashboard-tag-filter-selects > .tooltip {
+  text-transform: none;
+  font-size: 90%;
+}
+
+.modal-body h4 {
+  border-bottom: none;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
+}
+
+.modal-body p {
+  margin-bottom: 20px;
 }

@@ -70,7 +70,7 @@ class FilterService
       queries
     end
     
-    def android_app_query(app_filters)
+    def android_apps_query(app_filters)
       queries = []
 
       if app_filters[:mobilePriority]
@@ -186,6 +186,8 @@ class FilterService
       parts << android_sort_order_query(sort_by, order_by)
       
       query = parts.join('.')
+      
+      #puts "query_count: #{query_count}"
       
       #run the query for count
       results_count = AndroidApp.instance_eval("self.#{query_count}")

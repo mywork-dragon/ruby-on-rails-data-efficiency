@@ -4,6 +4,10 @@
  * Main module of the application.
  */
 
+/* Constants */
+// var API_URI_BASE = "http://mightysignal.com/";
+var API_URI_BASE = "http://" + location.host + "/";
+
 angular
   .module('appApp', [
     'ngRoute',
@@ -21,14 +25,13 @@ angular
         /* Disables loading spinner */
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
-          $('.load_circle_wrapper').addClass("loaded");
+          $('#app > .load_circle_wrapper').addClass("loaded");
         },1000);
 
         /* Populates "Categories" dropdown with list of categories */
         $http({
           method: 'GET',
-          //url: 'http://localhost:3000/api/get_ios_categories'
-					url: 'http://mightysignal.com/api/get_ios_categories'
+					url: API_URI_BASE + 'api/get_ios_categories'
         }).success(function(data) {
           $rootScope.categoryFilterOptions = data;
         });
