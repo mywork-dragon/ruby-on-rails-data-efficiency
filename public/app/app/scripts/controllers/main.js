@@ -60,6 +60,15 @@ angular.module('appApp')
         $('[data-toggle="tooltip"]').tooltip()
       });
 
+      $scope.mixpanelAnalyticsEventTooltip = function(name) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Tooltip Viewed",
+          { "tooltipName": name }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      };
+
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
 
@@ -85,10 +94,10 @@ angular.module('appApp')
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
-              searchQueryPairs['tags'] = searchQueryFields;
-              searchQueryPairs['numOfApps'] = data.resultsCount;
-              searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             });
+            searchQueryPairs['tags'] = searchQueryFields;
+            searchQueryPairs['numOfApps'] = data.resultsCount;
+            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
 
             mixpanel.track(
               "Search Request Successful",
