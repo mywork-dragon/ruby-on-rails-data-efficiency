@@ -187,7 +187,7 @@ class FilterService
       
       query = parts.join('.')
       
-      puts "query_count: #{query_count}"
+      #puts "query_count: #{query_count}"
       
       #run the query for count
       results_count = AndroidApp.instance_eval("self.#{query_count}")
