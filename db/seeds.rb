@@ -57,7 +57,7 @@ if Rails.env.development?
   (n = 500).times do |i|
     website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
     ios_app = IosApp.all.sample
-    ios_app = IosApp.includes(websites: :company).where(id: ios_app.id)
+    ios_app = IosApp.includes(websites: :company).where(id: ios_app.id).first
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
     company.websites << website
     ios_app.websites << website    
@@ -71,7 +71,7 @@ if Rails.env.development?
   (n = 500).times do |i|
     website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
     android_app = AndroidApp.all.sample
-    android_app = AndroidApp.includes(websites: :company).where(id: android_app.id)
+    android_app = AndroidApp.includes(websites: :company).where(id: android_app.id).first
     company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
     company.websites << website
     android_app.websites << website    
