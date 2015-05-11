@@ -216,17 +216,6 @@ class ApiController < ApplicationController
     render json: {results: results_json, resultsCount: results_count}
   end
   
-  def filter_android_apps
-    app_filters = params[:app]
-    company_filters = params[:company]
-    pageSize = params[:pageSize] || 50
-    pageNum = params[:pageNum] || 1
-    sort_by = params[:sortBy] || 'name'
-    order_by = params[:orderBy] || 'ASC'
-    companies_filtered = false
-    
-  end
-  
   # Get details of iOS app.
   # Input: appId (the key for the app in our database; not the appIdentifier)
   def get_ios_app
@@ -271,14 +260,13 @@ class ApiController < ApplicationController
     appId = params['id']
     android_app = AndroidApp.includes(:android_app_snapshots).find(appId)
     company = android_app.get_company
-    newest_app_snapshot = android_app.get_newest_app_snapshot
-    # newest_download_snapshot = android_app.get_newest_download_snapshot
+    newest_app_snapshot = android_app.newest_android_app_snapshot
     
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: app.mobile_priority, 
-      adSpend: app.ios_fb_ad_appearances.present?, 
+      mobilePriority: android_app.mobile_priority, 
+      adSpend: android_app.android_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
       downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
@@ -336,7 +324,7 @@ class ApiController < ApplicationController
             small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
           }
         }},
-        androidApps: company.get_android_apps.map{|app| 
+        androidApps: company.get_android_apps.map{|app| {
           id: app.id,
           name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
           mobilePriority: app.mobile_priority,
@@ -345,8 +333,7 @@ class ApiController < ApplicationController
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
-            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_350x350 : nil,
-            small: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_175x175 : nil
+            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
           }
         }}
       }
