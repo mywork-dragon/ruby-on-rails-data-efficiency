@@ -1302,7 +1302,7 @@ input.input-dark:focus {
   display: block;
   position: relative;
   padding: 5px 33px 5px 8px;
-  max-width: 160px;
+  max-width: 200px;
   width: 100%;
   border: none;
   outline: none;
