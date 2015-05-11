@@ -9,6 +9,8 @@ class BusinessEntityAndroidServiceWorker
 
       url = ss.seller_url
 
+      next if url.blank?
+
       if UrlHelper.secondary_site?(url)
         kind = :secondary
       else
