@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", function($scope, $http, $routeParams, $window) {
   $scope.load = function() {
 
     return $http({
@@ -14,12 +14,12 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
 
   /* LinkedIn Link Button Logic */
   $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-    var linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.appData.company.name) + "+" + linkedinLinkType;
+    var linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.companyData.name) + "+" + linkedinLinkType;
 
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "LinkedIn Link Clicked", {
-        "companyName": $scope.appData.company.name,
+        "companyName": $scope.companyData.name,
         "companyPosition": linkedinLinkType
       }
     );
