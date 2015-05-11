@@ -42,7 +42,7 @@ class ApiController < ApplicationController
     render json: {name: name, message: message, email: email}
   end
   
-  def filter_ios_apps
+  def filter_ios_apps_old
     app_filters = params[:app]
     company_filters = params[:company]
     pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
@@ -114,7 +114,7 @@ class ApiController < ApplicationController
     # render json: results_json
   end
   
-  def filter_ios_apps_2
+  def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
     page_size = params[:pageSize]
@@ -174,13 +174,64 @@ class ApiController < ApplicationController
   def filter_android_apps
     app_filters = params[:app]
     company_filters = params[:company]
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+    sort_by = params[:sortBy] || 'appName'
+    order_by = params[:orderBy] || 'ASC'
+    custom_keywords = params[:customKeywords]
+    
+    filter_args = {
+      app_filters: app_filters, 
+      company_filters: company_filters, 
+      custom_keywords: custom_keywords, 
+      page_size: 50, 
+      page_num: 1, 
+      sort_by: 'appName',
+       order_by: 'ASC'
+    }
+    
+    filter_args.merge!({page_size: page_size}) if page_size
+    filter_args.merge!({page_num: page_num}) if page_num
+    
+    filter_results = FilterService.filter_android_apps(filter_args)
+    
+    results = filter_results[:results]
+    results_count = filter_results[:results_count]
+    
+    results_json = []
+    results.each do |app|
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+      app_hash = {
+        app: {
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          adSpend: app.android_fb_ad_appearances.present?,
+          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil
+        },
+        company: {
+          id: company.present? ? company.id : nil,
+          name: company.present? ? company.name : nil,
+          fortuneRank: company.present? ? company.fortune_1000_rank : nil
+        }
+      }
+      results_json << app_hash
+    end
+    
+    render json: {results: results_json, resultsCount: results_count}
+  end
+  
+  def filter_android_apps
+    app_filters = params[:app]
+    company_filters = params[:company]
     pageSize = params[:pageSize] || 50
     pageNum = params[:pageNum] || 1
     sort_by = params[:sortBy] || 'name'
     order_by = params[:orderBy] || 'ASC'
     companies_filtered = false
-    
-    
     
   end
   
