@@ -11,7 +11,7 @@ class BusinessEntityService
       end
     end
     
-    def run_android(ios_app_snapshot_job_ids)
+    def run_android(android_app_snapshot_job_ids)
       AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
         android_app_snapshot_ids = batch.map{|aas| aas.id}
