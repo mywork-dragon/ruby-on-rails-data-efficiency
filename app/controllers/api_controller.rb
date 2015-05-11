@@ -293,7 +293,19 @@ class ApiController < ApplicationController
             small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
           }
         }},
-        androidApps: company.get_android_apps.map{|app| app.id}
+        androidApps: company.get_android_apps.map{|app| 
+          id: app.id,
+          name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          adSpend: app.android_fb_ad_appearances.present?,
+          userBase: app.user_base,
+          lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+          appIdentifier: app.app_identifier,
+          appIcon: {
+            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_350x350 : nil,
+            small: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_175x175 : nil
+          }
+        }}
       }
     end
     render json: @company_json
