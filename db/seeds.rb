@@ -28,14 +28,19 @@ if Rails.env.development?
     ios_app.set_user_base
     ios_cat = IosAppCategory.all.sample
     ios_cat.ios_app_snapshots << ios_app_snapshot
-    # download_snapshot = IosAppDownloadSnapshot.create(downloads: rand(1e2..1e6))
-    # ios_app.ios_app_download_snapshots << download_snapshot
+  end
+  
+  500.times do |i|
+    name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
     
-    # android_app = AndroidApp.find_or_create_by(app_identifier: "com.company#{i}")
-    # android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(2.years.ago, Time.now), android_app_id: AndroidApp.all.sample.id, icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), description: Faker::Lorem.paragraph, google_plus_likes: rand(10..1000), ratings_all_stars: rand(0..5), ratings_all_count: rand(10..100), downloads_min: rand(0..100), downloads_max: rand(100..1000000))
-    # android_app.android_app_snapshots << android_app_snapshot
-    # android_cat = AndroidAppCategory.all.sample
-    # android_cat.android_app_snapshots << android_app_snapshot
+    android_app = AndroidApp.find_or_create_by(app_identifier: i)
+    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6)
+    android_app.newest_android_app_snapshot = android_app_snapshot
+    android_app.mobile_priority = (0..2).to_a.sample
+    android_app.user_base = (0..3).to_a.sample
+    android_app.save
+    android_cat = AndroidAppCategory.all.sample
+    android_cat.android_app_snapshots << android_app_snapshot
   end
 
   puts "creating companies..."
@@ -47,34 +52,47 @@ if Rails.env.development?
     end
   end
 
-  puts "creating websites, and linking them to companies, ios apps, and android apps..."
+  puts "creating websites, and linking them to companies, ios apps"
   
-  for i in 0..500
+  (n = 500).times do |i|
     website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
-    ios_app = IosApp.includes(websites: :company).all.sample
+    ios_app = IosApp.all.sample
+    ios_app = IosApp.includes(websites: :company).where(id: ios_app.id)
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
     company.websites << website
     ios_app.websites << website    
     if i % 100 == 0
-      puts "#{i/100}/20 of the way done"
+      puts "#{i + 1} out of #{n}"
     end
   end
   
-  # for i in 0..2000
-  #   website = Website.create(url: Faker::Internet.domain_name, kind: rand(0..1))
-  #   android_app = AndroidApp.includes(websites: :company).all.sample
-  #   company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
-  #   company.websites << website
-  #   android_app.websites << website
-  #   if i % 100 == 0
-  #     puts "#{(i+2000)/100}/40 of the way done"
-  #   end
-  # end
+  puts "creating websites, and linking them to companies, android apps"
+  
+  (n = 500).times do |i|
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
+    android_app = AndroidApp.all.sample
+    android_app = AndroidApp.includes(websites: :company).where(id: android_app.id)
+    company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
+    company.websites << website
+    android_app.websites << website    
+    if i % 100 == 0
+      puts "#{i + 1} out of #{n}"
+    end
+  end
 
-  for i in 0..100
+  puts 'creating FB Ads'
+  
+  100.times do
     ad = IosFbAdAppearance.create
     app = IosApp.all.sample
     app.ios_fb_ad_appearances << ad
+  end
+  
+  puts 'creating Android Ads'
+  100.times do
+    ad = AndroidFbAdAppearance.create
+    app = AndroidApp.all.sample
+    app.android_fb_ad_appearances << ad
   end
 
 end
