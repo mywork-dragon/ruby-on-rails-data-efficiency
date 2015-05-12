@@ -1287,7 +1287,8 @@ input.input-dark:focus {
 .ui-select {
   position: relative;
   display: inline-block;
-  margin: 0 0 5px 5px;
+  padding: 3px 3px 3px 0;
+  margin: 5px 0 10px 5px;
   width: auto;
   height: auto;
   border: 1px solid #cbd5dd;
@@ -1302,7 +1303,7 @@ input.input-dark:focus {
   display: block;
   position: relative;
   padding: 5px 33px 5px 8px;
-  max-width: 200px;
+  max-width: 160px;
   width: 100%;
   border: none;
   outline: none;
@@ -7125,6 +7126,11 @@ i.infoTooltipIcon {
   display: inline-block;
   position: relative;
   top: 2px;
+}
+
+#dashboardSearchBox > input {
+  padding: 6px;
+  width: 185px;
 }
 
 :focus {
