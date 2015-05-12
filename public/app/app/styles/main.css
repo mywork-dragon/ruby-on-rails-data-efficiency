@@ -7153,5 +7153,13 @@ i.infoTooltipIcon {
 }
 
 .modal-body p {
-  margin-bottom: 20px;
+  margin-bottom: 7px;
+}
+
+.modal-body h4 {
+  margin-top: 20px;
+}
+
+.modal-body h4:first-child {
+  margin-top: 00px;
 }

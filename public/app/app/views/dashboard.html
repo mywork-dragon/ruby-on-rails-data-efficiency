@@ -48,7 +48,7 @@
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
               <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');"
-                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000. Click for more info."></i>
+                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. Click for more info."></i>
              </a>
              <span class="ui-select">
                   <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
@@ -213,16 +213,22 @@
               </p>
 
               <h4>Fortune Rank</h4>
-              <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000.</p>
+              <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>
 
               <h4>Advertising on Facebook</h4>
               <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
+              <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
+              <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
+                fashion – either they do (if an ad has been reported) or they don’t.</p>
 
               <h4>User Base Size</h4>
               <p>User Base Size: an estimate of how many active users an app has.</p>
+              <p>We derive this estimate based off of how many ratings per day an app has. Elite: 50,000 total ratings or 7 ratings per day average (for current release).
+                Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average
+                (for current release). Weak: anything less.</p>
 
               <h4>Last Updated</h4>
-              <p>Last Updated: length of time from last update to app.</p>
+              <p>Last Updated: length of time from last update to app, as reported on the iOS and Google Play stores.</p>
 
               <h4>Categories</h4>
               <p>Categories: the category/genre of the app (same as iOS App Store categories).</p>
