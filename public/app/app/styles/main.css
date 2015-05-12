@@ -4970,9 +4970,10 @@ img#appDetailsPageAppLogo {
   clear: both; }
 
 .tooltip-inner {
-  max-width: 200px;
-  padding: 8px 28px;
+  max-width: 250px;
+  padding: 10px 10px;
   color: #fff;
+  text-transform: none;
   background-color: #3F4245;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
