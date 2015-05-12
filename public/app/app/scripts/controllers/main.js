@@ -50,8 +50,9 @@ angular.module('appApp')
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
-        "Search Page Viewed",
-        { "userauthenticated": $scope.isAuthenticated }
+        "Page Viewed",
+        { "pageType": "Search",
+          "userauthenticated": $scope.isAuthenticated }
       );
       /* -------- Mixpanel Analytics End -------- */
 
