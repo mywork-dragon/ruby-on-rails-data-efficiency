@@ -67,6 +67,8 @@ angular.module('appApp')
           "Tooltip Viewed",
           { "tooltipName": name }
         );
+
+        console.log('tooltip: ' + name);
         /* -------- Mixpanel Analytics End -------- */
       };
 

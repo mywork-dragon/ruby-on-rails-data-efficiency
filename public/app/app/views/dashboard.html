@@ -36,8 +36,8 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');"
-                 title="Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed. Click for more info." ></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed. *Click for more info.*" ></i>
              </a>
              <span class="ui-select">
                   <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
@@ -47,8 +47,8 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');"
-                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. *Click for more info.*"></i>
              </a>
              <span class="ui-select">
                   <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
@@ -57,8 +57,8 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');"
-                 title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget. Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget. *Click for more info.*"></i>
              </a>
              <span class="ui-select">
                   <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
@@ -70,8 +70,8 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('User Base Size');"
-                 title="User Base Size: an estimate of how many active users an app has. Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('User Base Size');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="User Base Size: an estimate of how many active users an app has. *Click for more info.*"></i>
              </a>
              <span class="ui-select">
                   <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
@@ -84,8 +84,8 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Last Updated');"
-               title="Last Updated: length of time from last update to app. Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Last Updated');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+               title="Last Updated: length of time from last update to app. *Click for more info.*"></i>
              </a>
              <span class="ui-select">
                   <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
@@ -94,15 +94,15 @@
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');"
-               title="Categories: the category/genre of the app (same as iOS App Store categories). Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+               title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
              </a>
              <span id="dashboardSearchBox">
                   <input placeholder="App name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
-              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');"
-                title="Custom Keyword: searches all app names for a match to the supplied keyword. Click for more info."></i>
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                title="Custom Keyword: searches all app names for a match to the supplied keyword. *Click for more info.*"></i>
              </a>
             </span>
 
