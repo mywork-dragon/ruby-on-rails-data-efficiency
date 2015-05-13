@@ -182,6 +182,8 @@ class ApiController < ApplicationController
       order_by: order_by
     }
     
+    filter_args.delete_if{ |k, v| v.nil? }
+    
     filter_args.merge!({page_size: page_size}) if page_size
     filter_args.merge!({page_num: page_num}) if page_num
     
