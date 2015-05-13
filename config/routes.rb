@@ -43,9 +43,9 @@ Rails.application.routes.draw do
   #api for endpoints
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
-  post 'api/get_ios_app' => 'api#get_ios_app'
-  post 'api/get_android_app' => 'api#get_android_app'
-  post 'api/get_company' => 'api#get_company'
+  get 'api/get_ios_app' => 'api#get_ios_app'
+  get 'api/get_android_app' => 'api#get_android_app'
+  get 'api/get_company' => 'api#get_company'
   get 'api/get_ios_categories' => 'api#get_ios_categories'
   get 'api/get_android_categories' => 'api#get_android_categories'
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
