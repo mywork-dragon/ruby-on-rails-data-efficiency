@@ -119,8 +119,8 @@ class ApiController < ApplicationController
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: (page_size.nil? ? page_size.to_i : nil), 
-      page_num: page_num.nil? ? page_num.to_i : nil, 
+      page_size: (page_size.blank? ? nil : page_size.to_i), 
+      page_num: (page_num.blank? ? nil : page_num.to_i), 
       sort_by: sort_by,
       order_by: order_by
     }
@@ -175,13 +175,15 @@ class ApiController < ApplicationController
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: (page_size.nil? ? page_size.to_i : nil), 
-      page_num: (page_num.nil? ? page_num.to_i : nil), 
+      page_size: (page_size.blank? ? nil : page_size.to_i), 
+      page_num: (page_num.blank? ? nil : page_num.to_i), 
       sort_by: sort_by,
       order_by: order_by
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
+    
+    puts "filter_args: #{filter_args}"
     
     filter_results = FilterService.filter_android_apps(filter_args)
     
