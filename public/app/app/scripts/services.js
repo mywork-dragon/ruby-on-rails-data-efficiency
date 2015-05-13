@@ -58,7 +58,7 @@ angular.module("appApp")
           requestData.orderBy = order;
         }
         return $http({
-          method: 'GET',
+          method: 'POST',
           url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps',
           data: requestData
         });
