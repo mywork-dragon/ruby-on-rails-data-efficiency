@@ -109,18 +109,18 @@ class ApiController < ApplicationController
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    page_size = params[:pageSize] || nil
-    page_num = params[:pageNum] || nil
-    sort_by = params[:sortBy] || nil
-    order_by = params[:orderBy] || nil
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+    sort_by = params[:sortBy]
+    order_by = params[:orderBy]
     custom_keywords = params[:customKeywords]
     
     filter_args = {
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: page_size.to_i, 
-      page_num: page_num.to_i, 
+      page_size: (page_size.nil? ? page_size.to_i : nil), 
+      page_num: page_num.nil? ? page_num.to_i : nil, 
       sort_by: sort_by,
       order_by: order_by
     }
@@ -165,18 +165,18 @@ class ApiController < ApplicationController
   def filter_android_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    page_size = params[:pageSize] || nil
-    page_num = params[:pageNum] || nil
-    sort_by = params[:sortBy] || nil
-    order_by = params[:orderBy] || nil
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+    sort_by = params[:sortBy]
+    order_by = params[:orderBy]
     custom_keywords = params[:customKeywords]
     
     filter_args = {
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: page_size.to_i, 
-      page_num: page_num.to_i, 
+      page_size: (page_size.nil? ? page_size.to_i : nil), 
+      page_num: (page_num.nil? ? page_num.to_i : nil), 
       sort_by: sort_by,
       order_by: order_by
     }
