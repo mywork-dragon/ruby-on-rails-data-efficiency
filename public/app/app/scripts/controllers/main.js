@@ -50,8 +50,9 @@ angular.module('appApp')
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
-        "Search Page Viewed",
-        { "userauthenticated": $scope.isAuthenticated }
+        "Page Viewed",
+        { "pageType": "Search",
+          "userauthenticated": $scope.isAuthenticated }
       );
       /* -------- Mixpanel Analytics End -------- */
 
@@ -59,6 +60,17 @@ angular.module('appApp')
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
       });
+
+      $scope.mixpanelAnalyticsEventTooltip = function(name) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Tooltip Viewed",
+          { "tooltipName": name }
+        );
+
+        console.log('tooltip: ' + name);
+        /* -------- Mixpanel Analytics End -------- */
+      };
 
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
@@ -85,10 +97,10 @@ angular.module('appApp')
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
-              searchQueryPairs['tags'] = searchQueryFields;
-              searchQueryPairs['numOfApps'] = data.resultsCount;
-              searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             });
+            searchQueryPairs['tags'] = searchQueryFields;
+            searchQueryPairs['numOfApps'] = data.resultsCount;
+            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
 
             mixpanel.track(
               "Search Request Successful",

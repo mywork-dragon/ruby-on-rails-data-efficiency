@@ -33,7 +33,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   /* -------- Mixpanel Analytics Start -------- */
   mixpanel.track(
-    "App Page Viewed", {
+    "Page Viewed", {
+      "pageType": "App",
       "appid": $routeParams.id
     }
   );
