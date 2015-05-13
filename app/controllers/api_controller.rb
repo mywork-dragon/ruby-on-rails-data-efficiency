@@ -122,7 +122,7 @@ class ApiController < ApplicationController
       page_size: 50, 
       page_num: 1, 
       sort_by: 'appName',
-       order_by: 'ASC'
+      order_by: 'ASC'
     }
     
     filter_args.merge!({page_size: page_size}) if page_size
@@ -168,8 +168,8 @@ class ApiController < ApplicationController
     company_filters = params[:company]
     page_size = params[:pageSize]
     page_num = params[:pageNum]
-    sort_by = params[:sortBy] || 'appName'
-    order_by = params[:orderBy] || 'ASC'
+    sort_by = params[:sortBy] || nil
+    order_by = params[:orderBy] || nil
     custom_keywords = params[:customKeywords]
     
     filter_args = {
@@ -178,8 +178,8 @@ class ApiController < ApplicationController
       custom_keywords: custom_keywords, 
       page_size: 50, 
       page_num: 1, 
-      sort_by: 'appName',
-       order_by: 'ASC'
+      sort_by: sort_by,
+      order_by: order_by
     }
     
     filter_args.merge!({page_size: page_size}) if page_size
