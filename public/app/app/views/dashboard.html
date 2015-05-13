@@ -24,13 +24,14 @@
 
           <span class="dashboard-tag-filter-selects">
 
-            <!-- ----------------- JASON UnCOMMENT THIS - Android/iOS Button -------------------
+            <!-- Android/iOS Button Disabled
 
              <span class="btn-group" id="dashboardPlatformSwitch">
               <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
               <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
              </span>
-            -->
+
+             -->
 
              <span class="ui-select">
                   <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
@@ -179,7 +180,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
@@ -193,10 +194,9 @@
         </tr>
         </tbody>
       </table>
-
-      <div id="dashboardTableStatusMessage" data-ng-hide="$root.numApps > 0">
-        <h5 data-ng-hide="$root.dashboardSearchButtonDisabled">No Results</h5>
-        <div data-ng-hide="!$root.dashboardSearchButtonDisabled" id="wrap_spinner">
+      <div id="dashboardTableStatusMessage" data-ng-show="$root.dashboardSearchButtonDisabled || !($root.numApps > 0)">
+        <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled">No Results</h5>
+        <div data-ng-show="$root.dashboardSearchButtonDisabled" id="wrap_spinner">
           <div class="loading outer">
             <div class="loading inner"></div>
           </div>

@@ -208,7 +208,6 @@ angular.module('appApp')
           $scope.appPlatform = platform;
           APP_PLATFORM = platform;
           apiService.getCategories().success(function(data) {
-            console.log(APP_PLATFORM);
             $rootScope.categoryFilterOptions = data;
           });
         },
