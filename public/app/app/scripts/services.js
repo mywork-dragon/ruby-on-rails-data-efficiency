@@ -59,8 +59,14 @@ angular.module("appApp")
         }
         return $http({
           method: 'POST',
-          url: API_URI_BASE + 'api/filter_ios_apps',
+          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps',
           data: requestData
+        });
+      },
+      getCategories: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
       }
     };

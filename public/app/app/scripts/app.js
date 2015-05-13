@@ -7,6 +7,7 @@
 /* Constants */
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
+var APP_PLATFORM = "ios";
 
 angular
   .module('appApp', [
@@ -18,7 +19,7 @@ angular
     "rt.encodeuri",
     'ng-token-auth'
   ])
-  .run(function ($http, $rootScope, $auth) {
+  .run(function ($http, $rootScope, $auth, apiService) {
 
       $(document).ready(function(){
 
@@ -31,8 +32,9 @@ angular
         /* Populates "Categories" dropdown with list of categories */
         $http({
           method: 'GET',
-					url: API_URI_BASE + 'api/get_ios_categories'
+					url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         }).success(function(data) {
+          console.log(APP_PLATFORM);
           $rootScope.categoryFilterOptions = data;
         });
 
