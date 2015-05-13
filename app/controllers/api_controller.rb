@@ -109,24 +109,23 @@ class ApiController < ApplicationController
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    page_size = params[:pageSize]
-    page_num = params[:pageNum]
-    sort_by = params[:sortBy] || 'appName'
-    order_by = params[:orderBy] || 'ASC'
+    page_size = params[:pageSize] || nil
+    page_num = params[:pageNum] || nil
+    sort_by = params[:sortBy] || nil
+    order_by = params[:orderBy] || nil
     custom_keywords = params[:customKeywords]
     
     filter_args = {
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: 50, 
-      page_num: 1, 
-      sort_by: 'appName',
-      order_by: 'ASC'
+      page_size: page_size.to_i, 
+      page_num: page_num.to_i, 
+      sort_by: sort_by,
+      order_by: order_by
     }
     
-    filter_args.merge!({page_size: page_size}) if page_size
-    filter_args.merge!({page_num: page_num}) if page_num
+    filter_args.delete_if{ |k, v| v.nil? }
     
     filter_results = FilterService.filter_ios_apps(filter_args)
     
@@ -166,8 +165,8 @@ class ApiController < ApplicationController
   def filter_android_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    page_size = params[:pageSize]
-    page_num = params[:pageNum]
+    page_size = params[:pageSize] || nil
+    page_num = params[:pageNum] || nil
     sort_by = params[:sortBy] || nil
     order_by = params[:orderBy] || nil
     custom_keywords = params[:customKeywords]
@@ -176,16 +175,13 @@ class ApiController < ApplicationController
       app_filters: app_filters, 
       company_filters: company_filters, 
       custom_keywords: custom_keywords, 
-      page_size: 50, 
-      page_num: 1, 
+      page_size: page_size.to_i, 
+      page_num: page_num.to_i, 
       sort_by: sort_by,
       order_by: order_by
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
-    
-    filter_args.merge!({page_size: page_size}) if page_size
-    filter_args.merge!({page_num: page_num}) if page_num
     
     filter_results = FilterService.filter_android_apps(filter_args)
     
