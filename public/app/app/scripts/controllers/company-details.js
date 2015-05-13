@@ -4,7 +4,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
   $scope.load = function() {
 
     return $http({
-      method: 'POST',
+      method: 'GET',
       url: API_URI_BASE + 'api/get_company',
       params: {id: $routeParams.id}
     }).success(function(data) {
