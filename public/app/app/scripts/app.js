@@ -47,7 +47,7 @@ angular
          templateUrl: '/app/app/views/dashboard.html',
          controller: 'MainCtrl'
        })
-       .when('/app/:id', {
+       .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
          controller: 'AppDetailsCtrl'
        })

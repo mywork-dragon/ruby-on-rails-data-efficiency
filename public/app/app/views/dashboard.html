@@ -23,12 +23,10 @@
 
 
           <span class="dashboard-tag-filter-selects">
-            <!--
              <span class="btn-group" id="dashboardPlatformSwitch">
               <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
               <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
              </span>
-             -->
              <span class="ui-select">
                   <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
                     <option value="">Mobile Priority</option>
@@ -178,7 +176,7 @@
 
         <tbody>
         <tr data-ng-repeat="app in $root.apps">
-          <td><a href="#/app/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>
           <td>{{app.app.mobilePriority}}</td>
@@ -186,7 +184,7 @@
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
-          <td><a href="#/app/{{app.app.id}}" target="_blank">Details</a></td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">Details</a></td>
         </tr>
         </tbody>
       </table>

@@ -6,7 +6,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     return $http({
       method: 'GET',
-      url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_app',
+      url: API_URI_BASE + 'api/get_' + $routeParams.platform + '_app',
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.appData = data;
