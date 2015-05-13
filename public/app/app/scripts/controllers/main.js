@@ -154,18 +154,20 @@ angular.module('appApp')
               tag.text = displayName + ': ' + value;
               oneTagUpdated = true;
             }
-
-            // If first tag of limitToOneFilter = true category
-            if (!oneTagUpdated) {
-              $rootScope.tags.push({
-                parameter: parameter,
-                value: value,
-                text: displayName + ': ' + value
-              });
-            }
           }
 
         });
+
+        if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {
+          // If first tag of limitToOneFilter = true category
+          $rootScope.tags.push({
+            parameter: parameter,
+            value: value,
+            text: displayName + ': ' + value
+          });
+        }
+
+        console.log($rootScope.tags.length);
 
         if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
           $rootScope.tags.push({
