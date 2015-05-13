@@ -5,7 +5,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.load = function() {
 
     return $http({
-      method: 'POST',
+      method: 'GET',
       url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_app',
       params: {id: $routeParams.id}
     }).success(function(data) {
