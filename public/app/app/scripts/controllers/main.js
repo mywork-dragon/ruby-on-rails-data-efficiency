@@ -68,8 +68,6 @@ angular.module('appApp')
           "Tooltip Viewed",
           { "tooltipName": name }
         );
-
-        console.log('tooltip: ' + name);
         /* -------- Mixpanel Analytics End -------- */
       };
 
@@ -139,26 +137,37 @@ angular.module('appApp')
         );
         /* -------- Mixpanel Analytics End -------- */
 
-        if(limitToOneFilter) {
-          var tagUpdated = false;
-          $rootScope.tags.forEach(function (tag) {
+        var duplicateTag = false;
+        var oneTagUpdated = false;
+
+        $rootScope.tags.forEach(function (tag) {
+
+          // Determine if tag is a duplicate
+          if (tag.parameter == parameter && tag.value == value) {
+            duplicateTag = true;
+          }
+
+          if(limitToOneFilter && !duplicateTag) {
             // If replacing pre existing tag of limitToOneFilter = true category
             if (tag.parameter == parameter) {
               tag.value = value;
               tag.text = displayName + ': ' + value;
-              tagUpdated = true;
+              oneTagUpdated = true;
             }
-          });
-          // If first tag of limitToOneFilter = true category
-          if (!tagUpdated) {
-            $rootScope.tags.push({
-              parameter: parameter,
-              value: value,
-              text: displayName + ': ' + value
-            });
+
+            // If first tag of limitToOneFilter = true category
+            if (!oneTagUpdated) {
+              $rootScope.tags.push({
+                parameter: parameter,
+                value: value,
+                text: displayName + ': ' + value
+              });
+            }
           }
-        // If first or pre existing tag of limitToOneFilter = false category
-        } else {
+
+        });
+
+        if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
           $rootScope.tags.push({
             parameter: parameter,
             value: value,
@@ -208,7 +217,6 @@ angular.module('appApp')
           $scope.appPlatform = platform;
           APP_PLATFORM = platform;
           apiService.getCategories().success(function(data) {
-            console.log(APP_PLATFORM);
             $rootScope.categoryFilterOptions = data;
           });
         },
