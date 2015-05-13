@@ -52,7 +52,8 @@ angular.module('appApp')
       mixpanel.track(
         "Page Viewed",
         { "pageType": "Search",
-          "userauthenticated": $scope.isAuthenticated }
+          "userauthenticated": $scope.isAuthenticated,
+          "appPlatform": APP_PLATFORM }
       );
       /* -------- Mixpanel Analytics End -------- */
 
@@ -101,6 +102,7 @@ angular.module('appApp')
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
             searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
+            searchQueryPairs['platform']  = APP_PLATFORM;
 
             mixpanel.track(
               "Search Request Successful",
@@ -116,7 +118,8 @@ angular.module('appApp')
               {
                 "tags": $rootScope.tags,
                 "errorMessage": data,
-                "errorStatus": status
+                "errorStatus": status,
+                "platform": APP_PLATFORM
               }
             );
           });
@@ -181,7 +184,8 @@ angular.module('appApp')
           mixpanel.track(
             "Table Page Changed", {
               "page": page,
-              "tags": tags
+              "tags": tags,
+              "appPlatform": APP_PLATFORM
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -202,6 +206,11 @@ angular.module('appApp')
         },
         $scope.changeAppPlatform = function(platform) {
           $scope.appPlatform = platform;
+          APP_PLATFORM = platform;
+          apiService.getCategories().success(function(data) {
+            console.log(APP_PLATFORM);
+            $rootScope.categoryFilterOptions = data;
+          });
         },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
@@ -211,7 +220,8 @@ angular.module('appApp')
           mixpanel.track(
             "Table Sorting Changed", {
               "category": category,
-              "order": order
+              "order": order,
+              "appPlatform": APP_PLATFORM
             }
           );
           /* -------- Mixpanel Analytics End -------- */

@@ -6,7 +6,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     return $http({
       method: 'POST',
-      url: API_URI_BASE + 'api/get_ios_app',
+      url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_app',
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.appData = data;
@@ -35,7 +35,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   mixpanel.track(
     "Page Viewed", {
       "pageType": "App",
-      "appid": $routeParams.id
+      "appid": $routeParams.id,
+      "appPlatform": APP_PLATFORM
     }
   );
   /* -------- Mixpanel Analytics End -------- */

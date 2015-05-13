@@ -7169,3 +7169,7 @@ i.infoTooltipIcon {
 .modal-body h4:first-child {
   margin-top: 00px;
 }
+
+#dashboardPlatformSwitch {
+  margin-right: 10px;
+}
