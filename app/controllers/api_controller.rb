@@ -333,7 +333,7 @@ class ApiController < ApplicationController
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
-            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
+            small: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
           }
         }}
       }
