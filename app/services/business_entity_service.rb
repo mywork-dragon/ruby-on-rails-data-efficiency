@@ -47,6 +47,23 @@ class BusinessEntityService
         
       end
     end
+    
+    # special purpose
+    def delete_all_companies_with_google_play_identifier
+      cs_gp = Company.where.not(google_play_identifier: nil)
+      count = cs.gp.count
+      
+      cs_gp.each_with_index do |c, index|
+        
+        puts "Company #{index + 1} of #{count}"
+        
+        c.websites.each do |w|
+          w.delete
+        end
+        
+      end
+      
+    end
   
     
   
