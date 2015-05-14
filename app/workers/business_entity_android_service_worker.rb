@@ -4,8 +4,22 @@ class BusinessEntityAndroidServiceWorker
   def perform(android_snapshot_ids)
     android_snapshot_ids.each do |android_snapshot_id|
       ss = AndroidAppSnapshot.find(android_snapshot_id)
+      android_app = ss.android_app
 
       return if ss.nil?
+
+      if c = Company.find_by_app_store_identifier(ss_dasi) && !c.websites.empty?
+        primary_website = c.websites.first
+        
+        if !android_app.websites.include?(primary_website)
+          android_app.websites << primary_website 
+          android_app.save
+        end
+        
+        next  #go to the next app
+      end
+
+      #start looking at url if identifier didn't match
 
       url = ss.seller_url
 
@@ -29,9 +43,7 @@ class BusinessEntityAndroidServiceWorker
         w.save
       end
 
-      android_app = ss.android_app
-
-      android_app.websites << w if !android_app.websites.include?(w)
+      android_app.websites << w unless android_app.websites.include?(w)
       android_app.save
 
     end

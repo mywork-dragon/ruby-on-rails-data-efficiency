@@ -5,6 +5,9 @@ class Company < ActiveRecord::Base
   has_many :websites
   enum status: [ :active, :paused ]
   
+  validates :app_store_identifier, uniqueness: true
+  validates :google_play_identifier, uniqueness: true
+  
   # scope :get_fortune_1000, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 1000)
   # scope :get_fortune_500, where(:fortune_1000_rank.present? && :fortune_1000_rank >= 500)
   
