@@ -61,6 +61,8 @@ class BusinessEntityService
           w.delete
         end
         
+        c.delete
+        
       end
       
     end
