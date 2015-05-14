@@ -51,7 +51,7 @@ class BusinessEntityService
     # special purpose
     def delete_all_companies_with_google_play_identifier
       cs_gp = Company.where.not(google_play_identifier: nil)
-      count = cs.gp.count
+      count = cs_gp.count
       
       cs_gp.each_with_index do |c, index|
         
