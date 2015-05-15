@@ -45,12 +45,12 @@ class BusinessEntityAndroidServiceWorker
       elsif w.company.nil?
         w.company = Company.create(name: I18n.transliterate(ss.seller), google_play_identifier: ss.developer_google_play_identifier)
         w.save
-      else
-        w.company.google_play_identifier = ss.developer_google_play_identifier unless ss.developer_google_play_identifier.nil?
       end
 
-      android_app.websites << w unless android_app.websites.include?(w)
-      android_app.save
+      if c.google_play_identifier.blank?
+        android_app.websites << w unless android_app.websites.include?(w)
+        android_app.save
+      end
 
     end
   end
