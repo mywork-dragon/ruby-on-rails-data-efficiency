@@ -12,7 +12,7 @@ class CbService
   
     #ld "Google URL: #{url}"
       
-    page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
+    page = Tor.get(url, allow_redirections: :all)
   
     url_cache = nil
 
