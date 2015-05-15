@@ -1,5 +1,7 @@
 class BusinessEntityAndroidServiceWorker
   include Sidekiq::Worker
+  
+  sidekiq_options retry: false
  
   def perform(android_snapshot_ids)
     android_snapshot_ids.each do |android_snapshot_id|

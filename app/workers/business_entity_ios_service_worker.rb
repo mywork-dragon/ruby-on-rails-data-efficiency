@@ -1,6 +1,8 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
+  sidekiq_options retry: false
+
   def perform(ios_app_snapshot_ids)
     
     ios_app_snapshot_ids.each do |ios_app_snapshot_id|
