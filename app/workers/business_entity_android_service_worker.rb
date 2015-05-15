@@ -10,7 +10,7 @@ class BusinessEntityAndroidServiceWorker
 
       return if ss.nil?
 
-      if c = Company.find_by_google_play_identifier(ss.developer_google_play_identifier) && !c.websites.empty?
+      if (c = Company.find_by_google_play_identifier(ss.developer_google_play_identifier)) && !c.websites.empty?
         primary_website = c.websites.first
         
         if !android_app.websites.include?(primary_website)
