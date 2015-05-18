@@ -12,7 +12,7 @@ class CbService
   
     #ld "Google URL: #{url}"
       
-    page = Tor.get(url, allow_redirections: :all)
+    page = Tor.get(url)
   
     url_cache = nil
 
