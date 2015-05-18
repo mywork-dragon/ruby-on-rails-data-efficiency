@@ -12,8 +12,9 @@ class CbService
   
     #ld "Google URL: #{url}"
       
-    page = Tor.get(url)
-  
+    #page = Tor.get(url)
+    page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
+
     url_cache = nil
 
     html = Nokogiri::HTML(page)
@@ -106,7 +107,7 @@ class CbService
       cb_urls = []
       
       companies.each do |company|
-        cb_urls << self.cb_url(company)
+        cb_urls << self.attributes(company)
       end
       
       fundings = []
