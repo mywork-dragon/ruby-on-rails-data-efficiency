@@ -45,13 +45,13 @@
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
             <div class="panel-body">
-              <a ng-if="companyData.iosApps" ng-repeat="app in companyData.iosApps" href="#/app/{{app.id}}">
+              <a ng-if="companyData.iosApps" ng-repeat="app in companyData.iosApps" href="#/app/ios/{{app.id}}" target="_blank">
                 <div class="well companyAssociatedApp" >
                   <img ng-src="{{app.appIcon.large}}" />
                   <h5>{{app.name}}</h5>
                 </div>
               </a>
-              <a ng-if="companyData.androidApps" ng-repeat="app in companyData.androidApps" href="#/app/{{app.id}}">
+              <a ng-if="companyData.androidApps" ng-repeat="app in companyData.androidApps" href="#/app/android/{{app.id}}" target="_blank">
                 <div class="well companyAssociatedApp" >
                   <img ng-src="{{app.appIcon.large}}" />
                   <h5>{{app.name}}</h5>
