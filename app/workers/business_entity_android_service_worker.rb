@@ -10,17 +10,19 @@ class BusinessEntityAndroidServiceWorker
 
       return if ss.nil?
 
-      c = Company.find_by_google_play_identifier(ss.developer_google_play_identifier)
+      if dgpi = ss.developer_google_play_identifier
+        c = Company.find_by_google_play_identifier(dgpi)
 
-      if c && !c.websites.empty?
-        primary_website = c.websites.first
+        if c && !c.websites.empty?
+          primary_website = c.websites.first
         
-        if !android_app.websites.include?(primary_website)
-          android_app.websites << primary_website 
-          android_app.save
+          if !android_app.websites.include?(primary_website)
+            android_app.websites << primary_website 
+            android_app.save
+          end
+        
+          next  #go to the next app
         end
-        
-        next  #go to the next app
       end
 
       #start looking at url if identifier didn't match
