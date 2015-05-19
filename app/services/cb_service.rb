@@ -51,6 +51,7 @@ class CbService
     ret[:funding_text] = funding_text
     ret[:ipo] = ipo
     ret[:acquired] = acquired
+    ret[:headquarters] = headquarters
     
     ret
   end
@@ -91,6 +92,10 @@ class CbService
   
   def acquired
     @html.css('.overview-stats').children.map(&:text).any?{ |s| s.match(/\AAcquired/) }
+  end
+
+  def headquarters
+    @html.css('div.definition-list.container > dd > a').select{ |s| s['href'].match(/\/location\//) }.first.text
   end
 
   class << self
