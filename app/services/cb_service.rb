@@ -12,8 +12,9 @@ class CbService
   
     #ld "Google URL: #{url}"
       
+    #page = Tor.get(url)
     page = open(url, allow_redirections: :all, "User-Agent" => UserAgent.random_web)
-  
+
     url_cache = nil
 
     html = Nokogiri::HTML(page)
@@ -50,6 +51,7 @@ class CbService
     ret[:funding_text] = funding_text
     ret[:ipo] = ipo
     ret[:acquired] = acquired
+    ret[:headquarters] = headquarters
     
     ret
   end
@@ -92,6 +94,10 @@ class CbService
     @html.css('.overview-stats').children.map(&:text).any?{ |s| s.match(/\AAcquired/) }
   end
 
+  def headquarters
+    @html.css('div.definition-list.container > dd > a').select{ |s| s['href'].match(/\/location\//) }.first.text
+  end
+
   class << self
     
     def attributes(domain, options={})  
@@ -106,7 +112,7 @@ class CbService
       cb_urls = []
       
       companies.each do |company|
-        cb_urls << self.cb_url(company)
+        cb_urls << self.attributes(company)
       end
       
       fundings = []

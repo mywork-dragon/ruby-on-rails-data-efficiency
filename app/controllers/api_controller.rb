@@ -65,6 +65,7 @@ class ApiController < ApplicationController
       # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
+      
       app_hash = {
         app: {
           id: app.id,
@@ -73,7 +74,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
-          categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
+          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil
         },
         company: {
           id: company.present? ? company.id : nil,
