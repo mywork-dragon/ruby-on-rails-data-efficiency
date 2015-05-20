@@ -26,8 +26,9 @@ if Rails.env.development?
     ios_app.save
     ios_app.set_mobile_priority
     ios_app.set_user_base
+    
     ios_cat = IosAppCategory.all.sample
-    ios_cat.ios_app_snapshots << ios_app_snapshot
+    IosAppCategoriesSnapshot.create(ios_app_category: ios_cat, ios_app_snapshot: ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds.values.sample)
   end
   
   500.times do |i|
@@ -39,8 +40,9 @@ if Rails.env.development?
     android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample
     android_app.save
+    
     android_cat = AndroidAppCategory.all.sample
-    android_cat.android_app_snapshots << android_app_snapshot
+    AndroidAppCategoriesSnapshot.create(android_app_category: android_cat, android_app_snapshot: android_app_snapshot, kind: AndroidAppCategoriesSnapshot.kinds.values.sample)
   end
 
   puts "creating companies..."
