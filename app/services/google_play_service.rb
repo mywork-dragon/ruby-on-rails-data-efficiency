@@ -266,7 +266,8 @@ class GooglePlayService
     end
     
     def developer_google_play_identifier
-      link = @html.css('a.title-link.id-track-click').first['href']
+      link = @html.css('a.document-subtitle.primary').first['href']
+      
       link.gsub('/store/apps/developer?id=', '').strip
     end
   end

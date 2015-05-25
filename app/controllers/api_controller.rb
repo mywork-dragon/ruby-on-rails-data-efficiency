@@ -2,6 +2,8 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
   
+  #before_action :set_current_user, :authenticate_request #add this back later to verify every request -- jlew
+  
   # before_filter :disable_cors
   #
   # def disable_cors
@@ -11,19 +13,6 @@ class ApiController < ApplicationController
   #   headers['Access-Control-Request-Method'] = '*'
   #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   # end
-  
-  def auth
-    email = params[:email]
-    password = params[:password]
-    token = param[:token]
-    
-    user = User.find_by_email
-    
-    # must check for user, then valid password, then valid token, in that order
-    render json: {authorized: true} if user && user.valid_password?(password) && AuthService.token_valid?(token)
-    
-    render json: {authorized: false}
-  end
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -48,49 +37,35 @@ class ApiController < ApplicationController
   def filter_ios_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    pageSize = params[:pageSize].present? ? params[:pageSize].to_i : 50
-    pageNum = params[:pageNum].present? ? params[:pageNum].to_i : 1
-    sort_by = params[:sortBy] || 'appName'
-    order_by = params[:orderBy] || 'ASC'
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+    sort_by = params[:sortBy]
+    order_by = params[:orderBy]
+    custom_keywords = params[:customKeywords]
     
-    #filter for companies
-    queries = []
-    queries << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
+    filter_args = {
+      app_filters: app_filters, 
+      company_filters: company_filters, 
+      custom_keywords: custom_keywords, 
+      page_size: (page_size.blank? ? nil : page_size.to_i), 
+      page_num: (page_num.blank? ? nil : page_num.to_i), 
+      sort_by: sort_by,
+      order_by: order_by
+    }
     
-    queries << FilterService.ios_app_keywords_query(params[:customKeywords]) if params[:customKeywords].present?
+    filter_args.delete_if{ |k, v| v.nil? }
     
-    if company_filters.present?
-      queries.concat(FilterService.company_ios_apps_query(company_filters)) if company_filters.present?
-    else
-      queries << "joins(websites: :company)"
-    end
+    filter_results = FilterService.filter_ios_apps(filter_args)
     
-    queries.concat(FilterService.ios_apps_query(app_filters)) if app_filters.present?
+    results = filter_results[:results]
+    results_count = filter_results[:results_count]
     
-    # queries << FilterService.ios_sort_order_query(sort_by, order_by)
-    
-    query = queries.join('.')
-    query = "self." + query + ".group('ios_apps.id')"
-    # li "query right before count: #{query}"
-    
-    results_count = IosApp.instance_eval("#{query}.count.length")
-    # results_count = 5e6 #dummy the count
-    # li "results_count: #{results_count}"
-    
-    query += ".limit(#{pageSize}).offset(#{(pageNum-1) * pageSize})"
-    query += ".#{FilterService.ios_sort_order_query(sort_by, order_by)}"
-    # query += ".#{order_query}"
-    # li "query right before full eval: #{query}"
-    results = IosApp.instance_eval(query)
-    # li "FINISHED FULL EVAL TO GET RESULTS"
-    # li "#{results.to_a.map{|r| r.id}}"
-    # li "RESULTS CLASS: #{results.class}"
-    # li "RESULTS COUNT: #{results.count.length}"
     results_json = []
     results.each do |app|
       # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
+      
       app_hash = {
         app: {
           id: app.id,
@@ -99,7 +74,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
-          categories: newest_snapshot.present? ? newest_snapshot.ios_app_categories.map{|c| c.name} : nil
+          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil
         },
         company: {
           id: company.present? ? company.id : nil,
@@ -112,29 +87,69 @@ class ApiController < ApplicationController
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    # li "finished creating hashes"
+    
     render json: {results: results_json, resultsCount: results_count}
-    # render json: results_json
   end
   
   def filter_android_apps
     app_filters = params[:app]
     company_filters = params[:company]
-    pageSize = params[:pageSize] || 50
-    pageNum = params[:pageNum] || 1
-    sort_by = params[:sortBy] || 'name'
-    order_by = params[:orderBy] || 'ASC'
-    companies_filtered = false
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+    sort_by = params[:sortBy]
+    order_by = params[:orderBy]
+    custom_keywords = params[:customKeywords]
     
+    filter_args = {
+      app_filters: app_filters, 
+      company_filters: company_filters, 
+      custom_keywords: custom_keywords, 
+      page_size: (page_size.blank? ? nil : page_size.to_i), 
+      page_num: (page_num.blank? ? nil : page_num.to_i), 
+      sort_by: sort_by,
+      order_by: order_by
+    }
     
+    filter_args.delete_if{ |k, v| v.nil? }
     
+    puts "filter_args: #{filter_args}"
+    
+    filter_results = FilterService.filter_android_apps(filter_args)
+    
+    results = filter_results[:results]
+    results_count = filter_results[:results_count]
+    
+    results_json = []
+    results.each do |app|
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+      app_hash = {
+        app: {
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          adSpend: app.android_fb_ad_appearances.present?,
+          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil
+        },
+        company: {
+          id: company.present? ? company.id : nil,
+          name: company.present? ? company.name : nil,
+          fortuneRank: company.present? ? company.fortune_1000_rank : nil
+        }
+      }
+      results_json << app_hash
+    end
+    
+    render json: {results: results_json, resultsCount: results_count}
   end
   
   # Get details of iOS app.
   # Input: appId (the key for the app in our database; not the appIdentifier)
   def get_ios_app
     appId = params['id']
-    ios_app = IosApp.includes(:ios_app_snapshots, websites: :company).find(appId)
+    ios_app = IosApp.find(appId)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
     newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
@@ -172,16 +187,15 @@ class ApiController < ApplicationController
   
   def get_android_app
     appId = params['id']
-    android_app = AndroidApp.includes(:android_app_snapshots).find(appId)
+    android_app = AndroidApp.find(appId)
     company = android_app.get_company
-    newest_app_snapshot = android_app.get_newest_app_snapshot
-    # newest_download_snapshot = android_app.get_newest_download_snapshot
+    newest_app_snapshot = android_app.newest_android_app_snapshot
     
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: app.mobile_priority, 
-      adSpend: app.ios_fb_ad_appearances.present?, 
+      mobilePriority: android_app.mobile_priority, 
+      adSpend: android_app.android_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
       downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
@@ -215,6 +229,7 @@ class ApiController < ApplicationController
     if company.present?
       @company_json = {
         id: companyId,
+        name: company.name,
         websites: company.websites.to_a.map{|w| w.url},
         funding: company.funding,
         location: {
@@ -238,14 +253,29 @@ class ApiController < ApplicationController
             small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
           }
         }},
-        androidApps: company.get_android_apps.map{|app| app.id}
+        androidApps: company.get_android_apps.map{|app| {
+          id: app.id,
+          name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          adSpend: app.android_fb_ad_appearances.present?,
+          userBase: app.user_base,
+          lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+          appIdentifier: app.app_identifier,
+          appIcon: {
+            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
+          }
+        }}
       }
     end
     render json: @company_json
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).all.order('name asc').to_a.map{|cat| cat.name}
+    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+  end
+  
+  def get_android_categories
+    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
 end

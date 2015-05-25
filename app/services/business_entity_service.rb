@@ -11,7 +11,7 @@ class BusinessEntityService
       end
     end
     
-    def run_android
+    def run_android(android_app_snapshot_job_ids)
       AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
         android_app_snapshot_ids = batch.map{|aas| aas.id}
@@ -46,6 +46,26 @@ class BusinessEntityService
         BusinessEntityIosFixFortune1000Worker.perform_async(ios_app_id)
         
       end
+    end
+    
+    # special purpose
+    # Do not use this unless you know what you're doing!!!
+    def delete_all_companies_with_google_play_identifier
+      cs_gp = Company.where.not(google_play_identifier: nil)
+      count = cs_gp.count
+      
+      cs_gp.each_with_index do |c, index|
+        
+        puts "Company #{index + 1} of #{count}"
+        
+        c.websites.each do |w|
+          w.delete
+        end
+        
+        c.delete
+        
+      end
+      
     end
   
     

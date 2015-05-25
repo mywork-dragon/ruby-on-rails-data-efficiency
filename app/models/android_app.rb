@@ -35,6 +35,14 @@ class AndroidApp < ActiveRecord::Base
     return nil
   end
   
+  def name
+    if newest_android_app_snapshot.present?
+      return newest_android_app_snapshot.name
+    else
+      return nil
+    end
+  end
+  
   ###############################
   # Mobile priority methods
   ###############################

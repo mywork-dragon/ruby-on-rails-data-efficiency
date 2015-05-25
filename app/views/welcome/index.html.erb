@@ -7,14 +7,15 @@
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-      <!-- <a class="navbar-brand" href="#"> <img src="images/flathost-logo.png" alt="logo"></a> </div> -->
-      <%= image_tag("mighty_signal_logo_white.png", class: "navbar-brand", href: "#", alt: "logo")%> </div>
+      <%= image_tag("mighty_signal_logo_white.png", class: "navbar-brand", href: "#", alt: "logo")%>
+    </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <ul class="nav navbar-nav navbar-right">
         <li class="active"><a href="#home">HOME</a></li>
         <li class="hidden-sm"><a href="#about_anchor">ABOUT</a></li>
         <li class="hidden-sm"><a href="#contact_anchor">CONTACT</a></li>
+        <li class="hidden-sm"><a href="/app/app">LOGIN</a></li>
         <!-- <li><a href="whmcs/register.php" role="button" class="btn btn-success">Sign Up</a></li> -->
       </ul>
       </li>
@@ -33,8 +34,8 @@
 		
     <div class="domain" id="engineer_message">
 			
-      <div>
-        <h1>The engineer's approach<br/>to lead generation</h1>
+      <div id="heading">
+        <h1>The Engineer's Approach<br/>to Lead Generation</h1>
         <h3>Finding signals on the web that are invisible to salespeople, but visible to engineers.</h3>
       </div>
       <!-- <div class="row PageHead">
@@ -104,7 +105,7 @@
   <div class="row PageHead">
     <div class="col-md-12">
       <h1 id="about">About Us</h1>
-      <h3>Started by engineers, MightySignal tells B2B SaaS sales teams who are most likely to buy their product.</h3>
+      <h3>Started by engineers, MightySignal tells B2B SaaS sales teams who is most likely to buy their product.</h3>
     </div>
   </div>
   <div class="row">
@@ -182,7 +183,7 @@
           <%= text_field_tag("phone", nil, placeholder: "Phone Number", class: "form-control") %>
         </div>
         <div class="form-group">
-          <%= text_field_tag("crm", nil, placeholder: "What CRM do you use?", class: "form-control") %>
+          <%= text_field_tag("sdk", nil, placeholder: "Does your company have SDKs for iOS and/or Android?", class: "form-control") %>
         </div>
         <div class="form-group">
           <%= text_area_tag("message", nil, placeholder: "Your Message", class: "form-control") %>

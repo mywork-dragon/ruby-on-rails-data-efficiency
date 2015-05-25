@@ -8,54 +8,168 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", function ($scope, $location) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "$auth", function ($scope, $location, authService, $auth) {
+
     $scope.checkIfOwnPage = function() {
 
       return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
 
     };
+
+    $scope.isAuthenticated = authService.isAuthenticated();
+
+    /* Login specific logic */
+    $scope.onLoginButtonClick = function() {
+      $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
+        .then(function(resp) {
+          localStorage.setItem('custom_auth_token', resp.email);
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.identify(resp.email);
+
+          mixpanel.people.set({
+              "$email": resp.email
+          });
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Login Success"
+          );
+          /* -------- Mixpanel Analytics End -------- */
+
+          $scope.isAuthenticated = authService.isAuthenticated();
+          location.reload();
+        })
+        .catch(function(resp) {
+        });
+
+    };
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
+
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Page Viewed",
+        { "pageType": "Search",
+          "userauthenticated": $scope.isAuthenticated,
+          "appPlatform": APP_PLATFORM }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+
+      /* Initializes all Bootstrap tooltips */
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      });
+
+      $scope.mixpanelAnalyticsEventTooltip = function(name) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Tooltip Viewed",
+          { "tooltipName": name }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      };
+
       // When main Dashboard surch button is clicked
       $scope.submitSearch = function() {
+
+        var submitSearchStartTime = new Date().getTime();
+
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags)
           .success(function(data) {
-            console.log(data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = 1;
             $rootScope.resultsSortCategory = 'appName';
             $rootScope.resultsOrderBy = 'ASC';
+
+            var submitSearchEndTime = new Date().getTime();
+
+            var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
+
+            /* -------- Mixpanel Analytics Start -------- */
+            var searchQueryPairs = {};
+            var searchQueryFields = [];
+            $rootScope.tags.forEach(function(tag) {
+              searchQueryPairs[tag.parameter] = tag.value;
+              searchQueryFields.push(tag.parameter);
+            });
+            searchQueryPairs['tags'] = searchQueryFields;
+            searchQueryPairs['numOfApps'] = data.resultsCount;
+            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
+            searchQueryPairs['platform']  = APP_PLATFORM;
+
+            mixpanel.track(
+              "Search Request Successful",
+              searchQueryPairs
+            );
+            /* -------- Mixpanel Analytics End -------- */
+
           })
-          .error(function() {
+          .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
+            mixpanel.track(
+              "Search Request Failed",
+              {
+                "tags": $rootScope.tags,
+                "errorMessage": data,
+                "errorStatus": status,
+                "platform": APP_PLATFORM
+              }
+            );
           });
       };
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
-        if(limitToOneFilter) {
-          var tagUpdated = false;
-          $rootScope.tags.forEach(function (tag) {
+
+        /* -------- Mixpanel Analytics Start -------- */
+        var mixpanelProperties = {};
+
+        mixpanelProperties['parameter'] = parameter;
+        mixpanelProperties[parameter] = value;
+
+        mixpanel.track(
+          "Filter Added",
+          mixpanelProperties
+        );
+        /* -------- Mixpanel Analytics End -------- */
+
+        var duplicateTag = false;
+        var oneTagUpdated = false;
+
+        $rootScope.tags.forEach(function (tag) {
+
+          // Determine if tag is a duplicate
+          if (tag.parameter == parameter && tag.value == value) {
+            duplicateTag = true;
+          }
+
+          if(limitToOneFilter && !duplicateTag) {
             // If replacing pre existing tag of limitToOneFilter = true category
             if (tag.parameter == parameter) {
               tag.value = value;
               tag.text = displayName + ': ' + value;
-              tagUpdated = true;
+              oneTagUpdated = true;
             }
-          });
-          // If first tag of limitToOneFilter = true category
-          if (!tagUpdated) {
-            $rootScope.tags.push({
-              parameter: parameter,
-              value: value,
-              text: displayName + ': ' + value
-            });
           }
-        // If first or pre existing tag of limitToOneFilter = false category
-        } else {
+
+        });
+
+        if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {
+          // If first tag of limitToOneFilter = true category
+          $rootScope.tags.push({
+            parameter: parameter,
+            value: value,
+            text: displayName + ': ' + value
+          });
+        }
+
+        console.log($rootScope.tags.length);
+
+        if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
           $rootScope.tags.push({
             parameter: parameter,
             value: value,
@@ -73,11 +187,22 @@ angular.module('appApp')
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
+        $scope.appPlatform = "ios",
         // When table's paging options are selected
         $scope.select = function(page, tags) {
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Table Page Changed", {
+              "page": page,
+              "tags": tags,
+              "appPlatform": APP_PLATFORM
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
@@ -90,12 +215,30 @@ angular.module('appApp')
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
         },
+        $scope.changeAppPlatform = function(platform) {
+          $scope.appPlatform = platform;
+          APP_PLATFORM = platform;
+          apiService.getCategories().success(function(data) {
+            $rootScope.categoryFilterOptions = data;
+          });
+        },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
+
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Table Sorting Changed", {
+              "category": category,
+              "order": order,
+              "appPlatform": APP_PLATFORM
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+
           var firstPage = 1;
           apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
             .success(function(data) {
-              console.log(data);
               $rootScope.apps = data.results;
               $rootScope.numApps = data.resultsCount;
               $rootScope.dashboardSearchButtonDisabled = false;
@@ -124,36 +267,4 @@ angular.module('appApp')
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }
-  ])
-  .controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
-    $scope.load = function() {
-      return $http({
-        method: 'POST',
-        url: 'http://mightysignal.com/api/get_ios_app',
-        // url: 'http://localhost:3000/api/get_ios_app',
-        params: {id: $routeParams.id}
-      }).success(function(data) {
-        $scope.appData = data;
-        console.log(data);
-      });
-    };
-
-    $scope.load();
-  }
-  ])
-  .controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", function($scope, $http, $routeParams) {
-    $scope.load = function() {
-      return $http({
-        method: 'POST',
-        url: 'http://mightysignal.com/api/get_company',
-        // url: 'http://localhost:3000/api/get_company',
-        params: {id: $routeParams.id}
-      }).success(function(data) {
-        $scope.companyData = data;
-        console.log(data);
-      });
-    };
-
-    $scope.load();
-  }
   ]);

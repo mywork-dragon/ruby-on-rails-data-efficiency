@@ -8,7 +8,7 @@
       <div><i class="fa fa-search"></i></div>
       <div class="row">
         <div class="col-md-11">
-          <tags-input ng-model="tags" add-on-enter="true" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+          <tags-input ng-model="tags" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
             <ul class="tag-list"></ul>
           </tags-input>
         </div>
@@ -20,54 +20,90 @@
 
     <div class="panel-heading">
 
-           <span class="ui-select">
-                <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
-                  <option value="">Mobile Priority</option>
-                  <option value="L">Low</option>
-                  <option value="M">Medium</option>
-                  <option value="H">High</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
-                  <option value="">Fortune Rank</option>
-                  <option value="500">Fortune 500</option>
-                  <option value="1000">Fortune 1000</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
-                  <option value="">Reported Ad Spend</option>
-                  <option value="true">Yes</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
-                  <option value="">User Base Size</option>
-                  <option value="weak">Weak</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="strong">Strong</option>
-                  <option value="elite">Elite</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
-                  <option value="">Last Updated</option>
-                  <option value="7">Within 7 Days</option>
-                  <option value="30">Within 1 Month</option>
-                  <option value="90">Within 3 Months</option>
-                  <option value="180">Within 6 Months</option>
-                  <option value="360">Within 12 Months</option>
-                </select>
-            </span>
-            <span class="ui-select">
-                <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
-                  <option value="">Categories</option>
-                  <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
-                </select>
-            </span>
-            <span id="dashboardSearchBox">
-                <input placeholder="App name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
+
+
+          <span class="dashboard-tag-filter-selects">
+             <!-- <span class="btn-group" id="dashboardPlatformSwitch">
+              <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
+              <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
+             </span> -->
+             <span class="ui-select">
+                  <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
+                    <option value="">Mobile Priority</option>
+                    <option value="L">Low</option>
+                    <option value="M">Medium</option>
+                    <option value="H">High</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed. *Click for more info.*" ></i>
+             </a>
+             <span class="ui-select">
+                  <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
+                    <option value="">Fortune Rank</option>
+                    <option value="500">Fortune 500</option>
+                    <option value="1000">Fortune 1000</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. *Click for more info.*"></i>
+             </a>
+             <span class="ui-select">
+                  <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
+                    <option value="">Ads on Facebook</option>
+                    <option value="true">Yes</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget. *Click for more info.*"></i>
+             </a>
+             <span class="ui-select">
+                  <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
+                    <option value="">User Base Size</option>
+                    <option value="weak">Weak</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="strong">Strong</option>
+                    <option value="elite">Elite</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('User Base Size');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                 title="User Base Size: an estimate of how many active users an app has. *Click for more info.*"></i>
+             </a>
+             <span class="ui-select">
+                  <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
+                    <option value="">Last Updated</option>
+                    <option value="7">Within 7 Days</option>
+                    <option value="30">Within 1 Month</option>
+                    <option value="90">Within 3 Months</option>
+                    <option value="180">Within 6 Months</option>
+                    <option value="360">Within 12 Months</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Last Updated');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+               title="Last Updated: length of time from last update to app. *Click for more info.*"></i>
+             </a>
+             <span class="ui-select">
+                  <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
+                    <option value="">Categories</option>
+                    <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
+                  </select>
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+               title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
+             </a>
+             <span id="dashboardSearchBox">
+                  <input placeholder="App name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
+             </span>
+             <a href="" data-toggle="modal" data-target="#myModal">
+              <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                title="Custom Keyword: searches all app names for a match to the supplied keyword. *Click for more info.*"></i>
+             </a>
             </span>
 
     </div>
@@ -102,6 +138,15 @@
                                   data-ng-class="{active: row == '-companyName'}"></span>
           </div></th>
           <th><div class="th">
+            Fortune Rank
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" sortApps('fortuneRank', 'ASC') "
+                                  data-ng-class="{active: row == 'fortuneRank'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" sortApps('fortuneRank', 'DESC') "
+                                  data-ng-class="{active: row == '-fortuneRank'}"></span>
+          </div></th>
+          <th><div class="th">
             Mobile Priority
           </div></th>
           <th><div class="th">
@@ -124,33 +169,78 @@
                                   data-ng-class="{active: row == '-lastUpdated'}"></span>
           </div></th>
           <th><div class="th">
-            Fortune Rank
-                            <span class="glyphicon glyphicon-chevron-up"
-                                  data-ng-click=" sortApps('fortuneRank', 'ASC') "
-                                  data-ng-class="{active: row == 'fortuneRank'}"></span>
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  data-ng-click=" sortApps('fortuneRank', 'DESC') "
-                                  data-ng-class="{active: row == '-fortuneRank'}"></span>
-          </div></th>
-          <th><div class="th">
             Details
           </div></th>
         </tr>
         </thead>
-        <tbody>
+
+        <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
-          <td>{{app.app.name}}</td>
-          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
+          <td>{{app.company.fortuneRank}}</td>
           <td>{{app.app.mobilePriority}}</td>
           <td>{{app.app.adSpend}}</td>
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
-          <td>{{app.app.lastUpdated}}</td>
-          <td>{{app.company.fortuneRank}}</td>
-          <td><a href="#/app/{{app.app.id}}">Details</a></td>
+          <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">Details</a></td>
         </tr>
         </tbody>
       </table>
+      <div id="dashboardTableStatusMessage" data-ng-show="$root.dashboardSearchButtonDisabled || !($root.numApps > 0)">
+        <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled">No Results</h5>
+        <div data-ng-show="$root.dashboardSearchButtonDisabled" id="wrap_spinner">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h3 class="modal-title" id="myModalLabel">Methodology Behind the Filters</h3>
+            </div>
+            <div class="modal-body">
+              <h4>Mobile Priority</h4>
+              <p>Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>
+              <p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>
+                Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook. High: they have advertised on Facebook or have updated within the past two months. Medium: Updated within last 2 - 4 months. Low: Last update > 4 months ago.
+              </p>
+
+              <h4>Fortune Rank</h4>
+              <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>
+
+              <h4>Advertising on Facebook</h4>
+              <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
+              <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
+              <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
+                fashion – either they do (if an ad has been reported) or they don’t.</p>
+
+              <h4>User Base Size</h4>
+              <p>User Base Size: an estimate of how many active users an app has.</p>
+              <p>We derive this estimate based off of how many ratings per day an app has. Elite: 50,000 total ratings or 7 ratings per day average (for current release).
+                Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average
+                (for current release). Weak: anything less.</p>
+
+              <h4>Last Updated</h4>
+              <p>Last Updated: length of time from last update to app, as reported on the iOS and Google Play stores.</p>
+
+              <h4>Categories</h4>
+              <p>Categories: the category/genre of the app (same as iOS App Store categories).</p>
+
+              <h4>Custom Keyword Field</h4>
+              <p>Custom Keyword: searches all app names for a match to the supplied keyword.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
 

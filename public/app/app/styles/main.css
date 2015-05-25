@@ -639,7 +639,7 @@ pre {
   position: relative;
   padding: 0;
   vertical-align: middle;
-  height: 75px; }
+  height: 50px; }
 
 .table-dynamic .table-bordered thead th > .th {
   padding: 8px 25px 8px 8px; }
@@ -656,11 +656,11 @@ pre {
   color: #0393dd; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up {
-  top: 24px;
+  top: 10px;
   right: 5px; }
 
 .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
-  top: 38px;
+  top: 25px;
   right: 6px; }
 
 .table-dynamic .table-footer {
@@ -1287,7 +1287,8 @@ input.input-dark:focus {
 .ui-select {
   position: relative;
   display: inline-block;
-  margin: 0 0 5px 5px;
+  padding: 3px 3px 3px 0;
+  margin: 5px 0 10px 5px;
   width: auto;
   height: auto;
   border: 1px solid #cbd5dd;
@@ -1303,7 +1304,7 @@ input.input-dark:focus {
   position: relative;
   padding: 5px 33px 5px 8px;
   max-width: 160px;
-  width: 120%;
+  width: 100%;
   border: none;
   outline: none;
   background: transparent;
@@ -4920,7 +4921,8 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 
 .well.companyAssociatedApp {
   background: #f9f9f9;
-  padding: 10px;
+  padding: 0px;
+  margin-bottom: 7px;
 }
 
 .well.companyAssociatedApp:hover {
@@ -4969,9 +4971,10 @@ img#appDetailsPageAppLogo {
   clear: both; }
 
 .tooltip-inner {
-  max-width: 200px;
-  padding: 8px 28px;
+  max-width: 250px;
+  padding: 10px 10px;
   color: #fff;
+  text-transform: none;
   background-color: #3F4245;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
@@ -6702,6 +6705,10 @@ label {
   font-weight: bold;
   color: #0393dd; }
 
+.page-signin .logo img {
+  width: 175px;
+}
+
 .page-signin .logo a, .page-signup .logo a, .page-forgot .logo a {
   color: #0393dd; }
 
@@ -7098,4 +7105,71 @@ label {
   100% {
     transform: rotateZ(360deg); } }
 
+#textAngular-editableFix-010203040506070809 {
+  opacity: 0;
+}
+
 /*# sourceMappingURL=main.css.map */
+
+/* CUSTOM STYLES */
+
+i.infoTooltipIcon {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 15px;
+  position: relative;
+  top: 2px;
+}
+
+.dashboard-tag-filter-selects {
+  margin-left: 4px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+}
+
+#dashboardSearchBox > input {
+  padding: 6px;
+  width: 185px;
+}
+
+:focus {
+  outline: 0;
+}
+
+#dashboardTableStatusMessage {
+  width: 50px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  vertical-align: middle;
+  padding-top: 55px;
+  text-align: center;
+}
+
+.dashboard-tag-filter-selects > .tooltip {
+  text-transform: none;
+  font-size: 90%;
+}
+
+.modal-body h4 {
+  border-bottom: none;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
+}
+
+.modal-body p {
+  margin-bottom: 7px;
+}
+
+.modal-body h4 {
+  margin-top: 20px;
+}
+
+.modal-body h4:first-child {
+  margin-top: 00px;
+}
+
+#dashboardPlatformSwitch {
+  margin-right: 10px;
+}
