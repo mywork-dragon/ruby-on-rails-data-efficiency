@@ -73,8 +73,11 @@ angular.module("appApp")
   }])
   .factory("authService", [function() {
     return {
-        isAuthenticated: function() {
-          return localStorage.getItem('custom_auth_token') != null;
-        }
-      };
+      setToken: function(email) {
+        localStorage.setItem('custom_auth_token', email);
+      },
+      isAuthenticated: function() {
+        return localStorage.getItem('custom_auth_token') != null;
+      }
+    };
   }]);

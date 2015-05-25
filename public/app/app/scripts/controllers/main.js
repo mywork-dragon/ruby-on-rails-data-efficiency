@@ -22,7 +22,7 @@ angular.module('appApp')
     $scope.onLoginButtonClick = function() {
       $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
         .then(function(resp) {
-          localStorage.setItem('custom_auth_token', resp.email);
+          authService.setToken(resp.email);
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.identify(resp.email);
