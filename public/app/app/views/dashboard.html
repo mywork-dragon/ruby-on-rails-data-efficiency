@@ -120,6 +120,8 @@
         <thead>
         <tr>
           <th><div class="th">
+          </div></th>
+          <th><div class="th">
             App Name
                             <span class="glyphicon glyphicon-chevron-up"
                                   data-ng-click=" sortApps('appName', 'ASC') "
@@ -176,6 +178,9 @@
 
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
+          <td class="dashboardTableDataCheckbox">
+            <input type="checkbox" name="vehicle" value="Bike">
+          </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>

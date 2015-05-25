@@ -7173,3 +7173,7 @@ i.infoTooltipIcon {
 #dashboardPlatformSwitch {
   margin-right: 10px;
 }
+
+.dashboardTableDataCheckbox {
+  width: 10px;
+}
