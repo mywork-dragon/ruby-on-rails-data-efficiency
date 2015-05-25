@@ -49,6 +49,7 @@ class BusinessEntityService
     end
     
     # special purpose
+    # Do not use this unless you know what you're doing!!!
     def delete_all_companies_with_google_play_identifier
       cs_gp = Company.where.not(google_play_identifier: nil)
       count = cs_gp.count
