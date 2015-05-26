@@ -1,5 +1,7 @@
 'use strict';
 
+// Manual auth based off guide: http://adamalbrecht.com/2014/12/04/add-json-web-token-authentication-to-your-angular-rails-app/
+
 angular.module("appApp")
   .factory("authToken", [function() {
     return {
