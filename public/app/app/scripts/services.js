@@ -104,7 +104,7 @@ angular.module("appApp")
           mixpanel.track(
             "Login Success"
           );
-          //    /* -------- Mixpanel Analytics End -------- */
+          /* -------- Mixpanel Analytics End -------- */
 
           authToken.setToken(resp.auth_token);
           $rootScope.$broadcast(authEvents.loginSuccess);

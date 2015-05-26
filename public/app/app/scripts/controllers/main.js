@@ -22,8 +22,7 @@ angular.module('appApp')
     $scope.onLoginButtonClick = function() {
 
       authService.login($scope.user.email, $scope.user.password).then(function(){
-        $scope.isAuthenticated = authService.isAuthenticated();
-        location.reload();
+        $scope.isAuthenticated = authToken.isAuthenticated();
       },
       function(){
         alert('failed');
