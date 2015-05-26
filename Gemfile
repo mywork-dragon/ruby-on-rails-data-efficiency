@@ -95,6 +95,8 @@ gem 'bcrypt', '3.1.10'
 
 gem 'minitest-fail-fast', '0.0.1'
 
+gem 'apk_downloader'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
