@@ -25,7 +25,7 @@ angular.module('appApp')
         $scope.isAuthenticated = authToken.isAuthenticated();
       },
       function(){
-        alert('failed');
+        alert('Incorrect Email or Password');
       });
 
     };

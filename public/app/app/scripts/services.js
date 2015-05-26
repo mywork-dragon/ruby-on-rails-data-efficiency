@@ -78,13 +78,19 @@ angular.module("appApp")
       },
       isAuthenticated: function() {
         return localStorage.getItem('custom_auth_token') != null;
+      },
+      get: function() {
+        return localStorage.getItem('custom_auth_token');
       }
     }
   }])
   .factory("authEvents", [function() {
     return {
       loginSuccess: "STRING_REPRESENTS_EVENT_SUCCESS",
-      loginFailed: "STRING_REPRESENTS_EVENT_FAILURE"
+      loginFailed: "STRING_REPRESENTS_EVENT_FAILED_LOGIN",
+      notAuthenticated: "STRING_REPRESENTS_EVENT_FAILED_AUTH",
+      notAuthorized: "STRING_REPRESENTS_EVENT_FAILURE_NOT_AUTHORIZED",
+      sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT"
     }
   }])
   .factory("authService", ["$http", "$q", "$rootScope", "authToken", "authEvents", function($http, $q, $rootScope, authToken, authEvents) {
@@ -120,5 +126,32 @@ angular.module("appApp")
         return d.promise;
       }
     };
-  }]);
+  }])
+  .factory("authInterceptor", function($q, $injector) {
+    return {
+      // This will be called on every outgoing http request
+      request: function(config) {
+        var authToken = $injector.get("authToken");
+        var token = authToken.get();
+        config.headers = config.headers || {};
+        if (token) {
+          config.headers.Authorization = "Bearer " + token;
+        }
+        return config || $q.when(config);
+      },
+      // This will be called on every incoming response that has en error status code
+      responseError: function(response) {
+        var authEvents = $injector.get('authEvents');
+        var matchesAuthenticatePath = response.config && response.config.url.match(new RegExp('/api/auth'));
+        if (!matchesAuthenticatePath) {
+          $injector.get('$rootScope').$broadcast({
+            401: authEvents.notAuthenticated,
+            403: authEvents.notAuthorized,
+            419: authEvents.sessionTimeout
+          }[response.status], response);
+        }
+        return $q.reject(response);
+      }
+    };
+  });
 
