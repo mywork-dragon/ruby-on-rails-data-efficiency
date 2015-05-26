@@ -34,7 +34,6 @@ angular
           method: 'GET',
 					url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         }).success(function(data) {
-          console.log(APP_PLATFORM);
           $rootScope.categoryFilterOptions = data;
         });
 

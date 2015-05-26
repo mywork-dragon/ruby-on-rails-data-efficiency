@@ -8,7 +8,7 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "$auth", function ($scope, $location, authService, $auth) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", function ($scope, $location, authService, authToken) {
 
     $scope.checkIfOwnPage = function() {
 
@@ -16,32 +16,18 @@ angular.module('appApp')
 
     };
 
-    $scope.isAuthenticated = authService.isAuthenticated();
+    $scope.isAuthenticated = authToken.isAuthenticated();
 
     /* Login specific logic */
     $scope.onLoginButtonClick = function() {
-      $auth.submitLogin({email: $scope.user.email, password: $scope.user.password})
-        .then(function(resp) {
-          authService.setToken(resp.email);
 
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.identify(resp.email);
-
-          mixpanel.people.set({
-              "$email": resp.email
-          });
-
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Login Success"
-          );
-          /* -------- Mixpanel Analytics End -------- */
-
-          $scope.isAuthenticated = authService.isAuthenticated();
-          location.reload();
-        })
-        .catch(function(resp) {
-        });
+      authService.login($scope.user.email, $scope.user.password).then(function(){
+        $scope.isAuthenticated = authService.isAuthenticated();
+        location.reload();
+      },
+      function(){
+        alert('failed');
+      });
 
     };
   }])

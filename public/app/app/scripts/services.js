@@ -71,13 +71,54 @@ angular.module("appApp")
       }
     };
   }])
-  .factory("authService", [function() {
+  .factory("authToken", [function() {
     return {
-      setToken: function(email) {
-        localStorage.setItem('custom_auth_token', email);
+      setToken: function(payload) {
+        localStorage.setItem('custom_auth_token', payload);
       },
       isAuthenticated: function() {
         return localStorage.getItem('custom_auth_token') != null;
       }
+    }
+  }])
+  .factory("authEvents", [function() {
+    return {
+      loginSuccess: "STRING_REPRESENTS_EVENT_SUCCESS",
+      loginFailed: "STRING_REPRESENTS_EVENT_FAILURE"
+    }
+  }])
+  .factory("authService", ["$http", "$q", "$rootScope", "authToken", "authEvents", function($http, $q, $rootScope, authToken, authEvents) {
+    return {
+      login: function(email, password) {
+        var d = $q.defer();
+        $http.post("/auth/login", {
+          email: email,
+          password: password
+        }).success(function(resp) {
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.identify(resp.email);
+          mixpanel.people.set({
+            "$email": resp.email
+          });
+          mixpanel.track(
+            "Login Success"
+          );
+          //    /* -------- Mixpanel Analytics End -------- */
+
+          authToken.setToken(resp.auth_token);
+          $rootScope.$broadcast(authEvents.loginSuccess);
+          console.log(authEvents.loginSuccess);
+          console.log(resp);
+          d.resolve(resp.user);
+        }).error(function(resp) {
+          $rootScope.$broadcast(authEvents.loginFailed);
+          console.log(authEvents.loginFailed);
+          console.log(resp);
+          d.reject(resp.error);
+        });
+        return d.promise;
+      }
     };
   }]);
+
