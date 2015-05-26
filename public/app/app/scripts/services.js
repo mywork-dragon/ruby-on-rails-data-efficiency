@@ -97,9 +97,9 @@ angular.module("appApp")
         }).success(function(resp) {
 
           /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.identify(resp.email);
+          mixpanel.identify(email);
           mixpanel.people.set({
-            "$email": resp.email
+            "$email": email
           });
           mixpanel.track(
             "Login Success"
