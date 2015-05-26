@@ -124,7 +124,7 @@ class GooglePlaySnapshotServiceWorker
       end
 
       #update newest snapshot
-      android_app.newest_android_app_snapshot = s
+      android_app.newest_android_app_snapshot_id = s.id #make sure s has been saved first
       
       android_app_save_success = android_app.save
 
