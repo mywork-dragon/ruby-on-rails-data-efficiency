@@ -46,13 +46,9 @@ angular.module("appApp")
 
           authToken.setToken(resp.auth_token);
           $rootScope.$broadcast(authEvents.loginSuccess);
-          console.log(authEvents.loginSuccess);
-          console.log(resp);
           d.resolve(resp.user);
         }).error(function(resp) {
           $rootScope.$broadcast(authEvents.loginFailed);
-          console.log(authEvents.loginFailed);
-          console.log(resp);
           d.reject(resp.error);
         });
         return d.promise;
