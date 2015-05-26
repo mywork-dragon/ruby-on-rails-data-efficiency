@@ -78,15 +78,15 @@ class GooglePlaySnapshotServiceWorker
       #don't get similar apps in development
       if !Rails.env.development?
         if similar_apps = a[:similar_apps]
-          similar_apps.each do |app_identifier|
+          similar_apps.each do |similar_app_identifier|
 
-            android_app = AndroidApp.find_by_app_identifier(app_identifier)
+            similar_android_app = AndroidApp.find_by_app_identifier(similar_app_identifier)
             
-            if android_app.nil?
-              android_app = AndroidApp.new(app_identifier: app_identifier)
-              success = android_app.save
+            if similar_android_app.nil?
+              similar_android_app = AndroidApp.new(app_identifier: similar_app_identifier)
+              success = similar_android_app.save
 
-              GooglePlaySnapshotServiceWorker.perform_async(android_app_snapshot_job_id, android_app.id) if success
+              GooglePlaySnapshotServiceWorker.perform_async(android_app_snapshot_job_id, similar_android_app.id) if success
             end
 
           end
