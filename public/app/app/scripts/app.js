@@ -8,6 +8,13 @@
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
 var APP_PLATFORM = "ios";
+var JWT_TOKEN_NAME = "jwt_auth_token";
+
+if (location.host == "localhost:3000") {
+  JWT_TOKEN_NAME = "dev_jwt_auth_token";
+}
+
+console.log(JWT_TOKEN_NAME);
 
 angular
   .module('appApp', [
