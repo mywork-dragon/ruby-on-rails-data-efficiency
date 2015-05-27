@@ -454,10 +454,8 @@ ActiveRecord::Schema.define(version: 20150526235138) do
     t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "authentication_token"
   end
 
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
   create_table "websites", force: true do |t|
