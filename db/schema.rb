@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20150526235138) do
 
   create_table "android_app_categories", force: true do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -54,22 +54,22 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "android_app_snapshots", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                             limit: 255
+    t.string   "name"
     t.integer  "price"
     t.integer  "size",                             limit: 8
     t.date     "updated"
-    t.string   "seller_url",                       limit: 255
-    t.string   "version",                          limit: 255
+    t.string   "seller_url"
+    t.string   "version"
     t.date     "released"
     t.text     "description"
     t.integer  "android_app_id"
     t.integer  "google_plus_likes"
     t.boolean  "top_dev"
     t.boolean  "in_app_purchases"
-    t.string   "required_android_version",         limit: 255
-    t.string   "content_rating",                   limit: 255
-    t.string   "seller",                           limit: 255
-    t.decimal  "ratings_all_stars",                            precision: 3, scale: 2
+    t.string   "required_android_version"
+    t.string   "content_rating"
+    t.string   "seller"
+    t.decimal  "ratings_all_stars",                          precision: 3, scale: 2
     t.integer  "ratings_all_count"
     t.integer  "status"
     t.integer  "android_app_snapshot_job_id"
@@ -77,8 +77,8 @@ ActiveRecord::Schema.define(version: 20150526235138) do
     t.integer  "in_app_purchase_max"
     t.integer  "downloads_min",                    limit: 8
     t.integer  "downloads_max",                    limit: 8
-    t.string   "icon_url_300x300",                 limit: 255
-    t.string   "developer_google_play_identifier", limit: 255
+    t.string   "icon_url_300x300"
+    t.string   "developer_google_play_identifier"
   end
 
   add_index "android_app_snapshots", ["android_app_id", "name"], name: "index_android_app_id_and_name", using: :btree
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "app_identifier",                 limit: 255
+    t.string   "app_identifier"
     t.integer  "app_id"
     t.integer  "newest_android_app_snapshot_id"
     t.integer  "user_base"
@@ -116,11 +116,11 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "android_apps_websites", ["website_id"], name: "index_android_apps_websites_on_website_id", using: :btree
 
   create_table "android_fb_ad_appearances", force: true do |t|
-    t.string   "aws_assignment_identifier", limit: 255
-    t.string   "hit_identifier",            limit: 255
+    t.string   "aws_assignment_identifier"
+    t.string   "hit_identifier"
     t.integer  "m_turk_worker_id"
     t.integer  "android_app_id"
-    t.string   "heroku_identifier",         limit: 255
+    t.string   "heroku_identifier"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -135,29 +135,29 @@ ActiveRecord::Schema.define(version: 20150526235138) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "company_id"
-    t.string   "name",       limit: 255
+    t.string   "name"
   end
 
   create_table "companies", force: true do |t|
-    t.string   "name",                   limit: 255
-    t.string   "website",                limit: 255
+    t.string   "name"
+    t.string   "website"
     t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "fortune_1000_rank"
-    t.string   "ceo_name",               limit: 255
-    t.string   "street_address",         limit: 255
-    t.string   "city",                   limit: 255
-    t.string   "zip_code",               limit: 255
-    t.string   "state",                  limit: 255
+    t.string   "ceo_name"
+    t.string   "street_address"
+    t.string   "city"
+    t.string   "zip_code"
+    t.string   "state"
     t.integer  "employee_count"
-    t.string   "industry",               limit: 255
-    t.string   "type",                   limit: 255
+    t.string   "industry"
+    t.string   "type"
     t.integer  "funding"
     t.integer  "inc_5000_rank"
-    t.string   "country",                limit: 255
+    t.string   "country"
     t.integer  "app_store_identifier"
-    t.string   "google_play_identifier", limit: 255
+    t.string   "google_play_identifier"
   end
 
   add_index "companies", ["app_store_identifier"], name: "index_app_store_identifier", using: :btree
@@ -183,7 +183,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "installations", ["status", "created_at"], name: "index_installations_on_status_and_created_at", using: :btree
 
   create_table "ios_app_categories", force: true do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "ios_app_categories_snapshots", force: true do |t|
     t.integer  "ios_app_category_id"
     t.integer  "ios_app_snapshot_id"
-    t.string   "kind",                limit: 255
+    t.string   "kind"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -215,7 +215,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "ios_app_download_snapshot_exceptions", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
 
   create_table "ios_app_download_snapshot_jobs", force: true do |t|
-    t.string   "notes",      limit: 255
+    t.string   "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -236,7 +236,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "ios_app_languages", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",       limit: 255
+    t.string   "name"
   end
 
   add_index "ios_app_languages", ["name"], name: "index_ios_app_languages_on_name", using: :btree
@@ -263,32 +263,32 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "ios_app_snapshots", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                            limit: 255
+    t.string   "name"
     t.integer  "price"
     t.integer  "size",                            limit: 8
-    t.string   "seller_url",                      limit: 255
-    t.string   "support_url",                     limit: 255
-    t.string   "version",                         limit: 255
+    t.string   "seller_url"
+    t.string   "support_url"
+    t.string   "version"
     t.date     "released"
-    t.string   "recommended_age",                 limit: 255
+    t.string   "recommended_age"
     t.text     "description"
     t.integer  "ios_app_id"
-    t.string   "required_ios_version",            limit: 255
+    t.string   "required_ios_version"
     t.integer  "ios_app_snapshot_job_id"
     t.text     "release_notes"
-    t.string   "seller",                          limit: 255
+    t.string   "seller"
     t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",                       precision: 3,  scale: 2
+    t.decimal  "ratings_current_stars",                     precision: 3,  scale: 2
     t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",                           precision: 3,  scale: 2
+    t.decimal  "ratings_all_stars",                         precision: 3,  scale: 2
     t.integer  "ratings_all_count"
     t.boolean  "editors_choice"
     t.integer  "status"
     t.text     "exception_backtrace"
     t.text     "exception"
-    t.string   "icon_url_350x350",                limit: 255
-    t.string   "icon_url_175x175",                limit: 255
-    t.decimal  "ratings_per_day_current_release",             precision: 10, scale: 2
+    t.string   "icon_url_350x350"
+    t.string   "icon_url_175x175"
+    t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
@@ -336,8 +336,8 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "ios_apps_websites", ["website_id"], name: "index_ios_apps_websites_on_website_id", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
-    t.string   "aws_assignment_identifier", limit: 255
-    t.string   "hit_identifier",            limit: 255
+    t.string   "aws_assignment_identifier"
+    t.string   "hit_identifier"
     t.integer  "heroku_identifier"
     t.integer  "m_turk_worker_id"
     t.integer  "ios_app_id"
@@ -353,21 +353,21 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   create_table "ios_in_app_purchases", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                limit: 255
+    t.string   "name"
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
 
   create_table "m_turk_workers", force: true do |t|
-    t.string   "aws_identifier",    limit: 255
+    t.string   "aws_identifier"
     t.integer  "age"
-    t.string   "gender",            limit: 255
-    t.string   "city",              limit: 255
-    t.string   "state",             limit: 255
-    t.string   "country",           limit: 255
-    t.string   "iphone",            limit: 255
-    t.string   "ios_version",       limit: 255
-    t.string   "heroku_identifier", limit: 255
+    t.string   "gender"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "iphone"
+    t.string   "ios_version"
+    t.string   "heroku_identifier"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -385,21 +385,21 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "matchers", ["service_id"], name: "index_matchers_on_service_id", using: :btree
 
   create_table "oauth_users", force: true do |t|
-    t.string   "provider",      limit: 255
-    t.string   "uid",           limit: 255
-    t.string   "name",          limit: 255
-    t.string   "oauth_token",   limit: 255
-    t.string   "refresh_token", limit: 255
-    t.string   "instance_url",  limit: 255
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "name"
+    t.string   "oauth_token"
+    t.string   "refresh_token"
+    t.string   "instance_url"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",         limit: 255
+    t.string   "email"
   end
 
   create_table "proxies", force: true do |t|
     t.boolean  "active"
-    t.string   "public_ip",  limit: 255
-    t.string   "private_ip", limit: 255
+    t.string   "public_ip"
+    t.string   "private_ip"
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -417,7 +417,7 @@ ActiveRecord::Schema.define(version: 20150526235138) do
 
   create_table "scraped_results", force: true do |t|
     t.integer  "company_id"
-    t.string   "url",           limit: 255
+    t.string   "url"
     t.text     "raw_html"
     t.integer  "status"
     t.datetime "created_at"
@@ -429,16 +429,16 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   add_index "scraped_results", ["scrape_job_id"], name: "index_scraped_results_on_scrape_job_id", using: :btree
 
   create_table "services", force: true do |t|
-    t.string   "name",       limit: 255
-    t.string   "website",    limit: 255
-    t.string   "category",   limit: 255
+    t.string   "name"
+    t.string   "website"
+    t.string   "category"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "sidekiq_testers", force: true do |t|
-    t.string   "test_string", limit: 255
-    t.string   "ip",          limit: 255
+    t.string   "test_string"
+    t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "dummy_string"
@@ -450,18 +450,16 @@ ActiveRecord::Schema.define(version: 20150526235138) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                limit: 255
-    t.string   "password_digest",      limit: 255
+    t.string   "email"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "authentication_token"
   end
 
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
   create_table "websites", force: true do |t|
-    t.string   "url",        limit: 255
+    t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "kind"
