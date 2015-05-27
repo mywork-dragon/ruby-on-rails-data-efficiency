@@ -8,6 +8,13 @@
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
 var APP_PLATFORM = "ios";
+var JWT_TOKEN_NAME = "jwt_auth_token";
+
+if (location.host == "localhost:3000") {
+  JWT_TOKEN_NAME = "dev_jwt_auth_token";
+}
+
+console.log(JWT_TOKEN_NAME);
 
 angular
   .module('appApp', [
@@ -34,7 +41,6 @@ angular
           method: 'GET',
 					url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         }).success(function(data) {
-          console.log(APP_PLATFORM);
           $rootScope.categoryFilterOptions = data;
         });
 
@@ -65,5 +71,8 @@ angular
       tokenValidationPath: '/validate_token',
       emailSignInPath: '/login'
     });
+  })
+  .config(function($httpProvider) {
+    return $httpProvider.interceptors.push("authInterceptor");
   });
 

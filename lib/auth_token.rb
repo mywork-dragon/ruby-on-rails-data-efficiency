@@ -11,5 +11,5 @@ class AuthToken
   rescue
     nil # It will raise an error if it is not a token that was generated with our secret key or if the user changes the contents of the payload
   end
-  
+
 end

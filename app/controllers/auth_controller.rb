@@ -1,6 +1,6 @@
 class AuthController < ApplicationController
-  skip_before_filter  :verify_authenticity_token
-  #skip_before_action :authenticate_request # this will be implemented later
+  
+  skip_before_filter :verify_authenticity_token
   
   def authenticate
     li 'AuthController.authenticate'
