@@ -6,13 +6,13 @@ angular.module("appApp")
   .factory("authToken", [function() {
     return {
       setToken: function(payload) {
-        localStorage.setItem('custom_auth_token', payload);
+        localStorage.setItem('jwt_auth_token', payload);
       },
       isAuthenticated: function() {
-        return localStorage.getItem('custom_auth_token') != null;
+        return localStorage.getItem('jwt_auth_token') != null;
       },
       get: function() {
-        return localStorage.getItem('custom_auth_token');
+        return localStorage.getItem('jwt_auth_token');
       }
     }
   }])
