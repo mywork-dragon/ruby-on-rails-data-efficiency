@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420210830) do
+ActiveRecord::Schema.define(version: 20150526235138) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -81,8 +81,14 @@ ActiveRecord::Schema.define(version: 20150420210830) do
     t.string   "developer_google_play_identifier"
   end
 
+  add_index "android_app_snapshots", ["android_app_id", "name"], name: "index_android_app_id_and_name", using: :btree
+  add_index "android_app_snapshots", ["android_app_id", "released"], name: "index_android_app_id_and_released", using: :btree
+  add_index "android_app_snapshots", ["android_app_id"], name: "index_android_app_id", using: :btree
+  add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
+  add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
+  add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -435,6 +441,12 @@ ActiveRecord::Schema.define(version: 20150420210830) do
     t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "dummy_string"
+    t.text     "dummy_text"
+    t.string   "dummy_string2"
+    t.text     "dummy_text2"
+    t.string   "dummy_string3"
+    t.text     "dummy_text3"
   end
 
   create_table "users", force: true do |t|

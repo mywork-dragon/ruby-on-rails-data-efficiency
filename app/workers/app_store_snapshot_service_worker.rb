@@ -159,7 +159,7 @@ class AppStoreSnapshotServiceWorker
       end
       
       #update newest snapshot
-      ios_app.newest_ios_app_snapshot = s
+      ios_app.newest_ios_app_snapshot_id = s.id #make sure s has been saved already
       
       ios_app_save_success = ios_app.save
     
