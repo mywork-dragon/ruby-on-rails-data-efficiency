@@ -67,6 +67,110 @@ class BusinessEntityService
       end
       
     end
+    
+    def hard_code_gpi
+      ids = %w(
+        3057
+        2733
+        2889
+        2640
+        5279
+        8568
+        4642
+        3360
+        11291
+        2111
+        9666
+        424
+        1467
+        3418
+        3645
+        224
+        23235
+        3336
+        2785
+        12797
+        29093
+        27298
+        34493
+        47267
+        23898
+        11329
+        3707
+        22236
+        7435
+        22264
+        8110
+        7714
+        14638
+        2405
+        56660
+        1219
+        3895
+        69113
+        23423
+        96787
+        2910
+        6782
+        710
+        80468
+        25407
+      )
+      
+      gpis = %w(
+        Google+Inc.
+        Fiserv+Solutions,+Inc.
+        Gannett
+        Facebook
+        Oracle+America,+Inc.
+        Yahoo
+        Microsoft+Corporation
+        Hewlett+Packard+Development+Company,+L.P.
+        AT%26T+Services,+Inc.
+        Disney
+        ELECTRONIC+ARTS
+        Amazon+Mobile+LLC
+        Cisco+Systems,+Inc.
+        IBM+Collaboration+Solutions
+        Intel+Corporation
+        Adobe
+        MasterCard
+        Honeywell+International,+Inc.
+        Ford+Motor+Co.
+        Pfizer+Inc.
+        U.S.+Bank+Mobile
+        Tribune+Broadcasting+Company+LLC
+        Hasbro+Inc.
+        John+Deere
+        3M+Company
+        Symantec+Corporation
+        Intuit+Inc
+        Mattel
+        Trimble+Navigation
+        Avaya+Incorporated
+        Xerox
+        Verizon+-+VZ
+        American+Express
+        EMC+Corporation
+        FirstEnergy+Service+Company
+        CA+Technologies,+Inc
+        Juniper+Networks+Inc.+and+Affiliates
+        Parker+Hannifin+Corporation
+        Eastman+Kodak+Company
+        SYNNEX+Corporation
+        General+Electric++Company
+        State+Farm+Insurance
+        Autodesk+Inc.
+        Kimberly-Clark+Corporation
+        DIRECTV,+LLC
+      )
+      
+      ids.each_with_index do |id, index|
+        c = Company.find(id)
+        c.google_play_identifier = gpis[index]
+        c.save!
+      end
+    end
   
     
   
