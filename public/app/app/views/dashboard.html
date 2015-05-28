@@ -179,7 +179,7 @@
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="vehicle" value="Bike">
+            <input type="checkbox" name="appId" value="{{app.app.id}}" ng-checked="selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app.id)">
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>

@@ -207,6 +207,16 @@ angular.module('appApp')
             $rootScope.categoryFilterOptions = data;
           });
         },
+        $scope.selectedAppsForList = [],
+        $scope.addAppToList = function(selectedAppId) {
+          // Check if app id is already in list
+          var index = $scope.selectedAppsForList.indexOf(selectedAppId);
+          if (index > -1) {
+            $scope.selectedAppsForList.splice(index, 1);
+          } else {
+            $scope.selectedAppsForList.push(selectedAppId);
+          }
+        },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
 
