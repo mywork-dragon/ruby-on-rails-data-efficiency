@@ -14,8 +14,6 @@ if (location.host == "localhost:3000") {
   JWT_TOKEN_NAME = "dev_jwt_auth_token";
 }
 
-console.log(JWT_TOKEN_NAME);
-
 angular
   .module('appApp', [
     'ngRoute',
