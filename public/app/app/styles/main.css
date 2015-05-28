@@ -7167,7 +7167,7 @@ i.infoTooltipIcon {
 }
 
 .modal-body h4:first-child {
-  margin-top: 00px;
+  margin-top: 0px;
 }
 
 #dashboardPlatformSwitch {
@@ -7176,4 +7176,24 @@ i.infoTooltipIcon {
 
 .dashboardTableDataCheckbox {
   width: 10px;
+}
+
+#dashboardResultsTableHeading {
+  height: 52px;
+}
+
+#dashboardResultsTableHeading strong {
+  display: inline-block;
+  margin-top: 9px;
+}
+
+#dashboardResultsTableHeading .ui-select {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  position: fixed;
+  right: 28px;
+}
+
+#dashboardResultsTableHeading .ui-select select {
+  max-width: 165px;
 }

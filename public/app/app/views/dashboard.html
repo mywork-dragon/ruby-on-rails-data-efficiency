@@ -112,7 +112,17 @@
   </section>
 
   <section class="panel panel-default table-dynamic">
-    <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Results</strong></div>
+    <div class="panel-heading" id="dashboardResultsTableHeading">
+     <strong><i class="fa fa-list panel-ico"></i>Results</strong>
+     <span class="ui-select">
+      <select ng-model="lists" ng-change="">
+        <option value="">Add Selected to List</option>
+        <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
+      </select>
+     </span>
+    </div>
+
+
 
     <div id="results-table-wrapper">
 
