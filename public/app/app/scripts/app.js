@@ -59,6 +59,10 @@ angular
          templateUrl: '/app/app/views/company-details.html',
          controller: 'CompanyDetailsCtrl'
        })
+       .when('/lists', {
+         templateUrl: '/app/app/views/list.html',
+         controller: 'ListCtrl'
+       })
       .otherwise({
         redirectTo: '/'
       });

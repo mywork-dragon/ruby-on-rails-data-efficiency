@@ -7178,22 +7178,24 @@ i.infoTooltipIcon {
   width: 10px;
 }
 
-#dashboardResultsTableHeading {
+#dashboardResultsTableHeading, #listViewTableHeading {
   height: 52px;
 }
 
-#dashboardResultsTableHeading strong {
+#dashboardResultsTableHeading strong, #listViewTableHeading strong {
   display: inline-block;
   margin-top: 9px;
 }
 
-#dashboardResultsTableHeading .ui-select {
+#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select {
   margin-top: 0px;
   margin-bottom: 0px;
-  position: absolute;
-  right: 28px;
 }
 
-#dashboardResultsTableHeading .ui-select select {
+#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select {
   max-width: 165px;
+}
+
+#listViewTableHeading span, #listViewTableHeading button {
+  margin-left: 5px;
 }
