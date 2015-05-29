@@ -7190,7 +7190,7 @@ i.infoTooltipIcon {
 #dashboardResultsTableHeading .ui-select {
   margin-top: 0px;
   margin-bottom: 0px;
-  position: fixed;
+  position: absolute;
   right: 28px;
 }
 

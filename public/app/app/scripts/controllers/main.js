@@ -165,8 +165,8 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "$filter", "$rootScope",
-    function($scope, apiService, $filter, $rootScope) {
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope",
+    function($scope, apiService, listApiService, $filter, $rootScope) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
@@ -207,15 +207,10 @@ angular.module('appApp')
             $rootScope.categoryFilterOptions = data;
           });
         },
+        $scope.usersLists = listApiService.getLists(),
         $scope.selectedAppsForList = [],
         $scope.addAppToList = function(selectedAppId) {
-          // Check if app id is already in list
-          var index = $scope.selectedAppsForList.indexOf(selectedAppId);
-          if (index > -1) {
-            $scope.selectedAppsForList.splice(index, 1);
-          } else {
-            $scope.selectedAppsForList.push(selectedAppId);
-          }
+          listApiService.modifyCheckbox(selectedAppId, $scope.selectedAppsForList);
         },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
