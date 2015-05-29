@@ -21,10 +21,9 @@ angular
     'ngTagsInput',
     'app.directives',
     "ui.bootstrap",
-    "rt.encodeuri",
-    'ng-token-auth'
+    "rt.encodeuri"
   ])
-  .run(function ($http, $rootScope, $auth, apiService) {
+  .run(function ($http, $rootScope) {
 
       $(document).ready(function(){
 
@@ -66,13 +65,6 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  })
-  .config(function($authProvider) {
-    $authProvider.configure({
-      apiUrl: '/auth',
-      tokenValidationPath: '/validate_token',
-      emailSignInPath: '/login'
-    });
   })
   .config(function($httpProvider) {
     return $httpProvider.interceptors.push("authInterceptor");
