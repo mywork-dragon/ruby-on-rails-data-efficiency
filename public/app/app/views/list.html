@@ -111,41 +111,20 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h3 class="modal-title" id="myModalLabel">Methodology Behind the Filters</h3>
+              <h3 class="modal-title" id="myModalLabel">Create New List</h3>
             </div>
             <div class="modal-body">
-              <h4>Mobile Priority</h4>
-              <p>Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>
-              <p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>
-                Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook. High: they have advertised on Facebook or have updated within the past two months. Medium: Updated within last 2 - 4 months. Low: Last update > 4 months ago.
-              </p>
+              <form data-ng-submit="add()" class="add-task ng-pristine ng-valid">
+                <input type="text" placeholder="New list name..." class="form-control ng-pristine ng-valid ng-touched" data-ng-model="newTask" autofocus="">
+                <a type="submit" class="submit-button" data-ng-click="add()">
+                  <i class="fa fa-plus-circle"></i>
+                </a>
+              </form>
 
-              <h4>Fortune Rank</h4>
-              <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>
-
-              <h4>Advertising on Facebook</h4>
-              <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
-              <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
-              <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
-                fashion – either they do (if an ad has been reported) or they don’t.</p>
-
-              <h4>User Base Size</h4>
-              <p>User Base Size: an estimate of how many active users an app has.</p>
-              <p>We derive this estimate based off of how many ratings per day an app has. Elite: 50,000 total ratings or 7 ratings per day average (for current release).
-                Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average
-                (for current release). Weak: anything less.</p>
-
-              <h4>Last Updated</h4>
-              <p>Last Updated: length of time from last update to app, as reported on the iOS and Google Play stores.</p>
-
-              <h4>Categories</h4>
-              <p>Categories: the category/genre of the app (same as iOS App Store categories).</p>
-
-              <h4>Custom Keyword Field</h4>
-              <p>Custom Keyword: searches all app names for a match to the supplied keyword.</p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
             </div>
           </div>
         </div>

@@ -7193,7 +7193,8 @@ i.infoTooltipIcon {
 }
 
 #dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select {
-  max-width: 165px;
+  max-width: 170px;
+  wdith: 170px;
 }
 
 #listViewTableHeading span, #listViewTableHeading button {
