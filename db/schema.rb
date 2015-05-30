@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420210830) do
+ActiveRecord::Schema.define(version: 20150528221219) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -125,6 +125,60 @@ ActiveRecord::Schema.define(version: 20150420210830) do
   add_index "android_fb_ad_appearances", ["hit_identifier"], name: "index_android_fb_ad_appearances_on_hit_identifier", using: :btree
   add_index "android_fb_ad_appearances", ["m_turk_worker_id"], name: "index_android_fb_ad_appearances_on_m_turk_worker_id", using: :btree
 
+  create_table "android_package_tags", force: true do |t|
+    t.text     "tag_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "android_packages", force: true do |t|
+    t.text     "package_name"
+    t.integer  "android_package_tag_id"
+    t.integer  "apk_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_packages", ["android_package_tag_id"], name: "index_android_packages_on_android_package_tag_id", using: :btree
+  add_index "android_packages", ["apk_snapshot_id"], name: "index_android_packages_on_apk_snapshot_id", using: :btree
+
+  create_table "apk_snapshot_exceptions", force: true do |t|
+    t.integer  "apk_snapshot"
+    t.text     "name"
+    t.text     "backtrace"
+    t.integer  "try"
+    t.integer  "apk_snapshot_job_id"
+    t.integer  "google_accounts_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshot_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_job_id", using: :btree
+  add_index "apk_snapshot_exceptions", ["google_accounts_id"], name: "index_apk_snapshot_exceptions_on_google_accounts_id", using: :btree
+
+  create_table "apk_snapshot_jobs", force: true do |t|
+    t.text     "notes"
+    t.boolean  "is_fucked"
+    t.integer  "quit_on_exception_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "apk_snapshots", force: true do |t|
+    t.text     "version"
+    t.integer  "google_accounts_id"
+    t.integer  "android_app_id"
+    t.float    "download_time",       limit: 24
+    t.float    "unpack_time",         limit: 24
+    t.integer  "status"
+    t.integer  "apk_snapshot_job_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
+  add_index "apk_snapshots", ["google_accounts_id"], name: "index_apk_snapshots_on_google_accounts_id", using: :btree
+
   create_table "apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -159,6 +213,17 @@ ActiveRecord::Schema.define(version: 20150420210830) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "google_accounts", force: true do |t|
+    t.text     "email"
+    t.text     "password"
+    t.text     "android_id"
+    t.text     "from_ip"
+    t.boolean  "blocked"
+    t.integer  "flags"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"

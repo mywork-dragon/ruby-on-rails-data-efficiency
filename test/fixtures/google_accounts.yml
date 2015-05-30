@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: MyText
+  password: MyText
+  android_id: MyText
+  from_ip: MyText
+  blocked: false
+
+two:
+  email: MyText
+  password: MyText
+  android_id: MyText
+  from_ip: MyText
+  blocked: false

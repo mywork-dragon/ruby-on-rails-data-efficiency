@@ -98,3 +98,7 @@ gem 'minitest-fail-fast', '0.0.1'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'apk_downloader', '1.1.4'
+
+gem 'ruby_apk', '0.7.1'
+
