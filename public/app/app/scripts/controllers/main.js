@@ -56,7 +56,7 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      // When main Dashboard surch button is clicked
+      // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
 
         var submitSearchStartTime = new Date().getTime();
