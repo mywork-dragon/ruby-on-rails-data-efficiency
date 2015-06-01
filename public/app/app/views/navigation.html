@@ -16,7 +16,7 @@
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a href="#/lists"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
-              <li ng-repeat="list in usersLists"><a href=""><i class="fa fa-angle-right"></i><span>{{list}}</span></a></li>
+              <li ng-repeat="list in usersLists"><a href="" ng-click="getList(list)"><i class="fa fa-angle-right"></i><span>{{list}}</span></a></li>
               <li><a href="" data-toggle="modal" data-target="#createNewModal"><span>Create New</span></a></li>
             </ul>
         </li>

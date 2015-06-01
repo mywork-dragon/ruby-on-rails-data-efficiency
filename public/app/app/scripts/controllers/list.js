@@ -6,7 +6,17 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
 
   $rootScope.apps = data.results;
   $rootScope.numApps = data.resultsCount;
+
   $scope.usersLists = listApiService.getLists();
   $scope.createList = listApiService.createNewList;
+  $scope.getList = function(listName) {
+    var data = listApiService.getList(listName);
+    $rootScope.apps = data.results;
+    $rootScope.numApps = data.resultsCount;
+  };
+  $scope.addSelectedTo = function(list, selectedApps) {
+    listApiService.addSelectedTo(list, selectedApps);
+    $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+  };
 
 }]);

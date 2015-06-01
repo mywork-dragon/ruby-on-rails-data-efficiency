@@ -7,7 +7,7 @@
      <button type="submit" class="btn btn-primary pull-right" ng-click="">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" ng-click="">Delete Selected</button>
      <span class="ui-select pull-right">
-      <select ng-model="lists" ng-change="">
+      <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
         <option value="">Copy Selected to List</option>
         <option ng-repeat="option in usersLists" value="{{option}}">{{option}}</option>
       </select>

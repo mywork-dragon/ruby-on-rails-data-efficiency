@@ -117,7 +117,7 @@
     <div class="panel-heading" id="dashboardResultsTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Results</strong>
      <span class="ui-select pull-right">
-      <select ng-model="lists" ng-change="">
+      <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
         <option value="">Add Selected to List</option>
         <option ng-repeat="option in usersLists" value="{{option}}">{{option}}</option>
       </select>

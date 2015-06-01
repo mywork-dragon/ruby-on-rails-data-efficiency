@@ -152,8 +152,6 @@ angular.module('appApp')
           });
         }
 
-        console.log($rootScope.tags.length);
-
         if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
           $rootScope.tags.push({
             parameter: parameter,
@@ -209,6 +207,10 @@ angular.module('appApp')
         },
         $scope.usersLists = listApiService.getLists(),
         $scope.selectedAppsForList = [],
+        $scope.addSelectedTo = function(list, selectedApps) {
+          listApiService.addSelectedTo(list, selectedApps);
+          $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+        },
         $scope.addAppToList = function(selectedAppId) {
           listApiService.modifyCheckbox(selectedAppId, $scope.selectedAppsForList);
         },

@@ -18,6 +18,19 @@ angular.module("appApp")
       },
       createNewList: function(listName) {
         console.log(listName);
+      },
+      getList: function(listName) {
+        console.log(listName);
+
+        return {
+          results: {},
+          resultsCount: 0
+        }
+
+      },
+      addSelectedTo: function(list, selectedApps) {
+        console.log(list, selectedApps);
       }
+
     }
   }]);
