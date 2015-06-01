@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150529214900) do
+ActiveRecord::Schema.define(version: 20150601184328) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 20150529214900) do
     t.text     "dummy_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "is_it_medium_text"
   end
 
   create_table "installations", force: true do |t|
