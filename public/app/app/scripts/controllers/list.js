@@ -7,5 +7,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
   $rootScope.apps = data.results;
   $rootScope.numApps = data.resultsCount;
   $scope.usersLists = listApiService.getLists();
+  $scope.createList = listApiService.createNewList;
 
 }]);

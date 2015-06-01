@@ -15,6 +15,9 @@ angular.module("appApp")
           list.push(selectedAppId);
         }
         console.log(list);
+      },
+      createNewList: function(listName) {
+        console.log(listName);
       }
     }
   }]);
