@@ -30,6 +30,9 @@ angular.module("appApp")
       },
       addSelectedTo: function(list, selectedApps) {
         console.log(list, selectedApps);
+      },
+      deleteSelected: function(list) {
+        console.log(list);
       }
 
     }
