@@ -7194,9 +7194,19 @@ i.infoTooltipIcon {
 
 #dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select {
   max-width: 170px;
-  wdith: 170px;
+  width: 170px;
 }
 
 #listViewTableHeading span, #listViewTableHeading button {
   margin-left: 5px;
 }
+
+#lists-sidebar-navigation ul {
+  display: block;
+}
+
+.nav-min #lists-sidebar-navigation ul {
+  display: none !important;
+}
+
+
