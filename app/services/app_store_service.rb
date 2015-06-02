@@ -115,9 +115,7 @@ class AppStoreService
   end
 
   def name_json
-    ret = @json['trackName']
-    puts "name_json: #{ret}"
-    ret
+    @json['trackName']
   end
 
   def name_html
