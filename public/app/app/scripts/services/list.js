@@ -32,8 +32,8 @@ angular.module("appApp")
       addSelectedTo: function(list, selectedApps) {
         console.log(list, selectedApps);
       },
-      deleteSelected: function(list) {
-        console.log(list);
+      deleteSelected: function(listName, selectedApps) {
+        console.log(listName, selectedApps);
       },
       exportToCsv: function(listName) {
         console.log(listName);
