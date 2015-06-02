@@ -24,7 +24,8 @@ angular.module("appApp")
 
         return {
           results: {},
-          resultsCount: 0
+          resultsCount: 0,
+          currentList: listName
         }
 
       },
@@ -33,6 +34,9 @@ angular.module("appApp")
       },
       deleteSelected: function(list) {
         console.log(list);
+      },
+      exportToCsv: function(listName) {
+        console.log(listName);
       }
 
     }
