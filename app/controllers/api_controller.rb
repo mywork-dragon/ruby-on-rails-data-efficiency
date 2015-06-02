@@ -280,4 +280,34 @@ class ApiController < ApplicationController
     render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
+  def get_lists
+
+    authenticated_user = User.find(decoded_auth_token[:user_id])
+
+    puts authenticated_user.id
+
+    render json: '{"lists":["List 1", "List 2", "List 3"]}'
+
+  end
+
+  def get_list
+    render json: '{"resultsCount": 0, "currentList": "listName", "results":[{"app":{"id":62,"name":"Alpha","mobilePriority":"high","userBase":"moderate","lastUpdated":"2015-02-21","adSpend":true,"categories":[]},"company":{"id":391,"name":"Parisian, Satterfield and Koepp","fortuneRank":391}}]}'
+  end
+
+  def export_list_to_csv
+
+  end
+
+  def create_new_list
+
+  end
+
+  def add_to_list
+
+  end
+
+  def delete_from_list
+
+  end
+
 end

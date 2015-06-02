@@ -7,15 +7,19 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
   /* Initialize lists */
   $rootScope.apps = data.results;
   $rootScope.numApps = data.resultsCount;
-  var lists = listApiService.getLists();
-  $scope.usersLists = lists;
-  $rootScope.currentList = lists[0];
+
+  listApiService.getLists().success(function(data) {
+    $scope.usersLists = data.lists;
+    $rootScope.currentList = data.lists[0];
+  });
+
   $scope.createList = listApiService.createNewList;
   $scope.getList = function(listName) {
-    var data = listApiService.getList(listName);
-    $rootScope.apps = data.results;
-    $rootScope.numApps = data.resultsCount;
-    $rootScope.currentList = data.currentList;
+    listApiService.getList(listName).success(function(data) {
+      $rootScope.apps = data.results;
+      $rootScope.numApps = data.resultsCount;
+      $rootScope.currentList = data.currentList;
+    });
   };
   $scope.addSelectedTo = function(list, selectedApps) {
     listApiService.addSelectedTo(list, selectedApps);

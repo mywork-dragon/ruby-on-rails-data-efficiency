@@ -1,10 +1,13 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("listApiService", [function() {
+  .factory("listApiService", ["$http", function($http) {
     return {
       getLists: function() {
-        return ["List 1", "List 2", "List 3", "List 4"];
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/list/get_lists'
+        });
       },
       modifyCheckbox: function(selectedAppId, list) {
         // Check if app id is already in list
@@ -20,14 +23,11 @@ angular.module("appApp")
         console.log(listName);
       },
       getList: function(listName) {
-        console.log(listName);
-
-        return {
-          results: {},
-          resultsCount: 0,
-          currentList: listName
-        }
-
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/list/get_list',
+          data: {listName: listName}
+        });
       },
       addSelectedTo: function(list, selectedApps) {
         console.log(list, selectedApps);
