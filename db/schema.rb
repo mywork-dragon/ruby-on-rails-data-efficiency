@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150601202016) do
+ActiveRecord::Schema.define(version: 20150602090513) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -165,14 +165,6 @@ ActiveRecord::Schema.define(version: 20150601202016) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
-
-  create_table "dummy_models", force: true do |t|
-    t.string   "dummy"
-    t.text     "dummy_text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "is_it_medium_text"
-  end
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"
@@ -449,15 +441,6 @@ ActiveRecord::Schema.define(version: 20150601202016) do
     t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "dummy_string"
-    t.text     "dummy_text"
-    t.string   "dummy_string2"
-    t.text     "dummy_text2"
-    t.string   "dummy_string3"
-    t.text     "dummy_text3"
-    t.string   "dummy_string4"
-    t.text     "dummy_text4"
-    t.text     "is_it_medium_text"
   end
 
   create_table "users", force: true do |t|
