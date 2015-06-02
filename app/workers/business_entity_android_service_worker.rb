@@ -42,10 +42,10 @@ class BusinessEntityAndroidServiceWorker
 
       if w.nil?
         c = Company.find_by_google_play_identifier(ss.developer_google_play_identifier)
-        c = Company.create(name: I18n.transliterate(ss.seller), google_play_identifier: ss.developer_google_play_identifier) if c.nil?
+        c = Company.create(name: ss.seller, google_play_identifier: ss.developer_google_play_identifier) if c.nil?
         w = Website.create(url: url, company: c, kind: kind)
       elsif w.company.nil?
-        c = Company.create(name: I18n.transliterate(ss.seller), google_play_identifier: ss.developer_google_play_identifier)
+        c = Company.create(name: ss.seller, google_play_identifier: ss.developer_google_play_identifier)
         w.company = c
         w.save
       elsif !w.company.google_play_identifier.blank?  

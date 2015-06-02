@@ -25,10 +25,10 @@ class BusinessEntityIosServiceWorker
         
         if w.nil?
           c = Company.find_by_app_store_identifier(ss.developer_app_store_identifier)
-          c = Company.create(name: I18n.transliterate(ss.seller), app_store_identifier: ss.developer_app_store_identifier) if c.nil?
+          c = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier) if c.nil?
           w = Website.create(url: url, company: c, kind: kind)
         elsif w.company.nil?
-          w.company = Company.create(name: I18n.transliterate(ss.seller), app_store_identifier: ss.developer_app_store_identifier)
+          w.company = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier)
           w.save
         end
         

@@ -70,10 +70,6 @@ class AppStoreService
       begin
         attribute = send(method.to_sym)
         
-        if attribute.class == String
-          attribute = I18n.transliterate(attribute)
-        end
-        
         ret[key] = attribute
       rescue
         ret[key] = nil
@@ -119,7 +115,9 @@ class AppStoreService
   end
 
   def name_json
-    @json['trackName']
+    ret = @json['trackName']
+    puts "name_json: #{ret}"
+    ret
   end
 
   def name_html
