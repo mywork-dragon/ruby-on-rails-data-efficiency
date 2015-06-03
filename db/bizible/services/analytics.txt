@@ -1,3 +1,0 @@
-Omniture
-Sitecatalyst
-Kissmetrics

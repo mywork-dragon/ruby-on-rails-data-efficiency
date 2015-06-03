@@ -54,7 +54,6 @@ class AaService
         else
           text = n_text.text 
           text = text.strip.gsub(/Expand notes\z/, '').strip
-          text = I18n.transliterate(text)
         end
         
         ret << {version: version, date: date, text: text}  
