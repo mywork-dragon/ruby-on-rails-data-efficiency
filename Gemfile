@@ -70,7 +70,7 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq', '3.3.0', require: 'api'
+gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
 
 gem 'filesize', '0.0.4'
 
