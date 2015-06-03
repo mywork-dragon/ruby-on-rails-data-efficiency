@@ -13,6 +13,10 @@ angular.module("appApp")
       },
       get: function() {
         return localStorage.getItem(JWT_TOKEN_NAME);
+      },
+      deleteToken: function() {
+        localStorage.removeItem(JWT_TOKEN_NAME);
+        location.reload();
       }
     }
   }])

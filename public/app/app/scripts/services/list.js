@@ -38,6 +38,5 @@ angular.module("appApp")
       exportToCsv: function(listName) {
         console.log(listName);
       }
-
     }
   }]);

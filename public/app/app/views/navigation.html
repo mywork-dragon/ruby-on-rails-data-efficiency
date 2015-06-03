@@ -17,14 +17,12 @@
             <a href="#/lists"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in usersLists"><a href="" ng-click="getList(list)"><i class="fa fa-angle-right"></i><span>{{list}}</span></a></li>
-              <li><a href="" data-toggle="modal" data-target="#createNewModal"><span>Create New</span></a></li>
+              <li><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>
-        <!--
-        <li>
-            <a href="/404"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
+        <li ng-click="logUserOut()">
+            <a href=""><i class="fa fa-sign-out"></i><span>Log Out</span></a>
         </li>
-        -->
     </ul>
 
 </div>

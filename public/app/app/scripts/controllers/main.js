@@ -8,7 +8,7 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", function ($scope, $location, authService, authToken) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", function ($scope, $location, authService, authToken, listApiService, $rootScope) {
 
     $scope.checkIfOwnPage = function() {
 
@@ -20,15 +20,22 @@ angular.module('appApp')
 
     /* Login specific logic */
     $scope.onLoginButtonClick = function() {
-
-      authService.login($scope.user.email, $scope.user.password).then(function(){
+      
+      authService.login($scope.userEmail, $scope.userPassword).then(function(){ // "jason@mightysignal.com", "password"
         $scope.isAuthenticated = authToken.isAuthenticated();
+        listApiService.getLists().success(function(data) {
+          $scope.usersLists = data.lists;
+          $rootScope.currentList = data.lists[0];
+        });
+          location.reload();
       },
       function(){
         alert('Incorrect Email or Password');
       });
-
     };
+
+    $scope.logUserOut = authToken.deleteToken;
+
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {

@@ -4007,7 +4007,12 @@ fieldset[disabled] .btn-danger.active {
   border-top: none; }
 
 #nav ul li > a i.fa-angle-right {
-  margin-right: 25px; }
+  margin-right: 25px;
+  margin-left: 2px; }
+
+#nav ul li > a i.fa-plus {
+  margin-right: 19px;
+}
 
 #nav ul li > a > .badge {
   position: absolute;
