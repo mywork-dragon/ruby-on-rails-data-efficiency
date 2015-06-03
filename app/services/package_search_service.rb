@@ -12,7 +12,7 @@ class PackageSearchService
 
     def extract_manifest(app_identifier)
 
-      print "Searching for sdks in #{app_identifier}..."
+      print "Searching for sdks in #{app_identifier}... "
       path = "data/apk_files/" + app_identifier + ".apk"
       
       start_time = Time.now()
@@ -25,9 +25,6 @@ class PackageSearchService
       end_time = Time.now()
       unpack_time = (end_time - start_time).to_s
       
-      # v = AndroidAppSnapshot.select(:version).where(android_app_id: android_app_id).first
-      # apk_snap = ApkSnapshots.create(version: v.version, google_accounts_id: google_accounts_id, android_app_id: android_app_id, download_time: download_time, unpack_time: unpack_time)
-
       return manifest, unpack_time
 
     end
@@ -40,10 +37,13 @@ class PackageSearchService
       for f in find
         tags = manifest_xml.xpath("//#{f}")
         for tag in tags
-          app_identifier = tag["android:name"]
-          unless app_identifier.include? name
-            save_package(app_identifier, find.index(f), apk_snap_id)
-            i += 1
+          app_identifier = tag["android:name"] unless tag["android:name"].nil?
+          app_identifier = tag[":"] unless tag[":"].nil?
+          unless app_identifier.nil?
+            unless app_identifier.include? name
+              save_package(app_identifier, find.index(f), apk_snap_id)
+              i += 1
+            end
           end
         end
       end

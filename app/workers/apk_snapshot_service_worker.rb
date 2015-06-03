@@ -1,21 +1,15 @@
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
-  # accounting for retries ourself, so disable sidekiq retries
   sidekiq_options retry: false
   
   MAX_TRIES = 3
 
-  # Disables ActiveRecord logging 
   ActiveRecord::Base.logger.level = 1
   
-  # Not quite sure if is_fucked would be updated. Look into further.
-  def perform(apk_snapshot_job_id, app_id, is_fucked)
-
-    download_apk(apk_snapshot_job_id, app_id) unless is_fucked
-
-    puts is_fucked
-
+  def perform(apk_snapshot_job_id, app_id)
+    asj = ApkSnapshotJobs.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
+    download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
   end
 
   def download_apk(apk_snapshot_job_id, android_app_id)
@@ -23,39 +17,45 @@ class ApkSnapshotServiceWorker
     v = AndroidAppSnapshot.select(:version).where(android_app_id: android_app_id).first
     apk_snap = ApkSnapshots.create(version: v.version, android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
 
-    try = 0
+    @try = 0
 
     begin
 
       google_accounts_id, email, password, android_id = optimal_account(android_app_id, apk_snapshot_job_id)
 
-      ga = GoogleAccount.where(id: google_accounts_id)[0]
-      ga.last_downloaded = android_app_id
-      ga.save!
-
-      start_time = Time.now()
-      ApkDownloader.configure do |config|
-        config.email = email
-        config.password = password
-        config.android_id = android_id
+      if !google_accounts_id
+        j = ApkSnapshotJobs.where(id: apk_snapshot_job_id)[0]
+        j.is_fucked = true
+        j.save!
+        puts "All of your accounts are fucked."
+        @try = MAX_TRIES
+        return false
+      else
+        start_time = Time.now()
+        ApkDownloader.configure do |config|
+          config.email = email
+          config.password = password
+          config.android_id = android_id
+        end
+        app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
+        file_name = "data/apk_files/" + app_identifier + ".apk"
+        print "\nDownloading #{app_identifier}... "
+        ApkDownloader.download! app_identifier, file_name
       end
-      app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
-      file_name = "data/apk_files/" + app_identifier + ".apk"
-      print "\nDownloading #{app_identifier}... "
-      ApkDownloader.download! app_identifier, file_name
-      
 
     rescue Exception => e
 
+      puts e
+
       if e.message.include? "Unable to authenticate with Google"
         block_account(google_accounts_id, e.message)
-      elsif e.message.include? "Bad status (500)"
-        block_account(google_accounts_id, e.message)
+      elsif e.message.include? "Bad status"
+        flag_account(google_accounts_id, e.message)
       end
 
-      ApkSnapshotException.create(apk_snapshot: apk_snap.id, name: e.message, backtrace: e.backtrace, try: try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_accounts_id)
+      ApkSnapshotException.create(apk_snapshot: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_accounts_id)
 
-      if (try += 1) < MAX_TRIES
+      if (@try += 1) < MAX_TRIES
         retry
       else
         apk_snap.status = :failure
@@ -82,22 +82,17 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account(android_app_id, apk_snapshot_job_id)
-
-    accounts = []
-    ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",4).where.not(last_downloaded: android_app_id).each
-    for account in ga
-      accounts << ApkSnapshots.where(google_accounts: account.id).where("updated_at > ?", DateTime.now - 1).count
+    n = GoogleAccount.where(blocked: false).where("flags < ?",4).count
+    (0...n).each do |a|
+      ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",4).order(updated_at: :asc).limit(5).sample
+      ga.updated_at = DateTime.now
+      ga.save!
+      if ApkSnapshots.where(google_accounts: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
+        best_account = GoogleAccount.where(id: ga.id)
+        return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_id"]
+      end
     end
-    if accounts.length == 0
-      j = ApkSnapshotJobs.where(id: apk_snapshot_job_id)[0]
-      j.is_fucked = true
-      j.save!
-      puts "It appears as though all of your accounts have been fucked."
-    end
-    best_account = GoogleAccount.where(id: ga.to_a[accounts.each_with_index.min[1].to_i].id)
-
-    return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_id"]
-
+    return false
   end
 
   def block_account(google_accounts_id, message)
@@ -106,33 +101,16 @@ class ApkSnapshotServiceWorker
     ga = GoogleAccount.where(id: google_accounts_id)[0]
     ga.blocked = true
     ga.save!
-    # Needs to create account blocks table
   end
 
   def flag_account(google_accounts_id, message)
     puts "#{message}. Trying again. \n"
     puts "Account with `id` #{google_accounts_id} is being flagged"
-
     ga = GoogleAccount.where(id: google_accounts_id)[0]
     ga.flags += 1
     ga.save!
   end
   
 end
-
-
-# Test Tor to see:
-  # If it's gonna take too much time to download a file
-  # If Google is not going to like accounts using a ton of different ip addresses
-
-
-# Flags *
-# Blocks *
-# Temp Blocks *
-# Job Fucks 
-
-
-
-
 
 

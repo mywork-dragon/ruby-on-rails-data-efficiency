@@ -76,7 +76,7 @@ gem 'filesize', '0.0.4'
 
 gem 'aws-sdk', '~> 2'
 
-gem 'socksify', '1.6.0'
+gem 'socksify', '1.6.0', :require => 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
@@ -98,7 +98,7 @@ gem 'minitest-fail-fast', '0.0.1'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'apk_downloader', '1.1.4'
-
 gem 'ruby_apk', '0.7.1'
+
+gem 'ruby-protocol-buffers', '1.6.1'
 

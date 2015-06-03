@@ -4,7 +4,7 @@ class ApkService
 
     # def get
 
-    ActiveRecord::Base.logger.level = 1
+    # ActiveRecord::Base.logger.level = 1
 
     #   AndroidApp.select(:id, :app_identifier).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).each do |app|
     #     download_apk(app.id)

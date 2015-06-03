@@ -4,12 +4,12 @@ class CreateGoogleAccounts < ActiveRecord::Migration
       t.text :email
       t.text :password
       t.text :android_id
-      t.text :from_ip
+      t.integer :proxy_id
       t.boolean :blocked
       t.integer :flags
-      t.integer :last_downloaded
 
       t.timestamps
     end
+    add_index :google_accounts, :proxy_id 
   end
 end

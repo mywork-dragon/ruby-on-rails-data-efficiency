@@ -2,17 +2,17 @@ class OptimalAccountService
   
   class << self
   
-    def calc()
+    def calc
       
-    	total_apps = 1900000
+    	total_apps = 1273000
 
       seconds_in_a_day = 86400
 
       allowed_downloads_per_day = 1400
 
-      average_download_time = 10
+      average_download_time = 60
 
-      threads = 75
+      threads = 100
 
       accounts_per_day = ((seconds_in_a_day/(allowed_downloads_per_day * average_download_time).to_f)*threads).to_i
 

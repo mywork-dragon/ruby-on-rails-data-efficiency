@@ -1,4 +1,4 @@
-require 'socksify/http'
+# require 'socksify/http'
 
 class Tor
 
