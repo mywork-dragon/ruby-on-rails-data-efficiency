@@ -8,8 +8,24 @@ class BusinessEntityIosServiceWorker
     ios_app_snapshot_ids.each do |ios_app_snapshot_id|
     
       ss = IosAppSnapshot.find(ios_app_snapshot_id)
+      ios_app = ss.ios_app
       
       return if ss.nil?
+    
+      if dasi = ss.developer_app_store_identifier
+        c = Company.find_by_app_store_identifier(dasi)
+
+        if c && !c.websites.empty?
+          primary_website = c.websites.first
+        
+          if !ios_app.websites.include?(primary_website)
+            ios_app.websites << primary_website 
+            ios_app.save
+          end
+        
+          next  #go to the next app
+        end
+      end
     
       urls = [ss.seller_url, ss.support_url].select{|url| url}
       
@@ -30,9 +46,9 @@ class BusinessEntityIosServiceWorker
         elsif w.company.nil?
           w.company = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier)
           w.save
+        elsif !w.company.app_store_identifier.blank?  
+          next
         end
-        
-        ios_app = ss.ios_app
         
         ios_app.websites << w if !ios_app.websites.include?(w)
         ios_app.save
