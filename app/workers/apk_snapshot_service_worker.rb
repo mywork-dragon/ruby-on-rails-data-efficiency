@@ -5,7 +5,7 @@ class ApkSnapshotServiceWorker
   
   MAX_TRIES = 3
 
-  ActiveRecord::Base.logger.level = 1
+  ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
     asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
@@ -23,13 +23,11 @@ class ApkSnapshotServiceWorker
 
       google_accounts_id, email, password, android_id, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
 
-      puts email
-
       if !google_accounts_id
         j = ApkSnapshotJob.where(id: apk_snapshot_job_id)[0]
         j.is_fucked = true
         j.save!
-        puts "All of your accounts are fucked."
+        #puts "All of your accounts are fucked."
         @try = MAX_TRIES
         return false
       else
