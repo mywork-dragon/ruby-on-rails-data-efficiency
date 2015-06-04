@@ -6,7 +6,7 @@ class WhoisService
     w = Whois::Client.new
     @result = w.lookup(domain)
     
-    puts @result
+    #puts @result
     
     methods = %w(
       country_code
