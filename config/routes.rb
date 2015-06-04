@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get 'api/get_ios_categories' => 'api#get_ios_categories'
   get 'api/get_android_categories' => 'api#get_android_categories'
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
+  get 'api/results' => 'api#results'
   
   
   if Rails.env.development?
