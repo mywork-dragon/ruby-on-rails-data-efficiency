@@ -35,8 +35,10 @@ module ApkDownloader
         "sdk_version" => "16"
       }
 
+      @proxy = ApkDownloader.configuration.proxy
+
       # Use Tor
-      login_http = Net::HTTP.SOCKSProxy('127.0.0.1', 9050).new(LoginUri.host, LoginUri.port)
+      login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
       login_http.use_ssl = true
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
 
@@ -89,7 +91,7 @@ module ApkDownloader
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
       # Use Tor
-      http = Net::HTTP.SOCKSProxy('127.0.0.1', 9050).new(url.host, url.port)
+      http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       http.use_ssl = true
@@ -115,7 +117,7 @@ module ApkDownloader
     def api_request type, path, data = {}
       if @http.nil?
         # Use Tor
-        @http = Net::HTTP.SOCKSProxy('127.0.0.1', 9050).new(GoogleApiUri.host, GoogleApiUri.port)
+        @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
         @http.use_ssl = true
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end

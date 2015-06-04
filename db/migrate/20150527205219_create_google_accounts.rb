@@ -7,9 +7,13 @@ class CreateGoogleAccounts < ActiveRecord::Migration
       t.integer :proxy_id
       t.boolean :blocked
       t.integer :flags
+      t.datetime :last_used
 
       t.timestamps
     end
     add_index :google_accounts, :proxy_id 
+    add_index :google_accounts, :blocked 
+    add_index :google_accounts, :flags
+    add_index :google_accounts, :last_used
   end
 end
