@@ -95,6 +95,8 @@ gem 'bcrypt', '3.1.10'
 
 gem 'minitest-fail-fast', '0.0.1'
 
+gem 'whois', '3.5.9'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

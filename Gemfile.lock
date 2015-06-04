@@ -243,6 +243,8 @@ GEM
       raindrops (~> 0.7)
     whenever (0.9.4)
       chronic (>= 0.6.3)
+    whois (3.5.9)
+      activesupport (>= 3)
 
 PLATFORMS
   ruby
@@ -290,3 +292,4 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   whenever
+  whois
