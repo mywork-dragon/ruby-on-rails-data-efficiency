@@ -6,8 +6,12 @@ class WhoisService
     w = Whois::Client.new
     @result = w.lookup(domain)
     
+    puts @result
+    
     methods = %w(
-      country
+      country_code
+      country_full
+      continent
     )
     
     # Go through the list of methods, call each one, and store it in ret
@@ -18,7 +22,7 @@ class WhoisService
         attribute = send(method.to_sym)
         
         ret[key] = attribute
-      rescue
+      rescue => e
         ret[key] = nil
       end
       
@@ -27,8 +31,29 @@ class WhoisService
     ret
   end
   
-  def country
-    @result.match(/^Registrant Country:.*$/)[0].gsub('Registrant Country:', '').strip
+  # Pass it the stuff before the colon
+  def value_for_field(field)
+    @result.match(Regexp.new("^#{field}:.*$"))[0].gsub("#{field}:", '').strip
+  end
+  
+  def country_code
+    @country_code = value_for_field('Registrant Country')
+
+    begin
+      @code = IsoCountryCodes.find(@country_code)
+    rescue => e
+      @code = nil
+    end
+    
+    @country_code
+  end
+  
+  def country_full
+    @code.name
+  end
+  
+  def continent
+    @code.continent
   end
   
   class << self
