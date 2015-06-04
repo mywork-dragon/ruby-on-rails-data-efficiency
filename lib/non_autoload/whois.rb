@@ -1,23 +1,9 @@
-module Whois
-  class Client
+Whois::Server::SocketHandler.class_eval do
+  
+  def execute(query, *args)
+    puts "EXECUTION!!!"
 
-    def blah
-      puts "whassup"
-    end
-
+    #super
   end
   
-  class Server
-    
-    class SocketHandler
-      
-      def execute(query, *args)
-        puts "EXECUTION!!!"
-      
-        # super
-      end
-      
-    end
-    
-  end
 end
