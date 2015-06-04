@@ -12,6 +12,6 @@ class CreateApkSnapshotExceptions < ActiveRecord::Migration
     end
     add_index :apk_snapshot_exceptions, :apk_snapshot_id
     add_index :apk_snapshot_exceptions, :apk_snapshot_job_id
-    add_index :apk_snapshot_exceptions, :google_accounts_id
+    add_index :apk_snapshot_exceptions, :google_account_id
   end
 end
