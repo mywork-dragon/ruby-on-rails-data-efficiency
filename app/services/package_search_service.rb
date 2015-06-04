@@ -51,7 +51,7 @@ class PackageSearchService
     end
 
     def save_package(app_identifier, tag, apk_snap_id)
-      AndroidPackages.create(package_name: app_identifier.to_s, android_package_tag_id: tag.to_s, apk_snapshot_id: apk_snap_id.to_s)
+      AndroidPackage.create(package_name: app_identifier.to_s, android_package_tag_id: tag.to_s, apk_snapshot_id: apk_snap_id.to_s)
     end
 
     def get_name(app_identifier)

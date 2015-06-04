@@ -2,10 +2,8 @@
 
 one:
   package_name: MyText
-  android_package_tag_id: 1
   apk_snapshot_id: 1
 
 two:
   package_name: MyText
-  android_package_tag_id: 1
   apk_snapshot_id: 1

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ApkSnapshotJobsTest < ActiveSupport::TestCase
+class ApkSnapshotJobTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

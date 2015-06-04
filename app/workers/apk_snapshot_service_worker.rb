@@ -8,7 +8,7 @@ class ApkSnapshotServiceWorker
   ActiveRecord::Base.logger.level = 1
   
   def perform(apk_snapshot_job_id, app_id)
-    asj = ApkSnapshotJobs.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
+    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
     download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
   end
 
@@ -26,7 +26,7 @@ class ApkSnapshotServiceWorker
       puts email
 
       if !google_accounts_id
-        j = ApkSnapshotJobs.where(id: apk_snapshot_job_id)[0]
+        j = ApkSnapshotJob.where(id: apk_snapshot_job_id)[0]
         j.is_fucked = true
         j.save!
         puts "All of your accounts are fucked."
@@ -53,7 +53,7 @@ class ApkSnapshotServiceWorker
       elsif e.message.include? "Bad status"
         flag_account(google_accounts_id, e.message)
       elsif e.message.include? "abort then interrupt!"
-        j = ApkSnapshotJobs.where(id: apk_snapshot_job_id)[0]
+        j = ApkSnapshotJob.where(id: apk_snapshot_job_id)[0]
         j.is_fucked = true
         j.save!
         @try = MAX_TRIES
@@ -62,7 +62,7 @@ class ApkSnapshotServiceWorker
         flag_account(google_accounts_id, e.message)
       end
 
-      ApkSnapshotException.create(apk_snapshot: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_accounts_id)
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_accounts_id)
 
       if (@try += 1) < MAX_TRIES
         retry
@@ -102,7 +102,7 @@ class ApkSnapshotServiceWorker
       # if ApkSnapshots.where(google_accounts: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
       #   best_account = GoogleAccount.where(id: ga.id)
       #   p = Proxy.order(last_used: :asc).limit(5).sample
-      #   return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_id"], p.private_ip
+      #   return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
       # end
 
 
@@ -110,7 +110,7 @@ class ApkSnapshotServiceWorker
 
       best_account = GoogleAccount.where(id: ga.id)
       p = Proxy.order(last_used: :asc).limit(5).sample
-      return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_id"], p.private_ip
+      return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
 
     end
     return false

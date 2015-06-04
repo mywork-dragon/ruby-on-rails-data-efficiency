@@ -1,9 +1,9 @@
 class CreateGoogleAccounts < ActiveRecord::Migration
   def change
     create_table :google_accounts do |t|
-      t.text :email
-      t.text :password
-      t.text :android_id
+      t.string :email
+      t.string :password
+      t.string :android_identifier
       t.integer :proxy_id
       t.boolean :blocked
       t.integer :flags

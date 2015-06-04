@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AndroidPackagesTest < ActiveSupport::TestCase
+class AndroidPackageTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
