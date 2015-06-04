@@ -96,5 +96,8 @@ if Rails.env.development?
     app = AndroidApp.all.sample
     app.android_fb_ad_appearances << ad
   end
+  
+  #Create local IP for Tor
+  Proxy.create!(private_ip: '127.0.0.1', active: true)
 
 end

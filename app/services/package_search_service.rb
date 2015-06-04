@@ -12,7 +12,7 @@ class PackageSearchService
 
     def extract_manifest(app_identifier)
 
-      print "Searching for sdks in #{app_identifier}... "
+      li "Searching for sdks in #{app_identifier}... "
       path = "data/apk_files/" + app_identifier + ".apk"
       
       start_time = Time.now()
@@ -20,7 +20,7 @@ class PackageSearchService
       apk = Android::Apk.new(path)
       manifest = apk.manifest
 
-      print 'success'
+      li 'success'
 
       end_time = Time.now()
       unpack_time = (end_time - start_time).to_s
@@ -47,7 +47,7 @@ class PackageSearchService
           end
         end
       end
-      puts " ( time : #{unpack_time} sec, packages_found : #{i} )"
+      li " ( time : #{unpack_time} sec, packages_found : #{i} )"
     end
 
     def save_package(app_identifier, tag, apk_snap_id)

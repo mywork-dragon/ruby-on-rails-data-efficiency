@@ -24,10 +24,10 @@ class ApkSnapshotServiceWorker
       google_accounts_id, email, password, android_id, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
 
       if !google_accounts_id
-        j = ApkSnapshotJob.where(id: apk_snapshot_job_id)[0]
+        j = ApkSnapshotJob.find(apk_snapshot_job_id)
         j.is_fucked = true
         j.save!
-        #puts "All of your accounts are fucked."
+        li "All of your accounts are fucked."
         @try = MAX_TRIES
         return false
       else
@@ -50,8 +50,8 @@ class ApkSnapshotServiceWorker
         block_account(google_accounts_id, e.message)
       elsif e.message.include? "Bad status"
         flag_account(google_accounts_id, e.message)
-      elsif e.message.include? "abort then interrupt!"
-        j = ApkSnapshotJob.where(id: apk_snapshot_job_id)[0]
+      elsif e.message.include? "abort then interrupt!" && Rails.env.development?
+        j = ApkSnapshotJob.find(apk_snapshot_job_id)
         j.is_fucked = true
         j.save!
         @try = MAX_TRIES
@@ -74,7 +74,7 @@ class ApkSnapshotServiceWorker
       print "success"
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      puts " ( time : #{download_time} sec, account_used : #{email}) "
+      li " ( time : #{download_time} sec, account_used : #{email}) "
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id)
 
       apk_snap.google_accounts_id = google_accounts_id
@@ -111,20 +111,21 @@ class ApkSnapshotServiceWorker
       return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
 
     end
-    return false
+     
+    false
   end
 
   def block_account(google_accounts_id, message)
-    puts "#{message}. Trying a different account. \n"
-    puts "Account with `id` #{google_accounts_id} is being blocked"
+    li "#{message}. Trying a different account. \n"
+    li "Account with `id` #{google_accounts_id} is being blocked"
     ga = GoogleAccount.where(id: google_accounts_id)[0]
     ga.blocked = true
     ga.save!
   end
 
   def flag_account(google_accounts_id, message)
-    puts "#{message}. Trying again. \n"
-    puts "Account with `id` #{google_accounts_id} is being flagged"
+    li "#{message}. Trying again. \n"
+    li "Account with `id` #{google_accounts_id} is being flagged"
     ga = GoogleAccount.where(id: google_accounts_id)[0]
     ga.flags += 1
     ga.save!
