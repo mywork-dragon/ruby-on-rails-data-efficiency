@@ -134,10 +134,12 @@ ActiveRecord::Schema.define(version: 20150602090513) do
   create_table "android_packages", force: true do |t|
     t.string   "package_name"
     t.integer  "apk_snapshot_id"
+    t.integer  "android_package_tag"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "android_packages", ["android_package_tag"], name: "index_android_packages_on_android_package_tag", using: :btree
   add_index "android_packages", ["apk_snapshot_id"], name: "index_android_packages_on_apk_snapshot_id", using: :btree
   add_index "android_packages", ["package_name"], name: "index_android_packages_on_package_name", using: :btree
 

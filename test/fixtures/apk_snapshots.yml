@@ -2,14 +2,14 @@
 
 one:
   version: MyText
-  google_accounts_id: 1
+  google_account_id: 1
   android_app_id: 1
   download_time: 1.5
   unpack_time: 1.5
 
 two:
   version: MyText
-  google_accounts_id: 1
+  google_account_id: 1
   android_app_id: 1
   download_time: 1.5
   unpack_time: 1.5

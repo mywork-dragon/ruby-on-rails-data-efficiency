@@ -2,22 +2,21 @@ class PackageSearchService
 
   class << self
 
-    def search(app_identifier, apk_snap_id)
-      manifest, unpack_time = extract_manifest(app_identifier)
+    def search(app_identifier, apk_snap_id, file_name)
+      manifest, unpack_time = extract_manifest(app_identifier, file_name)
       name = get_name(app_identifier)
       find(manifest, name, apk_snap_id, unpack_time)
 
       unpack_time
     end
 
-    def extract_manifest(app_identifier)
+    def extract_manifest(app_identifier, file_name)
 
       li "Searching for sdks in #{app_identifier}... "
-      path = "data/apk_files/" + app_identifier + ".apk"
       
       start_time = Time.now()
 
-      apk = Android::Apk.new(path)
+      apk = Android::Apk.new(file_name)
       manifest = apk.manifest
 
       li 'success'
@@ -51,7 +50,7 @@ class PackageSearchService
     end
 
     def save_package(app_identifier, tag, apk_snap_id)
-      AndroidPackage.create(package_name: app_identifier.to_s, android_package_tag_id: tag.to_s, apk_snapshot_id: apk_snap_id.to_s)
+      AndroidPackage.create(package_name: app_identifier, android_package_tag: tag, apk_snapshot_id: apk_snap_id)
     end
 
     def get_name(app_identifier)
