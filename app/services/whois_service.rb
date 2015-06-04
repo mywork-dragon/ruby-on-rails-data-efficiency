@@ -3,12 +3,18 @@ class WhoisService
   def attributes(domain)
     ret = {}
     
-    w = Whois::Client.new
-    @result = w.lookup(domain)
+    begin
+      w = Whois::Client.new
+      @result = w.lookup(domain)
+      puts @result
+    rescue => e
+      return ret
+    end
+
     
-    #puts @result
     
     methods = %w(
+      registrant_name
       country_code
       country_full
       continent
@@ -36,6 +42,10 @@ class WhoisService
     @result.match(Regexp.new("^#{field}:.*$"))[0].gsub("#{field}:", '').strip
   end
   
+  def registrant_name
+    value_for_field('Registrant Name')
+  end
+  
   def country_code
     @country_code = value_for_field('Registrant Country')
 
@@ -55,6 +65,7 @@ class WhoisService
   def continent
     @code.continent
   end
+  
   
   class << self
     
