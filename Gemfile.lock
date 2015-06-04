@@ -292,4 +292,4 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   whenever
-  whois
+  whois (= 3.5.9)
