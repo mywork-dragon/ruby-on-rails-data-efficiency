@@ -1,4 +1,4 @@
-require 'socksify/http'
+# require 'socksify/http'
 
 class Tor
 
@@ -77,9 +77,7 @@ class Tor
       req['User-Agent'] = UserAgent.random_web
       req['Accept'] = URI.encode('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
       
-      response = sp.start {|http|
-        http.request(req)
-      }
+      response = sp.start { |http| http.request(req) }
       
       case response
       when Net::HTTPSuccess      
