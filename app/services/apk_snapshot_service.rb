@@ -12,10 +12,10 @@ class ApkSnapshotService
       
     end 
   
-    def run_100(notes)
+    def run_n(notes, size: 100)
       j = ApkSnapshotJob.create!(notes: notes)
       
-      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(100).each_with_index do |app, index|
+      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each_with_index do |app, index|
         li "App #{index}"
         ApkSnapshotServiceWorker.perform_async(j.id, app.id)
       end
