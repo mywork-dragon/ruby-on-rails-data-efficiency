@@ -30,6 +30,25 @@ class ApkSnapshotService
       ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
       
     end
+    
+    def run_common_apps(notes)
+      
+      j = ApkSnapshotJob.create!(notes: notes)
+      
+      app_identifiers = %w(
+        com.pinterest
+        com.instagram.android
+        com.twitter.android
+        tv.periscope.android
+        com.eatsprig
+      )
+      
+      app_identifiers.each do |ai|
+        aa = AndroidApp.find_by_app_identifier(ai)
+        ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
+      end
+      
+    end
   
   end
   
