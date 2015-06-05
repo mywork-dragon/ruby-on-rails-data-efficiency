@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+  has_and_belongs_to_many :lists
+
   has_secure_password
   validates_uniqueness_of :email
 
@@ -25,7 +27,5 @@ class User < ActiveRecord::Base
     end
     
   end
-
-
 
 end

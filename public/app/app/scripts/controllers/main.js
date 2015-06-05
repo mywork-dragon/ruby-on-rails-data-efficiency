@@ -20,7 +20,7 @@ angular.module('appApp')
 
     /* Login specific logic */
     $scope.onLoginButtonClick = function() {
-      
+
       authService.login($scope.userEmail, $scope.userPassword).then(function(){ // "jason@mightysignal.com", "password"
         $scope.isAuthenticated = authToken.isAuthenticated();
         listApiService.getLists().success(function(data) {
