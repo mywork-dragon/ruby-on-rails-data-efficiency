@@ -48,7 +48,8 @@ angular
      $routeProvider
        .when('/', {
          templateUrl: '/app/app/views/dashboard.html',
-         controller: 'MainCtrl'
+         controller: 'MainCtrl',
+         activeTab: 'search'
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
@@ -60,10 +61,12 @@ angular
        })
        .when('/lists', {
          templateUrl: '/app/app/views/list.html',
-         controller: 'ListCtrl'
+         controller: 'ListCtrl',
+         activeTab: 'lists'
        })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/',
+         activeTab: 'search'
       });
   })
   .config(function($httpProvider) {

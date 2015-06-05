@@ -8,16 +8,15 @@
 <div id="nav-wrapper">
     <ul id="nav"
         data-ng-controller="MainCtrl"
-        data-slim-scroll
-        data-highlight-active>
-        <li>
+        data-slim-scroll>
+        <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/"> <i class="fa fa-search"></i> <span>Search</span></a>
         </li>
-        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
+        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation" ng-class="{active: $route.current.activeTab == 'lists'}">
             <a href="#/lists"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in usersLists"><a href="" ng-click="getList(list)"><i class="fa fa-angle-right"></i><span>{{list}}</span></a></li>
-              <li><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
+              <li><a href="#" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>
         <li ng-click="logUserOut()">
