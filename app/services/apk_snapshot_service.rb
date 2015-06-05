@@ -49,6 +49,12 @@ class ApkSnapshotService
       end
       
     end
+    
+    # Given a job, tell all SDKs for each app
+    # def query
+    #
+    #
+    # end
   
   end
   
