@@ -13,6 +13,16 @@ class ApkSnapshotService
       
     end
   
+    # For testing
+    def run_test(notes)
+      
+      j = ApkSnapshotJob.create!(notes: notes)
+      
+      aa = AndroidApp.find_by_app_identifier('com.pinterest')
+      ApkSnapshotServiceWorker.new.perform(j.id, aa.id)
+      
+    end
+  
   end
   
 end
