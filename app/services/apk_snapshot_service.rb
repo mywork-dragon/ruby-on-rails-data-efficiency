@@ -39,8 +39,7 @@ class ApkSnapshotService
         com.pinterest
         com.instagram.android
         com.twitter.android
-        tv.periscope.android
-        com.eatsprig
+        com.snapchat.android
       )
       
       app_identifiers.each do |ai|
