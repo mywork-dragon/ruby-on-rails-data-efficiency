@@ -56,7 +56,8 @@ Rails.application.routes.draw do
   post 'api/list/create_new' => 'api#api/create_new_list'
   put 'api/list/add' => 'api#add_to_list'
   delete 'api/list/delete' => 'api#delete_from_list'
-  
+  get 'api/results' => 'api#results'
+
   
   if Rails.env.development?
     get 'app_info' => 'app#app_info'

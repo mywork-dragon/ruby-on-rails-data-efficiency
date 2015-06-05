@@ -70,13 +70,13 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq', '3.3.0'
+gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
 
 gem 'filesize', '0.0.4'
 
 gem 'aws-sdk', '~> 2'
 
-gem 'socksify', '1.6.0'
+gem 'socksify', '1.6.0', :require => 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
@@ -97,4 +97,8 @@ gem 'minitest-fail-fast', '0.0.1'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'ruby_apk', '0.7.1'
+
+gem 'ruby-protocol-buffers', '1.6.1'
 

@@ -70,10 +70,6 @@ class AppStoreService
       begin
         attribute = send(method.to_sym)
         
-        if attribute.class == String
-          attribute = I18n.transliterate(attribute)
-        end
-        
         ret[key] = attribute
       rescue
         ret[key] = nil

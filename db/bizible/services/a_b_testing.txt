@@ -1,3 +1,0 @@
-VisualWebOptimizer
-Optimizely
-Adobe Test&Target

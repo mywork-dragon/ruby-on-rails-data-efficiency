@@ -310,4 +310,8 @@ class ApiController < ApplicationController
 
   end
 
+  def results
+    render json: GoogleResults.search("something")
+  end
+
 end
