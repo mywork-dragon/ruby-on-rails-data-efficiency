@@ -27,7 +27,7 @@ class ApkSnapshotService
       j = ApkSnapshotJob.create!(notes: notes)
       
       aa = AndroidApp.find_by_app_identifier('com.pinterest')
-      ApkSnapshotServiceWorker.new.perform(j.id, aa.id)
+      ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
       
     end
   
