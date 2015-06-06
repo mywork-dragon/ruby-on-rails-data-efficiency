@@ -55,6 +55,29 @@ class ApkSnapshotService
     #
     # end
   
+    def about_job(job_id)
+      
+      j = ApkSnapshotJob.find(job_id)
+      
+      j.apk_snapshots.each do |apk_snapshot|
+        
+        puts "APK Snapshot: #{apk_snapshot.inspect}"
+        puts "App Identifier: #{apk_snapshot.android_app.app_identifier}"
+        puts ''
+        
+        puts 'AndroidPackages'
+        puts '---------------'
+        
+        apk_snapshot.android_packages.each do |android_package|
+          puts android_package.package_name
+        end
+        
+        puts ''
+        puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      end
+      
+    end
+  
   end
   
 end
