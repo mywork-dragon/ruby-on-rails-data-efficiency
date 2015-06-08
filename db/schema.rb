@@ -468,6 +468,9 @@ ActiveRecord::Schema.define(version: 20150608211008) do
     t.string   "icon_url_175x175"
     t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
     t.integer  "job_identifier"
+    t.string   "category"
+    t.integer  "user_base"
+    t.integer  "mobile_priority"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -475,8 +478,10 @@ ActiveRecord::Schema.define(version: 20150608211008) do
   add_index "jp_ios_app_snapshots", ["developer_app_store_identifier"], name: "index_jp_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
   add_index "jp_ios_app_snapshots", ["ios_app_id"], name: "index_jp_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "jp_ios_app_snapshots", ["job_identifier"], name: "index_jp_ios_app_snapshots_on_job_identifier", using: :btree
+  add_index "jp_ios_app_snapshots", ["mobile_priority"], name: "index_jp_ios_app_snapshots_on_mobile_priority", using: :btree
   add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
   add_index "jp_ios_app_snapshots", ["released"], name: "index_jp_ios_app_snapshots_on_released", using: :btree
+  add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
 
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"

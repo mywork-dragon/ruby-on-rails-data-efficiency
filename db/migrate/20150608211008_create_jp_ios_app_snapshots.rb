@@ -27,6 +27,7 @@ class CreateJpIosAppSnapshots < ActiveRecord::Migration
       t.integer :job_identifier
       t.string :category
       t.integer :user_base
+      t.integer :mobile_priority
 
       t.timestamps
     end
@@ -36,5 +37,6 @@ class CreateJpIosAppSnapshots < ActiveRecord::Migration
     add_index :jp_ios_app_snapshots, :developer_app_store_identifier
     add_index :jp_ios_app_snapshots, :job_identifier
     add_index :jp_ios_app_snapshots, :user_base
+    add_index :jp_ios_app_snapshots, :mobile_priority
   end
 end
