@@ -13,17 +13,16 @@ class JapanAppStoreSnapshotServiceWorker
   end
   
   
-  def save_attributes(options={})
-    ios_app = IosApp.find(options[:ios_app_id])
+  def save_attributes(ios_app_id:, job_identifier:)
+    ios_app = IosApp.find(ios_app_id)
     
-    ios_app_snapshot_job_id = options[:job_identifier]
     s = JpIosAppSnapshot.create(ios_app: ios_app, job_identifier: job_identifier)
     
     try = 0
     
     begin
       
-      a = AppStoreService.attributes(ios_app.app_identifier)
+      a = AppStoreService.attributes(ios_app.app_identifier, country_code: 'jp', scrape: false)
       
       raise 'AppStoreService.attributes is empty' if a.empty?
     
