@@ -15,11 +15,11 @@ class AppStoreIdsService
 
       app_url_ids = app_url_ids(country_code)
 
-      app_url_ids = app_url_ids[(2..2)] #for debug, only third for now
+      #app_url_ids = app_url_ids[(2..2)] #for debug, only third for now
 
       # url string param for each sub group of app category
       app_url_letters = ('A'..'Z').to_a + ['*']
-      app_url_letters.select!{ |l| l == 'G' } # for debug, only run one letter for now
+      #app_url_letters.select!{ |l| l == 'G' } # for debug, only run one letter for now
 
       # for each category of app
       app_url_ids.each do |app_id|

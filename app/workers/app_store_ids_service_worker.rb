@@ -44,8 +44,8 @@ class AppStoreIdsServiceWorker
       
       end
       
-      li 'App IDs'
-      li app_ids
+      # li 'App IDs'
+      # li app_ids
     
       add_to_db(app_ids.to_a, app_store_id)
     
