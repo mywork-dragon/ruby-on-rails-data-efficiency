@@ -6,12 +6,6 @@ class AppStoreSnapshotService
       
       j = IosAppSnapshotJob.create!(notes: notes)
       
-      # IosApp.find_in_batches(batch_size: 100).with_index do |ios_apps, batch|
-      #   li "Batch #{batch}" if batch%100 == 0
-      #   ios_app_ids = ios_apps.map(&:id)
-      #   AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_ids)
-      # end
-      
       IosApp.find_each.with_index do |ios_app, index|
         li "App ##{index}" if index%10000 == 0
         AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
@@ -42,8 +36,14 @@ class AppStoreSnapshotService
       100.times{ AppStoreSnapshotServiceWorker.perform_async }
     end
     
-    def run_japan
-      IosApp.
+    def run_japan(job_identifier)
+      app_store = AppStore.find_by_country_code('jp')
+      
+      AppStoresIosApp.where(app_store: app_store).find_each_with_index do |ios_app, index|
+        li "App ##{index}" if index%10000 == 0
+        
+        JapanAppStoreSnapshotServiceWorker.perform_async(job_identifier, ios_app.id)
+      end
     end
   
   end

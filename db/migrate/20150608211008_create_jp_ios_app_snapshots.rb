@@ -25,6 +25,8 @@ class CreateJpIosAppSnapshots < ActiveRecord::Migration
       t.string :icon_url_175x175
       t.decimal :ratings_per_day_current_release, precision: 10, scale: 2
       t.integer :job_identifier
+      t.string :category
+      t.integer :user_base
 
       t.timestamps
     end
@@ -33,5 +35,6 @@ class CreateJpIosAppSnapshots < ActiveRecord::Migration
     add_index :jp_ios_app_snapshots, :ios_app_id
     add_index :jp_ios_app_snapshots, :developer_app_store_identifier
     add_index :jp_ios_app_snapshots, :job_identifier
+    add_index :jp_ios_app_snapshots, :user_base
   end
 end
