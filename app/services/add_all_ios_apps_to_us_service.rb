@@ -8,7 +8,7 @@ class AddAllIosAppsToUsService
         
         ios_app_ids = batch.map{ |ios_app| ios_app.id}
         
-        BusinessEntityIosServiceWorker.perform_async(ios_app_ids)
+        AddAllIosAppsToUsServiceWorker.perform_async(ios_app_ids)
       end
     end
     

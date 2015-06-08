@@ -11,6 +11,7 @@ class AddAllIosAppsToUsServiceWorker
       ios_app = IosApp.find(app_id)
       ios_app.app_stores << us_app_store
     end
-    
-
   end
+  
+
+end
