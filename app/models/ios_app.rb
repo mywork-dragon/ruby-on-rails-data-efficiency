@@ -13,7 +13,7 @@ class IosApp < ActiveRecord::Base
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   
   has_many :app_stores_ios_apps
-  has_many :app_stores, through: :app_stores_ios_apps
+  has_many :app_stores, -> { uniq }, through: :app_stores_ios_apps
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
