@@ -74,11 +74,11 @@ class AppStoreIdsServiceWorker
   def add_to_db(app_ids, app_store_id)
   
     app_ids.each do |app_id|
-      
-      ios_apps = IosApp.where(app_identifier: app_id, app_store_id: app_store_id)
     
-      if ios_apps.empty?
-        ios_app = IosApp.new(app_identifier: app_id, app_store_id: app_store_id)
+      ios_app = IosApp.find_by_app_identifier(app_id)
+    
+      if ios_app.nil?
+        ios_app = IosApp.new(app_identifier: app_id)
         app = App.create
         ios_app.app = app
         success = ios_app.save
@@ -93,6 +93,10 @@ class AppStoreIdsServiceWorker
         logger.info "IosApp #{app_id} already in db"
       end
     
+    end
+  
+    if AppStoresIosApp.where(app_store: app_store_id, ios_app_id: ios_app.id).empty?
+      AppStoresIosApp.create!(app_store: app_store_id, ios_app_id: ios_app.id)
     end
   
   
