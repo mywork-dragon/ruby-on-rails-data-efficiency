@@ -41,6 +41,10 @@ class AppStoreSnapshotService
     def test
       100.times{ AppStoreSnapshotServiceWorker.perform_async }
     end
+    
+    def run_japan
+      IosApp.
+    end
   
   end
   
