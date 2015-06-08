@@ -81,6 +81,7 @@ class AppStoreIdsServiceWorker
     
       if ios_app.nil?
         ios_app = IosApp.new(app_identifier: app_id)
+      end
     
     end
   
