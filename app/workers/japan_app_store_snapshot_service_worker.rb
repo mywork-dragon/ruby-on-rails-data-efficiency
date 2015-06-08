@@ -85,8 +85,6 @@ class JapanAppStoreSnapshotServiceWorker
       if support_url = a[:support_url]
          s.support_url = support_url
       end
-   
-      end
       
       if icon_urls = a[:icon_urls]
         
