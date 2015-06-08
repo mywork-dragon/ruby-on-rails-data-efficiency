@@ -55,6 +55,8 @@ class JapanAppStoreSnapshotServiceWorker
       end
     
       if ratings = a[:ratings]
+  
+        
         if ratings_current = ratings[:current]
           ratings_current_count = ratings_current[:count].to_i
           s.ratings_current_count = ratings_current_count
@@ -95,18 +97,16 @@ class JapanAppStoreSnapshotServiceWorker
           s.icon_url_175x175 = size_175x175
         end
       end
-    
-      s.save!
       
       japan_scale = 95739/1875709.0 #uses instagram as the baseline
       
       #set user base
       if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
-        if ratings_per_day_current_release >= 7*japan_scale || ratings_all_count >= 50e3*japan_scale
+        if ratings_all_count >= 50e3*japan_scale
           user_base = :elite
-        elsif ratings_per_day_current_release >= 1*japan_scale || ratings_all_count >= 10e3*japan_scale
+        elsif ratings_all_count >= 10e3*japan_scale
           user_base = :strong
-        elsif ratings_per_day_current_release >= 0.1*japan_scale || ratings_all_count >= 100*japan_scale
+        elsif ratings_all_count >= 100*japan_scale
           user_base = :moderate
         else
           user_base = :weak
@@ -117,19 +117,24 @@ class JapanAppStoreSnapshotServiceWorker
       
       
       #set mobile priority
-      if released = a[:released]
-        if released > 2.months.ago
-          mobile_priority = :high
-        elsif released > 4.months.ago
-          mobile_priority = :medium
-        else
-          mobile_priority = :low
-        end
-        
-      end
+      # if released = a[:released]
+      #   if released > 2.months.ago
+      #     mobile_priority = :high
+      #   elsif released > 4.months.ago
+      #     mobile_priority = :medium
+      #   else
+      #     mobile_priority = :low
+      #   end
+      #
+      #   s.mobile_priority = mobile_priority
+      #
+      # end
+      
+    s.save!
     
     rescue => e
       if (try += 1) < MAX_TRIES
+        #puts e.message
         retry
       else
         s.status = :failure
