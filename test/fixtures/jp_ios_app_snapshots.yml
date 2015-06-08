@@ -1,0 +1,53 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  price: 1
+  size: 1
+  seller_url: MyString
+  support_url: MyString
+  version: MyString
+  released: 2015-06-08
+  recommended_age: MyString
+  description: MyText
+  ios_app_id: 1
+  required_ios_version: MyString
+  release_notes: MyText
+  seller: MyString
+  developer_app_store_identifier: 1
+  ratings_current_stars: 9.99
+  ratings_current_count: 1
+  ratings_all_stars: 9.99
+  ratings_all_count: 1
+  editors_choice: false
+  status: 1
+  icon_url_350x350: MyString
+  icon_url_175x175: MyString
+  ratings_per_day_current_release: 9.99
+  job_identifier: 1
+
+two:
+  name: MyString
+  price: 1
+  size: 1
+  seller_url: MyString
+  support_url: MyString
+  version: MyString
+  released: 2015-06-08
+  recommended_age: MyString
+  description: MyText
+  ios_app_id: 1
+  required_ios_version: MyString
+  release_notes: MyText
+  seller: MyString
+  developer_app_store_identifier: 1
+  ratings_current_stars: 9.99
+  ratings_current_count: 1
+  ratings_all_stars: 9.99
+  ratings_all_count: 1
+  editors_choice: false
+  status: 1
+  icon_url_350x350: MyString
+  icon_url_175x175: MyString
+  ratings_per_day_current_release: 9.99
+  job_identifier: 1
