@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150602090513) do
+ActiveRecord::Schema.define(version: 20150606005949) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -424,6 +424,27 @@ ActiveRecord::Schema.define(version: 20150602090513) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "lists", force: true do |t|
+    t.string   "name"
+    t.integer  "listable_id"
+    t.string   "listable_type"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "lists", ["listable_id"], name: "index_lists_on_listable_id", using: :btree
+
+  create_table "lists_users", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "list_id"
+    t.datetime "appointment_date"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "lists_users", ["list_id"], name: "index_lists_users_on_list_id", using: :btree
+  add_index "lists_users", ["user_id"], name: "index_lists_users_on_user_id", using: :btree
 
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"
