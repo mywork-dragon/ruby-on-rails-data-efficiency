@@ -439,13 +439,9 @@ ActiveRecord::Schema.define(version: 20150608192358) do
 
   create_table "lists", force: true do |t|
     t.string   "name"
-    t.integer  "listable_id"
-    t.string   "listable_type"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "lists", ["listable_id"], name: "index_lists_on_listable_id", using: :btree
 
   create_table "lists_users", force: true do |t|
     t.integer  "user_id"

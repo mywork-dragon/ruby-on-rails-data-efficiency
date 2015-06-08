@@ -7214,4 +7214,7 @@ i.infoTooltipIcon {
   display: none !important;
 }
 
-
+/* Hides empty option */
+select option:empty {
+  display: none;
+}

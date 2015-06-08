@@ -9,13 +9,13 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
   $rootScope.numApps = data.resultsCount;
 
   listApiService.getLists().success(function(data) {
-    $scope.usersLists = data.lists;
-    $rootScope.currentList = data.lists[0];
+    $scope.usersLists = data;
+    $rootScope.currentList = data[0];
   });
 
   $scope.createList = listApiService.createNewList;
-  $scope.getList = function(listName) {
-    listApiService.getList(listName).success(function(data) {
+  $scope.getList = function(listId) {
+    listApiService.getList(listId).success(function(data) {
       $rootScope.apps = data.results;
       $rootScope.numApps = data.resultsCount;
       $rootScope.currentList = data.currentList;
