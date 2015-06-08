@@ -28,8 +28,8 @@ class AppStoreIdsService
         app_url_letters.each do |app_letter|
         
           #delay.perform(app_id, app_letter) #run in background
-          # AppStoreIdsServiceWorker.perform_async(app_id, app_letter)
-          AppStoreIdsServiceWorker.new.perform(app_id, app_letter, app_store_id)
+          AppStoreIdsServiceWorker.perform_async(app_id, app_letter)
+          #AppStoreIdsServiceWorker.new.perform(app_id, app_letter, app_store_id)
         end
       
       end
