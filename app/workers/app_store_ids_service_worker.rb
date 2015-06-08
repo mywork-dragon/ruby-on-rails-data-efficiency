@@ -83,13 +83,14 @@ class AppStoreIdsServiceWorker
         ios_app = IosApp.new(app_identifier: app_id)
       end
     
-    end
-  
-    if AppStoresIosApp.where(app_store: app_store_id, ios_app_id: ios_app.id).empty?
-      ios_app.app_stores << AppStore.find(app_store_id)
-    end
     
-    ios.app.save
+      if AppStoresIosApp.where(app_store_id: app_store_id, ios_app_id: ios_app.id).empty?
+        ios_app.app_stores << AppStore.find(app_store_id)
+      end
+    
+      ios.app.save
+      
+    end
   
   end
   
