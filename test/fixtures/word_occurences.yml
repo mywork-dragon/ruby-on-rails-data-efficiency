@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  word: MyString
+  good: 1
+  bad: 1
+
+two:
+  word: MyString
+  good: 1
+  bad: 1

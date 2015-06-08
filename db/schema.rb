@@ -241,6 +241,7 @@ ActiveRecord::Schema.define(version: 20150608052506) do
     t.integer  "proxy_id"
     t.boolean  "blocked"
     t.integer  "flags"
+    t.boolean  "in_use"
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -551,5 +552,15 @@ ActiveRecord::Schema.define(version: 20150608052506) do
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
+
+  create_table "word_occurences", force: true do |t|
+    t.string   "word"
+    t.integer  "good"
+    t.integer  "bad"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "word_occurences", ["word"], name: "index_word_occurences_on_word", using: :btree
 
 end
