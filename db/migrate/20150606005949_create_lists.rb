@@ -15,5 +15,12 @@ class CreateLists < ActiveRecord::Migration
       t.datetime :appointment_date
       t.timestamps null: false
     end
+
+    create_table :listables_lists do |t|
+      t.integer :listable_id, index: true
+      t.integer :list_id, index: true
+      t.datetime :appointment_date
+      t.timestamps null: false
+    end
   end
 end
