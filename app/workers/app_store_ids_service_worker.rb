@@ -88,7 +88,7 @@ class AppStoreIdsServiceWorker
         ios_app.app_stores << AppStore.find(app_store_id)
       end
     
-      ios.app.save
+      ios_app.save
       
     end
   
