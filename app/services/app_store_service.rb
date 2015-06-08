@@ -4,17 +4,17 @@ class AppStoreService
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
-  def attributes(id, options={})
-    @json = app_store_json(id)
-    @html = app_store_html(id)
+  def attributes(id, country_code: 'us', lookup: true, scrape: true)
+    @country_code = country_code
+    
+    @json = app_store_json(id) if lookup
+    @html = app_store_html(id) if scrape
     
     #ld "@html: #{@html}"
     
     methods = []
     
-    html_only = options[:html_only]
-    
-    if @json && !html_only
+    if @json
       methods += %w(
         name_json
         description_json
@@ -30,7 +30,9 @@ class AppStoreService
         recommended_age_json
         required_ios_version_json
       )
-    elsif @html || html_only
+    end
+    
+    if @html
       methods += %w(
         name_html
         description_html
@@ -45,12 +47,6 @@ class AppStoreService
         ratings_html
         recommended_age_html
         required_ios_version_html
-      )
-    end
-    
-    # Must use HTML for these
-    if @html
-      methods += %w(
         support_url_html
         released_html
         languages_html
@@ -84,7 +80,9 @@ class AppStoreService
   # Returns nil if cannot get JSON
   def app_store_json(id)
     begin
-      page = Tor.get("https://itunes.apple.com/lookup?id=#{id}&limit=1")
+      country_param = (@country_code == 'us' ? '' : "country=#{@country_code}&")
+      url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
+      page = Tor.get(url)
       loaded_json = JSON.load(page)
       loaded_json['results'].first
     rescue
@@ -94,7 +92,7 @@ class AppStoreService
   end
 
   def app_store_html(id)
-    app_store_url = "https://itunes.apple.com/us/app/id#{id}"
+    app_store_url = "https://itunes.apple.com/#{@country_code}/app/id#{id}"
     
     url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
     
@@ -332,8 +330,8 @@ class AppStoreService
     # Attributes hash
     # @author Jason Lew
     # @param id The App Store identifier
-    def attributes(id, options={})
-      self.new.attributes(id, options)
+    def attributes(id, country_code: 'us', lookup: true, scrape: true)
+      self.new.attributes(id, country_code: country_code, lookup: lookup, scrape: scrape)
     end
     
     def test(options={})
