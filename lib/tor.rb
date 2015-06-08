@@ -6,8 +6,8 @@ class Tor
     
     def get(url)
       
-      if !Rails.env.production?
-        return get_using_proxy(url, '127.0.0.1')
+      if !Rails.env.production? #make sure you run Tor locally
+        return get_using_proxy(url, '127.0.0.1') 
       end
       
       proxy = next_proxy
