@@ -12,14 +12,13 @@ class CreateLists < ActiveRecord::Migration
     create_table :lists_users do |t|
       t.belongs_to :user, index: true
       t.belongs_to :list, index: true
-      t.datetime :appointment_date
       t.timestamps null: false
     end
 
     create_table :listables_lists do |t|
       t.integer :listable_id, index: true
       t.integer :list_id, index: true
-      t.datetime :appointment_date
+      t.string :listable_type
       t.timestamps null: false
     end
   end
