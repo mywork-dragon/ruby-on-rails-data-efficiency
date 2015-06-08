@@ -39,8 +39,10 @@ class AppStoreSnapshotService
     def run_japan(job_identifier)
       app_store = AppStore.find_by_country_code('jp')
       
-      AppStoresIosApp.where(app_store: app_store).find_each_with_index do |ios_app, index|
+      AppStoresIosApp.where(app_store: app_store).find_each_with_index do |app_stores_ios_app, index|
         li "App ##{index}" if index%10000 == 0
+        
+        ios_app = app_stores_ios_app.ios_app
         
         JapanAppStoreSnapshotServiceWorker.perform_async(job_identifier, ios_app.id)
       end
