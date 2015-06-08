@@ -41,15 +41,18 @@ class AppStoreIdsServiceWorker
         end
       
       end
+      
+      li 'App IDs'
+      li app_ids
     
-      add_to_db(app_ids.to_a)
+      #add_to_db(app_ids.to_a)
     
     end
   end
   
   def open_url(url)
 
-    page = open(url)
+    page = Tor.get(url)
 
     Nokogiri::HTML(page)
 
