@@ -86,18 +86,7 @@ class JapanAppStoreSnapshotServiceWorker
          s.support_url = support_url
       end
    
-    
-      if languages = a[:languages]
-        languages.each do |language_name|
-          s.ios_app_languages << IosAppLanguage.find_or_create_by(name: language_name)
-        end
       end
-    
-      # if in_app_purchases = a[:in_app_purchases]
-      #   in_app_purchases.each do |in_app_purchase|
-      #     IosInAppPurchase.create(name: in_app_purchase[:name], price: in_app_purchase[:price], ios_app_snapshot: s)
-      #   end
-      # end
       
       if icon_urls = a[:icon_urls]
         
