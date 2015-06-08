@@ -1,6 +1,8 @@
 class AppStoreIdsServiceWorker
   include Sidekiq::Worker
 
+  sidekiq_options retry: false
+
   def perform(app_id, app_letter, app_store_id)
     app_ids = Set.new
   
@@ -79,26 +81,14 @@ class AppStoreIdsServiceWorker
     
       if ios_app.nil?
         ios_app = IosApp.new(app_identifier: app_id)
-        app = App.create
-        ios_app.app = app
-        success = ios_app.save
-        
-        if success
-          logger.info "#{app_id} added to DB"
-        else
-          logger.error "Failed to save #{app_id} to DB"
-        end
-        
-      else
-        logger.info "IosApp #{app_id} already in db"
-      end
     
     end
   
     if AppStoresIosApp.where(app_store: app_store_id, ios_app_id: ios_app.id).empty?
-      AppStoresIosApp.create!(app_store: app_store_id, ios_app_id: ios_app.id)
+      ios_app.app_stores << AppStore.find(app_store_id)
     end
-  
+    
+    ios.app.save
   
   end
   
