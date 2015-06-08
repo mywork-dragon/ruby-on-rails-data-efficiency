@@ -9,9 +9,11 @@ class CreateLists < ActiveRecord::Migration
 
     add_index :lists, :listable_id
 
-    create_table :users_lists, id: false do |t|
+    create_table :lists_users do |t|
       t.belongs_to :user, index: true
       t.belongs_to :list, index: true
+      t.datetime :appointment_date
+      t.timestamps null: false
     end
   end
 end

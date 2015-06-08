@@ -300,6 +300,12 @@ class ApiController < ApplicationController
 
   def create_new_list
 
+    authenticated_user = User.find(decoded_auth_token[:user_id])
+
+    list_name = params['listName']
+
+    render json: List.find(authenticated_user.id).find(list_name)
+
   end
 
   def add_to_list

@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
 
-  has_and_belongs_to_many :lists
+  has_many :lists_users
+  has_many :lists, through: :lists_users
 
   has_secure_password
   validates_uniqueness_of :email

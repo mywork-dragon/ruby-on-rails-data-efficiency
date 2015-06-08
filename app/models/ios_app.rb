@@ -9,7 +9,7 @@ class IosApp < ActiveRecord::Base
   has_many :ios_apps_websites  
   has_many :websites, through: :ios_apps_websites
 
-  has_many :lists, as => :listable
+  has_many :lists, as: :listable
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   

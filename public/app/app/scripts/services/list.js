@@ -20,7 +20,11 @@ angular.module("appApp")
         console.log(list);
       },
       createNewList: function(listName) {
-        console.log(listName);
+        return $http({
+          method: 'POST',
+          url: API_URI_BASE + 'api/list/create_new',
+          data: {listName: listName}
+        });
       },
       getList: function(listName) {
         return $http({

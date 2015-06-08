@@ -8,7 +8,9 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", function ($scope, $location, authService, authToken, listApiService, $rootScope) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", "$route", function ($scope, $location, authService, authToken, listApiService, $rootScope, $route) {
+
+    $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
     $scope.checkIfOwnPage = function() {
 
@@ -21,7 +23,7 @@ angular.module('appApp')
     /* Login specific logic */
     $scope.onLoginButtonClick = function() {
 
-      authService.login($scope.userEmail, $scope.userPassword).then(function(){ // "jason@mightysignal.com", "password"
+      authService.login($scope.userEmail, $scope.userPassword).then(function(){
         $scope.isAuthenticated = authToken.isAuthenticated();
         listApiService.getLists().success(function(data) {
           $scope.usersLists = data.lists;
