@@ -1,7 +1,7 @@
 class AppStoreIdsServiceWorker
   include Sidekiq::Worker
 
-  def perform(app_id, app_letter)
+  def perform(app_id, app_letter, app_store_id)
     app_ids = Set.new
   
     last_page = false
@@ -45,7 +45,7 @@ class AppStoreIdsServiceWorker
       li 'App IDs'
       li app_ids
     
-      #add_to_db(app_ids.to_a)
+      add_to_db(app_ids.to_a, app_store_id)
     
     end
   end
@@ -71,14 +71,14 @@ class AppStoreIdsServiceWorker
   end
   
   # Pass array of app ids to add to db
-  def add_to_db(app_ids)
+  def add_to_db(app_ids, app_store_id)
   
     app_ids.each do |app_id|
+      
+      ios_apps = IosApp.where(app_identifier: app_id, app_store_id: app_store_id)
     
-      ios_app = IosApp.find_by_app_identifier(app_id)
-    
-      if ios_app.nil?
-        ios_app = IosApp.new(app_identifier: app_id)
+      if ios_apps.empty?
+        ios_app = IosApp.new(app_identifier: app_id, app_store_id: app_store_id)
         app = App.create
         ios_app.app = app
         success = ios_app.save

@@ -9,6 +9,10 @@ class AppStoreIdsService
     def run(country_code)
       # url string param for each category of app
 
+      app_store = AppStore.find_by_country_code(country_code)
+      raise 'App Store not in DB' if app_store.nil?
+      app_store_id = app_store.id
+
       app_url_ids = app_url_ids(country_code)
 
       app_url_ids = app_url_ids[(2..2)] #for debug, only third for now
@@ -25,7 +29,7 @@ class AppStoreIdsService
         
           #delay.perform(app_id, app_letter) #run in background
           # AppStoreIdsServiceWorker.perform_async(app_id, app_letter)
-          AppStoreIdsServiceWorker.new.perform(app_id, app_letter)
+          AppStoreIdsServiceWorker.new.perform(app_id, app_letter, app_store_id)
         end
       
       end
