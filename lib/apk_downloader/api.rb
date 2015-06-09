@@ -39,7 +39,7 @@ module ApkDownloader
 
       # Use Tor
       login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
-      login_http.ssl_version = 'TLSv1_2'
+      login_http.ssl_version = :TLSv1_2
       login_http.use_ssl = true
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
 
@@ -96,7 +96,7 @@ module ApkDownloader
 
       # Use Tor
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
-      http.ssl_version = 'TLSv1_2'
+      http.ssl_version = :TLSv1_2
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
@@ -124,7 +124,7 @@ module ApkDownloader
       if @http.nil?
         # Use Tor
         @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
-        @http.ssl_version = 'TLSv1_2'
+        @http.ssl_version = :TLSv1_2
         @http.use_ssl = true
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
