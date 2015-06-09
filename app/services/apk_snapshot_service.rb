@@ -10,7 +10,7 @@ class ApkSnapshotService
         ApkSnapshotServiceWorker.perform_async(j.id, app.id)
       end
       
-    end 
+    end
   
     def run_n(notes, size: 100)
       j = ApkSnapshotJob.create!(notes: notes)
@@ -49,11 +49,35 @@ class ApkSnapshotService
       end
       
     end
+
+    def retry_failed_apps(job_id)
+
+      # for app that failed  
+
+    end
     
     # Progress at scale
       # In Progress
       # Success
       # Failure
+      # Success Rate
+
+    def job_progress(job_id)
+      j = ApkSnapshotJob.find(job_id)
+
+      total = j.apk_snapshot.count
+      success = j.apk_snapshot.where(status: 1).count
+      fail = j.apk_snapshot.where(status: 0).count
+
+      puts "Progress : #{(success + fail)} out of #{total} \r"
+
+
+      # while true do
+      #   puts Time.now
+      #   sleep 1
+      # end
+
+    end
   
     def about_job(job_id)
       
