@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609010458) do
+ActiveRecord::Schema.define(version: 20150609012757) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -137,6 +137,8 @@ ActiveRecord::Schema.define(version: 20150609010458) do
     t.integer  "android_package_tag"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "identified"
+    t.boolean  "not_useful"
   end
 
   add_index "android_packages", ["android_package_tag"], name: "index_android_packages_on_android_package_tag", using: :btree
@@ -244,6 +246,7 @@ ActiveRecord::Schema.define(version: 20150609010458) do
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "in_use"
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
@@ -443,38 +446,6 @@ ActiveRecord::Schema.define(version: 20150609010458) do
     t.integer  "price"
   end
 
-  create_table "jp_ios_app_snapshots", force: true do |t|
-    t.string   "name"
-    t.integer  "price"
-    t.integer  "size",                           limit: 8
-    t.string   "seller_url"
-    t.string   "support_url"
-    t.string   "version"
-    t.string   "recommended_age"
-    t.text     "description"
-    t.integer  "ios_app_id"
-    t.string   "required_ios_version"
-    t.text     "release_notes"
-    t.string   "seller"
-    t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",                    precision: 3, scale: 2
-    t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",                        precision: 3, scale: 2
-    t.integer  "ratings_all_count"
-    t.integer  "status"
-    t.integer  "job_identifier"
-    t.string   "category"
-    t.integer  "user_base"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "jp_ios_app_snapshots", ["developer_app_store_identifier"], name: "index_jp_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
-  add_index "jp_ios_app_snapshots", ["ios_app_id"], name: "index_jp_ios_app_snapshots_on_ios_app_id", using: :btree
-  add_index "jp_ios_app_snapshots", ["job_identifier"], name: "index_jp_ios_app_snapshots_on_job_identifier", using: :btree
-  add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
-  add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
-
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"
     t.integer  "age"
@@ -583,5 +554,15 @@ ActiveRecord::Schema.define(version: 20150609010458) do
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
+
+  create_table "word_occurences", force: true do |t|
+    t.string   "word"
+    t.integer  "good"
+    t.integer  "bad"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "word_occurences", ["word"], name: "index_word_occurences_on_word", using: :btree
 
 end
