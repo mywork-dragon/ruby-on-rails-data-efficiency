@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150608052506) do
+ActiveRecord::Schema.define(version: 20150609012221) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -243,10 +243,10 @@ ActiveRecord::Schema.define(version: 20150608052506) do
     t.integer  "proxy_id"
     t.boolean  "blocked"
     t.integer  "flags"
-    t.boolean  "in_use"
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "in_use"
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
