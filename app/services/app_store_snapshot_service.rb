@@ -47,6 +47,35 @@ class AppStoreSnapshotService
         JapanAppStoreSnapshotServiceWorker.perform_async(job_identifier, ios_app.id)
       end
     end
+    
+    def japan_csv(file_path)
+      
+      CSV.open(file_path, "w+") do |csv|
+        csv << ['Name', 'Description', 'Release Notes', 'Category', 'Size (B)', 'Seller URL', 'Support URL', 'Version', 'Current Rating Average', 'Number of Current Ratings', 'All Time Ratings Stars', 'All Time Ratings Count', 'User Base']
+        
+        JpIosAppSnapshots.where.not(name: nil).find_each do |ss|
+          
+          line = []
+          
+          line << ss.name
+          line << ss.description
+          line << ss.release_notes
+          line << ss.category
+          line << ss.size
+          line << ss.seller_url
+          line << ss.support_url
+          line << ss.version
+          line << ss.ratings_current_stars
+          line << ss.ratings_current_count
+          line << ss.ratings_all_stars
+          line << ss.ratings_all_count
+          line << ss.user_base.capitalize
+          
+          ss << line
+        end
+      end
+      
+    end
   
   end
   
