@@ -28,8 +28,8 @@ class WhoisService
         attribute = send(method.to_sym)
         
         ret[key] = attribute
-      rescue => e
-        ret[key] = nil
+      # rescue => e
+      #   ret[key] = nil
       end
       
     end
