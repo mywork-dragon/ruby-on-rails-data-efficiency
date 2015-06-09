@@ -10,7 +10,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
 
   listApiService.getLists().success(function(data) {
     $scope.usersLists = data;
-    $rootScope.currentList = data[0];
+    $rootScope.currentList = data[0].id;
   });
 
   $scope.createList = function(listName) {

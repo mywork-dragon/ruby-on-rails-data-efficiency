@@ -218,13 +218,13 @@ angular.module('appApp')
           $scope.usersLists = data;
           $rootScope.currentList = data[0];
         }),
-        $scope.selectedAppsForList = [],
+        $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
           listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform);
           $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
         },
-        $scope.addAppToList = function(selectedAppId) {
-          listApiService.modifyCheckbox(selectedAppId, $scope.selectedAppsForList);
+        $scope.addAppToList = function(selectedApp) {
+          listApiService.modifyCheckbox(selectedApp.id, selectedApp.type, $rootScope.selectedAppsForList);
         },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {

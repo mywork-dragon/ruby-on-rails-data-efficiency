@@ -117,12 +117,12 @@
     <div class="panel-heading" id="dashboardResultsTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Results</strong>
      <span class="ui-select pull-right">
-      <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
+      <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)">
         <option value="">Add Selected to List</option>
         <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
       </select>
        <!--
-      <select ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-init="addSelectedToDropdown = 'Add Selected to List'" ng-model="addSelectedToDropdown" ng-options="option.id as option.name for option in usersLists"></select>
+      <select ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-init="addSelectedToDropdown = 'Add Selected to List'" ng-model="addSelectedToDropdown" ng-options="option.id as option.name for option in usersLists"></select>
       -->
      </span>
     </div>
@@ -194,7 +194,7 @@
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="appId" value="{{app.app.id}}" ng-checked="selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app.id)">
+            <input type="checkbox" name="appId" value="{{app.app.id}}" ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)">
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>

@@ -9,14 +9,15 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/list/get_lists'
         });
       },
-      modifyCheckbox: function(selectedAppId, list) {
+      modifyCheckbox: function(selectedAppId, selectedAppType, list) {
         // Check if app id is already in list
-        var index = list.indexOf(selectedAppId);
+        var index = list.map(function(x) {return x.id; }).indexOf(selectedAppId);
         if (index > -1) {
           list.splice(index, 1);
         } else {
-          list.push(selectedAppId);
+          list.push({id: selectedAppId, type: selectedAppType});
         }
+        console.log(list);
       },
       createNewList: function(listName) {
         return $http({
@@ -32,15 +33,22 @@ angular.module("appApp")
           params: {listId: listId}
         });
       },
-      addSelectedTo: function(list, selectedApps, appPlatform) {
+      addSelectedTo: function(listId, selectedApps, appPlatform) {
         return $http({
           method: 'PUT',
           url: API_URI_BASE + 'api/list/add',
-          data: {listId: list, appIds: selectedApps, appPlatform: appPlatform}
+          data: {listId: listId, apps: selectedApps, appPlatform: appPlatform}
         });
       },
-      deleteSelected: function(listName, selectedApps) {
-        console.log(listName, selectedApps);
+      deleteSelected: function(listId, selectedApps) {
+
+        console.log(listId, selectedApps);
+
+        return $http({
+          method: 'PUT',
+          url: API_URI_BASE + 'api/list/delete',
+          data: {listId: listId, apps: selectedApps}
+        });
       },
       exportToCsv: function(listName) {
         console.log(listName);
