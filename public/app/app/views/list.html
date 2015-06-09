@@ -6,14 +6,14 @@
      <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv($root.currentList)">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" ng-click="deleteSelected($root.currentList, selectedAppsForList)">Delete Selected</button>
-     <span class="ui-select pull-right">
-      <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
-        <option value="">Copy Selected to List</option>
-        <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
-      </select>
-     </span>
-
-
+      <!--
+      <span class="ui-select pull-right">
+        <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
+         <option value="">Copy Selected to List</option>
+         <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </span>
+      -->
     </div>
 
 

@@ -17,7 +17,6 @@ angular.module("appApp")
         } else {
           list.push(selectedAppId);
         }
-        console.log(list);
       },
       createNewList: function(listName) {
         return $http({
