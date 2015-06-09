@@ -85,8 +85,4 @@ Rails.application.configure do
     password:             'iamthemailmanofmightysignalyo',
     authentication:       'plain',
     enable_starttls_auto: true  }
-
-  # This might fix circular dependancy problem
-  config.allow_concurrency = true
-
 end
