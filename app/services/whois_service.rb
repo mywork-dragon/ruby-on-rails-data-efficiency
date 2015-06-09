@@ -7,8 +7,8 @@ class WhoisService
       w = Whois::Client.new
       @result = w.lookup(domain)
       #puts @result
-    # rescue => e
-    #   return ret
+    rescue => e
+      return ret
     end
 
     
@@ -28,8 +28,8 @@ class WhoisService
         attribute = send(method.to_sym)
         
         ret[key] = attribute
-      # rescue => e
-      #   ret[key] = nil
+      rescue => e
+        ret[key] = nil
       end
       
     end
@@ -51,8 +51,8 @@ class WhoisService
 
     begin
       @code = IsoCountryCodes.find(@country_code)
-    # rescue => e
-    #   @code = nil
+    rescue => e
+      @code = nil
     end
     
     @country_code
