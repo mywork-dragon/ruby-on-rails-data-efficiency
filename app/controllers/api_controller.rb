@@ -2,7 +2,7 @@ class ApiController < ApplicationController
   
   # skip_before_filter  :verify_authenticity_token
   
-  before_action :set_current_user, :authenticate_request
+  #before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
