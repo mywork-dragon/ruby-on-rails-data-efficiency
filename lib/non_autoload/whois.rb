@@ -9,7 +9,7 @@ Whois::Server::SocketHandler.class_eval do
       proxy.last_used = DateTime.now
       ip = proxy.private_ip
       proxy.save
-    else
+    elsif Rails.env.development?
       ip = '127.0.0.1'
     end
       
