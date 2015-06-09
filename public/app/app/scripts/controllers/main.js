@@ -26,8 +26,8 @@ angular.module('appApp')
       authService.login($scope.userEmail, $scope.userPassword).then(function(){
         $scope.isAuthenticated = authToken.isAuthenticated();
         listApiService.getLists().success(function(data) {
-          $scope.usersLists = data.lists;
-          $rootScope.currentList = data.lists[0];
+          $scope.usersLists = data;
+          $rootScope.currentList = data[0];
         });
           location.reload();
       },
@@ -214,7 +214,10 @@ angular.module('appApp')
             $rootScope.categoryFilterOptions = data;
           });
         },
-        $scope.usersLists = listApiService.getLists(),
+        listApiService.getLists().success(function(data) {
+          $scope.usersLists = data;
+          $rootScope.currentList = data[0];
+        }),
         $scope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
           listApiService.addSelectedTo(list, selectedApps);
