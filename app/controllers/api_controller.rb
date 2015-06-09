@@ -365,7 +365,9 @@ class ApiController < ApplicationController
 
     list_name = params['listName']
 
-    render json: List.find(authenticated_user.id).find(list_name)
+    render json: authenticated_user.lists.create(name: list_name)
+
+    # render json: List.find(authenticated_user.id).find(list_name)
 
   end
 

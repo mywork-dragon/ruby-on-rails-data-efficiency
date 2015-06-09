@@ -13,7 +13,15 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     $rootScope.currentList = data[0];
   });
 
-  $scope.createList = listApiService.createNewList;
+  $scope.createList = function(listName) {
+    listApiService.createNewList(listName).success(function() {
+      listApiService.getLists().success(function(data) {
+        $scope.usersLists = data;
+        $rootScope.currentList = data[0];
+        location.reload();
+      });
+    });
+  };
   $scope.getList = function(listId) {
     listApiService.getList(listId).success(function(data) {
       $rootScope.apps = data.results;

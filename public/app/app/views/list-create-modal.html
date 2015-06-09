@@ -6,7 +6,7 @@
         <h3 class="modal-title" id="myModalLabel">Create New List</h3>
       </div>
       <div class="modal-body">
-        <form data-ng-submit="add()" class="add-task ng-pristine ng-valid">
+        <form data-ng-submit="add()" class="add-task ng-pristine ng-valid" ng-enter="createList(createNewModal)">
           <input type="text" placeholder="New list name..." class="form-control ng-pristine ng-valid ng-touched" data-ng-model="createNewModal" autofocus="">
           <a type="submit" class="submit-button">
             <i class="fa fa-plus-circle"></i>
