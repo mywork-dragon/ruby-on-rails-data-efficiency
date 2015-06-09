@@ -102,3 +102,5 @@ gem 'ruby_apk', '0.7.1'
 
 gem 'ruby-protocol-buffers', '1.6.1'
 
+gem 'sanitize', '4.0.0'
+

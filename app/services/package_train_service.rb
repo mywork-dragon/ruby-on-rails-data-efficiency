@@ -6,7 +6,7 @@ class PackageTrainService
   class << self
 
     def run
-      AndroidPackage.where(android_package_tag_id: 0, identified: false).joins(:apk_snapshot).find_each do |package|
+      AndroidPackage.where(identified: false).joins(:apk_snapshot).find_each do |package|
         words(package.package_name, package.id)
       end
     end
