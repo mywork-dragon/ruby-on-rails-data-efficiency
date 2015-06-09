@@ -53,7 +53,7 @@ class AppStoreSnapshotService
       CSV.open(file_path, "w+") do |csv|
         csv << ['Name', 'Description', 'Release Notes', 'Category', 'Size (B)', 'Seller URL', 'Support URL', 'Version', 'Current Rating Average', 'Number of Current Ratings', 'All Time Ratings Stars', 'All Time Ratings Count', 'User Base']
         
-        JpIosAppSnapshots.where.not(name: nil).find_each do |ss|
+        JpIosAppSnapshot.where.not(name: nil).order('user_base ASC').find_each do |ss|
           
           line = []
           
@@ -71,7 +71,7 @@ class AppStoreSnapshotService
           line << ss.ratings_all_count
           line << ss.user_base.capitalize
           
-          ss << line
+          csv << line
         end
       end
       
