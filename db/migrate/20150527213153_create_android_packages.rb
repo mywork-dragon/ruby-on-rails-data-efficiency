@@ -4,6 +4,8 @@ class CreateAndroidPackages < ActiveRecord::Migration
       t.string :package_name
       t.integer :apk_snapshot_id
       t.integer :android_package_tag
+      t.boolean :identified
+      t.boolean :not_useful
 
       t.timestamps
     end

@@ -135,6 +135,8 @@ ActiveRecord::Schema.define(version: 20150608052506) do
     t.string   "package_name"
     t.integer  "apk_snapshot_id"
     t.integer  "android_package_tag"
+    t.boolean  "identified"
+    t.boolean  "not_useful"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

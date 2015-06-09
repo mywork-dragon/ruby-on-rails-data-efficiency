@@ -40,7 +40,7 @@ end
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
     
     android_app = AndroidApp.find_or_create_by(app_identifier: name)
-    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6)
+    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6, android_app_id: i+1)
     android_app.newest_android_app_snapshot = android_app_snapshot
     android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample
