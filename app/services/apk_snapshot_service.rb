@@ -37,10 +37,10 @@ class ApkSnapshotService
       j = ApkSnapshotJob.create!(notes: notes)
       
       app_identifiers = %w(
-        com.pinterest
         com.instagram.android
-        com.twitter.android
+        com.pinterest
         com.snapchat.android
+        com.twitter.android
       )
       
       app_identifiers.each do |ai|
