@@ -139,6 +139,9 @@ module ApkDownloader
 
       if type == :post
         api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        api_headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+        api_headers["Pragma"] = "no-cache"
+        api_headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
       end
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
