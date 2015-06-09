@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609012221) do
+ActiveRecord::Schema.define(version: 20150609012757) do
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -135,10 +135,10 @@ ActiveRecord::Schema.define(version: 20150609012221) do
     t.string   "package_name"
     t.integer  "apk_snapshot_id"
     t.integer  "android_package_tag"
-    t.boolean  "identified"
-    t.boolean  "not_useful"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "identified"
+    t.boolean  "not_useful"
   end
 
   add_index "android_packages", ["android_package_tag"], name: "index_android_packages_on_android_package_tag", using: :btree
