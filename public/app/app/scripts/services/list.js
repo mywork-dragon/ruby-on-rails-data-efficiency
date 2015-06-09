@@ -41,13 +41,17 @@ angular.module("appApp")
         });
       },
       deleteSelected: function(listId, selectedApps) {
-
-        console.log(listId, selectedApps);
-
+        return $http({
+          method: 'PUT',
+          url: API_URI_BASE + 'api/list/delete_items',
+          data: {listId: listId, apps: selectedApps}
+        });
+      },
+      deleteList: function(listId) {
         return $http({
           method: 'PUT',
           url: API_URI_BASE + 'api/list/delete',
-          data: {listId: listId, apps: selectedApps}
+          data: {listId: listId}
         });
       },
       exportToCsv: function(listName) {

@@ -413,6 +413,20 @@ class ApiController < ApplicationController
     render json: {:status => 'success'}
   end
 
+  def delete_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    List.find(list_id).destroy
+
+    render json: {:status => 'success'}
+  end
+
   def results
     render json: GoogleResults.search("something")
   end

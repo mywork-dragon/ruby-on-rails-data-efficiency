@@ -5,6 +5,7 @@
     <div class="panel-heading" id="listViewTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv($root.currentList)">Export List to CSV</button>
+     <button type="submit" class="btn btn-danger pull-right" ng-click="deleteList($root.currentList)">Delete List</button>
      <button type="submit" class="btn btn-danger pull-right" ng-click="deleteSelected($root.currentList, $root.selectedAppsForList)">Delete Selected</button>
       <!--
       <span class="ui-select pull-right">

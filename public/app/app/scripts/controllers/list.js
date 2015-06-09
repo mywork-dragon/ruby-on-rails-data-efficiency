@@ -33,7 +33,18 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     listApiService.addSelectedTo(list, selectedApps);
     $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
   };
-  $scope.deleteSelected = listApiService.deleteSelected;
+  $scope.deleteSelected = function(listId, selectedApps) {
+    listApiService.deleteSelected(listId, selectedApps).success(function() {
+      $rootScope.selectedAppsForList = [];
+      $scope.$apply()
+    });
+
+  };
+  $scope.deleteList = function(listId) {
+    listApiService.deleteList(listId).success(function() {
+      location.reload();
+    });
+  };
   $scope.exportListToCsv = listApiService.exportToCsv;
 
 }]);
