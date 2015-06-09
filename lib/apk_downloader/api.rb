@@ -92,6 +92,7 @@ module ApkDownloader
 
       # Use Tor
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
+      http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       # http.use_ssl = true
