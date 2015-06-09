@@ -65,11 +65,13 @@ class ApkSnapshotService
     def job_progress(job_id)
       j = ApkSnapshotJob.find(job_id)
 
-      total = j.apk_snapshot.count
-      success = j.apk_snapshot.where(status: 1).count
-      fail = j.apk_snapshot.where(status: 0).count
+      total = j.apk_snapshots.count
+      success = j.apk_snapshots.where(status: 1).count
+      fail = j.apk_snapshots.where(status: 0).count
 
-      puts "Progress : #{(success + fail)} out of #{total} \r"
+      puts "Progress : #{(success + fail).to_f/total}% \r"
+
+      puts "Success Rate : #{(success.to_f/total.to_f)*100}% \r"
 
 
       # while true do
