@@ -356,7 +356,7 @@ class ApiController < ApplicationController
   end
 
   def export_list_to_csv
-
+    render json: {:test => 'test'}
   end
 
   def create_new_list
@@ -372,11 +372,31 @@ class ApiController < ApplicationController
   end
 
   def add_to_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+    app_ids = params['appIds']
+    app_platform = params['appPlatform']
 
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    list = List.find(list_id)
+
+    if app_platform == 'ios'
+      listable_type = 'IosApp'
+    else
+      listable_type = 'AndroidApp'
+    end
+
+    app_ids.each { |app_id| ListablesList.create(listable_id: app_id, list_id: list_id, listable_type: listable_type) }
+
+    render json: {:test => 'test'}
   end
 
   def delete_from_list
-
+    render json: {:test => 'test'}
   end
 
   def results

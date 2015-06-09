@@ -33,8 +33,12 @@ angular.module("appApp")
           params: {listId: listId}
         });
       },
-      addSelectedTo: function(list, selectedApps) {
-        console.log(list, selectedApps);
+      addSelectedTo: function(list, selectedApps, appPlatform) {
+        return $http({
+          method: 'PUT',
+          url: API_URI_BASE + 'api/list/add',
+          data: {listId: list, appIds: selectedApps, appPlatform: appPlatform}
+        });
       },
       deleteSelected: function(listName, selectedApps) {
         console.log(listName, selectedApps);

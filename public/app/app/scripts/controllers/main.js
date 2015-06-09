@@ -220,7 +220,7 @@ angular.module('appApp')
         }),
         $scope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
-          listApiService.addSelectedTo(list, selectedApps);
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform);
           $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
         },
         $scope.addAppToList = function(selectedAppId) {
