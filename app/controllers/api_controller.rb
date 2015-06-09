@@ -280,4 +280,8 @@ class ApiController < ApplicationController
     render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
+  def results
+    render json: GoogleResults.search("something")
+  end
+
 end
