@@ -94,12 +94,12 @@ module ApkDownloader
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      http.use_ssl = true
+      # http.use_ssl = true
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
-      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)'
+      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)'
       req['Cookie'] = [cookie.name, cookie.value].join('=')
 
       resp = http.request req
