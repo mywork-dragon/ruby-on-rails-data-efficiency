@@ -50,11 +50,10 @@ class ApkSnapshotService
       
     end
     
-    # Given a job, tell all SDKs for each app
-    # def query
-    #
-    #
-    # end
+    # Progress at scale
+      # In Progress
+      # Success
+      # Failure
   
     def about_job(job_id)
       
