@@ -35,49 +35,47 @@ class ApkSnapshotService
     def run_common_apps(notes)
       
       j = ApkSnapshotJob.create!(notes: notes)
+
+      job_progress(j.id)
       
       app_identifiers = %w(
         com.instagram.android
         com.pinterest
         com.snapchat.android
         com.twitter.android
+        com.skype.raider
+        com.facebook.orca
       )
       
       app_identifiers.each do |ai|
         aa = AndroidApp.find_by_app_identifier(ai)
         ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
       end
+
+      retry_failed_apps(j.id)
       
     end
 
     def retry_failed_apps(job_id)
-
-      # for app that failed  
-
+      j = ApkSnapshotJob.find(job_id)
+      j.apk_snapshots.where(status: 0).find_each do |app|
+        ApkSnapshotServiceWorker.perform_async(j.id, app.android_app_id)
+      end
     end
-    
-    # Progress at scale
-      # In Progress
-      # Success
-      # Failure
-      # Success Rate
 
     def job_progress(job_id)
       j = ApkSnapshotJob.find(job_id)
 
-      total = j.apk_snapshots.count
-      success = j.apk_snapshots.where(status: 1).count
-      fail = j.apk_snapshots.where(status: 0).count
+      while true do
+        total = j.apk_snapshots.count
+        success = j.apk_snapshots.where(status: 1).count
+        fail = j.apk_snapshots.where(status: 0).count
 
-      puts "Progress : #{(success + fail).to_f/total}% \r"
+        puts "Progress : #{((success + fail).to_f/total)*100}% \r"
+        puts "Success Rate : #{(success.to_f/total.to_f)*100}% \r"
 
-      puts "Success Rate : #{(success.to_f/total.to_f)*100}% \r"
-
-
-      # while true do
-      #   puts Time.now
-      #   sleep 1
-      # end
+        sleep 1
+      end
 
     end
   
