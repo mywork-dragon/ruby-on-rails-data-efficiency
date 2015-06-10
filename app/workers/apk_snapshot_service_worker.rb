@@ -3,7 +3,7 @@ class ApkSnapshotServiceWorker
 
   sidekiq_options retry: false
   
-  MAX_TRIES = 3
+  MAX_TRIES = 10
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   

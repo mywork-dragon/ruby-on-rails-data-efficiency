@@ -69,7 +69,7 @@ class ApkSnapshotService
 
         progress = ((success + fail).to_f/total)*100
 
-        print "Progress : #{progress.to_i}%  |  Success Rate : #{(success.to_f/(success + fail).to_f).to_i*100}%"
+        print "Progress : #{progress.ceil}%  |  Success Rate : #{((success.to_f/(success + fail).to_f)*100).ceil}%"
         print "\r"
 
         return false if progress == 100.0
