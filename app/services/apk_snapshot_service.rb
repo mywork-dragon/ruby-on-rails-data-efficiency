@@ -65,14 +65,19 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        accounts_in_use = GoogleAccount.where(in_use: true).count
+        apk_ga = ApkSnapshot.select(:google_account_id).where(['apk_snapshot_job_id = ? and download_time IS NULL and google_account_id IS NOT NULL', j.id])
 
-        currently_downloading = ApkSnapshot.where(['apk_snapshot_job_id = ? and download_time IS NULL and google_account_id IS NOT NULL', j.id]).count
+        currently_downloading = apk_ga.count
+
+        accounts_in_use = apk_ga.count('google_account_id', :distinct => true)
 
         print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
-        print "\r"
 
-        return false if progress == 100.0
+        if progress == 100.0
+          return "\nScrape Complete"
+        else
+          print "\r"
+        end
 
         sleep 1
       end
