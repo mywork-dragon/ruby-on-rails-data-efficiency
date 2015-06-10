@@ -2,26 +2,27 @@
 
 angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", function($scope, $http, $routeParams, $rootScope, listApiService) {
 
+  $scope.load = function() {
+    listApiService.getList($routeParams.id).success(function(data) {
+      $rootScope.apps = data.results;
+      $rootScope.numApps = data.resultsCount;
+      $rootScope.currentList = $routeParams.id;
+    });
+  };
   listApiService.getLists().success(function(data) {
     $scope.usersLists = data;
-    $rootScope.currentList = data[0].id;
   });
 
   $scope.createList = function(listName) {
     listApiService.createNewList(listName).success(function() {
       listApiService.getLists().success(function(data) {
         $scope.usersLists = data;
-        $rootScope.currentList = data[0];
         location.reload();
       });
     });
   };
-  $scope.getList = function(listId) {
-    listApiService.getList(listId).success(function(data) {
-      $rootScope.apps = data.results;
-      $rootScope.numApps = data.resultsCount;
-      $rootScope.currentList = data.currentList;
-    });
+  $scope.getList = function() {
+
   };
   $scope.addSelectedTo = function(list, selectedApps) {
     listApiService.addSelectedTo(list, selectedApps);
@@ -48,5 +49,9 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         hiddenElement.download = 'mightysignal_list.csv';
         hiddenElement.click();
       });
+
   };
+
+  $scope.load();
+
 }]);

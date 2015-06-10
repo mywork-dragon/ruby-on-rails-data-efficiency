@@ -59,7 +59,7 @@ angular
          templateUrl: '/app/app/views/company-details.html',
          controller: 'CompanyDetailsCtrl'
        })
-       .when('/lists', {
+       .when('/lists/:id', {
          templateUrl: '/app/app/views/list.html',
          controller: 'ListCtrl',
          activeTab: 'lists'

@@ -27,7 +27,6 @@ angular.module('appApp')
         $scope.isAuthenticated = authToken.isAuthenticated();
         listApiService.getLists().success(function(data) {
           $scope.usersLists = data;
-          $rootScope.currentList = data[0];
         });
           location.reload();
       },
@@ -216,7 +215,6 @@ angular.module('appApp')
         },
         listApiService.getLists().success(function(data) {
           $scope.usersLists = data;
-          $rootScope.currentList = data[0];
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
