@@ -6,10 +6,8 @@ class Tor
     
     def get(url)
       
-      if !Rails.env.production?
-        open(url, 'User-Agent' => UserAgent.random_web) do |f|
-          return f.read
-        end
+      if !Rails.env.production? #make sure you run Tor locally
+        return get_using_proxy(url, '127.0.0.1') 
       end
       
       proxy = next_proxy
@@ -58,11 +56,11 @@ class Tor
       o
     end
     
-    private
-    
     def next_proxy
       Proxy.order(last_used: :asc).limit(5).sample
     end
+    
+    private
     
     def get_using_proxy(url, ip, limit=10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0

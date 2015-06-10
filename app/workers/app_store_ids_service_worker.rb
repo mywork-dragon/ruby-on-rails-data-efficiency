@@ -1,7 +1,9 @@
 class AppStoreIdsServiceWorker
   include Sidekiq::Worker
 
-  def perform(app_id, app_letter)
+  sidekiq_options retry: false
+
+  def perform(app_id, app_letter, app_store_id)
     app_ids = Set.new
   
     last_page = false
@@ -41,15 +43,18 @@ class AppStoreIdsServiceWorker
         end
       
       end
+      
+      # li 'App IDs'
+      # li app_ids
     
-      add_to_db(app_ids.to_a)
+      add_to_db(app_ids.to_a, app_store_id)
     
     end
   end
   
   def open_url(url)
 
-    page = open(url)
+    page = Tor.get(url)
 
     Nokogiri::HTML(page)
 
@@ -68,7 +73,7 @@ class AppStoreIdsServiceWorker
   end
   
   # Pass array of app ids to add to db
-  def add_to_db(app_ids)
+  def add_to_db(app_ids, app_store_id)
   
     app_ids.each do |app_id|
     
@@ -76,22 +81,16 @@ class AppStoreIdsServiceWorker
     
       if ios_app.nil?
         ios_app = IosApp.new(app_identifier: app_id)
-        app = App.create
-        ios_app.app = app
-        success = ios_app.save
-        
-        if success
-          logger.info "#{app_id} added to DB"
-        else
-          logger.error "Failed to save #{app_id} to DB"
-        end
-        
-      else
-        logger.info "IosApp #{app_id} already in db"
       end
     
+    
+      if AppStoresIosApp.where(app_store_id: app_store_id, ios_app_id: ios_app.id).empty?
+        ios_app.app_stores << AppStore.find(app_store_id)
+      end
+    
+      ios_app.save
+      
     end
-  
   
   end
   

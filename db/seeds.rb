@@ -15,14 +15,19 @@ if Rails.env.development?
     AndroidAppCategory.find_or_create_by(name: cat)
   end
 
+puts 'creating App Stores...'
+['us', 'jp'].each do |country_code|
+  AppStore.create!(country_code: country_code)
+end
+
   puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..500
     name = Faker::App.name
-    
-    ios_app = IosApp.find_or_create_by(app_identifier: i)
+    ios_app = IosApp.find_or_initialize_by(app_identifier: i)
     ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100), ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500))
     ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/(Date.tomorrow - ios_app_snapshot.released).to_f
     ios_app.newest_ios_app_snapshot = ios_app_snapshot
+    ios_app.app_stores << AppStore.all.sample
     ios_app.save
     ios_app.set_mobile_priority
     ios_app.set_user_base
@@ -35,7 +40,7 @@ if Rails.env.development?
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
     
     android_app = AndroidApp.find_or_create_by(app_identifier: name)
-    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6)
+    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6, android_app_id: i+1)
     android_app.newest_android_app_snapshot = android_app_snapshot
     android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample
@@ -55,7 +60,7 @@ if Rails.env.development?
   end
 
   puts "creating websites, and linking them to companies, ios apps"
-  
+
   (n = 500).times do |i|
     website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
     ios_app = IosApp.all.sample
@@ -99,5 +104,7 @@ if Rails.env.development?
   
   #Create local IP for Tor
   Proxy.create!(private_ip: '127.0.0.1', active: true)
+
+  GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
 
 end

@@ -70,7 +70,7 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
+gem 'sidekiq', '3.3.0', :require => 'sidekiq/api'
 
 gem 'filesize', '0.0.4'
 
@@ -95,6 +95,10 @@ gem 'bcrypt', '3.1.10'
 
 gem 'minitest-fail-fast', '0.0.1'
 
+gem 'whois', '3.5.9'
+
+gem 'iso_country_codes', '0.7.1'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
@@ -102,3 +106,6 @@ gem 'ruby_apk', '0.7.1'
 
 gem 'ruby-protocol-buffers', '1.6.1'
 
+gem 'sanitize', '4.0.0'
+
+gem 'net', :require => 'net/http'

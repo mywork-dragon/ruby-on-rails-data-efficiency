@@ -1,6 +1,7 @@
 class IosApp < ActiveRecord::Base
 
   validates :app_identifier, uniqueness: true
+  validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
 
   has_many :ios_app_snapshots
   belongs_to :app
@@ -14,6 +15,9 @@ class IosApp < ActiveRecord::Base
   has_many :lists, through: :listables_lists
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
+  
+  has_many :app_stores_ios_apps
+  has_many :app_stores, -> { uniq }, through: :app_stores_ios_apps
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]

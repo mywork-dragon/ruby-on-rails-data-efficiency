@@ -1,20 +1,8 @@
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
-  
+
   before_action :set_current_user, :authenticate_request
-  
-  #before_action :set_current_user, :authenticate_request #add this back later to verify every request -- jlew
-  
-  # before_filter :disable_cors
-  #
-  # def disable_cors
-  #   puts "blah"
-  #   headers['Access-Control-Allow-Origin'] = '*'
-  #   headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
-  #   headers['Access-Control-Request-Method'] = '*'
-  #   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  # end
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -37,6 +25,9 @@ class ApiController < ApplicationController
   end
   
   def filter_ios_apps
+    
+    li 'filter_ios_apps'
+    
     app_filters = params[:app]
     company_filters = params[:company]
     page_size = params[:pageSize]

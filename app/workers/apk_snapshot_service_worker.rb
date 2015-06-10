@@ -3,7 +3,7 @@ class ApkSnapshotServiceWorker
 
   sidekiq_options retry: false
   
-  MAX_TRIES = 3
+  MAX_TRIES = 10
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
@@ -99,9 +99,9 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account(android_app_id, apk_snapshot_job_id)
-    n = GoogleAccount.where(blocked: false).where("flags < ?",11).count
+    n = GoogleAccount.where(blocked: false).where("flags < ?",101).count
     (0...n).each do |a|
-      ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",11).order(last_used: :asc).limit(5).sample
+      ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",101).order(last_used: :asc).limit(5).sample
       ga.last_used = DateTime.now
       ga.save!
 
