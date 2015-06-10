@@ -108,3 +108,5 @@ gem 'ruby-protocol-buffers', '1.6.1'
 
 gem 'sanitize', '4.0.0'
 
+gem 'rb-libsvm', '1.3.1', require: 'libsvm'
+
