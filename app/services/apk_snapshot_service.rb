@@ -35,8 +35,6 @@ class ApkSnapshotService
     def run_common_apps(notes)
       
       j = ApkSnapshotJob.create!(notes: notes)
-
-      job_progress(j.id)
       
       app_identifiers = %w(
         com.instagram.android
@@ -51,8 +49,6 @@ class ApkSnapshotService
         aa = AndroidApp.find_by_app_identifier(ai)
         ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
       end
-
-      retry_failed_apps(j.id)
       
     end
 
@@ -71,8 +67,8 @@ class ApkSnapshotService
         success = j.apk_snapshots.where(status: 1).count
         fail = j.apk_snapshots.where(status: 0).count
 
-        puts "Progress : #{((success + fail).to_f/total)*100}% \r"
-        puts "Success Rate : #{(success.to_f/total.to_f)*100}% \r"
+        print "Progress : #{((success + fail).to_f/total)*100}%\nSuccess Rate : #{(success.to_f/total.to_f)*100}%"
+        print "\r"
 
         sleep 1
       end
