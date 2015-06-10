@@ -43,6 +43,10 @@ class ApkSnapshotServiceWorker
         @try = MAX_TRIES
         return false
       else
+        
+        apk_snap.google_account_id = google_account_id
+        apk_snap.save!
+
         start_time = Time.now()
         ApkDownloader.configure do |config|
           config.email = email

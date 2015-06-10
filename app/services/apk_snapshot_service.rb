@@ -54,8 +54,8 @@ class ApkSnapshotService
       end
     end
 
-    def job_progress(job_id)
-      j = ApkSnapshotJob.find(job_id)
+    def job
+      j = ApkSnapshotJob.last
 
       while true do
         total = j.apk_snapshots.count
@@ -65,12 +65,11 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        # Why is this wrong????!!!
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        thread_count = Thread.list.select {|thread| thread.status == "run"}.count
+        currently_downloading = ApkSnapshot.where(['apk_snapshot_job_id = ? and download_time IS NULL and google_account_id IS NOT NULL', j.id]).count
 
-        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Threads : #{thread_count}"
+        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
         print "\r"
 
         return false if progress == 100.0
