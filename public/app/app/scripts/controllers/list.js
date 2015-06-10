@@ -48,6 +48,5 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         hiddenElement.download = 'mightysignal_list.csv';
         hiddenElement.click();
       });
-  }
-
+  };
 }]);

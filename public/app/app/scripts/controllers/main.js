@@ -172,8 +172,8 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope",
-    function($scope, apiService, listApiService, $filter, $rootScope) {
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",
+    function($scope, apiService, listApiService, $filter, $rootScope, loggitService) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
@@ -220,8 +220,23 @@ angular.module('appApp')
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
-          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform);
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
+            $scope.notify('add-selected-success');
+          }).error(function() {
+            $scope.notify('add-selected-error');
+          });
           $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+        },
+        $scope.notify = function(type) {
+
+          console.log('notify called');
+
+          switch (type) {
+            case "add-selected-success":
+              return loggitService.logSuccess("Items were added successfully.");
+            case "add-selected-error":
+              return loggitService.logError("Error! Something went wrong while adding to list.");
+          }
         },
         $scope.addAppToList = function(selectedApp) {
           listApiService.modifyCheckbox(selectedApp.id, selectedApp.type, $rootScope.selectedAppsForList);
