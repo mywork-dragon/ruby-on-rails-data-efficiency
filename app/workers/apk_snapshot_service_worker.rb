@@ -1,3 +1,5 @@
+require 'timeout'
+
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
@@ -77,9 +79,18 @@ class ApkSnapshotServiceWorker
       else
         apk_snap.status = :failure
         apk_snap.save!
+
+        ga = GoogleAccount.find(google_account_id)
+        ga.in_use = false
+        ga.save!
+
       end
 
     else
+
+      ga = GoogleAccount.find(google_account_id)
+      ga.in_use = false
+      ga.save!
 
       print "success"
       end_time = Time.now()
@@ -96,6 +107,7 @@ class ApkSnapshotServiceWorker
       File.delete(file_name)
       
     end
+
   end
 
   def optimal_account(android_app_id, apk_snapshot_job_id)
@@ -103,6 +115,7 @@ class ApkSnapshotServiceWorker
     (0...n).each do |a|
       ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",101).order(last_used: :asc).limit(5).sample
       ga.last_used = DateTime.now
+      ga.in_use = true
       ga.save!
 
       # Limitted

@@ -12,24 +12,18 @@ class ApkSnapshotService
       
     end
   
-    def run_n(notes, size: 100)
+    def run_n(notes, size = 100)
       j = ApkSnapshotJob.create!(notes: notes)
       
-      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each_with_index do |app, index|
-        li "App #{index}"
-        ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each do |app|
+
+        if Rails.env.production?
+          ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+        elsif Rails.env.development?
+          ApkSnapshotServiceWorker.new.perform(j.id, app.id)
+        end
+
       end
-    end
-  
-    # For testing
-    def run_test(notes)
-      
-      j = ApkSnapshotJob.create!(notes: notes)
-      
-      aa = AndroidApp.find_by_app_identifier('com.pinterest')
-      # ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
-      ApkSnapshotServiceWorker.new.perform(j.id, aa.id)
-      
     end
     
     def run_common_apps(notes)
@@ -39,12 +33,11 @@ class ApkSnapshotService
       app_identifiers = %w(
         com.instagram.android
         com.pinterest
+        com.snapchat.android
+        com.twitter.android
+        com.skype.raider
+        com.facebook.orca
       )
-
-        # com.snapchat.android
-        # com.twitter.android
-        # com.skype.raider
-        # com.facebook.orca
       
       app_identifiers.each do |ai|
         aa = AndroidApp.find_by_app_identifier(ai)
@@ -72,7 +65,9 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%"
+        downloading_count = GoogleAccount.where(in_use: true).count
+
+        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Currently Downloading : #{downloading_count} apps"
         print "\r"
 
         return false if progress == 100.0
@@ -111,4 +106,4 @@ end
 
 
 # ApkSnapshotService.run_common_apps('')
-# ApkSnapshotService.job_progress(34)
+# ApkSnapshotService.job_progress()
