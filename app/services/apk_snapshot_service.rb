@@ -67,8 +67,12 @@ class ApkSnapshotService
         success = j.apk_snapshots.where(status: 1).count
         fail = j.apk_snapshots.where(status: 0).count
 
-        print "Progress : #{((success + fail).to_f/total)*100}%\nSuccess Rate : #{(success.to_f/total.to_f)*100}%"
+        progress = ((success + fail).to_f/total)*100
+
+        print "Progress : #{progress}%\nSuccess Rate : #{(success.to_f/total.to_f)*100}%"
         print "\r"
+
+        return false if progress == 100.0
 
         sleep 1
       end
