@@ -39,15 +39,17 @@ class ApkSnapshotService
       app_identifiers = %w(
         com.instagram.android
         com.pinterest
-        com.snapchat.android
-        com.twitter.android
-        com.skype.raider
-        com.facebook.orca
       )
+
+        # com.snapchat.android
+        # com.twitter.android
+        # com.skype.raider
+        # com.facebook.orca
       
       app_identifiers.each do |ai|
         aa = AndroidApp.find_by_app_identifier(ai)
         ApkSnapshotServiceWorker.perform_async(j.id, aa.id)
+        # ApkSnapshotServiceWorker.new.perform(j.id, aa.id)
       end
       
     end
@@ -68,8 +70,9 @@ class ApkSnapshotService
         fail = j.apk_snapshots.where(status: 0).count
 
         progress = ((success + fail).to_f/total)*100
+        success_rate = (success.to_f/(success + fail).to_f)*100
 
-        print "Progress : #{progress}%  |  Success Rate : #{((success.to_f/(success + fail).to_f)*100)}%"
+        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%"
         print "\r"
 
         return false if progress == 100.0
@@ -108,4 +111,4 @@ end
 
 
 # ApkSnapshotService.run_common_apps('')
-# ApkSnapshotService.job_progress(33)
+# ApkSnapshotService.job_progress(34)
