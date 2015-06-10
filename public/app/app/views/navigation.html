@@ -12,10 +12,10 @@
         <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/"> <i class="fa fa-search"></i> <span>Search</span></a>
         </li>
-        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation" ng-class="{active: $route.current.activeTab == 'lists'}">
-            <a href="#/lists"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
+        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
+            <a href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
-              <li ng-repeat="list in usersLists"><a href="#/lists" ng-click="getList(list.id); $scope.selectedAppsForList = []"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
+              <li ng-repeat="list in usersLists"><a href="#/lists" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="getList(list.id); $scope.selectedAppsForList = []"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
               <li><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>

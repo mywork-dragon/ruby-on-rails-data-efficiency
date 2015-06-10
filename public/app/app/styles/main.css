@@ -3947,7 +3947,7 @@ fieldset[disabled] .btn-danger.active {
 #nav > li.open > .fa, #nav > li:hover > .fa {
   color: #ffffff; }
 
-#nav > li.active > a {
+#nav > li.active > a, #nav ul > li > a.active {
   background-color: #272b2f;
   color: #ffffff;
   border-left: 2px solid #0393dd; }
