@@ -367,7 +367,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = %w(id name type mobilePriority userBase lastUpdated adSpend categories company_id company_name fortuneRank)
+    header = ['Mighty Signal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'Mighty Signal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)']
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"
@@ -382,10 +382,11 @@ class ApiController < ApplicationController
           app.user_base,
           newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           app.ios_fb_ad_appearances.present?,
-          newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
           company.present? ? company.id : nil,
           company.present? ? company.name : nil,
-          company.present? ? company.fortune_1000_rank : nil
+          company.present? ? company.fortune_1000_rank : nil,
+          app.get_website_urls.join(", ")
       ]
 
       apps << app_hash
@@ -404,10 +405,11 @@ class ApiController < ApplicationController
           app.user_base,
           newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           app.android_fb_ad_appearances.present?,
-          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(", ") : nil,
           company.present? ? company.id : nil,
           company.present? ? company.name : nil,
-          company.present? ? company.fortune_1000_rank : nil
+          company.present? ? company.fortune_1000_rank : nil,
+          app.get_website_urls.join(", ")
       ]
 
       apps << app_hash
@@ -424,7 +426,7 @@ class ApiController < ApplicationController
     end
 
     send_data list_csv
-    
+
   end
 
   def create_new_list
