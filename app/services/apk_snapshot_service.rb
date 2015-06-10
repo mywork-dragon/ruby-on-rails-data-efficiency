@@ -105,3 +105,7 @@ class ApkSnapshotService
   end
   
 end
+
+
+# ApkSnapshotService.run_common_apps('')
+# ApkSnapshotService.job_progress(33)

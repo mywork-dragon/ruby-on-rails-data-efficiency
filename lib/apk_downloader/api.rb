@@ -29,9 +29,9 @@ module ApkDownloader
         "source" => "android",
         "androidId" => ApkDownloader.configuration.android_id,
         "app" => "com.android.vending",
-        "device_country" => "fr",
-        "operatorCountry" => "fr",
-        "lang" => "fr",
+        "device_country" => "us",
+        "operatorCountry" => "us",
+        "lang" => "us",
         "sdk_version" => "16"
       }
 
