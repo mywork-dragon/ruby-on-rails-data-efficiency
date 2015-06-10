@@ -7202,6 +7202,10 @@ i.infoTooltipIcon {
   width: 170px;
 }
 
+#listViewTableHeading {
+  padding-right: 8px;
+}
+
 #listViewTableHeading span, #listViewTableHeading button {
   margin-left: 5px;
 }
