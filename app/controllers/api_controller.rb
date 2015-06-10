@@ -358,7 +358,73 @@ class ApiController < ApplicationController
   end
 
   def export_list_to_csv
-    render json: {:test => 'test'}
+
+    list_id = params['listId']
+
+    list = List.find(list_id)
+
+    ios_apps = list.ios_apps
+    android_apps = list.android_apps
+    apps = []
+
+    header = %w(id name type mobilePriority userBase lastUpdated adSpend categories company_id company_name fortuneRank)
+
+    ios_apps.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = [
+          app.id,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          'IosApp',
+          app.mobile_priority,
+          app.user_base,
+          newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          app.ios_fb_ad_appearances.present?,
+          newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          company.present? ? company.id : nil,
+          company.present? ? company.name : nil,
+          company.present? ? company.fortune_1000_rank : nil
+      ]
+
+      apps << app_hash
+
+    end
+
+    android_apps.each do |app|
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+
+      app_hash = [
+          app.id,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          'AndroidApp',
+          app.mobile_priority,
+          app.user_base,
+          newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          app.android_fb_ad_appearances.present?,
+          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+          company.present? ? company.id : nil,
+          company.present? ? company.name : nil,
+          company.present? ? company.fortune_1000_rank : nil
+      ]
+
+      apps << app_hash
+
+    end
+
+    puts apps.inspect
+
+    list_csv = CSV.generate do |csv|
+      csv << header
+      apps.each do |app|
+          csv << app
+      end
+    end
+
+    send_data list_csv
+    
   end
 
   def create_new_list

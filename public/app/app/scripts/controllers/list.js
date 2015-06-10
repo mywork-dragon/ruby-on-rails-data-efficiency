@@ -45,6 +45,15 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       location.reload();
     });
   };
-  $scope.exportListToCsv = listApiService.exportToCsv;
+  $scope.exportListToCsv = function(listId) {
+    listApiService.exportToCsv(listId).success(function (content) {
+        var hiddenElement = document.createElement('a');
+
+        hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'mightysignal_list.csv';
+        hiddenElement.click();
+      });
+  }
 
 }]);

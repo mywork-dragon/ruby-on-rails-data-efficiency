@@ -54,8 +54,12 @@ angular.module("appApp")
           data: {listId: listId}
         });
       },
-      exportToCsv: function(listName) {
-        console.log(listName);
+      exportToCsv: function(listId) {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/list/export_to_csv',
+          params: {listId: listId}
+        });
       }
     }
   }]);
