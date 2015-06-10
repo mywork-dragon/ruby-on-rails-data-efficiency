@@ -5,8 +5,8 @@
     <div class="panel-heading" id="listViewTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv($root.currentList)">Export List to CSV</button>
-     <button type="submit" class="btn btn-danger pull-right" ng-click="deleteList($root.currentList)">Delete List</button>
-     <button type="submit" class="btn btn-danger pull-right" ng-click="deleteSelected($root.currentList, $root.selectedAppsForList)">Delete Selected</button>
+     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
+     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal">Delete Selected</button>
       <!--
       <span class="ui-select pull-right">
         <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
@@ -107,7 +107,10 @@
         </div>
       </div>
 
-      <aside ng-include="'/app/app/views/list-create-modal.html'"></aside>
+      <!-- Modals -->
+      <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
 
     </div>
 
