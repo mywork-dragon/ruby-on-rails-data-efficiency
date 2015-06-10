@@ -65,9 +65,12 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        downloading_count = GoogleAccount.where(in_use: true).count
+        # Why is this wrong????!!!
+        accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Currently Downloading : #{downloading_count} apps"
+        thread_count = Thread.list.select {|thread| thread.status == "run"}.count
+
+        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Threads : #{thread_count}"
         print "\r"
 
         return false if progress == 100.0
