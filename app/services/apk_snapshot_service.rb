@@ -65,7 +65,7 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        apk_ga = ApkSnapshot.select(:google_account_id).where(['apk_snapshot_job_id = ? and download_time IS NULL and google_account_id IS NOT NULL', j.id])
+        apk_ga = ApkSnapshot.select(:google_account_id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
         currently_downloading = apk_ga.count
 

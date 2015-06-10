@@ -113,7 +113,7 @@ class ApkSnapshotServiceWorker
       ga.last_used = DateTime.now
       ga.save!
 
-      if ApkSnapshots.where(google_accounts: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
+      if ApkSnapshot.where(google_account_id: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
         best_account = GoogleAccount.where(id: ga.id)
         p = Proxy.order(last_used: :asc).limit(5).sample
         return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
