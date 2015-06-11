@@ -70,7 +70,7 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
+gem 'sidekiq', '3.3.0', :require => 'sidekiq/api'
 
 gem 'filesize', '0.0.4'
 
@@ -112,3 +112,4 @@ gem 'sanitize', '4.0.0'
 
 gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 
+gem 'net', :require => 'net/http'
