@@ -43,7 +43,44 @@ class LibsvmService
       
       #labels
       # 0: link to no company
-      # 1: link to existing company with developer 
+      # 1: link to existing company with developer identifier 
+      # 2: link to seller_url
+      # 3: link to support_url
+      
+      labels = [0, 1, 1, 1]
+
+      problem.set_examples(labels, examples)
+
+      model = Libsvm::Model.train(problem, parameter)
+
+      # pred = model.predict(Libsvm::Node.features(1, 1, 1))
+      pred = model.predict(Libsvm::Node.features(1, 0, 1, 0))
+      puts "Example [1, 1, 1] - Predicted #{pred}"
+    end
+    
+    def algo_whois
+      problem = Libsvm::Problem.new
+      parameter = Libsvm::SvmParameter.new
+
+      parameter.cache_size = 1 # in megabytes
+
+      parameter.eps = 0.001
+      parameter.c = 10
+      
+      #inputs:
+       
+      #app_is_found, 
+      #app_in_database
+      
+      # examples = [ ]
+
+      examples = [ [0, 0, 0, 0], [1, 0, 0, 0], [1, 1, 1, 1], [1, 0, 1, 1] ].map {|ary| Libsvm::Node.features(ary) }
+      
+      #labels
+      # 0: link to no company
+      # 1: link to existing company with developer identifier 
+      # 2: link to seller_url
+      # 3: link to support_url
       
       labels = [0, 1, 1, 1]
 
