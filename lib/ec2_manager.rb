@@ -32,7 +32,6 @@ class Ec2Manager
       resource = Aws::EC2::Resource.new(client: ec2)
  
       image = resource.images(filters: [{:name=>"image-id",:values=>[image_id]}]).first
-
  
       puts "image: #{image}"
       
@@ -42,6 +41,7 @@ class Ec2Manager
       
       key_pairs = resource.key_pairs
       key_pairs.each do |kp|
+        puts kp.name
         if kp.name == key_pair_name
           key_pair = kp
           break
@@ -83,14 +83,16 @@ class Ec2Manager
       instance
     end
     
-    def launch_proxy(options={})
+    def launch_proxy(region: 'us-east-1')
       
-      region = 'us-east-1'
-      region = options[region] if options[region]
+      if region == 'us-east-1'
+        image_id = 'ami-84562dec'
+        instance_type = 't1.micro'
+      end
       
       instance = launch(
-                        image_id: 'ami-84562dec',
-                        instance_type: 't1.micro',
+                        image_id: image_id,
+                        instance_type: instance_type,
                         region: region,
                         key_pair_name: 'proxy', 
                         security_group_name: 'proxy'
