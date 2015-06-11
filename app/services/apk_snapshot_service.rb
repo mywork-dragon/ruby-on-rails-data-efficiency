@@ -74,7 +74,8 @@ class ApkSnapshotService
         print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
 
         if progress == 100.0
-          return "\nScrape Complete"
+          puts "\nScrape Complete"
+          return false
         else
           print "\r"
         end
@@ -110,7 +111,3 @@ class ApkSnapshotService
   end
   
 end
-
-
-# ApkSnapshotService.run_common_apps('')
-# ApkSnapshotService.job_progress()
