@@ -62,12 +62,12 @@ class Tor
     
     private
     
-    def get_using_proxy(url, ip, limit=10)
+    def get_using_proxy(url, ip, port: 9050, limit: 10,)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
       uri = URI.parse(url)
       
-      sp = Net::HTTP.SOCKSProxy(ip, 9050).new(uri.host, uri.port)
+      sp = Net::HTTP.SOCKSProxy(ip, port).new(uri.host, uri.port)
       sp.use_ssl = true if uri.scheme == 'https'
       
       req = Net::HTTP::Get.new(uri)
@@ -83,7 +83,7 @@ class Tor
       when Net::HTTPRedirection  
         location = response['location']
         #puts "Redirected to: #{location}"
-        get_using_proxy(location, ip, limit - 1)
+        get_using_proxy(location, ip, limit: limit - 1)
       else
         response.error!
       end

@@ -6,7 +6,7 @@ class WhoisService
     begin
       w = Whois::Client.new
       @result = w.lookup(domain)
-      #puts @result
+      puts @result
     rescue => e
       return ret
     end
