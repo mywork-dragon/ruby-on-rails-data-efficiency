@@ -206,8 +206,10 @@ class FilterService
     end
     
     def android_app_keywords_query(keywords)
-      name_query_array = keywords.map{|k| "android_app_snapshots.name LIKE \"%#{k}%\""}
-      "joins(:newest_android_app_snapshot).where(\'#{name_query_array.join(' OR ')}\')"
+      # name_query_array = keywords.map{|k| "android_app_snapshots.name LIKE \"%#{k}%\""}
+      name_query_array = keywords.map{|k| "android_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
+      keywords_with_quotes = keywords.map{|k| "\"%#{k}%\", \"%#{k}%\""}
+      "joins(:newest_android_app_snapshot).where(\'#{name_query_array.join(' OR ')}\', #{keywords_with_quotes.join(',')})"
     end
     
     def ios_sort_order_query(sort_by, order_by)
