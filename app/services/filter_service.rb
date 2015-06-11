@@ -200,10 +200,10 @@ class FilterService
     end
     
     def ios_app_keywords_query(keywords)
-      # name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
-      # keywords_with_quotes = keywords.map{|k| "\"%#{k}%\", \"%#{k}%\""}
-      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ?"}
-      keywords_with_quotes = keywords.map{|k| "\"%#{k}%\""}
+      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
+      keywords_with_quotes = keywords.map{|k| "\"%#{k}%\", \"#{k}%\""}
+      # name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ?"}
+      # keywords_with_quotes = keywords.map{|k| "\"%#{k}%\""}
       "joins(:newest_ios_app_snapshot).where(\'#{name_query_array.join(' OR ')}\', #{keywords_with_quotes.join(',')})"
     end
     
