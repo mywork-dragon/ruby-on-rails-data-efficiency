@@ -60,7 +60,6 @@ class Tor
       Proxy.order(last_used: :asc).limit(5).sample
     end
     
-    private
     
     def get_using_proxy(url, ip, port: 9050, limit: 10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
