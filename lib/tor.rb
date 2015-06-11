@@ -62,7 +62,7 @@ class Tor
     
     private
     
-    def get_using_proxy(url, ip, port: 9050, limit: 10,)
+    def get_using_proxy(url, ip, port: 9050, limit: 10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
       uri = URI.parse(url)
