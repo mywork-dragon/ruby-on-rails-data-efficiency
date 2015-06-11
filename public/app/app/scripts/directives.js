@@ -185,4 +185,62 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
             });
           };
-      });
+      }).directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {
+          return {
+            replace: true,
+            restrict: 'E',
+            scope: {
+              checkboxes: '=',
+              allselected: '=allSelected',
+              allclear: '=allClear'
+            },
+            template: '<input type="checkbox" ng-model="checkboxMaster" ng-change="checkboxMasterChange()">',
+            controller: function ($scope, $element) {
+
+              $scope.checkboxMasterChange = function () {
+                if ($scope.checkboxMaster) {
+                  $rootScope.selectedAppsForList = [];
+                  angular.forEach($scope.checkboxes, function (app, index) {
+                    $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
+                  });
+                  console.log('Master Checkbox true', $rootScope.selectedAppsForList);
+                } else {
+                  angular.forEach($scope.checkboxes, function (cb, index) {
+                    $rootScope.selectedAppsForList = [];
+                  });
+                  console.log('Master Checkbox false', $rootScope.selectedAppsForList);
+                }
+              };
+
+              $scope.$watch('checkboxes', function () {
+                var allSet = true,
+                  allClear = true;
+                angular.forEach($scope.checkboxes, function (cb, index) {
+                  if (cb.isSelected) {
+                    allClear = false;
+                  } else {
+                    allSet = false;
+                  }
+                });
+
+                if ($scope.allselected !== undefined) {
+                  $scope.allselected = allSet;
+                }
+                if ($scope.allclear !== undefined) {
+                  $scope.allclear = allClear;
+                }
+
+                $element.prop('indeterminate', false);
+                if (allSet) {
+                  $scope.checkboxMaster = true;
+                } else if (allClear) {
+                  $scope.checkboxMaster = false;
+                } else {
+                  $scope.checkboxMaster = false;
+                  $element.prop('indeterminate', true);
+                }
+
+              }, true);
+            }
+          };
+        }]);

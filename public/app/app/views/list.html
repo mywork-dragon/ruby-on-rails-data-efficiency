@@ -4,7 +4,7 @@
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
-     <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv($root.currentList)">Export List to CSV</button>
+     <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv()">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal">Delete Selected</button>
       <!--
@@ -25,6 +25,7 @@
         <thead>
         <tr>
           <th><div class="th">
+            <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
           </div></th>
           <th><div class="th">
             App Name
@@ -84,7 +85,10 @@
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="appId" value="{{app.app.id}}" ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)">
+            <label>
+              <input type="checkbox" name="appId" ng-model="appCheckbox" ng-click="addAppToList(app.app)"> <!--  ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)" -->
+              {{appCheckbox}}
+            </label>
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>

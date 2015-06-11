@@ -220,10 +220,20 @@ angular.module('appApp')
         $scope.addSelectedTo = function(list, selectedApps) {
           listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
             $scope.notify('add-selected-success');
+            $rootScope.selectedAppsForList = [];
+            $scope.uncheckAllCheckboxes();
           }).error(function() {
             $scope.notify('add-selected-error');
           });
           $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+        },
+        $scope.checkAllCheckboxes = function() {
+          $scope.selectAppCheckbox = angular.copy($rootScope.apps);
+          console.log(checkAllCheckboxes);
+        },
+        $scope.uncheckAllCheckboxes = function() {
+          console.log($scope.selectAppCheckbox);
+          $scope.selectAppCheckbox = [];
         },
         $scope.notify = function(type) {
 

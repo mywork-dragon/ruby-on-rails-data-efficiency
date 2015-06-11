@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", function($scope, $http, $routeParams, $rootScope, listApiService) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "$location",
+  function($scope, $http, $routeParams, $rootScope, listApiService, $location) {
 
   $scope.load = function() {
     listApiService.getList($routeParams.id).success(function(data) {
@@ -28,20 +29,24 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     listApiService.addSelectedTo(list, selectedApps);
     $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
   };
-  $scope.deleteSelected = function(listId, selectedApps) {
-    listApiService.deleteSelected(listId, selectedApps).success(function() {
+  $scope.deleteSelected = function(selectedApps) {
+    listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
       $rootScope.selectedAppsForList = [];
-      $scope.$apply()
+      var path = '/lists/' + $routeParams.id;
+      console.log(path);
+      $location.path(path);
     });
 
+    console.log($scope);
+
   };
-  $scope.deleteList = function(listId) {
-    listApiService.deleteList(listId).success(function() {
+  $scope.deleteList = function() {
+    listApiService.deleteList($routeParams.id).success(function() {
       location.reload();
     });
   };
-  $scope.exportListToCsv = function(listId) {
-    listApiService.exportToCsv(listId).success(function (content) {
+  $scope.exportListToCsv = function() {
+    listApiService.exportToCsv($routeParams.id).success(function (content) {
         var hiddenElement = document.createElement('a');
 
         hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
@@ -51,6 +56,8 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       });
 
   };
+  $scope.AllSelectedItems = false;
+  $scope.NoSelectedItems = false;
 
   $scope.load();
 
