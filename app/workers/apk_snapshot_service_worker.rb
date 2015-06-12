@@ -61,7 +61,7 @@ class ApkSnapshotServiceWorker
           print "\nDownloading #{app_identifier}... "
 
           ApkDownloader.download! app_identifier, file_name
-          
+
         }
 
       end

@@ -74,7 +74,7 @@ class ApkSnapshotService
 
         # Check for blocked accounts
 
-        print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
+        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
 
         if progress == 100.0
           puts "\nScrape Complete"
