@@ -1,3 +1,5 @@
+require 'timeout'
+
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
@@ -55,7 +57,11 @@ class ApkSnapshotServiceWorker
         app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
         file_name = apk_file_name(app_identifier)
         print "\nDownloading #{app_identifier}... "
-        ApkDownloader.download! app_identifier, file_name
+
+        status = Timeout::timeout(300) {
+          ApkDownloader.download! app_identifier, file_name
+        }
+
       end
 
     rescue Exception => e
