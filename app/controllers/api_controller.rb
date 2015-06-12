@@ -449,7 +449,11 @@ class ApiController < ApplicationController
       listable_type = 'AndroidApp'
     end
 
-    apps.each { |app| ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: listable_type) }
+    apps.each { |app|
+      if ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: listable_type).nil?
+        ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: listable_type)
+      end
+    }
 
     render json: {:status => 'success'}
   end
