@@ -225,7 +225,7 @@ angular.module('appApp')
           }).error(function() {
             $scope.notify('add-selected-error');
           });
-          $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+          $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
         },
         $scope.checkAllCheckboxes = function() {
           $scope.selectAppCheckbox = angular.copy($rootScope.apps);
