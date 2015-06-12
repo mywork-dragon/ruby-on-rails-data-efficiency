@@ -34,9 +34,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       $rootScope.selectedAppsForList = [];
       location.reload();
     });
-
-    console.log($scope);
-
   };
   $scope.deleteList = function() {
     listApiService.deleteList($routeParams.id).success(function() {

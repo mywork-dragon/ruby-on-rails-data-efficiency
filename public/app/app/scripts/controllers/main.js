@@ -229,16 +229,11 @@ angular.module('appApp')
         },
         $scope.checkAllCheckboxes = function() {
           $scope.selectAppCheckbox = angular.copy($rootScope.apps);
-          console.log(checkAllCheckboxes);
         },
         $scope.uncheckAllCheckboxes = function() {
-          console.log($scope.selectAppCheckbox);
           $scope.selectAppCheckbox = [];
         },
         $scope.notify = function(type) {
-
-          console.log('notify called');
-
           switch (type) {
             case "add-selected-success":
               return loggitService.logSuccess("Items were added successfully.");

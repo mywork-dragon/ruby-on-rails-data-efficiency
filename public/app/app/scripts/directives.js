@@ -203,12 +203,10 @@ angular.module("app.directives", []).directive("imgHolder", [
                   angular.forEach($scope.checkboxes, function (app, index) {
                     $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
                   });
-                  console.log('Master Checkbox true', $rootScope.selectedAppsForList);
                 } else {
                   angular.forEach($scope.checkboxes, function (cb, index) {
                     $rootScope.selectedAppsForList = [];
                   });
-                  console.log('Master Checkbox false', $rootScope.selectedAppsForList);
                 }
               };
 
