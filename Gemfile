@@ -97,6 +97,8 @@ gem 'minitest-fail-fast', '0.0.1'
 
 gem 'whois', '3.5.9'
 
+gem 'text', '1.3.1'
+
 gem 'iso_country_codes', '0.7.1'
 
 # Use debugger
@@ -107,5 +109,7 @@ gem 'ruby_apk', '0.7.1'
 gem 'ruby-protocol-buffers', '1.6.1'
 
 gem 'sanitize', '4.0.0'
+
+gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 
 gem 'net', :require => 'net/http'

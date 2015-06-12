@@ -41,6 +41,10 @@ class ApkSnapshotServiceWorker
         @try = MAX_TRIES
         return false
       else
+
+        apk_snap.google_account_id = google_account_id
+        apk_snap.save!
+
         start_time = Time.now()
         ApkDownloader.configure do |config|
           config.email = email
@@ -51,7 +55,9 @@ class ApkSnapshotServiceWorker
         app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
         file_name = apk_file_name(app_identifier)
         print "\nDownloading #{app_identifier}... "
+
         ApkDownloader.download! app_identifier, file_name
+
       end
 
     rescue Exception => e
@@ -69,6 +75,10 @@ class ApkSnapshotServiceWorker
       else
         flag_account(google_account_id, e.message)
       end
+
+      ga = GoogleAccount.find(google_account_id)
+      ga.in_use = false
+      ga.save!
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
 
@@ -93,35 +103,32 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save!
 
+      ga = GoogleAccount.find(google_account_id)
+      ga.in_use = false
+      ga.save!
+
       File.delete(file_name)
       
     end
+
   end
 
   def optimal_account(android_app_id, apk_snapshot_job_id)
-    n = GoogleAccount.where(blocked: false).where("flags < ?",101).count
+    n = GoogleAccount.where(blocked: false, in_use: false).where("flags < ?",101).count
     (0...n).each do |a|
-      ga = GoogleAccount.select(:id).where(blocked: false).where("flags < ?",101).order(last_used: :asc).limit(5).sample
+      ga = GoogleAccount.select(:id).where(blocked: false, in_use: false).where("flags < ?",101).order(last_used: :asc).limit(5).sample
       ga.last_used = DateTime.now
       ga.save!
 
-      # Limitted
-
-      # if ApkSnapshots.where(google_accounts: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
-      #   best_account = GoogleAccount.where(id: ga.id)
-      #   p = Proxy.order(last_used: :asc).limit(5).sample
-      #   return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
-      # end
-
-
-      # Unlimitted
-
-      best_account = GoogleAccount.where(id: ga.id)
-      p = Proxy.order(last_used: :asc).limit(5).sample
-      return best_account[0]["id"], best_account[0]["email"], best_account[0]["password"], best_account[0]["android_identifier"], p.private_ip
+      if ApkSnapshot.where(google_account_id: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
+        best_account = GoogleAccount.find(ga.id)
+        best_account.in_use = true
+        best_account.save!
+        p = Proxy.order(last_used: :asc).limit(5).sample
+        return best_account.id, best_account.email, best_account.password, best_account.android_identifier, p.private_ip
+      end
 
     end
-     
     false
   end
 

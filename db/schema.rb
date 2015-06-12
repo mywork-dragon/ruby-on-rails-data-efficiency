@@ -510,6 +510,34 @@ ActiveRecord::Schema.define(version: 20150609023820) do
   add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
   add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
 
+  create_table "listables_lists", force: true do |t|
+    t.integer  "listable_id"
+    t.integer  "list_id"
+    t.string   "listable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "listables_lists", ["list_id"], name: "index_listables_lists_on_list_id", using: :btree
+  add_index "listables_lists", ["listable_id"], name: "index_listables_lists_on_listable_id", using: :btree
+  add_index "listables_lists", ["listable_type"], name: "index_listables_lists_on_listable_type", using: :btree
+
+  create_table "lists", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lists_users", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "list_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "lists_users", ["list_id"], name: "index_lists_users_on_list_id", using: :btree
+  add_index "lists_users", ["user_id"], name: "index_lists_users_on_user_id", using: :btree
+
   create_table "m_turk_workers", force: true do |t|
     t.string   "aws_identifier"
     t.integer  "age"
