@@ -8,8 +8,15 @@ class ApkSnapshotServiceWorker
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
-    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
-    download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
+    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
+    # download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
+
+    unless asj.is_fucked
+      download_apk(apk_snapshot_job_id, app_id)
+    else
+      ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
+    end
+
   end
   
   def apk_file_name(app_identifier)
@@ -30,6 +37,13 @@ class ApkSnapshotServiceWorker
     @try = 0
 
     begin
+
+      asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
+
+      if asj.is_fucked
+        @try = MAX_TRIES
+        return false
+      end
 
       google_account_id, email, password, android_id, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
 
