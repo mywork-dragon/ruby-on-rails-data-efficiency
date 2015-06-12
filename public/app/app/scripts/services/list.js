@@ -19,6 +19,13 @@ angular.module("appApp")
         }
       },
       createNewList: function(listName) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "New List Created", {
+            "listName": listName
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/list/create_new',
@@ -33,6 +40,15 @@ angular.module("appApp")
         });
       },
       addSelectedTo: function(listId, selectedApps, appPlatform) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Added to List", {
+            "listId": listId,
+            "selectedApps": selectedApps,
+            "appPlatform": appPlatform
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'PUT',
           url: API_URI_BASE + 'api/list/add',
@@ -47,6 +63,13 @@ angular.module("appApp")
         });
       },
       deleteList: function(listId) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Deleted List", {
+            "listId": listId
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'PUT',
           url: API_URI_BASE + 'api/list/delete',
@@ -54,6 +77,13 @@ angular.module("appApp")
         });
       },
       exportToCsv: function(listId) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Exported CSV", {
+            "listId": listId
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/list/export_to_csv',
