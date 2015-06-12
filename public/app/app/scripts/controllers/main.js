@@ -70,7 +70,7 @@ angular.module('appApp')
         var submitSearchStartTime = new Date().getTime();
 
         $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags)
+        apiService.searchRequestPost($rootScope.tags, 1, $rootScope.numPerPage)
           .success(function(data) {
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
@@ -284,8 +284,8 @@ angular.module('appApp')
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
-        $scope.numPerPageOpt = [20, 50, 100, 200],
-        $rootScope.numPerPage = $scope.numPerPageOpt[1],
+        $scope.numPerPageOpt = [50, 200, 350, 1000],
+        $rootScope.numPerPage = $scope.numPerPageOpt[2],
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }
