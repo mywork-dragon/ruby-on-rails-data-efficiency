@@ -69,7 +69,10 @@ class ApkSnapshotService
 
         currently_downloading = apk_ga.count
 
-        accounts_in_use = apk_ga.count('google_account_id', :distinct => true)
+        # accounts_in_use = apk_ga.count('google_account_id', :distinct => true)
+        accounts_in_use = GoogleAccount.where(in_use: true).count
+
+        # Check for blocked accounts
 
         print "Progress : #{progress.round(2)}%  |  Success Rate : #{success_rate.round(2)}%  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
 
