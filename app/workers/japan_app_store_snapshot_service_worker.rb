@@ -12,8 +12,8 @@ class JapanAppStoreSnapshotServiceWorker
 
   end
   
-  
-  def save_attributes(ios_app_id:, job_identifier:)
+  # I deleted the colons because it was causing an error.
+  def save_attributes(ios_app_id, job_identifier)
     ios_app = IosApp.find(ios_app_id)
     
     s = JpIosAppSnapshot.create(ios_app: ios_app, job_identifier: job_identifier)
