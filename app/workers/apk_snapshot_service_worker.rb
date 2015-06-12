@@ -42,25 +42,21 @@ class ApkSnapshotServiceWorker
         return false
       else
 
-        status = Timeout::timeout(300) {
+        apk_snap.google_account_id = google_account_id
+        apk_snap.save!
 
-          apk_snap.google_account_id = google_account_id
-          apk_snap.save!
+        start_time = Time.now()
+        ApkDownloader.configure do |config|
+          config.email = email
+          config.password = password
+          config.android_id = android_id
+          config.proxy = proxy
+        end
+        app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
+        file_name = apk_file_name(app_identifier)
+        print "\nDownloading #{app_identifier}... "
 
-          start_time = Time.now()
-          ApkDownloader.configure do |config|
-            config.email = email
-            config.password = password
-            config.android_id = android_id
-            config.proxy = proxy
-          end
-          app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
-          file_name = apk_file_name(app_identifier)
-          print "\nDownloading #{app_identifier}... "
-
-          ApkDownloader.download! app_identifier, file_name
-
-        }
+        ApkDownloader.download! app_identifier, file_name
 
       end
 
