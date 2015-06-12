@@ -87,6 +87,12 @@ class ApkSnapshotService
       end
 
     end
+
+    def fuck
+      j = ApkSnapshotJob.last
+      j.is_fucked = true
+      j.save!
+    end
   
     def about_job(job_id)
       
