@@ -1,4 +1,4 @@
-<div class="page-signin">
+<div class="page-signin" data-ng-controller="MainCtrl">
 
     <div class="signin-header">
         <div class="container text-center">
@@ -22,7 +22,7 @@
                                 <input type="email"
                                        class="form-control"
                                        placeholder="Email"
-                                       ng-model="user.email"
+                                       ng-model="userEmail"
                                        >
                             </div>
                         </div>
@@ -33,8 +33,8 @@
                                 </span>
                                 <input type="password"
                                        class="form-control"
-                                       placeholder="password"
-                                       ng-model="user.password"
+                                       placeholder="Password"
+                                       ng-model="userPassword"
                                        >
                             </div>
                         </div>

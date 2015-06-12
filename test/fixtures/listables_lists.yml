@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  listable_id: 1
+  list_id: 1
+  listable_type: MyString
+
+two:
+  listable_id: 1
+  list_id: 1
+  listable_type: MyString

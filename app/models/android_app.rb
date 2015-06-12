@@ -2,6 +2,9 @@ class AndroidApp < ActiveRecord::Base
 
   validates :app_identifier, uniqueness: true
   belongs_to :app
+
+  has_many :listables_lists, as: :listable
+  has_many :lists, through: :listables_lists
   
   has_many :android_fb_ad_appearances
   

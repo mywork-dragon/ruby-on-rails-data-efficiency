@@ -271,6 +271,225 @@ class ApiController < ApplicationController
     render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
+  def get_lists
+    render json: User.find(decoded_auth_token[:user_id]).lists
+  end
+
+  # Get a list, given a user_id and list_id
+  def get_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    list = List.find(list_id)
+
+    ios_apps = list.ios_apps
+    android_apps = list.android_apps
+
+    results_json = []
+
+    ios_apps.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = {
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              type: 'IosApp',
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      # li "app_hash: #{app_hash}"
+      # li "HASH: #{app_hash}"
+      results_json << app_hash
+      # li "results_json: #{results_json}"
+    end
+
+    android_apps.each do |app|
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+      app_hash = {
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              type: 'AndroidApp',
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.android_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+
+    # render json: '{"resultsCount": 0, "currentList": "listName", "results":[{"app":{"id":62,"name":"Alpha","mobilePriority":"high","userBase":"moderate","lastUpdated":"2015-02-21","adSpend":true,"categories":[]},"company":{"id":391,"name":"Parisian, Satterfield and Koepp","fortuneRank":391}}]}'
+    render json: {:resultsCount => results_json.count, :currentList => list_id, :results => results_json} #User.find(decoded_auth_token[:user_id]).lists.find(params['listId']).android_apps
+  end
+
+  def export_list_to_csv
+
+    list_id = params['listId']
+
+    list = List.find(list_id)
+
+    ios_apps = list.ios_apps
+    android_apps = list.android_apps
+    apps = []
+
+    header = ['Mighty Signal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'Mighty Signal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)']
+
+    ios_apps.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = [
+          app.id,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          'IosApp',
+          app.mobile_priority,
+          app.user_base,
+          newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          app.ios_fb_ad_appearances.present?,
+          newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
+          company.present? ? company.id : nil,
+          company.present? ? company.name : nil,
+          company.present? ? company.fortune_1000_rank : nil,
+          app.get_website_urls.join(", ")
+      ]
+
+      apps << app_hash
+
+    end
+
+    android_apps.each do |app|
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+
+      app_hash = [
+          app.id,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          'AndroidApp',
+          app.mobile_priority,
+          app.user_base,
+          newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          app.android_fb_ad_appearances.present?,
+          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(", ") : nil,
+          company.present? ? company.id : nil,
+          company.present? ? company.name : nil,
+          company.present? ? company.fortune_1000_rank : nil,
+          app.get_website_urls.join(", ")
+      ]
+
+      apps << app_hash
+
+    end
+
+    puts apps.inspect
+
+    list_csv = CSV.generate do |csv|
+      csv << header
+      apps.each do |app|
+          csv << app
+      end
+    end
+
+    send_data list_csv
+
+  end
+
+  def create_new_list
+
+    authenticated_user = User.find(decoded_auth_token[:user_id])
+
+    list_name = params['listName']
+
+    render json: authenticated_user.lists.create(name: list_name)
+
+    # render json: List.find(authenticated_user.id).find(list_name)
+
+  end
+
+  def add_to_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+    apps = params['apps']
+    app_platform = params['appPlatform']
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    if app_platform == 'ios'
+      listable_type = 'IosApp'
+    else
+      listable_type = 'AndroidApp'
+    end
+
+    apps.each { |app|
+      if ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: listable_type).nil?
+        ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: listable_type)
+      end
+    }
+
+    render json: {:status => 'success'}
+  end
+
+  def delete_from_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+    apps = params['apps']
+
+    puts user_id
+    puts apps.inspect
+    puts list_id
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    puts apps.each { |app| ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: app['type']).destroy }
+    render json: {:status => 'success'}
+  end
+
+  def delete_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    List.find(list_id).destroy
+
+    render json: {:status => 'success'}
+  end
+
   def results
     render json: GoogleResults.search("something")
   end

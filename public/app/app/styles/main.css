@@ -3947,7 +3947,7 @@ fieldset[disabled] .btn-danger.active {
 #nav > li.open > .fa, #nav > li:hover > .fa {
   color: #ffffff; }
 
-#nav > li.active > a {
+#nav > li.active > a, #nav ul > li > a.active {
   background-color: #272b2f;
   color: #ffffff;
   border-left: 2px solid #0393dd; }
@@ -4007,7 +4007,12 @@ fieldset[disabled] .btn-danger.active {
   border-top: none; }
 
 #nav ul li > a i.fa-angle-right {
-  margin-right: 25px; }
+  margin-right: 25px;
+  margin-left: 2px; }
+
+#nav ul li > a i.fa-plus {
+  margin-right: 19px;
+}
 
 #nav ul li > a > .badge {
   position: absolute;
@@ -7167,9 +7172,53 @@ i.infoTooltipIcon {
 }
 
 .modal-body h4:first-child {
-  margin-top: 00px;
+  margin-top: 0px;
 }
 
 #dashboardPlatformSwitch {
   margin-right: 10px;
+}
+
+.dashboardTableDataCheckbox {
+  width: 10px;
+}
+
+#dashboardResultsTableHeading, #listViewTableHeading {
+  height: 52px;
+}
+
+#dashboardResultsTableHeading strong, #listViewTableHeading strong {
+  display: inline-block;
+  margin-top: 9px;
+}
+
+#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select {
+  max-width: 170px;
+  width: 170px;
+}
+
+#listViewTableHeading {
+  padding-right: 8px;
+}
+
+#listViewTableHeading span, #listViewTableHeading button {
+  margin-left: 5px;
+}
+
+#lists-sidebar-navigation ul {
+  display: block;
+}
+
+.nav-min #lists-sidebar-navigation ul {
+  display: none !important;
+}
+
+/* Hides empty option */
+select option:empty {
+  display: none;
 }

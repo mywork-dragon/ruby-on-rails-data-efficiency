@@ -8,7 +8,9 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", function ($scope, $location, authService, authToken) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", "$route", function ($scope, $location, authService, authToken, listApiService, $rootScope, $route) {
+
+    $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
     $scope.checkIfOwnPage = function() {
 
@@ -21,14 +23,20 @@ angular.module('appApp')
     /* Login specific logic */
     $scope.onLoginButtonClick = function() {
 
-      authService.login($scope.user.email, $scope.user.password).then(function(){
+      authService.login($scope.userEmail, $scope.userPassword).then(function(){
         $scope.isAuthenticated = authToken.isAuthenticated();
+        listApiService.getLists().success(function(data) {
+          $scope.usersLists = data;
+        });
+          location.reload();
       },
       function(){
         alert('Incorrect Email or Password');
       });
-
     };
+
+    $scope.logUserOut = authToken.deleteToken;
+
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
@@ -56,13 +64,13 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      // When main Dashboard surch button is clicked
+      // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
 
         var submitSearchStartTime = new Date().getTime();
 
         $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags)
+        apiService.searchRequestPost($rootScope.tags, 1, $rootScope.numPerPage)
           .success(function(data) {
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
@@ -152,8 +160,6 @@ angular.module('appApp')
           });
         }
 
-        console.log($rootScope.tags.length);
-
         if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
           $rootScope.tags.push({
             parameter: parameter,
@@ -165,8 +171,8 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "$filter", "$rootScope",
-    function($scope, apiService, $filter, $rootScope) {
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",
+    function($scope, apiService, listApiService, $filter, $rootScope, loggitService) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
@@ -206,6 +212,37 @@ angular.module('appApp')
           apiService.getCategories().success(function(data) {
             $rootScope.categoryFilterOptions = data;
           });
+        },
+        listApiService.getLists().success(function(data) {
+          $scope.usersLists = data;
+        }),
+        $rootScope.selectedAppsForList = [],
+        $scope.addSelectedTo = function(list, selectedApps) {
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
+            $scope.notify('add-selected-success');
+            $rootScope.selectedAppsForList = [];
+            $scope.uncheckAllCheckboxes();
+          }).error(function() {
+            $scope.notify('add-selected-error');
+          });
+          $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+        },
+        $scope.checkAllCheckboxes = function() {
+          $scope.selectAppCheckbox = angular.copy($rootScope.apps);
+        },
+        $scope.uncheckAllCheckboxes = function() {
+          $scope.selectAppCheckbox = [];
+        },
+        $scope.notify = function(type) {
+          switch (type) {
+            case "add-selected-success":
+              return loggitService.logSuccess("Items were added successfully.");
+            case "add-selected-error":
+              return loggitService.logError("Error! Something went wrong while adding to list.");
+          }
+        },
+        $scope.addAppToList = function(selectedApp) {
+          listApiService.modifyCheckbox(selectedApp.id, selectedApp.type, $rootScope.selectedAppsForList);
         },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
@@ -247,8 +284,8 @@ angular.module('appApp')
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
-        $scope.numPerPageOpt = [20, 50, 100, 200],
-        $rootScope.numPerPage = $scope.numPerPageOpt[1],
+        $scope.numPerPageOpt = [50, 200, 350, 1000],
+        $rootScope.numPerPage = $scope.numPerPageOpt[2],
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }

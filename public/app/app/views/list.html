@@ -1,0 +1,154 @@
+
+<div class="page page-table" data-ng-controller="TableCtrl">
+
+  <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+    <div class="panel-heading" id="listViewTableHeading">
+     <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
+     <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv()">Export List to CSV</button>
+     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
+     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal">Delete Selected</button>
+      <!--
+      <span class="ui-select pull-right">
+        <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
+         <option value="">Copy Selected to List</option>
+         <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </span>
+      -->
+    </div>
+
+
+
+    <div id="results-table-wrapper">
+
+      <table class="table table-bordered table-striped table-responsive">
+        <thead>
+        <tr>
+          <th><div class="th">
+            <!-- <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox> -->
+          </div></th>
+          <th><div class="th">
+            App Name
+            <!--
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" sortApps('appName', 'ASC') "
+                                  data-ng-class="{active: row == 'appName'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" sortApps('appName', 'DESC') "
+                                  data-ng-class="{active: row == '-appName'}"></span>
+            -->
+          </div></th>
+          <th><div class="th">
+            Company
+            <!--
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" sortApps('companyName', 'ASC') "
+                                  data-ng-class="{active: row == 'companyName'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" sortApps('companyName', 'DESC') "
+                                  data-ng-class="{active: row == '-companyName'}"></span>
+            -->
+          </div></th>
+          <th><div class="th">
+            Fortune Rank
+            <!--
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" sortApps('fortuneRank', 'ASC') "
+                                  data-ng-class="{active: row == 'fortuneRank'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" sortApps('fortuneRank', 'DESC') "
+                                  data-ng-class="{active: row == '-fortuneRank'}"></span>
+            -->
+          </div></th>
+          <th><div class="th">
+            Mobile Priority
+          </div></th>
+          <th><div class="th">
+            Ad Spend
+          </div></th>
+          <th><div class="th">
+            User Base Size
+          </div></th>
+          <th><div class="th">
+            Categories
+
+          </div></th>
+          <th><div class="th">
+            Last Updated
+            <!--
+                            <span class="glyphicon glyphicon-chevron-up"
+                                  data-ng-click=" sortApps('lastUpdated', 'ASC') "
+                                  data-ng-class="{active: row == 'lastUpdated'}"></span>
+                            <span class="glyphicon glyphicon-chevron-down"
+                                  data-ng-click=" sortApps('lastUpdated', 'DESC') "
+                                  data-ng-class="{active: row == '-lastUpdated'}"></span>
+            -->
+          </div></th>
+          <th><div class="th">
+            Details
+          </div></th>
+        </tr>
+        </thead>
+
+        <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
+        <tr data-ng-repeat="app in $root.apps">
+          <td class="dashboardTableDataCheckbox">
+            <input type="checkbox" name="appId" ng-model="appCheckbox" data-app-id="{{app.app.id}}" data-app-type="{{app.app.type}}" ng-click="addAppToList(app.app)"> <!--  ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)" -->
+          </td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
+          <td>{{app.company.fortuneRank}}</td>
+          <td>{{app.app.mobilePriority}}</td>
+          <td>{{app.app.adSpend}}</td>
+          <td>{{app.app.userBase}}</td>
+          <td>{{app.app.categories.join(', ')}}</td>
+          <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
+          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">Details</a></td>
+        </tr>
+        </tbody>
+      </table>
+      <div id="dashboardTableStatusMessage" data-ng-show="$root.dashboardSearchButtonDisabled || !($root.numApps > 0)">
+        <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled">No Results</h5>
+        <div data-ng-show="$root.dashboardSearchButtonDisabled" id="wrap_spinner">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modals -->
+      <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
+    </div>
+
+    <footer class="table-footer">
+      <div class="row">
+        <div class="col-md-6 page-num-info">
+          <!--
+                      <span>
+                          Show
+                          <select data-ng-model="numPerPage"
+                                  data-ng-options="num for num in numPerPageOpt"
+                                  data-ng-change="onNumPerPageChange()">
+                          </select>
+                          entries per page
+                      </span>
+          -->
+        </div>
+        <div class="col-md-6 text-right pagination-container">
+          <pagination class="pagination-sm"
+                      ng-model="currentPage"
+                      total-items="numApps"
+                      max-size="4"
+                      ng-change="select(currentPage, tags)"
+                      items-per-page="numPerPage"
+                      rotate="false"
+                      boundary-links="true"></pagination>
+        </div>
+      </div>
+    </footer>
+  </section>
+
+</div>

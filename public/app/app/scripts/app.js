@@ -21,10 +21,9 @@ angular
     'ngTagsInput',
     'app.directives',
     "ui.bootstrap",
-    "rt.encodeuri",
-    'ng-token-auth'
+    "rt.encodeuri"
   ])
-  .run(function ($http, $rootScope, $auth, apiService) {
+  .run(function ($http, $rootScope) {
 
       $(document).ready(function(){
 
@@ -49,7 +48,8 @@ angular
      $routeProvider
        .when('/', {
          templateUrl: '/app/app/views/dashboard.html',
-         controller: 'MainCtrl'
+         controller: 'MainCtrl',
+         activeTab: 'search'
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
@@ -59,16 +59,15 @@ angular
          templateUrl: '/app/app/views/company-details.html',
          controller: 'CompanyDetailsCtrl'
        })
+       .when('/lists/:id', {
+         templateUrl: '/app/app/views/list.html',
+         controller: 'ListCtrl',
+         activeTab: 'lists'
+       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/',
+         activeTab: 'search'
       });
-  })
-  .config(function($authProvider) {
-    $authProvider.configure({
-      apiUrl: '/auth',
-      tokenValidationPath: '/validate_token',
-      emailSignInPath: '/login'
-    });
   })
   .config(function($httpProvider) {
     return $httpProvider.interceptors.push("authInterceptor");

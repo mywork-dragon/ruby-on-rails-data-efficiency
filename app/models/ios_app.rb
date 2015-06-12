@@ -7,8 +7,12 @@ class IosApp < ActiveRecord::Base
   belongs_to :app
   has_many :ios_fb_ad_appearances
   has_many :ios_app_download_snapshots
+  
   has_many :ios_apps_websites  
   has_many :websites, through: :ios_apps_websites
+
+  has_many :listables_lists, as: :listable
+  has_many :lists, through: :listables_lists
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
   

@@ -49,8 +49,16 @@ Rails.application.routes.draw do
   get 'api/get_ios_categories' => 'api#get_ios_categories'
   get 'api/get_android_categories' => 'api#get_android_categories'
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
+
+  get 'api/list/get_lists' => 'api#get_lists'
+  get 'api/list/get_list' => 'api#get_list'
+  get 'api/list/export_to_csv' => 'api#export_list_to_csv'
+  post 'api/list/create_new' => 'api#create_new_list'
+  put 'api/list/add' => 'api#add_to_list'
+  put 'api/list/delete_items' => 'api#delete_from_list'
+  put 'api/list/delete' => 'api#delete_list'
   get 'api/results' => 'api#results'
-  
+
   
   if Rails.env.development?
     get 'app_info' => 'app#app_info'

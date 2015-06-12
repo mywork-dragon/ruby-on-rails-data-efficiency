@@ -1,0 +1,22 @@
+<div class="modal fade" id="createNewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Create New List</h3>
+      </div>
+      <div class="modal-body">
+        <form data-ng-submit="add()" class="add-task ng-pristine ng-valid" ng-enter="createList(createNewModal)">
+          <input type="text" placeholder="New list name..." class="form-control ng-pristine ng-valid ng-touched" data-ng-model="createNewModal" autofocus="">
+          <a type="submit" class="submit-button">
+            <i class="fa fa-plus-circle"></i>
+          </a>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" data-ng-click="createList(createNewModal)">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
