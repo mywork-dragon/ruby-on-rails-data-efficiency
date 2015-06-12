@@ -74,6 +74,10 @@ class ApkSnapshotServiceWorker
         flag_account(google_account_id, e.message)
       end
 
+      ga = GoogleAccount.find(google_account_id)
+      ga.in_use = false
+      ga.save!
+
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
 
       if (@try += 1) < MAX_TRIES
@@ -81,11 +85,6 @@ class ApkSnapshotServiceWorker
       else
         apk_snap.status = :failure
         apk_snap.save!
-
-        ga = GoogleAccount.find(google_account_id)
-        ga.in_use = false
-        ga.save!
-
       end
 
     else
