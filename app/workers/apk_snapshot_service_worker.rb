@@ -66,7 +66,7 @@ class ApkSnapshotServiceWorker
         block_account(google_account_id, e.message)
       elsif e.message.include? "Bad status"
         flag_account(google_account_id, e.message)
-      elsif e.message.include?("abort then interrupt!") && Rails.env.development?
+      elsif e.message.include?("abort then interrupt!")
         j = ApkSnapshotJob.find(apk_snapshot_job_id)
         j.is_fucked = true
         j.save!
