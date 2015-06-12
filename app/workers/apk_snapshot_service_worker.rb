@@ -8,8 +8,13 @@ class ApkSnapshotServiceWorker
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
-    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
-    download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
+    # asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id)[0]
+    # download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
+    test()
+  end
+
+  def test
+    ApkSnapshot.create(version: 1)
   end
   
   def apk_file_name(app_identifier)
