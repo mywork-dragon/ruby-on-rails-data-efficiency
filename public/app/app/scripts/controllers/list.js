@@ -32,9 +32,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
   $scope.deleteSelected = function(selectedApps) {
     listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
       $rootScope.selectedAppsForList = [];
-      var path = '/lists/' + $routeParams.id;
-      console.log(path);
-      $location.path(path);
+      location.reload();
     });
 
     console.log($scope);
@@ -55,6 +53,14 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         hiddenElement.click();
       });
 
+  };
+  $scope.updateCheckboxStatus = function(appId, appType) {
+    $rootScope.selectedAppsForList.forEach(function(app) {
+      if(app.id == appId && app.type == appType) {
+        return true;
+      }
+    });
+    return false;
   };
   $scope.AllSelectedItems = false;
   $scope.NoSelectedItems = false;

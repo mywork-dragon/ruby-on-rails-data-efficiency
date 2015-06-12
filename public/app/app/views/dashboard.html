@@ -135,6 +135,7 @@
         <thead>
         <tr>
           <th><div class="th">
+            <!-- <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox> -->
           </div></th>
           <th><div class="th">
             App Name
@@ -194,7 +195,7 @@
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="appId" ng-click="addAppToList(app.app)">
+            <input type="checkbox" name="appId" ng-model="appCheckbox" data-app-id="{{app.app.id}}" data-app-type="{{app.app.type}}" ng-click="addAppToList(app.app)"> <!--  ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)" -->
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
