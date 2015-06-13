@@ -12,13 +12,14 @@
         <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/"> <i class="fa fa-search"></i> <span>Search</span></a>
         </li>
-        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
+        <!-- Patrick... I removed this from the UI -->
+        <!-- <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in usersLists"><a href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
               <li><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
-        </li>
+        </li> -->
         <li ng-click="logUserOut()">
             <a href="#/logout" ng-click="event.preventDefault()"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
         </li>
