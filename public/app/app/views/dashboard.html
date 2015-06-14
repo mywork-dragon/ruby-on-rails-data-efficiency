@@ -116,14 +116,12 @@
   <section class="panel panel-default table-dynamic">
     <div class="panel-heading" id="dashboardResultsTableHeading">
      <strong><i class="fa fa-list panel-ico"></i>Results</strong>
-      <!--
       <span class="ui-select pull-right">
         <select ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)">
           <option value="">Add Selected to List</option>
           <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
         </select>
       </span>
--->
     </div>
 
 
@@ -133,11 +131,9 @@
       <table class="table table-bordered table-striped table-responsive">
         <thead>
         <tr>
-          <!--
           <th><div class="th">
              <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
           </div></th>
-          -->
           <th><div class="th">
             App Name
                             <span class="glyphicon glyphicon-chevron-up"
@@ -195,11 +191,9 @@
 
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
-          <!--
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="appId" ng-model="appCheckbox" data-app-id="{{app.app.id}}" data-app-type="{{app.app.type}}" ng-click="addAppToList(app.app)">
+            <checkable-checkbox app="app.app"></checkable-checkbox>
           </td>
-          -->
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>

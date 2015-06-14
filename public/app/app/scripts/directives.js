@@ -279,4 +279,30 @@ angular.module("app.directives", []).directive("imgHolder", [
               }, true);
             }
           };
+        }]).directive('checkableCheckbox', ["$rootScope", "listApiService", function ($rootScope, listApiService) {
+          return {
+            replace: true,
+            restrict: 'E',
+            scope: {
+              app: '=app'
+            },
+            template: '<input type="checkbox" ng-model="appCheckbox" ng-change="addAppToList()">',
+            controller: function ($scope, $element) {
+
+              $scope.addAppToList = function() {
+                listApiService.modifyCheckbox($scope.app.id, $scope.app.type, $rootScope.selectedAppsForList);
+              };
+
+              $scope.$watch('$root.selectedAppsForList', function () {
+                $rootScope.selectedAppsForList.forEach(function(app) {
+                  if($scope.app.id == app.id && $scope.app.type == app.type) {
+                    $element.prop('checked', true);
+                  } else {
+                    $element.prop('checked', false);
+                  }
+                });
+              });
+
+            }
+          };
         }]);
