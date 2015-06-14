@@ -115,7 +115,6 @@ module ApkDownloader
 
           case resp
           when Net::HTTPSuccess
-            puts max_time
             return resp
           when Net::HTTPRedirection
             return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
