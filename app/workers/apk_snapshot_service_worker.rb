@@ -9,19 +9,15 @@ class ApkSnapshotServiceWorker
   
   def perform(apk_snapshot_job_id, app_id)
 
-    # asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
-    # # download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
+    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
 
-    # unless asj.is_fucked
-    #   download_apk(apk_snapshot_job_id, app_id)
-    # else
-    #   ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
-    # end
-
-    clear()
+    unless asj.is_fucked
+      download_apk(apk_snapshot_job_id, app_id)
+    else
+      ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
+    end
 
   end
-
 
   def clear()
     ApkSnapshot.create(version: 1)
