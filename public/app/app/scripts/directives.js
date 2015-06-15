@@ -204,22 +204,20 @@ angular.module("app.directives", []).directive("imgHolder", [
                     $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
                   });
                 } else {
-                  angular.forEach($scope.checkboxes, function (cb, index) {
-                    $rootScope.selectedAppsForList = [];
-                  });
+                  $rootScope.selectedAppsForList = [];
                 }
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
 
                 /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                $element.prop('checked', false);
                 if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
-                  $element.prop('indeterminate', false);
                   $element.prop('checked', true);
-                } else if($rootScope.selectedAppsForList.length > 0 && $rootScope.selectedAppsForList.length < $rootScope.numApps) {
-                  $element.prop('indeterminate', true);
+                } else {
+                  $element.prop('checked', false);
                 }
+
+                console.log('MasterCB', $rootScope.selectedAppsForList.length, $rootScope.numApps, $rootScope.selectedAppsForList);
 
               }, true);
             }
@@ -231,7 +229,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             scope: {
               app: '=app'
             },
-            template: '<input type="checkbox" ng-model="appCheckbox" ng-change="addAppToList()">',
+            template: '<input type="checkbox" ng-model="appCheckbox" ng-click="addAppToList()">',
             controller: function ($scope, $element) {
 
               $scope.addAppToList = function() {
@@ -239,6 +237,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
+                /*
                 $rootScope.selectedAppsForList.forEach(function(app) {
                   if($scope.app.id == app.id && $scope.app.type == app.type) {
                     $element.prop('checked', true);
@@ -246,6 +245,15 @@ angular.module("app.directives", []).directive("imgHolder", [
                     $element.prop('checked', false);
                   }
                 });
+                */
+
+                if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
+                  $element.prop('checked', true);
+                } else {
+                  $element.prop('checked', false);
+                }
+
+                console.log('CB', $rootScope.selectedAppsForList);
               });
 
             }
