@@ -44,7 +44,7 @@
     </div>
     <div class="col-md-4">
         <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
+            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Other Apps by {{companyData.name}}</strong><span id="dashboardResultsTableHeadingNumDisplayed"> | {{companyData.iosApps.length + companyData.androidApps.length}} total</span></div>
             <div class="panel-body">
               <a ng-if="companyData.iosApps" ng-repeat="app in companyData.iosApps" href="#/app/ios/{{app.id}}" target="_blank">
                 <div class="well companyAssociatedApp" >
