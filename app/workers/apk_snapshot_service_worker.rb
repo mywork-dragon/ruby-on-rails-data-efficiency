@@ -7,14 +7,18 @@ class ApkSnapshotServiceWorker
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
-  def perform(apk_snapshot_job_id, app_id)
+  def perform(apk_snapshot_job_id, app_id, clear = false)
 
-    asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
-
-    unless asj.is_fucked
-      download_apk(apk_snapshot_job_id, app_id)
+    if clear
+      clear()
     else
-      ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
+      asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
+
+      unless asj.is_fucked
+        download_apk(apk_snapshot_job_id, app_id)
+      else
+        ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
+      end
     end
 
   end

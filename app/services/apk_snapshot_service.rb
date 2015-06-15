@@ -17,15 +17,15 @@ class ApkSnapshotService
       
       AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each do |app|
 
-        if Rails.env.production?
-          ApkSnapshotServiceWorker.perform_async(j.id, app.id)
-        elsif Rails.env.development?
-          ApkSnapshotServiceWorker.new.perform(j.id, app.id)
-        end
+      if Rails.env.production?
+        ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+      elsif Rails.env.development?
+        ApkSnapshotServiceWorker.new.perform(j.id, app.id)
+      end
 
       end
     end
-    
+
     def run_common_apps(notes)
       
       j = ApkSnapshotJob.create!(notes: notes)
@@ -57,6 +57,8 @@ class ApkSnapshotService
     def job
       j = ApkSnapshotJob.last
 
+      start = DateTime.now
+
       while true do
         total = j.apk_snapshots.count
         success = j.apk_snapshots.where(status: 1).count
@@ -71,10 +73,12 @@ class ApkSnapshotService
 
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Currently Downloading : #{currently_downloading}"
+        elapsed = DateTime.now - start
+
+        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Time Elapsed : #{elapsed}"
 
         if progress == 100.0
-          puts "\nScrape Complete"
+          puts "\nScrape Completed"
           return false
         else
           print "\r"
@@ -86,6 +90,8 @@ class ApkSnapshotService
     end
 
     def fuck
+      ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
+
       j = ApkSnapshotJob.last
       j.is_fucked = true
       j.save!

@@ -123,7 +123,8 @@ module ApkDownloader
           end
         }
       rescue Exception => e
-        puts e.message
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
+        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
       end
 
     end
