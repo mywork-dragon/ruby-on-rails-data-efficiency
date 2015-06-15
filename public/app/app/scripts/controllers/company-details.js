@@ -14,7 +14,13 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
 
   /* LinkedIn Link Button Logic */
   $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-    var linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.companyData.name) + "+" + linkedinLinkType;
+    var linkedinLink = "";
+
+    if (linkedinLinkType == 'company') {
+      linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.companyData.name);
+    } else {
+      linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.companyData.name) + "+" + linkedinLinkType;
+    }
 
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
