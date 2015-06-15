@@ -44,7 +44,7 @@ class ApkSnapshotService
 
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        elapsed = Time.now - start
+        elapsed = (Time.now - start).to_i
 
         print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Time Elapsed : #{elapsed} \r"
 
