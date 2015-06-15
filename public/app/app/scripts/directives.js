@@ -216,9 +216,7 @@ angular.module("app.directives", []).directive("imgHolder", [
                 } else {
                   $element.prop('checked', false);
                 }
-
-                console.log('MasterCB', $rootScope.selectedAppsForList.length, $rootScope.numApps, $rootScope.selectedAppsForList);
-
+                
               }, true);
             }
           };
@@ -237,15 +235,6 @@ angular.module("app.directives", []).directive("imgHolder", [
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
-                /*
-                $rootScope.selectedAppsForList.forEach(function(app) {
-                  if($scope.app.id == app.id && $scope.app.type == app.type) {
-                    $element.prop('checked', true);
-                  } else {
-                    $element.prop('checked', false);
-                  }
-                });
-                */
 
                 if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
                   $element.prop('checked', true);
@@ -253,7 +242,6 @@ angular.module("app.directives", []).directive("imgHolder", [
                   $element.prop('checked', false);
                 }
 
-                console.log('CB', $rootScope.selectedAppsForList);
               });
 
             }
