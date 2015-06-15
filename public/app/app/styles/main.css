@@ -7231,3 +7231,17 @@ select option:empty {
   color: #BBB;
   cursor: initial;
 }
+
+.resultsTableAppIconHeader {
+  width: 68px;
+  padding-left: 8px !important;
+}
+
+.resultsTableAppIcon {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.resultsTableAppIcon img {
+  width: 32px;
+}

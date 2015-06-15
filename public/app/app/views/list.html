@@ -27,6 +27,9 @@
           <th class="selectAllCheckboxHeader">
             <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
           </th>
+          <th class="resultsTableAppIconHeader">
+            App Icon
+          </th>
           <th><div class="th">
             App Name
             <!--
@@ -94,6 +97,9 @@
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
             <checkable-checkbox app="app.app"></checkable-checkbox>
+          </td>
+          <td class="resultsTableAppIcon">
+            <img ng-src="{{app.app.appIcon.large}}" />
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
