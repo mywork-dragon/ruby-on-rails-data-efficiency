@@ -33,6 +33,8 @@ class ApkSnapshotServiceWorker
 
   def download_apk(apk_snapshot_job_id, android_app_id)
 
+    semaphore = Mutex.new
+
     v = AndroidAppSnapshot.select(:version).where(android_app_id: android_app_id).first
     apk_snap = ApkSnapshot.create(version: v.version, android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
 
@@ -62,12 +64,16 @@ class ApkSnapshotServiceWorker
         apk_snap.save!
 
         start_time = Time.now()
-        ApkDownloader.configure do |config|
-          config.email = email
-          config.password = password
-          config.android_id = android_id
-          config.proxy = proxy
-        end
+
+        semaphore.synchronize {
+          ApkDownloader.configure do |config|
+            config.email = email
+            config.password = password
+            config.android_id = android_id
+            config.proxy = proxy
+          end
+        }
+        
         app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
         file_name = apk_file_name(app_identifier)
         print "\nDownloading #{app_identifier}... "

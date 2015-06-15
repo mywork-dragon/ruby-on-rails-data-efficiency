@@ -28,7 +28,7 @@ class ApkSnapshotService
     def job
       j = ApkSnapshotJob.last
 
-      start = DateTime.now
+      start = Time.now
 
       while true do
         total = j.apk_snapshots.count
@@ -44,15 +44,13 @@ class ApkSnapshotService
 
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        elapsed = DateTime.now - start
+        elapsed = Time.now - start
 
-        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Time Elapsed : #{elapsed}"
+        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Time Elapsed : #{elapsed} \r"
 
         if progress == 100.0
-          puts "\nScrape Completed"
+          puts "\n\nScrape Completed"
           return false
-        else
-          print "\r"
         end
 
         sleep 1
