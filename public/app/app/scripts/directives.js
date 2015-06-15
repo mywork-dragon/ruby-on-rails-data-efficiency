@@ -216,7 +216,7 @@ angular.module("app.directives", []).directive("imgHolder", [
                 } else {
                   $element.prop('checked', false);
                 }
-                
+
               }, true);
             }
           };

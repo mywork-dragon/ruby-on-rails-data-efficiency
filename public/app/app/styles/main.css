@@ -7222,3 +7222,7 @@ i.infoTooltipIcon {
 select option:empty {
   display: none;
 }
+
+.selectAllCheckboxHeader {
+  padding-left: 10px !important;
+}
