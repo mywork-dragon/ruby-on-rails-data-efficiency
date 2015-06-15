@@ -7245,3 +7245,8 @@ select option:empty {
 .resultsTableAppIcon img {
   width: 32px;
 }
+
+#dashboardResultsTableHeadingNumDisplayed {
+  text-transform: initial;
+  font-weight: normal;
+}
