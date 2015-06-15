@@ -3,20 +3,22 @@ class ApkSnapshotServiceWorker
 
   sidekiq_options retry: false
   
-  MAX_TRIES = 10
+  MAX_TRIES = 3
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
     asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
-    # download_apk(apk_snapshot_job_id, app_id) unless asj.is_fucked
 
     unless asj.is_fucked
       download_apk(apk_snapshot_job_id, app_id)
     else
       ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
     end
+  end
 
+  def clear()
+    ApkSnapshot.create(version: 1)
   end
   
   def apk_file_name(app_identifier)
@@ -141,7 +143,6 @@ class ApkSnapshotServiceWorker
         p = Proxy.order(last_used: :asc).limit(5).sample
         return best_account.id, best_account.email, best_account.password, best_account.android_identifier, p.private_ip
       end
-
     end
     false
   end

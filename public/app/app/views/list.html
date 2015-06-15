@@ -6,7 +6,7 @@
      <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv()">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
-     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal">Delete Selected</button>
+     <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal" ng-disabled="$root.selectedAppsForList < 1">Delete Selected</button>
       <!--
       <span class="ui-select pull-right">
         <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
@@ -24,9 +24,9 @@
       <table class="table table-bordered table-striped table-responsive">
         <thead>
         <tr>
-          <th><div class="th">
-            <!-- <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox> -->
-          </div></th>
+          <th class="selectAllCheckboxHeader">
+            <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+          </th>
           <th><div class="th">
             App Name
             <!--
@@ -93,7 +93,7 @@
         <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
         <tr data-ng-repeat="app in $root.apps">
           <td class="dashboardTableDataCheckbox">
-            <input type="checkbox" name="appId" ng-model="appCheckbox" data-app-id="{{app.app.id}}" data-app-type="{{app.app.type}}" ng-click="addAppToList(app.app)"> <!--  ng-checked="$root.selectedAppsForList.indexOf(app.app.id) > -1" ng-click="addAppToList(app.app)" -->
+            <checkable-checkbox app="app.app"></checkable-checkbox>
           </td>
           <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>

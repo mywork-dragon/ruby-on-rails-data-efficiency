@@ -1,6 +1,6 @@
-# require 'net/http'
 require 'tempfile'
 require 'pp'
+require 'timeout'
 
 module ApkDownloader
   class Api
@@ -37,7 +37,6 @@ module ApkDownloader
 
       @proxy = ApkDownloader.configuration.proxy
 
-      # Use Tor
       login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
@@ -92,37 +91,46 @@ module ApkDownloader
 
     private
     def recursive_apk_fetch url, cookie, tries = 5
+        
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
-      # Use Tor
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
       http.use_ssl = true
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      # http.use_ssl = true
+      response = http.request_head(url)
+      file_size = response['content-length'].to_i
 
-      req = Net::HTTP::Get.new url.to_s
-      req['Accept-Encoding'] = ''
-      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)'
-      req['Cookie'] = [cookie.name, cookie.value].join('=')
+      max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
 
-      resp = http.request req
+      begin
+        status = Timeout::timeout(max_time) {
+          req = Net::HTTP::Get.new url.to_s
+          req['Accept-Encoding'] = ''
+          req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+          req['Cookie'] = [cookie.name, cookie.value].join('=')
 
-      case resp
-      when Net::HTTPSuccess
-        return resp
-      when Net::HTTPRedirection
+          resp = http.request req
+
+          case resp
+          when Net::HTTPSuccess
+            return resp
+          when Net::HTTPRedirection
+            return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+          else
+            resp.error!
+          end
+        }
+      rescue Exception => e
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
         return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      else
-        resp.error!
       end
+
     end
 
     def api_request type, path, data = {}
       if @http.nil?
-        # Use Tor
         @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
@@ -152,7 +160,6 @@ module ApkDownloader
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      # Use Tor
       req = if type == :get
         uri.query = URI.encode_www_form data
         Net::HTTP::Get.new uri.to_s

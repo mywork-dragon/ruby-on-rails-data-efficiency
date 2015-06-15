@@ -204,79 +204,46 @@ angular.module("app.directives", []).directive("imgHolder", [
                     $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
                   });
                 } else {
-                  angular.forEach($scope.checkboxes, function (cb, index) {
-                    $rootScope.selectedAppsForList = [];
-                  });
+                  $rootScope.selectedAppsForList = [];
                 }
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
 
-                /*
-                var allSet = true,
-                  allClear = true;
-                angular.forEach($scope.checkboxes, function (cb, index) {
-                  if (cb.isSelected) {
-                    allClear = false;
-                  } else {
-                    allSet = false;
-                  }
-                });
-
-                if ($scope.allselected !== undefined) {
-                  $scope.allselected = allSet;
-                }
-                if ($scope.allclear !== undefined) {
-                  $scope.allclear = allClear;
-                }
-                */
-
-                /*
-
-                $('.dashboardTableDataCheckbox > input').each(function(index, checkbox) {
-                  $rootScope.selectedAppsForList.forEach(function(app) {
-                    console.log(checkbox);
-                    if(checkbox.attributes['data-app-id'].value == app.id && checkbox.attributes['data-app-type'].value == app.type) {
-                      checkbox.prop('checked', true);
-                      console.log('TRUE ', checkbox);
-                    } else {
-                      checkbox.prop('checked', false);
-                      console.log('FALSE ', checkbox);
-                    }
-                  })
-                });
-
-                */
-
                 /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                $element.prop('checked', false);
                 if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
-                  $element.prop('indeterminate', false);
                   $element.prop('checked', true);
-                } else if($rootScope.selectedAppsForList.length > 0 && $rootScope.selectedAppsForList.length < $rootScope.numApps) {
-                  $element.prop('indeterminate', true);
-                }
-
-                /*
-
-                angular.forEach($rootScope.apps, function(app) {
-                  console.log($element, $element.inheritedData(), $element.inheritedData()['$isolateScope']['checkboxes']);
-                  $element.prop('checked', true);
-                });
-
-                $element.prop('indeterminate', false);
-                if (allSet) {
-                  $scope.checkboxMaster = true;
-                } else if (allClear) {
-                  $scope.checkboxMaster = false;
                 } else {
-                  $scope.checkboxMaster = false;
-                  $element.prop('indeterminate', true);
+                  $element.prop('checked', false);
                 }
-                */
-
 
               }, true);
+            }
+          };
+        }]).directive('checkableCheckbox', ["$rootScope", "listApiService", function ($rootScope, listApiService) {
+          return {
+            replace: true,
+            restrict: 'E',
+            scope: {
+              app: '=app'
+            },
+            template: '<input type="checkbox" ng-model="appCheckbox" ng-click="addAppToList()">',
+            controller: function ($scope, $element) {
+
+              $scope.addAppToList = function() {
+                listApiService.modifyCheckbox($scope.app.id, $scope.app.type, $rootScope.selectedAppsForList);
+              };
+
+              $scope.$watch('$root.selectedAppsForList', function () {
+
+                if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
+                  $element.prop('checked', true);
+                } else {
+                  $element.prop('checked', false);
+                }
+
+              });
+
             }
           };
         }]);
