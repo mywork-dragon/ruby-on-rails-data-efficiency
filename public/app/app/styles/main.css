@@ -7222,3 +7222,12 @@ i.infoTooltipIcon {
 select option:empty {
   display: none;
 }
+
+.selectAllCheckboxHeader {
+  padding-left: 10px !important;
+}
+
+#addSelectedToDropDown:disabled {
+  color: #BBB;
+  cursor: initial;
+}

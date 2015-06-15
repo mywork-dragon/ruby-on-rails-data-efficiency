@@ -241,9 +241,6 @@ angular.module('appApp')
               return loggitService.logError("Error! Something went wrong while adding to list.");
           }
         },
-        $scope.addAppToList = function(selectedApp) {
-          listApiService.modifyCheckbox(selectedApp.id, selectedApp.type, $rootScope.selectedAppsForList);
-        },
         // When orderby/sort arrows on dashboard table are clicked
         $scope.sortApps = function(category, order) {
 
