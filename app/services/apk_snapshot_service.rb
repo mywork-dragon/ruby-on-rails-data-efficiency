@@ -11,7 +11,7 @@ class ApkSnapshotService
   
     def run_n(notes, size = 100)
       workers = Sidekiq::Workers.new
-      if(workers.size != 0)
+      if workers.size == 0
         j = ApkSnapshotJob.create!(notes: notes)
         AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each do |app|
           if Rails.env.production?
