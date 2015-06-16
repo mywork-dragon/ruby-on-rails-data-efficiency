@@ -99,49 +99,49 @@ module ApkDownloader
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      # response = http.request_head(url)
-      # file_size = response['content-length'].to_i
+      response = http.request_head(url)
+      file_size = response['content-length'].to_i
 
-      # max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
+      max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
 
-      req = Net::HTTP::Get.new url.to_s
-      req['Accept-Encoding'] = ''
-      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      req['Cookie'] = [cookie.name, cookie.value].join('=')
+      # req = Net::HTTP::Get.new url.to_s
+      # req['Accept-Encoding'] = ''
+      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+      # req['Cookie'] = [cookie.name, cookie.value].join('=')
 
-      resp = http.request req
+      # resp = http.request req
 
-      case resp
-      when Net::HTTPSuccess
-        return resp
-      when Net::HTTPRedirection
-        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      else
-        resp.error!
-      end
-
-      # begin
-      #   status = Timeout::timeout(max_time) {
-      #     req = Net::HTTP::Get.new url.to_s
-      #     req['Accept-Encoding'] = ''
-      #     req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      #     req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      #     resp = http.request req
-
-      #     case resp
-      #     when Net::HTTPSuccess
-      #       return resp
-      #     when Net::HTTPRedirection
-      #       return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      #     else
-      #       resp.error!
-      #     end
-      #   }
-      # rescue Exception => e
-      #   ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
+      # case resp
+      # when Net::HTTPSuccess
+      #   return resp
+      # when Net::HTTPRedirection
       #   return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      # else
+      #   resp.error!
       # end
+
+      begin
+        status = Timeout::timeout(max_time) {
+          req = Net::HTTP::Get.new url.to_s
+          req['Accept-Encoding'] = ''
+          req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+          req['Cookie'] = [cookie.name, cookie.value].join('=')
+
+          resp = http.request req
+
+          case resp
+          when Net::HTTPSuccess
+            return resp
+          when Net::HTTPRedirection
+            return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+          else
+            resp.error!
+          end
+        }
+      rescue Exception => e
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
+        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      end
 
     end
 
