@@ -287,8 +287,8 @@ angular.module('appApp')
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
-        $scope.numPerPageOpt = [50, 200, 350, 1000],
-        $rootScope.numPerPage = $scope.numPerPageOpt[2],
+        $scope.numPerPageOpt = [100, 200, 350, 1000],
+        $rootScope.numPerPage = $scope.numPerPageOpt[0],
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }

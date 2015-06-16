@@ -217,8 +217,6 @@ angular.module("app.directives", []).directive("imgHolder", [
                   $element.prop('checked', false);
                 }
 
-                console.log('Master Checkbox Watch', $rootScope.numApps, $rootScope.selectedAppsForList);
-
               }, true);
             }
           };
@@ -243,8 +241,6 @@ angular.module("app.directives", []).directive("imgHolder", [
                 } else {
                   $element.prop('checked', false);
                 }
-
-                console.log('Sub Checkbox Watch', $rootScope.numApps, $rootScope.selectedAppsForList);
 
               });
 
