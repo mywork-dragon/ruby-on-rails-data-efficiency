@@ -119,7 +119,7 @@ class ApkSnapshotServiceWorker
       ga.in_use = false
       ga.save!
 
-      File.delete(file_name)
+      # File.delete(file_name)
       
     end
 

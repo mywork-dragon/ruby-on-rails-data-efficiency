@@ -15,7 +15,7 @@ module ApkDownloader
     def download! package, destination
       @api ||= Api.new
       data = @api.fetch_apk_data package
-      File.open(destination, 'wb') { |f| f.write data }
+      # File.open(destination, 'wb') { |f| f.write data }
     end
   end
 end
