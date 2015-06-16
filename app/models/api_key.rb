@@ -18,7 +18,6 @@ class ApiKey < ActiveRecord::Base
           break
         end
       end 
-      
     end
     
   end
