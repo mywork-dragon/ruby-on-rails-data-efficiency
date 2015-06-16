@@ -194,7 +194,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               allselected: '=allSelected',
               allclear: '=allClear'
             },
-            template: '<input type="checkbox" ng-model="checkboxMaster" ng-change="checkboxMasterChange()">',
+            template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
             controller: function ($scope, $element) {
 
               $scope.checkboxMasterChange = function () {
@@ -216,6 +216,8 @@ angular.module("app.directives", []).directive("imgHolder", [
                 } else {
                   $element.prop('checked', false);
                 }
+
+                console.log('Master Checkbox Watch', $rootScope.numApps, $rootScope.selectedAppsForList);
 
               }, true);
             }
@@ -241,6 +243,8 @@ angular.module("app.directives", []).directive("imgHolder", [
                 } else {
                   $element.prop('checked', false);
                 }
+
+                console.log('Sub Checkbox Watch', $rootScope.numApps, $rootScope.selectedAppsForList);
 
               });
 

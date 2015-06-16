@@ -7244,6 +7244,11 @@ select option:empty {
 
 .resultsTableAppIcon img {
   width: 32px;
+  margin-right: 5px;
+}
+
+.resultsTableAppIcon a {
+  vertical-align: middle;
 }
 
 #dashboardResultsTableHeadingNumDisplayed {

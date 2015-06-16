@@ -27,9 +27,6 @@
           <th class="selectAllCheckboxHeader">
             <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
           </th>
-          <th class="resultsTableAppIconHeader">
-            App Icon
-          </th>
           <th><div class="th">
             App Name
             <!--
@@ -99,9 +96,8 @@
             <checkable-checkbox app="app.app"></checkable-checkbox>
           </td>
           <td class="resultsTableAppIcon">
-            <img ng-src="{{app.app.appIcon.large}}" />
+            <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
           </td>
-          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>
           <td>{{app.app.mobilePriority}}</td>

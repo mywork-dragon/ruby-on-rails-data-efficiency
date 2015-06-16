@@ -239,12 +239,6 @@ angular.module('appApp')
           });
           $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
         },
-        $scope.checkAllCheckboxes = function() {
-          $scope.selectAppCheckbox = angular.copy($rootScope.apps);
-        },
-        $scope.uncheckAllCheckboxes = function() {
-          $scope.selectAppCheckbox = [];
-        },
         $scope.notify = function(type) {
           switch (type) {
             case "add-selected-success":
@@ -294,7 +288,7 @@ angular.module('appApp')
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
         $scope.numPerPageOpt = [50, 200, 350, 1000],
-        $rootScope.numPerPage = $scope.numPerPageOpt[0],
+        $rootScope.numPerPage = $scope.numPerPageOpt[2],
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }
