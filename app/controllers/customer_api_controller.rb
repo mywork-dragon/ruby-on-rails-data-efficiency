@@ -4,6 +4,12 @@
 class CustomerApiController < ApplicationController
   
   skip_before_filter :verify_authenticity_token
+  
+  # before_action :authenticate_request
+  #
+  # def authenticate_request
+  #   render nothing: true, status: 401 if !ApiKey.find_by_key(key)
+  # end
 
   def ios_apps
     render json: {'dummy' => 'show'}
@@ -14,9 +20,7 @@ class CustomerApiController < ApplicationController
   end
   
   def companies
-    
     render json: {'dummy' => 'show'}
-    
   end
 
 end
