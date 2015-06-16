@@ -39,15 +39,12 @@ module ApkDownloader
 
       login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
       login_http.use_ssl = true
-      login_http.ssl_version="SSLv3"
+      # login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
       post["Accept-Encoding"] = ""
-      post["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-      post["Pragma"] = "no-cache"
-      post["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
 
       response = login_http.request post
 
@@ -96,7 +93,7 @@ module ApkDownloader
 
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
       http.use_ssl = true
-      http.ssl_version="SSLv3"
+      # http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       response = http.request_head(url)
@@ -149,7 +146,7 @@ module ApkDownloader
       if @http.nil?
         @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
         @http.use_ssl = true
-        @http.ssl_version="SSLv3"
+        # @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
@@ -169,9 +166,6 @@ module ApkDownloader
 
       if type == :post
         api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-        api_headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-        api_headers["Pragma"] = "no-cache"
-        api_headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
       end
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
