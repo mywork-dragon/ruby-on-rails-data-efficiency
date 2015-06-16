@@ -3,7 +3,7 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-     <strong><i class="fa fa-list panel-ico"></i>Lists</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying {{appsDisplayedCount()}} of {{$root.numApps}}</span>
+     <strong><i class="fa fa-list panel-ico"></i>Lists</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying 1 - {{$root.numApps}} of {{$root.numApps}}</span>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv()">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal" ng-disabled="$root.selectedAppsForList < 1">Delete Selected</button>
@@ -139,6 +139,7 @@
                       </span>
           -->
         </div>
+        <!--
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="currentPage"
@@ -149,6 +150,7 @@
                       rotate="false"
                       boundary-links="true"></pagination>
         </div>
+        -->
       </div>
     </footer>
   </section>

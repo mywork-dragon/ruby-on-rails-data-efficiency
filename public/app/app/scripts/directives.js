@@ -211,7 +211,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               $scope.$watch('$root.selectedAppsForList', function () {
 
                 /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                if($rootScope.selectedAppsForList.length == $rootScope.numPerPage) {
+                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
@@ -236,12 +236,12 @@ angular.module("app.directives", []).directive("imgHolder", [
 
               $scope.$watch('$root.selectedAppsForList', function () {
 
-                if($rootScope.selectedAppsForList.length == $rootScope.numPerPage) {
+                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
                 }
-                
+
               });
 
             }

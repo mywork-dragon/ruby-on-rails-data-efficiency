@@ -233,7 +233,6 @@ angular.module('appApp')
           listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
             $scope.notify('add-selected-success');
             $rootScope.selectedAppsForList = [];
-            $scope.uncheckAllCheckboxes();
           }).error(function() {
             $scope.notify('add-selected-error');
           });
