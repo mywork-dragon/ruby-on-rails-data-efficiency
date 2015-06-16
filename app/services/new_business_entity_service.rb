@@ -21,21 +21,23 @@ class NewBusinessEntityService
       #https://github.com/MightySignal/varys/issues/159
       ids << IosAppSnapshot.find(2909535)
       
-      ids += IosAppSnapshot.where.not(name: nil).limit(50)
-      ids += IosAppSnapshot.where.not(name: nil).order('created_at DESC').limit(50)
+      # ids += IosAppSnapshot.where.not(name: nil).limit(50)
+      # ids += IosAppSnapshot.where.not(name: nil).order('created_at DESC').limit(50)
       
       ids
     end
     
-    def write_csv_line(csv: nil, ios_app_snapshot_id: nil, ios_app_snapshot_seller_url: nil, ios_app_snapshot_support_url: nil, website_id: nil, website_url: nil, company_id: nil, company_url: nil, ios_app_id: nil)
-      csv << [ios_app_snapshot_id, ios_app_snapshot_seller_url, ios_app_snapshot_support_url, website_id, website_url, company_id, company_url]
+    def write_csv_line(csv: nil, ios_app_snapshot_id: nil, ios_app_snapshot_seller_url: nil, ios_app_snapshot_support_url: nil, website_id: nil, website_url: nil, company_id: nil, company_website: nil, ios_app_id: nil)
+      line = [ios_app_snapshot_id, ios_app_snapshot_seller_url, ios_app_snapshot_support_url, website_id, website_url, company_id, company_website, ios_app_id]
+      puts line.to_s
+      csv << line
     end
 
     def run_ios
       
-      csv = CSV.generate do |csv|
+      csv = CSV.generate(col_sep: "\t") do |csv|
         
-        csv << ['ios_app_snapshot.id', 'ios_app_snapshot.seller_url', 'ios_app_snapshot.support_url', 'website.id', 'website.url', 'company.id', 'company.url', 'ios_app.id']
+        csv << ['ios_app_snapshot.id', 'ios_app_snapshot.seller_url', 'ios_app_snapshot.support_url', 'website.id', 'website.url', 'company.id', 'company.website' 'company.url', 'ios_app.id']
         
         ios_app_snapshot_ids.each do |ios_app_snapshot_id|
     
@@ -57,7 +59,7 @@ class NewBusinessEntityService
                 #ios_app.save
               end
             
-              write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: primary_website.id, website_url: primary_website.url, company_id: c.id, company_url: c.url, ios_app_id: ios_app.id)
+              write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: primary_website.id, website_url: primary_website.url, company_id: (c ? c.id : nil), company_website: (c ? c.website : nil), ios_app_id: ios_app.id)
               
               next  #go to the next app
             end
@@ -90,13 +92,16 @@ class NewBusinessEntityService
             ios_app.websites << w if !skip_save && !ios_app.websites.include?(w)
             #ios_app.save
             
-            write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: w.id, website_url: w.url, company_id: c.id, company_url: c.url, ios_app_id: ios_app.id)
+            write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: w.id, website_url: w.url, company_id: (c ? c.id : nil), company_website: (c ? c.website : nil), ios_app_id: ios_app.id)
         
           end
       
         end
         
       end
+      
+      print csv
+      nil
       
     end
     
