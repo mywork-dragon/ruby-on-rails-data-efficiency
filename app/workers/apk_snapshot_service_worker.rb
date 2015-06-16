@@ -78,11 +78,7 @@ class ApkSnapshotServiceWorker
 
     rescue Exception => e
 
-      if e.message.include? "Unable to authenticate with Google"
-        block_account(google_account_id, e.message)
-      elsif e.message.include? "Bad status"
-        flag_account(google_account_id, e.message)
-      elsif e.message.include?("abort then interrupt!") && Rails.env.development?
+      if e.message.include?("abort then interrupt!") && Rails.env.development?
         j = ApkSnapshotJob.find(apk_snapshot_job_id)
         j.is_fucked = true
         j.save!
