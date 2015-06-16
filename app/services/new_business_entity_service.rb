@@ -1,0 +1,105 @@
+class NewBusinessEntityService
+
+  class << self
+    
+    def ios_app_snapshot_ids
+      ids = []
+      
+      # https://github.com/MightySignal/varys/issues/154
+      ids << IosAppSnapshot.find(1819705)
+      
+      #https://github.com/MightySignal/varys/issues/155
+      #https://github.com/MightySignal/varys/issues/157
+      ids << IosAppSnapshot.find(2909066)
+      
+      #https://github.com/MightySignal/varys/issues/156
+      ids << IosAppSnapshot.find(2909501)
+      
+      #https://github.com/MightySignal/varys/issues/158
+      ids << IosAppSnapshot.find(2909093)
+      
+      #https://github.com/MightySignal/varys/issues/159
+      ids << IosAppSnapshot.find(2909535)
+      
+      ids += IosAppSnapshot.where.not(name: nil).limit(50)
+      ids += IosAppSnapshot.where.not(name: nil).order('created_at DESC').limit(50)
+      
+      ids
+    end
+    
+    def write_csv_line(csv: nil, ios_app_snapshot_id: nil, ios_app_snapshot_seller_url: nil, ios_app_snapshot_support_url: nil, website_id: nil, website_url: nil, company_id: nil, company_url: nil, ios_app_id: nil)
+      csv << [ios_app_snapshot_id, ios_app_snapshot_seller_url, ios_app_snapshot_support_url, website_id, website_url, company_id, company_url]
+    end
+
+    def run_ios
+      
+      csv = CSV.generate do |csv|
+        
+        csv << ['ios_app_snapshot.id', 'ios_app_snapshot.seller_url', 'ios_app_snapshot.support_url', 'website.id', 'website.url', 'company.id', 'company.url', 'ios_app.id']
+        
+        ios_app_snapshot_ids.each do |ios_app_snapshot_id|
+    
+          ss = IosAppSnapshot.find(ios_app_snapshot_id)
+          ios_app = ss.ios_app
+      
+          if ss.nil?
+            return
+          end
+    
+          if dasi = ss.developer_app_store_identifier
+            c = Company.find_by_app_store_identifier(dasi)
+
+            if c && !c.websites.empty?
+              primary_website = c.websites.first
+        
+              if !ios_app.websites.include?(primary_website)
+                ios_app.websites << primary_website 
+                #ios_app.save
+              end
+            
+              write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: primary_website.id, website_url: primary_website.url, company_id: c.id, company_url: c.url, ios_app_id: ios_app.id)
+              
+              next  #go to the next app
+            end
+          end
+    
+          urls = [ss.seller_url, ss.support_url].select{|url| url}
+      
+          urls.each do |url|
+            if UrlHelper.secondary_site?(url)
+              kind = :secondary
+            else
+              url = UrlHelper.url_with_http_and_domain(url)
+              kind = :primary
+            end
+        
+            w = Website.find_by_url(url)
+        
+            if w.nil?
+              c = Company.find_by_app_store_identifier(ss.developer_app_store_identifier)
+              #c = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier) if c.nil?
+              #w = Website.create(url: url, company: c, kind: kind)
+            elsif w.company.nil?
+              #w.company = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier)
+              #w.save
+            elsif !w.company.app_store_identifier.blank?  
+              skip_save = true
+              next
+            end
+        
+            ios_app.websites << w if !skip_save && !ios_app.websites.include?(w)
+            #ios_app.save
+            
+            write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: w.id, website_url: w.url, company_id: c.id, company_url: c.url, ios_app_id: ios_app.id)
+        
+          end
+      
+        end
+        
+      end
+      
+    end
+    
+  end
+
+end
