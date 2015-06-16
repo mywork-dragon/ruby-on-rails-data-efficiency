@@ -100,6 +100,8 @@ class NewBusinessEntityService
         
       end
       
+      puts "\n\n"
+      
       print csv
       nil
       
