@@ -107,6 +107,49 @@ class NewBusinessEntityService
       
     end
     
+    def run_ios_new
+      
+      ios_app_snapshot_ids.each do |ss|
+        
+        ss = IosAppSnapshot.find(ios_app_snapshot_id)
+        ios_app = ss.ios_app
+        
+        next if ss.nil?
+        
+        # 1. Link all apps to developer by by developer ID.
+        if dasi = ss.developer_app_store_identifier
+          
+          ios_developer = IosDeveloper.find_by_identifier(developer_app_store_identifier)
+          
+          # Create a new developer if it doesn't exit
+          if ios_developer.nil?
+            ios_developer = IosDeveloper.create(identifier: dasi, name: )
+            
+          end
+          
+          c = Company.find_by_app_store_identifier(dasi)
+
+          if c && !c.websites.empty?
+            primary_website = c.websites.first
+      
+            if !ios_app.websites.include?(primary_website)
+              ios_app.websites << primary_website 
+              #ios_app.save
+            end
+          end
+        end 
+        
+      end
+      
+    end
+    
+    def thresh
+      #input: count of other apps for same snapshot with same developer ID with the same website
+      
+       
+      
+    end
+    
   end
 
 end
