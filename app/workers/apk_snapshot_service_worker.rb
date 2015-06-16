@@ -69,7 +69,7 @@ class ApkSnapshotServiceWorker
       file_name = apk_file_name(app_identifier)
       # print "\nDownloading #{app_identifier}... "
 
-      ApkDownloader.download! app_identifier, file_name
+      ApkDownloader.download!(app_identifier, file_name)
 
       # end
 
@@ -143,16 +143,16 @@ class ApkSnapshotServiceWorker
   end
 
   def block_account(google_account_id, message)
-    li "#{message}. Trying a different account. \n"
-    li "Account with `id` #{google_account_id} is being blocked"
+    # li "#{message}. Trying a different account. \n"
+    # li "Account with `id` #{google_account_id} is being blocked"
     ga = GoogleAccount.where(id: google_account_id)[0]
     ga.blocked = true
     ga.save!
   end
 
   def flag_account(google_account_id, message)
-    li "#{message}. Trying again. \n"
-    li "Account with `id` #{google_account_id} is being flagged"
+    # li "#{message}. Trying again. \n"
+    # li "Account with `id` #{google_account_id} is being flagged"
     ga = GoogleAccount.where(id: google_account_id)[0]
     ga.flags += 1
     ga.save!
