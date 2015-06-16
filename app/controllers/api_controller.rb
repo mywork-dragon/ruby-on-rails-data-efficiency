@@ -374,7 +374,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['Mighty Signal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'Mighty Signal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)']
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)']
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"

@@ -38,16 +38,13 @@ module ApkDownloader
       @proxy = ApkDownloader.configuration.proxy
 
       login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
-      login_http.use_ssl = true
-      login_http.ssl_version="SSLv3"
-      login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      # login_http.use_ssl = true
+      # login_http.ssl_version="SSLv3"
+      # login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
       post["Accept-Encoding"] = ""
-      post["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-      post["Pragma"] = "no-cache"
-      post["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
 
       response = login_http.request post
 
@@ -95,14 +92,30 @@ module ApkDownloader
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
-      http.use_ssl = true
-      http.ssl_version="SSLv3"
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      # http.use_ssl = true
+      # http.ssl_version="SSLv3"
+      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       response = http.request_head(url)
       file_size = response['content-length'].to_i
 
       max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
+
+      # req = Net::HTTP::Get.new url.to_s
+      # req['Accept-Encoding'] = ''
+      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+      # req['Cookie'] = [cookie.name, cookie.value].join('=')
+
+      # resp = http.request req
+
+      # case resp
+      # when Net::HTTPSuccess
+      #   return resp
+      # when Net::HTTPRedirection
+      #   return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      # else
+      #   resp.error!
+      # end
 
       begin
         status = Timeout::timeout(max_time) {
@@ -123,7 +136,8 @@ module ApkDownloader
           end
         }
       rescue Exception => e
-        puts e.message
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
+        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
       end
 
     end
@@ -131,9 +145,9 @@ module ApkDownloader
     def api_request type, path, data = {}
       if @http.nil?
         @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
-        @http.use_ssl = true
-        @http.ssl_version="SSLv3"
-        @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        # @http.use_ssl = true
+        # @http.ssl_version="SSLv3"
+        # @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
       api_headers = {
@@ -152,9 +166,6 @@ module ApkDownloader
 
       if type == :post
         api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-        api_headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-        api_headers["Pragma"] = "no-cache"
-        api_headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
       end
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
