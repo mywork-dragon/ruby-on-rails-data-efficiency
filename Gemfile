@@ -113,3 +113,5 @@ gem 'sanitize', '4.0.0'
 gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 
 gem 'net', :require => 'net/http'
+
+gem 'domainator', '2.0.0'

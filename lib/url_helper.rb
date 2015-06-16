@@ -14,13 +14,15 @@ class UrlHelper
     end
     
     def url_with_domain_only(url)
-      ret = url_with_base_only(url).gsub(/\/.*\z/, '')  #remove stuff after .com
+      Domainator.parse(url)
       
-      if match = ret.match(/\..*\..*/)
-        ret = match[0].gsub(/\A./, '') 
-      end
-        
-      ret
+      # ret = url_with_base_only(url).gsub(/\/.*\z/, '')  #remove stuff after .com
+      #
+      # if match = ret.match(/\..*\..*/)
+      #   ret = match[0].gsub(/\A./, '')
+      # end
+      #
+      # ret
     end
     
     def url_with_http_and_domain(url)
