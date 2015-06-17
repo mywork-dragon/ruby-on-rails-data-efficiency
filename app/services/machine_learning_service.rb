@@ -39,13 +39,22 @@ class MachineLearningService
     
     training_ss_ids = [2909093]
     
-    training_ss_ids.each do |id|
+    training_ss_ids.map do |id|
       ss = IosAppSnapshot.find(id)
       
-      company_name_in_domain_percentage = white.similarity(ss.seller, ss.url)   # 0.8
+      appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
+      total = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, developer_app_store_identifier: ss.developer_app_store_identifier).count
+      percentage_other_apps_same_website = (appearances.to_f)/(total.to_f)
+      
+      contact_support_link_same = UrlHelper.url_with_domain_only(ss.seller_url) == UrlHelper.url_with_domain_only(ss.support_url) ? 1 : 0
+      
+      reviews = ss.ratings_all_count/5.0e6
+      
       white = Text::WhiteSimilarity.new
+      company_name_in_domain_percentage = white.similarity(ss.seller, UrlHelper.url_with_domain_only(ss.seller_url))
+      create_vector(company_name_in_domain_percentage: company_name_in_domain_percentage)
       
-      
+      create_vector(percentage_other_apps_same_website: percentage_other_apps_same_website, reviews: reviews, contact_support_link_same: contact_support_link_same, company_name_in_domain_percentage: company_name_in_domain_percentage)
     end
     
   end
@@ -54,7 +63,8 @@ class MachineLearningService
   
   #scale reviews down by 5M
   
-  def create_vector(percentage_other_apps_same_website: , reviews: , contact_support_link_same: , company_name_in_domain_percentage:)
+  def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same: , company_name_in_domain_percentage:)
+    
   end
 
   class << self
