@@ -37,7 +37,16 @@ class MachineLearningService
     parameter.eps = 0.001
     parameter.c = 10
     
+    training_ss_ids = [2909093]
     
+    training_ss_ids.each do |id|
+      ss = IosAppSnapshot.find(id)
+      
+      company_name_in_domain_percentage = white.similarity(ss., 'healed')   # 0.8
+      white = Text::WhiteSimilarity.new
+      
+      
+    end
     
   end
 
