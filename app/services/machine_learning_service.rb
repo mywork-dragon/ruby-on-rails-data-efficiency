@@ -52,7 +52,6 @@ class MachineLearningService
       
       white = Text::WhiteSimilarity.new
       company_name_in_domain_percentage = white.similarity(ss.seller, UrlHelper.url_with_domain_only(ss.seller_url))
-      create_vector(company_name_in_domain_percentage: company_name_in_domain_percentage)
       
       create_vector(percentage_other_apps_same_website: percentage_other_apps_same_website, reviews: reviews, contact_support_link_same: contact_support_link_same, company_name_in_domain_percentage: company_name_in_domain_percentage)
     end
