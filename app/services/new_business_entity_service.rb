@@ -155,6 +155,9 @@ class NewBusinessEntityService
       (appearances.to_f)/(total.to_f)
       
       #input: find link back to app on listed site
+      # site:snapchat.com (snapchat ios OR iphone OR ipad app)
+      
+      #input how many other apps in the batch list the website
       
     end
     
