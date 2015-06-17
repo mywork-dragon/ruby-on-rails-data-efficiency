@@ -106,11 +106,11 @@ class ApkSnapshotServiceWorker
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
       print " ( time : #{download_time} sec, account_used : #{email}) "
-      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = google_account_id
       apk_snap.download_time = download_time
-      # apk_snap.unpack_time = unpack_time
+      apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save!
 
