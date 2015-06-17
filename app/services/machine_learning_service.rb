@@ -42,7 +42,7 @@ class MachineLearningService
     training_ss_ids.each do |id|
       ss = IosAppSnapshot.find(id)
       
-      company_name_in_domain_percentage = white.similarity(ss., 'healed')   # 0.8
+      company_name_in_domain_percentage = white.similarity(ss.seller, ss.url)   # 0.8
       white = Text::WhiteSimilarity.new
       
       
