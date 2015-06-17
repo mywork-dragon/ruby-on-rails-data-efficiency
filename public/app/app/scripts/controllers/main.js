@@ -206,6 +206,18 @@ angular.module('appApp')
           var end, start;
           return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
         },
+        $scope.appsDisplayedCount = function() {
+
+          var lastPageMaxApps = $rootScope.numPerPage * $rootScope.currentPage;
+          var baseAppNum = $rootScope.numPerPage * ($rootScope.currentPage - 1) + 1;
+
+          if (lastPageMaxApps > $rootScope.numApps) {
+            return "" + baseAppNum + " - " + $rootScope.numApps;
+          } else {
+            return "" + baseAppNum + " - " + lastPageMaxApps;
+          }
+
+        },
         $scope.changeAppPlatform = function(platform) {
           $scope.appPlatform = platform;
           APP_PLATFORM = platform;
@@ -221,17 +233,10 @@ angular.module('appApp')
           listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
             $scope.notify('add-selected-success');
             $rootScope.selectedAppsForList = [];
-            $scope.uncheckAllCheckboxes();
           }).error(function() {
             $scope.notify('add-selected-error');
           });
           $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
-        },
-        $scope.checkAllCheckboxes = function() {
-          $scope.selectAppCheckbox = angular.copy($rootScope.apps);
-        },
-        $scope.uncheckAllCheckboxes = function() {
-          $scope.selectAppCheckbox = [];
         },
         $scope.notify = function(type) {
           switch (type) {
@@ -281,8 +286,8 @@ angular.module('appApp')
         $scope.search = function() {
           return $scope.filteredApps = $filter("filter")($scope.apps, $scope.searchKeywords), $scope.onFilterChange();
         },
-        $scope.numPerPageOpt = [50, 200, 350, 1000],
-        $rootScope.numPerPage = $scope.numPerPageOpt[2],
+        $scope.numPerPageOpt = [100, 200, 350, 1000],
+        $rootScope.numPerPage = $scope.numPerPageOpt[0],
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }

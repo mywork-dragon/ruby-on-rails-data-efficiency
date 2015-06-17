@@ -3,7 +3,7 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-     <strong><i class="fa fa-list panel-ico"></i>Lists</strong>
+     <strong><i class="fa fa-list panel-ico"></i>Lists</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying 1 - {{$root.numApps}} of {{$root.numApps}}</span>
      <button type="submit" class="btn btn-primary pull-right" ng-click="exportListToCsv()">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteSelectedModal" ng-disabled="$root.selectedAppsForList < 1">Delete Selected</button>
@@ -95,7 +95,9 @@
           <td class="dashboardTableDataCheckbox">
             <checkable-checkbox app="app.app"></checkable-checkbox>
           </td>
-          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a></td>
+          <td class="resultsTableAppIcon">
+            <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+          </td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>
           <td>{{app.app.mobilePriority}}</td>
@@ -137,6 +139,7 @@
                       </span>
           -->
         </div>
+        <!--
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="currentPage"
@@ -147,6 +150,7 @@
                       rotate="false"
                       boundary-links="true"></pagination>
         </div>
+        -->
       </div>
     </footer>
   </section>

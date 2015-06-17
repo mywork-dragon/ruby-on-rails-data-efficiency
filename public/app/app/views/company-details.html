@@ -26,14 +26,15 @@
                 <tr>
                   <td>
                     <strong>Website(s):</strong><br />
-                    <span ng-repeat="website in companyData.websites"><a href="http://{{website}}">{{website}}</a><br /></span>
+                    <span ng-repeat="website in companyData.websites"><a href="{{website}}">{{website}}</a><br /></span>
                   </td>
                 </tr>
                 <tr>
                   <td>
                     <strong>LinkedIn Profiles:</strong><br />
-                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales</button>
-                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing</button>
+                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
+                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </td>
                 </tr>
                 </tbody>
@@ -43,7 +44,7 @@
     </div>
     <div class="col-md-4">
         <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Apps</strong></div>
+            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Other Apps by {{companyData.name}}</strong><span id="dashboardResultsTableHeadingNumDisplayed"> | {{companyData.iosApps.length + companyData.androidApps.length}} total</span></div>
             <div class="panel-body">
               <a ng-if="companyData.iosApps" ng-repeat="app in companyData.iosApps" href="#/app/ios/{{app.id}}" target="_blank">
                 <div class="well companyAssociatedApp" >

@@ -1,3 +1,4 @@
+# This is our internal API that talks to the frontend
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
@@ -67,7 +68,11 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
-          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil
+          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          appIcon: {
+              large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+              small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+          }
         },
         company: {
           id: company.present? ? company.id : nil,
@@ -124,7 +129,11 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.android_fb_ad_appearances.present?,
-          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil
+          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+          appIcon: {
+              large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+              # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+          }
         },
         company: {
           id: company.present? ? company.id : nil,
@@ -307,7 +316,11 @@ class ApiController < ApplicationController
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
               adSpend: app.ios_fb_ad_appearances.present?,
-              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+              }
           },
           company: {
               id: company.present? ? company.id : nil,
@@ -333,7 +346,11 @@ class ApiController < ApplicationController
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
               adSpend: app.android_fb_ad_appearances.present?,
-              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+                  # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+              }
           },
           company: {
               id: company.present? ? company.id : nil,
