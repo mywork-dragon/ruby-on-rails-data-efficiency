@@ -59,12 +59,11 @@ class MachineLearningService
     
   end
 
-  private
   
   #scale reviews down by 5M
   
-  def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same: , company_name_in_domain_percentage:)
-    
+  def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same:, company_name_in_domain_percentage:)
+    [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage]
   end
 
   class << self
