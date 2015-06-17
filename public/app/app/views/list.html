@@ -84,9 +84,6 @@
                                   data-ng-class="{active: row == '-lastUpdated'}"></span>
             -->
           </div></th>
-          <th><div class="th">
-            Details
-          </div></th>
         </tr>
         </thead>
 
@@ -100,12 +97,12 @@
           </td>
           <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>
-          <td>{{app.app.mobilePriority}}</td>
-          <td>{{app.app.adSpend}}</td>
+          <td>
+            <i class="fa fa-circle" ng-class="'mobilePriorityStatus-' + app.app.mobilePriority"></i> {{app.app.mobilePriority}}
+          </td>          <td>{{app.app.adSpend}}</td>
           <td>{{app.app.userBase}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
-          <td><a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">Details</a></td>
         </tr>
         </tbody>
       </table>

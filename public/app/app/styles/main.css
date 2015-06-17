@@ -7255,3 +7255,11 @@ select option:empty {
   text-transform: initial;
   font-weight: normal;
 }
+
+.mobilePriorityStatus-medium {
+  color: #eec95a;
+}
+
+.mobilePriorityStatus-high {
+  color: #1EAD4F;
+}
