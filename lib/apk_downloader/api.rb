@@ -38,16 +38,16 @@ module ApkDownloader
       @proxy = ApkDownloader.configuration.proxy
 
       login_http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(LoginUri.host, LoginUri.port)
-      # login_http.use_ssl = true
-      # login_http.ssl_version="SSLv3"
-      # login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      login_http.use_ssl = true
+      login_http.ssl_version="SSLv3"
+      login_http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
       post["Accept-Encoding"] = ""
 
       response = login_http.request post
-
+      
       if ApkDownloader.configuration.debug
         pp "Login response:"
         pp response
@@ -92,9 +92,9 @@ module ApkDownloader
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
       http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(url.host, url.port)
-      # http.use_ssl = true
-      # http.ssl_version="SSLv3"
-      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.use_ssl = true
+      http.ssl_version="SSLv3"
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       response = http.request_head(url)
       file_size = response['content-length'].to_i
@@ -145,9 +145,9 @@ module ApkDownloader
     def api_request type, path, data = {}
       if @http.nil?
         @http = Net::HTTP.SOCKSProxy(@proxy, 9050).new(GoogleApiUri.host, GoogleApiUri.port)
-        # @http.use_ssl = true
-        # @http.ssl_version="SSLv3"
-        # @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        @http.use_ssl = true
+        @http.ssl_version="SSLv3"
+        @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
       api_headers = {

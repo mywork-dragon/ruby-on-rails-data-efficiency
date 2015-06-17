@@ -67,7 +67,7 @@ class ApkSnapshotServiceWorker
       end
       app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
       file_name = apk_file_name(app_identifier)
-      # print "\nDownloading #{app_identifier}... "
+      print "\nDownloading #{app_identifier}... "
 
       ApkDownloader.download!(app_identifier, file_name)
 
@@ -102,10 +102,10 @@ class ApkSnapshotServiceWorker
 
     else
 
-      # print "success"
+      print "success"
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      # li " ( time : #{download_time} sec, account_used : #{email}) "
+      print " ( time : #{download_time} sec, account_used : #{email}) "
       # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = google_account_id
