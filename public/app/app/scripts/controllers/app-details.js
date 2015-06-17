@@ -13,6 +13,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     });
   };
 
+  $scope.appPlatform = $routeParams.platform;
+
   /* LinkedIn Link Button Logic */
   $scope.onLinkedinButtonClick = function(linkedinLinkType) {
     var linkedinLink = "";
