@@ -37,7 +37,9 @@ class MachineLearningService
     parameter.eps = 0.001
     parameter.c = 10
     
-    training_ss_ids = [2909093]
+    # Dropbox, Tinder, MySpace, Papa John's Pizza, Children Study Lounge, Sheetal Sheth
+    training_ss_ids = [3756292, 3635886, 3690092, 3312993, 3596641, 3390829, 3547939]
+    labels = [1, 1, 1, 1, 1, 0, 0]
     
     training_ss_ids.map do |id|
       ss = IosAppSnapshot.find(id)
