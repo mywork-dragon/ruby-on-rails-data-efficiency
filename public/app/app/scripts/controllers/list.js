@@ -34,10 +34,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     $scope.getList = function() {
 
     };
-    $scope.addSelectedTo = function(list, selectedApps) {
-      listApiService.addSelectedTo(list, selectedApps);
-      $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
-    };
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];

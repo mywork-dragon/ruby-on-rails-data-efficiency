@@ -14,11 +14,8 @@ class ApkSnapshotService
       if workers.size == 0
         j = ApkSnapshotJob.create!(notes: notes)
         AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each do |app|
-          if Rails.env.production?
-            ApkSnapshotServiceWorker.perform_async(j.id, app.id)
-          elsif Rails.env.development?
-            ApkSnapshotServiceWorker.new.perform(j.id, app.id)
-          end
+          ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+          # ApkSnapshotServiceWorker.new.perform(j.id, app.id)
         end
       else
         print "WARNING: You cannot continue because there are #{workers.size} workers currently running."
@@ -30,6 +27,8 @@ class ApkSnapshotService
 
       start = Time.now
 
+      workers = Sidekiq::Workers.new
+
       while true do
         total = j.apk_snapshots.count
         success = j.apk_snapshots.where(status: 1).count
@@ -38,7 +37,7 @@ class ApkSnapshotService
         progress = ((success + fail).to_f/total)*100
         success_rate = (success.to_f/(success + fail).to_f)*100
 
-        apk_ga = ApkSnapshot.select(:google_account_id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
+        apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
         currently_downloading = apk_ga.count
 
@@ -46,7 +45,7 @@ class ApkSnapshotService
 
         elapsed = (Time.now - start).to_i
 
-        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Time Elapsed : #{elapsed} \r"
+        print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size} \r"
 
         if progress == 100.0
           puts "\n\nScrape Completed"

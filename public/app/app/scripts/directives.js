@@ -194,7 +194,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               allselected: '=allSelected',
               allclear: '=allClear'
             },
-            template: '<input type="checkbox" ng-model="checkboxMaster" ng-change="checkboxMasterChange()">',
+            template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
             controller: function ($scope, $element) {
 
               $scope.checkboxMasterChange = function () {
@@ -211,7 +211,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               $scope.$watch('$root.selectedAppsForList', function () {
 
                 /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
+                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
@@ -236,7 +236,7 @@ angular.module("app.directives", []).directive("imgHolder", [
 
               $scope.$watch('$root.selectedAppsForList', function () {
 
-                if($rootScope.selectedAppsForList.length == $rootScope.numApps) {
+                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
