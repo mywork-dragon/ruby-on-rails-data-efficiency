@@ -145,7 +145,8 @@ class NewBusinessEntityService
     
     # THE PROBLEM: does the website actually belong to the app?
     def thresh
-      ss = IosAppSnapshot.find(2909535)
+      # ss = IosAppSnapshot.find(2909535)
+      ss = IosAppSnapshot.find(2909093)
       
       #input: count of other listing for same snapshot with same developer ID with the same website
       appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
