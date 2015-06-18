@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150616004603) do
+ActiveRecord::Schema.define(version: 20150618054634) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -448,6 +448,14 @@ ActiveRecord::Schema.define(version: 20150616004603) do
   add_index "ios_apps_websites", ["ios_app_id", "website_id"], name: "index_ios_apps_websites_on_ios_app_id_and_website_id", using: :btree
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id"], name: "index_ios_apps_websites_on_website_id", using: :btree
+
+  create_table "ios_developers", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
