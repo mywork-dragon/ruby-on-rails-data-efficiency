@@ -116,16 +116,10 @@ class NewBusinessEntityService
         
         next if ss.nil?
         
-        # 1. Link all apps to developer by by developer ID.
+        # 1. Link all apps to developer by developer ID.
         if dasi = ss.developer_app_store_identifier
           
-          ios_developer = IosDeveloper.find_by_identifier(developer_app_store_identifier)
-          
-          # Create a new developer if it doesn't exit
-          if ios_developer.nil?
-            ios_developer = IosDeveloper.create(identifier: dasi)
-            
-          end
+          ios_developer = IosDeveloper.find_or_create_by_identifier(developer_app_store_identifier)
           
           c = Company.find_by_app_store_identifier(dasi)
 
