@@ -7256,10 +7256,26 @@ select option:empty {
   font-weight: normal;
 }
 
-.mobilePriorityStatus-medium {
+.status-low, .status-false {
+}
+
+.status-medium {
   color: #eec95a;
 }
 
-.mobilePriorityStatus-high {
+.status-high, .status-true {
   color: #1EAD4F;
+}
+
+.appTypeIndicator i.fa {
+  font-size: 12pt;
+  margin-right: 5px;
+}
+
+.appTypeIndicator i.fa-android {
+  color: #6ab344;
+}
+
+.dashboardMobilePriorityView i.fa-circle, .dashboardAdSpendView i.fa-circle {
+  margin-right: 5px;
 }
