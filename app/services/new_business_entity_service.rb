@@ -164,6 +164,8 @@ class NewBusinessEntityService
         
       end
 
+      # 2. run through SVM
+      something = MachineLearningService.method_name(ios_app_snapshot: ios_app_snapshot, websites: websites) #need to build this
       
       
     end
