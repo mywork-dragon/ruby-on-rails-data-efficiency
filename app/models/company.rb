@@ -4,11 +4,9 @@ class Company < ActiveRecord::Base
   has_many :apps
   has_many :websites
   
-  has_many :companies_ios_developers
-  has_many :ios_developers, through: :companies_ios_developers
+  has_many :ios_developers
   
-  has_many :android_developers_companies
-  has_many :android_developers, through: :android_developers_companies
+  has_many :android_developers
   
   enum status: [ :active, :paused ]
   
