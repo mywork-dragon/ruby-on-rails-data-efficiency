@@ -28,7 +28,7 @@ class MachineLearningService
     puts "Predicted #{pred}"
   end
   
-  def predict
+  def predict(app_identifier)
     problem = Libsvm::Problem.new
     parameter = Libsvm::SvmParameter.new
 
@@ -37,27 +37,40 @@ class MachineLearningService
     parameter.eps = 0.001
     parameter.c = 10
     
-    # Dropbox, Tinder, MySpace, Papa John's Pizza, Children Study Lounge, Sheetal Sheth
-    training_ss_ids = [3756292, 3635886, 3690092, 3312993, 3596641, 3390829, 3547939]
-    labels = [1, 1, 1, 1, 1, 0, 0]
+    # Dropbox, Tinder, MySpace, Papa John's Pizza, Children Study Lounge, Pulsepoint, Sheetal Sheth, Amazing Facts, Gay Times - the original gay lifestyle magazine, Bills Tracker for iPhone/iPad
+    training_ss_ids = [3756292, 3635886, 3690092, 3312993, 3596641, 3390829, 3547939, 2961514, 3474788, 2969821]
+    labels = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
     
-    training_ss_ids.map do |id|
-      ss = IosAppSnapshot.find(id)
-      
-      appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
-      total = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, developer_app_store_identifier: ss.developer_app_store_identifier).count
-      percentage_other_apps_same_website = (appearances.to_f)/(total.to_f)
-      
-      contact_support_link_same = UrlHelper.url_with_domain_only(ss.seller_url) == UrlHelper.url_with_domain_only(ss.support_url) ? 1 : 0
-      
-      reviews = ss.ratings_all_count/5.0e6
-      
-      white = Text::WhiteSimilarity.new
-      company_name_in_domain_percentage = white.similarity(ss.seller, UrlHelper.url_with_domain_only(ss.seller_url))
-      
-      create_vector(percentage_other_apps_same_website: percentage_other_apps_same_website, reviews: reviews, contact_support_link_same: contact_support_link_same, company_name_in_domain_percentage: company_name_in_domain_percentage)
+    examples = training_ss_ids.map do |id|
+      vector_from_ss_id(ss_id)
     end
     
+    problem.set_examples(labels, examples)
+    
+    model = Libsvm::Model.train(problem, parameter)
+    
+    ios_app = IosApp.find_by_app_identifier(app_identifier)
+    
+    ss = ios_app.newest_ios_app_snapshot
+
+    model.predict(Libsvm::Node.features(vector_from_ss_id(ss.id)))
+  end
+  
+  def vector_from_ss_id(ss_id)
+    ss = IosAppSnapshot.find(id)
+    
+    appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
+    total = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, developer_app_store_identifier: ss.developer_app_store_identifier).count
+    percentage_other_apps_same_website = (appearances.to_f)/(total.to_f)
+    
+    contact_support_link_same = UrlHelper.url_with_domain_only(ss.seller_url) == UrlHelper.url_with_domain_only(ss.support_url) ? 1 : 0
+    
+    reviews = ss.ratings_all_count/5.0e6
+    
+    white = Text::WhiteSimilarity.new
+    company_name_in_domain_percentage = white.similarity(ss.seller, UrlHelper.url_with_domain_only(ss.seller_url))
+    
+    create_vector(percentage_other_apps_same_website: percentage_other_apps_same_website, reviews: reviews, contact_support_link_same: contact_support_link_same, company_name_in_domain_percentage: company_name_in_domain_percentage)
   end
 
   
