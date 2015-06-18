@@ -19,8 +19,6 @@ class IosApp < ActiveRecord::Base
   has_many :app_stores_ios_apps
   has_many :app_stores, -> { uniq }, through: :app_stores_ios_apps
   
-  belongs_to :ios_developer
-  
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
   
