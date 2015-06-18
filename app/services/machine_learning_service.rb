@@ -52,8 +52,6 @@ class MachineLearningService
     
     problem.set_examples(labels, examples)
     
-    return
-    
     model = Libsvm::Model.train(problem, parameter)
     
     ios_app = IosApp.find_by_app_identifier(app_identifier)
