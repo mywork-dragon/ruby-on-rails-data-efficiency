@@ -13,10 +13,14 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     /* -------- Mixpanel Analytics End -------- */
 
     $scope.load = function() {
+      $scope.queryInProgress = true;
       listApiService.getList($routeParams.id).success(function(data) {
+        $scope.queryInProgress = false;
         $rootScope.apps = data.results;
         $rootScope.numApps = data.resultsCount;
         $rootScope.currentList = $routeParams.id;
+      }).error(function() {
+        $scope.queryInProgress = false;
       });
     };
     listApiService.getLists().success(function(data) {
@@ -30,9 +34,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
           location.reload();
         });
       });
-    };
-    $scope.getList = function() {
-
     };
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
