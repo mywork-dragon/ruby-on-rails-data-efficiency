@@ -644,6 +644,10 @@ pre {
 .table-dynamic .table-bordered thead th > .th {
   padding: 8px 25px 8px 8px; }
 
+.table-dynamic .table-bordered thead th > .th .normal-right-padding {
+  padding-right: 8px;
+}
+
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up, .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
   position: absolute;
   color: #999; }
@@ -7278,4 +7282,8 @@ select option:empty {
 
 .dashboardMobilePriorityView i.fa-circle, .dashboardAdSpendView i.fa-circle {
   margin-right: 5px;
+}
+
+.appDetailsHeader {
+  max-width: 40px;
 }
