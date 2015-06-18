@@ -19,6 +19,14 @@
                   <td><strong>Last Updated:</strong> {{appData.lastUpdated}}</td>
                 </tr>
                 <tr>
+                  <td ng-if="appPlatform == 'ios'">
+                    <a href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank"><strong>Apple App Store Listing</strong></a><br />
+                  </td>
+                  <td ng-if="appPlatform == 'android'">
+                    <a href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank"><strong>Google Play Store Listing</strong></a><br />
+                  </td>
+                </tr>
+                <tr>
                   <td><strong>App Logo:</strong><br /><img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" /></td>
                 </tr>
                 </tbody>
