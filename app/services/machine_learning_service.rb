@@ -11,12 +11,6 @@ class MachineLearningService
 
     examples = [ [0, 0, 0, 0], [1, 0, 0, 0], [1, 1, 1, 1], [1, 0, 1, 1] ].map {|ary| Libsvm::Node.features(ary) }
     
-    #labels
-    # 0: link to no company
-    # 1: link to existing company with developer identifier 
-    # 2: link to seller_url
-    # 3: link to support_url
-    
     labels = [0, 1, 1, 1]
 
     problem.set_examples(labels, examples)
@@ -45,8 +39,8 @@ class MachineLearningService
       vector_from_ss_id(ss_id)
     end
     
-    # puts "labels: #{labels}"
-    # puts "examples: #{examples}"
+    puts "labels: #{labels}"
+    puts "examples_a: #{examples_a}"
     
     examples = examples_a.map {|ary| Libsvm::Node.features(ary) }
     
@@ -86,7 +80,6 @@ class MachineLearningService
 
   
   #scale reviews down by 5M
-  
   def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same:, company_name_in_domain_percentage:)
     [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage].map{ |x| x.to_f }
   end
