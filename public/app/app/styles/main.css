@@ -644,6 +644,10 @@ pre {
 .table-dynamic .table-bordered thead th > .th {
   padding: 8px 25px 8px 8px; }
 
+.table-dynamic .table-bordered thead th > .th .normal-right-padding {
+  padding-right: 8px;
+}
+
 .table-dynamic .table-bordered thead th .glyphicon-chevron-up, .table-dynamic .table-bordered thead th .glyphicon-chevron-down {
   position: absolute;
   color: #999; }
@@ -7254,4 +7258,32 @@ select option:empty {
 #dashboardResultsTableHeadingNumDisplayed {
   text-transform: initial;
   font-weight: normal;
+}
+
+.status-low, .status-false {
+}
+
+.status-medium {
+  color: #eec95a;
+}
+
+.status-high, .status-true {
+  color: #1EAD4F;
+}
+
+.appTypeIndicator i.fa {
+  font-size: 12pt;
+  margin-right: 5px;
+}
+
+.appTypeIndicator i.fa-android {
+  color: #6ab344;
+}
+
+.dashboardMobilePriorityView i.fa-circle, .dashboardAdSpendView i.fa-circle {
+  margin-right: 5px;
+}
+
+.appDetailsHeader {
+  max-width: 40px;
 }
