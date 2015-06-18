@@ -121,11 +121,15 @@ class NewBusinessEntityService
         next if dasi.blank?
         
         if dasi
-          
           ios_developer = IosDeveloper.find_or_create_by_identifier(developer_app_store_identifier)
-          
           c = Company.find_by_app_store_identifier(dasi)
         end 
+        
+        # 2. Link the app to the developer if it's not already
+        ios_app.ios_developer = ios_developer if ios_app.ios_developer.blank?
+        
+        
+        
         
       end
       
