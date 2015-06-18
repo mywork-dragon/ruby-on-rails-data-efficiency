@@ -135,8 +135,24 @@ class NewBusinessEntityService
       
     end
     
-    def link_developer_to_company_and_add_websites
-      # 1
+    
+    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer)
+      
+      # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
+      legit_websites = websites_legit?(ios_app_snapshot)  #need to implement
+      
+      #2. For all legit websites, create a company for the developer if it doesn't already exist, and add the website to the company
+      legit_websites.each do |website_url|
+        company = ios_developer.company
+        
+        if company.blank?
+          company = Company.create(name: ios_developer.name)
+        end
+        
+        website = Website.find_or_create_by_url(website_url)
+        
+        company.websites << website
+      end
       
     end
     
