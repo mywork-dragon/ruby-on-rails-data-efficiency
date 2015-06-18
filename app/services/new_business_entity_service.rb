@@ -116,31 +116,72 @@ class NewBusinessEntityService
         
         next if ss.nil?
         
-        # 1. Link all apps to developer by by developer ID.
-        if dasi = ss.developer_app_store_identifier
-          
+        # 1. Link all apps to developer by developer ID.
+        dasi = ss.developer_app_store_identifier
+        next if dasi.blank?
+        
+        if dasi
           ios_developer = IosDeveloper.find_by_identifier(developer_app_store_identifier)
-          
-          # Create a new developer if it doesn't exit
-          if ios_developer.nil?
-            ios_developer = IosDeveloper.create(identifier: dasi)
-            
-          end
-          
+          ios_developer = IosDeveloper.create(identifier: dasi, name: ss.seller) if ios_developer.nil?
           c = Company.find_by_app_store_identifier(dasi)
-
-          if c && !c.websites.empty?
-            primary_website = c.websites.first
-      
-            if !ios_app.websites.include?(primary_website)
-              ios_app.websites << primary_website 
-              #ios_app.save
-            end
-          end
         end 
         
+        # 2. Link the app to the developer if it's not already
+        ios_app.ios_developer = ios_developer if ios_app.ios_developer.blank?
+        
+        # 3.
+        link_developer_to_company_and_add_websites
       end
       
+    end
+    
+    
+    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer)
+      
+      # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
+      the_legit_websites = legit_websites(ios_app_snapshot)  #need to implement
+      
+      #2. For all legit websites, create a company for the developer if it doesn't already exist, and add the website to the company
+      the_legit_websites.each do |website_url|
+        company = ios_developer.company
+        
+        if company.blank?
+          company = Company.create(name: ios_developer.name)
+        end
+        
+        website = Website.find_or_create_by_url(website_url)
+        
+        company.websites << website
+      end
+      
+    end
+    
+    def legit_websites(ios_app_snapshot:)
+      websites = [ios_app_snapshot.seller_url, support_url].select{ |url| url.present? }
+      
+      # 1. Remove all websites that are common sites (like Blogspot)
+      websites.reject do |website|
+        
+      end
+
+      # 2. run through SVM
+      something = MachineLearningService.method_name(ios_app_snapshot: ios_app_snapshot, websites: websites) #need to build this
+      
+      
+    end
+    
+    #need to fix this logic
+    def hosted_sites
+      %w(
+        facebook.com\/.+
+        sites.google.com\/+.*
+        plus.google.com\/+.*
+        twitter.com\/.+
+        pinterest.com\/.+
+        facebook.com\/.+
+        instagram.com\/.+
+        apple.com\/.+
+      )
     end
     
     # THE PROBLEM: does the website actually belong to the app?

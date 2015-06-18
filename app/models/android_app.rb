@@ -18,6 +18,8 @@ class AndroidApp < ActiveRecord::Base
   belongs_to :newest_android_app_snapshot, class_name: 'AndroidAppSnapshot', foreign_key: 'newest_android_app_snapshot_id'
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
   
+  belongs_to :android_developer
+  
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
   
