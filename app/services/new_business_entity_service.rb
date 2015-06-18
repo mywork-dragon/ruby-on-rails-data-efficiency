@@ -139,10 +139,10 @@ class NewBusinessEntityService
     def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer)
       
       # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
-      legit_websites = websites_legit?(ios_app_snapshot)  #need to implement
+      the_legit_websites = legit_websites(ios_app_snapshot)  #need to implement
       
       #2. For all legit websites, create a company for the developer if it doesn't already exist, and add the website to the company
-      legit_websites.each do |website_url|
+      the_legit_websites.each do |website_url|
         company = ios_developer.company
         
         if company.blank?
@@ -154,6 +154,32 @@ class NewBusinessEntityService
         company.websites << website
       end
       
+    end
+    
+    def legit_websites(ios_app_snapshot:)
+      websites = [ios_app_snapshot.seller_url, support_url].select{ |url| url.present? }
+      
+      # 1. Remove all websites that are common sites (like Blogspot)
+      websites.reject do |website|
+        
+      end
+
+      
+      
+    end
+    
+    #need to fix this logic
+    def hosted_sites
+      %w(
+        facebook.com\/.+
+        sites.google.com\/+.*
+        plus.google.com\/+.*
+        twitter.com\/.+
+        pinterest.com\/.+
+        facebook.com\/.+
+        instagram.com\/.+
+        apple.com\/.+
+      )
     end
     
     # THE PROBLEM: does the website actually belong to the app?
