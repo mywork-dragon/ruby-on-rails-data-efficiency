@@ -130,7 +130,6 @@ class CustomerApiController < ApplicationController
       }
     end
     
-    
     android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
     
     android_apps_a = android_apps.map do |android_app|
@@ -150,8 +149,6 @@ class CustomerApiController < ApplicationController
         }
       }
     end
-    
-    
     
     company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
     
