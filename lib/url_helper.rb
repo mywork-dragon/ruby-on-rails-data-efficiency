@@ -27,6 +27,10 @@ class UrlHelper
       'http://' + url_with_domain_only(url)
     end
     
+    def url_starts_with_http_or_https?(url)
+      !url.match(/^(http[s]*:\/\/)*/)[0].blank?
+    end
+    
     def secondary_site?(url)
       app_page_regexes_strings = %w(
         facebook.com\/.+
