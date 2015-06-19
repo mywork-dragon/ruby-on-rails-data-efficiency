@@ -131,11 +131,29 @@ class CustomerApiController < ApplicationController
     end
     
     
-    # android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+    android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+    
+    android_apps_a = android_apps.map do |android_app|
+      newest_app_snapshot = android_app.newest_android_app_snapshot
+      
+      {
+        id: android_app.id,
+        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+        mobilePriority: android_app.mobile_priority, 
+        adSpend: android_app.android_fb_ad_appearances.present?, 
+        countriesDeployed: nil, #not part of initial launch
+        downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
+        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+        appIdentifier: android_app.app_identifier,
+        appIcon: {
+          large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+        }
+      }
+    end
     
     
     
-    company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: nil}}
+    company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
     
     render json: company_json
   end
