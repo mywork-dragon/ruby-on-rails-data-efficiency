@@ -97,7 +97,7 @@ class CustomerApiController < ApplicationController
     
     company_h = {
       name: company.present? ? company.name : nil,
-      id: company.present? ? company.id : nil,
+      MightySignalId: company.present? ? company.id : nil,
       fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
       funding: company.present? ? company.funding : nil,
       # websites: android_app.get_website_urls, #this is an array
@@ -116,7 +116,7 @@ class CustomerApiController < ApplicationController
       newest_app_snapshot = ios_app.newest_ios_app_snapshot
       
       {
-        id: ios_app.id,
+        MightySignalId: ios_app.id,
         name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
         mobilePriority: ios_app.mobile_priority,
         adSpend: ios_app.ios_fb_ad_appearances.present?,
@@ -137,7 +137,7 @@ class CustomerApiController < ApplicationController
       newest_app_snapshot = android_app.newest_android_app_snapshot
       
       {
-        id: android_app.id,
+        MightySignalId: android_app.id,
         name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
         mobilePriority: android_app.mobile_priority, 
         adSpend: android_app.android_fb_ad_appearances.present?, 
