@@ -89,7 +89,35 @@ class CustomerApiController < ApplicationController
   end
   
   def companies
+    url = params['website']
     
+    website = Website.find_by_url(url)
+    
+    company = website.company
+    
+    company_hash = {
+      name: company.present? ? company.name : nil,
+      id: company.present? ? company.id : nil,
+      fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
+      funding: company.present? ? company.funding : nil,
+      # websites: android_app.get_website_urls, #this is an array
+      location: {
+        streetAddress: company.present? ? company.street_address : nil,
+        city: company.present? ? company.city : nil,
+        zipCode: company.present? ? company.zip_code : nil,
+        state: company.present? ? company.state : nil,
+        country: company.present? ? company.country : nil
+      }
+    }
+    
+    # ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+    # android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+    
+    
+    
+    company_json = {company: company_hash, apps: {ios_apps: nil, android_apps: nil}}
+    
+    render json: company_json
   end
 
 end
