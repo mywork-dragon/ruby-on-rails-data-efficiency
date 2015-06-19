@@ -13,6 +13,44 @@ class CustomerApiController < ApplicationController
   # end
 
   def ios_apps
+    # appId = params['id']
+    # ios_app = IosApp.find(appId)
+    # company = ios_app.get_company #could be nil, if no websites, or websites don't have company
+    # newest_app_snapshot = ios_app.newest_ios_app_snapshot
+    # newest_download_snapshot = ios_app.get_newest_download_snapshot
+    # app_json = {
+    #   id: appId,
+    #   name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+    #   mobilePriority: ios_app.mobile_priority,
+    #   adSpend: ios_app.ios_fb_ad_appearances.present?,
+    #   countriesDeployed: nil, #not part of initial launch
+    #   # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+    #   userBase: ios_app.user_base,
+    #   lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
+    #   appIdentifier: ios_app.app_identifier,
+    #   appIcon: {
+    #     large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+    #     small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+    #   },
+    #   company: {
+    #     name: company.present? ? company.name : nil,
+    #     id: company.present? ? company.id : nil,
+    #     fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+    #     funding: company.present? ? company.funding : nil,
+    #     websites: ios_app.get_website_urls,
+    #     location: {
+    #       streetAddress: company.present? ? company.street_address : nil,
+    #       city: company.present? ? company.city : nil,
+    #       zipCode: company.present? ? company.zip_code : nil,
+    #       state: company.present? ? company.state : nil,
+    #       country: company.present? ? company.country : nil
+    #     }
+    #   }
+    # }
+    # render json: app_json
+    
+    puts params['id']
+    
     render json: {'dummy' => 'show'}
   end
   
