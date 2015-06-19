@@ -95,7 +95,7 @@ class CustomerApiController < ApplicationController
     
     company = website.company
     
-    company_hash = {
+    company_h = {
       name: company.present? ? company.name : nil,
       id: company.present? ? company.id : nil,
       fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
@@ -110,12 +110,32 @@ class CustomerApiController < ApplicationController
       }
     }
     
-    # ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+    ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+    
+    ios_apps_a = ios_apps.map do |ios_app|
+      newest_app_snapshot = ios_app.newest_ios_app_snapshot
+      
+      {
+        id: ios_app.id,
+        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+        mobilePriority: ios_app.mobile_priority,
+        adSpend: ios_app.ios_fb_ad_appearances.present?,
+        userBase: ios_app.user_base,
+        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
+        appIdentifier: ios_app.app_identifier,
+        appIcon: {
+          large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+          small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+        }
+      }
+    end
+    
+    
     # android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
     
     
     
-    company_json = {company: company_hash, apps: {ios_apps: nil, android_apps: nil}}
+    company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: nil}}
     
     render json: company_json
   end
