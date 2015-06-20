@@ -19,7 +19,7 @@ class CustomerApiController < ApplicationController
   def ios_apps
     id = params['id']
     
-    ios_app = IosApp.find(id)
+    ios_app = IosApp.find_by_app_identifier(id)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
     newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
@@ -57,7 +57,7 @@ class CustomerApiController < ApplicationController
   
   def android_apps
     id = params['id']
-    android_app = AndroidApp.find(id)
+    android_app = AndroidApp.find_by_app_identifier(id)
     company = android_app.get_company
     newest_app_snapshot = android_app.newest_android_app_snapshot
     
