@@ -28,6 +28,8 @@ role :scraper, scraper_servers
 
 server web_server, user: 'deploy'
 
+server api_server, user: 'deploy'
+
 scraper_servers.each do |scraper_server|
   server scraper_server, user: 'deploy'
 end
