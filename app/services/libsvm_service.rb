@@ -21,7 +21,7 @@ class LibsvmService
 
       pred = model.predict(Libsvm::Node.features(1, 1, 1))
       puts "Example [1, 1, 1] - Predicted #{pred}"
-      en
+    end
     
     def algo
       problem = Libsvm::Problem.new
