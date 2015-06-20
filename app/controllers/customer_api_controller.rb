@@ -41,7 +41,6 @@ class CustomerApiController < ApplicationController
         name: company.present? ? company.name : nil,
         id: company.present? ? company.id : nil,
         fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-        funding: company.present? ? company.funding : nil,
         websites: ios_app.get_website_urls,
         location: {
           streetAddress: company.present? ? company.street_address : nil,
@@ -78,7 +77,6 @@ class CustomerApiController < ApplicationController
         name: company.present? ? company.name : nil,
         MightySignal_ID: company.present? ? company.id : nil,
         fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
-        funding: company.present? ? company.funding : nil,
         websites: android_app.get_website_urls, #this is an array
         location: {
           streetAddress: company.present? ? company.street_address : nil,
