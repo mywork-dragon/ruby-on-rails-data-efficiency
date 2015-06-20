@@ -77,11 +77,25 @@ class MachineLearningService
     
     create_vector(percentage_other_apps_same_website: percentage_other_apps_same_website, reviews: reviews, contact_support_link_same: contact_support_link_same, company_name_in_domain_percentage: company_name_in_domain_percentage)
   end
-
   
   #scale reviews down by 5M
   def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same:, company_name_in_domain_percentage:)
     [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage].map{ |x| x.to_f }
+  end
+
+  def legit_websites(ios_developer:, ios_app_snapshots:)
+    legit = []
+    url = ss.seller_url
+    ios_app_snapshots.each do |ss|
+      unless UrlHelper.secondary_site?(url)
+        if UrlHelper.url_with_domain_only(url)).include?(ss.seller.downcase.gsub(' ','').split('-')[0])
+          legit << url
+        else
+          legit << url if legit.exclude?(url) && predict(ss.ios_app_id)
+        end
+      end
+    end
+    legit
   end
 
   class << self
@@ -97,3 +111,19 @@ class MachineLearningService
   end
 
 end
+
+# Website.joins(:ios_apps).group('websites.id').count
+
+
+
+# websites_hash = Website.joins(:ios_apps).group('websites.id').count
+# websites_sorted = websites_hash.sort_by{|key, value| value}
+# i = 0
+# websites_sorted.reverse_each do |site_id|
+#   w = Website.find(site_id[0])
+#   puts w.ios_apps.first.app_identifier
+#   i += 1
+#   return false if i == 10
+# end
+
+

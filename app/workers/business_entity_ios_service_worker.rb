@@ -4,7 +4,85 @@ class BusinessEntityIosServiceWorker
   sidekiq_options retry: false
 
   def perform(ios_app_snapshot_ids)
+    stephens_thing(ios_app_snapshot_ids)
+  end
+
+  def stephens_thing(ios_app_snapshot_ids)
+
+    ios_app_snapshot_ids.each do |ios_app_snapshot_id|
     
+      ss = IosAppSnapshot.find(ios_app_snapshot_id)
+      ios_app = ss.ios_app
+      return if ss.nil?
+    
+      urls = [ss.seller_url, ss.support_url].select{|url| url}
+      
+      urls.each do |url|
+
+        url = UrlHelper.url_with_http_and_domain(url)
+        known_dev_id = UrlHelper.known_website(url)
+
+        ss_dasi = ss.developer_app_store_identifier
+        c = Company.find_by_app_store_identifier(ss_dasi)
+
+        website = Website.find_or_create_by(url: url)
+
+        f1000 = website.company.present? && website.company.fortune_1000_rank.present?
+
+        if known_dev_id.present?
+          if ss_dasi == known_dev_id
+            link_co_and_web(w: website, c: c)
+            link_ios_and_web(ios_app: ios_app, website: website)
+          else
+            unlink_ios_and_web(ios_app: ios_app, website: website)
+          end
+        elsif c.present?
+          link_co_and_web(w: website, c: c)
+          link_ios_and_web(ios_app: ios_app, website: website)
+        elsif website.company.present? && website.company.app_store_identifier != ss_dasi && !f1000
+          unlink_ios_and_web(ios_app: ios_app, c: c)
+        elsif website.company.blank?
+          new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
+          website.company = new_co
+          website.save
+        end
+        
+      end
+    end
+  end
+
+  def link_ios_and_web(ios_app:, website:)
+    if !ios_app.websites.include?(website)
+      ios_app.websites << website
+    end
+  end
+
+  def unlink_ios_and_web(ios_app:, website:)
+    if ios_app.websites.include?(website)
+      ios_app.websites.delete(website)
+    end
+  end
+
+  def link_co_and_web(w:, c:)
+    w.company = c
+    w.save
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  def jasons_thing(ios_app_snapshot_ids)
+
     ios_app_snapshot_ids.each do |ios_app_snapshot_id|
     
       ss = IosAppSnapshot.find(ios_app_snapshot_id)
@@ -56,7 +134,7 @@ class BusinessEntityIosServiceWorker
       end
       
     end
-    
+
   end
   
 end
