@@ -15,14 +15,6 @@ class UrlHelper
     
     def url_with_domain_only(url)
       Domainator.parse(url)
-      
-      # ret = url_with_base_only(url).gsub(/\/.*\z/, '')  #remove stuff after .com
-      #
-      # if match = ret.match(/\..*\..*/)
-      #   ret = match[0].gsub(/\A./, '')
-      # end
-      #
-      # ret
     end
     
     def url_with_http_and_domain(url)
@@ -48,11 +40,12 @@ class UrlHelper
       !url.match(regex).nil?
     end
 
+    # Returns ID of one that matches
+    # 0 is not a real ID
     def known_website(url)
       sites = 
       {
-        "sites.google.com" => 281956209,
-        "plus.google.com" => 281956209,
+        "google.com" => 281956209,
         "pinterest.com" => 429047995,
         "apple.com" => 284417353,
         "youtube.com" => 281956209,
