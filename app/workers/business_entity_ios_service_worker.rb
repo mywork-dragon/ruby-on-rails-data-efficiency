@@ -26,7 +26,10 @@ class BusinessEntityIosServiceWorker
         known_dev_id = UrlHelper.known_website(url) 
 
         ss_dasi = ss.developer_app_store_identifier
-        c = Company.find_by_app_store_identifier(ss_dasi)
+        
+        next if ss_dasi.blank? #skip if no developer identifier
+        
+        company = Company.find_by_app_store_identifier(ss_dasi)
 
         website = Website.find_or_create_by(url: url)
 
@@ -34,13 +37,13 @@ class BusinessEntityIosServiceWorker
 
         if known_dev_id.present?
           if ss_dasi == known_dev_id
-            link_co_and_web(website: website, company: c)
+            link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
-        elsif c.present?
-          link_co_and_web(website: website, company: c)
+        elsif company.present?
+          link_co_and_web(website: website, company: company)
           link_ios_and_web(ios_app: ios_app, website: website)
         elsif website.company.present? && website.company.app_store_identifier != ss_dasi && !f1000
           unlink_ios_and_web(ios_app: ios_app, website: website)
