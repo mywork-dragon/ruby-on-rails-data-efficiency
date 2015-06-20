@@ -6,14 +6,16 @@
 
 web_server = '54.85.3.24'
 
+api_server = '52.6.191.250'
+
 scraper_servers = %w(
   54.164.24.87
   54.88.39.109
   54.86.80.102
 )
 
-role :app, [web_server] + scraper_servers
-role :web, web_server
+role :app, [web_server] + scraper_servers + [api_server]
+role :web, [web_server, api_server]
 role :db,  web_server
 role :scraper, scraper_servers
 
