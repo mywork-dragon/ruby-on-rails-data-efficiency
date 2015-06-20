@@ -6,13 +6,11 @@ class CustomerApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
   
   before_action :authenticate_request, except: [:ping]
-  
-  # before_action :authenticate_request
-  #
-  # def authenticate_request
-  #   key = request.headers['MightySignal-API-Key']
-  #   render nothing: true, status: 401 if key.blank? || !ApiKey.find_by_key(key)
-  # end
+
+  def authenticate_request
+    key = request.headers['MightySignal-API-Key']
+    render nothing: true, status: 401 if key.blank? || !ApiKey.find_by_key(key)
+  end
   
   def ping
     render :json => {success: true, server: 'api'}
