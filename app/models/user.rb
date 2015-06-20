@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+  belongs_to :account
+
   has_many :lists_users
   has_many :lists, through: :lists_users
 

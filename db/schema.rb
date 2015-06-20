@@ -11,7 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609023820) do
+ActiveRecord::Schema.define(version: 20150618070016) do
+
+  create_table "accounts", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
+
+  create_table "accounts_api_keys", force: true do |t|
+    t.integer  "account_id"
+    t.integer  "api_key_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "accounts_api_keys", ["account_id"], name: "index_accounts_api_keys_on_account_id", using: :btree
+  add_index "accounts_api_keys", ["api_key_id"], name: "index_accounts_api_keys_on_api_key_id", using: :btree
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -115,6 +133,18 @@ ActiveRecord::Schema.define(version: 20150609023820) do
   add_index "android_apps_websites", ["android_app_id"], name: "index_android_apps_websites_on_android_app_id", using: :btree
   add_index "android_apps_websites", ["website_id"], name: "index_android_apps_websites_on_website_id", using: :btree
 
+  create_table "android_developers", force: true do |t|
+    t.string   "name"
+    t.string   "identifier"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_developers", ["company_id"], name: "index_android_developers_on_company_id", using: :btree
+  add_index "android_developers", ["identifier"], name: "index_android_developers_on_identifier", using: :btree
+  add_index "android_developers", ["name"], name: "index_android_developers_on_name", using: :btree
+
   create_table "android_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
     t.string   "hit_identifier"
@@ -144,6 +174,14 @@ ActiveRecord::Schema.define(version: 20150609023820) do
   add_index "android_packages", ["android_package_tag"], name: "index_android_packages_on_android_package_tag", using: :btree
   add_index "android_packages", ["apk_snapshot_id"], name: "index_android_packages_on_apk_snapshot_id", using: :btree
   add_index "android_packages", ["package_name"], name: "index_android_packages_on_package_name", using: :btree
+
+  create_table "api_keys", force: true do |t|
+    t.string   "key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "api_keys", ["key"], name: "index_api_keys_on_key", using: :btree
 
   create_table "apk_snapshot_exceptions", force: true do |t|
     t.integer  "apk_snapshot_id"
@@ -423,6 +461,18 @@ ActiveRecord::Schema.define(version: 20150609023820) do
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id"], name: "index_ios_apps_websites_on_website_id", using: :btree
 
+  create_table "ios_developers", force: true do |t|
+    t.string   "name"
+    t.string   "identifier"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
+  add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
+  add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
+
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
     t.string   "hit_identifier"
@@ -600,8 +650,10 @@ ActiveRecord::Schema.define(version: 20150609023820) do
     t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "account_id"
   end
 
+  add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
 
   create_table "websites", force: true do |t|
