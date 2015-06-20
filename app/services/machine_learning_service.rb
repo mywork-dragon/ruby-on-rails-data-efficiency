@@ -83,20 +83,20 @@ class MachineLearningService
     [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage].map{ |x| x.to_f }
   end
 
-  def legit_websites(ios_developer:, ios_app_snapshots:)
-    legit = []
-    url = ss.seller_url
-    ios_app_snapshots.each do |ss|
-      unless UrlHelper.secondary_site?(url)
-        if UrlHelper.url_with_domain_only(url)).include?(ss.seller.downcase.gsub(' ','').split('-')[0])
-          legit << url
-        else
-          legit << url if legit.exclude?(url) && predict(ss.ios_app_id)
-        end
-      end
-    end
-    legit
-  end
+  # def legit_websites(ios_developer:, ios_app_snapshots:)
+  #   legit = []
+  #   url = ss.seller_url
+  #   ios_app_snapshots.each do |ss|
+  #     unless UrlHelper.secondary_site?(url)
+  #       if UrlHelper.url_with_domain_only(url)).include?(ss.seller.downcase.gsub(' ','').split('-')[0])
+  #         legit << url
+  #       else
+  #         legit << url if legit.exclude?(url) && predict(ss.ios_app_id)
+  #       end
+  #     end
+  #   end
+  #   legit
+  # end
 
   class << self
     
