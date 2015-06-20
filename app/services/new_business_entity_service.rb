@@ -136,7 +136,7 @@ class NewBusinessEntityService
     end
     
     
-    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer)
+    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer:)
       
       # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
       the_legit_websites = legit_websites(ios_app_snapshot)  #need to implement
