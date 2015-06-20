@@ -9,11 +9,11 @@ class CustomerApiController < ApplicationController
 
   def authenticate_request
     key = request.headers['MightySignal-API-Key']
-    render nothing: true, status: 401 if key.blank? || !ApiKey.find_by_key(key)
+    render json: {error: {code: 401, message 'Unauthorized – Your API key is wrong.'}, status: 401 if key.blank? || !ApiKey.find_by_key(key)
   end
   
   def ping
-    render :json => {success: true, server: 'api'}
+    render json: {success: true, server: 'api'}
   end
 
   def ios_apps
