@@ -10,7 +10,7 @@ class CustomerApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
   
   before_action :authenticate_request, except: [:ping]
-  before_action :mixpanel_tracker, except: [:ping]
+  before_action :mixpanel_tracker, except: [:ping] if Rails.env.production?
 
   def authenticate_request
     key = request.headers[API_KEY_NAME]
@@ -183,12 +183,11 @@ class CustomerApiController < ApplicationController
     
       company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
     
-      render json: company_json
     rescue => e
       render json: json_500
       properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
     else
-      render json: app_json
+      render json: company_json
       properties.merge!('status_code' => '400')
     end
   

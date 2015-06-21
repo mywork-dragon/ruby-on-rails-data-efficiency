@@ -2,8 +2,11 @@ class ApiServerTestService
   
   class << self
     
-    def get
-      response = HTTParty.get('http://api.mightysignal.com/ios_apps/547702041', headers: {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'})
+    def get(dev: false)
+      
+      url = dev ? 'http://api.mightysignal.com/ios_apps/547702041' : 'api.lvh.me/ios_apps/547702041'
+      
+      response = HTTParty.get(url, headers: {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'})
       response.body
     end
     
