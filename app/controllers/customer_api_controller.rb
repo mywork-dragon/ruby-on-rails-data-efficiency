@@ -8,6 +8,7 @@ class CustomerApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
   
   before_action :authenticate_request, except: [:ping]
+  before_action :mixpanel_tracker, except: [:ping]
 
   def authenticate_request
     key = request.headers[API_KEY_NAME]
@@ -15,13 +16,15 @@ class CustomerApiController < ApplicationController
   end
   
   def ping
+    blah
+    
     render json: {success: true, server: 'api'}
   end
 
   def ios_apps
-    key = request.headers[API_KEY_NAME]
-    
     app_identifier = params['id']
+    
+    track('ios_apps', 'app_identifier' => app_identifier.to_s)
     
     ios_app = IosApp.find_by_app_identifier(app_identifier)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
@@ -167,14 +170,22 @@ class CustomerApiController < ApplicationController
   
   protected
   
-  def mp_tracker(key)
-    tracker = Mixpanel::Tracker.new('8ffd3d066b34498a83b3230b899e9d50')
+  def mixpanel_tracker
+    key = request.headers[API_KEY_NAME]
+    @tracker = Mixpanel::Tracker.new('8ffd3d066b34498a83b3230b899e9d50')
     
+    api_key = ApiKey.find_by_key(key)
+    account = api_key.account
     
+    @account_id = account.id
     
-    account = Account.find_by
+    tracker.people.set(account.id.to_s, {'name' => account.name, 'id' => @account_id}) 
     
-    tracker.people.set()
+    tracker
+  end
+  
+  def track(event, properties={}, ip=nil)
+    @tracker.track(@account_id, event, properties, ip)
   end
 
 end
