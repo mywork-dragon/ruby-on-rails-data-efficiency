@@ -2,10 +2,10 @@ class BusinessEntityService
 
   class << self
 
-    def run_ios_test(company = 28496)
+    def run_ios_test(company)
         ids = []
-        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company) do |a|
-            ids << a.newest_ios_app_snapshot_id
+        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+            ids << a.newest_ios_app_snapshot_id if a.newest_ios_app_snapshot_id.present?
         end
         BusinessEntityIosServiceWorker.new.perform(ids)
     end

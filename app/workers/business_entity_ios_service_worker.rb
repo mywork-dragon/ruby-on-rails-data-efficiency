@@ -23,6 +23,7 @@ class BusinessEntityIosServiceWorker
         url = UrlHelper.url_with_http_and_domain(url)
         
         #will be a number greater than 0 (known site, dev id for site), a 0(known site, no dev id known for site), or a nil (not known site)
+
         known_dev_id = UrlHelper.known_website(url) 
 
         ss_dasi = ss.developer_app_store_identifier
@@ -35,22 +36,33 @@ class BusinessEntityIosServiceWorker
 
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
+
         if known_dev_id.present?
+          puts "known_dev_id is present"
           if ss_dasi == known_dev_id
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
+        elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
+          puts "company and app do not have same developer id"
+          unlink_ios_and_web(ios_app: ios_app, website: website)
+
         elsif company.present?
+          puts "company and app have same developer id"
           link_co_and_web(website: website, company: company)
           link_ios_and_web(ios_app: ios_app, website: website)
-        elsif website.company.present? && website.company.app_store_identifier != ss_dasi && !f1000
-          unlink_ios_and_web(ios_app: ios_app, website: website)
+ 
         elsif website.company.blank?
+          puts "website's company is blank"
           new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
           website.company = new_co
           website.save
+        end
+
+        if f1000
+          puts "found app linked to f1000 company"
         end
         
       end
@@ -70,8 +82,8 @@ class BusinessEntityIosServiceWorker
   end
 
   def link_co_and_web(website:, company:)
-    w.company = company
-    w.save
+    website.company = company
+    website.save
   end
 
 
