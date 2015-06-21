@@ -1,6 +1,7 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
-
+  
+  sidekiq_options :queue => :critical
   sidekiq_options retry: false
 
   def perform(ios_app_snapshot_ids)
