@@ -170,11 +170,12 @@ class CustomerApiController < ApplicationController
   def mp_tracker(key)
     tracker = Mixpanel::Tracker.new('8ffd3d066b34498a83b3230b899e9d50')
     
+    api_key = ApiKey.find_by_key('key')
+    account = api_key.account
     
+    tracker.people.set(account.id.to_s, {'name' => account.name, 'id', => account.id}) 
     
-    account = Account.find_by
-    
-    tracker.people.set()
+    tracker
   end
 
 end
