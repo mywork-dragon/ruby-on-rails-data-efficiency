@@ -77,7 +77,8 @@ class UrlHelper
         "twitter.com" => 296415947,
         "instagram.com" => 389801255,
         "foursquare.com" => 306934924,
-        "ask.fm" => 635896476
+        "ask.fm" => 635896476,
+        "amazon.com" => 297606954
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil

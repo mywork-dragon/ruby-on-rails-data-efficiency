@@ -18,9 +18,11 @@ class BusinessEntityIosServiceWorker
     
       urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
       
+      urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      
       urls.each do |url|
 
-        url = UrlHelper.url_with_http_and_domain(url)
+        # url = UrlHelper.url_with_http_and_domain(url)
         
         #will be a number greater than 0 (known site, dev id for site), a 0(known site, no dev id known for site), or a nil (not known site)
 
@@ -51,6 +53,9 @@ class BusinessEntityIosServiceWorker
 
         elsif company.present?
           puts "company and app have same developer id"
+          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+          ios_app.websites.delete(websites_to_remove)
+          
           link_co_and_web(website: website, company: company)
           link_ios_and_web(ios_app: ios_app, website: website)
  
