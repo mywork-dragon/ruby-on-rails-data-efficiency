@@ -219,7 +219,7 @@ class CustomerApiController < ApplicationController
     properties.merge!('status_code' => '500', 'exception' => {'message' => e.message, 'backtrace' => e.backtrace})
   end
   
-  def merge_sucess!(properties)
+  def merge_success!(properties)
     properties.merge!('status_code' => '400')
   end
   
