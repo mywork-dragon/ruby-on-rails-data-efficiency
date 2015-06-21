@@ -3,12 +3,14 @@
 # @author Jason Lew
 class CustomerApiController < ApplicationController
   
+  API_KEY_NAME = 'MightySignal-API-Key'
+  
   skip_before_filter :verify_authenticity_token
   
   before_action :authenticate_request, except: [:ping]
 
   def authenticate_request
-    key = request.headers['MightySignal-API-Key']
+    key = request.headers[API_KEY_NAME]
     render json: {error: {code: 401, message: 'Unauthorized – Your API key is wrong.'}}, status: 401 if key.blank? || !ApiKey.find_by_key(key)
   end
   
@@ -17,6 +19,8 @@ class CustomerApiController < ApplicationController
   end
 
   def ios_apps
+    key = request.headers[API_KEY_NAME]
+    
     app_identifier = params['id']
     
     ios_app = IosApp.find_by_app_identifier(app_identifier)
@@ -55,6 +59,8 @@ class CustomerApiController < ApplicationController
   end
   
   def android_apps
+    key = request.headers[API_KEY_NAME]
+    
     app_identifier = params['id']
     android_app = AndroidApp.find_by_app_identifier(app_identifier)
     company = android_app.get_company
@@ -91,6 +97,8 @@ class CustomerApiController < ApplicationController
   end
   
   def companies
+    key = request.headers[API_KEY_NAME]
+    
     url = params['website']
     
     website = Website.find_by_url(url)
@@ -155,6 +163,18 @@ class CustomerApiController < ApplicationController
     company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
     
     render json: company_json
+  end
+  
+  protected
+  
+  def mp_tracker(key)
+    tracker = Mixpanel::Tracker.new('8ffd3d066b34498a83b3230b899e9d50')
+    
+    
+    
+    account = Account.find_by
+    
+    tracker.people.set()
   end
 
 end

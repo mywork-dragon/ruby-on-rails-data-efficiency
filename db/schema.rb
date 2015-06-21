@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618070016) do
+ActiveRecord::Schema.define(version: 20150621025144) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -20,16 +20,6 @@ ActiveRecord::Schema.define(version: 20150618070016) do
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
-
-  create_table "accounts_api_keys", force: true do |t|
-    t.integer  "account_id"
-    t.integer  "api_key_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "accounts_api_keys", ["account_id"], name: "index_accounts_api_keys_on_account_id", using: :btree
-  add_index "accounts_api_keys", ["api_key_id"], name: "index_accounts_api_keys_on_api_key_id", using: :btree
 
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
@@ -179,8 +169,10 @@ ActiveRecord::Schema.define(version: 20150618070016) do
     t.string   "key"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "account_id"
   end
 
+  add_index "api_keys", ["account_id"], name: "index_api_keys_on_account_id", using: :btree
   add_index "api_keys", ["key"], name: "index_api_keys_on_key", using: :btree
 
   create_table "apk_snapshot_exceptions", force: true do |t|

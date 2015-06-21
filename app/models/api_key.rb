@@ -3,8 +3,7 @@ class ApiKey < ActiveRecord::Base
   validates :key, presence: true
   validates :key, uniqueness: true
 
-  has_many :accounts_api_keys
-  has_many :accounts, through: :accounts_api_keys
+  belongs_to :account
 
   class << self
     

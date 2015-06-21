@@ -70,13 +70,13 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.3'
 
-gem 'sidekiq', '3.3.0', :require => 'sidekiq/api'
+gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
 
 gem 'filesize', '0.0.4'
 
 gem 'aws-sdk', '~> 2'
 
-gem 'socksify', '1.6.0', :require => 'socksify/http'
+gem 'socksify', '1.6.0', require: 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
@@ -89,7 +89,7 @@ gem 'faker', '1.4.3'
 gem 'jwt', '1.0.0'
 
 #cors
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', require: 'rack/cors'
 
 gem 'bcrypt', '3.1.10'
 
@@ -112,6 +112,8 @@ gem 'sanitize', '4.0.0'
 
 gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 
-gem 'net', :require => 'net/http'
+gem 'net', require: 'net/http'
+
+gem 'mixpanel-ruby', require: 'mixpanel-ruby'
 
 gem 'domainator', '2.0.0'
