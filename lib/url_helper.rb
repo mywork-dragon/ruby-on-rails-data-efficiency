@@ -23,7 +23,7 @@ class UrlHelper
     
     def url_with_http_and_domain(url)
       begin
-        'http://' + url_with_domain_only(url.downcase)
+        'http://' + url_with_domain_only(url)
       rescue => e
         return nil
       end
