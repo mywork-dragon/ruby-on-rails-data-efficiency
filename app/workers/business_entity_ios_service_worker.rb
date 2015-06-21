@@ -42,7 +42,8 @@ class BusinessEntityIosServiceWorker
         if known_dev_id.present?
           puts "known_dev_id is present"
           if ss_dasi == known_dev_id
-            puts "dasi == known"
+            websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+            ios_app.websites.delete(websites_to_remove)
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else
@@ -62,9 +63,11 @@ class BusinessEntityIosServiceWorker
  
         elsif website.company.blank?
           puts "website's company is blank"
+          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+          ios_app.websites.delete(websites_to_remove)
           new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
-          website.company = new_co
-          website.save
+          link_co_and_web(website: website, company: new_co)
+          link_ios_and_web(ios_app: ios_app, website: website)
         end
 
         if f1000
