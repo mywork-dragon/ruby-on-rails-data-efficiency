@@ -131,6 +131,7 @@ GEM
     minitest (5.4.3)
     minitest-fail-fast (0.0.1)
       minitest (~> 5)
+    mixpanel-ruby (2.1.0)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -289,6 +290,7 @@ DEPENDENCIES
   jwt (= 1.0.0)
   kaminari (= 0.16.3)
   minitest-fail-fast (= 0.0.1)
+  mixpanel-ruby
   mysql2 (= 0.3.17)
   net
   net-ssh (= 2.9.1)

@@ -160,5 +160,12 @@ class CustomerApiController < ApplicationController
     
     render json: company_json
   end
+  
+  protected
+  
+  def mp_tracker
+    tracker = Mixpanel::Tracker.new('8ffd3d066b34498a83b3230b899e9d50')
+    #tracker.people
+  end
 
 end
