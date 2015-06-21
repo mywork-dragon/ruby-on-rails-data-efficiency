@@ -40,7 +40,6 @@ class BusinessEntityIosServiceWorker
 
 
         if known_dev_id.present?
-          puts "known_dev_id is present"
           if ss_dasi == known_dev_id
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
@@ -50,11 +49,9 @@ class BusinessEntityIosServiceWorker
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
-          puts "company and app do not have same developer id"
           unlink_ios_and_web(ios_app: ios_app, website: website)
 
         elsif company.present?
-          puts "company and app have same developer id"
           websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
           ios_app.websites.delete(websites_to_remove)
           
@@ -62,16 +59,11 @@ class BusinessEntityIosServiceWorker
           link_ios_and_web(ios_app: ios_app, website: website)
  
         elsif website.company.blank?
-          puts "website's company is blank"
           websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
           ios_app.websites.delete(websites_to_remove)
           new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
           link_co_and_web(website: website, company: new_co)
           link_ios_and_web(ios_app: ios_app, website: website)
-        end
-
-        if f1000
-          puts "found app linked to f1000 company"
         end
         
       end
