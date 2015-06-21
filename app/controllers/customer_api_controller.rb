@@ -59,11 +59,11 @@ class CustomerApiController < ApplicationController
         }
       }
     rescue => e
-      render json: json_500
-      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+      render json: json_failure
+      merge_failure!(properties)
     else
       render json: app_json
-      properties.merge!('status_code' => '400')
+      merge_success!(properties)
     end
     
     track('ios_apps', properties)
@@ -108,11 +108,11 @@ class CustomerApiController < ApplicationController
         }
       }
     rescue => e
-      render json: json_500
-      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+      render json: json_failure
+      merge_failure!(properties)
     else
       render json: app_json
-      properties.merge!('status_code' => '400')
+      merge_success!(properties)
     end
   
     track('android_apps', properties)
@@ -184,11 +184,11 @@ class CustomerApiController < ApplicationController
       company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
     
     rescue => e
-      render json: json_500
-      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+      render json: json_failure
+      merge_failure!(properties)
     else
       render json: company_json
-      properties.merge!('status_code' => '400')
+      merge_success!(properties)
     end
   
     track('companies', properties)
@@ -196,6 +196,14 @@ class CustomerApiController < ApplicationController
   end
   
   protected
+  
+  def merge_failure!(properties)
+    properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+  end
+  
+  def merge_sucess!(properties)
+    properties.merge!('status_code' => '400')
+  end
   
   def mixpanel_tracker
     key = request.headers[API_KEY_NAME]
@@ -213,7 +221,7 @@ class CustomerApiController < ApplicationController
     @tracker.track(@account_id, event, properties, ip)
   end
   
-  def json_500
+  def json_failure
     {error: {code: 500, message: 'Internal Server Error'}}
   end
 
