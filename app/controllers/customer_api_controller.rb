@@ -16,8 +16,6 @@ class CustomerApiController < ApplicationController
   end
   
   def ping
-    blah
-    
     render json: {success: true, server: 'api'}
   end
 
