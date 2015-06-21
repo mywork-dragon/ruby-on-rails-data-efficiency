@@ -59,11 +59,11 @@ class CustomerApiController < ApplicationController
         }
       }
     rescue => e
-      properties.merge!('success' => 'false', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
       render json: json_500
+      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
     else
       render json: app_json
-      properties.merge!('success' => 'true')
+      properties.merge!('status_code' => '400')
     end
     
     track('ios_apps', properties)
@@ -109,82 +109,91 @@ class CustomerApiController < ApplicationController
       }
     rescue => e
       render json: json_500
-      properties.merge!('success' => 'false', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
     else
       render json: app_json
-      properties.merge!('success' => 'true')
+      properties.merge!('status_code' => '400')
     end
   
     track('android_apps', properties)
   end
   
   def companies
-    key = request.headers[API_KEY_NAME]
+    begin
+      url = params['website']
     
-    url = params['website']
+      website = Website.find_by_url(url)
     
-    website = Website.find_by_url(url)
+      company = website.company
     
-    company = website.company
-    
-    company_h = {
-      name: company.present? ? company.name : nil,
-      MightySignal_ID: company.present? ? company.id : nil,
-      fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
-      funding: company.present? ? company.funding : nil,
-      # websites: android_app.get_website_urls, #this is an array
-      location: {
-        streetAddress: company.present? ? company.street_address : nil,
-        city: company.present? ? company.city : nil,
-        zipCode: company.present? ? company.zip_code : nil,
-        state: company.present? ? company.state : nil,
-        country: company.present? ? company.country : nil
-      }
-    }
-    
-    ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
-    
-    ios_apps_a = ios_apps.map do |ios_app|
-      newest_app_snapshot = ios_app.newest_ios_app_snapshot
-      
-      {
-        MightySignalID: ios_app.id,
-        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-        mobilePriority: ios_app.mobile_priority,
-        adSpend: ios_app.ios_fb_ad_appearances.present?,
-        userBase: ios_app.user_base,
-        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
-        appIdentifier: ios_app.app_identifier,
-        appIcon: {
-          large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-          small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+      company_h = {
+        name: company.present? ? company.name : nil,
+        MightySignal_ID: company.present? ? company.id : nil,
+        fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
+        funding: company.present? ? company.funding : nil,
+        # websites: android_app.get_website_urls, #this is an array
+        location: {
+          streetAddress: company.present? ? company.street_address : nil,
+          city: company.present? ? company.city : nil,
+          zipCode: company.present? ? company.zip_code : nil,
+          state: company.present? ? company.state : nil,
+          country: company.present? ? company.country : nil
         }
       }
-    end
     
-    android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+      ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
     
-    android_apps_a = android_apps.map do |android_app|
-      newest_app_snapshot = android_app.newest_android_app_snapshot
+      ios_apps_a = ios_apps.map do |ios_app|
+        newest_app_snapshot = ios_app.newest_ios_app_snapshot
       
-      {
-        MightySignal_ID: android_app.id,
-        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-        mobilePriority: android_app.mobile_priority, 
-        adSpend: android_app.android_fb_ad_appearances.present?, 
-        countriesDeployed: nil, #not part of initial launch
-        downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
-        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
-        appIdentifier: android_app.app_identifier,
-        appIcon: {
-          large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+        {
+          MightySignalID: ios_app.id,
+          name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+          mobilePriority: ios_app.mobile_priority,
+          adSpend: ios_app.ios_fb_ad_appearances.present?,
+          userBase: ios_app.user_base,
+          lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
+          appIdentifier: ios_app.app_identifier,
+          appIcon: {
+            large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+          }
         }
-      }
+      end
+    
+      android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+    
+      android_apps_a = android_apps.map do |android_app|
+        newest_app_snapshot = android_app.newest_android_app_snapshot
+      
+        {
+          MightySignal_ID: android_app.id,
+          name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+          mobilePriority: android_app.mobile_priority, 
+          adSpend: android_app.android_fb_ad_appearances.present?, 
+          countriesDeployed: nil, #not part of initial launch
+          downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
+          lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+          appIdentifier: android_app.app_identifier,
+          appIcon: {
+            large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+          }
+        }
+      end
+    
+      company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
+    
+      render json: company_json
+    rescue => e
+      render json: json_500
+      properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
+    else
+      render json: app_json
+      properties.merge!('status_code' => '400')
     end
+  
+    track('companies', properties)
     
-    company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
-    
-    render json: company_json
   end
   
   protected
