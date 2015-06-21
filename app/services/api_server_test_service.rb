@@ -4,9 +4,15 @@ class ApiServerTestService
     
     def get(dev: false)
       
-      url = dev ? 'http://api.mightysignal.com/ios_apps/547702041' : 'api.lvh.me/ios_apps/547702041'
+      if dev
+        url = 'http://api.lvh.me:3000/ios_apps/547702041'
+        headers = nil
+      else
+        url = 'http://api.mightysignal.com/ios_apps/547702041'
+        headers = {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'}
+      end
       
-      response = HTTParty.get(url, headers: {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'})
+      response = HTTParty.get(url, headers: headers)
       response.body
     end
     
