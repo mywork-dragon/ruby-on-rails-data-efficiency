@@ -60,13 +60,14 @@ class CustomerApiController < ApplicationController
       }
     rescue => e
       render json: json_failure
-      merge_failure!(properties)
+      merge_failure!(properties, e)
     else
       render json: app_json
       merge_success!(properties)
+    ensure
+      track('ios_apps', properties)
     end
     
-    track('ios_apps', properties)
   end
   
   def android_apps
@@ -109,13 +110,14 @@ class CustomerApiController < ApplicationController
       }
     rescue => e
       render json: json_failure
-      merge_failure!(properties)
+      merge_failure!(properties, e)
     else
       render json: app_json
       merge_success!(properties)
+    ensure
+      track('android_apps', properties)
     end
-  
-    track('android_apps', properties)
+    
   end
   
   def companies
@@ -185,19 +187,19 @@ class CustomerApiController < ApplicationController
     
     rescue => e
       render json: json_failure
-      merge_failure!(properties)
+      merge_failure!(properties, e)
     else
       render json: company_json
       merge_success!(properties)
+    ensure
+      track('companies', properties)
     end
-  
-    track('companies', properties)
     
   end
   
   protected
   
-  def merge_failure!(properties)
+  def merge_failure!(properties, e)
     properties.merge!('status_code' => '500', 'exception' => {'message': e.message, 'backtrace' => e.backtrace})
   end
   
