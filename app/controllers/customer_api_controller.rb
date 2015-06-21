@@ -219,6 +219,8 @@ class CustomerApiController < ApplicationController
   end
   
   def track(event, properties={}, ip=nil)
+    return if Rails.env.development?
+    
     @tracker.track(@account_id, event, properties, ip)
   end
   
