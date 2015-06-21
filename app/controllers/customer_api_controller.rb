@@ -179,9 +179,7 @@ class CustomerApiController < ApplicationController
     
     @account_id = account.id
     
-    tracker.people.set(account.id.to_s, {'name' => account.name, 'id' => @account_id}) 
-    
-    tracker
+    @tracker.people.set(account.id.to_s, {'name' => account.name, 'id' => @account_id}) 
   end
   
   def track(event, properties={}, ip=nil)
