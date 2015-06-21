@@ -4,10 +4,21 @@ class Tor
 
   class << self
     
-    def get(url)
+    # @param bypass using the local IP instead (only available in dev)
+    def get(url, bypass: false)
       
-      if !Rails.env.production? #make sure you run Tor locally
-        return get_using_proxy(url, '127.0.0.1') 
+      if !Rails.env.production? 
+        
+        if bypass
+          return open(url).read
+        else
+          return get_using_proxy(url, '127.0.0.1') #make sure you run Tor locally
+        end
+        
+      end
+    
+      if bypass
+        raise 'Tor must be used in production'
       end
       
       proxy = next_proxy

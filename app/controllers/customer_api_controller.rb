@@ -6,27 +6,25 @@ class CustomerApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
   
   before_action :authenticate_request, except: [:ping]
-  
-  # before_action :authenticate_request
-  #
-  # def authenticate_request
-  #   key = request.headers['MightySignal-API-Key']
-  #   render nothing: true, status: 401 if key.blank? || !ApiKey.find_by_key(key)
-  # end
+
+  def authenticate_request
+    key = request.headers['MightySignal-API-Key']
+    render json: {error: {code: 401, message: 'Unauthorized – Your API key is wrong.'}}, status: 401 if key.blank? || !ApiKey.find_by_key(key)
+  end
   
   def ping
-    render :json => {success: true, server: 'api'}
+    render json: {success: true, server: 'api'}
   end
 
   def ios_apps
-    id = params['id']
+    app_identifier = params['id']
     
-    ios_app = IosApp.find(id)
+    ios_app = IosApp.find_by_app_identifier(app_identifier)
     company = ios_app.get_company #could be nil, if no websites, or websites don't have company
     newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
-      id: id,
+      MightySignal_ID: ios_app.id,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
       mobilePriority: ios_app.mobile_priority,
       adSpend: ios_app.ios_fb_ad_appearances.present?,
@@ -43,7 +41,6 @@ class CustomerApiController < ApplicationController
         name: company.present? ? company.name : nil,
         id: company.present? ? company.id : nil,
         fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-        funding: company.present? ? company.funding : nil,
         websites: ios_app.get_website_urls,
         location: {
           streetAddress: company.present? ? company.street_address : nil,
@@ -58,13 +55,13 @@ class CustomerApiController < ApplicationController
   end
   
   def android_apps
-    id = params['id']
-    android_app = AndroidApp.find(id)
+    app_identifier = params['id']
+    android_app = AndroidApp.find_by_app_identifier(app_identifier)
     company = android_app.get_company
     newest_app_snapshot = android_app.newest_android_app_snapshot
     
     app_json = {
-      id: id,
+      MightySignal_ID: android_app.id,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
       mobilePriority: android_app.mobile_priority, 
       adSpend: android_app.android_fb_ad_appearances.present?, 
@@ -78,9 +75,8 @@ class CustomerApiController < ApplicationController
       },
       company: {
         name: company.present? ? company.name : nil,
-        id: company.present? ? company.id : nil,
+        MightySignal_ID: company.present? ? company.id : nil,
         fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
-        funding: company.present? ? company.funding : nil,
         websites: android_app.get_website_urls, #this is an array
         location: {
           streetAddress: company.present? ? company.street_address : nil,
@@ -103,7 +99,7 @@ class CustomerApiController < ApplicationController
     
     company_h = {
       name: company.present? ? company.name : nil,
-      MightySignalId: company.present? ? company.id : nil,
+      MightySignal_ID: company.present? ? company.id : nil,
       fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
       funding: company.present? ? company.funding : nil,
       # websites: android_app.get_website_urls, #this is an array
@@ -122,7 +118,7 @@ class CustomerApiController < ApplicationController
       newest_app_snapshot = ios_app.newest_ios_app_snapshot
       
       {
-        MightySignalId: ios_app.id,
+        MightySignalID: ios_app.id,
         name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
         mobilePriority: ios_app.mobile_priority,
         adSpend: ios_app.ios_fb_ad_appearances.present?,
@@ -142,7 +138,7 @@ class CustomerApiController < ApplicationController
       newest_app_snapshot = android_app.newest_android_app_snapshot
       
       {
-        MightySignalId: android_app.id,
+        MightySignal_ID: android_app.id,
         name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
         mobilePriority: android_app.mobile_priority, 
         adSpend: android_app.android_fb_ad_appearances.present?, 

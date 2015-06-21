@@ -115,3 +115,5 @@ gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 gem 'net', require: 'net/http'
 
 gem 'mixpanel-ruby', require: 'mixpanel-ruby'
+
+gem 'domainator', '2.0.0'

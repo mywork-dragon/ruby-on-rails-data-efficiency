@@ -19,7 +19,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
     if (linkedinLinkType == 'company') {
       linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.companyData.name);
     } else {
-      linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.companyData.name) + "+" + linkedinLinkType;
+      linkedinLink = "https://www.linkedin.com/vsearch/p?keywords=" + linkedinLinkType + "&company=" + encodeURI($scope.companyData.name);
     }
 
     /* -------- Mixpanel Analytics Start -------- */

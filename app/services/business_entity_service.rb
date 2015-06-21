@@ -1,6 +1,16 @@
 class BusinessEntityService
 
   class << self
+
+    def run_ios_test(company = 28496)
+        ids = []
+        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company) do |a|
+            ids << a.newest_ios_app_snapshot_id
+        end
+        BusinessEntityIosServiceWorker.new.perform(ids)
+    end
+
+
   
     def run_ios(ios_app_snapshot_job_ids)
       IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
