@@ -42,6 +42,7 @@ class BusinessEntityIosServiceWorker
         if known_dev_id.present?
           puts "known_dev_id is present"
           if ss_dasi == known_dev_id
+            puts "dasi == known"
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else

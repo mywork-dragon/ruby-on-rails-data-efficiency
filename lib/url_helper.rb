@@ -78,7 +78,16 @@ class UrlHelper
         "instagram.com" => 389801255,
         "foursquare.com" => 306934924,
         "ask.fm" => 635896476,
-        "amazon.com" => 297606954
+        "amazon.com" => 297606954,
+        "apps-builder.com" => 463251463,
+        "goo.gl" => 0,
+        "vimeo.com" => 425194762,
+        "desk.com" => 281826149,
+        "fb.com" => 284882218,
+        "freshdesk.com" => 849713309,
+        "evertrue.com" => 429190217,
+        "golfchannel.com" => 466053030,
+        "gannett.com" => 404843797
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
