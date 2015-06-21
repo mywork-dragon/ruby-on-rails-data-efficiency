@@ -15,14 +15,18 @@ class UrlHelper
     
     def url_with_domain_only(url)
       begin
-        Domainator.parse(url)
+        Domainator.parse(url.downcase)
       rescue => e
         return nil
       end
     end
     
     def url_with_http_and_domain(url)
-      'http://' + url_with_domain_only(url.downcase)
+      begin
+        'http://' + url_with_domain_only(url.downcase)
+      rescue => e
+        return nil
+      end
     end
     
     def url_starts_with_http_or_https?(url)
