@@ -42,6 +42,8 @@ class BusinessEntityIosServiceWorker
         if known_dev_id.present?
           puts "known_dev_id is present"
           if ss_dasi == known_dev_id
+            websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+            ios_app.websites.delete(websites_to_remove)
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else
