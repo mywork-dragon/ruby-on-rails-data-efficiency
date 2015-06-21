@@ -16,7 +16,9 @@ class BusinessEntityIosServiceWorker
       
       ios_app = ss.ios_app
     
-      urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
+      # urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
+
+      urls = ss.ios_app.websites.map{ |site| site.url }
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
@@ -50,23 +52,24 @@ class BusinessEntityIosServiceWorker
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
-        elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
-          unlink_ios_and_web(ios_app: ios_app, website: website)
-
-        elsif company.present?
-          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-          ios_app.websites.delete(websites_to_remove)
-          
-          link_co_and_web(website: website, company: company)
-          link_ios_and_web(ios_app: ios_app, website: website)
- 
-        elsif website.company.blank?
-          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-          ios_app.websites.delete(websites_to_remove)
-          new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
-          link_co_and_web(website: website, company: new_co)
-          link_ios_and_web(ios_app: ios_app, website: website)
         end
+        # elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
+        #   unlink_ios_and_web(ios_app: ios_app, website: website)
+
+        # elsif company.present?
+        #   websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+        #   ios_app.websites.delete(websites_to_remove)
+          
+        #   link_co_and_web(website: website, company: company)
+        #   link_ios_and_web(ios_app: ios_app, website: website)
+ 
+        # elsif website.company.blank?
+        #   websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+        #   ios_app.websites.delete(websites_to_remove)
+        #   new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
+        #   link_co_and_web(website: website, company: new_co)
+        #   link_ios_and_web(ios_app: ios_app, website: website)
+        # end
         
       end
     end
