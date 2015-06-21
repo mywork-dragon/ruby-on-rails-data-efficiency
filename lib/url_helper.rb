@@ -14,7 +14,11 @@ class UrlHelper
     end
     
     def url_with_domain_only(url)
-      Domainator.parse(url)
+      begin
+        Domainator.parse(url)
+      rescue => e
+        return nil
+      end
     end
     
     def url_with_http_and_domain(url)

@@ -26,6 +26,8 @@ class BusinessEntityIosServiceWorker
         
         #will be a number greater than 0 (known site, dev id for site), a 0(known site, no dev id known for site), or a nil (not known site)
 
+        next if url.nil?
+
         known_dev_id = UrlHelper.known_website(url) 
 
         ss_dasi = ss.developer_app_store_identifier

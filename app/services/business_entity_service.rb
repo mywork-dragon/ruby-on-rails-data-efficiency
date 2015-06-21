@@ -38,7 +38,7 @@ class BusinessEntityService
         ios_app.ios_apps_websites.delete_all
       end
     end
-    
+
     # special purpose
     def run_ios_fix_f1000
       #get ids from CSV
@@ -181,8 +181,6 @@ class BusinessEntityService
         c.save!
       end
     end
-  
-    
   
   end
 
