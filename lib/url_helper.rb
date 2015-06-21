@@ -18,7 +18,7 @@ class UrlHelper
     end
     
     def url_with_http_and_domain(url)
-      'http://' + url_with_domain_only(url)
+      'http://' + url_with_domain_only(url.downcase)
     end
     
     def url_starts_with_http_or_https?(url)
