@@ -36,7 +36,6 @@ class CustomerApiController < ApplicationController
         mobilePriority: ios_app.mobile_priority,
         adSpend: ios_app.ios_fb_ad_appearances.present?,
         countriesDeployed: nil, #not part of initial launch
-        # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
         userBase: ios_app.user_base,
         lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
         appIdentifier: ios_app.app_identifier,
