@@ -1,6 +1,7 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
+
   sidekiq_options :retry => false
 
   def perform(ios_app_snapshot_ids)
@@ -31,8 +32,6 @@ class BusinessEntityIosServiceWorker
       
       ios_app = ss.ios_app
     
-      # urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
-
       urls = ss.ios_app.websites.map{ |site| site.url }
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
