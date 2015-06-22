@@ -1,15 +1,11 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
-
   sidekiq_options retry: false
 
-  def perform(ids, func_num)
-    if func_num == 0
-      associate_newest_snapshot_android(ids)
-    elsif func_num == 1
-      clean_android(ids)
-    end
+  def perform(ids, method_name)
+    method_name.to_sym
+    send(method_name, ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
