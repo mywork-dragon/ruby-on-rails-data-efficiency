@@ -77,6 +77,7 @@ class UrlHelper
         "yelp.com" => 284910353,
         "weebly.com" => 511158312,
         "wordpress.com" => 335703883,
+        "wordpress.org" => 335703883,
         "subway.com" => 860751246,
         "blogspot.com" => 0,
         "evernote.com" => 281796111,
