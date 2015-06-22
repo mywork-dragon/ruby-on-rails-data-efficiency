@@ -136,6 +136,7 @@ class NewBusinessEntityService
     end
     
     
+=begin
     def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer:)
       
       # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
@@ -155,7 +156,7 @@ class NewBusinessEntityService
       end
       
     end
-    
+
     def legit_websites(ios_app_snapshot:)
       websites = [ios_app_snapshot.seller_url, support_url].select{ |url| url.present? }
       
@@ -169,7 +170,8 @@ class NewBusinessEntityService
       
       
     end
-    
+=end
+
     #need to fix this logic
     def hosted_sites
       %w(
