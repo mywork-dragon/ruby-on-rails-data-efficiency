@@ -25,7 +25,7 @@ class CustomerApiController < ApplicationController
 
   def ios_apps
     begin
-      app_identifier = params['id']
+      app_identifier = params['appStoreId']
       properties = {'app_identifier' => app_identifier.to_s}
     
       ios_app = IosApp.find_by_app_identifier(app_identifier)
@@ -75,7 +75,7 @@ class CustomerApiController < ApplicationController
   
   def android_apps
     begin
-      app_identifier = params['id']
+      app_identifier = params['googlePlayId']
       properties = {'app_identifier' => app_identifier.to_s}
       
       track('android_apps', 'app_identifier' => app_identifier.to_s)
