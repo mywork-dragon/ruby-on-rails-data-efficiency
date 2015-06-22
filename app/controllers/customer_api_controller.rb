@@ -214,11 +214,11 @@ class CustomerApiController < ApplicationController
   protected
   
   def merge_failure!(properties, response, exception)
-    properties.merge!('status_code' => '500', 'exception' => {'message' => exception.message, 'backtrace' => exception.backtrace})
+    properties.merge!('status_code' => '500', 'exception' => {'message' => exception.message, 'backtrace' => exception.backtrace}, 'response' => response)
   end
   
-  def merge_success!(properties:, result:)
-    properties.merge!('status_code' => '400')
+  def merge_success!(properties, response)
+    properties.merge!('status_code' => '400', 'response' => response)
   end
   
   def mixpanel_tracker
