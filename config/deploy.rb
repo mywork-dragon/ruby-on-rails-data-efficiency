@@ -42,7 +42,8 @@ set :sidekiq_role, :scraper
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sidekiq_config, -> { File.join(Rails.root, 'config', 'sidekiq.yml') }
+# set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
+set :sidekiq_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper]
 
