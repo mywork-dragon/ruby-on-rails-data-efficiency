@@ -1,11 +1,11 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
-  sidekiq_options :queue => :critical, :retry => false
+  # sidekiq_options :queue => :critical, :retry => false
 
   def perform(ios_app_snapshot_ids)
-    # stephens_thing(ios_app_snapshot_ids)
-    reassosciate_empty_snapshots(ios_app_snapshot_ids)
+    stephens_thing(ios_app_snapshot_ids)
+    # reassosciate_empty_snapshots(ios_app_snapshot_ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
