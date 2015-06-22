@@ -25,7 +25,7 @@ class CustomerApiController < ApplicationController
 
   def ios_apps
     begin
-      app_identifier = params['appStoreId']
+      app_identifier = params['appStoreId'].to_i
       properties = {'app_identifier' => app_identifier.to_s}
 
       ios_app = IosApp.find_by_app_identifier(app_identifier)
