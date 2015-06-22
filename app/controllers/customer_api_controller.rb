@@ -64,10 +64,11 @@ class CustomerApiController < ApplicationController
     rescue => e
       render json: json_failure
       merge_failure!(properties, app_json, e)
+      track('ios_apps', properties)
+      raise e
     else
       render json: app_json
       merge_success!(properties, app_json)
-    ensure
       track('ios_apps', properties)
     end
 
@@ -118,10 +119,11 @@ class CustomerApiController < ApplicationController
     rescue => e
       render json: json_failure
       merge_failure!(properties, app_json, e)
+      track('android_apps', properties)
+      raise e
     else
       render json: app_json
       merge_success!(properties, app_json)
-    ensure
       track('android_apps', properties)
     end
 
@@ -199,10 +201,11 @@ class CustomerApiController < ApplicationController
     rescue => e
       render json: json_failure
       merge_failure!(properties, company_json, e)
+      track('companies', properties)
+      raise e
     else
       render json: company_json
       merge_success!(properties, company_json)
-    ensure
       track('companies', properties)
     end
 

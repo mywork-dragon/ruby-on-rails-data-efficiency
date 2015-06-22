@@ -30,7 +30,7 @@ class ApiServerTestService
       response.body
     end
     
-    def ios_apps(website='instagram.com', dev: false)
+    def companies(website='instagram.com', dev: false)
       
       if dev
         url = "http://api.lvh.me:3000/companies?website=#{website}"
