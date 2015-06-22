@@ -58,7 +58,7 @@ class UrlHelper
       sites = 
       {
         "google.com" => 281956209,
-        "pinterest.com" => 429047995,
+        "pinterest.com" => 328135727,
         "apple.com" => 284417353,
         "youtube.com" => 281956209,
         "zendesk.com" => 368796010,
@@ -96,7 +96,8 @@ class UrlHelper
         "freshdesk.com" => 849713309,
         "evertrue.com" => 429190217,
         "golfchannel.com" => 466053030,
-        "gannett.com" => 404843797
+        "gannett.com" => 404843797,
+        "netflix.com" => 363590054
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
