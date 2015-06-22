@@ -50,7 +50,7 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: ios_app.get_website_urls,
+            websites: company.websites,
             location: {
               streetAddress: company.present? ? company.street_address : nil,
               city: company.present? ? company.city : nil,
@@ -104,7 +104,7 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: android_app.get_website_urls,
+            websites: company.websites,
             location: {
               streetAddress: company.present? ? company.street_address : nil,
               city: company.present? ? company.city : nil,
