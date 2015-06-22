@@ -8,7 +8,8 @@ class ApiServerTestService
         url = 'http://api.lvh.me:3000/ios_apps/547702041'
         headers = nil
       else
-        url = 'http://api.mightysignal.com/ios_apps/547702041'
+        # url = 'http://api.mightysignal.com/ios_apps/547702041'
+        url = 'http://api.mightysignal.com/companies?website=dropbox.com'
         headers = {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'}
       end
       
