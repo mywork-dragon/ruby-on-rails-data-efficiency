@@ -4,10 +4,10 @@ class BusinessEntityIosServiceWorker
   sidekiq_options retry: false
 
   def perform(ios_app_snapshot_ids)
-    stephens_thing_on_app_ids(ios_app_snapshot_ids)
+    # stephens_thing_on_app_ids(ios_app_snapshot_ids)
     # reassociate_empty_snapshots(ios_app_snapshot_ids)
     # fix_popular_website(ios_app_snapshot_ids)
-    # associate_newest_snapshot(ios_app_snapshot_ids)
+    associate_newest_snapshot(ios_app_snapshot_ids)
   end
 
   def reassociate_empty_snapshots(ios_app_ids)
@@ -27,7 +27,7 @@ class BusinessEntityIosServiceWorker
     ios_app_ids.each do |ios_app_id|
       ia = IosApp.find(ios_app_id)
       return if ia.nil?
-      newest_snapshot = ia.ios_app_snapshots.max_by{|ss| ss.ios_app_snapshot_job_id}
+      newest_snapshot = ia.ios_app_snapshots.select{|ss| ss.name.present?}.max_by{|ss| ss.ios_app_snapshot_job_id}
       if newest_snapshot.present?
         ia.newest_ios_app_snapshot = newest_snapshot
         ia.save
