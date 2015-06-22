@@ -25,7 +25,11 @@ angular.module("appApp")
         }
       };
     }
-  ]);
-
-
-
+  ])
+  .factory('pageTitleService', function() {
+    var title = 'MightySignal';
+    return {
+      title: function() { return title; },
+      setTitle: function(newTitle) { title = newTitle }
+    };
+  });

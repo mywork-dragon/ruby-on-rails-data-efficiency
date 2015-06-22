@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "$location",
-  function($scope, $http, $routeParams, $rootScope, listApiService, $location) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService",
+  function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService) {
 
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
@@ -11,6 +11,9 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         "listId": $routeParams.id }
     );
     /* -------- Mixpanel Analytics End -------- */
+
+    /* Sets html title attribute */
+    pageTitleService.setTitle("MightySignal");
 
     $scope.load = function() {
       $scope.queryInProgress = true;
