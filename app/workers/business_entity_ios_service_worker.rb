@@ -4,16 +4,12 @@ class BusinessEntityIosServiceWorker
 
   sidekiq_options retry: false
 
-  # def perform(ids, func_num)
-  #   if func_num == 0
-  #     associate_newest_snapshot_android(ids)
-  #   elsif func_num == 1
-  #     clean_android(ids)
-  #   end
-  # end
-
-  def perform(ids)
-    clean_ios(ids)
+  def perform(ids, func_num)
+    if func_num == 0
+      associate_newest_snapshot_android(ids)
+    elsif func_num == 1
+      clean_android(ids)
+    end
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
@@ -45,7 +41,7 @@ class BusinessEntityIosServiceWorker
     android_app_ids.each do |android_app_id|
       aa = AndroidApp.find(android_app_id)
       return if aa.nil?
-      newest_snapshot = aa.android_app_snapshots.max_by{|ss| ss.android_app_snapshot_job_id}
+      newest_snapshot = aa.android_app_snapshots.select{|ss| ss.name.present?}.max_by{|ss| ss.android_app_snapshot_job_id}
       if newest_snapshot.present?
         aa.newest_android_app_snapshot = newest_snapshot
         aa.save
