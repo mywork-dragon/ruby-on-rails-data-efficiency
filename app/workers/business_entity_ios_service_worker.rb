@@ -5,9 +5,9 @@ class BusinessEntityIosServiceWorker
   sidekiq_options retry: false
 
   def perform(ids, func_num)
-    if func_name == 0
+    if func_num == 0
       associate_newest_snapshot_android(ids)
-    elsif func_name == 1
+    elsif func_num == 1
       clean_android(ids)
     end
   end
@@ -29,7 +29,7 @@ class BusinessEntityIosServiceWorker
     ios_app_ids.each do |ios_app_id|
       ia = IosApp.find(ios_app_id)
       return if ia.nil?
-      newest_snapshot = ia.ios_app_snapshots.max_by{|ss| ss.ios_app_snapshot_job_id}
+      newest_snapshot = ia.ios_app_snapshots.select{|ss| ss.name.present?}.max_by{|ss| ss.ios_app_snapshot_job_id}
       if newest_snapshot.present?
         ia.newest_ios_app_snapshot = newest_snapshot
         ia.save
