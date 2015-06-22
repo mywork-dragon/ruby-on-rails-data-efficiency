@@ -141,7 +141,7 @@ class CustomerApiController < ApplicationController
     
         company_h = {
           name: company.present? ? company.name : nil,
-          MightySignal_ID: company.present? ? company.id : nil,
+          mightySignalId: company.present? ? company.id : nil,
           fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
           location: {
             streetAddress: company.present? ? company.street_address : nil,
@@ -154,13 +154,14 @@ class CustomerApiController < ApplicationController
     
         # jlew -- look at all sibling websites
     
-        ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+        #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+        ios_apps = company.websites.map{ |website| website.ios_apps} #goes up to company, then down to all apps
     
         ios_apps_a = ios_apps.map do |ios_app|
           newest_app_snapshot = ios_app.newest_ios_app_snapshot
       
           {
-            MightySignalID: ios_app.id,
+            mightySignalId: ios_app.id,
             name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
             mobilePriority: ios_app.mobile_priority,
             adSpend: ios_app.ios_fb_ad_appearances.present?,
@@ -174,21 +175,23 @@ class CustomerApiController < ApplicationController
           }
         end
     
-        android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
+        #android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)} 
+        android_apps = company.websites.map{ |website| website.android_apps}  #goes up to company, then down to all apps
     
         android_apps_a = android_apps.map do |android_app|
           newest_app_snapshot = android_app.newest_android_app_snapshot
       
           {
-            MightySignal_ID: android_app.id,
+            mightySignalId: android_app.id,
             name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
             mobilePriority: android_app.mobile_priority, 
             adSpend: android_app.android_fb_ad_appearances.present?, 
-            downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
+            downloadsEstimate: newest_app_snapshot.present? ? (newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0 : nil,
+            downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
+            downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
-            appIdentifier: android_app.app_identifier,
-            appIcon: {
-              large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+            googlePlayId: android_app.app_identifier,
+            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
             }
           }
         end
