@@ -8,38 +8,41 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", "$route", function ($scope, $location, authService, authToken, listApiService, $rootScope, $route) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", "$route", "pageTitleService",
+    function ($scope, $location, authService, authToken, listApiService, $rootScope, $route, pageTitleService) {
 
-    $scope.$route = $route; // for use in determining active tab (for CSS styling)
+      $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
-    $scope.checkIfOwnPage = function() {
+      $scope.pageTitleService = pageTitleService;
 
-      return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
+      $scope.checkIfOwnPage = function() {
 
-    };
+        return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
 
-    $scope.isAuthenticated = authToken.isAuthenticated();
+      };
 
-    /* Login specific logic */
-    $scope.onLoginButtonClick = function() {
+      $scope.isAuthenticated = authToken.isAuthenticated();
 
-      authService.login($scope.userEmail, $scope.userPassword).then(function(){
-        $scope.isAuthenticated = authToken.isAuthenticated();
-        listApiService.getLists().success(function(data) {
-          $scope.usersLists = data;
+      /* Login specific logic */
+      $scope.onLoginButtonClick = function() {
+
+        authService.login($scope.userEmail, $scope.userPassword).then(function(){
+          $scope.isAuthenticated = authToken.isAuthenticated();
+          listApiService.getLists().success(function(data) {
+            $scope.usersLists = data;
+          });
+            location.reload();
+        },
+        function(){
+          alert('Incorrect Email or Password');
         });
-          location.reload();
-      },
-      function(){
-        alert('Incorrect Email or Password');
-      });
-    };
+      };
 
-    $scope.logUserOut = authToken.deleteToken;
+      $scope.logUserOut = authToken.deleteToken;
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
-    function($scope, apiService, $http, $rootScope) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "pageTitleService",
+    function($scope, apiService, $http, $rootScope, pageTitleService) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
