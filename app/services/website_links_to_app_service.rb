@@ -2,7 +2,6 @@ class WebsiteLinksToAppService
   
   BYPASS = false
 
-=begin
   def links?(app_name:, app_identifier:, domain:, platform:)
     @domain = domain
     
@@ -44,7 +43,6 @@ class WebsiteLinksToAppService
   	false
 
   end
-=end
 
   def res(results_html)
     results = results_html.search('cite').map do |cite|
