@@ -2,7 +2,7 @@ class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
 
-  sidekiq_options :retry => false
+  sidekiq_options retry: false
 
   def perform(ios_app_snapshot_ids)
     # stephens_thing(ios_app_snapshot_ids)
