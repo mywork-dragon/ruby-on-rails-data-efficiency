@@ -82,8 +82,6 @@ class BusinessEntityIosServiceWorker
     end
   end
 
-  end
-
   def link_android_and_web(android_app:, website:)
     if !android_app.websites.include?(website)
       android_app.websites << website
@@ -120,11 +118,11 @@ class BusinessEntityIosServiceWorker
 
         known_dev_id = UrlHelper.known_website(url) 
 
-        ss_dasi = ss.developer_app_store_identifier
+        ss_dasi = ss.developer_google_play_identifier
         
         next if ss_dasi.blank? #skip if no developer identifier
         
-        company = Company.find_by_app_store_identifier(ss_dasi)
+        company = Company.find_by_google_play_identifier(ss_dasi)
 
         website = Website.find_or_create_by(url: url)
 
@@ -141,7 +139,7 @@ class BusinessEntityIosServiceWorker
           end
         else
         
-          if website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
+          if website.company.present? && website.company.google_play_identifier.present? && website.company.google_play_identifier != ss_dasi && !f1000
             unlink_android_and_web(android_app: android_app, website: website)
           end
         
@@ -156,7 +154,7 @@ class BusinessEntityIosServiceWorker
           if website.company.blank?
             websites_to_remove = android_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             android_app.websites.delete(websites_to_remove)
-            new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
+            new_co = Company.create(name: ss.seller, google_play_identifier: ss_dasi)
             link_co_and_web(website: website, company: new_co)
             link_android_and_web(android_app: android_app, website: website)
           end
