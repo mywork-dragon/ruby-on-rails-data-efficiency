@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "$location",
-  function($scope, $http, $routeParams, $rootScope, listApiService, $location) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService",
+  function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService) {
 
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
@@ -12,11 +12,18 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     );
     /* -------- Mixpanel Analytics End -------- */
 
+    /* Sets html title attribute */
+    pageTitleService.setTitle("MightySignal");
+
     $scope.load = function() {
+      $scope.queryInProgress = true;
       listApiService.getList($routeParams.id).success(function(data) {
+        $scope.queryInProgress = false;
         $rootScope.apps = data.results;
         $rootScope.numApps = data.resultsCount;
         $rootScope.currentList = $routeParams.id;
+      }).error(function() {
+        $scope.queryInProgress = false;
       });
     };
     listApiService.getLists().success(function(data) {
@@ -30,9 +37,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
           location.reload();
         });
       });
-    };
-    $scope.getList = function() {
-
     };
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {

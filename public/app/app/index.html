@@ -1,9 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
+<html data-ng-app="appApp" data-ng-controller="MainCtrl">
     <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>MightySignal</title>
+    <title>{{pageTitleService.title()}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -47,7 +48,7 @@
     mixpanel.init("6a96c6c2b8cb2ad6de06ad54957b2f2a");</script><!-- end Mixpanel -->
 
   </head>
-  <body data-ng-app="appApp" id="app" data-custom-background="" data-off-canvas-nav="" data-ng-controller="MainCtrl">
+  <body id="app" data-custom-background="" data-off-canvas-nav="">
 
     <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
       <aside data-ng-include=" '/app/app/views/signin.html' " ng-hide="isAuthenticated"></aside>
