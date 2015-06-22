@@ -27,12 +27,12 @@ class BusinessEntityService
       end
     end
 
-    def run_android_by_app_id(method_name)
+    def run_android_by_app_id
       AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
         android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
 
-        BusinessEntityAndroidServiceWorker.perform_async(android_app_ids, method_name)
+        BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
       end
     end
 

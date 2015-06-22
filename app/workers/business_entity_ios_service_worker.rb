@@ -3,9 +3,10 @@ class BusinessEntityIosServiceWorker
 
   sidekiq_options retry: false
 
-  def perform(ids, method_name)
-    method_name.to_sym
-    send(method_name, ids)
+  def perform(ids)
+    # method_name.to_sym
+    # send(method_name, ids)
+    associate_newest_snapshot_android(ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
