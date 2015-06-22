@@ -4,7 +4,21 @@ class BusinessEntityIosServiceWorker
   sidekiq_options :queue => :critical, :retry => false
 
   def perform(ios_app_snapshot_ids)
-    stephens_thing(ios_app_snapshot_ids)
+    # stephens_thing(ios_app_snapshot_ids)
+    reassosciate_empty_snapshots(ios_app_snapshot_ids)
+  end
+
+  def reassosciate_empty_snapshots(ios_app_ids)
+    ios_app_ids.each do |ios_app_id|
+      ia = IosApp.find(ios_app_id)
+      return if ia.nil?
+
+      unless ia.newest_ios_app_snapshot.present?
+        ss_id = IosAppSnapshot.find_by_ios_app_id(ia.id).id
+        ia.newest_ios_app_snapshot_id = ss_id
+        ia.save
+      end
+    end
   end
 
   def stephens_thing(ios_app_snapshot_ids)
@@ -51,8 +65,8 @@ class BusinessEntityIosServiceWorker
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
-        elsif ss_dasi.blank?
-          unlink_ios_and_web(ios_app: ios_app, website: website)
+        # elsif ss_dasi.blank?
+          # unlink_ios_and_web(ios_app: ios_app, website: website)
         end
           
         # elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000

@@ -10,11 +10,28 @@ class BusinessEntityService
         BusinessEntityIosServiceWorker.new.perform(ids)
     end
 
+    def run_ios_by_id_test(company)
+        ids = []
+        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+            ids << a.id if a.id.present?
+        end
+        BusinessEntityIosServiceWorker.new.perform(ids)
+    end
+
+    def run_ios_by_app_id
+      IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"
+        ios_app_ids = batch.map{|ia| ia.id}.select{ |ia| ia.present?}
+
+        BusinessEntityIosServiceWorker.perform_async(ios_app_ids)
+      end
+    end
+
     def run_ios_by_app
       IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
-        ios_app_snapshot_ids = batch.map{ |ia| if ia.newest_ios_app_snapshot_id.present? then ia.newest_ios_app_snapshot_id else IosAppSnapshot.find_by_ios_app_id(ia.id).id end }
-        
+        ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
+
         BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
       end
     end
