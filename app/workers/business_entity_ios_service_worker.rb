@@ -1,16 +1,16 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
-
   sidekiq_options :retry => false
 
   def perform(ios_app_snapshot_ids)
     # stephens_thing(ios_app_snapshot_ids)
-    # reassosciate_empty_snapshots(ios_app_snapshot_ids)
-    fix_popular_website(ios_app_snapshot_ids)
+    # reassociate_empty_snapshots(ios_app_snapshot_ids)
+    # fix_popular_website(ios_app_snapshot_ids)
+    associate_newest_snapshot(ios_app_snapshot_ids)
   end
 
-  def reassosciate_empty_snapshots(ios_app_ids)
+  def reassociate_empty_snapshots(ios_app_ids)
     ios_app_ids.each do |ios_app_id|
       ia = IosApp.find(ios_app_id)
       return if ia.nil?
@@ -18,6 +18,18 @@ class BusinessEntityIosServiceWorker
       unless ia.newest_ios_app_snapshot.present?
         ss_id = IosAppSnapshot.find_by_ios_app_id(ia.id).id
         ia.newest_ios_app_snapshot_id = ss_id
+        ia.save
+      end
+    end
+  end
+  
+  def associate_newest_snapshot(ios_app_ids)
+    ios_app_ids.each do |ios_app_id|
+      ia = IosApp.find(ios_app_id)
+      return if ia.nil?
+      newest_snapshot = ia.ios_app_snapshots.max_by{|ss| ss.ios_app_snapshot_job_id}
+      if newest_snapshot.present?
+        ia.newest_ios_app_snapshot = newest_snapshot
         ia.save
       end
     end
@@ -67,11 +79,7 @@ class BusinessEntityIosServiceWorker
       
       ios_app = ss.ios_app
     
-      # urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
-
-      urls = ss.ios_app.websites.map{ |site| site.url }
-      
-      urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }
       puts "urls: #{urls}"
       
       urls.each do |url|
@@ -95,40 +103,54 @@ class BusinessEntityIosServiceWorker
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
         if known_dev_id.present?
-          puts "known_dev_id present"
           if ss_dasi == known_dev_id
-            puts "match between dev ids"
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
           else
-            puts "no match between dev ids"
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         # elsif ss_dasi.blank?
           # unlink_ios_and_web(ios_app: ios_app, website: website)
-        end
           
-        # elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
-        #   unlink_ios_and_web(ios_app: ios_app, website: website)
+        elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
+          unlink_ios_and_web(ios_app: ios_app, website: website)
 
-        # elsif company.present?
-        #   websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-        #   ios_app.websites.delete(websites_to_remove)
-          
-        #   link_co_and_web(website: website, company: company)
-        #   link_ios_and_web(ios_app: ios_app, website: website)
- 
-        # elsif website.company.blank?
-        #   websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-        #   ios_app.websites.delete(websites_to_remove)
-        #   new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
-        #   link_co_and_web(website: website, company: new_co)
-        #   link_ios_and_web(ios_app: ios_app, website: website)
-        # end
+        elsif company.present?
+          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+          ios_app.websites.delete(websites_to_remove)
+
+          link_co_and_web(website: website, company: company)
+          link_ios_and_web(ios_app: ios_app, website: website)
+
+        elsif website.company.blank?
+          websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
+          ios_app.websites.delete(websites_to_remove)
+          new_co = Company.create(name: ss.seller, app_store_identifier: ss_dasi)
+          link_co_and_web(website: website, company: new_co)
+          link_ios_and_web(ios_app: ios_app, website: website)
+        end
         
       end
+      
+      website_urls = ss.ios_app.websites.map{|w| w.url}
+      website_urls.each do |url|
+
+        known_dev_id = UrlHelper.known_website(url) 
+
+        ss_dasi = ss.developer_app_store_identifier
+        
+        website = Website.find_or_create_by(url: url)
+        
+
+        if known_dev_id.present?
+          if ss_dasi != known_dev_id
+            unlink_ios_and_web(ios_app: ios_app, website: website)
+          end          
+        end
+      end
+      
     end
   end
 
