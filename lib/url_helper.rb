@@ -101,6 +101,52 @@ class UrlHelper
       nil
     end
 
+    def known_website_android(url)
+      sites = 
+      {
+        "google.com" => "5700313618786177705",
+        "pinterest.com" => "Pinterest,+Inc.",
+        "apple.com" => "0",
+        "youtube.com" => "5700313618786177705",
+        "zendesk.com" => "Zendesk",
+        "sina.com.cn" => "Sina.com",
+        "sina.com" => "Sina.com",
+        "wix.com" => "Wix",
+        "tumblr.com" => "Tumblr,+Inc.",
+        "webs.com" => "0",
+        "weibo.com" => "Sina.com",
+        "uservoice.com" => "UserVoice+Inc.",
+        "helpshift.com" => "0",
+        "blog.com" => "0",
+        "appspot.com" => "0",
+        "naver.com" => "NAVER+Corp.",
+        "github.com" => "0",
+        "yelp.com" => "Yelp,+Inc",
+        "weebly.com" => "Weebly,+Inc.",
+        "wordpress.com" => "7957760354032996428",
+        "subway.com" => "SUBWAY+Restaurants",
+        "blogspot.com" => "0",
+        "evernote.com" => "Evernote+Corporation",
+        "imdb.com" => "IMDb",
+        "facebook.com" => "Facebook",
+        "twitter.com" => "Twitter,+Inc.",
+        "instagram.com" => "Instagram",
+        "foursquare.com" => "Foursquare",
+        "ask.fm" => "Ask.fm",
+        "amazon.com" => "Amazon+Mobile+LLC",
+        "apps-builder.com" => "AppsBuilder",
+        "goo.gl" => "0",
+        "vimeo.com" => "Vimeo+Mobile",
+        "desk.com" => "Salesforce.com,+inc.",
+        "fb.com" => "Facebook",
+        "freshdesk.com" => "Freshdesk",
+        "evertrue.com" => "EverTrue",
+        "golfchannel.com" => "Golf+Channel",
+        "gannett.com" => "Gannett+Company,+Inc."
+      }
+      sites.each{ |site, dev_id| return dev_id if url.include?(site) }
+      nil
+    end
     
     # Will get http://www.dropbox.com from:
     # https://www.google.com/url?q=http://www.dropbox.com&sa=D&usg=AFQjCNHkUkIvFbMV_t27v7cTn2Rd8cyuVw
