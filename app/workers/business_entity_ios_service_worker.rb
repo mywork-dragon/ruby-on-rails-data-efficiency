@@ -1,6 +1,6 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options :queue => :critical, :retry => false
 
   def perform(ios_app_snapshot_ids)
@@ -42,7 +42,6 @@ class BusinessEntityIosServiceWorker
 
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
-
         if known_dev_id.present?
           if ss_dasi == known_dev_id
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
@@ -52,7 +51,10 @@ class BusinessEntityIosServiceWorker
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
+        elsif ss_dasi.blank?
+          unlink_ios_and_web(ios_app: ios_app, website: website)
         end
+          
         # elsif website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
         #   unlink_ios_and_web(ios_app: ios_app, website: website)
 

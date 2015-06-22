@@ -13,7 +13,7 @@ class BusinessEntityService
     def run_ios_by_app
       IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
-        ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |id| id.present?}
+        ios_app_snapshot_ids = batch.map{ |ia| if ia.newest_ios_app_snapshot_id.present? then ia.newest_ios_app_snapshot_id else IosAppSnapshot.find_by_ios_app_id(ia.id).id end }
         
         BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
       end
