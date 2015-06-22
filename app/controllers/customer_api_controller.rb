@@ -135,6 +135,7 @@ class CustomerApiController < ApplicationController
   def companies
     begin
       url = params['website']
+      properties = {'website' => url.to_s}
     
       website = Website.find_by_url(url)
       
