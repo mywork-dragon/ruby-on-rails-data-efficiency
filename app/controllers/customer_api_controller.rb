@@ -98,7 +98,7 @@ class CustomerApiController < ApplicationController
           downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
           lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
           googlePlayId: android_app.app_identifier,
-          iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+          iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil,
           company: {
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
