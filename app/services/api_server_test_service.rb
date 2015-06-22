@@ -2,7 +2,9 @@ class ApiServerTestService
   
   class << self
     
-    def ios_apps(app_store_id=54770204, dev: false)
+    def ios_apps(app_store_id=389801252, dev: false)
+      
+      app_store_id = CGI::escape(app_store_id.to_s)
       
       if dev
         url = "http://api.lvh.me:3000/ios_apps?appStoreId=#{app_store_id}"
@@ -18,11 +20,13 @@ class ApiServerTestService
     
     def android_apps(google_play_id='com.instagram.android', dev: false)
       
+      google_play_id = CGI::escape(google_play_id)
+      
       if dev
         url = "http://api.lvh.me:3000/android_apps?googlePlayId=#{google_play_id}"
         headers = nil
       else
-        url = "http://api.mightysignal.com/ios_apps?googlePlayId=#{google_play_id}"
+        url = "http://api.mightysignal.com/android_apps?googlePlayId=#{google_play_id}"
         headers = production_headers
       end
       
@@ -31,6 +35,8 @@ class ApiServerTestService
     end
     
     def companies(website='instagram.com', dev: false)
+      
+      website = CGI::escape(website)
       
       if dev
         url = "http://api.lvh.me:3000/companies?website=#{website}"
