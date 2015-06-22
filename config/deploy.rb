@@ -42,7 +42,8 @@ set :sidekiq_role, :scraper
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
+# set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
+set :sidekiq_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper]
 
@@ -58,7 +59,7 @@ namespace :deploy do
   after :publishing, :restart
 
   after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
+    on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
     

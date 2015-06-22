@@ -1,3 +1,4 @@
+# This is our internal API that talks to the frontend
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token

@@ -1,0 +1,202 @@
+class NewBusinessEntityService
+
+  class << self
+    
+    def ios_app_snapshot_ids
+      ids = []
+      
+      # https://github.com/MightySignal/varys/issues/154
+      ids << IosAppSnapshot.find(1819705)
+      
+      #https://github.com/MightySignal/varys/issues/155
+      #https://github.com/MightySignal/varys/issues/157
+      ids << IosAppSnapshot.find(2909066)
+      
+      #https://github.com/MightySignal/varys/issues/156
+      ids << IosAppSnapshot.find(2909501)
+      
+      #https://github.com/MightySignal/varys/issues/158
+      ids << IosAppSnapshot.find(2909093)
+      
+      #https://github.com/MightySignal/varys/issues/159
+      ids << IosAppSnapshot.find(2909535)
+      
+      # ids += IosAppSnapshot.where.not(name: nil).limit(50)
+      # ids += IosAppSnapshot.where.not(name: nil).order('created_at DESC').limit(50)
+      
+      ids
+    end
+    
+    def write_csv_line(csv: nil, ios_app_snapshot_id: nil, ios_app_snapshot_seller_url: nil, ios_app_snapshot_support_url: nil, website_id: nil, website_url: nil, company_id: nil, company_website: nil, ios_app_id: nil)
+      line = [ios_app_snapshot_id, ios_app_snapshot_seller_url, ios_app_snapshot_support_url, website_id, website_url, company_id, company_website, ios_app_id]
+      puts line.to_s
+      csv << line
+    end
+
+    def run_ios
+      
+      csv = CSV.generate(col_sep: "\t") do |csv|
+        
+        csv << ['ios_app_snapshot.id', 'ios_app_snapshot.seller_url', 'ios_app_snapshot.support_url', 'website.id', 'website.url', 'company.id', 'company.website' 'company.url', 'ios_app.id']
+        
+        ios_app_snapshot_ids.each do |ios_app_snapshot_id|
+    
+          ss = IosAppSnapshot.find(ios_app_snapshot_id)
+          ios_app = ss.ios_app
+      
+          if ss.nil?
+            return
+          end
+    
+          if dasi = ss.developer_app_store_identifier
+            c = Company.find_by_app_store_identifier(dasi)
+
+            if c && !c.websites.empty?
+              primary_website = c.websites.first
+        
+              if !ios_app.websites.include?(primary_website)
+                ios_app.websites << primary_website 
+                #ios_app.save
+              end
+            
+              write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: primary_website.id, website_url: primary_website.url, company_id: (c ? c.id : nil), company_website: (c ? c.website : nil), ios_app_id: ios_app.id)
+              
+              next  #go to the next app
+            end
+          end
+    
+          urls = [ss.seller_url, ss.support_url].select{|url| url}
+      
+          urls.each do |url|
+            if UrlHelper.secondary_site?(url)
+              kind = :secondary
+            else
+              url = UrlHelper.url_with_http_and_domain(url)
+              kind = :primary
+            end
+        
+            w = Website.find_by_url(url)
+        
+            if w.nil?
+              c = Company.find_by_app_store_identifier(ss.developer_app_store_identifier)
+              #c = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier) if c.nil?
+              #w = Website.create(url: url, company: c, kind: kind)
+            elsif w.company.nil?
+              #w.company = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier)
+              #w.save
+            elsif !w.company.app_store_identifier.blank?  
+              skip_save = true
+              next
+            end
+        
+            ios_app.websites << w if !skip_save && !ios_app.websites.include?(w)
+            #ios_app.save
+            
+            write_csv_line(csv: csv, ios_app_snapshot_id: ss.id, ios_app_snapshot_seller_url: ss.seller_url, ios_app_snapshot_support_url: ss.support_url, website_id: w.id, website_url: w.url, company_id: (c ? c.id : nil), company_website: (c ? c.website : nil), ios_app_id: ios_app.id)
+        
+          end
+      
+        end
+        
+      end
+      
+      puts "\n\n"
+      
+      print csv
+      nil
+      
+    end
+    
+    def run_ios_new
+      
+      ios_app_snapshot_ids.each do |ss|
+        
+        ss = IosAppSnapshot.find(ios_app_snapshot_id)
+        ios_app = ss.ios_app
+        
+        next if ss.nil?
+        
+        # 1. Link all apps to developer by developer ID.
+        dasi = ss.developer_app_store_identifier
+        next if dasi.blank?
+        
+        if dasi
+          ios_developer = IosDeveloper.find_by_identifier(developer_app_store_identifier)
+          ios_developer = IosDeveloper.create(identifier: dasi, name: ss.seller) if ios_developer.nil?
+          c = Company.find_by_app_store_identifier(dasi)
+        end 
+        
+        # 2. Link the app to the developer if it's not already
+        ios_app.ios_developer = ios_developer if ios_app.ios_developer.blank?
+        
+        # 3.
+        link_developer_to_company_and_add_websites
+      end
+      
+    end
+    
+    
+    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer:)
+      
+      # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
+      the_legit_websites = legit_websites(ios_app_snapshot)  #need to implement
+      
+      #2. For all legit websites, create a company for the developer if it doesn't already exist, and add the website to the company
+      the_legit_websites.each do |website_url|
+        company = ios_developer.company
+        
+        if company.blank?
+          company = Company.create(name: ios_developer.name)
+        end
+        
+        website = Website.find_or_create_by_url(website_url)
+        
+        company.websites << website
+      end
+      
+    end
+    
+    def legit_websites(ios_app_snapshot:)
+      websites = [ios_app_snapshot.seller_url, support_url].select{ |url| url.present? }
+      
+      # 1. Remove all websites that are common sites (like Blogspot)
+      websites.reject do |website|
+        
+      end
+
+      # 2. run through SVM
+      something = MachineLearningService.method_name(ios_app_snapshot: ios_app_snapshot, websites: websites) #need to build this
+      
+      
+    end
+    
+    #need to fix this logic
+    def hosted_sites
+      %w(
+        facebook.com\/.+
+        sites.google.com\/+.*
+        plus.google.com\/+.*
+        twitter.com\/.+
+        pinterest.com\/.+
+        facebook.com\/.+
+        instagram.com\/.+
+        apple.com\/.+
+      )
+    end
+    
+    # THE PROBLEM: does the website actually belong to the app?
+    def thresh
+      # ss = IosAppSnapshot.find(2909535)
+      ss = IosAppSnapshot.find(2909093)
+      
+      #input: count of other listing for same snapshot with same developer ID with the same website
+      appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
+      total = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, developer_app_store_identifier: ss.developer_app_store_identifier).count
+      
+      (appearances.to_f)/(total.to_f)
+      
+    end
+    
+  end
+
+end

@@ -33,20 +33,25 @@ class AppStoreService
     end
     
     if @html
+      if !@json # if could not get JSON, need to get these from scrape
+        methods += %w(
+          name_html
+          description_html
+          release_notes_html
+          version_html
+          price_html
+          seller_url_html
+          categories_html
+          size_html
+          seller_html
+          developer_app_store_identifier_html
+          ratings_html
+          recommended_age_html
+          required_ios_version_html
+        )
+      end
+      
       methods += %w(
-        name_html
-        description_html
-        release_notes_html
-        version_html
-        price_html
-        seller_url_html
-        categories_html
-        size_html
-        seller_html
-        developer_app_store_identifier_html
-        ratings_html
-        recommended_age_html
-        required_ios_version_html
         support_url_html
         released_html
         languages_html
@@ -54,6 +59,7 @@ class AppStoreService
         editors_choice_html
         icon_urls_html
       )
+
     end
     
     ret = {}
@@ -162,7 +168,9 @@ class AppStoreService
   end
 
   def seller_url_json
-    @json['sellerUrl']
+    ret = @json['sellerUrl']
+    return nil if UrlHelper.url_with_base_only.blank?
+    ret
   end
 
   def seller_url_html
