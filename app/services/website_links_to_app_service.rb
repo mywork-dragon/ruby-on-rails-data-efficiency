@@ -1,7 +1,8 @@
 class WebsiteLinksToAppService
   
   BYPASS = false
-  
+
+=begin
   def links?(app_name:, app_identifier:, domain:, platform:)
     @domain = domain
     
@@ -12,7 +13,7 @@ class WebsiteLinksToAppService
       app_term = 'Android app'
       match_term = app_identifier
     end
-    
+
     query = CGI::escape("site:#{domain} #{app_name} #{app_term}")
     #puts "query: #{query}"
   	google_url = "http://www.google.com/search?q=#{query}"
@@ -43,6 +44,7 @@ class WebsiteLinksToAppService
   	false
 
   end
+=end
 
   def res(results_html)
     results = results_html.search('cite').map do |cite|
