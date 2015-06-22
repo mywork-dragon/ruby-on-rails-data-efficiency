@@ -132,6 +132,7 @@ class BusinessEntityIosServiceWorker
     end
   end
 
+=begin
   def link_ios_and_web(ios_app:, website:)
     if !ios_app.websites.include?(website)
       ios_app.websites << website
@@ -148,7 +149,7 @@ class BusinessEntityIosServiceWorker
     website.company = company
     website.save
   end
-
+=end
 
 
 
