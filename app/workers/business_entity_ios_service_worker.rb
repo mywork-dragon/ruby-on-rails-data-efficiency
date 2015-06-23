@@ -114,7 +114,7 @@ class BusinessEntityIosServiceWorker
         # puts url
         next if url.nil?
 
-        known_dev_id = UrlHelper.known_website(url) 
+        known_dev_id = UrlHelper.known_website_android(url) 
 
         ss_dasi = ss.developer_google_play_identifier
         
