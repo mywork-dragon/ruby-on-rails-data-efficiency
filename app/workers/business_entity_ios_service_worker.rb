@@ -235,30 +235,30 @@ class BusinessEntityIosServiceWorker
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
         if known_dev_id.present?
-          # puts"known dev id present"
+          puts "known dev id present"
           if ss_dasi == known_dev_id
-            # puts"known dev id match"
+            puts "known dev id match"
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
-            # puts"website: #{website.url}"
-            # puts"company: #{company.name}"
+            puts "website: #{website.url}"
+            puts "company: #{company.name}"
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
-            # putsios_app.websites
+            puts ios_app.websites
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         else
-          # puts"not a known dev id"
+          puts "not a known dev id"
           if website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
-            # puts"id doesn't match"
+            puts "id doesn't match"
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         
           if company.present?
-            # puts"dasi match"
-            # putscompany.name
-            # putsurl
+            puts "dasi match"
+            puts company.name
+            puts url
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
 
