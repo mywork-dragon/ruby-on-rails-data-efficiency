@@ -50,7 +50,7 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: company.websites,
+            websites: company.websites.map { |w| w.url},
             location: {
               streetAddress: company.present? ? company.street_address : nil,
               city: company.present? ? company.city : nil,
@@ -104,14 +104,12 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: company.websites,
-            location: {
-              streetAddress: company.present? ? company.street_address : nil,
-              city: company.present? ? company.city : nil,
-              zipCode: company.present? ? company.zip_code : nil,
-              state: company.present? ? company.state : nil,
-              country: company.present? ? company.country : nil
-            }
+            websites: company.websites.map { |w| w.url},
+            streetAddress: company.present? ? company.street_address : nil,
+            city: company.present? ? company.city : nil,
+            zipCode: company.present? ? company.zip_code : nil,
+            state: company.present? ? company.state : nil,
+            country: company.present? ? company.country : nil
           }
         }
       end
@@ -145,13 +143,11 @@ class CustomerApiController < ApplicationController
           name: company.present? ? company.name : nil,
           mightySignalId: company.present? ? company.id : nil,
           fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-          location: {
-            streetAddress: company.present? ? company.street_address : nil,
-            city: company.present? ? company.city : nil,
-            zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
-          }
+          streetAddress: company.present? ? company.street_address : nil,
+          city: company.present? ? company.city : nil,
+          zipCode: company.present? ? company.zip_code : nil,
+          state: company.present? ? company.state : nil,
+          country: company.present? ? company.country : nil
         }
 
         # jlew -- look at all sibling websites
