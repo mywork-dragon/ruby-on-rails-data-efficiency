@@ -6,8 +6,8 @@ class BusinessEntityIosServiceWorker
   def perform(ids)
     # method_name.to_sym
     # send(method_name, ids)
-    # associate_newest_snapshot_android(ids)
-    clean_android(ids)
+    associate_newest_snapshot_android(ids)
+    # clean_android(ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
@@ -93,7 +93,7 @@ class BusinessEntityIosServiceWorker
   end
 
 
-
+run_android_by_id_from_company(1072422)
 
 
   def clean_android(android_app_snapshot_ids)
@@ -113,10 +113,12 @@ class BusinessEntityIosServiceWorker
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
       urls.each do |url|
-        # puts url
+
         next if url.nil?
 
         known_dev_id = UrlHelper.known_website_android(url) 
+
+        puts known_dev_id
 
         ss_dasi = ss.developer_google_play_identifier
         
@@ -201,6 +203,10 @@ class BusinessEntityIosServiceWorker
     end
   end
 
+  def link_co_and_web(website:, company:)
+    website.company = company
+    website.save
+  end
 
 
 
