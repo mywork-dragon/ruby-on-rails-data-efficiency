@@ -34,14 +34,15 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       listApiService.createNewList(listName).success(function() {
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
-          location.reload();
+          $('#createNewModal').hide();
+          $('.modal-backdrop.fade.in').hide();
         });
       });
     };
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];
-        location.reload();
+        $scope.load();
       });
     };
     $scope.deleteList = function() {
