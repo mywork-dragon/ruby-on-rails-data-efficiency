@@ -27,26 +27,29 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       });
     };
     listApiService.getLists().success(function(data) {
-      $scope.usersLists = data;
+      $rootScope.usersLists = data;
     });
 
     $scope.createList = function(listName) {
       listApiService.createNewList(listName).success(function() {
         listApiService.getLists().success(function(data) {
-          $scope.usersLists = data;
-          location.reload();
+          $rootScope.usersLists = data;
+          $('#createNewModal').hide();
+          $('.modal-backdrop.fade.in').hide();
         });
       });
     };
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];
-        location.reload();
+        $scope.load();
       });
     };
     $scope.deleteList = function() {
       listApiService.deleteList($routeParams.id).success(function() {
-        location.reload();
+        listApiService.getLists().success(function(data) {
+          $rootScope.usersLists = data;
+        });
       });
     };
     $scope.exportListToCsv = function() {

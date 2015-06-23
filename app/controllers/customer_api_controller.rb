@@ -50,14 +50,12 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: company.websites.map { |w| w.url},
-            location: {
-              streetAddress: company.present? ? company.street_address : nil,
-              city: company.present? ? company.city : nil,
-              zipCode: company.present? ? company.zip_code : nil,
-              state: company.present? ? company.state : nil,
-              country: company.present? ? company.country : nil
-            }
+            streetAddress: company.present? ? company.street_address : nil,
+            city: company.present? ? company.city : nil,
+            zipCode: company.present? ? company.zip_code : nil,
+            state: company.present? ? company.state : nil,
+            country: company.present? ? company.country : nil
+            # websites: company.websites.map { |w| w.url}
           }
         }
       end
@@ -94,7 +92,7 @@ class CustomerApiController < ApplicationController
           name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
           mobilePriority: android_app.mobile_priority,
           adSpend: android_app.android_fb_ad_appearances.present?,
-          downloadsEstimate: newest_app_snapshot.present? ? (newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0 : nil,
+          downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round_to_i : nil,
           downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
           downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
           lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
@@ -104,12 +102,12 @@ class CustomerApiController < ApplicationController
             name: company.present? ? company.name : nil,
             mightySignalId: company.present? ? company.id : nil,
             fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-            websites: company.websites.map { |w| w.url},
             streetAddress: company.present? ? company.street_address : nil,
             city: company.present? ? company.city : nil,
             zipCode: company.present? ? company.zip_code : nil,
             state: company.present? ? company.state : nil,
             country: company.present? ? company.country : nil
+            # websites: company.websites.map { |w| w.url}
           }
         }
       end
@@ -148,9 +146,8 @@ class CustomerApiController < ApplicationController
           zipCode: company.present? ? company.zip_code : nil,
           state: company.present? ? company.state : nil,
           country: company.present? ? company.country : nil
+          # websites: company.websites.map { |w| w.url}
         }
-
-        # jlew -- look at all sibling websites
 
         #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
         ios_apps = company.websites.map{ |website| website.ios_apps} #goes up to company, then down to all apps
@@ -182,7 +179,7 @@ class CustomerApiController < ApplicationController
             name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
             mobilePriority: android_app.mobile_priority,
             adSpend: android_app.android_fb_ad_appearances.present?,
-            downloadsEstimate: newest_app_snapshot.present? ? (newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0 : nil,
+            downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
             downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
             downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
