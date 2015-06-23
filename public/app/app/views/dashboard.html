@@ -119,7 +119,7 @@
       <span class="ui-select pull-right">
         <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
           <option value="">Add Selected to List</option>
-          <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
+          <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
         </select>
       </span>
     </div>

@@ -11,7 +11,7 @@
       <span class="ui-select pull-right">
         <select ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
          <option value="">Copy Selected to List</option>
-         <option ng-repeat="option in usersLists" value="{{option.id}}">{{option.name}}</option>
+         <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
         </select>
       </span>
       -->
