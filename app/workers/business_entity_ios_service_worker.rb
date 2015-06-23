@@ -100,7 +100,7 @@ class BusinessEntityIosServiceWorker
 
     android_app_snapshot_ids.each do |android_app_snapshot_id|
     
-      ss = androidAppSnapshot.find(android_app_snapshot_id)
+      ss = AndroidAppSnapshot.find(android_app_snapshot_id)
       return if ss.nil?
       
       android_app = ss.android_app
