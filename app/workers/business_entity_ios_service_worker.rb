@@ -6,7 +6,8 @@ class BusinessEntityIosServiceWorker
   def perform(ids)
     # method_name.to_sym
     # send(method_name, ids)
-    associate_newest_snapshot_android(ids)
+    # associate_newest_snapshot_android(ids)
+    clean_android(ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
@@ -99,7 +100,7 @@ class BusinessEntityIosServiceWorker
 
     android_app_snapshot_ids.each do |android_app_snapshot_id|
     
-      ss = AndroidAppSnapshot.find(android_app_snapshot_id)
+      ss = androidAppSnapshot.find(android_app_snapshot_id)
       return if ss.nil?
       
       android_app = ss.android_app
@@ -109,8 +110,8 @@ class BusinessEntityIosServiceWorker
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
-      urls.each do |url|        
-
+      urls.each do |url|    
+        # puts url
         next if url.nil?
 
         known_dev_id = UrlHelper.known_website(url) 
@@ -126,21 +127,30 @@ class BusinessEntityIosServiceWorker
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
         if known_dev_id.present?
+          # puts"known dev id present"
           if ss_dasi == known_dev_id
+            # puts"known dev id match"
             websites_to_remove = android_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             android_app.websites.delete(websites_to_remove)
+            # puts"website: #{website.url}"
+            # puts"company: #{company.name}"
             link_co_and_web(website: website, company: company)
             link_android_and_web(android_app: android_app, website: website)
+            # putsandroid_app.websites
           else
             unlink_android_and_web(android_app: android_app, website: website)
           end
         else
-        
+          # puts"not a known dev id"
           if website.company.present? && website.company.google_play_identifier.present? && website.company.google_play_identifier != ss_dasi && !f1000
+            # puts"id doesn't match"
             unlink_android_and_web(android_app: android_app, website: website)
           end
         
           if company.present?
+            # puts"dasi match"
+            # putscompany.name
+            # putsurl
             websites_to_remove = android_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             android_app.websites.delete(websites_to_remove)
 
@@ -155,9 +165,25 @@ class BusinessEntityIosServiceWorker
             link_co_and_web(website: website, company: new_co)
             link_android_and_web(android_app: android_app, website: website)
           end
-          
+
         end
       end
+      
+      # cleanse app's existing websites linked to app, that may have been unlisted from support / seller url on snapshot
+      websites = android_app.websites.select{|w| urls.exclude?(w.url)}
+      websites.each do |website|
+        known_dev_id = UrlHelper.known_website(website.url)
+        ss_dasi = ss.developer_google_play_identifier
+        company = website.company
+        
+        known_dev_dasi_mismatch = known_dev_id.present? && ss_dasi != known_dev_id
+        company_dasi_mismatch = company.present? && company.google_play_identifier.present? && company.google_play_identifier != ss_dasi
+        if known_dev_dasi_mismatch || company_dasi_mismatch
+          unlink_android_and_web(android_app: android_app, website: website)
+        end
+      end
+      
+      
     end
   end
 
@@ -192,8 +218,8 @@ class BusinessEntityIosServiceWorker
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
-      urls.each do |url|        
-
+      urls.each do |url|    
+        # puts url
         next if url.nil?
 
         known_dev_id = UrlHelper.known_website(url) 
@@ -209,21 +235,30 @@ class BusinessEntityIosServiceWorker
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
         if known_dev_id.present?
+          # puts"known dev id present"
           if ss_dasi == known_dev_id
+            # puts"known dev id match"
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
+            # puts"website: #{website.url}"
+            # puts"company: #{company.name}"
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
+            # putsios_app.websites
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         else
-        
+          # puts"not a known dev id"
           if website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
+            # puts"id doesn't match"
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         
           if company.present?
+            # puts"dasi match"
+            # putscompany.name
+            # putsurl
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
 
@@ -241,6 +276,22 @@ class BusinessEntityIosServiceWorker
 
         end
       end
+      
+      # cleanse app's existing websites linked to app, that may have been unlisted from support / seller url on snapshot
+      websites = ios_app.websites.select{|w| urls.exclude?(w.url)}
+      websites.each do |website|
+        known_dev_id = UrlHelper.known_website(website.url)
+        ss_dasi = ss.developer_app_store_identifier
+        company = website.company
+        
+        known_dev_dasi_mismatch = known_dev_id.present? && ss_dasi != known_dev_id
+        company_dasi_mismatch = company.present? && company.app_store_identifier.present? && company.app_store_identifier != ss_dasi
+        if known_dev_dasi_mismatch || company_dasi_mismatch
+          unlink_ios_and_web(ios_app: ios_app, website: website)
+        end
+      end
+      
+      
     end
   end
 
