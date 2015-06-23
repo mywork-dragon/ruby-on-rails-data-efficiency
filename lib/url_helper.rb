@@ -61,6 +61,7 @@ class UrlHelper
         "pinterest.com" => 328135727,
         "apple.com" => 284417353,
         "youtube.com" => 281956209,
+        "youtu.be" => 281956209,
         "zendesk.com" => 368796010,
         "sina.com.cn" => 291478092,
         "sina.com" => 291478092,
@@ -97,7 +98,8 @@ class UrlHelper
         "evertrue.com" => 429190217,
         "golfchannel.com" => 466053030,
         "gannett.com" => 404843797,
-        "netflix.com" => 363590054
+        "netflix.com" => 363590054,
+        "fiserv.com" => 386678214
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
