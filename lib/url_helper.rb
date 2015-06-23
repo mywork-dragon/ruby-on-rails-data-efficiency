@@ -149,7 +149,8 @@ class UrlHelper
         "freshdesk.com" => "Freshdesk",
         "evertrue.com" => "EverTrue",
         "golfchannel.com" => "Golf+Channel",
-        "gannett.com" => "Gannett+Company,+Inc."
+        "gannett.com" => "Gannett+Company,+Inc.",
+        "youtu.be" => "0"
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil

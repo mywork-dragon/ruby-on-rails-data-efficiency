@@ -2,7 +2,7 @@ class ApiServerTestService
   
   class << self
     
-    def ios_apps(app_store_id=389801252, dev: false)
+    def ios_apps(app_store_id=530003802, dev: false)
       
       app_store_id = CGI::escape(app_store_id.to_s)
       
@@ -15,7 +15,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      response.body
+      JSON.parse(response.body)
     end
     
     def android_apps(google_play_id='com.instagram.android', dev: false)
@@ -31,7 +31,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      response.body
+      JSON.parse(response.body)
     end
     
     def companies(website='instagram.com', dev: false)
@@ -47,7 +47,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      response.body
+      JSON.parse(response.body)
     end
     
     def production_headers
