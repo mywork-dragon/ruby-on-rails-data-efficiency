@@ -106,11 +106,13 @@ class BusinessEntityIosServiceWorker
       android_app = ss.android_app
     
       #linking logic for support and seller urls
-      urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      # urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }.map{|url| UrlHelper.url_with_http_and_domain(url)}
+
+      urls = ss.android_app.websites.map{ |site| site.url }
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
-      urls.each do |url|    
+      urls.each do |url|
         # puts url
         next if url.nil?
 
