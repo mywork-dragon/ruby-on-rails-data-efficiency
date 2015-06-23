@@ -97,7 +97,8 @@ class UrlHelper
         "evertrue.com" => 429190217,
         "golfchannel.com" => 466053030,
         "gannett.com" => 404843797,
-        "netflix.com" => 363590054
+        "netflix.com" => 363590054,
+        "youtu.be" => 0
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
@@ -144,7 +145,8 @@ class UrlHelper
         "freshdesk.com" => "Freshdesk",
         "evertrue.com" => "EverTrue",
         "golfchannel.com" => "Golf+Channel",
-        "gannett.com" => "Gannett+Company,+Inc."
+        "gannett.com" => "Gannett+Company,+Inc.",
+        "youtu.be" => "0"
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
