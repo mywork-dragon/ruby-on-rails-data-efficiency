@@ -92,10 +92,6 @@ class BusinessEntityIosServiceWorker
     end
   end
 
-
-run_android_by_id_from_company(1072422)
-
-
   def clean_android(android_app_snapshot_ids)
 
     android_app_snapshot_ids.each do |android_app_snapshot_id|
