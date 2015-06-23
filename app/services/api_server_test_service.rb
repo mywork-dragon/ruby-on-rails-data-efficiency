@@ -34,7 +34,7 @@ class ApiServerTestService
       JSON.parse(response.body)
     end
     
-    def companies(website='instagram.com', dev: false)
+    def companies(website='costco.com ', dev: false)
       
       website = CGI::escape(website)
       
@@ -47,7 +47,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      JSON.parse(response.body)
+      # JSON.parse(response.body)
     end
     
     def production_headers
