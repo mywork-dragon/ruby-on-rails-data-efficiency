@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150621025144) do
+ActiveRecord::Schema.define(version: 20150624215301) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -643,10 +643,12 @@ ActiveRecord::Schema.define(version: 20150621025144) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
+    t.boolean  "tos_accepted",    default: false
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
+  add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
 
   create_table "websites", force: true do |t|
     t.string   "url"
