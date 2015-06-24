@@ -150,7 +150,7 @@ class CustomerApiController < ApplicationController
         }
 
         #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
-        ios_apps = company.websites.map{ |website| website.ios_apps} #goes up to company, then down to all apps
+        ios_apps = company.websites.map{ |website| website.ios_apps}.flatten #goes up to company, then down to all apps
 
         ios_apps_a = ios_apps.map do |ios_app|
           newest_app_snapshot = ios_app.newest_ios_app_snapshot
@@ -169,7 +169,7 @@ class CustomerApiController < ApplicationController
         end
 
         #android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
-        android_apps = company.websites.map{ |website| website.android_apps}  #goes up to company, then down to all apps
+        android_apps = company.websites.map{ |website| website.android_apps}.flatten  #goes up to company, then down to all apps
 
         android_apps_a = android_apps.map do |android_app|
           newest_app_snapshot = android_app.newest_android_app_snapshot
@@ -209,7 +209,7 @@ class CustomerApiController < ApplicationController
       url = params['website']
       properties = {'website' => url.to_s}
 
-      website = Website.find_by_url(url)
+      website = Website.find_by_url('http://' + url)
 
       if website.blank?
         company_h = {}
@@ -229,7 +229,7 @@ class CustomerApiController < ApplicationController
         }
 
         #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
-        ios_apps = company.websites.map{ |website| website.ios_apps} #goes up to company, then down to all apps
+        ios_apps = company.websites.map{ |website| website.ios_apps}.flatten #goes up to company, then down to all apps
 
         ios_apps_a = ios_apps.map do |ios_app|
           newest_app_snapshot = ios_app.newest_ios_app_snapshot
@@ -250,18 +250,20 @@ class CustomerApiController < ApplicationController
         company_json = {company: company_h, apps: {ios_apps: ios_apps_a}}
       end
 
-    rescue => e
-      render json: json_failure
-      merge_failure!(properties, company_json, e)
-      track('companies', properties)
-      raise e
-    else
-      render json: company_json
-      merge_success!(properties, company_json)
-      track('companies', properties)
+    # rescue => e
+    #   render json: json_failure
+    #   merge_failure!(properties, company_json, e)
+    #   track('companies', properties)
+    #   raise e
+    # else
+    #   render json: company_json
+    #   merge_success!(properties, company_json)
+    #   track('companies', properties)
     end
 
   end
+  
+  
   
   protected
   

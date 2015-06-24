@@ -47,8 +47,25 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      # JSON.parse(response.body)
+      JSON.parse(response.body)
     end
+    
+    def companies2(website='costco.com ', dev: false)
+      
+      website = CGI::escape(website)
+      
+      if dev
+        url = "http://api.lvh.me:3000/companies2?website=#{website}"
+        headers = nil
+      else
+        url = "http://api.mightysignal.com/companies2?website=#{website}"
+        headers = production_headers
+      end
+      
+      response = HTTParty.get(url, headers: headers)
+      #JSON.parse(response.body)
+    end
+    
     
     def production_headers
       {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'}
