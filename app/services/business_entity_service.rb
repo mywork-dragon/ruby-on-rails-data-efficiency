@@ -36,12 +36,29 @@ class BusinessEntityService
       end
     end
 
+    def run_android_by_id_from_company(company)
+        ids = []
+        AndroidApp.joins(android_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+            ids << a.id if a.id.present?
+        end
+        clean_android(ids)
+    end
+
     def run_ios_by_app
       IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
         ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
 
         BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
+      end
+    end
+
+    def run_android_by_app
+      AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"
+        android_app_snapshot_ids = batch.map{|ia| ia.newest_android_app_snapshot_id}.select{ |ia| ia.present?}
+
+        BusinessEntityIosServiceWorker.perform_async(android_app_snapshot_ids)
       end
     end
   

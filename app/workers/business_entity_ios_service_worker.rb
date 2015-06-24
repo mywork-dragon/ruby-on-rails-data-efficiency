@@ -6,8 +6,8 @@ class BusinessEntityIosServiceWorker
   def perform(ids)
     # method_name.to_sym
     # send(method_name, ids)
-    # associate_newest_snapshot_android(ids)
-    clean_android(ids)
+    associate_newest_snapshot_android(ids)
+    # clean_android(ids)
   end
 
   def reassosciate_empty_snapshots(ios_app_ids)
@@ -92,29 +92,29 @@ class BusinessEntityIosServiceWorker
     end
   end
 
-
-
-
-
   def clean_android(android_app_snapshot_ids)
 
     android_app_snapshot_ids.each do |android_app_snapshot_id|
     
-      ss = androidAppSnapshot.find(android_app_snapshot_id)
+      ss = AndroidAppSnapshot.find(android_app_snapshot_id)
       return if ss.nil?
       
       android_app = ss.android_app
     
       #linking logic for support and seller urls
-      urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      # urls = [ss.seller_url, ss.support_url].select{ |url| url.present? }.map{|url| UrlHelper.url_with_http_and_domain(url)}
+
+      urls = ss.android_app.websites.map{ |site| site.url }
       
       urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
       
-      urls.each do |url|    
-        # puts url
+      urls.each do |url|
+
         next if url.nil?
 
-        known_dev_id = UrlHelper.known_website(url) 
+        known_dev_id = UrlHelper.known_website_android(url) 
+
+        puts known_dev_id
 
         ss_dasi = ss.developer_google_play_identifier
         
@@ -199,6 +199,10 @@ class BusinessEntityIosServiceWorker
     end
   end
 
+  def link_co_and_web(website:, company:)
+    website.company = company
+    website.save
+  end
 
 
 
@@ -235,30 +239,30 @@ class BusinessEntityIosServiceWorker
         f1000 = website.company.present? && website.company.fortune_1000_rank.present?  #f1000 is a boolean
 
         if known_dev_id.present?
-          # puts"known dev id present"
+          puts "known dev id present"
           if ss_dasi == known_dev_id
-            # puts"known dev id match"
+            puts "known dev id match"
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
-            # puts"website: #{website.url}"
-            # puts"company: #{company.name}"
+            puts "website: #{website.url}"
+            puts "company: #{company.name}"
             link_co_and_web(website: website, company: company)
             link_ios_and_web(ios_app: ios_app, website: website)
-            # putsios_app.websites
+            puts ios_app.websites
           else
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         else
-          # puts"not a known dev id"
+          puts "not a known dev id"
           if website.company.present? && website.company.app_store_identifier.present? && website.company.app_store_identifier != ss_dasi && !f1000
-            # puts"id doesn't match"
+            puts "id doesn't match"
             unlink_ios_and_web(ios_app: ios_app, website: website)
           end
         
           if company.present?
-            # puts"dasi match"
-            # putscompany.name
-            # putsurl
+            puts "dasi match"
+            puts company.name
+            puts url
             websites_to_remove = ios_app.websites.to_a.select{|site| urls.exclude?(site.url)}
             ios_app.websites.delete(websites_to_remove)
 

@@ -29,7 +29,7 @@ angular.module('appApp')
         authService.login($scope.userEmail, $scope.userPassword).then(function(){
           $scope.isAuthenticated = authToken.isAuthenticated();
           listApiService.getLists().success(function(data) {
-            $scope.usersLists = data;
+            $rootScope.usersLists = data;
           });
             location.reload();
         },
@@ -229,7 +229,7 @@ angular.module('appApp')
           });
         },
         listApiService.getLists().success(function(data) {
-          $scope.usersLists = data;
+          $rootScope.usersLists = data;
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
