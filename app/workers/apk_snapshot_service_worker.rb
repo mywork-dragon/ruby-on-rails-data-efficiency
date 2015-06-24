@@ -8,13 +8,6 @@ class ApkSnapshotServiceWorker
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
-    # asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
-
-    # unless asj.is_fucked
-    #   download_apk(apk_snapshot_job_id, app_id)
-    # else
-    #   ApkSnapshotException.create(name: app_id, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
-    # end
     download_apk(apk_snapshot_job_id, app_id)
   end
   
@@ -29,45 +22,31 @@ class ApkSnapshotServiceWorker
   end
 
   def download_apk(apk_snapshot_job_id, android_app_id)
+    # v = AndroidAppSnapshot.select(:version).where(android_app_id: android_app_id).first
+    # v = AndroidAppSnapshot.find_by_android_app_id(android_app_id)
 
-    v = AndroidAppSnapshot.select(:version).where(android_app_id: android_app_id).first
-    apk_snap = ApkSnapshot.create(version: v.version, android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
+    apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
 
     @try = 0
 
     begin
+      # google_account_id, email, password, android_id, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
+      best_account, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
 
-      # asj = ApkSnapshotJob.select(:is_fucked).where(id: apk_snapshot_job_id).first
-
-      # if asj.is_fucked
-      #   @try = MAX_TRIES
-      #   return false
-      # end
-
-      google_account_id, email, password, android_id, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
-
-      # if !google_account_id
-      #   j = ApkSnapshotJob.find(apk_snapshot_job_id)
-      #   j.is_fucked = true
-      #   j.save!
-      #   li "All of your accounts are fucked."
-      #   @try = MAX_TRIES
-      #   return false
-      # else
-
-      apk_snap.google_account_id = google_account_id
+      apk_snap.google_account_id = best_account.id
       apk_snap.save!
 
       start_time = Time.now()
       ApkDownloader.configure do |config|
-        config.email = email
-        config.password = password
-        config.android_id = android_id
+        config.email = best_account.email
+        config.password = best_account.password
+        config.android_id = best_account.android_identifier
         config.proxy = proxy
       end
-      app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
+      # app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
+      app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
-      print "\nDownloading #{app_identifier}... "
+      # print "\nDownloading #{app_identifier}... "
 
       ApkDownloader.download!(app_identifier, file_name)
 
@@ -75,23 +54,15 @@ class ApkSnapshotServiceWorker
 
     rescue Exception => e
 
-      # if e.message.include?("abort then interrupt!") && Rails.env.development?
-      #   j = ApkSnapshotJob.find(apk_snapshot_job_id)
-      #   j.is_fucked = true
-      #   j.save!
-      #   @try = MAX_TRIES
-      #   return false
-      # else
-      #   flag_account(google_account_id, e.message)
-      # end
+      # flag_account(best_account.id, e.message)
 
-      flag_account(google_account_id, e.message)
+      # ga = GoogleAccount.find(google_account_id)
+      
+      best_account.flags += 1
+      best_account.in_use = false
+      best_account.save!
 
-      ga = GoogleAccount.find(google_account_id)
-      ga.in_use = false
-      ga.save!
-
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
       if (@try += 1) < MAX_TRIES
         retry
@@ -102,21 +73,21 @@ class ApkSnapshotServiceWorker
 
     else
 
-      print "success"
+      # print "success"
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      print " ( time : #{download_time} sec, account_used : #{email}) "
+      # print " ( time : #{download_time} sec, account_used : #{email}) "
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
-      apk_snap.google_account_id = google_account_id
+      apk_snap.google_account_id = best_account.id
       apk_snap.download_time = download_time
       apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save!
 
-      ga = GoogleAccount.find(google_account_id)
-      ga.in_use = false
-      ga.save!
+      # ga = GoogleAccount.find(google_account_id)
+      best_account.in_use = false
+      best_account.save!
 
       File.delete(file_name)
       
@@ -125,37 +96,42 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account(android_app_id, apk_snapshot_job_id)
-    n = GoogleAccount.where(blocked: false, in_use: false).where("flags < ?",101).count
+    n = GoogleAccount.where(in_use: false).count
     (0...n).each do |a|
-      ga = GoogleAccount.select(:id).where(blocked: false, in_use: false).where("flags < ?",101).order(last_used: :asc).limit(5).sample
+      ga = GoogleAccount.select(:id).where(in_use: false).order(:last_used).limit(5).sample
       ga.last_used = DateTime.now
       ga.save!
 
-      if ApkSnapshot.where(google_account_id: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
+      # if ApkSnapshot.where(google_account_id: ga.id).where("updated_at > ?", DateTime.now - 1).count < 1400
+      c = ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+      if c < 1400
         best_account = GoogleAccount.find(ga.id)
         best_account.in_use = true
         best_account.save!
         p = Proxy.order(last_used: :asc).limit(5).sample
-        return best_account.id, best_account.email, best_account.password, best_account.android_identifier, p.private_ip
+        # return best_account.id, best_account.email, best_account.password, best_account.android_identifier, p.private_ip
+        return best_account, p.private_ip
       end
     end
     false
   end
 
-  def block_account(google_account_id, message)
-    # li "#{message}. Trying a different account. \n"
-    # li "Account with `id` #{google_account_id} is being blocked"
-    ga = GoogleAccount.where(id: google_account_id)[0]
-    ga.blocked = true
-    ga.save!
-  end
+  # def block_account(google_account_id, message)
+  #   # li "#{message}. Trying a different account. \n"
+  #   # li "Account with `id` #{google_account_id} is being blocked"
+  #   # ga = GoogleAccount.where(id: google_account_id)[0]
+  #   ga = GoogleAccount.find(google_account_id)
+  #   ga.blocked = true
+  #   ga.save!
+  # end
 
-  def flag_account(google_account_id, message)
-    # li "#{message}. Trying again. \n"
-    # li "Account with `id` #{google_account_id} is being flagged"
-    ga = GoogleAccount.where(id: google_account_id)[0]
-    ga.flags += 1
-    ga.save!
-  end
+  # def flag_account(google_account_id, message)
+  #   # li "#{message}. Trying again. \n"
+  #   # li "Account with `id` #{google_account_id} is being flagged"
+  #   # ga = GoogleAccount.where(id: google_account_id)[0]
+  #   ga = GoogleAccount.find(google_account_id)
+  #   ga.flags += 1
+  #   ga.save!
+  # end
   
 end
