@@ -63,7 +63,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      #JSON.parse(response.body)
+      JSON.parse(response.body)
     end
     
     
