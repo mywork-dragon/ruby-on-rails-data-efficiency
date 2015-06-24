@@ -47,7 +47,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      # JSON.parse(response.body)
+      JSON.parse(response.body)
     end
     
     def companies2(website='costco.com ', dev: false)
@@ -63,7 +63,7 @@ class ApiServerTestService
       end
       
       response = HTTParty.get(url, headers: headers)
-      JSON.parse(response.body)
+      #JSON.parse(response.body)
     end
     
     
