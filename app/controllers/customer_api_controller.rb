@@ -250,15 +250,15 @@ class CustomerApiController < ApplicationController
         company_json = {company: company_h, apps: {ios_apps: ios_apps_a}}
       end
 
-    # rescue => e
-    #   render json: json_failure
-    #   merge_failure!(properties, company_json, e)
-    #   track('companies', properties)
-    #   raise e
-    # else
-    #   render json: company_json
-    #   merge_success!(properties, company_json)
-    #   track('companies', properties)
+    rescue => e
+      render json: json_failure
+      merge_failure!(properties, company_json, e)
+      track('companies', properties)
+      raise e
+    else
+      render json: company_json
+      merge_success!(properties, company_json)
+      track('companies', properties)
     end
 
   end
