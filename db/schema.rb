@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150621025144) do
+ActiveRecord::Schema.define(version: 20150625084553) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -265,6 +265,16 @@ ActiveRecord::Schema.define(version: 20150621025144) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "dupes", force: true do |t|
+    t.string   "app_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "count"
+  end
+
+  add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
+  add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
   create_table "google_accounts", force: true do |t|
     t.string   "email"
