@@ -30,30 +30,31 @@ class BusinessEntityService
     # Use for `associate_newest_snapshot_android`, `unlink_android_without_dev_id`, `dupe_count`
     def android_by_app_id
         AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
-            li "Batch #{index}"
-            android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
+          li "Batch #{index}"
+          android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
 
-            BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
+          BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
         end
     end
 
     # Use for `clean_android`
     def android_by_snapshot_id(method_name)
-        AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
-            li "Batch #{index}"
-            android_app_snapshot_ids = batch.map{|aa| aa.newest_android_app_snapshot_id}.select{ |aa| aa.present?}
+      AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"
+        android_app_snapshot_ids = batch.map{|aa| aa.newest_android_app_snapshot_id}.select{ |aa| aa.present?}
 
-            BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids, method_name)
-        end
+        BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids, method_name)
+      end
     end
 
 
     # Use for `delete_duplicates_android`
     def dupe_search
-        Dupe.where('count > 1').find_in_batches(batch_size: 1000).with_index do |batch, index|
-            dupe_id = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
-            BusinessEntityAndroidServiceWorker.perform_async(dupe_id)
-        end
+      Dupe.where('count > 1').find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"      
+        dupe_ids = batch.map{|dupe| dupe.id}.select{ |dupe_id| dupe_id.present?}
+        BusinessEntityAndroidServiceWorker.perform_async(dupe_ids)
+      end
     end
 
 

@@ -39,7 +39,10 @@ class BusinessEntityAndroidServiceWorker
 
   def delete_dupes_android(dupe_ids)
     dupe_ids.each do |dupe_id|
-      app_identifier = Dupe.find_by_id(dupe_ids).app_identifier
+      dupe = Dupe.find_by_id(dupe_id)
+      next if dupe.nil?
+      
+      app_identifier = dupe.app_identifier
       aa = AndroidApp.where(app_identifier: app_identifier)
       if aa.count > 1
         keep = aa.max_by{ |a| a.created_at }
