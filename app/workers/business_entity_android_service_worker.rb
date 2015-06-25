@@ -6,7 +6,7 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    associate_newest_snapshot_android(ids)
+    delete_duplicates_android(ids)
   end
 
   def associate_newest_snapshot_android(android_app_ids)
@@ -30,8 +30,8 @@ class BusinessEntityAndroidServiceWorker
       if aa_id.count > 1
         keep = aa_id.max_by{ |a| a.created_at }
         aa_id.each do |a|
-          if a != keep
-            AndroidApp.delete(a)
+          if a.id != keep.id
+            AndroidApp.delete(a.id)
           end
         end
       end
