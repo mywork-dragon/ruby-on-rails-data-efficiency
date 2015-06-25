@@ -6,7 +6,7 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    unlink_android_without_dev_id(ids)
+    clean_android(ids)
   end
 
   def dupe_count(ids)
