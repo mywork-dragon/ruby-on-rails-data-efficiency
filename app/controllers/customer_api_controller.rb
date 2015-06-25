@@ -53,8 +53,8 @@ class CustomerApiController < ApplicationController
             streetAddress: company.present? ? company.street_address : nil,
             city: company.present? ? company.city : nil,
             zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
+            state: company.present? ? company.state : nil
+            # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
           }
         }
@@ -105,8 +105,8 @@ class CustomerApiController < ApplicationController
             streetAddress: company.present? ? company.street_address : nil,
             city: company.present? ? company.city : nil,
             zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
+            state: company.present? ? company.state : nil
+            # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
           }
         }
@@ -144,8 +144,8 @@ class CustomerApiController < ApplicationController
           streetAddress: company.present? ? company.street_address : nil,
           city: company.present? ? company.city : nil,
           zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil,
-          country: company.present? ? company.country : nil
+          state: company.present? ? company.state : nil
+          # country: company.present? ? company.country : nil
           # websites: company.websites.map { |w| w.url}
         }
 
@@ -223,8 +223,8 @@ class CustomerApiController < ApplicationController
           streetAddress: company.present? ? company.street_address : nil,
           city: company.present? ? company.city : nil,
           zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil,
-          country: company.present? ? company.country : nil
+          state: company.present? ? company.state : nil
+          # country: company.present? ? company.country : nil
           # websites: company.websites.map { |w| w.url}
         }
 
