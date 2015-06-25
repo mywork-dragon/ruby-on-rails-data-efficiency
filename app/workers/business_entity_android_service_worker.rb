@@ -6,7 +6,7 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    dupe_count(ids)
+    delete_dupes_android(ids)
   end
 
   def dupe_count(ids)
@@ -33,6 +33,21 @@ class BusinessEntityAndroidServiceWorker
       if newest_snapshot.present?
         aa.newest_android_app_snapshot = newest_snapshot
         aa.save
+      end
+    end
+  end
+
+  def delete_dupes_android(dupe_ids)
+    dupe_ids.each do |dupe_id|
+      app_identifier = Dupe.find_by_id(dupe_ids).app_identifier
+      aa = AndroidApp.where(app_identifier: app_identifier)
+      if aa.count > 1
+        keep = aa.max_by{ |a| a.created_at }
+        aa.each do |a|
+          if a.id != keep.id
+            AndroidApp.delete(a.id)
+          end
+        end
       end
     end
   end

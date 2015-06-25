@@ -49,9 +49,10 @@ class BusinessEntityService
 
 
     # Use for `delete_duplicates_android`
-    def android_by_unique_identifier
-        AndroidApp.select(:app_identifier).uniq.select(:id).find_each do |ia|
-          puts ia.id
+    def dupe_search
+        Dupe.where('count > 1').find_in_batches(batch_size: 1000).with_index do |batch, index|
+            dupe_id = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
+            BusinessEntityAndroidServiceWorker.perform_async(dupe_id)
         end
     end
 
