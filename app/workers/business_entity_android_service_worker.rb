@@ -78,16 +78,18 @@ class BusinessEntityAndroidServiceWorker
     android_app_ids.each do |android_app_id|
       
       aa = AndroidApp.find_by_id(android_app_id)
-      ss = AndroidAppSnapshot.find_by_android_app_id(aa.id)
-      return if ss.nil?
-
-      urls = ss.android_app.websites.map{ |site| site.url }
+      next if aa.nil?
       
-      urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      ss = AndroidAppSnapshot.where(android_app_id: aa.id).order(created_at: :desc).first
+      next if ss.blank?
+
+      urls = aa.websites.map{ |site| site.url }
+      
+      urls = urls.map{ |url| UrlHelper.url_with_http_and_domain(url) }.select{ |url| url.present? }
       
       urls.each do |url|
 
-        next if url.nil?
+        next if url.blank?
 
         known_dev_id = UrlHelper.known_website_android(url) 
 
