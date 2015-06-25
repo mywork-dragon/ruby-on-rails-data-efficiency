@@ -107,7 +107,7 @@ module ApkDownloader
 
       max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
 
-      http.finish
+      # http.finish
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
@@ -190,7 +190,7 @@ module ApkDownloader
         post.tap { |p| p.set_form_data data }
       end
 
-      post.finish
+      # post.finish
 
       api_headers.each { |k, v| req[k] = v }
 
