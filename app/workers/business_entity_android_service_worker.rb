@@ -10,10 +10,13 @@ class BusinessEntityAndroidServiceWorker
   end
 
   def dupe_count(ids)
-    android_app_ids.each do |android_app_id|
-      dupe = Dupe.find_by_app_identifier(android_app_id)
+    ids.each do |android_app_id|
+      aa = AndroidApp.find_by_id(android_app_id)
+      next if aa.nil?
+
+      dupe = Dupe.find_by_app_identifier(aa.app_identifier)
+      
       if dupe.nil?
-        aa = AndroidApp.find_by_app_identifier(android_app_id)
         Dupe.create(app_identifier: aa.app_identifier, count: 1)
       else
         dupe.increment_counter(:count, 1)
