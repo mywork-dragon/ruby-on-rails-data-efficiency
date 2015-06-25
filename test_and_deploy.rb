@@ -29,5 +29,7 @@ if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
 
-puts ""
-system('cap production deploy')
+system('animate bicep_curl.gif &')
+
+# puts ""
+# system('cap production deploy')
