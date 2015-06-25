@@ -92,7 +92,7 @@ class CustomerApiController < ApplicationController
           name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
           mobilePriority: android_app.mobile_priority,
           adSpend: android_app.android_fb_ad_appearances.present?,
-          downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round_to_i : nil,
+          downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
           downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
           downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
           lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
