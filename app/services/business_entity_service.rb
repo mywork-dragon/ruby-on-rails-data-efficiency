@@ -38,12 +38,12 @@ class BusinessEntityService
     end
 
     # Use for `clean_android`
-    def android_by_snapshot_id(method_name)
+    def android_by_snapshot_id
       AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
         android_app_snapshot_ids = batch.map{|aa| aa.newest_android_app_snapshot_id}.select{ |aa| aa.present?}
 
-        BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids, method_name)
+        BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids)
       end
     end
 
