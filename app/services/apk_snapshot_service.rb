@@ -57,12 +57,12 @@ class ApkSnapshotService
 
     end
 
-    def fuck
-      # ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
-      j = ApkSnapshotJob.last
-      j.is_fucked = true
-      j.save!
-    end
+    # def fuck
+    #   # ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
+    #   j = ApkSnapshotJob.last
+    #   j.is_fucked = true
+    #   j.save!
+    # end
 
     def running
       workers = Sidekiq::Workers.new

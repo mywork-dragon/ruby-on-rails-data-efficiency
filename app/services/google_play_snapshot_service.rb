@@ -1,6 +1,5 @@
 class GooglePlaySnapshotService
   
-  
   class << self
 
     def run(notes, options={})
