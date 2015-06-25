@@ -14,13 +14,13 @@ class BusinessEntityService
         end
     end
 
-    # Use for `clean_android`
-    def android_by_snapshot_id(method_name)
-        AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    # Use for `clean_ios`
+    def ios_by_snapshot_id(method_name)
+        IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
             li "Batch #{index}"
-            android_app_snapshot_ids = batch.map{|ia| ia.newest_android_app_snapshot_id}.select{ |ia| ia.present?}
+            ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
 
-            BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids, method_name)
+            BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids, method_name)
         end
     end
 
@@ -28,12 +28,12 @@ class BusinessEntityService
     # For Android linking
 
     # Use for `delete_duplicates_android`, `associate_newest_snapshot_android`, `unlink_android_without_dev_id`
-    def android_by_app_id(method_name)
+    def android_by_app_id
         AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
             li "Batch #{index}"
             android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
 
-            BusinessEntityAndroidServiceWorker.perform_async(android_app_ids, method_name)
+            BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
         end
     end
 
