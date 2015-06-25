@@ -134,7 +134,7 @@ module ApkDownloader
 
           resp = http.request req
 
-          req.finish
+          # req.finish
 
           case resp
           when Net::HTTPSuccess
