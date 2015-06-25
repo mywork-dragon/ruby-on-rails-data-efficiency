@@ -6,7 +6,7 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    delete_duplicates_android(ids)
+    associate_newest_snapshot_android(ids)
   end
 
   def associate_newest_snapshot_android(android_app_ids)
