@@ -43,8 +43,26 @@ class ApkSnapshotServiceWorker
         config.android_id = best_account.android_identifier
         config.proxy = proxy
       end
+
+
+      apps = {
+        "1" => "jp.co.liica.physics",
+        "2" => "com.atomic.apps.medical.disease.condition.dictionary",
+        "3" => "com.hottrix.ibeerfree",
+        "4" => "com.sega.sonicjumpfever",
+        "5" => "com.livewallpaperkkpicture.cat",
+        "6" => "pl.thalion.achieve.productivity.timer",
+        "7" => "com.expensemanager",
+        "8" => "com.itsoftgroup.medicine",
+        "9" => "com.cfinc.iconkisekae",
+        "11" => "scare.your.friends.prank.maze.halloween"
+      }
+
+      # app_identifier = AndroidApp.find(android_app_id).app_identifier
+      app_identifier = apps[android_app_id.to_s]
+      
       # app_identifier = AndroidApp.select(:app_identifier).where(id: android_app_id)[0]["app_identifier"]
-      app_identifier = AndroidApp.find(android_app_id).app_identifier
+      # app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
       # print "\nDownloading #{app_identifier}... "
 
@@ -57,7 +75,7 @@ class ApkSnapshotServiceWorker
       # flag_account(best_account.id, e.message)
 
       # ga = GoogleAccount.find(google_account_id)
-      
+
       best_account.flags += 1
       best_account.in_use = false
       best_account.save!
