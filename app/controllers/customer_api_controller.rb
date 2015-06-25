@@ -130,7 +130,7 @@ class CustomerApiController < ApplicationController
       url = params['website']
       properties = {'website' => url.to_s}
 
-      website = Website.find_by_url(url)
+      website = Website.find_by_url('http://' + url)
 
       if website.blank?
         company_h = {}
