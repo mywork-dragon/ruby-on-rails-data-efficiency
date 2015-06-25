@@ -16,7 +16,7 @@ class BusinessEntityAndroidServiceWorker
         aa = AndroidApp.find_by_app_identifier(android_app_id)
         Dupe.create(app_identifier: aa.app_identifier, count: 1)
       else
-        dupe.increment_counter(:count, 1)
+        Dupe.increment_counter(:count, dupe.id)
         dupe.save
       end
     end
