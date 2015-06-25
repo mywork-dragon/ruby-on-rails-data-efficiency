@@ -102,7 +102,13 @@ class UrlHelper
         "netflix.com" => 363590054,
         "fiserv.com" => 386678214,
         "qq.com" => 504515421,
-        "bit.ly" => 420744919
+        "bit.ly" => 420744919,
+        "yahoo.com" => 281970157,
+        "aol.com" => 281704577,
+        "aim.com" => 281704577,
+        "cbssports.com" => 295669712,
+        "wevideo.com" => 615796923,
+        "dar-app.com" => 0
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
@@ -150,7 +156,15 @@ class UrlHelper
         "evertrue.com" => "EverTrue",
         "golfchannel.com" => "Golf+Channel",
         "gannett.com" => "Gannett+Company,+Inc.",
-        "youtu.be" => "0"
+        "youtu.be" => "0",
+        "fiserv.com" => "Fiserv+Solutions,+Inc.",
+        "qq.com" => "Tencent+Technology+(Shenzhen)+Company+Ltd.",
+        "yahoo.com" => "Yahoo",
+        "aol.com" => "AOL+Inc.",
+        "aim.com" => "AOL+Inc.",
+        "presselite.com" => "Presselite",
+        "wevideo.com" => "WeVideo+Inc.",
+        "dar-app.com" => "DAR-APP"
       }
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
