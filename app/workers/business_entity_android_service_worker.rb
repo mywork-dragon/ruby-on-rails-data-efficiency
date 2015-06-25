@@ -19,7 +19,7 @@ class BusinessEntityAndroidServiceWorker
       if dupe.nil?
         Dupe.create(app_identifier: aa.app_identifier, count: 1)
       else
-        Dupe.increment_counter(:count, dupe.id)
+        dupe.count += 1
         dupe.save
       end
     end
