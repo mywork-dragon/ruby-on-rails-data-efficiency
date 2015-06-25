@@ -6,7 +6,20 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    associate_newest_snapshot_android(ids)
+    dupe_count(ids)
+  end
+
+  def dupe_count(ids)
+    android_app_ids.each do |android_app_id|
+      dupe = Dupe.find_by_app_identifier(android_app_id)
+      if dupe.nil?
+        aa = AndroidApp.find_by_app_identifier(android_app_id)
+        Dupe.create(app_identifier: aa.app_identifier, count: 1)
+      else
+        dupe.increment_counter(:count, 1)
+        dupe.save
+      end
+    end
   end
 
   def associate_newest_snapshot_android(android_app_ids)
@@ -62,14 +75,7 @@ class BusinessEntityAndroidServiceWorker
         website = Website.find_or_create_by(url: url)
         
         if ss_dasi.blank? && known_dev_id.present?
-          if ss_dasi == known_dev_id
-            websites_to_remove = android_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-            android_app.websites.delete(websites_to_remove)
-            link_co_and_web(website: website, company: company)
-            link_android_and_web(android_app: android_app, website: website)
-          else
-            unlink_android_and_web(android_app: android_app, website: website)
-          end
+          unlink_android_and_web(android_app: android_app, website: website)
         end
       end
     end

@@ -27,7 +27,7 @@ class BusinessEntityService
 
     # For Android linking
 
-    # Use for `delete_duplicates_android`, `associate_newest_snapshot_android`, `unlink_android_without_dev_id`
+    # Use for `associate_newest_snapshot_android`, `unlink_android_without_dev_id`, `dupe_count`
     def android_by_app_id
         AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
             li "Batch #{index}"
@@ -44,6 +44,14 @@ class BusinessEntityService
             android_app_snapshot_ids = batch.map{|aa| aa.newest_android_app_snapshot_id}.select{ |aa| aa.present?}
 
             BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids, method_name)
+        end
+    end
+
+
+    # Use for `delete_duplicates_android`
+    def android_by_unique_identifier
+        AndroidApp.select(:app_identifier).uniq.select(:id).find_each do |ia|
+          puts ia.id
         end
     end
 
