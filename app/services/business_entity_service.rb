@@ -58,18 +58,18 @@ class BusinessEntityService
     end
 
     def android_apps_with_char(char)
-      apps = []
-      AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").each do |app|
-        apps << app.id
+      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").find_in_batches(batch_size: 1000).with_index do |app|
+        li "Batch #{index}"      
+        aa_ids = batch.map{|aa| aa.id}.select{ |aa_id| aa_id.present?}
+        BusinessEntityAndroidServiceWorker.perform_async(aa_ids)
       end
-      BusinessEntityAndroidServiceWorker.perform_async(apps)
     end
 
     def ios_apps_with_char(char)
       IosApp.select(:id).joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%#{char}%").find_each do |batch, index|
         li "Batch #{index}"      
         ia_ids = batch.map{|ia| ia.id}.select{ |ia_id| ia_id.present?}
-        BusinessEntityIosServiceWorker.perform_async(ia_ids)
+        # BusinessEntityIosServiceWorker.perform_async(ia_ids)
       end
     end
 
