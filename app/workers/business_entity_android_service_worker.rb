@@ -3,9 +3,57 @@ class BusinessEntityAndroidServiceWorker
   
   sidekiq_options retry: false
  
-  def perform(ids, method_name)
-    m = method_name.to_sym
-    send(m, ids)
+  def perform(ids)
+    # m = method_name.to_sym
+    # send(m, ids)
+    check_for_existence(ids)
+  end
+
+  MAX_TRIES = 3
+
+  def check_for_existence(ids)
+    ids.each do |android_app_id|
+
+      try = 0
+
+      aa = AndroidApp.find_by_id(android_app_id)
+      next if aa.nil?
+
+      url = "https://play.google.com/store/apps/details?id=#{aa.app_identifier}"
+
+      begin
+        Tor.get(url)
+      rescue => e
+        if e.message.include? '404'
+          # App was not found.
+          aa.taken_down = true
+          aa.save
+        else
+          retry if (try += 1) < MAX_TRIES
+        end
+      else
+        # App was found.
+        next
+      end
+
+    end
+    
+  end
+
+  def dupe_count(ids)
+    ids.each do |android_app_id|
+      aa = AndroidApp.find_by_id(android_app_id)
+      next if aa.nil?
+
+      dupe = Dupe.find_by_app_identifier(aa.app_identifier)
+      
+      if dupe.nil?
+        Dupe.create(app_identifier: aa.app_identifier, count: 1)
+      else
+        dupe.count += 1
+        dupe.save
+      end
+    end
   end
 
   def associate_newest_snapshot_android(android_app_ids)
@@ -20,6 +68,24 @@ class BusinessEntityAndroidServiceWorker
     end
   end
 
+  def delete_dupes_android(dupe_ids)
+    dupe_ids.each do |dupe_id|
+      dupe = Dupe.find_by_id(dupe_id)
+      next if dupe.nil?
+      
+      app_identifier = dupe.app_identifier
+      aa = AndroidApp.where(app_identifier: app_identifier)
+      if aa.count > 1
+        keep = aa.max_by{ |a| a.created_at }
+        aa.each do |a|
+          if a.id != keep.id
+            AndroidApp.delete(a.id)
+          end
+        end
+      end
+    end
+  end
+
   def delete_duplicates_android(android_app_ids)
     android_app_ids.each do |android_app_id|
       aa = AndroidApp.find_by_id(android_app_id)
@@ -29,8 +95,8 @@ class BusinessEntityAndroidServiceWorker
       if aa_id.count > 1
         keep = aa_id.max_by{ |a| a.created_at }
         aa_id.each do |a|
-          if a != keep
-            AndroidApp.delete(a)
+          if a.id != keep.id
+            AndroidApp.delete(a.id)
           end
         end
       end
@@ -43,16 +109,18 @@ class BusinessEntityAndroidServiceWorker
     android_app_ids.each do |android_app_id|
       
       aa = AndroidApp.find_by_id(android_app_id)
-      ss = AndroidAppSnapshot.find_by_android_app_id(aa.id)
-      return if ss.nil?
-
-      urls = ss.android_app.websites.map{ |site| site.url }
+      next if aa.nil?
       
-      urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
+      ss = AndroidAppSnapshot.where(android_app_id: aa.id).order(created_at: :desc).first
+      next if ss.blank?
+
+      urls = aa.websites.map{ |site| site.url }
+      
+      urls = urls.map{ |url| UrlHelper.url_with_http_and_domain(url) }.select{ |url| url.present? }
       
       urls.each do |url|
 
-        next if url.nil?
+        next if url.blank?
 
         known_dev_id = UrlHelper.known_website_android(url) 
 
@@ -61,14 +129,7 @@ class BusinessEntityAndroidServiceWorker
         website = Website.find_or_create_by(url: url)
         
         if ss_dasi.blank? && known_dev_id.present?
-          if ss_dasi == known_dev_id
-            websites_to_remove = android_app.websites.to_a.select{|site| urls.exclude?(site.url)}
-            android_app.websites.delete(websites_to_remove)
-            link_co_and_web(website: website, company: company)
-            link_android_and_web(android_app: android_app, website: website)
-          else
-            unlink_android_and_web(android_app: android_app, website: website)
-          end
+          unlink_android_and_web(android_app: android_app, website: website)
         end
       end
     end

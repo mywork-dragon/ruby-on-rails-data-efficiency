@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624215301) do
+ActiveRecord::Schema.define(version: 20150626033826) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -106,11 +106,13 @@ ActiveRecord::Schema.define(version: 20150624215301) do
     t.integer  "newest_android_app_snapshot_id"
     t.integer  "user_base"
     t.integer  "mobile_priority"
+    t.boolean  "taken_down"
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
+  add_index "android_apps", ["taken_down"], name: "index_android_apps_on_taken_down", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 
   create_table "android_apps_websites", force: true do |t|
@@ -265,6 +267,16 @@ ActiveRecord::Schema.define(version: 20150624215301) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "dupes", force: true do |t|
+    t.string   "app_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "count"
+  end
+
+  add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
+  add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
   create_table "google_accounts", force: true do |t|
     t.string   "email"
@@ -643,12 +655,10 @@ ActiveRecord::Schema.define(version: 20150624215301) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
-    t.boolean  "tos_accepted",    default: false
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
-  add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
 
   create_table "websites", force: true do |t|
     t.string   "url"
