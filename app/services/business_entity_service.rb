@@ -2,57 +2,199 @@ class BusinessEntityService
 
   class << self
 
-    def run_ios_test(company)
-        ids = []
-        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
-            ids << a.newest_ios_app_snapshot_id if a.newest_ios_app_snapshot_id.present?
+    # For Ios linking
+
+    # Use for `associate_newest_snapshot`
+    def ios_by_app_id(method_name)
+        IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+            li "Batch #{index}"
+            ios_app_ids = batch.map{|ia| ia.id}.select{ |ia| ia.present?}
+
+            BusinessEntityIosServiceWorker.perform_async(ios_app_ids, method_name)
         end
-        BusinessEntityIosServiceWorker.new.perform(ids)
     end
 
-    def run_ios_by_id_test(company)
-        ids = []
-        IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
-            ids << a.id if a.id.present?
+    # Use for `clean_ios`
+    def ios_by_snapshot_id(method_name)
+        IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+            li "Batch #{index}"
+            ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
+
+            BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids, method_name)
         end
-        BusinessEntityIosServiceWorker.new.perform(ids)
     end
 
-    def run_ios_by_app_id
-      IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
-        li "Batch #{index}"
-        ios_app_ids = batch.map{|ia| ia.id}.select{ |ia| ia.present?}
 
-        BusinessEntityIosServiceWorker.perform_async(ios_app_ids)
-      end
+    # For Android linking
+
+    # Use for `associate_newest_snapshot_android`, `unlink_android_without_dev_id`, `dupe_count`, `check_for_existence`
+    def android_by_app_id
+        AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+          li "Batch #{index}"
+          android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
+
+          BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
+        end
     end
 
-    def run_ios_by_app
-      IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    # Use for `clean_android`
+    def android_by_snapshot_id
+      AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"
-        ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
+        android_app_snapshot_ids = batch.map{|aa| aa.newest_android_app_snapshot_id}.select{ |aa| aa.present?}
 
-        BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
-      end
-    end
-  
-    def run_ios(ios_app_snapshot_job_ids)
-      IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
-        li "Batch #{index}"
-        ios_app_snapshot_ids = batch.map{|ias| ias.id}
-        
-        BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
-      end
-    end
-    
-    def run_android(android_app_snapshot_job_ids)
-      AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
-        li "Batch #{index}"
-        android_app_snapshot_ids = batch.map{|aas| aas.id}
-        
         BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids)
       end
     end
+
+
+    # Use for `delete_duplicates_android`
+    def dupe_search
+      Dupe.where('count > 1').find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"      
+        dupe_ids = batch.map{|dupe| dupe.id}.select{ |dupe_id| dupe_id.present?}
+        BusinessEntityAndroidServiceWorker.perform_async(dupe_ids)
+      end
+    end
+
+    def android_apps_with_char(char)
+      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").each do |batch|
+        # li "Batch #{index}"      
+        aa_ids = batch.map{|aa| aa.id}.select{ |aa_id| aa_id.present? }
+        BusinessEntityAndroidServiceWorker.perform_async(aa_ids)
+      end
+    end
+
+    def ios_apps_with_char(char)
+      IosApp.select(:id).joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%#{char}%").find_each do |batch, index|
+        li "Batch #{index}"      
+        ia_ids = batch.map{|ia| ia.id}.select{ |ia_id| ia_id.present?}
+        BusinessEntityIosServiceWorker.perform_async(ia_ids)
+      end
+    end
+
+    def company_by_id
+      Company.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"      
+        co_ids = batch.map{|co| co.id}.select{ |co_id| co_id.present?}
+        BusinessEntityCompanyServiceWorker.perform_async(co_ids)
+      end
+    end
+
+
+# IosApp.joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%?%").limit(10).each{ |a| puts "https://itunes.apple.com/us/app/id#{a.app_identifier}" }
+
+# AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%?%")
+
+
+# IosApp.select(:id).joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%?%")
+
+
+
+
+
+
+
+
+
+
+
+
+    # def run_ios_test(company)
+    #     ids = []
+    #     IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+    #         ids << a.newest_ios_app_snapshot_id if a.newest_ios_app_snapshot_id.present?
+    #     end
+    #     BusinessEntityIosServiceWorker.new.perform(ids)
+    # end
+
+    # def run_ios_by_id_test(company)
+    #     ids = []
+    #     IosApp.joins(ios_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+    #         ids << a.id if a.id.present?
+    #     end
+    #     BusinessEntityIosServiceWorker.new.perform(ids)
+    # end
+
+    # def run_ios_by_app_id
+    #   IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     ios_app_ids = batch.map{|ia| ia.id}.select{ |ia| ia.present?}
+
+    #     BusinessEntityIosServiceWorker.perform_async(ios_app_ids)
+    #   end
+    # end
+
+    # def run_android_by_app_id
+    #   AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     android_app_ids = batch.map{|aa| aa.id}.select{ |aa| aa.present?}
+
+    #     BusinessEntityAndroidServiceWorker.perform_async(android_app_ids)
+    #   end
+    # end
+
+    # def run_android_by_id_from_company(company)
+    #     ids = []
+    #     AndroidApp.joins(android_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+    #         ids << a.id if a.id.present?
+    #     end
+    #     associate_newest_snapshot_android(ids)
+    #     # delete_duplicate_android_apps(ids)
+    # end
+
+    # def run_android_from_company(company)
+    #     ids = []
+    #     AndroidApp.joins(android_apps_websites: {website: :company}).where('companies.id = ?', company).each do |a|
+    #         ids << a.newest_android_app_snapshot_id if a.newest_android_app_snapshot_id.present?
+    #     end
+    #     clean_android(ids)
+    # end
+
+    # def run_ios_by_app
+    #   IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     ios_app_snapshot_ids = batch.map{|ia| ia.newest_ios_app_snapshot_id}.select{ |ia| ia.present?}
+
+    #     BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
+    #   end
+    # end
+
+    # def run_android_by_app
+    #   AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     android_app_snapshot_ids = batch.map{|ia| ia.newest_android_app_snapshot_id}.select{ |ia| ia.present?}
+
+    #     BusinessEntityIosServiceWorker.perform_async(android_app_snapshot_ids)
+    #   end
+    # end
+  
+    # def run_ios(ios_app_snapshot_job_ids)
+    #   IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     ios_app_snapshot_ids = batch.map{|ias| ias.id}
+        
+    #     BusinessEntityIosServiceWorker.perform_async(ios_app_snapshot_ids)
+    #   end
+    # end
+    
+    # def run_android(android_app_snapshot_job_ids)
+    #   AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_ids).find_in_batches(batch_size: 1000).with_index do |batch, index|
+    #     li "Batch #{index}"
+    #     android_app_snapshot_ids = batch.map{|aas| aas.id}
+        
+    #     BusinessEntityAndroidServiceWorker.perform_async(android_app_snapshot_ids)
+    #   end
+    # end
+
+
+
+
+
+
+
+
+
     
     # special purpose
     def run_ios_remove_f1000

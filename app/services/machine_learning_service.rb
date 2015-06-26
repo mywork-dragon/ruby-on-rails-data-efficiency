@@ -79,9 +79,9 @@ class MachineLearningService
   end
   
   #scale reviews down by 5M
-  # def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same:, company_name_in_domain_percentage:)
-  #   [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage].map{ |x| x.to_f }
-  # end
+  def create_vector(percentage_other_apps_same_website:, reviews:, contact_support_link_same:, company_name_in_domain_percentage:)
+    [percentage_other_apps_same_website, reviews, contact_support_link_same, company_name_in_domain_percentage].map{ |x| x.to_f }
+  end
 
   # def legit_websites(ios_developer:, ios_app_snapshots:)
   #   legit = []
