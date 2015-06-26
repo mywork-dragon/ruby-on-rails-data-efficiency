@@ -16,13 +16,9 @@ class BusinessEntityCompanyServiceWorker
   		next if PublicSuffix.valid?(c_name) || c_name.nil?
 
   		search_url = "https://www.linkedin.com/vsearch/c?keywords=#{URI::encode(c_name)}"
-
   		search_res = Nokogiri::HTML(open(search_url))
 
-      	links = search_res.xpath("//h3[@class=\"r\"]/a")
-
-  		
-
+      	links = search_res.xpath("//ol[@id=\"results\"]")
 
   	end
 
