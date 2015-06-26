@@ -4674,7 +4674,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   color: #0393dd; }
 
 .list-info li label {
-  width: 100px; }
+  width: 130px; }
 
 .progress {
   -webkit-box-shadow: none;
@@ -4947,7 +4947,12 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 }
 
 img#appDetailsPageAppLogo {
-  width: 100px;
+  width: 70px;
+}
+
+#appPageLogoBox {
+  width: 70px;
+  margin-right: 15px;
 }
 
 .modal-content {
@@ -7286,4 +7291,19 @@ select option:empty {
 
 .appDetailsHeader {
   max-width: 40px;
+}
+
+#appPage .info-column, #companyPage .info-column {
+  padding: 15px;
+}
+
+#appTypeHeaderLogo {
+  position: absolute;
+  right: 15px;
+  top: 20px;
+}
+
+#appTypeHeaderLogo i {
+  font-size: 70px;
+  color: #DDDDDD;
 }

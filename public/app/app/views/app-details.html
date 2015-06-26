@@ -1,60 +1,354 @@
-<div class="page">
+<div id="appPage">
 
-    <div class="col-md-8">
-        <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>App Details</strong></div>
-            <div class="panel-body">
-              <table class="table table-striped">
-                <tbody>
-                <tr>
-                  <td><strong>Name:</strong> {{appData.name}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Mobile Priority:</strong> {{appData.mobilePriority}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Ad Spend:</strong> {{appData.adSpend}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Last Updated:</strong> {{appData.lastUpdated}}</td>
-                </tr>
-                <tr>
-                  <td ng-if="appPlatform == 'ios'">
-                    <a href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank"><strong>Apple App Store Listing</strong></a><br />
-                  </td>
-                  <td ng-if="appPlatform == 'android'">
-                    <a href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank"><strong>Google Play Store Listing</strong></a><br />
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>App Logo:</strong><br /><img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" /></td>
-                </tr>
-                </tbody>
-              </table>
+  <header class="page-main-header ng-scope">
+
+    <div class="row">
+      <div class="col-md-1" id="appPageLogoBox">
+        <img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" />
+      </div>
+      <div class="col-md-6">
+        <h4>
+          {{appData.name}} - App Page
+        </h4>
+        <p>
+          {{appData.company.name}}
+        </p>
+      </div>
+      <div class="" id="appTypeHeaderLogo">
+        <i class="fa fa-2" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+      </div>
+
+      </div>
+
+  </header>
+
+  <!--
+
+  <div class="col-md-8">
+      <section class="panel panel-default">
+          <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>App Details</strong></div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <tbody>
+              <tr>
+                <td><strong>Name:</strong> {{appData.name}}</td>
+              </tr>
+              <tr>
+                <td><strong>Mobile Priority:</strong> {{appData.mobilePriority}}</td>
+              </tr>
+              <tr>
+                <td><strong>Ad Spend:</strong> {{appData.adSpend}}</td>
+              </tr>
+              <tr>
+                <td><strong>Last Updated:</strong> {{appData.lastUpdated}}</td>
+              </tr>
+              <tr>
+                <td ng-if="appPlatform == 'ios'">
+                  <a href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank"><strong>Apple App Store Listing</strong></a><br />
+                </td>
+                <td ng-if="appPlatform == 'android'">
+                  <a href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank"><strong>Google Play Store Listing</strong></a><br />
+                </td>
+              </tr>
+              <tr>
+                <td><strong>App Logo:</strong><br /><img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" /></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+      </section>
+  </div>
+  <div class="col-md-4">
+      <section class="panel panel-default">
+          <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
+          <div class="panel-body">
+            <P>
+              <strong>Company Name:</strong> {{appData.company.name}}<br />
+            </P>
+            <P>
+              <strong>LinkedIn Profiles:</strong><br />
+              <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
+              <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+              <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+            </P>
+            <P>
+              <a href="#/company/{{appData.company.id}}" ><strong>More Company Details</strong></a><br />
+            </P>
+          </div>
+      </section>
+  </div>
+
+  -->
+  <div class="">
+    <div class="col-md-6 info-column">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>General Details</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+
+              <ul class="list-unstyled list-info" ng-if="appPlatform == 'ios'">
+                <li>
+                  <span class="icon fa fa-mobile panel-ico"></span>
+                  <label>App Name</label>
+                  {{appData.name}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <label>Platform</label>
+                  iOS
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>App Store ID</label>
+                  {{'id389801252'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <label>Price</label>
+                  {{'$0.99'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-flag"></span>
+                  <label>Release Date</label>
+                  {{'1/23/12'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Size</label>
+                  {{'102MB'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Required OS</label>
+                  {{'iOS 6.3.1'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Content Rating</label>
+                  {{'12+'}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Description</label>
+                  Instagram is a simple way to capture and share the world's moments. Transform your everyday photos and videos into works of art and share them with your family and friends.
+
+                  See the world through somebody else's eyes by following not only the people you know, but inspirational Instagrammers, photographers, athletes, celebrities and fashion icons. Every time you open Instagram, you'll see new photos and videos from your closest friends, plus breathtaking moments shared by creative people across the globe.
+
+                </li>
+              </ul>
+
+              <ul class="list-unstyled list-info" ng-if="appPlatform == 'android'">
+                <li>
+                  <span class="icon glyphicon glyphicon-iphone"></span>
+                  <label>App Name</label>
+                  {{appData.name}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <label>Platform</label>
+                  Android
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Play Store ID</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <label>Price</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-flag"></span>
+                  <label>Downloads</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Size</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>In-App Purchases</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Content Rating</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Required OS</label>
+                  {{}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>Description</label>
+                  {{}}
+                </li>
+              </ul>
+
             </div>
-        </section>
-    </div>
-    <div class="col-md-4">
-        <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Associated Company</strong></div>
-            <div class="panel-body">
-              <P>
-                <strong>Company Name:</strong> {{appData.company.name}}<br />
-              </P>
-              <P>
-                <strong>LinkedIn Profiles:</strong><br />
-                <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
-                <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
-              </P>
-              <P>
-                <a href="#/company/{{appData.company.id}}" ><strong>More Company Details</strong></a><br />
-              </P>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>MightySignal Insights</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon glyphicon glyphicon-user"></span>
+                  <label>MightySignal ID</label>
+                  {{appData.company.name}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <label>Ad Spend</label>
+                  janedoe@doezers.com
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Mobile Priority</label>
+                  Waringerstreet 141, Country name
+                </li>
+              </ul>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Modals -->
-    <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+    <div class="col-md-6 info-column">
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Action Center</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon glyphicon glyphicon-user"></span>
+                  <label>App Store Page</label>
+                  Version Num Here
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <label>LinkedIn Links</label>
+                  www.somewebsite.com
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Company Emails</label>
+                  Waringerstreet 141, Country name
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Add to List</label>
+                  Waringerstreet 141, Country name
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Company Details</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon glyphicon glyphicon-user"></span>
+                  <label>Company Name</label>
+                  {{appData.company.name}}
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <label>HQ Location</label>
+                  janedoe@doezers.com
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Fortune Rank</label>
+                  Waringerstreet 141, Country name
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <label>Funding</label>
+                  (+43) 645 63253736
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-flag"></span>
+                  <label>Website(s)</label>
+                  Argentina
+                </li>
+                <li>
+                  <a href="#/company/{{appData.company.id}}">Click Here for More Company Details</a>
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Latest Release</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon glyphicon glyphicon-user"></span>
+                  <label>Latest Version</label>
+                  Version Num Here
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <label>Release Date</label>
+                  janedoe@doezers.com
+                </li>
+                <li>
+                  <span class="icon glyphicon glyphicon-home"></span>
+                  <label>Release Notes</label>
+                  Waringerstreet 141, Country name
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Reviews</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon glyphicon glyphicon-user"></span>
+                  <label>Company Name</label>
+                  {{appData.company.name}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Modals -->
+  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
 
 </div>
