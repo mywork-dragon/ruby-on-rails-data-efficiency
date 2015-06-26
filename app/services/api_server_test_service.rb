@@ -68,7 +68,7 @@ class ApiServerTestService
     
     
     def production_headers
-      {'MightySignal-API-Key' => 'IlKqRg54kBfmDOO_V29R7w'}
+      {'MightySignal-API-Key' => 'dUO78m9dhcc_JFhDIphXoA'}
     end
     
     def run(n = 1000)
