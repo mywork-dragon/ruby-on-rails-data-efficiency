@@ -23,7 +23,7 @@ class BusinessEntityAndroidServiceWorker
 
       begin
         Tor.get(url)
-      rescue Exception => e
+      rescue => e
         if e.message.include? '404'
           # App was not found.
           aa.taken_down = true
