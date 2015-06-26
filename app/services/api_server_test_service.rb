@@ -34,7 +34,7 @@ class ApiServerTestService
       JSON.parse(response.body)
     end
     
-    def companies(website='costco.com ', dev: false)
+    def companies(website='costco.com', dev: false)
       
       website = CGI::escape(website)
       
