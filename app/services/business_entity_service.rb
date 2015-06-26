@@ -1,5 +1,5 @@
 class BusinessEntityService
-
+    
   class << self
 
     # For Ios linking
@@ -58,7 +58,7 @@ class BusinessEntityService
     end
 
     def android_apps_with_char(char)
-      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").find_in_batches(batch_size: 1000).with_index do |app|
+      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "Batch #{index}"      
         aa_ids = batch.map{|aa| aa.id}.select{ |aa_id| aa_id.present?}
         BusinessEntityAndroidServiceWorker.perform_async(aa_ids)
