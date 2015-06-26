@@ -89,103 +89,93 @@
 
               <ul class="list-unstyled list-info" ng-if="appPlatform == 'ios'">
                 <li>
-                  <span class="icon fa fa-mobile panel-ico"></span>
+                  <span class="icon fa fa-mobile"></span>
                   <label>App Name</label>
                   {{appData.name}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                   <label>Platform</label>
                   iOS
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
+                  <span class="icon fa fa-user"></span>
                   <label>App Store ID</label>
-                  {{'id389801252'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <span class="icon fa fa-usd"></span>
                   <label>Price</label>
-                  {{'$0.99'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-flag"></span>
+                  <span class="icon fa fa-calendar"></span>
                   <label>Release Date</label>
-                  {{'1/23/12'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-arrows"></span>
                   <label>Size</label>
-                  {{'102MB'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-cog"></span>
                   <label>Required OS</label>
-                  {{'iOS 6.3.1'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-child"></span>
                   <label>Content Rating</label>
-                  {{'12+'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-file-text-o"></span>
                   <label>Description</label>
-                  Instagram is a simple way to capture and share the world's moments. Transform your everyday photos and videos into works of art and share them with your family and friends.
-
-                  See the world through somebody else's eyes by following not only the people you know, but inspirational Instagrammers, photographers, athletes, celebrities and fashion icons. Every time you open Instagram, you'll see new photos and videos from your closest friends, plus breathtaking moments shared by creative people across the globe.
-
                 </li>
               </ul>
 
               <ul class="list-unstyled list-info" ng-if="appPlatform == 'android'">
                 <li>
-                  <span class="icon glyphicon glyphicon-iphone"></span>
+                  <span class="icon fa fa-mobile"></span>
                   <label>App Name</label>
                   {{appData.name}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                   <label>Platform</label>
                   Android
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
+                  <span class="icon fa fa-user"></span>
                   <label>Play Store ID</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <span class="icon fa fa-usd"></span>
                   <label>Price</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-flag"></span>
+                  <span class="icon fa fa-download"></span>
                   <label>Downloads</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-arrows"></span>
                   <label>Size</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-shopping-cart"></span>
                   <label>In-App Purchases</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-child"></span>
                   <label>Content Rating</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-cog"></span>
                   <label>Required OS</label>
                   {{}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
+                  <span class="icon fa fa-file-text-o"></span>
                   <label>Description</label>
                   {{}}
                 </li>
@@ -203,19 +193,19 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <li>
-                  <span class="icon glyphicon glyphicon-user"></span>
+                  <span class="icon fa fa-user"></span>
                   <label>MightySignal ID</label>
-                  {{appData.company.name}}
+                  {{appData.appIdentifier}}
                 </li>
                 <li>
                   <span class="icon glyphicon glyphicon-envelope"></span>
                   <label>Ad Spend</label>
-                  janedoe@doezers.com
+                  {{appData.adSpend}}
                 </li>
                 <li>
                   <span class="icon glyphicon glyphicon-home"></span>
                   <label>Mobile Priority</label>
-                  Waringerstreet 141, Country name
+                  {{appData.mobilePriority}}
                 </li>
               </ul>
             </div>
@@ -228,30 +218,36 @@
     <div class="col-md-6 info-column">
 
       <div class="panel panel-default">
-        <div class="panel-heading"><strong>Action Center</strong></div>
+        <div class="panel-heading"><strong>Actions</strong></div>
         <div class="panel-body">
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <li>
-                  <span class="icon glyphicon glyphicon-user"></span>
-                  <label>App Store Page</label>
-                  Version Num Here
-                </li>
-                <li>
-                  <span class="icon glyphicon glyphicon-globe"></span>
-                  <label>LinkedIn Links</label>
-                  www.somewebsite.com
-                </li>
-                <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
-                  <label>Company Emails</label>
-                  Waringerstreet 141, Country name
-                </li>
-                <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
+                  <span class="icon fa fa-plus"></span>
                   <label>Add to List</label>
-                  Waringerstreet 141, Country name
+                </li>
+                <li>
+                  <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
+                  <label>App Store Page</label>
+                  <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
+                  <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
+                </li>
+                <li>
+                  <span class="icon fa fa-linkedin"></span>
+                  <label>LinkedIn Links</label>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+                </li>
+                <li>
+                  <span class="icon fa fa-envelope-o"></span>
+                  <label>Company Emails</label>
+                </li>
+                <li>
+                  <span class="icon fa fa-briefcase"></span>
+                  <label>Company Page</label>
+                  <a href="#/company/{{appData.company.id}}">Company Page</a>
                 </li>
               </ul>
             </div>
@@ -266,32 +262,28 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <li>
-                  <span class="icon glyphicon glyphicon-user"></span>
+                  <span class="icon fa fa-briefcase"></span>
                   <label>Company Name</label>
                   {{appData.company.name}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <span class="icon fa fa-building-o"></span>
                   <label>HQ Location</label>
-                  janedoe@doezers.com
+                  {{appData.company.location.streetAddress}}
+                  {{appData.company.location.city}}, {{appData.company.location.country}}, {{appData.company.location.zipCode}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
+                  <span class="icon fa fa-bar-chart"></span>
                   <label>Fortune Rank</label>
-                  Waringerstreet 141, Country name
+                  {{appData.company.fortuneRank}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-earphone"></span>
+                  <span class="icon fa fa-money"></span>
                   <label>Funding</label>
-                  (+43) 645 63253736
+                  {{appData.company.funding}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-flag"></span>
-                  <label>Website(s)</label>
-                  Argentina
-                </li>
-                <li>
-                  <a href="#/company/{{appData.company.id}}">Click Here for More Company Details</a>
+                  <a href="#/company/{{appData.company.id}}">More Company Details</a>
                 </li>
               </ul>
 
@@ -307,19 +299,17 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <li>
-                  <span class="icon glyphicon glyphicon-user"></span>
+                  <span class="icon fa fa-cog"></span>
                   <label>Latest Version</label>
-                  Version Num Here
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-envelope"></span>
+                  <span class="icon fa fa-calendar"></span>
                   <label>Release Date</label>
-                  janedoe@doezers.com
+                  {{appData.lastUpdated | date : 'shortDate'}}
                 </li>
                 <li>
-                  <span class="icon glyphicon glyphicon-home"></span>
+                  <span class="icon fa fa-file-text-o"></span>
                   <label>Release Notes</label>
-                  Waringerstreet 141, Country name
                 </li>
               </ul>
             </div>
@@ -334,9 +324,8 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <li>
-                  <span class="icon glyphicon glyphicon-user"></span>
-                  <label>Company Name</label>
-                  {{appData.company.name}}
+                  <span class="icon fa fa-star-half-o"></span>
+                  <label>????????</label>
                 </li>
               </ul>
             </div>

@@ -7297,6 +7297,16 @@ select option:empty {
   padding: 15px;
 }
 
+#appPage .icon.fa {
+  font-size: 16px;
+  vertical-align: middle;
+  width: 12px;
+}
+
+#appPage .icon.fa-mobile {
+  font-size: 20px;
+}
+
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;
