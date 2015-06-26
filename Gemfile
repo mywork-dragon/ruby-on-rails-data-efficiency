@@ -118,3 +118,5 @@ gem 'mixpanel-ruby', '2.1.0', require: 'mixpanel-ruby'
 
 gem 'domainator', '2.0.0'
 
+gem 'public_suffix', '1.4.6'
+

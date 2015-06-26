@@ -76,6 +76,13 @@ class ApkSnapshotService
 
     end
 
+    def clear_accounts
+      GoogleAccount.all.each do |ga|
+        ga.in_use = false
+        ga.save
+      end
+    end
+
     # def fuck
     #   # ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
     #   j = ApkSnapshotJob.last

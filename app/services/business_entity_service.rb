@@ -27,7 +27,7 @@ class BusinessEntityService
 
     # For Android linking
 
-    # Use for `associate_newest_snapshot_android`, `unlink_android_without_dev_id`, `dupe_count`
+    # Use for `associate_newest_snapshot_android`, `unlink_android_without_dev_id`, `dupe_count`, `check_for_existence`
     def android_by_app_id
         AndroidApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
           li "Batch #{index}"
@@ -58,12 +58,37 @@ class BusinessEntityService
     end
 
 
+    def android_apps_with_char(char)
+      AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%#{char}%").find_each do |batch, index|
+        li "Batch #{index}"      
+        aa_ids = batch.map{|aa| aa.id}.select{ |aa_id| aa_id.present?}
+        BusinessEntityAndroidServiceWorker.perform_async(aa_ids)
+      end
+    end
+
+    def ios_apps_with_char(char)
+      IosApp.select(:id).joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%#{char}%").find_each do |batch, index|
+        li "Batch #{index}"      
+        ia_ids = batch.map{|ia| ia.id}.select{ |ia_id| ia_id.present?}
+        BusinessEntityIosServiceWorker.perform_async(aa_ids)
+      end
+    end
+
+    def company_by_id
+      Company.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        li "Batch #{index}"      
+        co_ids = batch.map{|co| co.id}.select{ |co_id| co_id.present?}
+        BusinessEntityCompanyServiceWorker.perform_async(co_ids)
+      end
+    end
 
 
+# IosApp.joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%?%").limit(10).each{ |a| puts "https://itunes.apple.com/us/app/id#{a.app_identifier}" }
+
+# AndroidApp.select(:id).joins(:newest_android_app_snapshot).where("android_app_snapshots.name LIKE ?", "%?%")
 
 
-
-
+# IosApp.select(:id).joins(:newest_ios_app_snapshot).where("ios_app_snapshots.name LIKE ?", "%?%")
 
 
 

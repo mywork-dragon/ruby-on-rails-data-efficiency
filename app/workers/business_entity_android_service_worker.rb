@@ -6,7 +6,37 @@ class BusinessEntityAndroidServiceWorker
   def perform(ids)
     # m = method_name.to_sym
     # send(m, ids)
-    clean_android(ids)
+    check_for_existence(ids)
+  end
+
+  MAX_TRIES = 3
+
+  def check_for_existence(ids)
+    ids.each do |android_app_id|
+
+      try = 0
+
+      aa = AndroidApp.find_by_id(android_app_id)
+      next if aa.nil?
+
+      url = "https://play.google.com/store/apps/details?id=#{aa.app_identifier}"
+
+      begin
+        Tor.get(url)
+      rescue Exception => e
+        if e.message.include? '404'
+          # App was not found.
+          aa.taken_down = true
+          aa.save
+        else
+          retry if (try += 1) < MAX_TRIES
+        end
+      else
+        # App was found.
+        next
+      end
+
+    end
   end
 
   def dupe_count(ids)
