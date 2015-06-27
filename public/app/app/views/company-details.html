@@ -1,5 +1,7 @@
 <div id="companyPage">
 
+  <!--
+
     <div class="col-md-8 info-column">
         <section class="panel panel-default">
             <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Company Details</strong></div>
@@ -61,6 +63,118 @@
             </div>
         </section>
     </div>
+
+    -->
+
+    <header class="page-main-header ng-scope">
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4>
+            {{companyData.name}} - Company Page
+          </h4>
+        </div>
+
+      </div>
+
+    </header>
+
+    <div class="col-md-6 info-column">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>General Details</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+
+              <ul class="list-unstyled list-info">
+                <li ng-if="appData.name">
+                  <span class="icon fa fa-mobile"></span>
+                  <label>App Name</label>
+                  {{appData.name}}
+                </li>
+                <li ng-if="appPlatform">
+                  <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
+                  <label>Platform</label>
+                  iOS
+                </li>
+                <li ng-if="appData.appStoreId">
+                  <span class="icon fa fa-user"></span>
+                  <label>App Store ID</label>
+                  id{{appData.appStoreId}}
+                </li>
+                <li ng-if="appData.price">
+                  <span class="icon fa fa-usd"></span>
+                  <label>Price</label>
+                  {{appData.price}}
+                </li>
+                <li ng-if="appData.size">
+                  <span class="icon fa fa-arrows"></span>
+                  <label>Size</label>
+                  {{appData.size}}
+                </li>
+                <li ng-if="appData.requiredIosVersion">
+                  <span class="icon fa fa-cog"></span>
+                  <label>Required OS</label>
+                  {{appData.requiredIosVersion}}
+                </li>
+                <li ng-if="appData.recommendedAge">
+                  <span class="icon fa fa-child"></span>
+                  <label>Content Rating</label>
+                  {{appData.recommendedAge}}
+                </li>
+                <li ng-if="appData.description">
+                  <span class="icon fa fa-file-text-o"></span>
+                  <label>Description</label>
+                  {{appData.description}}
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-6 info-column">
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Actions</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li>
+                  <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
+                  <label>App Store Page</label>
+                  <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
+                  <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
+                </li>
+                <li>
+                  <span class="icon fa fa-linkedin"></span>
+                  <label>LinkedIn Links</label>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+                </li>
+                <li>
+                  <span class="icon fa fa-envelope-o"></span>
+                  <label>Company Emails</label>
+                </li>
+                <li>
+                  <span class="icon fa fa-briefcase"></span>
+                  <label>Company Page</label>
+                  <a href="#/company/{{appData.company.id}}">Company Page</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 
     <!-- Modals -->
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
