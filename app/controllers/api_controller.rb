@@ -158,6 +158,17 @@ class ApiController < ApplicationController
     app_json = {
       id: appId,
       name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+      appStoreId: newest_app_snapshot.present? ? newest_app_snapshot.developer_app_store_identifier : nil,
+      price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
+      releaseDate: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+      size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
+      requiredIosVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_ios_version : nil,
+      recommendedAge: newest_app_snapshot.present? ? newest_app_snapshot.recommended_age : nil,
+      description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
+      currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
+      currentVersionDescription: newest_app_snapshot.present? ? newest_app_snapshot.release_notes : nil,
+      rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
+      ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       mobilePriority: ios_app.mobile_priority, 
       adSpend: ios_app.ios_fb_ad_appearances.present?, 
       countriesDeployed: nil, #not part of initial launch
@@ -201,6 +212,19 @@ class ApiController < ApplicationController
       countriesDeployed: nil, #not part of initial launch
       downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
       lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+      playStoreId: newest_app_snapshot.present? ? newest_app_snapshot.android_app_id : nil,
+      price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
+      size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
+      requiredAndroidVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_android_version : nil,
+      contentRating: newest_app_snapshot.present? ? newest_app_snapshot.content_rating : nil,
+      description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
+      currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
+      downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
+      downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
+      inAppPurchaseMin: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_min : nil,
+      inAppPurchaseMax: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_max : nil,
+      rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
+      ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
