@@ -126,7 +126,7 @@ module ApkDownloader
       # end
 
       begin
-        status = Timeout::timeout(max_time) {
+        timeout(20) do
           req = Net::HTTP::Get.new url.to_s
           req['Accept-Encoding'] = ''
           req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
@@ -144,8 +144,8 @@ module ApkDownloader
           else
             resp.error!
           end
-        }
-      rescue Exception => e
+        end
+      rescue => e
         # Need to accoun for snap_id, etc.
         ApkSnapshotException.create(name: e.message, backtrace: e.backtrace, try: @try)
         # ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id)

@@ -66,7 +66,7 @@ class ApkSnapshotServiceWorker
 
       ApkDownloader.download!(app_identifier, file_name)
 
-    rescue Exception => e
+    rescue => e
 
       best_account.flags += 1
       best_account.in_use = false
