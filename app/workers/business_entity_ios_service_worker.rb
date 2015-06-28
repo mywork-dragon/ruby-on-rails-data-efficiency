@@ -38,11 +38,14 @@ class BusinessEntityIosServiceWorker
   def associate_newest_snapshot_android(android_app_ids)
     android_app_ids.each do |android_app_id|
       aa = AndroidApp.find(android_app_id)
+      # puts "android app: #{aa}"
       return if aa.nil?
       newest_snapshot = aa.android_app_snapshots.select{|ss| ss.name.present?}.max_by{|ss| ss.android_app_snapshot_job_id}
+      # puts "newest_snapshot: #{newest_snapshot}"
       if newest_snapshot.present?
         aa.newest_android_app_snapshot = newest_snapshot
         aa.save
+        # puts aa.errors.messages
       end
     end
   end
