@@ -49,12 +49,12 @@
                 <li ng-if="appData.price">
                   <span class="icon fa fa-usd"></span>
                   <label>Price</label>
-                  {{appData.price}}
+                  {{(appData.price / 100.0) | currency}}
                 </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
                   <label>Size</label>
-                  {{appData.size}}
+                  {{appData.size | filesize}}
                 </li>
                 <li ng-if="appData.requiredIosVersion">
                   <span class="icon fa fa-cog"></span>
@@ -92,21 +92,23 @@
                 <li ng-if="appData.price">
                   <span class="icon fa fa-usd"></span>
                   <label>Price</label>
-                  {{appData.price}}
+                  {{(appData.price / 100.0) | currency}}
                 </li>
                 <li ng-if="appData.downloadsMin && appData.downloadsMax">
                   <span class="icon fa fa-download"></span>
                   <label>Downloads</label>
-                  {{appData.downloadsMin}} - {{appData.downloadsMax}}
+                  {{appData.downloadsMin | thousandSuffix}} - {{appData.downloadsMax | thousandSuffix}}
                 </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
                   <label>Size</label>
-                  {{appData.size}}
+                  {{appData.size | filesize}}
                 </li>
-                <li ng-if="appData.price">
+                <li ng-if="appData.inAppPurchaseMin && appData.inAppPurchaseMax">
                   <span class="icon fa fa-shopping-cart"></span>
                   <label>In-App Purchases</label>
+                  <span ng-if="appData.inAppPurchaseMin == appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}}</span>
+                  <span ng-if="appData.inAppPurchaseMin != appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}} - {{(appData.inAppPurchaseMax / 100.0) | currency}}</span>
                   {{appData.price}}
                 </li>
                 <li ng-if="appData.contentRating">
@@ -145,12 +147,12 @@
                 <li ng-if="appData.adSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
                   <label>Ad Spend</label>
-                  {{appData.adSpend}}
+                  {{appData.adSpend | capitalize}}
                 </li>
                 <li ng-if="appData.mobilePriority">
                   <span class="icon glyphicon glyphicon-home"></span>
                   <label>Mobile Priority</label>
-                  {{appData.mobilePriority}}
+                  {{appData.mobilePriority | capitalize}}
                 </li>
               </ul>
             </div>
