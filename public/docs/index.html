@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>MightySignal API Reference</title>
 
+    <link href="docs/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="docs/stylesheets/custom.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="docs/stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="docs/stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="docs/javascripts/bootstrap.min.js"></script>
+    <script src="docs/javascripts/custom.js"></script>
       <script src="docs/javascripts/all.js" type="text/javascript"></script>
 
   </head>
@@ -29,8 +33,7 @@
       <div id="toc">
       </div>
         <ul class="toc-footer">
-            <li><a href='#'>Sign Up for a Developer Key</a></li>
-            <li><a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
+            <li><a href='mailto:shane@mightysignal.com?subject=MightySignal API Key'>Sign Up for an API Key</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
@@ -40,9 +43,13 @@
 
 <p>Welcome to the MightySignal API!</p>
 
+<p>The MightySignal API lets you interact with MightySignal from anything that can send an HTTP request. </p>
+
+<p>Using the API, you can access MightySignal&rsquo;s unique data on millions of mobile apps.</p>
+
 <h1 id="authentication">Authentication</h1>
 
-<p>MightySignal uses API keys to allows access to the API. <a href="mailto:shane@mightysignal.com">Contact MightySignal</a> to get your API key.</p>
+<p>MightySignal uses API keys to allows access to the API. <a href="mailto:shane@mightysignal.com?subject=MightySignal API Key">Contact MightySignal</a> to get your API key.</p>
 
 <p>The API expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
 
@@ -67,15 +74,15 @@ You must replace <code>YourApiKey</code> with your own API key.
   </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WATCH Disney XD"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"weak"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"strong"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-17"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"appStoreId"</span><span class="p">:</span><span class="w"> </span><span class="mi">530003802</span><span class="p">,</span><span class="w">
   </span><span class="s2">"iconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a3.mzstatic.com/us/r30/Purple5/v4/a4/c7/70/a4c7701b-042f-e4b9-9c85-b771315b16aa/icon350x350.jpeg"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"iconSmall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a5.mzstatic.com/us/r30/Purple5/v4/a4/c7/70/a4c7701b-042f-e4b9-9c85-b771315b16aa/icon175x175.png"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"company"</span><span class="p">:</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Walt Disney Company"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">2111</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Walt Disney Company"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"fortuneRank"</span><span class="p">:</span><span class="w"> </span><span class="mi">61</span><span class="p">,</span><span class="w">
     </span><span class="s2">"streetAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500 S. Buena Vista St."</span><span class="p">,</span><span class="w">
     </span><span class="s2">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Burbank"</span><span class="p">,</span><span class="w">
@@ -85,7 +92,7 @@ You must replace <code>YourApiKey</code> with your own API key.
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>This endpoint retrieves a iOS app.</p>
+<p>This endpoint retrieves an iOS app.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
@@ -100,7 +107,7 @@ You must replace <code>YourApiKey</code> with your own API key.
 </tr>
 </thead><tbody>
 <tr>
-<td>appStoreIddd</td>
+<td>appStoreId</td>
 <td>The ID of the iOS app to retrieve. For example, Instagram&rsquo;s ID is <code class="prettyprint">389801252</code>. An easy way to get an app&rsquo;s ID is to extract it from its App Store URL; that is, extract <code class="prettyprint">389801252</code> from <code class="prettyprint">https://itunes.apple.com/us/app/instagram/id389801252</code>.</td>
 </tr>
 </tbody></table>
@@ -117,6 +124,76 @@ You must replace <code>YourApiKey</code> with your own API key.
 <td>mightySignalId</td>
 <td>MightySignal&rsquo;s unique ID for the app</td>
 </tr>
+<tr>
+<td>name</td>
+<td>The name of the app</td>
+</tr>
+<tr>
+<td>mobilePriority</td>
+<td>How much the company cares about the app. Can be <code class="prettyprint">high</code>, <code class="prettyprint">medium</code>, or <code class="prettyprint">low</code>. Use this to filter out apps that are not actively being developed or marketed. Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook.</td>
+</tr>
+<tr>
+<td>adSpend</td>
+<td>Whether the app is advertising on Facebook</td>
+</tr>
+<tr>
+<td>userBase</td>
+<td>A tier representing how many active users the app has. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">strong</code>, <code class="prettyprint">moderate</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>appStoreId</td>
+<td>The app&rsquo;s unique identifier on the App Store. It&rsquo;s the same value that is passed in as a parameter.</td>
+</tr>
+<tr>
+<td>iconLarge</td>
+<td>Link to the app&rsquo;s large icon</td>
+</tr>
+<tr>
+<td>iconSmall</td>
+<td>Link to the app&rsquo;s small icon</td>
+</tr>
+<tr>
+<td>company</td>
+<td><code class="prettyprint">See COMPANY table</code></td>
+</tr>
+</tbody></table>
+
+<h4 id="company">Company</h4>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the company</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the company</td>
+</tr>
+<tr>
+<td>fortuneRank</td>
+<td>The Fortune rank</td>
+</tr>
+<tr>
+<td>streetAddress</td>
+<td>The address of the company</td>
+</tr>
+<tr>
+<td>city</td>
+<td>The city where the company is located</td>
+</tr>
+<tr>
+<td>zipCode</td>
+<td>The zip code where the company is located</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The state where the company is located</td>
+</tr>
 </tbody></table>
 
 <h2 id="get-a-specific-android-app">Get a Specific Android App</h2>
@@ -128,11 +205,27 @@ You must replace <code>YourApiKey</code> with your own API key.
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Isis"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">46</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amazon Kindle"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"downloadsEstimate"</span><span class="p">:</span><span class="w"> </span><span class="mi">200000000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"downloadsMin"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"downloadsMax"</span><span class="p">:</span><span class="w"> </span><span class="mi">500000000</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-22"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"googlePlayId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.amazon.kindle"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"iconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://lh5.ggpht.com/sxnFjIWmIPhBg09VXkKdVY-Rwn7l1Bfxq-eo6wIM1d2wWHDApGk3w-3NN77Td_BwYz4=w300-rw"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"company"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amazon.com"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">424</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"fortuneRank"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"streetAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"410 Terry Ave. N."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seattle"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"zipCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"98109"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WA"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -156,6 +249,98 @@ You must replace <code>YourApiKey</code> with your own API key.
 </tr>
 </tbody></table>
 
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the app</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the app</td>
+</tr>
+<tr>
+<td>mobilePriority</td>
+<td>How much the company cares about the app. Can be <code class="prettyprint">high</code>, <code class="prettyprint">medium</code>, or <code class="prettyprint">low</code>. Use this to filter out apps that are not actively being developed or marketed. Currently, it is a function of how recently their app has been updated, and whether they advertise on Facebook.</td>
+</tr>
+<tr>
+<td>adSpend</td>
+<td>Whether the app is advertising on Facebook</td>
+</tr>
+<tr>
+<td>userBase</td>
+<td>A tier representing how many active users the app has. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">strong</code>, <code class="prettyprint">moderate</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>downloadsEstimate</td>
+<td>An estimate for number of downloads</td>
+</tr>
+<tr>
+<td>downloadsMin</td>
+<td>The minimum number of downloads</td>
+</tr>
+<tr>
+<td>downloadsMax</td>
+<td>The maximum number of downloads</td>
+</tr>
+<tr>
+<td>googlePlayId</td>
+<td>The app&rsquo;s unique identifier on Google Play. It&rsquo;s the same value that is passed in as a parameter.</td>
+</tr>
+<tr>
+<td>iconLarge</td>
+<td>Link to the app&rsquo;s large icon</td>
+</tr>
+<tr>
+<td>company</td>
+<td><code class="prettyprint">See COMPANY table</code></td>
+</tr>
+</tbody></table>
+
+<h4 id="company">Company</h4>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the company</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the company</td>
+</tr>
+<tr>
+<td>fortuneRank</td>
+<td>The Fortune rank</td>
+</tr>
+<tr>
+<td>streetAddress</td>
+<td>The address of the company</td>
+</tr>
+<tr>
+<td>city</td>
+<td>The city where the company is located</td>
+</tr>
+<tr>
+<td>zipCode</td>
+<td>The zip code where the company is located</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The state where the company is located</td>
+</tr>
+</tbody></table>
+
 <h1 id="companies">Companies</h1>
 
 <h2 id="get-a-company-and-its-apps-(given-a-website)">Get a Company and Its Apps (Given a Website)</h2>
@@ -167,11 +352,97 @@ You must replace <code>YourApiKey</code> with your own API key.
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Isis"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="s2">"company"</span><span class="p">:</span><span class="w"> 
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Instagram, Inc."</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1228048</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"fortuneRank"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"streetAddress"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Menlo Park"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"zipCode"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CA"</span><span class="w">
+  </span><span class="p">},</span><span class="w"> 
+  </span><span class="s2">"apps"</span><span class="p">:</span><span class="w"> 
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"ios_apps"</span><span class="p">:</span><span class="w"> 
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">793595</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hyperlapse from Instagram"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"strong"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-04-29"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="mi">740146917</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a3.mzstatic.com/us/r30/Purple1/v4/65/f8/c6/65f8c6c5-b731-ec9a-d412-feeca38f1810/icon350x350.jpeg"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconSmall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a3.mzstatic.com/us/r30/Purple1/v4/65/f8/c6/65f8c6c5-b731-ec9a-d412-feeca38f1810/icon175x175.jpeg"</span><span class="w">
+      </span><span class="p">},</span><span class="w"> 
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">226053</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Instagram"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-09"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="mi">389801252</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a2.mzstatic.com/us/r30/Purple7/v4/a9/ea/96/a9ea96b2-db43-db57-867e-135dc1b6acdd/icon350x350.png"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconSmall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a4.mzstatic.com/us/r30/Purple7/v4/a9/ea/96/a9ea96b2-db43-db57-867e-135dc1b6acdd/icon175x175.png"</span><span class="w">
+      </span><span class="p">},</span><span class="w"> 
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1149297</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Layout from Instagram"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-17"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="mi">967351793</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a4.mzstatic.com/us/r30/Purple5/v4/75/bb/c4/75bbc4bd-a9aa-f2df-51c8-1ab5f195e66a/icon350x350.png"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconSmall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://a4.mzstatic.com/us/r30/Purple5/v4/75/bb/c4/75bbc4bd-a9aa-f2df-51c8-1ab5f195e66a/icon175x175.jpeg"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w"> 
+    </span><span class="s2">"android_apps"</span><span class="p">:</span><span class="w"> 
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">134</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Instagram"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"downloadsEstimate"</span><span class="p">:</span><span class="w"> </span><span class="mi">250000000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMin"</span><span class="p">:</span><span class="w"> </span><span class="mi">500000000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMax"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-18"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"googlePlayId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.instagram.android"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://lh3.ggpht.com/vFpQP39LB60dli3n-rJnVvTM07dsvIzxrCL5xMiy1V4GV4unC1ifXkUExQ4N-DBCKwI=w300-rw"</span><span class="w">
+      </span><span class="p">},</span><span class="w"> 
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1868943</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Layout from Instagram: Collage"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"downloadsEstimate"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMin"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMax"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-06-17"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"googlePlayId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.instagram.layout"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://lh3.googleusercontent.com/xkT0KPyXSqtB3y9yClvJfSzWNCC8R6AeQnq-XOsiSWvhkHl7R0oU9olatrlcsd12x-U=w300-rw"</span><span class="w">
+      </span><span class="p">},</span><span class="w"> 
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"mightySignalId"</span><span class="p">:</span><span class="w"> </span><span class="mi">311101</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bolt"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"mobilePriority"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"adSpend"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"userBase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"strong"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"downloadsEstimate"</span><span class="p">:</span><span class="w"> </span><span class="mi">200000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMin"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"downloadsMax"</span><span class="p">:</span><span class="w"> </span><span class="mi">500000</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"lastUpdated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-09-09"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"googlePlayId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.instagram.bolt"</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"appIconLarge"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://lh6.ggpht.com/aXNsRKXzgyDv3UhUxOfeKxo15wBo3mlKtexegEAn079DzoPr4NMKkEvLxmWQFGPVZbE=w300"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -192,6 +463,184 @@ You must replace <code>YourApiKey</code> with your own API key.
 <tr>
 <td>website</td>
 <td>The website that you want to search. Use the domain only without <code class="prettyprint">http</code> or <code class="prettyprint">www</code> in front of it. For example, use <code class="prettyprint">instagram.com</code> instead of <code class="prettyprint">http://instagram.com</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>company</td>
+<td><code class="prettyprint">See COMPANY table</code></td>
+</tr>
+<tr>
+<td>apps</td>
+<td><code class="prettyprint">See APPS table</code></td>
+</tr>
+</tbody></table>
+
+<h4 id="company">Company</h4>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the company</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the company</td>
+</tr>
+<tr>
+<td>fortuneRank</td>
+<td>The Fortune rank</td>
+</tr>
+<tr>
+<td>streetAddress</td>
+<td>The address of the company</td>
+</tr>
+<tr>
+<td>city</td>
+<td>The city where the company is located</td>
+</tr>
+<tr>
+<td>zipCode</td>
+<td>The zip code where the company is located</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The state where the company is located</td>
+</tr>
+</tbody></table>
+
+<h4 id="apps">Apps</h4>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>iosApps</td>
+<td><code class="prettyprint">See IOS APPS table</code></td>
+</tr>
+<tr>
+<td>androidApps</td>
+<td><code class="prettyprint">See ANDROID APPS table</code></td>
+</tr>
+</tbody></table>
+
+<h4 id="ios-apps">iOS Apps</h4>
+
+<aside class="notice">
+This is an array under the <code>iosApps</code> key.
+</aside>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the app</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the app</td>
+</tr>
+<tr>
+<td>mobilePriority</td>
+<td>How much the company cares about the app. Can be <code class="prettyprint">high</code>, <code class="prettyprint">medium</code>, or <code class="prettyprint">low</code>. Use this to filter out apps that are not actively being developed or marketed. Currently, it is a function of how recently their app has been updated, and whether they advertise on Facebook.</td>
+</tr>
+<tr>
+<td>adSpend</td>
+<td>Whether the app is advertising on Facebook</td>
+</tr>
+<tr>
+<td>userBase</td>
+<td>A tier representing how many active users the app has. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">strong</code>, <code class="prettyprint">moderate</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>appStoreId</td>
+<td>The app&rsquo;s unique identifier on the App Store. It&rsquo;s the same value that is passed in as a parameter.</td>
+</tr>
+<tr>
+<td>iconLarge</td>
+<td>Link to the app&rsquo;s large icon</td>
+</tr>
+<tr>
+<td>iconSmall</td>
+<td>Link to the app&rsquo;s small icon</td>
+</tr>
+<tr>
+<td>company</td>
+<td><code class="prettyprint">See COMPANY table</code></td>
+</tr>
+</tbody></table>
+
+<h4 id="android-apps">Android Apps</h4>
+
+<aside class="notice">
+This is an array under the <code>androidApps</code> key.
+</aside>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>mightySignalId</td>
+<td>MightySignal&rsquo;s unique ID for the app</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the app</td>
+</tr>
+<tr>
+<td>mobilePriority</td>
+<td>How much the company cares about the app. Can be <code class="prettyprint">high</code>, <code class="prettyprint">medium</code>, or <code class="prettyprint">low</code>. Use this to filter out apps that are not actively being developed or marketed. Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook.</td>
+</tr>
+<tr>
+<td>adSpend</td>
+<td>Whether the app is advertising on Facebook</td>
+</tr>
+<tr>
+<td>userBase</td>
+<td>A tier representing how many active users the app has. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">strong</code>, <code class="prettyprint">moderate</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>downloadsEstimate</td>
+<td>An estimate for number of downloads</td>
+</tr>
+<tr>
+<td>downloadsMin</td>
+<td>The minimum number of downloads</td>
+</tr>
+<tr>
+<td>downloadsMax</td>
+<td>The maximum number of downloads</td>
+</tr>
+<tr>
+<td>googlePlayId</td>
+<td>The app&rsquo;s unique identifier on Google Play. It&rsquo;s the same value that is passed in as a parameter.</td>
+</tr>
+<tr>
+<td>iconLarge</td>
+<td>Link to the app&rsquo;s large icon</td>
 </tr>
 </tbody></table>
 
@@ -223,5 +672,54 @@ You must replace <code>YourApiKey</code> with your own API key.
       <div class="dark-box">
       </div>
     </div>
+
+      <!-- Terms of Service Modal -->
+      <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Terms of Service</h4>
+            </div>
+            <div class="modal-body">
+              <object data="legal/tos.pdf" type="application/pdf" width="100%" height="100%">
+                <p>It appears you don't have a PDF plugin for this browser.
+                No biggie... you can <a href="legal/tos.pdf">click here to
+                download the PDF file.</a></p>
+                
+              </object>
+            </div>
+            <div class="modal-footer">
+              <button id="modal-button-accept" type="button" class="btn btn-primary">Accept</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Login Modal -->
+      <div class="modal fade" id="loginModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">MightySignal Login</h4>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group" id="emailFormGroup">
+                  <label for="loginEmail">Email Address</label>
+                  <input type="email" class="form-control" id="loginEmail" placeholder="Email">
+                </div>
+                <div class="form-group" id="passwordFormGroup">
+                  <label for="loginPassword">Password</label>
+                  <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button id="loginButton" type="button" class="btn btn-primary">Login</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
   </body>
 </html>

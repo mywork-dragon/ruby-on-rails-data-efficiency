@@ -29,5 +29,12 @@ if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
 
+if `animate --version`.include?('command not found')
+  puts "\n\n\n\nYou must run `sudo port install ImageMagick` before you can get swole."
+  exit
+end
+
+system('animate bicep_curl.gif &')
+
 puts ""
 system('cap production deploy')

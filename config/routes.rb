@@ -58,12 +58,17 @@ Rails.application.routes.draw do
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
   get 'api/results' => 'api#results'
+
+  get 'api/user/tos' => 'api#user_tos_check'
+  put 'api/user/tos' => 'api#user_tos_set'
+
   
   # API for customers
   get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }
   get 'ios_apps' => 'customer_api#ios_apps', constraints: { subdomain: 'api' }
   get 'android_apps' => 'customer_api#android_apps', constraints: { subdomain: 'api' }
   get 'companies' => 'customer_api#companies', constraints: { subdomain: 'api' }
+  get 'companies2' => 'customer_api#companies2', constraints: { subdomain: 'api' }
 
   
   if Rails.env.development?

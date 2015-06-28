@@ -53,20 +53,20 @@ class CustomerApiController < ApplicationController
             streetAddress: company.present? ? company.street_address : nil,
             city: company.present? ? company.city : nil,
             zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
+            state: company.present? ? company.state : nil
+            # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
           }
         }
       end
     rescue => e
       render json: json_failure
-      merge_failure!(properties, app_json, e)
+      merge_failure!(properties, {app_json: app_json}, e)
       track('ios_apps', properties)
       raise e
     else
       render json: app_json
-      merge_success!(properties, app_json)
+      merge_success!(properties, {app_json: app_json})
       track('ios_apps', properties)
     end
 
@@ -92,7 +92,8 @@ class CustomerApiController < ApplicationController
           name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
           mobilePriority: android_app.mobile_priority,
           adSpend: android_app.android_fb_ad_appearances.present?,
-          downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round_to_i : nil,
+          userBase: android_app.user_base,
+          downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
           downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
           downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
           lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
@@ -105,8 +106,8 @@ class CustomerApiController < ApplicationController
             streetAddress: company.present? ? company.street_address : nil,
             city: company.present? ? company.city : nil,
             zipCode: company.present? ? company.zip_code : nil,
-            state: company.present? ? company.state : nil,
-            country: company.present? ? company.country : nil
+            state: company.present? ? company.state : nil
+            # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
           }
         }
@@ -114,12 +115,12 @@ class CustomerApiController < ApplicationController
 
     rescue => e
       render json: json_failure
-      merge_failure!(properties, app_json, e)
+      merge_failure!(properties, {app_json: app_json}, e)
       track('android_apps', properties)
       raise e
     else
       render json: app_json
-      merge_success!(properties, app_json)
+      merge_success!(properties, {app_json: app_json})
       track('android_apps', properties)
     end
 
@@ -130,7 +131,7 @@ class CustomerApiController < ApplicationController
       url = params['website']
       properties = {'website' => url.to_s}
 
-      website = Website.find_by_url(url)
+      website = Website.find_by_url('http://' + url)
 
       if website.blank?
         company_h = {}
@@ -144,13 +145,13 @@ class CustomerApiController < ApplicationController
           streetAddress: company.present? ? company.street_address : nil,
           city: company.present? ? company.city : nil,
           zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil,
-          country: company.present? ? company.country : nil
+          state: company.present? ? company.state : nil
+          # country: company.present? ? company.country : nil
           # websites: company.websites.map { |w| w.url}
         }
 
         #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
-        ios_apps = company.websites.map{ |website| website.ios_apps} #goes up to company, then down to all apps
+        ios_apps = company.websites.map{ |website| website.ios_apps}.flatten #goes up to company, then down to all apps
 
         ios_apps_a = ios_apps.map do |ios_app|
           newest_app_snapshot = ios_app.newest_ios_app_snapshot
@@ -163,13 +164,13 @@ class CustomerApiController < ApplicationController
             userBase: ios_app.user_base,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
             appIdentifier: ios_app.app_identifier,
-            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-            appIconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
           }
         end
 
         #android_apps = AndroidAppsWebsite.where(website_id: website.id).map(&:android_app_id).map{ |android_app_id| AndroidApp.find(android_app_id)}
-        android_apps = company.websites.map{ |website| website.android_apps}  #goes up to company, then down to all apps
+        android_apps = company.websites.map{ |website| website.android_apps}.flatten  #goes up to company, then down to all apps
 
         android_apps_a = android_apps.map do |android_app|
           newest_app_snapshot = android_app.newest_android_app_snapshot
@@ -179,12 +180,13 @@ class CustomerApiController < ApplicationController
             name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
             mobilePriority: android_app.mobile_priority,
             adSpend: android_app.android_fb_ad_appearances.present?,
+            userBase: android_app.user_base,
             downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
             downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
             downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
             googlePlayId: android_app.app_identifier,
-            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
           }
         end
 
@@ -193,16 +195,77 @@ class CustomerApiController < ApplicationController
 
     rescue => e
       render json: json_failure
-      merge_failure!(properties, company_json, e)
+      merge_failure!(properties, {company_json: company_json}, e)
       track('companies', properties)
       raise e
     else
       render json: company_json
-      merge_success!(properties, company_json)
+      merge_success!(properties, {company_json: company_json})
       track('companies', properties)
     end
 
   end
+  
+  def companies2
+    begin
+      url = params['website']
+      properties = {'website' => url.to_s}
+
+      website = Website.find_by_url('http://' + url)
+
+      if website.blank?
+        company_h = {}
+      else
+        company = website.company
+
+        company_h = {
+          name: company.present? ? company.name : nil,
+          mightySignalId: company.present? ? company.id : nil,
+          fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+          streetAddress: company.present? ? company.street_address : nil,
+          city: company.present? ? company.city : nil,
+          zipCode: company.present? ? company.zip_code : nil,
+          state: company.present? ? company.state : nil
+          # country: company.present? ? company.country : nil
+          # websites: company.websites.map { |w| w.url}
+        }
+
+        #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
+        ios_apps = company.websites.map{ |website| website.ios_apps}.flatten #goes up to company, then down to all apps
+
+        ios_apps_a = ios_apps.map do |ios_app|
+          newest_app_snapshot = ios_app.newest_ios_app_snapshot
+
+          {
+            mightySignalId: ios_app.id,
+            name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+            mobilePriority: ios_app.mobile_priority,
+            adSpend: ios_app.ios_fb_ad_appearances.present?,
+            userBase: ios_app.user_base,
+            lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
+            appIdentifier: ios_app.app_identifier,
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+          }
+        end
+
+        company_json = {company: company_h, apps: {ios_apps: ios_apps_a}}
+      end
+
+    rescue => e
+      render json: json_failure
+      merge_failure!(properties, {company_json: company_json}, e)
+      track('companies', properties)
+      raise e
+    else
+      render json: company_json
+      merge_success!(properties, {company_json: company_json})
+      track('companies', properties)
+    end
+
+  end
+  
+  
   
   protected
   
