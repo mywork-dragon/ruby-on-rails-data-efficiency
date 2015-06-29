@@ -1,4 +1,4 @@
-<div id="appPage">
+<div id="appPage" data-ng-controller="ListCtrl">
 
   <header class="page-main-header ng-scope">
 
@@ -161,20 +161,21 @@
         </div>
       </div>
 
-      <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount">
+      <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount != null">
         <div class="panel-heading"><strong>Reviews</strong></div>
         <div class="panel-body">
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-if="appData.rating">
+                <li>
                   <span class="icon fa fa-star-half-o"></span>
                   <label>Aggregate Rating:</label>
-                  {{appData.rating}} of 5.0
+                  <span ng-if="appData.rating != 0">{{appData.rating}} of 5.0</span>
                 </li>
                 <li ng-if="appData.ratingsCount">
                   <span class="icon fa fa-star-half-o"></span>
                   <label>Ratings Count:</label>
+                  <span ng-if="appData.ratingsCount == 0">No Ratings</span>
                   {{appData.ratingsCount}}
                 </li>
               </ul>
