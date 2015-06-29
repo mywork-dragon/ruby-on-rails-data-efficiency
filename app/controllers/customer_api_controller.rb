@@ -92,6 +92,7 @@ class CustomerApiController < ApplicationController
           name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
           mobilePriority: android_app.mobile_priority,
           adSpend: android_app.android_fb_ad_appearances.present?,
+          userBase: android_app.user_base,
           downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
           downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
           downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
@@ -163,8 +164,8 @@ class CustomerApiController < ApplicationController
             userBase: ios_app.user_base,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
             appIdentifier: ios_app.app_identifier,
-            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-            appIconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
           }
         end
 
@@ -179,12 +180,13 @@ class CustomerApiController < ApplicationController
             name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
             mobilePriority: android_app.mobile_priority,
             adSpend: android_app.android_fb_ad_appearances.present?,
+            userBase: android_app.user_base,
             downloadsEstimate: newest_app_snapshot.present? ? ((newest_app_snapshot.downloads_max -  newest_app_snapshot.downloads_min)/2.0).round.to_i : nil,
             downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
             downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
             googlePlayId: android_app.app_identifier,
-            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
           }
         end
 
@@ -242,8 +244,8 @@ class CustomerApiController < ApplicationController
             userBase: ios_app.user_base,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
             appIdentifier: ios_app.app_identifier,
-            appIconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-            appIconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
           }
         end
 

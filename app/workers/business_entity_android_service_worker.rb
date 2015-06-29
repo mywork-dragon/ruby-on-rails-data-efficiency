@@ -37,6 +37,7 @@ class BusinessEntityAndroidServiceWorker
       end
 
     end
+    
   end
 
   def dupe_count(ids)

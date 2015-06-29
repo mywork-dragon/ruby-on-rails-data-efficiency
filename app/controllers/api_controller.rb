@@ -535,4 +535,21 @@ class ApiController < ApplicationController
     render json: GoogleResults.search("something")
   end
 
+  def user_tos_check
+    render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
+  end
+
+  def user_tos_set
+
+    tos_status = params['tos_accepted']
+
+    if tos_status
+      user = User.find(decoded_auth_token[:user_id])
+      user.tos_accepted = true
+      user.save
+    end
+
+    render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
+  end
+
 end
