@@ -46,11 +46,11 @@
                   <label>App Store ID:</label>
                   id{{appData.appStoreId}}
                 </li>
-                <li ng-if="appData.price">
+                <li>
                   <span class="icon fa fa-usd"></span>
                   <label>Price:</label>
-                  {{(appData.price / 100.0) | currency}}
-                </li>
+                  <span ng-if="!appData.price">Free</span>
+                  <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>                </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
                   <label>Size:</label>
@@ -89,14 +89,15 @@
                   <label>Play Store ID:</label>
                   {{appData.playStoreId}}
                 </li>
-                <li ng-if="appData.price">
+                <li>
                   <span class="icon fa fa-usd"></span>
                   <label>Price:</label>
-                  {{(appData.price / 100.0) | currency}}
+                  <span ng-if="!appData.price">Free</span>
+                  <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>
                 </li>
                 <li ng-if="appData.downloadsMin && appData.downloadsMax">
                   <span class="icon fa fa-download"></span>
-                  <label>Downloads:</label>
+                  <label>Total Downloads:</label>
                   {{appData.downloadsMin | thousandSuffix}} - {{appData.downloadsMax | thousandSuffix}}
                 </li>
                 <li ng-if="appData.size">
@@ -142,7 +143,7 @@
                 <li ng-if="appData.appIdentifier">
                   <span class="icon fa fa-user"></span>
                   <label>MightySignal ID:</label>
-                  {{appData.appIdentifier}}
+                  {{appData.id}}
                 </li>
                 <li ng-if="appData.adSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
@@ -160,7 +161,7 @@
         </div>
       </div>
 
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount">
         <div class="panel-heading"><strong>Reviews</strong></div>
         <div class="panel-body">
           <div class="media">
