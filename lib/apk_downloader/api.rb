@@ -74,19 +74,19 @@ module ApkDownloader
     end
 
     def fetch_apk_data package
-      log_in!
-      doc = details(package).detailsResponse.docV2
-      version_code = doc.details.appDetails.versionCode
-      offer_type = doc.offer[0].offerType
+      puts log_in!
+      # doc = details(package).detailsResponse.docV2
+      # version_code = doc.details.appDetails.versionCode
+      # offer_type = doc.offer[0].offerType
 
-      message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+      # message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
-      url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-      cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+      # url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
+      # cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      resp = recursive_apk_fetch(url, cookie)
+      # resp = recursive_apk_fetch(url, cookie)
 
-      return resp.body
+      # return resp.body
     end
 
     private
