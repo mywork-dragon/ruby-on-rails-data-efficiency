@@ -33,7 +33,6 @@ class ApkSnapshotService
         apps = [1,2,3,4,5,6,7,8,9,11]
         apps.each do |app|
           ApkSnapshotServiceWorker.perform_async(j.id, app)
-          # ApkSnapshotServiceWorker.new.perform(j.id, app)
         end
       else
         print "WARNING: You cannot continue because there are #{workers.size} workers currently running."
