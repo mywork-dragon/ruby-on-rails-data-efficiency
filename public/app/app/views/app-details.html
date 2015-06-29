@@ -195,6 +195,12 @@
                 <li>
                   <span class="icon fa fa-plus"></span>
                   <label>Add to List:</label>
+                  <span class="ui-select">
+                    <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown)">
+                      <option value="">Add Selected to List</option>
+                      <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                  </span>
                 </li>
                 <li>
                   <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>

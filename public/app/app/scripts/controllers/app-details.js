@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService",
-  function($scope, $http, $routeParams, $window, pageTitleService) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService) {
 
   $scope.load = function() {
 
@@ -39,6 +39,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     /* -------- Mixpanel Analytics End -------- */
 
     $window.open(linkedinLink, '_blank');
+  };
+
+  $scope.addSelectedTo = function(list) {
+    var selectedApp = {
+      id: $routeParams.id,
+      type: $routeParams.platform == 'IosApp' ? 'ios' : 'android'
+    };
+    listApiService.addSelectedTo(list, selectedApp, $scope.appPlatform).success(function() {
+      $scope.notify('add-selected-success');
+      $rootScope.selectedAppsForList = [];
+    }).error(function() {
+      $scope.notify('add-selected-error');
+    });
+    $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
   };
 
   $scope.load();
