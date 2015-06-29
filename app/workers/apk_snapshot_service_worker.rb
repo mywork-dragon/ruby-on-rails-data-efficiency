@@ -45,23 +45,7 @@ class ApkSnapshotServiceWorker
         config.proxy = proxy
       end
 
-
-      apps = {
-        "1" => "jp.co.liica.physics",
-        "2" => "com.atomic.apps.medical.disease.condition.dictionary",
-        "3" => "com.hottrix.ibeerfree",
-        "4" => "com.sega.sonicjumpfever",
-        "5" => "com.livewallpaperkkpicture.cat",
-        "6" => "pl.thalion.achieve.productivity.timer",
-        "7" => "com.expensemanager",
-        "8" => "com.itsoftgroup.medicine",
-        "9" => "com.cfinc.iconkisekae",
-        "11" => "scare.your.friends.prank.maze.halloween"
-      }
-
-      app_identifier = apps[android_app_id.to_s]
-
-      # app_identifier = AndroidApp.find(android_app_id).app_identifier
+      app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
       ApkDownloader.download!(app_identifier, file_name)
