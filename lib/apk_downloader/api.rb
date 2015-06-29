@@ -125,7 +125,7 @@ module ApkDownloader
       # end
 
       begin
-        timeout(20) do
+        timeout(max_time) do
           req = Net::HTTP::Get.new url.to_s
           req['Accept-Encoding'] = ''
           req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
