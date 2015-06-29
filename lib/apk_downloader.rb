@@ -12,11 +12,10 @@ module ApkDownloader
       yield configuration
     end
 
-    def download! package, destination
-      @api ||= Api.new
-      data = @api.fetch_apk_data package
-      puts data
-      # File.open(destination, 'wb') { |f| f.write data }
-    end
+    # def download! package, destination
+    #   @api ||= Api.new
+    #   data = @api.fetch_apk_data package
+    #   File.open(destination, 'wb') { |f| f.write data }
+    # end
   end
 end

@@ -84,11 +84,9 @@ module ApkDownloader
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
       cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      return url
+      resp = recursive_apk_fetch(url, cookie)
 
-      # resp = recursive_apk_fetch(url, cookie)
-
-      # return resp.body
+      return resp.body
     end
 
     private
