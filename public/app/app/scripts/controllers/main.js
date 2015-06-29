@@ -40,6 +40,10 @@ angular.module('appApp')
 
       $scope.logUserOut = authToken.deleteToken;
 
+      $rootScope.$on('STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT', function() { // STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT
+        authToken.deleteToken();
+      })
+
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "pageTitleService",
     function($scope, apiService, $http, $rootScope, pageTitleService) {
