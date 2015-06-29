@@ -12,11 +12,12 @@ class ApkSnapshotService
     def run_n(notes, size = 100)
       workers = Sidekiq::Workers.new
 
-      # I should make sure that all processes are killed before I begin
+      clear_accounts()
 
       if workers.size == 0
         j = ApkSnapshotJob.create!(notes: notes)
-        AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each do |app|
+        AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each.with_index do |app, index|
+          li "app #{index}"
           ApkSnapshotServiceWorker.perform_async(j.id, app.id)
         end
       else
@@ -32,7 +33,6 @@ class ApkSnapshotService
         apps = [1,2,3,4,5,6,7,8,9,11]
         apps.each do |app|
           ApkSnapshotServiceWorker.perform_async(j.id, app)
-          # ApkSnapshotServiceWorker.new.perform(j.id, app)
         end
       else
         print "WARNING: You cannot continue because there are #{workers.size} workers currently running."
