@@ -33,98 +33,98 @@
               <ul class="list-unstyled list-info" ng-if="appPlatform == 'ios'">
                 <li ng-if="appData.name">
                   <span class="icon fa fa-mobile"></span>
-                  <label>App Name</label>
+                  <label>App Name:</label>
                   {{appData.name}}
                 </li>
                 <li ng-if="appPlatform">
                   <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                  <label>Platform</label>
+                  <label>Platform:</label>
                   iOS
                 </li>
                 <li ng-if="appData.appStoreId">
                   <span class="icon fa fa-user"></span>
-                  <label>App Store ID</label>
+                  <label>App Store ID:</label>
                   id{{appData.appStoreId}}
                 </li>
                 <li ng-if="appData.price">
                   <span class="icon fa fa-usd"></span>
-                  <label>Price</label>
+                  <label>Price:</label>
                   {{(appData.price / 100.0) | currency}}
                 </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
-                  <label>Size</label>
+                  <label>Size:</label>
                   {{appData.size | filesize}}
                 </li>
                 <li ng-if="appData.requiredIosVersion">
                   <span class="icon fa fa-cog"></span>
-                  <label>Required OS</label>
+                  <label>Required OS:</label>
                   {{appData.requiredIosVersion}}
                 </li>
                 <li ng-if="appData.recommendedAge">
                   <span class="icon fa fa-child"></span>
-                  <label>Content Rating</label>
+                  <label>Content Rating:</label>
                   {{appData.recommendedAge}}
                 </li>
                 <li ng-if="appData.description">
                   <span class="icon fa fa-file-text-o"></span>
-                  <label>Description</label>
-                  {{appData.description}}
+                  <label>Description:</label>
+                  <p class="appPageDescription">{{appData.description}}</p>
                 </li>
               </ul>
 
               <ul class="list-unstyled list-info" ng-if="appPlatform == 'android'">
                 <li ng-if="appData.name">
                   <span class="icon fa fa-mobile"></span>
-                  <label>App Name</label>
+                  <label>App Name:</label>
                   {{appData.name}}
                 </li>
                 <li>
                   <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                  <label>Platform</label>
+                  <label>Platform:</label>
                   Android
                 </li>
                 <li ng-if="appData.playStoreId">
                   <span class="icon fa fa-user"></span>
-                  <label>Play Store ID</label>
+                  <label>Play Store ID:</label>
                   {{appData.playStoreId}}
                 </li>
                 <li ng-if="appData.price">
                   <span class="icon fa fa-usd"></span>
-                  <label>Price</label>
+                  <label>Price:</label>
                   {{(appData.price / 100.0) | currency}}
                 </li>
                 <li ng-if="appData.downloadsMin && appData.downloadsMax">
                   <span class="icon fa fa-download"></span>
-                  <label>Downloads</label>
+                  <label>Downloads:</label>
                   {{appData.downloadsMin | thousandSuffix}} - {{appData.downloadsMax | thousandSuffix}}
                 </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
-                  <label>Size</label>
+                  <label>Size:</label>
                   {{appData.size | filesize}}
                 </li>
                 <li ng-if="appData.inAppPurchaseMin && appData.inAppPurchaseMax">
                   <span class="icon fa fa-shopping-cart"></span>
-                  <label>In-App Purchases</label>
+                  <label>In-App Purchases:</label>
                   <span ng-if="appData.inAppPurchaseMin == appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}}</span>
                   <span ng-if="appData.inAppPurchaseMin != appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}} - {{(appData.inAppPurchaseMax / 100.0) | currency}}</span>
                   {{appData.price}}
                 </li>
                 <li ng-if="appData.contentRating">
                   <span class="icon fa fa-child"></span>
-                  <label>Content Rating</label>
+                  <label>Content Rating:</label>
                   {{appData.contentRating}}
                 </li>
                 <li ng-if="appData.requiredAndroidVersion">
                   <span class="icon fa fa-cog"></span>
-                  <label>Required OS</label>
+                  <label>Required OS:</label>
                   {{appData.requiredAndroidVersion}}
                 </li>
                 <li ng-if="appData.description">
                   <span class="icon fa fa-file-text-o"></span>
-                  <label>Description</label>
-                  {{appData.description}}
+                  <label>Description:</label>
+                  <p class="appPageDescription">{{appData.description}}</p>
                 </li>
               </ul>
 
@@ -141,17 +141,17 @@
               <ul class="list-unstyled list-info">
                 <li ng-if="appData.appIdentifier">
                   <span class="icon fa fa-user"></span>
-                  <label>MightySignal ID</label>
+                  <label>MightySignal ID:</label>
                   {{appData.appIdentifier}}
                 </li>
                 <li ng-if="appData.adSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
-                  <label>Ad Spend</label>
+                  <label>Ad Spend:</label>
                   {{appData.adSpend | capitalize}}
                 </li>
                 <li ng-if="appData.mobilePriority">
                   <span class="icon glyphicon glyphicon-home"></span>
-                  <label>Mobile Priority</label>
+                  <label>Mobile Priority:</label>
                   {{appData.mobilePriority | capitalize}}
                 </li>
               </ul>
@@ -168,12 +168,12 @@
               <ul class="list-unstyled list-info">
                 <li ng-if="appData.rating">
                   <span class="icon fa fa-star-half-o"></span>
-                  <label>Aggregate Rating</label>
-                  {{appData.rating}} / 5.0
+                  <label>Aggregate Rating:</label>
+                  {{appData.rating}} of 5.0
                 </li>
                 <li ng-if="appData.ratingsCount">
                   <span class="icon fa fa-star-half-o"></span>
-                  <label>Ratings Count</label>
+                  <label>Ratings Count:</label>
                   {{appData.ratingsCount}}
                 </li>
               </ul>
@@ -194,28 +194,28 @@
               <ul class="list-unstyled list-info">
                 <li>
                   <span class="icon fa fa-plus"></span>
-                  <label>Add to List</label>
+                  <label>Add to List:</label>
                 </li>
                 <li>
                   <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                  <label>App Store Page</label>
+                  <label>App Store Page:</label>
                   <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
                   <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
                 </li>
                 <li>
                   <span class="icon fa fa-linkedin"></span>
-                  <label>LinkedIn Links</label>
+                  <label>LinkedIn Links:</label>
                   <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
                   <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                   <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
                 <li>
                   <span class="icon fa fa-envelope-o"></span>
-                  <label>Company Emails</label>
+                  <label>Company Emails:</label>
                 </li>
                 <li>
                   <span class="icon fa fa-briefcase"></span>
-                  <label>Company Page</label>
+                  <label>Company Page:</label>
                   <a href="#/company/{{appData.company.id}}">Company Page</a>
                 </li>
               </ul>
@@ -232,23 +232,23 @@
               <ul class="list-unstyled list-info">
                 <li ng-if="appData.company.name">
                   <span class="icon fa fa-briefcase"></span>
-                  <label>Company Name</label>
+                  <label>Company Name:</label>
                   {{appData.company.name}}
                 </li>
                 <li ng-if="appData.company.location">
                   <span class="icon fa fa-building-o"></span>
-                  <label>HQ Location</label>
+                  <label>HQ Location:</label>
                   {{appData.company.location.streetAddress}}
                   {{appData.company.location.city}}, {{appData.company.location.country}}, {{appData.company.location.zipCode}}
                 </li>
                 <li ng-if="appData.company.fortuneRank">
                   <span class="icon fa fa-bar-chart"></span>
-                  <label>Fortune Rank</label>
+                  <label>Fortune Rank:</label>
                   {{appData.company.fortuneRank}}
                 </li>
                 <li ng-if="appData.company.funding">
                   <span class="icon fa fa-money"></span>
-                  <label>Funding</label>
+                  <label>Funding:</label>
                   {{appData.company.funding | currency:"$":0}}
                 </li>
                 <li ng-if="appData.company.id">
@@ -269,18 +269,18 @@
               <ul class="list-unstyled list-info">
                 <li ng-if="appData.currentVersion">
                   <span class="icon fa fa-cog"></span>
-                  <label>Latest Version</label>
+                  <label>Latest Version:</label>
                   {{appData.currentVersion}}
                 </li>
                 <li ng-if="appData.lastUpdated">
                   <span class="icon fa fa-calendar"></span>
-                  <label>Release Date</label>
+                  <label>Release Date:</label>
                   {{appData.lastUpdated | date : 'shortDate'}}
                 </li>
                 <li ng-if="appData.currentVersionDescription">
                   <span class="icon fa fa-file-text-o"></span>
-                  <label>Release Notes</label>
-                  {{appData.currentVersionDescription}}
+                  <label>Release Notes:</label>
+                  <p class="appPageDescription">{{appData.currentVersionDescription}}</p>
                 </li>
               </ul>
             </div>

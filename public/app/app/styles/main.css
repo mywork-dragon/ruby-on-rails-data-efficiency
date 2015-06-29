@@ -7317,3 +7317,7 @@ select option:empty {
   font-size: 70px;
   color: #DDDDDD;
 }
+
+.appPageDescription {
+  margin-left: 25px;
+}
