@@ -185,7 +185,53 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
             });
           };
-      }).directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {
+      }).filter('filesize', function () {
+      return function (size) {
+        if (isNaN(size))
+          size = 0;
+
+        if (size < 1024)
+          return size + ' B';
+
+        size /= 1024;
+
+        if (size < 1024)
+          return size.toFixed(0) + ' KB';
+
+        size /= 1024;
+
+        if (size < 1024)
+          return size.toFixed(0) + ' MB';
+
+        size /= 1024;
+
+        if (size < 1024)
+          return size.toFixed(0) + ' GB';
+
+        size /= 1024;
+
+        return size.toFixed(0) + ' TB';
+      };
+    })
+    .filter('thousandSuffix', function () {
+      return function (input, decimals) {
+        var exp, rounded,
+          suffixes = ['K', 'M', 'G', 'T', 'P', 'E'];
+
+        if(window.isNaN(input)) {
+          return null;
+        }
+
+        if(input < 1000) {
+          return input;
+        }
+
+        exp = Math.floor(Math.log(input) / Math.log(1000));
+
+        return (input / Math.pow(1000, exp)).toFixed(decimals) + suffixes[exp - 1];
+      };
+    })
+    .directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {
           return {
             replace: true,
             restrict: 'E',
