@@ -50,7 +50,6 @@ module ApkDownloader
 
       response = login_http.request post
 
-      # login_http.finish
       
       if ApkDownloader.configuration.debug
         # pp "Login response:"
