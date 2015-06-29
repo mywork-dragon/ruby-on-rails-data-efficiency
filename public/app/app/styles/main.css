@@ -7206,7 +7206,7 @@ i.infoTooltipIcon {
   margin-bottom: 0px;
 }
 
-#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select {
+#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select, #appPageActionsPanel .ui-select select {
   max-width: 170px;
   width: 170px;
 }

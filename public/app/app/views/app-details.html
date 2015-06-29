@@ -147,7 +147,7 @@
                 <li ng-if="appData.adSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
                   <label>Ad Spend:</label>
-                  {{appData.adSpend | capitalize}}
+                  {{appData.adSpend ? 'Yes' : 'No'}}
                 </li>
                 <li ng-if="appData.mobilePriority">
                   <span class="icon glyphicon glyphicon-home"></span>
@@ -186,7 +186,7 @@
 
     <div class="col-md-6 info-column">
 
-      <div class="panel panel-default">
+      <div id="appPageActionsPanel" class="panel panel-default">
         <div class="panel-heading"><strong>Actions</strong></div>
         <div class="panel-body">
           <div class="media">
