@@ -41,7 +41,8 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.identify(email);
           mixpanel.people.set({
-            "$email": email
+            "$email": email,
+            "jwtToken": resp.auth_token
           });
           mixpanel.track(
             "Login Success"
