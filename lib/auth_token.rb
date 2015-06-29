@@ -1,6 +1,6 @@
 class AuthToken
   
-  def self.encode(payload, exp=1.month.from_now)
+  def self.encode(payload, exp=6.months.from_now)
     payload[:exp] = exp.to_i
     JWT.encode(payload, Rails.application.secrets.secret_key_base)
   end
