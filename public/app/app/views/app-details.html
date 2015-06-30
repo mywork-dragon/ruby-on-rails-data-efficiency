@@ -10,7 +10,7 @@
           {{appData.name}} - App Page
         </h4>
         <p>
-          {{appData.company.name}}
+          <a href="#/company/{{appData.company.id}}">{{appData.company.name}}</a>
         </p>
       </div>
       <div class="" id="appTypeHeaderLogo">
@@ -47,7 +47,8 @@
                   <span class="icon fa fa-usd"></span>
                   <label>Price:</label>
                   <span ng-if="!appData.price">Free</span>
-                  <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>                </li>
+                  <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>
+                </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
                   <label>Size:</label>
@@ -123,6 +124,11 @@
                   <span class="icon fa fa-cog"></span>
                   <label>Required OS:</label>
                   {{appData.requiredAndroidVersion}}
+                </li>
+                <li ng-if="appData.categories">
+                  <span class="icon fa fa-child"></span>
+                  <label>Categories:</label>
+                  <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
                 </li>
                 <li ng-if="appData.description">
                   <span class="icon fa fa-file-text-o"></span>
@@ -215,9 +221,9 @@
                 <li>
                   <span class="icon fa fa-linkedin"></span>
                   <label>LinkedIn Links:</label>
-                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
-                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                  <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+                  <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
+                  <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                  <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
                 <!--
                 <li>
@@ -228,7 +234,7 @@
                 <li>
                   <span class="icon fa fa-briefcase"></span>
                   <label>Company Page:</label>
-                  <a href="#/company/{{appData.company.id}}">Company Page</a>
+                  <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">Company Page</button>
                 </li>
               </ul>
             </div>
