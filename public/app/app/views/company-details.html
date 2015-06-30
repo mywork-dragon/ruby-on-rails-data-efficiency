@@ -146,7 +146,6 @@
 
     </div>
 </div>
-
 <div class="row companyPageRow">
   <div class="page page-table" data-ng-controller="TableCtrl">
 
@@ -154,7 +153,7 @@
 
 
         <div class="panel-heading" id="listViewTableHeading">
-          <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying 1 - {{$root.numApps}} of {{$root.numApps}}</span>
+          <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
           <span class="ui-select pull-right">
             <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
@@ -171,7 +170,7 @@
             <thead>
             <tr>
               <th class="selectAllCheckboxHeader">
-                <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+                <select-all-checkbox checkboxes="apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
               </th>
               <th><div class="th normal-right-padding">
                 App Name
@@ -186,28 +185,6 @@
               </div></th>
               <th><div class="th normal-right-padding appDetailsHeader">
                 App Type
-              </div></th>
-              <th><div class="th normal-right-padding">
-                Company
-                <!--
-                                <span class="glyphicon glyphicon-chevron-up"
-                                      data-ng-click=" sortApps('companyName', 'ASC') "
-                                      data-ng-class="{active: row == 'companyName'}"></span>
-                                <span class="glyphicon glyphicon-chevron-down"
-                                      data-ng-click=" sortApps('companyName', 'DESC') "
-                                      data-ng-class="{active: row == '-companyName'}"></span>
-                -->
-              </div></th>
-              <th><div class="th normal-right-padding">
-                Fortune Rank
-                <!--
-                                <span class="glyphicon glyphicon-chevron-up"
-                                      data-ng-click=" sortApps('fortuneRank', 'ASC') "
-                                      data-ng-class="{active: row == 'fortuneRank'}"></span>
-                                <span class="glyphicon glyphicon-chevron-down"
-                                      data-ng-click=" sortApps('fortuneRank', 'DESC') "
-                                      data-ng-class="{active: row == '-fortuneRank'}"></span>
-                -->
               </div></th>
               <th><div class="th normal-right-padding">
                 Mobile Priority
@@ -237,36 +214,30 @@
             </thead>
 
             <tbody data-ng-hide="queryInProgress">
-            <tr data-ng-repeat="app in $root.apps">
+            <tr data-ng-repeat="app in apps">
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app.app"></checkable-checkbox>
               </td>
               <td class="resultsTableAppIcon">
-                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+                <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.id}}" target="_blank">{{app.name}}</a>
               </td>
               <td class="appTypeIndicator">
-                <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
-                <!--
-                <span ng-if="app.app.type == 'IosApp'">iOS</span>
-                <span ng-if="app.app.type == 'AndroidApp'">Android</span>
-                -->
+                <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
-              <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
-              <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
-                <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
+                <i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
               </td>
               <td  class="dashboardAdSpendView">
-                <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
+                <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
               </td>
-              <td>{{app.app.userBase | capitalize}}</td>
-              <td>{{app.app.categories.join(', ')}}</td>
-              <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
+              <td>{{app.userBase | capitalize}}</td>
+              <td>{{app.categories.join(', ')}}</td>
+              <td>{{app.lastUpdated | date : 'shortDate'}}</td>
             </tr>
             </tbody>
           </table>
-          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !($root.numApps > 0)">
-            <h5 data-ng-hide="$root.appNum > 0 || queryInProgress">No Items</h5>
+          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || (numApps > 0)">
+            <h5 data-ng-hide="appNum > 0 || queryInProgress">No Items</h5>
             <div data-ng-show="queryInProgress" id="wrap_spinner">
               <div class="loading outer">
                 <div class="loading inner"></div>
