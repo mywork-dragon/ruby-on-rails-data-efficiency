@@ -273,6 +273,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           adSpend: app.ios_fb_ad_appearances.present?,
           userBase: app.user_base,
+          categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
           lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
@@ -287,6 +288,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           adSpend: app.android_fb_ad_appearances.present?,
           userBase: app.user_base,
+          categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
