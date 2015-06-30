@@ -7330,3 +7330,7 @@ select option:empty {
   margin-left: 0px;
   margin-right: 0px;
 }
+
+.companyPageWebsiteLink {
+  color: #767676;
+}
