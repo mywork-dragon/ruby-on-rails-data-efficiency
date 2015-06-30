@@ -1,11 +1,11 @@
 require 'apk_downloader/googleplay.pb'
 
 module ApkDownloader
-  require :Configuration, 'apk_downloader/configuration'
-  require :Api, 'apk_downloader/api'
+  autoload :Configuration, 'apk_downloader/configuration'
+  # autoload :Api, 'apk_downloader/api'
 
   class << self
-    attr_reader :configuration, :api
+    attr_reader :configuration
 
     def configure
       @configuration ||= Configuration.new
