@@ -10,71 +10,6 @@
     </div>
   </header>
 
-  <!--
-
-    <div class="col-md-8 info-column">
-        <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Company Details</strong></div>
-            <div class="panel-body">
-              <table class="table table-striped">
-                <tbody>
-                <tr>
-                  <td><strong>Name:</strong> {{companyData.name}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Fortune Rank:</strong> {{companyData.fortuneRank}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Funding:</strong> {{companyData.funding | currency}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Location:</strong>
-                    <p>
-                      {{companyData.location.streetAddress}}<br />
-                    {{companyData.location.city}}, {{companyData.location.state}}, {{companyData.location.country}} {{companyData.location.zipCode}}
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Website(s):</strong><br />
-                    <span ng-repeat="website in companyData.websites"><a href="{{website}}">{{website}}</a><br /></span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>LinkedIn Profiles:</strong><br />
-                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-        </section>
-    </div>
-    <div class="col-md-4 info-column">
-        <section class="panel panel-default">
-            <div class="panel-heading"><strong><i class="fa fa-list panel-ico"></i>Other Apps by {{companyData.name}}</strong><span id="dashboardResultsTableHeadingNumDisplayed"> | {{companyData.iosApps.length + companyData.androidApps.length}} total</span></div>
-            <div class="panel-body">
-              <a ng-if="companyData.iosApps" ng-repeat="app in companyData.iosApps" href="#/app/ios/{{app.id}}" target="_blank">
-                <div class="well companyAssociatedApp" >
-                  <img ng-src="{{app.appIcon.large}}" />
-                  <h5>{{app.name}}</h5>
-                </div>
-              </a>
-              <a ng-if="companyData.androidApps" ng-repeat="app in companyData.androidApps" href="#/app/android/{{app.id}}" target="_blank">
-                <div class="well companyAssociatedApp" >
-                  <img ng-src="{{app.appIcon.large}}" />
-                  <h5>{{app.name}}</h5>
-                </div>
-              </a>
-            </div>
-        </section>
-    </div>
-
-    -->
 <div class="row companyPageRow">
     <div class="col-md-6 info-column">
       <div class="panel panel-default">
@@ -113,7 +48,7 @@
                 <li ng-if="companyData.websites">
                   <span class="icon fa fa-globe"></span>
                   <label>Website<span ng-if="companyData.websites.length > 1">s</span>:</label>
-                  <span ng-repeat="website in companyData.websites"><a href="http://{{website}}" class="companyPageWebsiteLink" target="_blank">www.{{website}}</a>{{$last ? '' : ', '}}</span>
+                  <span ng-repeat="website in companyData.websites"><a href="http://{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>{{$last ? '' : ', '}}</span>
                 </li>
               </ul>
 
@@ -139,10 +74,12 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
+                <!--
                 <li>
                   <span class="icon fa fa-envelope-o"></span>
                   <label>Company Emails</label>
                 </li>
+                -->
               </ul>
             </div>
           </div>

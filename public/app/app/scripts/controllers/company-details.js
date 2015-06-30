@@ -16,8 +16,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         var companyApps = data.iosApps.concat(data.androidApps);
         $scope.apps = companyApps;
         $scope.numApps = companyApps.length;
+        $rootScope.numApps = companyApps.length;
         $scope.queryInProgress = false;
-        console.log('YO', companyApps, $rootScope.apps);
         /* Sets html title attribute */
       }).error(function() {
         $scope.queryInProgress = false;
