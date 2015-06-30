@@ -33,6 +33,9 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    apk_downloader (1.1.5)
+      ruby-protocol-buffers
+      varint
     arel (5.0.1.20140414130214)
     autoprefixer-rails (4.0.1)
       execjs
@@ -259,6 +262,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    varint (0.1.1)
     whenever (0.9.4)
       chronic (>= 0.6.3)
     whois (3.5.9)
@@ -269,6 +273,7 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 4.2.1)
+  apk_downloader (= 1.1.5)
   autoprefixer-rails
   aws-sdk (~> 2)
   bcrypt (= 3.1.10)
