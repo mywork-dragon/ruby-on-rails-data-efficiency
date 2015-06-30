@@ -1,8 +1,8 @@
 require 'apk_downloader/googleplay.pb'
 
 module ApkDownloader
-  load :Configuration,  'apk_downloader/configuration'
-  load :Api,            'apk_downloader/api'
+  require :Configuration, 'apk_downloader/configuration'
+  require :Api, 'apk_downloader/api'
 
   class << self
     attr_reader :configuration, :api
