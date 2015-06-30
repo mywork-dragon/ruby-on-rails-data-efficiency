@@ -83,8 +83,6 @@ class ApkSnapshotServiceWorker
       File.delete(file_name)
       
     end
-    
-    next
 
   end
 
