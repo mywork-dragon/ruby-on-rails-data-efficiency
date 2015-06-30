@@ -3,11 +3,7 @@ ApkDownloader::Api.module_eval do
   LoginUri = URI('https://android.clients.google.com/auth')
   GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
-  attr_reader :auth_token
-
-  def initialize
-    @details_messages = {}
-  end
+  attr_reader :auth_token, :ip
 
   def fetch_apk_data package
 
@@ -29,6 +25,8 @@ ApkDownloader::Api.module_eval do
 
     url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
     cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+
+    ApkSnapshotException.create(name: "url => #{url}")
 
     resp = recursive_apk_fetch(url, cookie)
 
@@ -75,8 +73,9 @@ ApkDownloader::Api.module_eval do
     response = login_http.request post
 
     if ApkDownloader.configuration.debug
-      pp "Login response:"
-      pp response
+      # pp "Login response:"
+      # pp response
+      ApkSnapshotException.create(name: "Login failed (maybe)")
     end
 
     if response.body =~ /error/i
