@@ -25,8 +25,6 @@ module Varys
     config.autoload_paths << "#{config.root}/app/services"
     #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
-
-    config.autoload_paths << Rails.root.join('lib')
     
     #turn of auto-generation of stylesheet and Javascripts
     config.generators.stylesheets = false

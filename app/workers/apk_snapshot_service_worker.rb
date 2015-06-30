@@ -48,7 +48,7 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      # ApkDownloader.download!(app_identifier, file_name)
+      ApkDownloader.download!(app_identifier, file_name)
 
     rescue => e
 
@@ -67,20 +67,20 @@ class ApkSnapshotServiceWorker
 
     else
 
-      # end_time = Time.now()
-      # download_time = (end_time - start_time).to_s
-      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      end_time = Time.now()
+      download_time = (end_time - start_time).to_s
+      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
-      # apk_snap.google_account_id = best_account.id
-      # apk_snap.download_time = download_time
-      # apk_snap.unpack_time = unpack_time
-      # apk_snap.status = :success
-      # apk_snap.save!
+      apk_snap.google_account_id = best_account.id
+      apk_snap.download_time = download_time
+      apk_snap.unpack_time = unpack_time
+      apk_snap.status = :success
+      apk_snap.save!
 
-      # best_account.in_use = false
-      # best_account.save!
+      best_account.in_use = false
+      best_account.save!
 
-      # File.delete(file_name)
+      File.delete(file_name)
       
     end
 
