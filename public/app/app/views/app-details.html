@@ -1,7 +1,6 @@
 <div id="appPage" data-ng-controller="ListCtrl">
 
   <header class="page-main-header ng-scope">
-
     <div class="row">
       <div class="col-md-1" id="appPageLogoBox">
         <img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" />
@@ -17,9 +16,7 @@
       <div class="" id="appTypeHeaderLogo">
         <i class="fa fa-2" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
       </div>
-
-      </div>
-
+    </div>
   </header>
 
   <div class="">
@@ -245,12 +242,6 @@
                   <label>Company Name:</label>
                   {{appData.company.name}}
                 </li>
-                <li ng-if="appData.company.location">
-                  <span class="icon fa fa-building-o"></span>
-                  <label>HQ Location:</label>
-                  {{appData.company.location.streetAddress}}
-                  {{appData.company.location.city}}, {{appData.company.location.country}}, {{appData.company.location.zipCode}}
-                </li>
                 <li ng-if="appData.company.fortuneRank">
                   <span class="icon fa fa-bar-chart"></span>
                   <label>Fortune Rank:</label>
@@ -260,6 +251,17 @@
                   <span class="icon fa fa-money"></span>
                   <label>Funding:</label>
                   {{appData.company.funding | currency:"$":0}}
+                </li>
+                <li ng-if="appData.company.location">
+                  <span class="icon fa fa-building-o"></span>
+                  <label>Address:</label>
+                  {{appData.company.location.streetAddress}}
+                  {{appData.company.location.city}}, {{appData.company.location.zipCode}}
+                </li>
+                <li ng-if="appData.company.location.country">
+                  <span class="icon fa fa-globe"></span>
+                  <label>Country:</label>
+                  {{appData.company.location.country}}
                 </li>
                 <li ng-if="appData.company.id">
                   <a href="#/company/{{appData.company.id}}">More Company Details</a>

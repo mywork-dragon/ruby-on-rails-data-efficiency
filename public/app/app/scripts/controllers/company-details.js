@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService",
-  function($scope, $http, $routeParams, $window, pageTitleService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope) {
   $scope.load = function() {
 
     return $http({
@@ -10,6 +10,10 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       params: {id: $routeParams.id}
     }).success(function(data) {
       $scope.companyData = data;
+      /*
+      console.log(data.iosApps, data.androidApps);
+      if(data.iosApps) {$rootScope.apps.push(data.iosApps);}
+      if(data.androidApps) {$rootScope.apps.push(data.androidApps);}
 
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.companyData.name);

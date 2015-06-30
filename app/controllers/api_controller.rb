@@ -269,6 +269,7 @@ class ApiController < ApplicationController
         iosApps: company.get_ios_apps.map{|app| {
           id: app.id,
           name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+          type: 'IosApp',
           mobilePriority: app.mobile_priority,
           adSpend: app.ios_fb_ad_appearances.present?,
           userBase: app.user_base,
@@ -282,6 +283,7 @@ class ApiController < ApplicationController
         androidApps: company.get_android_apps.map{|app| {
           id: app.id,
           name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+          type: 'AndroidApp',
           mobilePriority: app.mobile_priority,
           adSpend: app.android_fb_ad_appearances.present?,
           userBase: app.user_base,
