@@ -28,7 +28,7 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account, proxy = optimal_account(android_app_id, apk_snapshot_job_id)
+      best_account = optimal_account(android_app_id, apk_snapshot_job_id)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save!
@@ -38,11 +38,17 @@ class ApkSnapshotServiceWorker
       android_identifier = best_account.android_identifier
 
       start_time = Time.now()
+
+      # TCPSocket::socks_server = '127.0.0.1'
+      # TCPSocket::socks_port = 9050
+
+      # open('http://wtfismyip.com/json/').read
+
       ApkDownloader.configure do |config|
         config.email = email
         config.password = password
         config.android_id = android_identifier
-        config.proxy = proxy
+        # config.proxy = proxy
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
@@ -52,9 +58,9 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      best_account.flags += 1
-      best_account.in_use = false
-      best_account.save!
+      # best_account.flags += 1
+      # best_account.in_use = false
+      # best_account.save!
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
@@ -98,8 +104,8 @@ class ApkSnapshotServiceWorker
         best_account = GoogleAccount.find(ga.id)
         best_account.in_use = true
         best_account.save!
-        p = Proxy.order(last_used: :asc).limit(5).sample
-        return best_account, p.private_ip
+        # p = Proxy.order(last_used: :asc).limit(5).sample
+        return best_account
       end
     end
     false
