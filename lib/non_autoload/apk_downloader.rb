@@ -80,6 +80,8 @@ if defined?(ApkDownloader)
         ApkSnapshotException.create(name: "Login failed (maybe)")
       end
 
+      # ApkSnapshotException.create(name: "Login Happened")
+
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
