@@ -28,8 +28,6 @@ if defined?(ApkDownloader)
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
       cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      ApkSnapshotException.create(name: "url => #{url}\n ip => #{@ip}")
-
       resp = recursive_apk_fetch(url, cookie)
 
       return resp.body
@@ -77,10 +75,7 @@ if defined?(ApkDownloader)
       if ApkDownloader.configuration.debug
         # pp "Login response:"
         # pp response
-        ApkSnapshotException.create(name: "Login failed (maybe)")
       end
-
-      # ApkSnapshotException.create(name: "Login Happened")
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
@@ -132,7 +127,7 @@ if defined?(ApkDownloader)
       #     req['Cookie'] = [cookie.name, cookie.value].join('=')
 
       #     resp = http.request req
-          
+
       #     case resp
       #     when Net::HTTPSuccess
       #       return resp
@@ -207,6 +202,4 @@ if defined?(ApkDownloader)
     end
 
   end
-else
-  ApkSnapshotException.create(name: "ApkDownloader was undefined.")
 end
