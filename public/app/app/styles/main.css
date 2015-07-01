@@ -7252,8 +7252,14 @@ select option:empty {
 }
 
 .resultsTableAppIcon img {
-  width: 32px;
+  max-width: 32px;
+  max-height: 32px;
   margin-right: 5px;
+}
+
+.resultsTableAppIcon span {
+  width: 32px;
+  height: 32px;
 }
 
 .resultsTableAppIcon a {

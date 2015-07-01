@@ -96,7 +96,9 @@
               <checkable-checkbox app="app.app"></checkable-checkbox>
             </td>
             <td class="resultsTableAppIcon">
-              <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+              <span>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+              </span>
             </td>
             <td class="appTypeIndicator">
               <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>

@@ -64,7 +64,7 @@
                   <label>Content Rating:</label>
                   {{appData.recommendedAge}}
                 </li>
-                <li ng-if="appData.categories">
+                <li ng-if="appData.categories.length > 0">
                   <span class="icon fa fa-child"></span>
                   <label>Categories:</label>
                   <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
