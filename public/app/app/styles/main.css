@@ -7257,7 +7257,7 @@ select option:empty {
   margin-right: 5px;
 }
 
-.resultsTableAppIcon {
+.resultsTableAppIcon span {
   width: 32px;
   height: 32px;
 }

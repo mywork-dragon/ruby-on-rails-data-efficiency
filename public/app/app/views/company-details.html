@@ -96,12 +96,14 @@
 
         <div class="panel-heading" id="listViewTableHeading">
           <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
+          <!--
           <span class="ui-select pull-right">
             <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
               <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
             </select>
           </span>
+          -->
         </div>
 
 
