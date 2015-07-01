@@ -103,44 +103,45 @@ if defined?(ApkDownloader)
       req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
       req['Cookie'] = [cookie.name, cookie.value].join('=')
 
-      # max time
-      # response = http.request_head(url)
-      # file_size = response['content-length'].to_i
-      # max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
+      max time
+      response = http.request_head(url)
+      file_size = response['content-length'].to_i
+      max_time = if file_size > 0 then (file_size/10000) / 10 else 300 end
 
       resp = http.request req
 
-      case resp
-      when Net::HTTPSuccess
-        return resp
-      when Net::HTTPRedirection
-        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      else
-        resp.error!
-      end
-
-      # begin
-      #   timeout(max_time) do
-      #     req = Net::HTTP::Get.new url.to_s
-      #     req['Accept-Encoding'] = ''
-      #     req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      #     req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      #     resp = http.request req
-
-      #     case resp
-      #     when Net::HTTPSuccess
-      #       return resp
-      #     when Net::HTTPRedirection
-      #       return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      #     else
-      #       resp.error!
-      #     end
-      #   end
-      # rescue => e
-      #   ApkSnapshotException.create(name: e.message, backtrace: e.backtrace, try: @try)
+      # case resp
+      # when Net::HTTPSuccess
+      #   return resp
+      # when Net::HTTPRedirection
       #   return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      # else
+      #   resp.error!
       # end
+
+      begin
+        timeout(max_time) do
+          req = Net::HTTP::Get.new url.to_s
+          req['Accept-Encoding'] = ''
+          req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+          req['Cookie'] = [cookie.name, cookie.value].join('=')
+
+          resp = http.request req
+
+          case resp
+          when Net::HTTPSuccess
+            return resp
+          when Net::HTTPRedirection
+            return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+          else
+            resp.error!
+          end
+        end
+      rescue => e
+        # ApkSnapshotException.create(name: e.message, backtrace: e.backtrace, try: @try)
+        http.finish
+        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      end
 
 
     end
