@@ -1,7 +1,5 @@
 OpenSSL::Buffering.module_eval do
 
-	puts "hello!!!"
-
 	include Enumerable
 
 	##
@@ -14,11 +12,8 @@ OpenSSL::Buffering.module_eval do
 	##
 	# Default size to read from or write to the SSLSocket for buffer operations.
 
-	BLOCK_SIZE = 1024*16
+	BLOCK_SIZE = 1024*160
 
-
-	def patch_test
-		puts "this patch works!!!"
-	end
+	#16384
 
 end
