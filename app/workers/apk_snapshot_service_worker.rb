@@ -39,16 +39,10 @@ class ApkSnapshotServiceWorker
 
       start_time = Time.now()
 
-      # TCPSocket::socks_server = '127.0.0.1'
-      # TCPSocket::socks_port = 9050
-
-      # open('http://wtfismyip.com/json/').read
-
       ApkDownloader.configure do |config|
         config.email = email
         config.password = password
         config.android_id = android_identifier
-        # config.proxy = proxy
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier

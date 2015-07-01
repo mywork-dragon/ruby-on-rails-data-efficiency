@@ -31,7 +31,7 @@ class ApkSnapshotService
       
       j = ApkSnapshotJob.create!(notes: notes)
       AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each.with_index do |app, index|
-        li "app #{index}"
+        # li "app #{index}"
         ApkSnapshotServiceWorker.new.perform(j.id, app.id)
       end
     end
