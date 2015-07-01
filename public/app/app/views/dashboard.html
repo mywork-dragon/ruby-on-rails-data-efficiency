@@ -194,7 +194,9 @@
               <checkable-checkbox app="app.app"></checkable-checkbox>
             </td>
             <td class="resultsTableAppIcon">
-              <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+              <span>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+              </span>
             </td>
             <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
             <td>{{app.company.fortuneRank}}</td>
