@@ -7297,27 +7297,52 @@ select option:empty {
   padding: 15px;
 }
 
-#appPage .icon.fa {
+#appPage .icon.fa, #companyPage .icon.fa {
   font-size: 16px;
   vertical-align: middle;
   width: 12px;
 }
 
-#appPage .icon.fa-mobile {
+#appPage .icon.fa-mobile, #companyPage .icon.fa-mobile {
   font-size: 20px;
 }
 
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;
-  top: 20px;
+  top: 35px;
 }
 
 #appTypeHeaderLogo i {
-  font-size: 70px;
+  font-size: 40px;
   color: #DDDDDD;
 }
 
 .appPageDescription {
   margin-left: 25px;
+}
+
+#appPageActionsPanel .panel-body .ui-select {
+  margin: 0;
+}
+
+.companyPageRow {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.companyPageWebsiteLink {
+  color: #767676;
+}
+
+#linkedinLinksList button {
+  margin-right: 5px;
+}
+
+#linkedinLinksList button:last-of-type {
+  margin-right: 0px;
+}
+
+#companyDetailsTable {
+  margin-bottom: 0px;
 }

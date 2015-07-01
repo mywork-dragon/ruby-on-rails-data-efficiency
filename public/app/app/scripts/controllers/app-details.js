@@ -41,6 +41,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     $window.open(linkedinLink, '_blank');
   };
 
+  $scope.linkTo = function(path) {
+    $window.location.href = path;
+  };
+
   $scope.addSelectedTo = function(list) {
     var selectedApp = [{
       id: $routeParams.id,
