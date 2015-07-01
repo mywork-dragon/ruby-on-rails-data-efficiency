@@ -1,9 +1,7 @@
 Rails.application.configure do
 
-<<<<<<< HEAD
   # AWS.eager_autoload! #stephen
-=======
->>>>>>> 26db9fb4fbbfc87b0c1f48fda29c9372fbadd429
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
