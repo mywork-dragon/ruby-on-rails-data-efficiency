@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-12">
         <h4>
-          {{companyData.name}} - Company Page
+          {{companyData.name}}
         </h4>
       </div>
     </div>
@@ -67,7 +67,7 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li>
+                <li id="linkedinLinksList">
                   <span class="icon fa fa-linkedin"></span>
                   <label>LinkedIn Links</label>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
@@ -108,12 +108,14 @@
 
         <div id="results-table-wrapper">
 
-          <table class="table table-bordered table-striped table-responsive">
+          <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
             <thead>
             <tr>
+              <!--
               <th class="selectAllCheckboxHeader">
                 <select-all-checkbox checkboxes="apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
               </th>
+              -->
               <th><div class="th normal-right-padding">
                 App Name
                 <!--
@@ -157,9 +159,11 @@
 
             <tbody data-ng-hide="queryInProgress">
             <tr data-ng-repeat="app in apps">
+              <!--
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app.app"></checkable-checkbox>
               </td>
+              -->
               <td class="resultsTableAppIcon">
                 <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.id}}" target="_blank">{{app.name}}</a>
               </td>
@@ -178,8 +182,8 @@
             </tr>
             </tbody>
           </table>
-          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || (numApps > 0)">
-            <h5 data-ng-hide="appNum > 0 || queryInProgress">No Items</h5>
+          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(apps.length > 0)">
+            <h5 data-ng-hide="apps.length > 0 || queryInProgress">No Items</h5>
             <div data-ng-show="queryInProgress" id="wrap_spinner">
               <div class="loading outer">
                 <div class="loading inner"></div>
@@ -194,10 +198,11 @@
 
         </div>
 
+        <!--
         <footer class="table-footer">
           <div class="row">
             <div class="col-md-6 page-num-info">
-              <!--
+
                           <span>
                               Show
                               <select data-ng-model="numPerPage"
@@ -206,9 +211,9 @@
                               </select>
                               entries per page
                           </span>
-              -->
+
             </div>
-            <!--
+
             <div class="col-md-6 text-right pagination-container">
               <pagination class="pagination-sm"
                           ng-model="currentPage"
@@ -219,9 +224,10 @@
                           rotate="false"
                           boundary-links="true"></pagination>
             </div>
-            -->
+
           </div>
         </footer>
+        -->
       </div>
 
     </section>

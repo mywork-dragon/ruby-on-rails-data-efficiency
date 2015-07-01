@@ -218,7 +218,7 @@
                   <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
                   <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
                 </li>
-                <li>
+                <li id="linkedinLinksList">
                   <span class="icon fa fa-linkedin"></span>
                   <label>LinkedIn Links:</label>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
@@ -233,8 +233,8 @@
                 -->
                 <li>
                   <span class="icon fa fa-briefcase"></span>
-                  <label>Company Page:</label>
-                  <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">Company Page</button>
+                  <label>Company:</label>
+                  <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
                 </li>
               </ul>
             </div>
@@ -250,7 +250,7 @@
               <ul class="list-unstyled list-info">
                 <li ng-if="appData.company.name">
                   <span class="icon fa fa-briefcase"></span>
-                  <label>Company Name:</label>
+                  <label>Name:</label>
                   {{appData.company.name}}
                 </li>
                 <li ng-if="appData.company.fortuneRank">

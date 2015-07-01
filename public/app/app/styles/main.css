@@ -7334,3 +7334,15 @@ select option:empty {
 .companyPageWebsiteLink {
   color: #767676;
 }
+
+#linkedinLinksList button {
+  margin-right: 5px;
+}
+
+#linkedinLinksList button:last-of-type {
+  margin-right: 0px;
+}
+
+#companyDetailsTable {
+  margin-bottom: 0px;
+}
