@@ -48,7 +48,7 @@
                 <li ng-if="companyData.websites">
                   <span class="icon fa fa-globe"></span>
                   <label>Website<span ng-if="companyData.websites.length > 1">s</span>:</label>
-                  <span ng-repeat="website in companyData.websites"><a href="http://{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>{{$last ? '' : ', '}}</span>
+                  <span ng-repeat="website in companyData.websites"><a href="{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>{{$last ? '' : ', '}}</span>
                 </li>
               </ul>
 
