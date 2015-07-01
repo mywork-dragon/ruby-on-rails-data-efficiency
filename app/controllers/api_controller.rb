@@ -165,6 +165,7 @@ class ApiController < ApplicationController
       requiredIosVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_ios_version : nil,
       recommendedAge: newest_app_snapshot.present? ? newest_app_snapshot.recommended_age : nil,
       description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
+      categories: newest_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
       currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
       currentVersionDescription: newest_app_snapshot.present? ? newest_app_snapshot.release_notes : nil,
       rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
@@ -217,6 +218,7 @@ class ApiController < ApplicationController
       size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
       requiredAndroidVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_android_version : nil,
       contentRating: newest_app_snapshot.present? ? newest_app_snapshot.content_rating : nil,
+      categories: newest_app_snapshot.present? ? newest_app_snapshot.android_app_categories.map{|c| c.name} : nil,
       description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
       currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
       downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
@@ -269,9 +271,11 @@ class ApiController < ApplicationController
         iosApps: company.get_ios_apps.map{|app| {
           id: app.id,
           name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+          type: 'IosApp',
           mobilePriority: app.mobile_priority,
           adSpend: app.ios_fb_ad_appearances.present?,
           userBase: app.user_base,
+          categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
           lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
@@ -282,9 +286,11 @@ class ApiController < ApplicationController
         androidApps: company.get_android_apps.map{|app| {
           id: app.id,
           name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+          type: 'AndroidApp',
           mobilePriority: app.mobile_priority,
           adSpend: app.android_fb_ad_appearances.present?,
           userBase: app.user_base,
+          categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
           appIdentifier: app.app_identifier,
           appIcon: {
