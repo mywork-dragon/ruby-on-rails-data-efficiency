@@ -121,3 +121,5 @@ gem 'domainator', '2.0.0'
 gem 'public_suffix', '1.4.6'
 
 gem 'apk_downloader', '1.1.5'
+
+gem 'parallel', '1.6.0'
