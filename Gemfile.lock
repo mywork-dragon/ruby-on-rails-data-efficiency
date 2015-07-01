@@ -37,8 +37,6 @@ GEM
       ruby-protocol-buffers
       varint
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (4.0.1)
-      execjs
     aws-sdk (2.0.31)
       aws-sdk-resources (= 2.0.31)
     aws-sdk-core (2.0.31)
@@ -250,9 +248,6 @@ GEM
       coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (2.5.3)
-      execjs (>= 0.3.0)
-      json (>= 1.8.0)
     unicorn (4.8.3)
       kgio (~> 2.6)
       rack
@@ -269,14 +264,12 @@ PLATFORMS
 DEPENDENCIES
   PageRankr (= 4.2.1)
   apk_downloader (= 1.1.5)
-  autoprefixer-rails
   aws-sdk (~> 2)
   bcrypt (= 3.1.10)
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
   capistrano-sidekiq (= 0.5.2)
-  coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
   faker (= 1.4.3)
   filesize (= 0.0.4)
@@ -315,7 +308,6 @@ DEPENDENCIES
   spring
   text (= 1.3.1)
   turbolinks
-  uglifier (>= 1.3.0)
   unicorn
   whenever
   whois (= 3.5.9)
