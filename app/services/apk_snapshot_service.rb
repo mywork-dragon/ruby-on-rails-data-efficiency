@@ -54,8 +54,6 @@ class ApkSnapshotService
     def job
       j = ApkSnapshotJob.last
 
-      start = Time.now
-
       workers = Sidekiq::Workers.new
 
       while true do
@@ -72,8 +70,6 @@ class ApkSnapshotService
 
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        elapsed = (Time.now - start).to_i
-
         print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size} \r"
 
         if progress == 100.0
@@ -83,6 +79,21 @@ class ApkSnapshotService
 
         sleep 1
       end
+
+    end
+
+    def accounts
+      
+      j = ApkSnapshotJob.last
+
+      i = 1
+      GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.apk_snapshot_job_id = ?',96).each do |ga|
+        snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: 96).first
+        puts "#{i}.) #{ga.id}  |  in_use : #{ga.in_use}  |  status : #{snap.status}"
+        i += 1
+      end
+
+      print GoogleAccount.where(in_use: true).map{ |ga| ga.id }
 
     end
 

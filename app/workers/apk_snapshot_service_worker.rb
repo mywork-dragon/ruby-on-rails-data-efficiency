@@ -33,16 +33,12 @@ class ApkSnapshotServiceWorker
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
-      email = best_account.email
-      password = best_account.password
-      android_identifier = best_account.android_identifier
-
       start_time = Time.now()
 
       ApkDownloader.configure do |config|
-        config.email = email
-        config.password = password
-        config.android_id = android_identifier
+        config.email = best_account.email
+        config.password = best_account.password
+        config.android_id = best_account.android_identifier
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
