@@ -1,5 +1,10 @@
 # This is our internal API that talks to the frontend
+
 class ApiController < ApplicationController
+
+  require 'clearbit'
+
+  Clearbit.key = '229daf10e05c493613aa2159649d03b4'
   
   skip_before_filter  :verify_authenticity_token
 
@@ -575,6 +580,35 @@ class ApiController < ApplicationController
     end
 
     render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
+  end
+
+  def get_company_contacts
+
+    company_id = params['companyId']
+    contacts = []
+
+    # check to see if previous record exists and < 2 months old
+
+      # If yes, yes, return record
+
+      # If either no, hit clearbit api, save to new record & return record
+
+    prospects = Clearbit::Prospector.search(domain: 'stripe.com')
+
+    prospects.each do |contact|
+      contacts << {
+          clearBitId: contact.id,
+          givenName: contact.givenName,
+          familyName: contact.familyName,
+          fullName: contact.name.full_name,
+          title: contact.title,
+          email: contact.email,
+          linkedin: contact.linkedin
+      }
+    end
+
+    render json: {:contacts => contacts}
+
   end
 
 end
