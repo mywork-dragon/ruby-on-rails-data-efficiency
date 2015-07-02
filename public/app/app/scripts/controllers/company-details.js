@@ -2,6 +2,7 @@
 
 angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope",
   function($scope, $http, $routeParams, $window, pageTitleService, $rootScope) {
+
     $scope.load = function() {
 
       $scope.queryInProgress = true;
@@ -23,6 +24,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $scope.queryInProgress = false;
       });
     };
+    $scope.load();
+
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
@@ -46,8 +49,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       $window.open(linkedinLink, '_blank');
     };
 
-    $scope.load();
-
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "Page Viewed", {
@@ -57,5 +58,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       }
     );
     /* -------- Mixpanel Analytics End -------- */
+
   }
 ]);
