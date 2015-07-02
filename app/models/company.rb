@@ -3,10 +3,9 @@ class Company < ActiveRecord::Base
   has_many :scraped_results
   has_many :apps
   has_many :websites
-  
   has_many :ios_developers
-  
   has_many :android_developers
+  has_many :clearbit_contacts
   
   enum status: [ :active, :paused ]
   
