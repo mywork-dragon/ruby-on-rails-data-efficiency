@@ -28,10 +28,10 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account = optimal_account(android_app_id, apk_snapshot_job_id)
+      best_account = optimal_account()
 
       apk_snap.google_account_id = best_account.id
-      apk_snap.save!
+      apk_snap.save
 
       email = best_account.email
       password = best_account.password
@@ -52,9 +52,8 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      # best_account.flags += 1
-      # best_account.in_use = false
-      # best_account.save!
+      best_account.in_use = false
+      best_account.save
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
@@ -62,7 +61,7 @@ class ApkSnapshotServiceWorker
         retry
       else
         apk_snap.status = :failure
-        apk_snap.save!
+        apk_snap.save
       end
 
     else
@@ -75,10 +74,10 @@ class ApkSnapshotServiceWorker
       apk_snap.download_time = download_time
       apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
-      apk_snap.save!
+      apk_snap.save
 
       best_account.in_use = false
-      best_account.save!
+      best_account.save
 
       File.delete(file_name)
       
@@ -86,23 +85,28 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def optimal_account(android_app_id, apk_snapshot_job_id)
-    n = GoogleAccount.where(in_use: false).count
-    (0...n).each do |a|
-      ga = GoogleAccount.select(:id).where(in_use: false).order(:last_used).limit(5).sample
-      ga.last_used = DateTime.now
-      ga.save!
+  def optimal_account
 
-      c = ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+    ga = GoogleAccount.where(in_use: false).order(:last_used)
+
+    ga.each do |a|
+
+      best = ga.limit(5).sample
+      best.last_used = DateTime.now
+      best.save
+
+      c = ApkSnapshot.where(google_account_id: best.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+
       if c < 1400
-        best_account = GoogleAccount.find(ga.id)
-        best_account.in_use = true
-        best_account.save!
-        # p = Proxy.order(last_used: :asc).limit(5).sample
-        return best_account
+        best.in_use = true
+        best.save
+        return best
       end
+
     end
+
     false
+
   end
 
 end

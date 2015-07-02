@@ -28,8 +28,6 @@ if defined?(ApkDownloader)
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
       cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      ApkSnapshotException.create(name: "url => #{url}\n ip => #{@ip}")
-
       resp = recursive_apk_fetch(url, cookie)
 
       return resp.body
@@ -67,6 +65,7 @@ if defined?(ApkDownloader)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      # login_http.open_timeout = 10
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
@@ -77,10 +76,7 @@ if defined?(ApkDownloader)
       if ApkDownloader.configuration.debug
         # pp "Login response:"
         # pp response
-        ApkSnapshotException.create(name: "Login failed (maybe)")
       end
-
-      # ApkSnapshotException.create(name: "Login Happened")
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
@@ -102,6 +98,7 @@ if defined?(ApkDownloader)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.open_timeout = 15
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
@@ -118,6 +115,7 @@ if defined?(ApkDownloader)
       else
         resp.error!
       end
+
     end
 
     def api_request type, path, data = {}
@@ -130,6 +128,7 @@ if defined?(ApkDownloader)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        # @http.open_timeout = 10
       end
 
       api_headers = {
@@ -177,6 +176,4 @@ if defined?(ApkDownloader)
     end
 
   end
-else
-  ApkSnapshotException.create(name: "ApkDownloader was undefined.")
 end
