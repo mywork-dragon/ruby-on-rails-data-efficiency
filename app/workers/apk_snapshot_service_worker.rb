@@ -39,7 +39,7 @@ class ApkSnapshotServiceWorker
 
       start_time = Time.now()
 
-      timeout(120)
+      timeout(120) do
         ApkDownloader.configure do |config|
           config.email = email
           config.password = password
