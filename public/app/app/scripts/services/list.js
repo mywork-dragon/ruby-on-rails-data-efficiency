@@ -55,6 +55,21 @@ angular.module("appApp")
           data: {listId: listId, apps: selectedApps, appPlatform: appPlatform}
         });
       },
+      addMixedSelectedTo: function(listId, selectedApps) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Added to List", {
+            "listId": listId,
+            "selectedApps": selectedApps
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        return $http({
+          method: 'PUT',
+          url: API_URI_BASE + 'api/list/add_mixed',
+          data: {listId: listId, apps: selectedApps}
+        });
+      },
       deleteSelected: function(listId, selectedApps) {
         return $http({
           method: 'PUT',
