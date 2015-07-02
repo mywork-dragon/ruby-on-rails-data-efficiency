@@ -587,6 +587,8 @@ class ApiController < ApplicationController
     company_id = params['companyId']
     contacts = []
 
+    ClearbitContact.
+
     # check to see if previous record exists and < 2 months old
 
       # If yes, yes, return record

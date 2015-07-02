@@ -1,7 +1,7 @@
 class CreateClearbitContacts < ActiveRecord::Migration
   def change
     create_table :clearbit_contacts do |t|
-      t.integer :company_id
+      t.integer :website_id
       t.integer :clearbit_id
       t.string :given_name
       t.string :family_name
@@ -13,7 +13,7 @@ class CreateClearbitContacts < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :clearbit_contacts, :company_id
+    add_index :clearbit_contacts, :website_id
     add_index :clearbit_contacts, :clearbit_id
   end
 end

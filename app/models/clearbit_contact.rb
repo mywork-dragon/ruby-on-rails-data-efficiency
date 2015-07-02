@@ -1,3 +1,3 @@
 class ClearbitContact < ActiveRecord::Base
-  belongs_to :company
+  belongs_to :website
 end
