@@ -83,12 +83,12 @@ class ApkSnapshotService
     end
 
     def accounts
-      
+
       j = ApkSnapshotJob.last
 
       i = 1
-      GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.apk_snapshot_job_id = ?',96).each do |ga|
-        snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: 96).first
+      GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.apk_snapshot_job_id = ?',j.id).each do |ga|
+        snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: j.id).first
         puts "#{i}.) #{ga.id}  |  in_use : #{ga.in_use}  |  status : #{snap.status}"
         i += 1
       end

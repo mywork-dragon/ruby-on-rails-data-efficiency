@@ -1,3 +1,4 @@
+# Patch for 1.1.5
 if defined?(ApkDownloader)
 
   ApkDownloader::Api.module_eval do

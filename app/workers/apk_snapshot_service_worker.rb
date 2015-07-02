@@ -3,7 +3,7 @@ class ApkSnapshotServiceWorker
 
   sidekiq_options retry: false
   
-  MAX_TRIES = 3
+  MAX_TRIES = 5
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
@@ -28,7 +28,11 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account = optimal_account()
+      best_account = optimal_account(apk_snapshot_job_id)
+
+      if !best_account
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      end
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -48,8 +52,8 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      best_account.in_use = false
-      best_account.save
+      # best_account.in_use = false
+      # best_account.save
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
@@ -72,8 +76,8 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      best_account.in_use = false
-      best_account.save
+      # best_account.in_use = false
+      # best_account.save
 
       File.delete(file_name)
       
@@ -81,9 +85,9 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def optimal_account
+  def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5).shuffle
+    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| a if ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }.shuffle
 
     ga.each do |a|
 
