@@ -4,6 +4,6 @@ OpenSSL::Buffering.module_eval do
 
 	attr_accessor :sync
 
-	BLOCK_SIZE = 1024*160
+	BLOCK_SIZE = 1024*240
 
 end
