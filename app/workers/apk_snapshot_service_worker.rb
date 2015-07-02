@@ -39,16 +39,20 @@ class ApkSnapshotServiceWorker
 
       start_time = Time.now()
 
-      ApkDownloader.configure do |config|
-        config.email = email
-        config.password = password
-        config.android_id = android_identifier
+      timeout(120)
+        ApkDownloader.configure do |config|
+          config.email = email
+          config.password = password
+          config.android_id = android_identifier
+        end
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name)
+      timeout(300) do
+        ApkDownloader.download!(app_identifier, file_name)
+      end
 
     rescue => e
 
