@@ -93,6 +93,8 @@ class ApkSnapshotService
         i += 1
       end
 
+      puts "#{Sidekiq::Workers.new.size} workers"
+
       # print GoogleAccount.where(in_use: true).map{ |ga| ga.id }
 
     end
