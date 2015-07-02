@@ -93,7 +93,7 @@ class ApkSnapshotService
         i += 1
       end
 
-      print GoogleAccount.where(in_use: true).map{ |ga| ga.id }
+      # print GoogleAccount.where(in_use: true).map{ |ga| ga.id }
 
     end
 

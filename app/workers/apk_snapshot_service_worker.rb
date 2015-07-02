@@ -3,7 +3,7 @@ class ApkSnapshotServiceWorker
 
   sidekiq_options retry: false
   
-  MAX_TRIES = 5
+  MAX_TRIES = 3
 
   ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
@@ -96,11 +96,13 @@ class ApkSnapshotServiceWorker
 
       c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
 
-      if c < 1400
-        a.in_use = true
-        a.save
-        return a
-      end
+      return a if c < 1400
+      
+      # if c < 1400
+      #   a.in_use = true
+      #   a.save
+      #   return a
+      # end
 
     end
 
