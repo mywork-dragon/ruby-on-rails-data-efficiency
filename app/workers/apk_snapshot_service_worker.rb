@@ -48,7 +48,9 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name)
+      timeout(500) do
+        ApkDownloader.download!(app_identifier, file_name)
+      end
 
     rescue => e
 
