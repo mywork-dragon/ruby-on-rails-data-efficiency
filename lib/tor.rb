@@ -104,7 +104,7 @@ class Tor
       when Net::HTTPRedirection  
         location = response['location']
         #puts "Redirected to: #{location}"
-        get_using_proxy(location, ip, limit: limit - 1)
+        get_using_proxy(location, ip, port: port limit: limit - 1)
       else
         response.error!
       end
