@@ -8,7 +8,7 @@ class ApkSnapshotService
         ApkSnapshotServiceWorker.perform_async(j.id, app.id)
       end
     end
-    
+
     def run_n(notes, size = 100)
       workers = Sidekiq::Workers.new
 

@@ -39,20 +39,16 @@ class ApkSnapshotServiceWorker
 
       start_time = Time.now()
 
-      timeout(120) do
-        ApkDownloader.configure do |config|
-          config.email = email
-          config.password = password
-          config.android_id = android_identifier
-        end
+      ApkDownloader.configure do |config|
+        config.email = email
+        config.password = password
+        config.android_id = android_identifier
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      timeout(300) do
-        ApkDownloader.download!(app_identifier, file_name)
-      end
+      ApkDownloader.download!(app_identifier, file_name)
 
     rescue => e
 
@@ -91,20 +87,19 @@ class ApkSnapshotServiceWorker
 
   def optimal_account
 
-    ga = GoogleAccount.where(in_use: false).order(:last_used)
+    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5).shuffle
 
     ga.each do |a|
 
-      best = ga.limit(5).sample
-      best.last_used = DateTime.now
-      best.save
+      a.last_used = DateTime.now
+      a.save
 
-      c = ApkSnapshot.where(google_account_id: best.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
 
       if c < 1400
-        best.in_use = true
-        best.save
-        return best
+        a.in_use = true
+        a.save
+        return a
       end
 
     end
