@@ -95,8 +95,6 @@ class ApkSnapshotService
 
       puts "#{Sidekiq::Workers.new.size} workers"
 
-      # print GoogleAccount.where(in_use: true).map{ |ga| ga.id }
-
     end
 
     def clear_accounts
@@ -105,13 +103,6 @@ class ApkSnapshotService
         ga.save
       end
     end
-
-    # def fuck
-    #   # ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
-    #   j = ApkSnapshotJob.last
-    #   j.is_fucked = true
-    #   j.save!
-    # end
 
     def running
       workers = Sidekiq::Workers.new

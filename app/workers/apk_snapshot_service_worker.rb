@@ -54,9 +54,6 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      # best_account.in_use = false
-      # best_account.save
-
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
       if (@try += 1) < MAX_TRIES
@@ -78,9 +75,6 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      # best_account.in_use = false
-      # best_account.save
-
       File.delete(file_name)
       
     end
@@ -89,7 +83,7 @@ class ApkSnapshotServiceWorker
 
   def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| a if ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }.shuffle
+    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }.shuffle
 
     ga.each do |a|
 
@@ -99,12 +93,6 @@ class ApkSnapshotServiceWorker
       c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
 
       return a if c < 1400
-      
-      # if c < 1400
-      #   a.in_use = true
-      #   a.save
-      #   return a
-      # end
 
     end
 
