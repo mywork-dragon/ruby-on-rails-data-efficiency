@@ -96,14 +96,12 @@
 
         <div class="panel-heading" id="listViewTableHeading">
           <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
-          <!--
           <span class="ui-select pull-right">
-            <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
+            <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
               <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
             </select>
           </span>
-          -->
         </div>
 
 
@@ -113,11 +111,9 @@
           <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
             <thead>
             <tr>
-              <!--
               <th class="selectAllCheckboxHeader">
-                <select-all-checkbox checkboxes="apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+                <select-all-checkbox-two apps="apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
               </th>
-              -->
               <th><div class="th normal-right-padding">
                 App Name
                 <!--
@@ -161,11 +157,9 @@
 
             <tbody data-ng-hide="queryInProgress">
             <tr data-ng-repeat="app in apps">
-              <!--
               <td class="dashboardTableDataCheckbox">
-                <checkable-checkbox app="app.app"></checkable-checkbox>
+                <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
               </td>
-              -->
               <td class="resultsTableAppIcon">
                 <span>
                   <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.id}}" target="_blank">{{app.name}}</a>

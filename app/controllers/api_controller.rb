@@ -505,6 +505,25 @@ class ApiController < ApplicationController
     render json: {:status => 'success'}
   end
 
+  def add_mixed_to_list
+    user_id = decoded_auth_token[:user_id]
+    list_id = params['listId']
+    apps = params['apps']
+
+    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+      render json: {:error => "not user's list"}
+      return
+    end
+
+    apps.each { |app|
+      if ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: app['type']).nil?
+        ListablesList.create(listable_id: app['id'], list_id: list_id, listable_type: app['type'])
+      end
+    }
+
+    render json: {:status => 'success'}
+  end
+
   def delete_from_list
     user_id = decoded_auth_token[:user_id]
     list_id = params['listId']

@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "listApiService", "loggitService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, listApiService, loggitService) {
+
     $scope.load = function() {
 
       $scope.queryInProgress = true;
@@ -23,6 +24,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $scope.queryInProgress = false;
       });
     };
+    $scope.load();
+
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
@@ -46,8 +49,24 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       $window.open(linkedinLink, '_blank');
     };
 
-    $scope.load();
+    $scope.addMixedSelectedTo = function(list, selectedApps) {
+      listApiService.addMixedSelectedTo(list, selectedApps).success(function() {
+        $scope.notify('add-selected-success');
+        $scope.selectedAppsForList = [];
+      }).error(function() {
+        $scope.notify('add-selected-error');
+      });
+      $scope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+    };
 
+    $scope.notify = function(type) {
+      switch (type) {
+        case "add-selected-success":
+          return loggitService.logSuccess("Items were added successfully.");
+        case "add-selected-error":
+          return loggitService.logError("Error! Something went wrong while adding to list.");
+      }
+    };
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "Page Viewed", {
@@ -57,5 +76,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       }
     );
     /* -------- Mixpanel Analytics End -------- */
+
   }
 ]);

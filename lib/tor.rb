@@ -5,7 +5,7 @@ class Tor
   class << self
     
     # @param bypass using the local IP instead (only available in dev)
-    def get(url, bypass: false)
+    def get(url, bypass: false, new_servers: false)
       
       if !Rails.env.production? 
         
@@ -19,6 +19,14 @@ class Tor
     
       if bypass
         raise 'Tor must be used in production'
+      end
+      
+      if new_servers
+        port = next_port
+        
+        page = get_using_proxy(url, '172.31.37.104', port: port)
+        
+        return page
       end
       
       proxy = next_proxy
@@ -71,6 +79,9 @@ class Tor
       Proxy.order(last_used: :asc).limit(5).sample
     end
     
+    def next_port
+      rand(50000..50099)
+    end
     
     def get_using_proxy(url, ip, port: 9050, limit: 10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
@@ -93,7 +104,7 @@ class Tor
       when Net::HTTPRedirection  
         location = response['location']
         #puts "Redirected to: #{location}"
-        get_using_proxy(location, ip, limit: limit - 1)
+        get_using_proxy(location, ip, port: port, limit: limit - 1)
       else
         response.error!
       end

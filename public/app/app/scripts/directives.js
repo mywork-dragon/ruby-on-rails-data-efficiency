@@ -266,7 +266,8 @@ angular.module("app.directives", []).directive("imgHolder", [
               }, true);
             }
           };
-        }]).directive('checkableCheckbox', ["$rootScope", "listApiService", function ($rootScope, listApiService) {
+        }])
+    .directive('checkableCheckbox', ["$rootScope", "listApiService", function ($rootScope, listApiService) {
           return {
             replace: true,
             restrict: 'E',
@@ -292,4 +293,68 @@ angular.module("app.directives", []).directive("imgHolder", [
 
             }
           };
-        }]);
+        }])
+    .directive('selectAllCheckboxTwo', [function () {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          apps: '=apps',
+          selectedAppsForList: '=selectedAppsForList'
+        },
+        template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
+        controller: function ($scope, $element) {
+
+          $scope.checkboxMasterChange = function () {
+            if ($scope.checkboxMaster) {
+              $scope.selectedAppsForList = [];
+              angular.forEach($scope.apps, function (app, index) {
+                $scope.selectedAppsForList.push({id: app.id, type: app.type});
+              });
+            } else {
+              $scope.selectedAppsForList = [];
+            }
+          };
+
+          $scope.$watch('selectedAppsForList', function () {
+
+            /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
+            if($scope.selectedAppsForList.length == $scope.apps.length) {
+              $element.prop('checked', true);
+            } else {
+              $element.prop('checked', false);
+            }
+
+          }, true);
+        }
+      };
+    }])
+    .directive('checkableCheckboxTwo', ["listApiService", function (listApiService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          app: '=app',
+          selectedAppsForList: '=selectedAppsForList',
+          apps: '=apps'
+        },
+        template: '<input type="checkbox" ng-model="appCheckbox" ng-click="addAppToList()">',
+        controller: function ($scope, $element) {
+
+          $scope.addAppToList = function() {
+            listApiService.modifyCheckbox($scope.app.id, $scope.app.type, $scope.selectedAppsForList);
+          };
+
+          $scope.$watch('selectedAppsForList', function () {
+
+            if($scope.selectedAppsForList.length == $scope.apps.length) {
+              $element.prop('checked', true);
+            } else {
+              $element.prop('checked', false);
+            }
+
+          });
+
+        }
+      };
+    }]);
