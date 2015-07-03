@@ -56,6 +56,9 @@ class ApkSnapshotServiceWorker
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
+      best_account.in_use = false
+      best_account.save
+
       if (@try += 1) < MAX_TRIES
         retry
       else
@@ -64,6 +67,9 @@ class ApkSnapshotServiceWorker
       end
 
     else
+
+      best_account.in_use = false
+      best_account.save
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
@@ -83,7 +89,7 @@ class ApkSnapshotServiceWorker
 
   def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }
+    ga = GoogleAccount.where(in_use: false).order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }
 
     ga.each do |a|
 
@@ -92,7 +98,11 @@ class ApkSnapshotServiceWorker
 
       c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count
 
-      return a if c < 1400
+      if c < 1400
+        a.in_use = true
+        a.save
+        return a
+      end
 
     end
 
