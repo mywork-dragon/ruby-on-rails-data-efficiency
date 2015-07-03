@@ -8,7 +8,7 @@ class ApkSnapshotService
         ApkSnapshotServiceWorker.perform_async(j.id, app.id)
       end
     end
-    
+
     def run_n(notes, size = 100)
       workers = Sidekiq::Workers.new
 
@@ -54,8 +54,6 @@ class ApkSnapshotService
     def job
       j = ApkSnapshotJob.last
 
-      start = Time.now
-
       workers = Sidekiq::Workers.new
 
       while true do
@@ -72,8 +70,6 @@ class ApkSnapshotService
 
         accounts_in_use = GoogleAccount.where(in_use: true).count
 
-        elapsed = (Time.now - start).to_i
-
         print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size} \r"
 
         if progress == 100.0
@@ -86,19 +82,27 @@ class ApkSnapshotService
 
     end
 
+    def accounts
+
+      j = ApkSnapshotJob.last
+
+      i = 1
+      GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.apk_snapshot_job_id = ?',j.id).each do |ga|
+        snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: j.id).first
+        puts "#{i}.) #{ga.id}  |  in_use : #{ga.in_use}  |  status : #{snap.status}"
+        i += 1
+      end
+
+      puts "#{Sidekiq::Workers.new.size} workers"
+
+    end
+
     def clear_accounts
       GoogleAccount.all.each do |ga|
         ga.in_use = false
         ga.save
       end
     end
-
-    # def fuck
-    #   # ApkSnapshotServiceWorker.perform_async(nil, nil, true) if Rails.env.production?
-    #   j = ApkSnapshotJob.last
-    #   j.is_fucked = true
-    #   j.save!
-    # end
 
     def running
       workers = Sidekiq::Workers.new

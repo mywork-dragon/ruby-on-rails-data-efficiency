@@ -28,32 +28,31 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account = optimal_account()
+      best_account = optimal_account(apk_snapshot_job_id)
+
+      if !best_account
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      end
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
-      email = best_account.email
-      password = best_account.password
-      android_identifier = best_account.android_identifier
-
       start_time = Time.now()
 
       ApkDownloader.configure do |config|
-        config.email = email
-        config.password = password
-        config.android_id = android_identifier
+        config.email = best_account.email
+        config.password = best_account.password
+        config.android_id = best_account.android_identifier
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name)
+      timeout(180) do
+        ApkDownloader.download!(app_identifier, file_name)
+      end
 
     rescue => e
-
-      best_account.in_use = false
-      best_account.save
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
@@ -76,32 +75,24 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      best_account.in_use = false
-      best_account.save
-
       File.delete(file_name)
       
     end
 
   end
 
-  def optimal_account
+  def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.where(in_use: false).order(:last_used)
+    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }
 
     ga.each do |a|
 
-      best = ga.limit(5).sample
-      best.last_used = DateTime.now
-      best.save
+      a.last_used = DateTime.now
+      a.save
 
-      c = ApkSnapshot.where(google_account_id: best.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count
 
-      if c < 1400
-        best.in_use = true
-        best.save
-        return best
-      end
+      return a if c < 1400
 
     end
 
