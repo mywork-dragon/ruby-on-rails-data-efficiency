@@ -46,6 +46,7 @@ class AppStoreSnapshotServiceWorker
         developer_app_store_identifier
         icon_url_350x350
         icon_url_175x175
+        first_released
       )
     
       single_column_attributes.each do |sca|

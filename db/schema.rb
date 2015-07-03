@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150626033826) do
+ActiveRecord::Schema.define(version: 20150703002132) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -419,9 +419,11 @@ ActiveRecord::Schema.define(version: 20150626033826) do
     t.string   "icon_url_350x350"
     t.string   "icon_url_175x175"
     t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
+    t.date     "first_released"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
+  add_index "ios_app_snapshots", ["first_released"], name: "index_ios_app_snapshots_on_first_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id", "name"], name: "index_ios_app_snapshots_on_ios_app_id_and_name", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
