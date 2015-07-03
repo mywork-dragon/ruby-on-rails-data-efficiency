@@ -29,6 +29,7 @@ class AppStoreService
         ratings_json
         recommended_age_json
         required_ios_version_json
+        first_released_json
       )
     end
     
@@ -296,6 +297,10 @@ class AppStoreService
   
   def required_ios_version_json
     @json['minimumOsVersion']
+  end
+  
+  def first_released_json
+    @json['releaseDate'].to_date
   end
   
   def required_ios_version_html
