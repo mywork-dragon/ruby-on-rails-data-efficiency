@@ -83,14 +83,14 @@ class ApkSnapshotServiceWorker
 
   def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }.shuffle
+    ga = GoogleAccount.order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }
 
     ga.each do |a|
 
       a.last_used = DateTime.now
       a.save
 
-      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
+      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count
 
       return a if c < 1400
 
