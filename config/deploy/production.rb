@@ -17,7 +17,7 @@ scraper_servers = %w(
 role :app, [web_server] + scraper_servers + [api_server]
 role :web, web_server
 role :api, api_server
-role :db,  web_server
+role :db,  web_server #must have this do migrate db
 role :scraper, scraper_servers
 
 
