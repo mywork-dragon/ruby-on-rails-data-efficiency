@@ -29,7 +29,7 @@ class ApkSnapshotServiceWorker
     begin
 
       # best_account = optimal_account(apk_snapshot_job_id)
-      best_account = mutex_account(apk_snapshot_job_id)
+      best_account = mutex_account()
 
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
@@ -88,13 +88,9 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def mutex_account(apk_snapshot_job_id)
-    mutex = RedisMutex.new(:optimal_account)
-    if mutex.lock
+  def mutex_account
+    RedisMutex.with_lock(:optimal_account) do
       optimal_account()
-      mutex.unlock
-    else
-      ApkSnapshotException.create(name: "failed to acquire lock!", apk_snapshot_job_id: apk_snapshot_job_id)
     end
   end
 
