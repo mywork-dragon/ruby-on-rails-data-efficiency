@@ -28,8 +28,7 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      # best_account = optimal_account(apk_snapshot_job_id)
-      best_account = mutex_account()
+      best_account = optimal_account()
 
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
@@ -88,14 +87,8 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def mutex_account
-    # RedisMutex.with_lock(:optimal_account) do
-    #   optimal_account()
-    # end
-    optimal_account()
-  end
-
   def optimal_account
+    sleep rand(0..10)*0.1
     ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
     return false if ga.nil?
     ga.each do |a|
