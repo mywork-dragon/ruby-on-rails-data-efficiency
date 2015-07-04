@@ -88,7 +88,6 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account
-    sleep rand(0..10)*0.1
     ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
     return false if ga.nil?
     ga.each do |a|
