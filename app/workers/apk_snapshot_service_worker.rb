@@ -89,9 +89,10 @@ class ApkSnapshotServiceWorker
   end
 
   def mutex_account
-    RedisMutex.with_lock(:optimal_account) do
-      optimal_account()
-    end
+    # RedisMutex.with_lock(:optimal_account) do
+    #   optimal_account()
+    # end
+    optimal_account()
   end
 
   def optimal_account
