@@ -9,7 +9,7 @@ class ApkSnapshotService
       end
     end
 
-    def run_n(notes, size = 100)
+    def run_n(notes, size = 10)
       workers = Sidekiq::Workers.new
 
       clear_accounts()

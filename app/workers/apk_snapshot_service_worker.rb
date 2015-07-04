@@ -89,24 +89,36 @@ class ApkSnapshotServiceWorker
 
   def optimal_account(apk_snapshot_job_id)
 
-    ga = GoogleAccount.where(in_use: false).order(last_used: :asc).limit(5).select{ |a| ApkSnapshot.where(google_account_id: a.id, apk_snapshot_job_id: apk_snapshot_job_id, status: nil).count == 0 }
+    mutex = RedisMutex.new('non-blocking', block: 0, expire: 10.minutes)
 
-    ga.each do |a|
+    if mutex.lock
 
-      a.last_used = DateTime.now
-      a.save
+      begin
 
-      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count
+        ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
+        
+        return false if ga.nil?
 
-      if c < 1400
-        a.in_use = true
-        a.save
-        return a
+        ga.each do |a|
+
+          next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+
+          a.in_use = true
+          a.save
+
+          return a
+
+        end
+
+        return false
+
+      ensure
+        mutex.unlock
       end
 
+    else
+      ApkSnapshotException.create(name: 'failed to acquire lock!', apk_snapshot_job_id: apk_snapshot_job_id)
     end
-
-    false
 
   end
 
