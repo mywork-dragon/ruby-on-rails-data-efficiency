@@ -28,7 +28,8 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account = optimal_account(apk_snapshot_job_id)
+      # best_account = optimal_account(apk_snapshot_job_id)
+      best_account = mutex_account(apk_snapshot_job_id)
 
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
@@ -87,39 +88,28 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def optimal_account(apk_snapshot_job_id)
-
-    mutex = RedisMutex.new('non-blocking', block: 0, expire: 10.minutes)
-
+  def mutex_account(apk_snapshot_job_id)
+    mutex = RedisMutex.new(:optimal_account)
     if mutex.lock
-
-      begin
-
-        ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
-        
-        return false if ga.nil?
-
-        ga.each do |a|
-
-          next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-
-          a.in_use = true
-          a.save
-
-          return a
-
-        end
-
-        return false
-
-      ensure
-        mutex.unlock
-      end
-
+      optimal_account()
+      mutex.unlock
     else
-      ApkSnapshotException.create(name: 'failed to acquire lock!', apk_snapshot_job_id: apk_snapshot_job_id)
+      ApkSnapshotException.create(name: "failed to acquire lock!", apk_snapshot_job_id: apk_snapshot_job_id)
     end
+  end
 
+  def optimal_account
+    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
+    return false if ga.nil?
+    ga.each do |a|
+      a.last_used = DateTime.now
+      a.save
+      next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+      a.in_use = true
+      a.save
+      return a
+    end
+    return false
   end
 
 end
