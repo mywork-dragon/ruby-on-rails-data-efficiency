@@ -1,8 +1,6 @@
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
-  @lock = RemoteLock.new(RemoteLock::Adapters::Redis.new(redis))
-
   sidekiq_options retry: false
   
   MAX_TRIES = 3
@@ -30,11 +28,7 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      # RedisMutex.with_lock(:account) do
-      #   best_account = optimal_account()
-      # end
-
-      best_account = lock_account()
+      best_account = optimal_account()
 
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
@@ -91,12 +85,6 @@ class ApkSnapshotServiceWorker
       
     end
 
-  end
-
-  def lock_account
-    @lock.synchronize("optimal_account") do
-      optimal_account()
-    end
   end
 
   def optimal_account
