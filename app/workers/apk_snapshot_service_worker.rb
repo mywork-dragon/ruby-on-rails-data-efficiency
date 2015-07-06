@@ -88,7 +88,7 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account
-    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5)
+    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(3).lock(true)
     return false if ga.nil?
     ga.each do |a|
       a.last_used = DateTime.now
