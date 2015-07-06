@@ -68,8 +68,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       }
     };
 
-    $scope.getCompanyContacts = function(companyId) {
-      apiService.getCompanyContacts(companyId).success(function() {
+    $scope.getCompanyContacts = function(websites) {
+      apiService.getCompanyContacts(websites).success(function() {
 
       });
     };

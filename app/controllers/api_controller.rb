@@ -584,32 +584,75 @@ class ApiController < ApplicationController
 
   def get_company_contacts
 
-    company_id = params['companyId']
+    company_websites = params['companyWebsites']
     contacts = []
 
-    ClearbitContact.
+    # takes up to five websites associated with company & creates array of clearbit_contacts objects
+    company_websites.first(5).each do |url|
 
-    # check to see if previous record exists and < 2 months old
+      # finds matching record in website table
+      website = Website.find_by(url: url)
 
-      # If yes, yes, return record
+      # finds contact object for
+      clearbit_contacts_for_website = ClearbitContact.where(website_id: website.id)
 
-      # If either no, hit clearbit api, save to new record & return record
+      if clearbit_contacts_for_website.nil? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
+        puts "############################ API PING ENTERED #############################"
+        puts clearbit_contacts_for_website.first.updated_at
+        puts clearbit_contacts_for_website.first.updated_at > 60.days.ago
+        puts 60.days.ago
+        begin
 
-    prospects = Clearbit::Prospector.search(domain: 'stripe.com')
+          new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
 
-    prospects.each do |contact|
-      contacts << {
-          clearBitId: contact.id,
-          givenName: contact.givenName,
-          familyName: contact.familyName,
-          fullName: contact.name.full_name,
-          title: contact.title,
-          email: contact.email,
-          linkedin: contact.linkedin
-      }
+          ClearbitContact.where(website_id: website.id).destroy_all
+
+          new_clearbit_contacts.each do |contact|
+            # add to results hash (to return to front end)
+            contacts << {
+              website_id: website.id,
+              clearBitId: contact.id,
+              givenName: contact.givenName,
+              familyName: contact.familyName,
+              fullName: contact.name.full_name,
+              title: contact.title,
+              email: contact.email,
+              linkedin: contact.linkedin
+            }
+
+            # save as new records to DB
+            puts new_clearbit_contacts
+            clearbit_contact = ClearbitContact.create(website_id: website.id)
+            clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
+          end
+
+        rescue Nestful::ClientError
+          contacts << {error: 'ClientError'}
+        end
+
+      # if record exists and is no more than 60 days old
+      else
+
+        puts "############################ DB PING ENTERED #############################"
+
+        clearbit_contacts_for_website.each do |clearbit_contact|
+
+          # add to results hash (to return to front end)
+          contacts << {
+            website_id: website.id,
+            clearBitId: clearbit_contact.id,
+            givenName: clearbit_contact.given_name,
+            familyName: clearbit_contact.family_name,
+            fullName: clearbit_contact.full_name,
+            title: clearbit_contact.title,
+            email: clearbit_contact.email,
+            linkedin: clearbit_contact.linkedin
+          }
+        end
+      end
     end
 
-    render json: {:contacts => contacts}
+    render json: {:contacts => contacts || null}
 
   end
 

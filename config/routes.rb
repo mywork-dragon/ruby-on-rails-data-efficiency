@@ -64,7 +64,7 @@ Rails.application.routes.draw do
   get 'api/user/tos' => 'api#user_tos_check'
   put 'api/user/tos' => 'api#user_tos_set'
 
-  get 'api/company/contacts' => 'api#get_company_contacts'
+  post 'api/company/contacts' => 'api#get_company_contacts'
 
   
   # API for customers

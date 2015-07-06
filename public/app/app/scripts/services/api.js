@@ -69,12 +69,12 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
       },
-      getCompanyContacts: function(companyId) {
+      getCompanyContacts: function(websites) {
         return $http({
-          method: 'GET',
+          method: 'POST',
           url: API_URI_BASE + 'api/company/contacts',
-          params: {
-            companyId: companyId
+          data: {
+            companyWebsites: websites
           }
         });
       }
