@@ -88,17 +88,25 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account
-    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(3).lock(true)
-    return false if ga.nil?
-    ga.each do |a|
-      a.last_used = DateTime.now
-      a.save
-      next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-      a.in_use = true
-      a.save
-      return a
+    GoogleAccount.transaction do
+      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+      ga.last_used = DateTime.now
+      ga.save
+      next if ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+      ga.in_use = true
+      ga.save
+      ga
     end
-    return false
+    # return false if ga.nil?
+    # ga.each do |a|
+    #   a.last_used = DateTime.now
+    #   a.save
+    #   next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+    #   a.in_use = true
+    #   a.save
+    #   return a
+    # end
+    # return false
   end
 
 end
