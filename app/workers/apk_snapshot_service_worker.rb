@@ -28,9 +28,11 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      RedisMutex.with_lock(:account) do
-        best_account = optimal_account()
-      end
+      # RedisMutex.with_lock(:account) do
+      #   best_account = optimal_account()
+      # end
+
+      best_account = optimal_account()
 
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)

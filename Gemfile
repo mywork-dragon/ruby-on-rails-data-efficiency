@@ -124,6 +124,6 @@ gem 'apk_downloader', '1.1.5'
 
 gem 'parallel', '1.6.0'
 
-gem 'redis-classy', '2.2.0'
+# gem 'redis-classy', '2.2.0'
 
-gem 'redis-mutex', '4.0.0'
+# gem 'redis-mutex', '4.0.0'
