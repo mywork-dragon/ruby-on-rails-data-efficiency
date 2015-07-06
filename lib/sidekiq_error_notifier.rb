@@ -1,7 +1,7 @@
-class SidekiqErrorNotifier
+# class SidekiqErrorNotifier
 
-  def self.notify(exception, context_hash)
-  	ApkSnapshotException.create(name: exception)
-  end
+#   def self.notify(exception, context_hash)
+#   	ApkSnapshotException.create(name: exception)
+#   end
 
-end
+# end

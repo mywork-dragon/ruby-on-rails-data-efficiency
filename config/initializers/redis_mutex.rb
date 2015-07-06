@@ -1,1 +1,1 @@
-# RedisClassy.redis = Redis.new
+RedisClassy.redis = Redis.new
