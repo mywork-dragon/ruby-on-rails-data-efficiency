@@ -30,6 +30,8 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account()
 
+      raise 'unable to find an account' if best_account.blank?
+
       if !best_account
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
       end
