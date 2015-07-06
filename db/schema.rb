@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703002132) do
+ActiveRecord::Schema.define(version: 20150706232217) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -650,6 +650,23 @@ ActiveRecord::Schema.define(version: 20150703002132) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "super_proxies", force: true do |t|
+    t.boolean  "active"
+    t.string   "public_ip"
+    t.string   "private_ip"
+    t.integer  "port"
+    t.date     "last_used"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "super_proxies", ["active"], name: "index_super_proxies_on_active", using: :btree
+  add_index "super_proxies", ["last_used"], name: "index_super_proxies_on_last_used", using: :btree
+  add_index "super_proxies", ["port", "private_ip"], name: "index_super_proxies_on_port_and_private_ip", using: :btree
+  add_index "super_proxies", ["port"], name: "index_super_proxies_on_port", using: :btree
+  add_index "super_proxies", ["private_ip"], name: "index_super_proxies_on_private_ip", using: :btree
+  add_index "super_proxies", ["public_ip"], name: "index_super_proxies_on_public_ip", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email"
