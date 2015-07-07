@@ -44,15 +44,15 @@ set :super_scraper_processes, 50
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-on roles(:scraper) do
-  set :sidekiq_queue, %w(old_default)
-end
+# on roles(:scraper) do
+#   set :sidekiq_queue, %w(old_default)
+# end
+#
+# on roles(:super_scraper) do
+#   set :sidekiq_queue, %w(critical default)
+# end
 
-on roles(:super_scraper) do
-  set :sidekiq_queue, %w(critical default)
-end
-
-#set :sidekiq_queue, %w(critical default low)
+set :sidekiq_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper]
 
