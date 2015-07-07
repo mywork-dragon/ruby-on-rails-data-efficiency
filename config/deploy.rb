@@ -38,12 +38,21 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 
 set :sidekiq_monit_default_hooks, false
 
-set :sidekiq_role, :scraper
+set :sidekiq_role, [:scraper, :super_scraper]
+set :scraper_processes, 25
+set :super_scraper_processes, 50
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-# set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
-set :sidekiq_queue, %w(critical default low)
+on roles(:scraper) do
+  set :sidekiq_queue, %w(old_default)
+end
+
+on roles(:super_scraper) do
+  set :sidekiq_queue, %w(critical default)
+end
+
+#set :sidekiq_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper]
 
