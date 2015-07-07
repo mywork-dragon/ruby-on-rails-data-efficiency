@@ -5,14 +5,14 @@ class Tor
   class << self
     
     # @param bypass using the local IP instead (only available in dev)
-    def get(url, bypass: false, new_servers: false)
+    def get(url, bypass: false)
       
       if !Rails.env.production? 
         
         if bypass
           return open(url).read
         else
-          return get_using_proxy(url, '127.0.0.1') #make sure you run Tor locally
+          return get_using_proxy(url, ip: '127.0.0.1') #make sure you run Tor locally
         end
         
       end
@@ -21,19 +21,11 @@ class Tor
         raise 'Tor must be used in production'
       end
       
-      if new_servers
-        port = next_port
-        
-        page = get_using_proxy(url, '172.31.37.104', port: port)
-        
-        return page
-      end
-      
       proxy = next_proxy
       proxy.last_used = DateTime.now
       proxy.save
       
-      page = get_using_proxy(url, proxy.private_ip)
+      page = get_using_proxy(url, ip: proxy.private_ip, port: proxy.port)
       
       page
     end
@@ -54,7 +46,7 @@ class Tor
     
     def check_server(url, proxy)
       begin
-        page = get_using_proxy(url, proxy.private_ip) 
+        page = get_using_proxy(url, ip: proxy.private_ip, port: proxy.port) 
       
         puts ["Proxy id: #{proxy.id}", "Proxy public IP: #{proxy.public_ip}; Response: #{page}"].join(" | ")
         puts ""
@@ -76,14 +68,10 @@ class Tor
     end
     
     def next_proxy
-      Proxy.order(last_used: :asc).limit(5).sample
+      SuperProxy.order(last_used: :asc).limit(5).sample
     end
     
-    def next_port
-      rand(50000..50099)
-    end
-    
-    def get_using_proxy(url, ip, port: 9050, limit: 10)
+    def get_using_proxy(url, ip:, port: 9050, limit: 10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
       uri = URI.parse(url)
@@ -104,7 +92,7 @@ class Tor
       when Net::HTTPRedirection  
         location = response['location']
         #puts "Redirected to: #{location}"
-        get_using_proxy(location, ip, port: port, limit: limit - 1)
+        get_using_proxy(location, ip: ip, port: port, limit: limit - 1)
       else
         response.error!
       end
