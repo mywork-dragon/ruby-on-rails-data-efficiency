@@ -30,11 +30,17 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account()
 
-      raise 'unable to find an account' if best_account.blank?
+      # 1 == accounts are blank
+      # 2 == accounts are false
 
-      if !best_account
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-      end
+      raise '1' if best_account.blank?
+      raise '2' if !best_account
+
+      # if accounts are false or blank it should raise an error and then not do any of the stuff afterwords
+
+      # if !best_account
+        # ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      # end
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -50,7 +56,7 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      ApkSnapshotException.create(name: "#{file_name} is downloading from #{best_account.email}", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      # ApkSnapshotException.create(name: "#{file_name} is downloading from #{best_account.email}", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
       timeout(180) do
         ApkDownloader.download!(app_identifier, file_name)
@@ -58,12 +64,18 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      ba = if best_account.blank? then nil else best_account.id end
+      if e.message != '1' && e.message != '2'
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: ba)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
-      best_account.in_use = false
-      best_account.save
+        best_account.in_use = false
+        best_account.save
+
+      else
+
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+     
+      end
 
       if (@try += 1) < MAX_TRIES
         retry
