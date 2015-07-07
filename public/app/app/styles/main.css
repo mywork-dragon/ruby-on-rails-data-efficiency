@@ -7343,6 +7343,10 @@ select option:empty {
   margin: 0;
 }
 
+#appPage #companyContactsTable {
+  clear: both;
+}
+
 .companyPageRow {
   margin-left: 0px;
   margin-right: 0px;

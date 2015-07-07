@@ -225,16 +225,18 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
-                <!--
-                <li>
-                  <span class="icon fa fa-envelope-o"></span>
-                  <label>Company Emails:</label>
-                </li>
-                -->
                 <li>
                   <span class="icon fa fa-briefcase"></span>
                   <label>Company:</label>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
+                </li>
+                <li id="showCompanyEmailsButtonLi">
+                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites)">Load Contact Emails</button>
+                  <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                    <div class="loading outer">
+                      <div class="loading inner"></div>
+                    </div>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -313,6 +315,66 @@
 
     </div>
 
+  </div>
+
+  <div class="page page-table" data-ng-controller="TableCtrl">
+
+    <!-- Company Apps Table -->
+    <section class="panel panel-default table-dynamic" ng-show="contactsLoaded" id="companyContactsTable">
+
+      <div class="panel-heading" id="companyContactsTableHeading">
+        <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
+      </div>
+
+      <div id="results-table-wrapper">
+
+        <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th><div class="th normal-right-padding">
+              Full Name
+            </div></th>
+            <th><div class="th normal-right-padding appDetailsHeader">
+              Title
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Email
+            </div></th>
+            <th><div class="th normal-right-padding">
+              LinkedIn
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="queryInProgress">
+          <tr data-ng-repeat="contact in companyContacts">
+            <td>
+              {{contact.fullName}}
+            </td>
+            <td>
+              {{contact.title}}
+            </td>
+            <td>
+              <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
+            </td>
+            <td>
+              <a href="https://www.linkedin.com/{{contact.linkedin}}">www.linkedin.com/{{contact.linkedin}}</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="tableStatusMessage" ng-show="contactsLoading || companyContacts.length < 1">
+          <h5 data-ng-hide="companyContacts.length > 0 || !contactsLoaded">Sorry, No Contacts Available</h5>
+          <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
   </div>
 
   <!-- Modals -->

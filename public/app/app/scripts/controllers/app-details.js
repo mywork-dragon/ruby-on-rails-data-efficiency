@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService) {
 
   $scope.load = function() {
 
@@ -69,6 +69,22 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   };
 
   $scope.load();
+
+  $scope.contactsLoading = false;
+  $scope.contactsLoaded = false;
+
+  $scope.getCompanyContacts = function(websites) {
+
+    $scope.contactsLoading = true;
+    apiService.getCompanyContacts(websites).success(function(data) {
+      $scope.companyContacts = data.contacts;
+      $scope.contactsLoading = false;
+      $scope.contactsLoaded = true;
+    }).error(function() {
+      $scope.contactsLoading = false;
+      $scope.contactsLoaded = false;
+    });
+  };
 
   /* -------- Mixpanel Analytics Start -------- */
   mixpanel.track(
