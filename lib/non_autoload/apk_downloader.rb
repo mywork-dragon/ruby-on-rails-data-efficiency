@@ -10,15 +10,18 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package
 
-      if Rails.env.production?
-        # proxy = Tor.next_proxy_old
-        # proxy.last_used = DateTime.now
-        # @ip = proxy.private_ip
-        # proxy.save
-        @ip = '172.31.32.44'
-      elsif Rails.env.development?
-        @ip = '127.0.0.1'
-      end
+      # if Rails.env.production?
+      #   # proxy = Tor.next_proxy_old
+      #   # proxy.last_used = DateTime.now
+      #   # @ip = proxy.private_ip
+      #   # proxy.save
+      # elsif Rails.env.development?
+      #   @ip = '127.0.0.1'
+      # end
+
+      @ip = '172.31.32.44'
+      @port = '8888'
+      # JSON.load(open('https://wtfismyip.com/json', proxy: URI::parse('http://172.31.32.44:8888')))
 
       log_in!
       doc = details(package).detailsResponse.docV2
@@ -36,8 +39,9 @@ if defined?(ApkDownloader)
 
     end
 
-    def use_tor(host, port)
-      Net::HTTP.SOCKSProxy(@ip, 8888).new(host, port)
+    def use_proxy(host, port)
+      # Net::HTTP.SOCKSProxy(@ip, @port).new(host, port)
+      Net::HTTP.new(host, port, @ip, @port)
     end
 
     def log_in!
@@ -63,7 +67,7 @@ if defined?(ApkDownloader)
       host = LoginUri.host
       port = LoginUri.port
 
-      login_http = use_tor(host, port)
+      login_http = use_proxy(host, port)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
@@ -95,7 +99,7 @@ if defined?(ApkDownloader)
       host = url.host
       port = url.port
 
-      http = use_tor(host, port)
+      http = use_proxy(host, port)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -124,7 +128,7 @@ if defined?(ApkDownloader)
         host = GoogleApiUri.host
         port = GoogleApiUri.port
 
-        @http = use_tor(host, port)
+        @http = use_proxy(host, port)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
