@@ -108,8 +108,8 @@
 <div class="row companyPageRow">
   <div class="page page-table" data-ng-controller="TableCtrl">
 
+    <!-- Company Apps Table -->
     <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
-
 
         <div class="panel-heading" id="listViewTableHeading">
           <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
@@ -206,52 +206,19 @@
             </div>
           </div>
 
-          <!-- Modals -->
-          <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-          <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
-          <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
-
         </div>
 
-        <!--
-        <footer class="table-footer">
-          <div class="row">
-            <div class="col-md-6 page-num-info">
-
-                          <span>
-                              Show
-                              <select data-ng-model="numPerPage"
-                                      data-ng-options="num for num in numPerPageOpt"
-                                      data-ng-change="onNumPerPageChange()">
-                              </select>
-                              entries per page
-                          </span>
-
-            </div>
-
-            <div class="col-md-6 text-right pagination-container">
-              <pagination class="pagination-sm"
-                          ng-model="currentPage"
-                          total-items="numApps"
-                          max-size="4"
-                          ng-change="select(currentPage, tags)"
-                          items-per-page="numPerPage"
-                          rotate="false"
-                          boundary-links="true"></pagination>
-            </div>
-
-          </div>
-        </footer>
-        -->
       </div>
 
     </section>
 
   </div>
 
-</div>
-
   <!-- Modals -->
   <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
+</div>
 
 </div>
