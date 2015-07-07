@@ -38,8 +38,8 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 
 set :sidekiq_monit_default_hooks, false
 
-# set :sidekiq_role, :scraper
-set :sidekiq_role, [:scraper, :super_scraper]
+set :sidekiq_role, :scraper
+# set :sidekiq_role, [:scraper, :super_scraper]
 set :scraper_processes, 25
 set :super_scraper_processes, 50
 set :sidekiq_log, '/home/deploy/sidekiq.log'
