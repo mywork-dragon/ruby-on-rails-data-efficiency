@@ -76,6 +76,11 @@
                 </li>
                 <li id="showCompanyEmailsButtonLi">
                   <button id="showCompanyEmailsButton" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites)">Get Contact Emails</button>
+                  <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                    <div class="loading outer">
+                      <div class="loading inner"></div>
+                    </div>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -89,7 +94,7 @@
   <div class="page page-table" data-ng-controller="TableCtrl">
 
     <!-- Company Apps Table -->
-    <section class="panel panel-default table-dynamic">
+    <section class="panel panel-default table-dynamic" ng-show="contactsLoaded" id="companyContactsTable">
 
       <div class="panel-heading" id="companyContactsTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>

@@ -7348,6 +7348,14 @@ select option:empty {
   margin-right: 0px;
 }
 
+#companyPage .info-column {
+  padding-bottom: 0px;
+}
+
+#companyContactsTable {
+  margin-bottom: 350px;
+}
+
 .companyPageWebsiteLink {
   color: #767676;
 }
