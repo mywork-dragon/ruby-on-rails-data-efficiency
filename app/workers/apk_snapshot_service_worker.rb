@@ -58,7 +58,7 @@ class ApkSnapshotServiceWorker
 
       if e.message != '1' && e.message != '2'
 
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
         best_account.in_use = false
         best_account.save
@@ -81,13 +81,19 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
+      begin
+        unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      rescue => e
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+      else
+        apk_snap.unpack_time = unpack_time
+      end
+
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.download_time = download_time
-      apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save
 
