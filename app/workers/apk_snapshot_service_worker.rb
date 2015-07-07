@@ -81,13 +81,13 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
-      begin
-        unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
-      rescue => e
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
-      else
-        apk_snap.unpack_time = unpack_time
-      end
+      # begin
+      #   unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      # rescue => e
+      #   ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+      # else
+      #   apk_snap.unpack_time = unpack_time
+      # end
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
