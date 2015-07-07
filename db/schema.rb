@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150706232217) do
+ActiveRecord::Schema.define(version: 20150707001543) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -656,7 +656,7 @@ ActiveRecord::Schema.define(version: 20150706232217) do
     t.string   "public_ip"
     t.string   "private_ip"
     t.integer  "port"
-    t.date     "last_used"
+    t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
