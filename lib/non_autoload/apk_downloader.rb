@@ -11,10 +11,11 @@ if defined?(ApkDownloader)
     def fetch_apk_data package
 
       if Rails.env.production?
-        proxy = Tor.next_proxy_old
-        proxy.last_used = DateTime.now
-        @ip = proxy.private_ip
-        proxy.save
+        # proxy = Tor.next_proxy_old
+        # proxy.last_used = DateTime.now
+        # @ip = proxy.private_ip
+        # proxy.save
+        @ip = '172.31.32.44'
       elsif Rails.env.development?
         @ip = '127.0.0.1'
       end
@@ -36,7 +37,7 @@ if defined?(ApkDownloader)
     end
 
     def use_tor(host, port)
-      Net::HTTP.SOCKSProxy(@ip, 9050).new(host, port)
+      Net::HTTP.SOCKSProxy(@ip, 8888).new(host, port)
     end
 
     def log_in!
