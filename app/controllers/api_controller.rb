@@ -588,7 +588,7 @@ class ApiController < ApplicationController
     contacts = []
 
     if company_websites.nil?
-      render json: {:error => 'no websites'}
+      render json: {:contacts => contacts}
     else
 
       # takes up to five websites associated with company & creates array of clearbit_contacts objects
@@ -647,7 +647,7 @@ class ApiController < ApplicationController
           end
         end
       end
-      render json: {:contacts => contacts || null}
+      render json: {:contacts => contacts}
     end
   end
 end

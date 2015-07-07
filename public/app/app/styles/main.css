@@ -7161,6 +7161,16 @@ i.infoTooltipIcon {
   text-align: center;
 }
 
+.tableStatusMessage {
+  width: 250px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  vertical-align: middle;
+  padding-top: 55px;
+  text-align: center;
+}
+
 .dashboard-tag-filter-selects > .tooltip {
   text-transform: none;
   font-size: 90%;
@@ -7192,30 +7202,30 @@ i.infoTooltipIcon {
   width: 10px;
 }
 
-#dashboardResultsTableHeading, #listViewTableHeading {
+#dashboardResultsTableHeading, #listViewTableHeading, #companyContactsTableHeading {
   height: 52px;
 }
 
-#dashboardResultsTableHeading strong, #listViewTableHeading strong {
+#dashboardResultsTableHeading strong, #listViewTableHeading strong, #companyContactsTableHeading strong {
   display: inline-block;
   margin-top: 9px;
 }
 
-#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select {
+#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select, #companyContactsTableHeading .ui-select {
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select, #appPageActionsPanel .ui-select select {
+#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select, #companyContactsTableHeading .ui-select select, #appPageActionsPanel .ui-select select {
   max-width: 170px;
   width: 170px;
 }
 
-#listViewTableHeading {
+#listViewTableHeading, #companyContactsTableHeading {
   padding-right: 8px;
 }
 
-#listViewTableHeading span, #listViewTableHeading button {
+#listViewTableHeading span, #listViewTableHeading button, #companyContactsTableHeading span, #companyContactsTableHeading button {
   margin-left: 5px;
 }
 
