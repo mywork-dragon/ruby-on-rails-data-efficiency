@@ -42,14 +42,7 @@ set :sidekiq_monit_default_hooks, false
 set :sidekiq_role, [:scraper, :super_scraper]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
-
-on roles(:scraper) do
-  set :sidekiq_concurrency, 25
-end
-
-on roles(:super_scraper) do
-  set :sidekiq_concurrency, 30
-end
+set :sidekiq_concurrency, 23
 
 set :sidekiq_queue, %w(critical default low)
 
