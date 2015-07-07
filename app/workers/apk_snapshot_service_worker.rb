@@ -50,6 +50,8 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
+      ApkSnapshotException.create(name: "#{file_name} is downloading from #{best_account.email}", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+
       timeout(180) do
         ApkDownloader.download!(app_identifier, file_name)
       end
@@ -117,38 +119,5 @@ class ApkSnapshotServiceWorker
 
   end
 
-
-
-    # try = 0
-    # begin
-    #   GoogleAccount.transaction do
-    #     ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
-    #     ga.last_used = DateTime.now
-    #     ga.save
-    #     next if ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #     ga.in_use = true
-    #     ga.save
-    #     ga
-    #   end
-    #   try +=1
-    #   raise if ga.blank?
-    # rescue
-    #   retry if try < 5
-    # else
-    #   return ga
-    # end
-  # end
-
-
-    # return false if ga.nil?
-    # ga.each do |a|
-    #   a.last_used = DateTime.now
-    #   a.save
-    #   next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #   a.in_use = true
-    #   a.save
-    #   return a
-    # end
-    # return false
 
 end
