@@ -36,12 +36,6 @@ class ApkSnapshotServiceWorker
       raise '1' if best_account.blank?
       raise '2' if !best_account
 
-      # if accounts are false or blank it should raise an error and then not do any of the stuff afterwords
-
-      # if !best_account
-        # ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-      # end
-
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
@@ -55,8 +49,6 @@ class ApkSnapshotServiceWorker
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
-
-      # ApkSnapshotException.create(name: "#{file_name} is downloading from #{best_account.email}", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
       timeout(180) do
         ApkDownloader.download!(app_identifier, file_name)
@@ -91,11 +83,11 @@ class ApkSnapshotServiceWorker
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.download_time = download_time
-      # apk_snap.unpack_time = unpack_time
+      apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save
 
