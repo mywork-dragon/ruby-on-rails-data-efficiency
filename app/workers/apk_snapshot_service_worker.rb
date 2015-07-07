@@ -56,7 +56,9 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      ba = if best_account.blank? then nil else best_account.id end
+
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: ba)
 
       best_account.in_use = false
       best_account.save
@@ -90,15 +92,54 @@ class ApkSnapshotServiceWorker
   end
 
   def optimal_account
-    GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
-      ga.last_used = DateTime.now
-      ga.save
-      next if ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-      ga.in_use = true
-      ga.save
-      ga
+
+    GoogleAccount.count.times do
+
+      account = GoogleAccount.transaction do
+        ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+        ga.last_used = DateTime.now
+        ga.save
+        ga
+      end
+
+      next if account.blank?
+
+      next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+
+      account.in_use = true
+      account.save
+      
+      return account
+
     end
+
+    false
+
+  end
+
+
+
+    # try = 0
+    # begin
+    #   GoogleAccount.transaction do
+    #     ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+    #     ga.last_used = DateTime.now
+    #     ga.save
+    #     next if ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+    #     ga.in_use = true
+    #     ga.save
+    #     ga
+    #   end
+    #   try +=1
+    #   raise if ga.blank?
+    # rescue
+    #   retry if try < 5
+    # else
+    #   return ga
+    # end
+  # end
+
+
     # return false if ga.nil?
     # ga.each do |a|
     #   a.last_used = DateTime.now
@@ -109,6 +150,5 @@ class ApkSnapshotServiceWorker
     #   return a
     # end
     # return false
-  end
 
 end
