@@ -30,11 +30,11 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account()
 
-      raise 'unable to find an account' if best_account.blank?
+      # 1 == accounts are blank
+      # 2 == accounts are false
 
-      if !best_account
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "all accounts are being used or dead", try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-      end
+      raise '1' if best_account.blank?
+      raise '2' if !best_account
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -56,12 +56,18 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      ba = if best_account.blank? then nil else best_account.id end
+      if e.message != '1' && e.message != '2'
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: ba)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
-      best_account.in_use = false
-      best_account.save
+        best_account.in_use = false
+        best_account.save
+
+      else
+
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+     
+      end
 
       if (@try += 1) < MAX_TRIES
         retry
@@ -77,11 +83,11 @@ class ApkSnapshotServiceWorker
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.download_time = download_time
-      # apk_snap.unpack_time = unpack_time
+      apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save
 
@@ -117,38 +123,5 @@ class ApkSnapshotServiceWorker
 
   end
 
-
-
-    # try = 0
-    # begin
-    #   GoogleAccount.transaction do
-    #     ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
-    #     ga.last_used = DateTime.now
-    #     ga.save
-    #     next if ApkSnapshot.where(google_account_id: ga.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #     ga.in_use = true
-    #     ga.save
-    #     ga
-    #   end
-    #   try +=1
-    #   raise if ga.blank?
-    # rescue
-    #   retry if try < 5
-    # else
-    #   return ga
-    # end
-  # end
-
-
-    # return false if ga.nil?
-    # ga.each do |a|
-    #   a.last_used = DateTime.now
-    #   a.save
-    #   next if ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #   a.in_use = true
-    #   a.save
-    #   return a
-    # end
-    # return false
 
 end
