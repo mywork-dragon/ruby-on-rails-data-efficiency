@@ -7307,6 +7307,7 @@ select option:empty {
   font-size: 16px;
   vertical-align: middle;
   width: 12px;
+  margin-bottom: 2px;
 }
 
 #appPage .icon.fa-mobile, #companyPage .icon.fa-mobile {
@@ -7351,4 +7352,49 @@ select option:empty {
 
 #companyDetailsTable {
   margin-bottom: 0px;
+}
+
+#showCompanyEmailsButtonLi {
+  border: none;
+  margin-bottom: 0px;
+}
+
+#showCompanyEmailsButton {
+  margin-top: 25px;
+  margin-bottom: 0px;
+  width: 60%;
+  margin-left: 20%;
+}
+
+.showCompanyEmailsSection {
+  padding-bottom: 20px !important;
+  border-bottom: 1px dashed #9A9A9A !important;
+  overflow: hidden;
+}
+
+.showCompanyEmailsSection a {
+  color: #767676;
+}
+
+.showCompanyEmailsSection:nth-child(even) {
+  background-color: #FCFCFC;
+}
+
+.showCompanyEmailsSection:last-of-type {
+  padding-bottom: 10px !important;
+  border-bottom: none !important;
+}
+
+.showCompanyEmailsSection h5 {
+  margin-bottom: 15px;
+}
+
+.showCompanyEmailsSection label {
+  width: auto;
+  margin-right: 5px;
+}
+
+#loadingSpinnerContainer {
+  text-align: center;
+  padding-top: 15px;
 }

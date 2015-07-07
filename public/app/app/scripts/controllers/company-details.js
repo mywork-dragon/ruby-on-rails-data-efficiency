@@ -68,9 +68,19 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       }
     };
 
-    $scope.getCompanyContacts = function(websites) {
-      apiService.getCompanyContacts(websites).success(function() {
+    $scope.contactsLoading = false;
+    $scope.contactsLoaded = false;
 
+    $scope.getCompanyContacts = function(websites) {
+
+      $scope.contactsLoading = true;
+      apiService.getCompanyContacts(websites).success(function(data) {
+        $scope.companyContacts = data.contacts;
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = true;
+      }).error(function() {
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = false;
       });
     };
 

@@ -600,12 +600,8 @@ class ApiController < ApplicationController
         # finds contact object for
         clearbit_contacts_for_website = ClearbitContact.where(website_id: website.id)
 
-        puts "----------------------------- ----------------------------- -----------------------------"
-        puts clearbit_contacts_for_website
-        puts "------------------"
-
         if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
-          puts "############################ API PING ENTERED #############################"
+
           begin
 
             new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
@@ -626,22 +622,17 @@ class ApiController < ApplicationController
               }
 
               # save as new records to DB
-              puts new_clearbit_contacts
               clearbit_contact = ClearbitContact.create(website_id: website.id)
               clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
             end
 
           rescue Nestful::ClientError
-            contacts << {error: 'ClientError'}
+            # contacts << {error: 'ClientError'}
           end
 
         # if record exists and is no more than 60 days old
         else
-
-          puts "############################ DB PING ENTERED #############################"
-
           clearbit_contacts_for_website.each do |clearbit_contact|
-
             # add to results hash (to return to front end)
             contacts << {
               website_id: website.id,

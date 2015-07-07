@@ -74,11 +74,29 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
-                <li>
-                  <span class="icon fa fa-envelope-o"></span>
-                  <label>Company Emails</label>
-                  <button type="submit" class="btn btn-default btn-sm" ng-click="getCompanyContacts(companyData.websites)">{{companyData.name}} Emails</button>
+                <li ng-hide="contactsLoaded" id="showCompanyEmailsButtonLi">
+                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites)">Get Contact Emails</button>
+                  <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                    <div class="loading outer">
+                      <div class="loading inner"></div>
+                    </div>
+                  </div>
                 </li>
+                <span ng-show="contactsLoaded">
+                  <li ng-repeat="contact in companyContacts" class="showCompanyEmailsSection">
+                    <h5><strong>{{contact.fullName}}</strong><span ng-if="contact.title"> - </span>{{contact.title}}</h5>
+                    <div class="col-md-6" ng-if="contact.email">
+                      <span class="icon fa fa-envelope"></span>
+                      <label>Email:</label>
+                      <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
+                    </div>
+                    <div class="col-md-6" ng-if="contact.linkedin">
+                      <span class="icon fa fa-linkedin"></span>
+                      <label>LinkedIn:</label>
+                      <div><a href="https://www.linkedin.com/{{contact.linkedin}}">www.linkedin.com/{{contact.linkedin}}</a></div>
+                    </div>
+                  </li>
+                </span>
               </ul>
             </div>
           </div>
