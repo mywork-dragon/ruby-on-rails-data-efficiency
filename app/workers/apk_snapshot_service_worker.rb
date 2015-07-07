@@ -28,7 +28,7 @@ class ApkSnapshotServiceWorker
 
     begin
 
-      best_account = optimal_account()
+      best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
 
       # 1 == accounts are blank
       # 2 == accounts are false
@@ -39,7 +39,7 @@ class ApkSnapshotServiceWorker
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
-      start_time = Time.now()
+      start_time = Time.now
 
       ApkDownloader.configure do |config|
         config.email = best_account.email
@@ -50,11 +50,9 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      # timeout(180) do
-      #   ApkDownloader.download!(app_identifier, file_name)
-      # end
-
-      ApkDownloader.download!(app_identifier, file_name)
+      timeout(180) do
+        ApkDownloader.download!(app_identifier, file_name)
+      end
 
     rescue => e
 
@@ -105,30 +103,49 @@ class ApkSnapshotServiceWorker
 
   end
 
-  def optimal_account
+  def optimal_account(apk_snapshot_job_id, apk_snap_id)
 
-    GoogleAccount.count.times do
+    gac = GoogleAccount.count
 
-      account = GoogleAccount.transaction do
-        ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
-        ga.last_used = DateTime.now
-        ga.save
-        ga
+    gac.times do |c|
+
+      account = fresh_account
+
+      if account.blank? && Sidekiq::Queue.new.size > 0
+        200.times do |i|
+          account = fresh_account
+          if account.present?
+            ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
+            break
+          end
+          sleep 1
+        end
       end
 
-      next if account.blank?
-
-      next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-
-      account.in_use = true
-      account.save
-      
-      return account
+      if account.present?
+        next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+        account.in_use = true
+        account.save
+        return account
+      elsif c < gac
+        next
+      else
+        return false
+      end
 
     end
 
     false
 
+  end
+
+  def fresh_account
+    GoogleAccount.transaction do
+      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+      ga.last_used = DateTime.now
+      ga.save
+      ga
+    end
   end
 
 
