@@ -54,6 +54,8 @@ class ApkSnapshotServiceWorker
       #   ApkDownloader.download!(app_identifier, file_name)
       # end
 
+      ApkDownloader.download!(app_identifier, file_name)
+
     rescue => e
 
       if e.message == '1' || e.message == '2'
@@ -81,13 +83,13 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
-      # begin
-      #   unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
-      # rescue => e
-      #   ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
-      # else
-      #   apk_snap.unpack_time = unpack_time
-      # end
+      begin
+        unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      rescue => e
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+      else
+        apk_snap.unpack_time = unpack_time
+      end
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
@@ -97,7 +99,7 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      # File.delete(file_name)
+      File.delete(file_name)
       
     end
 
