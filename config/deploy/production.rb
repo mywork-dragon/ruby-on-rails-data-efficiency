@@ -41,7 +41,7 @@ scraper_servers.each do |scraper_server|
 end
 
 super_scraper_servers.each do |super_scraper_server|
-  server super_scraper_server, user: deploy
+  server super_scraper_server, user: 'deploy'
 end
 
 # Custom SSH Options
