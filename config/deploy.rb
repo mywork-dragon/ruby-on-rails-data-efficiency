@@ -40,8 +40,6 @@ set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
 set :sidekiq_role, [:scraper, :super_scraper]
-set :scraper_processes, 30
-set :super_scraper_processes, 50
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
