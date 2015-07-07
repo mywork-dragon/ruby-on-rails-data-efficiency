@@ -1,3 +1,4 @@
+# Patch for 1.1.5
 if defined?(ApkDownloader)
 
   ApkDownloader::Api.module_eval do
@@ -10,7 +11,7 @@ if defined?(ApkDownloader)
     def fetch_apk_data package
 
       if Rails.env.production?
-        proxy = Tor.next_proxy
+        proxy = Tor.next_proxy_old
         proxy.last_used = DateTime.now
         @ip = proxy.private_ip
         proxy.save

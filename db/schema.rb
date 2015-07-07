@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150702225527) do
+ActiveRecord::Schema.define(version: 20150707001543) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -436,9 +436,11 @@ ActiveRecord::Schema.define(version: 20150702225527) do
     t.string   "icon_url_350x350"
     t.string   "icon_url_175x175"
     t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
+    t.date     "first_released"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
+  add_index "ios_app_snapshots", ["first_released"], name: "index_ios_app_snapshots_on_first_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id", "name"], name: "index_ios_app_snapshots_on_ios_app_id_and_name", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
@@ -665,6 +667,23 @@ ActiveRecord::Schema.define(version: 20150702225527) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "super_proxies", force: true do |t|
+    t.boolean  "active"
+    t.string   "public_ip"
+    t.string   "private_ip"
+    t.integer  "port"
+    t.datetime "last_used"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "super_proxies", ["active"], name: "index_super_proxies_on_active", using: :btree
+  add_index "super_proxies", ["last_used"], name: "index_super_proxies_on_last_used", using: :btree
+  add_index "super_proxies", ["port", "private_ip"], name: "index_super_proxies_on_port_and_private_ip", using: :btree
+  add_index "super_proxies", ["port"], name: "index_super_proxies_on_port", using: :btree
+  add_index "super_proxies", ["private_ip"], name: "index_super_proxies_on_private_ip", using: :btree
+  add_index "super_proxies", ["public_ip"], name: "index_super_proxies_on_public_ip", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email"

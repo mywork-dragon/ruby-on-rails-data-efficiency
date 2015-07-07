@@ -30,6 +30,12 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account()
 
+      # 1 == accounts are blank
+      # 2 == accounts are false
+
+      raise '1' if best_account.blank?
+      raise '2' if !best_account
+
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
@@ -44,14 +50,26 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
+      # timeout(180) do
+      #   ApkDownloader.download!(app_identifier, file_name)
+      # end
+
       ApkDownloader.download!(app_identifier, file_name)
 
     rescue => e
 
-      best_account.in_use = false
-      best_account.save
+      if e.message == '1' || e.message == '2'
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+
+      else
+
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+
+        best_account.in_use = false
+        best_account.save
+     
+      end
 
       if (@try += 1) < MAX_TRIES
         retry
@@ -62,18 +80,24 @@ class ApkSnapshotServiceWorker
 
     else
 
+      best_account.in_use = false
+      best_account.save
+
+      begin
+        unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      rescue => e
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+      else
+        apk_snap.unpack_time = unpack_time
+      end
+
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
-      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.download_time = download_time
-      apk_snap.unpack_time = unpack_time
       apk_snap.status = :success
       apk_snap.save
-
-      best_account.in_use = false
-      best_account.save
 
       File.delete(file_name)
       
@@ -83,25 +107,29 @@ class ApkSnapshotServiceWorker
 
   def optimal_account
 
-    ga = GoogleAccount.where(in_use: false).order(:last_used).limit(5).shuffle
+    GoogleAccount.count.times do
 
-    ga.each do |a|
-
-      a.last_used = DateTime.now
-      a.save
-
-      c = ApkSnapshot.where(google_account_id: a.id, :updated_at => (DateTime.now - 1)..DateTime.now).count 
-
-      if c < 1400
-        a.in_use = true
-        a.save
-        return a
+      account = GoogleAccount.transaction do
+        ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+        ga.last_used = DateTime.now
+        ga.save
+        ga
       end
+
+      next if account.blank?
+
+      next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+
+      account.in_use = true
+      account.save
+      
+      return account
 
     end
 
     false
 
   end
+
 
 end

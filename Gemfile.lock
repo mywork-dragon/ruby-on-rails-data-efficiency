@@ -62,7 +62,7 @@ GEM
     capistrano-rails (1.1.2)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capistrano-sidekiq (0.5.2)
+    capistrano-sidekiq (0.5.3)
       capistrano
       sidekiq
     celluloid (0.16.0)
@@ -284,8 +284,8 @@ DEPENDENCIES
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
-  capistrano-sidekiq (= 0.5.2)
   clearbit (~> 0.1.6.pre)
+  capistrano-sidekiq (= 0.5.3)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
   faker (= 1.4.3)

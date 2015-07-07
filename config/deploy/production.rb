@@ -14,11 +14,16 @@ scraper_servers = %w(
   54.86.80.102
 )
 
-role :app, [web_server] + scraper_servers + [api_server]
+super_scraper_servers = %w(
+  52.7.5.216
+)
+
+role :app, [web_server] + scraper_servers + [api_server] + super_scraper_servers
 role :web, web_server
 role :api, api_server
-role :db,  web_server
+role :db,  web_server #must have this do migrate db
 role :scraper, scraper_servers
+role :super_scraper, super_scraper_servers
 
 
 # Extended Server Syntax
@@ -33,6 +38,10 @@ server api_server, user: 'deploy'
 
 scraper_servers.each do |scraper_server|
   server scraper_server, user: 'deploy'
+end
+
+super_scraper_servers.each do |super_scraper_server|
+  server super_scraper_server, user: 'deploy'
 end
 
 # Custom SSH Options
