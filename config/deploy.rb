@@ -43,13 +43,13 @@ set :sidekiq_role, [:scraper, :super_scraper]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-# on roles(:scraper) do
-#   set :sidekiq_queue, %w(old_default)
-# end
-#
-# on roles(:super_scraper) do
-#   set :sidekiq_queue, %w(critical default)
-# end
+on roles(:scraper) do
+  set :sidekiq_concurrency, 25
+end
+
+on roles(:super_scraper) do
+  set :sidekiq_concurrency, 30
+end
 
 set :sidekiq_queue, %w(critical default low)
 
