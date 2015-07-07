@@ -71,6 +71,12 @@ class Tor
       SuperProxy.order(last_used: :asc).limit(5).sample
     end
     
+    # Uses old proxy table
+    # For Stephen while we get new stuff set up
+    def next_proxy_old
+      Proxy.order(last_used: :asc).limit(5).sample
+    end
+    
     def get_using_proxy(url, ip:, port: 9050, limit: 10)
       raise ArgumentError, 'HTTP redirect too deep' if limit == 0
       
