@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "$location", "$anchorScroll",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, $location, $anchorScroll) {
 
   $scope.load = function() {
 
@@ -80,7 +80,26 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       $scope.companyContacts = data.contacts;
       $scope.contactsLoading = false;
       $scope.contactsLoaded = true;
-    }).error(function() {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Company Contacts Requested", {
+          'websites': websites,
+          'companyName': $scope.appData.company.name,
+          'requestResults': data.contacts,
+          'requestResultsCount': data.contacts.length
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+    }).error(function(err) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Company Contacts Requested", {
+          'websites': websites,
+          'companyName': $scope.appData.company.name,
+          'requestError': err
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
       $scope.contactsLoading = false;
       $scope.contactsLoaded = false;
     });
