@@ -56,16 +56,16 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      if e.message != '1' && e.message != '2'
+      if e.message == '1' || e.message == '2'
 
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-
-        best_account.in_use = false
-        best_account.save
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
 
       else
 
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+
+        best_account.in_use = false
+        best_account.save
      
       end
 
