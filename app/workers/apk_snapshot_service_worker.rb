@@ -50,9 +50,9 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      timeout(180) do
-        ApkDownloader.download!(app_identifier, file_name)
-      end
+      # timeout(180) do
+      #   ApkDownloader.download!(app_identifier, file_name)
+      # end
 
     rescue => e
 
@@ -97,7 +97,7 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      File.delete(file_name)
+      # File.delete(file_name)
       
     end
 
