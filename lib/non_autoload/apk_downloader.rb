@@ -10,18 +10,12 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package
 
-      # if Rails.env.production?
-      #   # proxy = Tor.next_proxy_old
-      #   # proxy.last_used = DateTime.now
-      #   # @ip = proxy.private_ip
-      #   # proxy.save
-      # elsif Rails.env.development?
-      #   @ip = '127.0.0.1'
-      # end
-
-      @ip = '999.31.32.44'
-      @port = '8888'
-      # JSON.load(open('https://wtfismyip.com/json', proxy: URI::parse('http://172.31.32.44:8888')))
+      if Rails.env.production?
+        @proxy_ip = proxies
+        @proxy_port = 8888
+      elsif Rails.env.development?
+        @ip = '127.0.0.1'
+      end
 
       log_in!
       doc = details(package).detailsResponse.docV2
@@ -40,8 +34,22 @@ if defined?(ApkDownloader)
     end
 
     def use_proxy(host, port)
-      # Net::HTTP.SOCKSProxy(@ip, @port).new(host, port)
-      Net::HTTP.new(host, port, @ip, @port)
+      Net::HTTP.new(host, port, @proxy_ip, @proxy_port)
+    end
+
+    def proxies
+      %w(
+        172.31.36.248
+        172.31.32.44
+        172.31.36.118
+        172.31.36.192
+        172.31.37.27
+        172.31.24.26
+        172.31.24.153
+        172.31.20.230
+        172.31.29.18
+        172.31.20.1
+      ).sample
     end
 
     def log_in!
