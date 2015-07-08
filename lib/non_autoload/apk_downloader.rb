@@ -3,8 +3,8 @@ if defined?(ApkDownloader)
 
   ApkDownloader::Api.module_eval do
 
-    LoginUri = URI('http://android.clients.google.com/auth')
-    GoogleApiUri = URI('http://android.clients.google.com/fdfe')
+    LoginUri = URI('https://android.clients.google.com/auth')
+    GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
     attr_reader :auth_token, :ip
 
@@ -94,9 +94,9 @@ if defined?(ApkDownloader)
       port = LoginUri.port
 
       login_http = use_proxy(host, port)
-      # login_http.use_ssl = true
+      login_http.use_ssl = true
       # login_http.ssl_version="SSLv3"
-      # login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
       login_http.open_timeout = 30
 
       post = Net::HTTP::Post.new LoginUri.to_s
@@ -127,10 +127,10 @@ if defined?(ApkDownloader)
       port = url.port
 
       http = use_proxy(host, port)
-      # http.use_ssl = (url.scheme == 'https')
+      http.use_ssl = (url.scheme == 'https')
       # http.ssl_version="SSLv3"
-      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      # http.open_timeout = 500
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.open_timeout = 500
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
@@ -157,9 +157,9 @@ if defined?(ApkDownloader)
         port = GoogleApiUri.port
 
         @http = use_proxy(host, port)
-        # @http.use_ssl = true
+        @http.use_ssl = true
         # @http.ssl_version="SSLv3"
-        # @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         @http.open_timeout = 30
       end
 
