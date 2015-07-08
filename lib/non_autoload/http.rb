@@ -80,19 +80,3 @@ module Net
   end
 
 end
-
-# require 'net/http/exceptions'
-
-# require 'net/http/header'
-
-# require 'net/http/generic_request'
-# require 'net/http/request'
-# require 'net/http/requests'
-
-# require 'net/http/response'
-# require 'net/http/responses'
-
-# require 'net/http/proxy_delta'
-
-# require 'net/http/backward'
-
