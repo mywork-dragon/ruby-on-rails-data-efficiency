@@ -406,7 +406,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)']
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)', 'MightySignal Company Page']
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"
@@ -425,7 +425,8 @@ class ApiController < ApplicationController
           company.present? ? company.id : nil,
           company.present? ? company.name : nil,
           company.present? ? company.fortune_1000_rank : nil,
-          app.get_website_urls.join(", ")
+          app.get_website_urls.join(", "),
+          company.present? ? 'http://www.mightysignal.com/app/app#/app/ios/' + company.id.to_s : nil,
       ]
 
       apps << app_hash
@@ -448,7 +449,8 @@ class ApiController < ApplicationController
           company.present? ? company.id : nil,
           company.present? ? company.name : nil,
           company.present? ? company.fortune_1000_rank : nil,
-          app.get_website_urls.join(", ")
+          app.get_website_urls.join(", "),
+          company.present? ? 'http://www.mightysignal.com/app/app#/app/android/' + company.id.to_s : nil,
       ]
 
       apps << app_hash
@@ -587,8 +589,6 @@ class ApiController < ApplicationController
       render json: {:contacts => contacts}
       return
     else
-      
-      puts "company_websites: #{company_websites}"
 
       # takes up to five websites associated with company & creates array of clearbit_contacts objects
       company_websites.first(5).each do |url|
@@ -650,7 +650,7 @@ class ApiController < ApplicationController
 
         # if record exists and is no more than 60 days old
         else
-          
+
           clearbit_contacts_for_website.each do |clearbit_contact|
             # add to results hash (to return to front end)
             contacts << {
