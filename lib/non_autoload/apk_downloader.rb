@@ -48,7 +48,7 @@ if defined?(ApkDownloader)
     end
 
     def use_proxy(host, port)
-      Net::HTTP.new(host, port, @proxy_ip, @proxy_port)
+      Net::HTTP.SOCKSProxy(@proxy_ip, @proxy_port).new(host, port)
     end
 
     # def use_proxy(host, port)
