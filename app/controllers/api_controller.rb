@@ -619,21 +619,34 @@ class ApiController < ApplicationController
 
             new_clearbit_contacts.each do |contact|
               # add to results hash (to return to front end)
+              
+              contact_id = contact['id']
+              contact_name = contact['name']
+              if contact_name
+                contact_given_name = contact_name['givenName']
+                contact_family_name = contact_name['familyName']
+                contact_full_name = contact_name['fullName']
+              end
+              contact_title = contact['title']
+              contact_email = contact['email']
+              contact_linkedin = contact['linkedin']
+              
               contacts << {
                 website_id: (website.present? ? website.id : nil),
-                clearBitId: contact['id'],
-                givenName: contact['name']['givenName'],
-                familyName: contact['name']['familyName'],
-                fullName: contact['name']['fullName'],
-                title: contact['title'],
-                email: contact['email'],
-                linkedin: contact['linkedin']
+                clearBitId: contact_id,
+                givenName: contact_given_name,
+                familyName: contact_family_name,
+                fullName: contact_full_name,
+                title: contact_title,
+                email: contact_email,
+                linkedin: contact_linkedin
               }
 
               # save as new records to DB
               if website
                 clearbit_contact = ClearbitContact.create(website_id: website.id)
-                clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
+                clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                clearbit_contact.save
               end
             end
 
