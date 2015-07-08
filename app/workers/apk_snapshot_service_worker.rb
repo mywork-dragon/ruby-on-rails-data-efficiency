@@ -82,6 +82,8 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :failure
       apk_snap.save
 
+      raise
+
     else
 
       best_account.in_use = false
