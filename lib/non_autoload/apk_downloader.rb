@@ -19,7 +19,7 @@ if defined?(ApkDownloader)
       #   @ip = '127.0.0.1'
       # end
 
-      @ip = '172.31.32.44'
+      @ip = '999.31.32.44'
       @port = '8888'
       # JSON.load(open('https://wtfismyip.com/json', proxy: URI::parse('http://172.31.32.44:8888')))
 
