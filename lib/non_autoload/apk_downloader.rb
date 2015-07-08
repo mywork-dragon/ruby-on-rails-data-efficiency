@@ -95,7 +95,7 @@ if defined?(ApkDownloader)
 
       login_http = use_proxy(host, port)
       login_http.use_ssl = true
-      # login_http.ssl_version="SSLv3"
+      login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
       login_http.open_timeout = 30
 
@@ -128,7 +128,7 @@ if defined?(ApkDownloader)
 
       http = use_proxy(host, port)
       http.use_ssl = (url.scheme == 'https')
-      # http.ssl_version="SSLv3"
+      http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http.open_timeout = 500
 
@@ -158,9 +158,9 @@ if defined?(ApkDownloader)
 
         @http = use_proxy(host, port)
         @http.use_ssl = true
-        # @http.ssl_version="SSLv3"
+        @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        @http.open_timeout = 30
+        @http.open_timeout = 60
       end
 
       api_headers = {
