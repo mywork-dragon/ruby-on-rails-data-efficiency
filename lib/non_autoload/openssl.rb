@@ -1,9 +1,9 @@
-OpenSSL::Buffering.module_eval do
+# OpenSSL::Buffering.module_eval do
 
-	include Enumerable
+# 	include Enumerable
 
-	attr_accessor :sync
+# 	attr_accessor :sync
 
-	BLOCK_SIZE = 1024*160
+# 	BLOCK_SIZE = 1024*160
 
-end
+# end

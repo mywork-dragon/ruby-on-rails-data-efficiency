@@ -130,6 +130,8 @@ if defined?(ApkDownloader)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      http.use_ssl = true
       # http.open_timeout = 500
 
       req = Net::HTTP::Get.new url.to_s
