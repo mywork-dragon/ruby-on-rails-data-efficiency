@@ -79,7 +79,7 @@ if defined?(ApkDownloader)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
-      login_http.open_timeout = 30
+      login_http.open_timeout = 60
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
@@ -112,7 +112,7 @@ if defined?(ApkDownloader)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      http.open_timeout = 30
+      http.open_timeout = 60
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
@@ -142,7 +142,7 @@ if defined?(ApkDownloader)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        @http.open_timeout = 30
+        @http.open_timeout = 60
       end
 
       api_headers = {
