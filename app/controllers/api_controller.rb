@@ -4,6 +4,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
+  before_action :set_clearbit_key, only: [:get_company_contacts]
   before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
@@ -650,5 +651,9 @@ class ApiController < ApplicationController
       end
       render json: {:contacts => contacts}
     end
+  end
+  
+  def set_clearbit_key
+    Clearbit.key = '229daf10e05c493613aa2159649d03b4'
   end
 end
