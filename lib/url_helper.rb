@@ -15,6 +15,7 @@ class UrlHelper
     
     def url_with_domain_only(url)
       begin
+        url = "http://" + url if !url.match(/^(http[s]*:\/\/)/)
         Domainator.parse(url.downcase)
       rescue => e
         return nil

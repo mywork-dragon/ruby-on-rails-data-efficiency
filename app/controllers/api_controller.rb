@@ -601,14 +601,9 @@ class ApiController < ApplicationController
 
         if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
 
-          puts "########### API ###########"
+          domain = UrlHelper.url_with_domain_only(url)
 
-          # Clearbit.key = '229daf10e05c493613aa2159649d03b4'
-          # new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
-
-          puts "########## #{url} ##########"
-
-          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => url})
+          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => domain})
           new_clearbit_contacts = JSON.load(get.response.body)
 
           # delete old records (prevents duplicates)
@@ -655,9 +650,7 @@ class ApiController < ApplicationController
 
         # if record exists and is no more than 60 days old
         else
-
-          puts "########### DB ###########"
-
+          
           clearbit_contacts_for_website.each do |clearbit_contact|
             # add to results hash (to return to front end)
             contacts << {
