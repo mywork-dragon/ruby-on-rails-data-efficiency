@@ -579,15 +579,19 @@ class ApiController < ApplicationController
   end
 
   def get_company_contacts
-    
-    Clearbit.key = '229daf10e05c493613aa2159649d03b4'
+
+    puts "#0"
 
     company_websites = params['companyWebsites']
     contacts = []
+    
+    puts "#1"
 
     if company_websites.nil?
       render json: {:contacts => contacts}
     else
+      
+    puts "#2"
 
       # takes up to five websites associated with company & creates array of clearbit_contacts objects
       company_websites.first(5).each do |url|
@@ -603,8 +607,13 @@ class ApiController < ApplicationController
           puts "########### API ###########"
 
           begin
-
-            new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
+            
+            # Clearbit.key = '229daf10e05c493613aa2159649d03b4'
+            # new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
+            
+            get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => website.url})
+            puts "get: #{get}"
+            new_clearbit_contacts = JSON.load(get.response.body)
 
             ClearbitContact.where(website_id: website.id).destroy_all
 
