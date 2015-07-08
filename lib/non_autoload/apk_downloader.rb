@@ -11,10 +11,8 @@ if defined?(ApkDownloader)
     def fetch_apk_data package
 
       if Rails.env.production?
-        proxy = Tor.next_proxy_old
-        proxy.last_used = DateTime.now
-        @ip = proxy.private_ip
-        proxy.save
+        @proxy_ip = proxies
+        @proxy_port = 8888
       elsif Rails.env.development?
         @ip = '127.0.0.1'
       end
@@ -35,8 +33,23 @@ if defined?(ApkDownloader)
 
     end
 
-    def use_tor(host, port)
-      Net::HTTP.SOCKSProxy(@ip, 9050).new(host, port)
+    def use_proxy(host, port)
+      Net::HTTP.new(host, port, @proxy_ip, @proxy_port)
+    end
+
+    def proxies
+      %w(
+        172.31.36.248
+        172.31.32.44
+        172.31.36.118
+        172.31.36.192
+        172.31.37.27
+        172.31.24.26
+        172.31.24.153
+        172.31.20.230
+        172.31.29.18
+        172.31.20.1
+      ).sample
     end
 
     def log_in!
@@ -62,7 +75,7 @@ if defined?(ApkDownloader)
       host = LoginUri.host
       port = LoginUri.port
 
-      login_http = use_tor(host, port)
+      login_http = use_proxy(host, port)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
@@ -94,7 +107,7 @@ if defined?(ApkDownloader)
       host = url.host
       port = url.port
 
-      http = use_tor(host, port)
+      http = use_proxy(host, port)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -123,7 +136,7 @@ if defined?(ApkDownloader)
         host = GoogleApiUri.host
         port = GoogleApiUri.port
 
-        @http = use_tor(host, port)
+        @http = use_proxy(host, port)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
