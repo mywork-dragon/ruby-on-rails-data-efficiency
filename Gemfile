@@ -76,7 +76,7 @@ gem 'filesize', '0.0.4'
 
 gem 'aws-sdk', '~> 2'
 
-# gem 'socksify', '1.6.0', require: 'socksify/http'
+gem 'socksify', '1.6.0', require: 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
