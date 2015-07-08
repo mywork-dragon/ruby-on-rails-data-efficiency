@@ -124,4 +124,4 @@ gem 'apk_downloader', '1.1.5'
 
 gem 'parallel', '1.6.0'
 
-gem 'clearbit', '~> 0.1.6.pre'
+gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
