@@ -4,7 +4,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
-  before_action :set_current_user, :authenticate_request
+  #before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -580,18 +580,15 @@ class ApiController < ApplicationController
 
   def get_company_contacts
 
-    puts "#0"
-
     company_websites = params['companyWebsites']
     contacts = []
-    
-    puts "#1"
 
-    if company_websites.nil?
+    if company_websites.blank?
       render json: {:contacts => contacts}
+      return
     else
       
-    puts "#2"
+      puts "company_websites: #{company_websites}"
 
       # takes up to five websites associated with company & creates array of clearbit_contacts objects
       company_websites.first(5).each do |url|
@@ -600,7 +597,7 @@ class ApiController < ApplicationController
         website = Website.find_by(url: url)
 
         # finds contact object for
-        clearbit_contacts_for_website = ClearbitContact.where(website_id: website.id)
+        clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
 
         if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
 
@@ -611,28 +608,33 @@ class ApiController < ApplicationController
             # Clearbit.key = '229daf10e05c493613aa2159649d03b4'
             # new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
             
-            get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => website.url})
-            puts "get: #{get}"
+            domain = UrlHelper.url_with_domain_only(url)
+            
+            get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => domain})
             new_clearbit_contacts = JSON.load(get.response.body)
 
-            ClearbitContact.where(website_id: website.id).destroy_all
+            ClearbitContact.where(website_id: website.id).destroy_all if website
+
+            puts new_clearbit_contacts
 
             new_clearbit_contacts.each do |contact|
               # add to results hash (to return to front end)
               contacts << {
-                website_id: website.id,
-                clearBitId: contact.id,
-                givenName: contact.givenName,
-                familyName: contact.familyName,
-                fullName: contact.name.full_name,
-                title: contact.title,
-                email: contact.email,
-                linkedin: contact.linkedin
+                website_id: (website.present? ? website.id : nil),
+                clearBitId: contact['id'],
+                givenName: contact['name']['givenName'],
+                familyName: contact['name']['familyName'],
+                fullName: contact['name']['fullName'],
+                title: contact['title'],
+                email: contact['email'],
+                linkedin: contact['linkedin']
               }
 
               # save as new records to DB
-              clearbit_contact = ClearbitContact.create(website_id: website.id)
-              clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
+              if website
+                clearbit_contact = ClearbitContact.create(website_id: website.id)
+                clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
+              end
             end
 
           rescue Nestful::ClientError
