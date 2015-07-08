@@ -2,8 +2,6 @@
 
 class ApiController < ApplicationController
   
-  Clearbit.key = '229daf10e05c493613aa2159649d03b4'
-  
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
