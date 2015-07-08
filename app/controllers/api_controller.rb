@@ -1,9 +1,7 @@
 # This is our internal API that talks to the frontend
 
 class ApiController < ApplicationController
-
-  require 'clearbit'
-
+  
   Clearbit.key = '229daf10e05c493613aa2159649d03b4'
   
   skip_before_filter  :verify_authenticity_token
