@@ -603,23 +603,24 @@ class ApiController < ApplicationController
 
           puts "########### API ###########"
 
-          begin
-            
-            # Clearbit.key = '229daf10e05c493613aa2159649d03b4'
-            # new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
-            
-            domain = UrlHelper.url_with_domain_only(url)
-            
-            get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => domain})
-            new_clearbit_contacts = JSON.load(get.response.body)
+          # Clearbit.key = '229daf10e05c493613aa2159649d03b4'
+          # new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
 
-            ClearbitContact.where(website_id: website.id).destroy_all if website
+          puts "########## #{url} ##########"
 
-            puts new_clearbit_contacts
+          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => url})
+          new_clearbit_contacts = JSON.load(get.response.body)
+
+          # delete old records (prevents duplicates)
+          ClearbitContact.where(website_id: website.id).destroy_all if website
+
+          puts new_clearbit_contacts
+
+          if new_clearbit_contacts.kind_of?(Array)
 
             new_clearbit_contacts.each do |contact|
               # add to results hash (to return to front end)
-              
+
               contact_id = contact['id']
               contact_name = contact['name']
               if contact_name
@@ -630,7 +631,7 @@ class ApiController < ApplicationController
               contact_title = contact['title']
               contact_email = contact['email']
               contact_linkedin = contact['linkedin']
-              
+
               contacts << {
                 website_id: (website.present? ? website.id : nil),
                 clearBitId: contact_id,
@@ -650,8 +651,6 @@ class ApiController < ApplicationController
               end
             end
 
-          rescue Nestful::ClientError
-            # contacts << {error: 'ClientError'}
           end
 
         # if record exists and is no more than 60 days old
