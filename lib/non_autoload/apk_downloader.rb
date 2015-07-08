@@ -18,11 +18,11 @@ if defined?(ApkDownloader)
       # end
 
       if Rails.env.production?
-        Proxy.transaction do
-          p = Proxy.lock.order(last_used: :asc).first
+        SuperProxy.transaction do
+          p = SuperProxy.lock.order(last_used: :asc).first
           
           @proxy_ip = p.private_ip
-          @proxy_port = 9050
+          @proxy_port = p.port
 
           p.last_used = DateTime.now
           p.save
