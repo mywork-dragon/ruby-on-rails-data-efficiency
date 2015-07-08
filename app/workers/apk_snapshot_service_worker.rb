@@ -1,11 +1,12 @@
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false
+  # sidekiq_options retry: false
+  sidekiq_options :retry => 3
   
-  MAX_TRIES = 0
+  # MAX_TRIES = 0
 
-  ActiveRecord::Base.logger.level = 1 if Rails.env.development?
+  # ActiveRecord::Base.logger.level = 1 if Rails.env.development?
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -24,7 +25,7 @@ class ApkSnapshotServiceWorker
 
     apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
 
-    @try = 0
+    # @try = 0
 
     begin
 
@@ -60,36 +61,45 @@ class ApkSnapshotServiceWorker
 
       if e.message == '1' || e.message == '2'
 
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
 
       else
 
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
 
         best_account.in_use = false
         best_account.save
      
       end
 
-      if (@try += 1) < MAX_TRIES
-        retry
-      else
-        apk_snap.status = :failure
-        apk_snap.save
-      end
+      # if (@try += 1) < MAX_TRIES
+      #   retry
+      # else
+      #   apk_snap.status = :failure
+      #   apk_snap.save
+      # end
+
+      apk_snap.status = :failure
+      apk_snap.save
+
+      raise
 
     else
 
       best_account.in_use = false
       best_account.save
 
-      begin
-        unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
-      rescue => e
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
-      else
-        apk_snap.unpack_time = unpack_time
-      end
+      # begin
+      #   unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      # rescue => e
+      #   ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
+      # else
+      #   apk_snap.unpack_time = unpack_time
+      # end
+
+      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      
+      apk_snap.unpack_time = unpack_time
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
