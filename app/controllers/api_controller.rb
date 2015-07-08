@@ -1,10 +1,6 @@
 # This is our internal API that talks to the frontend
 
 class ApiController < ApplicationController
-
-  require 'clearbit'
-
-  Clearbit.key = '229daf10e05c493613aa2159649d03b4'
   
   skip_before_filter  :verify_authenticity_token
 
@@ -583,6 +579,8 @@ class ApiController < ApplicationController
   end
 
   def get_company_contacts
+    
+    Clearbit.key = '229daf10e05c493613aa2159649d03b4'
 
     company_websites = params['companyWebsites']
     contacts = []
@@ -655,4 +653,5 @@ class ApiController < ApplicationController
       render json: {:contacts => contacts}
     end
   end
+
 end
