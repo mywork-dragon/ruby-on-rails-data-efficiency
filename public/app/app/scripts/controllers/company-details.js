@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "listApiService", "loggitService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, listApiService, loggitService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService) {
 
     $scope.load = function() {
 
@@ -67,6 +67,23 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
           return loggitService.logError("Error! Something went wrong while adding to list.");
       }
     };
+
+    $scope.contactsLoading = false;
+    $scope.contactsLoaded = false;
+
+    $scope.getCompanyContacts = function(websites) {
+
+      $scope.contactsLoading = true;
+      apiService.getCompanyContacts(websites).success(function(data) {
+        $scope.companyContacts = data.contacts;
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = true;
+      }).error(function() {
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = false;
+      });
+    };
+
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "Page Viewed", {

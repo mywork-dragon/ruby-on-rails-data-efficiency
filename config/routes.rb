@@ -58,10 +58,13 @@ Rails.application.routes.draw do
   put 'api/list/add_mixed' => 'api#add_mixed_to_list'
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
+
   get 'api/results' => 'api#results'
 
   get 'api/user/tos' => 'api#user_tos_check'
   put 'api/user/tos' => 'api#user_tos_set'
+
+  post 'api/company/contacts' => 'api#get_company_contacts'
 
   
   # API for customers

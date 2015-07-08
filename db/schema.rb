@@ -240,6 +240,23 @@ ActiveRecord::Schema.define(version: 20150707001543) do
     t.string   "name"
   end
 
+  create_table "clearbit_contacts", force: true do |t|
+    t.integer  "website_id"
+    t.integer  "clearbit_id"
+    t.string   "given_name"
+    t.string   "family_name"
+    t.string   "full_name"
+    t.string   "title"
+    t.string   "email"
+    t.string   "linkedin"
+    t.date     "updated"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
+  add_index "clearbit_contacts", ["website_id"], name: "index_clearbit_contacts_on_website_id", using: :btree
+
   create_table "companies", force: true do |t|
     t.string   "name"
     t.string   "website"
