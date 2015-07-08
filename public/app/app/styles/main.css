@@ -7357,7 +7357,11 @@ select option:empty {
 }
 
 #companyContactsTable {
-  margin-bottom: 350px;
+  margin-bottom: 35px;
+}
+
+#appPage #companyContactsTable {
+  margin-bottom: 0px;
 }
 
 .companyPageWebsiteLink {

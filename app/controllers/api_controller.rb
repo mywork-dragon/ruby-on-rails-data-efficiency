@@ -602,6 +602,8 @@ class ApiController < ApplicationController
 
         if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
 
+          puts "########### API ###########"
+
           begin
 
             new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
@@ -632,6 +634,9 @@ class ApiController < ApplicationController
 
         # if record exists and is no more than 60 days old
         else
+
+          puts "########### DB ###########"
+
           clearbit_contacts_for_website.each do |clearbit_contact|
             # add to results hash (to return to front end)
             contacts << {
