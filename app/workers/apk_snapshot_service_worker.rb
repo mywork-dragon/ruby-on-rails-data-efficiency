@@ -2,7 +2,7 @@ class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
   # sidekiq_options retry: false
-  sidekiq_options :retry => 3
+  sidekiq_options :retry => 5
   
   # MAX_TRIES = 0
 
