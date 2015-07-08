@@ -7161,16 +7161,6 @@ i.infoTooltipIcon {
   text-align: center;
 }
 
-.tableStatusMessage {
-  width: 250px;
-  height: 150px;
-  margin-left: auto;
-  margin-right: auto;
-  vertical-align: middle;
-  padding-top: 55px;
-  text-align: center;
-}
-
 .dashboard-tag-filter-selects > .tooltip {
   text-transform: none;
   font-size: 90%;
@@ -7202,30 +7192,30 @@ i.infoTooltipIcon {
   width: 10px;
 }
 
-#dashboardResultsTableHeading, #listViewTableHeading, #companyContactsTableHeading {
+#dashboardResultsTableHeading, #listViewTableHeading {
   height: 52px;
 }
 
-#dashboardResultsTableHeading strong, #listViewTableHeading strong, #companyContactsTableHeading strong {
+#dashboardResultsTableHeading strong, #listViewTableHeading strong {
   display: inline-block;
   margin-top: 9px;
 }
 
-#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select, #companyContactsTableHeading .ui-select {
+#dashboardResultsTableHeading .ui-select, #listViewTableHeading .ui-select {
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select, #companyContactsTableHeading .ui-select select, #appPageActionsPanel .ui-select select {
+#dashboardResultsTableHeading .ui-select select, #listViewTableHeading .ui-select select, #appPageActionsPanel .ui-select select {
   max-width: 170px;
   width: 170px;
 }
 
-#listViewTableHeading, #companyContactsTableHeading {
+#listViewTableHeading {
   padding-right: 8px;
 }
 
-#listViewTableHeading span, #listViewTableHeading button, #companyContactsTableHeading span, #companyContactsTableHeading button {
+#listViewTableHeading span, #listViewTableHeading button {
   margin-left: 5px;
 }
 
@@ -7317,7 +7307,6 @@ select option:empty {
   font-size: 16px;
   vertical-align: middle;
   width: 12px;
-  margin-bottom: 2px;
 }
 
 #appPage .icon.fa-mobile, #companyPage .icon.fa-mobile {
@@ -7343,25 +7332,9 @@ select option:empty {
   margin: 0;
 }
 
-#appPage #companyContactsTable {
-  clear: both;
-}
-
 .companyPageRow {
   margin-left: 0px;
   margin-right: 0px;
-}
-
-#companyPage .info-column {
-  padding-bottom: 0px;
-}
-
-#companyContactsTable {
-  margin-bottom: 35px;
-}
-
-#appPage #companyContactsTable {
-  margin-bottom: 0px;
 }
 
 .companyPageWebsiteLink {
@@ -7378,49 +7351,4 @@ select option:empty {
 
 #companyDetailsTable {
   margin-bottom: 0px;
-}
-
-#showCompanyEmailsButtonLi {
-  border: none;
-  margin-bottom: 0px;
-}
-
-#showCompanyEmailsButton {
-  margin-top: 25px;
-  margin-bottom: 0px;
-  width: 60%;
-  margin-left: 20%;
-}
-
-.showCompanyEmailsSection {
-  padding-bottom: 20px !important;
-  border-bottom: 1px dashed #CBC8C8 !important;
-  overflow: hidden;
-}
-
-.showCompanyEmailsSection a {
-  color: #767676;
-}
-
-.showCompanyEmailsSection:nth-child(even) {
-  background-color: #FCFCFC;
-}
-
-.showCompanyEmailsSection:last-of-type {
-  padding-bottom: 10px !important;
-  border-bottom: none !important;
-}
-
-.showCompanyEmailsSection h5 {
-  margin-bottom: 15px;
-}
-
-.showCompanyEmailsSection label {
-  width: auto;
-  margin-right: 5px;
-}
-
-#loadingSpinnerContainer {
-  text-align: center;
-  padding-top: 15px;
 }

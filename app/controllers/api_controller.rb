@@ -1,10 +1,5 @@
 # This is our internal API that talks to the frontend
-
 class ApiController < ApplicationController
-
-  require 'clearbit'
-
-  Clearbit.key = '229daf10e05c493613aa2159649d03b4'
   
   skip_before_filter  :verify_authenticity_token
 
@@ -582,77 +577,4 @@ class ApiController < ApplicationController
     render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
   end
 
-  def get_company_contacts
-
-    company_websites = params['companyWebsites']
-    contacts = []
-
-    if company_websites.nil?
-      render json: {:contacts => contacts}
-    else
-
-      # takes up to five websites associated with company & creates array of clearbit_contacts objects
-      company_websites.first(5).each do |url|
-
-        # finds matching record in website table
-        website = Website.find_by(url: url)
-
-        # finds contact object for
-        clearbit_contacts_for_website = ClearbitContact.where(website_id: website.id)
-
-        if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
-
-          puts "########### API ###########"
-
-          begin
-
-            new_clearbit_contacts = Clearbit::Prospector.search(domain: website.url)
-
-            ClearbitContact.where(website_id: website.id).destroy_all
-
-            new_clearbit_contacts.each do |contact|
-              # add to results hash (to return to front end)
-              contacts << {
-                website_id: website.id,
-                clearBitId: contact.id,
-                givenName: contact.givenName,
-                familyName: contact.familyName,
-                fullName: contact.name.full_name,
-                title: contact.title,
-                email: contact.email,
-                linkedin: contact.linkedin
-              }
-
-              # save as new records to DB
-              clearbit_contact = ClearbitContact.create(website_id: website.id)
-              clearbit_contact.update(website_id: website.id, clearbit_id: contact.id, given_name: contact.givenName, family_name: contact.familyName, full_name: contact.name.full_name, title: contact.title, email: contact.email, linkedin: contact.linkedin)
-            end
-
-          rescue Nestful::ClientError
-            # contacts << {error: 'ClientError'}
-          end
-
-        # if record exists and is no more than 60 days old
-        else
-
-          puts "########### DB ###########"
-
-          clearbit_contacts_for_website.each do |clearbit_contact|
-            # add to results hash (to return to front end)
-            contacts << {
-              website_id: website.id,
-              clearBitId: clearbit_contact.id,
-              givenName: clearbit_contact.given_name,
-              familyName: clearbit_contact.family_name,
-              fullName: clearbit_contact.full_name,
-              title: clearbit_contact.title,
-              email: clearbit_contact.email,
-              linkedin: clearbit_contact.linkedin
-            }
-          end
-        end
-      end
-      render json: {:contacts => contacts}
-    end
-  end
 end

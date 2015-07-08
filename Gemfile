@@ -123,5 +123,3 @@ gem 'public_suffix', '1.4.6'
 gem 'apk_downloader', '1.1.5'
 
 gem 'parallel', '1.6.0'
-
-gem 'clearbit', '~> 0.1.6.pre'

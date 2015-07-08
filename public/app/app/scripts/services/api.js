@@ -68,15 +68,6 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
-      },
-      getCompanyContacts: function(websites) {
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/company/contacts',
-          data: {
-            companyWebsites: websites
-          }
-        });
       }
     };
   }]);

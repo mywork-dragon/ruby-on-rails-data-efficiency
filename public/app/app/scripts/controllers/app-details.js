@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "$document",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, $document) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope) {
 
   $scope.load = function() {
 
@@ -69,41 +69,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   };
 
   $scope.load();
-
-  $scope.contactsLoading = false;
-  $scope.contactsLoaded = false;
-
-  $scope.getCompanyContacts = function(websites) {
-
-    $scope.contactsLoading = true;
-    apiService.getCompanyContacts(websites).success(function(data) {
-      $scope.companyContacts = data.contacts;
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = true;
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestResults': data.contacts,
-          'requestResultsCount': data.contacts.length
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-    }).error(function(err) {
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestError': err
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = false;
-    });
-  };
 
   /* -------- Mixpanel Analytics Start -------- */
   mixpanel.track(
