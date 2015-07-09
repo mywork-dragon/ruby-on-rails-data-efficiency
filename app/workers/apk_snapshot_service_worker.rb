@@ -18,13 +18,13 @@ class ApkSnapshotServiceWorker
 
   def download_apk(apk_snapshot_job_id, android_app_id)
 
-    @try_count = 1
-
     apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id).first
 
-    if apk_snap.present?
+    if apk_snap.nil?
 
       apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
+
+      @try_count = 1
 
     else
 
