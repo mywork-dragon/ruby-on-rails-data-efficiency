@@ -1,12 +1,9 @@
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
-  # sidekiq_options retry: false
-  sidekiq_options :retry => 5
-  
-  # MAX_TRIES = 0
+  MAX_TRIES = 5
 
-  # ActiveRecord::Base.logger.level = 1 if Rails.env.development?
+  sidekiq_options :retry => MAX_TRIES
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -23,19 +20,26 @@ class ApkSnapshotServiceWorker
 
   def download_apk(apk_snapshot_job_id, android_app_id)
 
-    apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
+    apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
 
-    # @try = 0
+    if apk_snap.count == 0
+
+      apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
+
+      @try = 1
+
+    else
+
+      apk_snap.try += 1
+      apk_snap.save
+
+      @try = apk_snap.try
+
+    end
 
     begin
 
       best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
-
-      # 1 == accounts are blank
-      # 2 == accounts are false
-
-      raise '1' if best_account.blank?
-      raise '2' if !best_account
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -51,36 +55,22 @@ class ApkSnapshotServiceWorker
       app_identifier = AndroidApp.find(android_app_id).app_identifier
       file_name = apk_file_name(app_identifier)
 
-      # timeout(30) do
-      #   ApkDownloader.download!(app_identifier, file_name)
-      # end
-
       ApkDownloader.download!(app_identifier, file_name)
 
     rescue => e
 
-      if e.message == '1' || e.message == '2'
-
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: '1 or 2', backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
-
-      else
-
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-
+      if best_account.present?
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
         best_account.in_use = false
         best_account.save
-     
+      else
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "no account  |  #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
       end
 
-      # if (@try += 1) < MAX_TRIES
-      #   retry
-      # else
-      #   apk_snap.status = :failure
-      #   apk_snap.save
-      # end
-
-      apk_snap.status = :failure
-      apk_snap.save
+      if @try >= MAX_TRIES
+        apk_snap.status = :failure
+        apk_snap.save
+      end
 
       raise
 
@@ -88,14 +78,6 @@ class ApkSnapshotServiceWorker
 
       best_account.in_use = false
       best_account.save
-
-      # begin
-      #   unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
-      # rescue => e
-      #   ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "package error: #{e.message}", backtrace: e.backtrace, apk_snapshot_job_id: apk_snapshot_job_id)
-      # else
-      #   apk_snap.unpack_time = unpack_time
-      # end
 
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
       
@@ -160,5 +142,7 @@ class ApkSnapshotServiceWorker
     end
   end
 
-
 end
+
+
+
