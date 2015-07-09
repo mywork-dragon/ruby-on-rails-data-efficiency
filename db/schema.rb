@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150707001543) do
+ActiveRecord::Schema.define(version: 20150709004349) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -209,11 +209,13 @@ ActiveRecord::Schema.define(version: 20150707001543) do
     t.integer  "apk_snapshot_job_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "try"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
+  add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
   create_table "app_stores", force: true do |t|
     t.string   "country_code"

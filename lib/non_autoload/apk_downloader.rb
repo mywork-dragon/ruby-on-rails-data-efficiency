@@ -10,20 +10,11 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package
 
-      # if Rails.env.production?
-      #   @proxy_ip = proxies
-      #   @proxy_port = 8888
-      # elsif Rails.env.development?
-      #   @ip = '127.0.0.1'
-      # end
-
       if Rails.env.production?
         SuperProxy.transaction do
           p = SuperProxy.lock.order(last_used: :asc).first
-          
           @proxy_ip = p.private_ip
           @proxy_port = p.port
-
           p.last_used = DateTime.now
           p.save
         end
@@ -51,25 +42,6 @@ if defined?(ApkDownloader)
       Net::HTTP.SOCKSProxy(@proxy_ip, @proxy_port).new(host, port)
     end
 
-    # def use_proxy(host, port)
-    #   Net::HTTP.new(host, port, @proxy_ip, @proxy_port)
-    # end
-
-    # def proxies
-    #   %w(
-    #     172.31.36.248
-    #     172.31.32.44
-    #     172.31.36.118
-    #     172.31.36.192
-    #     172.31.37.27
-    #     172.31.24.26
-    #     172.31.24.153
-    #     172.31.20.230
-    #     172.31.29.18
-    #     172.31.20.1
-    #   ).sample
-    # end
-
     def log_in!
       return if self.logged_in?
 
@@ -88,8 +60,6 @@ if defined?(ApkDownloader)
         "sdk_version" => "16"
       }
 
-      # login_http = Net::HTTP.new LoginUri.host, LoginUri.port
-
       host = LoginUri.host
       port = LoginUri.port
 
@@ -97,7 +67,6 @@ if defined?(ApkDownloader)
       login_http.use_ssl = true
       login_http.ssl_version="SSLv3"
       login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
-      # login_http.open_timeout = 30
 
       post = Net::HTTP::Post.new LoginUri.to_s
       post.set_form_data params
@@ -122,7 +91,6 @@ if defined?(ApkDownloader)
     def recursive_apk_fetch url, cookie, tries = 5
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
-      # http = Net::HTTP.new url.host, url.port
       host = url.host
       port = url.port
 
@@ -130,7 +98,8 @@ if defined?(ApkDownloader)
       http.use_ssl = (url.scheme == 'https')
       http.ssl_version="SSLv3"
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      # http.open_timeout = 500
+
+      http.use_ssl = true
 
       req = Net::HTTP::Get.new url.to_s
       req['Accept-Encoding'] = ''
@@ -152,7 +121,6 @@ if defined?(ApkDownloader)
 
     def api_request type, path, data = {}
       if @http.nil?
-        # @http = Net::HTTP.new GoogleApiUri.host, GoogleApiUri.port
         host = GoogleApiUri.host
         port = GoogleApiUri.port
 
@@ -160,7 +128,6 @@ if defined?(ApkDownloader)
         @http.use_ssl = true
         @http.ssl_version="SSLv3"
         @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        # @http.open_timeout = 60
       end
 
       api_headers = {
