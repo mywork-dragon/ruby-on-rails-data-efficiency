@@ -80,7 +80,9 @@ gem 'socksify', '1.6.0', require: 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
-gem 'capistrano-sidekiq', '0.5.3'
+# gem 'capistrano-sidekiq', '0.5.3'
+
+gem 'capistrano-sidekiq', '0.5.3.1', :path => 'vendor/gems/capistrano-sidekiq'
 
 gem 'kaminari', '0.16.3'
 

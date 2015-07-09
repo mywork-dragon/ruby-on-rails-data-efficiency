@@ -1,3 +1,10 @@
+PATH
+  remote: vendor/gems/capistrano-sidekiq
+  specs:
+    capistrano-sidekiq (0.5.3.1)
+      capistrano
+      sidekiq
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -323,6 +330,7 @@ DEPENDENCIES
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
+  capistrano-sidekiq (= 0.5.3.1)!
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
