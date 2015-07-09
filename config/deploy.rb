@@ -44,7 +44,7 @@ set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :scraper_concurrency, 50
-set :super_scraper, 50
+set :super_scraper_concurrency, 35
 
 set :sidekiq_queue, %w(critical default low)
 
