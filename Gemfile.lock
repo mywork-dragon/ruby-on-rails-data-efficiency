@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/jasonlew/capistrano-sidekiq.git
-  revision: 71420c212bb0f54fa4f642e6e48f00e7a8ea44dc
+  revision: 959d9ccfa6e4ffa186a5c5b3a6bce7aa78634744
   branch: select_queues_per_server
   specs:
     capistrano-sidekiq (0.5.3)
