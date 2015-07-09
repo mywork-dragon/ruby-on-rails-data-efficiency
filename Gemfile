@@ -80,7 +80,9 @@ gem 'socksify', '1.6.0', require: 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
-gem 'capistrano-sidekiq', '0.5.3'
+# gem 'capistrano-sidekiq', '0.5.3'
+
+gem 'capistrano-sidekiq', github: 'jasonlew/capistrano-sidekiq', branch: 'select_queues_per_server'
 
 gem 'kaminari', '0.16.3'
 
