@@ -1,9 +1,7 @@
 class ApkSnapshotServiceWorker
   include Sidekiq::Worker
 
-  MAX_TRIES = 5
-
-  sidekiq_options :retry => MAX_TRIES
+  sidekiq_options :retry => 5
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -20,20 +18,20 @@ class ApkSnapshotServiceWorker
 
   def download_apk(apk_snapshot_job_id, android_app_id)
 
-    apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id)
+    @try_count = 1
 
-    if apk_snap.count == 0
+    apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id).first
+
+    if apk_snap.present?
 
       apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
-
-      @try = 1
 
     else
 
       apk_snap.try += 1
       apk_snap.save
 
-      @try = apk_snap.try
+      @try_count = apk_snap.try
 
     end
 
@@ -60,14 +58,14 @@ class ApkSnapshotServiceWorker
     rescue => e
 
       if best_account.present?
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
         best_account.in_use = false
         best_account.save
       else
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "no account  |  #{e.message}", backtrace: e.backtrace, try: @try, apk_snapshot_job_id: apk_snapshot_job_id)
+        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "no account  |  #{e.message}", backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id)
       end
 
-      if @try >= MAX_TRIES
+      if @try_count >= 5
         apk_snap.status = :failure
         apk_snap.save
       end
