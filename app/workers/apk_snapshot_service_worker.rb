@@ -3,7 +3,7 @@ class ApkSnapshotServiceWorker
 
   MAX_TRIES = 3
 
-  sidekiq_options :retry => MAX_TRIES
+  sidekiq_options backtrace: true, :retry => MAX_TRIES
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
