@@ -56,13 +56,15 @@ class ApkSnapshotServiceWorker
         config.android_id = best_account.android_identifier
       end
 
-      app_identifier = AndroidApp.find(android_app_id).app_identifier
+      app_identifier = AndroidApp.find_by_id(android_app_id).app_identifier
 
       raise "no app_identifier" if app_identifier.blank?
 
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name)
+      timeout(180) do
+        ApkDownloader.download!(app_identifier, file_name)
+      end
 
     rescue => e
 

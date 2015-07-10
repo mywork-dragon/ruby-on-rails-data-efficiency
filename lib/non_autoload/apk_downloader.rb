@@ -159,8 +159,6 @@ if defined?(ApkDownloader)
 
       api_headers.each { |k, v| req[k] = v }
 
-      raise "req was blank" if req.blank?
-
       resp = @http.request req
 
       unless resp.code.to_i == 200 or resp.code.to_i == 302
