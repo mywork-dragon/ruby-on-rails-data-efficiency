@@ -6,7 +6,9 @@ module Net
   class HTTP < Protocol
 
     def begin_transport(req)
-      if @socket.closed?
+      if @socket.blank?
+      	raise "@socket had value of : #{@socket}"
+      elsif @socket.closed?
         connect
       elsif @keep_alive_timeout.blank?
       	raise "@keep_alive_timeout had value of : #{@keep_alive_timeout}"
