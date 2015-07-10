@@ -11,7 +11,7 @@ class ApkSnapshotServiceWorker
   
   def apk_file_name(app_identifier)
     if Rails.env.production?
-      raise "app_identifier not found" if app_identifier.blank?
+      raise if app_identifier.blank?
       file_name = "/mnt/apk_files/" + app_identifier + ".apk"
     elsif Rails.env.development?
       file_name = "../apk_files/" + app_identifier + ".apk"
