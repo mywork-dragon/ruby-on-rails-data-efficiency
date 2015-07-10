@@ -37,4 +37,4 @@ end
 system('animate bicep_curl.gif &')
 
 puts ""
-system('cap production deploy')
+system('bundle exec cap production deploy')
