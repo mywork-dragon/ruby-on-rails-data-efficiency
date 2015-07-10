@@ -11,7 +11,6 @@ class ApkSnapshotServiceWorker
   
   def apk_file_name(app_identifier)
     if Rails.env.production?
-      raise "app_identifier not found" if app_identifier.blank?
       file_name = "/mnt/apk_files/" + app_identifier + ".apk"
     elsif Rails.env.development?
       file_name = "../apk_files/" + app_identifier + ".apk"
@@ -21,26 +20,26 @@ class ApkSnapshotServiceWorker
 
   def download_apk(apk_snapshot_job_id, android_app_id)
 
-    raise "no android_app_id" if android_app_id.blank?
-      
-    apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id).first
-
-    if apk_snap.nil?
-
-      apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
-
-      @try_count = 1
-
-    else
-
-      apk_snap.try += 1
-      apk_snap.save
-
-      @try_count = apk_snap.try
-
-    end
-
     begin
+
+      raise "no android_app_id" if android_app_id.blank?
+
+      apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id).first
+
+      if apk_snap.nil?
+
+        apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
+
+        @try_count = 1
+
+      else
+
+        apk_snap.try += 1
+        apk_snap.save
+
+        @try_count = apk_snap.try
+
+      end
 
       best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
 
@@ -58,6 +57,9 @@ class ApkSnapshotServiceWorker
       end
 
       app_identifier = AndroidApp.find(android_app_id).app_identifier
+
+      raise "no app_identifier" if app_identifier.blank?
+
       file_name = apk_file_name(app_identifier)
 
       timeout(120)
