@@ -41,6 +41,8 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
 
+      raise if best_account.blank?
+
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
