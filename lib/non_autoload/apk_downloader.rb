@@ -86,7 +86,6 @@ if defined?(ApkDownloader)
       end
     end
 
-
     private
     def recursive_apk_fetch url, cookie, tries = 5
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
@@ -159,6 +158,8 @@ if defined?(ApkDownloader)
       end
 
       api_headers.each { |k, v| req[k] = v }
+
+      raise "req was blank" if req.blank?
 
       resp = @http.request req
 
