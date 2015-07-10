@@ -8,7 +8,7 @@ module Net
     def begin_transport(req)
       if @socket.closed?
         connect
-      elsif @keep_alive_timeout.present?
+      elsif @keep_alive_timeout.blank?
       	raise "@keep_alive_timeout had value of : #{@keep_alive_timeout}"
       elsif @last_communicated && @last_communicated + @keep_alive_timeout < Time.now
         D 'Conn close because of keep_alive_timeout'
