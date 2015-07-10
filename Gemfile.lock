@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/jasonlew/capistrano-sidekiq-multiple.git
+  revision: 548e45580da7d270a39e3159cbd1dbfe998b75cb
+  branch: select_queues_per_server
+  specs:
+    capistrano-sidekiq-multiple (0.0.0)
+      capistrano
+      sidekiq
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -62,9 +71,6 @@ GEM
     capistrano-rails (1.1.2)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capistrano-sidekiq (0.5.3)
-      capistrano
-      sidekiq
     celluloid (0.17.0)
       bundler
       celluloid-essentials
@@ -326,7 +332,7 @@ DEPENDENCIES
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
-  capistrano-sidekiq (= 0.5.3)
+  capistrano-sidekiq-multiple!
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
