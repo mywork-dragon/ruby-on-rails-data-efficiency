@@ -82,9 +82,7 @@ gem 'net-ssh', '2.9.1'
 
 # gem 'capistrano-sidekiq', '0.5.3'
 
-gem 'capistrano-sidekiq-multiple', github: 'jasonlew/capistrano-sidekiq-multiple', branch: 'select_queues_per_server'
-
-# gem 'capistrano-sidekiq', '0.5.3.1', :path => 'vendor/gems/capistrano-sidekiq'
+# gem 'capistrano-sidekiq-multiple', github: 'jasonlew/capistrano-sidekiq-multiple', branch: 'select_queues_per_server'
 
 gem 'kaminari', '0.16.3'
 
