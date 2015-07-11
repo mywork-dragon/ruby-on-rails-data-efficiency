@@ -8,22 +8,23 @@ web_server = '54.85.3.24'
 
 api_server = '52.6.191.250'
 
-scraper_servers = %w(
+sdk_scraper_servers = %w(
   54.164.24.87
   54.88.39.109
   54.86.80.102
 )
 
-super_scraper_servers = %w(
+scraper_servers = %w(
   52.7.5.216
 )
 
-role :app, [web_server] + scraper_servers + [api_server] + super_scraper_servers
+role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
 role :web, web_server
 role :api, api_server
 role :db,  web_server #must have this do migrate db
+role :sdk_scraper, sdk_scraper_servers
 role :scraper, scraper_servers
-role :super_scraper, super_scraper_servers
+
 
 
 # Extended Server Syntax
@@ -36,12 +37,12 @@ server web_server, user: 'deploy'
 
 server api_server, user: 'deploy'
 
-scraper_servers.each do |scraper_server|
-  server scraper_server, user: 'deploy'
+sdk_scraper_servers.each do |sdk_scraper_server|
+  server sdk_scraper_server, user: 'deploy'
 end
 
-super_scraper_servers.each do |super_scraper_server|
-  server super_scraper_server, user: 'deploy'
+scraper_servers.each do |scraper_server|
+  server scraper_server, user: 'deploy'
 end
 
 # Custom SSH Options
