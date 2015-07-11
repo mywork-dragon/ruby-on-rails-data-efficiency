@@ -37,12 +37,12 @@ server web_server, user: 'deploy'
 
 server api_server, user: 'deploy'
 
-scraper_servers.each do |scraper_server|
-  server scraper_server, user: 'deploy'
+sdk_scraper_servers.each do |sdk_scraper_server|
+  server sdk_scraper_server, user: 'deploy'
 end
 
-super_scraper_servers.each do |super_scraper_server|
-  server super_scraper_server, user: 'deploy'
+scraper_servers.each do |scraper_server|
+  server scraper_server, user: 'deploy'
 end
 
 # Custom SSH Options
