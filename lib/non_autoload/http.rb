@@ -16,7 +16,7 @@ module Net
 
       D "opening connection to #{conn_address}:#{conn_port}..."
 
-      ApkSnapshotException.create(name: "conn_address : #{conn_address}, conn_port : #{conn_port}, @local_host : #{@local_host}, @local_port : #{@local_port}")
+      raise "conn_address : #{conn_address}, conn_port : #{conn_port}, @local_host : #{@local_host}, @local_port : #{@local_port}"
 
       s = Timeout.timeout(@open_timeout, Net::OpenTimeout) {
         TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
