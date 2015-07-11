@@ -8,14 +8,14 @@ web_server = '54.85.3.24'
 
 api_server = '52.6.191.250'
 
-scraper_servers = %w(
-  52.7.5.216
-)
-
 sdk_scraper_servers = %w(
   54.164.24.87
   54.88.39.109
   54.86.80.102
+)
+
+scraper_servers = %w(
+  52.7.5.216
 )
 
 role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
