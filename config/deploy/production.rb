@@ -17,7 +17,7 @@ sdk_scraper_servers = %w(
 )
 
 scraper_servers = %w(
-  52.7.5.216
+  52.2.192.44
 )
 
 role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
