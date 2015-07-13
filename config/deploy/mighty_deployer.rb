@@ -9,6 +9,9 @@ module MightyDeployer
 
   puts "laksfnlaknsflkansfklansf!!!!"
 
+  def test
+  end
+
   def define_web_api_servers
     web_server = '54.85.3.24'
 
