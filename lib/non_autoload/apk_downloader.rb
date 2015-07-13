@@ -11,13 +11,16 @@ if defined?(ApkDownloader)
     def fetch_apk_data package
 
       if Rails.env.production?
-        SuperProxy.transaction do
-          p = SuperProxy.lock.order(last_used: :asc).first
-          @proxy_ip = p.private_ip
-          @proxy_port = p.port
-          p.last_used = DateTime.now
-          p.save
-        end
+        # SuperProxy.transaction do
+        #   p = SuperProxy.lock.order(last_used: :asc).first
+        #   @proxy_ip = p.private_ip
+        #   @proxy_port = p.port
+        #   p.last_used = DateTime.now
+        #   p.save
+        # end
+
+        @proxy = "#{get_ip}/8888"
+
       elsif Rails.env.development?
         ip = '127.0.0.1'
       end
@@ -26,8 +29,6 @@ if defined?(ApkDownloader)
       doc = details(package).detailsResponse.docV2
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType
-
-      # ApkSnapshotException.create(name: "offer_type: #{offer_type.to_s}, package: #{package.to_s}, version_code: #{version_code.to_s}")
 
       message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
@@ -38,6 +39,21 @@ if defined?(ApkDownloader)
 
       return resp.body
 
+    end
+
+    def get_ip
+      %w(
+        172.31.20.1
+        172.31.29.18
+        172.31.20.230
+        172.31.24.153
+        172.31.24.26
+        172.31.37.27
+        172.31.36.192
+        172.31.36.118
+        172.31.32.44
+        172.31.36.248
+      ).sample
     end
 
     def use_proxy(host, port)
@@ -62,35 +78,48 @@ if defined?(ApkDownloader)
         "sdk_version" => "16"
       }
 
-      host = LoginUri.host
-      port = LoginUri.port
+      # host = LoginUri.host
+      # port = LoginUri.port
 
-      login_http = use_proxy(host, port)
-      login_http.use_ssl = true
-      login_http.ssl_version="SSLv3"
-      login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
+      # login_http = use_proxy(host, port)
+      # login_http.use_ssl = true
+      # login_http.ssl_version="SSLv3"
+      # login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
 
-      post = Net::HTTP::Post.new LoginUri.to_s
-      post.set_form_data params
-      post["Accept-Encoding"] = ""
+      # post = Net::HTTP::Post.new LoginUri.to_s
+      # post.set_form_data params
+      # post["Accept-Encoding"] = ""
 
-      response = login_http.request post
+      # response = login_http.request post
 
-      if ApkDownloader.configuration.debug
-        pp "Login response:"
-        pp response
+
+      response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https"}, params) do |curb|
+        curb.proxy_url = @proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
+        curb.use_ssl = true
       end
 
-      if response.body =~ /error/i
+
+
+      # if ApkDownloader.configuration.debug
+      #   pp "Login response:"
+      #   pp response
+      # end
+
+      # if response.body =~ /error/i
+      if response.body_str =~ /error/i
         raise "Unable to authenticate with Google"
-      elsif response.body.include? "Auth="
-        @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+      # elsif response.body.include? "Auth="
+        # @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+      elsif response.body_str.include? "Auth="
+        @auth_token = response.body_str.scan(/Auth=(.*?)$/).flatten.first
       end
     end
 
     private
     def recursive_apk_fetch url, cookie, tries = 1
-      raise ArgumentError, 'HTTP redirect too deep' if tries == 0
+      raise ArgumentError, 'HTTP redirect too deep' if tries == 5
 
       host = url.host
       port = url.port
