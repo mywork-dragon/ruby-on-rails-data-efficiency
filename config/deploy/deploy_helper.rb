@@ -7,6 +7,8 @@ module DeployHelper
   @sdk_scraper_roles = []
   @scraper_roles = []
 
+  puts "laksfnlaknsflkansfklansf!!!!"
+
   def define_web_api_servers
     web_server = '54.85.3.24'
 
