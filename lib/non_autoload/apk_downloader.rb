@@ -89,7 +89,7 @@ if defined?(ApkDownloader)
     end
 
     private
-    def recursive_apk_fetch url, cookie, tries = 5
+    def recursive_apk_fetch url, cookie, tries = 1
       raise ArgumentError, 'HTTP redirect too deep' if tries == 0
 
       host = url.host
