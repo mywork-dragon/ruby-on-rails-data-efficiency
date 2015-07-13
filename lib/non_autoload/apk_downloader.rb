@@ -105,6 +105,8 @@ if defined?(ApkDownloader)
       req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
       req['Cookie'] = [cookie.name, cookie.value].join('=')
 
+      raise url.to_s
+
       resp = http.request req
 
       case resp
@@ -158,8 +160,6 @@ if defined?(ApkDownloader)
       end
 
       api_headers.each { |k, v| req[k] = v }
-
-      raise uri.to_s
 
       resp = @http.request req
 
