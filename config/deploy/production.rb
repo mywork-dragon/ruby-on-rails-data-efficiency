@@ -1,6 +1,6 @@
 require_relative 'mighty_deployer'
 
-DeployHelper.define_web_api_servers
-DeployHelper.define_scraper_servers
-DeployHelper.define_sdk_scraper_servers
-DeployHelper.define_roles
+MightyDeployer.define_web_api_servers
+MightyDeployer.define_scraper_servers
+MightyDeployer.define_sdk_scraper_servers
+MightyDeployer.define_roles
