@@ -1,5 +1,15 @@
 #!/usr/bin/env ruby
 
+swole_string = %q(
+ ___  _                 _                    _                     _       _ 
+|_ _|<_>._ _ _  ___   _| |_ ___   ___  ___ _| |_   ___ _ _ _  ___ | | ___ | |
+ | | | || ' ' |/ ._>   | | / . \ / . |/ ._> | |   <_-<| | | |/ . \| |/ ._>|_/
+ |_| |_||_|_|_|\___.   |_| \___/ \_. |\___. |_|   /__/|__/_/ \___/|_|\___.<_>
+                                 <___'
+)                                       
+
+puts swole_string
+
 current_branch = `git branch | sed -n '/\* /s///p'`.strip
 
 if current_branch != "master"
@@ -14,9 +24,11 @@ if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") &&
   abort
 end
 
+
+
 puts "\nWhich servers would you like to deploy to?\n\n"
 puts "Options: web_api scraper sdk_scraper all\n\n"
-print "I wanna deploy to: "
+print "Deploy to: "
 stage = gets
 puts stage 
 abort
