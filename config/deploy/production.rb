@@ -15,7 +15,6 @@ sdk_scraper_servers = %w(
 )
 
 scraper_servers = %w(
-  52.7.5.216
   52.2.192.44
 )
 
