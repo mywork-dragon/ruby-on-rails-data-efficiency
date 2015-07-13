@@ -27,6 +27,8 @@ if defined?(ApkDownloader)
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType
 
+      raise "offer_type: #{offer_type}, package: #{package}, version_code: #{version_code}"
+
       message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
@@ -104,8 +106,6 @@ if defined?(ApkDownloader)
       req['Accept-Encoding'] = ''
       req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
       req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      raise url.to_s
 
       resp = http.request req
 
