@@ -1,7 +1,7 @@
 class NewTorServiceWorker
   include Sidekiq::Worker
   
-  sidekiq_options retry: false
+  sidekiq_options backtrace: true, :retry => 3
 
   def perform(ios_app_id)
     
