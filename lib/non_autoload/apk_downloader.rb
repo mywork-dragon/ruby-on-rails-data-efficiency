@@ -27,16 +27,16 @@ if defined?(ApkDownloader)
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType
 
-      raise "offer_type: #{offer_type}\n package: #{package}\n version_code: #{version_code}"
+      raise doc
 
-      message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+      # message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
-      url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-      cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+      # url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
+      # cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      resp = recursive_apk_fetch(url, cookie)
+      # resp = recursive_apk_fetch(url, cookie)
 
-      return resp.body
+      # return resp.body
 
     end
 
