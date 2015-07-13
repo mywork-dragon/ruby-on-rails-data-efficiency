@@ -29,8 +29,6 @@ module MightyDeployer
     scraper_servers = %w(
       52.2.192.44
     )
-  
-    role :scraper, scraper_servers
 
     scraper_servers.each do |scraper_server|
       server scraper_server, user: 'deploy'
@@ -46,8 +44,6 @@ module MightyDeployer
       54.88.39.109
       54.86.80.102
     )
-  
-    role :sdk_scraper, sdk_scraper_servers
   
     sdk_scraper_servers.each do |sdk_scraper_server|
       server sdk_scraper_server, user: 'deploy'
