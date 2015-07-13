@@ -1,4 +1,4 @@
-require './deploy_helper.rb'
+require_relative 'deploy_helper'
 
 # Simple Role Syntax
 # ==================
