@@ -159,7 +159,7 @@ if defined?(ApkDownloader)
 
       api_headers.each { |k, v| req[k] = v }
 
-      ApkSnapshotException.create(name: uri.to_s)
+      raise uri.to_s
 
       resp = @http.request req
 
