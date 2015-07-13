@@ -14,7 +14,9 @@ if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") &&
   abort
 end
 
-puts 'Which server group would you like to deploy to?'
+puts "\nWhich servers would you like to deploy to?"
+puts "Options: web_api scraper sdk_scraper all\n"
+print "Deploy to: "
 stage = gets
 puts stage 
 abort
