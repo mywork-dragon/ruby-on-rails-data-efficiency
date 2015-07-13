@@ -1,9 +1,9 @@
 GIT
-  remote: git://github.com/jasonlew/capistrano-sidekiq-multiple.git
-  revision: 844924a9aef7fd429114c60aeb8d7a4be71d94e4
+  remote: git://github.com/MightySignal/capistrano-sidekiq-mighty-servers.git
+  revision: b6f9365ca9db7c77d5d46845c2d1821bea1fadd8
   branch: select_queues_per_server
   specs:
-    capistrano-sidekiq-multiple (0.0.0)
+    capistrano-sidekiq-mighty-servers (0.0.0)
       capistrano
       sidekiq
 
@@ -332,7 +332,7 @@ DEPENDENCIES
   bootstrap-sass (= 3.2.0)
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
-  capistrano-sidekiq-multiple!
+  capistrano-sidekiq-mighty-servers!
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)

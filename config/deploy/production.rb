@@ -1,3 +1,5 @@
+# require './deploy_helper'
+
 # Simple Role Syntax
 # ==================
 # Supports bulk-adding hosts to roles, the primary server in each group
@@ -15,7 +17,7 @@ sdk_scraper_servers = %w(
 )
 
 scraper_servers = %w(
-  52.7.5.216
+  52.2.192.44
 )
 
 role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
@@ -25,6 +27,7 @@ role :db,  web_server #must have this do migrate db
 role :sdk_scraper, sdk_scraper_servers
 role :scraper, scraper_servers
 
+# DeployHelper.define_servers(:production)
 
 
 # Extended Server Syntax
