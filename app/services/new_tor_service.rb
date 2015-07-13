@@ -1,5 +1,5 @@
 # Test the new Tor server
-class NewTorServiceWorker
+class NewTorService
   
   class << self
     
