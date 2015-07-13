@@ -24,7 +24,7 @@ print "Deploy to: "
 servers = gets
 valid_servers = %w(scraper sdk_scraper web_api all)
 if !valid_servers.include?(servers)
-  puts "Valid inputs: #{valid_servers.join(' ')}"
+  puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}"
   abort
 end
 
