@@ -14,6 +14,11 @@ if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") &&
   abort
 end
 
+puts 'Which server group would you like to deploy to?'
+stage = gets
+puts stage 
+abort
+
 test_cmd = 'bundle exec rake test:all'
  
 last_line = nil
