@@ -1,4 +1,4 @@
-module DeployHelper
+module MightyDeployer
 
   @app_roles = []
   @web_roles = []

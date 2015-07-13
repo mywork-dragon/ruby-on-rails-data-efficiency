@@ -1,4 +1,4 @@
-require_relative 'deploy_helper'
+require_relative 'mighty_deployer'
 
 DeployHelper.define_web_api_servers
 DeployHelper.define_scraper_servers
