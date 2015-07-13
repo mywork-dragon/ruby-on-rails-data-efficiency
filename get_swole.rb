@@ -22,8 +22,8 @@ puts "all: Deploys to all servers. Branch is 'master'"
 puts "\n\n"
 print "Deploy to: "
 servers = gets
-servers = %w(scraper sdk_scraper web_api all)
-if !servers.include?(stage)
+valid_servers = %w(scraper sdk_scraper web_api all)
+if !valid_servers.include?(servers)
   puts "Valid inputs: #{servers.join(' ')}"
   abort
 end
