@@ -10,7 +10,7 @@ set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
 
 # Default branch is :master
-set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+# set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/webapps/varys'
