@@ -41,7 +41,8 @@ stage = gets
 stages = %w(scraper sdk_scraper web_api all)
 if !stages.include?(stage)
   puts "Valid inputs: #{stages.join(' ')}"
-abort
+  abort
+end
 
 test_cmd = 'bundle exec rake test:all'
  
