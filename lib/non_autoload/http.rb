@@ -21,7 +21,7 @@ module Net
       # s = Timeout.timeout(@open_timeout, Net::OpenTimeout) {
       #   TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
       # }
-      TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
+      s = TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
       D "opened"
       if use_ssl?
