@@ -27,6 +27,7 @@ role :db,  web_server #must have this do migrate db
 role :sdk_scraper, sdk_scraper_servers
 role :scraper, scraper_servers
 
+# DeployHelper.define_servers(:production)
 
 
 # Extended Server Syntax
