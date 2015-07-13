@@ -21,19 +21,22 @@ puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
 puts "all: Deploys to all servers. Branch is 'master'" 
 puts "\n\n"
 print "Deploy to: "
-stage = gets
-stages = %w(scraper sdk_scraper web_api all)
-if !stages.include?(stage)
-  puts "Valid inputs: #{stages.join(' ')}"
+servers = gets
+servers = %w(scraper sdk_scraper web_api all)
+if !servers.include?(stage)
+  puts "Valid inputs: #{servers.join(' ')}"
   abort
 end
 
-if stage == 'scraper'
+if servers == 'scraper'
   branch = 'scraper'
-elsif stage == 'sdk_scraper'
+  stage = branch
+elsif servers == 'sdk_scraper'
   branch = 'sdk_scraper'
-elsif %w(web_api all).include?(stage)
+  stage = branch
+elsif %w(web_api all).include?(servers)
   branch = 'master'
+  stage = 'production'
 end
 
 current_branch = `git branch | sed -n '/\* /s///p'`.strip
@@ -73,4 +76,4 @@ end
 system('animate bicep_curl.gif &')
 
 puts ""
-system('bundle exec cap production deploy')
+system("bundle exec cap #{stage} deploy")
