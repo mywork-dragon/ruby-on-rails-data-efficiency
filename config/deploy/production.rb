@@ -25,14 +25,6 @@ scraper_servers = %w(
   52.2.192.44
 )
 
-role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
-role :web, web_server
-role :api, api_server
-role :db,  web_server #must have this do migrate db
-role :sdk_scraper, sdk_scraper_servers
-role :scraper, scraper_servers
-
-# DeployHelper.define_servers(:production)
 
 
 # Extended Server Syntax
@@ -52,6 +44,14 @@ end
 scraper_servers.each do |scraper_server|
   server scraper_server, user: 'deploy'
 end
+
+role :app, [web_server] + sdk_scraper_servers + [api_server] + scraper_servers
+role :web, web_server
+role :api, api_server
+role :db,  web_server #must have this do migrate db
+role :sdk_scraper, sdk_scraper_servers
+role :scraper, scraper_servers
+
 
 # Custom SSH Options
 # ==================
