@@ -1,4 +1,4 @@
-require './deploy_helper'
+require_relative 'deploy_helper'
 
 DeployHelper.define_web_api_servers
 DeployHelper.define_scraper_servers
