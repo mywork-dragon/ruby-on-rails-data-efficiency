@@ -12,22 +12,6 @@ swole_string = %q(
 
 puts swole_string
 
-current_branch = `git branch | sed -n '/\* /s///p'`.strip
-
-if current_branch != "master"
-  puts "Your current branch needs to be \"master\" to deploy."
-  abort
-end
-
-git_status = `git status -uno`.strip
-
-if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
-  puts git_status
-  abort
-end
-
-
-
 puts "\nWhich servers would you like to deploy to?\n\n"
 puts "Options"
 puts "-------"
@@ -41,6 +25,28 @@ stage = gets
 stages = %w(scraper sdk_scraper web_api all)
 if !stages.include?(stage)
   puts "Valid inputs: #{stages.join(' ')}"
+  abort
+end
+
+if stage == 'scraper'
+  branch = 'scraper'
+elsif stage == 'sdk_scraper'
+  branch = 'sdk_scraper'
+elsif %w(web_api all).include?(stage)
+  branch = 'master'
+end
+
+current_branch = `git branch | sed -n '/\* /s///p'`.strip
+
+if current_branch != branch
+  puts "Your current branch needs to be \"#{branch}\" to deploy."
+  abort
+end
+
+git_status = `git status -uno`.strip
+
+if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
+  puts git_status
   abort
 end
 
