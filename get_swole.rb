@@ -28,11 +28,19 @@ end
 
 
 
-puts "\n\nWhich servers would you like to deploy to?\n\n"
-puts "Options: web_api scraper sdk_scraper all\n\n"
+puts "\nWhich servers would you like to deploy to?\n\n"
+puts "Options"
+puts "-------"
+puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
+puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'scraper'"
+puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
+puts "all: Deploys to all servers. Branch is 'master'" 
+puts "\n\n"
 print "Deploy to: "
 stage = gets
-puts stage 
+stages = %w(scraper sdk_scraper web_api all)
+if !stages.include?(stage)
+  puts "Valid inputs: #{stages.join(' ')}"
 abort
 
 test_cmd = 'bundle exec rake test:all'
