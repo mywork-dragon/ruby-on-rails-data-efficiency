@@ -27,6 +27,8 @@ if defined?(ApkDownloader)
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType
 
+      # ApkSnapshotException.create(name: "offer_type: #{offer_type.to_s}, package: #{package.to_s}, version_code: #{version_code.to_s}")
+
       message = api_request :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
@@ -83,7 +85,6 @@ if defined?(ApkDownloader)
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
-        raise @auth_token.to_s
       end
     end
 
