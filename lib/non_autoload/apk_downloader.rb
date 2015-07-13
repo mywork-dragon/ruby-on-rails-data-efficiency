@@ -75,14 +75,15 @@ if defined?(ApkDownloader)
       response = login_http.request post
 
       if ApkDownloader.configuration.debug
-        # pp "Login response:"
-        # pp response
+        pp "Login response:"
+        pp response
       end
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+        raise @auth_token.to_s
       end
     end
 
@@ -104,8 +105,6 @@ if defined?(ApkDownloader)
       req['Accept-Encoding'] = ''
       req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
       req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      raise url.to_s
 
       resp = http.request req
 
