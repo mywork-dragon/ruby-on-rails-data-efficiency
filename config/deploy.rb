@@ -3,6 +3,9 @@ require 'sshkit/dsl'
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
+set :stages, %w(production)
+set :default_stage, 'production'
+
 set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
 
