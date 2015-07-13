@@ -54,6 +54,8 @@ module MightyDeployer
   end
 
   def self.define_roles
+    puts "@app_roles: #{@app_roles}"
+    
     role :app, @app_roles
     role :web, @web_roles
     role :api, @api_roles
