@@ -26,7 +26,7 @@ end
 
 
 
-puts "\nWhich servers would you like to deploy to?\n\n"
+puts "\n\nWhich servers would you like to deploy to?\n\n"
 puts "Options: web_api scraper sdk_scraper all\n\n"
 print "Deploy to: "
 stage = gets
