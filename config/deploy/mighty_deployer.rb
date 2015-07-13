@@ -35,10 +35,10 @@ module MightyDeployer
       52.6.191.250
     )
   
-    @app_roles += web_servers + api_servers
-    @web_roles += web_servers
-    @db_roles += web_servers
-    @api_roles += api_servers
+    @app_roles += @web_servers + @api_servers
+    @web_roles += @web_servers
+    @db_roles += @web_servers
+    @api_roles += @api_servers
   
   end
 
@@ -47,8 +47,8 @@ module MightyDeployer
       52.2.192.44
     )
   
-    @app_roles += scraper_servers
-    @scraper_roles += scraper_servers
+    @app_roles += @scraper_servers
+    @scraper_roles += @scraper_servers
   end
 
   def self.define_sdk_scraper_servers
@@ -58,8 +58,8 @@ module MightyDeployer
       54.86.80.102
     )
   
-    @app_roles += sdk_scraper_servers
-    @sdk_scraper_roles += sdk_scraper_servers
+    @app_roles += @sdk_scraper_servers
+    @sdk_scraper_roles += @sdk_scraper_servers
   end
 
   private
