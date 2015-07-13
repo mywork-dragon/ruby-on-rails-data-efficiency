@@ -12,6 +12,7 @@ class NewTorServiceWorker
     st = SidekiqTester.new
     
     st.test_string = a[:name]
+    st.ip =  MyIp.ip
     
     st.save
 
