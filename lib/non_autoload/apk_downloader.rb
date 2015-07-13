@@ -72,19 +72,18 @@ if defined?(ApkDownloader)
       post.set_form_data params
       post["Accept-Encoding"] = ""
 
-      raise params.to_s
-
       response = login_http.request post
 
       if ApkDownloader.configuration.debug
-        # pp "Login response:"
-        # pp response
+        pp "Login response:"
+        pp response
       end
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+        raise @auth_token.to_s
       end
     end
 
