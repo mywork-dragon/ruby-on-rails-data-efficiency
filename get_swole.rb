@@ -12,35 +12,44 @@ swole_string = %q(
 
 puts swole_string
 
+puts "\nWhich servers would you like to deploy to?\n\n"
+puts "Options"
+puts "-------"
+puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
+puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'sdk_scraper'"
+puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
+puts "all: Deploys to all servers. Branch is 'master'" 
+puts "\n"
+print "Deploy to: "
+servers = gets.chomp
+valid_servers = %w(scraper sdk_scraper web_api all)
+if !valid_servers.include?(servers)
+  puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
+  abort
+end
+
+if servers == 'scraper'
+  branch = 'scraper'
+  stage = branch
+elsif servers == 'sdk_scraper'
+  branch = 'sdk_scraper'
+  stage = branch
+elsif %w(web_api all).include?(servers)
+  branch = 'master'
+  stage = 'production'
+end
+
 current_branch = `git branch | sed -n '/\* /s///p'`.strip
 
-if current_branch != "master"
-  puts "Your current branch needs to be \"master\" to deploy."
+if current_branch != branch
+  puts "Your current branch needs to be \"#{branch}\" to deploy."
   abort
 end
 
 git_status = `git status -uno`.strip
 
-if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
+if ! ( git_status.include?("Your branch is up-to-date with 'origin/#{branch}'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
   puts git_status
-  abort
-end
-
-
-
-puts "\nWhich servers would you like to deploy to?\n\n"
-puts "Options"
-puts "-------"
-puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
-puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'scraper'"
-puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
-puts "all: Deploys to all servers. Branch is 'master'" 
-puts "\n\n"
-print "Deploy to: "
-stage = gets
-stages = %w(scraper sdk_scraper web_api all)
-if !stages.include?(stage)
-  puts "Valid inputs: #{stages.join(' ')}"
   abort
 end
 
@@ -67,4 +76,4 @@ end
 system('animate bicep_curl.gif &')
 
 puts ""
-system('bundle exec cap production deploy')
+system("bundle exec cap #{stage} deploy")
