@@ -63,19 +63,23 @@ if defined?(ApkDownloader)
     def log_in!
       return if self.logged_in?
 
+      headers = {
+        'Accept-Encoding' => ''
+      }
+
       params = {
-        "Email" => ApkDownloader.configuration.email,
-        "Passwd" => ApkDownloader.configuration.password,
-        "service" => "androidmarket",
-        "accountType" => "HOSTED_OR_GOOGLE",
-        "has_permission" => "1",
-        "source" => "android",
-        "androidId" => ApkDownloader.configuration.android_id,
-        "app" => "com.android.vending",
-        "device_country" => "fr",
-        "operatorCountry" => "fr",
-        "lang" => "fr",
-        "sdk_version" => "16"
+        'Email' => ApkDownloader.configuration.email,
+        'Passwd' => ApkDownloader.configuration.password,
+        'service' => 'androidmarket',
+        'accountType' => 'HOSTED_OR_GOOGLE',
+        'has_permission' => '1',
+        'source' => 'android',
+        'androidId' => ApkDownloader.configuration.android_id,
+        'app' => 'com.android.vending',
+        'device_country' => 'fr',
+        'operatorCountry' => 'fr',
+        'lang' => 'fr',
+        'sdk_version' => '16'
       }
 
       # host = LoginUri.host
@@ -92,23 +96,22 @@ if defined?(ApkDownloader)
 
       # response = login_http.request post
 
-      params = {
-        'Email' => 'karendawson961@gmail.com',
-        'Passwd' => 'thisisapassword',
-        'service' => 'androidmarket',
-        'accountType' => 'HOSTED_OR_GOOGLE',
-        'has_permission' => '1',
-        'source' => 'android',
-        'androidId' => '30e227767f79c15a',
-        'app' => 'com.android.vending',
-        'device_country' => 'fr',
-        'operatorCountry' => 'fr',
-        'lang' => 'fr',
-        'sdk_version' => '16',
-        'Accept-Encoding' => ''
-      }
+      # params = {
+      #   'Email' => 'karendawson961@gmail.com',
+      #   'Passwd' => 'thisisapassword',
+      #   'service' => 'androidmarket',
+      #   'accountType' => 'HOSTED_OR_GOOGLE',
+      #   'has_permission' => '1',
+      #   'source' => 'android',
+      #   'androidId' => '30e227767f79c15a',
+      #   'app' => 'com.android.vending',
+      #   'device_country' => 'fr',
+      #   'operatorCountry' => 'fr',
+      #   'lang' => 'fr',
+      #   'sdk_version' => '16'
+      # }
 
-      response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https"}, params) do |curb|
+      response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params) do |curb|
         curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
@@ -158,7 +161,7 @@ if defined?(ApkDownloader)
         'Cookie' => [cookie.name, cookie.value].join('=')
       }
 
-      response = CurbFu.post({:host => url.host, :path => url.path, :protocol => "https"}, headers) do |curb|
+      response = CurbFu.post({:host => url.host, :path => url.path, :protocol => "https", :headers => headers}) do |curb|
         curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 5
@@ -168,58 +171,85 @@ if defined?(ApkDownloader)
     end
 
     def api_request type, path, data = {}
-      if @http.nil?
-        host = GoogleApiUri.host
-        port = GoogleApiUri.port
+      # if @http.nil?
+      #   host = GoogleApiUri.host
+      #   port = GoogleApiUri.port
 
-        @http = use_proxy(host, port)
-        @http.use_ssl = true
-        @http.ssl_version="SSLv3"
-        @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
+      #   @http = use_proxy(host, port)
+      #   @http.use_ssl = true
+      #   @http.ssl_version="SSLv3"
+      #   @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      # end
 
-      api_headers = {
-        "Accept-Language" => "en_US",
-        "Authorization" => "GoogleLogin auth=#{@auth_token}",
-        "X-DFE-Enabled-Experiments" => "cl:billing.select_add_instrument_by_default",
-        "X-DFE-Unsupported-Experiments" => "nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes",
-        "X-DFE-Device-Id" => ApkDownloader.configuration.android_id,
-        "X-DFE-Client-Id" => "am-android-google",
-        "User-Agent" => "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)",
-        "X-DFE-SmallestScreenWidthDp" => "320",
-        "X-DFE-Filter-Level" => "3",
-        "Accept-Encoding" => "",
-        "Host" => "android.clients.google.com"
+      # api_headers = {
+      #   "Accept-Language" => "en_US",
+      #   "Authorization" => "GoogleLogin auth=#{@auth_token}",
+      #   "X-DFE-Enabled-Experiments" => "cl:billing.select_add_instrument_by_default",
+      #   "X-DFE-Unsupported-Experiments" => "nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes",
+      #   "X-DFE-Device-Id" => ApkDownloader.configuration.android_id,
+      #   "X-DFE-Client-Id" => "am-android-google",
+      #   "User-Agent" => "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)",
+      #   "X-DFE-SmallestScreenWidthDp" => "320",
+      #   "X-DFE-Filter-Level" => "3",
+      #   "Accept-Encoding" => "",
+      #   "Host" => "android.clients.google.com"
+      # }
+
+      # if type == :post
+      #   api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+      # end
+
+      # uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
+
+      # req = if type == :get
+      #   uri.query = URI.encode_www_form data
+      #   Net::HTTP::Get.new uri.to_s
+      # else
+      #   post = Net::HTTP::Post.new uri.to_s
+      #   post.tap { |p| p.set_form_data data }
+      # end
+
+      # api_headers.each { |k, v| req[k] = v }
+
+      # resp = @http.request req
+
+      # unless resp.code.to_i == 200 or resp.code.to_i == 302
+      #   raise "Bad status (#{resp.code}) from Play API (#{path}) => #{data}"
+      # end
+
+      # if ApkDownloader.configuration.debug
+      #   pp "Request response (#{type}):"
+      #   pp resp
+      # end
+
+      headers = {
+        'Accept-Language' => 'en_US',
+        'Authorization' => "GoogleLogin auth=#{@auth_token}",
+        'X-DFE-Enabled-Experiments' => 'cl:billing.select_add_instrument_by_default',
+        'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
+        'X-DFE-Device-Id' => ApkDownloader.configuration.android_id,
+        'X-DFE-Client-Id' => 'am-android-google',
+        'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
+        'X-DFE-SmallestScreenWidthDp' => '320',
+        'X-DFE-Filter-Level' => '3',
+        'Accept-Encoding' => '',
+        'Host' => 'android.clients.google.com',
+        'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
-
-      if type == :post
-        api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-      end
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      req = if type == :get
-        uri.query = URI.encode_www_form data
-        Net::HTTP::Get.new uri.to_s
-      else
-        post = Net::HTTP::Post.new uri.to_s
-        post.tap { |p| p.set_form_data data }
+      response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
+        curb.proxy_url = @proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
       end
 
-      api_headers.each { |k, v| req[k] = v }
-
-      resp = @http.request req
-
-      unless resp.code.to_i == 200 or resp.code.to_i == 302
-        raise "Bad status (#{resp.code}) from Play API (#{path}) => #{data}"
+      unless response.code.to_i == 200 or response.code.to_i == 302
+        raise "Bad status (#{response.code}) from Play API (#{path}) => #{data}"
       end
 
-      if ApkDownloader.configuration.debug
-        pp "Request response (#{type}):"
-        pp resp
-      end
-
-      return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(resp.body)
+      return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
     end
 
   end
