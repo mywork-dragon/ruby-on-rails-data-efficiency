@@ -21,8 +21,9 @@
 
 set :output, "/var/log/varys/cron/cron.log"
 
-# every 30.seconds, roles: [:scraper] do
-# end
+every 30.seconds, roles: [:scraper] do
+  command 'echo blah >> test'
+end
 
 # 2.times do |i|
 #   every 1.day, :at => '1:00am' do
