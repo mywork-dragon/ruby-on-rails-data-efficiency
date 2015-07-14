@@ -53,16 +53,18 @@ class ApkSnapshotService
       end
     end
 
-    # def run_local(notes)
+    def run_local(notes)
 
-    #   clear_accounts()
+      ActiveRecord::Base.logger.level = 1
 
-    #   j = ApkSnapshotJob.create!(notes: notes)
-    #   AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each.with_index do |app, index|
-    #     # li "app #{index}"
-    #     ApkSnapshotServiceWorker.new.perform(j.id, app.id)
-    #   end
-    # end
+      clear_accounts()
+
+      j = ApkSnapshotJob.create!(notes: notes)
+      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each.with_index do |app, index|
+        # li "app #{index}"
+        ApkSnapshotServiceWorker.new.perform(j.id, app.id)
+      end
+    end
 
 
     # def job

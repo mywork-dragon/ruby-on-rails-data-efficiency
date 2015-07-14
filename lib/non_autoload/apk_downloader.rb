@@ -8,9 +8,46 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token, :ip
 
+    def log_in!
+      return if self.logged_in?
+
+      headers = {
+        'Accept-Encoding' => ''
+      }
+
+      params = {
+        'Email' => ApkDownloader.configuration.email,
+        'Passwd' => ApkDownloader.configuration.password,
+        'service' => 'androidmarket',
+        'accountType' => 'HOSTED_OR_GOOGLE',
+        'has_permission' => '1',
+        'source' => 'android',
+        'androidId' => ApkDownloader.configuration.android_id,
+        'app' => 'com.android.vending',
+        'device_country' => 'fr',
+        'operatorCountry' => 'fr',
+        'lang' => 'fr',
+        'sdk_version' => '16'
+      }
+
+      response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params) do |curb|
+        curb.proxy_url = @proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
+      end
+
+      if response.body =~ /error/i
+        raise "Unable to authenticate with Google"
+      elsif response.body.include? "Auth="
+        @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+      end
+
+    end
+
     def fetch_apk_data package
 
       if Rails.env.production?
+
         # SuperProxy.transaction do
         #   p = SuperProxy.lock.order(last_used: :asc).first
         #   @proxy_ip = p.private_ip
@@ -56,171 +93,33 @@ if defined?(ApkDownloader)
       ).sample
     end
 
-    def use_proxy(host, port)
-      Net::HTTP.SOCKSProxy(@proxy_ip, @proxy_port).new(host, port)
-    end
-
-    def log_in!
-      return if self.logged_in?
-
-      headers = {
-        'Accept-Encoding' => ''
-      }
-
-      params = {
-        'Email' => ApkDownloader.configuration.email,
-        'Passwd' => ApkDownloader.configuration.password,
-        'service' => 'androidmarket',
-        'accountType' => 'HOSTED_OR_GOOGLE',
-        'has_permission' => '1',
-        'source' => 'android',
-        'androidId' => ApkDownloader.configuration.android_id,
-        'app' => 'com.android.vending',
-        'device_country' => 'fr',
-        'operatorCountry' => 'fr',
-        'lang' => 'fr',
-        'sdk_version' => '16'
-      }
-
-      # host = LoginUri.host
-      # port = LoginUri.port
-
-      # login_http = use_proxy(host, port)
-      # login_http.use_ssl = true
-      # login_http.ssl_version="SSLv3"
-      # login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
-
-      # post = Net::HTTP::Post.new LoginUri.to_s
-      # post.set_form_data params
-      # post["Accept-Encoding"] = ""
-
-      # response = login_http.request post
-
-      # params = {
-      #   'Email' => 'karendawson961@gmail.com',
-      #   'Passwd' => 'thisisapassword',
-      #   'service' => 'androidmarket',
-      #   'accountType' => 'HOSTED_OR_GOOGLE',
-      #   'has_permission' => '1',
-      #   'source' => 'android',
-      #   'androidId' => '30e227767f79c15a',
-      #   'app' => 'com.android.vending',
-      #   'device_country' => 'fr',
-      #   'operatorCountry' => 'fr',
-      #   'lang' => 'fr',
-      #   'sdk_version' => '16'
-      # }
-
-      response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params) do |curb|
-        curb.proxy_url = @proxy
-        curb.ssl_verify_peer = false
-        curb.max_redirects = 3
-      end
-
-      if response.body =~ /error/i
-        raise "Unable to authenticate with Google"
-      elsif response.body.include? "Auth="
-        @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
-      end
-
-    end
-
     private
-    def recursive_apk_fetch url, cookie, tries = 1
-      # raise ArgumentError, 'HTTP redirect too deep' if tries == 5
-
-      # host = url.host
-      # port = url.port
-
-      # http = use_proxy(host, port)
-      # http.use_ssl = (url.scheme == 'https')
-      # http.ssl_version="SSLv3"
-      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-      # http.use_ssl = true
-
-      # req = Net::HTTP::Get.new url.to_s
-      # req['Accept-Encoding'] = ''
-      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      # req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      # resp = http.request req
-
-      # case resp
-      # when Net::HTTPSuccess
-      #   return resp
-      # when Net::HTTPRedirection
-      #   return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      # else
-      #   resp.error!
-      # end
+    def recursive_apk_fetch url, cookie, try = 0
 
       headers = {
         'Accept-Encoding' => '',
-        'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)',
-        'Cookie' => [cookie.name, cookie.value].join('=')
+        'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
       }
 
-      response = CurbFu.post({:host => url.host, :path => url.path, :protocol => "https", :headers => headers}) do |curb|
+      cookies = [cookie.name, cookie.value].join('=')
+
+      params = url.query.split('&').map{ |q| q.split('=') }
+
+      response = CurbFu.get({:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params) do |curb|
         curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 5
       end
 
-
+      if try==0
+        return recursive_apk_fetch(URI(response['Location']), cookie, try + 1)
+      elsif try==1
+        return response
+      end
+        
     end
 
     def api_request type, path, data = {}
-      # if @http.nil?
-      #   host = GoogleApiUri.host
-      #   port = GoogleApiUri.port
-
-      #   @http = use_proxy(host, port)
-      #   @http.use_ssl = true
-      #   @http.ssl_version="SSLv3"
-      #   @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      # end
-
-      # api_headers = {
-      #   "Accept-Language" => "en_US",
-      #   "Authorization" => "GoogleLogin auth=#{@auth_token}",
-      #   "X-DFE-Enabled-Experiments" => "cl:billing.select_add_instrument_by_default",
-      #   "X-DFE-Unsupported-Experiments" => "nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes",
-      #   "X-DFE-Device-Id" => ApkDownloader.configuration.android_id,
-      #   "X-DFE-Client-Id" => "am-android-google",
-      #   "User-Agent" => "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)",
-      #   "X-DFE-SmallestScreenWidthDp" => "320",
-      #   "X-DFE-Filter-Level" => "3",
-      #   "Accept-Encoding" => "",
-      #   "Host" => "android.clients.google.com"
-      # }
-
-      # if type == :post
-      #   api_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-      # end
-
-      # uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
-
-      # req = if type == :get
-      #   uri.query = URI.encode_www_form data
-      #   Net::HTTP::Get.new uri.to_s
-      # else
-      #   post = Net::HTTP::Post.new uri.to_s
-      #   post.tap { |p| p.set_form_data data }
-      # end
-
-      # api_headers.each { |k, v| req[k] = v }
-
-      # resp = @http.request req
-
-      # unless resp.code.to_i == 200 or resp.code.to_i == 302
-      #   raise "Bad status (#{resp.code}) from Play API (#{path}) => #{data}"
-      # end
-
-      # if ApkDownloader.configuration.debug
-      #   pp "Request response (#{type}):"
-      #   pp resp
-      # end
 
       headers = {
         'Accept-Language' => 'en_US',
@@ -233,20 +132,25 @@ if defined?(ApkDownloader)
         'X-DFE-SmallestScreenWidthDp' => '320',
         'X-DFE-Filter-Level' => '3',
         'Accept-Encoding' => '',
-        'Host' => 'android.clients.google.com',
-        'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Host' => 'android.clients.google.com'
       }
+
+      headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8' if type == :post
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-        curb.proxy_url = @proxy
-        curb.ssl_verify_peer = false
-        curb.max_redirects = 3
-      end
-
-      unless response.code.to_i == 200 or response.code.to_i == 302
-        raise "Bad status (#{response.code}) from Play API (#{path}) => #{data}"
+      if type == :get
+        response = CurbFu.get({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
+          curb.proxy_url = @proxy
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+        end
+      elsif type == :post
+        response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
+          curb.proxy_url = @proxy
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+        end
       end
 
       return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)

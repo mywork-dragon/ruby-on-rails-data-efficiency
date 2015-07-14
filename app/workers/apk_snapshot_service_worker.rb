@@ -1,4 +1,5 @@
 class ApkSnapshotServiceWorker
+
   include Sidekiq::Worker
 
   MAX_TRIES = 3
