@@ -45,8 +45,8 @@ angular.module('appApp')
       });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "pageTitleService",
-    function($scope, apiService, $http, $rootScope, pageTitleService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
+    function($scope, apiService, $http, $rootScope, authService) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -176,6 +176,13 @@ angular.module('appApp')
         }
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };
+      authService.permissions()
+        .success(function(data) {
+          $scope.canViewSupportDesk = data.can_view_support_desk;
+        })
+        .error(function() {
+          $scope.canViewSupportDesk = false;
+        });
     }
   ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",

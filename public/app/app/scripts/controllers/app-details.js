@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "$document",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, $document) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
   $scope.load = function() {
 
@@ -70,11 +70,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.load();
 
+  authService.permissions()
+    .success(function(data) {
+      $scope.canViewSupportDesk = data.can_view_support_desk;
+    })
+    .error(function() {
+      $scope.canViewSupportDesk = false;
+    });
+
+  /* Company Contacts Logic */
   $scope.contactsLoading = false;
   $scope.contactsLoaded = false;
-
   $scope.getCompanyContacts = function(websites) {
-
     $scope.contactsLoading = true;
     apiService.getCompanyContacts(websites).success(function(data) {
       $scope.companyContacts = data.contacts;
