@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService) {
 
     $scope.load = function() {
 
@@ -26,6 +26,13 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
     };
     $scope.load();
 
+    authService.permissions()
+      .success(function(data) {
+        $scope.canViewSupportDesk = data.can_view_support_desk;
+      })
+      .error(function() {
+        $scope.canViewSupportDesk = false;
+      });
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {

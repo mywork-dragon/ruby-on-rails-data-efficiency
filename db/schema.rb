@@ -11,12 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709004349) do
+ActiveRecord::Schema.define(version: 20150713235909) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "can_view_support_desk", default: false, null: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree

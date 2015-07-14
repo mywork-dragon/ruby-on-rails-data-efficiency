@@ -57,6 +57,9 @@ angular.module("appApp")
           d.reject(resp.error);
         });
         return d.promise;
+      },
+      permissions: function() {
+        return $http.get('/auth/permissions');
       }
     };
   }])
