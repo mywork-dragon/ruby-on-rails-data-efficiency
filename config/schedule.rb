@@ -22,7 +22,7 @@
 set :output, "/var/log/varys/cron/cron.log"
 
 every 1.minutes, roles: [:scraper] do
-  command 'date >> test'
+  runner ''
 end
 
 # 2.times do |i|
