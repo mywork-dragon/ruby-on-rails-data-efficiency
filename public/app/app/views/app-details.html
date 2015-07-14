@@ -259,7 +259,7 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-if="appData.supportDesk">
+                <li ng-if="appData.supportDesk | supportDeskName">
                   <span class="icon fa fa-question-circle"></span>
                   <label>Name:</label>
                   <span ng-if="appData.supportDesk">{{appData.supportDesk | supportDeskName}}</span>

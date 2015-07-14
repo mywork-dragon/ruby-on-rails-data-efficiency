@@ -34,7 +34,7 @@
                   <label>Funding:</label>
                   {{companyData.funding | currency:"$":0}}
                 </li>
-                <li ng-if="companyData.location">
+                <li ng-if="companyData.location.city">
                   <span class="icon fa fa-building-o"></span>
                   <label>Address:</label>
                   {{companyData.location.streetAddress}}
