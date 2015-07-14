@@ -48,7 +48,7 @@ end
 
 git_status = `git status -uno`.strip
 
-if ! ( git_status.include?("Your branch is up-to-date with 'origin/master'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
+if ! ( git_status.include?("Your branch is up-to-date with 'origin/#{branch}'.") && git_status.include?("nothing to commit (use -u to show untracked files)") )
   puts git_status
   abort
 end
