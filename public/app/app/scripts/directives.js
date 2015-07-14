@@ -185,7 +185,8 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
             });
           };
-      }).filter('filesize', function () {
+      })
+    .filter('filesize', function () {
       return function (size) {
         if (isNaN(size))
           size = 0;
@@ -229,6 +230,30 @@ angular.module("app.directives", []).directive("imgHolder", [
         exp = Math.floor(Math.log(input) / Math.log(1000));
 
         return (input / Math.pow(1000, exp)).toFixed(decimals) + suffixes[exp - 1];
+      };
+    })
+    .filter('supportDeskName', function () {
+      return function (url) {
+        console.log(url);
+
+        var result = url;
+
+        var supportDeskNames = [
+          'Zendesk',
+          'Helpshift',
+          'UserVoice',
+          'Freshdesk',
+          'Desk'
+        ];
+
+        var domain = url.toLowerCase().split('.');
+
+        supportDeskNames.forEach(function(name) {
+          if (domain.length > 1 && domain[domain.length - 2] == name.toLowerCase()) {
+            result = name;
+          }
+        });
+        return result;
       };
     })
     .directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {

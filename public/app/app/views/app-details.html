@@ -253,21 +253,21 @@
       </div>
 
       <!-- Support Platform Optional Display Panel -->
-      <div class="panel panel-default" ng-show="canViewSupportDesk">
+      <div class="panel panel-default" ng-show="canViewSupportDesk"> <!-- && appData.supportDesk"> -->
         <div class="panel-heading"><strong>Support Desk</strong></div>
         <div class="panel-body">
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li>
-                  <span class="icon fa fa-star-half-o"></span>
+                <li ng-if="appData.supportDesk">
+                  <span class="icon fa fa-question-circle"></span>
                   <label>Name:</label>
-                  <span ng-if="appData.rating != 0">Name of Support Desk</span>
+                  <span ng-if="appData.supportDesk">{{appData.supportDesk | supportDeskName}}</span>
                 </li>
-                <li ng-if="appData.ratingsCount">
-                  <span class="icon fa fa-star-half-o"></span>
+                <li ng-if="appData.supportDesk">
+                  <span class="icon fa fa-question-circle"></span>
                   <label>Portal:</label>
-                  <a href="https://itunes.apple.com/us/app/id" target="_blank">https://link_to_support_desk</a>
+                  <a href="{{appData.supportDesk}}" target="_blank">{{appData.supportDesk}}</a>
                 </li>
               </ul>
             </div>
