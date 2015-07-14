@@ -234,10 +234,9 @@ angular.module("app.directives", []).directive("imgHolder", [
     })
     .filter('supportDeskName', function () {
       return function (url) {
-        console.log(url);
+        if(!url) return "";
 
         var result = url;
-
         var supportDeskNames = [
           'Zendesk',
           'Helpshift',

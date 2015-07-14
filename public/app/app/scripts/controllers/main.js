@@ -44,6 +44,14 @@ angular.module('appApp')
         authToken.deleteToken();
       });
 
+      authService.permissions()
+        .success(function(data) {
+          $scope.canViewSupportDesk = data.can_view_support_desk;
+        })
+        .error(function() {
+          $scope.canViewSupportDesk = false;
+        });
+
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
     function($scope, apiService, $http, $rootScope, authService) {
@@ -176,13 +184,6 @@ angular.module('appApp')
         }
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };
-      authService.permissions()
-        .success(function(data) {
-          $scope.canViewSupportDesk = data.can_view_support_desk;
-        })
-        .error(function() {
-          $scope.canViewSupportDesk = false;
-        });
     }
   ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",

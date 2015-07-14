@@ -76,6 +76,9 @@
             Categories
 
           </div></th>
+          <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+            Support Desk
+          </div></th>
           <th><div class="th normal-right-padding">
             Last Updated
             <!--
@@ -117,6 +120,7 @@
             </td>
             <td>{{app.app.userBase | capitalize}}</td>
             <td>{{app.app.categories.join(', ')}}</td>
+            <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
             <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
           </tr>
         </tbody>
