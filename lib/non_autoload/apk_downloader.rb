@@ -92,60 +92,78 @@ if defined?(ApkDownloader)
 
       # response = login_http.request post
 
+      params = {
+        'Email' => 'karendawson961@gmail.com',
+        'Passwd' => 'thisisapassword',
+        'service' => 'androidmarket',
+        'accountType' => 'HOSTED_OR_GOOGLE',
+        'has_permission' => '1',
+        'source' => 'android',
+        'androidId' => '30e227767f79c15a',
+        'app' => 'com.android.vending',
+        'device_country' => 'fr',
+        'operatorCountry' => 'fr',
+        'lang' => 'fr',
+        'sdk_version' => '16',
+        'Accept-Encoding' => ''
+      }
 
       response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https"}, params) do |curb|
         curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
-        curb.use_ssl = true
       end
 
-
-
-      # if ApkDownloader.configuration.debug
-      #   pp "Login response:"
-      #   pp response
-      # end
-
-      # if response.body =~ /error/i
-      if response.body_str =~ /error/i
+      if response.body =~ /error/i
         raise "Unable to authenticate with Google"
-      # elsif response.body.include? "Auth="
-        # @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
-      elsif response.body_str.include? "Auth="
-        @auth_token = response.body_str.scan(/Auth=(.*?)$/).flatten.first
+      elsif response.body.include? "Auth="
+        @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
       end
+
     end
 
     private
     def recursive_apk_fetch url, cookie, tries = 1
-      raise ArgumentError, 'HTTP redirect too deep' if tries == 5
+      # raise ArgumentError, 'HTTP redirect too deep' if tries == 5
 
-      host = url.host
-      port = url.port
+      # host = url.host
+      # port = url.port
 
-      http = use_proxy(host, port)
-      http.use_ssl = (url.scheme == 'https')
-      http.ssl_version="SSLv3"
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      # http = use_proxy(host, port)
+      # http.use_ssl = (url.scheme == 'https')
+      # http.ssl_version="SSLv3"
+      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      http.use_ssl = true
+      # http.use_ssl = true
 
-      req = Net::HTTP::Get.new url.to_s
-      req['Accept-Encoding'] = ''
-      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      req['Cookie'] = [cookie.name, cookie.value].join('=')
+      # req = Net::HTTP::Get.new url.to_s
+      # req['Accept-Encoding'] = ''
+      # req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+      # req['Cookie'] = [cookie.name, cookie.value].join('=')
 
-      resp = http.request req
+      # resp = http.request req
 
-      case resp
-      when Net::HTTPSuccess
-        return resp
-      when Net::HTTPRedirection
-        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
-      else
-        resp.error!
+      # case resp
+      # when Net::HTTPSuccess
+      #   return resp
+      # when Net::HTTPRedirection
+      #   return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+      # else
+      #   resp.error!
+      # end
+
+      headers = {
+        'Accept-Encoding' => '',
+        'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)',
+        'Cookie' => [cookie.name, cookie.value].join('=')
+      }
+
+      response = CurbFu.post({:host => url.host, :path => url.path, :protocol => "https"}, headers) do |curb|
+        curb.proxy_url = @proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 5
       end
+
 
     end
 
