@@ -19,7 +19,7 @@ puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
 puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'scraper'"
 puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
 puts "all: Deploys to all servers. Branch is 'master'" 
-puts "\n\n"
+puts "\n"
 print "Deploy to: "
 servers = gets.chomp
 valid_servers = %w(scraper sdk_scraper web_api all)
