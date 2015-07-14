@@ -354,6 +354,7 @@ class ApiController < ApplicationController
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
               adSpend: app.ios_fb_ad_appearances.present?,
               categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
               appIcon: {
                   large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
                   small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
@@ -384,6 +385,7 @@ class ApiController < ApplicationController
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
               adSpend: app.android_fb_ad_appearances.present?,
               categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
               appIcon: {
                   large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
                   # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil

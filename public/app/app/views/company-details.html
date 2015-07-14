@@ -38,7 +38,7 @@
                   <span class="icon fa fa-building-o"></span>
                   <label>Address:</label>
                   {{companyData.location.streetAddress}}
-                  {{companyData.location.city}}, {{companyData.location.zipCode}}
+                  {{companyData.location.city}}<span ng-if="companyData.location.zipCode">, </span>{{companyData.location.zipCode}}
                 </li>
                 <li ng-if="companyData.location.country">
                   <span class="icon fa fa-flag"></span>

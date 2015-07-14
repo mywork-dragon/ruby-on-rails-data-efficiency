@@ -236,7 +236,7 @@ angular.module("app.directives", []).directive("imgHolder", [
       return function (url) {
         if(!url) return "";
 
-        var result = url;
+        var result = "";
         var supportDeskNames = [
           'Zendesk',
           'Helpshift',
