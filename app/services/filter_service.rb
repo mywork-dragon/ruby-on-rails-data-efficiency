@@ -67,6 +67,18 @@ class FilterService
         #queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes.join(',')}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
       end
+
+      if app_filters[:supportDesk]
+
+        for support_desk in app_filters[:supportDesk]
+          puts "#######################################"
+
+          puts support_desk
+
+          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.#{support_desk}.%\"')"
+        end
+
+      end
       
       queries
     end
