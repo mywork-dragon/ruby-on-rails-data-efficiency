@@ -22,7 +22,7 @@
 set :output, "/var/log/varys/cron/cron.log"
 
 every 1.minutes, roles: [:scraper] do
-  runner 'SidekiqTest.say_hi'
+  runner 'SidekiqTester.say_hi'
 end
 
 # 2.times do |i|
