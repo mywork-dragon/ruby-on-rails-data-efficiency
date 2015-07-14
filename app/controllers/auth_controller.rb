@@ -11,7 +11,7 @@ class AuthController < ApplicationController
       li "authenticated"
       render json: { auth_token: user.generate_auth_token, email: user.email}
     else
-      li "authentication error"
+      li a"authentication error"
       render json: { error: 'Invalid username or password' }, status: :unauthorized
     end
   end
@@ -24,6 +24,14 @@ class AuthController < ApplicationController
     # render true if decoded_auth_token && User.find(decoded_auth_token[:user_id]) && !decoded_auth_token
     #
     # return false
+  end
+
+  def permissions
+    user = User.find(decoded_auth_token[:user_id])
+
+    account = Account.find(user.account_id)
+
+    render json: { :can_view_support_desk => account.can_view_support_desk }
   end
   
 end

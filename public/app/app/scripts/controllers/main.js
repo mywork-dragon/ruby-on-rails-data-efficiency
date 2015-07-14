@@ -44,9 +44,17 @@ angular.module('appApp')
         authToken.deleteToken();
       });
 
+      authService.permissions()
+        .success(function(data) {
+          $scope.canViewSupportDesk = data.can_view_support_desk;
+        })
+        .error(function() {
+          $scope.canViewSupportDesk = false;
+        });
+
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "pageTitleService",
-    function($scope, apiService, $http, $rootScope, pageTitleService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
+    function($scope, apiService, $http, $rootScope, authService) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(

@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   
   post 'auth/login' => 'auth#authenticate'
   post 'auth/validate_token' => 'auth#validate_token'
+  get 'auth/permissions' => 'auth#permissions'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

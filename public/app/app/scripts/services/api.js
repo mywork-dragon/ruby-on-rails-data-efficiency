@@ -39,6 +39,12 @@ angular.module("appApp")
               case 'fortuneRank':
                 requestData['company'][tag.parameter] = tag.value;
                 break;
+              case 'supportDesk':
+                if(requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
+                }                break;
               case 'customKeywords':
                 if(requestData[tag.parameter]) {
                   requestData[tag.parameter].push(tag.value);

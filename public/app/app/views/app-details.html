@@ -252,6 +252,29 @@
         </div>
       </div>
 
+      <!-- Support Platform Optional Display Panel -->
+      <div class="panel panel-default" ng-show="canViewSupportDesk"> <!-- && appData.supportDesk"> -->
+        <div class="panel-heading"><strong>Support Desk</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li ng-if="appData.supportDesk | supportDeskName">
+                  <span class="icon fa fa-question-circle"></span>
+                  <label>Name:</label>
+                  <span ng-if="appData.supportDesk">{{appData.supportDesk | supportDeskName}}</span>
+                </li>
+                <li ng-if="appData.supportDesk">
+                  <span class="icon fa fa-question-circle"></span>
+                  <label>Portal:</label>
+                  <a href="{{appData.supportDesk}}" target="_blank">{{appData.supportDesk}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="col-md-6 info-column">

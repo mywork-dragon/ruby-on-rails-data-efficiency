@@ -45,6 +45,10 @@ module MightyDeployer
   def self.define_scraper_servers
     @scraper_servers = %w(
       52.2.192.44
+      52.3.11.3
+      52.2.56.165
+      52.2.60.230
+      52.2.124.31
     )
   
     @app_roles += @scraper_servers

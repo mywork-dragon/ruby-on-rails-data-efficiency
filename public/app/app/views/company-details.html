@@ -34,11 +34,11 @@
                   <label>Funding:</label>
                   {{companyData.funding | currency:"$":0}}
                 </li>
-                <li ng-if="companyData.location">
+                <li ng-if="companyData.location.city">
                   <span class="icon fa fa-building-o"></span>
                   <label>Address:</label>
                   {{companyData.location.streetAddress}}
-                  {{companyData.location.city}}, {{companyData.location.zipCode}}
+                  {{companyData.location.city}}<span ng-if="companyData.location.zipCode">, </span>{{companyData.location.zipCode}}
                 </li>
                 <li ng-if="companyData.location.country">
                   <span class="icon fa fa-flag"></span>
@@ -200,6 +200,9 @@
                 Categories
 
               </div></th>
+              <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+                Support Desk
+              </div></th>
               <th><div class="th normal-right-padding">
                 Last Updated
                 <!--
@@ -235,6 +238,7 @@
               </td>
               <td>{{app.userBase | capitalize}}</td>
               <td>{{app.categories.join(', ')}}</td>
+              <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
               <td>{{app.lastUpdated | date : 'shortDate'}}</td>
             </tr>
             </tbody>

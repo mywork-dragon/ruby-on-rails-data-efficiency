@@ -20,8 +20,6 @@
 
     <div class="panel-heading">
 
-
-
           <span class="dashboard-tag-filter-selects">
 
              <span class="btn-group" id="dashboardPlatformSwitch">
@@ -32,9 +30,9 @@
              <span class="ui-select">
                   <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
                     <option value="">Mobile Priority</option>
-                    <option value="L">Low</option>
-                    <option value="M">Medium</option>
                     <option value="H">High</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Low</option>
                   </select>
              </span>
              <a href="" data-toggle="modal" data-target="#myModal">
@@ -101,6 +99,17 @@
               <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
                title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
              </a>
+             <span class="ui-select" ng-show="canViewSupportDesk">
+                  <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
+                    <option value="">Support Desk</option>
+                    <option value="zendesk">Zendesk</option>
+                    <option value="helpshift">HelpShift</option>
+                    <option value="uservoice">UserVoice</option>
+                    <option value="freshdesk">FreshDesk</option>
+                    <option value="desk">Desk</option>
+
+                  </select>
+             </span>
              <span id="dashboardSearchBox">
                   <input placeholder="App or Company name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
              </span>
@@ -174,7 +183,9 @@
           </div></th>
           <th><div class="th normal-right-padding">
             Categories
-
+          </div></th>
+          <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+            Support Desk
           </div></th>
           <th><div class="th">
             Last Updated
@@ -206,6 +217,7 @@
             </td>
             <td>{{app.app.userBase | capitalize}}</td>
             <td>{{app.app.categories.join(', ')}}</td>
+            <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
             <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
           </tr>
         </tbody>
