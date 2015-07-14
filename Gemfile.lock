@@ -339,7 +339,6 @@ DEPENDENCIES
   capistrano-sidekiq-mighty-servers!
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
-  curb (= 0.8.8)
   curb-fu (= 0.6.2)
   domainator (= 2.0.0)
   faker (= 1.4.3)
