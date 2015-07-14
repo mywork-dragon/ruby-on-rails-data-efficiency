@@ -21,7 +21,7 @@ puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
 puts "all: Deploys to all servers. Branch is 'master'" 
 puts "\n\n"
 print "Deploy to: "
-servers = gets
+servers = gets.chomp
 valid_servers = %w(scraper sdk_scraper web_api all)
 if !valid_servers.include?(servers)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
