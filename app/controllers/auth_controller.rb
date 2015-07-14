@@ -25,5 +25,13 @@ class AuthController < ApplicationController
     #
     # return false
   end
+
+  def permissions
+    user = User.find(decoded_auth_token[:user_id])
+
+    account = Account.find(user.account_id)
+
+    render json: { :can_view_support_desk => account.can_view_support_desk }
+  end
   
 end
