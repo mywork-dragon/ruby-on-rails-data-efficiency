@@ -352,7 +352,7 @@
                   <span class="icon fa fa-building-o"></span>
                   <label>Address:</label>
                   {{appData.company.location.streetAddress}}
-                  {{appData.company.location.city}}<span ng-if="companyData.location.zipCode">, </span>{{appData.company.location.zipCode}}
+                  {{appData.company.location.city}}<span ng-if="appData.company.location.zipCode">, </span>{{appData.company.location.zipCode}}
                 </li>
                 <li ng-if="appData.company.location.country">
                   <span class="icon fa fa-globe"></span>
