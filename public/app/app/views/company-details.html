@@ -98,6 +98,7 @@
 
       <div class="panel-heading" id="companyContactsTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
+        <button type="submit" class="btn btn-primary pull-right" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
       </div>
 
       <div id="results-table-wrapper">
