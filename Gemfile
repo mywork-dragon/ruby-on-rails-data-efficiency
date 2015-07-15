@@ -42,7 +42,7 @@ gem 'spring',        group: :development
 # gem 'rspec'
 # gem 'rspec-rails'
 
-gem 'whenever', require: false
+gem 'whenever', '0.9.4', require: false
 
 gem 'nokogiri', '1.6.4.1'
 

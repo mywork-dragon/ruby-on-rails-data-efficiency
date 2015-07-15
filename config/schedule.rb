@@ -19,11 +19,12 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "/var/log/varys/cron/cron.log"
+set :output, "/home/deploy/cron.log"
 
-every 1.minutes, roles: [:scraper] do
-  runner 'SidekiqTester.say_hi'
-end
+#this works! keep as a sample
+# every 1.minutes, roles: [:scraper] do
+#   runner "SidekiqTester.say_hi"
+# end
 
 # 2.times do |i|
 #   every 1.day, :at => '1:00am' do
