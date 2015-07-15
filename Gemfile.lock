@@ -375,7 +375,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   sidekiq (= 3.3.0)
-  sinatra
+  sinatra (= 1.4.6)
   socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
