@@ -82,6 +82,8 @@ if defined?(ApkDownloader)
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
       cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
+      ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\n@proxy: #{@proxy}")
+
       resp = recursive_apk_fetch(url, cookie)
 
       return resp.body
