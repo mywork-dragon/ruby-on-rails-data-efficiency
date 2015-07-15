@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "/var/log/varys/cron/cron.log"
+set :output, "/home/deploy/cron.log"
 
 every 1.minutes, roles: [:scraper] do
   runner "SidekiqTester.say_hi"
