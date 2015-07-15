@@ -297,9 +297,10 @@
         </div>
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
+                      ng-class="{disabled: $root.dashboardSearchButtonDisabled}"
                       ng-model="currentPage"
                       total-items="numApps"
-                      max-size="4"
+                      max-size="8"
                       ng-change="select(currentPage, tags)"
                       items-per-page="numPerPage"
                       rotate="false"
