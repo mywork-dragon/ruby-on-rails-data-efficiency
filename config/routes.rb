@@ -140,4 +140,7 @@ Rails.application.routes.draw do
   get 'url_search' => 'results#url_search'
   post 'url_search' => 'results#url_search_result', as: :url_search_result
   
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+  
 end
