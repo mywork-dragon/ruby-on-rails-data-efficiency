@@ -17,13 +17,7 @@ if defined?(ApkDownloader)
       #   p.save
       # end
 
-      @proxy = "#{get_ip}/8888"
-    elsif Rails.env.development?
-      @proxy = '127.0.0.1'
-    end
-
-    def get_ip
-      %w(
+      ip = %w(
         172.31.20.1
         172.31.29.18
         172.31.20.230
@@ -35,9 +29,11 @@ if defined?(ApkDownloader)
         172.31.32.44
         172.31.36.248
       ).sample
+
+      @proxy = "#{ip}/8888"
+    elsif Rails.env.development?
+      @proxy = '127.0.0.1'
     end
-
-
 
     def log_in!
       return if self.logged_in?
