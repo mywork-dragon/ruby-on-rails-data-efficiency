@@ -128,6 +128,9 @@ gem 'parallel', '1.6.0'
 
 gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
+require 'sidekiq/web'
+mount Sidekiq::Web => '/sidekiq'
+
 # gem 'curb', '0.8.8'
 #
 # gem 'curb-fu', '0.6.2'
