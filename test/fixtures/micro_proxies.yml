@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  active: false
+  public_ip: MyString
+  private_ip: MyString
+  last_used: 2015-07-14
+
+two:
+  active: false
+  public_ip: MyString
+  private_ip: MyString
+  last_used: 2015-07-14

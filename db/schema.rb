@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150713235909) do
+ActiveRecord::Schema.define(version: 20150715023111) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -211,11 +211,13 @@ ActiveRecord::Schema.define(version: 20150713235909) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "try"
+    t.string   "proxy"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
+  add_index "apk_snapshots", ["proxy"], name: "index_apk_snapshots_on_proxy", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
   create_table "app_stores", force: true do |t|
@@ -611,6 +613,20 @@ ActiveRecord::Schema.define(version: 20150713235909) do
   end
 
   add_index "matchers", ["service_id"], name: "index_matchers_on_service_id", using: :btree
+
+  create_table "micro_proxies", force: true do |t|
+    t.boolean  "active"
+    t.string   "public_ip"
+    t.string   "private_ip"
+    t.date     "last_used"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "micro_proxies", ["active"], name: "index_micro_proxies_on_active", using: :btree
+  add_index "micro_proxies", ["last_used"], name: "index_micro_proxies_on_last_used", using: :btree
+  add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
+  add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
 
   create_table "oauth_users", force: true do |t|
     t.string   "provider"

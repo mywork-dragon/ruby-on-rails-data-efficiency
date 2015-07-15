@@ -63,7 +63,7 @@ class ApkSnapshotServiceWorker
 
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name)
+      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
     rescue => e
 
