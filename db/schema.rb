@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715221302) do
+ActiveRecord::Schema.define(version: 20150715222107) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -585,7 +585,7 @@ ActiveRecord::Schema.define(version: 20150715221302) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "lists_users", ["list_id"], name: "index_lists_users_on_list_id", using: :btree
+  add_index "lists_users", ["list_id", "user_id"], name: "index_lists_users_on_list_id_and_user_id", using: :btree
   add_index "lists_users", ["user_id"], name: "index_lists_users_on_user_id", using: :btree
 
   create_table "m_turk_workers", force: true do |t|
