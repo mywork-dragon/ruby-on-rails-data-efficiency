@@ -53,7 +53,8 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       });
     };
     $scope.exportListToCsv = function() {
-      listApiService.exportToCsv($routeParams.id).success(function (content) {
+      listApiService.exportToCsv($routeParams.id)
+        .success(function (content) {
           var hiddenElement = document.createElement('a');
 
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
@@ -61,7 +62,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
           hiddenElement.download = 'mightysignal_list.csv';
           hiddenElement.click();
         });
-
     };
     $scope.updateCheckboxStatus = function(appId, appType) {
       $rootScope.selectedAppsForList.forEach(function(app) {

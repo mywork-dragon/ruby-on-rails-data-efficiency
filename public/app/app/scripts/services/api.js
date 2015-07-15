@@ -83,6 +83,23 @@ angular.module("appApp")
             companyWebsites: websites
           }
         });
+      },
+      exportContactsToCsv: function(contacts, companyName) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Exported Contacts CSV", {
+            "contacts": contacts
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        return $http({
+          method: 'POST',
+          url: API_URI_BASE + 'api/contacts/export_to_csv',
+          data: {
+            contacts: contacts,
+            companyName: companyName
+          }
+        });
       }
     };
   }]);

@@ -469,12 +469,36 @@ class ApiController < ApplicationController
 
     end
 
-    puts apps.inspect
-
     list_csv = CSV.generate do |csv|
       csv << header
       apps.each do |app|
           csv << app
+      end
+    end
+
+    send_data list_csv
+
+  end
+
+  def export_contacts_to_csv
+    contacts = params['contacts']
+    companyName = params['companyName']
+    header = ['MightySignal ID', 'Company Name', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
+
+    list_csv = CSV.generate do |csv|
+      csv << header
+      contacts.each do |contact|
+        contacts_hash = [
+            contact['clearBitId'],
+            companyName,
+            contact['title'],
+            contact['fullName'],
+            contact['givenName'],
+            contact['familyName'],
+            contact['email'],
+            contact['linkedin']
+        ]
+        csv << contacts_hash
       end
     end
 

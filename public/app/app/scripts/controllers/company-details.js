@@ -75,6 +75,18 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       }
     };
 
+    $scope.exportContactsToCsv = function() {
+      apiService.exportContactsToCsv($scope.companyContacts, $scope.companyData.name)
+        .success(function (content) {
+          var hiddenElement = document.createElement('a');
+
+          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = 'contacts.csv';
+          hiddenElement.click();
+        });
+    };
+
     $scope.contactsLoading = false;
     $scope.contactsLoaded = false;
 
