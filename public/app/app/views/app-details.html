@@ -235,13 +235,13 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li>
-                  <span class="icon fa fa-star-half-o"></span>
+                <li ng-if="appData.rating != 0">
+                  <span class="icon fa fa-star"></span>
                   <label>Aggregate Rating:</label>
-                  <span ng-if="appData.rating != 0">{{appData.rating}} of 5.0</span>
+                  <span>{{appData.rating}} of 5.0</span>
                 </li>
                 <li ng-if="appData.ratingsCount">
-                  <span class="icon fa fa-star-half-o"></span>
+                  <span class="icon fa fa-star"></span>
                   <label>Ratings Count:</label>
                   <span ng-if="appData.ratingsCount == 0">No Ratings</span>
                   {{appData.ratingsCount}}

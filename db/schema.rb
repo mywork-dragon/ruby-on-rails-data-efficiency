@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 20150715023111) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "try"
-    t.string   "proxy"
+    t.integer  "proxy"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
