@@ -31,7 +31,7 @@ if defined?(ApkDownloader)
       }
 
       response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params) do |curb|
-        curb.proxy_url = @proxy
+        curb.proxy_url = '172.31.29.18:8888'
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
       end
@@ -106,7 +106,7 @@ if defined?(ApkDownloader)
       params = url.query.split('&').map{ |q| q.split('=') }
 
       response = CurbFu.get({:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params) do |curb|
-        curb.proxy_url = @proxy
+        curb.proxy_url = '172.31.29.18:8888'
         curb.ssl_verify_peer = false
         curb.max_redirects = 5
       end
@@ -141,13 +141,13 @@ if defined?(ApkDownloader)
 
       if type == :get
         response = CurbFu.get({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = @proxy
+          curb.proxy_url = '172.31.29.18:8888'
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
         end
       elsif type == :post
         response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = @proxy
+          curb.proxy_url = '172.31.29.18:8888'
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
         end
