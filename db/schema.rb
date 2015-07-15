@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715215655) do
+ActiveRecord::Schema.define(version: 20150715220152) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -461,7 +461,7 @@ ActiveRecord::Schema.define(version: 20150715215655) do
   end
 
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
-  add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_languages_on_ios_app_snapshot_id", using: :btree
+  add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
