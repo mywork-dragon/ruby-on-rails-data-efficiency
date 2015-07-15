@@ -8,6 +8,37 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token, :ip
 
+    if Rails.env.production?
+      # SuperProxy.transaction do
+      #   p = SuperProxy.lock.order(last_used: :asc).first
+      #   @proxy_ip = p.private_ip
+      #   @proxy_port = p.port
+      #   p.last_used = DateTime.now
+      #   p.save
+      # end
+
+      @proxy = "#{get_ip}/8888"
+    elsif Rails.env.development?
+      @proxy = '127.0.0.1'
+    end
+
+    def get_ip
+      %w(
+        172.31.20.1
+        172.31.29.18
+        172.31.20.230
+        172.31.24.153
+        172.31.24.26
+        172.31.37.27
+        172.31.36.192
+        172.31.36.118
+        172.31.32.44
+        172.31.36.248
+      ).sample
+    end
+
+
+
     def log_in!
       return if self.logged_in?
 
@@ -31,7 +62,7 @@ if defined?(ApkDownloader)
       }
 
       response = CurbFu.post({:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params) do |curb|
-        curb.proxy_url = '172.31.29.18:8888'
+        curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
       end
@@ -45,23 +76,6 @@ if defined?(ApkDownloader)
     end
 
     def fetch_apk_data package
-
-      if Rails.env.production?
-
-        # SuperProxy.transaction do
-        #   p = SuperProxy.lock.order(last_used: :asc).first
-        #   @proxy_ip = p.private_ip
-        #   @proxy_port = p.port
-        #   p.last_used = DateTime.now
-        #   p.save
-        # end
-
-        @proxy = "#{get_ip}/8888"
-
-      elsif Rails.env.development?
-        ip = '127.0.0.1'
-      end
-
       log_in!
       doc = details(package).detailsResponse.docV2
       version_code = doc.details.appDetails.versionCode
@@ -78,21 +92,6 @@ if defined?(ApkDownloader)
 
     end
 
-    def get_ip
-      %w(
-        172.31.20.1
-        172.31.29.18
-        172.31.20.230
-        172.31.24.153
-        172.31.24.26
-        172.31.37.27
-        172.31.36.192
-        172.31.36.118
-        172.31.32.44
-        172.31.36.248
-      ).sample
-    end
-
     private
     def recursive_apk_fetch url, cookie, try = 0
 
@@ -106,7 +105,7 @@ if defined?(ApkDownloader)
       params = url.query.split('&').map{ |q| q.split('=') }
 
       response = CurbFu.get({:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params) do |curb|
-        curb.proxy_url = '172.31.29.18:8888'
+        curb.proxy_url = @proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 5
       end
@@ -141,13 +140,13 @@ if defined?(ApkDownloader)
 
       if type == :get
         response = CurbFu.get({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = '172.31.29.18:8888'
+          curb.proxy_url = @proxy
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
         end
       elsif type == :post
         response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = '172.31.29.18:8888'
+          curb.proxy_url = @proxy
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
         end
