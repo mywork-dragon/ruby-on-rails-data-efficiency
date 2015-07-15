@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715220532) do
+ActiveRecord::Schema.define(version: 20150715221302) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -352,6 +352,7 @@ ActiveRecord::Schema.define(version: 20150715220532) do
 
   add_index "ios_app_categories_snapshots", ["ios_app_category_id"], name: "index_ios_app_categories_snapshots_on_ios_app_category_id", using: :btree
   add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id", "ios_app_category_id", "kind"], name: "index_ios_app_snapshot_id_category_id_kind", using: :btree
+  add_index "ios_app_categories_snapshots", ["kind"], name: "index_ios_app_categories_snapshots_on_kind", using: :btree
 
   create_table "ios_app_download_snapshot_exceptions", force: true do |t|
     t.integer  "ios_app_download_snapshot_id"
@@ -568,7 +569,7 @@ ActiveRecord::Schema.define(version: 20150715220532) do
   end
 
   add_index "listables_lists", ["list_id"], name: "index_listables_lists_on_list_id", using: :btree
-  add_index "listables_lists", ["listable_id"], name: "index_listables_lists_on_listable_id", using: :btree
+  add_index "listables_lists", ["listable_id", "list_id", "listable_type"], name: "index_listable_id_list_id_listable_type", using: :btree
   add_index "listables_lists", ["listable_type"], name: "index_listables_lists_on_listable_type", using: :btree
 
   create_table "lists", force: true do |t|
