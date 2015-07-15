@@ -348,11 +348,11 @@
                   <label>Funding:</label>
                   {{appData.company.funding | currency:"$":0}}
                 </li>
-                <li ng-if="appData.company.location">
+                <li ng-if="appData.company.location.city">
                   <span class="icon fa fa-building-o"></span>
                   <label>Address:</label>
                   {{appData.company.location.streetAddress}}
-                  {{appData.company.location.city}}, {{appData.company.location.zipCode}}
+                  {{appData.company.location.city}}<span ng-if="companyData.location.zipCode">, </span>{{appData.company.location.zipCode}}
                 </li>
                 <li ng-if="appData.company.location.country">
                   <span class="icon fa fa-globe"></span>
@@ -363,7 +363,6 @@
                   <a href="#/company/{{appData.company.id}}">More Company Details</a>
                 </li>
               </ul>
-
             </div>
           </div>
         </div>

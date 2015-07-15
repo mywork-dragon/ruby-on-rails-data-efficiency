@@ -207,6 +207,8 @@ angular.module('appApp')
           );
           /* -------- Mixpanel Analytics End -------- */
 
+          $rootScope.dashboardSearchButtonDisabled = true;
+
           apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
             .success(function(data) {
               $rootScope.apps = data.results;
