@@ -54,7 +54,7 @@ set :scraper_concurrency, 50
 set :sdk_scraper_queue, %w(sdk)
 set :scraper_queue, %w(critical default low)
 
-set :whenever_roles, [:scraper]
+set :whenever_roles, [:scraper, :sdk_scraper]
 
 set :whenever_roles, [:scraper]
 set :whenever_identifier, "#{fetch(:application)}"
