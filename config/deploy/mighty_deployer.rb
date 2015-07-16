@@ -5,7 +5,9 @@ module MightyDeployer
   @api_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
+  @sdk_scraper_master_role = nil
   @scraper_roles = []
+  @scraper_master_role = nil
   
   @web_servers = []
   @api_servers = []
@@ -50,6 +52,8 @@ module MightyDeployer
       52.2.124.31
       52.3.159.84
     )
+    
+    @scraper_master_role = @scraper_servers.first
   
     @app_roles += @scraper_servers
     @scraper_roles += @scraper_servers
@@ -61,6 +65,8 @@ module MightyDeployer
       54.88.39.109
       54.86.80.102
     )
+  
+    @sdk_scraper_master_role = @sdk_scraper_servers.first
   
     @app_roles += @sdk_scraper_servers
     @sdk_scraper_roles += @sdk_scraper_servers
@@ -74,7 +80,9 @@ module MightyDeployer
     role :api, @api_roles
     role :db,  @db_roles #must have this do migrate db
     role :sdk_scraper, @sdk_scraper_roles
+    role :sdk_scraper_master, @sdk_scraper_master_role
     role :scraper, @scraper_roles
+    role :scraper_master, @scraper_master_role
   end
   
   def self.set_users
