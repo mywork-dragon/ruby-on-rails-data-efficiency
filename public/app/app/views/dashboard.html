@@ -99,7 +99,7 @@
               <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
                title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
              </a>
-             <span class="ui-select" ng-show="canViewSupportDesk">
+             <span class="ui-select" ng-show="canViewSupportDesk && appPlatform == 'ios'">
                   <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
                     <option value="">Support Desk</option>
                     <option value="zendesk">Zendesk</option>
