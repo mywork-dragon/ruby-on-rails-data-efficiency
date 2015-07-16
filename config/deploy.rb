@@ -56,7 +56,6 @@ set :scraper_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper, :sdk_scraper]
 
-set :whenever_roles, [:scraper]
 set :whenever_identifier, "#{fetch(:application)}"
 
 namespace :deploy do
