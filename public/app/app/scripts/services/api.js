@@ -5,7 +5,7 @@ angular.module("appApp")
     return {
       /* Translates tag object values into a request object that matches format of back end api endpoints */
       searchRequestPost: function(tags, currentPage, numPerPage, category, order) {
-        var requestData = {app: {}, company: {}};
+        var requestData = {app: {}, company: {}, custom: {}};
         if(tags) {
           tags.forEach(function (tag) {
             switch (tag.parameter) {
@@ -46,10 +46,10 @@ angular.module("appApp")
                   requestData['app'][tag.parameter] = [tag.value];
                 }                break;
               case 'customKeywords':
-                if(requestData[tag.parameter]) {
-                  requestData[tag.parameter].push(tag.value);
+                if(requestData['custom'][tag.parameter]) {
+                  requestData['custom'][tag.parameter].push(tag.value);
                 } else {
-                  requestData[tag.parameter] = [tag.value];
+                  requestData['custom'][tag.parameter] = [tag.value];
                 }
                 break;
             }
@@ -66,7 +66,7 @@ angular.module("appApp")
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps',
-          data: requestData
+          params: requestData
         });
       },
       getCategories: function() {

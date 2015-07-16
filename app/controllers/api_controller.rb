@@ -30,14 +30,17 @@ class ApiController < ApplicationController
     
     li 'filter_ios_apps'
     
-    app_filters = params[:app]
-    company_filters = params[:company]
+    app_filters = JSON.parse(params[:app])
+    company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = params[:customKeywords]
-    
+    custom_keywords = JSON.parse(params[:custom])[:customKeywords]
+
+    company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
+    app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
+
     filter_args = {
       app_filters: app_filters, 
       company_filters: company_filters, 
@@ -49,7 +52,7 @@ class ApiController < ApplicationController
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
-    
+
     filter_results = FilterService.filter_ios_apps(filter_args)
     
     results = filter_results[:results]
@@ -92,13 +95,16 @@ class ApiController < ApplicationController
   end
   
   def filter_android_apps
-    app_filters = params[:app]
-    company_filters = params[:company]
+    app_filters = JSON.parse(params[:app])
+    company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = params[:customKeywords]
+    custom_keywords = JSON.parse(params[:custom])[:customKeywords]
+
+    company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
+    app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
     
     filter_args = {
       app_filters: app_filters, 
@@ -111,9 +117,7 @@ class ApiController < ApplicationController
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
-    
-    puts "filter_args: #{filter_args}"
-    
+
     filter_results = FilterService.filter_android_apps(filter_args)
     
     results = filter_results[:results]
@@ -568,10 +572,6 @@ class ApiController < ApplicationController
     list_id = params['listId']
     apps = params['apps']
 
-    puts user_id
-    puts apps.inspect
-    puts list_id
-
     if ListsUser.where(user_id: user_id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
@@ -644,8 +644,6 @@ class ApiController < ApplicationController
 
           # delete old records (prevents duplicates)
           ClearbitContact.where(website_id: website.id).destroy_all if website
-
-          puts new_clearbit_contacts
 
           if new_clearbit_contacts.kind_of?(Array)
 
