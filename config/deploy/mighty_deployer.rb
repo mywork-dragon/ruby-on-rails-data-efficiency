@@ -48,6 +48,7 @@ module MightyDeployer
       52.2.56.165
       52.2.60.230
       52.2.124.31
+      52.3.159.84
     )
   
     @app_roles += @scraper_servers
