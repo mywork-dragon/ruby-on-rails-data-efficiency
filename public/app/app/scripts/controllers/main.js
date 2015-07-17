@@ -53,8 +53,8 @@ angular.module('appApp')
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location", "$httpParamSerializer",
-    function($scope, apiService, $http, $rootScope, authService, $window, $location, $httpParamSerializer) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location", "searchService",
+    function($scope, apiService, $http, $rootScope, authService, $window, $location, searchService) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -82,8 +82,6 @@ angular.module('appApp')
       // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
 
-
-
         var queryStringParameters = "?";
 
         $rootScope.tags.forEach(function(tag) {
@@ -93,157 +91,12 @@ angular.module('appApp')
         queryStringParameters += 'currentPage' + '=' + 1 + "&";
         queryStringParameters += 'numPerPage' + '=' + $rootScope.numPerPage;
 
-
-
-
-
-
-
-
-
-        queryStringParameters = function(tags, currentPage, numPerPage, category, order) {
-          var requestData = {app: {}, company: {}, custom: {}};
-          if (tags) {
-            tags.forEach(function (tag) {
-              switch (tag.parameter) {
-                case 'mobilePriority':
-                  if (requestData['app'][tag.parameter]) {
-                    requestData['app'][tag.parameter].push(tag.value);
-                  } else {
-                    requestData['app'][tag.parameter] = [tag.value];
-                  }
-                  break;
-                case 'adSpend':
-                  requestData['app'][tag.parameter] = tag.value;
-                  break;
-                case 'userBases':
-                  if (requestData['app'][tag.parameter]) {
-                    requestData['app'][tag.parameter].push(tag.value);
-                  } else {
-                    requestData['app'][tag.parameter] = [tag.value];
-                  }
-                  break;
-                case 'updatedDaysAgo':
-                  requestData['app'][tag.parameter] = tag.value;
-                  break;
-                case 'categories':
-                  if (requestData['app'][tag.parameter]) {
-                    requestData['app'][tag.parameter].push(tag.value);
-                  } else {
-                    requestData['app'][tag.parameter] = [tag.value];
-                  }
-                  break;
-                case 'fortuneRank':
-                  requestData['company'][tag.parameter] = tag.value;
-                  break;
-                case 'supportDesk':
-                  if (requestData['app'][tag.parameter]) {
-                    requestData['app'][tag.parameter].push(tag.value);
-                  } else {
-                    requestData['app'][tag.parameter] = [tag.value];
-                  }
-                  break;
-                case 'customKeywords':
-                  if (requestData['custom'][tag.parameter]) {
-                    requestData['custom'][tag.parameter].push(tag.value);
-                  } else {
-                    requestData['custom'][tag.parameter] = [tag.value];
-                  }
-                  break;
-              }
-            });
-          }
-          if (currentPage && numPerPage) {
-            requestData.pageNum = currentPage;
-            requestData.pageSize = numPerPage;
-          }
-          if (category && order) {
-            requestData.sortBy = category;
-            requestData.orderBy = order;
-          }
-
-          return $httpParamSerializer(requestData);
-
-          return $.param(requestData);
-
-          var str = [];
-          for(var p in requestData)
-            if (requestData.hasOwnProperty(p)) {
-              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(requestData[p]));
-            }
-          return str.join("&");
-
-        };
-
-
-
-
-
-
-
-
-
-
-        var path = "/app/app#/search?" + queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
+        var path = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
 
         console.log(path);
 
         $window.location.href = path;
 
-
-        /*
-
-        var submitSearchStartTime = new Date().getTime();
-
-        $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags, 1, $rootScope.numPerPage)
-          .success(function(data) {
-            $rootScope.apps = data.results;
-            $rootScope.numApps = data.resultsCount;
-            $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = 1;
-            $rootScope.resultsSortCategory = 'appName';
-            $rootScope.resultsOrderBy = 'ASC';
-
-            var submitSearchEndTime = new Date().getTime();
-
-            var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
-            */
-
-            /* -------- Mixpanel Analytics Start -------- */
-            /*
-            var searchQueryPairs = {};
-            var searchQueryFields = [];
-            $rootScope.tags.forEach(function(tag) {
-              searchQueryPairs[tag.parameter] = tag.value;
-              searchQueryFields.push(tag.parameter);
-            });
-            searchQueryPairs['tags'] = searchQueryFields;
-            searchQueryPairs['numOfApps'] = data.resultsCount;
-            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
-            searchQueryPairs['platform']  = APP_PLATFORM;
-
-            mixpanel.track(
-              "Search Request Successful",
-              searchQueryPairs
-            );
-            */
-            /* -------- Mixpanel Analytics End -------- */
-      /*
-          })
-          .error(function(data, status) {
-            $rootScope.dashboardSearchButtonDisabled = false;
-            mixpanel.track(
-              "Search Request Failed",
-              {
-                "tags": $rootScope.tags,
-                "errorMessage": data,
-                "errorStatus": status,
-                "platform": APP_PLATFORM
-              }
-            );
-          });
-      */
       };
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {

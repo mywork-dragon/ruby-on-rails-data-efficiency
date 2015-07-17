@@ -53,7 +53,6 @@ angular
        })
        .when('/search', {
          templateUrl: '/app/app/views/dashboard.html',
-         controller: 'SearchCtrl',
          activeTab: 'search',
          reloadOnSearch: false
        })

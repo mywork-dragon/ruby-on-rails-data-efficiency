@@ -4,10 +4,12 @@ angular.module('appApp')
   .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$routeParams", "$http",
     function ($scope, $location, authToken, $rootScope, $routeParams, $http) {
 
+      var searchCtrl = this; // same as searchCtrl = $scope
+
       console.log('SEARCH', $location.url().split('search')[1]);
 
       /* For query load when /search/:query path hit */
-      $scope.load = function() {
+      $scope.loadTableData = function() {
 
         var submitSearchStartTime = new Date().getTime();
 
@@ -19,12 +21,12 @@ angular.module('appApp')
         })
           .success(function(data) {
             console.log('YAYYYYYY', data);
-            $rootScope.apps = data.results;
-            $rootScope.numApps = data.resultsCount;
+            searchCtrl.apps = data.results;
+            searchCtrl.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = 1;
-            $rootScope.resultsSortCategory = 'appName';
-            $rootScope.resultsOrderBy = 'ASC';
+            searchCtrl.currentPage = 1;
+            searchCtrl.resultsSortCategory = 'appName';
+            searchCtrl.resultsOrderBy = 'ASC';
 
             var submitSearchEndTime = new Date().getTime();
 
@@ -66,7 +68,7 @@ angular.module('appApp')
 
       /* Only hit api if query string params are present */
       if($location.url().split('search')[1]) {
-        $scope.load();
+        $scope.loadTableData();
       }
 
     }
