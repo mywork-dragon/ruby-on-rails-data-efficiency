@@ -68,9 +68,11 @@ gem 'newrelic_rpm'
 gem 'restforce', '1.5.0'
 gem 'omniauth-salesforce', '1.0.5'
 
-gem 'httparty', '0.13.3'
+gem 'httparty', '0.13.3' 
 
-gem 'sidekiq', '3.3.0', require: 'sidekiq/api'
+source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
+  gem 'sidekiq-pro', require: 'sidekiq/api'
+end
 
 gem 'filesize', '0.0.4'
 

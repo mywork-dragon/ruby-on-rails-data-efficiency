@@ -9,6 +9,7 @@ GIT
 
 GEM
   remote: https://rubygems.org/
+  remote: https://ee3069b7:c6ce5996@gems.contribsys.com/
   specs:
     PageRankr (4.2.1)
       httparty (>= 0.9.0)
@@ -368,7 +369,6 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
-  sidekiq (= 3.3.0)
   socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
