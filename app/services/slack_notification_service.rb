@@ -1,11 +1,14 @@
 class SlackNotificationService
   
-  def test
+  class << self
+    def test
     
-    text = "Hello SLACK!"
+      text = "Hello SLACK!"
     
-    json = {text: text}.to_json
-    HttpParty.post('https://hooks.slack.com/services/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', body: json)
+      json = {text: text}.to_json
+      HTTParty.post('https://hooks.slack.com/services/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', body: json)
+    end
+    
   end
   
 end
