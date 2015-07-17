@@ -5,7 +5,7 @@ class TestBatchService
     def run
       batch = Sidekiq::Batch.new
       batch.description = "Batch description (this is optional)"
-      batch.on(:complete, 'SlackNotificationService#test')
+      batch.on(:complete, 'SlackNotificationService#done')
       batch.jobs do
         TestWorker.perform_async('hello!')
       end
