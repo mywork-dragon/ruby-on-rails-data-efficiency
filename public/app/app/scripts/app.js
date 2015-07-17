@@ -51,6 +51,12 @@ angular
          controller: 'MainCtrl',
          activeTab: 'search'
        })
+       .when('/search', {
+         templateUrl: '/app/app/views/dashboard.html',
+         controller: 'SearchCtrl',
+         activeTab: 'search',
+         reloadOnSearch: false
+       })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
          controller: 'AppDetailsCtrl'

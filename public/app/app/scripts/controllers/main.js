@@ -53,8 +53,8 @@ angular.module('appApp')
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
-    function($scope, apiService, $http, $rootScope, authService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location",
+    function($scope, apiService, $http, $rootScope, authService, $window, $location) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -82,6 +82,23 @@ angular.module('appApp')
       // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
 
+        var queryStringParameters = "?";
+
+        $rootScope.tags.forEach(function(tag) {
+          queryStringParameters += tag.parameter + '=' + tag.value + "&";
+        });
+
+        queryStringParameters += 'currentPage' + '=' + 1 + "&";
+        queryStringParameters += 'numPerPage' + '=' + $rootScope.numPerPage;
+
+        var path = "/app/app#/search" + queryStringParameters;
+
+        console.log(path);
+
+        $window.location.href = path;
+
+        /*
+
         var submitSearchStartTime = new Date().getTime();
 
         $rootScope.dashboardSearchButtonDisabled = true;
@@ -97,8 +114,10 @@ angular.module('appApp')
             var submitSearchEndTime = new Date().getTime();
 
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
+            */
 
             /* -------- Mixpanel Analytics Start -------- */
+            /*
             var searchQueryPairs = {};
             var searchQueryFields = [];
             $rootScope.tags.forEach(function(tag) {
@@ -114,8 +133,9 @@ angular.module('appApp')
               "Search Request Successful",
               searchQueryPairs
             );
+            */
             /* -------- Mixpanel Analytics End -------- */
-
+      /*
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -129,6 +149,7 @@ angular.module('appApp')
               }
             );
           });
+      */
       };
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
