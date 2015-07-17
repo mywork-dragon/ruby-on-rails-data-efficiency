@@ -4,18 +4,21 @@ angular.module('appApp')
   .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$routeParams", "$http",
     function ($scope, $location, authToken, $rootScope, $routeParams, $http) {
 
-      console.log('SEARCH', $location.search());
+      console.log('SEARCH', $location.url().split('search')[1]);
 
       /* For query load when /search/:query path hit */
       $scope.load = function() {
+
+        var submitSearchStartTime = new Date().getTime();
 
         $scope.queryInProgress = true;
 
         return $http({
           method: 'POST',
-          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + $routeParams.query
+          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + $location.url().split('search')[1]
         })
           .success(function(data) {
+            console.log('YAYYYYYY', data);
             $rootScope.apps = data.results;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -58,10 +61,11 @@ angular.module('appApp')
               }
             );
           });
+
       };
 
-      /* If Route is /search/ with query string params present */
-      if($location.url().split('/')[1] == 'search' && $routeParams.query) {
+      /* Only hit api if query string params are present */
+      if($location.url().split('search')[1]) {
         $scope.load();
       }
 

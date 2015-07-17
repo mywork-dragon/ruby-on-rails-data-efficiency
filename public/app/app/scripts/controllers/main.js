@@ -53,8 +53,8 @@ angular.module('appApp')
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location",
-    function($scope, apiService, $http, $rootScope, authService, $window, $location) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location", "$httpParamSerializer",
+    function($scope, apiService, $http, $rootScope, authService, $window, $location, $httpParamSerializer) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -82,6 +82,8 @@ angular.module('appApp')
       // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
 
+
+
         var queryStringParameters = "?";
 
         $rootScope.tags.forEach(function(tag) {
@@ -91,11 +93,103 @@ angular.module('appApp')
         queryStringParameters += 'currentPage' + '=' + 1 + "&";
         queryStringParameters += 'numPerPage' + '=' + $rootScope.numPerPage;
 
-        var path = "/app/app#/search" + queryStringParameters;
+
+
+
+
+
+
+
+
+        queryStringParameters = function(tags, currentPage, numPerPage, category, order) {
+          var requestData = {app: {}, company: {}, custom: {}};
+          if (tags) {
+            tags.forEach(function (tag) {
+              switch (tag.parameter) {
+                case 'mobilePriority':
+                  if (requestData['app'][tag.parameter]) {
+                    requestData['app'][tag.parameter].push(tag.value);
+                  } else {
+                    requestData['app'][tag.parameter] = [tag.value];
+                  }
+                  break;
+                case 'adSpend':
+                  requestData['app'][tag.parameter] = tag.value;
+                  break;
+                case 'userBases':
+                  if (requestData['app'][tag.parameter]) {
+                    requestData['app'][tag.parameter].push(tag.value);
+                  } else {
+                    requestData['app'][tag.parameter] = [tag.value];
+                  }
+                  break;
+                case 'updatedDaysAgo':
+                  requestData['app'][tag.parameter] = tag.value;
+                  break;
+                case 'categories':
+                  if (requestData['app'][tag.parameter]) {
+                    requestData['app'][tag.parameter].push(tag.value);
+                  } else {
+                    requestData['app'][tag.parameter] = [tag.value];
+                  }
+                  break;
+                case 'fortuneRank':
+                  requestData['company'][tag.parameter] = tag.value;
+                  break;
+                case 'supportDesk':
+                  if (requestData['app'][tag.parameter]) {
+                    requestData['app'][tag.parameter].push(tag.value);
+                  } else {
+                    requestData['app'][tag.parameter] = [tag.value];
+                  }
+                  break;
+                case 'customKeywords':
+                  if (requestData['custom'][tag.parameter]) {
+                    requestData['custom'][tag.parameter].push(tag.value);
+                  } else {
+                    requestData['custom'][tag.parameter] = [tag.value];
+                  }
+                  break;
+              }
+            });
+          }
+          if (currentPage && numPerPage) {
+            requestData.pageNum = currentPage;
+            requestData.pageSize = numPerPage;
+          }
+          if (category && order) {
+            requestData.sortBy = category;
+            requestData.orderBy = order;
+          }
+
+          return $httpParamSerializer(requestData);
+
+          return $.param(requestData);
+
+          var str = [];
+          for(var p in requestData)
+            if (requestData.hasOwnProperty(p)) {
+              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(requestData[p]));
+            }
+          return str.join("&");
+
+        };
+
+
+
+
+
+
+
+
+
+
+        var path = "/app/app#/search?" + queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
 
         console.log(path);
 
         $window.location.href = path;
+
 
         /*
 

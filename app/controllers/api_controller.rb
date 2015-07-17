@@ -29,14 +29,19 @@ class ApiController < ApplicationController
   def filter_ios_apps
     
     li 'filter_ios_apps'
+
+    puts params
     
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
+    # app_filters = params[:app]
+    # company_filters = params[:company]
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
     custom_keywords = JSON.parse(params[:custom])[:customKeywords]
+    # custom_keywords = params[:custom][:customKeywords]
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
