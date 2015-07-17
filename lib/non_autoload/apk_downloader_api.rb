@@ -132,18 +132,12 @@ if defined?(ApkDownloader)
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      if type == :get
-        response = CurbFu.get({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = proxy
-          curb.ssl_verify_peer = false
-          curb.max_redirects = 3
-        end
-      elsif type == :post
-        response = CurbFu.post({:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
-          curb.proxy_url = proxy
-          curb.ssl_verify_peer = false
-          curb.max_redirects = 3
-        end
+      raise 'type is not get or post' unless [:get,:post].include? type
+
+      response = CurbFu.send(type,{:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, data) do |curb|
+        curb.proxy_url = proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
       end
 
       return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)

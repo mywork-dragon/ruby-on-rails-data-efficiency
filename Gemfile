@@ -135,4 +135,5 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'curb', '0.8.8'
 #
-# gem 'curb-fu', '0.6.2'
+gem 'curb-fu', '0.6.2', group: :sdk_scraper
+
