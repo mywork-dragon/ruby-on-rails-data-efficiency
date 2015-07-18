@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$routeParams", "$http",
-    function ($scope, $location, authToken, $rootScope, $routeParams, $http) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$routeParams", "$http", "$window", "searchService",
+    function ($scope, $location, authToken, $rootScope, $routeParams, $http, $window, searchService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
 
       console.log('SEARCH', $location.url().split('search')[1]);
 
       /* For query load when /search/:query path hit */
-      $scope.loadTableData = function() {
+      searchCtrl.loadTableData = function() {
 
         var submitSearchStartTime = new Date().getTime();
 
@@ -68,8 +68,13 @@ angular.module('appApp')
 
       /* Only hit api if query string params are present */
       if($location.url().split('search')[1]) {
-        $scope.loadTableData();
+        searchCtrl.loadTableData();
       }
+
+      // When main Dashboard search button is clicked
+      searchCtrl.submitSearch = function() {
+        $window.location.href = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+      };
 
     }
   ]);

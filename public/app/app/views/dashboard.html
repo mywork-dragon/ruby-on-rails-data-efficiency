@@ -13,7 +13,7 @@
             </tags-input>
           </div>
           <div id="searchResultsControl">
-            <button type="submit" class="btn btn-primary" ng-click="submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Search</button>
+            <button type="submit" class="btn btn-primary" ng-click="searchCtrl.submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Search</button>
           </div>
         </div>
       </div>
@@ -143,7 +143,7 @@
           <thead>
           <tr>
             <th class="selectAllCheckboxHeader">
-              <select-all-checkbox checkboxes="searchCtrl.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+              <select-all-checkbox apps="searchCtrl.apps"></select-all-checkbox>
             </th>
             <th><div class="th">
               App Name
@@ -202,7 +202,7 @@
           <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
             <tr data-ng-repeat="app in searchCtrl.apps">
               <td class="dashboardTableDataCheckbox">
-                <checkable-checkbox app="app.app"></checkable-checkbox>
+                <checkable-checkbox app="app.app" apps="searchCtrl.apps"></checkable-checkbox>
               </td>
               <td class="resultsTableAppIcon">
                 <span>

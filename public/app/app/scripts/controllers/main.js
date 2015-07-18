@@ -81,23 +81,9 @@ angular.module('appApp')
 
       // When main Dashboard search button is clicked
       $scope.submitSearch = function() {
-
-        var queryStringParameters = "?";
-
-        $rootScope.tags.forEach(function(tag) {
-          queryStringParameters += tag.parameter + '=' + tag.value + "&";
-        });
-
-        queryStringParameters += 'currentPage' + '=' + 1 + "&";
-        queryStringParameters += 'numPerPage' + '=' + $rootScope.numPerPage;
-
-        var path = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
-
-        console.log(path);
-
-        $window.location.href = path;
-
+        $window.location.href = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
       };
+
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
 
