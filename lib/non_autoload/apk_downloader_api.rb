@@ -82,7 +82,7 @@ if defined?(ApkDownloader)
 
         ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
-        raise "Google did not return url or cookie" if url.blank? || cookie.blank
+        raise "Google did not return url or cookie" if url.blank? || cookie.blank?
 
         resp = recursive_apk_fetch(proxy, url, cookie)
 
