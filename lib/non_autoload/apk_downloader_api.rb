@@ -78,7 +78,7 @@ if defined?(ApkDownloader)
         message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0].strip
+        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
         ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
