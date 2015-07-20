@@ -79,11 +79,6 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      // When main Dashboard search button is clicked
-      $scope.submitSearch = function() {
-        $window.location.href = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy);
-      };
-
       $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
 

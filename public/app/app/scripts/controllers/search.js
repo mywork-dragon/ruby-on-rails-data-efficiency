@@ -74,6 +74,9 @@ angular.module('appApp')
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
         $window.location.href = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        console.log('SEARCH2', $location.url().split('search')[1]);
+        // searchCtrl.loadTableData();
+        $window.location.reload();
       };
 
     }

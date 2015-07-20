@@ -46,7 +46,7 @@ class FilterService
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
-      queries << 'joins(:ios_fb_ad_appearances)' if app_filters[:adSpend]
+      queries << 'joins(:ios_fb_ad_appearances)' if app_filters['adSpend']
       
       if app_filters['userBases']
         user_bases = []

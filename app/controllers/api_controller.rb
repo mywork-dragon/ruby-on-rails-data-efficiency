@@ -31,6 +31,9 @@ class ApiController < ApplicationController
     li 'filter_ios_apps'
 
     puts params
+    puts "########################"
+    puts params[:app]
+    puts JSON.parse(params[:app])
     
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
@@ -42,6 +45,9 @@ class ApiController < ApplicationController
     order_by = params[:orderBy]
     custom_keywords = JSON.parse(params[:custom])[:customKeywords]
     # custom_keywords = params[:custom][:customKeywords]
+
+    puts "########################"
+    puts app_filters['adSpend'].inspect
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
@@ -90,6 +96,7 @@ class ApiController < ApplicationController
           fortuneRank: company.present? ? company.fortune_1000_rank : nil
         }
       }
+
       # li "app_hash: #{app_hash}"
       # li "HASH: #{app_hash}"
       results_json << app_hash
