@@ -78,9 +78,11 @@ if defined?(ApkDownloader)
         message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0].strip
 
         ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
+
+        raise "Google did not return url or cookie" if url.blank? || cookie.blank
 
         resp = recursive_apk_fetch(proxy, url, cookie)
 
