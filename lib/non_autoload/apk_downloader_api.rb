@@ -59,7 +59,7 @@ if defined?(ApkDownloader)
       end
 
       apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-      apk_snap.proxy = proxy
+      apk_snap.proxy = mp.private_ip
       apk_snap.save
 
       proxy = "#{mp.private_ip}:8888"
