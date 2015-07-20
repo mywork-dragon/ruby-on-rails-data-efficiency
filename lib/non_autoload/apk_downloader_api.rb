@@ -85,7 +85,7 @@ if defined?(ApkDownloader)
         ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
         if url.blank? || cookie.blank?
-          snap.status = 2
+          snap.status = :no_response
           snap.save
           raise "Google did not return url or cookie"
         end
