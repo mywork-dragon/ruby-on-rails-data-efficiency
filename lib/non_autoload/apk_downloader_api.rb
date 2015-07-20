@@ -66,9 +66,9 @@ if defined?(ApkDownloader)
 
       if mp
 
-        private_ip = ApkSnapshot.find_by_id(apk_snap_id).private_ip
+        ip = ApkSnapshot.find_by_id(apk_snap_id).private_ip
 
-        proxy = "#{mp.private_ip}:8888"
+        proxy = "#{ip}:8888"
 
         log_in!(proxy)
         doc = details(package, proxy).detailsResponse.docV2
