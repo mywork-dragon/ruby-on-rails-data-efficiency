@@ -66,7 +66,9 @@ if defined?(ApkDownloader)
 
       if mp
 
-        ip = ApkSnapshot.find_by_id(apk_snap_id).proxy
+        snap = ApkSnapshot.find_by_id(apk_snap_id)
+
+        ip = snap.proxy
 
         proxy = "#{ip}:8888"
 
@@ -82,7 +84,11 @@ if defined?(ApkDownloader)
 
         ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
-        raise "Google did not return url or cookie" if url.blank? || cookie.blank?
+        if url.blank? || cookie.blank?
+          snap.status = 2
+          snap.save
+          raise "Google did not return url or cookie"
+        end
 
         resp = recursive_apk_fetch(proxy, url, cookie)
 
