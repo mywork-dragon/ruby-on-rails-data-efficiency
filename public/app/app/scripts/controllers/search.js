@@ -9,7 +9,11 @@ angular.module('appApp')
       console.log('SEARCH', $location.url().split('search')[1]);
 
       /* For query load when /search/:query path hit */
-      searchCtrl.loadTableData = function() {
+      searchCtrl.loadTableData = function(urlParams) {
+
+        if(!urlParams) {
+          urlParams = $location.url().split('search')[1];
+        }
 
         var submitSearchStartTime = new Date().getTime();
 
@@ -17,7 +21,7 @@ angular.module('appApp')
 
         return $http({
           method: 'POST',
-          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + $location.url().split('search')[1]
+          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + urlParams
         })
           .success(function(data) {
             console.log('YAYYYYYY', data);
@@ -73,10 +77,11 @@ angular.module('appApp')
 
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
-        $window.location.href = "/app/app#/search?" + searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        $window.location.href = "/app/app#/search?" + urlParams;
         console.log('SEARCH2', $location.url().split('search')[1]);
-        // searchCtrl.loadTableData();
-        $window.location.reload();
+        searchCtrl.loadTableData("?" + urlParams);
+        // $window.location.reload();
       };
 
     }
