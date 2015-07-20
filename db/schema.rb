@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715230055) do
+ActiveRecord::Schema.define(version: 20150720210848) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 20150715230055) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "try"
-    t.integer  "proxy"
+    t.string   "proxy"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
