@@ -53,32 +53,44 @@ if defined?(ApkDownloader)
     def fetch_apk_data package, apk_snap_id
 
       mp = MicroProxy.transaction do
+
         p = MicroProxy.lock.order(last_used: :asc).first
         p.last_used = DateTime.now
         p.save
+
+        apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
+        apk_snap.proxy = p.private_ip
+        apk_snap.save
+
       end
 
-      apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-      apk_snap.proxy = mp.private_ip
-      apk_snap.save
+      if mp
 
-      proxy = "#{mp.private_ip}:8888"
+        private_ip = ApkSnapshot.find_by_id(apk_snap_id).private_ip
 
-      log_in!(proxy)
-      doc = details(package, proxy).detailsResponse.docV2
-      version_code = doc.details.appDetails.versionCode
-      offer_type = doc.offer[0].offerType
+        proxy = "#{mp.private_ip}:8888"
 
-      message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+        log_in!(proxy)
+        doc = details(package, proxy).detailsResponse.docV2
+        version_code = doc.details.appDetails.versionCode
+        offer_type = doc.offer[0].offerType
 
-      url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-      cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+        message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
-      ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
+        url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
+        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-      resp = recursive_apk_fetch(proxy, url, cookie)
+        ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
-      return resp.body
+        resp = recursive_apk_fetch(proxy, url, cookie)
+
+        return resp.body
+
+      else
+
+        raise 'could not find ip to use'
+
+      end
 
     end
 
