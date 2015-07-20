@@ -3,7 +3,7 @@ class TestWorker
 
   def perform(string)
     puts "*******************TestWorker"
-    SidekiqTester.create!(test_string: "test", ip: MyIp.ip)
+    SidekiqTester.create!(test_string: string, ip: MyIp.ip)
   end
   
 end
