@@ -126,6 +126,10 @@ GEM
     colorize (0.7.7)
     connection_pool (2.2.0)
     crass (1.0.2)
+    curb (0.8.8)
+    curb-fu (0.6.2)
+      curb (>= 0.5.4.0)
+      rack-test (>= 0.2.0)
     domainator (2.0.0)
     dotenv (2.0.2)
     erubis (2.7.0)
@@ -336,6 +340,7 @@ DEPENDENCIES
   capistrano-sidekiq-mighty-servers!
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
+  curb-fu (= 0.6.2)
   domainator (= 2.0.0)
   faker (= 1.4.3)
   filesize (= 0.0.4)
