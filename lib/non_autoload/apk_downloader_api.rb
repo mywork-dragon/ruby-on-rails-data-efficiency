@@ -66,7 +66,7 @@ if defined?(ApkDownloader)
 
       if mp
 
-        ip = ApkSnapshot.find_by_id(apk_snap_id).private_ip
+        ip = ApkSnapshot.find_by_id(apk_snap_id).proxy
 
         proxy = "#{ip}:8888"
 
