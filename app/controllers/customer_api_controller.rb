@@ -56,7 +56,8 @@ class CustomerApiController < ApplicationController
             state: company.present? ? company.state : nil
             # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
-          }
+          },
+          categories: newest_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{ |iacs| iacs.ios_app_category.name} : nil
         }
       end
     rescue => e
@@ -109,7 +110,8 @@ class CustomerApiController < ApplicationController
             state: company.present? ? company.state : nil
             # country: company.present? ? company.country : nil
             # websites: company.websites.map { |w| w.url}
-          }
+          },
+          categories: newest_app_snapshot.present? ? newest_app_snapshot.android_app_categories.map{ |c| c.name} : nil,
         }
       end
 
@@ -165,7 +167,8 @@ class CustomerApiController < ApplicationController
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
             appIdentifier: ios_app.app_identifier,
             iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil,
+            categories: newest_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{ |iacs| iacs.ios_app_category.name} : nil
           }
         end
 
@@ -186,70 +189,12 @@ class CustomerApiController < ApplicationController
             downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
             lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
             googlePlayId: android_app.app_identifier,
-            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil,
+            categories: newest_app_snapshot.present? ? newest_app_snapshot.android_app_categories.map{ |c| c.name} : nil
           }
         end
 
         company_json = {company: company_h, apps: {ios_apps: ios_apps_a, android_apps: android_apps_a}}
-      end
-
-    rescue => e
-      render json: json_failure
-      merge_failure!(properties, {company_json: company_json}, e)
-      track('companies', properties)
-      raise e
-    else
-      render json: company_json
-      merge_success!(properties, {company_json: company_json})
-      track('companies', properties)
-    end
-
-  end
-  
-  def companies2
-    begin
-      url = params['website']
-      properties = {'website' => url.to_s}
-
-      website = Website.find_by_url('http://' + url)
-
-      if website.blank?
-        company_h = {}
-      else
-        company = website.company
-
-        company_h = {
-          name: company.present? ? company.name : nil,
-          mightySignalId: company.present? ? company.id : nil,
-          fortuneRank: company.present? ? company.fortune_1000_rank : nil,
-          streetAddress: company.present? ? company.street_address : nil,
-          city: company.present? ? company.city : nil,
-          zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil
-          # country: company.present? ? company.country : nil
-          # websites: company.websites.map { |w| w.url}
-        }
-
-        #ios_apps = IosAppsWebsite.where(website_id: website.id).map(&:ios_app_id).map{ |ios_app_id| IosApp.find(ios_app_id)}
-        ios_apps = company.websites.map{ |website| website.ios_apps}.flatten #goes up to company, then down to all apps
-
-        ios_apps_a = ios_apps.map do |ios_app|
-          newest_app_snapshot = ios_app.newest_ios_app_snapshot
-
-          {
-            mightySignalId: ios_app.id,
-            name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-            mobilePriority: ios_app.mobile_priority,
-            adSpend: ios_app.ios_fb_ad_appearances.present?,
-            userBase: ios_app.user_base,
-            lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
-            appIdentifier: ios_app.app_identifier,
-            iconLarge: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-            iconSmall: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
-          }
-        end
-
-        company_json = {company: company_h, apps: {ios_apps: ios_apps_a}}
       end
 
     rescue => e
