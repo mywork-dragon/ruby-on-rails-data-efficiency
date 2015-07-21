@@ -47,7 +47,7 @@ if defined?(ApkDownloader)
     def details package, proxy_ip, proxy_port, apk_snap_id
       if @details_messages[package].nil?
         log_in!(proxy_ip, proxy_port, apk_snap_id)
-        message = api_request proxy_ip, proxy_port, :get, '/details', :doc => package
+        message = api_request proxy_ip, proxy_port, apk_snap_id, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -84,7 +84,7 @@ if defined?(ApkDownloader)
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
 
-        message = api_request proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+        message = api_request proxy_ip, proxy_port, apk_snap_id, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
@@ -166,7 +166,7 @@ if defined?(ApkDownloader)
 
     # end
 
-    def api_request proxy_ip, proxy_port, type, path, data = {}
+    def api_request proxy_ip, proxy_port, apk_snap_id, type, path, data = {}
 
       ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
