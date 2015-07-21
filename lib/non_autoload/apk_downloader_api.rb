@@ -130,6 +130,7 @@ if defined?(ApkDownloader)
       when Net::HTTPSuccess
         return response
       when Net::HTTPRedirection
+        ApkSnapshotException.create(name: "#{response.body}")
         return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, tries - 1)
       else
         response.error!
@@ -157,6 +158,8 @@ if defined?(ApkDownloader)
     # def res_net(type: :get, uri: URI("https://www.google.com/search"), headers: {'Accept-Encoding' => ''}, params: {"q"=>"asdf"}, proxy_ip: '', proxy_port: '')
 
     def res_net(type:, uri:, headers:, params:, proxy_ip:, proxy_port:)
+
+      ApkSnapshotException.create(name: "uri: #{uri}, proxy_ip: #{proxy_ip}, proxy_port: #{proxy_port}, type: #{type}")
 
       http = Net::HTTP.new uri.host, uri.port
       http.use_ssl = true
@@ -199,6 +202,8 @@ if defined?(ApkDownloader)
       # response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       response = res_net(type: type, uri: uri, headers: headers, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
+
+      ApkSnapshotException.create(name: "api_request: #{response.body}")
 
       return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
     end
