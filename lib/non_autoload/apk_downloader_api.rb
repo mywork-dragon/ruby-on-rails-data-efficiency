@@ -8,7 +8,7 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token, :ip
 
-    def log_in!(proxy)
+    def log_in!(proxy, package)
       return if self.logged_in?
 
       headers = {
@@ -32,6 +32,8 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy: proxy)
 
+      ApkSnapshotException.create(name: "account: #{ApkDownloader.configuration.email} \npackage: #{package}")
+
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
@@ -42,7 +44,7 @@ if defined?(ApkDownloader)
 
     def details package, proxy
       if @details_messages[package].nil?
-        log_in!(proxy)
+        log_in!(proxy, package)
         message = api_request proxy, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
@@ -72,7 +74,7 @@ if defined?(ApkDownloader)
 
         proxy = "#{ip}:8888"
 
-        log_in!(proxy)
+        log_in!(proxy, package)
         doc = details(package, proxy).detailsResponse.docV2
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
@@ -82,7 +84,7 @@ if defined?(ApkDownloader)
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-        ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
+        # ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
         if url.blank? || cookie.blank?
           snap.status = :no_response
