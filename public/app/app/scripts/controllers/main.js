@@ -79,6 +79,8 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
+      if(!$rootScope.tags) $rootScope.tags = [];
+
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
 
         /* -------- Mixpanel Analytics Start -------- */

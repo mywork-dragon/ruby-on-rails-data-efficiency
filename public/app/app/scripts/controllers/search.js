@@ -16,7 +16,8 @@ angular.module('appApp')
         if ($routeParams.company) var companyParams = JSON.parse($routeParams.company);
         if ($routeParams.custom) var customParams = JSON.parse($routeParams.custom);
         var allParams = appParams ? appParams : [];
-        if ($routeParams.custom) allParams['customKeywords'] = customParams['customKeywords'];
+        if ($routeParams.custom && $routeParams.custom.first) allParams['customKeywords'] = customParams['customKeywords'];
+        console.log("CUSTOM PARAMS", $routeParams.custom);
         for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
         $rootScope.tags = [];
 
@@ -27,7 +28,7 @@ angular.module('appApp')
 
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
-              $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
+              if (arrayItem) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
             });
           } else {
             $rootScope.tags.push(searchService.searchFilters(key, value));
