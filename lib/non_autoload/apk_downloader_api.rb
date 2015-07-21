@@ -107,7 +107,7 @@ if defined?(ApkDownloader)
     end
 
     private
-    def recursive_apk_fetch proxy_ip, proxy_port, url, cookie, first = true
+    def recursive_apk_fetch proxy_ip, proxy_port, url, cookie, tries = 5
 
       headers = {
         'Accept-Encoding' => '',
@@ -122,9 +122,18 @@ if defined?(ApkDownloader)
 
       response = res_net(type: :get, uri: url, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
+      # return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
 
-      response
+      # response
+
+      case response
+      when Net::HTTPSuccess
+        return response
+      when Net::HTTPRedirection
+        return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, tries - 1)
+      else
+        response.error!
+      end
         
     end
 
