@@ -32,19 +32,9 @@ if defined?(ApkDownloader)
         'sdk_version' => '16'
       }
 
-      # response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy: proxy)
+      response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       # response = res_net(type: :post, uri: LoginUri, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
-
-      login_http = Net::HTTP.SOCKSProxy(proxy_ip, proxy_port).new LoginUri.host, LoginUri.port
-      login_http.use_ssl = true
-      login_http.verify_mode  = OpenSSL::SSL::VERIFY_NONE
-
-      post = Net::HTTP::Post.new LoginUri.to_s
-      post.set_form_data params
-      post["Accept-Encoding"] = ""
-
-      response = login_http.request post
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
@@ -129,44 +119,36 @@ if defined?(ApkDownloader)
 
       params = url.query.split('&').map{ |q| q.split('=') }
 
-      # response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy: proxy)
+      response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       # response = res_net(type: :get, uri: url, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      http = Net::HTTP.SOCKSProxy(proxy_ip, proxy_port).new url.host, url.port
-      http.use_ssl = (url.scheme == 'https')
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
 
-      req = Net::HTTP::Get.new url.to_s
-      req['Accept-Encoding'] = ''
-      req['User-Agent'] = 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
-      req['Cookie'] = [cookie.name, cookie.value].join('=')
-
-      resp = http.request req
-
-      return recursive_apk_fetch(proxy_ip, proxy_port, URI(resp['Location']), cookie, false) if first
-
-      resp
+      response
         
     end
 
-    # def res_curl(req:, params:, type:, proxy:)
+    def res_curl(req:, params:, type:, proxy_ip:, proxy_port:)
 
-    #   type = type.to_sym
+      type = type.to_sym
 
-    #   raise 'type is not get or post' unless [:get,:post].include? type
+      raise 'type is not get or post' unless [:get,:post].include? type
 
-    #   response = CurbFu.send(type, req, params) do |curb|
-    #     curb.proxy_url = proxy
-    #     curb.ssl_verify_peer = false
-    #     curb.max_redirects = 3
-    #   end
+      proxy = "#{proxy_ip}:#{proxy_port}"
 
-    # end
+      response = CurbFu.send(type, req, params) do |curb|
+        curb.proxy_url = proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
+      end
 
-    # def res_net(type:, uri:, headers:, params:, proxy_ip:, proxy_port:)
+    end
 
-    #   http = Net::HTTP.SOCKSProxy(proxy_ip, proxy_port).new uri.host, uri.port
+
+    # def res_net(type: :get, uri: URI("https://www.google.com/search"), headers: {'Accept-Encoding' => ''}, params: {"q"=>"asdf"}, proxy_ip: '', proxy_port: '')
+
+    #   http = Net::HTTP.new uri.host, uri.port
     #   http.use_ssl = true
     #   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
@@ -185,12 +167,6 @@ if defined?(ApkDownloader)
     # end
 
     def api_request proxy_ip, proxy_port, type, path, data = {}
-
-      if @http.nil?
-        @http = Net::HTTP.SOCKSProxy(proxy_ip, proxy_port).new GoogleApiUri.host, GoogleApiUri.port
-        @http.use_ssl = true
-        @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
 
       ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
@@ -212,32 +188,11 @@ if defined?(ApkDownloader)
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      # response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy: proxy)
+      response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       # response = res_net(type: type, uri: uri, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      req = if type == :get
-        uri.query = URI.encode_www_form data
-        Net::HTTP::Get.new uri.to_s
-      else
-        post = Net::HTTP::Post.new uri.to_s
-        post.tap { |p| p.set_form_data data }
-      end
-
-      api_headers.each { |k, v| req[k] = v }
-
-      resp = @http.request req
-
-      unless resp.code.to_i == 200 or resp.code.to_i == 302
-        raise "Bad status (#{resp.code}) from Play API (#{path}) => #{data}"
-      end
-
-      if ApkDownloader.configuration.debug
-        pp "Request response (#{type}):"
-        pp resp
-      end
-
-      return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(resp.body)
+      return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
     end
 
   end
