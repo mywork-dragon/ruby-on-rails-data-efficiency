@@ -53,8 +53,8 @@ angular.module('appApp')
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService", "$window", "$location", "searchService",
-    function($scope, apiService, $http, $rootScope, authService, $window, $location, searchService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
+    function($scope, apiService, $http, $rootScope) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -84,10 +84,8 @@ angular.module('appApp')
 
         /* -------- Mixpanel Analytics Start -------- */
         var mixpanelProperties = {};
-
         mixpanelProperties['parameter'] = parameter;
         mixpanelProperties[parameter] = value;
-
         mixpanel.track(
           "Filter Added",
           mixpanelProperties
@@ -112,7 +110,6 @@ angular.module('appApp')
               oneTagUpdated = true;
             }
           }
-
         });
 
         if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {

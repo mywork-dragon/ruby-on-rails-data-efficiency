@@ -4,7 +4,7 @@ class FilterService
     # @author Shane Wey
     def filter_companies(company_filters)
       company_results  = Company
-      company_results = company_results.where("fortune_1000_rank <= ?", company_filters[:fortuneRank].to_i) if company_filters[:fortuneRank]
+      company_results = company_results.where("fortune_1000_rank <= ?", company_filters['fortuneRank'].to_i) if company_filters['fortuneRank']
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
       company_results
