@@ -144,6 +144,7 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.9.3)
+    libv8 (3.16.14.11)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.1)
@@ -212,6 +213,7 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    ref (2.0.0)
     restforce (1.5.0)
       faraday (~> 0.9.0)
       faraday_middleware (>= 0.8.8)
@@ -243,6 +245,8 @@ GEM
       json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
       redis-namespace (~> 1.5, >= 1.5.2)
+    sidekiq-pro (1.9.2)
+      sidekiq (>= 3.2.3)
     socksify (1.6.0)
     spidr (0.4.1)
       nokogiri (~> 1.3)
@@ -261,6 +265,9 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     text (1.3.1)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
@@ -332,12 +339,17 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+  sidekiq-pro (= 1.9.2)!
   socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
   text (= 1.3.1)
+  therubyracer
   turbolinks
   uglifier (>= 1.3.0)
   unicorn
   whenever (= 0.9.4)
   whois (= 3.5.9)
+
+BUNDLED WITH
+   1.10.5
