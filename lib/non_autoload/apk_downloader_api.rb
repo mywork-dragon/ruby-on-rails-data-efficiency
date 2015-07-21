@@ -8,21 +8,23 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token, :ip
 
-    def log_in!(proxy)
+    def log_in!(proxy, apk_snap_id, package)
       return if self.logged_in?
 
       headers = {
         'Accept-Encoding' => ''
       }
 
+      ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+
       params = {
-        'Email' => ApkDownloader.configuration.email,
-        'Passwd' => ApkDownloader.configuration.password,
+        'Email' => ga.email,
+        'Passwd' => ga.password,
         'service' => 'androidmarket',
         'accountType' => 'HOSTED_OR_GOOGLE',
         'has_permission' => '1',
         'source' => 'android',
-        'androidId' => ApkDownloader.configuration.android_id,
+        'androidId' => ga.android_identifier,
         'app' => 'com.android.vending',
         'device_country' => 'fr',
         'operatorCountry' => 'fr',
@@ -32,6 +34,8 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy: proxy)
 
+      # ApkSnapshotException.create(name: "account: #{ApkDownloader.configuration.email} \npackage: #{package}")
+
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
@@ -40,9 +44,9 @@ if defined?(ApkDownloader)
 
     end
 
-    def details package, proxy
+    def details package, proxy, apk_snap_id
       if @details_messages[package].nil?
-        log_in!(proxy)
+        log_in!(proxy, apk_snap_id, package)
         message = api_request proxy, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
@@ -72,8 +76,8 @@ if defined?(ApkDownloader)
 
         proxy = "#{ip}:8888"
 
-        log_in!(proxy)
-        doc = details(package, proxy).detailsResponse.docV2
+        log_in!(proxy, apk_snap_id, package)
+        doc = details(package, proxy, apk_snap_id).detailsResponse.docV2
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
 
@@ -82,7 +86,7 @@ if defined?(ApkDownloader)
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
-        ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
+        # ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
         if url.blank? || cookie.blank?
           snap.status = :no_response
