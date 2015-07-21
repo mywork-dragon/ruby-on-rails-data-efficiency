@@ -190,7 +190,6 @@ angular.module('appApp')
 
           // Stops 'supportDesk' filter from being added
           if ($scope.appPlatform == 'android') {
-
             for (var index = 0; index < $rootScope.tags.length; index++) {
               if ($rootScope.tags[index].parameter == 'supportDesk') {
                 $rootScope.tags.splice(index, 1);

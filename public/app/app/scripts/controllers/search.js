@@ -22,8 +22,16 @@ angular.module('appApp')
 
         /* Rebuild Filters Array from URL Params */
         for (var key in allParams) {
-          console.log('Search Filters', searchService.searchFilters(key, allParams[key]));
-          $rootScope.tags.push(searchService.searchFilters(key, allParams[key]));
+
+          var value = allParams[key];
+
+          if(Array.isArray(value)) {
+            value.forEach(function(arrayItem) {
+              $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
+            });
+          } else {
+            $rootScope.tags.push(searchService.searchFilters(key, value));
+          }
         }
 
         console.log($rootScope.tags);
