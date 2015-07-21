@@ -34,11 +34,12 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy: proxy)
 
-
       if response.body =~ /error/i
+        ApkSnapshotException.create(name: "ERROR! - account: #{ga.email}, account_id: #{ga.id}, package: #{package}")
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+        ApkSnapshotException.create(name: "@auth_token: #{@auth_token}, account: #{ga.email}, account_id: #{ga.id}, package: #{package}")
       end
 
     end
