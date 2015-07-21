@@ -8,7 +8,7 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token, :ip
 
-    def log_in!(proxy, apk_snap_id, package)
+    def log_in!(proxy_ip, proxy_port, apk_snap_id)
       return if self.logged_in?
 
       headers = {
@@ -32,9 +32,9 @@ if defined?(ApkDownloader)
         'sdk_version' => '16'
       }
 
-      response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy: proxy)
+      response = res_curl(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      # ApkSnapshotException.create(name: "account: #{ApkDownloader.configuration.email} \npackage: #{package}")
+      # response = res_net(type: :post, uri: LoginUri, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
@@ -44,10 +44,10 @@ if defined?(ApkDownloader)
 
     end
 
-    def details package, proxy, apk_snap_id
+    def details package, proxy_ip, proxy_port, apk_snap_id
       if @details_messages[package].nil?
-        log_in!(proxy, apk_snap_id, package)
-        message = api_request proxy, :get, '/details', :doc => package
+        log_in!(proxy_ip, proxy_port, apk_snap_id)
+        message = api_request proxy_ip, proxy_port, apk_snap_id, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -72,21 +72,18 @@ if defined?(ApkDownloader)
 
         snap = ApkSnapshot.find_by_id(apk_snap_id)
 
-        ip = snap.proxy
+        proxy_ip = snap.proxy
+        proxy_port = '8888'
 
-        proxy = "#{ip}:8888"
-
-        log_in!(proxy, apk_snap_id, package)
-        doc = details(package, proxy, apk_snap_id).detailsResponse.docV2
+        log_in!(proxy_ip, proxy_port, apk_snap_id)
+        doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
 
-        message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+        message = api_request proxy_ip, proxy_port, apk_snap_id, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
-
-        # ApkSnapshotException.create(name: "url: #{url}\ncookie: #{cookie}\nproxy: #{proxy}")
 
         if url.blank? || cookie.blank?
           snap.status = :no_response
@@ -94,7 +91,7 @@ if defined?(ApkDownloader)
           raise "Google did not return url or cookie"
         end
 
-        resp = recursive_apk_fetch(proxy, url, cookie)
+        resp = recursive_apk_fetch(proxy_ip, proxy_port, url, cookie)
 
         return resp.body
 
@@ -107,7 +104,7 @@ if defined?(ApkDownloader)
     end
 
     private
-    def recursive_apk_fetch proxy, url, cookie, first = true
+    def recursive_apk_fetch proxy_ip, proxy_port, url, cookie, first = true
 
       headers = {
         'Accept-Encoding' => '',
@@ -118,19 +115,28 @@ if defined?(ApkDownloader)
 
       params = url.query.split('&').map{ |q| q.split('=') }
 
-      response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy: proxy)
+      response = res_curl(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      return recursive_apk_fetch(proxy, URI(response['Location']), cookie, false) if first
+      # response = res_net(type: :get, uri: url, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
+
+      return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
 
       response
         
     end
 
-    def res(req:, params:, type:, proxy:)
+
+    def res_curl(req:, params:, type:, proxy_ip:, proxy_port:)
+
+    # @url = URI('http://wtfismyip.com/json')
+
+    # def res_curl(req: {:host => @url.host, :path => @url.path, :protocol => "https"}, params: {}, type: :get, proxy_ip: '172.31.20.230', proxy_port: '8888')
 
       type = type.to_sym
 
       raise 'type is not get or post' unless [:get,:post].include? type
+
+      proxy = "#{proxy_ip}:#{proxy_port}"
 
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy
@@ -140,14 +146,39 @@ if defined?(ApkDownloader)
 
     end
 
-    def api_request proxy, type, path, data = {}
+
+    # def res_net(type: :get, uri: URI("https://www.google.com/search"), headers: {'Accept-Encoding' => ''}, params: {"q"=>"asdf"}, proxy_ip: '', proxy_port: '')
+
+    #   http = Net::HTTP.new uri.host, uri.port
+    #   http.use_ssl = true
+    #   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    #   if type == :post
+    #     req = Net::HTTP::Post.new uri.to_s
+    #     req.set_form_data params
+    #   elsif type == :get
+    #     uri.query = URI.encode_www_form params
+    #     req = Net::HTTP::Get.new uri.to_s
+    #   end
+
+    #   headers.each{|k,v| req[k] = v}
+
+    #   res = http.request req
+
+    # end
+
+    def api_request proxy_ip, proxy_port, apk_snap_id, type, path, data = {}
+
+      ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+
+      # Check @auth_token
 
       headers = {
         'Accept-Language' => 'en_US',
         'Authorization' => "GoogleLogin auth=#{@auth_token}",
         'X-DFE-Enabled-Experiments' => 'cl:billing.select_add_instrument_by_default',
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
-        'X-DFE-Device-Id' => ApkDownloader.configuration.android_id,
+        'X-DFE-Device-Id' => "#{ga.android_identifier}",
         'X-DFE-Client-Id' => 'am-android-google',
         'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
         'X-DFE-SmallestScreenWidthDp' => '320',
@@ -160,7 +191,9 @@ if defined?(ApkDownloader)
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy: proxy)
+      response = res_curl(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
+
+      # response = res_net(type: type, uri: uri, headers: headers, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
     end
