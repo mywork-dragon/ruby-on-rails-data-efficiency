@@ -38,16 +38,17 @@ if defined?(ApkDownloader)
         ApkSnapshotException.create(name: "ERROR! - account: #{ga.email}, account_id: #{ga.id}, package: #{package}")
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
-        @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
-        ApkSnapshotException.create(name: "@auth_token: #{@auth_token}, account: #{ga.email}, account_id: #{ga.id}, package: #{package}")
+        auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+        ApkSnapshotException.create(name: "auth_token: #{auth_token}, account: #{ga.email}, account_id: #{ga.id}, package: #{package}")
+        return auth_token
       end
 
     end
 
-    def details package, proxy, apk_snap_id
+    def details package, auth_token, proxy, apk_snap_id
       if @details_messages[package].nil?
         log_in!(proxy, apk_snap_id, package)
-        message = api_request proxy, :get, '/details', :doc => package
+        message = api_request auth_token, proxy, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -76,12 +77,12 @@ if defined?(ApkDownloader)
 
         proxy = "#{ip}:8888"
 
-        log_in!(proxy, apk_snap_id, package)
-        doc = details(package, proxy, apk_snap_id).detailsResponse.docV2
+        auth_token = log_in!(proxy, apk_snap_id, package)
+        doc = details(package, auth_token, proxy, apk_snap_id).detailsResponse.docV2
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
 
-        message = api_request proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+        message = api_request auth_token, proxy, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
@@ -139,13 +140,11 @@ if defined?(ApkDownloader)
 
     end
 
-    def api_request proxy, type, path, data = {}
-
-      # Check @auth_token
+    def api_request auth_token, proxy, type, path, data = {}
 
       headers = {
         'Accept-Language' => 'en_US',
-        'Authorization' => "GoogleLogin auth=#{@auth_token}",
+        'Authorization' => "GoogleLogin auth=#{auth_token}",
         'X-DFE-Enabled-Experiments' => 'cl:billing.select_add_instrument_by_default',
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
         'X-DFE-Device-Id' => ApkDownloader.configuration.android_id,
