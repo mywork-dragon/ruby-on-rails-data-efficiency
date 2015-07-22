@@ -70,11 +70,7 @@ class FilterService
 
       if app_filters[:supportDesk]
         for support_desk in app_filters[:supportDesk]
-          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.zendesk.%\"')" if app_filters[:supportDesk].include?("zendesk")
-          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.helpshift.%\"')" if app_filters[:supportDesk].include?("helpshift")
-          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.uservoice.%\"')" if app_filters[:supportDesk].include?("uservoice")
-          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.freshdesk.%\"')" if app_filters[:supportDesk].include?("freshdesk")
-          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.desk.%\"')" if app_filters[:supportDesk].include?("desk")
+          queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.#{support_desk}.%\"')"
         end
       end
       

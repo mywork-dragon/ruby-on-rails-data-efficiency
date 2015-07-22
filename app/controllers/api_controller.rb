@@ -417,7 +417,7 @@ class ApiController < ApplicationController
     apps = []
 
     header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)', 'MightySignal App Page', 'MightySignal Company Page']
-    can_view_support_desk ? header.push('Support Desk') : nil
+    can_view_support_desk ? header.push('Support URL') : nil
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"

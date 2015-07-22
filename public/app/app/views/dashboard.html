@@ -100,7 +100,7 @@
                title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
              </a>
              <span class="ui-select" ng-show="canViewSupportDesk && appPlatform == 'ios'">
-                  <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
+                  <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', true)">
                     <option value="">Support Desk</option>
                     <option value="zendesk">Zendesk</option>
                     <option value="helpshift">HelpShift</option>
