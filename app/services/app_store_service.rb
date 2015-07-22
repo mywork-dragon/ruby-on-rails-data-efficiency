@@ -25,6 +25,7 @@ class AppStoreService
         categories_json
         size_json
         seller_json
+        by_json
         developer_app_store_identifier_json
         ratings_json
         recommended_age_json
@@ -45,6 +46,7 @@ class AppStoreService
           categories_html
           size_html
           seller_html
+          by_html
           developer_app_store_identifier_html
           ratings_html
           recommended_age_html
@@ -59,7 +61,6 @@ class AppStoreService
         in_app_purchases_html
         editors_choice_html
         icon_urls_html
-        by_html
       )
 
     end
@@ -225,17 +226,21 @@ class AppStoreService
   end
 
   def seller_json
-    @json['artistName']
+    @json['sellerName']
   end
   
   def seller_html
     @html.css('li').select{ |li| li.text.match(/Seller: /) }.first.children[1].text
   end
 
+  def by_json
+    @json['artistName']
+  end
+
   def by_html
     @html.css('#title > div.left').children.find{ |c| c.name == 'h2' }.text.gsub(/\ABy /, '')
   end
-
+  
   def developer_app_store_identifier_json
     @json['artistId']
   end
