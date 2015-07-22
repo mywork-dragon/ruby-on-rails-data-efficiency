@@ -87,7 +87,7 @@ if defined?(ApkDownloader)
         snap = ApkSnapshot.find_by_id(apk_snap_id)
 
         proxy_ip = snap.proxy
-        proxy_port = "8888"
+        proxy_port = 8888
 
         log_in!(proxy_ip, proxy_port, apk_snap_id)
         doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
