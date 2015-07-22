@@ -62,6 +62,8 @@ class AppStoreService
         editors_choice_html
         icon_urls_html
         copywright_html
+        seller_url_text_html
+        support_url_text_html
       )
 
     end
@@ -335,6 +337,16 @@ class AppStoreService
   
   def copywright_html
     @html.css('li.copyright').text
+  end
+  
+  def seller_url_text_html
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Site\z/) }.first.text
+  end
+  
+  def support_url_text_html
+    children = @html.css(".app-links").children
+    children.select{ |c| c.text.match(/Support\z/) }.first.text
   end
   
   private
