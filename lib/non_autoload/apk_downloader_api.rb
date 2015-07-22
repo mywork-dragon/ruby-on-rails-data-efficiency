@@ -58,7 +58,7 @@ if defined?(ApkDownloader)
       end
     end
 
-    def details package
+    def details package, proxy_ip, proxy_port, apk_snap_id
       if @details_messages[package].nil?
         log_in!(proxy_ip, proxy_port, apk_snap_id)
         message = api_request proxy_ip, proxy_port, :get, '/details', :doc => package
@@ -136,7 +136,7 @@ if defined?(ApkDownloader)
       when Net::HTTPSuccess
         return resp
       when Net::HTTPRedirection
-        return recursive_apk_fetch(URI(resp['Location']), cookie, tries - 1)
+        return recursive_apk_fetch(proxy_ip, proxy_port, URI(resp['Location']), cookie, tries - 1)
       else
         resp.error!
       end
