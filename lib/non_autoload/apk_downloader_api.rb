@@ -61,7 +61,7 @@ if defined?(ApkDownloader)
     def details package
       if @details_messages[package].nil?
         log_in!(proxy_ip, proxy_port, apk_snap_id)
-        message = api_request auth_token, proxy_ip, proxy_port, :get, '/details', :doc => package
+        message = api_request proxy_ip, proxy_port, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -89,12 +89,12 @@ if defined?(ApkDownloader)
         proxy_ip = snap.proxy
         proxy_port = "8888"
 
-        auth_token = log_in!(proxy_ip, proxy_port, apk_snap_id)
-        doc = details(package, auth_token, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
+        log_in!(proxy_ip, proxy_port, apk_snap_id)
+        doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
         version_code = doc.details.appDetails.versionCode
         offer_type = doc.offer[0].offerType
 
-        message = api_request auth_token, proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+        message = api_request proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
         url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
@@ -142,7 +142,7 @@ if defined?(ApkDownloader)
       end
     end
 
-    def api_request auth_token, proxy_ip, proxy_port, type, path, data = {}
+    def api_request proxy_ip, proxy_port, type, path, data = {}
       if @http.nil?
         @http = Net::HTTP.SOCKSProxy(proxy_ip, proxy_port).new GoogleApiUri.host, GoogleApiUri.port
         @http.use_ssl = true
