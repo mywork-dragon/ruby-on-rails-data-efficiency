@@ -61,6 +61,7 @@ class AppStoreService
         in_app_purchases_html
         editors_choice_html
         icon_urls_html
+        copywright_html
       )
 
     end
@@ -330,6 +331,10 @@ class AppStoreService
     ret = {size_350x350: node['src-swap-high-dpi'], size_175x175: node['src-swap']} if node
     
     ret
+  end
+  
+  def copywright_html
+    @html.css('li.copyright').text
   end
   
   private
