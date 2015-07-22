@@ -69,7 +69,7 @@ if defined?(ApkDownloader)
         p.save
 
         apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-        apk_snap.proxy = p.id
+        apk_snap.super_proxy_id = p.id
         apk_snap.save
 
       end
