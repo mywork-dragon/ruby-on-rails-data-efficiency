@@ -94,7 +94,7 @@ class AppStoreService
     begin
       country_param = (@country_code == 'us' ? '' : "country=#{@country_code}&")
       url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
-      page = Tor.get(url, bypass: true)
+      page = Tor.get(url)
       loaded_json = JSON.load(page)
       loaded_json['results'].first
     rescue
@@ -112,7 +112,7 @@ class AppStoreService
 
     #li "url: #{url}"
     
-    page = Tor.get(url, bypass: true)
+    page = Tor.get(url)
     
     html = Nokogiri::HTML(page)
     

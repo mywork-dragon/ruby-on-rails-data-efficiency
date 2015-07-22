@@ -2,7 +2,7 @@ class AppStoreSnapshotServiceWorker
   include Sidekiq::Worker
   
   # accounting for retries ourself, so disable sidekiq retries
-  sidekiq_options retry: false
+  sidekiq_options retry: false, queue: :default
   
   MAX_TRIES = 3
   

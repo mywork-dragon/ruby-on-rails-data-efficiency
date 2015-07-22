@@ -4,7 +4,9 @@ class CsvSnapshotService
   
   class << self
     
-    def run(ios_app_ids)
+    def run_ios(notes, ios_app_ids)
+      
+
       
     end
     
