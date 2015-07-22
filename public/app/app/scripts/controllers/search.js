@@ -17,8 +17,10 @@ angular.module('appApp')
         if ($routeParams.custom) var customParams = JSON.parse($routeParams.custom);
         var allParams = appParams ? appParams : [];
         if ($routeParams.custom && $routeParams.custom.first) allParams['customKeywords'] = customParams['customKeywords'];
-        console.log("CUSTOM PARAMS", $routeParams.custom);
         for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
+
+        // if (!$rootScope.tags) $rootScope.tags = [];
+
         $rootScope.tags = [];
 
         /* Rebuild Filters Array from URL Params */
@@ -34,8 +36,6 @@ angular.module('appApp')
             $rootScope.tags.push(searchService.searchFilters(key, value));
           }
         }
-
-        console.log($rootScope.tags);
 
         var submitSearchStartTime = new Date().getTime();
         $scope.queryInProgress = true;
