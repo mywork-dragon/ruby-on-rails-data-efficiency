@@ -8,14 +8,6 @@ if defined?(ApkDownloader)
 
     attr_reader :auth_token
 
-    def initialize
-      @details_messages = {}
-    end
-
-    def logged_in?
-      !self.auth_token.nil?
-    end
-
     def log_in!(proxy_ip, proxy_port, apk_snap_id)
       return if self.logged_in?
 
@@ -70,24 +62,24 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package, apk_snap_id
 
-      mp = MicroProxy.transaction do
+      mp = SuperProxy.transaction do
 
-        p = MicroProxy.lock.order(last_used: :asc).first
+        p = SuperProxy.lock.order(last_used: :asc).first
         p.last_used = DateTime.now
         p.save
 
         apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-        apk_snap.proxy = p.private_ip
+        apk_snap.proxy = p.id
         apk_snap.save
 
       end
 
       if mp
 
-        snap = ApkSnapshot.find_by_id(apk_snap_id)
+        sp = SuperProxy.joins(apk_snapshots: :super_proxy).where('apk_snapshots.id = ?', 108).first
 
-        proxy_ip = snap.proxy
-        proxy_port = 8888
+        proxy_ip = sp.private_ip
+        proxy_port = sp.port
 
         log_in!(proxy_ip, proxy_port, apk_snap_id)
         doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
@@ -100,6 +92,7 @@ if defined?(ApkDownloader)
         cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
 
         if url.blank? || cookie.blank?
+          snap = ApkSnapshot.find_by_id(apk_snap_id)
           snap.status = :no_response
           snap.save
           raise "Google did not return url or cookie"
