@@ -76,7 +76,7 @@ if defined?(ApkDownloader)
 
       if mp
 
-        sp = SuperProxy.joins(apk_snapshots: :super_proxy).where('apk_snapshots.id = ?', 108).first
+        sp = SuperProxy.joins(apk_snapshots: :super_proxy).where('apk_snapshots.id = ?', apk_snap_id).first
 
         proxy_ip = sp.private_ip
         proxy_port = sp.port
