@@ -32,6 +32,8 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
+      ApkSnapshotException.create(name: "google_id: #{ga.id}, ")
+
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="

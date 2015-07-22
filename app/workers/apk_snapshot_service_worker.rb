@@ -4,7 +4,7 @@ class ApkSnapshotServiceWorker
 
   MAX_TRIES = 3
 
-  sidekiq_options backtrace: true, :retry => false, queue: :sdk
+  sidekiq_options backtrace: true, :retry => MAX_TRIES, queue: :sdk
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -75,7 +75,7 @@ class ApkSnapshotServiceWorker
         ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "no account  |  #{e.message}", backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id)
       end
 
-      if @try_count >= MAX_TRIES
+      if @try_count >= MAX_TRIES && apk_snap.status != :no_response
         apk_snap.status = :failure
         apk_snap.save
       end

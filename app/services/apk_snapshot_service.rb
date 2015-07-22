@@ -66,59 +66,29 @@ class ApkSnapshotService
     end
 
 
-    # def job
-    #   j = ApkSnapshotJob.last
+    def job
+      j = ApkSnapshotJob.last
 
-    #   workers = Sidekiq::Workers.new
+      workers = Sidekiq::Workers.new
 
-    #   while true do
-    #     total = j.apk_snapshots.count
-    #     success = j.apk_snapshots.where(status: 1).count
-    #     fail = j.apk_snapshots.where(status: 0).count
+      total = j.apk_snapshots.count
+      success = j.apk_snapshots.where(status: 1).count
+      fail = j.apk_snapshots.where(status: 0).count
+      no_response = j.apk_snapshots.where(status: 2).count
 
-    #     progress = ((success + fail).to_f/total)*100
-    #     success_rate = (success.to_f/(success + fail).to_f)*100
+      progress = ((success + fail).to_f/total)*100
+      success_rate = (success.to_f/(success + fail).to_f)*100
 
-    #     apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
+      apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
-    #     currently_downloading = apk_ga.count
+      currently_downloading = apk_ga.count
 
-    #     accounts_in_use = GoogleAccount.where(in_use: true).count
+      accounts_in_use = GoogleAccount.where(in_use: true).count
 
-    #     print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size} \r"
+      print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  no response - #{no_response} |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size}"
 
-    #     if progress == 100.0
-    #       puts "\n\nScrape Completed"
-    #       return false
-    #     end
 
-    #     sleep 1
-    #   end
-
-    # end
-  
-    # def about_job(job_id)
-      
-    #   j = ApkSnapshotJob.find(job_id)
-      
-    #   j.apk_snapshots.each do |apk_snapshot|
-        
-    #     puts "APK Snapshot: #{apk_snapshot.inspect}"
-    #     puts "App Identifier: #{apk_snapshot.android_app.app_identifier}"
-    #     puts ''
-        
-    #     puts 'AndroidPackages'
-    #     puts '---------------'
-        
-    #     apk_snapshot.android_packages.each do |android_package|
-    #       puts android_package.package_name
-    #     end
-        
-    #     puts ''
-    #     puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-    #   end
-      
-    # end
+    end
   
   end
   
