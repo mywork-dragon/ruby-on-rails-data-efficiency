@@ -59,6 +59,7 @@ class AppStoreService
         in_app_purchases_html
         editors_choice_html
         icon_urls_html
+        by_html
       )
 
     end
@@ -89,7 +90,7 @@ class AppStoreService
     begin
       country_param = (@country_code == 'us' ? '' : "country=#{@country_code}&")
       url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
-      page = Tor.get(url)
+      page = Tor.get(url, bypass: true)
       loaded_json = JSON.load(page)
       loaded_json['results'].first
     rescue
@@ -107,7 +108,7 @@ class AppStoreService
 
     #li "url: #{url}"
     
-    page = Tor.get(url)
+    page = Tor.get(url, bypass: true)
     
     html = Nokogiri::HTML(page)
     
@@ -229,6 +230,10 @@ class AppStoreService
   
   def seller_html
     @html.css('li').select{ |li| li.text.match(/Seller: /) }.first.children[1].text
+  end
+
+  def by_html
+    @html.css('#title > div.left').children.find{ |c| c.name == 'h2' }.text.gsub(/\ABy /, '')
   end
 
   def developer_app_store_identifier_json
