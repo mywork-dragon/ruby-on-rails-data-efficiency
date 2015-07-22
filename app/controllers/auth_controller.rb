@@ -11,7 +11,7 @@ class AuthController < ApplicationController
       li "authenticated"
       render json: { auth_token: user.generate_auth_token, email: user.email}
     else
-      li a"authentication error"
+      li "authentication error"
       render json: { error: 'Invalid username or password' }, status: :unauthorized
     end
   end

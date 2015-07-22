@@ -406,8 +406,10 @@ class ApiController < ApplicationController
 
   def export_list_to_csv
 
-    list_id = params['listId']
+    user = User.find(decoded_auth_token[:user_id])
+    can_view_support_desk = Account.find(user.account_id).can_view_support_desk
 
+    list_id = params['listId']
     list = List.find(list_id)
 
     ios_apps = list.ios_apps
@@ -415,6 +417,7 @@ class ApiController < ApplicationController
     apps = []
 
     header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)', 'MightySignal App Page', 'MightySignal Company Page']
+    can_view_support_desk ? header.push('Support Desk') : nil
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"
@@ -435,7 +438,8 @@ class ApiController < ApplicationController
           company.present? ? company.fortune_1000_rank : nil,
           app.get_website_urls.join(", "),
           'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
-          company.present? ? 'http://www.mightysignal.com/app/app#/company/' + company.id.to_s : nil
+          company.present? ? 'http://www.mightysignal.com/app/app#/company/' + company.id.to_s : nil,
+          can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
 
       ]
 
