@@ -56,117 +56,122 @@ class UrlHelper
     # Returns ID of one that matches
     # 0 is not a real ID
     def known_website(url)
-      sites = 
-      {
-        "google.com" => 281956209,
-        "pinterest.com" => 328135727,
-        "apple.com" => 284417353,
-        "me.com" => 284417353,
-        "youtube.com" => 281956209,
-        "youtu.be" => 281956209,
-        "zendesk.com" => 368796010,
-        "sina.com.cn" => 291478092,
-        "sina.com" => 291478092,
-        "wix.com" => 407141669,
-        "tumblr.com" => 305343407,
-        "webs.com" => 0,
-        "weibo.com" => 291478092,
-        "uservoice.com" => 370742542,
-        "helpshift.com" => 0,
-        "blog.com" => 0,
-        "appspot.com" => 0,
-        "naver.com" => 311867731,
-        "github.com" => 0,
-        "yelp.com" => 284910353,
-        "weebly.com" => 511158312,
-        "wordpress.com" => 335703883,
-        "wordpress.org" => 335703883,
-        "subway.com" => 860751246,
-        "blogspot.com" => 0,
-        "evernote.com" => 281796111,
-        "imdb.com" => 342792528,
-        "facebook.com" => 284882218,
-        "twitter.com" => 296415947,
-        "instagram.com" => 389801255,
-        "foursquare.com" => 306934924,
-        "ask.fm" => 635896476,
-        "amazon.com" => 297606954,
-        "apps-builder.com" => 463251463,
-        "goo.gl" => 0,
-        "vimeo.com" => 425194762,
-        "desk.com" => 281826149,
-        "fb.com" => 284882218,
-        "freshdesk.com" => 849713309,
-        "evertrue.com" => 429190217,
-        "golfchannel.com" => 466053030,
-        "gannett.com" => 404843797,
-        "netflix.com" => 363590054,
-        "fiserv.com" => 386678214,
-        "qq.com" => 504515421,
-        "bit.ly" => 420744919,
-        "yahoo.com" => 281970157,
-        "aol.com" => 281704577,
-        "aim.com" => 281704577,
-        "cbssports.com" => 295669712,
-        "wevideo.com" => 615796923,
-        "dar-app.com" => 0
-      }
+
+      sites = Mighty.array('
+      
+        google.com: 281956209
+        pinterest.com: 328135727
+        apple.com: 284417353
+        me.com: 284417353
+        youtube.com: 281956209
+        youtu.be: 281956209
+        zendesk.com: 368796010
+        sina.com.cn: 291478092
+        sina.com: 291478092
+        wix.com: 407141669
+        tumblr.com: 305343407
+        webs.com: 0
+        weibo.com: 291478092
+        uservoice.com: 370742542
+        helpshift.com: 0
+        blog.com: 0
+        appspot.com: 0
+        naver.com: 311867731
+        github.com: 0
+        yelp.com: 284910353
+        weebly.com: 511158312
+        wordpress.com: 335703883
+        wordpress.org: 335703883
+        subway.com: 860751246
+        blogspot.com: 0
+        evernote.com: 281796111
+        imdb.com: 342792528
+        facebook.com: 284882218
+        twitter.com: 296415947
+        instagram.com: 389801255
+        foursquare.com: 306934924
+        ask.fm: 635896476
+        amazon.com: 297606954
+        apps-builder.com: 463251463
+        goo.gl: 0
+        vimeo.com: 425194762
+        desk.com: 281826149
+        fb.com: 284882218
+        freshdesk.com: 849713309
+        evertrue.com: 429190217
+        golfchannel.com: 466053030
+        gannett.com: 404843797
+        netflix.com: 363590054
+        fiserv.com: 386678214
+        qq.com: 504515421
+        bit.ly: 420744919
+        yahoo.com: 281970157
+        aol.com: 281704577
+        aim.com: 281704577
+        cbssports.com: 295669712
+        wevideo.com: 615796923
+        dar-app.com: 0
+
+      ')
+
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
     end
 
     def known_website_android(url)
-      sites = 
-      {
-        "google.com" => "5700313618786177705",
-        "pinterest.com" => "Pinterest,+Inc.",
-        "apple.com" => "0",
-        "youtube.com" => "5700313618786177705",
-        "zendesk.com" => "Zendesk",
-        "sina.com.cn" => "Sina.com",
-        "sina.com" => "Sina.com",
-        "wix.com" => "Wix",
-        "tumblr.com" => "Tumblr,+Inc.",
-        "webs.com" => "0",
-        "weibo.com" => "Sina.com",
-        "uservoice.com" => "UserVoice+Inc.",
-        "helpshift.com" => "0",
-        "blog.com" => "0",
-        "appspot.com" => "0",
-        "naver.com" => "NAVER+Corp.",
-        "github.com" => "0",
-        "yelp.com" => "Yelp,+Inc",
-        "weebly.com" => "Weebly,+Inc.",
-        "wordpress.com" => "7957760354032996428",
-        "subway.com" => "SUBWAY+Restaurants",
-        "blogspot.com" => "0",
-        "evernote.com" => "Evernote+Corporation",
-        "imdb.com" => "IMDb",
-        "facebook.com" => "Facebook",
-        "twitter.com" => "Twitter,+Inc.",
-        "instagram.com" => "Instagram",
-        "foursquare.com" => "Foursquare",
-        "ask.fm" => "Ask.fm",
-        "amazon.com" => "Amazon+Mobile+LLC",
-        "apps-builder.com" => "AppsBuilder",
-        "goo.gl" => "0",
-        "vimeo.com" => "Vimeo+Mobile",
-        "desk.com" => "Salesforce.com,+inc.",
-        "fb.com" => "Facebook",
-        "freshdesk.com" => "Freshdesk",
-        "evertrue.com" => "EverTrue",
-        "golfchannel.com" => "Golf+Channel",
-        "gannett.com" => "Gannett+Company,+Inc.",
-        "youtu.be" => "0",
-        "fiserv.com" => "Fiserv+Solutions,+Inc.",
-        "qq.com" => "Tencent+Technology+(Shenzhen)+Company+Ltd.",
-        "yahoo.com" => "Yahoo",
-        "aol.com" => "AOL+Inc.",
-        "aim.com" => "AOL+Inc.",
-        "presselite.com" => "Presselite",
-        "wevideo.com" => "WeVideo+Inc.",
-        "dar-app.com" => "DAR-APP"
-      }
+      sites = Mighty.array('
+
+        google.com: 5700313618786177705
+        pinterest.com: Pinterest,+Inc.
+        apple.com: 0
+        youtube.com: 5700313618786177705
+        zendesk.com: Zendesk
+        sina.com.cn: Sina.com
+        sina.com: Sina.com
+        wix.com: Wix
+        tumblr.com: Tumblr,+Inc.
+        webs.com: 0
+        weibo.com: Sina.com
+        uservoice.com: UserVoice+Inc.
+        helpshift.com: 0
+        blog.com: 0
+        appspot.com: 0
+        naver.com: NAVER+Corp.
+        github.com: 0
+        yelp.com: Yelp,+Inc
+        weebly.com: Weebly,+Inc.
+        wordpress.com: 7957760354032996428
+        subway.com: SUBWAY+Restaurants
+        blogspot.com: 0
+        evernote.com: Evernote+Corporation
+        imdb.com: IMDb
+        facebook.com: Facebook
+        twitter.com: Twitter,+Inc.
+        instagram.com: Instagram
+        foursquare.com: Foursquare
+        ask.fm: Ask.fm
+        amazon.com: Amazon+Mobile+LLC
+        apps-builder.com: AppsBuilder
+        goo.gl: 0
+        vimeo.com: Vimeo+Mobile
+        desk.com: Salesforce.com,+inc.
+        fb.com: Facebook
+        freshdesk.com: Freshdesk
+        evertrue.com: EverTrue
+        golfchannel.com: Golf+Channel
+        gannett.com: Gannett+Company,+Inc.
+        youtu.be: 0
+        fiserv.com: Fiserv+Solutions,+Inc.
+        qq.com: Tencent+Technology+(Shenzhen)+Company+Ltd.
+        yahoo.com: Yahoo
+        aol.com: AOL+Inc.
+        aim.com: AOL+Inc.
+        presselite.com: Presselite
+        wevideo.com: WeVideo+Inc.
+        dar-app.com: DAR-APP
+
+      ')
+
       sites.each{ |site, dev_id| return dev_id if url.include?(site) }
       nil
     end
