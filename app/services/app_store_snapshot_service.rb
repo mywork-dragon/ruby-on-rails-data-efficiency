@@ -18,7 +18,7 @@ class AppStoreSnapshotService
       j = IosAppSnapshotJob.create!(notes: notes)
       
       ios_app_ids.each do |ios_app_id|
-        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_id)
       end
       
     end
