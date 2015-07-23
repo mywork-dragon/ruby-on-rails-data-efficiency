@@ -65,7 +65,6 @@ class ApkSnapshotService
       end
     end
 
-
     def job
       j = ApkSnapshotJob.last
 
@@ -77,7 +76,8 @@ class ApkSnapshotService
       no_response = j.apk_snapshots.where(status: 2).count
 
       progress = ((success + fail).to_f/total)*100
-      success_rate = (success.to_f/(success + fail).to_f)*100
+      success_rate = (success.to_f/(success + fail + no_response).to_f)*100
+      completion_rate = ((success + fail + no_response).to_f / total)*100
 
       apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
@@ -85,8 +85,15 @@ class ApkSnapshotService
 
       accounts_in_use = GoogleAccount.where(in_use: true).count
 
-      print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  no response - #{no_response} |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size}"
-
+      puts "Successes : #{success}"
+      puts "Failures : #{fail}"
+      puts "No Response : #{no_response}"
+      puts "Total : #{total}"
+      puts "Success Rate : #{success_rate.round(2)}%"
+      puts "Completion Rate : #{completion_rate}"
+      puts "Accounts In Use : #{accounts_in_use}"
+      puts "Downloading : #{currently_downloading}"
+      puts "Workers : #{workers.size}"
 
     end
   

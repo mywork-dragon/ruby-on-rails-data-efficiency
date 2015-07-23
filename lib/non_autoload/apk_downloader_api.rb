@@ -45,7 +45,7 @@ if defined?(ApkDownloader)
     def details package, proxy_ip, proxy_port, apk_snap_id
       if @details_messages[package].nil?
         log_in!(proxy_ip, proxy_port, apk_snap_id)
-        message = api_request proxy_ip, proxy_port, :get, '/details', :doc => package
+        message = api_request apk_snap_id, proxy_ip, proxy_port, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -64,40 +64,33 @@ if defined?(ApkDownloader)
         apk_snap.proxy = p.private_ip
         apk_snap.save
 
+        p
+
       end
 
-      if mp
+      proxy_ip = mp.private_ip
+      proxy_port = "8888"
 
+      log_in!(proxy_ip, proxy_port, apk_snap_id)
+      doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
+      version_code = doc.details.appDetails.versionCode
+      offer_type = doc.offer[0].offerType
+
+      message = api_request apk_snap_id, proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+
+      url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
+      cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+
+      if url.blank? || cookie.blank? || proxy_ip.blank?
         snap = ApkSnapshot.find_by_id(apk_snap_id)
-
-        proxy_ip = snap.proxy
-        proxy_port = "8888"
-
-        log_in!(proxy_ip, proxy_port, apk_snap_id)
-        doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
-        version_code = doc.details.appDetails.versionCode
-        offer_type = doc.offer[0].offerType
-
-        message = api_request proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
-
-        url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
-        cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
-
-        if url.blank? || cookie.blank?
-          snap.status = :no_response
-          snap.save
-          raise "Google did not return url or cookie"
-        end
-
-        resp = recursive_apk_fetch(proxy_ip, proxy_port, url, cookie)
-
-        return resp.body
-
-      else
-
-        raise 'could not find ip to use'
-
+        snap.status = :no_response
+        snap.save
+        raise "Google did not return url or cookie\nip: #{mp.private_ip}\naccount: #{snap.google_account_id}\ncookie: #{cookie}\nurl: #{url}"
       end
+
+      resp = recursive_apk_fetch(proxy_ip, proxy_port, url, cookie)
+
+      return resp.body
 
     end
 
@@ -121,7 +114,6 @@ if defined?(ApkDownloader)
         
     end
 
-
     def res(req:, params:, type:, proxy_ip:, proxy_port:)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
@@ -134,14 +126,16 @@ if defined?(ApkDownloader)
 
     end
 
-    def api_request proxy_ip, proxy_port, type, path, data = {}
+    def api_request apk_snap_id, proxy_ip, proxy_port, type, path, data = {}
+
+      ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
       headers = {
         'Accept-Language' => 'en_US',
         'Authorization' => "GoogleLogin auth=#{@auth_token}",
         'X-DFE-Enabled-Experiments' => 'cl:billing.select_add_instrument_by_default',
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
-        'X-DFE-Device-Id' => ApkDownloader.configuration.android_id,
+        'X-DFE-Device-Id' => ga.android_identifier,
         'X-DFE-Client-Id' => 'am-android-google',
         'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
         'X-DFE-SmallestScreenWidthDp' => '320',

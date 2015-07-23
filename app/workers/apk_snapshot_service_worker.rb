@@ -2,7 +2,7 @@ class ApkSnapshotServiceWorker
 
   include Sidekiq::Worker
 
-  MAX_TRIES = 3
+  MAX_TRIES = 2
 
   sidekiq_options backtrace: true, :retry => MAX_TRIES, queue: :sdk
   
