@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715230055) do
+ActiveRecord::Schema.define(version: 20150722234041) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 20150715230055) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "try"
-    t.integer  "proxy"
+    t.string   "proxy"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
@@ -443,6 +443,10 @@ ActiveRecord::Schema.define(version: 20150715230055) do
     t.string   "icon_url_175x175"
     t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
     t.date     "first_released"
+    t.string   "by"
+    t.string   "copywright"
+    t.string   "seller_url_text"
+    t.string   "support_url_text"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree

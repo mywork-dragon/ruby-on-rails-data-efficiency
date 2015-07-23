@@ -34,7 +34,10 @@ if servers == 'scraper'
 elsif servers == 'sdk_scraper'
   branch = 'sdk_scraper'
   stage = branch
-elsif %w(web_api all).include?(servers)
+elsif servers == 'web_api'
+  branch = 'master'
+  stage = 'web_api'
+elsif servers == 'all'
   branch = 'master'
   stage = 'production'
 end
