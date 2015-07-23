@@ -71,13 +71,14 @@ class ApkSnapshotService
       workers = Sidekiq::Workers.new
 
       total = j.apk_snapshots.count
-      success = j.apk_snapshots.where(status: 1).count
       fail = j.apk_snapshots.where(status: 0).count
+      success = j.apk_snapshots.where(status: 1).count
       no_response = j.apk_snapshots.where(status: 2).count
+      forbidden = j.apk_snapshots.where(status: 3).count
 
       progress = ((success + fail).to_f/total)*100
-      success_rate = (success.to_f/(success + fail + no_response).to_f)*100
-      completion_rate = ((success + fail + no_response).to_f / total)*100
+      success_rate = (success.to_f/(success + fail + no_response + forbidden).to_f)*100
+      completion_rate = ((success + fail + no_response + forbidden).to_f / total)*100
 
       apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
@@ -88,6 +89,7 @@ class ApkSnapshotService
       puts "Successes : #{success}"
       puts "Failures : #{fail}"
       puts "No Response : #{no_response}"
+      puts "Forbidden : #{forbidden}"
       puts "Total : #{total}"
       puts "Success Rate : #{success_rate.round(2)}%"
       puts "Completion Rate : #{completion_rate}"

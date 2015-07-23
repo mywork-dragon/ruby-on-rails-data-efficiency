@@ -43,7 +43,7 @@ if defined?(ApkDownloader)
     def details package, proxy_ip, proxy_port, apk_snap_id
       if @details_messages[package].nil?
         log_in!(proxy_ip, proxy_port, apk_snap_id)
-        message = api_request apk_snap_id, proxy_ip, proxy_port, :get, '/details', :doc => package
+        status_code, message = api_request apk_snap_id, proxy_ip, proxy_port, :get, '/details', :doc => package
         @details_messages[package] = message.payload
       end
 
@@ -74,7 +74,7 @@ if defined?(ApkDownloader)
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType
 
-      message = api_request apk_snap_id, proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
+      status_code, message = api_request apk_snap_id, proxy_ip, proxy_port, :post, '/purchase', :ot => offer_type, :doc => package, :vc => version_code
 
       url = URI(message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadUrl)
       cookie = message.payload.buyResponse.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
@@ -83,7 +83,7 @@ if defined?(ApkDownloader)
         snap = ApkSnapshot.find_by_id(apk_snap_id)
         snap.status = :no_response
         snap.save
-        raise "Google did not return url or cookie\nip: #{mp.private_ip}\naccount: #{snap.google_account_id}\ncookie: #{cookie}\nurl: #{url}"
+        raise "Google did not return url or cookie\n-------\nstatus code: #{status_code}\nip: #{mp.private_ip}\naccount: #{snap.google_account_id}\ncookie: #{cookie}\nurl: #{url}"
       end
 
       resp = recursive_apk_fetch(proxy_ip, proxy_port, url, cookie)
@@ -155,7 +155,7 @@ if defined?(ApkDownloader)
 
       response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
+      return response.status, ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
 
     end
 

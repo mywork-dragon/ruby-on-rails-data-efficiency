@@ -80,6 +80,11 @@ class ApkSnapshotServiceWorker
         apk_snap.save
       end
 
+      if e.message.include? "status code (503)"
+        apk_snap.status = :forbidden
+        apk_snap.save
+      end
+
       # if @try_count >= MAX_TRIES && apk_snap.status != :no_response
       #   apk_snap.status = :failure
       #   apk_snap.save
