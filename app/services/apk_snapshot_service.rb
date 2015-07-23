@@ -10,18 +10,19 @@ class ApkSnapshotService
     end
 
     def run_n(notes, size = 10)
-      workers = Sidekiq::Workers.new
+
+      workers = Sidekiq::Workers.new.map{ |w| w[2]["queue"] == 'sdk_scraper' }.include? true
 
       clear_accounts()
 
-      if workers.size == 0
+      if !workers
         j = ApkSnapshotJob.create!(notes: notes)
         AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(10).each.with_index do |app, index|
           li "app #{index}"
           ApkSnapshotServiceWorker.perform_async(j.id, app.id)
         end
       else
-        print "WARNING: You cannot continue because there are #{workers.size} workers currently running."
+        print "WARNING: You cannot continue because there are workers currently running."
       end
     end
 
