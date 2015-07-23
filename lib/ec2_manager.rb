@@ -2,6 +2,7 @@ class Ec2Manager
 
   PROXY_PRIVATE_KEY_PATH = '/Users/jason/penpals/important_stuff/proxy.pem'
   TOR_SETUP_SCRIPT_PATH = './server/tor_setup.sh'
+  TINYPROXY_SETUP_SCRIPT_PATH = './server/tinyproxy_setup.sh'
 
   class << self
   
@@ -53,8 +54,18 @@ class Ec2Manager
       # find security group
       security_group = resource.security_groups.find{|sg| sg.group_name == security_group_name }
       puts "Using security group: #{security_group.group_name}" 
- 
-      user_data = Base64.encode64(File.open(TOR_SETUP_SCRIPT_PATH, 'rb') { |f| f.read })
+      
+      setup_script = options[:setup_script]
+      
+      user_data = nil
+      
+      if setup_script
+        if setup_script == :tor
+          user_data = Base64.encode64(File.open(TOR_SETUP_SCRIPT_PATH, 'rb') { |f| f.read })
+        elsif setup_script == :tinyproxy
+          user_data = Base64.encode64(File.open(TINYPROXY_SETUP_SCRIPT_PATH, 'rb') { |f| f.read })
+        end
+      end
  
       # create the instance (and launch it)
       instance = resource.create_instances( 
@@ -95,7 +106,8 @@ class Ec2Manager
                         instance_type: instance_type,
                         region: region,
                         key_pair_name: 'proxy', 
-                        security_group_name: 'proxy'
+                        security_group_name: 'proxy',
+                        setup_script: :tinyproxy
                       )
                       
       #configure_proxy_with_tor(instance.instance.ip_address)
