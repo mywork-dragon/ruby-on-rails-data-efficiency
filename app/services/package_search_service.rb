@@ -12,14 +12,14 @@ class PackageSearchService
 
     def extract_manifest(app_identifier, file_name)
 
-      print "Searching for sdks in #{app_identifier}... "
+      print "Searching for sdks in #{app_identifier}... " if Rails.env.development?
       
       start_time = Time.now()
 
       apk = Android::Apk.new(file_name)
       manifest = apk.manifest
 
-      print 'success'
+      print 'success' if Rails.env.development?
 
       end_time = Time.now()
       unpack_time = (end_time - start_time).to_s
@@ -46,7 +46,7 @@ class PackageSearchService
           end
         end
       end
-      li " ( time : #{unpack_time} sec, packages_found : #{i} )"
+      li " ( time : #{unpack_time} sec, packages_found : #{i} )" if Rails.env.development?
     end
 
     def save_package(app_identifier, tag, apk_snap_id)
