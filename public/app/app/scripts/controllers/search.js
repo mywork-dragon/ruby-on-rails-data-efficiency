@@ -97,5 +97,16 @@ angular.module('appApp')
         searchCtrl.loadTableData();
       };
 
+      searchCtrl.appsDisplayedCount = function() {
+        var lastPageMaxApps = $rootScope.numPerPage * searchCtrl.currentPage;
+        var baseAppNum = $rootScope.numPerPage * (searchCtrl.currentPage - 1) + 1;
+
+        if (lastPageMaxApps > searchCtrl.numApps) {
+          return "" + baseAppNum + " - " + searchCtrl.numApps;
+        } else {
+          return "" + baseAppNum + " - " + lastPageMaxApps;
+        }
+      };
+
     }
   ]);
