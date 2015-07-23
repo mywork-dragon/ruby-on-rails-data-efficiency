@@ -30,7 +30,7 @@ if defined?(ApkDownloader)
         'sdk_version' => '16'
       }
 
-      response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
+      response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
@@ -104,7 +104,7 @@ if defined?(ApkDownloader)
 
       params = url.query.split('&').map{ |q| q.split('=') }
 
-      response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
+      response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
 
@@ -115,7 +115,7 @@ if defined?(ApkDownloader)
     # Testing curl
     # r = res(type: :get, req: {:host => "ip.jsontest.com", :protocol => "http"}, params: {}, proxy_ip: '172.31.29.18', proxy_port: '8888')
 
-    def res(req:, params:, type:, proxy_ip:, proxy_port:)
+    def res(req:, params:, type:, proxy_ip:, proxy_port:, apk_snap_id:)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
@@ -123,6 +123,12 @@ if defined?(ApkDownloader)
         curb.proxy_url = proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
+      end
+
+      if response.status == 403
+        as = ApkSnapshot.find_by_id(apk_snap_id)
+        as.apk_access_forbidden = true
+        as.save
       end
 
       raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip}" if [404,403,408,503].include? response.status
@@ -153,7 +159,7 @@ if defined?(ApkDownloader)
 
       uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
-      response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
+      response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       return response.status, ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
 
