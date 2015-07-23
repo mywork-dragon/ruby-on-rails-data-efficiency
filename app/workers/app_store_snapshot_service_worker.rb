@@ -4,7 +4,7 @@ class AppStoreSnapshotServiceWorker
   # accounting for retries ourself, so disable sidekiq retries
   sidekiq_options retry: false, queue: :default
   
-  MAX_TRIES = 3
+  MAX_TRIES = 10
   
   def perform(ios_app_snapshot_job_id, ios_app_id)
     
