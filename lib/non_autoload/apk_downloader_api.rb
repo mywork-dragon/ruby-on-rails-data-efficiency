@@ -126,7 +126,7 @@ if defined?(ApkDownloader)
       end
 
       if response.status == 403
-        as = ApkSnapshot.find_by_id(apk_snap_id)
+        as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
         as.apk_access_forbidden = true
         as.save
       end
