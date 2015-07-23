@@ -1,25 +1,24 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$routeParams", "$http", "$window", "searchService",
-    function ($scope, $location, authToken, $rootScope, $routeParams, $http, $window, searchService) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService",
+    function ($scope, $location, authToken, $rootScope, $http, $window, searchService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
 
       /* For query load when /search/:query path hit */
-      searchCtrl.loadTableData = function(urlParams) {
+      searchCtrl.loadTableData = function() {
 
-        if(!urlParams) urlParams = $location.url().split('search')[1]; // If url params not provided
+        var urlParams = $location.url().split('/search')[1]; // If url params not provided
+        var routeParams = $location.search();
 
         /* Complile Object with All Filters from Params */
-        if ($routeParams.app) var appParams = JSON.parse($routeParams.app);
-        if ($routeParams.company) var companyParams = JSON.parse($routeParams.company);
-        if ($routeParams.custom) var customParams = JSON.parse($routeParams.custom);
+        if (routeParams.app) var appParams = JSON.parse(routeParams.app);
+        if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
+        if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         var allParams = appParams ? appParams : [];
-        if ($routeParams.custom && $routeParams.custom.first) allParams['customKeywords'] = customParams['customKeywords'];
+        if (routeParams.custom && routeParams.custom.first) allParams['customKeywords'] = customParams['customKeywords'];
         for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
-
-        // if (!$rootScope.tags) $rootScope.tags = [];
 
         $rootScope.tags = [];
 
@@ -87,16 +86,15 @@ angular.module('appApp')
       };
 
       /* Only hit api if query string params are present */
-      if($location.url().split('search')[1]) {
+      if($location.url().split('/search')[1]) {
         searchCtrl.loadTableData();
       }
 
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
         var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
-        $window.location.href = "/app/app#/search?" + urlParams;
-        console.log('SEARCH2', $location.url().split('search')[1]);
-        searchCtrl.loadTableData("?" + urlParams);
+        $location.url('/search?' + urlParams);
+        searchCtrl.loadTableData();
       };
 
     }
