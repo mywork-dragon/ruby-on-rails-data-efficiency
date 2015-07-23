@@ -32,8 +32,6 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
-      ApkSnapshotException.create(name: "google_id: #{ga.id}, ")
-
       if response.body =~ /error/i
         raise "Unable to authenticate with Google"
       elsif response.body.include? "Auth="
@@ -127,7 +125,7 @@ if defined?(ApkDownloader)
         curb.max_redirects = 3
       end
 
-      raise "error code #{response.status} from #{caller[0][/`.*'/][1..-2]}" if response.status != 200
+      raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip}" if [404,403,408,503].include? response.status
 
       return response
 
