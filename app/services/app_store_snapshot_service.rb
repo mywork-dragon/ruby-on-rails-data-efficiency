@@ -23,6 +23,22 @@ class AppStoreSnapshotService
       
     end
     
+    def run_random(notes, n=1000)
+      
+      j = IosAppSnapshotJob.create!(notes: notes)
+      
+      n.times do
+        offset = rand(IosApp.count)
+        ios_app = IosApp.offset(offset).first
+        
+        next if ios_app.nil?
+        
+        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+      end
+
+      
+    end
+    
     def apps_per_minute(ios_app_snapshot_job_id, sample_seconds=10)
       a = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
       sleep sample_seconds
