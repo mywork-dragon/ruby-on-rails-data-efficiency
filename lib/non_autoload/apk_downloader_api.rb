@@ -127,7 +127,7 @@ if defined?(ApkDownloader)
         curb.max_redirects = 3
       end
 
-      raise "error code #{response.status} from #{caller[0][/`.*'/][1..-2]}" if response.staus != 200
+      raise "error code #{response.status} from #{caller[0][/`.*'/][1..-2]}" if response.status != 200
 
       return response
 
