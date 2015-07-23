@@ -114,6 +114,9 @@ if defined?(ApkDownloader)
         
     end
 
+    # Testing curl
+    # r = res(type: :get, req: {:host => "ip.jsontest.com", :protocol => "http"}, params: {}, proxy_ip: '172.31.29.18', proxy_port: '8888')
+
     def res(req:, params:, type:, proxy_ip:, proxy_port:)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
@@ -123,6 +126,10 @@ if defined?(ApkDownloader)
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
       end
+
+      raise "error code #{response.status} from #{caller[0][/`.*'/][1..-2]}" if response.staus != 200
+
+      return response
 
     end
 
@@ -151,6 +158,7 @@ if defined?(ApkDownloader)
       response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data, proxy_ip: proxy_ip, proxy_port: proxy_port)
 
       return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body)
+
     end
 
   end
