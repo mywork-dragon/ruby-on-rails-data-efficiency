@@ -86,14 +86,14 @@ if defined?(ApkDownloader)
         raise "Google did not return url or cookie\n-------\nstatus code: #{status_code}\nip: #{mp.private_ip}\naccount: #{snap.google_account_id}\ncookie: #{cookie}\nurl: #{url}"
       end
 
-      resp = recursive_apk_fetch(proxy_ip, proxy_port, url, cookie)
+      resp = recursive_apk_fetch(apk_snap_id, proxy_ip, proxy_port, url, cookie)
 
       return resp.body
 
     end
 
     private
-    def recursive_apk_fetch proxy_ip, proxy_port, url, cookie, first = true
+    def recursive_apk_fetch apk_snap_id, proxy_ip, proxy_port, url, cookie, first = true
 
       headers = {
         'Accept-Encoding' => '',
@@ -106,7 +106,7 @@ if defined?(ApkDownloader)
 
       response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
-      return recursive_apk_fetch(proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
+      return recursive_apk_fetch(apk_snap_id, proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
 
       response
         
