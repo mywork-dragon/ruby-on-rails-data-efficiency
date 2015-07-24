@@ -124,6 +124,19 @@ angular.module("appApp")
             };
             break;
         }
+      },
+      appPlatform: function(value) {
+
+        var platform = value;
+
+        return {
+          get: function(platform) {
+            return platform;
+          },
+          set: function(value) {
+            platform = value;
+          }
+        }
       }
     }
   }]);

@@ -380,4 +380,37 @@ angular.module("app.directives", []).directive("imgHolder", [
 
         }
       };
+    }])
+    .directive('appPlatformToggle', ["apiService", "$rootScope", function (apiService, $rootScope) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          appPlatform: '=appPlatform'
+        },
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
+        controller: function ($scope) {
+          $scope.searchAppPlatform = $scope.appPlatform;
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.appPlatform = platform;
+            $scope.searchAppPlatform = platform;
+            APP_PLATFORM = platform;
+            apiService.getCategories().success(function (data) {
+              $rootScope.categoryFilterOptions = data;
+            });
+
+            // Stops 'supportDesk' filter from being added
+            if ($scope.appPlatform == 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
     }]);

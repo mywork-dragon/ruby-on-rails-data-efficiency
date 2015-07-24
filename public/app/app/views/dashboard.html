@@ -20,11 +20,13 @@
       <div class="panel-heading">
 
             <span class="dashboard-tag-filter-selects">
-
+<!--
                <span class="btn-group" id="dashboardPlatformSwitch">
                 <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
                 <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
                </span>
+-->
+              <app-platform-toggle app-platform="appPlatform"></app-platform-toggle>
 
                <span class="ui-select">
                     <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">

@@ -12,15 +12,12 @@ angular.module('appApp')
         var urlParams = $location.url().split('/search')[1]; // If url params not provided
         var routeParams = $location.search();
 
-        console.log('routeParams.custom', routeParams.custom, routeParams.custom);
-
         /* Complile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         var allParams = appParams ? appParams : [];
         if (routeParams.custom && customParams['customKeywords'] && customParams['customKeywords'][0]) allParams['customKeywords'] = customParams['customKeywords'];
-        console.log('CUSTOM PARAMS:', customParams, customParams[0]);
         for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
 
         $rootScope.tags = [];
