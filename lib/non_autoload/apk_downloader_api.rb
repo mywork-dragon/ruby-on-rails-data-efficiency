@@ -32,8 +32,9 @@ if defined?(ApkDownloader)
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
-      if response.body =~ /error/i
-        raise "Unable to authenticate with Google | status_code: #{response.status}"
+      if response.status != 200
+        # raise "Unable to authenticate with Google | status_code: #{response.status}"
+        raise "Unable to connect with Google | status_code: #{response.status}"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
       end
