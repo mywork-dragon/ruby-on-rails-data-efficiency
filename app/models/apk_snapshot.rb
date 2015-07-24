@@ -6,6 +6,6 @@ class ApkSnapshot < ActiveRecord::Base
   
   	has_many :android_packages
 
-	enum status: [:failure, :success, :no_response, :fobidden]
+	enum status: [:failure, :success, :no_response, :fobidden, :taken_down]
 
 end

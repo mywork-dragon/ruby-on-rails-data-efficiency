@@ -131,6 +131,16 @@ if defined?(ApkDownloader)
         as.save
       end
 
+      if response.status == 404
+        as = ApkSnapshot.find_by_id(apk_snap_id).android_app
+        as.taken_down = true
+        as.save
+      end
+
+      snap = ApkSnapshot.find_by_id(apk_snap_id)
+      snap.status = :taken_down
+      snap.save
+
       raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip}" if [404,403,408,503].include? response.status
 
       return response

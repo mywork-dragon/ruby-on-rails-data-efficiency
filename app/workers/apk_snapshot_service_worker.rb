@@ -40,6 +40,8 @@ class ApkSnapshotServiceWorker
 
       end
 
+      raise "no snap id" if apk_snap.id.blank?
+
       best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
 
       apk_snap.google_account_id = best_account.id
@@ -67,9 +69,9 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
-      snap = ApkSnapshot.find_by_id(apk_snap_id)
+      # snap = ApkSnapshot.find_by_id(apk_snap_id)
       
-      snap.status = :failure if snap.status != :no_response
+      # snap.status = :failure if snap.status != :no_response
 
       raise
 
