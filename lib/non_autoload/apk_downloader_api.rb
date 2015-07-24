@@ -58,13 +58,13 @@ if defined?(ApkDownloader)
         p.last_used = DateTime.now
         p.save
 
-        apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-        apk_snap.proxy = p.private_ip
-        apk_snap.save
-
         p
 
       end
+
+      apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
+      apk_snap.proxy = mp.private_ip
+      apk_snap.save
 
       proxy_ip = mp.private_ip
       proxy_port = "8888"
