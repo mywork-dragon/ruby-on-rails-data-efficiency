@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService",
-    function ($scope, $location, authToken, $rootScope, $http, $window, searchService) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform",
+    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
+      searchCtrl.appPlatform = AppPlatform;
 
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function() {
@@ -16,9 +17,13 @@ angular.module('appApp')
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
+        if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
         var allParams = appParams ? appParams : [];
         if (routeParams.custom && customParams['customKeywords'] && customParams['customKeywords'][0]) allParams['customKeywords'] = customParams['customKeywords'];
         for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
+
+        searchCtrl.appPlatform.platform = platform.appPlatform;
+        var APP_PLATFORM = platform.appPlatform;
 
         $rootScope.tags = [];
 

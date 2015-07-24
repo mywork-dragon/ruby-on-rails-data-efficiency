@@ -32,4 +32,7 @@ angular.module("appApp")
       title: function() { return title; },
       setTitle: function(newTitle) { title = newTitle }
     };
+  })
+  .factory('AppPlatform', function() {
+    return {platform: "ios"};
   });

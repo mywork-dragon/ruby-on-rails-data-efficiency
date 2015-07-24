@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("searchService", ["$httpParamSerializer", function($httpParamSerializer) {
+  .factory("searchService", ["$httpParamSerializer", "AppPlatform", function($httpParamSerializer, AppPlatform) {
     return {
       queryStringParameters: function(tags, currentPage, numPerPage, category, order) {
-        var requestData = {app: {}, company: {}, custom: {}};
+        var requestData = {app: {}, company: {}, custom: {}, platform: {}};
         if (tags) {
           tags.forEach(function (tag) {
             switch (tag.parameter) {
@@ -63,6 +63,9 @@ angular.module("appApp")
           requestData.sortBy = category;
           requestData.orderBy = order;
         }
+
+        requestData['platform']['appPlatform'] = AppPlatform.platform;
+
         return $httpParamSerializer(requestData);
       },
       searchFilters: function(param, value) {
@@ -123,19 +126,6 @@ angular.module("appApp")
               value: value
             };
             break;
-        }
-      },
-      appPlatform: function(value) {
-
-        var platform = value;
-
-        return {
-          get: function(platform) {
-            return platform;
-          },
-          set: function(value) {
-            platform = value;
-          }
         }
       }
     }

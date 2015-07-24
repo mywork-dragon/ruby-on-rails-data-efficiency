@@ -22,11 +22,11 @@
             <span class="dashboard-tag-filter-selects">
 <!--
                <span class="btn-group" id="dashboardPlatformSwitch">
-                <button type="button" ng-class="appPlatform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
-                <button type="button" ng-class="appPlatform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
+                <button type="button" ng-class="appPlatform.platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
+                <button type="button" ng-class="appPlatform.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
                </span>
 -->
-              <app-platform-toggle app-platform="appPlatform"></app-platform-toggle>
+              <app-platform-toggle></app-platform-toggle>
 
                <span class="ui-select">
                     <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
@@ -100,7 +100,7 @@
                 <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
                  title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
                </a>
-               <span class="ui-select" ng-show="canViewSupportDesk && appPlatform == 'ios'">
+               <span class="ui-select" ng-show="canViewSupportDesk && appPlatform.platform == 'ios'">
                     <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
                       <option value="">Support Desk</option>
                       <option value="zendesk">Zendesk</option>
@@ -207,7 +207,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+                  <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
                 </span>
               </td>
               <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>

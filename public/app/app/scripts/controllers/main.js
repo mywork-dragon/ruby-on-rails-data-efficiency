@@ -133,14 +133,14 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",
-    function($scope, apiService, listApiService, $filter, $rootScope, loggitService) {
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
+    function($scope, apiService, listApiService, $filter, $rootScope, loggitService, AppPlatform) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
-        $scope.appPlatform = "ios",
+        $scope.appPlatform = AppPlatform,
         // When table's paging options are selected
         $scope.select = function(page, tags) {
 
@@ -187,7 +187,7 @@ angular.module('appApp')
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
-          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform.platform).success(function() {
             $scope.notify('add-selected-success');
             $rootScope.selectedAppsForList = [];
           }).error(function() {

@@ -381,20 +381,18 @@ angular.module("app.directives", []).directive("imgHolder", [
         }
       };
     }])
-    .directive('appPlatformToggle', ["apiService", "$rootScope", function (apiService, $rootScope) {
+    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
       return {
         replace: true,
         restrict: 'E',
-        scope: {
-          appPlatform: '=appPlatform'
-        },
-        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
+        scope: {},
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
         controller: function ($scope) {
-          $scope.searchAppPlatform = $scope.appPlatform;
+
+          $scope.appPlatform = AppPlatform;
 
           $scope.changeAppPlatform = function (platform) {
-            $scope.appPlatform = platform;
-            $scope.searchAppPlatform = platform;
+            $scope.appPlatform.platform = platform;
             APP_PLATFORM = platform;
             apiService.getCategories().success(function (data) {
               $rootScope.categoryFilterOptions = data;
