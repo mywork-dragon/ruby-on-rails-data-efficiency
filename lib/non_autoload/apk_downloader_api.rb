@@ -136,25 +136,37 @@ if defined?(ApkDownloader)
         curb.max_redirects = 3
       end
 
-      if response.status == 403
-        as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
-        as.apk_access_forbidden = true
-        as.save
+      
+      # [404,403,408,503]
+
+      if [200,500].include? response.status
+        return response
+      else
+        if response.status == 403
+          
+          as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
+          as.apk_access_forbidden = true
+          as.save
+
+          snap = ApkSnapshot.find_by_id(apk_snap_id)
+          snap.status = :forbidden
+          snap.save
+
+        elsif response.status == 404
+
+          as = ApkSnapshot.find_by_id(apk_snap_id).android_app
+          as.taken_down = true
+          as.save
+
+          snap = ApkSnapshot.find_by_id(apk_snap_id)
+          snap.status = :taken_down
+          snap.save
+
+        else
+          raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
+        end
       end
 
-      if response.status == 404
-        as = ApkSnapshot.find_by_id(apk_snap_id).android_app
-        as.taken_down = true
-        as.save
-
-        snap = ApkSnapshot.find_by_id(apk_snap_id)
-        snap.status = :taken_down
-        snap.save
-      end
-
-      raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}" if [404,403,408,503].include? response.status
-
-      return response
 
     end
 
