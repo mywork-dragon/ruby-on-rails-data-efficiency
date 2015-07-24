@@ -13,6 +13,16 @@ class AppStoreSnapshotService
       
     end
     
+    def run_app_ids(notes, ios_app_ids)
+      
+      j = IosAppSnapshotJob.create!(notes: notes)
+      
+      ios_app_ids.each do |ios_app_id|
+        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_id)
+      end
+      
+    end
+    
     def apps_per_minute(ios_app_snapshot_job_id, sample_seconds=10)
       a = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
       sleep sample_seconds

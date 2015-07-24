@@ -2,9 +2,7 @@ class ApkSnapshotServiceWorker
 
   include Sidekiq::Worker
 
-  MAX_TRIES = 3
-
-  sidekiq_options backtrace: true, :retry => false, queue: :sdk
+  sidekiq_options backtrace: true, :retry => 2, queue: :sdk
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -44,8 +42,6 @@ class ApkSnapshotServiceWorker
 
       best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
 
-      raise if best_account.blank?
-
       apk_snap.google_account_id = best_account.id
       apk_snap.save
 
@@ -67,20 +63,11 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      if best_account.present?
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
-        best_account.in_use = false
-        best_account.save
-      else
-        ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: "no account  |  #{e.message}", backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id)
-      end
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      best_account.in_use = false
+      best_account.save
 
-      if @try_count >= MAX_TRIES
-        apk_snap.status = :failure
-        apk_snap.save
-      end
-
-      raise
+      raise unless e.message.include? "status code (403)"
 
     else
 
