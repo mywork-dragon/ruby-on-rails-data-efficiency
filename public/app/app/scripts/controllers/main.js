@@ -53,8 +53,8 @@ angular.module('appApp')
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
-    function($scope, apiService, $http, $rootScope, authService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
+    function($scope, apiService, $http, $rootScope) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -79,66 +79,14 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      // When main Dashboard search button is clicked
-      $scope.submitSearch = function() {
+      if(!$rootScope.tags) $rootScope.tags = [];
 
-        var submitSearchStartTime = new Date().getTime();
-
-        $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags, 1, $rootScope.numPerPage)
-          .success(function(data) {
-            $rootScope.apps = data.results;
-            $rootScope.numApps = data.resultsCount;
-            $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = 1;
-            $rootScope.resultsSortCategory = 'appName';
-            $rootScope.resultsOrderBy = 'ASC';
-
-            var submitSearchEndTime = new Date().getTime();
-
-            var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
-
-            /* -------- Mixpanel Analytics Start -------- */
-            var searchQueryPairs = {};
-            var searchQueryFields = [];
-            $rootScope.tags.forEach(function(tag) {
-              searchQueryPairs[tag.parameter] = tag.value;
-              searchQueryFields.push(tag.parameter);
-            });
-            searchQueryPairs['tags'] = searchQueryFields;
-            searchQueryPairs['numOfApps'] = data.resultsCount;
-            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
-            searchQueryPairs['platform']  = APP_PLATFORM;
-
-            mixpanel.track(
-              "Search Request Successful",
-              searchQueryPairs
-            );
-            /* -------- Mixpanel Analytics End -------- */
-
-          })
-          .error(function(data, status) {
-            $rootScope.dashboardSearchButtonDisabled = false;
-            mixpanel.track(
-              "Search Request Failed",
-              {
-                "tags": $rootScope.tags,
-                "errorMessage": data,
-                "errorStatus": status,
-                "platform": APP_PLATFORM
-              }
-            );
-          });
-      };
-      $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
 
         /* -------- Mixpanel Analytics Start -------- */
         var mixpanelProperties = {};
-
         mixpanelProperties['parameter'] = parameter;
         mixpanelProperties[parameter] = value;
-
         mixpanel.track(
           "Filter Added",
           mixpanelProperties
@@ -163,7 +111,6 @@ angular.module('appApp')
               oneTagUpdated = true;
             }
           }
-
         });
 
         if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {
@@ -186,14 +133,14 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",
-    function($scope, apiService, listApiService, $filter, $rootScope, loggitService) {
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
+    function($scope, apiService, listApiService, $filter, $rootScope, loggitService, AppPlatform) {
       var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
-        $scope.appPlatform = "ios",
+        $scope.appPlatform = AppPlatform,
         // When table's paging options are selected
         $scope.select = function(page, tags) {
 
@@ -235,31 +182,12 @@ angular.module('appApp')
           }
 
         },
-        $scope.changeAppPlatform = function(platform) {
-          $scope.appPlatform = platform;
-          APP_PLATFORM = platform;
-          apiService.getCategories().success(function(data) {
-            $rootScope.categoryFilterOptions = data;
-          });
-
-          // Stops 'supportDesk' filter from being added
-          if ($scope.appPlatform == 'android') {
-
-            for (var index = 0; index < $rootScope.tags.length; index++) {
-              if ($rootScope.tags[index].parameter == 'supportDesk') {
-                $rootScope.tags.splice(index, 1);
-                index -= 1;
-              }
-            }
-          }
-
-        },
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
-          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform.platform).success(function() {
             $scope.notify('add-selected-success');
             $rootScope.selectedAppsForList = [];
           }).error(function() {

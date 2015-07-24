@@ -260,9 +260,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             replace: true,
             restrict: 'E',
             scope: {
-              checkboxes: '=',
-              allselected: '=allSelected',
-              allclear: '=allClear'
+              apps: '@apps'
             },
             template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
             controller: function ($scope, $element) {
@@ -270,8 +268,8 @@ angular.module("app.directives", []).directive("imgHolder", [
               $scope.checkboxMasterChange = function () {
                 if ($scope.checkboxMaster) {
                   $rootScope.selectedAppsForList = [];
-                  angular.forEach($scope.checkboxes, function (app, index) {
-                    $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
+                  angular.forEach($scope.apps, function (app, index) {
+                    $rootScope.selectedAppsForList.push({id: app.id, type: app.type});
                   });
                 } else {
                   $rootScope.selectedAppsForList = [];
@@ -281,7 +279,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               $scope.$watch('$root.selectedAppsForList', function () {
 
                 /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
+                if($rootScope.selectedAppsForList.length == $scope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
@@ -296,7 +294,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             replace: true,
             restrict: 'E',
             scope: {
-              app: '=app'
+              app: '=app',
+              apps: '@apps'
             },
             template: '<input type="checkbox" ng-model="appCheckbox" ng-click="addAppToList()">',
             controller: function ($scope, $element) {
@@ -307,7 +306,7 @@ angular.module("app.directives", []).directive("imgHolder", [
 
               $scope.$watch('$root.selectedAppsForList', function () {
 
-                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
+                if($rootScope.selectedAppsForList.length == $scope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
@@ -381,4 +380,35 @@ angular.module("app.directives", []).directive("imgHolder", [
 
         }
       };
+    }])
+    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {},
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.appPlatform.platform = platform;
+            APP_PLATFORM = platform;
+            apiService.getCategories().success(function (data) {
+              $rootScope.categoryFilterOptions = data;
+            });
+
+            // Stops 'supportDesk' filter from being added
+            if ($scope.appPlatform == 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
     }]);

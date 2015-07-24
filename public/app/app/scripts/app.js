@@ -46,10 +46,10 @@ angular
     })
   .config(function ($routeProvider) {
      $routeProvider
-       .when('/', {
+       .when('/search', {
          templateUrl: '/app/app/views/dashboard.html',
-         controller: 'MainCtrl',
-         activeTab: 'search'
+         activeTab: 'search',
+         reloadOnSearch: false
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
@@ -65,7 +65,7 @@ angular
          activeTab: 'lists'
        })
       .otherwise({
-        redirectTo: '/',
+        redirectTo: '/search',
          activeTab: 'search'
       });
   })

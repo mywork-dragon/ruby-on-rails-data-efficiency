@@ -25,7 +25,7 @@
         <thead>
         <tr>
           <th class="selectAllCheckboxHeader">
-            <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+            <select-all-checkbox apps="$root.apps"></select-all-checkbox>
           </th>
           <th><div class="th normal-right-padding">
             App Name
@@ -96,7 +96,7 @@
         <tbody data-ng-hide="queryInProgress">
           <tr data-ng-repeat="app in $root.apps">
             <td class="dashboardTableDataCheckbox">
-              <checkable-checkbox app="app.app"></checkable-checkbox>
+              <checkable-checkbox app="app.app" apps="$root.apps"></checkable-checkbox>
             </td>
             <td class="resultsTableAppIcon">
               <span>
