@@ -67,7 +67,11 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
-      raise unless e.message.include? "status code (403)"
+      snap = ApkSnapshot.find_by_id(apk_snap_id)
+      
+      snap.status = :failure if snap.status != :no_response
+
+      raise
 
     else
 
