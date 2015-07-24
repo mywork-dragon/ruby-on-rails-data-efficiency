@@ -41,6 +41,7 @@ angular.module('appApp')
           }
         }
 
+        $rootScope.dashboardSearchButtonDisabled = true;
         var submitSearchStartTime = new Date().getTime();
         $scope.queryInProgress = true;
         return $http({
