@@ -33,7 +33,7 @@ if defined?(ApkDownloader)
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       if response.body =~ /error/i
-        raise "Unable to authenticate with Google"
+        raise "Unable to authenticate with Google | status_code: #{response.status}"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
       end
@@ -83,7 +83,7 @@ if defined?(ApkDownloader)
         snap = ApkSnapshot.find_by_id(apk_snap_id)
         snap.status = :no_response
         snap.save
-        raise "Google did not return url or cookie\n-------\nstatus code: #{status_code}\nip: #{mp.private_ip}\naccount: #{snap.google_account_id}\ncookie: #{cookie}\nurl: #{url}"
+        raise "Google did not return url or cookie | status_code: #{status_code}"
       end
 
       resp = recursive_apk_fetch(apk_snap_id, proxy_ip, proxy_port, url, cookie)
@@ -107,6 +107,16 @@ if defined?(ApkDownloader)
       response = res(type: :get, req: {:host => url.host, :path => url.path, :protocol => "https", :headers => headers, :cookies => cookies}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       return recursive_apk_fetch(apk_snap_id, proxy_ip, proxy_port, URI(response['Location']), cookie, false) if first
+
+      if response.blank?
+
+        as = ApkSnapshot.find_by_id(apk_snap_id)
+        as.status = :failure
+        as.save
+
+        raise "recursive_apk_fetch returned empty | status_code: #{response.status}"
+        
+      end
 
       response
         
@@ -135,13 +145,13 @@ if defined?(ApkDownloader)
         as = ApkSnapshot.find_by_id(apk_snap_id).android_app
         as.taken_down = true
         as.save
+
+        snap = ApkSnapshot.find_by_id(apk_snap_id)
+        snap.status = :taken_down
+        snap.save
       end
 
-      snap = ApkSnapshot.find_by_id(apk_snap_id)
-      snap.status = :taken_down
-      snap.save
-
-      raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip}" if [404,403,408,503].include? response.status
+      raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}" if [404,403,408,503].include? response.status
 
       return response
 

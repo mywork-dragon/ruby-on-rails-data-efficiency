@@ -33,18 +33,15 @@ class ApkSnapshotService
       i = 1
       GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.apk_snapshot_job_id = ?',j.id).each do |ga|
         snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: j.id).first
-        # app = ""
-        # if snap.status == 'success'
-        #   ai = AndroidApp.find_by_id(snap.android_app_id).app_identifier
-        #   ap = AndroidPackage.where(apk_snapshot_id: snap.id).count
-        #   app = "| name : #{ai} | packages : #{ap}"
-        # end
-
+        app = ""
+        if snap.status == 'success'
+          ap = AndroidPackage.where(apk_snapshot_id: snap.id).count
+          app = "| packages : #{ap}"
+        end
+        
         ai = AndroidApp.find_by_id(snap.android_app_id).app_identifier
-        ap = AndroidPackage.where(apk_snapshot_id: snap.id).count
-        app = "| name : #{ai} | packages : #{ap}"
 
-        puts "#{i}.) #{ga.id}  |  try : #{snap.try}  |  status : #{snap.status} #{app}"
+        puts "#{i}.) #{ga.id}  |  try : #{snap.try}  |  status : #{snap.status} | name : #{ai} #{app}"
         i += 1
       end
 

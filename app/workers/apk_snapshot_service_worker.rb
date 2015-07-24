@@ -65,13 +65,13 @@ class ApkSnapshotServiceWorker
 
     rescue => e
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id)
+      status_code = e.message.split("status_code:")[1].to_s.strip
+
+      message = e.message.split("| status_code:")[0].to_s.strip
+
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
       best_account.in_use = false
       best_account.save
-
-      # snap = ApkSnapshot.find_by_id(apk_snap_id)
-      
-      # snap.status = :failure if snap.status != :no_response
 
       raise
 

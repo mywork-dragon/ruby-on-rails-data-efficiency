@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150723205918) do
+ActiveRecord::Schema.define(version: 20150724213023) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -189,11 +189,13 @@ ActiveRecord::Schema.define(version: 20150723205918) do
     t.integer  "google_account_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status_code"
   end
 
   add_index "apk_snapshot_exceptions", ["apk_snapshot_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_id", using: :btree
   add_index "apk_snapshot_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshot_exceptions", ["google_account_id"], name: "index_apk_snapshot_exceptions_on_google_account_id", using: :btree
+  add_index "apk_snapshot_exceptions", ["status_code"], name: "index_apk_status_code", using: :btree
 
   create_table "apk_snapshot_jobs", force: true do |t|
     t.text     "notes"
@@ -445,6 +447,10 @@ ActiveRecord::Schema.define(version: 20150723205918) do
     t.string   "icon_url_175x175"
     t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
     t.date     "first_released"
+    t.string   "by"
+    t.string   "copywright"
+    t.string   "seller_url_text"
+    t.string   "support_url_text"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
