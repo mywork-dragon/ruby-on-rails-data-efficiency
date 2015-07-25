@@ -38,7 +38,6 @@ class FilterService
       queries = []
 
       if app_filters['mobilePriority']
-
         mobile_priorities = []
         mobile_priorities << IosApp.mobile_priorities[:high] if app_filters['mobilePriority'].include?("H")
         mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters['mobilePriority'].include?("M")
@@ -65,6 +64,7 @@ class FilterService
         cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
         li cats_with_quotes
         li cats_with_quotes.join(',')
+
         #queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes.join(',')}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
       end
@@ -127,7 +127,7 @@ class FilterService
       parts = []
       
       parts << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
-      
+
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
       if company_filters.present?
@@ -146,7 +146,7 @@ class FilterService
       parts_count = Array.new(parts)
       
       parts_count << 'count.length'
-      
+
       # the query for count; will be run at the end
       query_count = parts_count.join('.')
       
