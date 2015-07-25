@@ -136,7 +136,7 @@ class ApkSnapshotServiceWorker
 
   def fresh_account
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
