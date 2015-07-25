@@ -139,11 +139,11 @@ if defined?(ApkDownloader)
       
       # [404,403,408,503]
 
-      if [200,500].include? response.status
+      if [200,302,500].include? response.status
         return response
       else
         if response.status == 403
-          
+
           as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
           as.apk_access_forbidden = true
           as.save
