@@ -61,6 +61,8 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package, apk_snap_id
 
+      @auth_token = nil
+
       mp = MicroProxy.transaction do
 
         p = MicroProxy.lock.order(last_used: :asc).first
