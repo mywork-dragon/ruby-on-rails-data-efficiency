@@ -13,10 +13,10 @@ class TestBatchService
       puts "Just started Batch #{batch.bid}"
     end
   
-    def on_complete(status, options)
-      Slackiq.notify(webhook_name: :main, description: options[:description], status: status, 'extra0' => 'hi', 'extra2' => 'bye')
-    end
+  end
   
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :main, description: options[:description], status: status, 'extra0' => 'hi', 'extra2' => 'bye')
   end
   
 end
