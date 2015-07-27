@@ -143,6 +143,10 @@ if defined?(ApkDownloader)
       else
         if response.status == 403
 
+          ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+          ga.flags = ga.flags + 1
+          ga.save
+
           as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
           as.apk_access_forbidden = true
           as.save

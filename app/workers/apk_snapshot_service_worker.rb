@@ -74,7 +74,7 @@ class ApkSnapshotServiceWorker
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
       best_account.in_use = false
       best_account.save
-
+      
       if message.include? "Couldn't connect to server"
         apk_snap.status = :could_not_connect
         apk_snap.save
