@@ -7,13 +7,20 @@ if defined?(ApkDownloader)
     GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
     def log_in!(proxy_ip, proxy_port, apk_snap_id)
-      return if self.logged_in?
+      # return if self.logged_in?
+
+      ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+
+      if self.logged_in?
+        ApkSnapshotException.create(name: "old: #{@auth_token}\naccount: #{ga.email}")
+        return
+      end
 
       headers = {
         'Accept-Encoding' => ''
       }
 
-      ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+      # ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
       params = {
         'Email' => ga.email,
@@ -37,6 +44,7 @@ if defined?(ApkDownloader)
         raise "Unable to connect with Google | status_code: #{response.status}"
       elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
+        ApkSnapshotException.create(name: "new: #{@auth_token}\naccount: #{ga.email}")
       end
 
     end
