@@ -10,6 +10,7 @@ class TestBatchService
       batch.on(:complete, self)
       batch.jobs do
         5.times{ TestWorker.perform_async('hello!') }
+        sleep(1)
       end
       puts "Just started Batch #{batch.bid}"
     end
