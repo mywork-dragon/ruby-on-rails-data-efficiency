@@ -1,0 +1,1 @@
+Slackiq.configure(main: 'https://hooks.slack.com/services/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')
