@@ -61,7 +61,9 @@ class ApkSnapshotServiceWorker
 
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      timeout(120) do
+        ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      end
 
     rescue => e
 
@@ -73,6 +75,14 @@ class ApkSnapshotServiceWorker
       best_account.in_use = false
       best_account.save
 
+      if message.include? "Couldn't connect to server"
+        apk_snap.status = :could_not_connect
+        apk_snap.save
+      elsif message.include? "execution expired"
+        apk_snap.status = :timeout
+        apk_snap.save
+      end
+      
       raise
 
     else

@@ -136,7 +136,6 @@ if defined?(ApkDownloader)
         curb.max_redirects = 3
       end
 
-      
       # [404,403,408,503]
 
       if [200,302,500].include? response.status
