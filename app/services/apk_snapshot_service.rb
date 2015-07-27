@@ -78,10 +78,13 @@ class ApkSnapshotService
       success = j.apk_snapshots.where(status: 1).count
       no_response = j.apk_snapshots.where(status: 2).count
       forbidden = j.apk_snapshots.where(status: 3).count
+      taken_down = j.apk_snapshots.where(status: 4).count
+      could_not_connect = j.apk_snapshots.where(status: 5).count
+      timeout = j.apk_snapshots.where(status: 6).count
 
       progress = ((success + fail).to_f/total)*100
       success_rate = (success.to_f/(success + fail + no_response + forbidden).to_f)*100
-      completion_rate = ((success + fail + no_response + forbidden).to_f / total)*100
+      completion_rate = ((success + fail + no_response + forbidden + taken_down + could_not_connect + timeout).to_f / total.to_f)*100
 
       apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
@@ -93,9 +96,14 @@ class ApkSnapshotService
       puts "Failures : #{fail}"
       puts "No Response : #{no_response}"
       puts "Forbidden : #{forbidden}"
+      puts "Taken Down : #{taken_down}"
+      puts "Counldn't Connect : #{could_not_connect}"
+      puts "Timeout : #{timeout}"
       puts "Total : #{total}"
+      puts "---"
       puts "Success Rate : #{success_rate.round(2)}%"
-      puts "Completion Rate : #{completion_rate}"
+      puts "Response Rate : #{completion_rate.round(2)}%"
+      puts "---"
       puts "Accounts In Use : #{accounts_in_use}"
       puts "Downloading : #{currently_downloading}"
       puts "Workers : #{workers.size}"

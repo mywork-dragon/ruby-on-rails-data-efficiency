@@ -2,7 +2,7 @@ class ApkSnapshotServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => false, queue: :sdk
+  sidekiq_options backtrace: true, :retry => 1, queue: :sdk
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
@@ -61,7 +61,7 @@ class ApkSnapshotServiceWorker
 
       file_name = apk_file_name(app_identifier)
 
-      timeout(120) do
+      timeout(100) do
         ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
       end
 
