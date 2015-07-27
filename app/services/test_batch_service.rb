@@ -16,7 +16,7 @@ class TestBatchService
   end
   
   def on_complete(status, options)
-    puts "status.created_at.class #{status.created_at.class}"
+    puts "description: #{options[:description]}"
     Slackiq.notify(webhook_name: :main, description: options[:description], status: status, 'extra0' => 'hi', 'extra2' => 'bye')
   end
   
