@@ -6,9 +6,9 @@ class TestBatchService
       batch = Sidekiq::Batch.new
       description = 'Batch description (this is optional)'
       batch.description = description 
-      batch.on(:complete, self, description: description)
+      batch.on(:complete, self, description: description.dup)
       batch.jobs do
-        TestWorker.perform_async('hello!')
+        5.times{ TestWorker.perform_async('hello!') }
       end
       puts "Just started Batch #{batch.bid}"
     end
