@@ -61,18 +61,28 @@ class ApkSnapshotServiceWorker
 
       file_name = apk_file_name(app_identifier)
 
-      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      timeout(100) do
+        ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      end
 
     rescue => e
 
-      status_code = e.message.split("status_code:")[1].to_s.strip
+      status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
 
-      message = e.message.split("| status_code:")[0].to_s.strip
+      message = e.message.to_s.split("| status_code:")[0].to_s.strip
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: e.message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
       best_account.in_use = false
       best_account.save
-
+      
+      if message.include? "Couldn't connect to server"
+        apk_snap.status = :could_not_connect
+        apk_snap.save
+      elsif message.include? "execution expired"
+        apk_snap.status = :timeout
+        apk_snap.save
+      end
+      
       raise
 
     else
@@ -136,7 +146,7 @@ class ApkSnapshotServiceWorker
 
   def fresh_account
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).limit(3).sample
+      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
