@@ -55,7 +55,9 @@ class ApkSnapshotServiceWorker
         config.android_id = best_account.android_identifier
       end
 
-      app_identifier = AndroidApp.find_by_id(android_app_id).app_identifier
+      aa = AndroidApp.find_by_id(android_app_id)
+
+      app_identifier = aa.app_identifier
 
       raise "no app_identifier" if app_identifier.blank?
 
@@ -79,6 +81,9 @@ class ApkSnapshotServiceWorker
       elsif message.include? "execution expired"
         apk_snap.status = :timeout
         apk_snap.save
+      elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
+        apk_snap.status = :deadlock
+        apk_snap.save
       end
       
       raise
@@ -99,6 +104,9 @@ class ApkSnapshotServiceWorker
       apk_snap.download_time = download_time
       apk_snap.status = :success
       apk_snap.save
+
+      # aa.newest_apk_snapshot_id = apk_snap.id
+      # aa.save
 
       File.delete(file_name)
       
