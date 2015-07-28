@@ -169,7 +169,12 @@ if defined?(ApkDownloader)
 
       # [404,403,408,503]
 
-      if [200,302,500].include? response.status
+      if [200,302].include? response.status
+        return response
+      elsif response.status == 500
+        ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+        ga.flags = ga.flags + 1
+        ga.save
         return response
       else
         if response.status == 403
