@@ -18,7 +18,7 @@ class TestBatchService
   end
   
   def on_complete(status, options)
-    Slackiq.notify(webhook_name: :main, title: 'Sidekiq Batch Completed!', description: DESCRIPTION, status: status, 'extra0' => 'hi', 'extra2' => 'bye')
+    Slackiq.notify(webhook_name: :main, title: 'Sidekiq Batch Completed!', status: status, 'extra0' => 'hi', 'extra2' => 'bye')
   end
   
 end
