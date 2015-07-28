@@ -106,8 +106,8 @@ class ApkSnapshotServiceWorker
       apk_snap.status = :success
       apk_snap.save
 
-      # aa.newest_apk_snapshot_id = apk_snap.id
-      # aa.save
+      aa.newest_apk_snapshot_id = apk_snap.id
+      aa.save
 
       File.delete(file_name)
       
