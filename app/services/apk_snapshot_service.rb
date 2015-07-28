@@ -13,7 +13,7 @@ class ApkSnapshotService
 
       workers = Sidekiq::Workers.new.map{ |w| w[2]["queue"] == 'sdk_scraper' }.include? true
 
-      # clear_accounts()
+      clear_accounts()
 
       if !workers
         j = ApkSnapshotJob.create!(notes: notes)
