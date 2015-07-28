@@ -46,7 +46,7 @@ set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sdk_scraper_concurrency, 50
+set :sdk_scraper_concurrency, 10
 set :scraper_concurrency, 50
 
 # set :sidekiq_queue, %w(critical default low)
