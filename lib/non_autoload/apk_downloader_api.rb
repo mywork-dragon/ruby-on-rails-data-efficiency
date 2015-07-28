@@ -164,6 +164,7 @@ if defined?(ApkDownloader)
         curb.proxy_url = proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
+        curb.timeout = 90
       end
 
       # [404,403,408,503]

@@ -61,9 +61,7 @@ class ApkSnapshotServiceWorker
 
       file_name = apk_file_name(app_identifier)
 
-      timeout(100) do
-        ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
-      end
+      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
     rescue => e
 
@@ -72,8 +70,8 @@ class ApkSnapshotServiceWorker
       message = e.message.to_s.split("| status_code:")[0].to_s.strip
 
       ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
-      best_account.in_use = false
-      best_account.save
+      # best_account.in_use = false
+      # best_account.save
       
       if message.include? "Couldn't connect to server"
         apk_snap.status = :could_not_connect
@@ -87,8 +85,8 @@ class ApkSnapshotServiceWorker
 
     else
 
-      best_account.in_use = false
-      best_account.save
+      # best_account.in_use = false
+      # best_account.save
 
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
       
@@ -116,21 +114,21 @@ class ApkSnapshotServiceWorker
 
       account = fresh_account
 
-      if account.blank? && Sidekiq::Queue.new.size > 0
-        200.times do |i|
-          account = fresh_account
-          if account.present?
-            ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
-            break
-          end
-          sleep 1
-        end
-      end
+      # if account.blank? && Sidekiq::Queue.new.size > 0
+      #   200.times do |i|
+      #     account = fresh_account
+      #     if account.present?
+      #       ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
+      #       break
+      #     end
+      #     sleep 1
+      #   end
+      # end
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-        account.in_use = true
-        account.save
+        # account.in_use = true
+        # account.save
         return account
       elsif c < gac
         next
@@ -146,7 +144,8 @@ class ApkSnapshotServiceWorker
 
   def fresh_account
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
+      # ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
+      ga = GoogleAccount.lock.order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
