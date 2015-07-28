@@ -7383,13 +7383,28 @@ select option:empty {
 #showCompanyEmailsButtonLi {
   border: none;
   margin-bottom: 0px;
+  clear: both;
+}
+
+#showCompanyEmailsContainer {
+  overflow: hidden;
+  position: relative;
+  display: table;
+  width: 100%;
 }
 
 #showCompanyEmailsButton {
-  margin-top: 25px;
-  margin-bottom: 0px;
-  width: 60%;
-  margin-left: 20%;
+  width: 158px;
+  display: table-cell;
+}
+
+#showCompanyEmailsTextField {
+  padding-left: 6px;
+  display: table-cell;
+}
+
+#showCompanyEmailsTextField input {
+  width: 100%;
 }
 
 .showCompanyEmailsSection {

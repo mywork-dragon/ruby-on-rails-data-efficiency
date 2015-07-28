@@ -93,9 +93,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   /* Company Contacts Logic */
   $scope.contactsLoading = false;
   $scope.contactsLoaded = false;
-  $scope.getCompanyContacts = function(websites) {
+  $scope.getCompanyContacts = function(websites, filter) {
     $scope.contactsLoading = true;
-    apiService.getCompanyContacts(websites).success(function(data) {
+    console.log('FILTERS', filter);
+    apiService.getCompanyContacts(websites, filter).success(function(data) {
       $scope.companyContacts = data.contacts;
       $scope.contactsLoading = false;
       $scope.contactsLoaded = true;
