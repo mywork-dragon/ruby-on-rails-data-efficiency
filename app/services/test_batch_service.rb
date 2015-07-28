@@ -5,15 +5,11 @@ class TestBatchService
     def run
       batch = Sidekiq::Batch.new
       batch.description = 'Batch description (this is optional)' 
-      # batch.on(:complete, self)
-      
-      Slackiq.notify_on(:complete, batch) do |status|
-        {webhook_name: :main, title: 'NEW TITLE', 'This' => 'Is', 'A' => 'Test'}
-      end
+      batch.on(:complete, self)
       
       batch.jobs do
         5.times{ TestWorker.perform_async('hello!') }
-        sleep(1)
+        sleep(2)
       end
       puts "Just started Batch #{batch.bid}"
     end
