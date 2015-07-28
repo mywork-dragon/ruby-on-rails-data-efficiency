@@ -164,11 +164,17 @@ if defined?(ApkDownloader)
         curb.proxy_url = proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
+        curb.timeout = 90
       end
 
       # [404,403,408,503]
 
-      if [200,302,500].include? response.status
+      if [200,302].include? response.status
+        return response
+      elsif response.status == 500
+        ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+        ga.flags = ga.flags + 1
+        ga.save
         return response
       else
         if response.status == 403
