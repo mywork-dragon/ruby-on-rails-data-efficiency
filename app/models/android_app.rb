@@ -16,6 +16,7 @@ class AndroidApp < ActiveRecord::Base
   has_many :apk_snapshots
 
   belongs_to :newest_android_app_snapshot, class_name: 'AndroidAppSnapshot', foreign_key: 'newest_android_app_snapshot_id'
+  belongs_to :newest_apk_snapshot, class_name: 'ApkSnapshot', foreign_key: 'newest_apk_snapshot_id'
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
   
   belongs_to :android_developer
