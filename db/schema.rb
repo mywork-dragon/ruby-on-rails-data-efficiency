@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150727222952) do
+ActiveRecord::Schema.define(version: 20150728215205) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -110,11 +110,13 @@ ActiveRecord::Schema.define(version: 20150727222952) do
     t.integer  "user_base"
     t.integer  "mobile_priority"
     t.boolean  "taken_down"
+    t.integer  "newest_apk_snapshot_id"
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
+  add_index "android_apps", ["newest_apk_snapshot_id"], name: "index_android_apps_on_newest_apk_snapshot_id", using: :btree
   add_index "android_apps", ["taken_down"], name: "index_android_apps_on_taken_down", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 

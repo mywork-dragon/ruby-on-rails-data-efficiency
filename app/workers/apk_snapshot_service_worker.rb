@@ -91,6 +91,7 @@ class ApkSnapshotServiceWorker
     else
 
       best_account.in_use = false
+      best_account.flags = 0
       best_account.save
 
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
@@ -152,7 +153,7 @@ class ApkSnapshotServiceWorker
 
   def fresh_account
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
+      ga = GoogleAccount.lock.where(in_use: false).where('flags > ?',5).order(:last_used).first
       # ga = GoogleAccount.lock.where('id > ?',45).order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
