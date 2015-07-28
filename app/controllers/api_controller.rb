@@ -43,8 +43,10 @@ class ApiController < ApplicationController
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = JSON.parse(params[:custom])[:customKeywords]
+    custom_keywords = JSON.parse(params[:custom])['customKeywords']
     # custom_keywords = params[:custom][:customKeywords]
+
+    puts custom_keywords
 
     puts "########################"
     puts app_filters['adSpend'].inspect
@@ -113,7 +115,7 @@ class ApiController < ApplicationController
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = JSON.parse(params[:custom])[:customKeywords]
+    custom_keywords = JSON.parse(params[:custom])['customKeywords']
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
