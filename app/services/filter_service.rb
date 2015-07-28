@@ -205,9 +205,7 @@ class FilterService
       parts << android_sort_order_query(sort_by, order_by)
       
       query = parts.join('.')
-      
-      #puts "query_count: #{query_count}"
-      
+
       #run the query for count
       results_count = AndroidApp.instance_eval("self.#{query_count}")
 
