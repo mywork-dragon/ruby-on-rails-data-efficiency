@@ -136,5 +136,5 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'curb-fu', '0.6.2', group: :sdk_scraper
 
-gem 'slackiq', github: 'MightySignal/slackiq', branch: 'v1'
+gem 'slackiq', '0.0.2'
 
