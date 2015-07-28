@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: git://github.com/MightySignal/slackiq.git
-  revision: 310d24aab791b98cf6c4e3ca9326dc5165caff39
+  revision: 695441a99989d3369a50d9e73810e2382ad5f614
   branch: v1
   specs:
     slackiq (0.0.0)
