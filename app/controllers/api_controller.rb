@@ -29,11 +29,6 @@ class ApiController < ApplicationController
   def filter_ios_apps
     
     li 'filter_ios_apps'
-
-    puts params
-    puts "########################"
-    puts params[:app]
-    puts JSON.parse(params[:app])
     
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
@@ -45,11 +40,6 @@ class ApiController < ApplicationController
     order_by = params[:orderBy]
     custom_keywords = JSON.parse(params[:custom])['customKeywords']
     # custom_keywords = params[:custom][:customKeywords]
-
-    puts custom_keywords
-
-    puts "########################"
-    puts app_filters['adSpend'].inspect
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
@@ -637,7 +627,12 @@ class ApiController < ApplicationController
   def get_company_contacts
 
     company_websites = params['companyWebsites']
+    filter = params['filter']
     contacts = []
+
+    puts "###########"
+    puts filter
+    puts "###########"
 
     if company_websites.blank?
       render json: {:contacts => contacts}
@@ -653,15 +648,24 @@ class ApiController < ApplicationController
         # finds contact object for
         clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
 
-        if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
+        # true if record is older than 60 days
+        data_expired = clearbit_contacts_for_website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
+
+        if !filter.blank? || clearbit_contacts_for_website.empty? || data_expired
 
           domain = UrlHelper.url_with_domain_only(url)
 
-          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => domain})
+          clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
+
+          puts "####"
+          puts clearbit_query
+          puts "####"
+
+          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
           new_clearbit_contacts = JSON.load(get.response.body)
 
           # delete old records (prevents duplicates)
-          ClearbitContact.where(website_id: website.id).destroy_all if website
+          ClearbitContact.where(website_id: website.id).destroy_all if data_expired
 
           if new_clearbit_contacts.kind_of?(Array)
 
@@ -693,7 +697,13 @@ class ApiController < ApplicationController
               # save as new records to DB
               if website
                 clearbit_contact = ClearbitContact.create(website_id: website.id)
-                clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                previous_record = ClearbitContact.where(clearbit_id: contact_id)
+                if previous_record.exists?
+                  previous_record.destroy_all
+                end
+                if contact_id != nil
+                  clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                end
                 clearbit_contact.save
               end
             end

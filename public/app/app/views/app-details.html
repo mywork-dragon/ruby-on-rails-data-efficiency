@@ -19,13 +19,14 @@
     </div>
   </header>
 
-  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded">
+  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
 
     <!-- Company Apps Table -->
     <section class="panel panel-default table-dynamic" id="companyContactsTable">
 
       <div class="panel-heading" id="companyContactsTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
+        <button type="submit" class="btn btn-primary pull-right" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
       </div>
 
       <div id="results-table-wrapper">
@@ -314,7 +315,14 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
                 </li>
                 <li id="showCompanyEmailsButtonLi">
-                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites)">Load Contact Emails</button>
+                  <div id="showCompanyEmailsContainer">
+                    <div id="showCompanyEmailsButton">
+                      <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load Contact Emails</button>
+                    </div>
+                    <div id="showCompanyEmailsTextField">
+                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
+                    </div>
+                  </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
                     <div class="loading outer">
                       <div class="loading inner"></div>
