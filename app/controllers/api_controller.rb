@@ -649,13 +649,17 @@ class ApiController < ApplicationController
         clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
 
         # true if record is older than 60 days
-        data_expired = website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
+        data_expired = clearbit_contacts_for_website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
 
         if !filter.blank? || clearbit_contacts_for_website.empty? || data_expired
 
           domain = UrlHelper.url_with_domain_only(url)
 
           clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
+
+          puts "####"
+          puts clearbit_query
+          puts "####"
 
           get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
           new_clearbit_contacts = JSON.load(get.response.body)
