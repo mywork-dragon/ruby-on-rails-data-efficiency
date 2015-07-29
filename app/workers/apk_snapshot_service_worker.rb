@@ -55,15 +55,15 @@ class ApkSnapshotServiceWorker
         config.android_id = best_account.android_identifier
       end
 
-      app_identifier = AndroidApp.find_by_id(android_app_id).app_identifier
+      aa = AndroidApp.find_by_id(android_app_id)
+
+      app_identifier = aa.app_identifier
 
       raise "no app_identifier" if app_identifier.blank?
 
       file_name = apk_file_name(app_identifier)
 
-      timeout(100) do
-        ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
-      end
+      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
     rescue => e
 
@@ -81,6 +81,9 @@ class ApkSnapshotServiceWorker
       elsif message.include? "execution expired"
         apk_snap.status = :timeout
         apk_snap.save
+      elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
+        apk_snap.status = :deadlock
+        apk_snap.save
       end
       
       raise
@@ -88,6 +91,7 @@ class ApkSnapshotServiceWorker
     else
 
       best_account.in_use = false
+      best_account.flags = 0
       best_account.save
 
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
@@ -101,6 +105,9 @@ class ApkSnapshotServiceWorker
       apk_snap.download_time = download_time
       apk_snap.status = :success
       apk_snap.save
+
+      aa.newest_apk_snapshot_id = apk_snap.id
+      aa.save
 
       File.delete(file_name)
       
@@ -116,16 +123,16 @@ class ApkSnapshotServiceWorker
 
       account = fresh_account
 
-      if account.blank? && Sidekiq::Queue.new.size > 0
-        200.times do |i|
-          account = fresh_account
-          if account.present?
-            ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
-            break
-          end
-          sleep 1
-        end
-      end
+      # if account.blank? && Sidekiq::Queue.new.size > 0
+      #   200.times do |i|
+      #     account = fresh_account
+      #     if account.present?
+      #       ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
+      #       break
+      #     end
+      #     sleep 1
+      #   end
+      # end
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -146,7 +153,8 @@ class ApkSnapshotServiceWorker
 
   def fresh_account
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).order(:last_used).first
+      ga = GoogleAccount.lock.where(in_use: false).where('flags > ?',5).order(:last_used).first
+      # ga = GoogleAccount.lock.where('id > ?',45).order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga

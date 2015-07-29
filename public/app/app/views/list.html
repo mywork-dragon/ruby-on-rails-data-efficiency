@@ -100,7 +100,7 @@
             </td>
             <td class="resultsTableAppIcon">
               <span>
-                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
               </span>
             </td>
             <td class="appTypeIndicator">
