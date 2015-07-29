@@ -95,7 +95,7 @@ class ApiController < ApplicationController
       # li "results_json: #{results_json}"
     end
     
-    render json: {results: results_json, resultsCount: results_count}
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
   
   def filter_android_apps
@@ -155,7 +155,7 @@ class ApiController < ApplicationController
       results_json << app_hash
     end
     
-    render json: {results: results_json, resultsCount: results_count}
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
   
   # Get details of iOS app.

@@ -52,9 +52,12 @@ angular.module('appApp')
             searchCtrl.apps = data.results;
             searchCtrl.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
-            searchCtrl.currentPage = 1;
+            $rootScope.currentPage = data.pageNum;
+            searchCtrl.currentPage = data.pageNum;
             searchCtrl.resultsSortCategory = 'appName';
             searchCtrl.resultsOrderBy = 'ASC';
+
+            console.log('PAGENUM', data.pageNum);
 
             var submitSearchEndTime = new Date().getTime();
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
