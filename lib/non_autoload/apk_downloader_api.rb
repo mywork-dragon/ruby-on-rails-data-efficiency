@@ -81,7 +81,7 @@ if defined?(ApkDownloader)
       end
 
       apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
-      apk_snap.proxy = mp.private_ip
+      apk_snap.micro_proxy_id = mp.id
       apk_snap.save
       
       proxy_ip = mp.private_ip
