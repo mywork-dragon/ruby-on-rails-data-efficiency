@@ -95,9 +95,30 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $scope.companyContacts = data.contacts;
         $scope.contactsLoading = false;
         $scope.contactsLoaded = true;
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.companyData.name,
+            'requestResults': data.contacts,
+            'requestResultsCount': data.contacts.length,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       }).error(function() {
         $scope.contactsLoading = false;
         $scope.contactsLoaded = false;
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.companyData.name,
+            'requestResultsCount': 0,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       });
     };
 
