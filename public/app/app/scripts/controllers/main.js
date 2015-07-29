@@ -171,34 +171,6 @@ angular.module('appApp')
               return loggitService.logError("Error! Something went wrong while adding to list.");
           }
         },
-        // When orderby/sort arrows on dashboard table are clicked
-        $scope.sortApps = function(category, order) {
-
-
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Table Sorting Changed", {
-              "category": category,
-              "order": order,
-              "appPlatform": APP_PLATFORM
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
-
-          var firstPage = 1;
-          apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
-            .success(function(data) {
-              $rootScope.apps = data.results;
-              $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = false;
-              $rootScope.currentPage = 1;
-              $rootScope.resultsSortCategory = category;
-              $rootScope.resultsOrderBy = order;
-            })
-            .error(function() {
-              $rootScope.dashboardSearchButtonDisabled = false;
-            });
-        },
         $scope.onFilterChange = function() {
           return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";
         },

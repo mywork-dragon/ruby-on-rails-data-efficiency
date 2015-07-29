@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform",
-    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService",
+    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
@@ -121,6 +121,33 @@ angular.module('appApp')
         var end, start;
         return start = (currentPage - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
       };
+
+      // When orderby/sort arrows on dashboard table are clicked
+      searchCtrl.sortApps = function(category, order) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Table Sorting Changed", {
+            "category": category,
+            "order": order,
+            "appPlatform": APP_PLATFORM
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        var firstPage = 1;
+        apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
+          .success(function(data) {
+            searchCtrl.apps = data.results;
+            searchCtrl.numApps = data.resultsCount;
+            $rootScope.dashboardSearchButtonDisabled = false;
+            $rootScope.currentPage = 1;
+            searchCtrl.currentPage = 1;
+            searchCtrl.resultsSortCategory = category;
+            searchCtrl.resultsOrderBy = order;
+          })
+          .error(function() {
+            $rootScope.dashboardSearchButtonDisabled = false;
+          });
+        };
 
       searchCtrl.appsDisplayedCount = function() {
         var lastPageMaxApps = $rootScope.numPerPage * searchCtrl.currentPage;
