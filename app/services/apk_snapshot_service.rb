@@ -11,41 +11,66 @@ class ApkSnapshotService
 
     def single(android_app_id)
 
-      aa = AndroidApp.find(android_app_id)
+      if android_app_id.include? "."
+        aa = AndroidApp.find_by_app_identifier(android_app_id)
+      else
+        aa = AndroidApp.find(android_app_id)
+      end
 
-      ai = aa.app_identifier
-      an = aa.newest_android_app_snapshot.name
+      if aa.newest_apk_snapshot.blank?
 
-      j = ApkSnapshotJob.create!(notes: ai)
+        ai = aa.app_identifier
 
-      ApkSnapshotServiceWorker.new.perform(j.id, android_app_id)
+        j = ApkSnapshotJob.create!(notes: ai)
 
-      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+        begin
+          ApkSnapshotServiceWorker.new.perform(j.id, android_app_id)
+        rescue
+          return nil
+        end
+
+        new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+      else
+
+        new_snap = aa.newest_apk_snapshot
+
+      end
 
       if new_snap.present? && new_snap.status == "success"
 
         p = new_snap.android_packages.where('android_package_tag != 1')
 
         if p.blank?
-          return "We couldn't find any sdks in #{an}"
+          return 0
         else
           hash = Hash.new
           p.each do |packages|
             package = packages.package_name
-            package.slice! "com."
+
+            ['com.','net.','org.','edu.'].each{|u| package.slice! u}
+
             name = package.split('.')[0]
-            if hash[name].blank?
-              hash[name] = [package]
-            else
-              hash[name] << package
+
+            if name.count("0-9").zero? && name.exclude? "android"
+
+              name = name.capitalize
+
+              if hash[name].blank?
+                hash[name] = [package]
+              else
+                hash[name] << package
+              end
+
             end
+
           end
           return hash
         end
 
       else
 
-        return "Sorry, there was a problem. Please try again."
+        return nil
 
       end
 
@@ -66,7 +91,7 @@ class ApkSnapshotService
         batch.jobs do
 
           j = ApkSnapshotJob.create!(notes: notes)
-          AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
+          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
             li "app #{index}"
             ApkSnapshotServiceWorker.perform_async(j.id, app.id)
           end
