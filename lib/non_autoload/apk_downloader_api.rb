@@ -72,7 +72,7 @@ if defined?(ApkDownloader)
 
       mp = MicroProxy.transaction do
 
-        p = MicroProxy.lock.order(last_used: :asc).first
+        p = MicroProxy.lock.order(last_used: :asc).where('flags <= ?',20).first
         p.last_used = DateTime.now
         p.save
 
@@ -167,17 +167,31 @@ if defined?(ApkDownloader)
         curb.timeout = 90
       end
 
-      # [404,403,408,503]
-
       if [200,302].include? response.status
+
+        mp = ApkSnapshot.find(apk_snap_id).micro_proxy
+        mp.flags = 0
+        mp.save
+
         return response
+
       elsif response.status == 500
+
         ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
         ga.flags = ga.flags + 1
         ga.save
+
         return response
+
       else
-        if response.status == 403
+
+        if response.status == 503
+          
+          mp = ApkSnapshot.find(apk_snap_id).micro_proxy
+          mp.flags = mp.flags + 1
+          mp.save
+
+        elsif response.status == 403
 
           ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
           ga.flags = ga.flags + 1
@@ -201,11 +215,11 @@ if defined?(ApkDownloader)
           snap.status = :taken_down
           snap.save
 
-        else
-          raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
         end
-      end
 
+        raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
+        
+      end
 
     end
 
