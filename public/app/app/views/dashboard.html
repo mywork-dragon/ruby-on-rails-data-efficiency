@@ -300,9 +300,9 @@
             <pagination class="pagination-sm"
                         ng-class="{disabled: $root.dashboardSearchButtonDisabled}"
                         ng-model="currentPage"
-                        total-items="numApps"
+                        total-items="searchCtrl.numApps"
                         max-size="8"
-                        ng-change="select(currentPage, tags)"
+                        ng-change="searchCtrl.submitPageChange(currentPage)"
                         items-per-page="numPerPage"
                         rotate="false"
                         boundary-links="true"></pagination>

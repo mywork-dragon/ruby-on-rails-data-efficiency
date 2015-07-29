@@ -142,33 +142,9 @@ angular.module('appApp')
         $scope.row = "",
         $scope.appPlatform = AppPlatform,
         // When table's paging options are selected
-        $scope.select = function(page, tags) {
+        $scope.select = function(page) {
 
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Table Page Changed", {
-              "page": page,
-              "tags": tags,
-              "appPlatform": APP_PLATFORM
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
-
-          $rootScope.dashboardSearchButtonDisabled = true;
-
-          apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
-            .success(function(data) {
-              $rootScope.apps = data.results;
-              $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = false;
-              $rootScope.currentPage = page;
-            })
-            .error(function() {
-              $rootScope.dashboardSearchButtonDisabled = false;
-            });
-
-          var end, start;
-          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
+// DELETE THIS FUNCTION
         },
         $scope.appsDisplayedCount = function() {
 

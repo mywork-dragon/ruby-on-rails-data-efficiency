@@ -103,6 +103,24 @@ angular.module('appApp')
         searchCtrl.loadTableData();
       };
 
+      searchCtrl.submitPageChange = function(currentPage) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Table Page Changed", {
+            "page": currentPage,
+            "tags": $rootScope.tags,
+            "appPlatform": APP_PLATFORM
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        $location.url('/search?' + urlParams);
+        searchCtrl.loadTableData();
+        $rootScope.currentPage = currentPage;
+        var end, start;
+        return start = (currentPage - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
+      };
+
       searchCtrl.appsDisplayedCount = function() {
         var lastPageMaxApps = $rootScope.numPerPage * searchCtrl.currentPage;
         var baseAppNum = $rootScope.numPerPage * (searchCtrl.currentPage - 1) + 1;
