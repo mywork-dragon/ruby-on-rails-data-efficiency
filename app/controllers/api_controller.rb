@@ -697,7 +697,13 @@ class ApiController < ApplicationController
               # save as new records to DB
               if website
                 clearbit_contact = ClearbitContact.create(website_id: website.id)
-                clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                previous_record = ClearbitContact.where(clearbit_id: contact_id)
+                if previous_record.exists?
+                  previous_record.destroy_all
+                end
+                if contact_id != nil
+                  clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                end
                 clearbit_contact.save
               end
             end

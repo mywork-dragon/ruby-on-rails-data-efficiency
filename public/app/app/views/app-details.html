@@ -19,7 +19,7 @@
     </div>
   </header>
 
-  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded">
+  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
 
     <!-- Company Apps Table -->
     <section class="panel panel-default table-dynamic" id="companyContactsTable">
