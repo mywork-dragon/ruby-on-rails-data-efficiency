@@ -141,22 +141,14 @@ angular.module('appApp')
         $scope.filteredApps = [],
         $scope.row = "",
         $scope.appPlatform = AppPlatform,
-        // When table's paging options are selected
-        $scope.select = function(page) {
-
-// DELETE THIS FUNCTION
-        },
         $scope.appsDisplayedCount = function() {
-
           var lastPageMaxApps = $rootScope.numPerPage * $rootScope.currentPage;
           var baseAppNum = $rootScope.numPerPage * ($rootScope.currentPage - 1) + 1;
-
           if (lastPageMaxApps > $rootScope.numApps) {
             return "" + baseAppNum + " - " + $rootScope.numApps;
           } else {
             return "" + baseAppNum + " - " + lastPageMaxApps;
           }
-
         },
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
