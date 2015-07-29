@@ -22,7 +22,7 @@ class ApkSnapshotService
 
       new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-      if new_snap.status == "success"
+      if new_snap.present? && new_snap.status == "success"
 
         p = new_snap.android_packages
 

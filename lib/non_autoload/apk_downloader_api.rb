@@ -72,7 +72,7 @@ if defined?(ApkDownloader)
 
       mp = MicroProxy.transaction do
 
-        p = MicroProxy.lock.order(last_used: :asc).where('flags <= ?',20).first
+        p = MicroProxy.lock.order(last_used: :asc).where('flags <= ?',10).first
         p.last_used = DateTime.now
         p.save
 
