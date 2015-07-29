@@ -18,7 +18,7 @@ class ApkSnapshotService
 
       j = ApkSnapshotJob.create!(notes: ai)
 
-      ApkSnapshotServiceWorker.perform_async(j.id, android_app_id)
+      ApkSnapshotServiceWorker.new.perform(j.id, android_app_id)
 
       new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
