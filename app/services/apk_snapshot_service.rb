@@ -30,7 +30,8 @@ class ApkSnapshotService
           return "We couldn't find any sdks in #{an}"
         else
           hash = Hash.new
-          p.each do |package|
+          p.each do |packages|
+            package = packages.package_name
             package.slice! "com."
             name = package.split('.')[0]
             if hash[name].blank?
