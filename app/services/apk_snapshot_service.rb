@@ -9,6 +9,37 @@ class ApkSnapshotService
       end
     end
 
+    def single(android_app_id)
+
+      aa = AndroidApp.find(android_app_id)
+
+      ai = aa.app_identifier
+      an = aa.newest_android_app_snapshot.name
+
+      j = ApkSnapshotJob.create!(notes: ai)
+
+      ApkSnapshotServiceWorker.perform_async(j.id, android_app_id)
+
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+      if new_snap.status == "success"
+
+        p = new_snap.android_packages
+
+        if p.blank?
+          return "We couldn't find any sdks in #{an}"
+        else
+          return p
+        end
+
+      else
+
+        return "Sorry, there was a problem. Please try again."
+
+      end
+
+    end
+
     def run_n(notes, size = 10)
 
       workers = Sidekiq::Workers.new.map{ |w| w[2]["queue"] == 'sdk_scraper' }.include? true
@@ -122,10 +153,10 @@ class ApkSnapshotService
   
   end
 
-  def on_complete(status, options)
-    Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!', 
-    'Testing' => 'it works!!!')
-  end
+  # def on_complete(status, options)
+  #   Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!', 
+  #   'Testing' => 'it works!!!')
+  # end
 
   
 end
