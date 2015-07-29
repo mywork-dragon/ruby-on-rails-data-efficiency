@@ -24,12 +24,22 @@ class ApkSnapshotService
 
       if new_snap.present? && new_snap.status == "success"
 
-        p = new_snap.android_packages
+        p = new_snap.android_packages.where('android_package_tag != 1')
 
         if p.blank?
           return "We couldn't find any sdks in #{an}"
         else
-          return p
+          hash = Hash.new
+          p.each do |package|
+            package.slice! "com."
+            name = package.split('.')[0]
+            if hash[name].blank?
+              hash[name] = [package]
+            else
+              hash[name] << package
+            end
+          end
+          return hash
         end
 
       else
