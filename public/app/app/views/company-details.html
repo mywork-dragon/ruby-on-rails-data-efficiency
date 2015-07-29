@@ -75,7 +75,14 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
                 <li id="showCompanyEmailsButtonLi">
-                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites)">Load Contact Emails</button>
+                  <div id="showCompanyEmailsContainer">
+                    <div id="showCompanyEmailsButton">
+                      <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites, companyContactFilter)">Load Contact Emails</button>
+                    </div>
+                    <div id="showCompanyEmailsTextField">
+                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
+                    </div>
+                  </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
                     <div class="loading outer">
                       <div class="loading inner"></div>

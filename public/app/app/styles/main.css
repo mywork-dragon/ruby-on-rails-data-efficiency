@@ -7404,7 +7404,8 @@ select option:empty {
 }
 
 #showCompanyEmailsTextField input {
-  width: 100%;
+  width: 99%;
+  height: 35px;
 }
 
 .showCompanyEmailsSection {

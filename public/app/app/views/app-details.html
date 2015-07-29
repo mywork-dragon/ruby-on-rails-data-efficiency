@@ -320,7 +320,7 @@
                       <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load Contact Emails</button>
                     </div>
                     <div id="showCompanyEmailsTextField">
-                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading">
+                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
                     </div>
                   </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">

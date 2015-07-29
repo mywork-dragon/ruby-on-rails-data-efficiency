@@ -95,7 +95,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.contactsLoaded = false;
   $scope.getCompanyContacts = function(websites, filter) {
     $scope.contactsLoading = true;
-    console.log('FILTERS', filter);
     apiService.getCompanyContacts(websites, filter).success(function(data) {
       $scope.companyContacts = data.contacts;
       $scope.contactsLoading = false;
