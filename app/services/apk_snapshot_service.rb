@@ -16,11 +16,21 @@ class ApkSnapshotService
       clear_accounts()
 
       if !workers
-        j = ApkSnapshotJob.create!(notes: notes)
-        AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
-          li "app #{index}"
-          ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+
+        batch = Sidekiq::Batch.new
+        batch.description = 'scrape n apks from google play' 
+        batch.on(:complete, self)
+
+        batch.jobs do
+
+          j = ApkSnapshotJob.create!(notes: notes)
+          AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
+            li "app #{index}"
+            ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+          end
+
         end
+
       else
         print "WARNING: You cannot continue because there are workers currently running."
       end
@@ -48,7 +58,7 @@ class ApkSnapshotService
       puts "#{Sidekiq::Workers.new.size} workers"
 
     end
-
+    
     def clear_accounts
       GoogleAccount.all.each do |ga|
         ga.in_use = false
@@ -111,5 +121,11 @@ class ApkSnapshotService
     end
   
   end
+
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!', 
+    'Testing' => 'it works!!!')
+  end
+
   
 end
