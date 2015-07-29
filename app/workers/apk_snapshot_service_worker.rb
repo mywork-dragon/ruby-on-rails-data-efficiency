@@ -2,7 +2,7 @@ class ApkSnapshotServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => false, queue: :sdk
+  sidekiq_options backtrace: true, :retry => 2, queue: :sdk
   
   def perform(apk_snapshot_job_id, app_id)
     download_apk(apk_snapshot_job_id, app_id)
