@@ -57,8 +57,6 @@ angular.module('appApp')
             searchCtrl.resultsSortCategory = 'appName';
             searchCtrl.resultsOrderBy = 'ASC';
 
-            console.log('PAGENUM', data.pageNum);
-
             var submitSearchEndTime = new Date().getTime();
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
 
