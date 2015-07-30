@@ -51,7 +51,7 @@ set :scraper_concurrency, 50
 
 # set :sidekiq_queue, %w(critical default low)
 
-set :sdk_scraper_queue, %w(sdk)
+set :sdk_scraper_queue, %w(sdk_single sdk)
 set :scraper_queue, %w(critical default low)
 
 set :whenever_roles, [:scraper, :sdk_scraper]

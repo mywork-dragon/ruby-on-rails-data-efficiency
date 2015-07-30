@@ -732,4 +732,73 @@ class ApiController < ApplicationController
     end
   end
 
+
+
+  def get_sdks(android_app_id)
+
+    aa = AndroidApp.find(android_app_id)
+
+    if aa.newest_apk_snapshot.blank?
+
+      ai = aa.app_identifier
+
+      j = ApkSnapshotJob.create!(notes: ai)
+
+      batch = Sidekiq::Batch.new
+      batch.jobs do
+        ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
+      end
+      bid = batch.bid
+
+      360.times do |i|
+        break if Sidekiq::Batch::Status.new(bid).complete?
+        sleep 0.25
+      end
+
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+    else
+
+      new_snap = aa.newest_apk_snapshot
+
+    end
+
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      if p.blank?
+        hash = 0
+      else
+        hash = Hash.new
+        p.each do |packages|
+          package = packages.package_name
+
+          ['com.','net.','org.','edu.'].each{|u| package.slice! u}
+
+          name = package.split('.')[0]
+
+          if name.count("0-9").zero? && name.exclude? "android"
+
+            name = name.capitalize
+
+            if hash[name].blank?
+              hash[name] = [package]
+            else
+              hash[name] << package
+            end
+
+          end
+
+        end
+      end
+
+    else
+      hash = nil
+    end
+
+    render json: hash.to_json
+
+  end
+
 end
