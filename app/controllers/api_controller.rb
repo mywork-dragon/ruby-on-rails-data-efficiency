@@ -778,7 +778,7 @@ class ApiController < ApplicationController
 
           name = package.split('.')[0]
 
-          if name.count("0-9").zero? && name.exclude? "android"
+          if name.count("0-9").zero? && name.exclude?("android")
 
             name = name.capitalize
 
