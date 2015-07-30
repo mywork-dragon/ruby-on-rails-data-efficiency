@@ -53,7 +53,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       );
       /* -------- Mixpanel Analytics End -------- */
 
-      $window.open(linkedinLink, '_blank');
+      $window.open(linkedinLink);
     };
 
     $scope.addMixedSelectedTo = function(list, selectedApps) {

@@ -38,7 +38,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     );
     /* -------- Mixpanel Analytics End -------- */
 
-    $window.open(linkedinLink, '_blank');
+    $window.open(linkedinLink);
   };
 
   $scope.linkTo = function(path) {
