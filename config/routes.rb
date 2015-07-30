@@ -68,6 +68,8 @@ Rails.application.routes.draw do
 
   post 'api/company/contacts' => 'api#get_company_contacts'
 
+  get 'api/sdks' => 'api#get_sdks'
+
   
   # API for customers
   get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }
