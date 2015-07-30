@@ -732,9 +732,36 @@ class ApiController < ApplicationController
     end
   end
 
+  def android_sdks_for_app_exists
 
+    android_app_id = params['id']
 
-  # Pass in id to params hash
+    aa = AndroidApp.find(android_app_id)
+
+    if aa.newest_apk_snapshot.blank?
+
+      hash = nil
+
+    else
+
+      new_snap = aa.newest_apk_snapshot
+
+    end
+
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      hash = clean_up_android_sdks(p)
+
+    else
+      hash = nil
+    end
+
+    render json: hash.to_json
+
+  end
+
   def android_sdks_for_app
 
     android_app_id = params['id']
@@ -770,39 +797,44 @@ class ApiController < ApplicationController
 
       p = new_snap.android_packages.where('android_package_tag != 1')
 
-      if p.blank?
-        hash = 0
-      else
-        hash = Hash.new
-        p.each do |packages|
-          
-          package = packages.package_name
-          raw = package
-
-          ['com.','net.','org.','edu.'].each{|u| package.slice! u}
-
-          name = package.split('.')[0]
-
-          if name.count("0-9").zero? && name.exclude?("android")
-
-            name = name.capitalize
-
-            if hash[name].blank?
-              hash[name] = [raw]
-            else
-              hash[name] << raw
-            end
-
-          end
-
-        end
-      end
+      hash = clean_up_android_sdks(p)
 
     else
       hash = nil
     end
 
     render json: hash.to_json
+
+  end
+
+
+  def clean_up_android_sdks(p)
+    hash = Hash.new
+
+    if p.present?
+      p.each do |packages|
+        
+        package = " " + packages.package_name
+
+        [' com.',' net.',' org.',' edu.',' eu.',' io.',' ui.',' .'].each{|u| package.slice! u}
+
+        name = package.split('.')[0].strip
+
+        if name.count("0-9").zero? && name.exclude?("android")
+
+          name = name.capitalize
+
+          if hash[name].blank?
+            hash[name] = [packages.package_name]
+          else
+            hash[name] << packages.package_name
+          end
+
+        end
+      end
+    end
+
+    hash
 
   end
 
