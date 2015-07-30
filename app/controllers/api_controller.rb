@@ -775,7 +775,9 @@ class ApiController < ApplicationController
       else
         hash = Hash.new
         p.each do |packages|
+          
           package = packages.package_name
+          raw = package
 
           ['com.','net.','org.','edu.'].each{|u| package.slice! u}
 
@@ -786,9 +788,9 @@ class ApiController < ApplicationController
             name = name.capitalize
 
             if hash[name].blank?
-              hash[name] = [package]
+              hash[name] = [raw]
             else
-              hash[name] << package
+              hash[name] << raw
             end
 
           end

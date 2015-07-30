@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729043335) do
+ActiveRecord::Schema.define(version: 20150730201252) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -318,9 +318,11 @@ ActiveRecord::Schema.define(version: 20150729043335) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
+    t.integer  "device"
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
+  add_index "google_accounts", ["device"], name: "index_google_accounts_on_device", using: :btree
   add_index "google_accounts", ["flags"], name: "index_google_accounts_on_flags", using: :btree
   add_index "google_accounts", ["last_used"], name: "index_google_accounts_on_last_used", using: :btree
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
