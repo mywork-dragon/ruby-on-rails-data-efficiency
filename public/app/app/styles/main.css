@@ -7440,3 +7440,12 @@ select option:empty {
   text-align: center;
   padding-top: 15px;
 }
+
+pre {
+  color: inherit;
+  background-color: #FFFFFF;
+  border: none;
+  word-wrap: normal;
+  padding: 0;
+  padding-left: 27px;
+}
