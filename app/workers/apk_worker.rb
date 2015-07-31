@@ -1,7 +1,7 @@
 module ApkWorker
 
-  def perform(apk_snapshot_job_id, app_id)
-    download_apk(apk_snapshot_job_id, app_id)
+  def perform(apk_snapshot_job_id, bid, app_id)
+    download_apk(apk_snapshot_job_id, bid, app_id)
   end
   
   def apk_file_name(app_identifier)
@@ -13,7 +13,7 @@ module ApkWorker
     file_name
   end
 
-  def download_apk(apk_snapshot_job_id, android_app_id)
+  def download_apk(apk_snapshot_job_id, bid, android_app_id)
 
     begin
 
@@ -38,7 +38,7 @@ module ApkWorker
 
       raise "no snap id" if apk_snap.id.blank?
 
-      best_account = optimal_account(apk_snapshot_job_id, apk_snap.id)
+      best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -112,24 +112,13 @@ module ApkWorker
 
   end
 
-  def optimal_account(apk_snapshot_job_id, apk_snap_id)
+  def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
 
     gac = GoogleAccount.count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id)
-
-      # if account.blank? && Sidekiq::Queue.new.size > 0
-      #   200.times do |i|
-      #     account = fresh_account
-      #     if account.present?
-      #       ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: "accounts froze for #{i} seconds", apk_snapshot_job_id: apk_snapshot_job_id)
-      #       break
-      #     end
-      #     sleep 1
-      #   end
-      # end
+      account = fresh_account(apk_snap_id, bid)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -148,15 +137,40 @@ module ApkWorker
 
   end
 
-  def fresh_account(apk_snap_id)
+  def fresh_account(apk_snap_id, bid)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
-    GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).where("flags <= 12 AND device #{d}").order(:last_used).first
+
+    stop = 10
+
+    g = GoogleAccount.transaction do
+      ga = GoogleAccount.lock.where(in_use: false).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
     end
+
+    if g.blank?
+
+      d_name = GoogleAccount.devices.find{|k,v| v == d}[0].gsub('_',' ')
+
+      err_msg = "All the accounts on your #{d_name} are down."
+      Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
+      raise err_msg
+
+    elsif g.flags >= stop
+
+      Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
+
+      g.blocked = true
+      g.save
+
+      fresh_account(apk_snap_id)
+
+    else
+      return g
+    end
+
   end
 
 end

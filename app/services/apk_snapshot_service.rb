@@ -26,7 +26,7 @@ class ApkSnapshotService
           j = ApkSnapshotJob.create!(notes: notes)
           AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
             li "app #{index}"
-            ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+            ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
 
         end
