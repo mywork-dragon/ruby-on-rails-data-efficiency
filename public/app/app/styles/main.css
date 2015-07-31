@@ -7398,6 +7398,13 @@ select option:empty {
   display: table-cell;
 }
 
+#showSdksButton {
+  margin-top: 25px;
+  margin-bottom: 0;
+  width: 60%;
+  margin-left: 20%;
+}
+
 #showCompanyEmailsTextField {
   padding-left: 6px;
   display: table-cell;
