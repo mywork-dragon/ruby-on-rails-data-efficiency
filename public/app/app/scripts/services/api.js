@@ -101,6 +101,19 @@ angular.module("appApp")
             companyName: companyName
           }
         });
+      },
+      checkForSdks: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/android_sdks_exists'
+        })
+      },
+      getSdks: function(appId) {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/android_sdks',
+          params: {appId: appId}
+        })
       }
     };
   }]);

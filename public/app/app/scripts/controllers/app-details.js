@@ -70,6 +70,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.load();
 
+  authService.checkForSdks = apiService.checkForSdks()
+    .success(function(data) {
+
+    }).error(function() {
+
+    });
+
+  authService.getSdks = apiService.getSdks(appId)
+    .success(function(data) {
+
+    }).error(function() {
+
+    });
+
   authService.permissions()
     .success(function(data) {
       $scope.canViewSupportDesk = data.can_view_support_desk;
@@ -95,35 +109,36 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.contactsLoaded = false;
   $scope.getCompanyContacts = function(websites, filter) {
     $scope.contactsLoading = true;
-    apiService.getCompanyContacts(websites, filter).success(function(data) {
-      $scope.companyContacts = data.contacts;
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = true;
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestResults': data.contacts,
-          'requestResultsCount': data.contacts.length,
-          'titleFilter': filter || ''
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-    }).error(function(err) {
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestError': err,
-          'titleFilter': filter || ''
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = false;
-    });
+    apiService.getCompanyContacts(websites, filter)
+      .success(function(data) {
+        $scope.companyContacts = data.contacts;
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = true;
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.appData.company.name,
+            'requestResults': data.contacts,
+            'requestResultsCount': data.contacts.length,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      }).error(function(err) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.appData.company.name,
+            'requestError': err,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = false;
+      });
   };
 
   /* -------- Mixpanel Analytics Start -------- */

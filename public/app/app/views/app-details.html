@@ -324,13 +324,27 @@
                       <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
                     </div>
                   </div>
-                  <div id="showSdksButton">
-                    <button ng-hide="" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load SDKs</button>
-                  </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
                     <div class="loading outer">
                       <div class="loading inner"></div>
                     </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" ng-show="">
+        <div class="panel-heading"><strong>SDKs</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li ng-if="appData.currentVersion">
+                  <div id="showSdksButton">
+                    <button ng-hide="" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load SDKs</button>
                   </div>
                 </li>
               </ul>
