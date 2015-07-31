@@ -122,10 +122,9 @@ class ApkSnapshotService
   
   end
 
-  # def on_complete(status, options)
-  #   Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!', 
-  #   'Testing' => 'it works!!!')
-  # end
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!')
+  end
 
   
 end

@@ -152,7 +152,7 @@ module ApkWorker
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).where("flags <= 6 AND device #{d}").order(:last_used).first
+      ga = GoogleAccount.lock.where(in_use: false).where("flags <= 12 AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
