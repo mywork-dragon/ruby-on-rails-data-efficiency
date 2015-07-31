@@ -98,6 +98,7 @@ module ApkWorker
       download_time = (end_time - start_time).to_s
 
       apk_snap.google_account_id = best_account.id
+      apk_snap.last_device = GoogleAccount.devices[best_account.device]
       apk_snap.download_time = download_time
       apk_snap.status = :success
       apk_snap.save
@@ -117,7 +118,7 @@ module ApkWorker
 
     gac.times do |c|
 
-      account = fresh_account
+      account = fresh_account(apk_snap_id)
 
       # if account.blank? && Sidekiq::Queue.new.size > 0
       #   200.times do |i|
@@ -147,9 +148,10 @@ module ApkWorker
 
   end
 
-  def fresh_account
+  def fresh_account(apk_snap_id)
+    device = ApkSnapshot.find(apk_snap_id).last_device
     GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false).where('flags <= ?',5).order(:last_used).first
+      ga = GoogleAccount.lock.where(in_use: false).where('flags <= ? AND device != ?',6,device).order(:last_used).first
       # ga = GoogleAccount.lock.where('id > ?',45).order(:last_used).first
       ga.last_used = DateTime.now
       ga.save

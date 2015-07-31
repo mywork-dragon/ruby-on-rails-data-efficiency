@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729043335) do
+ActiveRecord::Schema.define(version: 20150730210000) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -219,11 +219,13 @@ ActiveRecord::Schema.define(version: 20150729043335) do
     t.integer  "try"
     t.text     "auth_token"
     t.integer  "micro_proxy_id"
+    t.integer  "last_device"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
+  add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree
   add_index "apk_snapshots", ["micro_proxy_id"], name: "index_apk_snapshots_on_micro_proxy_id", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
@@ -318,9 +320,11 @@ ActiveRecord::Schema.define(version: 20150729043335) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
+    t.integer  "device"
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
+  add_index "google_accounts", ["device"], name: "index_google_accounts_on_device", using: :btree
   add_index "google_accounts", ["flags"], name: "index_google_accounts_on_flags", using: :btree
   add_index "google_accounts", ["last_used"], name: "index_google_accounts_on_last_used", using: :btree
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
