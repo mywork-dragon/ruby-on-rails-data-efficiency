@@ -342,9 +342,9 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-hide="sdks">
+                <li ng-hide="sdks" id="showSdksButtonLi">
                   <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="">Load SDKs</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Load SDKs</button>
                   </div>
                 </li>
                 <li ng-show="sdks">

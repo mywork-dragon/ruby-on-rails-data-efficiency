@@ -81,7 +81,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.getSdks = function(appId) {
     apiService.getSdks(appId)
       .success(function(data) {
-
+        $scope.sdks = data;
       }).error(function() {
 
       });
