@@ -14,6 +14,14 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.appData.name);
+
+      console.log('APP ID', $scope.appData.id);
+
+      apiService.checkForSdks($scope.appData.id)
+        .success(function(data) {
+          $scope.sdks = data;
+        }).error(function(err) {
+        });
     });
   };
 
@@ -70,19 +78,14 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.load();
 
-  authService.checkForSdks = apiService.checkForSdks()
-    .success(function(data) {
+  $scope.getSdks = function(appId) {
+    apiService.getSdks(appId)
+      .success(function(data) {
 
-    }).error(function() {
+      }).error(function() {
 
-    });
-
-  authService.getSdks = apiService.getSdks(appId)
-    .success(function(data) {
-
-    }).error(function() {
-
-    });
+      });
+  };
 
   authService.permissions()
     .success(function(data) {

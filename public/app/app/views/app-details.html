@@ -336,16 +336,19 @@
         </div>
       </div>
 
-      <div class="panel panel-default" ng-show="">
+      <div class="panel panel-default" ng-show="appPlatform == 'android'">
         <div class="panel-heading"><strong>SDKs</strong></div>
         <div class="panel-body">
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-if="appData.currentVersion">
+                <li ng-hide="sdks">
                   <div id="showSdksButton">
-                    <button ng-hide="" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load SDKs</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="">Load SDKs</button>
                   </div>
+                </li>
+                <li ng-show="sdks">
+                  {{sdks}}
                 </li>
               </ul>
             </div>
