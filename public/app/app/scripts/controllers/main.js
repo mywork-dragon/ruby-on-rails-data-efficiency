@@ -135,7 +135,6 @@ angular.module('appApp')
   ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
     function($scope, apiService, listApiService, $filter, $rootScope, loggitService, AppPlatform) {
-      var init;
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
