@@ -336,6 +336,26 @@
         </div>
       </div>
 
+      <div class="panel panel-default" ng-show="canViewSdks && appPlatform == 'android'">
+        <div class="panel-heading"><strong>SDKs</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li ng-hide="sdks" id="showSdksButtonLi">
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Load SDKs</button>
+                  </div>
+                </li>
+                <li ng-show="sdks">
+                  {{sdks}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="panel panel-default">
         <div class="panel-heading"><strong>Company Details</strong></div>
         <div class="panel-body">

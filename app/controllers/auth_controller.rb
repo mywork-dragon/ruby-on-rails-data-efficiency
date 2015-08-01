@@ -31,7 +31,7 @@ class AuthController < ApplicationController
 
     account = Account.find(user.account_id)
 
-    render json: { :can_view_support_desk => account.can_view_support_desk, :can_view_ad_spend => account.can_view_ad_spend }
+    render json: { :can_view_support_desk => account.can_view_support_desk, :can_view_ad_spend => account.can_view_ad_spend, :can_view_sdks => account.can_view_sdks }
   end
   
 end
