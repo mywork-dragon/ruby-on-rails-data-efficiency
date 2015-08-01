@@ -51,7 +51,7 @@ angular.module('appApp')
         })
         .error(function() {
           $scope.canViewSupportDesk = false;
-          $scope.canViewAdSpend = false;
+          $scope.canViewAdSpend = true;
         });
 
   }])
