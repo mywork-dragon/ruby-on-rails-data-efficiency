@@ -51,13 +51,13 @@
                 <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
                    title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. *Click for more info.*"></i>
                </a>
-               <span class="ui-select">
+               <span class="ui-select" ng-show="canViewAdSpend">
                     <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
                       <option value="">Ads on Facebook</option>
                       <option value="true">Yes</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
+               <a href="" data-toggle="modal" data-target="#myModal"  ng-show="canViewAdSpend">
                 <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
                    title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget. *Click for more info.*"></i>
                </a>
@@ -167,7 +167,7 @@
             <th><div class="th">
               Fortune Rank
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click=" searchCtrl.sortApps('fortuneRank', 'ASC') "
+                                    data-ng-click="searchCtrl.sortApps('fortuneRank', 'ASC') "
                                     data-ng-class="{active: row == 'fortuneRank'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('fortuneRank', 'DESC') "
@@ -176,7 +176,7 @@
             <th><div class="th normal-right-padding">
               Mobile Priority
             </div></th>
-            <th><div class="th normal-right-padding">
+            <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
               Ad Spend
             </div></th>
             <th><div class="th normal-right-padding">
@@ -213,7 +213,7 @@
               <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
               <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</td>
-              <td  class="dashboardAdSpendView">
+              <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
                 <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
               </td>
               <td>{{app.app.userBase | capitalize}}</td>
@@ -249,11 +249,13 @@
                 <h4>Fortune Rank</h4>
                 <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>
 
+                <span ng-show="canViewAdSpend">
                 <h4>Advertising on Facebook</h4>
                 <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
                 <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
                 <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
                   fashion – either they do (if an ad has been reported) or they don’t.</p>
+                </span>
 
                 <h4>User Base Size</h4>
                 <p>User Base Size: an estimate of how many active users an app has.</p>

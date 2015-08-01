@@ -198,7 +198,7 @@
               <th><div class="th normal-right-padding">
                 Mobile Priority
               </div></th>
-              <th><div class="th normal-right-padding">
+              <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
                 Ad Spend
               </div></th>
               <th><div class="th normal-right-padding">
@@ -241,7 +241,7 @@
               <td class="dashboardMobilePriorityView">
                 <i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
               </td>
-              <td  class="dashboardAdSpendView">
+              <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
                 <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
               </td>
               <td>{{app.userBase | capitalize}}</td>

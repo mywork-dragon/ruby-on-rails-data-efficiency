@@ -215,7 +215,7 @@
                   <label>MightySignal ID:</label>
                   {{appData.id}}
                 </li>
-                <li ng-if="appData.adSpend">
+                <li ng-if="appData.adSpend && canViewAdSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
                   <label>Ad Spend:</label>
                   {{appData.adSpend ? 'Yes' : 'No'}}
