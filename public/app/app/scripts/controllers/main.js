@@ -47,9 +47,11 @@ angular.module('appApp')
       authService.permissions()
         .success(function(data) {
           $scope.canViewSupportDesk = data.can_view_support_desk;
+          $scope.canViewAdSpend = data.can_view_ad_spend;
         })
         .error(function() {
           $scope.canViewSupportDesk = false;
+          $scope.canViewAdSpend = false;
         });
 
   }])
