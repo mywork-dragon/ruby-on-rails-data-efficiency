@@ -48,10 +48,12 @@ angular.module('appApp')
         .success(function(data) {
           $scope.canViewSupportDesk = data.can_view_support_desk;
           $scope.canViewAdSpend = data.can_view_ad_spend;
+          $scope.canViewSdks = data.can_view_sdks;
         })
         .error(function() {
           $scope.canViewSupportDesk = false;
           $scope.canViewAdSpend = true;
+          $scope.canViewSdks = false;
         });
 
   }])
