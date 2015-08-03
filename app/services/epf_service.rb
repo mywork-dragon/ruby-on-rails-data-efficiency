@@ -46,10 +46,10 @@ class EpfService
       #
       # puts 'Download done!'
       #
-      # tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
-      # saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
+      tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
+      saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
       #
-      # puts "saved_file_path: #{saved_file_path}"
+      puts "saved_file_path: #{saved_file_path}"
       #
       # unzip(saved_file_path)
       
