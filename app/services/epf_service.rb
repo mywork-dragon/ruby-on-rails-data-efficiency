@@ -112,14 +112,10 @@ class EpfService
     
     def fix_partials(main_file_name)
       
-      main_file = "#{EPF_DIRECTORY}/#{main_file_name}"
+      (NUMBER_OF_FILES - 1).times do |n|        #don't do the last file
+        split_file = file_for_n(n: n, filename: main_file_name)
       
-      NUMBER_OF_FILES.times do |n|        
-        split_file = file_for_n(n: n, filename: main_file)
-    
-        next if n == NUMBER_OF_FILES - 1 #don't proceed if last file
-      
-        next_split_file = file_for_n(n: n + 1, filename: main_file)
+        next_split_file = file_for_n(n: n + 1, filename: main_file_name)
       
         partial_data = get_partial_data_from_end(split_file)
       
@@ -140,7 +136,8 @@ class EpfService
       new_file = original_file + '.new'
       
       File.open(new_file, 'w') do |fo|
-        fo.print partial_data
+        
+        fo.print partial_data.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => ''})
         File.foreach(original_file) do |li|
           fo.puts li
         end
