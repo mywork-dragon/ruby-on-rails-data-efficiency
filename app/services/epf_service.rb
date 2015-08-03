@@ -42,7 +42,7 @@ class EpfService
       #TODO: call everything
           
       saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
-      #download(file_url, saved_file_path)  #download works
+      download(file_url, saved_file_path)  #download works
 
       puts 'Download done!'
       
@@ -54,7 +54,7 @@ class EpfService
       unzip(saved_file_path)
       
       files_for_feed(feed_symbol).each do |file|
-        file_path = "#{epf_directory}/#{tbz_name.gsub('.tbz', '')}"
+        file_path = "#{EPF_DIRECTORY}/#{tbz_name.gsub('.tbz', '')}"
         puts file_path
         split("#{file_path}/#{file}")
       
