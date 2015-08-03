@@ -50,7 +50,7 @@ class EpfService
       download(file_url, saved_file_path)  #download works
 
       puts 'EPF download complete'
-      send_slack_notifier('EPF download complet.e')
+      send_slack_notifier('EPF download complete')
       
       tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
       saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
@@ -71,6 +71,16 @@ class EpfService
       
       puts 'Partial files fixed.'
       send_slack_notifier('Partial files fixed.')
+      
+      files_for_feed(feed_symbol).each do |file|
+        NUMBER_OF_FILES.times do |n|
+          file = file_for_n(n: n, filename: file)
+          
+          EpfServiceWorker.perform_async(feed_symbol.to_s, file)
+        end
+      end
+      
+
       
     end
     
