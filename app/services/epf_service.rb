@@ -9,7 +9,7 @@ class EpfService
   RS = 2.chr + "\n"
   
   if Rails.env.production?
-    EPF_DIRECTORY = '/home/deploy/epf'
+    EPF_DIRECTORY = '/mnt/epf'
   else
     EPF_DIRECTORY = '/Users/jason/penpals/epf/epf_service'
   end
