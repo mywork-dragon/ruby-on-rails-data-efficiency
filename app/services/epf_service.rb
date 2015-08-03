@@ -9,7 +9,7 @@ class EpfService
   RS = 2.chr + "\n"
   
   if Rails.env.production?
-    EPF_DIRECTORY = 'home/deploy/epf/'
+    EPF_DIRECTORY = 'home/deploy/epf'
   else
     EPF_DIRECTORY = '/Users/jason/penpals/epf/epf_service'
   end
@@ -41,20 +41,13 @@ class EpfService
     def run_feed(file_url:, feed_symbol:, name:)
       #TODO: call everything
           
-      # saved_file_path = '/Users/jason/penpals/epf/epf_service/' + file_url.split('/').last
-      # download(file_url, saved_file_path)
-      #
-      # puts 'Download done!'
+      saved_file_path = EPF_DIRECTORY + file_url.split('/').last
+      download(file_url, saved_file_path)
+
+      puts 'Download done!'
       
-      if Rails.env.production?
-        tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
-        epf_directory =  EPF_DIRECTORY
-        saved_file_path = "#{epf_directory}/#{tbz_name}"
-      else
-        tbz_name = "itunes20150701.tbz"
-        epf_directory = "/Users/jason/penpals/epf/epf_service"
-        saved_file_path = "#{epf_directory}/#{tbz_name}" #{epf_directory}
-      end
+      tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
+      saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
       
       puts "saved_file_path: #{saved_file_path}"
       
