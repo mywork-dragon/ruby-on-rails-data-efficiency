@@ -138,3 +138,4 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 gem 'slackiq', '0.0.2'
 
+gem 'slack-notifier', '1.2.1'
