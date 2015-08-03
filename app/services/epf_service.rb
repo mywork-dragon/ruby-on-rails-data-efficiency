@@ -121,7 +121,7 @@ class EpfService
     def get_partial_data_from_end(file)
       max_lines = 5e3
       
-      file_s = File.open(file, "rb:UTF-8").read
+      file_s = File.open(file, "rb:UTF-8").read.scrub
       
       file_s_split = file_s.split(RS)
       
