@@ -9,7 +9,7 @@ class EpfService
   RS = 2.chr + "\n"
   
   if Rails.env.production?
-    EPF_DIRECTORY = 'home/deploy/epf'
+    EPF_DIRECTORY = '/home/deploy/epf'
   else
     EPF_DIRECTORY = '/Users/jason/penpals/epf/epf_service'
   end
@@ -53,7 +53,7 @@ class EpfService
       
       unzip(saved_file_path)
       
-      files.for_feed.each do |file|
+      files_for_feed(feed_symbol).each do |file|
         file_path = "#{epf_directory}/#{tbz_name.gsub('.tbz', '')}"
         puts file_path
         split(file_path)
