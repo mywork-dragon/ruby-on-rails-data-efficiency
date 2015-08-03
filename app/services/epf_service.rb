@@ -3,7 +3,7 @@ class EpfService
   EPF_USERNAME = 'epfuser99894'
   EPF_PASSWORD = '42413e32cb2759c0e96c9b3cb154c8e2'
 
-  NUMBER_OF_FILES = 10 # Should be less than or equal to the number of threads
+  NUMBER_OF_FILES = 50 # Should be less than or equal to the number of threads
   
   FS = 1.chr
   RS = 2.chr + "\n"
@@ -58,7 +58,7 @@ class EpfService
         puts file_path
         split("#{file_path}/#{file}")
       
-        fix_partials(feed_symbol.to_s)
+        fix_partials(file.to_s)
       end      
       
     end
