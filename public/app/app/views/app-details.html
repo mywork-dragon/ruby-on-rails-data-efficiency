@@ -348,7 +348,7 @@
                   </div>
                 </li>
                 <li ng-show="sdks">
-                  <div ng-repeat="(companyName, sdkList) in sdks">
+                  <div ng-repeat="(companyName, sdkList) in sdks" class="sdksListView">
                     <strong>{{companyName}}</strong>
                     <ul>
                       <li ng-repeat="sdk in sdkList">{{sdk}}</li>

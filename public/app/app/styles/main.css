@@ -7476,3 +7476,12 @@ pre {
 .collapse-text-toggle:after {
   content: ')';
 }
+
+.sdksListView ul:last-child {
+  margin-bottom: 10px;
+}
+
+.sdksListView li {
+  border: none;
+  padding: 5px;
+}
