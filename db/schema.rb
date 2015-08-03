@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150730210000) do
+ActiveRecord::Schema.define(version: 20150803210728) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -689,6 +689,43 @@ ActiveRecord::Schema.define(version: 20150730210000) do
 
   add_index "scraped_results", ["company_id"], name: "index_scraped_results_on_company_id", using: :btree
   add_index "scraped_results", ["scrape_job_id"], name: "index_scraped_results_on_scrape_job_id", using: :btree
+
+  create_table "sdk_companies", force: true do |t|
+    t.string   "name"
+    t.string   "website"
+    t.string   "funding"
+    t.string   "phone"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "country"
+    t.text     "description"
+    t.integer  "year_founded"
+    t.string   "bloomberg_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree
+  add_index "sdk_companies", ["country"], name: "index_sdk_companies_on_country", using: :btree
+  add_index "sdk_companies", ["funding"], name: "index_sdk_companies_on_funding", using: :btree
+  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", using: :btree
+  add_index "sdk_companies", ["state"], name: "index_sdk_companies_on_state", using: :btree
+  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", using: :btree
+  add_index "sdk_companies", ["year_founded"], name: "index_sdk_companies_on_year_founded", using: :btree
+  add_index "sdk_companies", ["zip"], name: "index_sdk_companies_on_zip", using: :btree
+
+  create_table "sdk_packages", force: true do |t|
+    t.string   "package_name"
+    t.integer  "sdk_company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_packages", ["package_name"], name: "index_sdk_packages_on_package_name", using: :btree
+  add_index "sdk_packages", ["sdk_company_id"], name: "index_sdk_packages_on_sdk_company_id", using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"
