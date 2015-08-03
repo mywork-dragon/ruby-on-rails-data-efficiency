@@ -37,21 +37,29 @@ class EpfService
       end
     end
     
+    def send_slack_notifier(title)
+      notifier = Slack::Notifier.new('https://hooks.slack.com/services/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')
+      attachment = { fallback: title, title: title, color: '#00ff66'}
+      notifier.ping('', attachments: [attachment])
+    end
+    
     # Valid feed symbols: :itunes, :match, :popularity, :pricing
     def run_feed(file_url:, feed_symbol:, name:)
-      #TODO: call everything
-          
-      # saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
-      # download(file_url, saved_file_path)  #download works
-      #
-      # puts 'Download done!'
-      #
+         
+      saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
+      download(file_url, saved_file_path)  #download works
+
+      puts 'EPF download complete'
+      send_slack_notifier('EPF download complet.e')
+      
       tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
       saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
-      #
+      
       puts "saved_file_path: #{saved_file_path}"
-      #
-      # unzip(saved_file_path)
+      
+      unzip(saved_file_path)
+      puts '.tbz unzipped'
+      send_slack_notifier('.tbz unzipped.')
       
       files_for_feed(feed_symbol).each do |file|
         file_path = "#{EPF_DIRECTORY}/#{tbz_name.gsub('.tbz', '')}"
@@ -60,6 +68,9 @@ class EpfService
       
         fix_partials(file.to_s)
       end      
+      
+      puts 'Partial files fixed.'
+      send_slack_notifier('Partial files fixed.')
       
     end
     
