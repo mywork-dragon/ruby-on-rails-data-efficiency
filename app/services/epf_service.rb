@@ -42,7 +42,7 @@ class EpfService
       #TODO: call everything
           
       saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
-      download(file_url, saved_file_path)
+      #download(file_url, saved_file_path)  #download works
 
       puts 'Download done!'
       
@@ -94,7 +94,7 @@ class EpfService
     end
     
     def unzip(file)
-      `tar -xvf #{file}`
+      `(cd #{EPF_DIRECTORY}; tar -xvf #{file})`
     end
     
     def split(filename)
