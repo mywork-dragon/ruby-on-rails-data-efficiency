@@ -124,11 +124,19 @@ class EpfService
       end
     end
     
+    # Gets it and removes it
     def get_partial_data_from_end(file)
       max_lines = 5e3
       
       file_s = File.open(file, "rb").read
-      file_s.split(RS).last
+      
+      file_s_split = file_s.split(RS)
+      
+      file_s_trimmed = file_s_split[0..(file_s_split.size - 2)].join(RS) + RS #remove the last element
+      
+      File.open(file, 'w') { |file| file.write(file_s_trimmed.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})) }
+      
+      file_s_split.last
     end
     
     def add_partial_data_to_beginning(partial_data, file)
@@ -137,7 +145,7 @@ class EpfService
       
       File.open(new_file, 'w') do |fo|
         
-        fo.print partial_data.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => ''})
+        fo.print partial_data.to_s.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})
         File.foreach(original_file) do |li|
           fo.puts li
         end
