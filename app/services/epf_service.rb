@@ -56,7 +56,7 @@ class EpfService
       files_for_feed(feed_symbol).each do |file|
         file_path = "#{epf_directory}/#{tbz_name.gsub('.tbz', '')}"
         puts file_path
-        split(file_path)
+        split("#{file_path}/#{file}")
       
         fix_partials
       end      
@@ -97,9 +97,9 @@ class EpfService
       `(cd #{EPF_DIRECTORY}; tar -xvf #{file})`
     end
     
-    def split(filename)
+    def split(file)
+      filename = file.split('/').last
       split_cmd = (Rails.env.production? ? 'split' : 'gsplit')
-      file = "#{EPF_DIRECTORY}/#{filename}"
       `(cd #{EPF_DIRECTORY}; #{split_cmd} -n #{NUMBER_OF_FILES} -a #{number_of_digits} -d #{file} #{filename}_)`
     end
     
