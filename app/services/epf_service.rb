@@ -128,7 +128,7 @@ class EpfService
     def get_partial_data_from_end(file)
       max_lines = 5e3
       
-      file_s = File.open(file, "rb").read
+      file_s = File.open(file, "rb:UTF-8").read
       
       file_s_split = file_s.split(RS)
       
@@ -143,7 +143,7 @@ class EpfService
       original_file = file
       new_file = original_file + '.new'
       
-      File.open(new_file, 'w') do |fo|
+      File.open(new_file, 'w:UTF-8') do |fo|
         
         fo.print partial_data.to_s.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})
         File.foreach(original_file) do |li|
