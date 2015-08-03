@@ -41,24 +41,24 @@ class EpfService
     def run_feed(file_url:, feed_symbol:, name:)
       #TODO: call everything
           
-      saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
-      download(file_url, saved_file_path)  #download works
-
-      puts 'Download done!'
-      
-      tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
-      saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
-      
-      puts "saved_file_path: #{saved_file_path}"
-      
-      unzip(saved_file_path)
+      # saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
+      # download(file_url, saved_file_path)  #download works
+      #
+      # puts 'Download done!'
+      #
+      # tbz_name = "#{feed_symbol.to_s}#{name}.tbz"
+      # saved_file_path = "#{EPF_DIRECTORY}/#{tbz_name}"
+      #
+      # puts "saved_file_path: #{saved_file_path}"
+      #
+      # unzip(saved_file_path)
       
       files_for_feed(feed_symbol).each do |file|
         file_path = "#{EPF_DIRECTORY}/#{tbz_name.gsub('.tbz', '')}"
         puts file_path
         split("#{file_path}/#{file}")
       
-        fix_partials
+        fix_partials(feed_symbol.to_s)
       end      
       
     end
