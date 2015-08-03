@@ -41,7 +41,7 @@ class EpfService
     def run_feed(file_url:, feed_symbol:, name:)
       #TODO: call everything
           
-      saved_file_path = EPF_DIRECTORY + file_url.split('/').last
+      saved_file_path = EPF_DIRECTORY + '/' + file_url.split('/').last
       download(file_url, saved_file_path)
 
       puts 'Download done!'
