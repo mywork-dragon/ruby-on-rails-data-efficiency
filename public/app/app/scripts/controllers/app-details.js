@@ -79,12 +79,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.load();
 
   $scope.getSdks = function(appId) {
+
+    $scope.sdks = {"Google":["com.google.android.gms.ads.AdActivity","com.google.android.gms.version","com.google.android.maps.v2.API_KEY"],"Amazon":["com.amazon.device.ads.AdActivity"],"Facebook":["com.facebook.sdk.ApplicationId"]};
+
+    /*
     apiService.getSdks(appId)
       .success(function(data) {
         $scope.sdks = data;
       }).error(function() {
 
       });
+    */
   };
 
   authService.permissions()

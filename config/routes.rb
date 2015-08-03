@@ -69,7 +69,7 @@ Rails.application.routes.draw do
   post 'api/company/contacts' => 'api#get_company_contacts'
 
   get 'api/android_sdks' => 'api#android_sdks_for_app'
-  get 'api/android_sdks_exists' => 'api#android_sdks_for_app_exists'
+  get 'api/android_sdks_exist' => 'api#android_sdks_for_app_exist'
 
   
   # API for customers
