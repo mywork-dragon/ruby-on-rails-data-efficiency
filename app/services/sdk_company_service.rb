@@ -11,7 +11,7 @@ class SdkCompanyService
   	end
 
   	def google_check
-  		SdkCompany.each.with_index do |com, index|
+  		SdkCompany.all.each.with_index do |com, index|
   			li "app #{index}"
         SdkCompanyServiceWorker.perform_async(com.id)
   		end
