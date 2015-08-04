@@ -128,6 +128,12 @@ class EpfService
       
       (NUMBER_OF_FILES - 1).times do |n|        #don't do the last file
         split_file = file_for_n(n: n, filename: main_file_name)
+        
+        if n == 0 #remove stuff on first file
+          file_s = File.open(split_file, "rb:UTF-8").read.scrub
+          file_s_without_headers_and_legal = file_s.split('##legal: ' + RS).last
+          File.open(split_file, 'w') { |file| file.write(file_s_without_headers_and_legal.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})) }
+        end
       
         next_split_file = file_for_n(n: n + 1, filename: main_file_name)
       

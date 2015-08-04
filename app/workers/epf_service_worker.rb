@@ -12,11 +12,11 @@ class EpfServiceWorker
   
   def perform_application(file)
     
-    if !File.exist?(file)
-      #Should only run on one server, so just chill out on the other ones
-      sleep(10)
+    File.foreach(filename).with_index do |line, line_num|
+       puts "#{line_num}: #{line}"
+       
+       
     end
-    
   end
   
 end
