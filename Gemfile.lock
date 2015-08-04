@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MightySignal/capistrano-sidekiq-mighty-servers.git
-  revision: 6142b82448bc1195f1af62fad68cdc9284b5e4b7
+  revision: c2790313332611be852fa3b0c930ff5cf0d4264a
   branch: select_queues_per_server
   specs:
     capistrano-sidekiq-mighty-servers (0.0.0)
