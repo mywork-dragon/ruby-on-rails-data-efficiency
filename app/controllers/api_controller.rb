@@ -736,7 +736,7 @@ class ApiController < ApplicationController
 
   def android_sdks_for_app_exist
 
-    android_app_id = params['id']
+    android_app_id = params['appId']
 
     aa = AndroidApp.find(android_app_id)
 

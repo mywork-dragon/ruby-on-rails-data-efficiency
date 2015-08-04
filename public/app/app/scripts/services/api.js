@@ -102,10 +102,11 @@ angular.module("appApp")
           }
         });
       },
-      checkForSdks: function() {
+      checkForSdks: function(appId) {
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/android_sdks_exist'
+          url: API_URI_BASE + 'api/android_sdks_exist',
+          params: {appId: appId}
         })
       },
       getSdks: function(appId) {
