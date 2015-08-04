@@ -38,7 +38,7 @@ class EpfServiceWorker
   
     return false unless IosAppEpfSnapshot.where(epf_full_feed_id: epf_full_feed_id, application_id: values[1]).blank?
   
-    ss = IosAppEpfSnapshot.new
+    ss = IosAppEpfSnapshot.new(epf_full_feed_id: epf_full_feed_id)
     
     values.each_with_index do |value, n|
       field = field_at_index(n)
