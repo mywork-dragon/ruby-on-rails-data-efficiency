@@ -73,15 +73,22 @@ class EpfService
       send_slack_notifier('Partial files fixed.')
       
       files_for_feed(feed_symbol).each do |main_file_name|
-        NUMBER_OF_FILES.times do |n|
-          file = file_for_n(n: n, filename: main_file_name)
-          
-          EpfServiceWorker.perform_async(main_file_name, file)
+        
+        batch = Sidekiq::Batch.new
+        batch.description = "EpfService, #{feed_symbol.to_s}, #{main_file_name}," 
+        batch.on(:complete, self)
+      
+        batch.jobs do
+          NUMBER_OF_FILES.times do |n|
+            file = file_for_n(n: n, filename: main_file_name) 
+            EpfServiceWorker.perform_async(main_file_name, file)
+          end
         end
       end
-      
-
-      
+    end
+    
+    def on_complete(status, options)
+      Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status)
     end
     
     # Oldest is first
