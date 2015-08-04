@@ -43,7 +43,7 @@ class EpfServiceWorker
     values.each_with_index do |value, n|
       field = field_at_index(n)
       
-      s.send("#{field}=", value) if value
+      ss.send("#{field}=", value) if value
     end
     
     ss.save
