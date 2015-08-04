@@ -42,12 +42,13 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master, :web]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sdk_scraper_concurrency, 15
 set :scraper_concurrency, 50
+set :web_concurrency, 0
 
 # set :sidekiq_queue, %w(critical default low)
 
