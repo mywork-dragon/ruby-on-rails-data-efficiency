@@ -5,7 +5,8 @@ class SdkCompanyServiceWorker
 	sidekiq_options backtrace: true, :retry => false, queue: :sdk
   
 	def perform(app_id)
-    find_company(app_id)
+    # find_company(app_id)
+    google_company(app_id)
   end
 
   def find_company(app_id)
@@ -92,6 +93,69 @@ class SdkCompanyServiceWorker
   def is_word?(w)
     return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
     false
+  end
+
+
+
+
+
+  def google_company(sdk_company_id)
+
+    sdk_com = SdkCompany.find_by_id(sdk_company_id)
+
+    query = sdk_com.name
+
+    link = google_search(query)
+
+    if link.present?
+      sdk_com.website = link
+    else
+      sdk_com.website = nil
+    end
+
+    sdk_com.save
+
+  end
+
+
+  def google_search(query)
+
+    q = query + " sdk"
+
+    results_html = Nokogiri::HTML(res(type: :get, req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}).body)
+
+    results = results_html.search('cite').map do |cite|
+      url = cite.inner_text
+      url = "http://" + url if url.exclude?("http://") || url.exclude?("https://")
+      host = URI(url).host
+      host if host.present? && host.include?(query)
+    end
+
+    results.reject{ |r| r.blank? }.first
+
+  end
+
+  def res(req:, params:, type:)
+
+    mp = MicroProxy.transaction do
+
+      p = MicroProxy.lock.order(last_used: :asc).first
+      p.last_used = DateTime.now
+      p.save
+
+      p
+
+    end
+
+    proxy = "#{mp.private_ip}:8888"
+
+    response = CurbFu.send(type, req, params) do |curb|
+      curb.proxy_url = proxy
+      curb.ssl_verify_peer = false
+      curb.max_redirects = 3
+      curb.timeout = 5
+    end
+
   end
 
 end
