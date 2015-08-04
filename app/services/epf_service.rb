@@ -199,7 +199,7 @@ class EpfService
   end
   
   def on_complete(status, options)
-    Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status)
+    Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => IosAppEpfSnapshot.where(epf_full_feed_id: EpfFullFeed.last.id).count)
   end
 
 end
