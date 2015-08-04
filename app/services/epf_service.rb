@@ -72,11 +72,11 @@ class EpfService
       puts 'Partial files fixed.'
       send_slack_notifier('Partial files fixed.')
       
-      files_for_feed(feed_symbol).each do |file|
+      files_for_feed(feed_symbol).each do |main_file_name|
         NUMBER_OF_FILES.times do |n|
-          file = file_for_n(n: n, filename: file)
+          file = file_for_n(n: n, filename: main_file_name)
           
-          EpfServiceWorker.perform_async(feed_symbol.to_s, file)
+          EpfServiceWorker.perform_async(main_file_name, file)
         end
       end
       
