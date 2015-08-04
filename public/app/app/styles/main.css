@@ -7383,13 +7383,40 @@ select option:empty {
 #showCompanyEmailsButtonLi {
   border: none;
   margin-bottom: 0px;
+  clear: both;
+}
+
+#showCompanyEmailsContainer {
+  overflow: hidden;
+  position: relative;
+  display: table;
+  width: 100%;
 }
 
 #showCompanyEmailsButton {
-  margin-top: 25px;
-  margin-bottom: 0px;
+  width: 158px;
+  display: table-cell;
+}
+
+#showSdksButtonLi {
+  border: none;
+}
+
+#showSdksButton {
+  margin-top: 10px;
+  margin-bottom: 0;
   width: 60%;
   margin-left: 20%;
+}
+
+#showCompanyEmailsTextField {
+  padding-left: 6px;
+  display: table-cell;
+}
+
+#showCompanyEmailsTextField input {
+  width: 99%;
+  height: 35px;
 }
 
 .showCompanyEmailsSection {
@@ -7423,4 +7450,38 @@ select option:empty {
 #loadingSpinnerContainer {
   text-align: center;
   padding-top: 15px;
+}
+
+pre {
+  color: inherit;
+  background-color: #FFFFFF;
+  border: none;
+  padding: 0;
+  padding-left: 27px;
+}
+
+/* DdTextCollapse Directive Styling */
+.collapse-text-toggle {
+  font-size: 12px;
+  color: #0393dd;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.collapse-text-toggle:hover {
+  color: #222222;
+}
+.collapse-text-toggle:before {
+  content: '\00a0(';
+}
+.collapse-text-toggle:after {
+  content: ')';
+}
+
+.sdksListView ul:last-child {
+  margin-bottom: 10px;
+}
+
+.sdksListView li {
+  border: none;
+  padding: 5px;
 }

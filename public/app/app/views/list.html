@@ -25,7 +25,7 @@
         <thead>
         <tr>
           <th class="selectAllCheckboxHeader">
-            <select-all-checkbox checkboxes="$root.apps" all-selected="AllSelectedItems" all-clear="NoSelectedItems"></select-all-checkbox>
+            <select-all-checkbox apps="$root.apps"></select-all-checkbox>
           </th>
           <th><div class="th normal-right-padding">
             App Name
@@ -66,7 +66,7 @@
           <th><div class="th normal-right-padding">
             Mobile Priority
           </div></th>
-          <th><div class="th normal-right-padding">
+          <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
             Ad Spend
           </div></th>
           <th><div class="th normal-right-padding">
@@ -96,11 +96,11 @@
         <tbody data-ng-hide="queryInProgress">
           <tr data-ng-repeat="app in $root.apps">
             <td class="dashboardTableDataCheckbox">
-              <checkable-checkbox app="app.app"></checkable-checkbox>
+              <checkable-checkbox app="app.app" apps="$root.apps"></checkable-checkbox>
             </td>
             <td class="resultsTableAppIcon">
               <span>
-                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform}}/{{app.app.id}}" target="_blank">{{app.app.name}}</a>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">{{app.app.name}}</a>
               </span>
             </td>
             <td class="appTypeIndicator">
@@ -110,12 +110,12 @@
               <span ng-if="app.app.type == 'AndroidApp'">Android</span>
               -->
             </td>
-            <td><a href="#/company/{{app.company.id}}" target="_blank">{{app.company.name}}</a></td>
+            <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
               <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
             </td>
-            <td  class="dashboardAdSpendView">
+            <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
               <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
             </td>
             <td>{{app.app.userBase | capitalize}}</td>

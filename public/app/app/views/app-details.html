@@ -19,13 +19,14 @@
     </div>
   </header>
 
-  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded">
+  <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
 
     <!-- Company Apps Table -->
     <section class="panel panel-default table-dynamic" id="companyContactsTable">
 
       <div class="panel-heading" id="companyContactsTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
+        <button type="submit" class="btn btn-primary pull-right" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
       </div>
 
       <div id="results-table-wrapper">
@@ -60,7 +61,7 @@
               <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
             </td>
             <td>
-              <a href="https://www.linkedin.com/{{contact.linkedin}}">www.linkedin.com/{{contact.linkedin}}</a>
+              <a href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">www.linkedin.com/{{contact.linkedin}}</a>
             </td>
           </tr>
           </tbody>
@@ -98,10 +99,10 @@
                   <label>Platform:</label>
                   iOS
                 </li>
-                <li ng-if="appData.appStoreId">
+                <li ng-if="appData.appIdentifier">
                   <span class="icon fa fa-user"></span>
                   <label>App Store ID:</label>
-                  id{{appData.appStoreId}}
+                  id{{appData.appIdentifier}}
                 </li>
                 <li>
                   <span class="icon fa fa-usd"></span>
@@ -132,7 +133,7 @@
                 <li ng-if="appData.description">
                   <span class="icon fa fa-file-text-o"></span>
                   <label>Description:</label>
-                  <p class="appPageDescription">{{appData.description}}</p>
+                  <p class="appPageDescription"><pre dd-text-collapse dd-text-collapse-max-length="110" dd-text-collapse-text="{{appData.description}}"></pre></p>
                 </li>
               </ul>
 
@@ -193,7 +194,8 @@
                 <li ng-if="appData.description">
                   <span class="icon fa fa-file-text-o"></span>
                   <label>Description:</label>
-                  <p class="appPageDescription">{{appData.description}}</p>
+                  <p class="appPageDescription"><pre dd-text-collapse dd-text-collapse-max-length="120" dd-text-collapse-text="{{appData.description}}"></pre></p>
+
                 </li>
               </ul>
 
@@ -213,7 +215,7 @@
                   <label>MightySignal ID:</label>
                   {{appData.id}}
                 </li>
-                <li ng-if="appData.adSpend">
+                <li ng-if="appData.adSpend && canViewAdSpend">
                   <span class="icon glyphicon glyphicon-envelope"></span>
                   <label>Ad Spend:</label>
                   {{appData.adSpend ? 'Yes' : 'No'}}
@@ -314,11 +316,43 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
                 </li>
                 <li id="showCompanyEmailsButtonLi">
-                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites)">Load Contact Emails</button>
+                  <div id="showCompanyEmailsContainer">
+                    <div id="showCompanyEmailsButton">
+                      <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load Contact Emails</button>
+                    </div>
+                    <div id="showCompanyEmailsTextField">
+                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
+                    </div>
+                  </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
                     <div class="loading outer">
                       <div class="loading inner"></div>
                     </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default" ng-show="canViewSdks && appPlatform == 'android'">
+        <div class="panel-heading"><strong>SDKs</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li ng-hide="sdks" id="showSdksButtonLi">
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Load SDKs</button>
+                  </div>
+                </li>
+                <li ng-show="sdks">
+                  <div ng-repeat="(companyName, sdkList) in sdks" class="sdksListView">
+                    <strong>{{companyName}}</strong>
+                    <ul>
+                      <li ng-repeat="sdk in sdkList">{{sdk}}</li>
+                    </ul>
                   </div>
                 </li>
               </ul>

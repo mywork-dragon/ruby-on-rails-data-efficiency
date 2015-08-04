@@ -14,6 +14,14 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.appData.name);
+
+      console.log('APP ID', $scope.appData.id);
+
+      apiService.checkForSdks($scope.appData.id)
+        .success(function(data) {
+          $scope.sdks = data;
+        }).error(function(err) {
+        });
     });
   };
 
@@ -38,7 +46,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     );
     /* -------- Mixpanel Analytics End -------- */
 
-    $window.open(linkedinLink, '_blank');
+    $window.open(linkedinLink);
   };
 
   $scope.linkTo = function(path) {
@@ -70,6 +78,15 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.load();
 
+  $scope.getSdks = function(appId) {
+    apiService.getSdks(appId)
+      .success(function(data) {
+        $scope.sdks = data;
+      }).error(function() {
+
+      });
+  };
+
   authService.permissions()
     .success(function(data) {
       $scope.canViewSupportDesk = data.can_view_support_desk;
@@ -78,38 +95,53 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       $scope.canViewSupportDesk = false;
     });
 
+  $scope.exportContactsToCsv = function() {
+    apiService.exportContactsToCsv($scope.companyContacts, $scope.appData.company.name)
+      .success(function (content) {
+        var hiddenElement = document.createElement('a');
+
+        hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'contacts.csv';
+        hiddenElement.click();
+      });
+  };
+
   /* Company Contacts Logic */
   $scope.contactsLoading = false;
   $scope.contactsLoaded = false;
-  $scope.getCompanyContacts = function(websites) {
+  $scope.getCompanyContacts = function(websites, filter) {
     $scope.contactsLoading = true;
-    apiService.getCompanyContacts(websites).success(function(data) {
-      $scope.companyContacts = data.contacts;
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = true;
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestResults': data.contacts,
-          'requestResultsCount': data.contacts.length
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-    }).error(function(err) {
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'websites': websites,
-          'companyName': $scope.appData.company.name,
-          'requestError': err
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-      $scope.contactsLoading = false;
-      $scope.contactsLoaded = false;
-    });
+    apiService.getCompanyContacts(websites, filter)
+      .success(function(data) {
+        $scope.companyContacts = data.contacts;
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = true;
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.appData.company.name,
+            'requestResults': data.contacts,
+            'requestResultsCount': data.contacts.length,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      }).error(function(err) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Contacts Requested", {
+            'websites': websites,
+            'companyName': $scope.appData.company.name,
+            'requestError': err,
+            'titleFilter': filter || ''
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        $scope.contactsLoading = false;
+        $scope.contactsLoaded = false;
+      });
   };
 
   /* -------- Mixpanel Analytics Start -------- */

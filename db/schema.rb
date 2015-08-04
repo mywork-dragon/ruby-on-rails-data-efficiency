@@ -11,13 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150723034734) do
+ActiveRecord::Schema.define(version: 20150804080250) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
+    t.boolean  "can_view_ad_spend",     default: true,  null: false
+    t.boolean  "can_view_sdks",         default: false, null: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
@@ -88,6 +90,7 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.integer  "downloads_max",                    limit: 8
     t.string   "icon_url_300x300"
     t.string   "developer_google_play_identifier"
+    t.boolean  "apk_access_forbidden"
   end
 
   add_index "android_app_snapshots", ["android_app_id", "name"], name: "index_android_app_id_and_name", using: :btree
@@ -95,6 +98,7 @@ ActiveRecord::Schema.define(version: 20150723034734) do
   add_index "android_app_snapshots", ["android_app_id"], name: "index_android_app_id", using: :btree
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
+  add_index "android_app_snapshots", ["apk_access_forbidden"], name: "index_apk_access_forbidden", using: :btree
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
@@ -108,11 +112,13 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.integer  "user_base"
     t.integer  "mobile_priority"
     t.boolean  "taken_down"
+    t.integer  "newest_apk_snapshot_id"
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
+  add_index "android_apps", ["newest_apk_snapshot_id"], name: "index_android_apps_on_newest_apk_snapshot_id", using: :btree
   add_index "android_apps", ["taken_down"], name: "index_android_apps_on_taken_down", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 
@@ -187,11 +193,13 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.integer  "google_account_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status_code"
   end
 
   add_index "apk_snapshot_exceptions", ["apk_snapshot_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_id", using: :btree
   add_index "apk_snapshot_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshot_exceptions", ["google_account_id"], name: "index_apk_snapshot_exceptions_on_google_account_id", using: :btree
+  add_index "apk_snapshot_exceptions", ["status_code"], name: "index_apk_status_code", using: :btree
 
   create_table "apk_snapshot_jobs", force: true do |t|
     t.text     "notes"
@@ -211,13 +219,16 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "try"
-    t.string   "proxy"
+    t.text     "auth_token"
+    t.integer  "micro_proxy_id"
+    t.integer  "last_device"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
-  add_index "apk_snapshots", ["proxy"], name: "index_apk_snapshots_on_proxy", using: :btree
+  add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree
+  add_index "apk_snapshots", ["micro_proxy_id"], name: "index_apk_snapshots_on_micro_proxy_id", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
   create_table "app_stores", force: true do |t|
@@ -300,6 +311,14 @@ ActiveRecord::Schema.define(version: 20150723034734) do
   add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
   add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
+  create_table "epf_full_feeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
+
   create_table "google_accounts", force: true do |t|
     t.string   "email"
     t.string   "password"
@@ -311,9 +330,11 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
+    t.integer  "device"
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
+  add_index "google_accounts", ["device"], name: "index_google_accounts_on_device", using: :btree
   add_index "google_accounts", ["flags"], name: "index_google_accounts_on_flags", using: :btree
   add_index "google_accounts", ["last_used"], name: "index_google_accounts_on_last_used", using: :btree
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
@@ -385,6 +406,47 @@ ActiveRecord::Schema.define(version: 20150723034734) do
   add_index "ios_app_download_snapshots", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_download_snapshots", ["status"], name: "index_ios_app_download_snapshots_on_status", using: :btree
+
+  create_table "ios_app_epf_snapshots", force: true do |t|
+    t.integer  "export_date",         limit: 8
+    t.integer  "application_id"
+    t.string   "title"
+    t.string   "recommended_age"
+    t.string   "artist_name"
+    t.string   "seller_name"
+    t.string   "company_url"
+    t.string   "support_url"
+    t.string   "view_url"
+    t.string   "artwork_url_large"
+    t.string   "artwork_url_small"
+    t.datetime "itunes_release_date"
+    t.string   "copywright"
+    t.text     "description"
+    t.string   "version"
+    t.string   "itunes_version"
+    t.integer  "download_size",       limit: 8
+    t.integer  "epf_full_feed_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_epf_snapshots", ["application_id"], name: "index_ios_app_epf_snapshots_on_application_id", using: :btree
+  add_index "ios_app_epf_snapshots", ["artist_name"], name: "index_ios_app_epf_snapshots_on_artist_name", using: :btree
+  add_index "ios_app_epf_snapshots", ["artwork_url_large"], name: "index_ios_app_epf_snapshots_on_artwork_url_large", using: :btree
+  add_index "ios_app_epf_snapshots", ["artwork_url_small"], name: "index_ios_app_epf_snapshots_on_artwork_url_small", using: :btree
+  add_index "ios_app_epf_snapshots", ["company_url"], name: "index_ios_app_epf_snapshots_on_company_url", using: :btree
+  add_index "ios_app_epf_snapshots", ["copywright"], name: "index_ios_app_epf_snapshots_on_copywright", using: :btree
+  add_index "ios_app_epf_snapshots", ["download_size"], name: "index_ios_app_epf_snapshots_on_download_size", using: :btree
+  add_index "ios_app_epf_snapshots", ["epf_full_feed_id"], name: "index_ios_app_epf_snapshots_on_epf_full_feed_id", using: :btree
+  add_index "ios_app_epf_snapshots", ["export_date"], name: "index_ios_app_epf_snapshots_on_export_date", using: :btree
+  add_index "ios_app_epf_snapshots", ["itunes_release_date"], name: "index_ios_app_epf_snapshots_on_itunes_release_date", using: :btree
+  add_index "ios_app_epf_snapshots", ["itunes_version"], name: "index_ios_app_epf_snapshots_on_itunes_version", using: :btree
+  add_index "ios_app_epf_snapshots", ["recommended_age"], name: "index_ios_app_epf_snapshots_on_recommended_age", using: :btree
+  add_index "ios_app_epf_snapshots", ["seller_name"], name: "index_ios_app_epf_snapshots_on_seller_name", using: :btree
+  add_index "ios_app_epf_snapshots", ["support_url"], name: "index_ios_app_epf_snapshots_on_support_url", using: :btree
+  add_index "ios_app_epf_snapshots", ["title"], name: "index_ios_app_epf_snapshots_on_title", using: :btree
+  add_index "ios_app_epf_snapshots", ["version"], name: "index_ios_app_epf_snapshots_on_version", using: :btree
+  add_index "ios_app_epf_snapshots", ["view_url"], name: "index_ios_app_epf_snapshots_on_view_url", using: :btree
 
   create_table "ios_app_languages", force: true do |t|
     t.datetime "created_at"
@@ -626,9 +688,11 @@ ActiveRecord::Schema.define(version: 20150723034734) do
     t.date     "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "flags"
   end
 
   add_index "micro_proxies", ["active"], name: "index_micro_proxies_on_active", using: :btree
+  add_index "micro_proxies", ["flags"], name: "index_micro_proxies_on_flags", using: :btree
   add_index "micro_proxies", ["last_used"], name: "index_micro_proxies_on_last_used", using: :btree
   add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
@@ -676,6 +740,43 @@ ActiveRecord::Schema.define(version: 20150723034734) do
 
   add_index "scraped_results", ["company_id"], name: "index_scraped_results_on_company_id", using: :btree
   add_index "scraped_results", ["scrape_job_id"], name: "index_scraped_results_on_scrape_job_id", using: :btree
+
+  create_table "sdk_companies", force: true do |t|
+    t.string   "name"
+    t.string   "website"
+    t.string   "funding"
+    t.string   "phone"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "country"
+    t.text     "description"
+    t.integer  "year_founded"
+    t.string   "bloomberg_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree
+  add_index "sdk_companies", ["country"], name: "index_sdk_companies_on_country", using: :btree
+  add_index "sdk_companies", ["funding"], name: "index_sdk_companies_on_funding", using: :btree
+  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", using: :btree
+  add_index "sdk_companies", ["state"], name: "index_sdk_companies_on_state", using: :btree
+  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", using: :btree
+  add_index "sdk_companies", ["year_founded"], name: "index_sdk_companies_on_year_founded", using: :btree
+  add_index "sdk_companies", ["zip"], name: "index_sdk_companies_on_zip", using: :btree
+
+  create_table "sdk_packages", force: true do |t|
+    t.string   "package_name"
+    t.integer  "sdk_company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_packages", ["package_name"], name: "index_sdk_packages_on_package_name", using: :btree
+  add_index "sdk_packages", ["sdk_company_id"], name: "index_sdk_packages_on_sdk_company_id", using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"

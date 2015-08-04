@@ -4,7 +4,7 @@ class FilterService
     # @author Shane Wey
     def filter_companies(company_filters)
       company_results  = Company
-      company_results = company_results.where("fortune_1000_rank <= ?", company_filters[:fortuneRank].to_i) if company_filters[:fortuneRank]
+      company_results = company_results.where("fortune_1000_rank <= ?", company_filters['fortuneRank'].to_i) if company_filters['fortuneRank']
       # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
       # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
       company_results
@@ -14,7 +14,7 @@ class FilterService
     def company_ios_apps_query(company_filters)
       query = []
       
-      if fortune_rank_s = company_filters[:fortuneRank]
+      if fortune_rank_s = company_filters['fortuneRank']
         fortune_rank = fortune_rank_s.to_i  #convert to i for safety
         query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
       end
@@ -26,7 +26,7 @@ class FilterService
     def company_android_apps_query(company_filters)
       query = []
       
-      if fortune_rank_s = company_filters[:fortuneRank]
+      if fortune_rank_s = company_filters['fortuneRank']
         fortune_rank = fortune_rank_s.to_i  #convert to i for safety
         query << "joins(android_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
       end
@@ -37,39 +37,40 @@ class FilterService
     def ios_apps_query(app_filters)
       queries = []
 
-      if app_filters[:mobilePriority]
+      if app_filters['mobilePriority']
         mobile_priorities = []
-        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
-        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
-        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
+        mobile_priorities << IosApp.mobile_priorities[:high] if app_filters['mobilePriority'].include?("H")
+        mobile_priorities << IosApp.mobile_priorities[:medium] if app_filters['mobilePriority'].include?("M")
+        mobile_priorities << IosApp.mobile_priorities[:low] if app_filters['mobilePriority'].include?("L")
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
-      queries << 'joins(:ios_fb_ad_appearances)' if app_filters[:adSpend]
+      queries << 'joins(:ios_fb_ad_appearances)' if app_filters['adSpend']
       
-      if app_filters[:userBases]
+      if app_filters['userBases']
         user_bases = []
-        user_bases << IosApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
-        user_bases << IosApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
-        user_bases << IosApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
-        user_bases << IosApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
+        user_bases << IosApp.user_bases[:elite] if app_filters['userBases'].include?("elite")
+        user_bases << IosApp.user_bases[:strong] if app_filters['userBases'].include?("strong")
+        user_bases << IosApp.user_bases[:moderate] if app_filters['userBases'].include?("moderate")
+        user_bases << IosApp.user_bases[:weak] if app_filters['userBases'].include?("weak")
         queries << "where(user_base: #{user_bases})"
       end
       
-      if app_filters[:updatedDaysAgo]
-        queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', \"#{app_filters[:updatedDaysAgo].to_i.days.ago.to_date}\")"
+      if app_filters['updatedDaysAgo']
+        queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', \"#{app_filters['updatedDaysAgo'].to_i.days.ago.to_date}\")"
       end
       
-      if app_filters[:categories]
-        cats_with_quotes = app_filters[:categories].map{|c| "\"#{c}\""}
+      if app_filters['categories']
+        cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
         li cats_with_quotes
         li cats_with_quotes.join(',')
+
         #queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes.join(',')}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
       end
 
-      if app_filters[:supportDesk]
-        for support_desk in app_filters[:supportDesk]
+      if app_filters['supportDesk']
+        for support_desk in app_filters['supportDesk']
           queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.#{support_desk}.%\"')"
         end
       end
@@ -80,38 +81,38 @@ class FilterService
     def android_apps_query(app_filters)
       queries = []
 
-      if app_filters[:mobilePriority]
+      if app_filters['mobilePriority']
         mobile_priorities = []
-        mobile_priorities << AndroidApp.mobile_priorities[:high] if app_filters[:mobilePriority].include?("H")
-        mobile_priorities << AndroidApp.mobile_priorities[:medium] if app_filters[:mobilePriority].include?("M")
-        mobile_priorities << AndroidApp.mobile_priorities[:low] if app_filters[:mobilePriority].include?("L")
+        mobile_priorities << AndroidApp.mobile_priorities[:high] if app_filters['mobilePriority'].include?("H")
+        mobile_priorities << AndroidApp.mobile_priorities[:medium] if app_filters['mobilePriority'].include?("M")
+        mobile_priorities << AndroidApp.mobile_priorities[:low] if app_filters['mobilePriority'].include?("L")
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
-      queries << 'joins(:android_fb_ad_appearances)' if app_filters[:adSpend]
+      queries << 'joins(:android_fb_ad_appearances)' if app_filters['adSpend']
       
-      if app_filters[:userBases]
+      if app_filters['userBases']
         user_bases = []
-        user_bases << AndroidApp.user_bases[:elite] if app_filters[:userBases].include?("elite")
-        user_bases << AndroidApp.user_bases[:strong] if app_filters[:userBases].include?("strong")
-        user_bases << AndroidApp.user_bases[:moderate] if app_filters[:userBases].include?("moderate")
-        user_bases << AndroidApp.user_bases[:weak] if app_filters[:userBases].include?("weak")
+        user_bases << AndroidApp.user_bases[:elite] if app_filters['userBases'].include?("elite")
+        user_bases << AndroidApp.user_bases[:strong] if app_filters['userBases'].include?("strong")
+        user_bases << AndroidApp.user_bases[:moderate] if app_filters['userBases'].include?("moderate")
+        user_bases << AndroidApp.user_bases[:weak] if app_filters['userBases'].include?("weak")
         queries << "where(user_base: #{user_bases})"
       end
       
-      if app_filters[:updatedDaysAgo]
-        queries << "joins(:newest_android_app_snapshot).where('android_app_snapshots.released > ?', \"#{app_filters[:updatedDaysAgo].to_i.days.ago.to_date}\")"
+      if app_filters['updatedDaysAgo']
+        queries << "joins(:newest_android_app_snapshot).where('android_app_snapshots.released > ?', \"#{app_filters['updatedDaysAgo'].to_i.days.ago.to_date}\")"
       end
       
-      if app_filters[:categories]
-        cats_with_quotes = app_filters[:categories].map{|c| "\"#{c}\""}
+      if app_filters['categories']
+        cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
         li cats_with_quotes
         li cats_with_quotes.join(',')
         queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
 
-      if app_filters[:supportDesk]
-        for support_desk in app_filters[:supportDesk]
+      if app_filters['supportDesk']
+        for support_desk in app_filters['supportDesk']
           queries << "joins(:newest_ios_app_snapshot).where('android_app_snapshots.seller_url LIKE \"%.#{support_desk}.%\"')"
         end
       end
@@ -126,7 +127,7 @@ class FilterService
       parts = []
       
       parts << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
-      
+
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
       if company_filters.present?
@@ -136,6 +137,7 @@ class FilterService
       end
       
       # add app filters
+
       parts << ios_apps_query(app_filters) if app_filters.present?
       
       parts << "group('ios_apps.id')"
@@ -144,17 +146,18 @@ class FilterService
       parts_count = Array.new(parts)
       
       parts_count << 'count.length'
-      
+
       # the query for count; will be run at the end
       query_count = parts_count.join('.')
       
       # add limit and offset
+
       parts << "limit(#{page_size}).offset(#{(page_num - 1) * page_size})"
       
       parts << ios_sort_order_query(sort_by, order_by)
       
       query = parts.join('.')
-      
+
       #run the query for count
       results_count = IosApp.instance_eval("self.#{query_count}")
 
@@ -202,9 +205,7 @@ class FilterService
       parts << android_sort_order_query(sort_by, order_by)
       
       query = parts.join('.')
-      
-      #puts "query_count: #{query_count}"
-      
+
       #run the query for count
       results_count = AndroidApp.instance_eval("self.#{query_count}")
 
@@ -215,6 +216,7 @@ class FilterService
     end
     
     def ios_app_keywords_query(keywords)
+
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
       keywords_with_quotes = keywords.map{|k| "\"#{k}%\", \"#{k}%\""}
       # name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ?"}

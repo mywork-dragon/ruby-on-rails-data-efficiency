@@ -48,7 +48,7 @@ class EpfServiceWorker
   end
   
   def field_at_index(n)
-    fields = ["application_id", "title", "recommended_age", "artist_name", "seller_name", "company_url", "support_url", "view_url", "artwork_url_large", "artwork_url_small", "itunes_release_date", "copyright", "description", "version", "itunes_version", "download_size"][n]
+    fields = ["export_date", "application_id", "title", "recommended_age", "artist_name", "seller_name", "company_url", "support_url", "view_url", "artwork_url_large", "artwork_url_small", "itunes_release_date", "copyright", "description", "version", "itunes_version", "download_size"][n]
   end
   
 end

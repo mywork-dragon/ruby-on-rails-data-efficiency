@@ -47,14 +47,18 @@ angular.module('appApp')
       authService.permissions()
         .success(function(data) {
           $scope.canViewSupportDesk = data.can_view_support_desk;
+          $scope.canViewAdSpend = data.can_view_ad_spend;
+          $scope.canViewSdks = data.can_view_sdks;
         })
         .error(function() {
           $scope.canViewSupportDesk = false;
+          $scope.canViewAdSpend = true;
+          $scope.canViewSdks = false;
         });
 
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "authService",
-    function($scope, apiService, $http, $rootScope, authService) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
+    function($scope, apiService, $http, $rootScope) {
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -79,66 +83,14 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      // When main Dashboard search button is clicked
-      $scope.submitSearch = function() {
+      if(!$rootScope.tags) $rootScope.tags = [];
 
-        var submitSearchStartTime = new Date().getTime();
-
-        $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags, 1, $rootScope.numPerPage)
-          .success(function(data) {
-            $rootScope.apps = data.results;
-            $rootScope.numApps = data.resultsCount;
-            $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = 1;
-            $rootScope.resultsSortCategory = 'appName';
-            $rootScope.resultsOrderBy = 'ASC';
-
-            var submitSearchEndTime = new Date().getTime();
-
-            var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
-
-            /* -------- Mixpanel Analytics Start -------- */
-            var searchQueryPairs = {};
-            var searchQueryFields = [];
-            $rootScope.tags.forEach(function(tag) {
-              searchQueryPairs[tag.parameter] = tag.value;
-              searchQueryFields.push(tag.parameter);
-            });
-            searchQueryPairs['tags'] = searchQueryFields;
-            searchQueryPairs['numOfApps'] = data.resultsCount;
-            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
-            searchQueryPairs['platform']  = APP_PLATFORM;
-
-            mixpanel.track(
-              "Search Request Successful",
-              searchQueryPairs
-            );
-            /* -------- Mixpanel Analytics End -------- */
-
-          })
-          .error(function(data, status) {
-            $rootScope.dashboardSearchButtonDisabled = false;
-            mixpanel.track(
-              "Search Request Failed",
-              {
-                "tags": $rootScope.tags,
-                "errorMessage": data,
-                "errorStatus": status,
-                "platform": APP_PLATFORM
-              }
-            );
-          });
-      };
-      $rootScope.tags = [];
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
 
         /* -------- Mixpanel Analytics Start -------- */
         var mixpanelProperties = {};
-
         mixpanelProperties['parameter'] = parameter;
         mixpanelProperties[parameter] = value;
-
         mixpanel.track(
           "Filter Added",
           mixpanelProperties
@@ -163,7 +115,6 @@ angular.module('appApp')
               oneTagUpdated = true;
             }
           }
-
         });
 
         if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {
@@ -186,80 +137,28 @@ angular.module('appApp')
       };
     }
   ])
-  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService",
-    function($scope, apiService, listApiService, $filter, $rootScope, loggitService) {
-      var init;
+  .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
+    function($scope, apiService, listApiService, $filter, $rootScope, loggitService, AppPlatform) {
       return $rootScope.apps = [],
         $scope.searchKeywords = "",
         $scope.filteredApps = [],
         $scope.row = "",
-        $scope.appPlatform = "ios",
-        // When table's paging options are selected
-        $scope.select = function(page, tags) {
-
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Table Page Changed", {
-              "page": page,
-              "tags": tags,
-              "appPlatform": APP_PLATFORM
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
-
-          $rootScope.dashboardSearchButtonDisabled = true;
-
-          apiService.searchRequestPost($rootScope.tags, page, $rootScope.numPerPage, $rootScope.resultsSortCategory, $rootScope.resultsOrderBy)
-            .success(function(data) {
-              $rootScope.apps = data.results;
-              $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = false;
-              $rootScope.currentPage = page;
-            })
-            .error(function() {
-              $rootScope.dashboardSearchButtonDisabled = false;
-            });
-
-          var end, start;
-          return start = (page - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
-        },
+        $scope.appPlatform = AppPlatform,
         $scope.appsDisplayedCount = function() {
-
           var lastPageMaxApps = $rootScope.numPerPage * $rootScope.currentPage;
           var baseAppNum = $rootScope.numPerPage * ($rootScope.currentPage - 1) + 1;
-
           if (lastPageMaxApps > $rootScope.numApps) {
             return "" + baseAppNum + " - " + $rootScope.numApps;
           } else {
             return "" + baseAppNum + " - " + lastPageMaxApps;
           }
-
-        },
-        $scope.changeAppPlatform = function(platform) {
-          $scope.appPlatform = platform;
-          APP_PLATFORM = platform;
-          apiService.getCategories().success(function(data) {
-            $rootScope.categoryFilterOptions = data;
-          });
-
-          // Stops 'supportDesk' filter from being added
-          if ($scope.appPlatform == 'android') {
-
-            for (var index = 0; index < $rootScope.tags.length; index++) {
-              if ($rootScope.tags[index].parameter == 'supportDesk') {
-                $rootScope.tags.splice(index, 1);
-                index -= 1;
-              }
-            }
-          }
-
         },
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
         }),
         $rootScope.selectedAppsForList = [],
         $scope.addSelectedTo = function(list, selectedApps) {
-          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform).success(function() {
+          listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform.platform).success(function() {
             $scope.notify('add-selected-success');
             $rootScope.selectedAppsForList = [];
           }).error(function() {
@@ -274,34 +173,6 @@ angular.module('appApp')
             case "add-selected-error":
               return loggitService.logError("Error! Something went wrong while adding to list.");
           }
-        },
-        // When orderby/sort arrows on dashboard table are clicked
-        $scope.sortApps = function(category, order) {
-
-
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Table Sorting Changed", {
-              "category": category,
-              "order": order,
-              "appPlatform": APP_PLATFORM
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
-
-          var firstPage = 1;
-          apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
-            .success(function(data) {
-              $rootScope.apps = data.results;
-              $rootScope.numApps = data.resultsCount;
-              $rootScope.dashboardSearchButtonDisabled = false;
-              $rootScope.currentPage = 1;
-              $rootScope.resultsSortCategory = category;
-              $rootScope.resultsOrderBy = order;
-            })
-            .error(function() {
-              $rootScope.dashboardSearchButtonDisabled = false;
-            });
         },
         $scope.onFilterChange = function() {
           return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";

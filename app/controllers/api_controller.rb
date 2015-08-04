@@ -1,5 +1,4 @@
 # This is our internal API that talks to the frontend
-
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
@@ -30,14 +29,20 @@ class ApiController < ApplicationController
     
     li 'filter_ios_apps'
     
-    app_filters = params[:app]
-    company_filters = params[:company]
+    app_filters = JSON.parse(params[:app])
+    company_filters = JSON.parse(params[:company])
+    # app_filters = params[:app]
+    # company_filters = params[:company]
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = params[:customKeywords]
-    
+    custom_keywords = JSON.parse(params[:custom])['customKeywords']
+    # custom_keywords = params[:custom][:customKeywords]
+
+    company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
+    app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
+
     filter_args = {
       app_filters: app_filters, 
       company_filters: company_filters, 
@@ -49,7 +54,7 @@ class ApiController < ApplicationController
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
-    
+
     filter_results = FilterService.filter_ios_apps(filter_args)
     
     results = filter_results[:results]
@@ -69,6 +74,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
+          type: 'IosApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
           categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
           appIcon: {
@@ -82,23 +88,27 @@ class ApiController < ApplicationController
           fortuneRank: company.present? ? company.fortune_1000_rank : nil
         }
       }
+
       # li "app_hash: #{app_hash}"
       # li "HASH: #{app_hash}"
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
     
-    render json: {results: results_json, resultsCount: results_count}
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
   
   def filter_android_apps
-    app_filters = params[:app]
-    company_filters = params[:company]
+    app_filters = JSON.parse(params[:app])
+    company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = params[:customKeywords]
+    custom_keywords = JSON.parse(params[:custom])['customKeywords']
+
+    company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
+    app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
     
     filter_args = {
       app_filters: app_filters, 
@@ -111,9 +121,7 @@ class ApiController < ApplicationController
     }
     
     filter_args.delete_if{ |k, v| v.nil? }
-    
-    puts "filter_args: #{filter_args}"
-    
+
     filter_results = FilterService.filter_android_apps(filter_args)
     
     results = filter_results[:results]
@@ -131,6 +139,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.android_fb_ad_appearances.present?,
+          type: 'AndroidApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
@@ -147,7 +156,7 @@ class ApiController < ApplicationController
       results_json << app_hash
     end
     
-    render json: {results: results_json, resultsCount: results_count}
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
   
   # Get details of iOS app.
@@ -572,10 +581,6 @@ class ApiController < ApplicationController
     list_id = params['listId']
     apps = params['apps']
 
-    puts user_id
-    puts apps.inspect
-    puts list_id
-
     if ListsUser.where(user_id: user_id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
@@ -623,7 +628,12 @@ class ApiController < ApplicationController
   def get_company_contacts
 
     company_websites = params['companyWebsites']
+    filter = params['filter']
     contacts = []
+
+    puts "###########"
+    puts filter
+    puts "###########"
 
     if company_websites.blank?
       render json: {:contacts => contacts}
@@ -639,17 +649,24 @@ class ApiController < ApplicationController
         # finds contact object for
         clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
 
-        if clearbit_contacts_for_website.empty? || clearbit_contacts_for_website.first.updated_at < 60.days.ago
+        # true if record is older than 60 days
+        data_expired = clearbit_contacts_for_website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
+
+        if !filter.blank? || clearbit_contacts_for_website.empty? || data_expired
 
           domain = UrlHelper.url_with_domain_only(url)
 
-          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: {'domain' => domain})
+          clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
+
+          puts "####"
+          puts clearbit_query
+          puts "####"
+
+          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
           new_clearbit_contacts = JSON.load(get.response.body)
 
           # delete old records (prevents duplicates)
-          ClearbitContact.where(website_id: website.id).destroy_all if website
-
-          puts new_clearbit_contacts
+          ClearbitContact.where(website_id: website.id).destroy_all if data_expired
 
           if new_clearbit_contacts.kind_of?(Array)
 
@@ -681,7 +698,13 @@ class ApiController < ApplicationController
               # save as new records to DB
               if website
                 clearbit_contact = ClearbitContact.create(website_id: website.id)
-                clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                previous_record = ClearbitContact.where(clearbit_id: contact_id)
+                if previous_record.exists?
+                  previous_record.destroy_all
+                end
+                if contact_id != nil
+                  clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
+                end
                 clearbit_contact.save
               end
             end
@@ -708,6 +731,109 @@ class ApiController < ApplicationController
       end
       render json: {:contacts => contacts}
     end
+  end
+
+  def android_sdks_for_app_exist
+
+    android_app_id = params['appId']
+
+    aa = AndroidApp.find(android_app_id)
+
+    if aa.newest_apk_snapshot.blank?
+
+      hash = nil
+
+    else
+
+      new_snap = aa.newest_apk_snapshot
+
+    end
+
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      hash = clean_up_android_sdks(p)
+
+    else
+      hash = nil
+    end
+
+    render json: hash.to_json
+
+  end
+
+  def android_sdks_for_app
+    aa = AndroidApp.find(params['appId'])
+
+    if aa.newest_apk_snapshot.blank?
+
+      ai = aa.app_identifier
+
+      j = ApkSnapshotJob.create!(notes: ai)
+
+      batch = Sidekiq::Batch.new
+      batch.jobs do
+        ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
+      end
+      bid = batch.bid
+
+      360.times do |i|
+        break if Sidekiq::Batch::Status.new(bid).complete?
+        sleep 0.25
+      end
+
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+    else
+
+      new_snap = aa.newest_apk_snapshot
+
+    end
+
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      hash = clean_up_android_sdks(p)
+
+    else
+      hash = nil
+    end
+
+    # HANDLE NIL CASE!!!!!!!
+  
+    render json: hash
+  end
+
+  def clean_up_android_sdks(p)
+    hash = Hash.new
+
+    if p.present?
+      p.each do |packages|
+      
+        package = " " + packages.package_name
+
+        [' com.',' net.',' org.',' edu.',' eu.',' io.',' ui.',' .'].each{|u| package.slice! u}
+
+        name = package.split('.')[0].strip
+
+        if name.count("0-9").zero? && name.exclude?("android")
+
+          name = name.capitalize
+
+          if hash[name].blank?
+            hash[name] = [packages.package_name]
+          else
+            hash[name] << packages.package_name
+          end
+
+        end
+      end
+    end
+
+    hash
+
   end
 
 end

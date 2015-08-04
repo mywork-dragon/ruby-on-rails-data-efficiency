@@ -260,9 +260,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             replace: true,
             restrict: 'E',
             scope: {
-              checkboxes: '=',
-              allselected: '=allSelected',
-              allclear: '=allClear'
+              apps: '=apps',
+              numApps: '=numApps'
             },
             template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
             controller: function ($scope, $element) {
@@ -270,7 +269,8 @@ angular.module("app.directives", []).directive("imgHolder", [
               $scope.checkboxMasterChange = function () {
                 if ($scope.checkboxMaster) {
                   $rootScope.selectedAppsForList = [];
-                  angular.forEach($scope.checkboxes, function (app, index) {
+
+                  angular.forEach($scope.apps, function (app) {
                     $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
                   });
                 } else {
@@ -279,14 +279,12 @@ angular.module("app.directives", []).directive("imgHolder", [
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
-
-                /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
-                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
+                /* Controls 'checked' status of master checkbox (top checkbox). Two states: [ ] and [X] */
+                if($rootScope.selectedAppsForList.length == $rootScope.numPerPage || $rootScope.selectedAppsForList.length == $scope.numApps) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
                 }
-
               }, true);
             }
           };
@@ -296,7 +294,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             replace: true,
             restrict: 'E',
             scope: {
-              app: '=app'
+              app: '=app',
+              apps: '=apps'
             },
             template: '<input type="checkbox" ng-model="appCheckbox" ng-click="addAppToList()">',
             controller: function ($scope, $element) {
@@ -306,13 +305,11 @@ angular.module("app.directives", []).directive("imgHolder", [
               };
 
               $scope.$watch('$root.selectedAppsForList', function () {
-
-                if($rootScope.selectedAppsForList.length == $rootScope.apps.length) {
+                if($rootScope.selectedAppsForList.length == $scope.apps.length) {
                   $element.prop('checked', true);
                 } else {
                   $element.prop('checked', false);
                 }
-
               });
 
             }
@@ -332,7 +329,7 @@ angular.module("app.directives", []).directive("imgHolder", [
           $scope.checkboxMasterChange = function () {
             if ($scope.checkboxMaster) {
               $scope.selectedAppsForList = [];
-              angular.forEach($scope.apps, function (app, index) {
+              angular.forEach($scope.apps, function (app) {
                 $scope.selectedAppsForList.push({id: app.id, type: app.type});
               });
             } else {
@@ -379,6 +376,79 @@ angular.module("app.directives", []).directive("imgHolder", [
 
           });
 
+        }
+      };
+    }])
+    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {},
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.appPlatform.platform = platform;
+            APP_PLATFORM = platform;
+            apiService.getCategories().success(function (data) {
+              $rootScope.categoryFilterOptions = data;
+            });
+
+            // Stops 'supportDesk' filter from being added
+            if ($scope.appPlatform == 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
+    }])
+    .directive('ddTextCollapse', ['$compile', function($compile) {
+      return {
+        restrict: 'A',
+        scope: true,
+        link: function(scope, element, attrs) {
+          // start collapsed
+          scope.collapsed = false;
+          // create the function to toggle the collapse
+          scope.toggle = function() {
+            scope.collapsed = !scope.collapsed;
+          };
+          // wait for changes on the text
+          attrs.$observe('ddTextCollapseText', function(text) {
+            // get the length from the attributes
+            var maxLength = scope.$eval(attrs.ddTextCollapseMaxLength);
+            if (text.length > maxLength) {
+              // split the text in two parts, the first always showing
+              var firstPart = String(text).substring(0, maxLength);
+              var secondPart = String(text).substring(maxLength, text.length);
+              // create some new html elements to hold the separate info
+              var firstSpan = $compile('<span>' + firstPart + '</span>')(scope);
+              var secondSpan = $compile('<span ng-if="collapsed">' + secondPart + '</span>')(scope);
+              var moreIndicatorSpan = $compile('<span ng-if="!collapsed">... </span>')(scope);
+              var lineBreak = $compile('<br ng-if="collapsed">')(scope);
+              var toggleButton = $compile('<span class="collapse-text-toggle" ng-click="toggle()">{{collapsed ? "READ LESS" : "READ MORE"}}</span>')(scope);
+              // remove the current contents of the element
+              // and add the new ones we created
+              element.empty();
+              element.append(firstSpan);
+              element.append(secondSpan);
+              element.append(moreIndicatorSpan);
+              element.append(lineBreak);
+              element.append(toggleButton);
+            }
+            else {
+              element.empty();
+              element.append(text);
+            }
+          });
         }
       };
     }]);

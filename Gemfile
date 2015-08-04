@@ -70,7 +70,7 @@ gem 'omniauth-salesforce', '1.0.5'
 gem 'httparty', '0.13.3' 
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
-  gem 'sidekiq-pro', '1.9.2'
+  gem 'sidekiq-pro'
 end
 
 
@@ -132,9 +132,9 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
-# gem 'curb', '0.8.8'
+# gem 'slackiq', '0.0.3'
 
-# gem 'curb-fu', '0.6.2', group: :sdk_scraper
+# gem 'curb-fu', '0.6.2'
 
 gem 'slackiq', '0.0.2'
 

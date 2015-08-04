@@ -75,7 +75,14 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
                 <li id="showCompanyEmailsButtonLi">
-                  <button id="showCompanyEmailsButton" ng-hide="contactsLoading" ng-disabled="contactsLoading || contactsLoaded" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites)">Load Contact Emails</button>
+                  <div id="showCompanyEmailsContainer">
+                    <div id="showCompanyEmailsButton">
+                      <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyData.websites, companyContactFilter)">Load Contact Emails</button>
+                    </div>
+                    <div id="showCompanyEmailsTextField">
+                      <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
+                    </div>
+                  </div>
                   <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
                     <div class="loading outer">
                       <div class="loading inner"></div>
@@ -133,7 +140,7 @@
                 <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
               </td>
               <td>
-                <a href="https://www.linkedin.com/{{contact.linkedin}}">www.linkedin.com/{{contact.linkedin}}</a>
+                <a href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">www.linkedin.com/{{contact.linkedin}}</a>
               </td>
             </tr>
           </tbody>
@@ -191,7 +198,7 @@
               <th><div class="th normal-right-padding">
                 Mobile Priority
               </div></th>
-              <th><div class="th normal-right-padding">
+              <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
                 Ad Spend
               </div></th>
               <th><div class="th normal-right-padding">
@@ -225,7 +232,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}" target="_blank">{{app.name}}</a>
+                  <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">{{app.name}}</a>
                 </span>
               </td>
               <td class="appTypeIndicator">
@@ -234,7 +241,7 @@
               <td class="dashboardMobilePriorityView">
                 <i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
               </td>
-              <td  class="dashboardAdSpendView">
+              <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
                 <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
               </td>
               <td>{{app.userBase | capitalize}}</td>

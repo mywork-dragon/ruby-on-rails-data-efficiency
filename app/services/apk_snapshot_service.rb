@@ -10,18 +10,29 @@ class ApkSnapshotService
     end
 
     def run_n(notes, size = 10)
-      workers = Sidekiq::Workers.new
+
+      workers = Sidekiq::Workers.new.map{ |w| w[2]["queue"] == 'sdk_scraper' }.include? true
 
       clear_accounts()
 
-      if workers.size == 0
-        j = ApkSnapshotJob.create!(notes: notes)
-        AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each.with_index do |app, index|
-          li "app #{index}"
-          ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+      if !workers
+
+        batch = Sidekiq::Batch.new
+        batch.description = 'scrape n apks from google play' 
+        batch.on(:complete, self)
+
+        batch.jobs do
+
+          j = ApkSnapshotJob.create!(notes: notes)
+          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
+            li "app #{index}"
+            ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
+          end
+
         end
+
       else
-        print "WARNING: You cannot continue because there are #{workers.size} workers currently running."
+        print "WARNING: You cannot continue because there are workers currently running."
       end
     end
 
@@ -34,18 +45,20 @@ class ApkSnapshotService
         snap = ApkSnapshot.where(google_account_id: ga.id, apk_snapshot_job_id: j.id).first
         app = ""
         if snap.status == 'success'
-          ai = AndroidApp.find_by_id(snap.android_app_id).app_identifier
           ap = AndroidPackage.where(apk_snapshot_id: snap.id).count
-          app = "| name : #{ai} | packages : #{ap}"
+          app = "| packages : #{ap}"
         end
-        puts "#{i}.) #{ga.id}  |  try : #{snap.try}  |  status : #{snap.status} #{app}"
+        
+        ai = AndroidApp.find_by_id(snap.android_app_id).app_identifier
+
+        puts "#{i}.) #{ga.id}  |  try : #{snap.try}  |  status : #{snap.status} | name : #{ai} #{app}"
         i += 1
       end
 
       puts "#{Sidekiq::Workers.new.size} workers"
 
     end
-
+    
     def clear_accounts
       GoogleAccount.all.each do |ga|
         ga.in_use = false
@@ -65,61 +78,53 @@ class ApkSnapshotService
       end
     end
 
+    def job
+      j = ApkSnapshotJob.last
 
-    # def job
-    #   j = ApkSnapshotJob.last
+      workers = Sidekiq::Workers.new
 
-    #   workers = Sidekiq::Workers.new
+      total = j.apk_snapshots.count
+      fail = j.apk_snapshots.where(status: 0).count
+      success = j.apk_snapshots.where(status: 1).count
+      no_response = j.apk_snapshots.where(status: 2).count
+      forbidden = j.apk_snapshots.where(status: 3).count
+      taken_down = j.apk_snapshots.where(status: 4).count
+      could_not_connect = j.apk_snapshots.where(status: 5).count
+      timeout = j.apk_snapshots.where(status: 6).count
 
-    #   while true do
-    #     total = j.apk_snapshots.count
-    #     success = j.apk_snapshots.where(status: 1).count
-    #     fail = j.apk_snapshots.where(status: 0).count
+      progress = ((success + fail).to_f/total)*100
+      success_rate = (success.to_f/(success + fail + no_response + forbidden).to_f)*100
+      completion_rate = ((success + fail + no_response + forbidden + taken_down + could_not_connect + timeout).to_f / total.to_f)*100
 
-    #     progress = ((success + fail).to_f/total)*100
-    #     success_rate = (success.to_f/(success + fail).to_f)*100
+      apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
 
-    #     apk_ga = ApkSnapshot.select(:id).where(['apk_snapshot_job_id = ? and status IS NULL and google_account_id IS NOT NULL', j.id])
+      currently_downloading = apk_ga.count
 
-    #     currently_downloading = apk_ga.count
+      accounts_in_use = GoogleAccount.where(in_use: true).count
 
-    #     accounts_in_use = GoogleAccount.where(in_use: true).count
+      puts "Successes : #{success}"
+      puts "Failures : #{fail}"
+      puts "No Response : #{no_response}"
+      puts "Forbidden : #{forbidden}"
+      puts "Taken Down : #{taken_down}"
+      puts "Counldn't Connect : #{could_not_connect}"
+      puts "Timeout : #{timeout}"
+      puts "Total : #{total}"
+      puts "---"
+      puts "Success Rate : #{success_rate.round(2)}%"
+      puts "Response Rate : #{completion_rate.round(2)}%"
+      puts "---"
+      puts "Accounts In Use : #{accounts_in_use}"
+      puts "Downloading : #{currently_downloading}"
+      puts "Workers : #{workers.size}"
 
-    #     print "Progress : #{(success + fail)} of #{total} - (#{progress.round(2)}%)  |  Success Rate : #{fail} failures, #{success} successes - (#{success_rate.round(2)}% succeeded)  |  Accounts In Use : #{accounts_in_use}  |  Downloading : #{currently_downloading}  |  Workers : #{workers.size} \r"
-
-    #     if progress == 100.0
-    #       puts "\n\nScrape Completed"
-    #       return false
-    #     end
-
-    #     sleep 1
-    #   end
-
-    # end
-  
-    # def about_job(job_id)
-      
-    #   j = ApkSnapshotJob.find(job_id)
-      
-    #   j.apk_snapshots.each do |apk_snapshot|
-        
-    #     puts "APK Snapshot: #{apk_snapshot.inspect}"
-    #     puts "App Identifier: #{apk_snapshot.android_app.app_identifier}"
-    #     puts ''
-        
-    #     puts 'AndroidPackages'
-    #     puts '---------------'
-        
-    #     apk_snapshot.android_packages.each do |android_package|
-    #       puts android_package.package_name
-    #     end
-        
-    #     puts ''
-    #     puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-    #   end
-      
-    # end
+    end
   
   end
+
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!')
+  end
+
   
 end
