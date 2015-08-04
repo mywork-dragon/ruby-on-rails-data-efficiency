@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803210728) do
+ActiveRecord::Schema.define(version: 20150804075337) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: false, null: false
+    t.boolean  "can_view_ad_spend",     default: true,  null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
@@ -398,6 +398,45 @@ ActiveRecord::Schema.define(version: 20150803210728) do
   add_index "ios_app_download_snapshots", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_download_snapshots", ["status"], name: "index_ios_app_download_snapshots_on_status", using: :btree
+
+  create_table "ios_app_epf_snapshots", force: true do |t|
+    t.integer  "export_date",         limit: 8
+    t.integer  "application_id"
+    t.string   "title"
+    t.string   "recommended_age"
+    t.string   "artist_name"
+    t.string   "seller_name"
+    t.string   "company_url"
+    t.string   "support_url"
+    t.string   "view_url"
+    t.string   "artwork_url_large"
+    t.string   "artwork_url_small"
+    t.datetime "itunes_release_date"
+    t.string   "copywright"
+    t.text     "description"
+    t.string   "version"
+    t.string   "itunes_version"
+    t.integer  "download_size",       limit: 8
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_app_epf_snapshots", ["application_id"], name: "index_ios_app_epf_snapshots_on_application_id", using: :btree
+  add_index "ios_app_epf_snapshots", ["artist_name"], name: "index_ios_app_epf_snapshots_on_artist_name", using: :btree
+  add_index "ios_app_epf_snapshots", ["artwork_url_large"], name: "index_ios_app_epf_snapshots_on_artwork_url_large", using: :btree
+  add_index "ios_app_epf_snapshots", ["artwork_url_small"], name: "index_ios_app_epf_snapshots_on_artwork_url_small", using: :btree
+  add_index "ios_app_epf_snapshots", ["company_url"], name: "index_ios_app_epf_snapshots_on_company_url", using: :btree
+  add_index "ios_app_epf_snapshots", ["copywright"], name: "index_ios_app_epf_snapshots_on_copywright", using: :btree
+  add_index "ios_app_epf_snapshots", ["download_size"], name: "index_ios_app_epf_snapshots_on_download_size", using: :btree
+  add_index "ios_app_epf_snapshots", ["export_date"], name: "index_ios_app_epf_snapshots_on_export_date", using: :btree
+  add_index "ios_app_epf_snapshots", ["itunes_release_date"], name: "index_ios_app_epf_snapshots_on_itunes_release_date", using: :btree
+  add_index "ios_app_epf_snapshots", ["itunes_version"], name: "index_ios_app_epf_snapshots_on_itunes_version", using: :btree
+  add_index "ios_app_epf_snapshots", ["recommended_age"], name: "index_ios_app_epf_snapshots_on_recommended_age", using: :btree
+  add_index "ios_app_epf_snapshots", ["seller_name"], name: "index_ios_app_epf_snapshots_on_seller_name", using: :btree
+  add_index "ios_app_epf_snapshots", ["support_url"], name: "index_ios_app_epf_snapshots_on_support_url", using: :btree
+  add_index "ios_app_epf_snapshots", ["title"], name: "index_ios_app_epf_snapshots_on_title", using: :btree
+  add_index "ios_app_epf_snapshots", ["version"], name: "index_ios_app_epf_snapshots_on_version", using: :btree
+  add_index "ios_app_epf_snapshots", ["view_url"], name: "index_ios_app_epf_snapshots_on_view_url", using: :btree
 
   create_table "ios_app_languages", force: true do |t|
     t.datetime "created_at"
