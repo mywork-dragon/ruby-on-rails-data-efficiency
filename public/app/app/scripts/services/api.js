@@ -105,7 +105,7 @@ angular.module("appApp")
       checkForSdks: function() {
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/android_sdks_exists'
+          url: API_URI_BASE + 'api/android_sdks_exist'
         })
       },
       getSdks: function(appId) {

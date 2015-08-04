@@ -734,7 +734,7 @@ class ApiController < ApplicationController
     end
   end
 
-  def android_sdks_for_app_exists
+  def android_sdks_for_app_exist
 
     android_app_id = params['id']
 
@@ -805,6 +805,7 @@ class ApiController < ApplicationController
       hash = nil
     end
 
+    # HANDLE NIL CASE!!!!!!!
     render json: hash.to_json
 
   end
