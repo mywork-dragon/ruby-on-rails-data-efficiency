@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20150803210728) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: true,  null: false
+    t.boolean  "can_view_ad_spend",     default: false, null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
