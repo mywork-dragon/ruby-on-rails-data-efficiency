@@ -1,5 +1,3 @@
-require 'sidekiq'
-
 # This is our internal API that talks to the frontend
 class ApiController < ApplicationController
   
@@ -737,31 +735,33 @@ class ApiController < ApplicationController
 
   def android_sdks_for_app_exist
 
-    android_app_id = params['appId']
+    render json: AndroidSdksForAppService.sdks_hash(params['appId'])
 
-    aa = AndroidApp.find(android_app_id)
-
-    if aa.newest_apk_snapshot.blank?
-
-      hash = nil
-
-    else
-
-      new_snap = aa.newest_apk_snapshot
-
-    end
-
-    if new_snap.present? && new_snap.status == "success"
-
-      p = new_snap.android_packages.where('android_package_tag != 1')
-
-      hash = clean_up_android_sdks(p)
-
-    else
-      hash = nil
-    end
-
-    render json: hash.to_json
+    # android_app_id = params['appId']
+#
+#     aa = AndroidApp.find(android_app_id)
+#
+#     if aa.newest_apk_snapshot.blank?
+#
+#       hash = nil
+#
+#     else
+#
+#       new_snap = aa.newest_apk_snapshot
+#
+#     end
+#
+#     if new_snap.present? && new_snap.status == "success"
+#
+#       p = new_snap.android_packages.where('android_package_tag != 1')
+#
+#       hash = clean_up_android_sdks(p)
+#
+#     else
+#       hash = nil
+#     end
+#
+#     render json: hash.to_json
 
   end
 
