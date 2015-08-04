@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804225824) do
+ActiveRecord::Schema.define(version: 20150804234020) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -430,6 +430,7 @@ ActiveRecord::Schema.define(version: 20150804225824) do
     t.datetime "updated_at"
   end
 
+  add_index "ios_app_epf_snapshots", ["application_id", "epf_full_feed_id"], name: "index_application_id_and_epf_full_feed_id", using: :btree
   add_index "ios_app_epf_snapshots", ["application_id"], name: "index_ios_app_epf_snapshots_on_application_id", using: :btree
   add_index "ios_app_epf_snapshots", ["artwork_url_small"], name: "index_ios_app_epf_snapshots_on_artwork_url_small", using: :btree
   add_index "ios_app_epf_snapshots", ["download_size"], name: "index_ios_app_epf_snapshots_on_download_size", using: :btree
