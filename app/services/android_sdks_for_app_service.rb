@@ -1,3 +1,5 @@
+require 'sidekiq-pro'
+
 class AndroidSdksForAppService
   
   class << self
