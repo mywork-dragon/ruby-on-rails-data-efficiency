@@ -133,7 +133,7 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
-gem 'slackiq', '0.0.3'
+# gem 'slackiq', '0.0.3'
 
 # gem 'curb-fu', '0.6.2'
 
