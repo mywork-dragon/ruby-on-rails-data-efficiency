@@ -43,7 +43,11 @@ class EpfServiceWorker
     values.each_with_index do |value, n|
       field = field_at_index(n)
       
-      ss.send("#{field}=", value) if value
+      if field == 'itunes_release_date'
+        ss.date = Date.strptime("04 07 2015", '%m %d %Y')
+      else
+        ss.send("#{field}=", value) if value
+      end
     end
     
     ss.save
