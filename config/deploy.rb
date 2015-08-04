@@ -42,7 +42,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master]
+set :sidekiq_role, [:sdk_scraper_master, :sdk_scraper, :scraper_master, :scraper, ]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
