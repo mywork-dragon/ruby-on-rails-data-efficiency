@@ -4,12 +4,12 @@ class EpfServiceWorker
   FS = 1.chr
   RS = 2.chr + "\n"
 
-  sidekiq_options backtrace: true, :retry => false, queue: :'172-31-32-93'
+  sidekiq_options backtrace: true, :retry => false, queue: :scraper_master
 
   def perform(epf_full_feed_id, main_file_name, file)
     case main_file_name
     when 'application'
-      perform_application(file)
+      perform_application(epf_full_feed_id, file)
     end
   end
   
