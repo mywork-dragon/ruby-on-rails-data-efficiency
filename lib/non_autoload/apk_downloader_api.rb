@@ -154,7 +154,7 @@ if defined?(ApkDownloader)
     end
 
     # Testing curl
-    # r = res(type: :get, req: {:host => "ip.jsontest.com", :protocol => "http"}, params: {}, proxy_ip: '172.31.29.18', proxy_port: '8888')
+    # r = res(type: :get, req: {:host => "fabric.io", :protocol => "http"}, params: {}, proxy_ip: '172.31.29.18', proxy_port: '8888', apk_snap_id: nil)
 
     def res(req:, params:, type:, proxy_ip:, proxy_port:, apk_snap_id:)
 

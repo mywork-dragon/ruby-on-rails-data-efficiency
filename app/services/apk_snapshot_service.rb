@@ -24,9 +24,9 @@ class ApkSnapshotService
         batch.jobs do
 
           j = ApkSnapshotJob.create!(notes: notes)
-          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
+          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
             li "app #{index}"
-            ApkSnapshotServiceWorker.perform_async(j.id, app.id)
+            ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
 
         end
@@ -122,10 +122,9 @@ class ApkSnapshotService
   
   end
 
-  # def on_complete(status, options)
-  #   Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!', 
-  #   'Testing' => 'it works!!!')
-  # end
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!')
+  end
 
   
 end
