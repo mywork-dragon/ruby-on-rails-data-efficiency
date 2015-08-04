@@ -28,13 +28,15 @@ class EpfServiceWorker
         
       end
     end
-    
-    records
   end
   
   def save_application(record)
-    puts record
-    puts ""
+    # puts record
+    # puts ""
+    
+    fields = record.gsub(RS, '').split(FS)
+    
+    
   end
   
 end
