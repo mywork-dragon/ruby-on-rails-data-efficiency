@@ -74,6 +74,8 @@ class EpfService
       
       files_for_feed(feed_symbol).each do |main_file_name|
         
+        epf_full_feed = EpfFullFeed.find_or_create_by(name: name)
+        
         batch = Sidekiq::Batch.new
         batch.description = "EpfService, #{feed_symbol.to_s}, #{main_file_name}," 
         batch.on(:complete, self)
@@ -81,7 +83,7 @@ class EpfService
         batch.jobs do
           NUMBER_OF_FILES.times do |n|
             file = file_for_n(n: n, filename: main_file_name) 
-            EpfServiceWorker.perform_async(main_file_name, file)
+            EpfServiceWorker.perform_async(epf_full_feed.id, main_file_name, file)
           end
         end
       end
