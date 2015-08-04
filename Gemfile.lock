@@ -334,7 +334,7 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
-  sidekiq-pro (= 1.9.2)!
+  sidekiq-pro!
   socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
