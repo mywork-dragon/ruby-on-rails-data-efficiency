@@ -6,14 +6,14 @@ class EpfServiceWorker
 
   sidekiq_options backtrace: true, :retry => false, queue: :'172-31-32-93'
 
-  def perform(main_file_name, file)
+  def perform(epf_full_feed_id, main_file_name, file)
     case main_file_name
     when 'application'
       perform_application(file)
     end
   end
   
-  def perform_application(file)
+  def perform_application(epf_full_feed_id, file)
     
     record = ''
     File.foreach(file, encoding: 'UTF-8:UTF-8').with_index do |line, line_num|
@@ -22,7 +22,7 @@ class EpfServiceWorker
        
       if line.end_with?(RS)
         
-        save_application(record)
+        save_application(epf_full_feed_id, record)
         
         record = ''
         
@@ -36,13 +36,17 @@ class EpfServiceWorker
     
     values = record.gsub(RS, '').split(FS)
   
-    ss = IosAppEpfSnapshot.create!
+    next unless IosAppEpfSnapshot.where(epf_full_feed_id: epf_full_feed_id, application_id: values[1]).blank?
+  
+    ss = IosAppEpfSnapshot.new
     
     values.each_with_index do |value, n|
       field = field_at_index(n)
       
       s.send("#{field}=", value) if value
     end
+    
+    ss.save
     
     
   end
