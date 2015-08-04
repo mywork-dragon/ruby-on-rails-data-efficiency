@@ -44,7 +44,10 @@ class EpfServiceWorker
       field = field_at_index(n)
       
       if field == 'itunes_release_date'
-        ss.itunes_release_date = Date.strptime(value, '%m %d %Y')
+        begin
+          ss.itunes_release_date = Date.strptime(value, '%m %d %Y')
+        rescue => e
+        end
       else
         ss.send("#{field}=", value) if (field && value)
       end

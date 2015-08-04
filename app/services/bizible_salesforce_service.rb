@@ -298,8 +298,8 @@ class BizibleSalesforceService
         puts "Company ##{index + 1} of #{opps_count}"
         begin
            BizibleSalesforceService.hydrate_opp(id: opp.Id, website: opp.Website__c, name: opp.name)
-    
-        rescue Exception => e
+        rescue => e
+        end
           puts "skipping... problem #{e.message}"
           pp e.backtrace
         end
