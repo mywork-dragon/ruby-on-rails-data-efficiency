@@ -34,9 +34,21 @@ class EpfServiceWorker
     # puts record
     # puts ""
     
-    fields = record.gsub(RS, '').split(FS)
+    values = record.gsub(RS, '').split(FS)
+  
+    ss = IosAppEpfSnapshot.create!
+    
+    values.each_with_index do |value, n|
+      field = field_at_index(n)
+      
+      s.send("#{field}=", value) if value
+    end
     
     
+  end
+  
+  def field_at_index(n)
+    fields = ["application_id", "title", "recommended_age", "artist_name", "seller_name", "company_url", "support_url", "view_url", "artwork_url_large", "artwork_url_small", "itunes_release_date", "copyright", "description", "version", "itunes_version", "download_size"][n]
   end
   
 end
