@@ -1,7 +1,7 @@
 class EpfServiceWorker
   include Sidekiq::Worker
   
-  FFS = 1.chr
+  FS = 1.chr
   RS = 2.chr + "\n"
 
   sidekiq_options backtrace: true, :retry => false, queue: :'172-31-32-93'
