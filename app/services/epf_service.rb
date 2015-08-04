@@ -89,10 +89,6 @@ class EpfService
       end
     end
     
-    def on_complete(status, options)
-      Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status)
-    end
-    
     # Oldest is first
     # current: The current snapshots
     # all: All snapshots
@@ -196,6 +192,10 @@ class EpfService
       EPF_DIRECTORY + '/' + filename + '_' + suffix
     end
     
+  end
+  
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status)
   end
 
 end
