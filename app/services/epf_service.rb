@@ -72,6 +72,10 @@ class EpfService
       puts 'Partial files fixed.'
       send_slack_notifier('Partial files fixed.')
       
+      store(feed_symbol: feed_symbol, name: name)
+    end
+    
+    def store(feed_symbol:, name:)
       files_for_feed(feed_symbol).each do |main_file_name|
         
         epf_full_feed = EpfFullFeed.find_or_create_by(name: name)
