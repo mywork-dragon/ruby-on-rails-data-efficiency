@@ -735,60 +735,13 @@ class ApiController < ApplicationController
 
   def android_sdks_for_app_exist
 
-    render json: AndroidSdksForAppService.sdks_hash(params['appId'])
-
-    # android_app_id = params['appId']
-#
-#     aa = AndroidApp.find(android_app_id)
-#
-#     if aa.newest_apk_snapshot.blank?
-#
-#       hash = nil
-#
-#     else
-#
-#       new_snap = aa.newest_apk_snapshot
-#
-#     end
-#
-#     if new_snap.present? && new_snap.status == "success"
-#
-#       p = new_snap.android_packages.where('android_package_tag != 1')
-#
-#       hash = clean_up_android_sdks(p)
-#
-#     else
-#       hash = nil
-#     end
-#
-#     render json: hash.to_json
-
-  end
-
-  def android_sdks_for_app
-
     android_app_id = params['appId']
 
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
 
-      ai = aa.app_identifier
-
-      j = ApkSnapshotJob.create!(notes: ai)
-
-      batch = Sidekiq::Batch.new
-      batch.jobs do
-        ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
-      end
-      bid = batch.bid
-
-      360.times do |i|
-        break if Sidekiq::Batch::Status.new(bid).complete?
-        sleep 0.25
-      end
-
-      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+      hash = nil
 
     else
 
@@ -806,9 +759,12 @@ class ApiController < ApplicationController
       hash = nil
     end
 
-    # HANDLE NIL CASE!!!!!!!
     render json: hash.to_json
 
+  end
+
+  def android_sdks_for_app
+    render json: AndroidSdksForAppService.sdks_hash(params['appId'])
   end
 
 
