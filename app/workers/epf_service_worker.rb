@@ -36,7 +36,7 @@ class EpfServiceWorker
     
     values = record.gsub(RS, '').split(FS)
   
-    next unless IosAppEpfSnapshot.where(epf_full_feed_id: epf_full_feed_id, application_id: values[1]).blank?
+    return false unless IosAppEpfSnapshot.where(epf_full_feed_id: epf_full_feed_id, application_id: values[1]).blank?
   
     ss = IosAppEpfSnapshot.new
     
