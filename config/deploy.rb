@@ -48,12 +48,13 @@ set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sdk_scraper_concurrency, 15
 set :scraper_concurrency, 50
-set :web_concurrency, 0
+set :web_concurrency, 1
 
 # set :sidekiq_queue, %w(critical default low)
 
 set :sdk_scraper_queue, %w(sdk_single sdk)
 set :scraper_queue, %w(critical default low)
+set :web_queue, %w(no_op)
 
 set :whenever_roles, [:scraper, :sdk_scraper]
 
