@@ -767,35 +767,4 @@ class ApiController < ApplicationController
     render json: AndroidSdksForAppService.sdks_hash(params['appId'])
   end
 
-
-  def clean_up_android_sdks(p)
-    hash = Hash.new
-
-    if p.present?
-      p.each do |packages|
-        
-        package = " " + packages.package_name
-
-        [' com.',' net.',' org.',' edu.',' eu.',' io.',' ui.',' .'].each{|u| package.slice! u}
-
-        name = package.split('.')[0].strip
-
-        if name.count("0-9").zero? && name.exclude?("android")
-
-          name = name.capitalize
-
-          if hash[name].blank?
-            hash[name] = [packages.package_name]
-          else
-            hash[name] << packages.package_name
-          end
-
-        end
-      end
-    end
-
-    hash
-
-  end
-
 end
