@@ -96,9 +96,6 @@ class SdkCompanyServiceWorker
   end
 
 
-
-
-
   def google_company(sdk_company_id)
 
     sdk_com = SdkCompany.find_by_id(sdk_company_id)
@@ -124,14 +121,22 @@ class SdkCompanyServiceWorker
 
     results_html = Nokogiri::HTML(res(type: :get, req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}).body)
 
-    results = results_html.search('cite').map do |cite|
+    results = results_html.search('cite').each do |cite|
       url = cite.inner_text
-      url = "http://" + url if url.exclude?("http://") || url.exclude?("https://")
-      host = URI(url).host
-      host if host.present? && host.include?(query)
+
+      ext = %w(.com .co .net .org .edu .io .ui .gov).select{|s| s if url.include?(s) }.first
+
+      next if ext.nil?
+
+      %w(www. doc. docs. dev. documentation.).each{|p| url = url.gsub(p,'') }
+
+      domain = url.split(ext).first.to_s + ext.to_s
+
+      return domain if domain.include? query.downcase
+
     end
 
-    results.reject{ |r| r.blank? }.first
+    results
 
   end
 
