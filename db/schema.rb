@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804075337) do
+ActiveRecord::Schema.define(version: 20150804080250) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -311,6 +311,14 @@ ActiveRecord::Schema.define(version: 20150804075337) do
   add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
   add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
+  create_table "epf_full_feeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
+
   create_table "google_accounts", force: true do |t|
     t.string   "email"
     t.string   "password"
@@ -417,6 +425,7 @@ ActiveRecord::Schema.define(version: 20150804075337) do
     t.string   "version"
     t.string   "itunes_version"
     t.integer  "download_size",       limit: 8
+    t.integer  "epf_full_feed_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -428,6 +437,7 @@ ActiveRecord::Schema.define(version: 20150804075337) do
   add_index "ios_app_epf_snapshots", ["company_url"], name: "index_ios_app_epf_snapshots_on_company_url", using: :btree
   add_index "ios_app_epf_snapshots", ["copywright"], name: "index_ios_app_epf_snapshots_on_copywright", using: :btree
   add_index "ios_app_epf_snapshots", ["download_size"], name: "index_ios_app_epf_snapshots_on_download_size", using: :btree
+  add_index "ios_app_epf_snapshots", ["epf_full_feed_id"], name: "index_ios_app_epf_snapshots_on_epf_full_feed_id", using: :btree
   add_index "ios_app_epf_snapshots", ["export_date"], name: "index_ios_app_epf_snapshots_on_export_date", using: :btree
   add_index "ios_app_epf_snapshots", ["itunes_release_date"], name: "index_ios_app_epf_snapshots_on_itunes_release_date", using: :btree
   add_index "ios_app_epf_snapshots", ["itunes_version"], name: "index_ios_app_epf_snapshots_on_itunes_version", using: :btree

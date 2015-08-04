@@ -18,6 +18,7 @@ class CreateIosAppEpfSnapshots < ActiveRecord::Migration
       t.string :version
       t.string :itunes_version
       t.integer :download_size, limit: 8
+      t.integer :epf_full_feed_id
 
       t.timestamps
     end
@@ -37,5 +38,6 @@ class CreateIosAppEpfSnapshots < ActiveRecord::Migration
     add_index :ios_app_epf_snapshots, :version
     add_index :ios_app_epf_snapshots, :itunes_version
     add_index :ios_app_epf_snapshots, :download_size
+    add_index :ios_app_epf_snapshots, :epf_full_feed_id
   end
 end
