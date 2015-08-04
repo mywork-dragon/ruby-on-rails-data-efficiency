@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804220800) do
+ActiveRecord::Schema.define(version: 20150804222756) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -419,7 +419,7 @@ ActiveRecord::Schema.define(version: 20150804220800) do
     t.text     "view_url"
     t.text     "artwork_url_large"
     t.string   "artwork_url_small"
-    t.datetime "itunes_release_date"
+    t.date     "itunes_release_date"
     t.text     "copyright"
     t.text     "description"
     t.string   "version"
