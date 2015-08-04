@@ -5,8 +5,7 @@ class SdkCompanyServiceWorker
 	sidekiq_options backtrace: true, :retry => false, queue: :sdk
   
 	def perform(app_id)
-    # find_company(app_id)
-    google_company(app_id)
+    clean(app_id)
   end
 
   def find_company(app_id)
@@ -104,7 +103,7 @@ class SdkCompanyServiceWorker
 
     link = google_search(query)
 
-    if link.present?
+    if link.present? && link != 0
       sdk_com.website = link
     else
       sdk_com.website = nil
@@ -128,7 +127,7 @@ class SdkCompanyServiceWorker
 
       next if ext.nil?
 
-      %w(www. doc. docs. dev. documentation.).each{|p| url = url.gsub(p,'') }
+      %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
 
       domain = url.split(ext).first.to_s + ext.to_s
 
@@ -142,25 +141,55 @@ class SdkCompanyServiceWorker
 
   def res(req:, params:, type:)
 
-    mp = MicroProxy.transaction do
+    if Rails.env.production?
 
-      p = MicroProxy.lock.order(last_used: :asc).first
-      p.last_used = DateTime.now
-      p.save
+      mp = MicroProxy.transaction do
 
-      p
+        p = MicroProxy.lock.order(last_used: :asc).first
+        p.last_used = DateTime.now
+        p.save
+
+        p
+
+      end
+
+      proxy = "#{mp.private_ip}:8888"
+
+      response = CurbFu.send(type, req, params) do |curb|
+        curb.proxy_url = proxy
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
+        curb.timeout = 5
+      end
+
+    else
+
+      response = CurbFu.send(type, req, params) do |curb|
+        curb.ssl_verify_peer = false
+        curb.max_redirects = 3
+        curb.timeout = 5
+      end
 
     end
 
-    proxy = "#{mp.private_ip}:8888"
+  end
 
-    response = CurbFu.send(type, req, params) do |curb|
-      curb.proxy_url = proxy
-      curb.ssl_verify_peer = false
-      curb.max_redirects = 3
-      curb.timeout = 5
+  def clean(sdk_company_id)
+    sdk_com = SdkCompany.find(sdk_company_id)
+
+    url = sdk_com.website
+
+    if url == 0
+      sdk_com.website = nil
+      sdk_com.save
+    else
+
+      %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
+
+      sdk_com.website = url
+      sdk_com.save
+
     end
-
   end
 
 end
