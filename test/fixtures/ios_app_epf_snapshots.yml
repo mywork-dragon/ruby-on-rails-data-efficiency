@@ -13,7 +13,7 @@ one:
   artwork_url_large: MyString
   artwork_url_small: MyString
   itunes_release_date: 2015-08-04 00:53:37
-  copywright: MyString
+  copyright: MyString
   description: MyText
   version: MyString
   itunes_version: MyString
@@ -32,7 +32,7 @@ two:
   artwork_url_large: MyString
   artwork_url_small: MyString
   itunes_release_date: 2015-08-04 00:53:37
-  copywright: MyString
+  copyright: MyString
   description: MyText
   version: MyString
   itunes_version: MyString
