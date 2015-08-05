@@ -14,6 +14,8 @@ class SdkCompanyServiceWorker
 
     @api_words = %w(key secret token app)
 
+    @url_exts = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me)
+
     ap = AndroidApp.find_by_id(app_id).newest_apk_snapshot.android_packages
 
     ap.select{|a| a unless " #{a.package_name}".include?(' android.') || a.package_name.blank? }.map{|b| b.package_name}.each do |package|
@@ -36,7 +38,7 @@ class SdkCompanyServiceWorker
 
     ext = 'com'
 
-    if %w(com net org edu eu io ui gov).include?(pre) || pre.blank?
+    if @url_exts.include?(pre) || pre.blank?
       package_arr.shift
       ext = pre
     end
@@ -153,7 +155,7 @@ class SdkCompanyServiceWorker
     results = results_html.search('cite').each do |cite|
       url = cite.inner_text
 
-      ext = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me).select{|s| s if url.include?(s) }.first
+      ext = @url_exts.select{|s| s if url.include?(s) }.first
 
       next if ext.nil?
 
@@ -213,22 +215,22 @@ class SdkCompanyServiceWorker
 
   end
 
-  def clean(sdk_company_id)
-    sdk_com = SdkCompany.find(sdk_company_id)
+  # def clean(sdk_company_id)
+  #   sdk_com = SdkCompany.find(sdk_company_id)
 
-    url = sdk_com.website
+  #   url = sdk_com.website
 
-    if url == 0
-      sdk_com.website = nil
-      sdk_com.save
-    else
+  #   if url == 0
+  #     sdk_com.website = nil
+  #     sdk_com.save
+  #   else
 
-      %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
+  #     %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
 
-      sdk_com.website = url
-      sdk_com.save
+  #     sdk_com.website = url
+  #     sdk_com.save
 
-    end
-  end
+  #   end
+  # end
 
 end
