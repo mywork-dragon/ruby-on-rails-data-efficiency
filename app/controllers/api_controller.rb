@@ -733,6 +733,20 @@ class ApiController < ApplicationController
     end
   end
 
+  def custom_search
+
+    search = IosAppSnapshot.search do
+      fulltext params['query']
+      # paginate :page => 1, :per_page => 50
+    end
+
+    results = search.results
+
+    puts search.inspect
+    puts results
+    render json: results
+  end
+
   def android_sdks_for_app_exist
 
     android_app_id = params['appId']
@@ -801,8 +815,6 @@ class ApiController < ApplicationController
       hash = nil
     end
 
-    # HANDLE NIL CASE!!!!!!!
-  
     render json: hash
   end
 
