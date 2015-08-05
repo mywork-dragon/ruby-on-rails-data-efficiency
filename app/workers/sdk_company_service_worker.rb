@@ -13,7 +13,6 @@ class SdkCompanyServiceWorker
   def find_company(app_id)
 
     @api_words = %w(key secret token app)
-    @url_exts = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me)
 
     ap = AndroidApp.find_by_id(app_id).newest_apk_snapshot.android_packages
 
@@ -35,7 +34,7 @@ class SdkCompanyServiceWorker
 
     package_arr = package.split('.')
 
-    package_arr.shift if @url_exts.include?(pre) || pre.blank?
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
@@ -109,20 +108,22 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    # aa = AndroidApp.find(app_id)
+    aa = AndroidApp.find(app_id)
 
-    # play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if aa.get_company && aa.get_company.google_play_identifier
-    # app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if aa.newest_android_app_snapshot && aa.newest_android_app_snapshot.name
+    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if defined? aa.get_company.google_play_identifier
+    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if defined? aa.newest_android_app_snapshot.name
+
+    %w(com co net org edu io ui gov cn jp me ltd inc llc lp corporation corp group).each{ |a| play_id = play_id.gsub(a,'') } if play_id.present?
 
     return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
-      # if play_id.present? && app_name.present?
-        # if play_id.similar(w) <= 0.9 && app_name.similar(w) <= 0.9
-    #       return true
-        # end
-    #   else
-    #     return true
-    #   end
-    # end
+      if play_id.present? && app_name.present?
+        if play_id.similar(w) <= 0.9 && app_name.similar(w) <= 0.9
+          return true
+        end
+      else
+        return true
+      end
+    end
 
     false
   end
@@ -160,7 +161,7 @@ class SdkCompanyServiceWorker
     results = results_html.search('cite').each do |cite|
       url = cite.inner_text
 
-      ext = @url_exts.select{|s| s if url.include?(s) }.first
+      ext = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me).select{|s| s if url.include?(s) }.first
 
       next if ext.nil?
 
