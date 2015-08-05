@@ -11,13 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803210728) do
+ActiveRecord::Schema.define(version: 20150805210736) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
+    t.boolean  "can_view_ad_spend",     default: true,  null: false
+    t.boolean  "can_view_sdks",         default: false, null: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
@@ -706,6 +708,7 @@ ActiveRecord::Schema.define(version: 20150803210728) do
     t.string   "bloomberg_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "favicon"
   end
 
   add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree

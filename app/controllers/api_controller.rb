@@ -752,7 +752,7 @@ class ApiController < ApplicationController
 
       p = new_snap.android_packages.where('android_package_tag != 1')
 
-      hash = clean_up_android_sdks(p)
+      hash = sdk_hash(p, new_snap.updated_at)
 
     else
       hash = nil
@@ -797,7 +797,7 @@ class ApiController < ApplicationController
 
       p = new_snap.android_packages.where('android_package_tag != 1')
 
-      hash = clean_up_android_sdks(p)
+      hash = sdk_hash(p, new_snap.updated_at)
 
     else
       hash = nil
@@ -807,9 +807,12 @@ class ApiController < ApplicationController
 
   end
 
-
-  def clean_up_android_sdks(p)
+  def sdk_hash(p, last_updated)
     hash = Hash.new
+    main_hash = Hash.new
+    package_hash = Hash.new
+    website_hash = Hash.new
+    favicon_hash = Hash.new
 
     if p.present?
       p.each do |packages|
@@ -824,17 +827,39 @@ class ApiController < ApplicationController
 
           name = name.capitalize
 
-          if hash[name].blank?
-            hash[name] = [packages.package_name]
+          if package_hash[name].blank?
+
+            sdk_com = SdkCompany.find_by_name(name)
+
+            url = nil
+            url = sdk_com.website unless sdk_com.nil?
+
+            favicon = nil
+            favicon = sdk_com.favicon unless sdk_com.nil?
+
+            website_hash[name] = {'website' => url.to_s}
+
+            favicon_hash[name] = {'favicon' => favicon.to_s}
+
+            package_hash[name] = {'packages' =>[packages.package_name]}
+
+            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name]]
+
           else
-            hash[name] << packages.package_name
+
+            hash[name][0]['packages'] << packages.package_name
+
           end
 
         end
       end
     end
 
-    hash
+    main_hash['sdks'] = hash
+    
+    main_hash['last_updated'] = last_updated
+
+    main_hash
 
   end
 

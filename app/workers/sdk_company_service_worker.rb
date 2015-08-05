@@ -3,12 +3,16 @@ class SdkCompanyServiceWorker
 	include Sidekiq::Worker
 
 	sidekiq_options backtrace: true, :retry => false, queue: :sdk
-  
-	def perform(app_id)
-    clean(app_id)
+
+	def perform(app_id, method)
+
+    find_company(app_id)
+
   end
 
   def find_company(app_id)
+
+    @api_words = %w(key secret token app)
 
     ap = AndroidApp.find_by_id(app_id).newest_apk_snapshot.android_packages
 
@@ -24,7 +28,7 @@ class SdkCompanyServiceWorker
 
   end
 
-  def find_or_create_company_from_package(package)
+  def find_or_create_company_from_package(app_id, package)
 
     pre = package.split('.').first
 
@@ -45,13 +49,13 @@ class SdkCompanyServiceWorker
 
       name = camel_split(package.split(/(?=[A-Z_])/).first)
 
-      if is_word? name
+      return nil if name.split(' ').any?{|s| s.length == 1 }
 
-        if package.downcase.include?('key') || package.downcase.include?('secret') || package.downcase.include?('token') || package.downcase.include?('app')
+      if is_word? name, app_id
 
-          website = name.downcase.gsub(' ','') + "." + ext
+        if @api_words.any?{|i| package.downcase.include? i}
 
-          sdk_com = SdkCompany.create_with(website: website).find_or_create_by(name: name)
+          sdk_com = SdkCompany.find_or_create_by(name: name)
 
         else
 
@@ -65,19 +69,27 @@ class SdkCompanyServiceWorker
 
       name = package.split('.').first
 
-      if is_word? name
+      if is_word? name, app_id
 
         name = camel_split(name)
 
-        website = name.downcase.gsub(' ','') + "." + ext
-
-        sdk_com =  SdkCompany.create_with(website: website).find_or_create_by(name: name)
+        sdk_com =  SdkCompany.find_or_create_by(name: name)
 
       end
 
     end
 
-    return sdk_com.id unless sdk_com.blank?
+    # Check name again
+
+    sdk_id = sdk_com.id unless sdk_com.blank?
+
+    sdk_com_check = SdkCompany.where(name: name)
+
+    if sdk_com_check.count > 1
+      sdk_id = sdk_com_check.map{|s| s.id}.min 
+    end
+
+    return sdk_id unless sdk_id.blank?
 
     nil
 
@@ -85,12 +97,26 @@ class SdkCompanyServiceWorker
 
   def camel_split(words)
 
-    words.split(/(?=[A-Z])/).map(&:capitalize).join(' ')
+    name = words.split(/(?=[A-Z])/).map do |w| 
+      if @api_words.any?{|k| w.downcase.include? k }
+        nil
+      else
+        w.capitalize
+      end
+    end
+
+    name.join(' ').strip
 
   end
 
-  def is_word?(w)
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+  def is_word?(w, app_id)
+
+    aa = AndroidApp.find(app_id)
+
+    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','')
+    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase
+
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && play_id.similar(w) <= 0.80 && app_name.similar(w) <= 0.80
     false
   end
 
@@ -103,8 +129,12 @@ class SdkCompanyServiceWorker
 
     link = google_search(query)
 
-    if link.present? && link != 0
+    if link.present? && link != '0'
+
       sdk_com.website = link
+
+      sdk_com.favicon = get_favicon(link)
+
     else
       sdk_com.website = nil
     end
@@ -123,11 +153,11 @@ class SdkCompanyServiceWorker
     results = results_html.search('cite').each do |cite|
       url = cite.inner_text
 
-      ext = %w(.com .co .net .org .edu .io .ui .gov).select{|s| s if url.include?(s) }.first
+      ext = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me).select{|s| s if url.include?(s) }.first
 
       next if ext.nil?
 
-      %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
+      %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation. dashboard. sdk. wiki.).each{|p| url = url.gsub(p,'') }
 
       domain = url.split(ext).first.to_s + ext.to_s
 
@@ -135,8 +165,17 @@ class SdkCompanyServiceWorker
 
     end
 
-    results
+    nil
 
+  end
+
+  def get_favicon(url)
+    begin
+      favicon = WWW::Favicon.new
+      favicon_url = favicon.find(url)
+    rescue
+      nil
+    end
   end
 
   def res(req:, params:, type:)

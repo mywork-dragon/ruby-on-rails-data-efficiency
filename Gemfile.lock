@@ -113,6 +113,7 @@ GEM
     hashie (2.0.5)
     hike (1.2.3)
     hitimes (1.2.2)
+    hpricot (0.8.6)
     html2haml (2.0.0)
       erubis (~> 2.7.0)
       haml (~> 4.0.0)
@@ -247,6 +248,7 @@ GEM
       redis-namespace (~> 1.5, >= 1.5.2)
     sidekiq-pro (1.9.2)
       sidekiq (>= 3.2.3)
+    similar_text (0.0.4)
     slackiq (0.0.3)
       httparty
     socksify (1.6.0)
@@ -291,6 +293,8 @@ GEM
       chronic (>= 0.6.3)
     whois (3.5.9)
       activesupport (>= 3)
+    www-favicon (0.0.6)
+      hpricot
 
 PLATFORMS
   ruby
@@ -342,6 +346,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   sidekiq-pro (= 1.9.2)!
+  similar_text (= 0.0.4)
   slackiq (= 0.0.3)
   socksify (= 1.6.0)
   spidr (= 0.4.1)
@@ -353,6 +358,7 @@ DEPENDENCIES
   unicorn
   whenever (= 0.9.4)
   whois (= 3.5.9)
+  www-favicon (= 0.0.6)
 
 BUNDLED WITH
    1.10.5
