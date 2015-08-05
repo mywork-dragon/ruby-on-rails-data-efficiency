@@ -35,12 +35,7 @@ class SdkCompanyServiceWorker
 
     package_arr = package.split('.')
 
-    ext = 'com'
-
-    if @url_exts.include?(pre) || pre.blank?
-      package_arr.shift
-      ext = pre
-    end
+    package_arr.shift if @url_exts.include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
@@ -73,6 +68,8 @@ class SdkCompanyServiceWorker
       if is_word?(name, app_id)
 
         name = camel_split(name)
+
+        return nil if name.split(' ').any?{|s| s.length == 1 }
 
         sdk_com =  SdkCompany.find_or_create_by(name: name)
 
@@ -112,21 +109,21 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    aa = AndroidApp.find(app_id)
+    # aa = AndroidApp.find(app_id)
 
-    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if aa.get_company && aa.get_company.google_play_identifier
-    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if aa.newest_android_app_snapshot && aa.newest_android_app_snapshot.name
+    # play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if aa.get_company && aa.get_company.google_play_identifier
+    # app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if aa.newest_android_app_snapshot && aa.newest_android_app_snapshot.name
 
-    if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
-      if play_id.present? && app_name.present?
-        if play_id.similar(w) <= 0.75 && app_name.similar(w) <= 0.75
-          return true
-        end
-      else
-        return true
-      end
-    end
-    
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+      # if play_id.present? && app_name.present?
+        # if play_id.similar(w) <= 0.9 && app_name.similar(w) <= 0.9
+    #       return true
+        # end
+    #   else
+    #     return true
+    #   end
+    # end
+
     false
   end
 
