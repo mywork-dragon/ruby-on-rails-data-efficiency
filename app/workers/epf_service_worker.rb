@@ -37,6 +37,8 @@ class EpfServiceWorker
     values = record.gsub(RS, '').split(FS)
   
     return false unless IosAppEpfSnapshot.where(epf_full_feed_id: epf_full_feed_id, application_id: values[1]).blank?
+    
+    return false unless values.count == fields.count
   
     ss = IosAppEpfSnapshot.new(epf_full_feed_id: epf_full_feed_id)
     
@@ -45,7 +47,7 @@ class EpfServiceWorker
       
       if field == 'itunes_release_date'
         begin
-          ss.itunes_release_date = Date.strptime(value, '%m %d %Y')
+          ss.itunes_release_date = Date.strptime(value.strip, '%Y %m %d')
         rescue => e
         end
       else
@@ -59,7 +61,11 @@ class EpfServiceWorker
   end
   
   def field_at_index(n)
-    fields = ["export_date", "application_id", "title", "recommended_age", "artist_name", "seller_name", "company_url", "support_url", "view_url", "artwork_url_large", "artwork_url_small", "itunes_release_date", "copyright", "description", "version", "itunes_version", "download_size"][n]
+    fields[n]
+  end
+  
+  def fields
+    ["export_date", "application_id", "title", "recommended_age", "artist_name", "seller_name", "company_url", "support_url", "view_url", "artwork_url_large", "artwork_url_small", "itunes_release_date", "copyright", "description", "version", "itunes_version", "download_size"]
   end
   
 end
