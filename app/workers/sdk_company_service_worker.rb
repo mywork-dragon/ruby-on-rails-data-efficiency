@@ -110,14 +110,14 @@ class SdkCompanyServiceWorker
 
     aa = AndroidApp.find(app_id)
 
-    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if defined? aa.get_company.google_play_identifier
-    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if defined? aa.newest_android_app_snapshot.name
+    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if defined?(aa.get_company.google_play_identifier)
+    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if defined?(aa.newest_android_app_snapshot.name)
 
     %w(com co net org edu io ui gov cn jp me ltd inc llc lp corporation corp group).each{ |a| play_id = play_id.gsub(a,'') } if play_id.present?
 
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+    if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
       if play_id.present? && app_name.present?
-        if play_id.similar(w) <= 0.9 && app_name.similar(w) <= 0.9
+        if play_id.similar(w) <= 0.8 || app_name.similar(w) <= 0.8
           return true
         end
       else
