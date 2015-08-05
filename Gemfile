@@ -137,3 +137,5 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'curb-fu', '0.6.2'
 
+gem 'sunspot_rails'
+gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in development
