@@ -13,7 +13,6 @@ class SdkCompanyServiceWorker
   def find_company(app_id)
 
     @api_words = %w(key secret token app)
-
     @url_exts = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me)
 
     ap = AndroidApp.find_by_id(app_id).newest_apk_snapshot.android_packages
