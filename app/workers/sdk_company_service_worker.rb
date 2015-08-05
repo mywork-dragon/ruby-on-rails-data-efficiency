@@ -19,7 +19,7 @@ class SdkCompanyServiceWorker
 
     ap.select{|a| a unless " #{a.package_name}".include?(' android.') || a.package_name.blank? }.map{|b| b.package_name}.each do |package|
 
-      company_id = find_or_create_company_from_package(package)
+      company_id = find_or_create_company_from_package(app_id, package)
 
       next if company_id.nil?
 
