@@ -52,7 +52,7 @@ class SdkCompanyServiceWorker
 
       return nil if name.split(' ').any?{|s| s.length == 1 }
 
-      if is_word? name, app_id
+      if is_word?(name, app_id)
 
         if @api_words.any?{|i| package.downcase.include? i}
 
@@ -70,7 +70,7 @@ class SdkCompanyServiceWorker
 
       name = package.split('.').first
 
-      if is_word? name, app_id
+      if is_word?(name, app_id)
 
         name = camel_split(name)
 
@@ -114,10 +114,19 @@ class SdkCompanyServiceWorker
 
     aa = AndroidApp.find(app_id)
 
-    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','')
-    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase
+    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if aa.get_company && aa.get_company.google_play_identifier
+    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if aa.newest_android_app_snapshot && aa.newest_android_app_snapshot.name
 
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && play_id.similar(w) <= 0.80 && app_name.similar(w) <= 0.80
+    if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+      if play_id.present? && app_name.present?
+        if play_id.similar(w) <= 0.75 && app_name.similar(w) <= 0.75
+          return true
+        end
+      else
+        return true
+      end
+    end
+    
     false
   end
 
