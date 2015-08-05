@@ -1,0 +1,39 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  export_date: 1
+  application_id: 1
+  title: MyString
+  recommended_age: MyString
+  artist_name: MyString
+  seller_name: MyString
+  company_url: MyString
+  support_url: 
+  view_url: MyString
+  artwork_url_large: MyString
+  artwork_url_small: MyString
+  itunes_release_date: 2015-08-04 00:53:37
+  copyright: MyString
+  description: MyText
+  version: MyString
+  itunes_version: MyString
+  download_size: 1
+
+two:
+  export_date: 1
+  application_id: 1
+  title: MyString
+  recommended_age: MyString
+  artist_name: MyString
+  seller_name: MyString
+  company_url: MyString
+  support_url: 
+  view_url: MyString
+  artwork_url_large: MyString
+  artwork_url_small: MyString
+  itunes_release_date: 2015-08-04 00:53:37
+  copyright: MyString
+  description: MyText
+  version: MyString
+  itunes_version: MyString
+  download_size: 1

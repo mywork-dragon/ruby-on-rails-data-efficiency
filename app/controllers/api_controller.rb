@@ -1,5 +1,4 @@
 # This is our internal API that talks to the frontend
-
 class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
@@ -734,9 +733,9 @@ class ApiController < ApplicationController
     end
   end
 
-  def android_sdks_for_app_exists
+  def android_sdks_for_app_exist
 
-    android_app_id = params['id']
+    android_app_id = params['appId']
 
     aa = AndroidApp.find(android_app_id)
 
@@ -765,10 +764,7 @@ class ApiController < ApplicationController
   end
 
   def android_sdks_for_app
-
-    android_app_id = params['appId']
-
-    aa = AndroidApp.find(android_app_id)
+    aa = AndroidApp.find(params['appId'])
 
     if aa.newest_apk_snapshot.blank?
 
@@ -805,17 +801,17 @@ class ApiController < ApplicationController
       hash = nil
     end
 
-    render json: hash.to_json
-
+    # HANDLE NIL CASE!!!!!!!
+  
+    render json: hash
   end
-
 
   def clean_up_android_sdks(p)
     hash = Hash.new
 
     if p.present?
       p.each do |packages|
-        
+      
         package = " " + packages.package_name
 
         [' com.',' net.',' org.',' edu.',' eu.',' io.',' ui.',' .'].each{|u| package.slice! u}
