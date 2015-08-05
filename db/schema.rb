@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804234020) do
+ActiveRecord::Schema.define(version: 20150805210736) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -751,6 +751,7 @@ ActiveRecord::Schema.define(version: 20150804234020) do
     t.string   "bloomberg_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "favicon"
   end
 
   add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree
