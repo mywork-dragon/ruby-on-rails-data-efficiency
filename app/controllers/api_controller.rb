@@ -870,7 +870,7 @@ class ApiController < ApplicationController
 
           name = package.split('.').first
 
-          if is_word?(name, nil)
+          if SdkCompanyServiceWorker.new.is_word?(name, nil)
 
             name = SdkCompanyServiceWorker.new.camel_split(name)
 
