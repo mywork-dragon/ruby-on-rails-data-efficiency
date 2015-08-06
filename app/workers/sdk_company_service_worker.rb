@@ -72,19 +72,19 @@ class SdkCompanyServiceWorker
 
     # Check name again
 
-    # sdk_id = sdk_com.id unless sdk_com.blank?
+    sdk_id = sdk_com.id unless sdk_com.blank?
 
-    # sdk_com_check = SdkCompany.where(name: name)
+    sdk_com_check = SdkCompany.where(name: name)
 
-    # if sdk_com_check.count > 1
-    #   sdk_id = sdk_com_check.map{|s| s.id}.min 
-    # end
+    if sdk_com_check.count > 1
+      sdk_id = sdk_com_check.map{|s| s.id}.min 
+    end
 
-    # return sdk_id unless sdk_id.blank?
+    return sdk_id unless sdk_id.blank?
 
-    puts sdk_com.id
+    # puts sdk_com.id
 
-    return sdk_com.id unless sdk_com.blank?
+    # return sdk_com.id unless sdk_com.blank?
 
     nil
 
