@@ -114,11 +114,12 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    ap = AndroidApp.find(app_id).app_identifier
+    # ap = AndroidApp.find(app_id).app_identifier
 
-    package = strip_prefix(ap).split('.').first
+    # package = strip_prefix(ap).split('.').first
 
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 0.85
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+     # && package.similar(w) <= 0.85
 
     false
 
