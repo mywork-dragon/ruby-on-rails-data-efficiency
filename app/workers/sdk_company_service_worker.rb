@@ -114,8 +114,6 @@ class SdkCompanyServiceWorker
 
   end
 
-  48546
-
   def is_word?(w, app_id)
 
     ap = AndroidApp.find(app_id).app_identifier
