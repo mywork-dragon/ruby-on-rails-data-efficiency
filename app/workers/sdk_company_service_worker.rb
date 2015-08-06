@@ -6,7 +6,9 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    google_company(app_id)
+    # google_company(app_id)
+
+    get_favicon(app_id)
 
   end
 
@@ -182,6 +184,7 @@ class SdkCompanyServiceWorker
   end
 
   def get_favicon(url)
+    url = 'http://' + url if url.exclude?('http://') && url.exclude?('https://')
     begin
       favicon = WWW::Favicon.new
       favicon_url = favicon.find(url)
