@@ -36,7 +36,7 @@ class SdkCompanyServiceWorker
 
       package = package.capitalize if package == package.upcase
 
-      name = camel_split(package.split(/(?=[A-Z_])/).first)
+      name = camel_split_key_words(package.split(/(?=[A-Z_])/).first)
 
       return nil if name.split(' ').select{|s| s.length == 1 }.count > 1
 
@@ -82,6 +82,8 @@ class SdkCompanyServiceWorker
 
     # return sdk_id unless sdk_id.blank?
 
+    puts sdk_com.id
+
     return sdk_com.id unless sdk_com.blank?
 
     nil
@@ -101,6 +103,10 @@ class SdkCompanyServiceWorker
   end
 
   def camel_split(words)
+    words.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
+  end
+
+  def camel_split_key_words(words)
 
     name = words.split(/(?=[A-Z])/).map do |w| 
       if @api_words.any?{|k| w.downcase.include? k }
