@@ -38,7 +38,7 @@ class SdkCompanyServiceWorker
 
       name = camel_split(package.split(/(?=[A-Z_])/).first)
 
-      return nil if name.split(' ').any?{|s| s.length == 1 }
+      return nil if name.split(' ').select{|s| s.length == 1 }.count > 1
 
       if is_word?(name, app_id)
 
@@ -62,7 +62,7 @@ class SdkCompanyServiceWorker
 
         name = camel_split(name)
 
-        return nil if name.split(' ').any?{|s| s.length == 1 }
+        return nil if name.split(' ').select{|s| s.length == 1 }.count > 1
 
         sdk_com =  SdkCompany.find_or_create_by(name: name)
 
@@ -114,13 +114,15 @@ class SdkCompanyServiceWorker
 
   end
 
+  48546
+
   def is_word?(w, app_id)
 
     ap = AndroidApp.find(app_id).app_identifier
 
     package = strip_prefix(ap).split('.').first
 
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 0.85
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
 
     false
 
