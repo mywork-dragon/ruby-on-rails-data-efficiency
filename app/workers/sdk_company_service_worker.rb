@@ -6,9 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    # google_company(app_id)
-
-    get_favicon(app_id)
+    find_company(app_id)
 
   end
 
@@ -72,8 +70,6 @@ class SdkCompanyServiceWorker
 
     end
 
-    # Check name again
-
     sdk_id = sdk_com.id unless sdk_com.blank?
 
     sdk_com_check = SdkCompany.where(name: name)
@@ -83,10 +79,6 @@ class SdkCompanyServiceWorker
     end
 
     return sdk_id unless sdk_id.blank?
-
-    # puts sdk_com.id
-
-    # return sdk_com.id unless sdk_com.blank?
 
     nil
 
@@ -124,11 +116,13 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    ap = AndroidApp.find(app_id).app_identifier
-
-    package = strip_prefix(ap).split('.').first
-
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
+    if app_id.nil?
+      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+    else
+      ap = AndroidApp.find(app_id).app_identifier
+      package = strip_prefix(ap).split('.').first
+      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
+    end
 
     false
 

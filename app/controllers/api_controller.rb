@@ -733,6 +733,42 @@ class ApiController < ApplicationController
     end
   end
 
+  def android_sdks_for_app_refresh
+
+    android_app_id = params['appId']
+
+    aa = AndroidApp.find(android_app_id)
+
+    ai = aa.app_identifier
+
+    j = ApkSnapshotJob.create!(notes: ai)
+
+    batch = Sidekiq::Batch.new
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
+    end
+    bid = batch.bid
+
+    360.times do |i|
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
+    end
+
+    new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      hash = sdk_hash(p, new_snap.updated_at)
+
+    else
+      hash = nil
+    end
+
+    render json: hash.to_json
+
+  end
 
   def android_sdks_for_app_exist
 
@@ -815,15 +851,35 @@ class ApiController < ApplicationController
     package_hash = Hash.new
     website_hash = Hash.new
     favicon_hash = Hash.new
+    popularity_hash = Hash.new
 
     if p.present?
       p.each do |packages|
         
-        package = " " + packages.package_name
+        package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
 
-        [' com.',' net.',' org.',' edu.',' eu.',' io.',' ui.',' .'].each{|u| package.slice! u}
+        if package.count('.').zero?
 
-        name = package.split('.')[0].strip
+          package = package.capitalize if package == package.upcase
+
+          name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
+
+          next if name.split(' ').select{|s| s.length == 1 }.count > 1
+
+        else
+
+          name = package.split('.').first
+
+          if is_word?(name, nil)
+
+            name = SdkCompanyServiceWorker.new.camel_split(name)
+
+            next if name.split(' ').select{|s| s.length == 1 }.count > 1
+
+          end
+
+        end
+
 
         if name.count("0-9").zero? && name.exclude?("android")
 
@@ -845,7 +901,9 @@ class ApiController < ApplicationController
 
             package_hash[name] = {'packages' =>[packages.package_name]}
 
-            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name]]
+            popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
+
+            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
 
           else
 
@@ -856,6 +914,8 @@ class ApiController < ApplicationController
         end
       end
     end
+
+    hash = hash.sort_by { |h| -hash[h[0]][3]['popularity'] }
 
     main_hash['sdks'] = hash
     
