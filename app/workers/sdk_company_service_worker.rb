@@ -72,15 +72,17 @@ class SdkCompanyServiceWorker
 
     # Check name again
 
-    sdk_id = sdk_com.id unless sdk_com.blank?
+    # sdk_id = sdk_com.id unless sdk_com.blank?
 
-    sdk_com_check = SdkCompany.where(name: name)
+    # sdk_com_check = SdkCompany.where(name: name)
 
-    if sdk_com_check.count > 1
-      sdk_id = sdk_com_check.map{|s| s.id}.min 
-    end
+    # if sdk_com_check.count > 1
+    #   sdk_id = sdk_com_check.map{|s| s.id}.min 
+    # end
 
-    return sdk_id unless sdk_id.blank?
+    # return sdk_id unless sdk_id.blank?
+
+    return sdk_com.id unless sdk_com.blank?
 
     nil
 
@@ -114,12 +116,11 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    # ap = AndroidApp.find(app_id).app_identifier
+    ap = AndroidApp.find(app_id).app_identifier
 
-    # package = strip_prefix(ap).split('.').first
+    package = strip_prefix(ap).split('.').first
 
-    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
-     # && package.similar(w) <= 0.85
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 0.85
 
     false
 
