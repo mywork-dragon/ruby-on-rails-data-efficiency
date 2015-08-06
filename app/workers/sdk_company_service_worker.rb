@@ -30,13 +30,7 @@ class SdkCompanyServiceWorker
 
   def find_or_create_company_from_package(app_id, package)
 
-    pre = package.split('.').first
-
-    package_arr = package.split('.')
-
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me).include?(pre) || pre.blank?
-
-    package = package_arr.join('.')
+    package = strip_prefix(package)
 
     if package.count('.').zero?
 
@@ -92,6 +86,18 @@ class SdkCompanyServiceWorker
 
   end
 
+  def strip_prefix(package)
+
+    pre = package.split('.').first
+
+    package_arr = package.split('.')
+
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me).include?(pre) || pre.blank?
+
+    package = package_arr.join('.')
+
+  end
+
   def camel_split(words)
 
     name = words.split(/(?=[A-Z])/).map do |w| 
@@ -108,24 +114,14 @@ class SdkCompanyServiceWorker
 
   def is_word?(w, app_id)
 
-    aa = AndroidApp.find(app_id)
+    ap = AndroidApp.find(app_id).app_identifier
 
-    play_id = aa.get_company.google_play_identifier.gsub(/[^a-z0-9\s]/i,'').gsub(' ','').downcase if defined?(aa.get_company.google_play_identifier)
-    app_name = aa.newest_android_app_snapshot.name.gsub(' ','').downcase if defined?(aa.newest_android_app_snapshot.name)
+    package = strip_prefix(ap).split('.').first
 
-    %w(com co net org edu io ui gov cn jp me ltd inc llc lp corporation corp group).each{ |a| play_id = play_id.gsub(a,'') } if play_id.present?
-
-    if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
-      if play_id.present? && app_name.present?
-        if play_id.similar(w) <= 0.8 || app_name.similar(w) <= 0.8
-          return true
-        end
-      else
-        return true
-      end
-    end
+    return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 0.85
 
     false
+
   end
 
 
