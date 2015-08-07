@@ -33,7 +33,7 @@ class SdkCompanyService
       sdk_com = SdkCompany.find_by_name(name)
 
       if sdk_com.present?
-        sdk_com.alias = new_name
+        sdk_com.alias_name = new_name
         sdk_com.save
       end
 
@@ -46,11 +46,11 @@ class SdkCompanyService
       sdk_com = SdkCompany.find_by_name(name)
 
       if sdk_com.present?
-        sdk_com.alias = new_name
+        sdk_com.alias_website = new_website
         sdk_com.save
       end
 
-      puts "Company name has been changed from '#{sdk_com.website}' to '#{new_name}'"
+      puts "Company name has been changed from '#{sdk_com.website}' to '#{new_website}'"
 
     end
 
