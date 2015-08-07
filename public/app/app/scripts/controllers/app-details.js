@@ -19,7 +19,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
-          $scope.sdks = data;
+
+          /* API Response Cleanup */
+          $scope.sdkData = {
+            'sdks': data.sdks,
+            'lastUpdated': data.last_updated
+          };
+
         }).error(function(err) {
         });
     });
@@ -81,7 +87,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.getSdks = function(appId) {
     apiService.getSdks(appId)
       .success(function(data) {
-        $scope.sdks = data;
+
+        /* API Response Cleanup */
+        $scope.sdkData = {
+          'sdks': data.sdks,
+          'lastUpdated': data.last_updated
+        };
+
       }).error(function() {
 
       });
