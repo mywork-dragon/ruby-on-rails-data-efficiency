@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20150807003613) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: false, null: false
+    t.boolean  "can_view_ad_spend",     default: true,  null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
@@ -752,11 +752,13 @@ ActiveRecord::Schema.define(version: 20150807003613) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "favicon"
-    t.string   "alias"
-    t.boolean  "flagged"
+    t.string   "alias_name"
+    t.string   "alias_website"
+    t.boolean  "flagged",       default: false
   end
 
-  add_index "sdk_companies", ["alias"], name: "index_sdk_companies_on_alias", using: :btree
+  add_index "sdk_companies", ["alias_name"], name: "index_sdk_companies_on_alias_name", using: :btree
+  add_index "sdk_companies", ["alias_website"], name: "index_sdk_companies_on_alias_website", using: :btree
   add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree
   add_index "sdk_companies", ["country"], name: "index_sdk_companies_on_country", using: :btree
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
