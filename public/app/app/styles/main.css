@@ -7409,6 +7409,10 @@ select option:empty {
   margin-left: 20%;
 }
 
+#showSdksButtonTitle {
+  text-align: center; 
+}
+
 #showCompanyEmailsTextField {
   padding-left: 6px;
   display: table-cell;
