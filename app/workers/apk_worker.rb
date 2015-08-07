@@ -165,7 +165,7 @@ module ApkWorker
       g.blocked = true
       g.save
 
-      fresh_account(apk_snap_id)
+      fresh_account(apk_snap_id, bid)
 
     else
       return g

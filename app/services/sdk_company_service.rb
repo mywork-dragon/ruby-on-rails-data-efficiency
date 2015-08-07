@@ -10,6 +10,20 @@ class SdkCompanyService
         end
   	end
 
+  	def google_check
+  		SdkCompany.all.each.with_index do |com, index|
+  			li "app #{index}"
+        SdkCompanyServiceWorker.perform_async(com.id)
+  		end
+  	end
+
+    def favicon_fix
+      SdkCompany.where('website IS NOT NULL AND favicon IS NULL').each.with_index do |com, index|
+        li "app #{index}"
+        SdkCompanyServiceWorker.perform_async(com.id)
+      end
+    end
+
 
   end
 
