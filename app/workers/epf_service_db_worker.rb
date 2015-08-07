@@ -1,4 +1,4 @@
-class EpfServiceWorker
+class EpfServiceDbWorker
   include Sidekiq::Worker
   
   FS = 1.chr

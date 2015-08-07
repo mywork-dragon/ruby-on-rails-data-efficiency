@@ -87,7 +87,7 @@ class EpfService
         batch.jobs do
           NUMBER_OF_FILES.times do |n|
             file = file_for_n(n: n, filename: main_file_name) 
-            EpfServiceWorker.perform_async(epf_full_feed.id, main_file_name, file)
+            EpfServiceDbWorker.perform_async(epf_full_feed.id, main_file_name, file)
           end
         end
       end
@@ -221,6 +221,32 @@ class EpfService
     end
     
     true
+  end
+  
+  def add_apps
+    
+    batch = Sidekiq::Batch.new
+    batch.description = "EpfServiceAddAppsWorker" 
+    batch.on(:complete, EpfServiceAddAppsWorkerCallback)
+  
+    batch.jobs do
+      IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.last).find_in_batches(batch_size: 1000).with_index do |b, index|
+        li "Batch #{index}"
+      
+        ios_app_epf_snapshot_ids = b.map{ |ss| ss.id}
+      
+        EpfServiceAddAppsWorker.perform_async(ios_app_epf_snapshot_ids)
+      end
+    end
+    
+  end
+  
+  class EpfServiceAddAppsWorkerCallback
+    
+    def on_complete(status, options)
+      Slackiq.notify(webhook_name: :main, title: 'EpfServiceAddAppsWorker Completed', status: status)
+    end
+    
   end
 
 end
