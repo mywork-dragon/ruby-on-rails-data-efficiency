@@ -22,7 +22,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
           /* API Response Cleanup */
           $scope.sdkData = {
-            'sdks': data.sdks[0],
+            'sdks': data.sdks,
             'lastUpdated': data.last_updated
           };
 
@@ -90,7 +90,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
         /* API Response Cleanup */
         $scope.sdkData = {
-          'sdks': data.sdks[0],
+          'sdks': data.sdks,
           'lastUpdated': data.last_updated
         };
 
