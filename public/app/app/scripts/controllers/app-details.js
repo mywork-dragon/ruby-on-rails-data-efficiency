@@ -29,6 +29,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         }).error(function(err) {
         });
     });
+
   };
 
   $scope.appPlatform = $routeParams.platform;
@@ -85,10 +86,22 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.load();
 
   $scope.getSdks = function(appId) {
+
+    var data = {"sdks":[["Google",[{"packages":["com.google.android.gms.ads.AdActivity","com.google.android.gms.version","com.google.android.maps.v2.API_KEY"]},{"website":"https://google.com"},{"favicon":"https://www.google.com/favicon.ico"},{"popularity":1}]],["Amazon",[{"packages":["com.amazon.device.ads.AdActivity"]},{"website":"https://aws.amazon.com"},{"favicon":"https://a0.awsstatic.com/main/images/site/favicon.ico"},{"popularity":1}]],["Facebook",[{"packages":["com.facebook.sdk.ApplicationId"]},{"website":"facebook.com"},{"favicon":""},{"popularity":1}]]],"last_updated":"2015-07-30T22:26:07.000-07:00"};
+
+    $scope.sdkData = {
+      'sdks': data.sdks,
+      'lastUpdated': data.last_updated
+    };
+
+    console.log('SDK Data', $scope.sdkData);
+    console.log('SDKs', data.sdks);
+
+    /*
+
     apiService.getSdks(appId)
       .success(function(data) {
 
-        /* API Response Cleanup */
         $scope.sdkData = {
           'sdks': data.sdks,
           'lastUpdated': data.last_updated
@@ -97,6 +110,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       }).error(function() {
 
       });
+
+      */
+
   };
 
   authService.permissions()
