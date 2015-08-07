@@ -347,11 +347,11 @@
                     <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Load SDKs</button>
                   </div>
                 </li>
-                <li ng-show="sdks">
-                  <div ng-repeat="(companyName, sdkList) in sdks" class="sdksListView">
-                    <strong>{{companyName}}</strong>
+                <li ng-show="sdkData">
+                  <div ng-repeat="sdk in sdkData.sdks" class="sdksListView">
+                    <strong>{{sdk[0]}}</strong>
                     <ul>
-                      <li ng-repeat="sdk in sdkList">{{sdk}}</li>
+                      <li ng-repeat="sdkName in sdk[1]">{{sdkName}}</li>
                     </ul>
                   </div>
                 </li>
