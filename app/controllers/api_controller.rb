@@ -882,6 +882,10 @@ class ApiController < ApplicationController
 
         name = name.capitalize
 
+        if sdk_com.present?
+          name = sdk_com.alias_name unless sdk_com.alias_name.blank?
+        end
+
         if package_hash[name].blank?
 
           sdk_com = SdkCompany.where(name: name, flagged: false).first
@@ -890,7 +894,7 @@ class ApiController < ApplicationController
           favicon = nil
 
           if sdk_com.present?
-            name = sdk_com.alias_name unless sdk_com.alias_name.blank?
+            # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
             url = sdk_com.website unless sdk_com.website.blank?
             url = sdk_com.alias_website unless sdk_com.alias_website.blank?
