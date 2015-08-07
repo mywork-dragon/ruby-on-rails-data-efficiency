@@ -891,8 +891,14 @@ class ApiController < ApplicationController
 
           if sdk_com.present?
             name = sdk_com.alias_name unless sdk_com.alias_name.blank?
+
             url = sdk_com.website unless sdk_com.website.blank?
             url = sdk_com.alias_website unless sdk_com.alias_website.blank?
+
+            if sdk_com.website.present? || sdk_com.alias_website.present?
+              url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
+            end
+
             favicon = sdk_com.favicon
           end
 

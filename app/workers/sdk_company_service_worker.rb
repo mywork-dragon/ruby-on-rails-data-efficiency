@@ -123,11 +123,11 @@ class SdkCompanyServiceWorker
   def is_word?(w, app_id)
 
     if app_id.nil?
-      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+      return true if w.count('0-9') < 4 && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
     else
       ap = AndroidApp.find(app_id).app_identifier
       package = strip_prefix(ap).split('.').first
-      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
+      return true if w.count('0-9') < 4 && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
     end
 
     false
@@ -159,6 +159,11 @@ class SdkCompanyServiceWorker
 
       sdk_com.save
 
+    end
+
+    if sdk_com.alias_website.present? && sdk_com.favicon.blank?
+      sdk_com.favicon = get_favicon(sdk_com.alias_website)
+      sdk_com.save
     end
 
   end
