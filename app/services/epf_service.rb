@@ -203,5 +203,24 @@ class EpfService
     Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => count.to_s)
     `rm -rf /mnt/epf/*` if count > 1e6
   end
+  
+  def generate_weekly_newest_csv
+    epf_full_feed_last = EpfFullFeed.last
+    file_path = "/home/deploy/#{epf_full_feed_last.name}_weekly_newest.csv"
+    
+    newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+    week_before_newest = newest_date - 6.days
+    
+    CSV.open(file_path, "w") do |csv|
+      column_names = IosAppEpfSnapshot.column_names
+      csv << column_names
+      IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ss| 
+        
+        csv << ss.attributes.values_at(*column_names)
+      end
+    end
+    
+    true
+  end
 
 end
