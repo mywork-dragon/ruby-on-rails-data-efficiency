@@ -196,6 +196,24 @@ class EpfService
       EPF_DIRECTORY + '/' + filename + '_' + suffix
     end
     
+    def add_apps
+    
+      batch = Sidekiq::Batch.new
+      batch.description = "EpfServiceAddAppsWorker" 
+      # batch.on(:complete, EpfServiceAddAppsWorkerCallback)
+  
+      batch.jobs do
+        IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.last).find_in_batches(batch_size: 1000).with_index do |b, index|
+          li "Batch #{index}"
+      
+          ios_app_epf_snapshot_ids = b.map{ |ss| ss.id}
+      
+          EpfServiceAddAppsWorker.perform_async(ios_app_epf_snapshot_ids)
+        end
+      end
+    
+    end
+    
   end
   
   def on_complete(status, options)
@@ -223,30 +241,12 @@ class EpfService
     true
   end
   
-  def add_apps
-    
-    batch = Sidekiq::Batch.new
-    batch.description = "EpfServiceAddAppsWorker" 
-    batch.on(:complete, EpfServiceAddAppsWorkerCallback)
-  
-    batch.jobs do
-      IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.last).find_in_batches(batch_size: 1000).with_index do |b, index|
-        li "Batch #{index}"
-      
-        ios_app_epf_snapshot_ids = b.map{ |ss| ss.id}
-      
-        EpfServiceAddAppsWorker.perform_async(ios_app_epf_snapshot_ids)
-      end
-    end
-    
-  end
-  
-  class EpfServiceAddAppsWorkerCallback
-    
-    def on_complete(status, options)
-      Slackiq.notify(webhook_name: :main, title: 'EpfServiceAddAppsWorker Completed', status: status)
-    end
-    
-  end
+  # class EpfServiceAddAppsWorkerCallback
+ #
+ #    def on_complete(status, options)
+ #      Slackiq.notify(webhook_name: :main, title: 'EpfServiceAddAppsWorker Completed', status: status)
+ #    end
+ #
+ #  end
 
 end
