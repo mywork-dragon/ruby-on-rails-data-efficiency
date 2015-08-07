@@ -349,7 +349,7 @@
                 </li>
                 <li ng-show="sdkData" id="sdkLiveScanDisplay">
                   <div ng-repeat="sdk in sdkData.sdks" class="sdksListView">
-                    <a href="{{sdk[1][2]['website']}}"><strong>{{sdk[0]}}</strong></a>
+                    <a href="{{sdk[1][1]['website']}}"><strong>{{sdk[0]}}</strong></a>
                     <ul>
                       <li ng-repeat="sdkName in sdk[1][0]['packages']">
                         <img src="{{sdk[1][2]['favicon']}}" ng-show="sdk[1][2]['favicon']"><i class="fa fa-circle" ng-hide="sdk[1][2]['favicon']"></i>{{sdkName}}

@@ -7460,6 +7460,26 @@ pre {
   padding-left: 27px;
 }
 
+#sdkLiveScanDisplay ul img, ul i {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+#sdkLiveScanDisplay ul i {
+  margin-left: 3px;
+  margin-right: 7px;
+}
+
+#sdkLiveScanDisplay a {
+  color: #767676;
+}
+
+#sdkLiveScanDisplay ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
