@@ -60,7 +60,7 @@ class SdkCompanyService
         sdk_com = SdkCompany.find_by_name(name)
       elsif id.present?
         sdk_com = SdkCompany.find_by_id(id)
-      else
+      end
 
       sdk_com.flagged = true
 
