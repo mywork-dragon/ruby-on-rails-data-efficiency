@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805210736) do
+ActiveRecord::Schema.define(version: 20150807003613) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: true,  null: false
+    t.boolean  "can_view_ad_spend",     default: false, null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
@@ -752,10 +752,14 @@ ActiveRecord::Schema.define(version: 20150805210736) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "favicon"
+    t.string   "alias"
+    t.boolean  "flagged"
   end
 
+  add_index "sdk_companies", ["alias"], name: "index_sdk_companies_on_alias", using: :btree
   add_index "sdk_companies", ["bloomberg_id"], name: "index_sdk_companies_on_bloomberg_id", using: :btree
   add_index "sdk_companies", ["country"], name: "index_sdk_companies_on_country", using: :btree
+  add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
   add_index "sdk_companies", ["funding"], name: "index_sdk_companies_on_funding", using: :btree
   add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", using: :btree
   add_index "sdk_companies", ["state"], name: "index_sdk_companies_on_state", using: :btree
