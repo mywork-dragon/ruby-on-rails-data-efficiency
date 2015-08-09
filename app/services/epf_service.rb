@@ -185,16 +185,9 @@ class EpfService
       File.delete(original_file + '.old')
     end
     
-    private
     
-    def number_of_digits
-      NUMBER_OF_FILES.to_s.length
-    end
     
-    def file_for_n(n:, filename:)
-      suffix = n.to_s.rjust(number_of_digits, '0')
-      EPF_DIRECTORY + '/' + filename + '_' + suffix
-    end
+    
     
     def add_apps
     
@@ -212,6 +205,17 @@ class EpfService
         end
       end
     
+    end
+    
+    private
+    
+    def number_of_digits
+      NUMBER_OF_FILES.to_s.length
+    end
+    
+    def file_for_n(n:, filename:)
+      suffix = n.to_s.rjust(number_of_digits, '0')
+      EPF_DIRECTORY + '/' + filename + '_' + suffix
     end
     
   end
