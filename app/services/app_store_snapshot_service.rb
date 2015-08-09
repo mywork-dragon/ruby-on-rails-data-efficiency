@@ -118,7 +118,7 @@ class AppStoreSnapshotService
         week_before_newest = newest_date - 6.days
 
 
-        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).find_each_with_index do |epf_ss, index| 
+        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
           
           app_identifer = epf_ss.application_id
           
