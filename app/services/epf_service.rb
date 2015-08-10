@@ -234,11 +234,27 @@ class EpfService
     week_before_newest = newest_date - 6.days
     
     CSV.open(file_path, "w") do |csv|
-      column_names = IosAppEpfSnapshot.column_names
+      column_names = IosAppEpfSnapshot.column_names + ['Category', 'User Base', 'Average Rating', 'Number of Ratings']
       csv << column_names
-      IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ss| 
+      IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
+        row = ss.attributes.values_at(*column_names)
         
-        csv << ss.attributes.values_at(*column_names)
+        ios_app = IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)
+        
+        if ios_app && (ios_app_ss = ios_app.newest_ios_app_snapshot)
+          
+          category = ios_app_ss.ios_app_categories.first
+          
+          user_base = ios_app.user_base
+          
+          average_rating = ratings_current_stars
+          
+          number_of_ratings = ratings_current_count
+          
+          row += [category, user_base, average_rating, number_of_ratings]
+        end
+        
+        csv << row
       end
     end
     
