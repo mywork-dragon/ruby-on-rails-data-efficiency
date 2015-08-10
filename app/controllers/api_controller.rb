@@ -735,15 +735,8 @@ class ApiController < ApplicationController
 
   def custom_search
 
-    search = IosAppSnapshot.search do
-      fulltext params['query']
-      # paginate :page => 1, :per_page => 50
-    end
+    results = {}
 
-    results = search.results
-
-    puts search.inspect
-    puts results
     render json: results
 
   end

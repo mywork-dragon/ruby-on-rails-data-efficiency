@@ -141,5 +141,3 @@ gem 'www-favicon', '0.0.6'
 
 # gem 'curb-fu', '0.6.2'
 
-gem 'sunspot_rails', '2.2.0'
-gem 'sunspot_solr', '2.2.0' # optional pre-packaged Solr distribution for use in development

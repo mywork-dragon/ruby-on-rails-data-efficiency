@@ -11,9 +11,5 @@ class IosAppSnapshot < ActiveRecord::Base
   has_many :ios_app_snapshot_exceptions
   
   enum status: [:failure, :success]
-
-  searchable do
-    text :name, :seller_url
-  end
     
 end
