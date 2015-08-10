@@ -1,5 +1,8 @@
 class IosAppSnapshot < ActiveRecord::Base
 
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   has_many :ios_app_snapshots_languages
   has_many :ios_app_languages, through: :ios_app_snapshots_languages
   

@@ -735,7 +735,7 @@ class ApiController < ApplicationController
 
   def custom_search
 
-    results = {}
+    results = IosAppSnapshot.search(params['query']).records
 
     render json: results
 

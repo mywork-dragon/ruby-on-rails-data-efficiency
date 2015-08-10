@@ -319,8 +319,8 @@ DEPENDENCIES
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
-  elasticsearch-model
-  elasticsearch-rails
+  elasticsearch-model (= 0.1.7)
+  elasticsearch-rails (= 0.1.7)
   faker (= 1.4.3)
   filesize (= 0.0.4)
   foundation-rails (= 5.4.3.1)
