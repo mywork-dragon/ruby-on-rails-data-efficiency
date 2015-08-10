@@ -185,7 +185,40 @@ class EpfService
       File.delete(original_file + '.old')
     end
     
+    def generate_weekly_newest_csv
+      epf_full_feed_last = EpfFullFeed.last
+      file_path = "/home/deploy/#{epf_full_feed_last.name}_weekly_newest.csv"
     
+      newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+      week_before_newest = newest_date - 6.days
+    
+      CSV.open(file_path, "w") do |csv|
+        column_names = IosAppEpfSnapshot.column_names
+        csv << column_names + ['Category', 'User Base', 'Average Rating', 'Number of Ratings']
+        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
+          row = ios_app_epf_ss.attributes.values_at(*column_names)
+        
+          ios_app = IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)
+        
+          if ios_app && (ios_app_ss = ios_app.newest_ios_app_snapshot)
+          
+            category = ios_app_ss.ios_app_categories.first.name
+          
+            user_base = ios_app.user_base
+          
+            average_rating = ios_app_ss.ratings_current_stars
+          
+            number_of_ratings = ios_app_ss.ratings_current_count
+          
+            row += [category, user_base, average_rating, number_of_ratings]
+          end
+        
+          csv << row
+        end
+      end
+    
+      true
+    end
     
     
     
@@ -224,41 +257,6 @@ class EpfService
     count = IosAppEpfSnapshot.where(epf_full_feed_id: EpfFullFeed.last.id).count
     Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => count.to_s)
     `rm -rf /mnt/epf/*` if count > 1e6
-  end
-  
-  def generate_weekly_newest_csv
-    epf_full_feed_last = EpfFullFeed.last
-    file_path = "/home/deploy/#{epf_full_feed_last.name}_weekly_newest.csv"
-    
-    newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
-    week_before_newest = newest_date - 6.days
-    
-    CSV.open(file_path, "w") do |csv|
-      column_names = IosAppEpfSnapshot.column_names + ['Category', 'User Base', 'Average Rating', 'Number of Ratings']
-      csv << column_names
-      IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
-        row = ss.attributes.values_at(*column_names)
-        
-        ios_app = IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)
-        
-        if ios_app && (ios_app_ss = ios_app.newest_ios_app_snapshot)
-          
-          category = ios_app_ss.ios_app_categories.first
-          
-          user_base = ios_app.user_base
-          
-          average_rating = ratings_current_stars
-          
-          number_of_ratings = ratings_current_count
-          
-          row += [category, user_base, average_rating, number_of_ratings]
-        end
-        
-        csv << row
-      end
-    end
-    
-    true
   end
   
   # class EpfServiceAddAppsWorkerCallback
