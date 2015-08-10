@@ -72,6 +72,9 @@ GEM
       capistrano-bundler (~> 1.1)
     celluloid (0.16.0)
       timers (~> 4.0.0)
+    chewy (0.8.1)
+      activesupport (>= 3.2)
+      elasticsearch (>= 1.0.0)
     chronic (0.10.2)
     clearbit (0.1.7.pre)
       nestful (~> 1.1.0)
@@ -316,6 +319,7 @@ DEPENDENCIES
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
   capistrano-sidekiq-mighty-servers!
+  chewy (= 0.8.1)
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   domainator (= 2.0.0)
