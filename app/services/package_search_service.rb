@@ -51,6 +51,14 @@ class PackageSearchService
 
     def save_package(app_identifier, tag, apk_snap_id)
       AndroidPackage.create(package_name: app_identifier, android_package_tag: tag, apk_snapshot_id: apk_snap_id, identified: false, not_useful: false)
+
+      app_id = AndroidApp.find_by_app_identifier(app_identifier).id
+      company_ids = SdkCompanyServiceWorker.new.find_company(app_id)
+
+      company_ids.each do |id|
+         SdkCompanyServiceWorker.new.google_company(id)
+      end
+      
     end
 
     def get_name(app_identifier)

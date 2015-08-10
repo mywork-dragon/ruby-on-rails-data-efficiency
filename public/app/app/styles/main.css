@@ -7409,6 +7409,10 @@ select option:empty {
   margin-left: 20%;
 }
 
+#showSdksButtonTitle {
+  text-align: center; 
+}
+
 #showCompanyEmailsTextField {
   padding-left: 6px;
   display: table-cell;
@@ -7458,6 +7462,26 @@ pre {
   border: none;
   padding: 0;
   padding-left: 27px;
+}
+
+#sdkLiveScanDisplay ul img, ul i {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+#sdkLiveScanDisplay ul i {
+  margin-left: 3px;
+  margin-right: 7px;
+}
+
+#sdkLiveScanDisplay a {
+  color: #767676;
+}
+
+#sdkLiveScanDisplay ul {
+  list-style: none;
+  padding-left: 15px;
 }
 
 /* DdTextCollapse Directive Styling */

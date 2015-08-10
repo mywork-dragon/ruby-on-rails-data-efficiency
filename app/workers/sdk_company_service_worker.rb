@@ -16,6 +16,8 @@ class SdkCompanyServiceWorker
 
     ap = AndroidApp.find_by_id(app_id).newest_apk_snapshot.android_packages
 
+    company_ids = []
+
     ap.select{|a| a unless " #{a.package_name}".include?(' android.') || a.package_name.blank? }.map{|b| b.package_name}.each do |package|
 
       company_id = find_or_create_company_from_package(app_id, package)
@@ -24,7 +26,11 @@ class SdkCompanyServiceWorker
 
       sdk_package = SdkPackage.create_with(sdk_company_id: company_id).find_or_create_by(package_name: package)
 
+      company_ids << company_id
+
     end
+
+    company_ids
 
   end
 
@@ -117,11 +123,11 @@ class SdkCompanyServiceWorker
   def is_word?(w, app_id)
 
     if app_id.nil?
-      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
+      return true if w.count('0-9') < 4 && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3
     else
       ap = AndroidApp.find(app_id).app_identifier
       package = strip_prefix(ap).split('.').first
-      return true if w.count('0-9').zero? && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
+      return true if w.count('0-9') < 4 && w.exclude?('android') && w.downcase.gsub(/[^a-z0-9\s]/i, '').present? && w.length >= 3 && package.similar(w) <= 75
     end
 
     false
@@ -131,23 +137,34 @@ class SdkCompanyServiceWorker
 
   def google_company(sdk_company_id)
 
+    return nil if delete_if_duplicate(sdk_company_id)
+
     sdk_com = SdkCompany.find_by_id(sdk_company_id)
 
-    query = sdk_com.name
+    if sdk_com.website.blank? && sdk_com.alias_website.blank?
 
-    link = google_search(query)
+      query = sdk_com.name
 
-    if link.present? && link != '0'
+      url = google_search(query)
 
-      sdk_com.website = link
+      if url.present? && url != '0'
 
-      sdk_com.favicon = get_favicon(link)
+        sdk_com.website = url
 
-    else
-      sdk_com.website = nil
+        sdk_com.favicon = get_favicon(url)
+
+      else
+        sdk_com.website = nil
+      end
+
+      sdk_com.save
+
     end
 
-    sdk_com.save
+    if sdk_com.alias_website.present? && sdk_com.favicon.blank?
+      sdk_com.favicon = get_favicon(sdk_com.alias_website)
+      sdk_com.save
+    end
 
   end
 
@@ -178,13 +195,22 @@ class SdkCompanyServiceWorker
   end
 
   def get_favicon(url)
-    url = 'http://' + url if url.exclude?('http://') && url.exclude?('https://')
+    url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
     begin
       favicon = WWW::Favicon.new
       favicon_url = favicon.find(url)
     rescue
       nil
     end
+  end
+
+  def delete_if_duplicate(company_id)
+    sdk_com = SdkCompany.find(company_id).sdk_packages
+    if sdk_com.count.zero?
+      sdk_com.delete
+      return true
+    end
+    false
   end
 
   def res(req:, params:, type:)
@@ -221,23 +247,5 @@ class SdkCompanyServiceWorker
     end
 
   end
-
-  # def clean(sdk_company_id)
-  #   sdk_com = SdkCompany.find(sdk_company_id)
-
-  #   url = sdk_com.website
-
-  #   if url == 0
-  #     sdk_com.website = nil
-  #     sdk_com.save
-  #   else
-
-  #     %w(www. doc. docs. dev. developer. developers. cloud. support. help. documentation.).each{|p| url = url.gsub(p,'') }
-
-  #     sdk_com.website = url
-  #     sdk_com.save
-
-  #   end
-  # end
 
 end

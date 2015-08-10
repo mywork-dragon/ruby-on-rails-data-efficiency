@@ -342,17 +342,23 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-hide="sdks" id="showSdksButtonLi">
-                  <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Load SDKs</button>
+                <li ng-show="sdkData" id="sdkLiveScanDisplay">
+                  <div ng-repeat="sdk in sdkData.sdks" class="sdksListView">
+                    <a href="{{sdk[1][1]['website']}}" ng-show="{{sdk[1][1]['website']}}"><strong>{{sdk[0]}}</strong></a>
+                    <strong ng-hide="sdk[1][1]['website']">{{sdk[0]}}</strong>
+                    <ul>
+                      <li ng-repeat="sdkName in sdk[1][0]['packages']">
+                        <img src="{{sdk[1][2]['favicon']}}" ng-show="sdk[1][2]['favicon']"><i class="fa fa-circle" ng-hide="sdk[1][2]['favicon']"></i>{{sdkName}}
+                      </li>
+                    </ul>
                   </div>
                 </li>
-                <li ng-show="sdks">
-                  <div ng-repeat="(companyName, sdkList) in sdks" class="sdksListView">
-                    <strong>{{companyName}}</strong>
-                    <ul>
-                      <li ng-repeat="sdk in sdkList">{{sdk}}</li>
-                    </ul>
+                <li id="showSdksButtonLi">
+                  <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
+                    Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
+                  </div>
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
                   </div>
                 </li>
               </ul>
