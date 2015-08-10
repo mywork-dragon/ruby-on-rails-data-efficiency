@@ -882,13 +882,15 @@ class ApiController < ApplicationController
 
         name = name.capitalize
 
+        sdk_com = SdkCompany.where(name: name, flagged: false).first
+
         if sdk_com.present?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
         end
 
         if package_hash[name].blank?
 
-          sdk_com = SdkCompany.where(name: name, flagged: false).first
+          # sdk_com = SdkCompany.where(name: name, flagged: false).first
 
           url = nil
           favicon = nil
