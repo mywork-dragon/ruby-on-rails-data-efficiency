@@ -260,7 +260,7 @@ class EpfService
   end
 
   def on_complete_add_apps(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Add Apps completed)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Add Apps completed')
   end
   
 
