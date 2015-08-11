@@ -889,6 +889,7 @@ class ApiController < ApplicationController
         sdk_com = SdkCompany.where(name: name, flagged: false).first
 
         if sdk_com.present?
+          next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
         end
 
