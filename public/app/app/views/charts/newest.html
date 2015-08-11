@@ -1,4 +1,4 @@
-<div id="newestChartPage" data-ng-controller="ChartCtrl">
+<div id="newestChartPage" data-ng-controller="ChartCtrl as chartCtrl">
 
   <header class="page-main-header ng-scope">
     <div class="row">
@@ -18,6 +18,7 @@
 
         <div class="panel-heading" id="listViewTableHeading">
           <strong><i class="fa fa-list panel-ico"></i>Newest iOS Apps</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
+          <button type="submit" class="btn btn-primary pull-right" ng-click="chartCtrl.exportListToCsv()">Export All to CSV</button>
           <span class="ui-select pull-right">
             <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
@@ -25,8 +26,6 @@
             </select>
           </span>
         </div>
-
-
 
         <div id="results-table-wrapper">
 

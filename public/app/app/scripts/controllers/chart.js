@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleService", "listApiService",
-  function($scope, $http, pageTitleService, listApiService) {
+angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService",
+  function($scope, $http, pageTitleService, listApiService, apiService) {
 
     var chartCtrl = this; // same as chartCtrl = $scope
 
@@ -9,7 +9,7 @@ angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleS
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/newest_apps_chart'
+        url: API_URI_BASE + 'api/chart/newest'
       }).success(function(data) {
         chartCtrl.chartData = data;
 
@@ -30,6 +30,18 @@ angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleS
         chartCtrl.notify('add-selected-error');
       });
       chartCtrl['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+    };
+
+    chartCtrl.exportListToCsv = function() {
+      apiService.exportNewestChartToCsv()
+        .success(function (content) {
+          var hiddenElement = document.createElement('a');
+
+          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = 'mightysignal_newest_apps.csv';
+          hiddenElement.click();
+        });
     };
 
     /* -------- Mixpanel Analytics Start -------- */
