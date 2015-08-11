@@ -6,6 +6,8 @@ class ApkSnapshotServiceSingle
 
       	j = ApkSnapshotJob.create!(notes: app_identifier)
 
+      	favicon = WWW::Favicon.new
+
   		batch = Sidekiq::Batch.new
 		bid = batch.bid
 
