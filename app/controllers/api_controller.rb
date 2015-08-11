@@ -744,13 +744,11 @@ class ApiController < ApplicationController
     j = ApkSnapshotJob.create!(notes: ai)
 
     batch = Sidekiq::Batch.new
-
     bid = batch.bid
-
     batch.jobs do
       ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
     end
-    
+
     360.times do |i|
       break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
@@ -815,9 +813,7 @@ class ApiController < ApplicationController
       j = ApkSnapshotJob.create!(notes: ai)
 
       batch = Sidekiq::Batch.new
-
       bid = batch.bid
-      
       batch.jobs do
         ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
       end
@@ -886,13 +882,16 @@ class ApiController < ApplicationController
 
         name = name.capitalize
 
+        sdk_com = SdkCompany.where(name: name, flagged: false).first
+
         if sdk_com.present?
+          next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
         end
 
         if package_hash[name].blank?
 
-          sdk_com = SdkCompany.where(name: name, flagged: false).first
+          # sdk_com = SdkCompany.where(name: name, flagged: false).first
 
           url = nil
           favicon = nil
