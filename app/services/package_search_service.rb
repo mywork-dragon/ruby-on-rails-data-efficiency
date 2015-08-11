@@ -46,17 +46,7 @@ class PackageSearchService
           end
         end
       end
-      # li " ( time : #{unpack_time} sec, packages_found : #{i} )" if Rails.env.development?
-
-      # app_id = AndroidApp.find_by_app_identifier(app_identifier).id
-
-      app_id = ApkSnapshot.find(apk_snap_id).android_app_id
-      company_ids = SdkCompanyServiceWorker.new.find_company(app_id)
-
-      company_ids.each do |id|
-         SdkCompanyServiceWorker.new.google_company(id)
-      end
-
+      li " ( time : #{unpack_time} sec, packages_found : #{i} )" if Rails.env.development?
     end
 
     def save_package(app_identifier, tag, apk_snap_id)

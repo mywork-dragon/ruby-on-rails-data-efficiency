@@ -91,6 +91,12 @@ module ApkWorker
       best_account.save
 
       unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+
+      company_ids = SdkCompanyServiceWorker.new.find_company(android_app_id)
+
+      company_ids.each do |id|
+         SdkCompanyServiceWorker.new.google_company(id)
+      end
       
       apk_snap.unpack_time = unpack_time
 
