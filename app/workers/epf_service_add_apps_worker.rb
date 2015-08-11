@@ -13,9 +13,17 @@ class EpfServiceAddAppsWorker
       ios_app = IosApp.find_by_app_identifier(app_identifier)
       
       if ios_app.blank?
-        IosApp.create(app_identifier: app_identifier)
+        ios_app = IosApp.create(app_identifier: app_identifier)
       end
     
+      if ios_app.released.blank?
+        ios_app.released = ios_app_epf_snapshot.itunes_release_date
+
+        ios_app.save
+      end
+
+
+
     end
   end
   
