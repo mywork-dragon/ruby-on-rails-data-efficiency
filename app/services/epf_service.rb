@@ -226,7 +226,7 @@ class EpfService
     
       batch = Sidekiq::Batch.new
       batch.description = "EpfServiceAddAppsWorker" 
-      # batch.on(:complete, EpfServiceAddAppsWorkerCallback)
+      batch.on(:complete, 'EpfService#on_complete_add_apps')
   
       batch.jobs do
         IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.last).find_in_batches(batch_size: 1000).with_index do |b, index|
@@ -258,13 +258,10 @@ class EpfService
     Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => count.to_s)
     `rm -rf /mnt/epf/*` if count > 1e6
   end
+
+  def on_complete_add_apps(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Add Apps completed)
+  end
   
-  # class EpfServiceAddAppsWorkerCallback
- #
- #    def on_complete(status, options)
- #      Slackiq.notify(webhook_name: :main, title: 'EpfServiceAddAppsWorker Completed', status: status)
- #    end
- #
- #  end
 
 end
