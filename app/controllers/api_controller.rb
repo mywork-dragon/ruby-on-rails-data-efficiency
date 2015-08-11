@@ -812,10 +812,6 @@ class ApiController < ApplicationController
 
       j = ApkSnapshotJob.create!(notes: ai)
 
-      # favicon = WWW::Favicon.new
-
-      noko = Nokogiri::HTML
-
       batch = Sidekiq::Batch.new
       bid = batch.bid
       batch.jobs do
