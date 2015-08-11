@@ -41,6 +41,8 @@ if defined?(ApkDownloader)
         'sdk_version' => '16'
       }
 
+      puts "#{ga.email}  |  #{ga.password}  |  #{ga.android_identifier}"
+
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       if response.status != 200
@@ -100,6 +102,8 @@ if defined?(ApkDownloader)
       # end
 
       # apk_snap.save
+
+      puts "#{proxy_ip}"
 
       doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
       version_code = doc.details.appDetails.versionCode

@@ -152,15 +152,15 @@ module ApkWorker
 
     if g.blank?
 
-      d_name = GoogleAccount.devices.find{|k,v| v == d}[0].gsub('_',' ')
+      d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
 
       err_msg = "All the accounts on your #{d_name} are down."
-      Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
+      # Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
       raise err_msg
 
     elsif g.flags >= stop
 
-      Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
+      # Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
 
       g.blocked = true
       g.save
