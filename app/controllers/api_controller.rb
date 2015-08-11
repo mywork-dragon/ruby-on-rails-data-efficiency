@@ -773,45 +773,31 @@ class ApiController < ApplicationController
   def android_sdks_for_app_exist
 
     android_app_id = params['appId']
-
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-
       hash = nil
-
     else
-
       new_snap = aa.newest_apk_snapshot
-
     end
 
     if new_snap.present? && new_snap.status == "success"
-
       p = new_snap.android_packages.where('android_package_tag != 1')
-
       hash = sdk_hash(p, new_snap.updated_at)
-
     else
       hash = nil
     end
 
     render json: hash.to_json
-
   end
 
   def android_sdks_for_app
-
     android_app_id = params['appId']
-
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-
       ai = aa.app_identifier
-
       j = ApkSnapshotJob.create!(notes: ai)
-
       batch = Sidekiq::Batch.new
       bid = batch.bid
       batch.jobs do
@@ -824,25 +810,18 @@ class ApiController < ApplicationController
       end
 
       new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
     else
-
       new_snap = aa.newest_apk_snapshot
-
     end
 
     if new_snap.present? && new_snap.status == "success"
-
       p = new_snap.android_packages.where('android_package_tag != 1')
-
       hash = sdk_hash(p, new_snap.updated_at)
-
     else
       hash = nil
     end
 
     render json: hash.to_json
-
   end
 
   def sdk_hash(p, last_updated)
@@ -859,29 +838,18 @@ class ApiController < ApplicationController
         package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
 
         if package.count('.').zero?
-
           package = package.capitalize if package == package.upcase
-
           name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
-
           next if name.split(' ').select{|s| s.length == 1 }.count > 1
-
         else
-
           name = package.split('.').first
-
           if SdkCompanyServiceWorker.new.is_word?(name, nil)
-
             name = SdkCompanyServiceWorker.new.camel_split(name)
-
             next if name.split(' ').select{|s| s.length == 1 }.count > 1
-
           end
-
         end
 
         name = name.capitalize
-
         sdk_com = SdkCompany.where(name: name, flagged: false).first
 
         if sdk_com.present?
@@ -892,13 +860,11 @@ class ApiController < ApplicationController
         if package_hash[name].blank?
 
           # sdk_com = SdkCompany.where(name: name, flagged: false).first
-
           url = nil
           favicon = nil
 
           if sdk_com.present?
             # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-
             url = sdk_com.website unless sdk_com.website.blank?
             url = sdk_com.alias_website unless sdk_com.alias_website.blank?
 
@@ -910,32 +876,25 @@ class ApiController < ApplicationController
           end
 
           website_hash[name] = {'website' => url.to_s}
-
           favicon_hash[name] = {'favicon' => favicon.to_s}
-
           package_hash[name] = {'packages' =>[packages.package_name]}
-
           popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
-
           hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
-
         else
-
           hash[name][0]['packages'] << packages.package_name
-
         end
-
       end
     end
 
     hash = hash.sort_by { |h| -hash[h[0]][3]['popularity'] }
-
     main_hash['sdks'] = hash
-    
     main_hash['last_updated'] = last_updated
 
     main_hash
+  end
 
+  def newest_apps_chart
+    render json: {}
   end
 
 end
