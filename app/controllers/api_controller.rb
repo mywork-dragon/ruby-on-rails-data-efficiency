@@ -814,6 +814,8 @@ class ApiController < ApplicationController
 
       # favicon = WWW::Favicon.new
 
+      noko = Nokogiri::HTML
+
       batch = Sidekiq::Batch.new
       bid = batch.bid
       batch.jobs do
