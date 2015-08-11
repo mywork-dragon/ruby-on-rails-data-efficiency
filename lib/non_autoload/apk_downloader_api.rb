@@ -41,8 +41,6 @@ if defined?(ApkDownloader)
         'sdk_version' => '16'
       }
 
-      puts "email : #{ga.email}  |  password : #{ga.password}  |  id : #{ga.android_identifier}"
-
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       if response.status != 200
