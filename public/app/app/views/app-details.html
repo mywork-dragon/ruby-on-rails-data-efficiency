@@ -353,12 +353,12 @@
                     </ul>
                   </div>
                 </li>
-                <li id="showSdksButtonLi">
+                <li id="showSdksButtonLi" ng-hide="noSdkData || sdkQueryInProgress">
                   <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
                     Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
                   </div>
                   <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)" ng-hide="noSdkData || sdkQueryInProgress">Live Scan</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
                   </div>
                 </li>
                 <li id="appPageSdkScanStatus">
