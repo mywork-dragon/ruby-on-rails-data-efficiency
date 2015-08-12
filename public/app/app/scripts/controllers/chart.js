@@ -11,7 +11,7 @@ angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleS
         method: 'GET',
         url: API_URI_BASE + 'api/chart/newest'
       }).success(function(data) {
-        chartCtrl.chartData = data;
+        chartCtrl.chartData = data.results;
 
         // Sets html title attribute
         pageTitleService.setTitle('MightySignal - Newest Apps');

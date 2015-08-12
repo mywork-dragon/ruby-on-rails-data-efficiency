@@ -873,7 +873,7 @@ class ApiController < ApplicationController
 
               favicon = sdk_com.favicon
           end
-          
+
             website_hash[name] = {'website' => url.to_s}
             favicon_hash[name] = {'favicon' => favicon.to_s}
             package_hash[name] = {'packages' =>[packages.package_name]}
@@ -913,20 +913,19 @@ class ApiController < ApplicationController
       newest_snapshot = app.newest_ios_app_snapshot
 
       app_hash = {
-          app: {
-              id: app.id,
-              name: newest_snapshot.present? ? newest_snapshot.name : nil,
-              mobilePriority: app.mobile_priority,
-              userBase: app.user_base,
-              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-              adSpend: app.ios_fb_ad_appearances.present?,
-              type: 'IosApp',
-              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
-              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-              appIcon: {
-                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
-                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
-              }
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          releasedDate: app.released,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          type: 'IosApp',
+          supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
+          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          appIcon: {
+              large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+              small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
           },
           company: {
               id: company.present? ? company.id : nil,

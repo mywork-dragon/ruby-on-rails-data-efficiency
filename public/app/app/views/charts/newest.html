@@ -33,7 +33,7 @@
             <thead>
             <tr>
               <th class="selectAllCheckboxHeader">
-                <select-all-checkbox-two apps="apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
+                <select-all-checkbox-two apps="chartCtrl.chartData" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
               </th>
               <th><div class="th normal-right-padding">
                 App Name
@@ -76,13 +76,24 @@
                                       data-ng-class="{active: row == '-lastUpdated'}"></span>
                 -->
               </div></th>
+              <th><div class="th normal-right-padding">
+                Released Date
+                <!--
+                                <span class="glyphicon glyphicon-chevron-up"
+                                      data-ng-click=" sortApps('lastUpdated', 'ASC') "
+                                      data-ng-class="{active: row == 'lastUpdated'}"></span>
+                                <span class="glyphicon glyphicon-chevron-down"
+                                      data-ng-click=" sortApps('lastUpdated', 'DESC') "
+                                      data-ng-class="{active: row == '-lastUpdated'}"></span>
+                -->
+              </div></th>
             </tr>
             </thead>
 
             <tbody data-ng-hide="queryInProgress">
-            <tr data-ng-repeat="app in apps">
+            <tr data-ng-repeat="app in chartCtrl.chartData">
               <td class="dashboardTableDataCheckbox">
-                <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
+                <checkable-checkbox-two app="app" apps="chartCtrl.chartData" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
               </td>
               <td class="resultsTableAppIcon">
                 <span>
@@ -102,11 +113,12 @@
               <td>{{app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
               <td>{{app.lastUpdated | date : 'shortDate'}}</td>
+              <td>{{app.releasedDate | date : 'shortDate'}}</td>
             </tr>
             </tbody>
           </table>
-          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(apps.length > 0)">
-            <h5 data-ng-hide="apps.length > 0 || queryInProgress">No Items</h5>
+          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(chartCtrl.chartData.length > 0)">
+            <h5 data-ng-hide="chartCtrl.chartData.length > 0 || queryInProgress">No Items</h5>
             <div data-ng-show="queryInProgress" id="wrap_spinner">
               <div class="loading outer">
                 <div class="loading inner"></div>
