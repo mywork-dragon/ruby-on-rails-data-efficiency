@@ -7332,6 +7332,14 @@ select option:empty {
   font-size: 20px;
 }
 
+#appPageSdkScanStatus {
+  padding: 0;
+}
+
+#appPageSdkScanStatus div {
+  text-align: center;
+}
+
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;

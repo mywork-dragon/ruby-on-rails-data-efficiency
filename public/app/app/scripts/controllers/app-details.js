@@ -95,6 +95,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'lastUpdated': data.last_updated
         };
 
+        $scope.noSdkData = !data;
+
       }).error(function() {
 
       });
