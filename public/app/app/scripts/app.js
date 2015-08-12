@@ -66,7 +66,6 @@ angular
        })
        .when('/chart/newest', {
          templateUrl: '/app/app/views/charts/newest.html',
-         controller: 'ChartCtrl',
          activeTab: 'chartNewest'
        })
       .otherwise({
