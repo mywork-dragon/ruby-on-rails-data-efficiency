@@ -189,7 +189,7 @@ class EpfService
       epf_full_feed_last = EpfFullFeed.last
       file_path = "/home/deploy/#{epf_full_feed_last.name}_weekly_newest.csv"
     
-      newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+      newest_date = IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last).order('itunes_release_date DESC').limit(1).first.itunes_release_date
       week_before_newest = newest_date - 6.days
     
       CSV.open(file_path, "w") do |csv|
