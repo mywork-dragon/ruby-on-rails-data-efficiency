@@ -64,10 +64,6 @@ angular
          controller: 'ListCtrl',
          activeTab: 'lists'
        })
-       .when('/chart/newest', {
-         templateUrl: '/app/app/views/charts/newest.html',
-         activeTab: 'chartNewest'
-       })
       .otherwise({
         redirectTo: '/search',
          activeTab: 'search'
