@@ -19,12 +19,14 @@
         <div class="panel-heading" id="listViewTableHeading">
           <strong><i class="fa fa-list panel-ico"></i>Newest iOS Apps</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
           <button type="submit" class="btn btn-primary pull-right" ng-click="chartCtrl.exportListToCsv()">Export All to CSV</button>
+          <!--
           <span class="ui-select pull-right">
             <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
               <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
             </select>
           </span>
+          -->
         </div>
 
         <div id="results-table-wrapper">
@@ -32,9 +34,11 @@
           <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
             <thead>
             <tr>
+              <!--
               <th class="selectAllCheckboxHeader">
                 <select-all-checkbox-two apps="chartCtrl.chartData" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
               </th>
+              -->
               <th><div class="th normal-right-padding">
                 App Name
                 <!--
@@ -92,9 +96,11 @@
 
             <tbody data-ng-hide="queryInProgress">
             <tr data-ng-repeat="app in chartCtrl.chartData">
+              <!--
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox-two app="app" apps="chartCtrl.chartData" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
               </td>
+              -->
               <td class="resultsTableAppIcon">
                 <span>
                   <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">{{app.name}}</a>
@@ -134,9 +140,11 @@
 
   </div>
 
-  <!-- Modals -->
-  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-  <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
-  <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+  <div ng-controller="ListCtrl">
+    <!-- Modals -->
+    <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+  </div>
 
 </div>
