@@ -50,8 +50,11 @@
                                       data-ng-class="{active: row == '-appName'}"></span>
                 -->
               </div></th>
-              <th><div class="th normal-right-padding appDetailsHeader">
-                App Type
+              <th><div class="th normal-right-padding">
+                Company Name
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Fortune Rank
               </div></th>
               <th><div class="th normal-right-padding">
                 Mobile Priority
@@ -68,17 +71,6 @@
               </div></th>
               <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
                 Support Desk
-              </div></th>
-              <th><div class="th normal-right-padding">
-                Last Updated
-                <!--
-                                <span class="glyphicon glyphicon-chevron-up"
-                                      data-ng-click=" sortApps('lastUpdated', 'ASC') "
-                                      data-ng-class="{active: row == 'lastUpdated'}"></span>
-                                <span class="glyphicon glyphicon-chevron-down"
-                                      data-ng-click=" sortApps('lastUpdated', 'DESC') "
-                                      data-ng-class="{active: row == '-lastUpdated'}"></span>
-                -->
               </div></th>
               <th><div class="th normal-right-padding">
                 Released Date
@@ -106,9 +98,10 @@
                   <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">{{app.name}}</a>
                 </span>
               </td>
-              <td class="appTypeIndicator">
-                <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+              <td>
+                <a href="#/company/{{app.company.id}}">{{app.company.name}}</a>
               </td>
+              <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
               </td>
@@ -118,7 +111,6 @@
               <td>{{app.userBase | capitalize}}</td>
               <td>{{app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
-              <td>{{app.lastUpdated | date : 'shortDate'}}</td>
               <td>{{app.releasedDate | date : 'shortDate'}}</td>
             </tr>
             </tbody>
