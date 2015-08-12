@@ -31,7 +31,7 @@ angular
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
           $('#app > .load_circle_wrapper').addClass("loaded");
-        },1000);
+        },300);
 
         /* Populates "Categories" dropdown with list of categories */
         $http({
@@ -44,7 +44,7 @@ angular
       });
 
     })
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', function ($routeProvider) {
      $routeProvider
        .when('/search', {
          templateUrl: '/app/app/views/dashboard.html',
@@ -64,14 +64,18 @@ angular
          controller: 'ListCtrl',
          activeTab: 'lists'
        })
+       .when('/chart/newest', {
+         templateUrl: '/app/app/views/charts/newest.html',
+         activeTab: 'chartNewest'
+       })
       .otherwise({
         redirectTo: '/search',
          activeTab: 'search'
       });
-  })
-  .config(function($httpProvider) {
-    return $httpProvider.interceptors.push("authInterceptor");
-  })
+  }])
+  .config(['$httpProvider', function($httpProvider) {
+     return $httpProvider.interceptors.push("authInterceptor");
+  }])
   .filter('capitalize', function() {
     return function(input, all) {
       return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';

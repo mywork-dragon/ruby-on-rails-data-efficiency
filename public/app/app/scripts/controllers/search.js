@@ -160,5 +160,16 @@ angular.module('appApp')
         }
       };
 
+      searchCtrl.exportAllToCsv = function() {
+        apiService.exportAllToCsv($location.url().split('/search')[1])
+          .success(function (content) {
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'all_results.csv';
+            hiddenElement.click();
+          });
+      };
+
     }
   ]);
