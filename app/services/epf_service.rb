@@ -194,7 +194,7 @@ class EpfService
     
       CSV.open(file_path, "w") do |csv|
         column_names = IosAppEpfSnapshot.column_names
-        csv << column_names + ['Category', 'User Base', 'Average Rating', 'Number of Ratings']
+        csv << column_names + ['Category', 'User Base', 'Average Rating', 'Number of Ratings', 'MightySignal ID']
         IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
           row = ios_app_epf_ss.attributes.values_at(*column_names)
         
@@ -209,8 +209,10 @@ class EpfService
             average_rating = ios_app_ss.ratings_current_stars
           
             number_of_ratings = ios_app_ss.ratings_current_count
+
+            mighty_signal_id = ios_app.id
           
-            row += [category, user_base, average_rating, number_of_ratings]
+            row += [category, user_base, average_rating, number_of_ratings, mighty_signal_id]
           end
         
           csv << row
