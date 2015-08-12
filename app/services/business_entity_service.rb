@@ -230,8 +230,7 @@ class BusinessEntityService
 
       IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.find(1), itunes_release_date:  week_before_newest..newest_date).find_in_batches(batch_size: 1000).with_index do |batch, index|
          
-        ios_app_ss_ids = batch.map{ |ios_app_epf_ss| IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)}.select{ |ios_app| ios_app.present? }.map{ |ios_app| ios_app.newest_ios_app_snapshot }.select{ |ios_app_ss| ios_app_ss.present?}
-
+        ios_app_ss_ids = batch.map{ |ios_app_epf_ss| IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)}.select{ |ios_app| ios_app.present? }.map{ |ios_app| ios_app.newest_ios_app_snapshot }.select{ |ios_app_ss| ios_app_ss.present?}.map(&:id)
         BusinessEntityIosServiceWorker.perform_async(ios_app_ss_ids, 'clean_ios')
       end 
     end
