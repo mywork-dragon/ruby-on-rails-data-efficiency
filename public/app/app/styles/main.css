@@ -7202,6 +7202,14 @@ i.infoTooltipIcon {
   width: 10px;
 }
 
+#dashboardResultsTableHeading {
+  padding-right: 8px;
+}
+
+#dashboardResultsTableHeading button {
+  margin-left: 5px;
+}
+
 #dashboardResultsTableHeading, #listViewTableHeading, #companyContactsTableHeading {
   height: 52px;
 }
@@ -7410,7 +7418,7 @@ select option:empty {
 }
 
 #showSdksButtonTitle {
-  text-align: center; 
+  text-align: center;
 }
 
 #showCompanyEmailsTextField {

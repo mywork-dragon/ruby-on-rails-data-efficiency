@@ -122,12 +122,14 @@
 
       </div>
 
-
     </section>
 
     <section class="panel panel-default table-dynamic">
       <div class="panel-heading" id="dashboardResultsTableHeading">
        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{searchCtrl.appsDisplayedCount()}} of {{searchCtrl.numApps}}</span>
+        <!--
+        <button type="submit" class="btn btn-primary pull-right" ng-click="searchCtrl.exportAllToCsv()">Export All to CSV</button>
+        -->
         <span class="ui-select pull-right">
           <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
             <option value="">Add Selected to List</option>
@@ -135,8 +137,6 @@
           </select>
         </span>
       </div>
-
-
 
       <div id="results-table-wrapper" data-ng-controller="ListCtrl">
 

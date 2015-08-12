@@ -36,7 +36,6 @@ angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleS
       apiService.exportNewestChartToCsv()
         .success(function (content) {
           var hiddenElement = document.createElement('a');
-
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
           hiddenElement.target = '_blank';
           hiddenElement.download = 'mightysignal_newest_apps.csv';

@@ -10,15 +10,15 @@ Rails.application.routes.draw do
   
   post 'test_sf_post' => 'salesforce#test_sf_post'
   post 'test_get_token' => 'salesforce#test_get_token'
-  post 'bizible_hydrate_lead'=> 'bizible_salesforce#hydrate_lead'
-  post 'bizible_hydrate_opp'=> 'bizible_salesforce#hydrate_opp'
+  post 'bizible_hydrate_lead' => 'bizible_salesforce#hydrate_lead'
+  post 'bizible_hydrate_opp' => 'bizible_salesforce#hydrate_opp'
   get 'customer_salesforce_credentials' => 'customer_salesforce#salesforce_credentials'
   
-  post 'triggermail_demo_hydrate_lead'=> 'triggermail_demo_salesforce#hydrate_lead'
-  post 'triggermail_hydrate_lead'=> 'triggermail_salesforce#hydrate_lead'
-  post 'lead_hydration_demo_hydrate_lead'=> 'lead_hydration_demo_salesforce#hydrate_lead'
-  post 'mighty_signal_hydrate_lead'=> 'mighty_signal_salesforce#hydrate_lead'
-  post 'mighty_signal_hydrate_opp'=> 'mighty_signal_salesforce#hydrate_opp'
+  post 'triggermail_demo_hydrate_lead' => 'triggermail_demo_salesforce#hydrate_lead'
+  post 'triggermail_hydrate_lead' => 'triggermail_salesforce#hydrate_lead'
+  post 'lead_hydration_demo_hydrate_lead' => 'lead_hydration_demo_salesforce#hydrate_lead'
+  post 'mighty_signal_hydrate_lead' => 'mighty_signal_salesforce#hydrate_lead'
+  post 'mighty_signal_hydrate_opp' => 'mighty_signal_salesforce#hydrate_opp'
   
   get 'mturk' => 'mturk#gochime'
   
@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   get 'api/get_ios_categories' => 'api#get_ios_categories'
   get 'api/get_android_categories' => 'api#get_android_categories'
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
+  get 'api/search/export_results_to_csv' => 'api#export_all_search_results_to_csv'
 
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'

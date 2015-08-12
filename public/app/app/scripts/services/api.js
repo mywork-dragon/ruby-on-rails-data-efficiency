@@ -113,6 +113,17 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/chart/export_to_csv'
         });
       },
+      exportAllToCsv: function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Exported Search Results CSV"
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/search/export_results_to_csv'
+        });
+      },
       checkForSdks: function(appId) {
         return $http({
           method: 'GET',

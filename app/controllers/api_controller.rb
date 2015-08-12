@@ -631,10 +631,6 @@ class ApiController < ApplicationController
     filter = params['filter']
     contacts = []
 
-    puts "###########"
-    puts filter
-    puts "###########"
-
     if company_websites.blank?
       render json: {:contacts => contacts}
       return
@@ -893,16 +889,62 @@ class ApiController < ApplicationController
     main_hash
   end
 
+  def export_all_search_results_to_csv
+
+  end
+
   def newest_apps_chart
-    render json: {}
+
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+
+    results = IosApp.where(released: Date.new(2015, 7, 24)..Date.new(2015, 7, 30))
+    results_count = results.count
+
+    results_json = []
+    results.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = {
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              type: 'IosApp',
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+
+      # li "app_hash: #{app_hash}"
+      # li "HASH: #{app_hash}"
+      results_json << app_hash
+      # li "results_json: #{results_json}"
+    end
+
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
 
   def export_newest_apps_chart_to_csv
     user = User.find(decoded_auth_token[:user_id])
     can_view_support_desk = Account.find(user.account_id).can_view_support_desk
 
-    ios_apps = # IOS APPS HERE --------------------------------------------
-    android_apps = # ANDROID APPS HERE ------------------------------------
+    ios_apps = # IOS APPS HERE ------------------------------------------------
+    android_apps = # ANDROID APPS HERE ----------------------------------------
     apps = []
 
     header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)', 'MightySignal App Page', 'MightySignal Company Page']
