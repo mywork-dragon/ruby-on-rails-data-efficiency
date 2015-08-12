@@ -87,18 +87,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
+    $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId)
       .success(function(data) {
-
         $scope.sdkData = {
           'sdks': data.sdks,
           'lastUpdated': data.last_updated
         };
-
         $scope.noSdkData = !data;
-
+        $scope.sdkQueryInProgress = false;
       }).error(function() {
-
+        $scope.sdkQueryInProgress = false;
       });
 
   };

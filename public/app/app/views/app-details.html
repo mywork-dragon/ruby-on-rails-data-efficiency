@@ -362,11 +362,15 @@
                   </div>
                 </li>
                 <li id="appPageSdkScanStatus">
-                  <div>
-                    <h5 ng-show="noSdkData">SDKs Not Available</h5>
+                  <div ng-show="noSdkData">
+                    <h5>SDKs Not Available</h5>
+                  </div>
+                  <div data-ng-show="sdkQueryInProgress" id="wrap_spinner">
+                    <div class="loading outer">
+                      <div class="loading inner"></div>
+                    </div>
                   </div>
                 </li>
-
               </ul>
             </div>
           </div>
