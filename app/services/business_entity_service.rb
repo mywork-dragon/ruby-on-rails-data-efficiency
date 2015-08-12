@@ -225,7 +225,7 @@ class BusinessEntityService
     end
 
     def run_ios_branch_job_8_12
-      newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+      newest_date = IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.find(1)).order('itunes_release_date DESC').limit(1).first.itunes_release_date
       week_before_newest = newest_date - 6.days
 
       IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.find(1), itunes_release_date:  week_before_newest..newest_date).find_in_batches(batch_size: 1000).with_index do |batch, index|
