@@ -89,18 +89,6 @@ if defined?(ApkDownloader)
 
       log_in!(proxy_ip, proxy_port, apk_snap_id)
 
-      # if @auth_token.blank?
-
-      #   raise "auth_token was blank"
-
-      # else
-
-      #   apk_snap.auth_token = @auth_token
-
-      # end
-
-      # apk_snap.save
-
       doc = details(package, proxy_ip, proxy_port, apk_snap_id).detailsResponse.docV2
       version_code = doc.details.appDetails.versionCode
       offer_type = doc.offer[0].offerType

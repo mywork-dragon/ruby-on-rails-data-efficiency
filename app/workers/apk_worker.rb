@@ -106,6 +106,12 @@ module ApkWorker
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
 
+      company_ids = SdkCompanyServiceWorker.new.find_company(android_app_id)
+
+      company_ids.each do |id|
+         SdkCompanyServiceWorker.new.google_company(id)
+      end
+
       File.delete(file_name)
       
     end
@@ -152,7 +158,7 @@ module ApkWorker
 
     if g.blank?
 
-      d_name = GoogleAccount.devices.find{|k,v| v == d}[0].gsub('_',' ')
+      d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
 
       err_msg = "All the accounts on your #{d_name} are down."
       Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)

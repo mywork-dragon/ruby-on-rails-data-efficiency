@@ -846,14 +846,16 @@ class ApiController < ApplicationController
         end
 
         name = name.capitalize
-        sdk_com = SdkCompany.where(name: name, flagged: false).first
+
+        # sdk_com = SdkCompany.where(name: name, flagged: false).first
+
+        sdk_com = SdkCompany.find_by_name(name)
 
         if sdk_com.present?
           next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-        end
 
-        if package_hash[name].blank?
+          if package_hash[name].blank?
 
           # sdk_com = SdkCompany.where(name: name, flagged: false).first
           url = nil
@@ -864,20 +866,23 @@ class ApiController < ApplicationController
             url = sdk_com.website unless sdk_com.website.blank?
             url = sdk_com.alias_website unless sdk_com.alias_website.blank?
 
-            if sdk_com.website.present? || sdk_com.alias_website.present?
-              url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
-            end
 
-            favicon = sdk_com.favicon
+              if sdk_com.website.present? || sdk_com.alias_website.present?
+                url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
+              end
+
+              favicon = sdk_com.favicon
+          end
+          
+            website_hash[name] = {'website' => url.to_s}
+            favicon_hash[name] = {'favicon' => favicon.to_s}
+            package_hash[name] = {'packages' =>[packages.package_name]}
+            popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
+            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
+          else
+            hash[name][0]['packages'] << packages.package_name
           end
 
-          website_hash[name] = {'website' => url.to_s}
-          favicon_hash[name] = {'favicon' => favicon.to_s}
-          package_hash[name] = {'packages' =>[packages.package_name]}
-          popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
-          hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
-        else
-          hash[name][0]['packages'] << packages.package_name
         end
       end
     end
