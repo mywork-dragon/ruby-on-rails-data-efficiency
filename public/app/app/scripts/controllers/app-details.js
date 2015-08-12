@@ -95,10 +95,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'lastUpdated': data.last_updated
         };
         $scope.noSdkData = !data;
-        $scope.sdkQueryInProgress = false;
       }).error(function() {
-        $scope.sdkQueryInProgress = false;
       });
+    $scope.sdkQueryInProgress = false;
 
   };
 
