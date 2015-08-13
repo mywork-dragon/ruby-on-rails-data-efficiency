@@ -131,10 +131,10 @@ angular.module("appApp")
           params: {appId: appId}
         })
       },
-      getSdks: function(appId) {
+      getSdks: function(appId, endPoint) {
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/android_sdks',
+          url: API_URI_BASE + endPoint,
           params: {appId: appId}
         })
       }

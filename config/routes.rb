@@ -56,6 +56,7 @@ Rails.application.routes.draw do
 
   get 'api/android_sdks' => 'api#android_sdks_for_app'
   get 'api/android_sdks_exist' => 'api#android_sdks_for_app_exist'
+  get 'api/android_sdks_refresh' => 'api#android_sdks_for_app_refresh'
 
   # Auth Endpoints (for Front-End)
   post 'auth/login' => 'auth#authenticate'
