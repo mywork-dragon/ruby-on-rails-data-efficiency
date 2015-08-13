@@ -731,9 +731,12 @@ class ApiController < ApplicationController
 
   def custom_search
 
-    results = IosAppSnapshot.search(params['query']).records
+    resultIds = AppsIndex::IosAppSnapshot.query(multi_match: {
+                                                  query: params['query'],
+                                                  fields: [:name, :description]
+                                              }).map { |result| result.attributes["id"]}
 
-    render json: results
+    render json: IosAppSnapshot.find(resultIds)
 
   end
 
