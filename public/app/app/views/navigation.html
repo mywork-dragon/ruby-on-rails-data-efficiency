@@ -12,6 +12,11 @@
         <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/"> <i class="fa fa-search"></i> <span>Search</span></a>
         </li>
+        <!--
+        <li ng-class="{active: $route.current.activeTab == 'chartNewest'}">
+          <a href="#/chart/newest"> <i class="fa fa-line-chart"></i> <span>Newest Apps</span></a>
+        </li>
+        -->
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a style="cursor: default;" href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>

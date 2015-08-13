@@ -631,10 +631,6 @@ class ApiController < ApplicationController
     filter = params['filter']
     contacts = []
 
-    puts "###########"
-    puts filter
-    puts "###########"
-
     if company_websites.blank?
       render json: {:contacts => contacts}
       return
@@ -744,18 +740,14 @@ class ApiController < ApplicationController
   def android_sdks_for_app_refresh
 
     android_app_id = params['appId']
-
     aa = AndroidApp.find(android_app_id)
-
     ai = aa.app_identifier
-
     j = ApkSnapshotJob.create!(notes: ai)
-
     batch = Sidekiq::Batch.new
-    batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
-    end
     bid = batch.bid
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+    end
 
     360.times do |i|
       break if Sidekiq::Batch::Status.new(bid).complete?
@@ -765,86 +757,59 @@ class ApiController < ApplicationController
     new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
     if new_snap.present? && new_snap.status == "success"
-
       p = new_snap.android_packages.where('android_package_tag != 1')
-
       hash = sdk_hash(p, new_snap.updated_at)
-
     else
       hash = nil
     end
-
     render json: hash.to_json
-
   end
 
   def android_sdks_for_app_exist
 
     android_app_id = params['appId']
-
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-
       hash = nil
-
     else
-
       new_snap = aa.newest_apk_snapshot
-
     end
 
     if new_snap.present? && new_snap.status == "success"
-
       p = new_snap.android_packages.where('android_package_tag != 1')
-
       hash = sdk_hash(p, new_snap.updated_at)
-
     else
       hash = nil
     end
-
     render json: hash.to_json
-
   end
 
   def android_sdks_for_app
-
     android_app_id = params['appId']
-
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-
       ai = aa.app_identifier
-
       j = ApkSnapshotJob.create!(notes: ai)
-
       batch = Sidekiq::Batch.new
-      batch.jobs do
-        ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
-      end
       bid = batch.bid
+      batch.jobs do
+        ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+      end
 
       360.times do |i|
         break if Sidekiq::Batch::Status.new(bid).complete?
         sleep 0.25
       end
-
       new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
     else
-
       new_snap = aa.newest_apk_snapshot
-
     end
 
     if new_snap.present? && new_snap.status == "success"
-
       p = new_snap.android_packages.where('android_package_tag != 1')
-
       hash = sdk_hash(p, new_snap.updated_at)
-
     else
       hash = nil
     end
@@ -863,86 +828,161 @@ class ApiController < ApplicationController
 
     if p.present?
       p.each do |packages|
-        
+
         package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
 
         if package.count('.').zero?
-
           package = package.capitalize if package == package.upcase
-
           name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
-
           next if name.split(' ').select{|s| s.length == 1 }.count > 1
-
         else
 
           name = package.split('.').first
 
           if SdkCompanyServiceWorker.new.is_word?(name, nil)
-
             name = SdkCompanyServiceWorker.new.camel_split(name)
-
             next if name.split(' ').select{|s| s.length == 1 }.count > 1
-
           end
-
         end
 
         name = name.capitalize
-
-        sdk_com = SdkCompany.where(name: name, flagged: false).first
+        # sdk_com = SdkCompany.where(name: name, flagged: false).first
+        sdk_com = SdkCompany.find_by_name(name)
 
         if sdk_com.present?
+          next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-        end
 
-        if package_hash[name].blank?
+          if package_hash[name].blank?
 
-          # sdk_com = SdkCompany.where(name: name, flagged: false).first
+            # sdk_com = SdkCompany.where(name: name, flagged: false).first
+            url = nil
+            favicon = nil
 
-          url = nil
-          favicon = nil
+            if sdk_com.present?
+              # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
-          if sdk_com.present?
-            # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
+              url = sdk_com.website unless sdk_com.website.blank?
+              url = sdk_com.alias_website unless sdk_com.alias_website.blank?
 
-            url = sdk_com.website unless sdk_com.website.blank?
-            url = sdk_com.alias_website unless sdk_com.alias_website.blank?
-
-            if sdk_com.website.present? || sdk_com.alias_website.present?
-              url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
+              if sdk_com.website.present? || sdk_com.alias_website.present?
+                url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
+              end
+              favicon = sdk_com.favicon
             end
-
-            favicon = sdk_com.favicon
+            website_hash[name] = {'website' => url.to_s}
+            favicon_hash[name] = {'favicon' => favicon.to_s}
+            package_hash[name] = {'packages' =>[packages.package_name]}
+            popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
+            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
+          else
+            hash[name][0]['packages'] << packages.package_name
           end
-
-          website_hash[name] = {'website' => url.to_s}
-
-          favicon_hash[name] = {'favicon' => favicon.to_s}
-
-          package_hash[name] = {'packages' =>[packages.package_name]}
-
-          popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
-
-          hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
-
-        else
-
-          hash[name][0]['packages'] << packages.package_name
-
         end
-
       end
     end
 
     hash = hash.sort_by { |h| -hash[h[0]][3]['popularity'] }
-
     main_hash['sdks'] = hash
-    
     main_hash['last_updated'] = last_updated
 
     main_hash
 
+  end
+
+  def export_all_search_results_to_csv
+
+  end
+
+  def newest_apps_chart
+
+    page_size = params[:pageSize]
+    page_num = params[:pageNum]
+
+    results = IosApp.where(released: Date.new(2015, 7, 24)..Date.new(2015, 7, 30))
+    results_count = results.count
+
+    results_json = []
+    results.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = {
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          releasedDate: app.released,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          type: 'IosApp',
+          supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
+          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          appIcon: {
+              large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+              small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+
+      # li "app_hash: #{app_hash}"
+      # li "HASH: #{app_hash}"
+      results_json << app_hash
+      # li "results_json: #{results_json}"
+    end
+
+    render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
+  end
+
+  def export_newest_apps_chart_to_csv
+    user = User.find(decoded_auth_token[:user_id])
+    can_view_support_desk = Account.find(user.account_id).can_view_support_desk
+
+    ios_apps = # IOS APPS HERE ------------------------------------------------
+    android_apps = # ANDROID APPS HERE ----------------------------------------
+    apps = []
+
+    header = ['MightySignal App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date']
+    can_view_support_desk ? header.push('Support URL') : nil
+
+    results = IosApp.where(released: Date.new(2015, 7, 24)..Date.new(2015, 7, 30))
+
+    results_json = []
+    results.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = [
+          app.id,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          company.present? ? company.name : nil,
+          company.present? ? company.fortune_1000_rank : nil,
+          app.mobile_priority,
+          app.ios_fb_ad_appearances.present? ? 'Yes' : 'No',
+          app.user_base,
+          newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
+          app.released,
+          newest_snapshot.present? ? newest_snapshot.support_url : nil
+      ]
+
+      apps << app_hash
+
+    end
+
+    list_csv = CSV.generate do |csv|
+      csv << header
+      apps.each do |app|
+        csv << app
+      end
+    end
+
+    send_data list_csv
   end
 
 end

@@ -20,7 +20,7 @@ class ApkSnapshotService
       if !workers
 
         batch = Sidekiq::Batch.new
-        batch.description = 'scrape n apks from google play' 
+        batch.description = 'scrape n apks from google play'
         batch.on(:complete, self)
 
         batch.jobs do

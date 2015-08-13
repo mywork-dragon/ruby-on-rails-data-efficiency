@@ -19,13 +19,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
-
           /* API Response Cleanup */
           $scope.sdkData = {
             'sdks': data.sdks,
             'lastUpdated': data.last_updated
           };
-
         }).error(function(err) {
         });
     });
@@ -87,16 +85,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
-    apiService.getSdks(appId)
-      .success(function(data) {
+    // If data already loaded, userefresh api endpoint
+    var endPoint = ($scope.sdkData != null && $scope.sdkData.sdks.length > 0) ? 'api/android_sdks_refresh' : 'api/android_sdks';
 
+    $scope.sdkQueryInProgress = true;
+    apiService.getSdks(appId, endPoint)
+      .success(function(data) {
+        $scope.sdkQueryInProgress = false;
+        if(data == null) $scope.noSdkData = true;
         $scope.sdkData = {
           'sdks': data.sdks,
           'lastUpdated': data.last_updated
         };
-
       }).error(function() {
-
+        $scope.sdkQueryInProgress = false;
       });
 
   };
