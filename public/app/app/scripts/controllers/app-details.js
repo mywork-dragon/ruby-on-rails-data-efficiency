@@ -86,7 +86,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.getSdks = function(appId) {
 
     // If data already loaded, userefresh api endpoint
-    var endPoint = $scope.sdkData != null && $scope.sdkData.length > 0 ? 'android_sdks_refresh' : 'android_sdks';
+    var endPoint = ($scope.sdkData != null && $scope.sdkData.sdks.length > 0) ? 'api/android_sdks_refresh' : 'api/android_sdks';
 
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, endPoint)
