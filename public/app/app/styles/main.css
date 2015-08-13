@@ -7333,7 +7333,7 @@ select option:empty {
 }
 
 #appPageSdkScanStatus {
-  padding: 0;
+  padding: 0 20px 0 0;
 }
 
 #appPageSdkScanStatus div {
