@@ -416,7 +416,7 @@ class ApiController < ApplicationController
   def export_list_to_csv
 
     user = User.find(decoded_auth_token[:user_id])
-    can_view_support_desk = Account.find(user.account_id).blank? ? Account.find(user.account_id).can_view_support_desk : false
+    can_view_support_desk = user.account_id.nil? ? false : Account.find(user.account_id).can_view_support_desk
 
     list_id = params['listId']
     list = List.find(list_id)
