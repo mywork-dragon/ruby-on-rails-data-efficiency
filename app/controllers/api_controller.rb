@@ -731,12 +731,19 @@ class ApiController < ApplicationController
 
   def custom_search
 
-    resultIds = AppsIndex::IosAppSnapshot.query(multi_match: {
-                                                  query: params['query'],
-                                                  fields: [:name, :description]
-                                              }).map { |result| result.attributes["id"]}
+    query = params['query']
+    page_offset = 0
+    num_per_page = 100
 
-    render json: IosAppSnapshot.find(resultIds)
+    result_ids = AppsIndex.query(
+        multi_match: {
+          query: query,
+          fields: [:name, :description],
+          fuzziness: "AUTO"
+        }
+      ).limit(num_per_page).offset(page_offset).map { |result| result.attributes["id"]}
+
+    render json: IosAppSnapshot.find(result_ids)
 
   end
 
