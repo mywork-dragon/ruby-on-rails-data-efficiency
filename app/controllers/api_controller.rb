@@ -806,39 +806,45 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    if aa.newest_apk_snapshot.blank?
-
-      ai = aa.app_identifier
-
-      j = ApkSnapshotJob.create!(notes: ai)
-
-      batch = Sidekiq::Batch.new
-      batch.jobs do
-        ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
-      end
-      bid = batch.bid
-
-      360.times do |i|
-        break if Sidekiq::Batch::Status.new(bid).complete?
-        sleep 0.25
-      end
-
-      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
+    if aa.taken_down
+      # app has been taken down
     else
 
-      new_snap = aa.newest_apk_snapshot
+      if aa.newest_apk_snapshot.blank?
 
-    end
+        ai = aa.app_identifier
 
-    if new_snap.present? && new_snap.status == "success"
+        j = ApkSnapshotJob.create!(notes: ai)
 
-      p = new_snap.android_packages.where('android_package_tag != 1')
+        batch = Sidekiq::Batch.new
+        batch.jobs do
+          ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
+        end
+        bid = batch.bid
 
-      hash = sdk_hash(p, new_snap.updated_at)
+        360.times do |i|
+          break if Sidekiq::Batch::Status.new(bid).complete?
+          sleep 0.25
+        end
 
-    else
-      hash = nil
+        new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
+      else
+
+        new_snap = aa.newest_apk_snapshot
+
+      end
+
+      if new_snap.present? && new_snap.status == "success"
+
+        p = new_snap.android_packages.where('android_package_tag != 1')
+
+        hash = sdk_hash(p, new_snap.updated_at)
+
+      else
+        hash = nil
+      end
+
     end
 
     render json: hash.to_json
