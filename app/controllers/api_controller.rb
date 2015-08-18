@@ -732,7 +732,7 @@ class ApiController < ApplicationController
   def android_sdks_for_app_refresh
 
     android_app_id = params['appId']
-    
+
     error_code = 0
 
     aa = AndroidApp.find(android_app_id)
@@ -886,7 +886,7 @@ class ApiController < ApplicationController
       end
     end
 
-    hash = hash.sort_by { |k,v| -v['popularity'] }
+    hash = hash.sort_by { |k,v| -v['popularity'] }.to_h
 
     error_code = 1 if hash.empty?
     main_hash['sdks'] = hash
