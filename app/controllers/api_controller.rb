@@ -774,9 +774,9 @@ class ApiController < ApplicationController
 
   end
 
-  def android_sdks_for_app_exist(android_app_id = 6444)
+  def android_sdks_for_app_exist
 
-    # android_app_id = params['appId']
+    android_app_id = params['appId']
 
     error_code = 0
 
@@ -804,16 +804,15 @@ class ApiController < ApplicationController
       hash = nil
     end
 
-    # render json: hash.to_json
-    puts hash.to_json
+    render json: hash.to_json
 
   end
 
-  def android_sdks_for_app(android_app_id)
+  def android_sdks_for_app
 
     error_code = 0
 
-    # android_app_id = params['appId']
+    android_app_id = params['appId']
 
     aa = AndroidApp.find(android_app_id)
 
@@ -821,18 +820,14 @@ class ApiController < ApplicationController
 
       ai = aa.app_identifier
 
-      # batch = Sidekiq::Batch.new
-      # bid = batch.bid
-      # batch.jobs do
-      #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-      # end
+      j = ApkSnapshotJob.create!(notes: ai)
 
       batch = Sidekiq::Batch.new
-      batch.jobs do
-        # need to make job !!!!!
-        ApkSnapshotServiceSingleWorker.new.perform(j.id, android_app_id)
-      end
       bid = batch.bid
+      batch.jobs do
+        ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+      end
+      
 
       360.times do |i|
         break if Sidekiq::Batch::Status.new(bid).complete?
@@ -859,9 +854,7 @@ class ApiController < ApplicationController
       hash = sdk_hash(nil, new_snap.updated_at, 3)
     end
 
-    # render json: hash.to_json
-
-    puts hash.to_json
+    render json: hash.to_json
 
   end
 
@@ -942,11 +935,6 @@ class ApiController < ApplicationController
     main_hash['sdks'] = hash
     
     main_hash['last_updated'] = last_updated
-
-    # 0 == we're all good.
-    # 1 == this app doesn't even use sdks, man.
-    # 2 == this app doesn't even exist, brah.
-    # 3 == there was an error. my bad.
 
     main_hash['error_code'] = error_code
 
