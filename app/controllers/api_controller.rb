@@ -737,6 +737,8 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
+    error_code = 0
+
     aa = AndroidApp.find(android_app_id)
 
     ai = aa.app_identifier
@@ -760,7 +762,9 @@ class ApiController < ApplicationController
 
       p = new_snap.android_packages.where('android_package_tag != 1')
 
-      hash = sdk_hash(p, new_snap.updated_at)
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
 
     else
       hash = nil
@@ -770,9 +774,11 @@ class ApiController < ApplicationController
 
   end
 
-  def android_sdks_for_app_exist
+  def android_sdks_for_app_exist(android_app_id = 6444)
 
-    android_app_id = params['appId']
+    # android_app_id = params['appId']
+
+    error_code = 0
 
     aa = AndroidApp.find(android_app_id)
 
@@ -790,78 +796,79 @@ class ApiController < ApplicationController
 
       p = new_snap.android_packages.where('android_package_tag != 1')
 
-      hash = sdk_hash(p, new_snap.updated_at)
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
 
     else
       hash = nil
     end
 
-    render json: hash.to_json
+    # render json: hash.to_json
+    puts hash.to_json
 
   end
 
-  def android_sdks_for_app
+  def android_sdks_for_app(android_app_id)
 
-    android_app_id = params['appId']
+    error_code = 0
+
+    # android_app_id = params['appId']
 
     aa = AndroidApp.find(android_app_id)
 
-    if aa.taken_down
-      # app has been taken down
-    else
+    if aa.newest_apk_snapshot.blank?
 
-      if aa.newest_apk_snapshot.blank?
+      ai = aa.app_identifier
 
-        ai = aa.app_identifier
+      # batch = Sidekiq::Batch.new
+      # bid = batch.bid
+      # batch.jobs do
+      #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+      # end
 
       batch = Sidekiq::Batch.new
-      bid = batch.bid
       batch.jobs do
-        ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+        # need to make job !!!!!
+        ApkSnapshotServiceSingleWorker.new.perform(j.id, android_app_id)
+      end
+      bid = batch.bid
+
+      360.times do |i|
+        break if Sidekiq::Batch::Status.new(bid).complete?
+        sleep 0.25
       end
 
-        batch = Sidekiq::Batch.new
-        batch.jobs do
-          ApkSnapshotServiceSingleWorker.perform_async(j.id, android_app_id)
-        end
-        bid = batch.bid
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-        360.times do |i|
-          break if Sidekiq::Batch::Status.new(bid).complete?
-          sleep 0.25
-        end
+    else
 
-        new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-      else
-
-        new_snap = aa.newest_apk_snapshot
-
-      end
-
-      if new_snap.present? && new_snap.status == "success"
-
-        p = new_snap.android_packages.where('android_package_tag != 1')
-
-        hash = sdk_hash(p, new_snap.updated_at)
-
-      else
-        hash = nil
-      end
+      new_snap = aa.newest_apk_snapshot
 
     end
 
-    render json: hash.to_json
+    if new_snap.present? && new_snap.status == "success"
+
+      p = new_snap.android_packages.where('android_package_tag != 1')
+
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
+
+    else
+      hash = sdk_hash(nil, new_snap.updated_at, 3)
+    end
+
+    # render json: hash.to_json
+
+    puts hash.to_json
 
   end
 
-  def sdk_hash(p, last_updated)
+  def sdk_hash(p, last_updated, error_code)
+
     hash = Hash.new
     main_hash = Hash.new
-    package_hash = Hash.new
-    website_hash = Hash.new
-    favicon_hash = Hash.new
-    popularity_hash = Hash.new
 
     if p.present?
       p.each do |packages|
@@ -892,23 +899,18 @@ class ApiController < ApplicationController
 
         name = name.capitalize
 
-        # sdk_com = SdkCompany.where(name: name, flagged: false).first
-
         sdk_com = SdkCompany.find_by_name(name)
 
         if sdk_com.present?
           next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
-          if package_hash[name].blank?
-
-            # sdk_com = SdkCompany.where(name: name, flagged: false).first
+          if hash[name].blank?
 
             url = nil
             favicon = nil
 
             if sdk_com.present?
-              # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
               url = sdk_com.website unless sdk_com.website.blank?
               url = sdk_com.alias_website unless sdk_com.alias_website.blank?
@@ -920,19 +922,11 @@ class ApiController < ApplicationController
               favicon = sdk_com.favicon
             end
 
-            website_hash[name] = {'website' => url.to_s}
-
-            favicon_hash[name] = {'favicon' => favicon.to_s}
-
-            package_hash[name] = {'packages' =>[packages.package_name]}
-
-            popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
-
-            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
+            hash[name] = {'packages' => [packages.package_name], 'website' => url.to_s, 'favicon' => favicon.to_s, 'popularity' => url.nil? ? 0:1}
 
           else
 
-            hash[name][0]['packages'] << packages.package_name
+            hash[name]['packages'] << packages.package_name
 
           end
 
@@ -941,11 +935,20 @@ class ApiController < ApplicationController
       end
     end
 
-    hash = hash.sort_by { |h| -hash[h[0]][3]['popularity'] }
+    hash = hash.sort_by { |k,v| -v['popularity'] }
+
+    error_code = 1 if hash.empty?
 
     main_hash['sdks'] = hash
     
     main_hash['last_updated'] = last_updated
+
+    # 0 == we're all good.
+    # 1 == this app doesn't even use sdks, man.
+    # 2 == this app doesn't even exist, brah.
+    # 3 == there was an error. my bad.
+
+    main_hash['error_code'] = error_code
 
     main_hash
 
