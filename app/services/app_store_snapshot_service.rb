@@ -5,12 +5,20 @@ class AppStoreSnapshotService
     def run(notes, options={})
       
       j = IosAppSnapshotJob.create!(notes: notes)
+
+      batch = Sidekiq::Batch.new
+      batch.description = "run: #{notes}" 
+      batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
+  
+      batch.jobs do
+        
+        IosApp.find_each.with_index do |ios_app, index|
+          li "App ##{index}" if index%10000 == 0
+          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        end    
       
-      IosApp.find_each.with_index do |ios_app, index|
-        li "App ##{index}" if index%10000 == 0
-        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
       end
-      
+       
     end
     
     def run_app_ids(notes, ios_app_ids)
@@ -134,6 +142,10 @@ class AppStoreSnapshotService
       
     end
   
+  end
+
+  def on_complete_run(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape Completed')
   end
   
   def on_complete_run_new_apps(status, options)
