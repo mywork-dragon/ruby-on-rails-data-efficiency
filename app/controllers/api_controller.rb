@@ -735,13 +735,17 @@ class ApiController < ApplicationController
     page_offset = 0
     num_per_page = 100
 
-    result_ids = AppsIndex.query(
+    result_ids = AppsIndex::IosAppSnapshot.query(
         multi_match: {
           query: query,
-          fields: [:name, :description],
-          fuzziness: "AUTO"
+          fields: [:name, :description, :seller, :seller_url, :company_name],
+          type: 'most_fields',
+          fuzziness: 'AUTO'
         }
-      ).limit(num_per_page).offset(page_offset).map { |result| result.attributes["id"]}
+      ).limit(num_per_page).offset(page_offset).map { |result|
+        puts result.inspect
+        result.attributes["id"]
+      }
 
     render json: IosAppSnapshot.find(result_ids)
 
