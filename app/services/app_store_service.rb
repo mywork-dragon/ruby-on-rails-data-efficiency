@@ -175,7 +175,7 @@ class AppStoreService
 
   def seller_url_json
     ret = @json['sellerUrl']
-    return nil if UrlHelper.url_with_base_only.blank?
+    return nil if UrlHelper.url_with_base_only(ret).blank?
     ret
   end
 
