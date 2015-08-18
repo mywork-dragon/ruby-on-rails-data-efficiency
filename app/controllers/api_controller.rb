@@ -732,6 +732,9 @@ class ApiController < ApplicationController
   def android_sdks_for_app_refresh
 
     android_app_id = params['appId']
+    
+    error_code = 0
+
     aa = AndroidApp.find(android_app_id)
     ai = aa.app_identifier
     j = ApkSnapshotJob.create!(notes: ai)
@@ -750,7 +753,10 @@ class ApiController < ApplicationController
 
     if new_snap.present? && new_snap.status == "success"
       p = new_snap.android_packages.where('android_package_tag != 1')
-      hash = sdk_hash(p, new_snap.updated_at)
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
+
     else
       hash = nil
     end
@@ -760,6 +766,9 @@ class ApiController < ApplicationController
   def android_sdks_for_app_exist
 
     android_app_id = params['appId']
+
+    error_code = 0
+
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
@@ -770,7 +779,10 @@ class ApiController < ApplicationController
 
     if new_snap.present? && new_snap.status == "success"
       p = new_snap.android_packages.where('android_package_tag != 1')
-      hash = sdk_hash(p, new_snap.updated_at)
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
+
     else
       hash = nil
     end
@@ -778,7 +790,11 @@ class ApiController < ApplicationController
   end
 
   def android_sdks_for_app
+
     android_app_id = params['appId']
+
+    error_code = 0
+
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
@@ -789,6 +805,7 @@ class ApiController < ApplicationController
       batch.jobs do
         ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
       end
+      
 
       360.times do |i|
         break if Sidekiq::Batch::Status.new(bid).complete?
@@ -801,22 +818,22 @@ class ApiController < ApplicationController
 
     if new_snap.present? && new_snap.status == "success"
       p = new_snap.android_packages.where('android_package_tag != 1')
-      hash = sdk_hash(p, new_snap.updated_at)
+      error_code = 2 if aa.taken_down
+
+      hash = sdk_hash(p, new_snap.updated_at, error_code)
+
     else
-      hash = nil
+      hash = sdk_hash(nil, new_snap.updated_at, 3)
     end
 
     render json: hash.to_json
 
   end
 
-  def sdk_hash(p, last_updated)
+  def sdk_hash(p, last_updated, error_code)
+
     hash = Hash.new
     main_hash = Hash.new
-    package_hash = Hash.new
-    website_hash = Hash.new
-    favicon_hash = Hash.new
-    popularity_hash = Hash.new
 
     if p.present?
       p.each do |packages|
@@ -838,21 +855,18 @@ class ApiController < ApplicationController
         end
 
         name = name.capitalize
-        # sdk_com = SdkCompany.where(name: name, flagged: false).first
         sdk_com = SdkCompany.find_by_name(name)
 
         if sdk_com.present?
           next if sdk_com.flagged?
           name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
-          if package_hash[name].blank?
+          if hash[name].blank?
 
-            # sdk_com = SdkCompany.where(name: name, flagged: false).first
             url = nil
             favicon = nil
 
             if sdk_com.present?
-              # name = sdk_com.alias_name unless sdk_com.alias_name.blank?
 
               url = sdk_com.website unless sdk_com.website.blank?
               url = sdk_com.alias_website unless sdk_com.alias_website.blank?
@@ -862,21 +876,23 @@ class ApiController < ApplicationController
               end
               favicon = sdk_com.favicon
             end
-            website_hash[name] = {'website' => url.to_s}
-            favicon_hash[name] = {'favicon' => favicon.to_s}
-            package_hash[name] = {'packages' =>[packages.package_name]}
-            popularity_hash[name] = if url.nil? then {'popularity' => 0} else {'popularity' => 1} end
-            hash[name] = [package_hash[name], website_hash[name], favicon_hash[name], popularity_hash[name]]
+            hash[name] = {'packages' => [packages.package_name], 'website' => url.to_s, 'favicon' => favicon.to_s, 'popularity' => url.nil? ? 0:1}
+
           else
-            hash[name][0]['packages'] << packages.package_name
+            hash[name]['packages'] << packages.package_name
+
           end
         end
       end
     end
 
-    hash = hash.sort_by { |h| -hash[h[0]][3]['popularity'] }
+    hash = hash.sort_by { |k,v| -v['popularity'] }
+
+    error_code = 1 if hash.empty?
     main_hash['sdks'] = hash
     main_hash['last_updated'] = last_updated
+
+    main_hash['error_code'] = error_code
 
     main_hash
 
