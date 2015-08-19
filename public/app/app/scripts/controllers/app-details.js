@@ -85,8 +85,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
-    // If data already loaded, userefresh api endpoint
-    var endPoint = ($scope.sdkData != null && $scope.sdkData.sdks.length > 0) ? 'api/android_sdks_refresh' : 'api/android_sdks';
+    // If data already loaded, use refresh api endpoint
+    var endPoint = (!$scope.sdkData || $scope.sdkData != null) ? 'api/android_sdks_refresh' : 'api/android_sdks';
 
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, endPoint)
@@ -97,7 +97,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           $scope.noSdkData = true;
           switch (data.error_code) {
             case 1:
-              sdkErrorMessage = "SDKs Not Available";
+              sdkErrorMessage = "No SDKs in App";
               break;
             case 2:
               sdkErrorMessage = "SDKs Not Available - App Was Removed from App Store";
