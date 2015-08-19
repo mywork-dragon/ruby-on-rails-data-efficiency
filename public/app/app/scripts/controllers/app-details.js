@@ -95,7 +95,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         var sdkErrorMessage = "";
         if(data == null) {
           $scope.noSdkData = true;
-          $scope.sdkData = {'errorMessage': "No SDKs in App"}
+          $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
         }
         if(data.error_code > 0) {
           $scope.noSdkData = true;
