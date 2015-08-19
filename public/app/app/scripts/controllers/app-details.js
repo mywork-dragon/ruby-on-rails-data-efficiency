@@ -92,10 +92,26 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     apiService.getSdks(appId, endPoint)
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
-        if(data == null) $scope.noSdkData = true;
+        var sdkErrorMessage = "";
+        if(data == null || data.error_code > 0) {
+          $scope.noSdkData = true;
+          switch (data.error_code) {
+            case 1:
+              sdkErrorMessage = "SDKs Not Available";
+              break;
+            case 2:
+              sdkErrorMessage = "SDKs Not Available - App Was Removed from App Store";
+              break;
+            case 3:
+              sdkErrorMessage = "Error - Please Try Again Later";
+              break;
+          }
+        }
         $scope.sdkData = {
           'sdks': data.sdks,
-          'lastUpdated': data.last_updated
+          'lastUpdated': data.last_updated,
+          'errorCode': data.error_code,
+          'errorMessage': sdkErrorMessage
         };
       }).error(function() {
         $scope.sdkQueryInProgress = false;
