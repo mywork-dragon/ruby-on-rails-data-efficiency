@@ -106,7 +106,8 @@ if defined?(ApkDownloader)
         if url.blank?
           raise "Google did not return url | status_code: #{status_code}"
         elsif cookie.blank?
-          raise "Google did not return cookie | status_code: #{status_code}"
+          # raise "Google did not return cookie | status_code: #{status_code}"
+          raise message
         elsif proxy_ip.blank?
           raise "No proxy was found | status_code: #{status_code}"
         end
