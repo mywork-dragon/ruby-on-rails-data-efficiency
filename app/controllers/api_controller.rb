@@ -758,7 +758,7 @@ class ApiController < ApplicationController
       hash = sdk_hash(p, new_snap.updated_at, error_code)
 
     else
-      hash = nil
+      hash = sdk_hash(nil, nil, 3)
     end
     render json: hash.to_json
   end
@@ -772,7 +772,7 @@ class ApiController < ApplicationController
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-      hash = nil
+      hash = sdk_hash(nil, nil, 3)
     else
       new_snap = aa.newest_apk_snapshot
     end
@@ -784,7 +784,7 @@ class ApiController < ApplicationController
       hash = sdk_hash(p, new_snap.updated_at, error_code)
 
     else
-      hash = nil
+      hash = sdk_hash(nil, nil, 3)
     end
     render json: hash.to_json
   end
@@ -797,33 +797,48 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    if aa.newest_apk_snapshot.blank?
-      ai = aa.app_identifier
-      j = ApkSnapshotJob.create!(notes: ai)
-      batch = Sidekiq::Batch.new
-      bid = batch.bid
-      batch.jobs do
-        ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-      end
-      
+    price = aa.newest_android_app_snapshot.price.to_i
 
-      360.times do |i|
-        break if Sidekiq::Batch::Status.new(bid).complete?
-        sleep 0.25
-      end
-      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+    if price.zero?
+      hash = sdk_hash(nil, nil, 4)
     else
-      new_snap = aa.newest_apk_snapshot
-    end
 
-    if new_snap.present? && new_snap.status == "success"
-      p = new_snap.android_packages.where('android_package_tag != 1')
-      error_code = 2 if aa.taken_down
+      if aa.newest_apk_snapshot.blank?
+        ai = aa.app_identifier
+        j = ApkSnapshotJob.create!(notes: ai)
+        batch = Sidekiq::Batch.new
+        bid = batch.bid
+        batch.jobs do
+          ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+        end
+        
 
-      hash = sdk_hash(p, new_snap.updated_at, error_code)
+        360.times do |i|
+          if Sidekiq::Batch::Status.new(bid).complete?
 
-    else
-      hash = sdk_hash(nil, new_snap.updated_at, 3)
+            snap = ApkSnapshot.where(android_app_id: android_app_id).first
+
+            break if snap.status.present?
+
+          end
+          # break if Sidekiq::Batch::Status.new(bid).complete?
+          sleep 0.25
+        end
+        new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+      else
+        new_snap = aa.newest_apk_snapshot
+      end
+
+      if new_snap.present? && new_snap.status == "success"
+        p = new_snap.android_packages.where('android_package_tag != 1')
+        error_code = 2 if aa.taken_down
+
+        hash = sdk_hash(p, new_snap.updated_at, error_code)
+
+      else
+        hash = sdk_hash(nil, nil, 3)
+      end
+
     end
 
     render json: hash.to_json

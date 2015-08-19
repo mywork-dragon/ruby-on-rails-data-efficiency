@@ -223,7 +223,11 @@ if defined?(ApkDownloader)
 
       auth_token = ApkSnapshot.find_by_id(apk_snap_id).auth_token
 
-      raise "account or auth token was blank" if ga.blank? || auth_token.blank?
+      # raise "account or auth token was blank" if ga.blank? || auth_token.blank?
+
+      puts "Type : #{type.to_s}"
+      puts "Identifier : #{ga.android_identifier}"
+      puts "Auth Token : #{auth_token}"
 
       headers = {
         'Accept-Language' => 'en_US',
