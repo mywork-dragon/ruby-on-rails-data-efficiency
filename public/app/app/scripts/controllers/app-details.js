@@ -86,14 +86,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.getSdks = function(appId) {
 
     // If data already loaded, use refresh api endpoint
-    var endPoint = (!$scope.sdkData || $scope.sdkData != null) ? 'api/android_sdks_refresh' : 'api/android_sdks';
+    var endPoint = ($scope.sdkData == undefined || $scope.sdkData != null) ? 'api/android_sdks_refresh' : 'api/android_sdks';
 
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, endPoint)
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
         var sdkErrorMessage = "";
-        if(data == null || data.error_code > 0) {
+        if(data == null) {
+          $scope.noSdkData = true;
+          $scope.sdkData = {'errorMessage': "No SDKs in App"}
+        }
+        if(data.error_code > 0) {
           $scope.noSdkData = true;
           switch (data.error_code) {
             case 1:
@@ -107,14 +111,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               break;
           }
         }
-        $scope.sdkData = {
-          'sdks': data.sdks,
-          'lastUpdated': data.last_updated,
-          'errorCode': data.error_code,
-          'errorMessage': sdkErrorMessage
-        };
+        if(data) {
+          $scope.sdkData = {
+            'sdks': data.sdks,
+            'lastUpdated': data.last_updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
+          };
+        }
       }).error(function() {
         $scope.sdkQueryInProgress = false;
+        $scope.noSdkData = true;
+        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
       });
 
   };
