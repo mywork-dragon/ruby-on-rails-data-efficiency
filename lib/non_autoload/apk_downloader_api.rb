@@ -102,12 +102,14 @@ if defined?(ApkDownloader)
         snap = ApkSnapshot.find_by_id(apk_snap_id)
         snap.status = :no_response
         snap.save
+
+        puts "Url : #{url}"
+        puts "Cookie : #{cookie}"
         
         if url.blank?
           raise "Google did not return url | status_code: #{status_code}"
         elsif cookie.blank?
-          # raise "Google did not return cookie | status_code: #{status_code}"
-          raise message
+          raise "Google did not return cookie | status_code: #{status_code}"
         elsif proxy_ip.blank?
           raise "No proxy was found | status_code: #{status_code}"
         end
@@ -226,7 +228,11 @@ if defined?(ApkDownloader)
 
       auth_token = ApkSnapshot.find_by_id(apk_snap_id).auth_token
 
-      raise "account or auth token was blank" if ga.blank? || auth_token.blank?
+      # raise "account or auth token was blank" if ga.blank? || auth_token.blank?
+
+      puts "Type : #{type.to_s}"
+      puts "Identifier : #{ga.android_identifier}"
+      puts "Auth Token : #{auth_token}"
 
       headers = {
         'Accept-Language' => 'en_US',

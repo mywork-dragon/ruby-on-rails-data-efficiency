@@ -80,6 +80,22 @@ class ApkSnapshotService
       end
     end
 
+
+    def single_prod(notes)
+
+      j = ApkSnapshotJob.create!(notes: "SINGLE: #{notes}")
+
+      batch = Sidekiq::Batch.new
+      batch.jobs do
+
+        AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
+          ApkSnapshotServiceWorker.new.perform(j.id, batch.bid, app.id)
+        end
+
+      end
+
+    end
+
     def job
       j = ApkSnapshotJob.last
 
