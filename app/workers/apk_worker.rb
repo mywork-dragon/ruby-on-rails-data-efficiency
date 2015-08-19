@@ -32,6 +32,8 @@ module ApkWorker
         apk_snap.try += 1
         apk_snap.save
 
+        raise "data flag" if apk_snap.android_app.data_flag
+
         @try_count = apk_snap.try
 
       end
