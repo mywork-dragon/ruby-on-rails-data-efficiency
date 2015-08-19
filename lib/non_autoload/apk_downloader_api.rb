@@ -103,16 +103,11 @@ if defined?(ApkDownloader)
         snap.status = :no_response
         snap.save
 
-        puts "Url : #{url}"
-        puts "Cookie : #{cookie}"
-        
-        if url.blank?
-          raise "Google did not return url | status_code: #{status_code}"
-        elsif cookie.blank?
-          raise "Google did not return cookie | status_code: #{status_code}"
-        elsif proxy_ip.blank?
-          raise "No proxy was found | status_code: #{status_code}"
-        end
+        aa = snap.android_app
+        aa.data_flag = true
+        aa.save
+
+        raise "Google did not return url or cookie | status_code: #{status_code}"
 
       end
 

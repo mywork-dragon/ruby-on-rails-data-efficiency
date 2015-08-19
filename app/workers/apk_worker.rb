@@ -21,8 +21,6 @@ module ApkWorker
 
       apk_snap = ApkSnapshot.where(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id).first
 
-      # if there app has been flagged because of a data problem, quit the job.
-
       if apk_snap.nil?
 
         apk_snap = ApkSnapshot.create(android_app_id: android_app_id, apk_snapshot_job_id: apk_snapshot_job_id, try: 1)
@@ -33,6 +31,8 @@ module ApkWorker
 
         apk_snap.try += 1
         apk_snap.save
+
+        raise "data flag" if apk_snap.android_app.data_flag
 
         @try_count = apk_snap.try
 
