@@ -816,7 +816,10 @@ class ApiController < ApplicationController
         end
 
         360.times do |i|
-          break if Sidekiq::Batch::Status.new(bid).join.nil?
+          if Sidekiq::Batch::Status.new(bid).pending.zero?
+            snap = ApkSnapshot.where(android_app_id: android_app_id).first
+            break if snap.status.present?
+          end
           sleep 0.25
         end
 
