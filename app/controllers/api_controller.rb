@@ -745,7 +745,7 @@ class ApiController < ApplicationController
     end
 
     360.times do |i|
-      break if Sidekiq::Batch::Status.new(bid).pending.zero?
+      break if Sidekiq::Batch::Status.new(bid).total.zero?
       sleep 0.25
     end
 
@@ -813,7 +813,7 @@ class ApiController < ApplicationController
         end
         
         360.times do |i|
-          break if Sidekiq::Batch::Status.new(bid).pending.zero?
+          break if Sidekiq::Batch::Status.new(bid).total.zero?
           sleep 0.25
         end
         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
