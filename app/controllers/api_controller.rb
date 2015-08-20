@@ -812,16 +812,11 @@ class ApiController < ApplicationController
           ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
         end
         
-
         360.times do |i|
           if Sidekiq::Batch::Status.new(bid).complete?
-
             snap = ApkSnapshot.where(android_app_id: android_app_id).first
-
-            break if snap.status.present?
-
+            break if snap.status.present? || snap.try == 3
           end
-          # break if Sidekiq::Batch::Status.new(bid).complete?
           sleep 0.25
         end
         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
@@ -903,7 +898,7 @@ class ApiController < ApplicationController
 
     hash = hash.sort_by { |k,v| -v['popularity'] }.to_h
 
-    error_code = 1 if hash.empty?
+    error_code = 1 if hash.empty? && error_code.zero?
     main_hash['sdks'] = hash
     main_hash['last_updated'] = last_updated
 
