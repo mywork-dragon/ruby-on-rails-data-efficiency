@@ -729,40 +729,40 @@ class ApiController < ApplicationController
     end
   end
 
-  def android_sdks_for_app_refresh
+  # def android_sdks_for_app_refresh
 
-    # android_app_id = params['appId']
+  #   # android_app_id = params['appId']
 
-    # error_code = 0
+  #   # error_code = 0
 
-    # aa = AndroidApp.find(android_app_id)
-    # ai = aa.app_identifier
-    # j = ApkSnapshotJob.create!(notes: ai)
-    # batch = Sidekiq::Batch.new
-    # bid = batch.bid
-    # batch.jobs do
-    #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-    # end
+  #   # aa = AndroidApp.find(android_app_id)
+  #   # ai = aa.app_identifier
+  #   # j = ApkSnapshotJob.create!(notes: ai)
+  #   # batch = Sidekiq::Batch.new
+  #   # bid = batch.bid
+  #   # batch.jobs do
+  #   #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+  #   # end
 
-    # 360.times do |i|
-    #   break if Sidekiq::Batch::Status.new(bid).total.zero?
-    #   sleep 0.25
-    # end
+  #   # 360.times do |i|
+  #   #   break if Sidekiq::Batch::Status.new(bid).total.zero?
+  #   #   sleep 0.25
+  #   # end
 
-    # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+  #   # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    # if new_snap.present? && new_snap.status == "success"
-    #   p = new_snap.android_packages.where('android_package_tag != 1')
-    #   error_code = 2 if aa.taken_down
+  #   # if new_snap.present? && new_snap.status == "success"
+  #   #   p = new_snap.android_packages.where('android_package_tag != 1')
+  #   #   error_code = 2 if aa.taken_down
 
-    #   hash = sdk_hash(p, new_snap.updated_at, error_code)
+  #   #   hash = sdk_hash(p, new_snap.updated_at, error_code)
 
-    # else
-    #   hash = sdk_hash(nil, nil, 3)
-    # end
-    # render json: hash.to_json
-    ApkSnapshotJob.create(notes: 'blah blah blah')
-  end
+  #   # else
+  #   #   hash = sdk_hash(nil, nil, 3)
+  #   # end
+  #   # render json: hash.to_json
+  #   ApkSnapshotJob.create(notes: 'blah blah blah')
+  # end
 
   def android_sdks_for_app_exist
 
@@ -791,7 +791,7 @@ class ApiController < ApplicationController
   end
 
   # def android_sdks_for_app
-  def android_sdks_for_app
+  def android_sdks_for_app_refresh
 
     android_app_id = params['appId']
 
@@ -807,7 +807,7 @@ class ApiController < ApplicationController
 
     if aa.taken_down
       error_code = 2
-    elsif price.zero?
+    elsif !price.zero?
       # hash = sdk_hash(nil, nil, 4)
       error_code = 4
     else
