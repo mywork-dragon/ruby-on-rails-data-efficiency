@@ -768,26 +768,35 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    error_code = 0
+    # error_code = 0
+    updated = nil
+    packages = nil
 
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-      hash = sdk_hash(nil, nil, 3)
+      # hash = sdk_hash(nil, nil, 3)
+      error_code = 1
     else
       new_snap = aa.newest_apk_snapshot
     end
 
     if new_snap.present? && new_snap.status == "success"
-      p = new_snap.android_packages.where('android_package_tag != 1')
-      error_code = 2 if aa.taken_down
+      # packages = new_snap.android_packages.where('android_package_tag != 1')
+      # error_code = 2 if aa.taken_down
 
-      hash = sdk_hash(p, new_snap.updated_at, error_code)
+      # hash = sdk_hash(p, new_snap.updated_at, error_code)
+
+      updated = new_snap.updated_at
+      packages = new_snap.android_packages.where('android_package_tag != 1')
+
+      error_code = packages.count.zero? ? 1:0
 
     else
-      hash = sdk_hash(nil, nil, 3)
+      # hash = sdk_hash(nil, nil, 3)
+      error_code = 5
     end
-    render json: hash.to_json
+    render json: sdk_hash(packages, updated, error_code)
   end
 
   # def android_sdks_for_app
@@ -879,7 +888,7 @@ class ApiController < ApplicationController
 
     new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 3
+    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
     new_snap
 
