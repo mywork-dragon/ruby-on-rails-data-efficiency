@@ -813,10 +813,7 @@ class ApiController < ApplicationController
         end
         
         360.times do |i|
-          if Sidekiq::Batch::Status.new(bid).complete?
-            snap = ApkSnapshot.where(android_app_id: android_app_id).first
-            break if snap.status == "success" || snap.try == 3
-          end
+          break if Sidekiq::Batch::Status.new(bid).pending.zero?
           sleep 0.25
         end
         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
