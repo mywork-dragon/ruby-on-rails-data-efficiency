@@ -843,7 +843,7 @@ class ApiController < ApplicationController
 
   end
 
-  def run_batch(android_app_id, app_identifier, job_id = nil)
+  def run_batch(android_app_id, app_identifier, job_id = nil, tries = 0)
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
     batch = Sidekiq::Batch.new
@@ -858,9 +858,13 @@ class ApiController < ApplicationController
       sleep 0.25
     end
 
-    snap = ApkSnapshot.where(android_app_id: android_app_id).first
+    new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    run_batch(android_app_id, app_identifier, job_id) if snap.status != 1 && snap.try < 3
+    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 3
+
+    # snap = ApkSnapshot.where(android_app_id: android_app_id).first
+
+    # run_batch(android_app_id, app_identifier, job_id) if snap.status != 1 && snap.try < 3
 
   end
 
