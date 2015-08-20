@@ -797,6 +797,8 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
+    error_code = 2 if aa.taken_down
+
     price = aa.newest_android_app_snapshot.price.to_i
 
     if price.zero?
@@ -808,22 +810,24 @@ class ApiController < ApplicationController
         j = ApkSnapshotJob.create!(notes: ai)
         batch = Sidekiq::Batch.new
         bid = batch.bid
+
         batch.jobs do
           ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
         end
-        
+
         360.times do |i|
-          break if Sidekiq::Batch::Status.new(bid).total.zero?
+          break if Sidekiq::Batch::Status.new(bid).join.nil?
           sleep 0.25
         end
+
         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+
       else
         new_snap = aa.newest_apk_snapshot
       end
 
       if new_snap.present? && new_snap.status == "success"
         p = new_snap.android_packages.where('android_package_tag != 1')
-        error_code = 2 if aa.taken_down
 
         hash = sdk_hash(p, new_snap.updated_at, error_code)
 
