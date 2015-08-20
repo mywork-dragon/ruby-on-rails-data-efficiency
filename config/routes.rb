@@ -54,9 +54,12 @@ Rails.application.routes.draw do
   get 'api/chart/newest' => 'api#newest_apps_chart'
   get 'api/chart/export_to_csv' => 'api#export_newest_apps_chart_to_csv'
 
-  get 'api/android_sdks' => 'api#android_sdks_for_app'
-  get 'api/android_sdks_exist' => 'api#android_sdks_for_app_exist'
-  get 'api/android_sdks_refresh' => 'api#android_sdks_for_app_refresh'
+  # get 'api/android_sdks' => 'api#android_sdks_for_app'
+  # get 'api/android_sdks_exist' => 'api#android_sdks_for_app_exist'
+  # get 'api/android_sdks_refresh' => 'api#android_sdks_for_app_refresh'
+
+  get 'api/android_sdks_exist' => 'api#android_sdks_exist'
+  get 'api/scan_android_sdks' => 'api#scan_android_sdks'
 
   # Auth Endpoints (for Front-End)
   post 'auth/login' => 'auth#authenticate'

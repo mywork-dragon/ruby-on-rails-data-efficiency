@@ -729,63 +729,22 @@ class ApiController < ApplicationController
     end
   end
 
-  # def android_sdks_for_app_refresh
-
-  #   # android_app_id = params['appId']
-
-  #   # error_code = 0
-
-  #   # aa = AndroidApp.find(android_app_id)
-  #   # ai = aa.app_identifier
-  #   # j = ApkSnapshotJob.create!(notes: ai)
-  #   # batch = Sidekiq::Batch.new
-  #   # bid = batch.bid
-  #   # batch.jobs do
-  #   #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-  #   # end
-
-  #   # 360.times do |i|
-  #   #   break if Sidekiq::Batch::Status.new(bid).total.zero?
-  #   #   sleep 0.25
-  #   # end
-
-  #   # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-  #   # if new_snap.present? && new_snap.status == "success"
-  #   #   p = new_snap.android_packages.where('android_package_tag != 1')
-  #   #   error_code = 2 if aa.taken_down
-
-  #   #   hash = sdk_hash(p, new_snap.updated_at, error_code)
-
-  #   # else
-  #   #   hash = sdk_hash(nil, nil, 3)
-  #   # end
-  #   # render json: hash.to_json
-  #   ApkSnapshotJob.create(notes: 'blah blah blah')
-  # end
-
-  def android_sdks_for_app_exist
+  def android_sdks_exist
 
     android_app_id = params['appId']
 
-    # error_code = 0
     updated = nil
     packages = nil
 
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
-      # hash = sdk_hash(nil, nil, 3)
       error_code = 1
     else
       new_snap = aa.newest_apk_snapshot
     end
 
     if new_snap.present? && new_snap.status == "success"
-      # packages = new_snap.android_packages.where('android_package_tag != 1')
-      # error_code = 2 if aa.taken_down
-
-      # hash = sdk_hash(p, new_snap.updated_at, error_code)
 
       updated = new_snap.updated_at
       packages = new_snap.android_packages.where('android_package_tag != 1')
@@ -793,62 +752,31 @@ class ApiController < ApplicationController
       error_code = packages.count.zero? ? 1:0
 
     else
-      # hash = sdk_hash(nil, nil, 3)
       error_code = 5
     end
     render json: sdk_hash(packages, updated, error_code)
   end
 
-  # def android_sdks_for_app
-  def android_sdks_for_app_refresh
+  def scan_android_sdks
 
     android_app_id = params['appId']
 
-    # error_code = 0
     packages = nil
     updated = nil
 
     aa = AndroidApp.find(android_app_id)
-
-    # error_code = 2 if aa.taken_down
 
     price = aa.newest_android_app_snapshot.price.to_i
 
     if aa.taken_down
       error_code = 2
     elsif !price.zero?
-      # hash = sdk_hash(nil, nil, 4)
       error_code = 4
     else
 
       app_identifier = aa.app_identifier
 
       new_snap = run_batch(android_app_id, app_identifier)
-
-      # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-      # if aa.newest_apk_snapshot.blank?
-      #   app_identifier = aa.app_identifier
-      #   # j = ApkSnapshotJob.create!(notes: ai)
-      #   # batch = Sidekiq::Batch.new
-      #   # bid = batch.bid
-
-      #   # batch.jobs do
-      #   #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-      #   # end
-
-      #   # 360.times do |i|
-      #   #   if Sidekiq::Batch::Status.new(bid).pending.zero?
-      #   #   sleep 0.25
-      #   # end
-
-      #   run_batch(android_app_id, app_identifier)
-
-      #   new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-      # else
-      #   new_snap = aa.newest_apk_snapshot
-      # end
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -858,10 +786,7 @@ class ApiController < ApplicationController
 
         error_code = 0
 
-        # hash = sdk_hash(p, new_snap.updated_at, error_code)
-
       else
-        # hash = sdk_hash(nil, nil, 3)
         error_code = 3
       end
 
@@ -891,10 +816,6 @@ class ApiController < ApplicationController
     run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
     new_snap
-
-    # snap = ApkSnapshot.where(android_app_id: android_app_id).first
-
-    # run_batch(android_app_id, app_identifier, job_id) if snap.status != 1 && snap.try < 3
 
   end
 
