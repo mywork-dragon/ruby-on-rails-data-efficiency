@@ -806,22 +806,21 @@ class ApiController < ApplicationController
     else
 
       if aa.newest_apk_snapshot.blank?
-        ai = aa.app_identifier
-        j = ApkSnapshotJob.create!(notes: ai)
-        batch = Sidekiq::Batch.new
-        bid = batch.bid
+        app_identifier = aa.app_identifier
+        # j = ApkSnapshotJob.create!(notes: ai)
+        # batch = Sidekiq::Batch.new
+        # bid = batch.bid
 
-        batch.jobs do
-          ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
-        end
+        # batch.jobs do
+        #   ApkSnapshotServiceSingleWorker.perform_async(j.id, bid, android_app_id)
+        # end
 
-        360.times do |i|
-          if Sidekiq::Batch::Status.new(bid).pending.zero?
-            snap = ApkSnapshot.where(android_app_id: android_app_id).first
-            break if snap.status.present?
-          end
-          sleep 0.25
-        end
+        # 360.times do |i|
+        #   if Sidekiq::Batch::Status.new(bid).pending.zero?
+        #   sleep 0.25
+        # end
+
+        run_batch(android_app_id, app_identifier)
 
         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
@@ -841,6 +840,27 @@ class ApiController < ApplicationController
     end
 
     render json: hash.to_json
+
+  end
+
+  def run_batch(android_app_id, app_identifier, job_id = nil)
+
+    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
+    batch = Sidekiq::Batch.new
+    bid = batch.bid
+
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+    end
+
+    360.times do |i|
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
+    end
+
+    snap = ApkSnapshot.where(android_app_id: android_app_id).first
+
+    run_batch(android_app_id, app_identifier, job_id) if snap.status != 1 && snap.try < 3
 
   end
 

@@ -28,8 +28,7 @@ module ApkWorker
         @try_count = 1
 
       else
-
-        apk_snap.status = nil
+        
         apk_snap.try += 1
         apk_snap.save
 
