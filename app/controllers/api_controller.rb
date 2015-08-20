@@ -745,7 +745,7 @@ class ApiController < ApplicationController
     end
 
     360.times do |i|
-      break if Sidekiq::Batch::Status.new(bid).complete?
+      break if Sidekiq::Batch::Status.new(bid).pending.zero?
       sleep 0.25
     end
 
