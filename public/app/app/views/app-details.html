@@ -342,7 +342,7 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
-                <li ng-show="sdkData" ng-hide="noSdkData || (!sdkData && noSdkData == undefined) || sdkData.errorCode == 5" id="sdkLiveScanDisplay">
+                <li ng-show="sdkData && sdkData.errorCode == 0" id="sdkLiveScanDisplay">
                   <div ng-repeat="(sdkCompName, sdkValue) in sdkData.sdks" class="sdksListView">
                     <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank"><strong>{{sdkCompName}}</strong></a>
                     <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
