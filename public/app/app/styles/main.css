@@ -7340,6 +7340,14 @@ select option:empty {
   text-align: center;
 }
 
+#appPageSdkScanStatus #wrap_spinner {
+  margin-top: 20px;
+}
+
+#appPageSdkScanStatus #wrap_spinner p {
+  padding-top: 15px;
+}
+
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;

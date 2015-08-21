@@ -19,10 +19,35 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
-          /* API Response Cleanup */
+          var sdkErrorMessage = "";
+          if(data == null) {
+            $scope.noSdkData = true;
+            $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+          }
+          if(data.error_code > 0) {
+            $scope.noSdkData = true;
+            switch (data.error_code) {
+              case 1:
+                sdkErrorMessage = "No SDKs in App";
+                break;
+              case 2:
+                sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+                break;
+              case 3:
+                sdkErrorMessage = "Error - Please Try Again Later";
+                break;
+              case 4:
+                sdkErrorMessage = "SDKs Not Available for Paid Apps";
+                break;
+              case 5:
+                sdkErrorMessage = "SDKs Not Available";
+            }
+          }
           $scope.sdkData = {
             'sdks': data.sdks,
-            'lastUpdated': data.last_updated
+            'lastUpdated': data.last_updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
           };
         }).error(function(err) {
         });
@@ -85,11 +110,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
-    // If data already loaded, use refresh api endpoint
-    var endPoint = ($scope.sdkData == undefined || $scope.sdkData != null) ? 'api/android_sdks_refresh' : 'api/android_sdks';
-
     $scope.sdkQueryInProgress = true;
-    apiService.getSdks(appId, endPoint)
+    apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
         var sdkErrorMessage = "";
