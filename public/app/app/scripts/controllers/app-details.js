@@ -40,7 +40,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
                 sdkErrorMessage = "SDKs Not Available for Paid Apps";
                 break;
               case 5:
-                sdkErrorMessage = "SDKs Not Available";
+                $scope.noSdkData = false;
+                break;
             }
           }
           $scope.sdkData = {
@@ -126,10 +127,16 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               sdkErrorMessage = "No SDKs in App";
               break;
             case 2:
-              sdkErrorMessage = "SDKs Not Available - App Was Removed from App Store";
+              sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
               break;
             case 3:
               sdkErrorMessage = "Error - Please Try Again Later";
+              break;
+            case 4:
+              sdkErrorMessage = "SDKs Not Available for Paid Apps";
+              break;
+            case 5:
+              $scope.noSdkData = false;
               break;
           }
         }
