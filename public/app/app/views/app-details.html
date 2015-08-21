@@ -353,14 +353,6 @@
                     </ul>
                   </div>
                 </li>
-                <li id="showSdksButtonLi" ng-hide="sdkQueryInProgress">
-                  <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
-                    Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
-                  </div>
-                  <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
-                  </div>
-                </li>
                 <li id="appPageSdkScanStatus">
                   <div ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
@@ -370,6 +362,14 @@
                       <div class="loading inner"></div>
                     </div>
                     <p>Scanning - this will take a moment.</p>
+                  </div>
+                </li>
+                <li id="showSdksButtonLi" ng-hide="sdkQueryInProgress">
+                  <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
+                    Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
+                  </div>
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
                   </div>
                 </li>
               </ul>
