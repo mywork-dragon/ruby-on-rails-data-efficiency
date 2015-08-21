@@ -353,7 +353,7 @@
                     </ul>
                   </div>
                 </li>
-                <li id="showSdksButtonLi" ng-hide="noSdkData || sdkQueryInProgress">
+                <li id="showSdksButtonLi" ng-hide="sdkQueryInProgress">
                   <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
                     Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
                   </div>
