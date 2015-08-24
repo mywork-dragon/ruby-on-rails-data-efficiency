@@ -102,7 +102,13 @@ if defined?(ApkDownloader)
         snap = ApkSnapshot.find_by_id(apk_snap_id)
         snap.status = :no_response
         snap.save
+
+        aa = snap.android_app
+        aa.data_flag = true
+        aa.save
+
         raise "Google did not return url or cookie | status_code: #{status_code}"
+
       end
 
       resp = recursive_apk_fetch(apk_snap_id, proxy_ip, proxy_port, url, cookie)
@@ -216,6 +222,12 @@ if defined?(ApkDownloader)
       ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
       auth_token = ApkSnapshot.find_by_id(apk_snap_id).auth_token
+
+      # raise "account or auth token was blank" if ga.blank? || auth_token.blank?
+
+      puts "Type : #{type.to_s}"
+      puts "Identifier : #{ga.android_identifier}"
+      puts "Auth Token : #{auth_token}"
 
       headers = {
         'Accept-Language' => 'en_US',
