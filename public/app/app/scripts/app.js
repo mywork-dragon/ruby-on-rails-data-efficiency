@@ -51,6 +51,10 @@ angular
          activeTab: 'search',
          reloadOnSearch: false
        })
+       .when('/search/custom', {
+         templateUrl: '/app/app/views/custom-search.html',
+         activeTab: 'search'
+       })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
          controller: 'AppDetailsCtrl'
