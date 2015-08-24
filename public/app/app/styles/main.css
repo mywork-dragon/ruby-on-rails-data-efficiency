@@ -7533,3 +7533,15 @@ pre {
   border: none;
   padding: 5px;
 }
+
+#mainSearchBoxWrapper {
+  margin-top: -55px;
+}
+
+#mainSearchBoxWrapper input, #mainSearchBoxWrapper button {
+  height: 40px;
+}
+
+#mainSearchBox {
+  padding-left: 0;
+}
