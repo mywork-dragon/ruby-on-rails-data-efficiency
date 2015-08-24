@@ -101,8 +101,13 @@ class ApkSnapshotService
 # This gives you links to every app that threw an exception given a job id
 # ApkSnapshotException.where(try: 3, apk_snapshot_job_id: 651).each{ |a| puts "https://play.google.com/store/apps/details?id=#{ApkSnapshot.find(a.apk_snapshot_id).android_app.app_identifier}" }
 
-    def job
-      j = ApkSnapshotJob.last
+    def job(id = nil)
+
+      if id.nil?
+        j = ApkSnapshotJob.last
+      else
+        j = ApkSnapshotJob.find(id)
+      end
 
       workers = Sidekiq::Workers.new
 
