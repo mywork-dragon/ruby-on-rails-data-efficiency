@@ -78,7 +78,7 @@ class SdkCompanyServiceWorker
 
       if contains_known_string.present?
 
-        name = contains_known_string
+        name = contains_known_string.first
 
       else
 
@@ -108,7 +108,15 @@ class SdkCompanyServiceWorker
 
       if is_word?(name, app_id)
 
-        name = camel_split(name)
+        contains_known_string = known_strings.select{|w| name.include? w }
+
+        if contains_known_string.present?
+
+          name = contains_known_string.first
+
+        else
+          name = camel_split(name)
+        end
 
         return nil if name.split(' ').select{|s| s.length == 1 }.count > 1
 
