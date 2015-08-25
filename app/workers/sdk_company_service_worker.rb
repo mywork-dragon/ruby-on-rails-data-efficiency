@@ -6,7 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    delete_duplicates(app_id)
+    find_company(app_id)
 
   end
 
@@ -30,9 +30,11 @@ class SdkCompanyServiceWorker
 
   def delete_duplicates(company_id)
 
-    sdk_com = SdkCompany.find(company_id).sdk_packages
+    sdk_com = SdkCompany.find(company_id)
 
-    if sdk_com.count.zero?
+    sdk_packages = sdk_com.sdk_packages.count
+
+    if sdk_packages.zero?
 
       sdk_com.delete
 
