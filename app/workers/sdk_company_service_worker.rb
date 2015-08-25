@@ -10,6 +10,36 @@ class SdkCompanyServiceWorker
 
   end
 
+  def remove_dots(company_id)
+
+    sdk_com = SdkCompany.find(company_id)
+
+    if sdk_com.website.present?
+      company = sdk_com.website.chomp('/').gsub('://','')
+
+      if company.split('.com').first.include?('/')
+
+        sdk_com.website = nil
+        sdk_com.save
+
+      end
+
+    end
+
+  end
+
+  def delete_duplicates(company_id)
+
+    sdk_com = SdkCompany.find(company_id).sdk_packages
+
+    if sdk_com.count.zero?
+
+      sdk_com.delete
+
+    end
+
+  end
+
   def find_company(app_id)
 
     @api_words = %w(key secret token app)
@@ -96,7 +126,7 @@ class SdkCompanyServiceWorker
 
     package_arr = package.split('.')
 
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me).include?(pre) || pre.blank?
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
@@ -186,7 +216,7 @@ class SdkCompanyServiceWorker
 
       domain = url.split(ext).first.to_s + ext.to_s
 
-      return domain if domain.include? query.downcase
+      return domain if domain.include?(query.downcase) && domain.exclude?('...')
 
     end
 
