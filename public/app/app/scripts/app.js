@@ -52,7 +52,7 @@ angular
          reloadOnSearch: false
        })
        .when('/search/custom', {
-         templateUrl: '/app/app/views/custom-search.html',
+         templateUrl: '/app/app/views/custom-search-results.html',
          activeTab: 'search'
        })
        .when('/app/:platform/:id', {

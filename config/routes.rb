@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   # API Endpoints (for Front-End)
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
+  post 'api/search/ios' => 'api#search_ios_apps'
+  post 'api/search/android' => 'api#search_android_apps'
   get 'api/get_ios_app' => 'api#get_ios_app'
   get 'api/get_android_app' => 'api#get_android_app'
   get 'api/get_company' => 'api#get_company'

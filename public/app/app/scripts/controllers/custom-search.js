@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', [function() {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', function($rootScope, customSearchService) {
 
     var customSearchCtrl = this;
 
@@ -12,7 +12,17 @@ angular.module('appApp')
     };
 
     customSearchCtrl.submitSearch = function() {
-      alert(customSearchCtrl.searchInput);
+
+      customSearchService.customSearch(customSearchCtrl.platform, customSearchCtrl.searchInput)
+        .success(function(data) {
+          $rootScope.apps = data;
+          $rootScope.appNum = data.length;
+          console.log(data);
+        })
+        .error(function(data) {
+
+        });
+
     }
 
   }]);

@@ -729,28 +729,6 @@ class ApiController < ApplicationController
     end
   end
 
-  def custom_search
-
-    query = params['query']
-    page_offset = 0
-    num_per_page = 100
-
-    result_ids = AppsIndex::IosAppSnapshot.query(
-        multi_match: {
-          query: query,
-          fields: [:name, :description, :seller, :seller_url, :company_name],
-          type: 'most_fields',
-          fuzziness: 'AUTO'
-        }
-      ).limit(num_per_page).offset(page_offset).map { |result|
-        puts result.inspect
-        result.attributes["id"]
-      }
-
-    render json: IosAppSnapshot.find(result_ids)
-
-  end
-
   def android_sdks_exist
 
     android_app_id = params['appId']
@@ -1002,6 +980,35 @@ class ApiController < ApplicationController
     end
 
     send_data list_csv
+  end
+
+  def search_ios_apps
+    query = params['query']
+
+    puts "######"
+    puts query
+    puts "######"
+
+    page_offset = 0
+    num_per_page = 100
+
+    result_ids = AppsIndex::IosAppSnapshot.query(
+        multi_match: {
+            query: query,
+            fields: [:name, :description, :seller, :seller_url, :company_name],
+            type: 'most_fields',
+            fuzziness: 'AUTO'
+        }
+    ).limit(num_per_page).offset(page_offset).map { |result|
+      puts result.inspect
+      result.attributes["id"]
+    }
+
+    render json: IosAppSnapshot.find(result_ids)
+  end
+
+  def search_android_apps
+
   end
 
 end
