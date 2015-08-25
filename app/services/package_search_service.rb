@@ -57,6 +57,21 @@ class PackageSearchService
       app_identifier.split('.')[1]
     end
 
+    def create_xml_file(file)
+
+      file_path = '../../Desktop/' + file
+
+      apk = Android::Apk.new(file_path)
+      manifest = apk.manifest
+
+      manifest_xml = Nokogiri::XML(manifest.to_xml)
+
+      puts manifest_xml
+
+      File.open('../../Desktop/manifest.xml', 'wb') { |file| file.write(manifest_xml) }
+
+    end
+
   end
   
 end

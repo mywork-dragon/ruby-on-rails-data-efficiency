@@ -6,7 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    find_company(app_id)
+    delete_duplicates(app_id)
 
   end
 
@@ -32,13 +32,7 @@ class SdkCompanyServiceWorker
 
     sdk_com = SdkCompany.find(company_id)
 
-    sdk_packages = sdk_com.sdk_packages.count
-
-    if sdk_packages.zero?
-
-      sdk_com.delete
-
-    end
+    sdk_com.delete if sdk_com.sdk_packages.count.zero?
 
   end
 
@@ -203,7 +197,7 @@ class SdkCompanyServiceWorker
 
         sdk_com.website = url
 
-        sdk_com.favicon = get_favicon(url)
+        sdk_com.favicon = get_favicon(url) if sdk_com.favicon.nil?
 
       else
         sdk_com.website = nil

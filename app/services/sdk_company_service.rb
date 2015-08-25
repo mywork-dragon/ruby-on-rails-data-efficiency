@@ -8,10 +8,10 @@ class SdkCompanyService
           li "app #{index}"
           SdkCompanyServiceWorker.perform_async(app.id)
         end
-  	end
+  	endπ
 
     def duplicate_fix
-      SdkCompany.all.find_each.with_index do |com, index|
+      SdkCompany.all.each.with_index do |com, index|
         li "app #{index}"
         SdkCompanyServiceWorker.perform_async(com.id)
       end
