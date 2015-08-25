@@ -6,7 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    find_company(app_id)
+    delete_duplicates(app_id)
 
   end
 
