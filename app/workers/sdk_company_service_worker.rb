@@ -6,7 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    delete_duplicates(app_id)
+    remove_dots(app_id)
 
   end
 
@@ -195,9 +195,19 @@ class SdkCompanyServiceWorker
 
       if url.present? && url != '0'
 
-        sdk_com.website = url
+        company = url.chomp('/').gsub('://','')
 
-        sdk_com.favicon = get_favicon(url) if sdk_com.favicon.nil?
+        if company.split('.com').first.exclude?('/')
+
+            sdk_com.website = url
+
+            sdk_com.favicon = get_favicon(url) if sdk_com.favicon.nil?
+
+        end
+
+        # sdk_com.website = url
+
+        # sdk_com.favicon = get_favicon(url) if sdk_com.favicon.nil?
 
       else
         sdk_com.website = nil
