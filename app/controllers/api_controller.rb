@@ -985,10 +985,6 @@ class ApiController < ApplicationController
   def search_ios_apps
     query = params['query']
 
-    puts "######"
-    puts query
-    puts "######"
-
     page_offset = 0
     num_per_page = 100
 
@@ -1004,7 +1000,50 @@ class ApiController < ApplicationController
       result.attributes["id"]
     }
 
-    render json: IosAppSnapshot.find(result_ids)
+    ios_app_snapshots = IosAppSnapshot.find(result_ids)
+
+    results_json = []
+
+    ios_app_snapshots.each do |app_snapshot|
+      # li "CREATING HASH FOR #{app.id}"
+
+      puts "ENTERED LOOP!!"
+
+      app = app_snapshot.ios_app
+      company = app.get_company
+
+      puts "APP to FOLLOW"
+      puts app
+
+      app_hash = {
+          app: {
+              id: app.present? ? app.id : nil,
+              name: app_snapshot.name,
+              type: 'IosApp',
+              mobilePriority: app.present? ? app.mobile_priority : nil,
+              userBase: app.present? ? app.user_base : nil,
+              lastUpdated: app_snapshot.released.to_s,
+              adSpend: app.present? ? app.ios_fb_ad_appearances.present? : nil,
+              categories: IosAppCategoriesSnapshot.where(ios_app_snapshot: app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name},
+              supportDesk: app_snapshot.support_url,
+              appIcon: {
+                  large: app_snapshot.icon_url_350x350,
+                  small: app_snapshot.icon_url_175x175
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      # li "app_hash: #{app_hash}"
+      # li "HASH: #{app_hash}"
+      results_json << app_hash
+      # li "results_json: #{results_json}"
+    end
+
+    render json: results_json
   end
 
   def search_android_apps
