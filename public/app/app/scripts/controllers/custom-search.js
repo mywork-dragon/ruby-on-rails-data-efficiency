@@ -5,4 +5,14 @@ angular.module('appApp')
 
     var customSearchCtrl = this;
 
+    customSearchCtrl.platform = 'ios'; // default
+
+    customSearchCtrl.changeAppPlatform = function(platform) {
+      customSearchCtrl.platform = platform;
+    };
+
+    customSearchCtrl.submitSearch = function() {
+      alert(customSearchCtrl.searchInput);
+    }
+
   }]);
