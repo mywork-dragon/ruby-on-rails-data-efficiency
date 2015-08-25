@@ -66,13 +66,25 @@ class SdkCompanyServiceWorker
 
   def find_or_create_company_from_package(app_id, package)
 
+    known_strings = %w(MobileAppTracking HasOffers)
+
     package = strip_prefix(package)
 
     if package.count('.').zero?
 
       package = package.capitalize if package == package.upcase
 
-      name = camel_split_key_words(package.split(/(?=[A-Z_])/).first)
+      contains_known_string = known_strings.select{|w| package.include? w }
+
+      if contains_known_string.present?
+
+        name = contains_known_string
+
+      else
+
+        name = camel_split_key_words(package.split(/(?=[A-Z_])/).first)
+
+      end
 
       return nil if name.split(' ').select{|s| s.length == 1 }.count > 1
 
