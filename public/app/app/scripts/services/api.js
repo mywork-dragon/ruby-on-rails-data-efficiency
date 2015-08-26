@@ -140,4 +140,3 @@ angular.module("appApp")
       }
     };
   }]);
-

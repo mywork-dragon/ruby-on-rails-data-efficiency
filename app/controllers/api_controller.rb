@@ -984,9 +984,8 @@ class ApiController < ApplicationController
 
   def search_ios_apps
     query = params['query']
-
-    page_offset = 0
-    num_per_page = 100
+    page_offset = params['page'] ? params['page'] : 0
+    num_per_page = params['numPerPage'] ? params['numPerPage'] : 100
 
     result_ids = AppsIndex::IosAppSnapshot.query(
         multi_match: {
@@ -1034,6 +1033,7 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
+
     render json: results_json
   end
 
