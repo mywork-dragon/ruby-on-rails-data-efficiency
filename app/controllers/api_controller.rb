@@ -1007,13 +1007,8 @@ class ApiController < ApplicationController
     ios_app_snapshots.each do |app_snapshot|
       # li "CREATING HASH FOR #{app.id}"
 
-      puts "ENTERED LOOP!!"
-
       app = app_snapshot.ios_app
       company = app.get_company
-
-      puts "APP to FOLLOW"
-      puts app
 
       app_hash = {
           app: {
@@ -1037,12 +1032,8 @@ class ApiController < ApplicationController
               fortuneRank: company.present? ? company.fortune_1000_rank : nil
           }
       }
-      # li "app_hash: #{app_hash}"
-      # li "HASH: #{app_hash}"
       results_json << app_hash
-      # li "results_json: #{results_json}"
     end
-
     render json: results_json
   end
 

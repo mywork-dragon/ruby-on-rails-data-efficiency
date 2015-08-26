@@ -20,7 +20,7 @@
     <div id="mainSearchBoxWrapper" class="pull-right" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
       <div id="mainSearchBox" class="col-lg-5 col-sm-6 pull-right">
         <div class="input-group">
-          <input type="text" class="form-control" ng-model="customSearchCtrl.searchInput" placeholder="Search for {{customSearchCtrl.platform == 'ios' ? 'iOS' : 'Android'}} app or company">
+          <input type="text" class="form-control" ng-model="customSearchCtrl.searchInput" ng-enter="customSearchCtrl.submitSearch()" placeholder="Search for {{customSearchCtrl.platform == 'ios' ? 'iOS' : 'Android'}} app or company">
               <span class="input-group-btn">
                   <button class="btn btn-primary" type="button" ng-click="customSearchCtrl.submitSearch()">Search</button>
               </span>

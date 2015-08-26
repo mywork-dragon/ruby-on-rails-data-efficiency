@@ -1,4 +1,17 @@
 
+<header class="page-main-header ng-scope">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Custom Search</h4>
+    </div>
+  </div>
+  <!--
+  <div class="" id="appTypeHeaderLogo">
+    <i class="fa fa-2" ng-class="customSearchCtrl.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+  </div>
+  -->
+</header>
+
 <div class="page page-table" data-ng-controller="TableCtrl">
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
@@ -60,24 +73,24 @@
           </td>
           <td class="resultsTableAppIcon">
               <span>
-                <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">{{app.name}}</a>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">{{app.app.name}}</a>
               </span>
           </td>
           <td class="appTypeIndicator">
-            <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+            <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
           </td>
           <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
           <td>{{app.company.fortuneRank}}</td>
           <td class="dashboardMobilePriorityView">
-            <i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
+            <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
           </td>
           <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
-            <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+            <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
           </td>
-          <td>{{app.userBase | capitalize}}</td>
-          <td>{{app.categories.join(', ')}}</td>
-          <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
-          <td>{{app.lastUpdated | date : 'shortDate'}}</td>
+          <td>{{app.app.userBase | capitalize}}</td>
+          <td>{{app.app.categories.join(', ')}}</td>
+          <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
+          <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
         </tr>
         </tbody>
       </table>
@@ -111,7 +124,6 @@
                       </span>
           -->
         </div>
-        <!--
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="currentPage"
@@ -122,7 +134,6 @@
                       rotate="false"
                       boundary-links="true"></pagination>
         </div>
-        -->
       </div>
     </footer>
 

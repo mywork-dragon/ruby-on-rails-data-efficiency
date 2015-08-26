@@ -17,7 +17,7 @@ angular.module('appApp')
         .success(function(data) {
           $rootScope.apps = data;
           $rootScope.appNum = data.length;
-          console.log(data);
+          $rootScope.numApps = data.length;
         })
         .error(function(data) {
 
