@@ -1049,9 +1049,6 @@ class ApiController < ApplicationController
             fuzziness: 'AUTO'
         }
     ).limit(num_per_page).offset(page_offset).map { |result|
-      puts "#############"
-      puts result.inspect
-      puts "#############"
       result.attributes["id"]
     }
 

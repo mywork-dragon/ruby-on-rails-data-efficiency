@@ -53,8 +53,7 @@ angular
        })
        .when('/search/custom', {
          templateUrl: '/app/app/views/custom-search-results.html',
-         activeTab: 'search',
-         reloadOnSearch: false
+         activeTab: 'search'
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
