@@ -167,12 +167,7 @@ angular.module('appApp')
           $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
         },
         $scope.notify = function(type) {
-          switch (type) {
-            case "add-selected-success":
-              return loggitService.logSuccess("Items were added successfully.");
-            case "add-selected-error":
-              return loggitService.logError("Error! Something went wrong while adding to list.");
-          }
+          listApiService.listAddNotify(type);
         },
         $scope.onFilterChange = function() {
           return $scope.select(1), $rootScope.currentPage = 1, $scope.row = "";
