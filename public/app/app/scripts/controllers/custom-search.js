@@ -39,7 +39,7 @@ angular.module('appApp')
           query: customSearchCtrl.searchInput,
           platform: customSearchCtrl.platform,
           page: 0,
-          numPerPage: 25
+          numPerPage: 50
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();

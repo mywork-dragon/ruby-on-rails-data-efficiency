@@ -1039,7 +1039,7 @@ class ApiController < ApplicationController
   def search_android_apps
     query = params['query']
     page_offset = !params['page'].nil? ? params['page'] : 0
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'] : 25
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'] : 50
 
     result_ids = AppsIndex::AndroidAppSnapshot.query(
         multi_match: {
@@ -1049,7 +1049,9 @@ class ApiController < ApplicationController
             fuzziness: 'AUTO'
         }
     ).limit(num_per_page).offset(page_offset).map { |result|
+      puts "#############"
       puts result.inspect
+      puts "#############"
       result.attributes["id"]
     }
 
