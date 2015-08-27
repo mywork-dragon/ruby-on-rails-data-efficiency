@@ -990,7 +990,7 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::IosAppSnapshot.query(
         multi_match: {
             query: query,
-            fields: [:name, :description, :seller, :seller_url, :company_name],
+            fields: [:name, :description, :seller, :seller_url],
             type: 'most_fields',
             fuzziness: 'AUTO'
         }
@@ -1004,7 +1004,6 @@ class ApiController < ApplicationController
     results_json = []
 
     ios_app_snapshots.each do |app_snapshot|
-      # li "CREATING HASH FOR #{app.id}"
 
       app = app_snapshot.ios_app
       company = app.get_company
@@ -1038,7 +1037,55 @@ class ApiController < ApplicationController
   end
 
   def search_android_apps
+    query = params['query']
+    page_offset = params['page'] ? params['page'] : 0
+    num_per_page = params['numPerPage'] ? params['numPerPage'] : 100
 
+    result_ids = AppsIndex::AndroidAppSnapshot.query(
+        multi_match: {
+            query: query,
+            fields: [:name, :description, :seller, :seller_url],
+            type: 'most_fields',
+            fuzziness: 'AUTO'
+        }
+    ).limit(num_per_page).offset(page_offset).map { |result|
+      puts result.inspect
+      result.attributes["id"]
+    }
+
+    android_app_snapshots = AndroidAppSnapshot.find(result_ids)
+
+    results_json = []
+
+    android_app_snapshots.each do |app_snapshot|
+
+      app = app_snapshot.android_app
+      company = app.get_company
+
+      app_hash = {
+          app: {
+              id: app.present? ? app.id : nil,
+              name: app_snapshot.name,
+              type: 'AndroidApp',
+              mobilePriority: app.present? ? app.mobile_priority : nil,
+              userBase: app.present? ? app.user_base : nil,
+              lastUpdated: app_snapshot.released.to_s,
+              adSpend: app.present? ? app.android_fb_ad_appearances.present? : nil,
+              categories: app_snapshot.android_app_categories.map{|c| c.name}.join(", "),
+              appIcon: {
+                  large: app_snapshot.icon_url_300x300
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+
+    render json: results_json
   end
 
 end

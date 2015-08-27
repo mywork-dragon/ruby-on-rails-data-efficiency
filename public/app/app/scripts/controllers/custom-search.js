@@ -18,6 +18,7 @@ angular.module('appApp')
           customSearchCtrl.apps = data;
           customSearchCtrl.appNum = data.length;
           customSearchCtrl.numApps = data.length;
+          customSearchCtrl.changeAppPlatform(routeParams.platform);
         })
         .error(function(data) {
           customSearchCtrl.appNum = 0;
@@ -39,7 +40,6 @@ angular.module('appApp')
         platform: customSearchCtrl.platform,
         page: 0,
         numPerPage: 100
-
       };
       $location.url('/search/custom?' + $httpParamSerializer(payload));
       customSearchCtrl.loadTableData();
