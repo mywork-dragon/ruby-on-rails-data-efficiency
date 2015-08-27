@@ -15,13 +15,13 @@ angular.module('appApp')
 
       customSearchService.customSearch(routeParams.platform, routeParams.query)
         .success(function(data) {
-          $rootScope.apps = data;
-          $rootScope.appNum = data.length;
-          $rootScope.numApps = data.length;
+          customSearchCtrl.apps = data;
+          customSearchCtrl.appNum = data.length;
+          customSearchCtrl.numApps = data.length;
         })
         .error(function(data) {
-          $rootScope.appNum = 0;
-          $rootScope.numApps = 0;
+          customSearchCtrl.appNum = 0;
+          customSearchCtrl.numApps = 0;
         });
 
     };

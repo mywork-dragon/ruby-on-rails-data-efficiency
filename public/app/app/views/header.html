@@ -17,7 +17,7 @@
                     ><i class="fa fa-bars"></i></a>
         </li>
     </ul>
-    <div id="mainSearchBoxWrapper" class="pull-right" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
+    <div id="mainSearchBoxWrapper" class="pull-right">
       <div id="mainSearchBox" class="col-lg-5 col-sm-6 pull-right">
         <div class="input-group">
           <input type="text" class="form-control" ng-model="customSearchCtrl.searchInput" ng-enter="customSearchCtrl.submitSearch()" placeholder="Search for {{customSearchCtrl.platform == 'ios' ? 'iOS' : 'Android'}} app or company">
