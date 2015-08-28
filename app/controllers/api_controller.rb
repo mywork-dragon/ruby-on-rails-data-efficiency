@@ -990,9 +990,10 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::IosAppSnapshot.query(
         multi_match: {
             query: query,
-            fields: [:name, :description, :seller, :seller_url],
+            fields: [:name, :seller, :seller_url, :company_name],
             type: 'most_fields',
-            fuzziness: 'AUTO'
+            fuzziness: 'AUTO',
+            minimum_should_match: '75%'
         }
     ).limit(num_per_page).offset(page_offset).map { |result|
       puts result.inspect
@@ -1044,9 +1045,9 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::AndroidAppSnapshot.query(
         multi_match: {
             query: query,
-            fields: [:name, :description, :seller, :seller_url],
+            fields: [:name, :seller, :seller_url, :company_name],
             type: 'most_fields',
-            fuzziness: 'AUTO'
+            minimum_should_match: '75%'
         }
     ).limit(num_per_page).offset(page_offset).map { |result|
       result.attributes["id"]
