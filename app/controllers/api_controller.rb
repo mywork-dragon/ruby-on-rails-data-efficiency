@@ -990,7 +990,7 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::IosAppSnapshot.query(
         multi_match: {
             query: query,
-            fields: [:name, :seller, :seller_url, :company_name],
+            fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             fuzziness: 'AUTO',
             minimum_should_match: '75%'
@@ -1045,7 +1045,7 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::AndroidAppSnapshot.query(
         multi_match: {
             query: query,
-            fields: [:name, :seller, :seller_url, :company_name],
+            fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             minimum_should_match: '75%'
         }
