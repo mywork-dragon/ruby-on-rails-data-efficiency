@@ -81,8 +81,8 @@ module MightyDeployer
       52.7.134.183
     )
 
-    @app_roles += @scraper_servers
-    @staging_roles += @scraper_servers
+    @app_roles += @staging_servers
+    @staging_roles += @staging_servers
   end
 
   private
