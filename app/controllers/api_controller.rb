@@ -729,6 +729,13 @@ class ApiController < ApplicationController
     end
   end
 
+
+  # ------------------------------------------------------------
+
+  # I have to rewrite all of this stuff to work with the new db
+
+  # ------------------------------------------------------------
+
   def android_sdks_exist
 
     android_app_id = params['appId']

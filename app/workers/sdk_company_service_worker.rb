@@ -6,35 +6,128 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    remove_dots(app_id)
+    transition_from_sdk_companies_to_android_sdk_companies(app_id)
 
   end
 
-  def remove_dots(company_id)
+  def transition_from_sdk_companies_to_android_sdk_companies(company_id)
 
     sdk_com = SdkCompany.find(company_id)
 
-    if sdk_com.website.present?
-      company = sdk_com.website.chomp('/').gsub('://','')
+    if (sdk_com.website.present? || sdk_com.alias_website.present?) && !sdk_com.flagged?
 
-      if company.split('.com').first.include?('/')
+      website = httpify( sdk_com.alias_website.present? ? sdk_com.alias_website : sdk_com.website )
+      
+      name = sdk_com.alias_name.present? ? sdk_com.alias_name : sdk_com.name
 
-        sdk_com.website = nil
-        sdk_com.save
+      asc = AndroidSdkCompany.create_with(website: website, favicon: sdk_com.favicon).find_or_create_by(name: name)
+
+      AndroidSdkPackagePrefix.create_with(android_sdk_company: asc).find_or_create_by(prefix: sdk_com.name)
+
+      # save the android_package in android_sdk_packages with package_name and android_sdk_package_prefix_id
+
+      # find each android_app that belongs to a company and link it up in the android_sdk_companies_android_apps table
+
+      # link up android_packages and apk_snapshots in android_sdk_packages_apk_snapshots table
+
+    end
+
+    nil
+
+  end
+
+
+  def name_from_package(package_name)
+
+    @api_words = %w(key secret token app)
+
+    package = strip_prefix(package_name)
+
+    package = package.capitalize if package == package.upcase && package.count('.').zero?
+
+    name = camel_split(package.split('.').first)
+
+    return nil if !name_check? name
+
+    name
+
+  end
+
+
+  def create_company_from_name(name)
+
+    # aa = ApkSnapshot.find(apk_snapshot_id).android_app
+
+    website = google_search(name)
+
+    if website.present?
+
+      asc = AndroidSdkCompany.create_with(website: website).find_or_create_by(name: name)
+
+      aspp = AndroidSdkPackagePrefix.find_by_prefix(name)
+
+      aspp.android_sdk_company_id = asc.id
+
+      aspp.save
+
+      # AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company: asc, android_app: aa)
+
+      if asc.favicon.nil?
+
+        favicon_url = get_favicon(website)
+
+        asc.favicon = favicon_url
+
+        asc.save
 
       end
+
+      return asc.id
+
+    else
+
+      return nil
 
     end
 
   end
 
-  def delete_duplicates(company_id)
+  def name_check?(name)
 
-    sdk_com = SdkCompany.find(company_id)
-
-    sdk_com.delete if sdk_com.sdk_packages.count.zero?
+    name.count('0-9') < 4 && name.exclude?('android') && name.downcase.gsub(/[^a-z0-9\s]/i, '').present? && name.length >= 3 && name.split(' ').select{|s| s.length == 1 }.count < 1
 
   end
+
+  def httpify(url)
+    url = %w(http https).any?{|h| url.include? h} ? url : "http://#{url}"
+  end
+
+
+  # def remove_dots(company_id)
+
+  #   sdk_com = SdkCompany.find(company_id)
+
+  #   if sdk_com.website.present?
+  #     company = sdk_com.website.chomp('/').gsub('://','')
+
+  #     if company.split('.com').first.include?('/')
+
+  #       sdk_com.website = nil
+  #       sdk_com.save
+
+  #     end
+
+  #   end
+
+  # end
+
+  # def delete_duplicates(company_id)
+
+  #   sdk_com = SdkCompany.find(company_id)
+
+  #   sdk_com.delete if sdk_com.sdk_packages.count.zero?
+
+  # end
 
   def find_company(app_id)
 
@@ -149,7 +242,11 @@ class SdkCompanyServiceWorker
   end
 
   def camel_split(words)
-    words.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
+    if (words =~ /[A-Z]{2}/).nil? && words != words.upcase
+      words.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
+    else
+      words
+    end
   end
 
   def camel_split_key_words(words)
@@ -162,7 +259,7 @@ class SdkCompanyServiceWorker
       end
     end
 
-    name.join(' ').strip
+    name.compact.join(' ').strip
 
   end
 
@@ -229,12 +326,16 @@ class SdkCompanyServiceWorker
 
     q = query + " sdk"
 
-    results_html = Nokogiri::HTML(res(type: :get, req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}).body)
+    result = res(type: :get, req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+
+    return nil if result.nil?
+
+    results_html = Nokogiri::HTML(result.body)
 
     results = results_html.search('cite').each do |cite|
       url = cite.inner_text
 
-      ext = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me).select{|s| s if url.include?(s) }.first
+      ext = %w(.com .co .net .org .edu .io .ui .gov .cn .jp .me .ly).select{|s| s if url.include?(s) }.first
 
       next if ext.nil?
 
@@ -242,7 +343,14 @@ class SdkCompanyServiceWorker
 
       domain = url.split(ext).first.to_s + ext.to_s
 
-      return domain if domain.include?(query.downcase) && domain.exclude?('...')
+      return httpify(domain) if domain.include?(query.downcase) && domain.exclude?('...') && domain != '0' && domain.count('-').zero?
+
+      if url.include?('github.com/')
+        repo_name = url.gsub('https://','').split('/')[2]
+        if repo_name == query
+          return url
+        end
+      end
 
     end
 
@@ -251,7 +359,9 @@ class SdkCompanyServiceWorker
   end
 
   def get_favicon(url)
-    url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
+
+    return nil if url.include?('github.com/')
+
     begin
       favicon = WWW::Favicon.new
       favicon_url = favicon.find(url)
@@ -273,23 +383,31 @@ class SdkCompanyServiceWorker
 
     if Rails.env.production?
 
-      mp = MicroProxy.transaction do
+      begin
 
-        p = MicroProxy.lock.order(last_used: :asc).first
-        p.last_used = DateTime.now
-        p.save
+        mp = MicroProxy.transaction do
 
-        p
+          p = MicroProxy.lock.order(last_used: :asc).first
+          p.last_used = DateTime.now
+          p.save
 
-      end
+          p
 
-      proxy = "#{mp.private_ip}:8888"
+        end
 
-      response = CurbFu.send(type, req, params) do |curb|
-        curb.proxy_url = proxy
-        curb.ssl_verify_peer = false
-        curb.max_redirects = 3
-        curb.timeout = 5
+        proxy = "#{mp.private_ip}:8888"
+
+        response = CurbFu.send(type, req, params) do |curb|
+          curb.proxy_url = proxy
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+          curb.timeout = 5
+        end
+
+      rescue
+
+        nil
+
       end
 
     else

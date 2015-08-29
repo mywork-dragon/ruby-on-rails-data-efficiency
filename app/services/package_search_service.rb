@@ -2,76 +2,76 @@ class PackageSearchService
 
   class << self
 
-    def search(app_identifier, apk_snap_id, file_name)
-      manifest, unpack_time = extract_manifest(app_identifier, file_name)
-      name = get_name(app_identifier)
-      find(manifest, name, apk_snap_id, unpack_time)
+    # Deal with parameters
 
-      unpack_time
-    end
+    def find_packages(app_identifier: 'com.supercell.clashofclans', apk_snapshot_id: 1)
 
-    def extract_manifest(app_identifier, file_name)
+      # Change path to work with s3 bucket
 
-      print "Searching for sdks in #{app_identifier}... " if Rails.env.development?
-      
-      start_time = Time.now()
-
-      apk = Android::Apk.new(file_name)
-      manifest = apk.manifest
-
-      print 'success' if Rails.env.development?
-
-      end_time = Time.now()
-      unpack_time = (end_time - start_time).to_s
-      
-      return manifest, unpack_time
-
-    end
-
-    def find(manifest, name, apk_snap_id, unpack_time)
-      manifest_xml = Nokogiri::XML(manifest.to_xml)
-      find = ["activity", "action", "meta-data"]
-      found = []
-      i = 0
-      for f in find
-        tags = manifest_xml.xpath("//#{f}")
-        for tag in tags
-          app_identifier = tag["android:name"] unless tag["android:name"].nil?
-          app_identifier = tag[":"] unless tag[":"].nil?
-          unless app_identifier.nil?
-            unless app_identifier.include? name
-              save_package(app_identifier, find.index(f), apk_snap_id)
-              i += 1
-            end
-          end
-        end
-      end
-      li " ( time : #{unpack_time} sec, packages_found : #{i} )" if Rails.env.development?
-    end
-
-    def save_package(app_identifier, tag, apk_snap_id)
-      AndroidPackage.create(package_name: app_identifier, android_package_tag: tag, apk_snapshot_id: apk_snap_id, identified: false, not_useful: false)
-    end
-
-    def get_name(app_identifier)
-      app_identifier.split('.')[1]
-    end
-
-    def create_xml_file(file)
-
-      file_path = '../../Desktop/' + file
+      file_path = '../../Desktop/' + app_identifier + '.apk'
 
       apk = Android::Apk.new(file_path)
-      manifest = apk.manifest
 
-      manifest_xml = Nokogiri::XML(manifest.to_xml)
+      manifest_xml = Nokogiri::XML(apk.manifest.to_xml)
 
-      puts manifest_xml
+      manifest_xml.xpath('//activity','//receiver','//action','//meta-data').each do |tag|
 
-      File.open('../../Desktop/manifest.xml', 'wb') { |file| file.write(manifest_xml) }
+        package_name = %w(android:name :).map{|t| tag[t] }.compact.first.to_s
+
+        name = app_identifier.split('.')[1]
+
+        is_android = %w(com.android. android.).any?{|n| " #{package_name}".include? " #{n}" }
+
+        if package_name.present? && package_name.exclude?(name) && !is_android
+
+          save_package(package_name: package_name, apk_snapshot_id: apk_snapshot_id)
+
+        end
+
+      end
+
+      version = manifest_xml.xpath('//manifest').first['android:versionName']
+
+      # Change path to work with s3 bucket
+
+      file_name = '../../Desktop/' + app_identifier + '_' + version + '.xml'
+
+      File.open(file_name, 'wb') { |file| file.write(manifest_xml) }
+
+      version = version.present? ? version : nil
+
+    end
+
+    def save_package(package_name:, apk_snapshot_id:)
+
+      name = SdkCompanyServiceWorker.new.name_from_package(package_name)
+
+      if name.present?
+
+        prefix = AndroidSdkPackagePrefix.find_or_create_by(prefix: name)
+
+        company_id = prefix.android_sdk_company_id.nil? ? SdkCompanyServiceWorker.new.create_company_from_name(name) : prefix.android_sdk_company_id
+
+        if company_id.present?
+
+          aa = ApkSnapshot.find(apk_snapshot_id).android_app
+
+          AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+
+        end
+
+        package = AndroidSdkPackage.create_with(android_sdk_package_prefix: prefix).find_or_create_by(package_name: package_name)
+
+        AndroidSdkPackagesApkSnapshot.find_or_create_by(android_sdk_package_id: package.id, apk_snapshot_id: apk_snapshot_id)
+
+      end
 
     end
 
   end
   
 end
+
+
+
+# Figure out why openUDID isn't working

@@ -92,9 +92,13 @@ module ApkWorker
       best_account.flags = 0
       best_account.save
 
-      unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+
+      version = find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snap.id)
       
-      apk_snap.unpack_time = unpack_time
+      # apk_snap.unpack_time = unpack_time
+
+      apk_snap.version = version if version.present?
 
       end_time = Time.now()
       download_time = (end_time - start_time).to_s
@@ -108,11 +112,11 @@ module ApkWorker
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
 
-      company_ids = SdkCompanyServiceWorker.new.find_company(android_app_id)
+      # company_ids = SdkCompanyServiceWorker.new.find_company(android_app_id)
 
-      company_ids.each do |id|
-         SdkCompanyServiceWorker.new.google_company(id)
-      end
+      # company_ids.each do |id|
+         # SdkCompanyServiceWorker.new.google_company(id)
+      # end
 
       File.delete(file_name)
       

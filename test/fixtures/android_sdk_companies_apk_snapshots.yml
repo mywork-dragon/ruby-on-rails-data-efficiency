@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  android_sdk_company_id: 1
+  apk_snapshot_id: 1
+
+two:
+  android_sdk_company_id: 1
+  apk_snapshot_id: 1

@@ -2,6 +2,14 @@ class SdkCompanyService
   
   class << self
 
+    def all_companies_sync
+
+      SdkCompany.all.each.with_index do |com, index|
+        li "app #{index}"
+        SdkCompanyServiceWorker.new.perform(com.id)
+      end
+
+    end
 
   	def find
         AndroidApp.where("newest_apk_snapshot_id IS NOT NULL").find_each.with_index do |app, index|
