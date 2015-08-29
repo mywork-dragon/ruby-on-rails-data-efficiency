@@ -982,4 +982,110 @@ class ApiController < ApplicationController
     send_data list_csv
   end
 
+  def search_ios_apps
+    query = params['query']
+    page_offset = params['page'] ? params['page'] : 0
+    num_per_page = params['numPerPage'] ? params['numPerPage'] : 100
+
+    result_ids = AppsIndex::IosAppSnapshot.query(
+        multi_match: {
+            query: query,
+            fields: [:name, :seller_url, :company_name],
+            type: 'most_fields',
+            fuzziness: 'AUTO',
+            minimum_should_match: '75%'
+        }
+    ).limit(num_per_page).offset(page_offset).map { |result|
+      puts result.inspect
+      result.attributes["id"]
+    }
+
+    ios_app_snapshots = IosAppSnapshot.find(result_ids)
+
+    results_json = []
+
+    ios_app_snapshots.each do |app_snapshot|
+
+      app = app_snapshot.ios_app
+      company = app.get_company
+
+      app_hash = {
+          app: {
+              id: app.present? ? app.id : nil,
+              name: app_snapshot.name,
+              type: 'IosApp',
+              mobilePriority: app.present? ? app.mobile_priority : nil,
+              userBase: app.present? ? app.user_base : nil,
+              lastUpdated: app_snapshot.released.to_s,
+              adSpend: app.present? ? app.ios_fb_ad_appearances.present? : nil,
+              categories: IosAppCategoriesSnapshot.where(ios_app_snapshot: app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name},
+              supportDesk: app_snapshot.support_url,
+              appIcon: {
+                  large: app_snapshot.icon_url_350x350,
+                  small: app_snapshot.icon_url_175x175
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+
+    render json: results_json
+  end
+
+  def search_android_apps
+    query = params['query']
+    page_offset = !params['page'].nil? ? params['page'] : 0
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'] : 50
+
+    result_ids = AppsIndex::AndroidAppSnapshot.query(
+        multi_match: {
+            query: query,
+            fields: [:name, :seller_url, :company_name],
+            type: 'most_fields',
+            minimum_should_match: '75%'
+        }
+    ).limit(num_per_page).offset(page_offset).map { |result|
+      result.attributes["id"]
+    }
+
+    android_app_snapshots = AndroidAppSnapshot.find(result_ids)
+
+    results_json = []
+
+    android_app_snapshots.each do |app_snapshot|
+
+      app = app_snapshot.android_app
+      company = app.get_company
+
+      app_hash = {
+          app: {
+              id: app.present? ? app.id : nil,
+              name: app_snapshot.name,
+              type: 'AndroidApp',
+              mobilePriority: app.present? ? app.mobile_priority : nil,
+              userBase: app.present? ? app.user_base : nil,
+              lastUpdated: app_snapshot.released.to_s,
+              adSpend: app.present? ? app.android_fb_ad_appearances.present? : nil,
+              categories: app_snapshot.android_app_categories.map{|c| c.name}.join(", "),
+              appIcon: {
+                  large: app_snapshot.icon_url_300x300
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+
+    render json: results_json
+  end
+
 end

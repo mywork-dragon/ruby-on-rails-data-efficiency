@@ -48,7 +48,7 @@
     mixpanel.init("6a96c6c2b8cb2ad6de06ad54957b2f2a");</script><!-- end Mixpanel -->
 
   </head>
-  <body id="app" data-custom-background="" data-off-canvas-nav="">
+  <body id="app" data-custom-background="" data-off-canvas-nav="" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
 
     <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
       <aside data-ng-include=" '/app/app/views/signin.html' " ng-hide="isAuthenticated"></aside>
@@ -112,9 +112,11 @@
     <script src="/app/app/scripts/services/auth.js"></script>
     <script src="/app/app/scripts/services/list.js"></script>
     <script src="/app/app/scripts/services/search.js"></script>
+    <script src="/app/app/scripts/services/custom-search.js"></script>
     <script src="/app/app/scripts/services/general.js"></script>
     <script src="/app/app/scripts/controllers/main.js"></script>
     <script src="/app/app/scripts/controllers/search.js"></script>
+    <script src="/app/app/scripts/controllers/custom-search.js"></script>
     <script src="/app/app/scripts/controllers/chart.js"></script>
     <script src="/app/app/scripts/controllers/list.js"></script>
     <script src="/app/app/scripts/controllers/app-details.js"></script>
