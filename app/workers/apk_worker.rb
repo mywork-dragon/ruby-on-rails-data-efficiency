@@ -94,7 +94,7 @@ module ApkWorker
 
       # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
 
-      version = PackageSearchService.find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snap.id)
+      version = PackageSearchService.find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snap.id, file_name: file_name)
       
       # apk_snap.unpack_time = unpack_time
 

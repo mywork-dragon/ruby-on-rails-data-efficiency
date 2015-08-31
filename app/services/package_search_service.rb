@@ -2,15 +2,13 @@ class PackageSearchService
 
   class << self
 
-    # Deal with parameters
-
-    def find_packages(app_identifier:, apk_snapshot_id:)
+    def find_packages(app_identifier:, apk_snapshot_id:, file_name:)
 
       # Change path to work with s3 bucket
 
       # file_path = '../../Desktop/' + app_identifier + '.apk'
 
-      apk = Android::Apk.new(file_path)
+      apk = Android::Apk.new(file_name)
 
       manifest_xml = Nokogiri::XML(apk.manifest.to_xml)
 
@@ -71,7 +69,3 @@ class PackageSearchService
   end
   
 end
-
-
-
-# Figure out why openUDID isn't working
