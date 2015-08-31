@@ -24,12 +24,6 @@ class SdkCompanyServiceWorker
 
       AndroidSdkPackagePrefix.create_with(android_sdk_company: asc).find_or_create_by(prefix: sdk_com.name)
 
-      # save the android_package in android_sdk_packages with package_name and android_sdk_package_prefix_id
-
-      # find each android_app that belongs to a company and link it up in the android_sdk_companies_android_apps table
-
-      # link up android_packages and apk_snapshots in android_sdk_packages_apk_snapshots table
-
     end
 
     nil

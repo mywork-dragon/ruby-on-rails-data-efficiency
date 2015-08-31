@@ -730,55 +730,62 @@ class ApiController < ApplicationController
   end
 
 
-  # ------------------------------------------------------------
-
-  # I have to rewrite all of this stuff to work with the new db
-
-  # ------------------------------------------------------------
-
   def android_sdks_exist
 
     android_app_id = params['appId']
 
-    updated = nil
-    packages = nil
+    updated = packages = nil
 
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
+
       error_code = 1
+
     else
+
       new_snap = aa.newest_apk_snapshot
+
+      packages = new_snap.android_sdk_packages
+
+      if new_snap.status == "success"
+
+        updated = new_snap.updated_at
+
+        packages = new_snap.android_sdk_packages
+
+        error_code = packages.count.zero? ? 1:0
+
+      else
+
+        error_code = 5
+
+      end
+ 
     end
 
-    if new_snap.present? && new_snap.status == "success"
-
-      updated = new_snap.updated_at
-      packages = new_snap.android_packages.where('android_package_tag != 1')
-
-      error_code = packages.count.zero? ? 1:0
-
-    else
-      error_code = 5
-    end
     render json: sdk_hash(packages, updated, error_code)
+
   end
 
   def scan_android_sdks
 
     android_app_id = params['appId']
 
-    packages = nil
-    updated = nil
+    updated = packages = nil
 
     aa = AndroidApp.find(android_app_id)
 
     price = aa.newest_android_app_snapshot.price.to_i
 
     if aa.taken_down
+
       error_code = 2
+
     elsif !price.zero?
+
       error_code = 4
+
     else
 
       app_identifier = aa.app_identifier
@@ -787,7 +794,7 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        packages = new_snap.android_packages.where('android_package_tag != 1')
+        packages = new_snap.android_sdk_packages
 
         updated = new_snap.updated_at
 
@@ -800,6 +807,44 @@ class ApiController < ApplicationController
     end
 
     render json: sdk_hash(packages, updated, error_code)
+
+  end
+
+  def sdk_hash(packages, last_updated, error_code)
+
+    hash = Hash.new
+
+    main_hash = Hash.new
+
+    packages.each do |package|
+
+      company = package.android_sdk_package_prefix.android_sdk_company
+
+      next if company.nil? || company.flagged
+
+      name = company.name
+
+      if hash[name].blank?
+
+        hash[name] = {'packages' => [package.package_name], 'website' => company.website, 'favicon' => company.favicon}
+
+      else
+        
+        hash[name]['packages'] << package.package_name
+
+      end
+
+    end
+
+    error_code = 1 if hash.empty? && error_code.zero?
+
+    main_hash['sdks'] = hash
+
+    main_hash['last_updated'] = last_updated
+
+    main_hash['error_code'] = error_code
+
+    main_hash.to_json
 
   end
 
@@ -823,74 +868,6 @@ class ApiController < ApplicationController
     run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
     new_snap
-
-  end
-
-  def sdk_hash(p, last_updated, error_code)
-
-    hash = Hash.new
-    main_hash = Hash.new
-
-    if p.present?
-      p.each do |packages|
-
-        package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
-
-        if package.count('.').zero?
-          package = package.capitalize if package == package.upcase
-          name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
-          next if name.split(' ').select{|s| s.length == 1 }.count > 1
-        else
-
-          name = package.split('.').first
-
-          if SdkCompanyServiceWorker.new.is_word?(name, nil)
-            name = SdkCompanyServiceWorker.new.camel_split(name)
-            next if name.split(' ').select{|s| s.length == 1 }.count > 1
-          end
-        end
-
-        name = name.capitalize
-        sdk_com = SdkCompany.find_by_name(name)
-
-        if sdk_com.present?
-          next if sdk_com.flagged?
-          name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-
-          if hash[name].blank?
-
-            url = nil
-            favicon = nil
-
-            if sdk_com.present?
-
-              url = sdk_com.website unless sdk_com.website.blank?
-              url = sdk_com.alias_website unless sdk_com.alias_website.blank?
-
-              if sdk_com.website.present? || sdk_com.alias_website.present?
-                url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
-              end
-              favicon = sdk_com.favicon
-            end
-            hash[name] = {'packages' => [packages.package_name], 'website' => url.to_s, 'favicon' => favicon.to_s, 'popularity' => url.nil? ? 0:1}
-
-          else
-            hash[name]['packages'] << packages.package_name
-
-          end
-        end
-      end
-    end
-
-    hash = hash.sort_by { |k,v| -v['popularity'] }.to_h
-
-    error_code = 1 if hash.empty? && error_code.zero?
-    main_hash['sdks'] = hash
-    main_hash['last_updated'] = last_updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
 
   end
 

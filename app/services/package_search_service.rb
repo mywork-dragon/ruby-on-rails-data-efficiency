@@ -4,11 +4,11 @@ class PackageSearchService
 
     # Deal with parameters
 
-    def find_packages(app_identifier: 'com.supercell.clashofclans', apk_snapshot_id: 1)
+    def find_packages(app_identifier:, apk_snapshot_id:)
 
       # Change path to work with s3 bucket
 
-      file_path = '../../Desktop/' + app_identifier + '.apk'
+      # file_path = '../../Desktop/' + app_identifier + '.apk'
 
       apk = Android::Apk.new(file_path)
 
@@ -34,9 +34,9 @@ class PackageSearchService
 
       # Change path to work with s3 bucket
 
-      file_name = '../../Desktop/' + app_identifier + '_' + version + '.xml'
+      # file_name = '../../Desktop/' + app_identifier + '_' + version + '.xml'
 
-      File.open(file_name, 'wb') { |file| file.write(manifest_xml) }
+      # File.open(file_name, 'wb') { |file| file.write(manifest_xml) }
 
       version = version.present? ? version : nil
 
