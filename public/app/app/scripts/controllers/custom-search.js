@@ -19,6 +19,7 @@ angular.module('appApp')
             customSearchCtrl.apps = data;
             customSearchCtrl.appNum = data.length;
             customSearchCtrl.numApps = data.length;
+            customSearchCtrl.searchInput = routeParams.query;
             customSearchCtrl.changeAppPlatform(routeParams.platform);
           })
           .error(function(data) {
