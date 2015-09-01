@@ -47,7 +47,7 @@ class BusinessEntityService
           if ios_app
             ss = ios_app.newest_ios_app_snapshot
 
-            BusinessEntityIosServiceWorker.clean_ios([ss.id]) if ss
+            BusinessEntityIosServiceWorker.perform_async([ss.id], 'clean_ios') if ss
           end
         
         end
@@ -393,7 +393,7 @@ class BusinessEntityService
   end
 
     def on_complete_ios_new_apps(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'ios_new_apps completed')
+    Slackiq.notify(webhook_name: :main, status: status, title: 'ios_new_apps')
   end
 
 end
