@@ -368,9 +368,9 @@ class SdkCompanyServiceWorker
 
     asc = AndroidSdkCompany.find(app_id)
 
-    url = asc.favicon
+    url = asc.website
 
-    return nil if url.nil?
+    return nil if url.include?('github.com/')
 
     begin
       favicon = WWW::Favicon.new
