@@ -2,8 +2,8 @@
 
 one:
   android_sdk_company_id: 1
-  apk_snapshot_id: 1
+  android_app_id: 1
 
 two:
   android_sdk_company_id: 1
-  apk_snapshot_id: 1
+  android_app_id: 1

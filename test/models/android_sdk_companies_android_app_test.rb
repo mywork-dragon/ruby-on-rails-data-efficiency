@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AndroidSdkCompaniesApkSnapshotTest < ActiveSupport::TestCase
+class AndroidSdkCompaniesAndroidAppTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
