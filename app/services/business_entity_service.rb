@@ -24,6 +24,37 @@ class BusinessEntityService
         end
     end
 
+    # For new apps every week
+    # @author Jason Lew
+    def ios_new_apps
+      batch = Sidekiq::Batch.new
+      batch.description = "ios_new_apps" 
+      batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
+  
+      batch.jobs do
+        epf_full_feed_last = EpfFullFeed.last
+    
+        newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+        week_before_newest = newest_date - 6.days
+
+
+        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date: week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
+          
+          app_identifer = epf_ss.application_id
+          
+          ios_app = IosApp.find_by_app_identifier(app_identifer)
+          
+          if ios_app
+            ss = ios_app.newest_ios_app_snapshot
+
+            BusinessEntityIosServiceWorker.clean_ios([ss.id]) if ss
+          end
+        
+        end
+    
+      end
+      
+    end
 
     # For Android linking
 
@@ -359,6 +390,10 @@ class BusinessEntityService
       end
     end
   
+  end
+
+    def on_complete_ios_new_apps(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'ios_new_apps completed')
   end
 
 end
