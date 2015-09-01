@@ -826,7 +826,7 @@ class ApiController < ApplicationController
 
       if hash[name].blank?
 
-        hash[name] = {'packages' => [package.package_name], 'website' => company.website, 'favicon' => company.favicon}
+        hash[name] = {'packages' => [package.package_name], 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count}
 
       else
         
@@ -835,6 +835,8 @@ class ApiController < ApplicationController
       end
 
     end
+
+    hash = hash.sort_by{ |k,v| -v['android_app_count'] }
 
     error_code = 1 if hash.empty? && error_code.zero?
 
