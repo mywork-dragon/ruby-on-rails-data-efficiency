@@ -6,9 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    url = AndroidSdkCompany.find(app_id).favicon
-
-    get_favicon(url)
+    get_and_save_favicon(app_id)
 
   end
 
@@ -361,6 +359,27 @@ class SdkCompanyServiceWorker
     begin
       favicon = WWW::Favicon.new
       favicon_url = favicon.find(url)
+    rescue
+      nil
+    end
+  end
+
+  def get_and_save_favicon(app_id)
+
+    asc = AndroidSdkCompany.find(app_id)
+
+    url = asc.favicon
+
+    return nil if url.include?('github.com/') || url.nil?
+
+    begin
+      favicon = WWW::Favicon.new
+      favicon_url = favicon.find(url)
+
+      asc.favicon = favicon_url
+
+      asc.save
+
     rescue
       nil
     end
