@@ -370,7 +370,7 @@ class SdkCompanyServiceWorker
 
     url = asc.favicon
 
-    return nil if url.include?('github.com/') || url.nil?
+    return nil if url.nil?
 
     begin
       favicon = WWW::Favicon.new
