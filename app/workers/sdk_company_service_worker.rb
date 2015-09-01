@@ -229,7 +229,7 @@ class SdkCompanyServiceWorker
 
     package_arr = package.split('.')
 
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward).include?(pre) || pre.blank?
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
