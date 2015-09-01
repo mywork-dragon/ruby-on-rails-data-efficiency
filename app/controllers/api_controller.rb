@@ -993,15 +993,11 @@ class ApiController < ApplicationController
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             fuzziness: 'AUTO',
-            minimum_should_match: '75%'
+            minimum_should_match: '80%'
         }
-    ).limit(num_per_page).offset(page_offset).map { |result|
-      puts result.inspect
-      result.attributes["id"]
-    }
+    ).limit(num_per_page).offset(page_offset).map { |result| result.attributes["id"] }
 
     ios_apps = IosApp.find(result_ids)
-
     results_json = []
 
     ios_apps.each do |app|
@@ -1033,7 +1029,6 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
-
     render json: results_json
   end
 
@@ -1047,14 +1042,12 @@ class ApiController < ApplicationController
             query: query,
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
-            minimum_should_match: '75%'
+            fuzziness: 'AUTO',
+            minimum_should_match: '80%'
         }
-    ).limit(num_per_page).offset(page_offset).map { |result|
-      result.attributes["id"]
-    }
+    ).limit(num_per_page).offset(page_offset).map { |result| result.attributes["id"] }
 
     android_apps = AndroidApp.find(result_ids)
-
     results_json = []
 
     android_apps.each do |app|
@@ -1085,8 +1078,6 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
-
     render json: results_json
   end
-
 end
