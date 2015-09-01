@@ -6,7 +6,7 @@ class SdkCompanyServiceWorker
 
 	def perform(app_id)
 
-    transition_from_sdk_companies_to_android_sdk_companies(app_id)
+    get_favicon(app_id)
 
   end
 
