@@ -126,13 +126,13 @@ module ApkWorker
 
   def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
 
-    single_job = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
+    scrape_type = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: ' ? :live : :full
 
-    gac = single_job ? LiveScanGoogleAccount.count : GoogleAccount.count
+    gac = GoogleAccount.where(scrape_type: scrape_type).count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id, single_job, bid)
+      account = fresh_account(apk_snap_id, scrape_type, bid)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -151,18 +151,14 @@ module ApkWorker
 
   end
 
-  def fresh_account(apk_snap_id, single_job, bid)
+  def fresh_account(apk_snap_id, scrape_type, bid)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
 
     stop = 10
 
-    class_name = single_job ? 'LiveScanGoogleAccount' : 'GoogleAccount'
-
-    account_obj = Object.const_get(class_name).new
-
-    g = account_obj.transaction do
-      ga = account_obj.lock.where(in_use: false).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
+    g = GoogleAccount.transaction do
+      ga = GoogleAccount.lock.where(in_use: false, scrape_type: scrape_type).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
@@ -170,7 +166,7 @@ module ApkWorker
 
     if g.blank?
 
-      d_name = account_obj.devices.find{|k,v| v == d}.first.gsub('_',' ')
+      d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
 
       err_msg = "All the accounts on your #{d_name} are down."
       Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
