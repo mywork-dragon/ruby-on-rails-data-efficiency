@@ -11,6 +11,8 @@ angular.module('appApp')
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {
 
+        customSearchCtrl.queryInProgress = true;
+
         var urlParams = $location.url().split('/search/custom')[1]; // Get url params
         var routeParams = $location.search();
 
@@ -20,10 +22,12 @@ angular.module('appApp')
             customSearchCtrl.appNum = data.length;
             customSearchCtrl.numApps = data.length;
             customSearchCtrl.changeAppPlatform(routeParams.platform);
+            customSearchCtrl.queryInProgress = false;
           })
           .error(function(data) {
             customSearchCtrl.appNum = 0;
             customSearchCtrl.numApps = 0;
+            customSearchCtrl.queryInProgress = false;
           });
 
       };

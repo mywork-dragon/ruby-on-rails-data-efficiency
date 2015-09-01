@@ -94,9 +94,9 @@
         </tr>
         </tbody>
       </table>
-      <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(customSearchCtrl.numApps > 0)">
-        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || queryInProgress">No Items</h5>
-        <div data-ng-show="queryInProgress" id="wrap_spinner">
+      <div id="dashboardTableStatusMessage" data-ng-show="customSearchCtrl.queryInProgress || !(customSearchCtrl.numApps > 0)">
+        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || customSearchCtrl.queryInProgress">No Items</h5>
+        <div data-ng-show="customSearchCtrl.queryInProgress" id="wrap_spinner">
           <div class="loading outer">
             <div class="loading inner"></div>
           </div>
