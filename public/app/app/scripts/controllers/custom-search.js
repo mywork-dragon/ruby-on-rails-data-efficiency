@@ -43,6 +43,14 @@ angular.module('appApp')
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Custom Search", {
+            "query": customSearchCtrl.searchInput,
+            "platform": customSearchCtrl.platform
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       };
 
       customSearchCtrl.addSelectedTo = function(list, selectedApps) {
