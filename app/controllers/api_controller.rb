@@ -987,7 +987,7 @@ class ApiController < ApplicationController
     page_offset = params['page'] ? params['page'] : 0
     num_per_page = params['numPerPage'] ? params['numPerPage'] : 100
 
-    result_ids = AppsIndex::IosAppSnapshot.query(
+    result_ids = AppsIndex::IosApp.query(
         multi_match: {
             query: query,
             fields: [:name, :seller_url, :company_name],
@@ -1000,29 +1000,29 @@ class ApiController < ApplicationController
       result.attributes["id"]
     }
 
-    ios_app_snapshots = IosAppSnapshot.find(result_ids)
+    ios_apps = IosApp.find(result_ids)
 
     results_json = []
 
-    ios_app_snapshots.each do |app_snapshot|
+    ios_apps.each do |app|
 
-      app = app_snapshot.ios_app
       company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
 
       app_hash = {
           app: {
-              id: app.present? ? app.id : nil,
-              name: app_snapshot.name,
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'IosApp',
-              mobilePriority: app.present? ? app.mobile_priority : nil,
-              userBase: app.present? ? app.user_base : nil,
-              lastUpdated: app_snapshot.released.to_s,
-              adSpend: app.present? ? app.ios_fb_ad_appearances.present? : nil,
-              categories: IosAppCategoriesSnapshot.where(ios_app_snapshot: app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name},
-              supportDesk: app_snapshot.support_url,
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
               appIcon: {
-                  large: app_snapshot.icon_url_350x350,
-                  small: app_snapshot.icon_url_175x175
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
               }
           },
           company: {
@@ -1042,7 +1042,7 @@ class ApiController < ApplicationController
     page_offset = !params['page'].nil? ? params['page'] : 0
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'] : 50
 
-    result_ids = AppsIndex::AndroidAppSnapshot.query(
+    result_ids = AppsIndex::AndroidApp.query(
         multi_match: {
             query: query,
             fields: [:name, :seller_url, :company_name],
@@ -1053,27 +1053,28 @@ class ApiController < ApplicationController
       result.attributes["id"]
     }
 
-    android_app_snapshots = AndroidAppSnapshot.find(result_ids)
+    android_apps = AndroidApp.find(result_ids)
 
     results_json = []
 
-    android_app_snapshots.each do |app_snapshot|
+    android_apps.each do |app|
 
-      app = app_snapshot.android_app
       company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
 
       app_hash = {
           app: {
-              id: app.present? ? app.id : nil,
-              name: app_snapshot.name,
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'AndroidApp',
-              mobilePriority: app.present? ? app.mobile_priority : nil,
-              userBase: app.present? ? app.user_base : nil,
-              lastUpdated: app_snapshot.released.to_s,
-              adSpend: app.present? ? app.android_fb_ad_appearances.present? : nil,
-              categories: app_snapshot.android_app_categories.map{|c| c.name}.join(", "),
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.android_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
               appIcon: {
-                  large: app_snapshot.icon_url_300x300
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
               }
           },
           company: {
