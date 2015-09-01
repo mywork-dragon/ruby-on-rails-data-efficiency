@@ -141,5 +141,5 @@ gem 'slackiq', '0.0.3'
 
 gem 'curb-fu', '0.6.2'
 
-gem "paperclip", "~> 4.3"
+# gem "paperclip", "~> 4.3"
 
