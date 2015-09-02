@@ -126,7 +126,9 @@ module ApkWorker
 
   def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
 
-    scrape_type = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: ' ? :live : :full
+    is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
+
+    scrape_type = is_single ? :live : :full
 
     gac = GoogleAccount.where(scrape_type: scrape_type).count
 
