@@ -836,7 +836,7 @@ class ApiController < ApplicationController
 
     end
 
-    hash = hash.sort_by{ |k,v| -v['android_app_count'] }
+    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
 
     error_code = 1 if hash.empty? && error_code.zero?
 
