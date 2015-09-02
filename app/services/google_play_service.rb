@@ -258,7 +258,7 @@ class GooglePlayService
     end
     
     def icon_url_300x300
-      @html.css('div.details-info > div.cover-container > img').first['src']
+      @html.css('.cover-image').first['src']
     end
     
     def developer_google_play_identifier
