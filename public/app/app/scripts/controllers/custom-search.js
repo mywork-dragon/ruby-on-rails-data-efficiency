@@ -51,7 +51,7 @@ angular.module('appApp')
           query: customSearchCtrl.searchInput,
           platform: customSearchCtrl.platform,
           page: newPageNum || 1,
-          numPerPage: 25
+          numPerPage: 100
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
@@ -80,9 +80,6 @@ angular.module('appApp')
       };
 
       customSearchCtrl.appsDisplayedCount = function() {
-        console.log('NUM PER PAGE', customSearchCtrl.numPerPage);
-        console.log('CURRENT PAGE', customSearchCtrl.currentPage);
-
         var lastPageMaxApps = customSearchCtrl.numPerPage * customSearchCtrl.currentPage;
         var baseAppNum = customSearchCtrl.numPerPage * (customSearchCtrl.currentPage - 1) + 1;
 
