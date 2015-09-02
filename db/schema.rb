@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150819201806) do
+ActiveRecord::Schema.define(version: 20150901014331) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -176,6 +176,57 @@ ActiveRecord::Schema.define(version: 20150819201806) do
   add_index "android_packages", ["apk_snapshot_id"], name: "index_android_packages_on_apk_snapshot_id", using: :btree
   add_index "android_packages", ["package_name"], name: "index_android_packages_on_package_name", using: :btree
 
+  create_table "android_sdk_companies", force: true do |t|
+    t.string   "name"
+    t.string   "website"
+    t.string   "favicon"
+    t.boolean  "flagged",    default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
+  add_index "android_sdk_companies", ["name"], name: "index_android_sdk_companies_on_name", using: :btree
+  add_index "android_sdk_companies", ["website"], name: "index_android_sdk_companies_on_website", using: :btree
+
+  create_table "android_sdk_companies_android_apps", force: true do |t|
+    t.integer  "android_sdk_company_id"
+    t.integer  "android_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdk_companies_android_apps", ["android_app_id", "android_sdk_company_id"], name: "index_android_app_id_android_sdk_company_id", using: :btree
+  add_index "android_sdk_companies_android_apps", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
+
+  create_table "android_sdk_package_prefixes", force: true do |t|
+    t.string  "prefix"
+    t.integer "android_sdk_company_id"
+  end
+
+  add_index "android_sdk_package_prefixes", ["android_sdk_company_id"], name: "index_android_sdk_package_prefixes_on_android_sdk_company_id", using: :btree
+  add_index "android_sdk_package_prefixes", ["prefix"], name: "index_android_sdk_package_prefixes_on_prefix", using: :btree
+
+  create_table "android_sdk_packages", force: true do |t|
+    t.string   "package_name"
+    t.integer  "android_sdk_package_prefix_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdk_packages", ["android_sdk_package_prefix_id"], name: "index_android_sdk_packages_on_android_sdk_package_prefix_id", using: :btree
+  add_index "android_sdk_packages", ["package_name"], name: "index_android_sdk_packages_on_package_name", using: :btree
+
+  create_table "android_sdk_packages_apk_snapshots", force: true do |t|
+    t.integer  "android_sdk_package_id"
+    t.integer  "apk_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdk_packages_apk_snapshots", ["android_sdk_package_id"], name: "android_sdk_package_id", using: :btree
+  add_index "android_sdk_packages_apk_snapshots", ["apk_snapshot_id", "android_sdk_package_id"], name: "index_apk_snapshot_id_android_sdk_package_id", using: :btree
+
   create_table "api_keys", force: true do |t|
     t.string   "key"
     t.datetime "created_at"
@@ -333,6 +384,7 @@ ActiveRecord::Schema.define(version: 20150819201806) do
     t.datetime "updated_at"
     t.boolean  "in_use"
     t.integer  "device"
+    t.integer  "scrape_type",        default: 0
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
@@ -340,6 +392,7 @@ ActiveRecord::Schema.define(version: 20150819201806) do
   add_index "google_accounts", ["flags"], name: "index_google_accounts_on_flags", using: :btree
   add_index "google_accounts", ["last_used"], name: "index_google_accounts_on_last_used", using: :btree
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
+  add_index "google_accounts", ["scrape_type"], name: "index_google_accounts_on_scrape_type", using: :btree
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"

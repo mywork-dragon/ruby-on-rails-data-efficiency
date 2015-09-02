@@ -16,7 +16,7 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying 1 - {{customSearchCtrl.numApps}} of {{customSearchCtrl.numApps}}</span>
+      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying 1 - {{customSearchCtrl.appNum}} of {{customSearchCtrl.numApps}}</span>
       <span class="ui-select pull-right">
         <select ng-model="addSelectedToDropdown" ng-change="customSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
          <option value="">Copy Selected to List</option>

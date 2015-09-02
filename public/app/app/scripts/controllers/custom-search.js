@@ -18,9 +18,10 @@ angular.module('appApp')
 
         customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage)
           .success(function(data) {
-            customSearchCtrl.apps = data;
-            customSearchCtrl.appNum = data.length;
-            customSearchCtrl.numApps = data.length;
+            customSearchCtrl.apps = data.appData;
+            customSearchCtrl.appNum = data.appData.length;
+            customSearchCtrl.numApps = data.totalAppsCount;
+            customSearchCtrl.numPerPage = data.numPerPage;
             customSearchCtrl.changeAppPlatform(routeParams.platform);
             customSearchCtrl.queryInProgress = false;
           })
