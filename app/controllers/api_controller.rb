@@ -992,8 +992,7 @@ class ApiController < ApplicationController
             query: query,
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
-            fuzziness: 'AUTO',
-            minimum_should_match: '3<75%'
+            minimum_should_match: '2<75%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
@@ -1045,8 +1044,7 @@ class ApiController < ApplicationController
             operator: 'and',
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
-            fuzziness: 'AUTO',
-            minimum_should_match: '3<75%'
+            minimum_should_match: '2<75%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
