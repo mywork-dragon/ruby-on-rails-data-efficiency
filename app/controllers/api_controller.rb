@@ -995,7 +995,11 @@ class ApiController < ApplicationController
             fuzziness: 'AUTO',
             minimum_should_match: '80%'
         }
-    ).limit(num_per_page).offset(page_offset).map { |result| result.attributes["id"] }
+    ).limit(num_per_page).offset(page_offset)
+
+    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+
+    result_ids = result_ids.map { |result| result.attributes["id"] }
 
     ios_apps = IosApp.find(result_ids)
     results_json = []
@@ -1029,7 +1033,7 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
-    render json: results_json
+    render json: {data: results_json, totalAppsCount: total_apps_count}
   end
 
   def search_android_apps

@@ -38,11 +38,15 @@ angular.module('appApp')
         customSearchCtrl.platform = platform;
       };
 
-      customSearchCtrl.submitSearch = function() {
+      customSearchCtrl.onPageChange = function(currentPage) {
+        customSearchCtrl.submitSearch(currentPage + 1);
+      };
+
+      customSearchCtrl.submitSearch = function(newPageNum) {
         var payload = {
           query: customSearchCtrl.searchInput,
           platform: customSearchCtrl.platform,
-          page: 0,
+          page: newPageNum || 0,
           numPerPage: 50
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));

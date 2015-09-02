@@ -110,26 +110,26 @@
 
     </div>
 
-    <!--
     <footer class="table-footer">
       <div class="row">
         <div class="col-md-6 page-num-info">
-                      <span>
-                          Show
-                          <select data-ng-model="numPerPage"
-                                  data-ng-options="num for num in numPerPageOpt"
-                                  data-ng-change="onNumPerPageChange()">
-                          </select>
-                          entries per page
-                      </span>
-
+          <!--
+              <span>
+                  Show
+                  <select data-ng-model="numPerPage"
+                          data-ng-options="num for num in numPerPageOpt"
+                          data-ng-change="onNumPerPageChange()">
+                  </select>
+                  entries per page
+              </span>
+          -->
         </div>
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="customSearchCtrl.currentPage"
-                      total-items="numApps"
+                      total-items="customSearchCtrl.numApps"
                       max-size="4"
-                      ng-change="select(currentPage, tags)"
+                      ng-change="customSearchCtrl.onPageChange(customSearchCtrl.currentPage)"
                       items-per-page="customSearchCtrl.numPerPage"
                       rotate="false"
                       boundary-links="true"></pagination>
@@ -137,7 +137,6 @@
         </div>
       </div>
     </footer>
-    -->
 
   </section>
 
