@@ -993,7 +993,7 @@ class ApiController < ApplicationController
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             fuzziness: 'AUTO',
-            minimum_should_match: '80%'
+            minimum_should_match: '3<75%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
@@ -1042,10 +1042,11 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::AndroidApp.query(
         multi_match: {
             query: query,
+            operator: 'and',
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             fuzziness: 'AUTO',
-            minimum_should_match: '80%'
+            minimum_should_match: '3<75%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
