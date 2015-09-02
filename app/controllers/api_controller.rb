@@ -984,8 +984,8 @@ class ApiController < ApplicationController
 
   def search_ios_apps
     query = params['query']
-    page = params['page'] ? params['page'].to_i : 0
-    num_per_page = params['numPerPage'] ? params['numPerPage'].to_i : 100
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::IosApp.query(
         multi_match: {
@@ -995,7 +995,7 @@ class ApiController < ApplicationController
             fuzziness: 'AUTO',
             minimum_should_match: '80%'
         }
-    ).limit(num_per_page).offset(page - 1)
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
@@ -1036,7 +1036,7 @@ class ApiController < ApplicationController
 
   def search_android_apps
     query = params['query']
-    page = !params['page'].nil? ? params['page'].to_i : 0
+    page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::AndroidApp.query(
@@ -1047,7 +1047,7 @@ class ApiController < ApplicationController
             fuzziness: 'AUTO',
             minimum_should_match: '80%'
         }
-    ).limit(num_per_page).offset(page - 1)
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
