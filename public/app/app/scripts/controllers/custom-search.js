@@ -23,6 +23,8 @@ angular.module('appApp')
             customSearchCtrl.numApps = data.totalAppsCount;
             customSearchCtrl.numPerPage = data.numPerPage;
             customSearchCtrl.changeAppPlatform(routeParams.platform);
+            customSearchCtrl.searchInput = routeParams.query;
+            customSearchCtrl.currentPage = data.page;
             customSearchCtrl.queryInProgress = false;
           })
           .error(function(data) {
@@ -39,16 +41,17 @@ angular.module('appApp')
         customSearchCtrl.platform = platform;
       };
 
-      customSearchCtrl.onPageChange = function(currentPage) {
-        customSearchCtrl.submitSearch(currentPage + 1);
+      customSearchCtrl.onPageChange = function(nextPage) {
+        console.log('NEXT PAGE', nextPage);
+        customSearchCtrl.submitSearch(nextPage);
       };
 
       customSearchCtrl.submitSearch = function(newPageNum) {
         var payload = {
           query: customSearchCtrl.searchInput,
           platform: customSearchCtrl.platform,
-          page: newPageNum || 0,
-          numPerPage: 50
+          page: newPageNum || 1,
+          numPerPage: 5
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
@@ -74,6 +77,21 @@ angular.module('appApp')
 
       customSearchCtrl.notify = function(type) {
         listApiService.listAddNotify(type);
-      }
+      };
+
+      customSearchCtrl.appsDisplayedCount = function() {
+        console.log('NUM PER PAGE', customSearchCtrl.numPerPage);
+        console.log('CURRENT PAGE', customSearchCtrl.currentPage);
+
+        var lastPageMaxApps = customSearchCtrl.numPerPage * customSearchCtrl.currentPage;
+        var baseAppNum = customSearchCtrl.numPerPage * (customSearchCtrl.currentPage - 1) + 1;
+
+        if (lastPageMaxApps > customSearchCtrl.numApps) {
+          return "" + baseAppNum + " - " + customSearchCtrl.numApps;
+        } else {
+          return "" + baseAppNum + " - " + lastPageMaxApps;
+        }
+      };
+
     }
   ]);
