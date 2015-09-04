@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(production scraper sdk_scraper web)
+set :stages, %w(production scraper sdk_scraper web staging)
 set :default_stage, 'production'
 
 set :application, 'varys'
