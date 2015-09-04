@@ -4,13 +4,13 @@ module ApkWorker
     download_apk(apk_snapshot_job_id, bid, app_id)
   end
   
-  def apk_file_name(app_identifier)
+  def apk_file_path
     if Rails.env.production?
-      file_name = "/mnt/apk_files/" + app_identifier + ".apk"
+      file_path = "/mnt/apk_files/"
     elsif Rails.env.development?
-      file_name = "../apk_files/" + app_identifier + ".apk"
+      file_path = "../apk_files/"
     end
-    file_name
+    file_path
   end
 
   def download_apk(apk_snapshot_job_id, bid, android_app_id)
@@ -59,7 +59,7 @@ module ApkWorker
 
       raise "no app_identifier" if app_identifier.blank?
 
-      file_name = apk_file_name(app_identifier)
+      file_name = apk_file_path + app_identifier + ".apk"
 
       ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
@@ -88,35 +88,34 @@ module ApkWorker
 
     else
 
+      end_time = Time.now()
+      download_time = (end_time - start_time).to_s
+
       best_account.in_use = false
       best_account.flags = 0
       best_account.save
 
-      # unpack_time = PackageSearchService.search(app_identifier, apk_snap.id, file_name)
+      # rename file with version
 
-      version = PackageSearchService.find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snap.id, file_name: file_name)
-      
-      # apk_snap.unpack_time = unpack_time
-
+      file_name_with_version = apk_file_path + app_identifier + '_' + PackageVersion.get(app_identifier) + '.apk'
+      File.rename(file_name, file_name_with_version)
       apk_snap.version = version if version.present?
-
-      end_time = Time.now()
-      download_time = (end_time - start_time).to_s
+      
+      # update snapshot with new data
 
       apk_snap.google_account_id = best_account.id
       apk_snap.last_device = GoogleAccount.devices[best_account.device]
       apk_snap.download_time = download_time
       apk_snap.status = :success
+      apk_snap.auth_token = nil
       apk_snap.save
+
+      # save snapshot to app
 
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
 
-      # company_ids = SdkCompanyServiceWorker.new.find_company(android_app_id)
-
-      # company_ids.each do |id|
-         # SdkCompanyServiceWorker.new.google_company(id)
-      # end
+      ApkFile.find_or_create_by(apk: open(file_name_with_version))
 
       File.delete(file_name)
       

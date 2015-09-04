@@ -77,7 +77,7 @@ end
 
 gem 'filesize', '0.0.4'
 
-gem 'aws-sdk', '~> 2'
+# gem 'aws-sdk', '~> 2'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
@@ -141,5 +141,7 @@ gem 'www-favicon', '0.0.6'
 
 # gem 'curb-fu', '0.6.2'
 
-# gem "paperclip", "~> 4.3"
+gem 'paperclip', '4.3.0'
+
+gem 'aws-sdk', '< 2.0'
 

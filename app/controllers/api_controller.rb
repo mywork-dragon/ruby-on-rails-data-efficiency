@@ -792,6 +792,8 @@ class ApiController < ApplicationController
 
       new_snap = run_batch(android_app_id, app_identifier)
 
+      # if the app downloaded successfully, scan it for sdks
+
       if new_snap.present? && new_snap.status == "success"
 
         packages = new_snap.android_sdk_packages

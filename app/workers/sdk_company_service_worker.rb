@@ -37,11 +37,13 @@ class SdkCompanyServiceWorker
 
     package = strip_prefix(package_name)
 
+    return nil if package.blank?
+
     package = package.capitalize if package == package.upcase && package.count('.').zero?
 
     name = camel_split(package.split('.').first)
 
-    return nil if !name_check? name
+    return nil if name.nil?
 
     name
 
@@ -52,11 +54,24 @@ class SdkCompanyServiceWorker
 
     # aa = ApkSnapshot.find(apk_snapshot_id).android_app
 
-    website = google_search(name)
+    url = google_search(name)
+
+    github_url, company_name = github_google_search(name) if url.blank?
+
+    github = github_url.present?
+
+    website = [url, github_url].compact.first
 
     if website.present?
 
-      asc = AndroidSdkCompany.create_with(website: website).find_or_create_by(name: name)
+      parent_company = AndroidSdkPackagePrefix.find_by_prefix(company_name)
+
+      parent_company_id = parent_company.present? ? parent_company.android_sdk_company_id : nil 
+
+      asc = AndroidSdkCompany.create_with(website: website, parent_company_id: parent_company_id, open_source: github).find_or_create_by(name: name)
+
+      #delete this later
+      # AndroidSdkPackagePrefix.find_or_create_by(prefix: name)
 
       aspp = AndroidSdkPackagePrefix.find_by_prefix(name)
 
@@ -66,7 +81,7 @@ class SdkCompanyServiceWorker
 
       # AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company: asc, android_app: aa)
 
-      if asc.favicon.nil?
+      if asc.favicon.nil? && !github
 
         favicon_url = get_favicon(website)
 
@@ -225,11 +240,13 @@ class SdkCompanyServiceWorker
 
   def strip_prefix(package)
 
-    pre = package.split('.').first
+    clean_package = package.gsub('co.','').gsub('main.','')
 
-    package_arr = package.split('.')
+    pre = clean_package.split('.').first
 
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common).include?(pre) || pre.blank?
+    package_arr = clean_package.split('.')
+
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
@@ -326,6 +343,8 @@ class SdkCompanyServiceWorker
 
     results_html = Nokogiri::HTML(result.body)
 
+    i = 0
+
     results = results_html.search('cite').each do |cite|
       url = cite.inner_text
 
@@ -337,12 +356,61 @@ class SdkCompanyServiceWorker
 
       domain = url.split(ext).first.to_s + ext.to_s
 
+      i += 1
+
+      break if i > 3
+
       return httpify(domain) if domain.include?(query.downcase) && domain.exclude?('...') && domain != '0' && domain.count('-').zero?
+
+    end
+
+    nil
+
+  end
+
+
+  def github_google_search(query)
+
+    q = query + " github"
+
+    result = res(type: :get, req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+
+    return nil if result.nil?
+
+    results_html = Nokogiri::HTML(result.body)
+
+    results = results_html.search('cite').each do |cite|
+      url = cite.inner_text
+
+      if url.include?('github.io/')
+        repo_name = url.gsub('https://','').split('/')[1]
+
+        clean_query = query.downcase.gsub(' ','')
+        clean_repo_name = repo_name.downcase
+        
+        if clean_repo_name == clean_query && url.exclude?('...')
+          company_name = url.gsub('http://','').gsub('https://','').gsub('www.','').split('.').first.capitalize
+          return httpify(url), company_name
+        end
+      end
+
+    end
+
+
+    results = results_html.search('cite').each do |cite|
+      url = cite.inner_text
 
       if url.include?('github.com/')
         repo_name = url.gsub('https://','').split('/')[2]
-        if repo_name == query
-          return url
+
+        return nil if repo_name.nil?
+
+        clean_query = query.downcase.gsub(' ','')
+        clean_repo_name = repo_name.downcase
+
+        if clean_repo_name == clean_query && url.exclude?('...')
+          company_name = url.gsub('https://','').split('/')[1].capitalize
+          return httpify(url), company_name
         end
       end
 
