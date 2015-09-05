@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903214534) do
+ActiveRecord::Schema.define(version: 20150904234834) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -288,9 +288,11 @@ ActiveRecord::Schema.define(version: 20150903214534) do
     t.text     "auth_token"
     t.integer  "micro_proxy_id"
     t.integer  "last_device"
+    t.integer  "apk_file_id"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
+  add_index "apk_snapshots", ["apk_file_id"], name: "index_apk_snapshots_on_apk_file_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
   add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree

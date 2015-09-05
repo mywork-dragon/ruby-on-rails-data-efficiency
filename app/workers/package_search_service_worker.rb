@@ -16,17 +16,15 @@ class PackageSearchServiceWorker
 
     apk_snapshot_id = nas.id
 
-    file_name = apk_file_name(app_identifier: app_identifier)
-
-    find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id, file_name: file_name)
+    find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
 
   end
 
-  def apk_file_name(app_identifier: app_identifier)
+  def apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
 
     if Rails.env.production?
 
-      file_name = # path to s3 bucket
+      file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
 
     elsif Rails.env.development?
       
@@ -38,7 +36,9 @@ class PackageSearchServiceWorker
   
   end
 
-  def find_packages(app_identifier:, apk_snapshot_id:, file_name:)
+  def find_packages(app_identifier:, apk_snapshot_id:)
+
+    file_name = apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
 
     apk = Android::Apk.new(file_name)
 

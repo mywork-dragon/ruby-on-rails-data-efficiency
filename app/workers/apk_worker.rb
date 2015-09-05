@@ -108,14 +108,16 @@ module ApkWorker
       apk_snap.download_time = download_time
       apk_snap.status = :success
       apk_snap.auth_token = nil
-      apk_snap.save
 
       # save snapshot to app
 
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
 
-      ApkFile.find_or_create_by(apk: open(file_name_with_version))
+      af = ApkFile.find_or_create_by(apk: open(file_name_with_version))
+
+      apk_snap.apk_file = af
+      apk_snap.save
 
       File.delete(file_name)
       
@@ -156,7 +158,7 @@ module ApkWorker
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
 
-    stop = 10
+    stop = 10000000000
 
     g = GoogleAccount.transaction do
       ga = GoogleAccount.lock.where(in_use: false, scrape_type: scrape_type).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first

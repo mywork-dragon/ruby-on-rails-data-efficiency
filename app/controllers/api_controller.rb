@@ -752,9 +752,9 @@ class ApiController < ApplicationController
 
         updated = new_snap.updated_at
 
-        packages = new_snap.android_sdk_packages
+        companies = aa.android_sdk_companies
 
-        error_code = packages.count.zero? ? 1:0
+        error_code = companies.count.zero? ? 1:0
 
       else
 
@@ -764,7 +764,7 @@ class ApiController < ApplicationController
  
     end
 
-    render json: sdk_hash(packages, updated, error_code)
+    render json: sdk_hash(companies, updated, error_code)
 
   end
 
@@ -772,7 +772,7 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated = packages = nil
+    updated = companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -790,13 +790,13 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      new_snap = run_batch(android_app_id, app_identifier)
-
-      # if the app downloaded successfully, scan it for sdks
+      new_snap = download_apk(android_app_id, app_identifier)
 
       if new_snap.present? && new_snap.status == "success"
 
-        packages = new_snap.android_sdk_packages
+        scan_apk(aa.id)
+
+        companies = aa.android_sdk_companies
 
         updated = new_snap.updated_at
 
@@ -808,41 +808,39 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(packages, updated, error_code)
+    render json: sdk_hash(companies, updated, error_code)
 
   end
 
-  def sdk_hash(packages, last_updated, error_code)
+  def sdk_hash(companies, last_updated, error_code)
 
-    hash = Hash.new
+    co_hash = os_hash = main_hash = Hash.new
 
-    main_hash = Hash.new
-
-    packages.each do |package|
-
-      company = package.android_sdk_package_prefix.android_sdk_company
+    companies.each do |company|
 
       next if company.nil? || company.flagged
 
-      name = company.name
+      if company.open_source
 
-      if hash[name].blank?
-
-        hash[name] = {'packages' => [package.package_name], 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count}
+        os_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => company.parent_company_id }
 
       else
-        
-        hash[name]['packages'] << package.package_name
+
+        co_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => company.parent_company_id }
 
       end
 
     end
 
-    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
+    co_hash = sort_hash(co_hash)
+
+    os_hash = sort_hash(os_hash)
 
     error_code = 1 if hash.empty? && error_code.zero?
 
-    main_hash['sdks'] = hash
+    main_hash['companies'] = co_hash
+
+    main_hash['open_source'] = os_hash
 
     main_hash['last_updated'] = last_updated
 
@@ -852,7 +850,11 @@ class ApiController < ApplicationController
 
   end
 
-  def run_batch(android_app_id, app_identifier, job_id = nil, tries = 0)
+  def sort_hash(hash)
+    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
+  end
+
+  def download_apk(android_app_id, app_identifier, job_id = nil, tries = 0)
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
     batch = Sidekiq::Batch.new
@@ -869,9 +871,25 @@ class ApiController < ApplicationController
 
     new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
+    download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
     new_snap
+
+  end
+
+  def scan_apk(android_app_id)
+
+    batch = Sidekiq::Batch.new
+    bid = batch.bid
+
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(android_app_id)
+    end
+
+    360.times do |i|
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
+    end
 
   end
 
