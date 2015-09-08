@@ -2,9 +2,7 @@ class PackageVersion
 
   class << self
 
-    def get(app_identifier:)
-
-    	file_name = PackageSearchServiceWorker.new.apk_file_name(app_identifier: app_identifier)
+    def get(file_name:)
 
     	apk = Android::Apk.new(file_name)
 
