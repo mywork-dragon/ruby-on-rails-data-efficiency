@@ -1072,8 +1072,8 @@ class ApiController < ApplicationController
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
               adSpend: app.android_fb_ad_appearances.present?,
-              downloads_min: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
-              downloads_max: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
+              downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+              downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
               categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
               supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
               appIcon: {

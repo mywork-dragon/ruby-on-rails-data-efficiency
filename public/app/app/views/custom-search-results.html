@@ -93,7 +93,7 @@
           <td>{{app.app.userBase | capitalize}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
           <td ng-show="canViewSupportDesk && customSearchCtrl.platform = 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
-          <td ng-show="customSearchCtrl.platform == 'android'"></td>
+          <td ng-show="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | thousandSuffix}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | thousandSuffix}}</td>
           <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
         </tr>
         </tbody>
