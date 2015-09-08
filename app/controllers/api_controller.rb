@@ -730,11 +730,11 @@ class ApiController < ApplicationController
   end
 
 
-  def android_sdks_exist
+  def android_sdks_exist(android_app_id)
 
     android_app_id = params['appId']
 
-    updated = packages = nil
+    updated = companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -814,19 +814,39 @@ class ApiController < ApplicationController
 
   def sdk_hash(companies, last_updated, error_code)
 
-    co_hash = os_hash = main_hash = Hash.new
+    main_hash = Hash.new
 
-    companies.each do |company|
+    co_hash = Hash.new
 
-      next if company.nil? || company.flagged
+    os_hash = Hash.new
 
-      if company.open_source
+    if companies.present?
 
-        os_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => company.parent_company_id }
+      companies.each do |company|
 
-      else
+        next if company.nil? || company.flagged
 
-        co_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => company.parent_company_id }
+        parent_company = if company.parent_company_id.present?
+
+          pc = AndroidSdkCompany.find(company.parent_company_id)
+
+          { 'name' => pc.name, 'website' => pc.website, 'favicon' => pc.favicon }
+
+        else
+
+          nil
+
+        end
+
+        if company.open_source
+
+          os_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+
+        else
+
+          co_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+
+        end
 
       end
 
@@ -836,7 +856,7 @@ class ApiController < ApplicationController
 
     os_hash = sort_hash(os_hash)
 
-    error_code = 1 if hash.empty? && error_code.zero?
+    error_code = 1 if co_hash.empty? && os_hash.empty? && error_code.zero?
 
     main_hash['companies'] = co_hash
 
