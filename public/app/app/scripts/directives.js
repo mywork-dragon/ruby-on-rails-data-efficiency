@@ -266,7 +266,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
         return result + si[exp - 1];
       };
-    });
+    })
     .directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {
           return {
             replace: true,
