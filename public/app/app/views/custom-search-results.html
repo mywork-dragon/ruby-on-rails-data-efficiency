@@ -57,8 +57,11 @@
           <th><div class="th normal-right-padding">
             Categories
           </div></th>
-          <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+          <th ng-show="canViewSupportDesk && customSearchCtrl.platform = 'ios'"><div class="th normal-right-padding">
             Support Desk
+          </div></th>
+          <th ng-show="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
+            Downloads
           </div></th>
           <th><div class="th normal-right-padding">
             Last Updated
@@ -89,7 +92,8 @@
           </td>
           <td>{{app.app.userBase | capitalize}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
-          <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
+          <td ng-show="canViewSupportDesk && customSearchCtrl.platform = 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
+          <td ng-show="customSearchCtrl.platform == 'android'"></td>
           <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
         </tr>
         </tbody>
