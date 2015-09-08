@@ -903,7 +903,7 @@ class ApiController < ApplicationController
     bid = batch.bid
 
     batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(android_app_id)
+      PackageSearchServiceWorker.perform_async(android_app_id)
     end
 
     360.times do |i|
