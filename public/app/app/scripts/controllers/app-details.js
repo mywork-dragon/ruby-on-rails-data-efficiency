@@ -111,6 +111,14 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
+    /* -------- Mixpanel Analytics Start -------- */
+    mixpanel.track(
+      "SDK Live Scan Clicked", {
+        'companyName': $scope.appData.company.name
+      }
+    );
+    /* -------- Mixpanel Analytics End -------- */
+
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
@@ -142,10 +150,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         }
         if(data) {
           $scope.sdkData = {
-            'sdks': data.sdks,
-            'lastUpdated': data.last_updated,
-            'errorCode': data.error_code,
-            'errorMessage': sdkErrorMessage
+     'sdkCompanies': data.companies,
+     'sdkOpenSource': data.open_source,
+     'lastUpdated': data.last_updated,
+     'errorCode': data.error_code,
+     'errorMessage': sdkErrorMessage
           };
         }
       }).error(function() {

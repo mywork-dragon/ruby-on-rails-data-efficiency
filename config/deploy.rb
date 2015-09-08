@@ -29,7 +29,7 @@ set :deploy_to, '/home/webapps/varys'
 set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentials.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -74,7 +74,8 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     # on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
-    on roles(:web, :staging, in: :groups, limit: 3, wait: 10) do
+
+    on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
 

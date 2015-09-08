@@ -77,7 +77,7 @@ end
 
 gem 'filesize', '0.0.4'
 
-gem 'aws-sdk', '~> 2'
+# gem 'aws-sdk', '~> 2'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
@@ -144,4 +144,8 @@ gem 'www-favicon', '0.0.6'
 gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
 gem 'chewy', '0.8.1'
+
+gem 'paperclip', '4.3.0'
+
+gem 'aws-sdk', '< 2.0'
 

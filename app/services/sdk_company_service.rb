@@ -2,27 +2,49 @@ class SdkCompanyService
   
   class << self
 
+    def all_companies_sync
+
+      SdkCompany.all.each.with_index do |com, index|
+        li "app #{index}"
+        SdkCompanyServiceWorker.new.perform(com.id)
+      end
+
+    end
 
   	def find
-        AndroidApp.where("newest_apk_snapshot_id IS NOT NULL").each.with_index do |app, index|
+        AndroidApp.where("newest_apk_snapshot_id IS NOT NULL").find_each.with_index do |app, index|
           li "app #{index}"
           SdkCompanyServiceWorker.perform_async(app.id)
         end
   	end
 
+    def duplicate_fix
+      SdkCompany.all.each.with_index do |com, index|
+        li "app #{index}"
+        SdkCompanyServiceWorker.perform_async(com.id)
+      end
+    end
+
   	def google_check
-  		SdkCompany.where(flagged: false).each.with_index do |com, index|
+  		SdkCompany.where('website IS NULL AND alias_website IS NULL AND flagged IS false').find_each.with_index do |com, index|
   			li "app #{index}"
         SdkCompanyServiceWorker.perform_async(com.id)
   		end
   	end
 
     def favicon_fix
-      SdkCompany.where('website IS NOT NULL AND favicon IS NULL').each.with_index do |com, index|
+      AndroidSdkCompany.where(favicon: nil).each.with_index do |com, index|
         li "app #{index}"
         SdkCompanyServiceWorker.perform_async(com.id)
       end
     end
+
+    # def favicon_fix
+    #   SdkCompany.where('website IS NOT NULL AND favicon IS NULL').each.with_index do |com, index|
+    #     li "app #{index}"
+    #     SdkCompanyServiceWorker.perform_async(com.id)
+    #   end
+    # end
 
 
     # ------------

@@ -88,4 +88,12 @@ Rails.application.configure do
     password:             'iamthemailmanofmightysignalyo',
     authentication:       'plain',
     enable_starttls_auto: true  }
+
+
+  config.paperclip_defaults = {
+    :storage => :s3,
+    :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
+  }
+
+
 end

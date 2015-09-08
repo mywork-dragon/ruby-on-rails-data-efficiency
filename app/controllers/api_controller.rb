@@ -729,58 +729,74 @@ class ApiController < ApplicationController
     end
   end
 
-  def android_sdks_exist
+
+  def android_sdks_exist(android_app_id)
 
     android_app_id = params['appId']
 
-    updated = nil
-    packages = nil
+    updated = companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
+
       error_code = 1
+
     else
+
       new_snap = aa.newest_apk_snapshot
+
+      packages = new_snap.android_sdk_packages
+
+      if new_snap.status == "success"
+
+        updated = new_snap.updated_at
+
+        companies = aa.android_sdk_companies
+
+        error_code = companies.count.zero? ? 1:0
+
+      else
+
+        error_code = 5
+
+      end
+ 
     end
 
-    if new_snap.present? && new_snap.status == "success"
+    render json: sdk_hash(companies, updated, error_code)
 
-      updated = new_snap.updated_at
-      packages = new_snap.android_packages.where('android_package_tag != 1')
-
-      error_code = packages.count.zero? ? 1:0
-
-    else
-      error_code = 5
-    end
-    render json: sdk_hash(packages, updated, error_code)
   end
 
   def scan_android_sdks
 
     android_app_id = params['appId']
 
-    packages = nil
-    updated = nil
+    updated = companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
     price = aa.newest_android_app_snapshot.price.to_i
 
     if aa.taken_down
+
       error_code = 2
+
     elsif !price.zero?
+
       error_code = 4
+
     else
 
       app_identifier = aa.app_identifier
 
-      new_snap = run_batch(android_app_id, app_identifier)
+      new_snap = download_apk(android_app_id, app_identifier)
 
       if new_snap.present? && new_snap.status == "success"
 
-        packages = new_snap.android_packages.where('android_package_tag != 1')
+        scan_apk(aa.id)
+
+        companies = aa.android_sdk_companies
 
         updated = new_snap.updated_at
 
@@ -792,11 +808,73 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(packages, updated, error_code)
+    render json: sdk_hash(companies, updated, error_code)
 
   end
 
-  def run_batch(android_app_id, app_identifier, job_id = nil, tries = 0)
+  def sdk_hash(companies, last_updated, error_code)
+
+    main_hash = Hash.new
+
+    co_hash = Hash.new
+
+    os_hash = Hash.new
+
+    if companies.present?
+
+      companies.each do |company|
+
+        next if company.nil? || company.flagged
+
+        parent_company = if company.parent_company_id.present?
+
+          pc = AndroidSdkCompany.find(company.parent_company_id)
+
+          { 'name' => pc.name, 'website' => pc.website, 'favicon' => pc.favicon }
+
+        else
+
+          nil
+
+        end
+
+        if company.open_source
+
+          os_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+
+        else
+
+          co_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+
+        end
+
+      end
+
+    end
+
+    co_hash = sort_hash(co_hash)
+
+    os_hash = sort_hash(os_hash)
+
+    error_code = 1 if co_hash.empty? && os_hash.empty? && error_code.zero?
+
+    main_hash['companies'] = co_hash
+
+    main_hash['open_source'] = os_hash
+
+    main_hash['last_updated'] = last_updated
+
+    main_hash['error_code'] = error_code
+
+    main_hash.to_json
+
+  end
+
+  def sort_hash(hash)
+    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
+  end
+
+  def download_apk(android_app_id, app_identifier, job_id = nil, tries = 0)
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
     batch = Sidekiq::Batch.new
@@ -813,77 +891,25 @@ class ApiController < ApplicationController
 
     new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
+    download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
     new_snap
 
   end
 
-  def sdk_hash(p, last_updated, error_code)
+  def scan_apk(android_app_id)
 
-    hash = Hash.new
-    main_hash = Hash.new
+    batch = Sidekiq::Batch.new
+    bid = batch.bid
 
-    if p.present?
-      p.each do |packages|
-
-        package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
-
-        if package.count('.').zero?
-          package = package.capitalize if package == package.upcase
-          name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
-          next if name.split(' ').select{|s| s.length == 1 }.count > 1
-        else
-
-          name = package.split('.').first
-
-          if SdkCompanyServiceWorker.new.is_word?(name, nil)
-            name = SdkCompanyServiceWorker.new.camel_split(name)
-            next if name.split(' ').select{|s| s.length == 1 }.count > 1
-          end
-        end
-
-        name = name.capitalize
-        sdk_com = SdkCompany.find_by_name(name)
-
-        if sdk_com.present?
-          next if sdk_com.flagged?
-          name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-
-          if hash[name].blank?
-
-            url = nil
-            favicon = nil
-
-            if sdk_com.present?
-
-              url = sdk_com.website unless sdk_com.website.blank?
-              url = sdk_com.alias_website unless sdk_com.alias_website.blank?
-
-              if sdk_com.website.present? || sdk_com.alias_website.present?
-                url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
-              end
-              favicon = sdk_com.favicon
-            end
-            hash[name] = {'packages' => [packages.package_name], 'website' => url.to_s, 'favicon' => favicon.to_s, 'popularity' => url.nil? ? 0:1}
-
-          else
-            hash[name]['packages'] << packages.package_name
-
-          end
-        end
-      end
+    batch.jobs do
+      PackageSearchServiceWorker.perform_async(android_app_id)
     end
 
-    hash = hash.sort_by { |k,v| -v['popularity'] }.to_h
-
-    error_code = 1 if hash.empty? && error_code.zero?
-    main_hash['sdks'] = hash
-    main_hash['last_updated'] = last_updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
+    360.times do |i|
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
+    end
 
   end
 

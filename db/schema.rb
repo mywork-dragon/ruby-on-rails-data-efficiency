@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150901014331) do
+ActiveRecord::Schema.define(version: 20150904234834) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -183,10 +183,17 @@ ActiveRecord::Schema.define(version: 20150901014331) do
     t.boolean  "flagged",    default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "flagged",           default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "open_source",       default: false
+    t.integer  "parent_company_id"
   end
 
   add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
   add_index "android_sdk_companies", ["name"], name: "index_android_sdk_companies_on_name", using: :btree
+  add_index "android_sdk_companies", ["open_source"], name: "android_sdk_companies_open_source_index", using: :btree
+  add_index "android_sdk_companies", ["parent_company_id"], name: "android_sdk_companies_parent_company_index", using: :btree
   add_index "android_sdk_companies", ["website"], name: "index_android_sdk_companies_on_website", using: :btree
 
   create_table "android_sdk_companies_android_apps", force: true do |t|
@@ -237,6 +244,15 @@ ActiveRecord::Schema.define(version: 20150901014331) do
   add_index "api_keys", ["account_id"], name: "index_api_keys_on_account_id", using: :btree
   add_index "api_keys", ["key"], name: "index_api_keys_on_key", using: :btree
 
+  create_table "apk_files", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "apk_file_name"
+    t.string   "apk_content_type"
+    t.integer  "apk_file_size"
+    t.datetime "apk_updated_at"
+  end
+
   create_table "apk_snapshot_exceptions", force: true do |t|
     t.integer  "apk_snapshot_id"
     t.text     "name"
@@ -275,9 +291,11 @@ ActiveRecord::Schema.define(version: 20150901014331) do
     t.text     "auth_token"
     t.integer  "micro_proxy_id"
     t.integer  "last_device"
+    t.integer  "apk_file_id"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
+  add_index "apk_snapshots", ["apk_file_id"], name: "index_apk_snapshots_on_apk_file_id", using: :btree
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
   add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree
