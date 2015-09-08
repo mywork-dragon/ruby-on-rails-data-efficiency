@@ -74,15 +74,22 @@ module ApkWorker
       best_account.save
       
       if message.include? "Couldn't connect to server"
+        
         apk_snap.status = :could_not_connect
-        apk_snap.save
+
       elsif message.include? "execution expired"
+        
         apk_snap.status = :timeout
-        apk_snap.save
+
       elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
+        
         apk_snap.status = :deadlock
-        apk_snap.save
+
       end
+
+      apk_snap.auth_token = nil
+
+      apk_snap.save
       
       raise
 
@@ -97,7 +104,7 @@ module ApkWorker
 
       # rename file with version
 
-      file_name_with_version = apk_file_path + app_identifier + '_' + PackageVersion.get(app_identifier) + '.apk'
+      file_name_with_version = apk_file_path + app_identifier + '_' + PackageVersion.get(file_name: file_name) + '.apk'
       File.rename(file_name, file_name_with_version)
       apk_snap.version = version if version.present?
       
