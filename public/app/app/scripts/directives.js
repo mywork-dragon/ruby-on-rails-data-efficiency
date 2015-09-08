@@ -260,7 +260,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         if(number < 1000) {
           return number;
         }
-        var si = ['K', 'M', 'G', 'T', 'P', 'H'];
+        var si = ['K', 'M', 'B', 'T', 'Q', 'Quin'];
         var exp = Math.floor(Math.log(number) / Math.log(1000));
         var result = number / Math.pow(1000, exp);
         result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
