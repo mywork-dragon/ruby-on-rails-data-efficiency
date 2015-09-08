@@ -119,6 +119,49 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     );
     /* -------- Mixpanel Analytics End -------- */
 
+
+
+    var data = { "companies":{ "Square":{ "website":"https://squareup.com/", "favicon":null, "android_app_count":1, "parent_company":null }, "Amazon AWS":{ "website":"http://aws.amazon.com/", "favicon":null, "android_app_count":1, "parent_company":null }, "Crashlytics":{ "website":"http://try.crashlytics.com", "favicon":"http://try.crashlytics.com/favicon.ico", "android_app_count":1, "parent_company":null } }, "open_source":{ "Butterknife":{ "website":"http://jakewharton.github.io/butterknife/", "favicon":null, "android_app_count":1, "parent_company":null }, "Retrofit":{ "website":"http://square.github.io/retrofit/", "favicon":null, "android_app_count":1, "parent_company":{ "name":"Square", "website":"https://squareup.com/", "favicon":null } }, "Dagger":{ "website":"http://square.github.io/dagger/", "favicon":null, "android_app_count":1, "parent_company":{ "name":"Square", "website":"https://squareup.com/", "favicon":null } } }, "last_updated":"2015-09-02T17:35:02.000-07:00", "error_code":0 };
+
+
+    $scope.sdkQueryInProgress = false;
+    var sdkErrorMessage = "";
+    if(data == null) {
+      $scope.noSdkData = true;
+      $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+    }
+    if(data.error_code > 0) {
+      $scope.noSdkData = true;
+      switch (data.error_code) {
+        case 1:
+          sdkErrorMessage = "No SDKs in App";
+          break;
+        case 2:
+          sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+          break;
+        case 3:
+          sdkErrorMessage = "Error - Please Try Again Later";
+          break;
+        case 4:
+          sdkErrorMessage = "SDKs Not Available for Paid Apps";
+          break;
+        case 5:
+          $scope.noSdkData = false;
+          break;
+      }
+    }
+    if(data) {
+      $scope.sdkData = {
+        'sdkCompanies': data.companies,
+        'sdkOpenSource': data.open_source,
+        'lastUpdated': data.last_updated,
+        'errorCode': data.error_code,
+        'errorMessage': sdkErrorMessage
+      };
+    }
+
+    /*
+
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
@@ -161,6 +204,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.noSdkData = true;
         $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
       });
+
+    */
 
   };
 
