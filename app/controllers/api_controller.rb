@@ -734,7 +734,9 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated = companies = nil
+    updated = nil
+
+    companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -746,7 +748,7 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
-      packages = new_snap.android_sdk_packages
+      # packages = new_snap.android_sdk_packages
 
       if new_snap.status == "success"
 
@@ -790,11 +792,21 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      new_snap = download_apk(android_app_id, app_identifier)
+      begin
+        download_apk(android_app_id, app_identifier)
+      rescue
+        nil
+      end
+
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
 
-        scan_apk(aa.id)
+        begin
+          scan_apk(aa.id)
+        rescue
+          nil
+        end
 
         companies = aa.android_sdk_companies
 
@@ -884,16 +896,10 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
-    360.times do |i|
+    360.times do
       break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
     end
-
-    new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-    download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
-
-    new_snap
 
   end
 
@@ -906,7 +912,7 @@ class ApiController < ApplicationController
       PackageSearchServiceWorker.perform_async(android_app_id)
     end
 
-    360.times do |i|
+    360.times do
       break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
     end
@@ -1008,4 +1014,113 @@ class ApiController < ApplicationController
     send_data list_csv
   end
 
+  def search_ios_apps
+    query = params['query']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+    result_ids = AppsIndex::IosApp.query(
+        multi_match: {
+            query: query,
+            operator: 'and',
+            fields: [:name, :seller_url, :company_name],
+            type: 'most_fields',
+            minimum_should_match: '3<75%',
+            fuzziness: '1',
+            prefix_length: '3'
+
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
+
+    ios_apps = IosApp.find(result_ids)
+    results_json = []
+
+    ios_apps.each do |app|
+
+      company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
+
+      app_hash = {
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              type: 'IosApp',
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+    render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+  end
+
+  def search_android_apps
+    query = params['query']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+    result_ids = AppsIndex::AndroidApp.query(
+        multi_match: {
+            query: query,
+            operator: 'and',
+            fields: [:name, :seller_url, :company_name],
+            type: 'most_fields',
+            minimum_should_match: '3<75%',
+            fuzziness: '1',
+            prefix_length: '3'
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
+
+    android_apps = AndroidApp.find(result_ids)
+    results_json = []
+
+    android_apps.each do |app|
+
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+
+      app_hash = {
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              type: 'AndroidApp',
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.android_fb_ad_appearances.present?,
+              downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+              downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
+          }
+      }
+      results_json << app_hash
+    end
+    render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+  end
 end

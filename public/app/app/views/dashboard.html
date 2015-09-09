@@ -12,7 +12,7 @@
             </tags-input>
           </div>
           <div id="searchResultsControl">
-            <button type="submit" class="btn btn-primary" ng-click="searchCtrl.submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Search</button>
+            <button type="submit" class="btn btn-primary" ng-click="searchCtrl.submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Filter</button>
           </div>
         </div>
       </div>
@@ -111,14 +111,16 @@
 
                     </select>
                </span>
+              <!--
                <span id="dashboardSearchBox">
                     <input placeholder="App or Company name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
                </span>
                <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                  title="Custom Keyword: searches all app names for a match to the supplied keyword. *Click for more info.*"></i>
+                 <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
+                    title="Custom Keyword: searches all app names for a match to the supplied keyword. *Click for more info.*"></i>
                </a>
               </span>
+              -->
 
       </div>
 

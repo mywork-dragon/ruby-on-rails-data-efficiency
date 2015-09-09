@@ -567,6 +567,10 @@ pre {
 .table > thead > tr > th, .table > thead > tr > td, .table > tbody > tr > th, .table > tbody > tr > td, .table > tfoot > tr > th, .table > tfoot > tr > td {
   padding: 10px; }
 
+.table > thead > tr > th {
+  min-width: 30px;
+}
+
 .table .table {
   background-color: #f3f3f3; }
 
@@ -7532,4 +7536,16 @@ pre {
 .sdksListView li {
   border: none;
   padding: 5px;
+}
+
+#mainSearchBoxWrapper {
+  margin-top: -55px;
+}
+
+#mainSearchBoxWrapper input, #mainSearchBoxWrapper button {
+  height: 40px;
+}
+
+#mainSearchBox {
+  padding-left: 0;
 }
