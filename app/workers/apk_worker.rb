@@ -106,8 +106,8 @@ module ApkWorker
 
       version = PackageVersion.get(file_name: file_name)
 
-      file_name_with_version = apk_file_path + app_identifier + '_' + version + '.apk'
-      File.rename(file_name, file_name_with_version)
+      # file_name_with_version = apk_file_path + app_identifier + '_' + version + '.apk'
+      # File.rename(file_name, file_name_with_version)
       apk_snap.version = version if version.present?
       
       # update snapshot with new data
@@ -123,7 +123,7 @@ module ApkWorker
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
 
-      af = ApkFile.find_or_create_by(apk: open(file_name_with_version))
+      af = ApkFile.find_or_create_by(apk: open(file_name))
 
       apk_snap.apk_file = af
       apk_snap.save
