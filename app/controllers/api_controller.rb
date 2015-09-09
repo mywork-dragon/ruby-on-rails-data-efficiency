@@ -881,8 +881,7 @@ class ApiController < ApplicationController
     bid = batch.bid
 
     batch.jobs do
-      ApkSnapshotServiceSingleWorker.new.perform(job_id, bid, android_app_id)
-      # ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
     360.times do |i|
