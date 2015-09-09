@@ -790,7 +790,9 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      new_snap = download_apk(android_app_id, app_identifier)
+      # new_snap = download_apk(android_app_id, app_identifier)
+
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -884,13 +886,9 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
-    begin
-      360.times do
-        break if Sidekiq::Batch::Status.new(bid).complete?
-        sleep 0.25
-      end
-    rescue => e
-      ApkSnashotException.create(name: "DOWNLOAD BATCH FAIL: #{e.message}")
+    360.times do
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
     end
 
     new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
@@ -910,13 +908,9 @@ class ApiController < ApplicationController
       PackageSearchServiceWorker.perform_async(android_app_id)
     end
 
-    begin
-      360.times do
-        break if Sidekiq::Batch::Status.new(bid).complete?
-        sleep 0.25
-      end
-    rescue => e
-      ApkSnashotException.create(name: "SCAN BATCH FAIL: #{e.message}")
+    360.times do
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      sleep 0.25
     end
 
   end
