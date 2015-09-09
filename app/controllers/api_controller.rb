@@ -730,7 +730,7 @@ class ApiController < ApplicationController
   end
 
 
-  def android_sdks_exist(android_app_id)
+  def android_sdks_exist
 
     android_app_id = params['appId']
 
@@ -794,11 +794,11 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        # scan_apk(aa.id)
+        scan_apk(aa.id)
 
-        # companies = aa.android_sdk_companies
+        companies = aa.android_sdk_companies
 
-        # updated = new_snap.updated_at
+        updated = new_snap.updated_at
 
         error_code = 0
 
@@ -881,7 +881,8 @@ class ApiController < ApplicationController
     bid = batch.bid
 
     batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+      ApkSnapshotServiceSingleWorker.new.perform(job_id, bid, android_app_id)
+      # ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
     360.times do |i|
