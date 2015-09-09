@@ -117,16 +117,16 @@ module ApkWorker
       apk_snap.download_time = download_time
       apk_snap.status = :success
       apk_snap.auth_token = nil
-
-      # save snapshot to app
-
-      aa.newest_apk_snapshot_id = apk_snap.id
-      aa.save
       
       af = ApkFile.create!(apk: open(file_name))
 
       apk_snap.apk_file = af
       apk_snap.save
+
+      # save snapshot to app
+
+      aa.newest_apk_snapshot_id = apk_snap.id
+      aa.save
 
       File.delete(file_name)
       
