@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("listApiService", ["$http", function($http) {
+  .factory("listApiService", ["$http", "loggitService", function($http, loggitService) {
     return {
       getLists: function() {
         return $http({
@@ -104,6 +104,14 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/list/export_to_csv',
           params: {listId: listId}
         });
+      },
+      listAddNotify: function(type) {
+        switch (type) {
+          case "add-selected-success":
+            return loggitService.logSuccess("Items were added successfully.");
+          case "add-selected-error":
+            return loggitService.logError("Error! Something went wrong while adding to list.");
+        }
       }
     }
   }]);

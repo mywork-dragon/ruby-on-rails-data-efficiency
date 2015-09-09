@@ -74,6 +74,7 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     # on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
+
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
