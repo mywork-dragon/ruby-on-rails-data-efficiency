@@ -180,6 +180,9 @@ ActiveRecord::Schema.define(version: 20150904234834) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
+    t.boolean  "flagged",    default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "flagged",           default: false
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -1,0 +1,147 @@
+
+<header class="page-main-header ng-scope">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Custom Search</h4>
+    </div>
+  </div>
+  <!--
+  <div class="" id="appTypeHeaderLogo">
+    <i class="fa fa-2" ng-class="customSearchCtrl.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+  </div>
+  -->
+</header>
+
+<div class="page page-table" data-ng-controller="TableCtrl">
+
+  <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+    <div class="panel-heading" id="listViewTableHeading">
+      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps}}</span>
+      <span class="ui-select pull-right">
+        <select ng-model="addSelectedToDropdown" ng-change="customSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
+         <option value="">Copy Selected to List</option>
+         <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </span>
+    </div>
+
+    <div id="results-table-wrapper" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
+
+      <table class="table table-bordered table-striped table-responsive">
+        <thead>
+        <tr>
+          <th class="selectAllCheckboxHeader">
+            <select-all-checkbox apps="customSearchCtrl.apps"></select-all-checkbox>
+          </th>
+          <th><div class="th normal-right-padding">
+            App Name
+          </div></th>
+          <th><div class="th normal-right-padding appDetailsHeader">
+            App Type
+          </div></th>
+          <th><div class="th normal-right-padding">
+            Company
+          </div></th>
+          <th><div class="th normal-right-padding">
+            Fortune Rank
+          </div></th>
+          <th><div class="th normal-right-padding">
+            Mobile Priority
+          </div></th>
+          <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
+            Ad Spend
+          </div></th>
+          <th><div class="th normal-right-padding">
+            User Base Size
+          </div></th>
+          <th><div class="th normal-right-padding">
+            Categories
+          </div></th>
+          <th ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'"><div class="th normal-right-padding">
+            Support Desk
+          </div></th>
+          <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
+            Downloads
+          </div></th>
+          <th><div class="th normal-right-padding">
+            Last Updated
+          </div></th>
+        </tr>
+        </thead>
+
+        <tbody data-ng-hide="queryInProgress">
+        <tr data-ng-repeat="app in customSearchCtrl.apps">
+          <td class="dashboardTableDataCheckbox">
+            <checkable-checkbox app="app.app" apps="customSearchCtrl.apps"></checkable-checkbox>
+          </td>
+          <td class="resultsTableAppIcon">
+              <span>
+                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">{{app.app.name}}</a>
+              </span>
+          </td>
+          <td class="appTypeIndicator">
+            <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+          </td>
+          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td>{{app.company.fortuneRank}}</td>
+          <td class="dashboardMobilePriorityView">
+            <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
+          </td>
+          <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
+            <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
+          </td>
+          <td>{{app.app.userBase | capitalize}}</td>
+          <td>{{app.app.categories.join(', ')}}</td>
+          <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
+          <td ng-if="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | humanizeNum}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | humanizeNum}}</td>
+          <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div id="dashboardTableStatusMessage" data-ng-show="customSearchCtrl.queryInProgress || !(customSearchCtrl.numApps > 0)">
+        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || customSearchCtrl.queryInProgress">No Items</h5>
+        <div data-ng-show="customSearchCtrl.queryInProgress" id="wrap_spinner">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modals -->
+      <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+      <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
+    </div>
+
+    <footer class="table-footer">
+      <div class="row">
+        <div class="col-md-6 page-num-info">
+          <!--
+              <span>
+                  Show
+                  <select data-ng-model="numPerPage"
+                          data-ng-options="num for num in numPerPageOpt"
+                          data-ng-change="onNumPerPageChange()">
+                  </select>
+                  entries per page
+              </span>
+          -->
+        </div>
+        <div class="col-md-6 text-right pagination-container">
+          <pagination class="pagination-sm"
+                      ng-model="customSearchCtrl.currentPage"
+                      total-items="customSearchCtrl.numApps"
+                      max-size="8"
+                      ng-change="customSearchCtrl.onPageChange(customSearchCtrl.currentPage)"
+                      items-per-page="customSearchCtrl.numPerPage"
+                      rotate="false"
+                      boundary-links="true"></pagination>
+
+        </div>
+      </div>
+    </footer>
+
+  </section>
+
+</div>
