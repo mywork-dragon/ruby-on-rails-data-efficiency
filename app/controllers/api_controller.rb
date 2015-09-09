@@ -794,11 +794,11 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        scan_apk(aa.id)
+        # scan_apk(aa.id)
 
-        companies = aa.android_sdk_companies
+        # companies = aa.android_sdk_companies
 
-        updated = new_snap.updated_at
+        # updated = new_snap.updated_at
 
         error_code = 0
 
