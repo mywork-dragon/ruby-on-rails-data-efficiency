@@ -20,27 +20,41 @@ class PackageSearchServiceWorker
 
   end
 
-  def apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
+  # def apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
+
+  #   if Rails.env.production?
+
+  #     file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
+
+  #   elsif Rails.env.development?
+      
+  #     file_name = '../../Documents/' + app_identifier + '.apk'
+    
+  #   end
+    
+  #   file_name
+  
+  # end
+
+  def find_packages(app_identifier:, apk_snapshot_id:)
+
+    # file_name = apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
+
+    # apk = Android::Apk.new(file_name)
 
     if Rails.env.production?
 
       file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
 
+      apk = Android::Apk.new(open(file_name))
+
     elsif Rails.env.development?
       
       file_name = '../../Documents/' + app_identifier + '.apk'
+
+      apk = Android::Apk.new(file_name)
     
     end
-    
-    file_name
-  
-  end
-
-  def find_packages(app_identifier:, apk_snapshot_id:)
-
-    file_name = apk_file_name(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
-
-    apk = Android::Apk.new(file_name)
 
     dex = apk.dex
 
