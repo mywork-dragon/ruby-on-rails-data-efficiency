@@ -810,7 +810,9 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies, updated, error_code)
+    # render json: sdk_hash(companies, updated, error_code)
+
+    render json: 'hello'.to_json
 
   end
 
@@ -891,38 +893,38 @@ class ApiController < ApplicationController
     #   sleep 0.25
     # end
 
-    new_snap = nil
+    # new_snap = nil
 
-    Sidekiq.redis do |conn|
-      conn.psubscribe("batch-#{bid}") do |on|
-        on.pmessage do |pattern, channel, msg|
-          if msg == "+"
-            conn.punsubscribe
+    # Sidekiq.redis do |conn|
+    #   conn.psubscribe("batch-#{bid}") do |on|
+    #     on.pmessage do |pattern, channel, msg|
+    #       if msg == "+"
+    #         conn.punsubscribe
 
-            new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+    #         new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-            bid = channel.match(/batch-(.+)/)[1]
-            finalize_batch(bid)
+    #         bid = channel.match(/batch-(.+)/)[1]
+    #         finalize_batch(bid)
 
-            break
+    #         break
 
-          elsif msg == "-"
-            conn.punsubscribe
-            bid = channel.match(/batch-(.+)/)[1]
-            finalize_batch(bid)
+    #       elsif msg == "-"
+    #         conn.punsubscribe
+    #         bid = channel.match(/batch-(.+)/)[1]
+    #         finalize_batch(bid)
 
-            break
-            
-          end
-        end
-      end
-    end
+    #         break
+
+    #       end
+    #     end
+    #   end
+    # end
 
     # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
+    # download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
-    new_snap
+    # new_snap
 
   end
 
