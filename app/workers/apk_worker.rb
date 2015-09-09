@@ -104,7 +104,9 @@ module ApkWorker
 
       # rename file with version
 
-      file_name_with_version = apk_file_path + app_identifier + '_' + PackageVersion.get(file_name: file_name) + '.apk'
+      version = PackageVersion.get(file_name: file_name)
+
+      file_name_with_version = apk_file_path + app_identifier + '_' + version + '.apk'
       File.rename(file_name, file_name_with_version)
       apk_snap.version = version if version.present?
       
