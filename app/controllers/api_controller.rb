@@ -901,12 +901,6 @@ class ApiController < ApplicationController
       sleep 0.25
     end
 
-    # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-    # download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
-
-    # new_snap
-
   end
 
   def scan_apk(android_app_id)
