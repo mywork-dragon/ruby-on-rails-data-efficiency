@@ -734,7 +734,9 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated = companies = nil
+    updated = nil
+
+    companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -746,7 +748,7 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
-      packages = new_snap.android_sdk_packages
+      # packages = new_snap.android_sdk_packages
 
       if new_snap.status == "success"
 
