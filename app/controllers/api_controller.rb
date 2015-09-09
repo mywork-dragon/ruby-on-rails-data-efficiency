@@ -1017,6 +1017,7 @@ class ApiController < ApplicationController
     result_ids = AppsIndex::IosApp.query(
         multi_match: {
             query: query,
+            operator: 'and',
             fields: [:name, :seller_url, :company_name],
             type: 'most_fields',
             minimum_should_match: '3<75%',
