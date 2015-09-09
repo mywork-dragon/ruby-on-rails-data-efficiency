@@ -122,8 +122,8 @@ module ApkWorker
 
       aa.newest_apk_snapshot_id = apk_snap.id
       aa.save
-
-      af = ApkFile.find_or_create_by(apk: open(file_name))
+      
+      af = ApkFile.create!(apk: open(file_name))
 
       apk_snap.apk_file = af
       apk_snap.save
