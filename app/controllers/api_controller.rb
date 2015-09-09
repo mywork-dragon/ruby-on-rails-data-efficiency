@@ -791,32 +791,34 @@ class ApiController < ApplicationController
       app_identifier = aa.app_identifier
 
       begin
-        new_snap = download_apk(android_app_id, app_identifier)
-      rescue => e
-        ApkSnapshotException.create(name: "API CONTROLLER: #{e.message}")
+        download_apk(android_app_id, app_identifier)
+      rescue
+        nil
       end
 
-      # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-      # if new_snap.present? && new_snap.status == "success"
+      if new_snap.present? && new_snap.status == "success"
 
-      #   # scan_apk(aa.id)
+        begin
+          scan_apk(aa.id)
+        rescue
+          nil
+        end
 
-      #   # companies = aa.android_sdk_companies
+        companies = aa.android_sdk_companies
 
-      #   # updated = new_snap.updated_at
+        updated = new_snap.updated_at
 
-      #   error_code = 0
+        error_code = 0
 
-      # else
-      #   error_code = 3
-      # end
+      else
+        error_code = 3
+      end
 
     end
 
-    # render json: sdk_hash(companies, updated, error_code)
-
-    render json: 'hello'.to_json
+    render json: sdk_hash(companies, updated, error_code)
 
   end
 
@@ -897,11 +899,11 @@ class ApiController < ApplicationController
       sleep 0.25
     end
 
-    new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+    # new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
 
-    download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
+    # download_apk(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
 
-    new_snap
+    # new_snap
 
   end
 
