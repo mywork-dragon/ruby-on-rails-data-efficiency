@@ -43,9 +43,9 @@ class SdkCompanyServiceWorker
 
     name = camel_split(package.split('.').first)
 
-    %w(ads maps wallet analytics).each{|g| name = 'Google ' + g.capitalize if package.include? g } if package.include? 'google'
+    %w(ads maps wallet analytics drive admob doubleclick).each{|g| name = 'Google ' + g.capitalize if package.include? g } if package.include? 'google'
 
-    return nil if name.nil?
+    return nil if name.nil? || name.length <= 1
 
     name
 
@@ -242,7 +242,7 @@ class SdkCompanyServiceWorker
 
   def strip_prefix(package)
 
-    clean_package = package.gsub('co.','').gsub('main.','')
+    clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','')
 
     pre = clean_package.split('.').first
 
