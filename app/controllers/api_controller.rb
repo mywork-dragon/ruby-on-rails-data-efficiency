@@ -748,8 +748,6 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
-      # packages = new_snap.android_sdk_packages
-
       if new_snap.status == "success"
 
         updated = new_snap.updated_at
@@ -838,11 +836,13 @@ class ApiController < ApplicationController
 
         next if company.nil? || company.flagged
 
-        parent_company = if company.parent_company_id.present?
+        main_company = company.parent_company_id.present? ? AndroidSdkCompany.find(company.parent_company_id) : company
 
-          pc = AndroidSdkCompany.find(company.parent_company_id)
+        children = if company.parent_company_id.present?
 
-          { 'name' => pc.name, 'website' => pc.website, 'favicon' => pc.favicon }
+          cc = company
+
+          { 'name' => cc.name, 'website' => cc.website, 'favicon' => cc.favicon.nil? && cc.open_source ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
 
         else
 
@@ -852,11 +852,27 @@ class ApiController < ApplicationController
 
         if company.open_source
 
-          os_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+          if company.parent_company_id.blank?
+
+            os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+
+          else
+
+            co_hash[main_company.name]['children'] << children
+
+          end
 
         else
 
-          co_hash[company.name] = { 'website' => company.website, 'favicon' => company.favicon, 'android_app_count' => company.android_apps.count, 'parent_company' => parent_company }
+          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
+
+            co_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+
+          else
+
+            co_hash[main_company.name]['children'] << children
+
+          end
 
         end
 

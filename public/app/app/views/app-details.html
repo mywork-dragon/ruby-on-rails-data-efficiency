@@ -353,16 +353,28 @@
                           <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <ul>
+                            <li ng-repeat="subSdk in sdkValue['children']">
+                              <img src="{{subSdk['favicon']}}" ng-show="subSdk['favicon']">
+                              <a href="{{subSdk['website']}}" ng-show="{{subSdk['website']}}" target="_blank">{{subSdk['name']}}</a>
+                            </li>
+                          </ul>
                         </li>
                       </ul>
                     </div>
                     <div class="col-md-6" ng-show="sdkData.sdkOpenSource">
-                      <strong>Open-Source Packages</strong>
+                      <strong>Open-Source SDKs</strong>
                       <ul>
                         <li ng-repeat="(sdkCompName, sdkValue) in sdkData.sdkOpenSource">
                           <i class="fa fa-github"></i>
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <ul>
+                            <li ng-repeat="subSdk in sdkValue['children']">
+                              <img src="{{subSdk['favicon']}}" ng-show="subSdk['favicon']">
+                              <a href="{{subSdk['website']}}" ng-show="{{subSdk['website']}}" target="_blank">{{subSdk['name']}}</a>
+                            </li>
+                          </ul>
                         </li>
                       </ul>
                     </div>
