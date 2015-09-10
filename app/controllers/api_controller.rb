@@ -1023,7 +1023,7 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :company_name],
+            fields: [:name, :seller_url, :seller, :ratings_all],
             type: 'most_fields',
             minimum_should_match: '3<75%',
             fuzziness: '1',
@@ -1078,7 +1078,7 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :company_name],
+            fields: [:name, :seller_url, :seller, :ratings_all],
             type: 'most_fields',
             minimum_should_match: '3<75%',
             fuzziness: '1',
