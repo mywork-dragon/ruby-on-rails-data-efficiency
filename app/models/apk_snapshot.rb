@@ -5,11 +5,11 @@ class ApkSnapshot < ActiveRecord::Base
   	belongs_to :apk_snapshot_job
   	belongs_to :micro_proxy
 
-  	# will need to get rid of this
-  	# has_many :android_packages
-
   	has_many :android_sdk_packages_apk_snapshots
   	has_many :android_sdk_packages, through: :android_sdk_packages_apk_snapshots
+
+  	has_many :android_sdk_companies_apk_snapshots
+	has_many :android_sdk_companies, through: :android_sdk_companies_apk_snapshots
 
   	belongs_to :apk_file
 

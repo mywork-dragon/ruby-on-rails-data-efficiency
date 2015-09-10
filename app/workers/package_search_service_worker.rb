@@ -75,9 +75,7 @@ class PackageSearchServiceWorker
 
       if company_id.present?
 
-        aa = ApkSnapshot.find(apk_snapshot_id).android_app
-
-        AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+        AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
 
       end
 
