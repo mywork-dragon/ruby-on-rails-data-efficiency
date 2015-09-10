@@ -7533,6 +7533,14 @@ pre {
   margin-bottom: 10px;
 }
 
+.sdksListView ul ul:last-child {
+  margin-bottom: 0;
+}
+
+.sdksListView ul ul > li:first-child {
+  margin-top: 5px;
+}
+
 .sdksListView li {
   border: none;
   padding: 5px;
