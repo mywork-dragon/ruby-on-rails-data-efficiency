@@ -242,13 +242,13 @@ class SdkCompanyServiceWorker
 
   def strip_prefix(package)
 
-    clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','')
+    clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','').gsub('github.','')
 
     pre = clean_package.split('.').first
 
     package_arr = clean_package.split('.')
 
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk eu).include?(pre) || pre.blank?
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk eu fr).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
