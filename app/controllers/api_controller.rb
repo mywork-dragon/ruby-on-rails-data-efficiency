@@ -752,7 +752,7 @@ class ApiController < ApplicationController
 
         updated = new_snap.updated_at
 
-        companies = aa.android_sdk_companies
+        companies = new_snap.android_sdk_companies
 
         error_code = companies.count.zero? ? 1:0
 
@@ -806,7 +806,7 @@ class ApiController < ApplicationController
           nil
         end
 
-        companies = aa.android_sdk_companies
+        companies = new_snap.android_sdk_companies
 
         updated = new_snap.updated_at
 

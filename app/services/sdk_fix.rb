@@ -60,9 +60,9 @@ class SdkFix
 
 				AndroidSdkPackagesApkSnapshot.where(android_sdk_package: package).each do |a|
 
-					aa = ApkSnapshot.find(a.apk_snapshot_id).android_app
+					as = ApkSnapshot.find(a.apk_snapshot_id)
 
-					AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company: company, android_app: aa)
+					AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company: company, apk_snapshot: as)
 
 				end
 
@@ -84,9 +84,9 @@ class SdkFix
 
 				AndroidSdkPackagesApkSnapshot.where(android_sdk_package: package).each do |a|
 
-					aa = ApkSnapshot.find(a.apk_snapshot_id).android_app
+					as = ApkSnapshot.find(a.apk_snapshot_id)
 
-					ascaa = AndroidSdkCompaniesAndroidApp.where(android_sdk_company: company, android_app: aa).first
+					ascaa = AndroidSdkCompaniesApkSnapshot.where(android_sdk_company: company, apk_snapshot: as).first
 
 					ascaa.delete if ascaa.present?
 

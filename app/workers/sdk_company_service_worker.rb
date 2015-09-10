@@ -43,7 +43,9 @@ class SdkCompanyServiceWorker
 
     name = camel_split(package.split('.').first)
 
-    return nil if name.nil?
+    %w(ads maps wallet analytics drive admob doubleclick).each{|g| name = 'Google ' + g.capitalize if package.include? g } if package.include? 'google'
+
+    return nil if name.nil? || name.length <= 1
 
     name
 
@@ -70,7 +72,7 @@ class SdkCompanyServiceWorker
 
       asc = AndroidSdkCompany.create_with(website: website, parent_company_id: parent_company_id, open_source: github).find_or_create_by(name: name)
 
-      #delete this later
+      # delete this later
       # AndroidSdkPackagePrefix.find_or_create_by(prefix: name)
 
       aspp = AndroidSdkPackagePrefix.find_by_prefix(name)
@@ -240,13 +242,13 @@ class SdkCompanyServiceWorker
 
   def strip_prefix(package)
 
-    clean_package = package.gsub('co.','').gsub('main.','')
+    clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','').gsub('github.','')
 
     pre = clean_package.split('.').first
 
     package_arr = clean_package.split('.')
 
-    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk).include?(pre) || pre.blank?
+    package_arr.shift if %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk eu fr).include?(pre) || pre.blank?
 
     package = package_arr.join('.')
 
