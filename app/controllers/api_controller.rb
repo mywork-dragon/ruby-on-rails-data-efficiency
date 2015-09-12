@@ -1039,13 +1039,20 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :seller, :ratings_all],
+            fields: [:name, :seller_url], #, :seller, :ratings_all],
             type: 'most_fields',
             minimum_should_match: '3<75%',
             fuzziness: '1',
             prefix_length: '3'
-
         }
+    ).boost_factor(
+         5,
+         match: {
+             query: query,
+             operator: 'and',
+             fields: [:name], #, :seller],
+             minimum_should_match: '100%'
+         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
@@ -1094,11 +1101,19 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :seller, :ratings_all],
+            fields: [:name, :seller_url], # , :seller, :ratings_all],
             type: 'most_fields',
             minimum_should_match: '3<75%',
             fuzziness: '1',
             prefix_length: '3'
+        }
+    ).boost_factor(
+        5,
+        match: {
+            query: query,
+            operator: 'and',
+            fields: [:name], #, :seller],
+            minimum_should_match: '100%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
