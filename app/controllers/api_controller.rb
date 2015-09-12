@@ -1047,7 +1047,7 @@ class ApiController < ApplicationController
         }
     ).boost_factor(
          5,
-         match: {
+         multi_match: {
              query: query,
              operator: 'and',
              fields: [:name], #, :seller],
@@ -1109,7 +1109,7 @@ class ApiController < ApplicationController
         }
     ).boost_factor(
         5,
-        match: {
+        multi_match: {
             query: query,
             operator: 'and',
             fields: [:name], #, :seller],
