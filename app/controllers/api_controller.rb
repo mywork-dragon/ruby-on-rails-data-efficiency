@@ -754,6 +754,20 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
+        current_ids = companies.map(&:id)
+
+        total_ids = []
+
+        aa.apk_snapshots.joins(:android_sdk_companies).each do |cos|
+
+          cos_ids = cos.android_sdk_companies.map(&:id)
+
+          total_ids = total_ids + cos_ids
+
+        end
+
+        removed_companies = AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
+
         error_code = companies.count.zero? ? 1:0
 
       else
@@ -764,7 +778,7 @@ class ApiController < ApplicationController
  
     end
 
-    render json: sdk_hash(companies, updated, error_code)
+    render json: sdk_hash(companies, removed_companies, updated, error_code)
 
   end
 
@@ -822,9 +836,33 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies, last_updated, error_code)
+  def sdk_hash(companies, removed_companies, last_updated, error_code)
 
     main_hash = Hash.new
+
+    installed_co_hash, installed_os_hash = form_hash(companies)
+
+    uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
+
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
+    
+    main_hash['installed_sdk_companies'] = installed_co_hash
+
+    main_hash['installed_open_source_sdks'] = installed_os_hash
+
+    main_hash['uninstalled_sdk_companies'] = uninstalled_co_hash
+
+    main_hash['uninstalled_open_source_sdks'] = uninstalled_os_hash
+
+    main_hash['last_updated'] = last_updated
+
+    main_hash['error_code'] = error_code
+
+    main_hash.to_json
+
+  end
+
+  def form_hash(companies)
 
     co_hash = Hash.new
 
@@ -884,17 +922,7 @@ class ApiController < ApplicationController
 
     os_hash = sort_hash(os_hash)
 
-    error_code = 1 if co_hash.empty? && os_hash.empty? && error_code.zero?
-
-    main_hash['companies'] = co_hash
-
-    main_hash['open_source'] = os_hash
-
-    main_hash['last_updated'] = last_updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
+    return co_hash, os_hash
 
   end
 

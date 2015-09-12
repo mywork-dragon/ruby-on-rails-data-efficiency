@@ -242,7 +242,11 @@ class SdkCompanyServiceWorker
 
   def strip_prefix(package)
 
-    clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','').gsub('github.','')
+    # clean_package = package.gsub('co.','').gsub('main.','').gsub('googlecode.','').gsub('github.','').gsub('android.','').gsub('gms.','')
+
+    clean_package = package
+
+    %w(co. main. googlecode. github. android. gms.).each{ |w| clean_package = clean_package.gsub(w,'') }
 
     pre = clean_package.split('.').first
 

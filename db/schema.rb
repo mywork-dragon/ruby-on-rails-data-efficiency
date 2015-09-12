@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150910200207) do
+ActiveRecord::Schema.define(version: 20150911192947) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -192,6 +192,16 @@ ActiveRecord::Schema.define(version: 20150910200207) do
   add_index "android_sdk_companies", ["open_source"], name: "android_sdk_companies_open_source_index", using: :btree
   add_index "android_sdk_companies", ["parent_company_id"], name: "android_sdk_companies_parent_company_index", using: :btree
   add_index "android_sdk_companies", ["website"], name: "index_android_sdk_companies_on_website", using: :btree
+
+  create_table "android_sdk_companies_android_apps", force: true do |t|
+    t.integer  "android_sdk_company_id"
+    t.integer  "android_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdk_companies_android_apps", ["android_app_id", "android_sdk_company_id"], name: "index_android_app_id_android_sdk_company_id", using: :btree
+  add_index "android_sdk_companies_android_apps", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
 
   create_table "android_sdk_companies_apk_snapshots", force: true do |t|
     t.integer  "android_sdk_company_id"

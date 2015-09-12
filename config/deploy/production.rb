@@ -1,3 +1,5 @@
+raise 'ILLEGAL!'
+
 require_relative 'mighty_deployer'
 
 set :branch, 'master'
