@@ -244,7 +244,7 @@ GEM
     sidekiq-pro (2.0.7)
       sidekiq (>= 3.4.2)
     slack-notifier (1.2.1)
-    slackiq (0.0.2)
+    slackiq (1.0.1)
       httparty
     socksify (1.6.0)
     spidr (0.4.1)
@@ -339,7 +339,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   sidekiq-pro!
   slack-notifier (= 1.2.1)
-  slackiq (= 0.0.2)
+  slackiq (= 1.0.1)
   socksify (= 1.6.0)
   spidr (= 0.4.1)
   spring
