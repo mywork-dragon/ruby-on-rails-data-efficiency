@@ -1144,12 +1144,6 @@ class ApiController < ApplicationController
             minimum_should_match: '100%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
-
-    puts "#########"
-    puts result_ids
-    puts "#########"
-
-
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
