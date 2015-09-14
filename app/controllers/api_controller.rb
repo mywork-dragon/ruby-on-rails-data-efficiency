@@ -1075,8 +1075,10 @@ class ApiController < ApplicationController
         }
     ).boost_factor(
          5,
-         term: {
-             name: query
+         filter: {
+             term: {
+                 name: query
+             }
          }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
