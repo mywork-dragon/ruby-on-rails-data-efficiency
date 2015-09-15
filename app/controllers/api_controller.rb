@@ -754,19 +754,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        current_ids = companies.map(&:id)
-
-        total_ids = []
-
-        aa.apk_snapshots.joins(:android_sdk_companies).each do |cos|
-
-          cos_ids = cos.android_sdk_companies.map(&:id)
-
-          total_ids = total_ids + cos_ids
-
-        end
-
-        removed_companies = AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
+        removed_companies = get_removed_companies(aa)
 
         error_code = companies.count.zero? ? 1:0
 
@@ -786,7 +774,9 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated = companies = nil
+    updated = nil
+
+    companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -810,7 +800,7 @@ class ApiController < ApplicationController
         nil
       end
 
-      new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
+      new_snap = aa.newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -822,6 +812,8 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
+        removed_companies = get_removed_companies(aa)
+
         updated = new_snap.updated_at
 
         error_code = 0
@@ -832,7 +824,25 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies, updated, error_code)
+    render json: sdk_hash(companies, removed_companies, updated, error_code)
+
+  end
+
+  def get_removed_companies(android_app)
+
+    current_ids = companies.map(&:id)
+
+    total_ids = []
+
+    android_app.apk_snapshots.joins(:android_sdk_companies).each do |cos|
+
+      cos_ids = cos.android_sdk_companies.map(&:id)
+
+      total_ids = total_ids + cos_ids
+
+    end
+
+    AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
 
   end
 

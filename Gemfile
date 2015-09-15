@@ -149,3 +149,5 @@ gem 'paperclip', '4.3.0'
 
 gem 'aws-sdk', '< 2.0'
 
+gem 'colorize', '0.7.7'
+

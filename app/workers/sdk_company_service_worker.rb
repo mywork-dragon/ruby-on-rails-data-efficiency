@@ -43,7 +43,7 @@ class SdkCompanyServiceWorker
 
     name = camel_split(package.split('.').first)
 
-    %w(ads maps wallet analytics drive admob doubleclick).each{|g| name = 'Google ' + g.capitalize if package.include? g } if package.include? 'google'
+    %w(ads maps wallet analytics drive admob doubleclick plus).each{|g| name = 'Google ' + g.capitalize if package.include? g } if package.include? 'google'
 
     return nil if name.nil? || name.length <= 1
 
@@ -246,7 +246,7 @@ class SdkCompanyServiceWorker
 
     clean_package = package
 
-    %w(co. main. googlecode. github. android. gms.).each{ |w| clean_package = clean_package.gsub(w,'') }
+    %w(co. main. googlecode. github.).each{ |w| clean_package = clean_package.gsub(w,'') }
 
     pre = clean_package.split('.').first
 

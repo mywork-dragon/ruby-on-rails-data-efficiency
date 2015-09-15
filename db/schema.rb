@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150911192947) do
+ActiveRecord::Schema.define(version: 20150915033622) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -702,6 +702,12 @@ ActiveRecord::Schema.define(version: 20150911192947) do
   add_index "jp_ios_app_snapshots", ["job_identifier"], name: "index_jp_ios_app_snapshots_on_job_identifier", using: :btree
   add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
   add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
+
+  create_table "known_ios_words", force: true do |t|
+    t.string "word"
+  end
+
+  add_index "known_ios_words", ["word"], name: "index_known_ios_words_on_word", using: :btree
 
   create_table "listables_lists", force: true do |t|
     t.integer  "listable_id"
