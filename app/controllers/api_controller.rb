@@ -1074,23 +1074,12 @@ class ApiController < ApplicationController
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::IosApp.query(
-=begin
         multi_match: {
             query: query,
             operator: 'and',
             fields: [:name, :seller_url, :seller],
             type: 'cross_fields',
             fuzziness: 1
-        }
-=end
-        multi_match: {
-            query: query,
-            operator: 'and',
-            fields: [:name, :seller_url, :seller], # , :ratings_all],
-            type: 'most_fields',
-            minimum_should_match: '3<75%',
-            fuzziness: '1',
-            prefix_length: '3'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
@@ -1141,11 +1130,9 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :seller], # , :ratings_all],
-            type: 'most_fields',
-            minimum_should_match: '3<75%',
-            fuzziness: '1',
-            prefix_length: '3'
+            fields: [:name, :seller_url, :seller],
+            type: 'cross_fields',
+            fuzziness: 1
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
