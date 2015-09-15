@@ -1068,7 +1068,6 @@ class ApiController < ApplicationController
             query: query,
             operator: 'and',
             fields: [:name, :seller_url, :seller],
-            type: 'most_fields',
             minimum_should_match: '100%'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
