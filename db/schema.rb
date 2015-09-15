@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915033622) do
+ActiveRecord::Schema.define(version: 20150915195834) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -666,6 +666,16 @@ ActiveRecord::Schema.define(version: 20150915033622) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "ios_word_occurences", force: true do |t|
+    t.string   "word"
+    t.integer  "count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_word_occurences", ["count"], name: "index_ios_word_occurences_on_count", using: :btree
+  add_index "ios_word_occurences", ["word"], name: "index_ios_word_occurences_on_word", using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
     t.string   "name"
