@@ -1068,7 +1068,7 @@ class ApiController < ApplicationController
             query: query,
             operator: 'and',
             fields: [:name, :seller_url, :seller],
-            minimum_should_match: '100%'
+            type: 'cross_fields'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
