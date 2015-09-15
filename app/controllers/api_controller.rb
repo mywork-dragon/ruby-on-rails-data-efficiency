@@ -754,7 +754,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(aa, companies)
 
         error_code = companies.count.zero? ? 1:0
 
@@ -812,7 +812,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(aa, companies)
 
         updated = new_snap.updated_at
 
@@ -828,7 +828,7 @@ class ApiController < ApplicationController
 
   end
 
-  def get_removed_companies(android_app)
+  def get_removed_companies(android_app, companies)
 
     current_ids = companies.map(&:id)
 
