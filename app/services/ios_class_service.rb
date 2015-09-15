@@ -4,7 +4,7 @@ class IosClassService
 
 		def search_apple_docs
 
-			class_dump = File.open('../Zinio.classdump.txt').read
+			class_dump = File.open('Zinio.classdump.txt').read
 
 			clss = class_dump.scan(/(@property|@protocol|@interface|struct|_Bool|\(void\)|\(id\)|\(int\))(.*?)\n/m)
 
