@@ -814,6 +814,8 @@ class ApiController < ApplicationController
           nil
         end
 
+        sleep 20
+
         companies = new_snap.android_sdk_companies
 
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
