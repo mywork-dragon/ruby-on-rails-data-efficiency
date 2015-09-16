@@ -814,7 +814,7 @@ class ApiController < ApplicationController
           nil
         end
 
-        sleep 5
+        sleep 20
 
         companies = new_snap.android_sdk_companies
 
