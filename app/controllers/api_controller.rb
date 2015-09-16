@@ -738,6 +738,8 @@ class ApiController < ApplicationController
 
     companies = nil
 
+    removed_companies = nil
+
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
@@ -754,7 +756,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         error_code = companies.count.zero? ? 1:0
 
@@ -777,6 +779,8 @@ class ApiController < ApplicationController
     updated = nil
 
     companies = nil
+
+    removed_companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -812,7 +816,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         updated = new_snap.updated_at
 
@@ -830,7 +834,7 @@ class ApiController < ApplicationController
 
   end
 
-  def get_removed_companies(android_app)
+  def get_removed_companies(android_app:, companies:)
 
     current_ids = companies.map(&:id)
 
@@ -1076,23 +1080,12 @@ class ApiController < ApplicationController
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::IosApp.query(
-=begin
         multi_match: {
             query: query,
             operator: 'and',
             fields: [:name, :seller_url, :seller],
             type: 'cross_fields',
             fuzziness: 1
-        }
-=end
-        multi_match: {
-            query: query,
-            operator: 'and',
-            fields: [:name, :seller_url, :seller], # , :ratings_all],
-            type: 'most_fields',
-            minimum_should_match: '3<75%',
-            fuzziness: '1',
-            prefix_length: '3'
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
@@ -1143,11 +1136,9 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :seller], # , :ratings_all],
-            type: 'most_fields',
-            minimum_should_match: '3<75%',
-            fuzziness: '1',
-            prefix_length: '3'
+            fields: [:name, :seller_url, :seller],
+            type: 'cross_fields',
+            fuzziness: 1
         }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
