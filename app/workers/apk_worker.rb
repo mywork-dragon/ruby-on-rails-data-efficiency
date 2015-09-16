@@ -63,8 +63,6 @@ module ApkWorker
 
       ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
-      ApkSnapshotException.create(name: "download took #{dt.real} seconds")
-
     rescue => e
 
       status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
@@ -121,8 +119,6 @@ module ApkWorker
       apk_snap.auth_token = nil
       
       af = ApkFile.create!(apk: open(file_name))
-
-      ApkSnapshotException.create(name:"upload took #{ut.real} seconds")
 
       apk_snap.apk_file = af
       apk_snap.save
