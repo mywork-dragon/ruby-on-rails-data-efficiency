@@ -140,6 +140,8 @@ module ApkWorker
 
     scrape_type = is_single ? :live : :full
 
+    ApkSnapshotException.create(notes: scrape_type)
+
     gac = GoogleAccount.where(scrape_type: scrape_type).count
 
     gac.times do |c|
