@@ -61,7 +61,11 @@ module ApkWorker
 
       file_name = apk_file_path + app_identifier + ".apk"
 
-      ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      dt = Benchmark.measure do
+        ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
+      end
+
+      ApkSnapshotException.create(name: "download took #{dt.real} seconds")
 
     rescue => e
 
@@ -118,7 +122,11 @@ module ApkWorker
       apk_snap.status = :success
       apk_snap.auth_token = nil
       
-      af = ApkFile.create!(apk: open(file_name))
+      ut = Benchmark.measure do
+        af = ApkFile.create!(apk: open(file_name))
+      end
+
+      ApkSnapshotException.create(name:"upload took #{ut.real} seconds")
 
       apk_snap.apk_file = af
       apk_snap.save
