@@ -814,9 +814,9 @@ class ApiController < ApplicationController
           nil
         end
 
-        companies = new_snap.android_sdk_companies
+        sleep 5
 
-        ApkSnapshotException.create(name: "companies: #{companies.count}")
+        companies = new_snap.android_sdk_companies
 
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
