@@ -734,40 +734,6 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    # updated = nil
-
-    # companies = nil
-
-    # removed_companies = nil
-
-    # aa = AndroidApp.find(android_app_id)
-
-    # if aa.newest_apk_snapshot.blank?
-
-    #   error_code = 1
-
-    # else
-
-    #   new_snap = aa.newest_apk_snapshot
-
-    #   if new_snap.status == "success"
-
-    #     updated = new_snap.updated_at
-
-    #     companies = new_snap.android_sdk_companies
-
-    #     removed_companies = get_removed_companies(android_app: aa, companies: companies)
-
-    #     error_code = companies.count.zero? ? 1:0
-
-    #   else
-
-    #     error_code = 5
-
-    #   end
- 
-    # end
-
     companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
     render json: sdk_hash(companies, removed_companies, updated, error_code)
@@ -778,11 +744,7 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    # updated = nil
-
-    # companies = nil
-
-    # removed_companies = nil
+    updated, companies, removed_companies, error_code = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -816,15 +778,11 @@ class ApiController < ApplicationController
           nil
         end
 
-        # companies = new_snap.android_sdk_companies
-
-        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
-
-        # updated = new_snap.updated_at
-
-        # error_code = 0
-
-        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        begin
+          companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        rescue => e
+          ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
+        end
 
       else
         error_code = 3
