@@ -734,6 +734,110 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
+    # updated = nil
+
+    # companies = nil
+
+    # removed_companies = nil
+
+    # aa = AndroidApp.find(android_app_id)
+
+    # if aa.newest_apk_snapshot.blank?
+
+    #   error_code = 1
+
+    # else
+
+    #   new_snap = aa.newest_apk_snapshot
+
+    #   if new_snap.status == "success"
+
+    #     updated = new_snap.updated_at
+
+    #     companies = new_snap.android_sdk_companies
+
+    #     removed_companies = get_removed_companies(android_app: aa, companies: companies)
+
+    #     error_code = companies.count.zero? ? 1:0
+
+    #   else
+
+    #     error_code = 5
+
+    #   end
+ 
+    # end
+
+    companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+
+    render json: sdk_hash(companies, removed_companies, updated, error_code)
+
+  end
+
+  def scan_android_sdks
+
+    android_app_id = params['appId']
+
+    # updated = nil
+
+    # companies = nil
+
+    # removed_companies = nil
+
+    aa = AndroidApp.find(android_app_id)
+
+    price = aa.newest_android_app_snapshot.price.to_i
+
+    if aa.taken_down
+
+      error_code = 2
+
+    elsif !price.zero?
+
+      error_code = 4
+
+    else
+
+      app_identifier = aa.app_identifier
+
+      begin
+        download_apk(android_app_id, app_identifier)
+      rescue
+        nil
+      end
+
+      new_snap = aa.newest_apk_snapshot
+
+      if new_snap.present? && new_snap.status == "success"
+
+        begin
+          scan_apk(aa.id)
+        rescue
+          nil
+        end
+
+        # companies = new_snap.android_sdk_companies
+
+        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
+
+        # updated = new_snap.updated_at
+
+        # error_code = 0
+
+        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+
+      else
+        error_code = 3
+      end
+
+    end
+
+    render json: sdk_hash(companies, removed_companies, updated, error_code)
+
+  end
+
+  def get_sdks(android_app_id:)
+
     updated = nil
 
     companies = nil
@@ -768,69 +872,7 @@ class ApiController < ApplicationController
  
     end
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
-
-  end
-
-  def scan_android_sdks
-
-    android_app_id = params['appId']
-
-    updated = nil
-
-    companies = nil
-
-    removed_companies = nil
-
-    aa = AndroidApp.find(android_app_id)
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    if aa.taken_down
-
-      error_code = 2
-
-    elsif !price.zero?
-
-      error_code = 4
-
-    else
-
-      app_identifier = aa.app_identifier
-
-      begin
-        download_apk(android_app_id, app_identifier)
-      rescue
-        nil
-      end
-
-      new_snap = aa.newest_apk_snapshot
-
-      if new_snap.present? && new_snap.status == "success"
-
-        begin
-          scan_apk(aa.id)
-        rescue
-          nil
-        end
-
-        sleep 20
-
-        companies = new_snap.android_sdk_companies
-
-        removed_companies = get_removed_companies(android_app: aa, companies: companies)
-
-        updated = new_snap.updated_at
-
-        error_code = 0
-
-      else
-        error_code = 3
-      end
-
-    end
-
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    return companies, removed_companies, updated, error_code
 
   end
 
