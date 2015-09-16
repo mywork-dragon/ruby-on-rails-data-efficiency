@@ -768,7 +768,7 @@ class ApiController < ApplicationController
  
     end
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
   end
 
@@ -828,7 +828,7 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
   end
 
@@ -850,7 +850,7 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies, removed_companies, last_updated, error_code)
+  def sdk_hash(companies:, removed_companies:, last_updated:, error_code:)
 
     main_hash = Hash.new
 
