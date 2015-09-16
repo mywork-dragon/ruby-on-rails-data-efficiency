@@ -45,8 +45,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             }
           }
           $scope.sdkData = {
-            'sdkCompanies': data.companies,
-            'sdkOpenSource': data.open_source,
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
             'lastUpdated': data.last_updated,
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
@@ -151,11 +153,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         }
         if(data) {
           $scope.sdkData = {
-           'sdkCompanies': data.companies,
-           'sdkOpenSource': data.open_source,
-           'lastUpdated': data.last_updated,
-           'errorCode': data.error_code,
-           'errorMessage': sdkErrorMessage
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.last_updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
           };
         }
       }).error(function() {

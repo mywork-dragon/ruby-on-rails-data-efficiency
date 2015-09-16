@@ -738,6 +738,8 @@ class ApiController < ApplicationController
 
     companies = nil
 
+    removed_companies = nil
+
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.blank?
@@ -754,7 +756,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         error_code = companies.count.zero? ? 1:0
 
@@ -777,6 +779,8 @@ class ApiController < ApplicationController
     updated = nil
 
     companies = nil
+
+    removed_companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -812,7 +816,7 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(aa)
+        removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         updated = new_snap.updated_at
 
@@ -828,7 +832,7 @@ class ApiController < ApplicationController
 
   end
 
-  def get_removed_companies(android_app)
+  def get_removed_companies(android_app:, companies:)
 
     current_ids = companies.map(&:id)
 
