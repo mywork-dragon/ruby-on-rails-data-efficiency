@@ -27,11 +27,7 @@ class PackageSearchServiceWorker
 
       file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
 
-      sdt = Benchmark.measure do
-        apk = Android::Apk.new(open(file_name))
-      end
-
-      ApkSnapshotException.create(name: "s3 download took #{sdt.real} seconds")
+      apk = Android::Apk.new(open(file_name))
 
     elsif Rails.env.development?
       
@@ -61,12 +57,8 @@ class PackageSearchServiceWorker
 
     clss.uniq.compact.uniq.each do |package_name|
 
-      spt = Benchmark.measure do
-        save_package(package_name: package_name, apk_snapshot_id: apk_snapshot_id)
-      end
-
-      ApkSnapshotException.create(name: "Saving the package took #{spt.real} seconds")
-
+      save_package(package_name: package_name, apk_snapshot_id: apk_snapshot_id)
+      
     end
 
   end
