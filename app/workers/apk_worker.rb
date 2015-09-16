@@ -138,15 +138,15 @@ module ApkWorker
 
     is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
 
-    scrape_type = is_single ? :live : :full
+    # scrape_type = is_single ? :live : :full
 
-    ApkSnapshotException.create(name: scrape_type)
+    # ApkSnapshotException.create(name: scrape_type)
 
-    gac = GoogleAccount.where(scrape_type: scrape_type).count
+    gac = GoogleAccount.where(scrape_type: is_single ? 1:0).count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id, scrape_type, bid)
+      account = fresh_account(apk_snap_id, is_single, bid)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -165,14 +165,14 @@ module ApkWorker
 
   end
 
-  def fresh_account(apk_snap_id, scrape_type, bid)
+  def fresh_account(apk_snap_id, is_single, bid)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
 
     stop = 10000000000
 
     g = GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false, scrape_type: scrape_type).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
+      ga = GoogleAccount.lock.where(in_use: false, scrape_type: is_single ? 1:0).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
