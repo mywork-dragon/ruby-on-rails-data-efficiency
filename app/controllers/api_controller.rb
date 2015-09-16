@@ -824,6 +824,8 @@ class ApiController < ApplicationController
 
     end
 
+    ApkSnapshotException.create(name: "companies : #{companies.count}, removed_companies : #{removed_companies.count}")
+
     render json: sdk_hash(companies, removed_companies, updated, error_code)
 
   end
