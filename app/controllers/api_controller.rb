@@ -816,6 +816,8 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
+        ApkSnapshotException.create(name: "companies: #{companies.count}")
+
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         updated = new_snap.updated_at
@@ -827,8 +829,6 @@ class ApiController < ApplicationController
       end
 
     end
-
-    ApkSnapshotException.create(name: "companies : #{companies.count}, removed_companies : #{removed_companies.count}")
 
     render json: sdk_hash(companies, removed_companies, updated, error_code)
 
