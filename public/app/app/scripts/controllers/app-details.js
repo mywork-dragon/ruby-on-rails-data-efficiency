@@ -119,8 +119,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       "SDK Live Scan Clicked", {
         'companyName': $scope.appData.company.name,
         'appName': $scope.appData.name,
-        'appId': $scope.appData.id,
-        'appPlatform': appPlatform
+        'appId': $scope.appData.id
       }
     );
     /* -------- Mixpanel Analytics End -------- */
