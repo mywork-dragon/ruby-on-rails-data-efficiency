@@ -770,7 +770,7 @@ class ApiController < ApplicationController
       #   nil
       # end
 
-      download_apk(android_app_id, app_identifier)
+      job_id = download_apk(android_app_id, app_identifier)
 
       new_snap = aa.newest_apk_snapshot
 
@@ -782,7 +782,7 @@ class ApiController < ApplicationController
         #   nil
         # end
 
-        scan_apk(aa.id)
+        scan_apk(aa.id, job_id)
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
@@ -952,12 +952,14 @@ class ApiController < ApplicationController
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
 
-    batch = Sidekiq::Batch.new
-    bid = batch.bid
+    # batch = Sidekiq::Batch.new
+    # bid = batch.bid
 
-    batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
-    end
+    # batch.jobs do
+    #   ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+    # end
+
+    ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
 
     # sleep 10
 
@@ -970,16 +972,20 @@ class ApiController < ApplicationController
       break if ss.present? && ss.status.present?
     end
 
+    job_id
+
   end
 
-  def scan_apk(android_app_id)
+  def scan_apk(android_app_id, job_id)
 
-    batch = Sidekiq::Batch.new
-    bid = batch.bid
+    # batch = Sidekiq::Batch.new
+    # bid = batch.bid
 
-    batch.jobs do
-      PackageSearchServiceWorker.perform_async(android_app_id)
-    end
+    # batch.jobs do
+    #   PackageSearchServiceWorker.perform_async(android_app_id)
+    # end
+
+    PackageSearchServiceWorker.perform_async(android_app_id)
 
     360.times do
       # break if Sidekiq::Batch::Status.new(bid).complete?
