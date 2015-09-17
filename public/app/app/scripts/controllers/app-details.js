@@ -192,6 +192,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       });
   };
 
+  $scope.isEmpty = function(obj) {
+    return Object.keys(obj).length === 0;
+  };
+
   /* Company Contacts Logic */
   $scope.contactsLoading = false;
   $scope.contactsLoaded = false;
