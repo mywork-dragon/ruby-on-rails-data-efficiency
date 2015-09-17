@@ -796,7 +796,7 @@ class ApiController < ApplicationController
 
     # render json: sdk_hash(companies, removed_companies, updated, error_code)
 
-    render json: error_code.to_json
+    render json: sdk_hash(nil,nil,nil,error_code)
 
   end
 
@@ -967,10 +967,8 @@ class ApiController < ApplicationController
       # break if Sidekiq::Batch::Status.new(bid).complete?
       # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
       # sleep 0.25
-      sleep 20
+      sleep 10
     end
-
-    0
 
   end
 
