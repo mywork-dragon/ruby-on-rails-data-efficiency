@@ -964,9 +964,12 @@ class ApiController < ApplicationController
     # sleep 10
 
     360.times do
-      break if Sidekiq::Batch::Status.new(bid).complete?
-      # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
+      # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
+      
+      ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+
+      break if ss && ss.status.present?
     end
 
   end
