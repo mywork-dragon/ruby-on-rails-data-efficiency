@@ -975,7 +975,8 @@ class ApiController < ApplicationController
       # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
 
-      ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+      ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
       puts "ss: #{ss}, ss.id: #{ss.id}"
 
       puts "ss object: #{ss.inspect}"
