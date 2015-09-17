@@ -125,8 +125,7 @@ module ApkWorker
       apk_snap.apk_file = af
 
       # debugging
-      apk_snap.scan_status = 1
-      apk_snap.auth_token = 'blah blah blah'
+      apk_snap.auth_token = ''
 
       apk_snap.save
 
