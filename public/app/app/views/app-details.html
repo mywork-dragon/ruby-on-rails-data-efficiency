@@ -415,7 +415,7 @@
                     </div>
                   </div>
                 </li>
-                <li id="appPageSdkScanStatus" ng-if="!noSdkData && !sdkQueryInProgress">
+                <li id="appPageSdkScanStatus" ng-if="noSdkData || sdkQueryInProgress">
                   <div ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
                   </div>
