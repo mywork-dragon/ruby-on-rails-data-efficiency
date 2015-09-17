@@ -20,6 +20,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
           var sdkErrorMessage = "";
+          $scope.noSdkData = false;
           if(data == null) {
             $scope.noSdkData = true;
             $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
@@ -129,6 +130,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
         var sdkErrorMessage = "";
+        $scope.noSdkData = false;
         if(data == null) {
           $scope.noSdkData = true;
           $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
