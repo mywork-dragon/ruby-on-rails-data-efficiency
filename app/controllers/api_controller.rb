@@ -992,7 +992,7 @@ class ApiController < ApplicationController
 
       if ss.present?
 
-        ss.save
+        5.times{ ss.reload(lock: true) }
 
         puts "ss.status: #{ss.status}"
 
