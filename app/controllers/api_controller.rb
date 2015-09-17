@@ -983,7 +983,7 @@ class ApiController < ApplicationController
 
       # puts "ss: #{ss}, ss.id: #{ss.id}"
 
-      ss.reload
+      ss.save
 
       puts "ss object: #{ss.inspect}"
 
