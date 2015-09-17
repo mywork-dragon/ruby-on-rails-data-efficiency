@@ -952,7 +952,7 @@ class ApiController < ApplicationController
     hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
   end
 
-  def download_apk(android_app_id, app_identifier
+  def download_apk(android_app_id, app_identifier)
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
 
