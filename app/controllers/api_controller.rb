@@ -963,12 +963,13 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
-    360.times do
-      # break if Sidekiq::Batch::Status.new(bid).complete?
-      # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
-      # sleep 0.25
-      sleep 10
-    end
+    sleep 10
+
+    # 360.times do
+    #   # break if Sidekiq::Batch::Status.new(bid).complete?
+    #   # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
+    #   # sleep 0.25
+    # end
 
   end
 
