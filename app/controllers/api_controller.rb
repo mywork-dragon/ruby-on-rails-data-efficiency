@@ -776,17 +776,15 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        begin
-          scan_apk(aa.id)
-        rescue => e
-          nil
-        end
+        # begin
+        #   scan_apk(aa.id)
+        # rescue => e
+        #   nil
+        # end
 
-        begin
-          companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-        rescue => e
-          ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
-        end
+        scan_apk(aa.id)
+
+        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
         error_code = 3
@@ -966,7 +964,7 @@ class ApiController < ApplicationController
     360.times do
       # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
-      
+
       ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
 
       break if ss && ss.status.present?
@@ -984,8 +982,12 @@ class ApiController < ApplicationController
     end
 
     360.times do
-      break if Sidekiq::Batch::Status.new(bid).complete?
+      # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
+
+      ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+
+      break if ss && ss.scan_status.present?
     end
 
   end
