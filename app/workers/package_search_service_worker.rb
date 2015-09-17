@@ -61,7 +61,7 @@ class PackageSearchServiceWorker
 
       apk_snap = ApkSnapshot.find_by_id(apk_snapshot_id)
 
-      apk_snap.scan_statuses[:scan_success]
+      apk_snap = apk_snap.scan_statuses[:scan_success]
       
       apk_snap.save
       
