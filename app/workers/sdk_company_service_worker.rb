@@ -56,6 +56,8 @@ class SdkCompanyServiceWorker
 
     # aa = ApkSnapshot.find(apk_snapshot_id).android_app
 
+    return nil if name.nil?
+
     url = google_search(name)
 
     github_url, company_name = github_google_search(name) if url.blank?
@@ -389,7 +391,7 @@ class SdkCompanyServiceWorker
       url = cite.inner_text
 
       if url.include?('github.io/')
-        repo_name = url.gsub('https://','').split('/')[1]
+        repo_name = url.gsub('https://','').gsub('http://','').split('/')[1]
 
         clean_query = query.downcase.gsub(' ','')
         clean_repo_name = repo_name.downcase
