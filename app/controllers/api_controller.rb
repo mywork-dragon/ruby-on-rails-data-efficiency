@@ -776,7 +776,7 @@ class ApiController < ApplicationController
 
         begin
           scan_apk(aa.id)
-        rescue
+        rescue => e
           ApkSnapshotException.create(name: "Finished scanning: #{e.message}", backtrace: e.backtrace)
         end
 
