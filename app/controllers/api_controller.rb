@@ -987,12 +987,9 @@ class ApiController < ApplicationController
 
       puts "ss object: #{ss.inspect}"
 
-
-      #break if ss.present? && ss.status.present?
+      ss = ss.reload if ss.present?
 
       if ss.present?
-
-        5.times{ ss.reload(lock: true) }
 
         puts "ss.status: #{ss.status}"
 
