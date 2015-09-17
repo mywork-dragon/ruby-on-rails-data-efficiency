@@ -980,9 +980,15 @@ class ApiController < ApplicationController
 
       #break if ss.present? && ss.status.present?
 
-      if ss.present? && ss.status.present?
-        puts 'BREAK'
-        break
+      if ss.present?
+
+        puts "ss.status: #{ss.status}"
+
+        if ss.status.present?
+          puts 'BREAK'
+          break
+        end
+
       end
     end
 
