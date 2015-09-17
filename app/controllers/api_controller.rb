@@ -987,23 +987,19 @@ class ApiController < ApplicationController
 
       puts "ss object: #{ss.inspect}"
 
-      if ss.present?
-        puts "BREAK"
-        break
-      end
 
       #break if ss.present? && ss.status.present?
 
-      # if ss.present?
+      if ss.present?
 
-      #   puts "ss.status: #{ss.status}"
+        puts "ss.status: #{ss.status}"
 
-      #   if ss.status.present?
-      #     puts 'BREAK'
-      #     break
-      #   end
+        if ss.status.present?
+          puts 'BREAK'
+          break
+        end
 
-      # end
+      end
     end
 
     puts '#5'
