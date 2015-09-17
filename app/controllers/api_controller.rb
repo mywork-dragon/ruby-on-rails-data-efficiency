@@ -736,7 +736,7 @@ class ApiController < ApplicationController
 
     companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
   end
 
@@ -854,7 +854,7 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies, removed_companies, last_updated, error_code)
+  def sdk_hash(companies:, removed_companies:, updated:, error_code:)
 
     main_hash = Hash.new
 
@@ -872,7 +872,7 @@ class ApiController < ApplicationController
 
     main_hash['uninstalled_open_source_sdks'] = uninstalled_os_hash
 
-    main_hash['last_updated'] = last_updated
+    main_hash['updated'] = updated
 
     main_hash['error_code'] = error_code
 

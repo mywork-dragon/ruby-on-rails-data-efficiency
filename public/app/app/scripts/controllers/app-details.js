@@ -117,7 +117,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "SDK Live Scan Clicked", {
-        'companyName': $scope.appData.company.name
+        'companyName': $scope.appData.company.name,
+        'appName': $scope.appData.name,
+        'appId': $scope.appData.id
       }
     );
     /* -------- Mixpanel Analytics End -------- */
@@ -188,6 +190,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         hiddenElement.download = 'contacts.csv';
         hiddenElement.click();
       });
+  };
+
+  $scope.isEmpty = function(obj) {
+    return Object.keys(obj).length === 0;
   };
 
   /* Company Contacts Logic */
