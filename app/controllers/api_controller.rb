@@ -983,7 +983,7 @@ class ApiController < ApplicationController
 
       # puts "ss: #{ss}, ss.id: #{ss.id}"
 
-      ss.save
+      
 
       puts "ss object: #{ss.inspect}"
 
@@ -991,6 +991,8 @@ class ApiController < ApplicationController
       #break if ss.present? && ss.status.present?
 
       if ss.present?
+
+        ss.save
 
         puts "ss.status: #{ss.status}"
 
