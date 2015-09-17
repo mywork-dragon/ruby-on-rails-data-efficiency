@@ -779,7 +779,7 @@ class ApiController < ApplicationController
         begin
           scan_apk(aa.id)
         rescue => e
-          ApkSnapshotException.create(name: "Finished scanning: #{e.message}", backtrace: e.backtrace)
+          nil
         end
 
         begin
@@ -964,8 +964,8 @@ class ApiController < ApplicationController
     # sleep 10
 
     360.times do
-      break if Sidekiq::Batch::Status.new(bid).complete?
-      # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
+      # break if Sidekiq::Batch::Status.new(bid).complete?
+      break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
       sleep 0.25
     end
 
