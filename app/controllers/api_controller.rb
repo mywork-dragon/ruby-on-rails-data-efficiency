@@ -978,6 +978,8 @@ class ApiController < ApplicationController
       ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
       puts "ss: #{ss}, ss.id: #{ss.id}"
 
+      puts "ss object: #{ss.inspect}"
+
       #break if ss.present? && ss.status.present?
 
       if ss.present?
