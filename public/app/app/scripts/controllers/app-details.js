@@ -49,7 +49,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'sdkOpenSource': data.installed_open_source_sdks,
             'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
             'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
-            'lastUpdated': data.last_updated,
+            'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
