@@ -977,7 +977,7 @@ class ApiController < ApplicationController
 
       # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
       
-      ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
       # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).where.not(status: nil)
 
@@ -987,7 +987,7 @@ class ApiController < ApplicationController
 
       puts "ss object: #{ss.inspect}"
 
-      ss = ss.reload(lock: true) if ss.present?
+      # ss = ss.reload(lock: true) if ss.present?
 
       if ss.present?
 
