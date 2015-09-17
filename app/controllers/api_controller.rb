@@ -764,13 +764,13 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      # begin
-      #   download_apk(android_app_id, app_identifier)
-      # rescue
-      #   nil
-      # end
+      begin
+        download_apk(android_app_id, app_identifier)
+      rescue
+        nil
+      end
 
-      download_apk(android_app_id, app_identifier)
+      # download_apk(android_app_id, app_identifier)
 
       new_snap = aa.newest_apk_snapshot
 
@@ -964,8 +964,8 @@ class ApiController < ApplicationController
     # sleep 10
 
     360.times do
-      # break if Sidekiq::Batch::Status.new(bid).complete?
-      break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
+      break if Sidekiq::Batch::Status.new(bid).complete?
+      # break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
       sleep 0.25
     end
 
