@@ -7352,10 +7352,6 @@ select option:empty {
   padding-top: 15px;
 }
 
-#appPageSdkScanStatus #sdkScanErrorMessage h5{
-  padding-left: 20px;
-}
-
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;
