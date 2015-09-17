@@ -764,23 +764,11 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      # begin
-      #   download_apk(android_app_id, app_identifier)
-      # rescue
-      #   nil
-      # end
-
       job_id = download_apk(android_app_id, app_identifier)
 
       new_snap = aa.newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
-
-        # begin
-        #   scan_apk(aa.id)
-        # rescue => e
-        #   nil
-        # end
 
         scan_apk(aa.id, job_id)
 
@@ -798,19 +786,11 @@ class ApiController < ApplicationController
 
   def get_sdks(android_app_id:)
 
-    updated = nil
-
-    companies = nil
-
-    removed_companies = nil
+    updated, companies, removed_companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
-    if aa.newest_apk_snapshot.blank?
-
-      error_code = 1
-
-    else
+    if aa.newest_apk_snapshot.present?
 
       new_snap = aa.newest_apk_snapshot
 
@@ -822,14 +802,18 @@ class ApiController < ApplicationController
 
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
-        error_code = companies.count.zero? ? 1:0
+        error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
 
       else
 
         error_code = 5
 
       end
- 
+
+    else
+
+      error_code = 3
+
     end
 
     return companies, removed_companies, updated, error_code
