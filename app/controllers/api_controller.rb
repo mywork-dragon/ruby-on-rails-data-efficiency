@@ -782,9 +782,9 @@ class ApiController < ApplicationController
         #   nil
         # end
 
-        # scan_apk(aa.id, job_id)
+        scan_apk(aa.id, job_id)
 
-        # companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
         error_code = 3
@@ -1022,7 +1022,9 @@ class ApiController < ApplicationController
       # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
 
-      ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+
+      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
       break if ss.present? && ss.scan_status.present?
     end
