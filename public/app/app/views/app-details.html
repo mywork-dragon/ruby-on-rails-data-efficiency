@@ -162,7 +162,7 @@
                 <li ng-if="appData.downloadsMin && appData.downloadsMax">
                   <span class="icon fa fa-download"></span>
                   <label>Total Downloads:</label>
-                  {{appData.downloadsMin | thousandSuffix}} - {{appData.downloadsMax | thousandSuffix}}
+                  {{appData.downloadsMin | humanizeNum}} - {{appData.downloadsMax | humanizeNum}}
                 </li>
                 <li ng-if="appData.size">
                   <span class="icon fa fa-arrows"></span>
