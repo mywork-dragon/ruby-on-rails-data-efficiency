@@ -896,7 +896,7 @@ class ApiController < ApplicationController
 
           cc = company
 
-          { 'name' => cc.name, 'website' => cc.website, 'favicon' => cc.favicon.nil? && cc.open_source ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
+          { 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
 
         else
 
