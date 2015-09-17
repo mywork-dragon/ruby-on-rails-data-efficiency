@@ -762,11 +762,13 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      begin
-        download_apk(android_app_id, app_identifier)
-      rescue
-        nil
-      end
+      # begin
+      #   download_apk(android_app_id, app_identifier)
+      # rescue
+      #   nil
+      # end
+
+      download_apk(android_app_id, app_identifier)
 
       new_snap = aa.newest_apk_snapshot
 
@@ -948,9 +950,9 @@ class ApiController < ApplicationController
     hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
   end
 
-  def download_apk(android_app_id, app_identifier, job_id = nil, tries = 0)
+  def download_apk(android_app_id, app_identifier)
 
-    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
+    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
     batch = Sidekiq::Batch.new
     bid = batch.bid
 
@@ -959,7 +961,8 @@ class ApiController < ApplicationController
     end
 
     360.times do
-      break if Sidekiq::Batch::Status.new(bid).complete?
+      # break if Sidekiq::Batch::Status.new(bid).complete?
+      break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
       sleep 0.25
     end
 
