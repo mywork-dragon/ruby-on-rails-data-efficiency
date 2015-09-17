@@ -742,55 +742,55 @@ class ApiController < ApplicationController
 
   def scan_android_sdks
 
-    android_app_id = params['appId']
+    # android_app_id = params['appId']
 
-    updated, companies, removed_companies, error_code = nil
+    # updated, companies, removed_companies, error_code = nil
 
-    aa = AndroidApp.find(android_app_id)
+    # aa = AndroidApp.find(android_app_id)
 
-    price = aa.newest_android_app_snapshot.price.to_i
+    # price = aa.newest_android_app_snapshot.price.to_i
 
-    if aa.taken_down
+    # if aa.taken_down
 
-      error_code = 2
+    #   error_code = 2
 
-    elsif !price.zero?
+    # elsif !price.zero?
 
-      error_code = 4
+    #   error_code = 4
 
-    else
+    # else
 
-      app_identifier = aa.app_identifier
+    #   app_identifier = aa.app_identifier
 
-      begin
-        download_apk(android_app_id, app_identifier)
-      rescue
-        nil
-      end
+    #   begin
+    #     download_apk(android_app_id, app_identifier)
+    #   rescue
+    #     nil
+    #   end
 
-      new_snap = aa.newest_apk_snapshot
+    #   new_snap = aa.newest_apk_snapshot
 
-      if new_snap.present? && new_snap.status == "success"
+    #   if new_snap.present? && new_snap.status == "success"
 
-        begin
-          scan_apk(aa.id)
-        rescue
-          nil
-        end
+    #     begin
+    #       scan_apk(aa.id)
+    #     rescue
+    #       nil
+    #     end
 
-        begin
-          companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-        rescue => e
-          ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
-        end
+    #     begin
+    #       companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+    #     rescue => e
+    #       ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
+    #     end
 
-      else
-        error_code = 3
-      end
+    #   else
+    #     error_code = 3
+    #   end
 
-    end
+    # end
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    # render json: sdk_hash(companies, removed_companies, updated, error_code)
 
   end
 
