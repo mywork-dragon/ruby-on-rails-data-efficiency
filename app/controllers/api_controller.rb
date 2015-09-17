@@ -976,23 +976,32 @@ class ApiController < ApplicationController
       sleep 0.25
 
       # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
-      ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      puts "ss: #{ss}, ss.id: #{ss.id}"
+      
+      #ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+
+      ss = ApkSnapshot.where(apk_snapshot_job_id: 1417).where.not(status: nil)
+
+      # puts "ss: #{ss}, ss.id: #{ss.id}"
 
       puts "ss object: #{ss.inspect}"
 
+      if ss.present?
+        puts "BREAK"
+        break
+      end
+
       #break if ss.present? && ss.status.present?
 
-      if ss.present?
+      # if ss.present?
 
-        puts "ss.status: #{ss.status}"
+      #   puts "ss.status: #{ss.status}"
 
-        if ss.status.present?
-          puts 'BREAK'
-          break
-        end
+      #   if ss.status.present?
+      #     puts 'BREAK'
+      #     break
+      #   end
 
-      end
+      # end
     end
 
     puts '#5'
