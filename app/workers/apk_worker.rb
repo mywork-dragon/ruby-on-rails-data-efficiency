@@ -118,11 +118,16 @@ module ApkWorker
       apk_snap.last_device = GoogleAccount.devices[best_account.device]
       apk_snap.download_time = download_time
       apk_snap.status = :success
-      apk_snap.auth_token = nil
+      # apk_snap.auth_token = nil
       
       af = ApkFile.create!(apk: open(file_name))
 
       apk_snap.apk_file = af
+
+      # debugging
+      apk_snap.scan_status = 1
+      apk_snap.auth_token = 'blah blah blah'
+
       apk_snap.save
 
       # save snapshot to app
