@@ -748,6 +748,8 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
+    error_code = 1 # default
+
     price = aa.newest_android_app_snapshot.price.to_i
 
     if aa.taken_down
@@ -785,8 +787,6 @@ class ApiController < ApplicationController
         rescue => e
           ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
         end
-
-        error_code = 1
 
       else
         error_code = 3
