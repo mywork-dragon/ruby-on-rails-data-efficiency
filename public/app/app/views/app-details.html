@@ -382,7 +382,7 @@
                           </li>
                         </ul>
                       </div>
-                      <div class="col-md-6" ng-hide="isEmpty(sdkData.sdkOpenSource) && isEmpty(sdkData.uninstalledSdkOpenSource)">
+                      <div class="col-md-6 sdkOpenSourceSection" ng-hide="isEmpty(sdkData.sdkOpenSource) && isEmpty(sdkData.uninstalledSdkOpenSource)">
                         <strong ng-hide="isEmpty(sdkData.sdkOpenSource)">Open-Source SDKs</strong>
                         <ul ng-hide="isEmpty(sdkData.sdkOpenSource)">
                           <li ng-repeat="(sdkCompName, sdkValue) in sdkData.sdkOpenSource">
@@ -418,7 +418,7 @@
                   </div>
                 </li>
                 <li id="appPageSdkScanStatus" ng-if="noSdkData || sdkQueryInProgress">
-                  <div ng-show="noSdkData">
+                  <div id="sdkScanErrorMessage" ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
                   </div>
                   <div data-ng-show="sdkQueryInProgress" id="wrap_spinner">

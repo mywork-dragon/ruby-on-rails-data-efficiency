@@ -7352,6 +7352,10 @@ select option:empty {
   padding-top: 15px;
 }
 
+#appPageSdkScanStatus #sdkScanErrorMessage h5{
+  padding-left: 20px;
+}
+
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;
@@ -7560,4 +7564,11 @@ pre {
 
 #mainSearchBox {
   padding-left: 0;
+}
+
+.sdkOpenSourceSection .fa-github {
+  color: black;
+  font-size: 18px;
+  position: relative;
+  top: 2px;
 }
