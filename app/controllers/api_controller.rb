@@ -764,13 +764,13 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      begin
-        download_apk(android_app_id, app_identifier)
-      rescue
-        nil
-      end
+      # begin
+      #   download_apk(android_app_id, app_identifier)
+      # rescue
+      #   nil
+      # end
 
-      # download_apk(android_app_id, app_identifier)
+      download_apk(android_app_id, app_identifier)
 
       new_snap = aa.newest_apk_snapshot
 
@@ -967,7 +967,7 @@ class ApiController < ApplicationController
 
       ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
 
-      break if ss && ss.status.present?
+      break if ss.present? && ss.status.present?
     end
 
   end
@@ -987,7 +987,7 @@ class ApiController < ApplicationController
 
       ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
 
-      break if ss && ss.scan_status.present?
+      break if ss.present? && ss.scan_status.present?
     end
 
   end
