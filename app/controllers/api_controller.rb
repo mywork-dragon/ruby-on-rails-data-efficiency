@@ -794,7 +794,9 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies, removed_companies, updated, error_code)
+    # render json: sdk_hash(companies, removed_companies, updated, error_code)
+
+    render json: error_code.to_json
 
   end
 
@@ -953,6 +955,7 @@ class ApiController < ApplicationController
   def download_apk(android_app_id, app_identifier)
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
+
     batch = Sidekiq::Batch.new
     bid = batch.bid
 
@@ -965,6 +968,8 @@ class ApiController < ApplicationController
       break if ApkSnapshot.where(apk_snapshot_job_id: job_id).first.status.present?
       sleep 0.25
     end
+
+    0
 
   end
 
