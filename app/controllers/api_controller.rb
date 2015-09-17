@@ -952,14 +952,14 @@ class ApiController < ApplicationController
 
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
 
-    # batch = Sidekiq::Batch.new
-    # bid = batch.bid
+    batch = Sidekiq::Batch.new
+    bid = batch.bid
 
-    # batch.jobs do
-    #   ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
-    # end
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+    end
 
-    ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+    # ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
 
     # sleep 10
 
