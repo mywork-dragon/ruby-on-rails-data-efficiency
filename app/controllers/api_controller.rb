@@ -742,7 +742,7 @@ class ApiController < ApplicationController
 
   def scan_android_sdks
 
-    android_app_id = params['appId']
+    # android_app_id = params['appId']
 
     # updated, companies, removed_companies, error_code = nil
 
@@ -795,8 +795,6 @@ class ApiController < ApplicationController
     # end
 
     # render json: sdk_hash(companies, removed_companies, updated, error_code)
-
-    render json: sdk_hash(nil,nil,nil,1)
 
   end
 
