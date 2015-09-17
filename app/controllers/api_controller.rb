@@ -987,7 +987,7 @@ class ApiController < ApplicationController
 
       puts "ss object: #{ss.inspect}"
 
-      ss = ss.reload if ss.present?
+      ss = ss.reload(lock: true) if ss.present?
 
       if ss.present?
 
