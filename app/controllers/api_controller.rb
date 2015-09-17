@@ -977,11 +977,13 @@ class ApiController < ApplicationController
 
       # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
       
-      #ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
 
-      ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).where.not(status: nil)
+      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).where.not(status: nil)
 
       # puts "ss: #{ss}, ss.id: #{ss.id}"
+
+      ss.reload
 
       puts "ss object: #{ss.inspect}"
 
