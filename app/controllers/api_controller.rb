@@ -772,17 +772,19 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        begin
-          scan_apk(aa.id)
-        rescue
-          nil
-        end
+        # begin
+        #   scan_apk(aa.id)
+        # rescue
+        #   ApkSnapshotException.create(name: "Finished scanning: #{e.message}", backtrace: e.backtrace)
+        # end
 
-        begin
-          companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-        rescue => e
-          ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
-        end
+        # begin
+        #   companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        # rescue => e
+        #   ApkSnapshotException.create(name: "Scan Problem: #{e.message}", backtrace: e.backtrace)
+        # end
+
+        error_code = 1
 
       else
         error_code = 3
