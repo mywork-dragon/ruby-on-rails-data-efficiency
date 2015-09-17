@@ -7512,7 +7512,7 @@ pre {
   padding-left: 15px;
 }
 
-#sdkLiveScanDisplay .list-info li {
+#sdkLiveScanDisplay .list-info li, #appPageSdkScanStatus .list-info li {
   border-bottom: none;
 }
 
