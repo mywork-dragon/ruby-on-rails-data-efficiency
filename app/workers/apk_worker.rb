@@ -101,10 +101,11 @@ module ApkWorker
 
       apk_snap.save
       
-      need_to_raise = retry_possibly(apk_snapshot_job_id, bid, android_app_id)
+      #need_to_raise = retry_possibly(apk_snapshot_job_id, bid, android_app_id)
 
-      raise if need_to_raise
+      #raise if need_to_raise
 
+      raise 
     else
 
       end_time = Time.now()
