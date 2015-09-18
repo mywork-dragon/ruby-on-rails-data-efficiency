@@ -752,7 +752,7 @@ class ApiController < ApplicationController
 
     price = aa.newest_android_app_snapshot.price.to_i
 
-    if aa.taken_down
+    if aa.taken_down?
 
       error_code = 2
 
