@@ -59,13 +59,13 @@ class PackageSearchServiceWorker
 
       save_package(package_name: package_name, apk_snapshot_id: apk_snapshot_id)
 
-      apk_snap = ApkSnapshot.find_by_id(apk_snapshot_id)
-      
-      apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_success]
-
-      apk_snap.save
-
     end
+
+    apk_snap = ApkSnapshot.find_by_id(apk_snapshot_id)
+      
+    apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_success]
+
+    apk_snap.save
 
   end
 
