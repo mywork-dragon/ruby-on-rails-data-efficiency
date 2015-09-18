@@ -776,8 +776,18 @@ class ApiController < ApplicationController
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
-      else
+      elsif new_snap.present?
+      
+        new_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
+
+        new_snap.save
+
         error_code = 3
+      
+      else
+        
+        error_code = 3
+
       end
 
     end
