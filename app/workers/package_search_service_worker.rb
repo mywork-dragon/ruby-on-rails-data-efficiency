@@ -57,7 +57,7 @@ class PackageSearchServiceWorker
 
     batch = Sidekiq::Batch.new
 
-    batch.on(:complete, 'apk_snapshot_id' => apk_snapshot_id)
+    batch.on(:complete, PackageSearchServiceWorker, 'apk_snapshot_id' => apk_snapshot_id)
 
     batch.jobs do
 
