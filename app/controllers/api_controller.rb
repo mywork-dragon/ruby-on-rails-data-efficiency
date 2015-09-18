@@ -904,7 +904,7 @@ class ApiController < ApplicationController
 
         if company.open_source
 
-          if company.parent_company_id.blank?
+          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
 
             os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
 
