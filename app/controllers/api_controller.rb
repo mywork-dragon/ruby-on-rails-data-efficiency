@@ -748,7 +748,7 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    error_code = 1 # default
+    error_code = 1
 
     price = aa.newest_android_app_snapshot.price.to_i
 
@@ -771,6 +771,8 @@ class ApiController < ApplicationController
       if new_snap.present? && new_snap.status == "success"
 
         scan_apk(aa.id, job_id)
+
+        ApkSnapshotException.create(name: "Scan was a success. APP_ID : #{aa.id}, NEWEST_APK_SNAPSHOT_ID : #{aa.newest_apk_snapshot_id}")
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
@@ -934,58 +936,29 @@ class ApiController < ApplicationController
 
   def download_apk(android_app_id, app_identifier)
 
-    puts '#0'
-
     job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
-
-    puts '#1'
 
     batch = Sidekiq::Batch.new
     bid = batch.bid
 
     batch.jobs do
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
-      puts '#2'
     end
 
-    # ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+    360.times do
 
-    # sleep 10
-
-    puts '#3'
-
-    360.times do |n|
-      puts "#4, loop #{n}"
-      # break if Sidekiq::Batch::Status.new(bid).complete?
       sleep 0.25
-
-      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
       
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).where.not(status: nil)
-
-      # puts "ss: #{ss}, ss.id: #{ss.id}"
-
-      
-
-      puts "ss object: #{ss.inspect}"
-
-      # ss = ss.reload(lock: true) if ss.present?
-
       if ss.present?
 
-        puts "ss.status: #{ss.status}"
-
         if ss.status.present?
-          puts 'BREAK'
           break
         end
 
       end
     end
-
-    puts '#5'
 
     job_id
 
@@ -993,20 +966,11 @@ class ApiController < ApplicationController
 
   def scan_apk(android_app_id, job_id)
 
-    # batch = Sidekiq::Batch.new
-    # bid = batch.bid
-
-    # batch.jobs do
-    #   PackageSearchServiceWorker.perform_async(android_app_id)
-    # end
-
     PackageSearchServiceWorker.perform_async(android_app_id)
 
     360.times do
-      # break if Sidekiq::Batch::Status.new(bid).complete?
-      sleep 0.25
 
-      # ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).first
+      sleep 0.25
 
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
