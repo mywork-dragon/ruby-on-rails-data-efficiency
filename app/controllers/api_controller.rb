@@ -858,7 +858,9 @@ class ApiController < ApplicationController
 
     # uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
 
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
+    # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
+
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero?
     
     main_hash['installed_sdk_companies'] = installed_co_hash
 
