@@ -393,6 +393,8 @@ class SdkCompanyServiceWorker
       if url.include?('github.io/')
         repo_name = url.gsub('https://','').gsub('http://','').split('/')[1]
 
+        return nil if repo_name.nil?
+
         clean_query = query.downcase.gsub(' ','')
         clean_repo_name = repo_name.downcase
         
