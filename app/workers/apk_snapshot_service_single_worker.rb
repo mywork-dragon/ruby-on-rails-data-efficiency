@@ -6,7 +6,7 @@ class ApkSnapshotServiceSingleWorker
   
   include ApkWorker
 
-  def initialize(item_name, quantity)
+  def initialize
     @retry = 0
   end
 
