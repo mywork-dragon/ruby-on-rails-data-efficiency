@@ -69,6 +69,10 @@ module ApkWorker
 
     rescue => e
 
+      li "\n"
+      li e.backtrace
+      li "\n"
+
       status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
 
       message = e.message.to_s.split("| status_code:")[0].to_s.strip
