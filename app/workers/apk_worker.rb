@@ -67,8 +67,6 @@ module ApkWorker
 
     rescue => e
 
-      retry_possibly(apk_snapshot_job_id, bid, android_app_id)
-
       status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
 
       message = e.message.to_s.split("| status_code:")[0].to_s.strip
@@ -95,7 +93,9 @@ module ApkWorker
 
       apk_snap.save
       
-      raise
+      retry_possibly(apk_snapshot_job_id, bid, android_app_id)
+
+      #raise
 
     else
 
