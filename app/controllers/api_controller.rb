@@ -856,7 +856,7 @@ class ApiController < ApplicationController
 
     installed_co_hash, installed_os_hash = form_hash(companies)
 
-    uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
+    # uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
 
     error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
     
@@ -864,9 +864,9 @@ class ApiController < ApplicationController
 
     main_hash['installed_open_source_sdks'] = installed_os_hash
 
-    main_hash['uninstalled_sdk_companies'] = uninstalled_co_hash
+    main_hash['uninstalled_sdk_companies'] = {}
 
-    main_hash['uninstalled_open_source_sdks'] = uninstalled_os_hash
+    main_hash['uninstalled_open_source_sdks'] = {}
 
     main_hash['updated'] = updated
 
