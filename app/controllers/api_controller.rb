@@ -772,7 +772,7 @@ class ApiController < ApplicationController
 
         scan_apk(aa.id, job_id)
 
-        ApkSnapshotException.create(name: "Scan was a success. APP_ID : #{aa.id}, NEWEST_APK_SNAPSHOT_ID : #{aa.newest_apk_snapshot_id}")
+        # ApkSnapshotException.create(name: "Scan was a success. APP_ID : #{aa.id}, NEWEST_APK_SNAPSHOT_ID : #{aa.newest_apk_snapshot_id}")
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
@@ -801,6 +801,8 @@ class ApiController < ApplicationController
         updated = new_snap.updated_at
 
         companies = new_snap.android_sdk_companies
+
+        ApkSnapshotException.create(name: "Companies : #{companies.count}")
 
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
