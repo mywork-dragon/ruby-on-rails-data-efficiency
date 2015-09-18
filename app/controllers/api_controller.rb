@@ -906,11 +906,11 @@ class ApiController < ApplicationController
 
           if co_hash[main_company.name].blank? || company.parent_company_id.blank?
 
-            os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact.uniq }
+            os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
 
           else
 
-            co_hash[main_company.name]['children'] << children
+            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
 
           end
 
@@ -918,11 +918,11 @@ class ApiController < ApplicationController
 
           if co_hash[main_company.name].blank? || company.parent_company_id.blank?
 
-            co_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact.uniq }
+            co_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
 
           else
 
-            co_hash[main_company.name]['children'] << children
+            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
 
           end
 
