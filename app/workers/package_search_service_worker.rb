@@ -82,14 +82,43 @@ class PackageSearchServiceWorker
       if company_id.present?
 
         aa = ApkSnapshot.find(apk_snapshot_id).android_app
-        
-        AndroidSdkCompaniesApkSnapshot.transaction do
-          AndroidSdkCompaniesApkSnapshot.lock.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
+
+        ascas = AndroidSdkCompaniesApkSnapshot.transaction do
+          AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id).first
         end
 
-        AndroidSdkCompaniesAndroidApp.transaction do
-          AndroidSdkCompaniesAndroidApp.lock.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+        if ascas.nil?
+
+          AndroidSdkCompaniesApkSnapshot.transaction do
+            AndroidSdkCompaniesApkSnapshot.create(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
+          end
+
         end
+
+        ascaa = AndroidSdkCompaniesAndroidApp.transaction do
+          AndroidSdkCompaniesAndroidApp.where(android_sdk_company_id: company_id, android_app_id: aa.id).first
+        end
+
+
+        if ascaa.nil?
+
+          AndroidSdkCompaniesAndroidApp.transaction do
+            AndroidSdkCompaniesAndroidApp.create(android_sdk_company_id: company_id, android_app_id: aa.id)
+          end
+
+        end
+
+
+        
+        # AndroidSdkCompaniesApkSnapshot.transaction do
+        #   AndroidSdkCompaniesApkSnapshot.lock.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
+        # end
+
+        # AndroidSdkCompaniesAndroidApp.transaction do
+        #   AndroidSdkCompaniesAndroidApp.lock.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+        # end
+
+
 
       end
 
