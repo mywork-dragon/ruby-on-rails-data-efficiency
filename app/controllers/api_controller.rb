@@ -734,7 +734,19 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+    updated, companies, removed_companies, error_code = nil
+
+    price = aa.newest_android_app_snapshot.price.to_i
+
+    if !price.zero?
+
+      error_code = 4
+
+    else
+
+      companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+
+    end
 
     render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
