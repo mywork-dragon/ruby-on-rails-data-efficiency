@@ -1190,4 +1190,10 @@ class ApiController < ApplicationController
     end
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
+
+  def test_timeout
+    sleep 65
+    render json: {test:'complete'}
+  end
+
 end
