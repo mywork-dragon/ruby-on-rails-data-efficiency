@@ -101,9 +101,9 @@ module ApkWorker
 
       apk_snap.save
       
-      retry_possibly(apk_snapshot_job_id, bid, android_app_id)
+      need_to_raise = retry_possibly(apk_snapshot_job_id, bid, android_app_id)
 
-      #raise
+      raise if need_to_raise
 
     else
 

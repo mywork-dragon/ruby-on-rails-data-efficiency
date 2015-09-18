@@ -10,11 +10,13 @@ class ApkSnapshotServiceSingleWorker
     @retry = 0
   end
 
+  # Returns true if need to raise exception (hit the last retry)
   def retry_possibly(apk_snapshot_job_id, bid, android_app_id)
-    return if @retry == 3 # 3 retries max
+    return true if @retry == 3 # 3 retries max
     @retry += 1
     li "Retry #{@retry}"
     download_apk(apk_snapshot_job_id, bid, android_app_id)
+    false
   end
 
 end
