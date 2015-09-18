@@ -44,6 +44,8 @@ Rails.application.routes.draw do
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
 
+  get 'api/test_timeout' => 'api#test_timeout'
+
   post 'api/contacts/export_to_csv' => 'api#export_contacts_to_csv'
 
   get 'api/results' => 'api#results'
