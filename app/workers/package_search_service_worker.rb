@@ -82,16 +82,24 @@ class PackageSearchServiceWorker
       if company_id.present?
 
         aa = ApkSnapshot.find(apk_snapshot_id).android_app
+        
+        AndroidSdkCompaniesApkSnapshot.transaction do
+          AndroidSdkCompaniesApkSnapshot.lock.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
+        end
 
-        AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
-
-        AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+        AndroidSdkCompaniesAndroidApp.transaction do
+          AndroidSdkCompaniesAndroidApp.lock.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
+        end
 
       end
 
-      package = AndroidSdkPackage.create_with(android_sdk_package_prefix: prefix).find_or_create_by(package_name: package_name)
+      package = AndroidSdkPackage.transaction do
+        AndroidSdkPackage.lock.create_with(android_sdk_package_prefix: prefix).find_or_create_by(package_name: package_name)
+      end
 
-      AndroidSdkPackagesApkSnapshot.find_or_create_by(android_sdk_package_id: package.id, apk_snapshot_id: apk_snapshot_id)
+      AndroidSdkPackagesApkSnapshot.transaction do
+        AndroidSdkPackagesApkSnapshot.lock.find_or_create_by(android_sdk_package_id: package.id, apk_snapshot_id: apk_snapshot_id)
+      end
 
     end
 
