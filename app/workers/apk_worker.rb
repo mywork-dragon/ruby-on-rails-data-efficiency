@@ -42,6 +42,8 @@ module ApkWorker
 
       best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
 
+      li "best_account: #{best_account.inspect}"
+
       raise "no best account" if best_account.nil?
 
       apk_snap.google_account_id = best_account.id
