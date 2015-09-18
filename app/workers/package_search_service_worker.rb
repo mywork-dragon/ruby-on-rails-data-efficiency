@@ -73,7 +73,7 @@ class PackageSearchServiceWorker
 
   def on_complete(status, options)
 
-    apk_snap = ApkSnapshot.find_by_id(apk_snapshot_id)
+    apk_snap = ApkSnapshot.find_by_id(options['apk_snapshot_id'])
       
     apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_success]
 
