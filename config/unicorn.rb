@@ -19,4 +19,4 @@ listen "/tmp/unicorn.varys.sock"
 worker_processes 4
 
 # Time-out
-timeout 180
+timeout 210
