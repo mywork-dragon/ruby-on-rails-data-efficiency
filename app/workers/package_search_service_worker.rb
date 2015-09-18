@@ -93,7 +93,7 @@ class PackageSearchServiceWorker
 
       end
 
-      package = AndroidSdkPackage.lock.create_with(android_sdk_package_prefix: prefix).find_or_create_by(package_name: package_name)
+      package = AndroidSdkPackage.create_with(android_sdk_package_prefix: prefix).find_or_create_by(package_name: package_name)
 
       AndroidSdkPackagesApkSnapshot.transaction do
         AndroidSdkPackagesApkSnapshot.lock.find_or_create_by(android_sdk_package_id: package.id, apk_snapshot_id: apk_snapshot_id)
