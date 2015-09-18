@@ -71,7 +71,9 @@ module ApkWorker
 
       message = e.message.to_s.split("| status_code:")[0].to_s.strip
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
+      apk_snap_id = apk_snap.blank? ? nil : apk_snap.id
+
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
       best_account.in_use = false
       best_account.save
       
