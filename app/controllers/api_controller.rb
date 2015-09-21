@@ -1190,7 +1190,7 @@ class ApiController < ApplicationController
         filter: {
             range:{
                 ratings_all: {
-                    gte: 150000
+                    gte: 1000000
                 }
             }
         }
@@ -1199,8 +1199,8 @@ class ApiController < ApplicationController
         filter: {
             range:{
                 ratings_all: {
-                    gte: 100000,
-                    lt: 150000
+                    gte: 1000000,
+                    lt: 140000
                 }
             }
         }
