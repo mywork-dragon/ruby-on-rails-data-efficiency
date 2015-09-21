@@ -17,13 +17,14 @@ module MightyDeployer
   @sdk_scraper_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :staging]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_dev, :staging]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
     define_web_servers if server_symbols.include?(:web)
     define_scraper_servers if server_symbols.include?(:scraper)
     define_sdk_scraper_servers if server_symbols.include?(:sdk_scraper)
+    # I think I need to set up development on the same server as sdk_scraper
     define_staging_servers if server_symbols.include?(:staging)
     
     define_roles
