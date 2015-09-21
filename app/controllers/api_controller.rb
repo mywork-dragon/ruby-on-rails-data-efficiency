@@ -1111,11 +1111,32 @@ class ApiController < ApplicationController
             type: 'cross_fields',
             fuzziness: 1
         }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 150000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 100000,
+                    lt: 150000
+                }
+            }
+        }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
+
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_apps = IosApp.find(result_ids)
+    ios_apps = []
+    result_ids.each{ |id| ios_apps << IosApp.find(id) }
     results_json = []
 
     ios_apps.each do |app|
@@ -1164,11 +1185,31 @@ class ApiController < ApplicationController
             type: 'cross_fields',
             fuzziness: 1
         }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 150000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 100000,
+                    lt: 150000
+                }
+            }
+        }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_apps = AndroidApp.find(result_ids)
+    android_apps = []
+    result_ids.each{ |id| android_apps << AndroidApp.find(id) }
     results_json = []
 
     android_apps.each do |app|
