@@ -18,7 +18,7 @@ class IosClassService
 
 					str = str.gsub(/\((.*?)\)/m,'').gsub(/[^a-z0-9\s]/i,'').gsub('Bool','').gsub('Init','').gsub('init','').strip.split(' ').first
 
-					IosClassServiceWorker.perform_async(str)
+					IosClassServiceWorker.new.perform(str)
 
 					# words = str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip unless str.present?
 
