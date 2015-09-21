@@ -24,17 +24,7 @@ class SavePackageServiceWorker
 
         aa = ApkSnapshot.find(apk_snapshot_id).android_app
 
-        # AndroidSdkCompaniesApkSnapshot        
-
-        ascas = AndroidSdkCompaniesApkSnapshot.transaction do
-
-          AndroidSdkCompaniesApkSnapshot.lock.where(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id).first
-
-        end
-
-        AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id) if ascas.nil?
-
-        # AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
+        AndroidSdkCompaniesApkSnapshot.find_or_create_by(android_sdk_company_id: company_id, apk_snapshot_id: apk_snapshot_id)
 
         AndroidSdkCompaniesAndroidApp.find_or_create_by(android_sdk_company_id: company_id, android_app_id: aa.id)
 
