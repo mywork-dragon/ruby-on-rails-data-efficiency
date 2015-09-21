@@ -139,3 +139,5 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 gem 'slackiq', '1.0.1'
 
 gem 'slack-notifier', '1.2.1'
+
+gem 'awesome_print', '1.6.1'
