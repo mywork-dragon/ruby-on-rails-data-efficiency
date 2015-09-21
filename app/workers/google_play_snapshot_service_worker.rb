@@ -96,7 +96,7 @@ class GooglePlaySnapshotServiceWorker
       s.save!
 
       #set user base
-      if defined?(downloads)
+      if defined?(downloads) && downloads
         if downloads.max >= 5e6
           user_base = :elite
         elsif downloads.max >= 500e3
