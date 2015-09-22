@@ -814,13 +814,13 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    puts "STAGE 1  ###############"
-    puts android_app_id
-    puts "###"
-    puts aa
-    puts "###"
-    puts aa.inspect
-    puts "STAGE 1  ###############"
+    logger.info("STAGE 1  ###############")
+    logger.info( android_app_id)
+    logger.info( "###")
+    logger.info( aa)
+    logger.info( "###")
+    logger.info( aa.inspect)
+    logger.info( "STAGE 1  ###############")
 
     if aa.newest_apk_snapshot.present?
 
