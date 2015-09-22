@@ -154,6 +154,15 @@ if defined?(ApkDownloader)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
+      # proxy = '169.45.70.23:8888' if Rails.env.development?
+
+      puts "req: #{req}"
+      puts "params: #{params}"
+      puts "type: #{type}"
+      puts "proxy_ip: #{proxy_ip}"
+      puts "proxy_port: #{proxy_port}"
+      puts "apk_snap_id: #{apk_snap_id}"
+
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy
         curb.ssl_verify_peer = false
@@ -236,7 +245,7 @@ if defined?(ApkDownloader)
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
         'X-DFE-Device-Id' => ga.android_identifier,
         'X-DFE-Client-Id' => 'am-android-google',
-        'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
+        'User-Agent' => 'Android-com.android.vending/5.8.8 (api=80380800,versionCode=4,sdk=22,device=flounder,hardware=flounder,product=volantis)',
         'X-DFE-SmallestScreenWidthDp' => '320',
         'X-DFE-Filter-Level' => '3',
         'Accept-Encoding' => '',
