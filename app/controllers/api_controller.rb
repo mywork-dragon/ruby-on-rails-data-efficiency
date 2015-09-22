@@ -734,6 +734,8 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
+    aa = AndroidApp.find(android_app_id)
+
     updated, companies, removed_companies, error_code = nil
 
     price = aa.newest_android_app_snapshot.price.to_i
