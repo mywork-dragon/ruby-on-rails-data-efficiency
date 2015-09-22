@@ -7249,6 +7249,16 @@ i.infoTooltipIcon {
   display: none !important;
 }
 
+#lists-sidebar-navigation ul > li > a {
+  display: table;
+  width: 100%;
+}
+
+#lists-sidebar-navigation ul > li > a > i {
+  display: table-cell;
+  width: 25px;
+}
+
 /* Hides empty option */
 select option:empty {
   display: none;
