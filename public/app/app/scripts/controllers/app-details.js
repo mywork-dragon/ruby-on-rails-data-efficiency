@@ -145,7 +145,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
               break;
             case 3:
-              sdkErrorMessage = "Error - Please Try Again Later";
+              sdkErrorMessage = "Error - Please Try Again";
               break;
             case 4:
               sdkErrorMessage = "SDKs Not Available for Paid Apps";
