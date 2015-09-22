@@ -28,21 +28,151 @@ class IosClassServiceWorker
 
   end
 
+
+  def string(first_str = 'helloimacooldude', second_str = 'hellosometimesieatcheese')
+
+    first_arr = first_str.downcase.split('')
+
+    second_arr = second_str.downcase.split('')
+
+    [first_arr, second_arr].each.with_index do |str, str_ind|
+
+      stop_at = str.length
+
+      double_letters = str.map.with_index do |letter, index|
+
+        if index < stop_at - 1
+          
+          letter + str[index+1]
+
+        end
+
+      end
+
+    end
+
+  end
+
+
   def in_cocoapods(q)
 
-    cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{q}&ids=20&offset=0&sort=quality").read).to_a
+    words = q.split(/(?=[A-Z])/)
 
-    first_words = cocoapods['allocations'][0][5].map{ |p| puts p['id'].split('-').first }
+    words.each.with_index do |word, index|
 
-    first_word = first_words.max_by{ |p| first_words.count(p) }
+      index = words.count - index
 
-    # test text similarity
+      str = index.times.map do |i|
 
-    if first_word.downcase == q
-      puts q.green
-    else
-      puts q.red
+        words[i]
+
+      end
+
+      str = str.join
+
+      puts str
+
+      sleep 0.2
+
+      # cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{URI.escape(str)}&ids=20&offset=0&sort=quality").read).to_h
+
+      # if cocoapods['allocations'].present?
+
+      #   pod = cocoapods['allocations'][0][5].select{|x| x['link'].exclude?('github.') }.sort_by{|x| x['id'].size }.first
+
+      #   if pod.present?
+
+      #     if str.similar(pod['id']) >= 80
+      #       puts q.green
+      #     else
+      #       puts q.red
+      #     end
+
+      #   else
+
+      #     pod = cocoapods['allocations'][0][5].sort_by{|x| x['id'].size }.first
+
+      #     return if pod['id'].blank?
+
+      #     if str.similar(pod['id']) >= 80
+      #       puts q.blue
+      #     else
+      #       puts q.red
+      #     end
+
+      #   end
+
+      # else
+
+      #   puts q.red
+
+      # end
+
+
+
+
+
+
     end
+
+
+
+
+
+
+
+    # q.split(/(?=[A-Z])/).each.with_index do |word, index|
+
+    #   str = 
+
+    #   cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{URI.escape(str)}&ids=20&offset=0&sort=quality").read).to_h
+
+    #   if cocoapods['allocations'].present?
+
+    #     pod = cocoapods['allocations'][0][5].select{|x| x['link'].exclude?('github.') }.sort_by{|x| x['id'].size }.first
+
+    #     if pod.present?
+
+    #       if (first_word.similar(new_name) >= 80
+    #         puts q.green
+    #       else
+    #         puts q.red
+    #       end
+
+    #     else
+
+    #       pod = cocoapods['allocations'][0][5].sort_by{|x| x['id'].size }.first
+
+    #       return if new_name.blank?
+
+    #       if first_word.similar(pod['id']) >= 80
+    #         puts q.blue
+    #       else
+    #         puts q.red
+    #       end
+
+    #     end
+
+    #   else
+
+    #     puts q.red
+
+    #   end
+
+    # end
+
+
+    # first_word = first_words.max_by{ |p| first_words.count(p) }
+
+    # return false if first_word.blank?
+
+    # if q.similar(first_word) >= 80
+    #   puts q.green
+    # else
+    #   puts q.red
+    # end
+
+    nil
 
   end
 
