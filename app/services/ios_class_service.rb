@@ -56,7 +56,9 @@ class IosClassService
 
 				  #   end
 
-					IosClassServiceWorker.new.perform(str)
+					# IosClassServiceWorker.new.perform(str)
+
+					puts str
 
 					# puts str
 
