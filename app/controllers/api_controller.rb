@@ -810,7 +810,7 @@ class ApiController < ApplicationController
 
   def get_sdks(android_app_id:)
 
-    updated, companies, removed_companies = nil
+    updated, companies, error_code = 0, removed_companies = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -835,10 +835,6 @@ class ApiController < ApplicationController
         error_code = 5
 
       end
-
-    else
-
-      error_code = 0
 
     end
 
