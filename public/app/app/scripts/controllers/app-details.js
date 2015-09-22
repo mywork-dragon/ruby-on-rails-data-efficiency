@@ -184,7 +184,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'uninstalledSdkOpenSource': $scope.sdkData.uninstalledSdkOpenSource,
             'lastUpdated': $scope.sdkData.lastUpdated,
             'errorCode': $scope.sdkData.errorCode,
-            'errorMessage': errorMessage
+            'errorMessage': $scope.sdkData.errorMessage
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -204,7 +204,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         );
         /* -------- Mixpanel Analytics End -------- */
       });
-
   };
 
   authService.permissions()
