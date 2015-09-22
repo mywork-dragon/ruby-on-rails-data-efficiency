@@ -198,7 +198,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorType': 'Web Server',
             'errorStatus': err
           }
         );
