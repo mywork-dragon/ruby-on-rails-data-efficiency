@@ -814,14 +814,6 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    logger.info("STAGE 1  ###############")
-    logger.info( android_app_id)
-    logger.info( "###")
-    logger.info( aa)
-    logger.info( "###")
-    logger.info( aa.inspect)
-    logger.info( "STAGE 1  ###############")
-
     if aa.newest_apk_snapshot.present?
 
       new_snap = aa.newest_apk_snapshot
@@ -846,13 +838,9 @@ class ApiController < ApplicationController
 
     else
 
-      error_code = 3
+      error_code = 0
 
     end
-
-    puts "STAGE 2  ###############"
-    puts error_code
-    puts "STAGE 2  ###############"
 
     return companies, removed_companies, updated, error_code
 
