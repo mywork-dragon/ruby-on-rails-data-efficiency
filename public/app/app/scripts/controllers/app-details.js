@@ -120,7 +120,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       "SDK Live Scan Clicked", {
         'companyName': $scope.appData.company.name,
         'appName': $scope.appData.name,
-        'appId': $scope.appData.id
+        'appId': $scope.appData.id,
+        'mobilePriority': $scope.appData.mobilePriority,
+        'fortuneRank': $scope.appData.company.fortuneRank,
+        'userBase': $scope.appData.userBase,
+        'ratingsAllCount': $scope.appData.ratingsCount
       }
     );
     /* -------- Mixpanel Analytics End -------- */
@@ -166,10 +170,39 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'errorMessage': sdkErrorMessage
           };
         }
-      }).error(function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        var mixpanelEventTitle = "SDK Live Scan " + $scope.sdkData.errorCode != 3 ? 'Success' : 'Failed';
+        mixpanel.track(
+          mixpanelEventTitle, {
+            'platform': 'Android',
+            'companyName': $scope.appData.company.name,
+            'appName': $scope.appData.name,
+            'appId': $scope.appData.id,
+            'sdkCompanies': $scope.sdkData.sdkCompanies,
+            'sdkOpenSource': $scope.sdkData.sdkOpenSource,
+            'uninstalledSdkCompanies': $scope.sdkData.uninstalledSdkCompanies,
+            'uninstalledSdkOpenSource': $scope.sdkData.uninstalledSdkOpenSource,
+            'lastUpdated': $scope.sdkData.lastUpdated,
+            'errorCode': $scope.sdkData.errorCode,
+            'errorMessage': errorMessage
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      }).error(function(err) {
         $scope.sdkQueryInProgress = false;
         $scope.noSdkData = true;
-        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "SDK Live Scan Failed", {
+            'companyName': $scope.appData.company.name,
+            'appName': $scope.appData.name,
+            'appId': $scope.appData.id,
+            'errorType': 'Web Server',
+            'errorStatus': err
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       });
 
   };
