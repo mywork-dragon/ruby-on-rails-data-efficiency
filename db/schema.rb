@@ -211,7 +211,8 @@ ActiveRecord::Schema.define(version: 20150921203154) do
   end
 
   add_index "android_sdk_companies_apk_snapshots", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
-  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id", unique: true, using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id", using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_uniq_apk_snapshot_id_android_sdk_company_id", unique: true, using: :btree
 
   create_table "android_sdk_package_prefixes", force: true do |t|
     t.string  "prefix"
@@ -769,7 +770,7 @@ ActiveRecord::Schema.define(version: 20150921203154) do
     t.boolean  "active"
     t.string   "public_ip"
     t.string   "private_ip"
-    t.datetime "last_used"
+    t.date     "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "flags"
