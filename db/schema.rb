@@ -769,7 +769,7 @@ ActiveRecord::Schema.define(version: 20150921203154) do
     t.boolean  "active"
     t.string   "public_ip"
     t.string   "private_ip"
-    t.date     "last_used"
+    t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "flags"
