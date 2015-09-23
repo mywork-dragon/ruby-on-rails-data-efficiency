@@ -7267,6 +7267,14 @@ i.infoTooltipIcon {
   display: block;
 }
 
+#lists-sidebar-navigation > ul > li > a {
+  text-transform: none;
+}
+
+#listCreateNewButton span {
+  text-transform: uppercase;
+}
+
 .nav-min #lists-sidebar-navigation ul {
   display: none !important;
 }
@@ -7290,6 +7298,7 @@ select option:empty {
 
 .selectAllCheckboxHeader {
   padding-left: 10px !important;
+  max-width: 20px;
 }
 
 #addSelectedToDropDown:disabled {

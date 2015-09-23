@@ -21,7 +21,7 @@
             <a style="cursor: default;" href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in $root.usersLists"><a href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
-              <li><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
+              <li id="listCreateNewButton"><a href="" data-toggle="modal" data-target="#createNewModal"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>
         <li ng-click="logUserOut()">
