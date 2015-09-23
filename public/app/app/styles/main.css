@@ -4779,6 +4779,10 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   font-size: 12px;
 }
 
+#results-table-wrapper > table {
+  margin-bottom: 0;
+}
+
 .panel-group .panel {
   margin-bottom: 0;
   -webkit-border-radius: 0px;
@@ -7331,9 +7335,10 @@ select option:empty {
   vertical-align: middle;
 }
 
-#dashboardResultsTableHeadingNumDisplayed {
+span#dashboardResultsTableHeadingNumDisplayed {
   text-transform: initial;
   font-weight: normal;
+  margin-left: 0;
 }
 
 .status-low, .status-false {
