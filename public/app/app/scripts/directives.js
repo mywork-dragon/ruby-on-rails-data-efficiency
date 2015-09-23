@@ -395,13 +395,16 @@ angular.module("app.directives", []).directive("imgHolder", [
       return {
         replace: true,
         restrict: 'E',
-        scope: {},
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
         template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
 
           $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
             $scope.appPlatform.platform = platform;
             APP_PLATFORM = platform;
             apiService.getCategories().success(function (data) {
@@ -469,7 +472,6 @@ angular.module("app.directives", []).directive("imgHolder", [
         link: function(scope, element, attrs) {
           scope.$watch(attrs.focusMe, function(value) {
             if(value === true) {
-              console.log('value=',value);
               $timeout(function() {
                 element[0].focus();
                 scope[attrs.focusMe] = false;
