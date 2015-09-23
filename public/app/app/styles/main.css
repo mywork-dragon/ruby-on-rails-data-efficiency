@@ -628,7 +628,7 @@ pre {
 #searchResultsControl {
   float: right;
   position: absolute;
-  right: 40px;
+  right: 30px;
   margin-top: 15px;
 }
 
@@ -7146,6 +7146,20 @@ i.infoTooltipIcon {
   top: 2px;
 }
 
+.dashboard-tag-filter-selects > .ui-select {
+  top: 2px;
+}
+
+#filterMethodButton {
+  position: absolute;
+  right: 30px;
+  top: 153px;
+}
+
+#facebookMethodologySection > h4 {
+  margin-top: 20px;
+}
+
 #dashboardSearchBox > input {
   padding: 6px;
   width: 185px;
@@ -7173,6 +7187,10 @@ i.infoTooltipIcon {
   vertical-align: middle;
   padding-top: 55px;
   text-align: center;
+}
+
+.dashboard-tag-filter-selects {
+  margin-right: 140px;
 }
 
 .dashboard-tag-filter-selects > .tooltip {
