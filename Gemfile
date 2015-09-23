@@ -132,11 +132,9 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
-# gem 'slackiq', '0.0.3'
-
 # gem 'curb-fu', '0.6.2'
 
-gem 'slackiq', '1.0.1'
+gem 'slackiq', '1.1.1'
 
 gem 'slack-notifier', '1.2.1'
 

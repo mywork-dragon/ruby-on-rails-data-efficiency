@@ -34,6 +34,15 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper] do
   command 's3cmd put /home/deploy/sidekiq.log s3://varys-backup/sidekiq_logs/sidekiq_"`hostname -I`"_` date +\'%Y_%m_%d_%H_%M_%S\' `.log; cat /dev/null > /home/deploy/sidekiq.log'
 end
 
+# every :friday, at: '8:00pm' roles: [:scraper_master] do
+every :friday, at: '8:00pm' roles: [:scraper_master] do
+  AppStoreSnapshotServiceWorker.perform('new scrape blah blah')
+end
+
+every... roles: [:scraper_master] do
+  GooglePlaySnapshotServiceWorker.perform('new scrape blah blah')
+end
+
 # 2.times do |i|
 #   every 1.day, :at => '1:00am' do
 #     rake "scraper:scrape_all SCRAPE_PROCESSES=1 SCRAPE_PAGE_NUMBER=#{i}"
