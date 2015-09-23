@@ -7338,9 +7338,13 @@ select option:empty {
   color: #1EAD4F;
 }
 
+.appTypeIndicator {
+  text-align: center;
+}
+
 .appTypeIndicator i.fa {
   font-size: 12pt;
-  margin-right: 5px;
+  margin-right: 0;
 }
 
 .appTypeIndicator i.fa-android {
