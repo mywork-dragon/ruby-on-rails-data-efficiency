@@ -42,8 +42,6 @@ module ApkWorker
 
       best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
 
-      # li "best_account: #{best_account.inspect}"
-
       raise "no best account" if best_account.nil?
 
       apk_snap.google_account_id = best_account.id
@@ -69,9 +67,9 @@ module ApkWorker
 
     rescue => e
 
-      li "\n"
-      li e.backtrace
-      li "\n"
+      # li "\n"
+      # li e.backtrace
+      # li "\n"
 
       status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
 
@@ -153,32 +151,26 @@ module ApkWorker
 
   def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
 
-    # is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
+    is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
 
-    # # scrape_type = is_single ? :live : :full
+    gac = GoogleAccount.where(scrape_type: is_single ? 1:0).count
 
-    # # ApkSnapshotException.create(name: scrape_type)
+    gac.times do |c|
 
-    # gac = GoogleAccount.where(scrape_type: is_single ? 1:0).count
+      account = fresh_account(apk_snap_id, is_single, bid)
 
-    # gac.times do |c|
+      if account.present?
+        next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+        account.in_use = true
+        account.save
+        return account
+      elsif c < gac
+        next
+      else
+        return false
+      end
 
-    #   account = fresh_account(apk_snap_id, is_single, bid)
-
-    #   if account.present?
-    #     next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #     account.in_use = true
-    #     account.save
-    #     return account
-    #   elsif c < gac
-    #     next
-    #   else
-    #     return false
-    #   end
-
-    # end
-
-    return GoogleAccount.first
+    end
 
     false
 
