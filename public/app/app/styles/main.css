@@ -7140,7 +7140,7 @@ i.infoTooltipIcon {
 }
 
 .dashboard-tag-filter-selects {
-  margin-left: 4px;
+  margin-left: 0;
   display: inline-block;
   position: relative;
   top: 2px;
