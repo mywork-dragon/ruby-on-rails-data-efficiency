@@ -171,7 +171,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           };
         }
         /* -------- Mixpanel Analytics Start -------- */
-        var mixpanelEventTitle = "SDK Live Scan " + $scope.sdkData.errorCode != 3 ? 'Success' : 'Failed';
+        var mixpanelEventTitle = "SDK Live Scan " + ($scope.sdkData.errorCode != 3 ? 'Success' : 'Failed');
         mixpanel.track(
           mixpanelEventTitle, {
             'platform': 'Android',
@@ -198,7 +198,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorType': 'Web Server',
             'errorStatus': err
           }
         );
