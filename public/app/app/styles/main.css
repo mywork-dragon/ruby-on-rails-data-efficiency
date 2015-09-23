@@ -4005,7 +4005,7 @@ fieldset[disabled] .btn-danger.active {
 #nav ul li > a {
   position: relative;
   display: block;
-  padding: 13px 0 13px 25px;
+  padding: 12px 0 12px 25px;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
