@@ -27,9 +27,9 @@ if defined?(ApkDownloader)
         'source' => 'android',
         'androidId' => ga.android_identifier,
         'app' => 'com.android.vending',
-        'device_country' => 'us',
-        'operatorCountry' => 'us',
-        'lang' => 'en',
+        'device_country' => 'US',
+        'operatorCountry' => 'US',
+        'lang' => 'en-US',
         'sdk_version' => '16'
       }
 
