@@ -612,7 +612,7 @@ pre {
 #dashboard-tag-display .fa-search {
   float: left;
   margin-top: 27px;
-  margin-right: 10px;
+  margin-right: 0;
 }
 
 #dashboardSearchBox {
@@ -7153,7 +7153,7 @@ i.infoTooltipIcon {
 #filterMethodButton {
   position: absolute;
   right: 30px;
-  top: 153px;
+  top: 152px;
 }
 
 #facebookMethodologySection > h4 {
@@ -7218,6 +7218,10 @@ i.infoTooltipIcon {
 
 #dashboardPlatformSwitch {
   margin-right: 10px;
+}
+
+.dashboard-tag-filter-selects #dashboardPlatformSwitch {
+  margin-right: 0;
 }
 
 .dashboardTableDataCheckbox {
