@@ -35,12 +35,9 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper] do
 end
 
 # every :friday, at: '8:00pm' roles: [:scraper_master] do
-every :friday, at: '8:00pm' roles: [:scraper_master] do
-  AppStoreSnapshotServiceWorker.perform('new scrape blah blah')
-end
-
-every... roles: [:scraper_master] do
-  GooglePlaySnapshotServiceWorker.perform('new scrape blah blah')
+every :wednesday, at: '11:47am' roles: [:scraper_master] do
+  notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
+  runner "AppStoreSnapshotService.run('#{notes}')"
 end
 
 # 2.times do |i|
