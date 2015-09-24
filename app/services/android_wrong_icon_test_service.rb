@@ -20,7 +20,7 @@ class AndroidWrongIconTestService
 
       
 
-      Slackiq.message('AndroidWrongIconTestService: Done queueing.' webhook_name: :main)
+      Slackiq.message('AndroidWrongIconTestService: Done queueing.', webhook_name: :main)
 
     end
 
