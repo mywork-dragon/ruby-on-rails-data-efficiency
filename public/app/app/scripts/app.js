@@ -65,7 +65,6 @@ angular
        })
        .when('/lists/:id', {
          templateUrl: '/app/app/views/list.html',
-         controller: 'ListCtrl',
          activeTab: 'lists'
        })
       .otherwise({
