@@ -60,15 +60,6 @@ angular.module('appApp')
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
     function($scope, apiService, $http, $rootScope) {
 
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "Page Viewed",
-        { "pageType": "Search",
-          "userauthenticated": $scope.isAuthenticated,
-          "appPlatform": APP_PLATFORM }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-
       /* Initializes all Bootstrap tooltips */
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
