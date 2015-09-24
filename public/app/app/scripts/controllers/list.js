@@ -3,15 +3,6 @@
 angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService",
   function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService) {
 
-    /* -------- Mixpanel Analytics Start -------- */
-    mixpanel.track(
-      "Page Viewed",
-      { "pageType": "Lists",
-        "userauthenticated": $scope.isAuthenticated,
-        "listId": $routeParams.id }
-    );
-    /* -------- Mixpanel Analytics End -------- */
-
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
 
@@ -69,6 +60,17 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         }
       });
       return false;
+    };
+    $scope.recordListViewEvent = function(listName, listId) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Page Viewed",
+        { "pageType": "Lists",
+          "userauthenticated": $scope.isAuthenticated,
+          "listId": listId,
+          "listName": listName }
+      );
+      /* -------- Mixpanel Analytics End -------- */
     };
     $scope.AllSelectedItems = false;
     $scope.NoSelectedItems = false;
