@@ -68,7 +68,7 @@ angular.module('appApp')
       $scope.mixpanelAnalyticsEventTooltip = function(name) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "Tooltip Viewed",
+          "Methodology Modal Viewed",
           { "tooltipName": name }
         );
         /* -------- Mixpanel Analytics End -------- */

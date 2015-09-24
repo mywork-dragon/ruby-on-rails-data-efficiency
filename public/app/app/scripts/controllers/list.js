@@ -64,7 +64,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     $scope.recordListViewEvent = function(listName, listId) {
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
-        "Page Viewed",
+        "List Viewed",
         { "pageType": "Lists",
           "userauthenticated": $scope.isAuthenticated,
           "listId": listId,

@@ -123,10 +123,13 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
 
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
-      "Page Viewed", {
-        "pageType": "Company",
+      "Company Page Viewed", {
         "companyid": $routeParams.id,
-        "appPlatform": APP_PLATFORM
+        "appPlatform": APP_PLATFORM,
+        "companyName": $scope.companyData.name,
+        "fortuneRank": $scope.companyData.fortuneRank,
+        "funding": $scope.companyData.funding
+
       }
     );
     /* -------- Mixpanel Analytics End -------- */

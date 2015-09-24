@@ -265,12 +265,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.contactsLoaded = false;
       });
   };
-
   /* -------- Mixpanel Analytics Start -------- */
   mixpanel.track(
-    "Page Viewed", {
+    "App Page Viewed", {
       "pageType": "App",
-      "appid": $routeParams.id,
+      "appId": $routeParams.id,
+      "appName": $scope.appData.name,
+      "companyName": $scope.appData.company.name,
       "appPlatform": APP_PLATFORM
     }
   );
