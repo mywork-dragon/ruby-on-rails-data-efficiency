@@ -7302,7 +7302,7 @@ select option:empty {
 
 .selectAllCheckboxHeader {
   padding-left: 10px !important;
-  max-width: 20px;
+  max-width: 28px;
 }
 
 #addSelectedToDropDown:disabled {
