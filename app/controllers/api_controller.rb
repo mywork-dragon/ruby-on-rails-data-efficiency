@@ -814,7 +814,9 @@ class ApiController < ApplicationController
 
   def get_sdks(android_app_id:)
 
-    updated, companies, error_code = 0, removed_companies = nil
+    updated, companies, removed_companies = nil
+
+    error_code = 0
 
     aa = AndroidApp.find(android_app_id)
 
@@ -827,8 +829,6 @@ class ApiController < ApplicationController
         updated = new_snap.updated_at
 
         companies = new_snap.android_sdk_companies
-
-        ApkSnapshotException.create(name: "Companies : #{companies.count}")
 
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
