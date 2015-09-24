@@ -11,7 +11,12 @@ class AndroidWrongIconTestServiceWorker
 
     icon_url = icon_url_300x300(html)
 
-    st = SidekiqTester.create!(test_string: icon_url, ip: Tor.get('http://wtfismyip.com/json'))
+    json = JSON.parse(Tor.get('http://wtfismyip.com/json'))
+    ip = json['YourFuckingIPAddress']
+    location = json['YourFuckingLocation']
+    ip_location = "#{ip}; #{location}"[0..190]
+
+    st = SidekiqTester.create!(test_string: icon_url, ip: ip_location)
 
     if !icon_url.include?('wBm0OacVBiFPAfxvrwuJcNWSuhfs1J7rr141r0wETQFhAhfGv29JzMC6W5i_vv8Zxw')
       filename = "trivia_crack_bad_html_#{st.id}"
