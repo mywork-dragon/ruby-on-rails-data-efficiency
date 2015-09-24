@@ -12,6 +12,10 @@ class IosClassService
 
 			hash = Hash.new
 
+			failed_terms = []
+			
+			successful_terms = []
+
 			clss.each do |k, v|
 
 				str = v[/[^<]+/].strip
@@ -22,47 +26,96 @@ class IosClassService
 
 					next if str.blank?
 
-					# first_word = str.split(/(?=[A-Z])/).first
+					orig_str = str
 
-					
 
-				    # words = str.split(/(?=[A-Z])/).select{ |x| x.length > 1 }.map{ |x| x }
+				    words = str.gsub(/(message|binary|application|internal|custom|batch|through|viewed|view|event|for|thread|descriptor|unknown|save|login|delete|activity|key|logout|user|appears|hide|hidden|account|field|return|url|retry|handle|show|showing|controller|network|signin|request|background|display|submit|should|get|download|handle|change|ready|animate|animation|directory|object|portrait|landscape|toolbar|navigation|navbar|cancel|delay)/i,'')
 
-				    # first_word = words.first
+				    words = words.split(/(?=[A-Z])/)
 
-				    # next if first_word.blank?
+				    words_count = words.select{ |w| w.length > 1 }.count
 
-				    # # puts first_word
+				    words.pop if words_count >= 3
 
-				    # hash[first_word] = [] if hash[first_word].nil?
+				    words.each.with_index do |word, index|
 
-				    # words.each do |word|
+				      index = words.count - index
 
-				    # 	hash[first_word] << word
+				      str = index.times.map do |i|
 
-				    # end
+				        words[i]
 
-				  #   words.each do |word|
+				      end
 
-						# if word.present?
+				      str = str.join
 
-					 #    	if hash[first_word].blank?
-						#     	hash[first_word] = [first_word]
-						#     else
-						#     	hash[first_word] << word if word != first_word
-						#     end
+				      if str.length >= 3
 
-						# end
+				        next if failed_terms.include?(str) || successful_terms.include?(str)
 
-				  #   end
+				        cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{URI.escape(str)}&ids=20&offset=0&sort=quality").read).to_h
 
-					# IosClassServiceWorker.new.perform(str)
+				        if cocoapods['allocations'].present?
 
-					puts str
+				          pod = cocoapods['allocations'][0][5].select{|x| x['link'].present? && x['link'].exclude?('github.') }.sort_by{|x| x['id'].size }.first
 
-					# puts str
+				          if pod.present?
 
-					# words = str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip unless str.present?
+				            if str.similar(pod['id']) >= 80
+				              puts str.green
+				              puts "    => #{pod['id']}"
+				              puts "    => #{pod['link']}"
+				              puts "    => #{pod['source']}"
+				              puts "    => #{orig_str}"
+
+				              successful_terms << str
+				              
+				              break
+
+				            else
+				              puts str.yellow
+
+				              failed_terms << str
+
+				            end
+
+				          else
+
+				            pod = cocoapods['allocations'][0][5].sort_by{|x| x['id'].size }.first
+
+				            return if pod['id'].blank?
+
+				            if str.similar(pod['id']) >= 80
+				              puts str.blue
+
+				              successful_terms << str
+
+				              File.open('../ios_sdk_companies.txt', 'wb') { |f| f.write successful_terms }
+
+				            else
+				              puts str.purple
+
+				              failed_terms << str
+				            end
+
+				          end
+
+				        else
+
+				          puts str.red
+
+				          failed_terms << str
+
+				        end
+
+				      end
+
+
+				    end
+
+
+
+
 
 				end
 

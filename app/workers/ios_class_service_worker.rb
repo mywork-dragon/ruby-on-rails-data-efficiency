@@ -29,34 +29,44 @@ class IosClassServiceWorker
   end
 
 
-  def string(first_str = 'helloimacooldude', second_str = 'hellosometimesieatcheese')
+  # def string(first_str = 'helloimacooldude', second_str = 'hellosometimesieatcheese')
 
-    first_arr = first_str.downcase.split('')
+  #   first_arr = first_str.downcase.split('')
 
-    second_arr = second_str.downcase.split('')
+  #   second_arr = second_str.downcase.split('')
 
-    [first_arr, second_arr].each.with_index do |str, str_ind|
+  #   [first_arr, second_arr].each.with_index do |str, str_ind|
 
-      stop_at = str.length
+  #     stop_at = str.length
 
-      double_letters = str.map.with_index do |letter, index|
+  #     double_letters = str.map.with_index do |letter, index|
 
-        if index < stop_at - 1
+  #       if index < stop_at - 1
           
-          letter + str[index+1]
+  #         letter + str[index+1]
 
-        end
+  #       end
 
-      end
+  #     end
 
-    end
+  #   end
 
-  end
+  # end
 
 
   def in_cocoapods(q)
 
-    words = q.split(/(?=[A-Z])/)
+    failed_terms = []
+
+    successful_terms = []
+
+    words = q.gsub(/(message|binary|application|internal|custom|batch|through|viewed|view|event|for|thread|descriptor|unknown)/i,'')
+
+    words = words.split(/(?=[A-Z])/)
+
+    words_count = words.select{ |w| w.length > 1 }.count
+
+    words.pop if words_count >= 3
 
     words.each.with_index do |word, index|
 
@@ -70,43 +80,67 @@ class IosClassServiceWorker
 
       str = str.join
 
-      puts str
+      if str.length >= 3
 
-      sleep 0.2
+        # puts str
 
-      # cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{URI.escape(str)}&ids=20&offset=0&sort=quality").read).to_h
+        # sleep 0.2
 
-      # if cocoapods['allocations'].present?
+        next if failed_terms.include?(str) || successful_terms.include?(str)
 
-      #   pod = cocoapods['allocations'][0][5].select{|x| x['link'].exclude?('github.') }.sort_by{|x| x['id'].size }.first
+        cocoapods = JSON.parse(open("https://search.cocoapods.org/api/v1/pods.picky.hash.json?query=on%3Aios+#{URI.escape(str)}&ids=20&offset=0&sort=quality").read).to_h
 
-      #   if pod.present?
+        if cocoapods['allocations'].present?
 
-      #     if str.similar(pod['id']) >= 80
-      #       puts q.green
-      #     else
-      #       puts q.red
-      #     end
+          pod = cocoapods['allocations'][0][5].select{|x| x['link'].exclude?('github.') }.sort_by{|x| x['id'].size }.first
 
-      #   else
+          if pod.present?
 
-      #     pod = cocoapods['allocations'][0][5].sort_by{|x| x['id'].size }.first
+            if str.similar(pod['id']) >= 80
+              puts str.green
+              puts "    => #{pod['id']}"
+              puts "    => #{pod['link']}"
 
-      #     return if pod['id'].blank?
+              successful_terms << str
+              
+              break
 
-      #     if str.similar(pod['id']) >= 80
-      #       puts q.blue
-      #     else
-      #       puts q.red
-      #     end
+            else
+              puts str.yellow
 
-      #   end
+              failed_terms << str
 
-      # else
+            end
 
-      #   puts q.red
+          else
 
-      # end
+            pod = cocoapods['allocations'][0][5].sort_by{|x| x['id'].size }.first
+
+            return if pod['id'].blank?
+
+            if str.similar(pod['id']) >= 80
+              puts str.blue
+
+              successful_terms << str
+            else
+              puts str.purple
+
+              failed_terms << str
+            end
+
+          end
+
+        else
+
+          puts str.red
+
+        end
+
+        puts successful_terms
+
+        puts failed_terms
+
+      end
 
 
 
