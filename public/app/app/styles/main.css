@@ -7432,6 +7432,11 @@ span#dashboardResultsTableHeadingNumDisplayed {
   margin-right: 0px;
 }
 
+.companyPageRow > .alert {
+  margin-bottom: 5px;
+  text-align: center;
+}
+
 #companyPage .info-column {
   padding-bottom: 0px;
 }
