@@ -82,7 +82,8 @@
           <td class="appTypeIndicator">
             <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
           </td>
-          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td ng-if="!app.company.name">{{app.app.seller}}</td>
           <td>{{app.company.fortuneRank}}</td>
           <td class="dashboardMobilePriorityView">
             <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}

@@ -176,8 +176,8 @@
                   <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">{{app.app.name}}</a>
                 </span>
               </td>
-              <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-              <td>{{app.company.fortuneRank}}</td>
+              <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+              <td ng-if="!app.company.name">{{app.app.seller}}</td>              <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</td>
               <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
                 <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
