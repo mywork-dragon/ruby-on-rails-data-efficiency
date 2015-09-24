@@ -110,7 +110,7 @@
               <span ng-if="app.app.type == 'AndroidApp'">Android</span>
               -->
             </td>
-            <td>{{app.app.seller}}</td>
+            <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
               <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
