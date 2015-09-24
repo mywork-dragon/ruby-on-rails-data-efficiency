@@ -12,7 +12,7 @@ class AndroidWrongIconTestService
 
       batch.jobs do
 
-        10e3.times do |n|
+        10e3.to_i.times do |n|
           AndroidWrongIconTestServiceWorker.perform_async
         end  
       
