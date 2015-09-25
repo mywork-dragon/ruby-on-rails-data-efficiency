@@ -63,6 +63,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     };
     $scope.recordListViewEvent = function(listName, listId) {
       /* -------- Mixpanel Analytics Start -------- */
+      console.log('List Event', listName, listId);
       mixpanel.track(
         "List Viewed",
         { "pageType": "Lists",

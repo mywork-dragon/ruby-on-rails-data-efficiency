@@ -15,8 +15,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.appData.name);
 
-      console.log('APP ID', $scope.appData.id);
-
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
           var sdkErrorMessage = "";
@@ -54,10 +52,19 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.company.name,
+              "appPlatform": APP_PLATFORM
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
         }).error(function(err) {
         });
     });
-
   };
 
   $scope.appPlatform = $routeParams.platform;
@@ -226,7 +233,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   };
 
   $scope.isEmpty = function(obj) {
-    return Object.keys(obj).length === 0;
+    try { return Object.keys(obj).length === 0; }
+    catch(err) {}
   };
 
   /* Company Contacts Logic */
@@ -265,16 +273,5 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.contactsLoaded = false;
       });
   };
-  /* -------- Mixpanel Analytics Start -------- */
-  mixpanel.track(
-    "App Page Viewed", {
-      "pageType": "App",
-      "appId": $routeParams.id,
-      "appName": $scope.appData.name,
-      "companyName": $scope.appData.company.name,
-      "appPlatform": APP_PLATFORM
-    }
-  );
-  /* -------- Mixpanel Analytics End -------- */
 }
 ]);

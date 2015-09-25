@@ -20,6 +20,18 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $rootScope.numApps = companyApps.length;
         $scope.queryInProgress = false;
         /* Sets html title attribute */
+
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Page Viewed", {
+            "companyid": $routeParams.id,
+            "appPlatform": APP_PLATFORM,
+            "companyName": $scope.companyData.name,
+            "fortuneRank": $scope.companyData.fortuneRank,
+            "funding": $scope.companyData.funding
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       }).error(function() {
         $scope.queryInProgress = false;
       });
@@ -120,19 +132,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         /* -------- Mixpanel Analytics End -------- */
       });
     };
-
-    /* -------- Mixpanel Analytics Start -------- */
-    mixpanel.track(
-      "Company Page Viewed", {
-        "companyid": $routeParams.id,
-        "appPlatform": APP_PLATFORM,
-        "companyName": $scope.companyData.name,
-        "fortuneRank": $scope.companyData.fortuneRank,
-        "funding": $scope.companyData.funding
-
-      }
-    );
-    /* -------- Mixpanel Analytics End -------- */
 
   }
 ]);
