@@ -7434,12 +7434,15 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 .companyPageRow > .alert {
   margin-bottom: 5px;
+  padding-top: 0;
   text-align: center;
   background-image: none;
   background-color: #F3F3F3;
   border: none;
   color: #767676;
   font-style: italic;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 #companyPage .info-column {
