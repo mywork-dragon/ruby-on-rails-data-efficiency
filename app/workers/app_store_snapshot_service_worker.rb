@@ -22,10 +22,11 @@ class AppStoreSnapshotServiceWorker
     
     ios_app_snapshot_job_id = options[:ios_app_snapshot_job_id]
 
-    IosAppSnapshot.transaction do
+    #IosAppSnapshot.transaction do
 
-      s = IosAppSnapshot.lock.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
-      
+      #s = IosAppSnapshot.lock.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
+      s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
+
       try = 0
       
       begin
@@ -185,7 +186,7 @@ class AppStoreSnapshotServiceWorker
       end
       
       s
-    end
+    #end
   end
   
   def test_save_attributes
