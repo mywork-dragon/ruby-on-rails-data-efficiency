@@ -138,7 +138,7 @@ class AppStoreSnapshotServiceWorker
         s.save!
         
         #set user base
-        if defined?(ratings_all_count) && defined?(ratings_per_day_current_release)
+        if defined?(ratings_all_count) && ratings_all_count && defined?(ratings_per_day_current_release) && ratings_per_day_current_release
           if ratings_per_day_current_release >= 7 || ratings_all_count >= 50e3
             user_base = :elite
           elsif ratings_per_day_current_release >= 1 || ratings_all_count >= 10e3
