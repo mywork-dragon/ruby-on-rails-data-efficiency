@@ -18,6 +18,7 @@ class EpfService
   class << self
     
     
+    # Step 1
     def run_itunes_current
       urls = epf_snapshot_urls
       
@@ -219,6 +220,8 @@ class EpfService
         end
       end
     
+      Slackiq.message("EPF CSV has been generated! Path: #{file_path}", webhook_name: :main)
+
       file_path
     end
     
@@ -259,10 +262,14 @@ class EpfService
     count = IosAppEpfSnapshot.where(epf_full_feed_id: EpfFullFeed.last.id).count
     Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => count.to_s)
     `rm -rf /mnt/epf/*` if count > 1e6
+
+    EpfService.add_apps # Step 2
   end
 
   def on_complete_add_apps(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Add Apps completed')
+
+    AppStoreSnapshotService.run_new_apps  # Step 3
   end
   
 

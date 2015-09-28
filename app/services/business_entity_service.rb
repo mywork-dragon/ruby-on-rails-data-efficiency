@@ -394,6 +394,8 @@ class BusinessEntityService
 
     def on_complete_ios_new_apps(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'ios_new_apps')
+
+    EpfService.generate_weekly_newest_csv   #Step 5
   end
 
 end
