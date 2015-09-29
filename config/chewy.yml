@@ -6,4 +6,5 @@ test:
 development:
   host: 'localhost:9200'
 production:
-  host: 'http://57ee73786e08205571d6e29709308c9c.us-east-1.aws.found.io:9200'
+  host: 'http://57ee73786e08205571d6e29709308c9c.us-east-1.aws.found.io:9200' # production
+  # host: 'http://61c4f9158b228c06f4614390856c43c2.us-east-1.aws.found.io:9200' # staging

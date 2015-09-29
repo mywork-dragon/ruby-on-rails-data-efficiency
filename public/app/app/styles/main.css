@@ -612,7 +612,7 @@ pre {
 #dashboard-tag-display .fa-search {
   float: left;
   margin-top: 27px;
-  margin-right: 10px;
+  margin-right: 0;
 }
 
 #dashboardSearchBox {
@@ -628,7 +628,7 @@ pre {
 #searchResultsControl {
   float: right;
   position: absolute;
-  right: 40px;
+  right: 30px;
   margin-top: 15px;
 }
 
@@ -4005,7 +4005,7 @@ fieldset[disabled] .btn-danger.active {
 #nav ul li > a {
   position: relative;
   display: block;
-  padding: 13px 0 13px 25px;
+  padding: 12px 0 12px 25px;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
@@ -4777,6 +4777,10 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 #results-table-wrapper {
   overflow: scroll;
   font-size: 12px;
+}
+
+#results-table-wrapper > table {
+  margin-bottom: 0;
 }
 
 .panel-group .panel {
@@ -7140,10 +7144,24 @@ i.infoTooltipIcon {
 }
 
 .dashboard-tag-filter-selects {
-  margin-left: 4px;
+  margin-left: 0;
   display: inline-block;
   position: relative;
   top: 2px;
+}
+
+.dashboard-tag-filter-selects > .ui-select {
+  top: 2px;
+}
+
+#filterMethodButton {
+  position: absolute;
+  right: 30px;
+  top: 152px;
+}
+
+#facebookMethodologySection > h4 {
+  margin-top: 20px;
 }
 
 #dashboardSearchBox > input {
@@ -7175,6 +7193,10 @@ i.infoTooltipIcon {
   text-align: center;
 }
 
+.dashboard-tag-filter-selects {
+  margin-right: 140px;
+}
+
 .dashboard-tag-filter-selects > .tooltip {
   text-transform: none;
   font-size: 90%;
@@ -7200,6 +7222,10 @@ i.infoTooltipIcon {
 
 #dashboardPlatformSwitch {
   margin-right: 10px;
+}
+
+.dashboard-tag-filter-selects #dashboardPlatformSwitch {
+  margin-right: 0;
 }
 
 .dashboardTableDataCheckbox {
@@ -7245,8 +7271,28 @@ i.infoTooltipIcon {
   display: block;
 }
 
+#lists-sidebar-navigation > ul > li > a {
+  text-transform: none;
+}
+
+#listCreateNewButton span {
+  text-transform: uppercase;
+}
+
 .nav-min #lists-sidebar-navigation ul {
   display: none !important;
+}
+
+#lists-sidebar-navigation ul > li > a {
+  display: table;
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 10px;
+}
+
+#lists-sidebar-navigation ul > li > a > i {
+  display: table-cell;
+  width: 25px;
 }
 
 /* Hides empty option */
@@ -7256,6 +7302,7 @@ select option:empty {
 
 .selectAllCheckboxHeader {
   padding-left: 10px !important;
+  max-width: 28px;
 }
 
 #addSelectedToDropDown:disabled {
@@ -7288,9 +7335,10 @@ select option:empty {
   vertical-align: middle;
 }
 
-#dashboardResultsTableHeadingNumDisplayed {
+span#dashboardResultsTableHeadingNumDisplayed {
   text-transform: initial;
   font-weight: normal;
+  margin-left: 0;
 }
 
 .status-low, .status-false {
@@ -7304,9 +7352,13 @@ select option:empty {
   color: #1EAD4F;
 }
 
+.appTypeIndicator {
+  text-align: center;
+}
+
 .appTypeIndicator i.fa {
   font-size: 12pt;
-  margin-right: 5px;
+  margin-right: 0;
 }
 
 .appTypeIndicator i.fa-android {
@@ -7378,6 +7430,19 @@ select option:empty {
 .companyPageRow {
   margin-left: 0px;
   margin-right: 0px;
+}
+
+.companyPageRow > .alert {
+  margin-bottom: 5px;
+  padding-top: 0;
+  text-align: center;
+  background-image: none;
+  background-color: #F3F3F3;
+  border: none;
+  color: #767676;
+  font-style: italic;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 #companyPage .info-column {
@@ -7512,6 +7577,10 @@ pre {
   padding-left: 15px;
 }
 
+#sdkLiveScanDisplay .list-info li, #appPageSdkScanStatus .list-info li {
+  border-bottom: none;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
@@ -7556,4 +7625,15 @@ pre {
 
 #mainSearchBox {
   padding-left: 0;
+}
+
+.sdkOpenSourceSection .fa-github {
+  color: black;
+  font-size: 18px;
+  position: relative;
+  top: 2px;
+}
+
+#nav-wrapper > div {
+  padding-bottom: 100px;
 }

@@ -15,11 +15,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.appData.name);
 
-      console.log('APP ID', $scope.appData.id);
-
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
           var sdkErrorMessage = "";
+          $scope.noSdkData = false;
           if(data == null) {
             $scope.noSdkData = true;
             $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
@@ -34,7 +33,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
                 sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
                 break;
               case 3:
-                sdkErrorMessage = "Error - Please Try Again Later";
+                sdkErrorMessage = "Error - Please Try Again";
                 break;
               case 4:
                 sdkErrorMessage = "SDKs Not Available for Paid Apps";
@@ -45,16 +44,27 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             }
           }
           $scope.sdkData = {
-            'sdkCompanies': data.companies,
-            'sdkOpenSource': data.open_source,
-            'lastUpdated': data.last_updated,
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.company.name,
+              "appPlatform": APP_PLATFORM
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
         }).error(function(err) {
         });
     });
-
   };
 
   $scope.appPlatform = $routeParams.platform;
@@ -115,7 +125,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     /* -------- Mixpanel Analytics Start -------- */
     mixpanel.track(
       "SDK Live Scan Clicked", {
-        'companyName': $scope.appData.company.name
+        'companyName': $scope.appData.company.name,
+        'appName': $scope.appData.name,
+        'appId': $scope.appData.id,
+        'mobilePriority': $scope.appData.mobilePriority,
+        'fortuneRank': $scope.appData.company.fortuneRank,
+        'userBase': $scope.appData.userBase,
+        'ratingsAllCount': $scope.appData.ratingsCount
       }
     );
     /* -------- Mixpanel Analytics End -------- */
@@ -125,6 +141,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
         var sdkErrorMessage = "";
+        $scope.noSdkData = false;
         if(data == null) {
           $scope.noSdkData = true;
           $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
@@ -139,7 +156,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
               break;
             case 3:
-              sdkErrorMessage = "Error - Please Try Again Later";
+              sdkErrorMessage = "Error - Please Try Again";
               break;
             case 4:
               sdkErrorMessage = "SDKs Not Available for Paid Apps";
@@ -151,19 +168,48 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         }
         if(data) {
           $scope.sdkData = {
-           'sdkCompanies': data.companies,
-           'sdkOpenSource': data.open_source,
-           'lastUpdated': data.last_updated,
-           'errorCode': data.error_code,
-           'errorMessage': sdkErrorMessage
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
           };
         }
-      }).error(function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        var mixpanelEventTitle = "SDK Live Scan " + ($scope.sdkData.errorCode != 3 ? 'Success' : 'Failed');
+        mixpanel.track(
+          mixpanelEventTitle, {
+            'platform': 'Android',
+            'companyName': $scope.appData.company.name,
+            'appName': $scope.appData.name,
+            'appId': $scope.appData.id,
+            'sdkCompanies': $scope.sdkData.sdkCompanies,
+            'sdkOpenSource': $scope.sdkData.sdkOpenSource,
+            'uninstalledSdkCompanies': $scope.sdkData.uninstalledSdkCompanies,
+            'uninstalledSdkOpenSource': $scope.sdkData.uninstalledSdkOpenSource,
+            'lastUpdated': $scope.sdkData.lastUpdated,
+            'errorCode': $scope.sdkData.errorCode,
+            'errorMessage': $scope.sdkData.errorMessage
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      }).error(function(err) {
         $scope.sdkQueryInProgress = false;
         $scope.noSdkData = true;
-        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "SDK Live Scan Failed", {
+            'companyName': $scope.appData.company.name,
+            'appName': $scope.appData.name,
+            'appId': $scope.appData.id,
+            'errorStatus': err
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       });
-
   };
 
   authService.permissions()
@@ -184,6 +230,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         hiddenElement.download = 'contacts.csv';
         hiddenElement.click();
       });
+  };
+
+  $scope.isEmpty = function(obj) {
+    try { return Object.keys(obj).length === 0; }
+    catch(err) {}
   };
 
   /* Company Contacts Logic */
@@ -222,15 +273,5 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.contactsLoaded = false;
       });
   };
-
-  /* -------- Mixpanel Analytics Start -------- */
-  mixpanel.track(
-    "Page Viewed", {
-      "pageType": "App",
-      "appid": $routeParams.id,
-      "appPlatform": APP_PLATFORM
-    }
-  );
-  /* -------- Mixpanel Analytics End -------- */
 }
 ]);
