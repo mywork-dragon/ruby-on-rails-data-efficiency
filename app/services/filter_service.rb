@@ -67,8 +67,6 @@ class FilterService
 
         #queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
         queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
-        puts queries
-        queries
       end
 
       if app_filters['supportDesk']
@@ -107,10 +105,10 @@ class FilterService
       end
       
       if app_filters['categories']
-        cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
+        cats_with_quotes = app_filters['categories'] #.map{|c| "\"#{c}\""}
         li cats_with_quotes
         li cats_with_quotes.join(',')
-        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
+        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes})"
       end
 
       if app_filters['supportDesk']
