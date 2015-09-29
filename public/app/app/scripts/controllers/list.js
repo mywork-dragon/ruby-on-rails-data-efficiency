@@ -70,6 +70,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
           "listId": listId,
           "listName": listName }
       );
+      console.log($rootScope.numApps);
       /* -------- Mixpanel Analytics End -------- */
     };
     $scope.AllSelectedItems = false;
