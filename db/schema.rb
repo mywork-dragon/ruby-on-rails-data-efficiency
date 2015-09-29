@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150921203154) do
+ActiveRecord::Schema.define(version: 20150928175409) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -352,6 +352,49 @@ ActiveRecord::Schema.define(version: 20150921203154) do
 
   add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
   add_index "clearbit_contacts", ["website_id"], name: "index_clearbit_contacts_on_website_id", using: :btree
+
+  create_table "cocoapod_authors", force: true do |t|
+    t.string   "name"
+    t.text     "email"
+    t.integer  "cocoapod_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_authors", ["cocoapod_id"], name: "index_cocoapod_authors_on_cocoapod_id", using: :btree
+  add_index "cocoapod_authors", ["name"], name: "index_cocoapod_authors_on_name", using: :btree
+
+  create_table "cocoapod_exceptions", force: true do |t|
+    t.text     "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cocoapod_tags", force: true do |t|
+    t.string   "tag"
+    t.integer  "cocoapod_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_tags", ["cocoapod_id"], name: "index_cocoapod_tags_on_cocoapod_id", using: :btree
+  add_index "cocoapod_tags", ["tag"], name: "index_cocoapod_tags_on_tag", using: :btree
+
+  create_table "cocoapods", force: true do |t|
+    t.string   "name"
+    t.string   "version"
+    t.text     "summary"
+    t.text     "link"
+    t.boolean  "cocoadocs"
+    t.text     "git"
+    t.text     "http"
+    t.string   "tag"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapods", ["cocoadocs"], name: "index_cocoapods_on_cocoadocs", using: :btree
+  add_index "cocoapods", ["name", "version"], name: "index_cocoapods_on_name_and_version", unique: true, using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"

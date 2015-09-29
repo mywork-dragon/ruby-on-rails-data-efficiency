@@ -25,4 +25,8 @@ class AppsIndex < Chewy::Index
     field :company_name, value: ->(android_app) {!android_app.get_company.nil? ? android_app.get_company.name : ''}
   end
 
+  define_type Cocoapod do
+    field :name
+  end
+
 end

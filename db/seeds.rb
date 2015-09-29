@@ -103,7 +103,7 @@ end
   end
   
   #Create local IP for Tor
-  Proxy.create!(private_ip: '127.0.0.1', active: true)
+  # Proxy.create!(private_ip: '127.0.0.1', active: true)
 
   GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
 

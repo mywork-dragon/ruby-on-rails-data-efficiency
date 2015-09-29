@@ -43,6 +43,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    amatch (0.3.0)
+      tins (~> 1.0)
     apk_downloader (1.1.5)
       ruby-protocol-buffers
       varint
@@ -131,6 +133,10 @@ GEM
     colorize (0.7.7)
     connection_pool (2.2.0)
     crass (1.0.2)
+    curb (0.8.8)
+    curb-fu (0.6.2)
+      curb (>= 0.5.4.0)
+      rack-test (>= 0.2.0)
     domainator (2.0.0)
     dotenv (2.0.2)
     elasticsearch (1.0.12)
@@ -338,6 +344,7 @@ GEM
     tilt (1.4.1)
     timers (4.1.1)
       hitimes
+    tins (1.6.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -362,9 +369,10 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 4.2.1)
+  amatch (= 0.3.0)
   apk_downloader (= 1.1.5)
   autoprefixer-rails
-  awesome_print
+  awesome_print (= 1.6.1)
   aws-sdk (< 2.0)
   bcrypt (= 3.1.10)
   bootstrap-sass (= 3.2.0)
@@ -375,6 +383,7 @@ DEPENDENCIES
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   colorize (= 0.7.7)
+  curb-fu (= 0.6.2)
   domainator (= 2.0.0)
   elasticsearch-model (= 0.1.7)
   elasticsearch-rails (= 0.1.7)
