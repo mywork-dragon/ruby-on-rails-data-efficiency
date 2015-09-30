@@ -2,33 +2,126 @@ class IosClassService
 
 	class << self
 
+
+    def tree
+
+      class_dump = File.open('../Zinio.classdump.txt').read
+
+      names = class_dump.scan(/@interface(.*?)$/)
+
+      names.each do |name, v|
+
+        if name[/: (.*?)$/,1].include? "NSObject"
+
+          mixrank = %w(
+            facebook
+            flurry
+            afnetworking
+            ziparchive
+            bolts
+            crashlytics
+            cocoalumberjack
+            plcrashreporter
+            parse
+            crittercism
+            appsflyer
+            pinterest
+            webtrends
+            gigya
+            coretextlabel
+          )
+
+          if mixrank.any?{|x| name.downcase.include? x.downcase }
+
+            puts name.green
+
+          end
+
+        end
+
+      end
+
+      # names
+      nil
+
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def search
 
       # ActiveRecord::Base.logger.level = 1
 
       sdks = []
 
-      interface_names = ['ASDFThisIsATestYo']
+      interface_names_from_class_dump.each do |query|
 
-      interface_names.each do |str|
+        # include wildcard and left edge
 
-        # Cocoapod.find_by_name(["#{str}","#{str}sdk","#{str}-sdk","#{str}-ios-sdk","#{str}-ios"])
+        result = elastic_search(query)
 
-        str_arr = str.split(/(?=[A-Z])/)
+        next if result.nil? || query.nil?
 
-        arr_len = str_arr.length
+        substring = longest_common_substring(result, query)
 
-        arr_len.downto(0) do |i|
+        sdks << query if substring.length == result.gsub(/ios|sdk|\-/i,'').length
 
-          puts str_arr.map{|x| x if str_arr.index(x) <= i }.compact.join
+      end
 
-          # puts str_arr
+      sdks = remove_subs(sdks)
 
-          # puts i
 
-          # puts str_arr.map{|x| str_arr[str_len - str_arr.index(x)] }.compact.join
 
-          # puts str_arr.map{|x| str_len}
+      # sdks.each do |sdk|
+
+      #   puts sdk
+
+      # end
+
+      mixrank = %w(
+        facebook
+        flurry
+        afnetworking
+        ziparchive
+        bolts
+        crashlytics
+        cocoalumberjack
+        plcrashreporter
+        parse
+        crittercism
+        appsflyer
+        pinterest
+        webtrends
+        gigya
+        coretextlabel
+      )
+
+      i = 1
+
+      sdks.each do |sdk|
+
+        if mixrank.any?{|x| sdk.downcase.include? x.downcase }
+
+          puts "#{i}. #{sdk.green}"
+
+          i+=1
+
+        else
+
+          puts sdk.purple
 
         end
 
@@ -36,39 +129,43 @@ class IosClassService
 
       nil
 
-      # mixrank = %w(facebook flurry afnetworking ziparchive bolts crashlytics cocoalumberjack plcrashreporter parse crittercism appsflyer pinterest webtrends gigya coretextlabel)
-
-      # sdks.each do |sdk|
-
-      #   if mixrank.any?{|x| sdk.downcase.include? x.downcase }
-
-      #     puts sdk.green
-
-      #   else
-
-      #     puts sdk.purple
-
-      #   end
-
-      # end
-
-      # nil
+      sdks
 
     end
 
-		def interface_names
+		def interface_names_from_class_dump
 
 			class_dump = File.open('../Zinio.classdump.txt').read
 
-			class_dump.scan(/@interface (.*?) :/m).uniq
+			names = class_dump.scan(/@interface (.*?) :/m).uniq
 
-      # .map{ |k,v| i = 0; k.split(/(?=[A-Z])/).join }.uniq
+      queries = []
 
-      # .map{|p| i+=1 if p.length>1; i<=2 ? p : nil}
+      names.each do |str, v|
+
+        queries << str
+
+        # str_arr = str.split(/(?=[A-Z][a-z])/)
+
+        # str_arr.length.downto(0) do |i|
+
+        #   str = str_arr.select.with_index{|x,j|j<i}.compact.join
+
+        #   if str != str.upcase
+
+        #     queries << str
+
+        #   end
+
+        # end
+
+      end
+
+      queries.uniq
 
 		end
 
-    def elastic(query)
+    def elastic_search(query)
 
       result = AppsIndex::Cocoapod.query(
         match: {
@@ -90,7 +187,7 @@ class IosClassService
     end
 
 
-    def lcs(str1, str2)
+    def longest_common_substring(str1, str2)
 
       return nil if [str1, str2].any?(&:blank?)
 
@@ -134,8 +231,13 @@ class IosClassService
 
     end
 
+    def remove_subs(sdks)
+
+      sdks.map{ |sdk| sdk unless sdks.any?{|x| x.downcase.include?(sdk.downcase) && x.length > sdk.length } }.compact
+
+    end
+
 
 	end
-
 
 end
