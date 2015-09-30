@@ -975,13 +975,26 @@ class ApiController < ApplicationController
       
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-      if ss.present?
+      if ss.present? && ss.status.present? 
 
-        if ss.status.present?
+        if ss.status = "success"
+
+          aa = ss.android_app
+
+          if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
+            
+            break
+
+          end
+
+        else
+
           break
+
         end
 
       end
+
     end
 
     job_id
