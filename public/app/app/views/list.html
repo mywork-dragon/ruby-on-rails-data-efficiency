@@ -110,7 +110,8 @@
               <span ng-if="app.app.type == 'AndroidApp'">Android</span>
               -->
             </td>
-            <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+            <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+            <td ng-if="!app.company.name">{{app.app.seller}}</td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
               <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
@@ -141,9 +142,13 @@
 
     </div>
 
+    <!--
     <footer class="table-footer">
       <div class="row">
         <div class="col-md-6 page-num-info">
+
+          -->
+
           <!--
                       <span>
                           Show
@@ -154,7 +159,13 @@
                           entries per page
                       </span>
           -->
+
+        <!--
+
         </div>
+
+        -->
+
         <!--
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
@@ -167,8 +178,12 @@
                       boundary-links="true"></pagination>
         </div>
         -->
+
+      <!--
+
       </div>
     </footer>
+    -->
   </section>
 
 </div>

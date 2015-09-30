@@ -10,7 +10,7 @@
     </div>
   </header>
 
-<div class="row companyPageRow">
+  <div class="row companyPageRow">
     <div class="col-md-6 info-column">
       <div class="panel panel-default">
         <div class="panel-heading"><strong>General Details</strong></div>
@@ -157,6 +157,12 @@
       </div>
 
     </section>
+
+    <div class="row companyPageRow">
+      <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
+        <div ng-transclude=""><span class="ng-binding ng-scope">Note: We do our best to accurately link companies to apps. Due to limited source data, they may occasionally be incorrectly linked.</span></div>
+      </div>
+    </div>
 
     <!-- Company Apps Table -->
     <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">

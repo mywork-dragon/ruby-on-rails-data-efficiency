@@ -20,13 +20,8 @@
       <div class="panel-heading">
 
             <span class="dashboard-tag-filter-selects">
-<!--
-               <span class="btn-group" id="dashboardPlatformSwitch">
-                <button type="button" ng-class="appPlatform.platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('ios')">iOS</button>
-                <button type="button" ng-class="appPlatform.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="changeAppPlatform('android')">Android</button>
-               </span>
--->
-              <app-platform-toggle></app-platform-toggle>
+
+              <app-platform-toggle custom-search-platform="customSearchCtrl.platform"></app-platform-toggle>
 
                <span class="ui-select">
                     <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)">
@@ -36,10 +31,6 @@
                       <option value="L">Low</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Mobile Priority');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                   title="Mobile Priority: how much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed. *Click for more info.*" ></i>
-               </a>
                <span class="ui-select">
                     <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
                       <option value="">Fortune Rank</option>
@@ -47,20 +38,12 @@
                       <option value="1000">Fortune 1000</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Fortune Rank');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                   title="Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists. *Click for more info.*"></i>
-               </a>
                <span class="ui-select" ng-show="canViewAdSpend">
                     <select ng-model="adSpend" ng-change="onFilterChange('adSpend', adSpend, 'Reported Ad Spend', false)">
                       <option value="">Ads on Facebook</option>
                       <option value="true">Yes</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal"  ng-show="canViewAdSpend">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Advertising on Facebook');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                   title="Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget. *Click for more info.*"></i>
-               </a>
                <span class="ui-select">
                     <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)">
                       <option value="">User Base Size</option>
@@ -70,10 +53,6 @@
                       <option value="elite">Elite</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('User Base Size');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                   title="User Base Size: an estimate of how many active users an app has. *Click for more info.*"></i>
-               </a>
               <!--
                <span class="ui-select">
                     <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
@@ -85,21 +64,13 @@
                       <option value="360">Within 12 Months</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Last Updated');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                 title="Last Updated: length of time from last update to app. *Click for more info.*"></i>
-               </a>
                -->
                <span class="ui-select">
-                    <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', true)">
+                    <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
                       <option value="">Categories</option>
                       <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
                     </select>
                </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Categories');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                 title="Categories: the category/genre of the app (same as iOS App Store categories). *Click for more info.*"></i>
-               </a>
                <span class="ui-select" ng-show="canViewSupportDesk && appPlatform.platform == 'ios'">
                     <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
                       <option value="">Support Desk</option>
@@ -111,18 +82,11 @@
 
                     </select>
                </span>
-              <!--
-               <span id="dashboardSearchBox">
-                    <input placeholder="App or Company name..." ng-model="customKeywords" ng-enter="onFilterChange('customKeywords', customKeywords, 'Custom')">
-               </span>
-               <a href="" data-toggle="modal" data-target="#myModal">
-                 <i class="fa fa-info-circle infoTooltipIcon" data-toggle="tooltip" data-placement="top" ng-mouseover="mixpanelAnalyticsEventTooltip('Custom Keyword');" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')"
-                    title="Custom Keyword: searches all app names for a match to the supplied keyword. *Click for more info.*"></i>
-               </a>
-              </span>
-              -->
-
-      </div>
+            </span>
+            <span id="filterMethodButton">
+              <button type="button" class="btn btn-sp-v btn-bordered-default pull-right" data-toggle="modal" data-target="#myModal" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')">Filters Explained</button>
+            </span>
+        </div>
 
     </section>
 
@@ -212,8 +176,8 @@
                   <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">{{app.app.name}}</a>
                 </span>
               </td>
-              <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-              <td>{{app.company.fortuneRank}}</td>
+              <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+              <td ng-if="!app.company.name">{{app.app.seller}}</td>              <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</td>
               <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
                 <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
@@ -251,12 +215,12 @@
                 <h4>Fortune Rank</h4>
                 <p>Fortune Rank: filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>
 
-                <span ng-show="canViewAdSpend">
-                <h4>Advertising on Facebook</h4>
-                <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
-                <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
-                <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
-                  fashion – either they do (if an ad has been reported) or they don’t.</p>
+                <span ng-show="canViewAdSpend" id="facebookMethodologySection">
+                  <h4>Advertising on Facebook</h4>
+                  <p>Advertising on Facebook: whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>
+                  <p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>
+                  <p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary
+                    fashion – either they do (if an ad has been reported) or they don’t.</p>
                 </span>
 
                 <h4>User Base Size</h4>
@@ -270,9 +234,6 @@
 
                 <h4>Categories</h4>
                 <p>Categories: the category/genre of the app (same as iOS App Store categories).</p>
-
-                <h4>Custom Keyword Field</h4>
-                <p>Custom Keyword: searches all app names for a match to the supplied keyword.</p>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

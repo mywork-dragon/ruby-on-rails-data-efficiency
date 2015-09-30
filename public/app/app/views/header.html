@@ -20,18 +20,14 @@
     <div id="mainSearchBoxWrapper" class="pull-right">
       <div id="mainSearchBox" class="col-lg-5 col-sm-6 pull-right">
         <div class="input-group">
-          <input type="text" class="form-control" ng-model="customSearchCtrl.searchInput" ng-enter="customSearchCtrl.submitSearch()" placeholder="Search for {{customSearchCtrl.platform == 'ios' ? 'iOS' : 'Android'}} app or company">
+          <input type="text" class="form-control" ng-model="customSearchCtrl.searchInput" ng-enter="customSearchCtrl.submitSearch()" placeholder="Search for {{customSearchCtrl.platform == 'ios' ? 'iOS' : 'Android'}} app or company" autofocus>
               <span class="input-group-btn">
                   <button class="btn btn-primary" type="button" ng-click="customSearchCtrl.submitSearch()">Search</button>
               </span>
         </div>
       </div>
-
       <div class="pull-right">
-        <span class="btn-group ng-isolate-scope" id="dashboardPlatformSwitch">
-          <button type="button" ng-class="customSearchCtrl.platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn btn-default" ng-click="customSearchCtrl.changeAppPlatform('ios')">iOS</button>
-          <button type="button" ng-class="customSearchCtrl.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn btn-default" ng-click="customSearchCtrl.changeAppPlatform('android')">Android</button>
-        </span>
+        <app-platform-toggle custom-search-platform="customSearchCtrl.platform"></app-platform-toggle>
       </div>
     </div>
   </div>
