@@ -77,10 +77,15 @@ module ApkWorker
 
       apk_snap_id = apk_snap.blank? ? nil : apk_snap.id
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
-      best_account.in_use = false
-      best_account.save
+      best_account_id = best_account.present? ? best_account.id : nil
+
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account_id, status_code: status_code)
       
+      if best_account.present?
+        best_account.in_use = false
+        best_account.save
+      end
+
       if message.include? "Couldn't connect to server"
         
         apk_snap.status = :could_not_connect
