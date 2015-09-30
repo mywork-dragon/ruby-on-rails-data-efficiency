@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20150928215917) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: true,  null: false
+    t.boolean  "can_view_ad_spend",     default: false, null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
@@ -211,8 +211,9 @@ ActiveRecord::Schema.define(version: 20150928215917) do
   end
 
   add_index "android_sdk_companies_apk_snapshots", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
-  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id2", using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id", using: :btree
   add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id_unique", unique: true, using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_uniq_apk_snapshot_id_android_sdk_company_id", unique: true, using: :btree
 
   create_table "android_sdk_package_prefixes", force: true do |t|
     t.string  "prefix"
