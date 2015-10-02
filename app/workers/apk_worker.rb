@@ -188,7 +188,7 @@ module ApkWorker
     stop = 10000000000
 
     g = GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false, scrape_type: is_single ? 1:0).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
+      ga = GoogleAccount.lock.where(scrape_type: is_single ? 1:0).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
