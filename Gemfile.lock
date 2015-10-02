@@ -43,8 +43,6 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    amatch (0.3.0)
-      tins (~> 1.0)
     apk_downloader (1.1.5)
       ruby-protocol-buffers
       varint
@@ -219,6 +217,7 @@ GEM
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     mysql2 (0.3.17)
+    naive_bayes (0.0.3)
     nenv (0.2.0)
     nestful (1.1.1)
     net (0.3.3)
@@ -344,7 +343,6 @@ GEM
     tilt (1.4.1)
     timers (4.1.1)
       hitimes
-    tins (1.6.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -369,7 +367,6 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 4.2.1)
-  amatch (= 0.3.0)
   apk_downloader (= 1.1.5)
   autoprefixer-rails
   awesome_print (= 1.6.1)
@@ -403,6 +400,7 @@ DEPENDENCIES
   minitest-fail-fast (= 0.0.1)
   mixpanel-ruby (= 2.1.0)
   mysql2 (= 0.3.17)
+  naive_bayes (= 0.0.3)
   net
   net-ssh (= 2.9.1)
   newrelic_rpm

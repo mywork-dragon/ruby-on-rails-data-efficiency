@@ -2,140 +2,73 @@ class IosClassService
 
 	class << self
 
+    def search(app_name)
 
-    def tree
-
-      class_dump = File.open('../Zinio.classdump.txt').read
-
-      names = class_dump.scan(/@interface(.*?)$/)
-
-      names.each do |name, v|
-
-        if name[/: (.*?)$/,1].include? "NSObject"
-
-          mixrank = %w(
-            facebook
-            flurry
-            afnetworking
-            ziparchive
-            bolts
-            crashlytics
-            cocoalumberjack
-            plcrashreporter
-            parse
-            crittercism
-            appsflyer
-            pinterest
-            webtrends
-            gigya
-            coretextlabel
-          )
-
-          if mixrank.any?{|x| name.downcase.include? x.downcase }
-
-            puts name.green
-
-          end
-
-        end
-
-      end
-
-      # names
-      nil
-
-    end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def search
-
-      # ActiveRecord::Base.logger.level = 1
+      ActiveRecord::Base.logger.level = 1
 
       sdks = []
 
-      interface_names_from_class_dump.each do |query|
+      interface_names_from_class_dump(app_name).each do |query|
 
-        # include wildcard and left edge
-
-        result = elastic_search(query)
+        result = active_search(query)
 
         next if result.nil? || query.nil?
 
-        substring = longest_common_substring(result, query)
+        # substring = longest_common_substring(result, query)
 
-        sdks << query if substring.length == result.gsub(/ios|sdk|\-/i,'').length
+        # sdks << query if substring.length == result.gsub(/ios|sdk|\-/i,'').length
+
+        sdks << result
 
       end
 
-      sdks = remove_subs(sdks)
+      sdk_list = File.open("../dumps/#{app_name}.sdks").read
 
+      mixrank = sdk_list.split("\n")
 
+      both = []
 
-      # sdks.each do |sdk|
-
-      #   puts sdk
-
-      # end
-
-      mixrank = %w(
-        facebook
-        flurry
-        afnetworking
-        ziparchive
-        bolts
-        crashlytics
-        cocoalumberjack
-        plcrashreporter
-        parse
-        crittercism
-        appsflyer
-        pinterest
-        webtrends
-        gigya
-        coretextlabel
-      )
-
-      i = 1
+      mightysignal = []
 
       sdks.each do |sdk|
 
         if mixrank.any?{|x| sdk.downcase.include? x.downcase }
 
-          puts "#{i}. #{sdk.green}"
-
-          i+=1
+          both << sdk
 
         else
 
-          puts sdk.purple
+          mightysignal << sdk
 
         end
 
       end
 
-      nil
+      puts "\n"
 
-      sdks
+      puts "Both -> #{both.count}".blue
+
+      both.each{|b| puts '     ' + b.green }
+
+      puts "MightySignal -> #{mightysignal.count}".blue
+
+      mightysignal.each{|m| puts '     ' + m.purple }
+
+      mixrank = mixrank.map{|x| x unless both.any?{|s| s.downcase.include? x.downcase } }.compact
+
+      puts "Mixrank -> #{mixrank.count}".blue
+
+      mixrank.each{|m| puts '     ' + m.red }
+
+      puts "\n"
+
+      sdks.count
 
     end
 
-		def interface_names_from_class_dump
+		def interface_names_from_class_dump(app_name)
 
-			class_dump = File.open('../Zinio.classdump.txt').read
+      class_dump = File.open("../dumps/#{app_name}.classdump").read
 
 			names = class_dump.scan(/@interface (.*?) :/m).uniq
 
@@ -164,6 +97,16 @@ class IosClassService
       queries.uniq
 
 		end
+
+    def active_search(query)
+
+      cocoapod = Cocoapod.find_by_name([query, query + 'sdk', query + '-ios-sdk', query + '-ios', query + '-sdk'])
+
+      # cocoapod = Cocoapod.where("name LIKE '%#{query}%'").sort_by{|x| x.name.length }.first
+
+      cocoapod.name if cocoapod.present?
+
+    end
 
     def elastic_search(query)
 
