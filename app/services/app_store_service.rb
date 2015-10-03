@@ -31,6 +31,7 @@ class AppStoreService
         recommended_age_json
         required_ios_version_json
         first_released_json
+        screenshot_urls_json
       )
     end
     
@@ -51,6 +52,7 @@ class AppStoreService
           ratings_html
           recommended_age_html
           required_ios_version_html
+          screenshot_urls_html
         )
       end
       
@@ -307,6 +309,14 @@ class AppStoreService
   def recommended_age_html
     @html.css("#left-stack > div.lockup.product.application > div.app-rating > a").text.gsub("Rated ", '')
   end
+
+  def screenshot_urls_json
+    @json['screenshotUrls']
+  end
+
+  def screenshot_urls_html
+    @html.css(".iphone-screen-shots > div").children.find{ |pic| pic.css("img").first['src'] }
+  end
   
   def required_ios_version_json
     @json['minimumOsVersion']
@@ -385,9 +395,7 @@ class AppStoreService
       #   https://itunes.apple.com/us/app/overdrive-library-ebooks-audiobooks/id366869252?mt=8
       #   https://itunes.apple.com/us/app/goodreads-book-recommendations/id355833469?mt=8
       # )
-    
-      url = 
-    
+
       page = open('https://itunes.apple.com/us/genre/ios-games/id6014')
       html = Nokogiri::HTML(page)
     
