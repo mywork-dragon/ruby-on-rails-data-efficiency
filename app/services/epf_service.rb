@@ -263,13 +263,13 @@ class EpfService
     Slackiq.notify(webhook_name: :main, title: 'EPF Batch Completed', status: status, 'Apps Added' => count.to_s)
     `rm -rf /mnt/epf/*` if count > 1e6
 
-    EpfService.add_apps # Step 2
+    #EpfService.add_apps # Step 2
   end
 
   def on_complete_add_apps(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Add Apps completed')
 
-    AppStoreSnapshotService.run_new_apps  # Step 3
+    # AppStoreSnapshotService.run_new_apps  # Step 3
   end
   
 
