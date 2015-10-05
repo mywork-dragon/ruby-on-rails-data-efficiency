@@ -256,6 +256,13 @@ class GooglePlayService
 
       cards
     end
+
+    def screenshot_urls
+      puts "#####"
+      puts @html.css(".screenshot").map{ |pic| pic['src'] }
+      puts "#####"
+      @html.css(".screenshot").map{ |pic| pic['src'] }
+    end
     
     def icon_url_300x300
       #@html.css('.cover-image').first['src']
