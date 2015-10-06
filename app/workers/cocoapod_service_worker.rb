@@ -14,9 +14,13 @@ class CocoapodServiceWorker
 
   def scrape(char, res_count, offset)
 
+    ActiveRecord::Base.logger.level = 1
+
     cocoapods_url = "https://search.cocoapods.org/api/v1/pods.picky.hash.json"
 
     url = "#{cocoapods_url}?query=on%3Aios+#{char}&ids=#{res_count}&offset=#{offset}&sort=name"
+
+    puts "Scraping #{char}, #{res_count} - #{res_count.to_int + offset.to_int}"
     
     begin
 

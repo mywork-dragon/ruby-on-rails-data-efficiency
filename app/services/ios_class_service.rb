@@ -116,7 +116,9 @@ class IosClassService
 
       interface_names_from_class_dump(app_name).each do |query|
 
-        result = active_search(query[1])
+        q = query[1]
+
+        result = active_source_data_search(q) || active_search(q)
 
         next if result.nil? || query.nil?
 
@@ -212,7 +214,13 @@ class IosClassService
 
       cocoapod = Cocoapod.find_by_name([query, query + 'sdk', query + '-ios-sdk', query + '-ios', query + '-sdk'])
 
-      # cocoapod = Cocoapod.where("name LIKE '%#{query}%'").sort_by{|x| x.name.length }.first
+      cocoapod.name if cocoapod.present?
+
+    end
+
+    def active_source_data_search(query)
+
+      cocoapod = CocoapodSourceData.find_by_name(query)
 
       cocoapod.name if cocoapod.present?
 

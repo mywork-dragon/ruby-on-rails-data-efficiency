@@ -36,6 +36,26 @@ class CocoapodService
 
     end
 
+    def inspect_source
+
+    	Cocoapod.all.each do |pod|
+
+    		CocoapodServiceWorker.new.perform(pod.id)
+
+    	end
+
+    end
+
+    def inspect_source_by_ids(ids = [12797,13795])
+
+    	ids.each do |id|
+
+    		CocoapodServiceWorker.new.perform(id)
+
+    	end
+
+    end
+
 	end
 
 end
