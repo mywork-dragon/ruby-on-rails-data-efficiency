@@ -78,44 +78,46 @@ class CocoapodServiceWorker
 
 
 
-  def download_source()
+  def download_source(cocoapod_id)
 
-    cocoapod_id = 1
+    # cocoapod_id = 1
 
-    srcs = %w(
-      https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip
-      https://kit-downloads.fabric.io/ios/com.twitter.crashlytics.ios/3.3.4/com.twitter.crashlytics.ios-default.zip
-    )
+    # srcs = %w(
+    #   https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip
+    #   https://kit-downloads.fabric.io/ios/com.twitter.crashlytics.ios/3.3.4/com.twitter.crashlytics.ios-default.zip
+    # )
 
-    srcs.each do |src|
+    cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
-      ext = File.extname(src)
+    source_code_url = cocoapod.source_code_url
 
-      basename = File.basename(src, ext)
+    return nil if cocoapod.nil?
 
-      dump = '../sdk_dump/'
+    ext = File.extname(source_code_url)
 
-      filename = dump + basename + ext
+    basename = File.basename(source_code_url, ext)
 
-      data = Proxy.get(req: src)
+    dump = Rails.env.production? ? 'somedirectory' : '../sdk_dump/'
 
-      File.open(filename, 'wb') { |f| f.write data.body }
+    filename = dump + basename + ext
 
-      if ext == '.zip'
+    data = Proxy.get(req: source_code_url)
 
-        Dir.mkdir dump + basename
+    File.open(filename, 'wb') { |f| f.write data.body }
 
-        Zip::ZipFile.open(filename) do |zip_file|
+    if ext == '.zip'
 
-          zip_file.each do |entry|
+      Dir.mkdir dump + basename
 
-            entry.extract( dump + basename + '/' + entry.name )
+      Zip::ZipFile.open(filename) do |zip_file|
 
-            if File.extname(entry.name) == '.h'
+        zip_file.each do |entry|
 
-              parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
+          entry.extract( dump + basename + '/' + entry.name )
 
-            end
+          if File.extname(entry.name) == '.h'
+
+            parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
 
           end
 
@@ -123,11 +125,11 @@ class CocoapodServiceWorker
 
       end
 
-      File.delete(filename)
-
-      FileUtils.rm_rf(dump+basename)
-
     end
+
+    File.delete(filename)
+
+    FileUtils.rm_rf(dump+basename)
 
   end
 
