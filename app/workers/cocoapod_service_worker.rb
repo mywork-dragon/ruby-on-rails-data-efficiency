@@ -78,37 +78,68 @@ class CocoapodServiceWorker
 
 
 
-  def download_source
+  def download_source()
 
-    Zip.on_exists_proc = true
+    cocoapod_id = 1
 
-    filename = "../sdk_dump/AppsFlyer.zip"
+    srcs = %w(
+      https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip
+      https://kit-downloads.fabric.io/ios/com.twitter.crashlytics.ios/3.3.4/com.twitter.crashlytics.ios-default.zip
+    )
 
-    src = "https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip"
+    srcs.each do |src|
 
-    data = Proxy.get(req: src)
+      ext = File.extname(src)
 
-    File.open(filename, 'wb') { |f| f.write data }
+      basename = File.basename(src, ext)
 
-    ext = File.extname(src)
+      dump = '../sdk_dump/'
 
-    if ext == '.zip'
+      filename = dump + basename + ext
 
-      Zip::File.open(filename) do |zip_file|
-        # Handle entries one by one
-        zip_file.each do |entry|
-          # Extract to file/directory/symlink
-          puts "Extracting #{entry.name}"
-          entry.extract(dest_file)
+      data = Proxy.get(req: src)
 
-          # Read into memory
-          content = entry.get_input_stream.read
+      File.open(filename, 'wb') { |f| f.write data.body }
+
+      if ext == '.zip'
+
+        Dir.mkdir dump + basename
+
+        Zip::ZipFile.open(filename) do |zip_file|
+
+          zip_file.each do |entry|
+
+            entry.extract( dump + basename + '/' + entry.name )
+
+            if File.extname(entry.name) == '.h'
+
+              parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
+
+            end
+
+          end
+
         end
 
-        # Find specific entry
-        entry = zip_file.glob('*.h').first
-        puts entry.get_input_stream.read
       end
+
+      File.delete(filename)
+
+      FileUtils.rm_rf(dump+basename)
+
+    end
+
+  end
+
+  def parse_header(filename:, cocoapod_id:)
+
+    file = File.open(filename).read
+
+    names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq
+
+    names.each do |name|
+
+      CocoapodClasses.create(name: name[1], cocoapod_id: cocoapod_id)
 
     end
 
