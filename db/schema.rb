@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006003343) do
+ActiveRecord::Schema.define(version: 20151006012620) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -653,6 +653,7 @@ ActiveRecord::Schema.define(version: 20151006003343) do
     t.integer  "purpose"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "in_use"
   end
 
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
