@@ -19,10 +19,45 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
-          $scope.sdks = data;
+          var sdkErrorMessage = "";
+          $scope.noSdkData = false;
+          if(data == null) {
+            $scope.noSdkData = true;
+            $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+          }
+          if(data.error_code > 0) {
+            $scope.noSdkData = true;
+            switch (data.error_code) {
+              case 1:
+                sdkErrorMessage = "No SDKs in App";
+                break;
+              case 2:
+                sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+                break;
+              case 3:
+                sdkErrorMessage = "Error - Please Try Again Later";
+                break;
+              case 4:
+                sdkErrorMessage = "SDKs Not Available for Paid Apps";
+                break;
+              case 5:
+                $scope.noSdkData = false;
+                break;
+            }
+          }
+          $scope.sdkData = {
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
+          };
         }).error(function(err) {
         });
     });
+
   };
 
   $scope.appPlatform = $routeParams.platform;
@@ -79,12 +114,64 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   $scope.load();
 
   $scope.getSdks = function(appId) {
-    apiService.getSdks(appId)
-      .success(function(data) {
-        $scope.sdks = data;
-      }).error(function() {
 
+    /* -------- Mixpanel Analytics Start -------- */
+    mixpanel.track(
+      "SDK Live Scan Clicked", {
+        'companyName': $scope.appData.company.name,
+        'appName': $scope.appData.name,
+        'appId': $scope.appData.id
+      }
+    );
+    /* -------- Mixpanel Analytics End -------- */
+
+    $scope.sdkQueryInProgress = true;
+    apiService.getSdks(appId, 'api/scan_android_sdks')
+      .success(function(data) {
+        $scope.sdkQueryInProgress = false;
+        var sdkErrorMessage = "";
+        $scope.noSdkData = false;
+        if(data == null) {
+          $scope.noSdkData = true;
+          $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+        }
+        if(data.error_code > 0) {
+          $scope.noSdkData = true;
+          switch (data.error_code) {
+            case 1:
+              sdkErrorMessage = "No SDKs in App";
+              break;
+            case 2:
+              sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+              break;
+            case 3:
+              sdkErrorMessage = "Error - Please Try Again Later";
+              break;
+            case 4:
+              sdkErrorMessage = "SDKs Not Available for Paid Apps";
+              break;
+            case 5:
+              $scope.noSdkData = false;
+              break;
+          }
+        }
+        if(data) {
+          $scope.sdkData = {
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
+            'errorCode': data.error_code,
+            'errorMessage': sdkErrorMessage
+          };
+        }
+      }).error(function() {
+        $scope.sdkQueryInProgress = false;
+        $scope.noSdkData = true;
+        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
       });
+
   };
 
   authService.permissions()
@@ -105,6 +192,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         hiddenElement.download = 'contacts.csv';
         hiddenElement.click();
       });
+  };
+
+  $scope.isEmpty = function(obj) {
+    return Object.keys(obj).length === 0;
   };
 
   /* Company Contacts Logic */

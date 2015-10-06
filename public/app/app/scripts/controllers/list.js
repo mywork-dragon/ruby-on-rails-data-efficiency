@@ -56,7 +56,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       listApiService.exportToCsv($routeParams.id)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
-
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
           hiddenElement.target = '_blank';
           hiddenElement.download = 'mightysignal_list.csv';

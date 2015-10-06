@@ -31,11 +31,8 @@ class IosApp < ActiveRecord::Base
   end
   
   def get_company
-    support_url = newest_ios_app_snapshot.present? ? newest_ios_app_snapshot.support_url : nil
-    seller_url = newest_ios_app_snapshot.present? ? newest_ios_app_snapshot.seller_url : nil
-    
     self.websites.each do |w|
-      if w.company.present? #&& /sites.google.com/.match(support_url).blank? && /sites.google.com/.match(seller_url).blank?
+      if w.company.present?
         return w.company
       end
     end
