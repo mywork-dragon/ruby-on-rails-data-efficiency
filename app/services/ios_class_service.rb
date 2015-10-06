@@ -102,14 +102,6 @@ class IosClassService
 
     def search(app_name)
 
-
-      @known_shit = Mighty.array('
-         CocoaLumberjack: DDAbstractDatabaseLogger
-         CocoaLumberjack: DDAbstractLogger
-      ')
-
-
-
       ActiveRecord::Base.logger.level = 1
 
       sdks = []
@@ -122,11 +114,7 @@ class IosClassService
 
         next if result.nil? || query.nil?
 
-        # substring = longest_common_substring(result, query)
-
-        # sdks << query if substring.length == result.gsub(/ios|sdk|\-/i,'').length
-
-        sdks << query
+        sdks << [query[1], result]
 
       end
 
@@ -142,7 +130,7 @@ class IosClassService
 
         # sdk = sdk
 
-        if mixrank.any?{|x| sdk[0].downcase.include? x.downcase.gsub(' ','') }
+        if mixrank.any?{|x| sdk[1].downcase.include? x.downcase.gsub(' ','') }
 
           both << sdk
 
@@ -164,7 +152,7 @@ class IosClassService
 
       mightysignal.each{|m| puts '     ' + m[1].purple + ' => ' + m[0].purple }
 
-      mixrank = mixrank.map{|x| x unless both.any?{|s| s[0].downcase.include? x.downcase.gsub(' ','') } }.compact
+      mixrank = mixrank.map{|x| x unless both.any?{|s| s[1].downcase.include? x.downcase.gsub(' ','') } }.compact
 
       puts "Mixrank -> #{mixrank.count}".blue
 
@@ -220,83 +208,83 @@ class IosClassService
 
     def active_source_data_search(query)
 
-      cocoapod = CocoapodSourceData.find_by_name(query)
+      cocoapod_source_data = CocoapodSourceData.find_by_name(query)
 
-      cocoapod.name if cocoapod.present?
-
-    end
-
-    def elastic_search(query)
-
-      result = AppsIndex::Cocoapod.query(
-        match: {
-            name: query
-        }
-      ).limit(1)
-
-
-      if !result.count.zero?
-
-        attributes = result.first.attributes
-
-        return attributes['name']
-
-      end
-
-      nil
+      cocoapod_source_data.cocoapod.name if cocoapod_source_data.present?
 
     end
 
+    # def elastic_search(query)
 
-    def longest_common_substring(str1, str2)
+    #   result = AppsIndex::Cocoapod.query(
+    #     match: {
+    #         name: query
+    #     }
+    #   ).limit(1)
 
-      return nil if [str1, str2].any?(&:blank?)
 
-      str1 = str1.downcase
+    #   if !result.count.zero?
 
-      str2 = str2.downcase
+    #     attributes = result.first.attributes
 
-      m = Array.new(str1.length){ [0] * str2.length }
+    #     return attributes['name']
 
-      longest_length, longest_end_pos = 0,0
+    #   end
 
-      (0..str1.length - 1).each do |x|
+    #   nil
 
-        (0..str2.length - 1).each do |y|
+    # end
 
-          if str1[x] == str2[y]
 
-            m[x][y] = 1
+    # def longest_common_substring(str1, str2)
 
-            if (x > 0 && y > 0)
+    #   return nil if [str1, str2].any?(&:blank?)
 
-              m[x][y] += m[x-1][y-1]
+    #   str1 = str1.downcase
 
-            end
+    #   str2 = str2.downcase
 
-            if m[x][y] > longest_length
+    #   m = Array.new(str1.length){ [0] * str2.length }
 
-              longest_length = m[x][y]
+    #   longest_length, longest_end_pos = 0,0
 
-              longest_end_pos = x
+    #   (0..str1.length - 1).each do |x|
 
-            end
+    #     (0..str2.length - 1).each do |y|
 
-          end
+    #       if str1[x] == str2[y]
 
-        end
+    #         m[x][y] = 1
 
-      end
+    #         if (x > 0 && y > 0)
 
-      return str1[longest_end_pos - longest_length + 1 .. longest_end_pos]
+    #           m[x][y] += m[x-1][y-1]
 
-    end
+    #         end
 
-    def remove_subs(sdks)
+    #         if m[x][y] > longest_length
 
-      sdks.map{ |sdk| sdk unless sdks.any?{|x| x.downcase.include?(sdk.downcase) && x.length > sdk.length } }.compact
+    #           longest_length = m[x][y]
 
-    end
+    #           longest_end_pos = x
+
+    #         end
+
+    #       end
+
+    #     end
+
+    #   end
+
+    #   return str1[longest_end_pos - longest_length + 1 .. longest_end_pos]
+
+    # end
+
+    # def remove_subs(sdks)
+
+    #   sdks.map{ |sdk| sdk unless sdks.any?{|x| x.downcase.include?(sdk.downcase) && x.length > sdk.length } }.compact
+
+    # end
 
 
 	end

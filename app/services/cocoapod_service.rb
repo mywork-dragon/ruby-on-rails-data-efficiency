@@ -45,8 +45,10 @@ class CocoapodService
     	end
 
     end
+    
+    # [8155,85,14088,14087]
 
-    def inspect_source_by_ids(ids = [12797,13795])
+    def inspect_source_by_ids(ids = [8155,85,14088,14087])
 
     	ids.each do |id|
 

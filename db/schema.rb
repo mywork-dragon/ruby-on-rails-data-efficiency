@@ -379,6 +379,7 @@ ActiveRecord::Schema.define(version: 20151006182901) do
   end
 
   add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
+  add_index "cocoapod_source_data", ["name", "cocoapod_id"], name: "index_cocoapod_source_data_on_name_and_cocoapod_id", unique: true, using: :btree
   add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
 
   create_table "cocoapod_tags", force: true do |t|

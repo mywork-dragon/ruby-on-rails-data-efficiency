@@ -86,44 +86,58 @@ class CocoapodServiceWorker
 
   def download_source(cocoapod_id)
 
-    # srcs = %w(
-    #   https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip
-    #   https://kit-downloads.fabric.io/ios/com.twitter.crashlytics.ios/3.3.4/com.twitter.crashlytics.ios-default.zip
-    # )
-
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
-    source_code_url = cocoapod.http || cocoapod.git
+    url = cocoapod.http
+
+    source_code_url = if url.blank?
+
+      url = cocoapod.git
+
+      company = url[/.com+[^a-zA-Z](?!.*.com+[^a-zA-Z])(.*?)\//,1]
+
+      repo = url[/#{company}\/(.*?)\./,1]
+
+      'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+
+    else
+
+      url.gsub(/(?<=.zip).+/,'')
+
+    end
 
     return nil if cocoapod.nil? || source_code_url.nil?
 
-    ext = File.extname(source_code_url)
+    ext = '.zip'
 
-    basename = File.basename(source_code_url, ext)
+    basename = cocoapod.name
 
-    dump = Rails.env.production? ? 'somedirectory' : '../sdk_dump/'
+    dump = Rails.env.production? ? '"/mnt/sdk_dump/"' : '../sdk_dump/'
 
     filename = dump + basename + ext
 
-    data = Proxy.get(req: source_code_url)
+    headers = {
+      'Content-Type' => 'application/zip',
+      'User-Agent' => UserAgent.random_web
+    }
+
+    uri = URI(source_code_url)
+
+    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
 
     File.open(filename, 'wb') { |f| f.write data.body }
 
-    if ext == '.zip'
+    Dir.mkdir dump + basename
 
-      Dir.mkdir dump + basename
+    Zip::ZipFile.open(filename) do |zip_file|
 
-      Zip::ZipFile.open(filename) do |zip_file|
+      zip_file.each do |entry|
 
-        zip_file.each do |entry|
+        entry.extract( dump + basename + '/' + entry.name )
 
-          entry.extract( dump + basename + '/' + entry.name )
+        if File.extname(entry.name) == '.h'
 
-          if File.extname(entry.name) == '.h'
-
-            parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
-
-          end
+          parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
 
         end
 
@@ -145,7 +159,15 @@ class CocoapodServiceWorker
 
     names.each do |name|
 
-      CocoapodSourceData.create(name: name[1], cocoapod_id: cocoapod_id)
+      begin
+
+        CocoapodSourceData.find_or_create_by(name: name[1], cocoapod_id: cocoapod_id)
+
+      rescue
+
+        nil
+
+      end
 
     end
 
