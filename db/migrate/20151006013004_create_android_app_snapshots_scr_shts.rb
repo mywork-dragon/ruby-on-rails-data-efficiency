@@ -1,0 +1,10 @@
+class CreateAndroidAppSnapshotsScrShts < ActiveRecord::Migration
+  def change
+    add_reference :android_app_snapshots, :android_app_snapshots_scr_shts, index: true
+    create_table :android_app_snapshots_scr_shts do |t|
+      t.string :url
+      t.integer :position
+      t.timestamps null: false
+    end
+  end
+end

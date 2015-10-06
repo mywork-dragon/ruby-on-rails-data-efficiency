@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150928175409) do
+ActiveRecord::Schema.define(version: 20151006013004) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 20150928175409) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "price"
-    t.integer  "size",                             limit: 8
+    t.integer  "size",                              limit: 8
     t.date     "updated"
     t.string   "seller_url"
     t.string   "version"
@@ -80,17 +80,18 @@ ActiveRecord::Schema.define(version: 20150928175409) do
     t.string   "required_android_version"
     t.string   "content_rating"
     t.string   "seller"
-    t.decimal  "ratings_all_stars",                          precision: 3, scale: 2
+    t.decimal  "ratings_all_stars",                           precision: 3, scale: 2
     t.integer  "ratings_all_count"
     t.integer  "status"
     t.integer  "android_app_snapshot_job_id"
     t.integer  "in_app_purchase_min"
     t.integer  "in_app_purchase_max"
-    t.integer  "downloads_min",                    limit: 8
-    t.integer  "downloads_max",                    limit: 8
+    t.integer  "downloads_min",                     limit: 8
+    t.integer  "downloads_max",                     limit: 8
     t.string   "icon_url_300x300"
     t.string   "developer_google_play_identifier"
     t.boolean  "apk_access_forbidden"
+    t.integer  "android_app_snapshots_scr_shts_id"
   end
 
   add_index "android_app_snapshots", ["android_app_id", "name"], name: "index_android_app_id_and_name", using: :btree
@@ -98,10 +99,18 @@ ActiveRecord::Schema.define(version: 20150928175409) do
   add_index "android_app_snapshots", ["android_app_id"], name: "index_android_app_id", using: :btree
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
+  add_index "android_app_snapshots", ["android_app_snapshots_scr_shts_id"], name: "index_android_app_snapshots_on_android_app_snapshots_scr_shts_id", using: :btree
   add_index "android_app_snapshots", ["apk_access_forbidden"], name: "index_apk_access_forbidden", using: :btree
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
+
+  create_table "android_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -628,6 +637,7 @@ ActiveRecord::Schema.define(version: 20150928175409) do
     t.string   "copywright"
     t.string   "seller_url_text"
     t.string   "support_url_text"
+    t.integer  "ios_app_snapshots_scr_shts_id"
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
@@ -636,6 +646,7 @@ ActiveRecord::Schema.define(version: 20150928175409) do
   add_index "ios_app_snapshots", ["ios_app_id", "released"], name: "index_ios_app_snapshots_on_ios_app_id_and_released", using: :btree
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
+  add_index "ios_app_snapshots", ["ios_app_snapshots_scr_shts_id"], name: "index_ios_app_snapshots_on_ios_app_snapshots_scr_shts_id", using: :btree
   add_index "ios_app_snapshots", ["name"], name: "index_ios_app_snapshots_on_name", using: :btree
   add_index "ios_app_snapshots", ["released"], name: "index_ios_app_snapshots_on_released", using: :btree
   add_index "ios_app_snapshots", ["support_url"], name: "index_ios_app_snapshots_on_support_url", using: :btree
@@ -649,6 +660,13 @@ ActiveRecord::Schema.define(version: 20150928175409) do
 
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
+
+  create_table "ios_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
