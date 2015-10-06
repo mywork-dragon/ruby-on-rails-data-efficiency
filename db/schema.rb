@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150928175409) do
+ActiveRecord::Schema.define(version: 20151006182901) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -211,7 +211,8 @@ ActiveRecord::Schema.define(version: 20150928175409) do
   end
 
   add_index "android_sdk_companies_apk_snapshots", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
-  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id", unique: true, using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id2", using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id_unique", unique: true, using: :btree
 
   create_table "android_sdk_package_prefixes", force: true do |t|
     t.string  "prefix"
@@ -369,6 +370,16 @@ ActiveRecord::Schema.define(version: 20150928175409) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "cocoapod_source_data", force: true do |t|
+    t.string   "name"
+    t.integer  "cocoapod_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
+  add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
 
   create_table "cocoapod_tags", force: true do |t|
     t.string   "tag"
@@ -688,6 +699,19 @@ ActiveRecord::Schema.define(version: 20150928175409) do
   add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
+
+  create_table "ios_devices", force: true do |t|
+    t.string   "serial_number"
+    t.string   "ip"
+    t.integer  "purpose"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "in_use"
+  end
+
+  add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
+  add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
+  add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"

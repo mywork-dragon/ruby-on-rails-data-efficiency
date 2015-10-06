@@ -153,5 +153,7 @@ gem 'aws-sdk', '< 2.0'
 
 gem 'colorize', '0.7.7'
 
+gem 'awesome_print', '1.6.1'
+
 gem 'rubyzip', '0.9.9'
 

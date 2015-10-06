@@ -4,9 +4,11 @@ class CocoapodServiceWorker
 
 	sidekiq_options :retry => 2, queue: :scraper
 
-	def perform(char, res_count, offset)
+	def perform(cocoapod_id)
 
-    scrape(char, res_count, offset)
+    # scrape(char, res_count, offset)
+
+    download_source(cocoapod_id)
 
   end
 
@@ -80,8 +82,6 @@ class CocoapodServiceWorker
 
   def download_source(cocoapod_id)
 
-    # cocoapod_id = 1
-
     # srcs = %w(
     #   https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip
     #   https://kit-downloads.fabric.io/ios/com.twitter.crashlytics.ios/3.3.4/com.twitter.crashlytics.ios-default.zip
@@ -89,9 +89,9 @@ class CocoapodServiceWorker
 
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
-    source_code_url = cocoapod.source_code_url
+    source_code_url = cocoapod.http || cocoapod.git
 
-    return nil if cocoapod.nil?
+    return nil if cocoapod.nil? || source_code_url.nil?
 
     ext = File.extname(source_code_url)
 
@@ -141,7 +141,7 @@ class CocoapodServiceWorker
 
     names.each do |name|
 
-      CocoapodClasses.create(name: name[1], cocoapod_id: cocoapod_id)
+      CocoapodSourceData.create(name: name[1], cocoapod_id: cocoapod_id)
 
     end
 
