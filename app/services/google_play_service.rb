@@ -262,7 +262,11 @@ class GooglePlayService
     end
 
     def screenshot_urls
-      @html.css(".screenshot").map{ |pic| pic['src'] }
+      begin
+        @html.css(".screenshot").map{ |pic| pic['src'] }
+      rescue => e
+        nil
+      end
     end
     
     def icon_url_300x300
