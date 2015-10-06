@@ -33,6 +33,7 @@ class GooglePlayService
         ratings_all_stars
         ratings_all_count
         similar_apps
+        screenshot_urls
         icon_url_300x300
         developer_google_play_identifier
       )
@@ -58,7 +59,10 @@ class GooglePlayService
 
     def google_play_html(app_identifier)
       url = "https://play.google.com/store/apps/details?id=#{app_identifier}"
-      
+
+      puts "url: #{url}"
+
+
       page = Tor.get(url)
 
       Nokogiri::HTML(page)
@@ -258,10 +262,11 @@ class GooglePlayService
     end
 
     def screenshot_urls
-      puts "#####"
-      puts @html.css(".screenshot").map{ |pic| pic['src'] }
-      puts "#####"
-      @html.css(".screenshot").map{ |pic| pic['src'] }
+      begin
+        @html.css(".screenshot").map{ |pic| pic['src'] }
+      rescue => e
+        nil
+      end
     end
     
     def icon_url_300x300

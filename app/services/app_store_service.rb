@@ -315,7 +315,11 @@ class AppStoreService
   end
 
   def screenshot_urls_html
-    @html.css(".iphone-screen-shots > div > div > img").map{ |pic| pic['src'] }
+    begin
+      @html.css(".iphone-screen-shots > div > div > img").map{ |pic| pic['src'] }
+    rescue => e
+      nil
+    end
   end
   
   def required_ios_version_json

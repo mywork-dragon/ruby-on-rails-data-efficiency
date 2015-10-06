@@ -125,6 +125,12 @@ class GooglePlaySnapshotServiceWorker
           android_app.mobile_priority = mobile_priority
         end
 
+        if screenshot_urls = a[:screenshot_urls]
+          screenshot_urls.each_with_index do |screenshot_url, index|
+            AndroidAppSnapshotsScreenshot.create(url: screenshot_url, position: index)
+          end
+        end
+
         #update newest snapshot
         android_app.newest_android_app_snapshot_id = s.id #make sure s has been saved first
         
