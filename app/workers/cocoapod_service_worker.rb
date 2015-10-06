@@ -75,4 +75,43 @@ class CocoapodServiceWorker
 
   end
 
+
+
+
+  def download_source
+
+    Zip.on_exists_proc = true
+
+    filename = "../sdk_dump/AppsFlyer.zip"
+
+    src = "https://s3-eu-west-1.amazonaws.com/download.appsflyer.com/ios/AF-iOS-SDK-v3.3.1.zip"
+
+    data = Proxy.get(req: src)
+
+    File.open(filename, 'wb') { |f| f.write data }
+
+    ext = File.extname(src)
+
+    if ext == '.zip'
+
+      Zip::File.open(filename) do |zip_file|
+        # Handle entries one by one
+        zip_file.each do |entry|
+          # Extract to file/directory/symlink
+          puts "Extracting #{entry.name}"
+          entry.extract(dest_file)
+
+          # Read into memory
+          content = entry.get_input_stream.read
+        end
+
+        # Find specific entry
+        entry = zip_file.glob('*.h').first
+        puts entry.get_input_stream.read
+      end
+
+    end
+
+  end
+
 end

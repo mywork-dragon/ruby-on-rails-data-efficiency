@@ -157,3 +157,6 @@ gem 'awesome_print', '1.6.1'
 
 gem 'naive_bayes', '0.0.3'
 
+gem 'rubyzip', '0.9.9'
+
+

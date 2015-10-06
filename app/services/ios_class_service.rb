@@ -2,7 +2,113 @@ class IosClassService
 
 	class << self
 
+
+
+    def train
+
+      nb = NaiveBayes.new(:sdk, :garbage)
+
+      training_words = %w(
+        AppsFlyerConnectionDelegate
+        AppsFlyerTrackerDelegate
+        AppsFlyerParameters
+        FiksuAppstoreDetector
+        FiksuDebugManager
+        FiksuFMABridge
+        GCDMulticastDelegate
+      )
+
+      # training_words = %w(
+      #   SFHFKeychainUtils
+      #   MyLibrary
+      #   Spread
+      #   WebViewController
+      #   Stack
+      #   Analytics
+      #   shareSDK
+      #   Flow
+      #   AsyncImageView
+      #   Async
+      #   DDAbstract
+      #   JSONAPI
+      #   JSON
+      #   Notification
+      #   Fabric
+      #   SQLitePersistentObject
+      # )
+
+      training_words.each do |word|
+
+        system "clear"
+
+        parts = word.split(/(?=[A-Z][a-z])/)
+
+        parts.each.with_index do |part, index|
+
+          puts "#{index}. #{part}"
+
+        end
+
+        puts "\nWhich #s are good?"
+
+        answer = gets.chomp
+
+        answers = answer.split(//).map{ |x| x.strip.to_i }
+
+        parts.each.with_index do |part, index|
+
+          category = answers.include?(index) ? :sdk : :garbage
+
+          nb.train(category, parts[index])
+
+        end
+
+      end
+
+      nb
+
+    end
+
+
+    def classify(word: 'AppsFlyerConversionConnectionDelegate')
+
+      nb = train
+
+      parts = word.split(/(?=[A-Z][a-z])/)
+      
+      parts.map do |part|
+
+        category = nb.classify(*part)
+
+        category.first == :sdk ? part : nil
+
+      end.compact.join
+
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def search(app_name)
+
+
+      @known_shit = Mighty.array('
+         CocoaLumberjack: DDAbstractDatabaseLogger
+         CocoaLumberjack: DDAbstractLogger
+      ')
+
+
 
       ActiveRecord::Base.logger.level = 1
 
@@ -10,7 +116,7 @@ class IosClassService
 
       interface_names_from_class_dump(app_name).each do |query|
 
-        result = active_search(query)
+        result = active_search(query[1])
 
         next if result.nil? || query.nil?
 
@@ -18,7 +124,7 @@ class IosClassService
 
         # sdks << query if substring.length == result.gsub(/ios|sdk|\-/i,'').length
 
-        sdks << result
+        sdks << query
 
       end
 
@@ -32,7 +138,9 @@ class IosClassService
 
       sdks.each do |sdk|
 
-        if mixrank.any?{|x| sdk.downcase.include? x.downcase }
+        # sdk = sdk
+
+        if mixrank.any?{|x| sdk[0].downcase.include? x.downcase.gsub(' ','') }
 
           both << sdk
 
@@ -48,13 +156,13 @@ class IosClassService
 
       puts "Both -> #{both.count}".blue
 
-      both.each{|b| puts '     ' + b.green }
+      both.each{|b| puts '     ' + b[1].green + ' => ' + b[0].green }
 
       puts "MightySignal -> #{mightysignal.count}".blue
 
-      mightysignal.each{|m| puts '     ' + m.purple }
+      mightysignal.each{|m| puts '     ' + m[1].purple + ' => ' + m[0].purple }
 
-      mixrank = mixrank.map{|x| x unless both.any?{|s| s.downcase.include? x.downcase } }.compact
+      mixrank = mixrank.map{|x| x unless both.any?{|s| s[0].downcase.include? x.downcase.gsub(' ','') } }.compact
 
       puts "Mixrank -> #{mixrank.count}".blue
 
@@ -75,8 +183,10 @@ class IosClassService
       queries = []
 
       names.each do |str, v|
+        
+        orig = str
 
-        queries << str
+        queries << [orig, str]
 
         # str_arr = str.split(/(?=[A-Z][a-z])/)
 
@@ -86,7 +196,7 @@ class IosClassService
 
         #   if str != str.upcase
 
-        #     queries << str
+        #     queries << [orig, str]
 
         #   end
 
