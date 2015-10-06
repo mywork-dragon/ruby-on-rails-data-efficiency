@@ -127,7 +127,7 @@ class GooglePlaySnapshotServiceWorker
 
         if screenshot_urls = a[:screenshot_urls]
           screenshot_urls.each_with_index do |screenshot_url, index|
-            AndroidAppSnapshotsScreenshot.create(url: screenshot_url, position: index)
+            AndroidAppSnapshotsScrSht.create(url: screenshot_url, position: index)
           end
         end
 

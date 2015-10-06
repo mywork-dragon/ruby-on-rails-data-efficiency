@@ -138,7 +138,7 @@ class AppStoreSnapshotServiceWorker
 
         if screenshot_urls = a[:screenshot_urls]
           screenshot_urls.each_with_index do |screenshot_url, index|
-            IosAppSnapshotsScreenshot.create(url: screenshot_url, position: index)
+            IosAppSnapshotsScrSht.create(url: screenshot_url, position: index)
           end
         end
       
