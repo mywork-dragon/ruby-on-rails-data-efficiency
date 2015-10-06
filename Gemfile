@@ -67,7 +67,7 @@ gem 'newrelic_rpm'
 gem 'restforce', '1.5.0'
 gem 'omniauth-salesforce', '1.0.5'
 
-gem 'httparty', '0.13.3' 
+gem 'httparty', '0.13.3'
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro'
@@ -76,7 +76,7 @@ end
 
 gem 'filesize', '0.0.4'
 
-# gem 'aws-sdk', '~> 2'
+gem 'aws-sdk', '~> 2'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
@@ -136,5 +136,6 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 gem 'slackiq', '1.1.1'
 
+gem 'slack-notifier', '1.2.1'
 
 gem 'awesome_print', '1.6.1'
