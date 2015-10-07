@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006012620) do
+ActiveRecord::Schema.define(version: 20151007011035) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -102,6 +102,16 @@ ActiveRecord::Schema.define(version: 20151006012620) do
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
+
+  create_table "android_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "android_app_snapshot_id"
+  end
+
+  add_index "android_app_snapshots_scr_shts", ["android_app_snapshot_id"], name: "index_android_app_snapshots_scr_shts_on_android_app_snapshot_id", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -607,6 +617,16 @@ ActiveRecord::Schema.define(version: 20151006012620) do
 
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
+
+  create_table "ios_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.integer  "ios_app_snapshot_id"
+  end
+
+  add_index "ios_app_snapshots_scr_shts", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_scr_shts_on_ios_app_snapshot_id", using: :btree
 
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
