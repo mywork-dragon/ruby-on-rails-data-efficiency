@@ -3,7 +3,8 @@ require 'sshkit/dsl'
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
-set :stages, %w(production scraper sdk_scraper web_api)
+# set :stages, %w(production scraper sdk_scraper web_api)
+set :stages, %w(production scraper sdk_scraper web staging)
 set :default_stage, 'production'
 
 set :application, 'varys'
@@ -28,7 +29,7 @@ set :deploy_to, '/home/webapps/varys'
 set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentials.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -46,8 +47,7 @@ set :sidekiq_role, [:sdk_scraper_master, :sdk_scraper, :scraper_master, :scraper
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sdk_scraper_concurrency, 50
-set :scraper_master_concurrency, 50
+set :sdk_scraper_concurrency, 30
 set :scraper_concurrency, 50
 set :web_concurrency, 1
 
@@ -74,12 +74,14 @@ namespace :deploy do
   after :publishing, :restart
 
   after :restart, :clear_cache do
-    on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
+    # on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
+
+    on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
-    
+
     # run bower install to get bower updates
-    on roles(:web) do
+    on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
     end
   end

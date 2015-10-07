@@ -8,10 +8,10 @@
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
 var APP_PLATFORM = "ios";
-var JWT_TOKEN_NAME = "jwt_auth_token";
+var JWT_TOKEN_NAME = "ms_jwt_auth_token";
 
 if (location.host == "localhost:3000") {
-  JWT_TOKEN_NAME = "dev_jwt_auth_token";
+  JWT_TOKEN_NAME = "dev_ms_jwt_auth_token";
 }
 
 angular
@@ -31,7 +31,7 @@ angular
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
           $('#app > .load_circle_wrapper').addClass("loaded");
-        },1000);
+        },300);
 
         /* Populates "Categories" dropdown with list of categories */
         $http({
@@ -44,12 +44,16 @@ angular
       });
 
     })
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', function ($routeProvider) {
      $routeProvider
        .when('/search', {
          templateUrl: '/app/app/views/dashboard.html',
          activeTab: 'search',
          reloadOnSearch: false
+       })
+       .when('/search/custom', {
+         templateUrl: '/app/app/views/custom-search-results.html',
+         activeTab: 'search'
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
@@ -68,10 +72,10 @@ angular
         redirectTo: '/search',
          activeTab: 'search'
       });
-  })
-  .config(function($httpProvider) {
-    return $httpProvider.interceptors.push("authInterceptor");
-  })
+  }])
+  .config(['$httpProvider', function($httpProvider) {
+     return $httpProvider.interceptors.push("authInterceptor");
+  }])
   .filter('capitalize', function() {
     return function(input, all) {
       return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';

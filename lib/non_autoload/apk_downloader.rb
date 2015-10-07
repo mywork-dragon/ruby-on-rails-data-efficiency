@@ -13,6 +13,7 @@ module ApkDownloader
        end
 
       File.open(destination, 'wb') { |f| f.write data }
+      
     end
   end
 end

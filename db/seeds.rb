@@ -103,8 +103,24 @@ end
   end
   
   #Create local IP for Tor
-  Proxy.create!(private_ip: '127.0.0.1', active: true)
+  # Proxy.create!(private_ip: '127.0.0.1', active: true)
 
   GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
+
+  apk_snapshot = ApkSnapshot.create(android_app_id: 1)
+
+  # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')
+
+  # android_app = AndroidApp.find(1)
+
+
+  # AndroidSdkCompaniesAndroidApp.create!(android_sdk_company: sdk_com, android_app: android_app)
+
+
+  # AndroidSdkPackage.create(package_name: 'com.testpackage.activity', android_sdk_company_id: sdk_com.id)
+
+  # AndroidSdkPackage.create(package_name: 'com.testpackage.login', android_sdk_company_id: sdk_com.id)
+
+  # AndroidSdkPackagePrefix.create(prefix: 'testpackage', android_sdk_company_id: sdk_com.id)
 
 end

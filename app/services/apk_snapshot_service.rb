@@ -11,20 +11,20 @@ class ApkSnapshotService
 
     def run_n(notes, size = 10)
 
-      workers = Sidekiq::Workers.new.map{ |w| w[2]["queue"] == 'sdk_scraper' }.include? true
+      workers = Sidekiq::Workers.new.any?{ |w| w[2]["queue"] == 'sdk_scraper' }
 
       clear_accounts()
 
       if !workers
 
         batch = Sidekiq::Batch.new
-        batch.description = 'scrape n apks from google play' 
+        batch.description = 'scrape n apks from google play'
         batch.on(:complete, self)
 
         batch.jobs do
 
           j = ApkSnapshotJob.create!(notes: notes)
-          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
+          AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high, data_flag: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(size).each.with_index do |app, index|
             li "app #{index}"
             ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
@@ -78,8 +78,34 @@ class ApkSnapshotService
       end
     end
 
-    def job
-      j = ApkSnapshotJob.last
+
+    def single_prod(notes, n = 1)
+
+      j = ApkSnapshotJob.create!(notes: "SINGLE: #{notes}")
+
+      batch = Sidekiq::Batch.new
+      batch.jobs do
+
+        AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(n).each do |app|
+          ApkSnapshotServiceWorker.new.perform(j.id, batch.bid, app.id)
+        end
+
+      end
+
+    end
+
+# AndroidApp.where(taken_down: nil, newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = 0 AND android_app_snapshots.apk_access_forbidden IS NOT true").limit(100).each{ |app| puts "https://play.google.com/store/apps/details?id=#{app.app_identifier}" }
+
+# This gives you links to every app that threw an exception given a job id
+# ApkSnapshotException.where(try: 3, apk_snapshot_job_id: 651).each{ |a| puts "https://play.google.com/store/apps/details?id=#{ApkSnapshot.find(a.apk_snapshot_id).android_app.app_identifier}" }
+
+    def job(id = nil)
+
+      if id.nil?
+        j = ApkSnapshotJob.last
+      else
+        j = ApkSnapshotJob.find(id)
+      end
 
       workers = Sidekiq::Workers.new
 

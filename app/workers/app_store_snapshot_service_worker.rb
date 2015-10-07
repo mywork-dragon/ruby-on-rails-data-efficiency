@@ -34,7 +34,7 @@ class AppStoreSnapshotServiceWorker
         a = AppStoreService.attributes(ios_app.app_identifier)
         
         raise 'AppStoreService.attributes is empty' if a.empty?
-      
+
         single_column_attributes = %w(
           name
           description
@@ -133,6 +133,12 @@ class AppStoreSnapshotServiceWorker
           end
           if size_175x175 = icon_urls[:size_175x175]
             s.icon_url_175x175 = size_175x175
+          end
+        end
+
+        if screenshot_urls = a[:screenshot_urls]
+          screenshot_urls.each_with_index do |screenshot_url, index|
+            IosAppSnapshotsScrSht.create(url: screenshot_url, position: index, ios_app_snapshot_id: s.id)
           end
         end
       

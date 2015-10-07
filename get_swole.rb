@@ -17,12 +17,13 @@ puts "Options"
 puts "-------"
 puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
 puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'sdk_scraper'"
-puts "web_api: Deploys to the Web and API servers. Branch is 'master'"
+puts "staging: Deploys to the staging server. Branch is 'staging'"
+puts "web: Deploys to the Web server. Branch is 'master'"
 puts "all: Deploys to all servers. Branch is 'master'" 
 puts "\n"
 print "Deploy to: "
 servers = gets.chomp
-valid_servers = %w(scraper sdk_scraper web_api all)
+valid_servers = %w(scraper sdk_scraper staging web all)
 if !valid_servers.include?(servers)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
@@ -34,9 +35,12 @@ if servers == 'scraper'
 elsif servers == 'sdk_scraper'
   branch = 'sdk_scraper'
   stage = branch
-elsif servers == 'web_api'
+elsif servers == 'staging'
+  branch = 'staging'
+  stage = branch
+elsif servers == 'web'
   branch = 'master'
-  stage = 'web_api'
+  stage = 'web'
 elsif servers == 'all'
   branch = 'master'
   stage = 'production'
@@ -70,13 +74,6 @@ last_line.split(", ")
 if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
-
-# if `animate --version`.include?('command not found')
-#   puts "\n\n\n\nYou must run `sudo port install ImageMagick` before you can get swole."
-#   exit
-# end
-
-# system('animate bicep_curl.gif &')
 
 puts ""
 system("bundle exec cap #{stage} deploy")

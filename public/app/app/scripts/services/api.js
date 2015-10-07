@@ -102,6 +102,28 @@ angular.module("appApp")
           }
         });
       },
+      exportNewestChartToCsv: function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Exported Newest Apps CSV"
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/chart/export_to_csv'
+        });
+      },
+      exportAllToCsv: function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Exported Search Results CSV"
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/search/export_results_to_csv'
+        });
+      },
       checkForSdks: function(appId) {
         return $http({
           method: 'GET',
@@ -109,13 +131,12 @@ angular.module("appApp")
           params: {appId: appId}
         })
       },
-      getSdks: function(appId) {
+      getSdks: function(appId, endPoint) {
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/android_sdks',
+          url: API_URI_BASE + endPoint,
           params: {appId: appId}
         })
       }
     };
   }]);
-

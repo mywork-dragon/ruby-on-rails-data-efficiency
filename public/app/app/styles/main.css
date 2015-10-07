@@ -567,6 +567,10 @@ pre {
 .table > thead > tr > th, .table > thead > tr > td, .table > tbody > tr > th, .table > tbody > tr > td, .table > tfoot > tr > th, .table > tfoot > tr > td {
   padding: 10px; }
 
+.table > thead > tr > th {
+  min-width: 30px;
+}
+
 .table .table {
   background-color: #f3f3f3; }
 
@@ -7202,6 +7206,14 @@ i.infoTooltipIcon {
   width: 10px;
 }
 
+#dashboardResultsTableHeading {
+  padding-right: 8px;
+}
+
+#dashboardResultsTableHeading button {
+  margin-left: 5px;
+}
+
 #dashboardResultsTableHeading, #listViewTableHeading, #companyContactsTableHeading {
   height: 52px;
 }
@@ -7324,6 +7336,22 @@ select option:empty {
   font-size: 20px;
 }
 
+#appPageSdkScanStatus {
+  padding: 0 20px 0 0;
+}
+
+#appPageSdkScanStatus div {
+  text-align: center;
+}
+
+#appPageSdkScanStatus #wrap_spinner {
+  margin-top: 20px;
+}
+
+#appPageSdkScanStatus #wrap_spinner p {
+  padding-top: 15px;
+}
+
 #appTypeHeaderLogo {
   position: absolute;
   right: 15px;
@@ -7409,6 +7437,10 @@ select option:empty {
   margin-left: 20%;
 }
 
+#showSdksButtonTitle {
+  text-align: center;
+}
+
 #showCompanyEmailsTextField {
   padding-left: 6px;
   display: table-cell;
@@ -7460,6 +7492,30 @@ pre {
   padding-left: 27px;
 }
 
+#sdkLiveScanDisplay ul img, ul i {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+#sdkLiveScanDisplay ul i {
+  margin-left: 3px;
+  margin-right: 7px;
+}
+
+#sdkLiveScanDisplay a {
+  color: #767676;
+}
+
+#sdkLiveScanDisplay ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+#sdkLiveScanDisplay .list-info li, #appPageSdkScanStatus .list-info li {
+  border-bottom: none;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
@@ -7481,7 +7537,34 @@ pre {
   margin-bottom: 10px;
 }
 
+.sdksListView ul ul:last-child {
+  margin-bottom: 0;
+}
+
+.sdksListView ul ul > li:first-child {
+  margin-top: 5px;
+}
+
 .sdksListView li {
   border: none;
   padding: 5px;
+}
+
+#mainSearchBoxWrapper {
+  margin-top: -55px;
+}
+
+#mainSearchBoxWrapper input, #mainSearchBoxWrapper button {
+  height: 40px;
+}
+
+#mainSearchBox {
+  padding-left: 0;
+}
+
+.sdkOpenSourceSection .fa-github {
+  color: black;
+  font-size: 18px;
+  position: relative;
+  top: 2px;
 }

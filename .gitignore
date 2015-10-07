@@ -6,6 +6,7 @@
 
 /config/database.yml
 /config/secrets.yml
+/config/s3_credentials.yml
 
 # Ignore bundler config.
 /.bundle
