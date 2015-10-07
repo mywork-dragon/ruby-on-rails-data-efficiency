@@ -74,6 +74,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
+          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'IosApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
           categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
@@ -139,6 +140,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.android_fb_ad_appearances.present?,
+          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
@@ -358,6 +360,7 @@ class ApiController < ApplicationController
               id: app.id,
               name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'IosApp',
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
@@ -389,6 +392,7 @@ class ApiController < ApplicationController
               id: app.id,
               name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'AndroidApp',
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
@@ -734,6 +738,8 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
+    aa = AndroidApp.find(android_app_id)
+
     updated, companies, removed_companies, error_code = nil
 
     price = aa.newest_android_app_snapshot.price.to_i
@@ -810,6 +816,8 @@ class ApiController < ApplicationController
 
     updated, companies, removed_companies = nil
 
+    error_code = 0
+
     aa = AndroidApp.find(android_app_id)
 
     if aa.newest_apk_snapshot.present?
@@ -822,8 +830,6 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        ApkSnapshotException.create(name: "Companies : #{companies.count}")
-
         removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
         error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
@@ -833,10 +839,6 @@ class ApiController < ApplicationController
         error_code = 5
 
       end
-
-    else
-
-      error_code = 3
 
     end
 
@@ -1111,11 +1113,32 @@ class ApiController < ApplicationController
             type: 'cross_fields',
             fuzziness: 1
         }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 150000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 100000,
+                    lt: 150000
+                }
+            }
+        }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
+
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_apps = IosApp.find(result_ids)
+    ios_apps = []
+    result_ids.each{ |id| ios_apps << IosApp.find(id) }
     results_json = []
 
     ios_apps.each do |app|
@@ -1164,11 +1187,31 @@ class ApiController < ApplicationController
             type: 'cross_fields',
             fuzziness: 1
         }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 1000000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 1000000,
+                    lt: 140000
+                }
+            }
+        }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_apps = AndroidApp.find(result_ids)
+    android_apps = []
+    result_ids.each{ |id| android_apps << AndroidApp.find(id) }
     results_json = []
 
     android_apps.each do |app|
