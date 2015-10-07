@@ -34,11 +34,10 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper] do
   command 's3cmd put /home/deploy/sidekiq.log s3://varys-backup/sidekiq_logs/sidekiq_"`hostname -I`"_` date +\'%Y_%m_%d_%H_%M_%S\' `.log; cat /dev/null > /home/deploy/sidekiq.log'
 end
 
-# every :friday, at: '8:00pm', roles: [:scraper_master] do
-every :wednesday, at: '11:55am', roles: [:scraper_master] do
-  notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
-  runner "AppStoreSnapshotService.run('#{notes}')"
-end
+# every :wednesday, at: '11:55am', roles: [:scraper_master] do
+#   notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
+#   runner "AppStoreSnapshotService.run('#{notes}')"
+# end
 
 # 2.times do |i|
 #   every 1.day, :at => '1:00am' do
