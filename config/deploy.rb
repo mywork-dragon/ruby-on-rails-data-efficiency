@@ -48,6 +48,7 @@ set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sdk_scraper_concurrency, 30
+set :scraper_master_concurrency, 50
 set :scraper_concurrency, 50
 set :web_concurrency, 1
 
