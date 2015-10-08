@@ -325,7 +325,40 @@ class ApiController < ApplicationController
   end
   
   def get_android_categories
-    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+
+    # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+
+    categories = [
+      'Books & Reference',
+      'Business',
+      'Comics',
+      'Communication',
+      'Education',
+      'Entertainment',
+      'Finance',
+      'Health & Fitness',
+      'Libraries & Demo',
+      'Lifestyle',
+      'Live Wallpaper',
+      'Media & Video',
+      'Medical',
+      'Music & Audio',
+      'News & Magazines',
+      'Personalization',
+      'Photography',
+      'Productivity',
+      'Shopping',
+      'Social',
+      'Sports',
+      'Tools',
+      'Transportation',
+      'Travel & Local',
+      'Weather',
+      'Widgets',
+      'Games',
+      'Family'
+    ]
+    render json: categories
   end
 
   def get_lists
