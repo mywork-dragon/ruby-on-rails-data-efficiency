@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(production scraper sdk_scraper web staging)
+set :stages, %w(production scraper sdk_scraper sdk_scraper_dev web staging)
 set :default_stage, 'production'
 
 set :application, 'varys'
@@ -43,7 +43,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper_master, :sdk_scraper, :scraper_master, :scraper, :web ]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master, :web, :sdk_scraper_dev]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -59,7 +59,7 @@ set :scraper_master_queue, %w(critical scraper_master default low)
 set :scraper_queue, %w(critical default low)
 set :web_queue, %w(no_op)
 
-set :whenever_roles, [:scraper, :sdk_scraper]
+set :whenever_roles, [:scraper, :sdk_scraper, :sdk_scraper_dev]
 
 set :whenever_identifier, "#{fetch(:application)}"
 
