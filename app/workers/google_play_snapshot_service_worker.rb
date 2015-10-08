@@ -20,6 +20,8 @@ class GooglePlaySnapshotServiceWorker
 
     s = AndroidAppSnapshot.transaction{ AndroidAppSnapshot.where(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id).first }
 
+    SidekiqTester.create(test_string: s.id.to_s, ip: options[:android_app_id].to_s)
+
     try = 0
 
     begin
