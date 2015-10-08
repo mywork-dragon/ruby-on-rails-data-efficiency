@@ -133,18 +133,17 @@ class FilterService
           'Pretend Play'
         ]
         categories = app_filters['categories'] #.map{|c| "\"#{c}\""}
-        final_categories = categories
         categories.each do |category|
           if category == 'Games'
-            final_categories += gaming_categories
+            categories += gaming_categories
           end
           if category == 'Family'
-            final_categories += family_categories
+            categories += family_categories
           end
         end
-        li final_categories
-        li final_categories.join(',')
-        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{final_categories})"
+        li categories
+        li categories.join(',')
+        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
       if app_filters['supportDesk']

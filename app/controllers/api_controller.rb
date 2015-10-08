@@ -339,7 +339,6 @@ class ApiController < ApplicationController
       'Health & Fitness',
       'Libraries & Demo',
       'Lifestyle',
-      'Live Wallpaper',
       'Media & Video',
       'Medical',
       'Music & Audio',
@@ -353,8 +352,7 @@ class ApiController < ApplicationController
       'Tools',
       'Transportation',
       'Travel & Local',
-      'Weather',
-      'Widgets'
+      'Weather'
     ]
     render json: categories
   end
