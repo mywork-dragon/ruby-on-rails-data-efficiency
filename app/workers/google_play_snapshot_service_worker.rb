@@ -18,10 +18,10 @@ class GooglePlaySnapshotServiceWorker
 
     s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
-    tm = TestModel.create
+    # tm = TestModel.create
 
-    tm.string0 = s.id.to_s
-    tm.save
+    # tm.string0 = s.id.to_s
+    # tm.save
 
     try = 0
 
@@ -29,8 +29,8 @@ class GooglePlaySnapshotServiceWorker
 
       a = GooglePlayService.attributes(android_app.app_identifier)
 
-      tm.text0 = a.inspect
-      tm.save
+      # tm.text0 = a.inspect
+      # tm.save
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
