@@ -4,7 +4,7 @@ class GooglePlaySnapshotServiceWorker
   # accounting for retries ourself, so disable sidekiq retries
   sidekiq_options retry: false
 
-  MAX_TRIES = 3
+  MAX_TRIES = 0
 
   def perform(android_app_snapshot_job_id, android_app_id)
 
