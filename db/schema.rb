@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008181836) do
+ActiveRecord::Schema.define(version: 20151008183413) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1001,6 +1001,9 @@ ActiveRecord::Schema.define(version: 20151008181836) do
     t.string   "string19"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "text0"
+    t.text     "text1"
+    t.text     "text2"
   end
 
   add_index "test_models", ["string0"], name: "index_test_models_on_string0", using: :btree
