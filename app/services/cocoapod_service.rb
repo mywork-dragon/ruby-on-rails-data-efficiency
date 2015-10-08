@@ -45,16 +45,36 @@ class CocoapodService
     	end
 
     end
-    
+
+    def inspect_source_n(n = 100)
+
+      Cocoapod.limit(n).each do |pod|
+
+        CocoapodServiceWorker.new.perform(pod.id)
+
+      end
+
+    end
+
     # [8155,85,14088,14087]
 
-    def inspect_source_by_ids(ids = [8155,85,14088,14087])
+    def inspect_source_by_ids(ids = [14])
 
     	ids.each do |id|
 
     		CocoapodServiceWorker.new.perform(id)
 
     	end
+
+    end
+
+    def apple_docs
+
+      CocoapodSourceData.all.each do |d|
+
+        CocoapodServiceWorker.new.in_apple_docs?(d.name)
+
+      end
 
     end
 

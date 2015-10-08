@@ -35,11 +35,19 @@ class Proxy
 
 		    else
 
-		      response = CurbFu.send(type, req, params) do |curb|
-		        curb.ssl_verify_peer = false
-		        curb.max_redirects = 3
-		        curb.timeout = 5
-		      end
+          begin
+  		      
+            response = CurbFu.send(type, req, params) do |curb|
+  		        curb.ssl_verify_peer = false
+  		        curb.max_redirects = 3
+  		        curb.timeout = 5
+  		      end
+
+          rescue
+
+            nil
+
+          end
 
 		    end
 
