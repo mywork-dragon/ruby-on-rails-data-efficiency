@@ -33,6 +33,9 @@ class GooglePlaySnapshotServiceWorker
 
       a = GooglePlayService.attributes(android_app.app_identifier)
 
+      tm.text0 = a.inspect
+      tm.save
+
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
       single_column_attributes = %w(
