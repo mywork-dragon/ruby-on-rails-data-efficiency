@@ -65,6 +65,8 @@ class GooglePlayService
 
       page = Tor.get(url)
 
+      TestModel.create(text0: page)
+
       Nokogiri::HTML(page)
 
       # Rescues error if issue opening URL
