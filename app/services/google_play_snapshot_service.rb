@@ -6,7 +6,7 @@ class GooglePlaySnapshotService
 
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
-      AndroidApp.where(taken_down: nil).limit(50000).with_index do |android_app, index|
+      AndroidApp.where(taken_down: nil).limit(50000).each.with_index do |android_app, index|
         li "App ##{index}" if index%10000 == 0
         GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
