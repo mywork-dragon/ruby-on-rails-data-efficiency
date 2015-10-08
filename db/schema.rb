@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150928215917) do
+ActiveRecord::Schema.define(version: 20151007011035) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: false, null: false
+    t.boolean  "can_view_ad_spend",     default: true,  null: false
     t.boolean  "can_view_sdks",         default: false, null: false
   end
 
@@ -102,6 +102,16 @@ ActiveRecord::Schema.define(version: 20150928215917) do
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
+
+  create_table "android_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "android_app_snapshot_id"
+  end
+
+  add_index "android_app_snapshots_scr_shts", ["android_app_snapshot_id"], name: "index_android_app_snapshots_scr_shts_on_android_app_snapshot_id", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -211,9 +221,8 @@ ActiveRecord::Schema.define(version: 20150928215917) do
   end
 
   add_index "android_sdk_companies_apk_snapshots", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
-  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id", using: :btree
+  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id2", using: :btree
   add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id_unique", unique: true, using: :btree
-  add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_uniq_apk_snapshot_id_android_sdk_company_id", unique: true, using: :btree
 
   create_table "android_sdk_package_prefixes", force: true do |t|
     t.string  "prefix"
@@ -609,6 +618,16 @@ ActiveRecord::Schema.define(version: 20150928215917) do
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
 
+  create_table "ios_app_snapshots_scr_shts", force: true do |t|
+    t.string   "url"
+    t.integer  "position"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.integer  "ios_app_snapshot_id"
+  end
+
+  add_index "ios_app_snapshots_scr_shts", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_scr_shts_on_ios_app_snapshot_id", using: :btree
+
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -647,6 +666,19 @@ ActiveRecord::Schema.define(version: 20150928215917) do
   add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
+
+  create_table "ios_devices", force: true do |t|
+    t.string   "serial_number"
+    t.string   "ip"
+    t.integer  "purpose"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "in_use"
+  end
+
+  add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
+  add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
+  add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
