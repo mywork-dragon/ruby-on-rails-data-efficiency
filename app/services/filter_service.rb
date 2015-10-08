@@ -136,10 +136,10 @@ class FilterService
         final_categories = categories
         categories.each do |category|
           if category == 'Games'
-            final_categories + gaming_categories
+            final_categories += gaming_categories
           end
           if category == 'Family'
-            final_categories + family_categories
+            final_categories += family_categories
           end
         end
         li final_categories
