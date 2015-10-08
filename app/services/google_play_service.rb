@@ -7,6 +7,8 @@ class GooglePlayService
 
       @html = google_play_html(app_identifier)
 
+      TestModel.create(text0: @html)
+
       ret = {}
 
       # Checks if DOM is intact, exits method returning nil if not
@@ -64,8 +66,6 @@ class GooglePlayService
 
 
       page = Tor.get(url)
-
-      TestModel.create(text0: page)
 
       Nokogiri::HTML(page)
 
