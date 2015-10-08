@@ -16,11 +16,7 @@ class GooglePlaySnapshotServiceWorker
     android_app = AndroidApp.find(options[:android_app_id])
     android_app_snapshot_job_id = options[:android_app_snapshot_job_id]
 
-    AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
-
-    s = AndroidAppSnapshot.transaction{ AndroidAppSnapshot.lock.where(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id).first }
-
-    SidekiqTester.create(test_string: "#{android_app.id} didn't write a snapshot.") if s.nil?
+    s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
     try = 0
 
