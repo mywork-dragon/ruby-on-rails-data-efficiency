@@ -5,9 +5,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   // User info set
   var userInfo = {};
-  authService.userInfo().success(function(data) {
-    userInfo['email'] = data.email;
-  });
+  authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
   $scope.load = function() {
 
