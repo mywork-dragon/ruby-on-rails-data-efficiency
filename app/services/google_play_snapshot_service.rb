@@ -2,19 +2,6 @@ class GooglePlaySnapshotService
   
   class << self
 
-    def limit_run(notes, options={})
-
-      j = AndroidAppSnapshotJob.create!(notes: notes)
-
-      AndroidApp.where(taken_down: nil).limit(1000).each.with_index do |android_app, index|
-        li "App ##{index}" if index%10000 == 0
-        GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
-      end
-
-      nil
-
-    end
-
     def run(notes, options={})
 
       j = AndroidAppSnapshotJob.create!(notes: notes)

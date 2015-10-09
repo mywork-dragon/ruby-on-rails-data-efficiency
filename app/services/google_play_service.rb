@@ -65,16 +65,6 @@ class GooglePlayService
 
       page = Tor.get(url)
 
-
-      # TestModel.create(text0: page.to_s)
-
-      dir = '/mnt/play/'
-
-      # Dir.mkdir(dir) unless File.exist?(dir)
-
-      File.open(dir + app_identifier + '.html' , 'wb') { |f| f.write page }
-
-
       Nokogiri::HTML(page)
 
       # Rescues error if issue opening URL
