@@ -32,6 +32,6 @@
     "angular-cookie": "~4.0.6",
     "checklist-model": "~0.2.4",
     "angular-scroll": "~0.7.1",
-    "slacktivity": "~1.0"
+    "slacktivity": "~1.1.1"
   }
 }
