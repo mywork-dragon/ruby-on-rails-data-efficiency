@@ -37,7 +37,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+gem 'spring', '~> 1.3.6',        group: :development
 
 # gem 'rspec'
 # gem 'rspec-rails'
@@ -71,7 +71,7 @@ gem 'omniauth-salesforce', '1.0.5'
 gem 'httparty', '0.13.3' 
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
-  gem 'sidekiq-pro'
+  gem 'sidekiq-pro', '2.0.8'
 end
 
 
