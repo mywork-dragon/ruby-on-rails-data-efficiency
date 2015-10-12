@@ -199,6 +199,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         );
         /* -------- Mixpanel Analytics End -------- */
         /* -------- Slacktivity Alerts -------- */
+        var sdkCompanies = Object.keys($scope.sdkData.sdkCompanies).toString();
+        var sdkOpenSource = Object.keys($scope.sdkData.sdkOpenSource).toString();
+        var uninstalledSdkCompanies = Object.keys($scope.sdkData.uninstalledSdkCompanies).toString();
+        var uninstalledSdkOpenSource = Object.keys($scope.sdkData.uninstalledSdkOpenSource).toString();
         window.Slacktivity.send({
           "title": mixpanelEventTitle,
           "fallback": mixpanelEventTitle,
@@ -206,10 +210,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,
           'appId': $scope.appData.id,
-          'sdkCompanies': JSON.stringify($scope.sdkData.sdkCompanies),
-          'sdkOpenSource': JSON.stringify($scope.sdkData.sdkOpenSource),
-          'uninstalledSdkCompanies': JSON.stringify($scope.sdkData.uninstalledSdkCompanies),
-          'uninstalledSdkOpenSource': JSON.stringify($scope.sdkData.uninstalledSdkOpenSource),
+          'sdkCompanies': sdkCompanies,
+          'sdkOpenSource': sdkOpenSource,
+          'uninstalledSdkCompanies': uninstalledSdkCompanies,
+          'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
           'lastUpdated': $scope.sdkData.lastUpdated,
           'errorCode': $scope.sdkData.errorCode,
           'errorMessage': $scope.sdkData.errorMessage
