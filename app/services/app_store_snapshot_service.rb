@@ -1,5 +1,16 @@
 class AppStoreSnapshotService
   
+  begin
+    batch = Sidekiq::Batch.new
+    batch.description = 'description'
+    batch.jobs do
+      AppStoreSnapshotServiceWorker.perform_async(-1, 1)
+    end
+  rescue => e
+    le e.message
+    le e.backtrace.join("\n")
+  end
+
   class << self
   
     def run(notes, options={})
