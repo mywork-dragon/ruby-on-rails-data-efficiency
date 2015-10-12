@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151007234328) do
+ActiveRecord::Schema.define(version: 20151012210621) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -360,6 +360,15 @@ ActiveRecord::Schema.define(version: 20151007234328) do
     t.string   "name"
   end
 
+  create_table "class_dumps", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "class_dump_file_name"
+    t.string   "class_dump_content_type"
+    t.integer  "class_dump_file_size"
+    t.datetime "class_dump_updated_at"
+  end
+
   create_table "clearbit_contacts", force: true do |t|
     t.integer  "website_id"
     t.string   "clearbit_id"
@@ -694,11 +703,13 @@ ActiveRecord::Schema.define(version: 20151007234328) do
     t.integer  "user_base"
     t.integer  "mobile_priority"
     t.date     "released"
+    t.integer  "newest_ipa_snapshot_id"
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
   add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
   add_index "ios_apps", ["newest_ios_app_snapshot_id"], name: "index_ios_apps_on_newest_ios_app_snapshot_id", using: :btree
+  add_index "ios_apps", ["newest_ipa_snapshot_id"], name: "index_ios_apps_on_newest_ipa_snapshot_id", using: :btree
   add_index "ios_apps", ["released"], name: "index_ios_apps_on_released", using: :btree
   add_index "ios_apps", ["user_base"], name: "index_ios_apps_on_user_base", using: :btree
 
@@ -789,10 +800,12 @@ ActiveRecord::Schema.define(version: 20151007234328) do
 
   create_table "ipa_snapshots", force: true do |t|
     t.integer  "ios_app_id"
+    t.integer  "class_dump_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "ipa_snapshots", ["class_dump_id"], name: "index_ipa_snapshots_on_class_dump_id", using: :btree
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
