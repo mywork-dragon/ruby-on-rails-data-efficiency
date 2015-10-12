@@ -3,7 +3,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
-  #before_action :set_current_user, :authenticate_request
+  before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -325,7 +325,36 @@ class ApiController < ApplicationController
   end
   
   def get_android_categories
-    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    categories = [
+      'Books & Reference',
+      'Business',
+      'Comics',
+      'Communication',
+      'Education',
+      'Entertainment',
+      'Family',
+      'Finance',
+      'Games',
+      'Health & Fitness',
+      'Libraries & Demo',
+      'Lifestyle',
+      'Media & Video',
+      'Medical',
+      'Music & Audio',
+      'News & Magazines',
+      'Personalization',
+      'Photography',
+      'Productivity',
+      'Shopping',
+      'Social',
+      'Sports',
+      'Tools',
+      'Transportation',
+      'Travel & Local',
+      'Weather'
+    ]
+    render json: categories
   end
 
   def get_lists

@@ -3,6 +3,10 @@
 angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
+  // User info set
+  var userInfo = {};
+  authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
   $scope.load = function() {
 
     return $http({
@@ -135,7 +139,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       }
     );
     /* -------- Mixpanel Analytics End -------- */
-
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
@@ -182,8 +185,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         mixpanel.track(
           mixpanelEventTitle, {
             'platform': 'Android',
-            'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
             'appId': $scope.appData.id,
             'sdkCompanies': $scope.sdkData.sdkCompanies,
             'sdkOpenSource': $scope.sdkData.sdkOpenSource,
@@ -195,6 +198,27 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           }
         );
         /* -------- Mixpanel Analytics End -------- */
+        /* -------- Slacktivity Alerts -------- */
+        var sdkCompanies = Object.keys($scope.sdkData.sdkCompanies).toString();
+        var sdkOpenSource = Object.keys($scope.sdkData.sdkOpenSource).toString();
+        var uninstalledSdkCompanies = Object.keys($scope.sdkData.uninstalledSdkCompanies).toString();
+        var uninstalledSdkOpenSource = Object.keys($scope.sdkData.uninstalledSdkOpenSource).toString();
+        window.Slacktivity.send({
+          "title": mixpanelEventTitle,
+          "fallback": mixpanelEventTitle,
+          "userEmail": userInfo.email,
+          'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
+          'appId': $scope.appData.id,
+          'sdkCompanies': sdkCompanies,
+          'sdkOpenSource': sdkOpenSource,
+          'uninstalledSdkCompanies': uninstalledSdkCompanies,
+          'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
+          'lastUpdated': $scope.sdkData.lastUpdated,
+          'errorCode': $scope.sdkData.errorCode,
+          'errorMessage': $scope.sdkData.errorMessage
+        });
+        /* -------- Slacktivity Alerts End -------- */
       }).error(function(err) {
         $scope.sdkQueryInProgress = false;
         $scope.noSdkData = true;
@@ -209,6 +233,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           }
         );
         /* -------- Mixpanel Analytics End -------- */
+        /* -------- Slacktivity Alerts -------- */
+        window.Slacktivity.send({
+          "title": "SDK Live Scan Failed",
+          "fallback": "SDK Live Scan Failed",
+          "userEmail": userInfo.email,
+          'companyName': $scope.appData.company.name,
+          'appName': $scope.appData.name,
+          'appId': $scope.appData.id,
+          'errorStatus': err
+        });
+        /* -------- Slacktivity Alerts End -------- */
       });
   };
 
