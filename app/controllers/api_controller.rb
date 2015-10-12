@@ -1013,8 +1013,6 @@ class ApiController < ApplicationController
           aa = ss.android_app
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-            
-            TestModel.create(str0: 'app logged as success')
 
             break
 
@@ -1022,7 +1020,8 @@ class ApiController < ApplicationController
 
         else
 
-          TestModel.create(str0: 'app logged as failure')
+          ss.scan_status = :failure
+          ss.save
 
           break
 
