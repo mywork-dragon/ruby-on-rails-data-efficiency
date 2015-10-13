@@ -815,6 +815,8 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
+      TestModel.create(string0: android_app_id, string1: new_snap)
+
       if new_snap.present? && new_snap.status == "success"
 
         x = Benchmark.measure do
