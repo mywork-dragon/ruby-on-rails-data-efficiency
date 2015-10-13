@@ -815,7 +815,7 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
-      TestModel.create(str0: new_snap.status)
+      TestModel.create(string0: new_snap.status)
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -1016,11 +1016,15 @@ class ApiController < ApplicationController
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
 
+            TestModel.create(string0: "new snap was written")
+
             break
 
           end
 
         else
+
+          TestModel.create(string0: "snap was unsuccessful")
 
           break
 
