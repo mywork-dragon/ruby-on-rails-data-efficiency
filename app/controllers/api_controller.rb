@@ -813,11 +813,9 @@ class ApiController < ApplicationController
 
       job_id = download_apk(android_app_id, app_identifier)
 
-      aa = aa.reload
+      # aa = aa.reload
 
-      # aa = AndroidApp.uncached{ AndroidApp.find(android_app_id) }
-
-      aa.reload
+      aa = AndroidApp.uncached{ AndroidApp.find(android_app_id) }
 
       new_snap = aa.newest_apk_snapshot
 
