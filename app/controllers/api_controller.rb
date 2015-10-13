@@ -815,6 +815,8 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
+      TestModel.create(str0: new_snap.status)
+
       if new_snap.present? && new_snap.status == "success"
 
         scan_apk(aa.id, job_id)
