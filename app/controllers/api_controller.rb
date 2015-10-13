@@ -815,7 +815,7 @@ class ApiController < ApplicationController
 
       new_snap = aa.newest_apk_snapshot
 
-      TestModel.create(string0: android_app_id, string1: new_snap.inspect)
+      # TestModel.create(string0: android_app_id, string1: new_snap.inspect)
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -823,13 +823,13 @@ class ApiController < ApplicationController
           scan_apk(aa.id, job_id)
         end
 
-        TestModel.create(string0: android_app_id, string1: x.real)
+        # TestModel.create(string0: android_app_id, string1: x.real)
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
 
-        TestModel.create(string0: android_app_id, string1: "scan was read as failure")
+        # TestModel.create(string0: android_app_id, string1: "scan was read as failure")
 
         apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
       
@@ -1020,7 +1020,7 @@ class ApiController < ApplicationController
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
 
-            TestModel.create(string0: android_app_id, string1: "pre success")
+            # TestModel.create(string0: android_app_id, string1: "pre success")
 
             break
 
@@ -1028,7 +1028,7 @@ class ApiController < ApplicationController
 
         else
 
-          TestModel.create(string0: android_app_id, string1: "pre failure")
+          # TestModel.create(string0: android_app_id, string1: "pre failure")
 
           break
 
