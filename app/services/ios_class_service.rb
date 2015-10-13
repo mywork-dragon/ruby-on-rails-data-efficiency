@@ -10,35 +10,33 @@ class IosClassService
 
       class_names(snap.id).each do |q|
 
-        puts q[0]
+        r = code_search(q) || search(q)
 
-        # r = code_search(q) || search(q)
+        next if r.nil? || q.nil?
 
-        # next if r.nil? || q.nil?
+        begin
 
-        # begin
+          i = IosSdk.create(name: r.name, website: r.link, cocoapod: r)
+          os = r.link.include? 'github'
 
-        #   i = IosSdk.create(name: r.name, website: r.link, cocoapod: r)
-        #   os = r.link.include? 'github'
+          if !os
+            favicon = WWW::Favicon.new
+            favicon_url = favicon.find(url)
+            i.favicon = favicon_url
+          end
 
-        #   if !os
-        #     favicon = WWW::Favicon.new
-        #     favicon_url = favicon.find(url)
-        #     i.favicon = favicon_url
-        #   end
+          i.open_source = os
+          i.save
 
-        #   i.open_source = os
-        #   i.save
+        rescue
+          i = IosSdk.find_by_cocoapod_id(r.id)
+        end
 
-        # rescue
-        #   i = IosSdk.find_by_cocoapod_id(r.id)
-        # end
-
-        # begin
-        #   IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot: snap)
-        # rescue
-        #   nil
-        # end
+        begin
+          IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot: snap)
+        rescue
+          nil
+        end
 
       end
       nil
