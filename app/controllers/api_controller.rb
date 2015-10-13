@@ -1006,7 +1006,7 @@ class ApiController < ApplicationController
       
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-      if ss.present? && ss.status.present? 
+      if ss.present? && ss.status.present?
 
         if ss.status = "success"
 
@@ -1019,9 +1019,6 @@ class ApiController < ApplicationController
           end
 
         else
-
-          ss.scan_status = :failure
-          ss.save
 
           break
 
