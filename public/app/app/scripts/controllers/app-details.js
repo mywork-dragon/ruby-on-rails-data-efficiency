@@ -206,6 +206,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         window.Slacktivity.send({
           "title": mixpanelEventTitle,
           "fallback": mixpanelEventTitle,
+          "color": mixpanelEventTitle == "SDK Live Scan Success" ? "#45825A" : "#E82020",
           "userEmail": userInfo.email,
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,
@@ -219,7 +220,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'errorMessage': $scope.sdkData.errorMessage
         });
         /* -------- Slacktivity Alerts End -------- */
-      }).error(function(err) {
+      }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
         $scope.noSdkData = true;
         $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
@@ -229,7 +230,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorStatus': err
+            'errorStatus': status
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -237,9 +238,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         window.Slacktivity.send({
           "title": "SDK Live Scan Failed",
           "fallback": "SDK Live Scan Failed",
+          "color": "#e82020",
           "userEmail": userInfo.email,
-          'companyName': $scope.appData.company.name,
           'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
           'appId': $scope.appData.id,
           'errorStatus': err
         });
