@@ -815,7 +815,9 @@ class ApiController < ApplicationController
 
       aa = aa.reload
 
-      aa = AndroidApp.uncached{ AndroidApp.find(android_app_id) }
+      # aa = AndroidApp.uncached{ AndroidApp.find(android_app_id) }
+
+      aa.reload
 
       new_snap = aa.newest_apk_snapshot
 
@@ -823,9 +825,7 @@ class ApiController < ApplicationController
 
       if new_snap.present? && new_snap.status == "success"
 
-        x = Benchmark.measure do
-          scan_apk(aa.id, job_id)
-        end
+        scan_apk(aa.id, job_id)
 
         # TestModel.create(string0: android_app_id, string1: x.real)
 
