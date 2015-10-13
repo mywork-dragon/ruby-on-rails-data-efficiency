@@ -230,7 +230,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorStatus': status
+            'errorStatus': err
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -243,7 +243,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,
           'appId': $scope.appData.id,
-          'errorStatus': err
+          'errorStatus': status
         });
         /* -------- Slacktivity Alerts End -------- */
       });
