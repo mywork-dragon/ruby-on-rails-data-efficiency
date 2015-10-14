@@ -811,29 +811,19 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      job_id = download_apk(android_app_id, app_identifier)
-
-      aa.reload
-
-      # aa = AndroidApp.uncached{ AndroidApp.find(android_app_id) }
+      job_id, new_snap = download_apk(android_app_id, app_identifier)
 
       aa = AndroidApp.find(android_app_id)
 
-      new_snap = aa.newest_apk_snapshot
-
-      # TestModel.create(string0: android_app_id, string1: new_snap.inspect)
+      # new_snap = aa.newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
 
         scan_apk(aa.id, job_id)
 
-        # TestModel.create(string0: android_app_id, string1: x.real)
-
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
-
-        # TestModel.create(string0: android_app_id, string1: "scan was read as failure")
 
         apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
       
@@ -1010,6 +1000,8 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
+    new_snap = nil
+
     360.times do
 
       sleep 0.25
@@ -1024,15 +1016,13 @@ class ApiController < ApplicationController
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
 
-            # TestModel.create(string0: android_app_id, string1: "pre success")
+            new_snap = ss.id
 
             break
 
           end
 
         else
-
-          # TestModel.create(string0: android_app_id, string1: "pre failure")
 
           break
 
@@ -1042,7 +1032,7 @@ class ApiController < ApplicationController
 
     end
 
-    job_id
+    return job_id, new_snap
 
   end
 
