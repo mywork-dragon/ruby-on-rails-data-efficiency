@@ -219,7 +219,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'errorCode': $scope.sdkData.errorCode,
           'errorMessage': $scope.sdkData.errorMessage
         };
-        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = 'staging-slacktivity' } // if on staging server
+        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
         window.Slacktivity.send(slacktivityData);
         /* -------- Slacktivity Alerts End -------- */
       }).error(function(err, status) {
@@ -247,7 +247,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'appId': $scope.appData.id,
           'errorStatus': status
         };
-        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = 'staging-slacktivity' } // if on staging server
+        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
         window.Slacktivity.send(slacktivityData);
         /* -------- Slacktivity Alerts End -------- */
       });
