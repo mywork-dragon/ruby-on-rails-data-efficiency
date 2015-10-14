@@ -203,9 +203,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         var sdkOpenSource = Object.keys($scope.sdkData.sdkOpenSource).toString();
         var uninstalledSdkCompanies = Object.keys($scope.sdkData.uninstalledSdkCompanies).toString();
         var uninstalledSdkOpenSource = Object.keys($scope.sdkData.uninstalledSdkOpenSource).toString();
-        window.Slacktivity.send({
+        var slacktivityData = {
           "title": mixpanelEventTitle,
           "fallback": mixpanelEventTitle,
+          "color": mixpanelEventTitle == "SDK Live Scan Success" ? "#45825A" : "#E82020",
           "userEmail": userInfo.email,
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,
@@ -217,9 +218,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           'lastUpdated': $scope.sdkData.lastUpdated,
           'errorCode': $scope.sdkData.errorCode,
           'errorMessage': $scope.sdkData.errorMessage
-        });
+        };
+        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
         /* -------- Slacktivity Alerts End -------- */
-      }).error(function(err) {
+      }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
         $scope.noSdkData = true;
         $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
@@ -234,15 +237,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         );
         /* -------- Mixpanel Analytics End -------- */
         /* -------- Slacktivity Alerts -------- */
-        window.Slacktivity.send({
+        var slacktivityData = {
           "title": "SDK Live Scan Failed",
           "fallback": "SDK Live Scan Failed",
+          "color": "#e82020",
           "userEmail": userInfo.email,
-          'companyName': $scope.appData.company.name,
           'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
           'appId': $scope.appData.id,
-          'errorStatus': err
-        });
+          'errorStatus': status
+        };
+        if (API_URI_BASE.indexOf('52.7.134.183') >= 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
         /* -------- Slacktivity Alerts End -------- */
       });
   };

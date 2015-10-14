@@ -811,15 +811,17 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      job_id = download_apk(android_app_id, app_identifier)
+      job_id, new_snap = download_apk(android_app_id, app_identifier)
 
-      new_snap = aa.newest_apk_snapshot
+      aa = AndroidApp.find(android_app_id)
+
+      # new_snap = aa.newest_apk_snapshot
+
+      TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
 
       if new_snap.present? && new_snap.status == "success"
 
         scan_apk(aa.id, job_id)
-
-        # ApkSnapshotException.create(name: "Scan was a success. APP_ID : #{aa.id}, NEWEST_APK_SNAPSHOT_ID : #{aa.newest_apk_snapshot_id}")
 
         companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
@@ -1000,27 +1002,31 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
+    new_snap = nil
+
     360.times do
 
       sleep 0.25
       
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-      if ss.present? && ss.status.present? 
+      if ss.present? && ss.status.present?
 
         if ss.status = "success"
 
           aa = ss.android_app
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-            
+
+            new_snap = ss
+
             break
 
           end
 
         else
 
-          break
+          break if ss.try == 3
 
         end
 
@@ -1028,7 +1034,7 @@ class ApiController < ApplicationController
 
     end
 
-    job_id
+    return job_id, new_snap
 
   end
 
