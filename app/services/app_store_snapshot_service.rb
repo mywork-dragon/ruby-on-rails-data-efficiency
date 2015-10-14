@@ -6,22 +6,22 @@ class AppStoreSnapshotService
       
       j = IosAppSnapshotJob.create!(notes: notes)
 
-      batch = Sidekiq::Batch.new
-      batch.description = "run: #{notes}" 
-      batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
+      #batch = Sidekiq::Batch.new
+      #batch.description = "run: #{notes}" 
+      #batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
   
       Slackiq.message('Starting to queue apps...', webhook_name: :main)
 
       ios_app_count = IosApp.count
 
-      batch.jobs do
+      #batch.jobs do
         
         IosApp.find_each.with_index do |ios_app, index|
           li "App ##{index}" if index%10000 == 0
           AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
         end    
       
-      end
+      #end
 
       Slackiq.message("Done queing apps (#{ios_app_count}.", webhook_name: :main)
        
