@@ -1016,7 +1016,7 @@ class ApiController < ApplicationController
 
           if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
 
-            new_snap = ss.id
+            new_snap = ss
 
             break
 
