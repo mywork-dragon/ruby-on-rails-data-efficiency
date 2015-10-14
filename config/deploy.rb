@@ -56,7 +56,7 @@ set :web_concurrency, 1
 
 set :sdk_scraper_queue, %w(sdk)
 set :scraper_queue, %w(critical default low)
-set :scraper_master_queue, %w(critical scraper_master default low)
+set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
 set :web_queue, %w(no_op)
 
 set :whenever_roles, [:scraper, :sdk_scraper, :sdk_scraper_dev]
