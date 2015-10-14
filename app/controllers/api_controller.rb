@@ -1026,7 +1026,7 @@ class ApiController < ApplicationController
 
         else
 
-          break
+          break if ss.try == 3
 
         end
 
