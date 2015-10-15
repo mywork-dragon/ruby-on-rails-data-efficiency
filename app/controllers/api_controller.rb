@@ -3,7 +3,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
-  before_action :set_current_user, :authenticate_request
+  #before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -244,7 +244,6 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
-      takenDown: android_app.taken_down,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
         # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -326,36 +325,7 @@ class ApiController < ApplicationController
   end
   
   def get_android_categories
-    # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
-    categories = [
-      'Books & Reference',
-      'Business',
-      'Comics',
-      'Communication',
-      'Education',
-      'Entertainment',
-      'Family',
-      'Finance',
-      'Games',
-      'Health & Fitness',
-      'Libraries & Demo',
-      'Lifestyle',
-      'Media & Video',
-      'Medical',
-      'Music & Audio',
-      'News & Magazines',
-      'Personalization',
-      'Photography',
-      'Productivity',
-      'Shopping',
-      'Social',
-      'Sports',
-      'Tools',
-      'Transportation',
-      'Travel & Local',
-      'Weather'
-    ]
-    render json: categories
+    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
   end
 
   def get_lists
@@ -770,7 +740,7 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    updated, companies, error_code = nil
+    updated, companies, removed_companies, error_code = nil
 
     price = aa.newest_android_app_snapshot.price.to_i
 
@@ -780,11 +750,11 @@ class ApiController < ApplicationController
 
     else
 
-      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+      companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
     end
 
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
+    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
   end
 
@@ -792,7 +762,7 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated, companies, error_code = nil
+    updated, companies, removed_companies, error_code = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -812,19 +782,17 @@ class ApiController < ApplicationController
 
       app_identifier = aa.app_identifier
 
-      job_id, new_snap = download_apk(android_app_id, app_identifier)
+      job_id = download_apk(android_app_id, app_identifier)
 
-      aa = AndroidApp.find(android_app_id)
-
-      # new_snap = aa.newest_apk_snapshot
-
-      TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
+      new_snap = aa.newest_apk_snapshot
 
       if new_snap.present? && new_snap.status == "success"
 
         scan_apk(aa.id, job_id)
 
-        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        # ApkSnapshotException.create(name: "Scan was a success. APP_ID : #{aa.id}, NEWEST_APK_SNAPSHOT_ID : #{aa.newest_apk_snapshot_id}")
+
+        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
 
@@ -840,13 +808,13 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
+    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
 
   end
 
   def get_sdks(android_app_id:)
 
-    updated, companies = nil
+    updated, companies, removed_companies = nil
 
     error_code = 0
 
@@ -862,11 +830,9 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
+        removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
-        # error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
-
-        error_code = companies.count.zero? ? 1:0
+        error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
 
       else
 
@@ -876,7 +842,7 @@ class ApiController < ApplicationController
 
     end
 
-    return companies, updated, error_code
+    return companies, removed_companies, updated, error_code
 
   end
 
@@ -898,7 +864,7 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies:, updated:, error_code:, snap:)
+  def sdk_hash(companies:, removed_companies:, updated:, error_code:)
 
     main_hash = Hash.new
 
@@ -908,7 +874,7 @@ class ApiController < ApplicationController
 
     # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
 
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero?
     
     main_hash['installed_sdk_companies'] = installed_co_hash
 
@@ -1005,39 +971,22 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
-    new_snap = nil
-
     360.times do
 
       sleep 0.25
       
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-      if ss.present? && ss.status.present?
+      if ss.present?
 
-        if ss.status = "success"
-
-          aa = ss.android_app
-
-          if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-
-            new_snap = ss
-
-            break
-
-          end
-
-        else
-
-          break if ss.try == 3
-
+        if ss.status.present?
+          break
         end
 
       end
-
     end
 
-    return job_id, new_snap
+    job_id
 
   end
 

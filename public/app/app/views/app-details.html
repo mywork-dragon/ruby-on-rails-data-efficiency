@@ -342,16 +342,12 @@
           <div class="media">
             <div class="media-body">
               <ul class="list-unstyled list-info">
+<!--
+                <div style="text-align:center"><strong>SDK Live Scans are currently being updated - please check back later.</strong></div>
+-->
 
-                <!-- <div style="text-align:center">
-                  <strong>SDK Live Scans are currently being updated - please check back later.</strong>
-                </div> -->
 
-                <div style="text-align:center" ng-show="appData.takenDown">
-                  <strong>App is no longer listed in the app store - no SDK Live Scan available.</strong>
-                </div>
-
-                <li ng-show="sdkData && sdkData.errorCode == 0 && !appData.takenDown" id="sdkLiveScanDisplay">
+                <li ng-show="sdkData && sdkData.errorCode == 0" id="sdkLiveScanDisplay">
                   <div class="sdksListView">
                     <div class="row">
                       <div class="col-md-6" ng-hide="isEmpty(sdkData.sdkCompanies) && isEmpty(sdkData.uninstalledSdkCompanies)">
@@ -421,7 +417,7 @@
                     </div>
                   </div>
                 </li>
-                <li id="appPageSdkScanStatus" ng-if="(noSdkData || sdkQueryInProgress) && !appData.takenDown">
+                <li id="appPageSdkScanStatus" ng-if="noSdkData || sdkQueryInProgress">
                   <div id="sdkScanErrorMessage" ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
                   </div>
@@ -432,7 +428,7 @@
                     <p>Scanning - this may take a minute.</p>
                   </div>
                 </li>
-                <li id="showSdksButtonLi" ng-hide="sdkQueryInProgress || appData.takenDown">
+                <li id="showSdksButtonLi" ng-hide="sdkQueryInProgress">
                   <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
                     Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
                   </div>

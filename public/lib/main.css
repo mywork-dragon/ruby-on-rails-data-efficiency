@@ -40,7 +40,7 @@ form .form-group {
     margin-bottom: 10px;
 }
 
-.mainFeatures img {
+#features img {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 40px;
@@ -48,12 +48,12 @@ form .form-group {
     width: 350px;
 }
 
-.mainFeatures .caption h4 {
+#features .caption h4 {
     margin-bottom: 0px;
     margin-top: 5px;
 }
 
-.mainFeatures p.teamMemberTitle {
+#features p.teamMemberTitle {
     margin-bottom: 8px;
 }
 

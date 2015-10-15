@@ -33,9 +33,5 @@ class AuthController < ApplicationController
 
     render json: { :can_view_support_desk => account.can_view_support_desk, :can_view_ad_spend => account.can_view_ad_spend, :can_view_sdks => account.can_view_sdks }
   end
-
-  def user_info
-    render json: { :email => User.find(decoded_auth_token[:user_id]).email }
-  end
   
 end

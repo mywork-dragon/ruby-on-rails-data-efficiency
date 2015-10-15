@@ -71,7 +71,6 @@ Rails.application.routes.draw do
   post 'auth/login' => 'auth#authenticate'
   post 'auth/validate_token' => 'auth#validate_token'
   get 'auth/permissions' => 'auth#permissions'
-  get 'auth/user/info' => 'auth#user_info'
 
   # API for customers
   get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }

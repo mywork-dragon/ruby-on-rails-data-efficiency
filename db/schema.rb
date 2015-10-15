@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006182901) do
+ActiveRecord::Schema.define(version: 20150928215917) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -353,16 +353,6 @@ ActiveRecord::Schema.define(version: 20151006182901) do
 
   add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
   add_index "clearbit_contacts", ["website_id"], name: "index_clearbit_contacts_on_website_id", using: :btree
-
-  create_table "cocoapod_source_data", force: true do |t|
-    t.string   "name"
-    t.integer  "cocoapod_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
-  add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"

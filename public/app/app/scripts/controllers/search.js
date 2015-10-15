@@ -72,7 +72,7 @@ angular.module('appApp')
             searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             searchQueryPairs['platform']  = APP_PLATFORM;
             mixpanel.track(
-              "Filter Query Successful",
+              "Search Request Successful",
               searchQueryPairs
             );
             /* -------- Mixpanel Analytics End -------- */
@@ -80,7 +80,7 @@ angular.module('appApp')
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
             mixpanel.track(
-              "Filter Query Failed",
+              "Search Request Failed",
               {
                 "tags": $rootScope.tags,
                 "errorMessage": data,
@@ -89,6 +89,7 @@ angular.module('appApp')
               }
             );
           });
+
       };
 
       /* Only hit api if query string params are present */

@@ -94,7 +94,7 @@ angular.module("appApp")
       exportToCsv: function(listId) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "List Exported to CSV", {
+          "Exported CSV", {
             "listId": listId
           }
         );

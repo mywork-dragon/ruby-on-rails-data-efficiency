@@ -22,6 +22,11 @@
 # Ignore RubyMine files
 /.idea/
 
-/public/app/node_modules
+/public/dashboard/bower_components
+
+/public/dashboard/node_modules
+
+/public/dashboard/dist
+
 /public/app/bower_components
-!/public/app/bower_components/slacktivity
+/public/app/node_modules
