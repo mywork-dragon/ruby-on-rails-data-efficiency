@@ -10,7 +10,7 @@ class CleanDataService
 
 				#puts "app #{index}"
 
-				CleanDataServiceWorker.perform(snap.id)
+				CleanDataServiceWorker.perform_async(snap.id)
 
 			end
 
