@@ -56,6 +56,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
+          if($scope.isEmpty(data.installed_sdk_companies) && $scope.isEmpty(data.installed_open_source_sdks) && $scope.isEmpty(data.uninstalled_sdk_companies) && $scope.isEmpty(data.uninstalled_open_source_sdks)) {
+            $scope.noAppSnapshot = true;
+          }
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "App Page Viewed", {
