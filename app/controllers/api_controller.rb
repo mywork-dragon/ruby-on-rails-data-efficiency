@@ -784,7 +784,7 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code)
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
 
@@ -840,7 +840,7 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code)
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
 
@@ -898,7 +898,7 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies:, updated:, error_code:)
+  def sdk_hash(companies:, updated:, error_code:, snap:)
 
     main_hash = Hash.new
 
@@ -908,7 +908,7 @@ class ApiController < ApplicationController
 
     # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
 
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero?
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
     
     main_hash['installed_sdk_companies'] = installed_co_hash
 
