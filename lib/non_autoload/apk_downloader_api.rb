@@ -161,6 +161,8 @@ if defined?(ApkDownloader)
         curb.timeout = 90
       end
 
+      TestModel.create(text0: response)
+
       if [200,302].include? response.status
 
         mp = ApkSnapshot.find(apk_snap_id).micro_proxy
@@ -244,14 +246,16 @@ if defined?(ApkDownloader)
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
         'X-DFE-Device-Id' => ga.android_identifier,
         'X-DFE-Client-Id' => 'am-android-google',
-        # 'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
-        # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
         'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M)',
         'X-DFE-SmallestScreenWidthDp' => '320',
         'X-DFE-Filter-Level' => '3',
         'Accept-Encoding' => '',
         'Host' => 'android.clients.google.com'
       }
+
+
+        # 'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
+        # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
 
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8' if type == :post
 

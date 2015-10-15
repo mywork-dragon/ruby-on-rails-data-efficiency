@@ -66,7 +66,7 @@
                </span>
                -->
                <span class="ui-select">
-                    <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', true)">
+                    <select ng-model="categories" ng-change="onFilterChange('categories', categories, 'Category', false)">
                       <option value="">Categories</option>
                       <option ng-repeat="option in categoryFilterOptions" value="{{option}}">{{option}}</option>
                     </select>
@@ -79,7 +79,6 @@
                       <option value="uservoice">UserVoice</option>
                       <option value="freshdesk">FreshDesk</option>
                       <option value="desk">Desk</option>
-
                     </select>
                </span>
             </span>

@@ -238,7 +238,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.appIcon.large}}" /> <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">{{app.name}}</a>
+                  <img ng-src="{{app.appIcon.large}}" /> <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">{{app.name}}</a>
                 </span>
               </td>
               <td class="appTypeIndicator">
