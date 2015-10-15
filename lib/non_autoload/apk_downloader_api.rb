@@ -161,7 +161,7 @@ if defined?(ApkDownloader)
         curb.timeout = 90
       end
 
-      TestModel.create(text0: response)
+      # TestModel.create(text0: response)
 
       if [200,302].include? response.status
 
