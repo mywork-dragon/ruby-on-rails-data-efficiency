@@ -770,7 +770,7 @@ class ApiController < ApplicationController
 
     aa = AndroidApp.find(android_app_id)
 
-    updated, companies, removed_companies, error_code = nil
+    updated, companies, error_code = nil
 
     price = aa.newest_android_app_snapshot.price.to_i
 
@@ -780,11 +780,11 @@ class ApiController < ApplicationController
 
     else
 
-      companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
     end
 
-    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
 
@@ -792,7 +792,7 @@ class ApiController < ApplicationController
 
     android_app_id = params['appId']
 
-    updated, companies, removed_companies, error_code = nil
+    updated, companies, error_code = nil
 
     aa = AndroidApp.find(android_app_id)
 
@@ -824,7 +824,7 @@ class ApiController < ApplicationController
 
         scan_apk(aa.id, job_id)
 
-        companies, removed_companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
 
@@ -840,13 +840,13 @@ class ApiController < ApplicationController
 
     end
 
-    render json: sdk_hash(companies: companies, removed_companies: removed_companies, updated: updated, error_code: error_code)
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
 
   def get_sdks(android_app_id:)
 
-    updated, companies, removed_companies = nil
+    updated, companies = nil
 
     error_code = 0
 
@@ -862,9 +862,11 @@ class ApiController < ApplicationController
 
         companies = new_snap.android_sdk_companies
 
-        removed_companies = get_removed_companies(android_app: aa, companies: companies)
+        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
 
-        error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
+        # error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
+
+        error_code = companies.count.zero? ? 1:0
 
       else
 
@@ -874,7 +876,7 @@ class ApiController < ApplicationController
 
     end
 
-    return companies, removed_companies, updated, error_code
+    return companies, updated, error_code
 
   end
 
@@ -896,7 +898,7 @@ class ApiController < ApplicationController
 
   end
 
-  def sdk_hash(companies:, removed_companies:, updated:, error_code:)
+  def sdk_hash(companies:, updated:, error_code:, snap:)
 
     main_hash = Hash.new
 
@@ -906,7 +908,7 @@ class ApiController < ApplicationController
 
     # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
 
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero?
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
     
     main_hash['installed_sdk_companies'] = installed_co_hash
 
