@@ -30,7 +30,7 @@ if defined?(ApkDownloader)
         'device_country' => 'us',
         'operatorCountry' => 'us',
         'lang' => 'en',
-        'sdk_version' => '17'
+        'sdk_version' => '22'
       }
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
@@ -245,7 +245,8 @@ if defined?(ApkDownloader)
         'X-DFE-Device-Id' => ga.android_identifier,
         'X-DFE-Client-Id' => 'am-android-google',
         # 'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
-        'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
+        # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
+        'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M)',
         'X-DFE-SmallestScreenWidthDp' => '320',
         'X-DFE-Filter-Level' => '3',
         'Accept-Encoding' => '',
