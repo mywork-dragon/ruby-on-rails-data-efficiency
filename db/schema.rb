@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008183413) do
+ActiveRecord::Schema.define(version: 20151006182901) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -102,16 +102,6 @@ ActiveRecord::Schema.define(version: 20151008183413) do
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
-
-  create_table "android_app_snapshots_scr_shts", force: true do |t|
-    t.string   "url"
-    t.integer  "position"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "android_app_snapshot_id"
-  end
-
-  add_index "android_app_snapshots_scr_shts", ["android_app_snapshot_id"], name: "index_android_app_snapshots_scr_shts_on_android_app_snapshot_id", using: :btree
 
   create_table "android_apps", force: true do |t|
     t.datetime "created_at"
@@ -363,6 +353,16 @@ ActiveRecord::Schema.define(version: 20151008183413) do
 
   add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
   add_index "clearbit_contacts", ["website_id"], name: "index_clearbit_contacts_on_website_id", using: :btree
+
+  create_table "cocoapod_source_data", force: true do |t|
+    t.string   "name"
+    t.integer  "cocoapod_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
+  add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -618,16 +618,6 @@ ActiveRecord::Schema.define(version: 20151008183413) do
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
 
-  create_table "ios_app_snapshots_scr_shts", force: true do |t|
-    t.string   "url"
-    t.integer  "position"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.integer  "ios_app_snapshot_id"
-  end
-
-  add_index "ios_app_snapshots_scr_shts", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_scr_shts_on_ios_app_snapshot_id", using: :btree
-
   create_table "ios_apps", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -666,19 +656,6 @@ ActiveRecord::Schema.define(version: 20151008183413) do
   add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
-
-  create_table "ios_devices", force: true do |t|
-    t.string   "serial_number"
-    t.string   "ip"
-    t.integer  "purpose"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "in_use"
-  end
-
-  add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
-  add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
-  add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
@@ -934,55 +911,6 @@ ActiveRecord::Schema.define(version: 20151008183413) do
   add_index "super_proxies", ["port"], name: "index_super_proxies_on_port", using: :btree
   add_index "super_proxies", ["private_ip"], name: "index_super_proxies_on_private_ip", using: :btree
   add_index "super_proxies", ["public_ip"], name: "index_super_proxies_on_public_ip", using: :btree
-
-  create_table "test_models", force: true do |t|
-    t.string   "string0"
-    t.string   "string1"
-    t.string   "string2"
-    t.string   "string3"
-    t.string   "string4"
-    t.string   "string5"
-    t.string   "string6"
-    t.string   "string7"
-    t.string   "string8"
-    t.string   "string9"
-    t.string   "string10"
-    t.string   "string11"
-    t.string   "string12"
-    t.string   "string13"
-    t.string   "string14"
-    t.string   "string15"
-    t.string   "string16"
-    t.string   "string17"
-    t.string   "string18"
-    t.string   "string19"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "text0"
-    t.text     "text1"
-    t.text     "text2"
-  end
-
-  add_index "test_models", ["string0"], name: "index_test_models_on_string0", using: :btree
-  add_index "test_models", ["string1"], name: "index_test_models_on_string1", using: :btree
-  add_index "test_models", ["string10"], name: "index_test_models_on_string10", using: :btree
-  add_index "test_models", ["string11"], name: "index_test_models_on_string11", using: :btree
-  add_index "test_models", ["string12"], name: "index_test_models_on_string12", using: :btree
-  add_index "test_models", ["string13"], name: "index_test_models_on_string13", using: :btree
-  add_index "test_models", ["string14"], name: "index_test_models_on_string14", using: :btree
-  add_index "test_models", ["string15"], name: "index_test_models_on_string15", using: :btree
-  add_index "test_models", ["string16"], name: "index_test_models_on_string16", using: :btree
-  add_index "test_models", ["string17"], name: "index_test_models_on_string17", using: :btree
-  add_index "test_models", ["string18"], name: "index_test_models_on_string18", using: :btree
-  add_index "test_models", ["string19"], name: "index_test_models_on_string19", using: :btree
-  add_index "test_models", ["string2"], name: "index_test_models_on_string2", using: :btree
-  add_index "test_models", ["string3"], name: "index_test_models_on_string3", using: :btree
-  add_index "test_models", ["string4"], name: "index_test_models_on_string4", using: :btree
-  add_index "test_models", ["string5"], name: "index_test_models_on_string5", using: :btree
-  add_index "test_models", ["string6"], name: "index_test_models_on_string6", using: :btree
-  add_index "test_models", ["string7"], name: "index_test_models_on_string7", using: :btree
-  add_index "test_models", ["string8"], name: "index_test_models_on_string8", using: :btree
-  add_index "test_models", ["string9"], name: "index_test_models_on_string9", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email"
