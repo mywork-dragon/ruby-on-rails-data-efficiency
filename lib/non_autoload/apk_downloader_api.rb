@@ -27,10 +27,10 @@ if defined?(ApkDownloader)
         'source' => 'android',
         'androidId' => ga.android_identifier,
         'app' => 'com.android.vending',
-        'device_country' => 'US',
-        'operatorCountry' => 'US',
-        'lang' => 'en-US',
-        'sdk_version' => '16'
+        'device_country' => 'us',
+        'operatorCountry' => 'us',
+        'lang' => 'en',
+        'sdk_version' => '17'
       }
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
