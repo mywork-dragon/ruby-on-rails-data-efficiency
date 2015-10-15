@@ -146,6 +146,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         var sdkErrorMessage = "";
         $scope.noSdkData = false;
         if(data == null) {
@@ -227,6 +228,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         /* -------- Slacktivity Alerts End -------- */
       }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         $scope.noSdkData = true;
         $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
         /* -------- Mixpanel Analytics Start -------- */
