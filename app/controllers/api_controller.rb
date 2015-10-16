@@ -1043,7 +1043,7 @@ class ApiController < ApplicationController
 
   def scan_apk(android_app_id, job_id)
 
-    PackageSearchServiceWorker.perform_async(android_app_id)
+    PackageSearchServiceSingleWorker.perform_async(android_app_id)
 
     360.times do
 
