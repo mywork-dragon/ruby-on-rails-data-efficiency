@@ -6,7 +6,7 @@ module MightyDeployer
   @staging_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
-  @sdk_scraper_single_role = nil
+  @sdk_scraper_live_scan_role = []
   @scraper_roles = []
   @scraper_master_role = nil
   
@@ -15,6 +15,7 @@ module MightyDeployer
   @staging_servers = []
   @scraper_servers = []
   @sdk_scraper_servers = []
+  @sdk_scraper_live_scan_servers = []
 
   def self.deploy_to(server_symbols)
     valid_symbols = [:web, :scraper, :sdk_scraper, :staging]
@@ -24,6 +25,7 @@ module MightyDeployer
     define_web_servers if server_symbols.include?(:web)
     define_scraper_servers if server_symbols.include?(:scraper)
     define_sdk_scraper_servers if server_symbols.include?(:sdk_scraper)
+    define_sdk_scraper_live_scan_servers if server_symbols.include?(:sdk_scraper_live_scan)
     define_staging_servers if server_symbols.include?(:staging)
     
     define_roles
@@ -70,10 +72,17 @@ module MightyDeployer
       54.86.80.102
     )
   
-    @sdk_scraper_single_role = @sdk_scraper_servers.first
-  
     @app_roles += @sdk_scraper_servers
     @sdk_scraper_roles += @sdk_scraper_servers
+  end
+
+  def self.define_sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_servers = %w(
+        54.164.24.87
+      )
+
+    @app_roles += @sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_roles += @sdk_scraper_live_scan_servers
   end
 
   def self.define_staging_servers
@@ -93,7 +102,7 @@ module MightyDeployer
     # role :api, @api_roles
     role :db,  @db_roles #must have this do migrate db
     role :sdk_scraper, @sdk_scraper_roles
-    role :sdk_scraper_single, @sdk_scraper_single_role
+    role :sdk_scraper_live_scan, @sdk_scraper_live_scan_roles
     role :scraper, @scraper_roles
     role :scraper_master, @scraper_master_role
     role :staging, @staging_roles
@@ -114,6 +123,10 @@ module MightyDeployer
     
     @sdk_scraper_servers.each do |sdk_scraper_server|
       server sdk_scraper_server, user: 'deploy'
+    end
+
+    @sdk_scraper_live_scan_servers.each do |sdk_scraper_live_scan_server|
+      server sdk_scraper_live_scan_server, user: 'deploy'
     end
 
     @staging_servers.each do |staging_server|
