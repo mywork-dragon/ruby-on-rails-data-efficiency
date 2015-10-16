@@ -2,7 +2,7 @@ class ApkSnapshotServiceSingleWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => 2, queue: :sdk_live_scan
+  sidekiq_options backtrace: true, :retry => 2, queue: :sdk_scraper_live_scan_queue
   
   include ApkWorker
 
@@ -17,6 +17,10 @@ class ApkSnapshotServiceSingleWorker
     li "Retry #{@retry}"
     download_apk(apk_snapshot_job_id, bid, android_app_id)
     false
+  end
+
+  def single_queue?
+    true
   end
 
 end
