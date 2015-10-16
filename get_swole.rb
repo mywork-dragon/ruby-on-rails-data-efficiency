@@ -24,7 +24,7 @@ puts "all: Deploys to all servers. Branch is 'master'"
 puts "\n"
 print "Deploy to: "
 servers = gets.chomp
-valid_servers = %w(scraper sdk_scraper staging web all)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web all)
 if !valid_servers.include?(servers)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
