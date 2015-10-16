@@ -18,7 +18,7 @@ module MightyDeployer
   @sdk_scraper_live_scan_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :staging]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :staging]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
