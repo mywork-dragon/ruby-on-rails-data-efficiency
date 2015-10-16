@@ -6,7 +6,7 @@ module MightyDeployer
   @staging_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
-  @sdk_scraper_live_scan_role = []
+  @sdk_scraper_live_scan_roles = []
   @scraper_roles = []
   @scraper_master_role = nil
   
