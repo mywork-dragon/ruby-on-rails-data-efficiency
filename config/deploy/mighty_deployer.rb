@@ -67,7 +67,6 @@ module MightyDeployer
 
   def self.define_sdk_scraper_servers
     @sdk_scraper_servers = %w(
-      54.164.24.87
       54.88.39.109
       54.86.80.102
     )
