@@ -2,7 +2,7 @@ class SavePackageServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options queue: :sdk_scraper
+  sidekiq_options queue: :sdk
 
   include SavePackageWorker
   
