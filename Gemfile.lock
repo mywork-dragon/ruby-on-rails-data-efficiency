@@ -313,7 +313,7 @@ GEM
       json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
       redis-namespace (~> 1.5, >= 1.5.2)
-    sidekiq-pro (2.0.8)
+    sidekiq-pro (2.1.1)
       sidekiq (>= 3.4.2)
     similar_text (0.0.4)
     socksify (1.6.0)
@@ -416,7 +416,11 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+<<<<<<< HEAD
   sidekiq-pro (= 2.0.8)!
+=======
+  sidekiq-pro (= 2.1.1)!
+>>>>>>> 6694cbe4fc266df6befe20ca5cd999e053030e16
   similar_text (= 0.0.4)
   socksify (= 1.6.0)
   spidr (= 0.4.1)

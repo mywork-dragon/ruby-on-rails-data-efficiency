@@ -71,7 +71,7 @@ gem 'omniauth-salesforce', '1.0.5'
 gem 'httparty', '0.13.3' 
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
-  gem 'sidekiq-pro', '2.0.8'
+  gem 'sidekiq-pro', '2.1.1'
 end
 
 
