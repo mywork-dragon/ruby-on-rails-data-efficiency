@@ -421,7 +421,7 @@
                     </div>
                   </div>
                 </li>
-                <li id="appPageSdkScanStatus" ng-if="noSdkData && !appData.takenDown || sdkQueryInProgress && !appData.takenDown ">
+                <li id="appPageSdkScanStatus" ng-if="noSdkData && !appData.takenDown || sdkQueryInProgress && !appData.takenDown">
                   <div id="sdkScanErrorMessage" ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
                   </div>
@@ -432,7 +432,7 @@
                     <p>Scanning - this may take a minute.</p>
                   </div>
                 </li>
-                <li id="showSdksButtonLi" ng-if="!sdkQueryInProgress || !appData.takenDown">
+                <li id="showSdksButtonLi" ng-if="!sdkQueryInProgress && !appData.takenDown">
                   <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
                     Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
                   </div>
