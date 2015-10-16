@@ -6,7 +6,7 @@ module MightyDeployer
   @staging_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
-  @sdk_scraper_master_role = nil
+  @sdk_scraper_single_role = nil
   @scraper_roles = []
   @scraper_master_role = nil
   
@@ -70,7 +70,7 @@ module MightyDeployer
       54.86.80.102
     )
   
-    @sdk_scraper_master_role = @sdk_scraper_servers.first
+    @sdk_scraper_single_role = @sdk_scraper_servers.first
   
     @app_roles += @sdk_scraper_servers
     @sdk_scraper_roles += @sdk_scraper_servers
@@ -93,7 +93,7 @@ module MightyDeployer
     # role :api, @api_roles
     role :db,  @db_roles #must have this do migrate db
     role :sdk_scraper, @sdk_scraper_roles
-    role :sdk_scraper_master, @sdk_scraper_master_role
+    role :sdk_scraper_single, @sdk_scraper_single_role
     role :scraper, @scraper_roles
     role :scraper_master, @scraper_master_role
     role :staging, @staging_roles
