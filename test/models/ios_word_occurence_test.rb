@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TestModelTest < ActiveSupport::TestCase
+class IosWordOccurenceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

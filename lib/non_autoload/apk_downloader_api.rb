@@ -7,14 +7,6 @@ if defined?(ApkDownloader)
     GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
     def log_in!(proxy_ip, proxy_port, apk_snap_id)
-      # return if self.logged_in?
-
-      # ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
-
-      # if self.logged_in?
-      #   ApkSnapshotException.create(name: "old: #{@auth_token}\naccount: #{ga.email}")
-      #   return
-      # end
 
       snap = ApkSnapshot.find_by_id(apk_snap_id)
 
@@ -35,23 +27,21 @@ if defined?(ApkDownloader)
         'source' => 'android',
         'androidId' => ga.android_identifier,
         'app' => 'com.android.vending',
-        'device_country' => 'fr',
-        'operatorCountry' => 'fr',
-        'lang' => 'fr',
-        'sdk_version' => '16'
+        'device_country' => 'us',
+        'operatorCountry' => 'us',
+        'lang' => 'en',
+        'sdk_version' => '17'
       }
 
       response = res(type: :post, req: {:host => LoginUri.host, :path => LoginUri.path, :protocol => "https", :headers => headers}, params: params, proxy_ip: proxy_ip, proxy_port: proxy_port, apk_snap_id: apk_snap_id)
 
       if response.status != 200
-        # raise "Unable to authenticate with Google | status_code: #{response.status}"
         raise "Unable to connect with Google | status_code: #{response.status}"
       elsif response.body.include? "Auth="
         # @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
         a = response.body.scan(/Auth=(.*?)$/).flatten.first
         snap.auth_token = a
         snap.save
-        # ApkSnapshotException.create(name: "new: #{@auth_token}\naccount: #{ga.email}")
       end
 
     end
@@ -72,7 +62,7 @@ if defined?(ApkDownloader)
 
       mp = MicroProxy.transaction do
 
-        p = MicroProxy.lock.order(last_used: :asc).where('flags <= ?',10).first
+        p = MicroProxy.lock.order(last_used: :asc).where(active: true).first
         p.last_used = DateTime.now
         p.save
 
@@ -122,7 +112,8 @@ if defined?(ApkDownloader)
 
       headers = {
         'Accept-Encoding' => '',
-        'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+        # 'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
+        'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.1.1; Nexus 9 Build/LMY48M)'
       }
 
       cookies = [cookie.name, cookie.value].join('=')
@@ -154,12 +145,23 @@ if defined?(ApkDownloader)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
+      # proxy = '169.45.70.23:8888' if Rails.env.development?
+
+      puts "req: #{req}"
+      puts "params: #{params}"
+      puts "type: #{type}"
+      puts "proxy_ip: #{proxy_ip}"
+      puts "proxy_port: #{proxy_port}"
+      puts "apk_snap_id: #{apk_snap_id}"
+
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
         curb.timeout = 90
       end
+
+      # TestModel.create(text0: response)
 
       if [200,302].include? response.status
 
@@ -211,8 +213,16 @@ if defined?(ApkDownloader)
 
         end
 
-        raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
+        if response.status == 403
+
+          raise "#{response.body}, status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
+           
+        else
+          
+          raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
         
+        end
+
       end
 
     end
@@ -236,12 +246,16 @@ if defined?(ApkDownloader)
         'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
         'X-DFE-Device-Id' => ga.android_identifier,
         'X-DFE-Client-Id' => 'am-android-google',
-        'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
+        'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
         'X-DFE-SmallestScreenWidthDp' => '320',
         'X-DFE-Filter-Level' => '3',
         'Accept-Encoding' => '',
         'Host' => 'android.clients.google.com'
       }
+
+
+        # 'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
+        # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
 
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8' if type == :post
 

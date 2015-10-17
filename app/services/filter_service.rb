@@ -61,12 +61,12 @@ class FilterService
       end
       
       if app_filters['categories']
-        cats_with_quotes = app_filters['categories'] #.map{|c| "\"#{c}\""}
+        cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
         li cats_with_quotes
         li cats_with_quotes.join(',')
 
         #queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
-        queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
+        queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats_with_quotes.join(',')}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
       end
 
       if app_filters['supportDesk']
@@ -105,45 +105,10 @@ class FilterService
       end
       
       if app_filters['categories']
-        gaming_categories = [
-          'Action',
-          'Adventure',
-          'Arcade',
-          'Board',
-          'Card',
-          'Casino',
-          'Casual',
-          'Educational',
-          'Music',
-          'Puzzle',
-          'Racing',
-          'Role Playing',
-          'Simulation',
-          'Sports',
-          'Strategy',
-          'Trivia',
-          'Word'
-        ]
-        family_categories = [
-          'Action & Adventure',
-          'Brain Games',
-          'Creativity',
-          'Education',
-          'Music & Video',
-          'Pretend Play'
-        ]
-        categories = app_filters['categories'] #.map{|c| "\"#{c}\""}
-        categories.each do |category|
-          if category == 'Games'
-            categories += gaming_categories
-          end
-          if category == 'Family'
-            categories += family_categories
-          end
-        end
-        li categories
-        li categories.join(',')
-        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
+        cats_with_quotes = app_filters['categories'].map{|c| "\"#{c}\""}
+        li cats_with_quotes
+        li cats_with_quotes.join(',')
+        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes.join(',')})"
       end
 
       if app_filters['supportDesk']
