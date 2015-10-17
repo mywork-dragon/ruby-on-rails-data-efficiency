@@ -189,6 +189,15 @@ if defined?(ApkDownloader)
 
         elsif response.status == 403
 
+          if response.body.include? "This item cannot be installed in your country"
+
+            aa = ApkSnapshot.find_by_id(apk_snap_id)
+
+            aa.in_america = false
+            aa.save
+
+          end
+
           ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
           ga.flags = ga.flags + 1
           ga.save
