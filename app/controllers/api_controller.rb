@@ -804,7 +804,7 @@ class ApiController < ApplicationController
 
         apk_snap.save
 
-        error_code = 3
+        error_code = apk_snap.android_app.in_america? ? 3 : 6
       
       end
 
