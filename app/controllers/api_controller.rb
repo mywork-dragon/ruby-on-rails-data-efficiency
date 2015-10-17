@@ -784,11 +784,11 @@ class ApiController < ApplicationController
 
       job_id, new_snap = download_apk(android_app_id, app_identifier)
 
-      aa = AndroidApp.find(android_app_id)
+      # aa = AndroidApp.find(android_app_id)
 
       # new_snap = aa.newest_apk_snapshot
 
-      TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
+      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
 
       if new_snap.present? && new_snap.status == "success"
 
