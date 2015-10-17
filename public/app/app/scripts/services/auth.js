@@ -48,12 +48,6 @@ angular.module("appApp")
             "Login Success"
           );
           /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          window.Slacktivity.send({
-            "Login Status": "Success",
-            "User Email": email
-          });
-          /* -------- Slacktivity Alerts End -------- */
 
           authToken.setToken(resp.auth_token);
           $rootScope.$broadcast(authEvents.loginSuccess);
@@ -66,9 +60,6 @@ angular.module("appApp")
       },
       permissions: function() {
         return $http.get('/auth/permissions');
-      },
-      userInfo: function() {
-        return $http.get('/auth/user/info');
       }
     };
   }])
