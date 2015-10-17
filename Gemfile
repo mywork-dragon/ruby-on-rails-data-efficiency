@@ -139,7 +139,7 @@ gem 'www-favicon', '0.0.6'
 
 # gem 'slackiq', '0.0.3'
 
-gem 'curb-fu', '0.6.2'
+# gem 'curb-fu', '0.6.2'
 
 # group: :scraper_only
 
