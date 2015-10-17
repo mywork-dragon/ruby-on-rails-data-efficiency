@@ -1,4 +1,4 @@
-class PackageSearchServiceWorker
+class PackageSearchServiceSingleWorker
 
   include Sidekiq::Worker
 
