@@ -191,7 +191,7 @@ if defined?(ApkDownloader)
 
           if response.body.include? "This item cannot be installed in your country"
 
-            aa = ApkSnapshot.find_by_id(apk_snap_id)
+            aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
 
             aa.in_america = false
             aa.save
