@@ -93,9 +93,9 @@ if defined?(ApkDownloader)
         snap.status = :no_response
         snap.save
 
-        aa = snap.android_app
-        aa.data_flag = true
-        aa.save
+        # aa = snap.android_app
+        # aa.data_flag = true
+        # aa.save
 
         raise "Google did not return url or cookie | status_code: #{status_code}"
 
