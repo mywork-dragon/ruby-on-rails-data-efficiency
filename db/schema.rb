@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151017011353) do
+ActiveRecord::Schema.define(version: 20151019201035) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -111,19 +111,15 @@ ActiveRecord::Schema.define(version: 20151017011353) do
     t.integer  "newest_android_app_snapshot_id"
     t.integer  "user_base"
     t.integer  "mobile_priority"
-    t.boolean  "taken_down"
     t.integer  "newest_apk_snapshot_id"
-    t.boolean  "data_flag"
-    t.boolean  "in_america",                     default: true
+    t.integer  "display_type",                   default: 0
   end
 
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
-  add_index "android_apps", ["data_flag"], name: "index_android_apps_on_data_flag", using: :btree
-  add_index "android_apps", ["in_america"], name: "index_android_apps_on_in_america", using: :btree
+  add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
   add_index "android_apps", ["newest_apk_snapshot_id"], name: "index_android_apps_on_newest_apk_snapshot_id", using: :btree
-  add_index "android_apps", ["taken_down"], name: "index_android_apps_on_taken_down", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 
   create_table "android_apps_websites", force: true do |t|
