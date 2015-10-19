@@ -26,6 +26,8 @@ class AndroidApp < ActiveRecord::Base
 
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
+
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible]
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
