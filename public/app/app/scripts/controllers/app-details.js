@@ -3,6 +3,10 @@
 angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
+  // User info set
+  var userInfo = {};
+  authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
   $scope.load = function() {
 
     return $http({
@@ -138,7 +142,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       }
     );
     /* -------- Mixpanel Analytics End -------- */
-
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
@@ -186,8 +189,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         mixpanel.track(
           mixpanelEventTitle, {
             'platform': 'Android',
-            'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
             'appId': $scope.appData.id,
             'sdkCompanies': $scope.sdkData.sdkCompanies,
             'sdkOpenSource': $scope.sdkData.sdkOpenSource,
@@ -223,7 +226,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
         window.Slacktivity.send(slacktivityData);
         /* -------- Slacktivity Alerts End -------- */
-      }).error(function(err) {
+      }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
         $scope.noAppSnapshot = false;
         $scope.noSdkData = true;
@@ -234,7 +237,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorStatus': err
+            'errorStatus': status
           }
         );
         /* -------- Mixpanel Analytics End -------- */

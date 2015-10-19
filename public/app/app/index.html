@@ -54,7 +54,7 @@
       <aside data-ng-include=" '/app/app/views/signin.html' " ng-hide="isAuthenticated"></aside>
     </div>
 
-    <div ng-show="isAuthenticated">
+    <div id="main-content-container" ng-show="isAuthenticated">
 
       <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
         <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container" ></aside>
@@ -101,6 +101,7 @@
     <script src="/app/bower_components/slimScroll/jquery.slimscroll.min.js"></script>
     <script src="/app/bower_components/angular-encode-uri/dist/angular-encode-uri.min.js"></script>
     <script src="/app/bower_components/angular-cookie/angular-cookie.js"></script>
+    <script src="/app/bower_components/slacktivity/slacktivity.js"></script>
 
     <!-- endbower -->
     <!-- endbuild -->
