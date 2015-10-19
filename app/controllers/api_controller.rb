@@ -244,7 +244,7 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
-      takenDown: android_app.taken_down,
+      # takenDown: android_app.taken_down,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
         # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -800,11 +800,12 @@ class ApiController < ApplicationController
 
     price = aa.newest_android_app_snapshot.price.to_i
 
-    if aa.taken_down?
+    # if aa.taken_down?
 
-      error_code = 2
+    #   error_code = 2
 
-    elsif !price.zero?
+    # els
+    if !price.zero?
 
       error_code = 4
 
