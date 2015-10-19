@@ -819,7 +819,7 @@ class ApiController < ApplicationController
 
       # new_snap = aa.newest_apk_snapshot
 
-      TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
+      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -1044,7 +1044,7 @@ class ApiController < ApplicationController
 
   def scan_apk(android_app_id, job_id)
 
-    PackageSearchServiceWorker.perform_async(android_app_id)
+    PackageSearchServiceSingleWorker.perform_async(android_app_id)
 
     360.times do
 
