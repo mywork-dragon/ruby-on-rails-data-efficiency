@@ -62,6 +62,7 @@ class ApkSnapshotService
     def clear_accounts
       GoogleAccount.all.each do |ga|
         ga.in_use = false
+        ga.flags = 0
         ga.save
       end
     end
