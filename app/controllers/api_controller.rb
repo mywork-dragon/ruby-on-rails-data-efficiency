@@ -3,7 +3,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
-  #before_action :set_current_user, :authenticate_request
+  before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -244,6 +244,7 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
+      takenDown: android_app.taken_down,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
         # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -325,7 +326,36 @@ class ApiController < ApplicationController
   end
   
   def get_android_categories
-    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    categories = [
+      'Books & Reference',
+      'Business',
+      'Comics',
+      'Communication',
+      'Education',
+      'Entertainment',
+      'Family',
+      'Finance',
+      'Games',
+      'Health & Fitness',
+      'Libraries & Demo',
+      'Lifestyle',
+      'Media & Video',
+      'Medical',
+      'Music & Audio',
+      'News & Magazines',
+      'Personalization',
+      'Photography',
+      'Productivity',
+      'Shopping',
+      'Social',
+      'Sports',
+      'Tools',
+      'Transportation',
+      'Travel & Local',
+      'Weather'
+    ]
+    render json: categories
   end
 
   def get_lists
@@ -784,11 +814,11 @@ class ApiController < ApplicationController
 
       job_id, new_snap = download_apk(android_app_id, app_identifier)
 
-      # aa = AndroidApp.find(android_app_id)
+      aa = AndroidApp.find(android_app_id)
 
       # new_snap = aa.newest_apk_snapshot
 
-      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
+      TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
 
       if new_snap.present? && new_snap.status == "success"
 
@@ -804,7 +834,7 @@ class ApiController < ApplicationController
 
         apk_snap.save
 
-        error_code = apk_snap.android_app.in_america? ? 3 : 6
+        error_code = 3
       
       end
 
@@ -1013,7 +1043,7 @@ class ApiController < ApplicationController
 
   def scan_apk(android_app_id, job_id)
 
-    PackageSearchServiceSingleWorker.perform_async(android_app_id)
+    PackageSearchServiceWorker.perform_async(android_app_id)
 
     360.times do
 
