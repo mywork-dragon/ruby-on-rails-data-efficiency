@@ -365,7 +365,37 @@ ActiveRecord::Schema.define(version: 20151019201035) do
     t.string   "class_dump_content_type"
     t.integer  "class_dump_file_size"
     t.datetime "class_dump_updated_at"
+    t.integer  "ipa_snapshot_id"
+    t.boolean  "success"
+    t.boolean  "install_success"
+    t.boolean  "dump_success"
+    t.boolean  "teardown_success"
+    t.boolean  "teardown_retry"
+    t.float    "duration",                limit: 24
+    t.float    "install_time",            limit: 24
+    t.float    "dump_time",               limit: 24
+    t.float    "teardown_time",           limit: 24
+    t.text     "error"
+    t.text     "trace"
+    t.text     "error_root"
+    t.text     "error_teardown"
+    t.text     "error_teardown_trace"
+    t.string   "method"
+    t.boolean  "complete"
+    t.integer  "error_code"
+    t.integer  "ios_device_id"
   end
+
+  add_index "class_dumps", ["complete"], name: "index_class_dumps_on_complete", using: :btree
+  add_index "class_dumps", ["dump_success"], name: "index_class_dumps_on_dump_success", using: :btree
+  add_index "class_dumps", ["error_code"], name: "index_class_dumps_on_error_code", using: :btree
+  add_index "class_dumps", ["install_success"], name: "index_class_dumps_on_install_success", using: :btree
+  add_index "class_dumps", ["ios_device_id"], name: "index_class_dumps_on_ios_device_id", using: :btree
+  add_index "class_dumps", ["ipa_snapshot_id"], name: "index_class_dumps_on_ipa_snapshot_id", using: :btree
+  add_index "class_dumps", ["method"], name: "index_class_dumps_on_method", using: :btree
+  add_index "class_dumps", ["success"], name: "index_class_dumps_on_success", using: :btree
+  add_index "class_dumps", ["teardown_retry"], name: "index_class_dumps_on_teardown_retry", using: :btree
+  add_index "class_dumps", ["teardown_success"], name: "index_class_dumps_on_teardown_success", using: :btree
 
   create_table "clearbit_contacts", force: true do |t|
     t.integer  "website_id"
@@ -740,9 +770,11 @@ ActiveRecord::Schema.define(version: 20151019201035) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
+    t.datetime "last_used"
   end
 
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
+  add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
 
@@ -808,12 +840,10 @@ ActiveRecord::Schema.define(version: 20151019201035) do
 
   create_table "ipa_snapshots", force: true do |t|
     t.integer  "ios_app_id"
-    t.integer  "class_dump_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "ipa_snapshots", ["class_dump_id"], name: "index_ipa_snapshots_on_class_dump_id", using: :btree
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
@@ -916,7 +946,7 @@ ActiveRecord::Schema.define(version: 20151019201035) do
     t.boolean  "active"
     t.string   "public_ip"
     t.string   "private_ip"
-    t.datetime "last_used"
+    t.date     "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "flags"
