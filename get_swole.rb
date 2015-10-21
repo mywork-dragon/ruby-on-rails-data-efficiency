@@ -24,7 +24,7 @@ puts "darth_vader: Deploys to Vader."
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
