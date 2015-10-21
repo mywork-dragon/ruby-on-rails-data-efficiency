@@ -40,6 +40,8 @@ module ApkWorker
 
       raise "no snap id" if apk_snap.id.blank?
 
+      # raise "not in america" unless apk_snap.android_app.in_america?
+
       best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
 
       raise "no best account" if best_account.blank?
@@ -149,6 +151,9 @@ module ApkWorker
       aa.save
 
       File.delete(file_name)
+
+
+      # PackageSearchServiceWorker.perform_async(android_app_id) unless single_queue?
       
     end
 
