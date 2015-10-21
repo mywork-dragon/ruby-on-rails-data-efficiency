@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-# blah
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
@@ -39,14 +38,22 @@ abort if !res.casecmp("yes").zero?
 
 ENV["MS_BRANCH"] = branch
 
-# check that branch is up to date with remote
-git_status = `git status -uno`.strip
-if ! ( git_status.include?("Your branch is up-to-date") && git_status.include?("nothing to commit (use -u to show untracked files)") )
-  puts git_status
+# check that branch is in sync with remote
+`git fetch origin`
+if !`git log HEAD..origin/#{branch}`.chomp.empty?
+  puts "Error: origin/#{branch} is ahead of local. Pull changes"
   abort
 end
 
-puts 'blah'
+if !`git log origin/#{branch}..HEAD`.chomp.empty?
+  puts "Error: local is ahead remote. Push your changes"
+  abort
+end
+
+if !`git status -uno`.include?("nothing to commit")
+  puts "Error: Some local files have been edited and not committed"
+  abort
+end
 
 # run tests and abort on failure
 test_cmd = 'bundle exec rake test:all'
