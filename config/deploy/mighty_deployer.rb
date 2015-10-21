@@ -146,7 +146,7 @@ module MightyDeployer
     end
 
     @darth_vader_servers.each do |darth_vader_server|
-      server darth_vader_server, user: 'deploy'
+      server darth_vader_server, user: 'darth-vader'
     end
     
   end
