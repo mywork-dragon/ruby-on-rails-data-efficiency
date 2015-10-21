@@ -45,6 +45,8 @@ if ! ( git_status.include?("Your branch is up-to-date") && git_status.include?("
   abort
 end
 
+puts 'blah'
+
 # run tests and abort on failure
 test_cmd = 'bundle exec rake test:all'
 last_line = nil
