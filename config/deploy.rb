@@ -11,7 +11,7 @@ set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
 
 # Default branch is :master
-# set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, ENV["MS_BRANCH"] || "master" # set in get_swole.rb
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/webapps/varys'
