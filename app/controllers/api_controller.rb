@@ -3,7 +3,7 @@ class ApiController < ApplicationController
   
   skip_before_filter  :verify_authenticity_token
 
-  #before_action :set_current_user, :authenticate_request
+  before_action :set_current_user, :authenticate_request
   
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -74,6 +74,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
+          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'IosApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
           categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
@@ -139,6 +140,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           adSpend: app.android_fb_ad_appearances.present?,
+          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
@@ -242,6 +244,7 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
+      # takenDown: android_app.taken_down,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
         # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
@@ -323,7 +326,36 @@ class ApiController < ApplicationController
   end
   
   def get_android_categories
-    render json: AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    categories = [
+      'Books & Reference',
+      'Business',
+      'Comics',
+      'Communication',
+      'Education',
+      'Entertainment',
+      'Family',
+      'Finance',
+      'Games',
+      'Health & Fitness',
+      'Libraries & Demo',
+      'Lifestyle',
+      'Media & Video',
+      'Medical',
+      'Music & Audio',
+      'News & Magazines',
+      'Personalization',
+      'Photography',
+      'Productivity',
+      'Shopping',
+      'Social',
+      'Sports',
+      'Tools',
+      'Transportation',
+      'Travel & Local',
+      'Weather'
+    ]
+    render json: categories
   end
 
   def get_lists
@@ -358,6 +390,7 @@ class ApiController < ApplicationController
               id: app.id,
               name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'IosApp',
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
@@ -389,6 +422,7 @@ class ApiController < ApplicationController
               id: app.id,
               name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'AndroidApp',
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
@@ -729,76 +763,242 @@ class ApiController < ApplicationController
     end
   end
 
+
   def android_sdks_exist
 
     android_app_id = params['appId']
 
-    updated = nil
-    packages = nil
-
     aa = AndroidApp.find(android_app_id)
 
-    if aa.newest_apk_snapshot.blank?
-      error_code = 1
-    else
-      new_snap = aa.newest_apk_snapshot
-    end
+    updated, companies, error_code = nil
 
-    if new_snap.present? && new_snap.status == "success"
+    price = aa.newest_android_app_snapshot.price.to_i
 
-      updated = new_snap.updated_at
-      packages = new_snap.android_packages.where('android_package_tag != 1')
+    if !price.zero?
 
-      error_code = packages.count.zero? ? 1:0
+      error_code = 4
 
     else
-      error_code = 5
+
+      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
+
     end
-    render json: sdk_hash(packages, updated, error_code)
+
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
+
   end
 
   def scan_android_sdks
 
     android_app_id = params['appId']
 
-    packages = nil
-    updated = nil
+    updated, companies, error_code = nil
 
     aa = AndroidApp.find(android_app_id)
 
+    error_code = 1
+
     price = aa.newest_android_app_snapshot.price.to_i
 
-    if aa.taken_down
-      error_code = 2
-    elsif !price.zero?
+    # if aa.taken_down?
+
+    #   error_code = 2
+
+    # els
+    if !price.zero?
+
       error_code = 4
+
     else
 
       app_identifier = aa.app_identifier
 
-      new_snap = run_batch(android_app_id, app_identifier)
+      job_id, new_snap = download_apk(android_app_id, app_identifier)
+
+      aa = AndroidApp.find(android_app_id)
+
+      # new_snap = aa.newest_apk_snapshot
+
+      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
 
       if new_snap.present? && new_snap.status == "success"
 
-        packages = new_snap.android_packages.where('android_package_tag != 1')
+        scan_apk(aa.id, job_id)
 
-        updated = new_snap.updated_at
-
-        error_code = 0
+        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
       else
+
+        apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      
+        apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
+
+        apk_snap.save
+
         error_code = 3
+      
       end
 
     end
 
-    render json: sdk_hash(packages, updated, error_code)
+    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
 
-  def run_batch(android_app_id, app_identifier, job_id = nil, tries = 0)
+  def get_sdks(android_app_id:)
 
-    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id if job_id.nil?
+    updated, companies = nil
+
+    error_code = 0
+
+    aa = AndroidApp.find(android_app_id)
+
+    if aa.newest_apk_snapshot.present?
+
+      new_snap = aa.newest_apk_snapshot
+
+      if new_snap.status == "success"
+
+        updated = new_snap.updated_at
+
+        companies = new_snap.android_sdk_companies
+
+        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
+
+        # error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
+
+        error_code = companies.count.zero? ? 1:0
+
+      else
+
+        error_code = 5
+
+      end
+
+    end
+
+    return companies, updated, error_code
+
+  end
+
+  def get_removed_companies(android_app:, companies:)
+
+    current_ids = companies.map(&:id)
+
+    total_ids = []
+
+    android_app.apk_snapshots.joins(:android_sdk_companies).each do |cos|
+
+      cos_ids = cos.android_sdk_companies.map(&:id)
+
+      total_ids = total_ids + cos_ids
+
+    end
+
+    AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
+
+  end
+
+  def sdk_hash(companies:, updated:, error_code:, snap:)
+
+    main_hash = Hash.new
+
+    installed_co_hash, installed_os_hash = form_hash(companies)
+
+    # uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
+
+    # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
+
+    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
+    
+    main_hash['installed_sdk_companies'] = installed_co_hash
+
+    main_hash['installed_open_source_sdks'] = installed_os_hash
+
+    main_hash['uninstalled_sdk_companies'] = {}
+
+    main_hash['uninstalled_open_source_sdks'] = {}
+
+    main_hash['updated'] = updated
+
+    main_hash['error_code'] = error_code
+
+    main_hash.to_json
+
+  end
+
+  def form_hash(companies)
+
+    co_hash = Hash.new
+
+    os_hash = Hash.new
+
+    if companies.present?
+
+      companies.each do |company|
+
+        next if company.nil? || company.flagged
+
+        main_company = company.parent_company_id.present? ? AndroidSdkCompany.find(company.parent_company_id) : company
+
+        children = if company.parent_company_id.present?
+
+          cc = company
+
+          { 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
+
+        else
+
+          nil
+
+        end
+
+        if company.open_source
+
+          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
+
+            os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+
+          else
+
+            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
+
+          end
+
+        else
+
+          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
+
+            co_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+
+          else
+
+            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
+
+          end
+
+        end
+
+      end
+
+    end
+
+    co_hash = sort_hash(co_hash)
+
+    os_hash = sort_hash(os_hash)
+
+    return co_hash, os_hash
+
+  end
+
+  def sort_hash(hash)
+    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
+  end
+
+  def download_apk(android_app_id, app_identifier)
+
+    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
+
     batch = Sidekiq::Batch.new
     bid = batch.bid
 
@@ -806,84 +1006,54 @@ class ApiController < ApplicationController
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
     end
 
-    360.times do |i|
-      break if Sidekiq::Batch::Status.new(bid).complete?
+    new_snap = nil
+
+    360.times do
+
       sleep 0.25
+      
+      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
+
+      if ss.present? && ss.status.present?
+
+        if ss.status = "success"
+
+          aa = ss.android_app
+
+          if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
+
+            new_snap = ss
+
+            break
+
+          end
+
+        else
+
+          break if ss.try == 3
+
+        end
+
+      end
+
     end
 
-    new_snap = AndroidApp.find(android_app_id).newest_apk_snapshot
-
-    run_batch(android_app_id, nil, job_id, tries += 1) if new_snap.nil? && tries < 2
-
-    new_snap
+    return job_id, new_snap
 
   end
 
-  def sdk_hash(p, last_updated, error_code)
+  def scan_apk(android_app_id, job_id)
 
-    hash = Hash.new
-    main_hash = Hash.new
+    PackageSearchServiceSingleWorker.perform_async(android_app_id)
 
-    if p.present?
-      p.each do |packages|
+    360.times do
 
-        package = SdkCompanyServiceWorker.new.strip_prefix(packages.package_name)
+      sleep 0.25
 
-        if package.count('.').zero?
-          package = package.capitalize if package == package.upcase
-          name = SdkCompanyServiceWorker.new.camel_split(package.split(/(?=[A-Z_])/).first)
-          next if name.split(' ').select{|s| s.length == 1 }.count > 1
-        else
+      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
-          name = package.split('.').first
-
-          if SdkCompanyServiceWorker.new.is_word?(name, nil)
-            name = SdkCompanyServiceWorker.new.camel_split(name)
-            next if name.split(' ').select{|s| s.length == 1 }.count > 1
-          end
-        end
-
-        name = name.capitalize
-        sdk_com = SdkCompany.find_by_name(name)
-
-        if sdk_com.present?
-          next if sdk_com.flagged?
-          name = sdk_com.alias_name unless sdk_com.alias_name.blank?
-
-          if hash[name].blank?
-
-            url = nil
-            favicon = nil
-
-            if sdk_com.present?
-
-              url = sdk_com.website unless sdk_com.website.blank?
-              url = sdk_com.alias_website unless sdk_com.alias_website.blank?
-
-              if sdk_com.website.present? || sdk_com.alias_website.present?
-                url = "http://#{url}" unless %w(http https).any?{|h| url.include? h}
-              end
-              favicon = sdk_com.favicon
-            end
-            hash[name] = {'packages' => [packages.package_name], 'website' => url.to_s, 'favicon' => favicon.to_s, 'popularity' => url.nil? ? 0:1}
-
-          else
-            hash[name]['packages'] << packages.package_name
-
-          end
-        end
-      end
+      break if ss.present? && ss.scan_status.present?
     end
-
-    hash = hash.sort_by { |k,v| -v['popularity'] }.to_h
-
-    error_code = 1 if hash.empty? && error_code.zero?
-    main_hash['sdks'] = hash
-    main_hash['last_updated'] = last_updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
 
   end
 
@@ -984,46 +1154,66 @@ class ApiController < ApplicationController
 
   def search_ios_apps
     query = params['query']
-    page_offset = params['page'] ? params['page'] : 0
-    num_per_page = params['numPerPage'] ? params['numPerPage'] : 100
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-    result_ids = AppsIndex::IosAppSnapshot.query(
+    result_ids = AppsIndex::IosApp.query(
         multi_match: {
             query: query,
-            fields: [:name, :seller_url, :company_name],
-            type: 'most_fields',
-            fuzziness: 'AUTO',
-            minimum_should_match: '75%'
+            operator: 'and',
+            fields: [:name, :seller_url, :seller],
+            type: 'cross_fields',
+            fuzziness: 1
         }
-    ).limit(num_per_page).offset(page_offset).map { |result|
-      puts result.inspect
-      result.attributes["id"]
-    }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 150000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 100000,
+                    lt: 150000
+                }
+            }
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
 
-    ios_app_snapshots = IosAppSnapshot.find(result_ids)
+    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
 
+    ios_apps = []
+    result_ids.each{ |id| ios_apps << IosApp.find(id) }
     results_json = []
 
-    ios_app_snapshots.each do |app_snapshot|
+    ios_apps.each do |app|
 
-      app = app_snapshot.ios_app
       company = app.get_company
+      newest_snapshot = app.newest_ios_app_snapshot
 
       app_hash = {
           app: {
-              id: app.present? ? app.id : nil,
-              name: app_snapshot.name,
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'IosApp',
-              mobilePriority: app.present? ? app.mobile_priority : nil,
-              userBase: app.present? ? app.user_base : nil,
-              lastUpdated: app_snapshot.released.to_s,
-              adSpend: app.present? ? app.ios_fb_ad_appearances.present? : nil,
-              categories: IosAppCategoriesSnapshot.where(ios_app_snapshot: app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name},
-              supportDesk: app_snapshot.support_url,
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
               appIcon: {
-                  large: app_snapshot.icon_url_350x350,
-                  small: app_snapshot.icon_url_175x175
-              }
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+              },
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil
           },
           company: {
               id: company.present? ? company.id : nil,
@@ -1033,48 +1223,71 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
-
-    render json: results_json
+    render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
   def search_android_apps
     query = params['query']
-    page_offset = !params['page'].nil? ? params['page'] : 0
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'] : 50
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-    result_ids = AppsIndex::AndroidAppSnapshot.query(
+    result_ids = AppsIndex::AndroidApp.query(
         multi_match: {
             query: query,
-            fields: [:name, :seller_url, :company_name],
-            type: 'most_fields',
-            minimum_should_match: '75%'
+            operator: 'and',
+            fields: [:name, :seller_url, :seller],
+            type: 'cross_fields',
+            fuzziness: 1
         }
-    ).limit(num_per_page).offset(page_offset).map { |result|
-      result.attributes["id"]
-    }
+    ).boost_factor(
+        3,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 1000000
+                }
+            }
+        }
+    ).boost_factor(
+        2,
+        filter: {
+            range:{
+                ratings_all: {
+                    gte: 1000000,
+                    lt: 140000
+                }
+            }
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_app_snapshots = AndroidAppSnapshot.find(result_ids)
-
+    android_apps = []
+    result_ids.each{ |id| android_apps << AndroidApp.find(id) }
     results_json = []
 
-    android_app_snapshots.each do |app_snapshot|
+    android_apps.each do |app|
 
-      app = app_snapshot.android_app
       company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
 
       app_hash = {
           app: {
-              id: app.present? ? app.id : nil,
-              name: app_snapshot.name,
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
               type: 'AndroidApp',
-              mobilePriority: app.present? ? app.mobile_priority : nil,
-              userBase: app.present? ? app.user_base : nil,
-              lastUpdated: app_snapshot.released.to_s,
-              adSpend: app.present? ? app.android_fb_ad_appearances.present? : nil,
-              categories: app_snapshot.android_app_categories.map{|c| c.name}.join(", "),
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              adSpend: app.android_fb_ad_appearances.present?,
+              downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+              downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
               appIcon: {
-                  large: app_snapshot.icon_url_300x300
-              }
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+              },
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil
           },
           company: {
               id: company.present? ? company.id : nil,
@@ -1084,8 +1297,12 @@ class ApiController < ApplicationController
       }
       results_json << app_hash
     end
+    render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+  end
 
-    render json: results_json
+  def test_timeout
+    sleep 65
+    render json: {test:'complete'}
   end
 
 end

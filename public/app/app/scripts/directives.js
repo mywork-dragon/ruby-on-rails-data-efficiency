@@ -255,6 +255,18 @@ angular.module("app.directives", []).directive("imgHolder", [
         return result;
       };
     })
+    .filter('humanizeNum', function(){
+      return function humanize(number) {
+        if(number < 1000) {
+          return number;
+        }
+        var si = ['K', 'M', 'B', 'T', 'Q', 'Quin'];
+        var exp = Math.floor(Math.log(number) / Math.log(1000));
+        var result = number / Math.pow(1000, exp);
+        result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
+        return result + si[exp - 1];
+      };
+    })
     .directive('selectAllCheckbox', ["$rootScope", function ($rootScope) {
           return {
             replace: true,
@@ -383,13 +395,16 @@ angular.module("app.directives", []).directive("imgHolder", [
       return {
         replace: true,
         restrict: 'E',
-        scope: {},
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
         template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> </span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
 
           $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
             $scope.appPlatform.platform = platform;
             APP_PLATFORM = platform;
             apiService.getCategories().success(function (data) {
@@ -451,4 +466,18 @@ angular.module("app.directives", []).directive("imgHolder", [
           });
         }
       };
-    }]);
+    }])
+    .directive('focusMe', function($timeout) {
+      return {
+        link: function(scope, element, attrs) {
+          scope.$watch(attrs.focusMe, function(value) {
+            if(value === true) {
+              $timeout(function() {
+                element[0].focus();
+                scope[attrs.focusMe] = false;
+              }, 550);
+            }
+          });
+        }
+      };
+    });

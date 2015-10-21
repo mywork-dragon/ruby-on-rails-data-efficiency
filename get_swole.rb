@@ -17,12 +17,14 @@ puts "Options"
 puts "-------"
 puts "scraper: Deploys to the main scraper servers. Branch is 'scraper'"
 puts "sdk_scraper: Deploys to the SDK scraper servers. Branch is 'sdk_scraper'"
+puts "sdk_scraper_live_scan: Deploys to the SDK scraper live scan. Branch is 'sdk_scraper_live_scan'"
+puts "staging: Deploys to the staging server. Branch is 'staging'"
 puts "web: Deploys to the Web server. Branch is 'master'"
 puts "all: Deploys to all servers. Branch is 'master'" 
 puts "\n"
 print "Deploy to: "
 servers = gets.chomp
-valid_servers = %w(scraper sdk_scraper web all)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web all)
 if !valid_servers.include?(servers)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
@@ -33,6 +35,12 @@ if servers == 'scraper'
   stage = branch
 elsif servers == 'sdk_scraper'
   branch = 'sdk_scraper'
+  stage = branch
+elsif servers == 'sdk_scraper_live_scan'
+  branch = 'sdk_scraper_live_scan'
+  stage = branch
+elsif servers == 'staging'
+  branch = 'staging'
   stage = branch
 elsif servers == 'web'
   branch = 'master'

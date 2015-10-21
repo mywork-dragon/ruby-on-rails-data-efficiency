@@ -16,7 +16,7 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying 1 - {{customSearchCtrl.numApps}} of {{customSearchCtrl.numApps}}</span>
+      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps}}</span>
       <span class="ui-select pull-right">
         <select ng-model="addSelectedToDropdown" ng-change="customSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
          <option value="">Copy Selected to List</option>
@@ -57,8 +57,11 @@
           <th><div class="th normal-right-padding">
             Categories
           </div></th>
-          <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+          <th ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'"><div class="th normal-right-padding">
             Support Desk
+          </div></th>
+          <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
+            Downloads
           </div></th>
           <th><div class="th normal-right-padding">
             Last Updated
@@ -79,7 +82,8 @@
           <td class="appTypeIndicator">
             <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
           </td>
-          <td><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td ng-if="!app.company.name">{{app.app.seller}}</td>
           <td>{{app.company.fortuneRank}}</td>
           <td class="dashboardMobilePriorityView">
             <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
@@ -89,14 +93,15 @@
           </td>
           <td>{{app.app.userBase | capitalize}}</td>
           <td>{{app.app.categories.join(', ')}}</td>
-          <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
+          <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
+          <td ng-if="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | humanizeNum}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | humanizeNum}}</td>
           <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
         </tr>
         </tbody>
       </table>
-      <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(customSearchCtrl.numApps > 0)">
-        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || queryInProgress">No Items</h5>
-        <div data-ng-show="queryInProgress" id="wrap_spinner">
+      <div id="dashboardTableStatusMessage" data-ng-show="customSearchCtrl.queryInProgress || !(customSearchCtrl.numApps > 0)">
+        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || customSearchCtrl.queryInProgress">No Items</h5>
+        <div data-ng-show="customSearchCtrl.queryInProgress" id="wrap_spinner">
           <div class="loading outer">
             <div class="loading inner"></div>
           </div>
@@ -110,26 +115,26 @@
 
     </div>
 
-    <!--
     <footer class="table-footer">
       <div class="row">
         <div class="col-md-6 page-num-info">
-                      <span>
-                          Show
-                          <select data-ng-model="numPerPage"
-                                  data-ng-options="num for num in numPerPageOpt"
-                                  data-ng-change="onNumPerPageChange()">
-                          </select>
-                          entries per page
-                      </span>
-
+          <!--
+              <span>
+                  Show
+                  <select data-ng-model="numPerPage"
+                          data-ng-options="num for num in numPerPageOpt"
+                          data-ng-change="onNumPerPageChange()">
+                  </select>
+                  entries per page
+              </span>
+          -->
         </div>
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
                       ng-model="customSearchCtrl.currentPage"
-                      total-items="numApps"
-                      max-size="4"
-                      ng-change="select(currentPage, tags)"
+                      total-items="customSearchCtrl.numApps"
+                      max-size="8"
+                      ng-change="customSearchCtrl.onPageChange(customSearchCtrl.currentPage)"
                       items-per-page="customSearchCtrl.numPerPage"
                       rotate="false"
                       boundary-links="true"></pagination>
@@ -137,7 +142,6 @@
         </div>
       </div>
     </footer>
-    -->
 
   </section>
 

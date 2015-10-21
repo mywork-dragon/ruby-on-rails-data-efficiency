@@ -3,25 +3,30 @@ module MightyDeployer
   @app_roles = []
   @web_roles = []
   # @api_roles = []
+  @staging_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
-  @sdk_scraper_master_role = nil
+  @sdk_scraper_live_scan_roles = []
   @scraper_roles = []
   @scraper_master_role = nil
   
   @web_servers = []
   # @api_servers = []
+  @staging_servers = []
   @scraper_servers = []
   @sdk_scraper_servers = []
+  @sdk_scraper_live_scan_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :staging]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
     define_web_servers if server_symbols.include?(:web)
     define_scraper_servers if server_symbols.include?(:scraper)
     define_sdk_scraper_servers if server_symbols.include?(:sdk_scraper)
+    define_sdk_scraper_live_scan_servers if server_symbols.include?(:sdk_scraper_live_scan)
+    define_staging_servers if server_symbols.include?(:staging)
     
     define_roles
     
@@ -62,15 +67,30 @@ module MightyDeployer
 
   def self.define_sdk_scraper_servers
     @sdk_scraper_servers = %w(
-      54.164.24.87
       54.88.39.109
       54.86.80.102
     )
   
-    @sdk_scraper_master_role = @sdk_scraper_servers.first
-  
     @app_roles += @sdk_scraper_servers
     @sdk_scraper_roles += @sdk_scraper_servers
+  end
+
+  def self.define_sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_servers = %w(
+        54.164.24.87
+      )
+
+    @app_roles += @sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_roles += @sdk_scraper_live_scan_servers
+  end
+
+  def self.define_staging_servers
+    @staging_servers = %w(
+      52.7.134.183
+    )
+
+    @app_roles += @staging_servers
+    @staging_roles += @staging_servers
   end
 
   private
@@ -81,9 +101,10 @@ module MightyDeployer
     # role :api, @api_roles
     role :db,  @db_roles #must have this do migrate db
     role :sdk_scraper, @sdk_scraper_roles
-    role :sdk_scraper_master, @sdk_scraper_master_role
+    role :sdk_scraper_live_scan, @sdk_scraper_live_scan_roles
     role :scraper, @scraper_roles
     role :scraper_master, @scraper_master_role
+    role :staging, @staging_roles
   end
   
   def self.set_users
@@ -101,6 +122,14 @@ module MightyDeployer
     
     @sdk_scraper_servers.each do |sdk_scraper_server|
       server sdk_scraper_server, user: 'deploy'
+    end
+
+    @sdk_scraper_live_scan_servers.each do |sdk_scraper_live_scan_server|
+      server sdk_scraper_live_scan_server, user: 'deploy'
+    end
+
+    @staging_servers.each do |staging_server|
+      server staging_server, user: 'deploy'
     end
     
   end

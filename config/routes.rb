@@ -44,6 +44,8 @@ Rails.application.routes.draw do
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
 
+  get 'api/test_timeout' => 'api#test_timeout'
+
   post 'api/contacts/export_to_csv' => 'api#export_contacts_to_csv'
 
   get 'api/results' => 'api#results'
@@ -69,6 +71,7 @@ Rails.application.routes.draw do
   post 'auth/login' => 'auth#authenticate'
   post 'auth/validate_token' => 'auth#validate_token'
   get 'auth/permissions' => 'auth#permissions'
+  get 'auth/user/info' => 'auth#user_info'
 
   # API for customers
   get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }

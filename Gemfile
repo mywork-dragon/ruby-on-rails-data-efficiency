@@ -37,7 +37,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+gem 'spring', '1.3.6',       group: :development
 
 # gem 'rspec'
 # gem 'rspec-rails'
@@ -71,13 +71,13 @@ gem 'omniauth-salesforce', '1.0.5'
 gem 'httparty', '0.13.3' 
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
-  gem 'sidekiq-pro'
+  gem 'sidekiq-pro', '2.1.1'
 end
 
 
 gem 'filesize', '0.0.4'
 
-gem 'aws-sdk', '~> 2'
+# gem 'aws-sdk', '~> 2'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
@@ -141,7 +141,17 @@ gem 'www-favicon', '0.0.6'
 
 # gem 'curb-fu', '0.6.2'
 
+# group: :scraper_only
+
 gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
 gem 'chewy', '0.8.1'
+
+gem 'paperclip', '4.3.0'
+
+gem 'aws-sdk', '< 2.0'
+
+gem 'colorize', '0.7.7'
+
+gem 'awesome_print', '1.6.1'
 

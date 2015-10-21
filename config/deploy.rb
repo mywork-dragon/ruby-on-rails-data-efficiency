@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(production scraper sdk_scraper web)
+set :stages, %w(production scraper sdk_scraper web staging)
 set :default_stage, 'production'
 
 set :application, 'varys'
@@ -29,7 +29,7 @@ set :deploy_to, '/home/webapps/varys'
 set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentials.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -43,17 +43,19 @@ set :linked_files, %w{config/database.yml config/secrets.yml}
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master, :web]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper, :scraper_master, :web]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sdk_scraper_concurrency, 30
+set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
 set :web_concurrency, 1
 
 # set :sidekiq_queue, %w(critical default low)
 
-set :sdk_scraper_queue, %w(sdk_single sdk)
+set :sdk_scraper_queue, %w(sdk)
+set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default low)
 set :web_queue, %w(no_op)
 
@@ -74,12 +76,13 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     # on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
-    on roles(:web, :api), in: :groups, limit: 3, wait: 10 do
+
+    on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
 
     # run bower install to get bower updates
-    on roles(:web) do
+    on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
     end
   end

@@ -3,6 +3,10 @@
 angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
+  // User info set
+  var userInfo = {};
+  authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
   $scope.load = function() {
 
     return $http({
@@ -15,11 +19,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       /* Sets html title attribute */
       pageTitleService.setTitle($scope.appData.name);
 
-      console.log('APP ID', $scope.appData.id);
-
       apiService.checkForSdks($scope.appData.id)
         .success(function(data) {
           var sdkErrorMessage = "";
+          $scope.noSdkData = false;
           if(data == null) {
             $scope.noSdkData = true;
             $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
@@ -34,7 +37,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
                 sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
                 break;
               case 3:
-                sdkErrorMessage = "Error - Please Try Again Later";
+                sdkErrorMessage = "Error - Please Try Again";
                 break;
               case 4:
                 sdkErrorMessage = "SDKs Not Available for Paid Apps";
@@ -45,15 +48,30 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             }
           }
           $scope.sdkData = {
-            'sdks': data.sdks,
-            'lastUpdated': data.last_updated,
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
+          if($scope.isEmpty(data.installed_sdk_companies) && $scope.isEmpty(data.installed_open_source_sdks) && $scope.isEmpty(data.uninstalled_sdk_companies) && $scope.isEmpty(data.uninstalled_open_source_sdks)) {
+            $scope.noAppSnapshot = true;
+          }
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.company.name,
+              "appPlatform": APP_PLATFORM
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
         }).error(function(err) {
         });
     });
-
   };
 
   $scope.appPlatform = $routeParams.platform;
@@ -111,11 +129,26 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
   $scope.getSdks = function(appId) {
 
+    /* -------- Mixpanel Analytics Start -------- */
+    mixpanel.track(
+      "SDK Live Scan Clicked", {
+        'companyName': $scope.appData.company.name,
+        'appName': $scope.appData.name,
+        'appId': $scope.appData.id,
+        'mobilePriority': $scope.appData.mobilePriority,
+        'fortuneRank': $scope.appData.company.fortuneRank,
+        'userBase': $scope.appData.userBase,
+        'ratingsAllCount': $scope.appData.ratingsCount
+      }
+    );
+    /* -------- Mixpanel Analytics End -------- */
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         var sdkErrorMessage = "";
+        $scope.noSdkData = false;
         if(data == null) {
           $scope.noSdkData = true;
           $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
@@ -130,7 +163,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
               break;
             case 3:
-              sdkErrorMessage = "Error - Please Try Again Later";
+              sdkErrorMessage = "Error - Please Try Again";
               break;
             case 4:
               sdkErrorMessage = "SDKs Not Available for Paid Apps";
@@ -142,18 +175,87 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         }
         if(data) {
           $scope.sdkData = {
-            'sdks': data.sdks,
-            'lastUpdated': data.last_updated,
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
+            'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
+            'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
         }
-      }).error(function() {
+        /* -------- Mixpanel Analytics Start -------- */
+        var mixpanelEventTitle = "SDK Live Scan " + ($scope.sdkData.errorCode != 3 ? 'Success' : 'Failed');
+        mixpanel.track(
+          mixpanelEventTitle, {
+            'platform': 'Android',
+            'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
+            'appId': $scope.appData.id,
+            'sdkCompanies': $scope.sdkData.sdkCompanies,
+            'sdkOpenSource': $scope.sdkData.sdkOpenSource,
+            'uninstalledSdkCompanies': $scope.sdkData.uninstalledSdkCompanies,
+            'uninstalledSdkOpenSource': $scope.sdkData.uninstalledSdkOpenSource,
+            'lastUpdated': $scope.sdkData.lastUpdated,
+            'errorCode': $scope.sdkData.errorCode,
+            'errorMessage': $scope.sdkData.errorMessage
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        /* -------- Slacktivity Alerts -------- */
+        var sdkCompanies = Object.keys($scope.sdkData.sdkCompanies).toString();
+        var sdkOpenSource = Object.keys($scope.sdkData.sdkOpenSource).toString();
+        var uninstalledSdkCompanies = Object.keys($scope.sdkData.uninstalledSdkCompanies).toString();
+        var uninstalledSdkOpenSource = Object.keys($scope.sdkData.uninstalledSdkOpenSource).toString();
+        var slacktivityData = {
+          "title": mixpanelEventTitle,
+          "fallback": mixpanelEventTitle,
+          "color": mixpanelEventTitle == "SDK Live Scan Success" ? "#45825A" : "#E82020",
+          "userEmail": userInfo.email,
+          'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
+          'appId': $scope.appData.id,
+          'sdkCompanies': sdkCompanies,
+          'sdkOpenSource': sdkOpenSource,
+          'uninstalledSdkCompanies': uninstalledSdkCompanies,
+          'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
+          'lastUpdated': $scope.sdkData.lastUpdated,
+          'errorCode': $scope.sdkData.errorCode,
+          'errorMessage': $scope.sdkData.errorMessage
+        };
+        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
+        /* -------- Slacktivity Alerts End -------- */
+      }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         $scope.noSdkData = true;
-        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"}
+        $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "SDK Live Scan Failed", {
+            'companyName': $scope.appData.company.name,
+            'appName': $scope.appData.name,
+            'appId': $scope.appData.id,
+            'errorStatus': status
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        /* -------- Slacktivity Alerts -------- */
+        var slacktivityData = {
+          "title": "SDK Live Scan Failed",
+          "fallback": "SDK Live Scan Failed",
+          "color": "#e82020",
+          "userEmail": userInfo.email,
+          'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
+          'appId': $scope.appData.id,
+          'errorStatus': status
+        };
+        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
+        /* -------- Slacktivity Alerts End -------- */
       });
-
   };
 
   authService.permissions()
@@ -174,6 +276,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         hiddenElement.download = 'contacts.csv';
         hiddenElement.click();
       });
+  };
+
+  $scope.isEmpty = function(obj) {
+    try { return Object.keys(obj).length === 0; }
+    catch(err) {}
   };
 
   /* Company Contacts Logic */
@@ -212,15 +319,5 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.contactsLoaded = false;
       });
   };
-
-  /* -------- Mixpanel Analytics Start -------- */
-  mixpanel.track(
-    "Page Viewed", {
-      "pageType": "App",
-      "appid": $routeParams.id,
-      "appPlatform": APP_PLATFORM
-    }
-  );
-  /* -------- Mixpanel Analytics End -------- */
 }
 ]);

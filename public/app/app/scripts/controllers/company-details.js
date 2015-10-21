@@ -20,6 +20,18 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $rootScope.numApps = companyApps.length;
         $scope.queryInProgress = false;
         /* Sets html title attribute */
+
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Company Page Viewed", {
+            "companyid": $routeParams.id,
+            "appPlatform": APP_PLATFORM,
+            "companyName": $scope.companyData.name,
+            "fortuneRank": $scope.companyData.fortuneRank,
+            "funding": $scope.companyData.funding
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
       }).error(function() {
         $scope.queryInProgress = false;
       });
@@ -54,6 +66,20 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       /* -------- Mixpanel Analytics End -------- */
 
       $window.open(linkedinLink);
+    };
+
+    $scope.onAppTableAppClick = function(app) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "App on Company Page Clicked", {
+          "companyName": $scope.companyData.name,
+          "appName": app.name,
+          "appId": app.id,
+          "appPlatform": app.type
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+      $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
     };
 
     $scope.addMixedSelectedTo = function(list, selectedApps) {
@@ -120,16 +146,6 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         /* -------- Mixpanel Analytics End -------- */
       });
     };
-
-    /* -------- Mixpanel Analytics Start -------- */
-    mixpanel.track(
-      "Page Viewed", {
-        "pageType": "Company",
-        "companyid": $routeParams.id,
-        "appPlatform": APP_PLATFORM
-      }
-    );
-    /* -------- Mixpanel Analytics End -------- */
 
   }
 ]);

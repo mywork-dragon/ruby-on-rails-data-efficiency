@@ -12,6 +12,9 @@ class AndroidApp < ActiveRecord::Base
   # has_many :websites, through: :android_apps_snapshots
   has_many :android_apps_websites
   has_many :websites, through: :android_apps_websites
+
+  has_many :android_sdk_companies_android_apps
+  has_many :android_sdk_companies, through: :android_sdk_companies_android_apps
   
   has_many :apk_snapshots
 
@@ -20,9 +23,11 @@ class AndroidApp < ActiveRecord::Base
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
   
   belongs_to :android_developer
-  
+
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
+
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible]
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|

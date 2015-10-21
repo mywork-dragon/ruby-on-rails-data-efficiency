@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
         <form data-ng-submit="add()" class="add-task ng-pristine ng-valid" ng-enter="createList(createNewModal)">
-          <input type="text" placeholder="New list name..." class="form-control ng-pristine ng-valid ng-touched" data-ng-model="createNewModal" autofocus="">
+          <input type="text" focus-me="$root.focusInput" placeholder="New list name..." class="form-control ng-pristine ng-valid ng-touched" data-ng-model="createNewModal">
           <a type="submit" class="submit-button">
             <i class="fa fa-plus-circle"></i>
           </a>
