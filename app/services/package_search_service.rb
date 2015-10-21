@@ -18,8 +18,6 @@ class PackageSearchService
 
     		app_id = snap.android_app.id
 
-    		puts "http://mightysignal.com/app/app#/app/android/#{app_id}"
-
     		PackageSearchServiceWorker.perform_async(app_id)
 
     	end
