@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+puts "LAFKSLAKNSLKASFLAKNSFLK"
+
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
