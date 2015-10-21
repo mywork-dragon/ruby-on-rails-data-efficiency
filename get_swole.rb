@@ -40,8 +40,12 @@ abort if !res.casecmp("yes").zero?
 
 ENV["MS_BRANCH"] = branch
 
-# check that branch is in sync with remote
-`git fetch origin`
+puts "Updating remote references"
+begin
+  `git fetch origin`
+rescue => e
+end
+puts "Checking that branch is in sync with remote"
 if !`git log HEAD..origin/#{branch}`.chomp.empty?
   puts "Error: origin/#{branch} is ahead of local. Pull changes"
   abort
