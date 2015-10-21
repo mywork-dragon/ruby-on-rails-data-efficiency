@@ -347,11 +347,19 @@
                   <strong>SDK Live Scans are currently being updated - please check back later.</strong>
                 </div> -->
 
-                <div style="text-align:center" ng-show="appData.takenDown">
+                <div style="text-align:center" ng-if="appData.displayStatus == 'taken_down'">
                   <strong>App is no longer listed in the app store - no SDK Live Scan available.</strong>
                 </div>
 
-                <li ng-show="sdkData && sdkData.errorCode == 0 && !appData.takenDown && !noAppSnapshot" id="sdkLiveScanDisplay">
+                <div style="text-align:center" ng-if="appData.displayStatus == 'foreign'">
+                  <strong>App is not in the U.S. app store - no SDK Live Scan available.</strong>
+                </div>
+
+                <div style="text-align:center" ng-if="appData.displayStatus == 'device_incompatible'">
+                  <strong>SDK Live Scan is temporarily unavailable for this app.</strong>
+                </div>
+
+                <li ng-show="sdkData && sdkData.errorCode == 0 && appData.displayStatus == 'normal' && !noAppSnapshot" id="sdkLiveScanDisplay">
                   <div class="sdksListView">
                     <div class="row">
                       <div class="col-md-6" ng-hide="isEmpty(sdkData.sdkCompanies) && isEmpty(sdkData.uninstalledSdkCompanies)">
@@ -421,7 +429,7 @@
                     </div>
                   </div>
                 </li>
-                <li id="appPageSdkScanStatus" ng-if="noSdkData && !appData.takenDown || sdkQueryInProgress && !appData.takenDown">
+                <li id="appPageSdkScanStatus" ng-if="noSdkData && appData.displayStatus == 'normal' || sdkQueryInProgress && appData.displayStatus == 'normal'">
                   <div id="sdkScanErrorMessage" ng-show="noSdkData">
                     <h5>{{sdkData.errorMessage}}</h5>
                   </div>
@@ -432,7 +440,7 @@
                     <p>Scanning - this may take a minute.</p>
                   </div>
                 </li>
-                <li id="showSdksButtonLi" ng-if="!sdkQueryInProgress && !appData.takenDown">
+                <li id="showSdksButtonLi" ng-if="!sdkQueryInProgress && appData.displayStatus == 'normal'">
                   <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
                     Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
                   </div>
