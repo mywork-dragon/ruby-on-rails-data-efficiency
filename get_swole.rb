@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+# blah
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
