@@ -214,7 +214,7 @@ class EpfService
         
           if ios_app && (ios_app_ss = ios_app.newest_ios_app_snapshot)
           
-            released = ios_app_ss.released
+            released = ios_app.released
 
             category = ios_app_ss.ios_app_categories.first.name
           
