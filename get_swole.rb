@@ -20,6 +20,7 @@ puts "sdk_scraper: Deploys to the SDK scraper servers."
 puts "sdk_scraper_live_scan: Deploys to the SDK scraper live scan."
 puts "staging: Deploys to the staging server."
 puts "web: Deploys to the Web server."
+puts "darth_vader: Deploys to Vader."
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
