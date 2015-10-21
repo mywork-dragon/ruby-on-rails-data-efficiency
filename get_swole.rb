@@ -42,7 +42,7 @@ ENV["MS_BRANCH"] = branch
 
 puts "Updating remote references"
 begin
-  `git fetch origin`
+  `git fetch origin` # just for catching the output if it goes to stderr
 rescue => e
 end
 puts "Checking that branch is in sync with remote"
