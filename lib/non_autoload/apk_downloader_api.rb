@@ -93,9 +93,9 @@ if defined?(ApkDownloader)
         snap.status = :no_response
         snap.save
 
-        aa = snap.android_app
-        aa.data_flag = true
-        aa.save
+        # aa = snap.android_app
+        # aa.data_flag = true
+        # aa.save
 
         raise "Google did not return url or cookie | status_code: #{status_code}"
 
@@ -161,8 +161,6 @@ if defined?(ApkDownloader)
         curb.timeout = 90
       end
 
-      # TestModel.create(text0: response)
-
       if [200,302].include? response.status
 
         mp = ApkSnapshot.find(apk_snap_id).micro_proxy
@@ -189,13 +187,25 @@ if defined?(ApkDownloader)
 
         elsif response.status == 403
 
-          ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
-          ga.flags = ga.flags + 1
-          ga.save
+          if response.body.include? "This item cannot be installed in your country"
 
-          as = ApkSnapshot.find_by_id(apk_snap_id).android_app.newest_android_app_snapshot
-          as.apk_access_forbidden = true
-          as.save
+            aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
+            aa.display_type = :foreign
+            aa.save
+
+          elsif response.body.include? "Your device is not compatible with this item"
+            
+            aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
+            aa.display_type = :device_incompatible
+            aa.save
+
+          else
+
+            ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
+            ga.flags = ga.flags + 1
+            ga.save
+
+          end
 
           snap = ApkSnapshot.find_by_id(apk_snap_id)
           snap.status = :forbidden
@@ -203,9 +213,9 @@ if defined?(ApkDownloader)
 
         elsif response.status == 404
 
-          as = ApkSnapshot.find_by_id(apk_snap_id).android_app
-          as.taken_down = true
-          as.save
+          aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
+          aa.display_type = :taken_down
+          aa.save
 
           snap = ApkSnapshot.find_by_id(apk_snap_id)
           snap.status = :taken_down
