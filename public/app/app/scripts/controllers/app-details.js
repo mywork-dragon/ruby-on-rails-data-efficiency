@@ -69,6 +69,22 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             }
           );
           /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          if($scope.appData.displayStatus != 'normal') {
+            var slacktivityData = {
+              "title": 'Hidden SDK Live Scan',
+              "fallback": 'Hidden SDK Live Scan',
+              "color": "#FFFF66",
+              "userEmail": userInfo.email,
+              'appName': $scope.appData.name,
+              'companyName': $scope.appData.company.name,
+              'appId': $scope.appData.id,
+              'displayStatus': $scope.appData.displayStatus
+            };
+            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+            window.Slacktivity.send(slacktivityData);
+          }
+          /* -------- Slacktivity Alerts End -------- */
         }).error(function(err) {
         });
     });
