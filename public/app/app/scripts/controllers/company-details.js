@@ -68,6 +68,20 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       $window.open(linkedinLink);
     };
 
+    $scope.onAppTableAppClick = function(app) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "App on Company Page Clicked", {
+          "companyName": $scope.companyData.name,
+          "appName": app.name,
+          "appId": app.id,
+          "appPlatform": app.type
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+      $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
+    };
+
     $scope.addMixedSelectedTo = function(list, selectedApps) {
       listApiService.addMixedSelectedTo(list, selectedApps).success(function() {
         $scope.notify('add-selected-success');
