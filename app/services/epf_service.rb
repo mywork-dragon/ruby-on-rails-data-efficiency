@@ -198,7 +198,7 @@ class EpfService
         column_names = IosAppEpfSnapshot.column_names - ['itunes_release_date'] #use release date from IosApp instead now (until Apple fixed their stuff)
         csv << column_names + ['itunes_release_date', 'Category', 'User Base', 'Average Rating', 'Number of Ratings', 'MightySignal ID']
         #IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
-        IosApp.where(released:  week_before_newest..newest_date).each do |ios_app|
+        IosApp.where(released:  week_before_newest..newest_date).order('released DESC').each do |ios_app|
 
           ios_app_epf_ss = IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, application_id: ios_app.app_identifier).first
 
