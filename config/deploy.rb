@@ -43,11 +43,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-<<<<<<< HEAD
-set :sidekiq_role, [:sdk_scraper_master, :sdk_scraper, :scraper_master, :scraper, :web, :sdk_scraper_dev]
-=======
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper, :scraper_master, :web]
->>>>>>> master
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -60,10 +56,7 @@ set :web_concurrency, 1
 # set :sidekiq_queue, %w(critical default low)
 
 set :sdk_scraper_queue, %w(sdk)
-<<<<<<< HEAD
-=======
 set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
->>>>>>> master
 set :scraper_queue, %w(critical default low)
 set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
 set :web_queue, %w(no_op)
