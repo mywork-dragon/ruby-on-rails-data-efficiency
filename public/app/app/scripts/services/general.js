@@ -34,5 +34,5 @@ angular.module("appApp")
     };
   })
   .factory('AppPlatform', function() {
-    return {platform: "ios"};
+    return {platform: APP_PLATFORM};
   });

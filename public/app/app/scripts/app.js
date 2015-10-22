@@ -7,7 +7,7 @@
 /* Constants */
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
-var APP_PLATFORM = "ios";
+var APP_PLATFORM = "android"; // Default
 var JWT_TOKEN_NAME = "ms_jwt_auth_token";
 
 if (location.host == "localhost:3000") {
