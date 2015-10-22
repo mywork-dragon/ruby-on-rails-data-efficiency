@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-puts "LAFKSLAKNSLKASFLAKNSFLK"
-
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
@@ -34,7 +32,7 @@ end
 
 # validate
 branch = `git rev-parse --abbrev-ref HEAD`.chomp
-puts "Deploying branch #{branch} to #{stage}. Is that correct? [yes/no]"
+print "Deploying branch #{branch} to #{stage}. Is that correct? [yes/no]: "
 res = gets.chomp
 abort if !res.casecmp("yes").zero?
 
