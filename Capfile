@@ -14,7 +14,6 @@ require 'capistrano/deploy'
 #   https://github.com/capistrano/bundler
 #   https://github.com/capistrano/rails
 #
-# require 'capistrano/rvm'
 # require 'capistrano/rbenv'
 # require 'capistrano/chruby'
 # require 'capistrano/bundler'
@@ -22,6 +21,12 @@ require 'capistrano/deploy'
 # require 'capistrano/rails/migrations'
 
 require 'capistrano/rails'
+
+task :use_rvm do
+  require 'capistrano/rvm'
+end
+
+task :darth_vader => [:use_rvm]
 
 require 'capistrano/sidekiq'
 require 'capistrano/sidekiq/monit' #to require monit tasks # Only for capistrano3

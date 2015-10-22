@@ -48,6 +48,7 @@ gem 'nokogiri', '1.6.4.1'
 # for deployment
 gem 'capistrano', '3.2.1'
 gem 'capistrano-rails', '1.1.2'
+gem 'capistrano-rvm', '0.1.2'
 
 # allow http to https redirections
 gem 'open_uri_redirections', require: "open_uri_redirections"
@@ -130,8 +131,6 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
-# gem 'curb-fu', '0.6.2'
-
 gem 'slackiq', '1.1.1'
 
 gem 'slack-notifier', '1.2.1'
@@ -139,7 +138,6 @@ gem 'slack-notifier', '1.2.1'
 gem 'similar_text', '0.0.4'
 
 gem 'www-favicon', '0.0.6'
-
 
 # gem 'curb-fu', '0.6.2', group: :scraper_only
 
