@@ -217,7 +217,8 @@ class EpfService
             released = ios_app.released
 
             category = ios_app_ss.ios_app_categories.first.name
-          
+            category = IosAppCategoriesSnapshot.where(ios_app_snapshot_id: ios_app_ss.id, kind: '0').first.ios_app_category.name
+
             user_base = ios_app.user_base
           
             average_rating = ios_app_ss.ratings_current_stars
