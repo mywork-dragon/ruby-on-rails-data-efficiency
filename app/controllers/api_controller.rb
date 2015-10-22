@@ -322,7 +322,34 @@ class ApiController < ApplicationController
   end
 
   def get_ios_categories
-    render json: IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    # IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
+    categories = [
+      'Books',
+      'Business',
+      'Catalogs',
+      'Education',
+      'Entertainment',
+      'Finance',
+      'Food & Drink',
+      'Games',
+      'Health & Fitness',
+      'Kids',
+      'Lifestyle',
+      'Magazines & Newspapers',
+      'Medical',
+      'Music',
+      'Navigation',
+      'News',
+      'Photo & Video',
+      'Productivity',
+      'Reference',
+      'Social Networking',
+      'Sports',
+      'Travel',
+      'Utilities',
+      'Weather'
+    ]
+    render json: categories
   end
   
   def get_android_categories
