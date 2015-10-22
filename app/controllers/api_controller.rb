@@ -1134,17 +1134,18 @@ class ApiController < ApplicationController
   end
 
   def export_newest_apps_chart_to_csv
-    user = User.find(decoded_auth_token[:user_id])
-    can_view_support_desk = Account.find(user.account_id).can_view_support_desk
 
     ios_apps = # IOS APPS HERE ------------------------------------------------
     android_apps = # ANDROID APPS HERE ----------------------------------------
     apps = []
 
     header = ['MightySignal App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date']
-    can_view_support_desk ? header.push('Support URL') : nil
+    # Android
+    # SELECT  `android_apps`.* FROM `android_apps` INNER JOIN `android_app_snapshots` ON `android_app_snapshots`.`id` = `android_apps`.`newest_android_app_snapshot_id` INNER JOIN `android_app_categories_snapshots` ON `android_app_categories_snapshots`.`android_app_snapshot_id` = `android_app_snapshots`.`id` INNER JOIN `android_app_categories` ON `android_app_categories`.`id` = `android_app_categories_snapshots`.`android_app_category_id` INNER JOIN `android_apps_websites` ON `android_apps_websites`.`android_app_id` = `android_apps`.`id` INNER JOIN `websites` ON `websites`.`id` = `android_apps_websites`.`website_id` INNER JOIN `companies` ON `companies`.`id` = `websites`.`company_id` WHERE (android_app_snapshots.name IS NOT null) AND `android_apps`.`mobile_priority` IN (0) AND `android_apps`.`user_base` IN (0) AND (android_app_categories.name IN ('Travel & Local','Lifestyle','Sports','Health & Fitness','Entertainment','Photography')) GROUP BY android_apps.id  ORDER BY android_app_snapshots.name ASC
 
-    results = IosApp.where(released: Date.new(2015, 7, 24)..Date.new(2015, 7, 30))
+    # iOS
+    sql = "SELECT  `ios_apps`.* FROM `ios_apps` INNER JOIN `ios_app_snapshots` ON `ios_app_snapshots`.`id` = `ios_apps`.`newest_ios_app_snapshot_id` INNER JOIN `ios_app_categories_snapshots` ON `ios_app_categories_snapshots`.`ios_app_snapshot_id` = `ios_app_snapshots`.`id` INNER JOIN `ios_app_categories` ON `ios_app_categories`.`id` = `ios_app_categories_snapshots`.`ios_app_category_id` INNER JOIN `ios_apps_websites` ON `ios_apps_websites`.`ios_app_id` = `ios_apps`.`id` INNER JOIN `websites` ON `websites`.`id` = `ios_apps_websites`.`website_id` INNER JOIN `companies` ON `companies`.`id` = `websites`.`company_id` WHERE (ios_app_snapshots.name IS NOT null) AND `ios_apps`.`mobile_priority` IN (0) AND `ios_apps`.`user_base` IN (0) AND (ios_app_categories.name IN ('Food & Drink','Travel','Lifestyle','Sports','Health & Fitness','Entertainment','Photo & Video') AND ios_app_categories_snapshots.kind = 0) GROUP BY ios_apps.id  ORDER BY ios_app_snapshots.name ASC"
+    results = ActiveRecord::Base.connection.execute(sql)
 
     results_json = []
     results.each do |app|
@@ -1161,8 +1162,7 @@ class ApiController < ApplicationController
           app.ios_fb_ad_appearances.present? ? 'Yes' : 'No',
           app.user_base,
           newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
-          app.released,
-          newest_snapshot.present? ? newest_snapshot.support_url : nil
+          app.released
       ]
 
       apps << app_hash
