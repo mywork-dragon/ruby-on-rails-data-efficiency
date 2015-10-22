@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+begin
+  require 'colorize'
+rescue => e
+  puts "\nYou need to install the colorize gem to get swole."
+  puts "gem install colorize"
+  abort
+end
+
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
@@ -10,17 +18,17 @@ swole_string = %q(
 
 )                                       
 
-puts swole_string
+puts swole_string.light_yellow
 
 puts "\nWhich servers would you like to deploy to?\n\n"
 puts "Options"
 puts "-------"
-puts "scraper: Deploys to the main scraper servers."
-puts "sdk_scraper: Deploys to the SDK scraper servers."
-puts "sdk_scraper_live_scan: Deploys to the SDK scraper live scan."
-puts "staging: Deploys to the staging server."
-puts "web: Deploys to the Web server."
-puts "darth_vader: Deploys to Vader."
+puts "scraper".light_cyan + ": Deploys to the main scraper servers."
+puts "sdk_scraper".light_cyan + ": Deploys to the SDK scraper servers."
+puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live scan."
+puts "staging:".light_cyan + " Deploys to the staging server."
+puts "web".light_cyan + ": Deploys to the Web server."
+puts "darth_vader".light_cyan + ": Deploys to Vader."
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
@@ -32,30 +40,47 @@ end
 
 # validate
 branch = `git rev-parse --abbrev-ref HEAD`.chomp
-print "Deploying branch #{branch} to #{stage}. Is that correct? [yes/no]: "
+print "\nDeploying branch #{branch.light_blue} to #{stage.light_cyan}. Is that correct? [yes/no]: "
 res = gets.chomp
 abort if !res.casecmp("yes").zero?
 
 ENV["MS_BRANCH"] = branch
 
-puts "Updating remote references"
+if stage == 'darth_vader'
+
+  puts %q(
+
+
+  ________            ____             __      _____ _     __   
+ /_  __/ /_  ___     / __ \____ ______/ /__   / ___/(_)___/ /__ 
+  / / / __ \/ _ \   / / / / __ `/ ___/ //_/   \__ \/ / __  / _ \
+ / / / / / /  __/  / /_/ / /_/ / /  / ,<     ___/ / / /_/ /  __/
+/_/ /_/ /_/\___/  /_____/\__,_/_/  /_/|_|   /____/_/\__,_/\___/ 
+                                                                
+
+
+  ).red
+
+end
+
+puts "\nUpdating remote references..."
 begin
   `git fetch origin` # just for catching the output if it goes to stderr
 rescue => e
 end
-puts "Checking that branch is in sync with remote"
+puts "\nChecking that branch is in sync with remote...\n\n"
 if !`git log HEAD..origin/#{branch}`.chomp.empty?
-  puts "Error: origin/#{branch} is ahead of local. Pull changes"
+  puts "Error: origin/#{branch} is ahead of local. Pull changes".red
   abort
 end
 
 if !`git log origin/#{branch}..HEAD`.chomp.empty?
-  puts "Error: local is ahead remote. Push your changes"
+  puts "Error: local is ahead remote. Push your changes".red
   abort
 end
 
 if !`git status -uno`.include?("nothing to commit")
-  puts "Error: Some local files have been edited and not committed"
+  puts "Error: Some local files have been edited and not committed".red
   abort
 end
 
