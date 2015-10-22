@@ -6,11 +6,7 @@ class IosClassServiceWorker
 
   def perform(q)
 
-<<<<<<< HEAD
-  	in_cocoapods(q)
-=======
   	top_words(q)
->>>>>>> master
 
   end
 
