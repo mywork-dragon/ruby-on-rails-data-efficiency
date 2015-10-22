@@ -6,17 +6,54 @@ class IosClassServiceWorker
 
   def perform(q)
 
+<<<<<<< HEAD
   	in_cocoapods(q)
+=======
+  	top_words(q)
+>>>>>>> master
 
   end
 
+
+
+  def top_words(q)
+
+    q.split(/(?=[A-Z])/).map(&:downcase).each do |word|
+
+      iwo = IosWordOccurence.find_by_word(word)
+
+      if iwo.nil?
+
+        IosWordOccurence.create(word: word, count: 1)
+
+      else
+
+        iwo.count += 1
+
+        iwo.save
+
+      end
+
+    end
+
+  end
+
+
+
+
+
+
+
+
+
+
   def save_known_ios_words(q)
 
-  	kiw = KnownIosWords.find_by_word(q)
+  	kiw = KnownIosWord.find_by_word(q)
 
-  	if kiw.nil? && in_apple_docs(q)
+  	if kiw.nil? && in_apple_docs?(q)
 
-  		KnownIosWords.create(word: q)
+  		KnownIosWord.create(word: q)
 
   	end
 

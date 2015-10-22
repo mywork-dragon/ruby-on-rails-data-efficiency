@@ -209,7 +209,7 @@ class FilterService
       parts = []
 
       # parts << "where.not(taken_down: true)"
-      parts << "where(taken_down: nil)"
+      # parts << "where(taken_down: nil)"
       
       parts << "includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')"
       

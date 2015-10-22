@@ -2,10 +2,17 @@ class IosClassService
 
 	class << self
 
+<<<<<<< HEAD
 
+=======
+		def parse_classes
+
+			class_dump = File.open('Zinio.classdump.txt').read
+>>>>>>> master
 
     def train
 
+<<<<<<< HEAD
       nb = NaiveBayes.new(:sdk, :garbage)
 
       training_words = %w(
@@ -36,19 +43,48 @@ class IosClassService
       #   Fabric
       #   SQLitePersistentObject
       # )
+=======
+			# exclude_words = %w(ns ui categories table tab scroll search page library button zoom issue index image server theme purchase cl zinio)
+
+			exclude_words = %w(zinio)
+
+			the_classes = clss.map do |k, v|
+
+				# str = v[/[^<]+/].strip
+
+				str = v
+>>>>>>> master
 
       training_words.each do |word|
 
+<<<<<<< HEAD
         system "clear"
 
         parts = word.split(/(?=[A-Z][a-z])/)
+=======
+					# str = str.split(/[^\w\s]/).select(&:present?).count
+
+					# str = str.gsub(/\((.*?)\)/m,'').gsub(/[^a-z0-9\s]/i,'').gsub('Bool','').gsub('Init','').gsub('init','').gsub('nonatomic','').gsub('dealloc','').gsub('retain','').gsub('readonly','').strip if str.present?
+
+					# IosClassServiceWorker.new.perform(str)
+>>>>>>> master
 
         parts.each.with_index do |part, index|
 
+<<<<<<< HEAD
           puts "#{index}. #{part}"
+=======
+					str = str.gsub(/\((.*?)\)/m,'').gsub(/[^\w\s]/,' ').gsub('_',' ') if str.present?
+
+					str
+
+
+				end
+>>>>>>> master
 
         end
 
+<<<<<<< HEAD
         puts "\nWhich #s are good?"
 
         answer = gets.chomp
@@ -205,6 +241,26 @@ class IosClassService
       end
 
       queries.uniq
+=======
+			the_classes.select(&:present?).uniq
+
+		end
+
+
+		def top_words
+
+			parse_classes.each do |cls|
+
+				# IosClassServiceWorker.new.perform(cls)
+
+				# puts cls if cls.downcase.include? 'crittercism'
+
+				puts cls.split(/[A-Z][a-z]/)
+
+			end
+
+			nil
+>>>>>>> master
 
 		end
 
@@ -289,6 +345,17 @@ class IosClassService
       sdks.map{ |sdk| sdk unless sdks.any?{|x| x.downcase.include?(sdk.downcase) && x.length > sdk.length } }.compact
 
     end
+
+
+		def search_apple_docs
+
+			parse_classes.each do |cls|
+
+				IosClassServiceWorker.new.perform(cls)
+
+			end
+
+		end
 
 
 	end

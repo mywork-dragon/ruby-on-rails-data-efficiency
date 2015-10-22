@@ -32,7 +32,7 @@ module ApkWorker
         apk_snap.try += 1
         apk_snap.save
 
-        raise "data flag" if apk_snap.android_app.data_flag
+        # raise "data flag" if apk_snap.android_app.data_flag
 
         @try_count = apk_snap.try
 
@@ -40,7 +40,11 @@ module ApkWorker
 
       raise "no snap id" if apk_snap.id.blank?
 
+      # raise "not in america" unless apk_snap.android_app.in_america?
+
       best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
+
+      raise "no best account" if best_account.blank?
 
       apk_snap.google_account_id = best_account.id
       apk_snap.save
@@ -65,14 +69,25 @@ module ApkWorker
 
     rescue => e
 
+      # li "\n"
+      # li e.backtrace
+      # li "\n"
+
       status_code = e.message.to_s.split("| status_code:")[1].to_s.strip
 
       message = e.message.to_s.split("| status_code:")[0].to_s.strip
 
-      ApkSnapshotException.create(apk_snapshot_id: apk_snap.id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account.id, status_code: status_code)
-      best_account.in_use = false
-      best_account.save
+      apk_snap_id = apk_snap.blank? ? nil : apk_snap.id
+
+      best_account_id = best_account.present? ? best_account.id : nil
+
+      ApkSnapshotException.create(apk_snapshot_id: apk_snap_id, name: message, backtrace: e.backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: best_account_id, status_code: status_code)
       
+      if best_account.present?
+        best_account.in_use = false
+        best_account.save
+      end
+
       if message.include? "Couldn't connect to server"
         
         apk_snap.status = :could_not_connect
@@ -91,8 +106,11 @@ module ApkWorker
 
       apk_snap.save
       
-      raise
+      #need_to_raise = retry_possibly(apk_snapshot_job_id, bid, android_app_id)
 
+      #raise if need_to_raise
+
+      raise 
     else
 
       end_time = Time.now()
@@ -116,11 +134,15 @@ module ApkWorker
       apk_snap.last_device = GoogleAccount.devices[best_account.device]
       apk_snap.download_time = download_time
       apk_snap.status = :success
-      apk_snap.auth_token = nil
+      # apk_snap.auth_token = nil
       
       af = ApkFile.create!(apk: open(file_name))
 
       apk_snap.apk_file = af
+
+      # debugging
+      apk_snap.auth_token = ''
+
       apk_snap.save
 
       # save snapshot to app
@@ -129,6 +151,9 @@ module ApkWorker
       aa.save
 
       File.delete(file_name)
+
+
+      # PackageSearchServiceWorker.perform_async(android_app_id) unless single_queue?
       
     end
 
@@ -138,13 +163,11 @@ module ApkWorker
 
     is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
 
-    scrape_type = is_single ? :live : :full
-
-    gac = GoogleAccount.where(scrape_type: scrape_type).count
+    gac = GoogleAccount.where(scrape_type: is_single ? 1:0).count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id, scrape_type, bid)
+      account = fresh_account(apk_snap_id, is_single, bid)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -163,14 +186,14 @@ module ApkWorker
 
   end
 
-  def fresh_account(apk_snap_id, scrape_type, bid)
+  def fresh_account(apk_snap_id, is_single, bid)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
     d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
 
     stop = 10000000000
 
     g = GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(in_use: false, scrape_type: scrape_type).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
+      ga = GoogleAccount.lock.where(scrape_type: is_single ? 1:0).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
