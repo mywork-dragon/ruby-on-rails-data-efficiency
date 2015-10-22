@@ -445,8 +445,6 @@ ActiveRecord::Schema.define(version: 20151019201035) do
     t.datetime "updated_at"
   end
 
-<<<<<<< HEAD
-=======
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"
     t.integer  "cocoapod_id"
@@ -457,7 +455,6 @@ ActiveRecord::Schema.define(version: 20151019201035) do
   add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
   add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
 
->>>>>>> master
   create_table "cocoapod_tags", force: true do |t|
     t.string   "tag"
     t.integer  "cocoapod_id"
