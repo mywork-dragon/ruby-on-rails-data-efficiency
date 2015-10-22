@@ -410,7 +410,6 @@ angular.module("app.directives", []).directive("imgHolder", [
             apiService.getCategories().success(function (data) {
               $rootScope.categoryFilterOptions = data;
             });
-
             // Stops 'supportDesk' filter from being added
             if ($scope.appPlatform == 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
@@ -418,6 +417,13 @@ angular.module("app.directives", []).directive("imgHolder", [
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }
+              }
+            }
+            // Removes all categories upon platform switch
+            for (var index = 0; index < $rootScope.tags.length; index++) {
+              if ($rootScope.tags[index].parameter == 'categories') {
+                $rootScope.tags.splice(index, 1);
+                index -= 1;
               }
             }
           };
