@@ -24,7 +24,7 @@ class Proxy
 		          curb.proxy_url = proxy
 		          curb.ssl_verify_peer = false
 		          curb.max_redirects = 3
-		          curb.timeout = 5
+		          curb.timeout = 120
 		        end
 
 		      rescue
@@ -40,12 +40,12 @@ class Proxy
             response = CurbFu.send(type, req, params) do |curb|
   		        curb.ssl_verify_peer = false
   		        curb.max_redirects = 3
-  		        curb.timeout = 5
+  		        curb.timeout = 120
   		      end
 
-          rescue
+          rescue => e
 
-            nil
+            e.message
 
           end
 

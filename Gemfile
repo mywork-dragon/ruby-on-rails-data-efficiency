@@ -157,3 +157,5 @@ gem 'awesome_print', '1.6.1'
 
 gem 'rubyzip', '0.9.9'
 
+gem 'diff_dirs', '0.1.2'
+
