@@ -1139,12 +1139,12 @@ class ApiController < ApplicationController
     android_apps = # ANDROID APPS HERE ----------------------------------------
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date', 'Min Downloads', 'Max Downloads']
+    header = ['MightySignal App ID', 'Android App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date', 'Total Ratings', 'Min Downloads', 'Max Downloads']
     # Android
-    results = AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', ["Travel & Local", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photography"]).group('android_apps.id').order('android_app_snapshots.name ASC').to_a
+    # results = AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', ["Travel & Local", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photography"]).group('android_apps.id').order('android_app_snapshots.name ASC').to_a
 
     # iOS
-    # results = IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', ["Food & Drink", "Travel", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photo & Video"], 0).group('ios_apps.id').order('ios_app_snapshots.name ASC').to_a
+    results = IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', ["Food & Drink", "Travel", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photo & Video"], 0).group('ios_apps.id').order('ios_app_snapshots.name ASC').to_a
 
     results_json = []
     results.each do |app|
@@ -1154,14 +1154,16 @@ class ApiController < ApplicationController
 
       app_hash = [
           app.id,
+          app.app_identifier,
           newest_snapshot.present? ? newest_snapshot.name : nil,
-          company.present? ? company.name : nil,
+          newest_snapshot.present? ? newest_snapshot.seller : nil,
           company.present? ? company.fortune_1000_rank : nil,
           app.mobile_priority,
           app.ios_fb_ad_appearances.present? ? 'Yes' : 'No',
           app.user_base,
           newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
           app.released,
+          newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_max : nil
       ]
