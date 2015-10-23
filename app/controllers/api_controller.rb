@@ -1139,7 +1139,7 @@ class ApiController < ApplicationController
     android_apps = # ANDROID APPS HERE ----------------------------------------
     apps = []
 
-    header = ['MightySignal App ID', 'Android App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date', 'Total Ratings', 'Min Downloads', 'Max Downloads']
+    header = ['MightySignal App ID', 'Android App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Total Ratings', 'Min Downloads', 'Max Downloads']
     # Android
     results = AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', ["Travel & Local", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photography"]).group('android_apps.id').order('android_app_snapshots.name ASC').to_a
 
@@ -1162,7 +1162,6 @@ class ApiController < ApplicationController
           app.android_fb_ad_appearances.present? ? 'Yes' : 'No',
           app.user_base,
           newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
-          app.released,
           newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_max : nil
