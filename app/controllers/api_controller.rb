@@ -1152,6 +1152,7 @@ class ApiController < ApplicationController
       company = app.get_company
       newest_snapshot = app.newest_android_app_snapshot
 
+      # Android
       app_hash = [
           app.id,
           app.app_identifier,
@@ -1161,7 +1162,7 @@ class ApiController < ApplicationController
           app.mobile_priority,
           app.android_fb_ad_appearances.present? ? 'Yes' : 'No',
           app.user_base,
-          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(', ') : nil,
           newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
           newest_snapshot.present? ? newest_snapshot.downloads_max : nil
