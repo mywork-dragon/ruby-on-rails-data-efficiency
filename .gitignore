@@ -7,6 +7,7 @@
 /config/database.yml
 /config/secrets.yml
 /config/s3_credentials.yml
+/config/.github_token
 
 # Ignore bundler config.
 /.bundle
@@ -21,6 +22,9 @@
 
 # Ignore RubyMine files
 /.idea/
+
+# Ignore db patches
+db.patch
 
 node_modules
 

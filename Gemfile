@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 # Use mysql as the database for Active Record
@@ -69,7 +68,7 @@ gem 'newrelic_rpm'
 gem 'restforce', '1.5.0'
 gem 'omniauth-salesforce', '1.0.5'
 
-gem 'httparty', '0.13.3' 
+gem 'httparty', '0.13.3'
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '2.1.1'
@@ -77,8 +76,6 @@ end
 
 
 gem 'filesize', '0.0.4'
-
-# gem 'aws-sdk', '~> 2'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
@@ -134,16 +131,19 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
+gem 'slackiq', '1.1.1'
+
+gem 'slack-notifier', '1.2.1'
+
 gem 'similar_text', '0.0.4'
 
 gem 'www-favicon', '0.0.6'
 
-# gem 'slackiq', '0.0.3'
-
-# gem 'curb-fu', '0.6.2'
+# gem 'curb-fu', '0.6.2', group: :scraper_only
 
 gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
+
 gem 'chewy', '0.8.1'
 
 gem 'paperclip', '4.3.0'
@@ -154,3 +154,4 @@ gem 'colorize', '0.7.7'
 
 gem 'awesome_print', '1.6.1'
 
+gem 'rubyzip', '0.9.9'
