@@ -1134,17 +1134,14 @@ class ApiController < ApplicationController
   end
 
   def export_newest_apps_chart_to_csv
-    user = User.find(decoded_auth_token[:user_id])
-    can_view_support_desk = Account.find(user.account_id).can_view_support_desk
 
-    ios_apps = # IOS APPS HERE ------------------------------------------------
-    android_apps = # ANDROID APPS HERE ----------------------------------------
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date']
-    can_view_support_desk ? header.push('Support URL') : nil
+    # ---------------- iOS ----------------
 
-    results = IosApp.where(released: Date.new(2015, 7, 24)..Date.new(2015, 7, 30))
+    header = ['MightySignal App ID', 'iOS App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Released Date', 'Total Ratings'] # 'Min Downloads', 'Max Downloads']
+
+    results = IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', ["Food & Drink", "Travel", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photo & Video"], 0).group('ios_apps.id').order('ios_app_snapshots.name ASC').to_a
 
     results_json = []
     results.each do |app|
@@ -1154,20 +1151,58 @@ class ApiController < ApplicationController
 
       app_hash = [
           app.id,
+          app.app_identifier,
           newest_snapshot.present? ? newest_snapshot.name : nil,
-          company.present? ? company.name : nil,
+          newest_snapshot.present? ? newest_snapshot.seller : nil,
           company.present? ? company.fortune_1000_rank : nil,
           app.mobile_priority,
           app.ios_fb_ad_appearances.present? ? 'Yes' : 'No',
           app.user_base,
           newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
           app.released,
-          newest_snapshot.present? ? newest_snapshot.support_url : nil
+          newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil
+          #newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          #newest_snapshot.present? ? newest_snapshot.downloads_max : nil
       ]
 
       apps << app_hash
 
     end
+
+
+    # ---------------- ANDROID ----------------
+=begin
+    header = ['MightySignal App ID', 'Android App ID', 'App Name', 'Company Name', 'Fortune Rank', 'Mobile Priority', 'Ad Spend', 'User Base', 'Categories', 'Total Ratings', 'Min Downloads', 'Max Downloads']
+
+    results = AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).where(mobile_priority: [0]).where(user_base: [0]).joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', ["Travel & Local", "Lifestyle", "Sports", "Health & Fitness", "Entertainment", "Photography"]).group('android_apps.id').order('android_app_snapshots.name ASC').to_a
+
+    results_json = []
+    results.each do |app|
+      # li "CREATING HASH FOR #{app.id}"
+      company = app.get_company
+      newest_snapshot = app.newest_android_app_snapshot
+
+      # Android
+      app_hash = [
+          app.id,
+          app.app_identifier,
+          newest_snapshot.present? ? newest_snapshot.name : nil,
+          newest_snapshot.present? ? newest_snapshot.seller : nil,
+          company.present? ? company.fortune_1000_rank : nil,
+          app.mobile_priority,
+          app.android_fb_ad_appearances.present? ? 'Yes' : 'No',
+          app.user_base,
+          newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(', ') : nil,
+          newest_snapshot.present? ? newest_snapshot.ratings_all_count : nil,
+          newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          newest_snapshot.present? ? newest_snapshot.downloads_max : nil
+      ]
+
+      apps << app_hash
+
+    end
+=end
+
 
     list_csv = CSV.generate do |csv|
       csv << header

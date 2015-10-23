@@ -198,7 +198,7 @@ class FilterService
 
       #run the main query
       results = IosApp.instance_eval("self.#{query}")
-      
+
       {results_count: results_count, results: results}
     end
     
@@ -246,7 +246,7 @@ class FilterService
 
       #run the main query
       results = AndroidApp.instance_eval("self.#{query}")
-      
+
       {results_count: results_count, results: results}
     end
     
