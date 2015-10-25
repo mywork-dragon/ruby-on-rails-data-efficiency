@@ -17,7 +17,7 @@ class FixIosCategoriesKindService
         FixIosCategoriesWorker.perform_async(ids, 1)
       end
     end
-
+    
   end
 
 
