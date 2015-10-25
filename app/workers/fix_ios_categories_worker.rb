@@ -5,7 +5,7 @@ class FixIosCategoriesWorker
 
   def perform(iacs_ids, value)
     iacs_ids.each do |iacs_id|
-      iacs = IosAppsCategoriesSnapshot.find(iacs_id)
+      iacs = IosAppCategoriesSnapshot.find(iacs_id)
       iacs.kind = value
       iacs.save
     end
