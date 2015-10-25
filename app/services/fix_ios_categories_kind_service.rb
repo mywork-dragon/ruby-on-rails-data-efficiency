@@ -8,9 +8,10 @@ class FixIosCategoriesKindService
       batch.on(:complete, 'FixIosCategoriesKindService#on_complete_fix_primary')
 
       batch.jobs do
-        IosAppCategoriesSnapshot.where(kind: 'primary').find_each.with_index do |iacs, index|
-          li "IosAppCategoriesSnapshot ##{index}" if index % 1000 == 0
-          FixIosCategoriesWorker.perform_async(iacs.id, 0)
+        IosAppCategoriesSnapshot.where(kind: 'primary').find_in_batches(batch_size: 1000).with_index do |batch, index|
+          li "##{index}"
+          ids = batch.map{ |iac| iac.id}
+          FixIosCategoriesWorker.perform_async(ids, 0)
         end
       end
     end
@@ -21,9 +22,10 @@ class FixIosCategoriesKindService
       batch.on(:complete, 'FixIosCategoriesKindService#on_complete_fix_secondary')
 
       batch.jobs do
-        IosAppCategoriesSnapshot.where(kind: 'secondary').find_each.with_index do |iacs, index|
-          li "IosAppCategoriesSnapshot ##{index}" if index % 1000 == 0
-          FixIosCategoriesWorker.perform_async(iacs.id, 1)
+        IosAppCategoriesSnapshot.where(kind: 'primary').find_in_batches(batch_size: 1000).with_index do |batch, index|
+          li "##{index}"
+          ids = batch.map{ |iac| iac.id}
+          FixIosCategoriesWorker.perform_async(ids, 1)
         end
       end
     end
