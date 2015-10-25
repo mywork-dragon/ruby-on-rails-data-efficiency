@@ -101,7 +101,8 @@ angular.module("appApp")
         /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/list/export_to_csv',
+          // url: API_URI_BASE + 'api/list/export_to_csv',
+          url: API_URI_BASE + 'api/export_newest_apps_chart_to_csv',
           params: {listId: listId}
         });
       },
