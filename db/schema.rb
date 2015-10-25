@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151019201035) do
+ActiveRecord::Schema.define(version: 20151025024136) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -576,7 +576,7 @@ ActiveRecord::Schema.define(version: 20151019201035) do
   create_table "ios_app_categories_snapshots", force: true do |t|
     t.integer  "ios_app_category_id"
     t.integer  "ios_app_snapshot_id"
-    t.string   "kind"
+    t.integer  "kind"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
