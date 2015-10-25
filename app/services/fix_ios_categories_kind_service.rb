@@ -11,7 +11,7 @@ class FixIosCategoriesKindService
     end
 
     def fix_secondary
-      IosAppCategoriesSnapshot.where(kind: 'primary').find_in_batches(batch_size: 1000).with_index do |batch, index|
+      IosAppCategoriesSnapshot.where(kind: 'secondary').find_in_batches(batch_size: 1000).with_index do |batch, index|
         li "##{index}"
         ids = batch.map{ |iac| iac.id}
         FixIosCategoriesWorker.perform_async(ids, 1)
