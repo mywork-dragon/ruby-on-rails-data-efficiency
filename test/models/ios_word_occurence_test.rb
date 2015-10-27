@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CocoapodSourceDataTest < ActiveSupport::TestCase
+class IosWordOccurenceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

@@ -6,25 +6,30 @@ module MightyDeployer
   @staging_roles = []
   @db_roles = []
   @sdk_scraper_roles = []
-  @sdk_scraper_master_role = nil
+  @sdk_scraper_live_scan_roles = []
   @scraper_roles = []
   @scraper_master_role = nil
+  @darth_vader_roles = []
   
   @web_servers = []
   # @api_servers = []
   @staging_servers = []
   @scraper_servers = []
   @sdk_scraper_servers = []
+  @sdk_scraper_live_scan_servers = []
+  @darth_vader_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :staging]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :staging]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
     define_web_servers if server_symbols.include?(:web)
     define_scraper_servers if server_symbols.include?(:scraper)
     define_sdk_scraper_servers if server_symbols.include?(:sdk_scraper)
+    define_sdk_scraper_live_scan_servers if server_symbols.include?(:sdk_scraper_live_scan)
     define_staging_servers if server_symbols.include?(:staging)
+    define_darth_vader_servers if server_symbols.include?(:darth_vader)
     
     define_roles
     
@@ -65,15 +70,21 @@ module MightyDeployer
 
   def self.define_sdk_scraper_servers
     @sdk_scraper_servers = %w(
-      54.164.24.87
       54.88.39.109
       54.86.80.102
     )
   
-    @sdk_scraper_master_role = @sdk_scraper_servers.first
-  
     @app_roles += @sdk_scraper_servers
     @sdk_scraper_roles += @sdk_scraper_servers
+  end
+
+  def self.define_sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_servers = %w(
+        54.164.24.87
+      )
+
+    @app_roles += @sdk_scraper_live_scan_servers
+    @sdk_scraper_live_scan_roles += @sdk_scraper_live_scan_servers
   end
 
   def self.define_staging_servers
@@ -85,6 +96,15 @@ module MightyDeployer
     @staging_roles += @staging_servers
   end
 
+  def self.define_darth_vader_servers
+    @darth_vader_servers = %w(
+      192.168.1.4
+    )
+
+    @app_roles += @darth_vader_servers
+    @darth_vader_roles += @darth_vader_servers
+  end
+
   private
 
   def self.define_roles
@@ -93,10 +113,11 @@ module MightyDeployer
     # role :api, @api_roles
     role :db,  @db_roles #must have this do migrate db
     role :sdk_scraper, @sdk_scraper_roles
-    role :sdk_scraper_master, @sdk_scraper_master_role
+    role :sdk_scraper_live_scan, @sdk_scraper_live_scan_roles
     role :scraper, @scraper_roles
     role :scraper_master, @scraper_master_role
     role :staging, @staging_roles
+    role :darth_vader, @darth_vader_roles
   end
   
   def self.set_users
@@ -116,8 +137,16 @@ module MightyDeployer
       server sdk_scraper_server, user: 'deploy'
     end
 
+    @sdk_scraper_live_scan_servers.each do |sdk_scraper_live_scan_server|
+      server sdk_scraper_live_scan_server, user: 'deploy'
+    end
+
     @staging_servers.each do |staging_server|
       server staging_server, user: 'deploy'
+    end
+
+    @darth_vader_servers.each do |darth_vader_server|
+      server darth_vader_server, user: 'darth-vader'
     end
     
   end

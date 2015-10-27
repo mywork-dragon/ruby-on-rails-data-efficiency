@@ -3,6 +3,10 @@
 angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
+  // User info set
+  var userInfo = {};
+  authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
   $scope.load = function() {
 
     return $http({
@@ -52,6 +56,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'errorCode': data.error_code,
             'errorMessage': sdkErrorMessage
           };
+          if($scope.isEmpty(data.installed_sdk_companies) && $scope.isEmpty(data.installed_open_source_sdks) && $scope.isEmpty(data.uninstalled_sdk_companies) && $scope.isEmpty(data.uninstalled_open_source_sdks)) {
+            $scope.noAppSnapshot = true;
+          }
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "App Page Viewed", {
@@ -62,6 +69,35 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             }
           );
           /* -------- Mixpanel Analytics End -------- */
+          if($routeParams.platform == 'android') {
+            /* -------- Slacktivity Alerts -------- */
+            if($scope.appData.displayStatus != 'normal') {
+              var slacktivityData = {
+                "title": 'Hidden SDK Live Scan',
+                "fallback": 'Hidden SDK Live Scan',
+                "color": "#FFFF66",
+                "userEmail": userInfo.email,
+                'appName': $scope.appData.name,
+                'companyName': $scope.appData.company.name,
+                'appId': $scope.appData.id,
+                'displayStatus': $scope.appData.displayStatus
+              };
+              if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+              window.Slacktivity.send(slacktivityData);
+            }
+            /* -------- Slacktivity Alerts End -------- */
+            /* -------- Mixpanel Analytics Start -------- */
+            mixpanel.track(
+              "Hidden SDK Live Scan Viewed", {
+                "userEmail": userInfo.email,
+                'appName': $scope.appData.name,
+                'companyName': $scope.appData.company.name,
+                'appId': $scope.appData.id,
+                'displayStatus': $scope.appData.displayStatus
+              }
+            );
+            /* -------- Mixpanel Analytics End -------- */
+          }
         }).error(function(err) {
         });
     });
@@ -135,11 +171,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       }
     );
     /* -------- Mixpanel Analytics End -------- */
-
     $scope.sdkQueryInProgress = true;
     apiService.getSdks(appId, 'api/scan_android_sdks')
       .success(function(data) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         var sdkErrorMessage = "";
         $scope.noSdkData = false;
         if(data == null) {
@@ -182,8 +218,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         mixpanel.track(
           mixpanelEventTitle, {
             'platform': 'Android',
-            'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
             'appId': $scope.appData.id,
             'sdkCompanies': $scope.sdkData.sdkCompanies,
             'sdkOpenSource': $scope.sdkData.sdkOpenSource,
@@ -195,8 +231,33 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           }
         );
         /* -------- Mixpanel Analytics End -------- */
-      }).error(function(err) {
+        /* -------- Slacktivity Alerts -------- */
+        var sdkCompanies = Object.keys($scope.sdkData.sdkCompanies).toString();
+        var sdkOpenSource = Object.keys($scope.sdkData.sdkOpenSource).toString();
+        var uninstalledSdkCompanies = Object.keys($scope.sdkData.uninstalledSdkCompanies).toString();
+        var uninstalledSdkOpenSource = Object.keys($scope.sdkData.uninstalledSdkOpenSource).toString();
+        var slacktivityData = {
+          "title": mixpanelEventTitle,
+          "fallback": mixpanelEventTitle,
+          "color": mixpanelEventTitle == "SDK Live Scan Success" ? "#45825A" : "#E82020",
+          "userEmail": userInfo.email,
+          'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
+          'appId': $scope.appData.id,
+          'sdkCompanies': sdkCompanies,
+          'sdkOpenSource': sdkOpenSource,
+          'uninstalledSdkCompanies': uninstalledSdkCompanies,
+          'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
+          'lastUpdated': $scope.sdkData.lastUpdated,
+          'errorCode': $scope.sdkData.errorCode,
+          'errorMessage': $scope.sdkData.errorMessage
+        };
+        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
+        /* -------- Slacktivity Alerts End -------- */
+      }).error(function(err, status) {
         $scope.sdkQueryInProgress = false;
+        $scope.noAppSnapshot = false;
         $scope.noSdkData = true;
         $scope.sdkData = {'errorMessage': "Error - Please Try Again Later"};
         /* -------- Mixpanel Analytics Start -------- */
@@ -205,10 +266,24 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'companyName': $scope.appData.company.name,
             'appName': $scope.appData.name,
             'appId': $scope.appData.id,
-            'errorStatus': err
+            'errorStatus': status
           }
         );
         /* -------- Mixpanel Analytics End -------- */
+        /* -------- Slacktivity Alerts -------- */
+        var slacktivityData = {
+          "title": "SDK Live Scan Failed",
+          "fallback": "SDK Live Scan Failed",
+          "color": "#e82020",
+          "userEmail": userInfo.email,
+          'appName': $scope.appData.name,
+          'companyName': $scope.appData.company.name,
+          'appId': $scope.appData.id,
+          'errorStatus': status
+        };
+        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        window.Slacktivity.send(slacktivityData);
+        /* -------- Slacktivity Alerts End -------- */
       });
   };
 

@@ -6,7 +6,7 @@ angular.module('appApp')
 
       var customSearchCtrl = this;
 
-      customSearchCtrl.platform = 'ios'; // default
+      customSearchCtrl.platform = APP_PLATFORM; // default
 
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {

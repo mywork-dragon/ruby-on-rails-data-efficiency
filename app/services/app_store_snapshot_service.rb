@@ -1,16 +1,30 @@
 class AppStoreSnapshotService
-  
+
   class << self
   
     def run(notes, options={})
       
       j = IosAppSnapshotJob.create!(notes: notes)
+
+      #batch = Sidekiq::Batch.new
+      #batch.description = "run: #{notes}" 
+      #batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
+  
+      Slackiq.message('Starting to queue apps...', webhook_name: :main)
+
+      ios_app_count = IosApp.count
+
+      #batch.jobs do
+        
+        IosApp.find_each.with_index do |ios_app, index|
+          li "App ##{index}" if index%10000 == 0
+          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        end    
       
-      IosApp.find_each.with_index do |ios_app, index|
-        li "App ##{index}" if index%10000 == 0
-        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-      end
-      
+      #end
+
+      Slackiq.message("Done queing apps (#{ios_app_count}.", webhook_name: :main)
+       
     end
     
     def run_app_ids(notes, ios_app_ids)
@@ -20,6 +34,22 @@ class AppStoreSnapshotService
       ios_app_ids.each do |ios_app_id|
         AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_id)
       end
+      
+    end
+    
+    def run_random(notes, n=1000)
+      
+      j = IosAppSnapshotJob.create!(notes: notes)
+      
+      n.times do
+        offset = rand(IosApp.count)
+        ios_app = IosApp.offset(offset).first
+        
+        next if ios_app.nil?
+        
+        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+      end
+
       
     end
     
@@ -86,7 +116,52 @@ class AppStoreSnapshotService
       end
       
     end
+    
+    # Last week
+    def run_new_apps(notes)
+
+      raise "jason neeeds to fix to use IosApp"
+
+      j = IosAppSnapshotJob.create!(notes: notes)
+      
+      batch = Sidekiq::Batch.new
+      batch.description = "run_new_apps: #{notes}" 
+      batch.on(:complete, 'AppStoreSnapshotService#on_complete_run_new_apps')
+  
+      batch.jobs do
+        epf_full_feed_last = EpfFullFeed.last
+    
+        newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+        week_before_newest = newest_date - 6.days
+
+
+        # IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
+          
+        #   app_identifer = epf_ss.application_id
+          
+        #   ios_app = IosApp.find_by_app_identifier(app_identifer)
+          
+        #   if ios_app
+        #     AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        #   end
+        
+        # end
+    
+      end
+      
+    end
   
   end
+
+  def on_complete_run(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape Completed')
+  end
+  
+  def on_complete_run_new_apps(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Run New Apps Completed')
+
+    BusinessEntityService.ios_new_apps # Step 4
+  end
+  
   
 end

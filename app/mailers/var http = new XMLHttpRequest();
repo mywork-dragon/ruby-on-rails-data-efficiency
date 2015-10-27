@@ -1,0 +1,8 @@
+var http = new XMLHttpRequest();
+var url = "https://hooks.slack.com/services/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";
+var params = "payload=whooooooo";
+http.open("POST", url, true);
+
+http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+http.send(params);

@@ -6,4 +6,13 @@ class ApkSnapshotServiceWorker
   
   include ApkWorker
 
+  # Returns true if need to raise exception (always)
+  def retry_possibly(apk_snapshot_job_id, bid, android_app_id)
+    true
+  end
+
+  def single_queue?
+    false
+  end
+
 end

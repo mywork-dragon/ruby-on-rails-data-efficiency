@@ -1,6 +1,6 @@
 class IpaSnapshot < ActiveRecord::Base
 
-	belongs_to :class_dump
+	has_one :class_dump
 	belongs_to :ios_app
 
 	has_many :ios_sdks_ipa_snapshots
