@@ -33,19 +33,14 @@ angular
           $('#app > .load_circle_wrapper').addClass("loaded");
         },300);
 
-        /* Populates "Categories" dropdown with list of categories */
-        $http({
-          method: 'GET',
-					url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
-        }).success(function(data) {
-          $rootScope.categoryFilterOptions = data;
-        });
-
       });
 
     })
   .config(['$routeProvider', function ($routeProvider) {
      $routeProvider
+       .when('/login', {
+         templateUrl: '/app/app/views/signin.html'
+       })
        .when('/search', {
          templateUrl: '/app/app/views/dashboard.html',
          activeTab: 'search',
@@ -67,10 +62,10 @@ angular
          templateUrl: '/app/app/views/list.html',
          activeTab: 'lists'
        })
-      .otherwise({
-        redirectTo: '/search',
+       .otherwise({
+         redirectTo: '/search',
          activeTab: 'search'
-      });
+       });
   }])
   .config(['$httpProvider', function($httpProvider) {
      return $httpProvider.interceptors.push("authInterceptor");

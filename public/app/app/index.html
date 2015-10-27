@@ -48,25 +48,21 @@
     mixpanel.init("6a96c6c2b8cb2ad6de06ad54957b2f2a");</script><!-- end Mixpanel -->
 
   </head>
-  <body id="app" data-custom-background="" data-off-canvas-nav="" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
+  <body id="app" data-custom-background="" data-off-canvas-nav="">
 
-    <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
-      <aside data-ng-include=" '/app/app/views/signin.html' " ng-hide="isAuthenticated"></aside>
-    </div>
+    <div id="main-content-container">
 
-    <div id="main-content-container" ng-show="isAuthenticated">
-
-      <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
+      <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
         <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container" ></aside>
       </div>
 
       <div class="view-container">
 
-        <div data-ng-hide="checkIfOwnPage()" data-ng-cloak="" class="no-print">
+        <div data-ng-controller="CustomSearchCtrl as customSearchCtrl" data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
 
-        <section data-ng-view="" id="content" class="animate-fade-up"></section>
+        <section data-ng-view="" id="content" class="animate-fade-up" ng-class="!$root.isAuthenticated ? 'contentHidden' : ''"></section>
       </div>
     </div>
     <div class="page-loading-overlay"> <div class="loader-2"></div> </div>
@@ -116,6 +112,7 @@
     <script src="/app/app/scripts/services/custom-search.js"></script>
     <script src="/app/app/scripts/services/general.js"></script>
     <script src="/app/app/scripts/controllers/main.js"></script>
+    <script src="/app/app/scripts/controllers/login.js"></script>
     <script src="/app/app/scripts/controllers/search.js"></script>
     <script src="/app/app/scripts/controllers/custom-search.js"></script>
     <script src="/app/app/scripts/controllers/chart.js"></script>
