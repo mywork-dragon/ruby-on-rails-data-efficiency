@@ -139,19 +139,33 @@ class CocoapodServiceWorker
 
         entry.extract( dump + basename + '/' + entry.name )
 
-        if File.extname(entry.name) == '.h'
+        # if File.extname(entry.name) == '.h'
 
-          parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
+        #   parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
 
-        end
+        # end
 
       end
 
     end
 
+    unzipped_file = dump + basename
+
+    podspec = `ls #{unzipped} | grep *.podspec`.chomp
+
+    globs = podspec.scan(/(source_files |public_header_files )= (.?*)\n/).map{|k,v| v }
+
+    globs = globs.map{|x| x.scan(/['"]{1}([^']+)['"]{1}/).flatten }.flatten
+
+    files = globs.map{|glob| Dir.glob(unzipped_file+'/'+glob) }.flatten.uniq
+
+    files.each do |file|
+      parse_header(filename: file, cocoapod_id: cocoapod_id)
+    end
+
     File.delete(filename)
 
-    FileUtils.rm_rf(dump+basename)
+    FileUtils.rm_rf(unzipped_file)
 
   end
 
