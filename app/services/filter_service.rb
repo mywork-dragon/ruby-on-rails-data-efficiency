@@ -105,10 +105,45 @@ class FilterService
       end
       
       if app_filters['categories']
-        cats_with_quotes = app_filters['categories'] #.map{|c| "\"#{c}\""}
-        li cats_with_quotes
-        li cats_with_quotes.join(',')
-        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{cats_with_quotes})"
+        gaming_categories = [
+          'Action',
+          'Adventure',
+          'Arcade',
+          'Board',
+          'Card',
+          'Casino',
+          'Casual',
+          'Educational',
+          'Music',
+          'Puzzle',
+          'Racing',
+          'Role Playing',
+          'Simulation',
+          'Sports',
+          'Strategy',
+          'Trivia',
+          'Word'
+        ]
+        family_categories = [
+          'Action & Adventure',
+          'Brain Games',
+          'Creativity',
+          'Education',
+          'Music & Video',
+          'Pretend Play'
+        ]
+        categories = app_filters['categories'] #.map{|c| "\"#{c}\""}
+        categories.each do |category|
+          if category == 'Games'
+            categories += gaming_categories
+          end
+          if category == 'Family'
+            categories += family_categories
+          end
+        end
+        li categories
+        li categories.join(',')
+        queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
       if app_filters['supportDesk']
@@ -163,7 +198,7 @@ class FilterService
 
       #run the main query
       results = IosApp.instance_eval("self.#{query}")
-      
+
       {results_count: results_count, results: results}
     end
     
@@ -174,7 +209,7 @@ class FilterService
       parts = []
 
       # parts << "where.not(taken_down: true)"
-      parts << "where(taken_down: nil)"
+      # parts << "where(taken_down: nil)"
       
       parts << "includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')"
       
@@ -211,7 +246,7 @@ class FilterService
 
       #run the main query
       results = AndroidApp.instance_eval("self.#{query}")
-      
+
       {results_count: results_count, results: results}
     end
     

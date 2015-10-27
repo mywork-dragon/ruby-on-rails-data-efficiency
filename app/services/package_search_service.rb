@@ -10,6 +10,22 @@ class PackageSearchService
       end
     end
 
+    def sdks_from_snaps(n = nil)
+
+    	snaps = n.nil? ? ApkSnapshot.where(status: 1, scan_status: nil) : ApkSnapshot.where(status: 1, scan_status: nil).limit(n)
+
+    	snaps.each do |snap|
+
+    		app_id = snap.android_app.id
+
+    		PackageSearchServiceWorker.perform_async(app_id)
+
+    	end
+
+    	nil
+
+    end
+
   end
   
 end

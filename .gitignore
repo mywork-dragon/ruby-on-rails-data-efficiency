@@ -7,6 +7,7 @@
 /config/database.yml
 /config/secrets.yml
 /config/s3_credentials.yml
+/config/.github_token
 
 # Ignore bundler config.
 /.bundle
@@ -22,11 +23,12 @@
 # Ignore RubyMine files
 /.idea/
 
-/public/dashboard/bower_components
+# Ignore db patches
+db.patch
 
-/public/dashboard/node_modules
-
-/public/dashboard/dist
+node_modules
 
 /public/app/bower_components
 /public/app/node_modules
+!/public/app/bower_components/slacktivity
+

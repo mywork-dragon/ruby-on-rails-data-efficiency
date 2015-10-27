@@ -24,6 +24,37 @@ class BusinessEntityService
         end
     end
 
+    # For new apps every week
+    # @author Jason Lew
+    def ios_new_apps
+      batch = Sidekiq::Batch.new
+      batch.description = "ios_new_apps" 
+      batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
+  
+      batch.jobs do
+        epf_full_feed_last = EpfFullFeed.last
+    
+        newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+        week_before_newest = newest_date - 6.days
+
+
+        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date: week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
+          
+          app_identifer = epf_ss.application_id
+          
+          ios_app = IosApp.find_by_app_identifier(app_identifer)
+          
+          if ios_app
+            ss = ios_app.newest_ios_app_snapshot
+
+            BusinessEntityIosServiceWorker.perform_async([ss.id], 'clean_ios') if ss
+          end
+        
+        end
+    
+      end
+      
+    end
 
     # For Android linking
 
@@ -223,6 +254,17 @@ class BusinessEntityService
         
       end
     end
+
+    def run_ios_branch_job_8_12
+      newest_date = IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.find(1)).order('itunes_release_date DESC').limit(1).first.itunes_release_date
+      week_before_newest = newest_date - 6.days
+
+      IosAppEpfSnapshot.where(epf_full_feed: EpfFullFeed.find(1), itunes_release_date:  week_before_newest..newest_date).find_in_batches(batch_size: 1000).with_index do |batch, index|
+         
+        ios_app_ss_ids = batch.map{ |ios_app_epf_ss| IosApp.find_by_app_identifier(ios_app_epf_ss.application_id)}.select{ |ios_app| ios_app.present? }.map{ |ios_app| ios_app.newest_ios_app_snapshot }.select{ |ios_app_ss| ios_app_ss.present?}.map(&:id)
+        BusinessEntityIosServiceWorker.perform_async(ios_app_ss_ids, 'clean_ios')
+      end 
+    end
     
     # special purpose
     # Do not use this unless you know what you're doing!!!
@@ -348,6 +390,12 @@ class BusinessEntityService
       end
     end
   
+  end
+
+    def on_complete_ios_new_apps(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'ios_new_apps')
+
+    # EpfService.generate_weekly_newest_csv   #Step 5
   end
 
 end

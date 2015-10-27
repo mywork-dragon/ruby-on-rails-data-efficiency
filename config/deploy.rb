@@ -4,14 +4,13 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(production scraper sdk_scraper web staging)
-set :default_stage, 'production'
+set :stages, %w(scraper sdk_scraper web staging darth_vader)
 
 set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
 
 # Default branch is :master
-# set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, ENV["MS_BRANCH"] || "master" # set in get_swole.rb
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/webapps/varys'
@@ -43,18 +42,22 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_master, :scraper, :scraper_master, :web]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sdk_scraper_concurrency, 30
+set :sdk_scraper_concurrency, 50
+set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
+set :scraper_master_concurrency, 50
 set :web_concurrency, 1
 
 # set :sidekiq_queue, %w(critical default low)
 
-set :sdk_scraper_queue, %w(sdk_single sdk)
+set :sdk_scraper_queue, %w(sdk)
+set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default low)
+set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
 set :web_queue, %w(no_op)
 
 set :whenever_roles, [:scraper, :sdk_scraper]

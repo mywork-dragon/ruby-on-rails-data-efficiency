@@ -4,7 +4,7 @@ class GooglePlaySnapshotServiceWorker
   # accounting for retries ourself, so disable sidekiq retries
   sidekiq_options retry: false
 
-  MAX_TRIES = 3
+  MAX_TRIES = 0
 
   def perform(android_app_snapshot_job_id, android_app_id)
 
@@ -18,11 +18,19 @@ class GooglePlaySnapshotServiceWorker
 
     s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
+    # tm = TestModel.create
+
+    # tm.string0 = s.id.to_s
+    # tm.save
+
     try = 0
 
     begin
 
       a = GooglePlayService.attributes(android_app.app_identifier)
+
+      # tm.text0 = a.inspect
+      # tm.save
 
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
@@ -96,7 +104,7 @@ class GooglePlaySnapshotServiceWorker
       s.save!
 
       #set user base
-      if defined?(downloads)
+      if defined?(downloads) && downloads
         if downloads.max >= 5e6
           user_base = :elite
         elsif downloads.max >= 500e3
@@ -123,10 +131,16 @@ class GooglePlaySnapshotServiceWorker
         android_app.mobile_priority = mobile_priority
       end
 
-      #update newest snapshot
-      android_app.newest_android_app_snapshot_id = s.id #make sure s has been saved first
-      
-      android_app_save_success = android_app.save
+        if screenshot_urls = a[:screenshot_urls]
+          screenshot_urls.each_with_index do |screenshot_url, index|
+            AndroidAppSnapshotsScrSht.create(url: screenshot_url, position: index, android_app_snapshot_id: s.id)
+          end
+        end
+
+        #update newest snapshot
+        android_app.newest_android_app_snapshot_id = s.id #make sure s has been saved first
+        
+        android_app_save_success = android_app.save
 
     rescue => e
       ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)
@@ -142,6 +156,7 @@ class GooglePlaySnapshotServiceWorker
     end
 
     s
+
   end
 
   def test_save_attributes
