@@ -64,6 +64,10 @@ set :whenever_roles, [:scraper, :sdk_scraper]
 
 set :whenever_identifier, "#{fetch(:application)}"
 
+currentRev = fetch :current_revision
+puts currentRev
+abort
+
 namespace :deploy do
 
   desc 'Restart application'
