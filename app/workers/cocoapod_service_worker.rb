@@ -151,16 +151,19 @@ class CocoapodServiceWorker
 
     unzipped_file = dump + basename
 
-    podspec = `ls #{unzipped} | grep *.podspec`.chomp
+    podspec = Dir.glob("#{unzipped_file}/**/*.podspec").sort_by {|x| x.count('/')}.first
 
-    globs = podspec.scan(/(source_files |public_header_files )= (.?*)\n/).map{|k,v| v }
+    contents = File.open(podspec).read
+
+    globs = contents.scan(/(source_files |public_header_files )= (.*?)\n/).map{|k,v| v }
 
     globs = globs.map{|x| x.scan(/['"]{1}([^']+)['"]{1}/).flatten }.flatten
 
-    files = globs.map{|glob| Dir.glob(unzipped_file+'/'+glob) }.flatten.uniq
+    files = globs.map{|glob| Dir.glob(File.dirname(podspec)+'/'+glob) }.flatten.uniq
 
     files.each do |file|
-      parse_header(filename: file, cocoapod_id: cocoapod_id)
+      next if File.extname(file) == '.m'
+      parse_header(filename: file, cocoapod_id: cocoapod_id, ext: File.extname(file))
     end
 
     File.delete(filename)
@@ -169,17 +172,23 @@ class CocoapodServiceWorker
 
   end
 
-  def parse_header(filename:, cocoapod_id:)
+  def parse_header(filename:, cocoapod_id:, ext:)
 
     return nil unless File.exist? filename
 
     file = File.open(filename).read
 
-    names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq
+    if ext == '.h'
+      names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
+    elsif ext == '.swift'
+      names = file.scan(/^public\s(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
+    else
+      names = []
+    end
 
     names.each do |name|
 
-      next if in_apple_docs?(name[1]) || name[1].blank?
+      # next if in_apple_docs?(name[1]) || name[1].blank?
 
       begin
 

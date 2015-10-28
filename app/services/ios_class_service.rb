@@ -3,6 +3,34 @@ class IosClassService
 	class << self
 
     def classify(snap_id)
+      ActiveRecord::Base.logger.level = 1
+
+      class_dump = IpaSnapshot.find(snap_id).class_dump
+
+      if class_dump.method == 'classdump'
+        classify_classdump(snap_id)
+      else class_dump.method == 'strings'
+      	classify_strings(snap_id)
+      end
+    end
+
+    def classify_strings(snap_id)
+
+    	ActiveRecord::Base.logger.level = 1
+
+    	url = IpaSnapshot.find(snap_id).class_dump.class_dump.url
+    	lines = open(url).read
+
+    	# Look for delegates first
+    	delegates =	    	
+    end
+
+    def extract_by_regex(contents, regex)
+    	matches = lines.map {|line| regex.match(line)}.compact
+    	output = matches.map {|x| yield(x)}.uniq
+    end
+
+    def classify_classdump(snap_id)
 
       ActiveRecord::Base.logger.level = 1
 
