@@ -30,7 +30,7 @@ gulp.task('rev-edit', ['rev-rename'], function() {
         .pipe(gulp.dest('./public/app/dist/'));
 });
 
-gulp.task('rev', ['rev-edit'], function() {
+gulp.task('build', ['rev-edit'], function() {
     var manifest = gulp.src('./public/app/dist/rev-manifest.json');
     return gulp
         .src('./public/app/app/views/index.html')
