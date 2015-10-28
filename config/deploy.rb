@@ -85,8 +85,8 @@ namespace :deploy do
     # run bower install to get bower updates
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
-      execute '(cd /home/webapps/varys && npm cache clean && npm install)'
-      execute '(cd /home/webapps/varys && gulp build)'
+      execute '(cd /home/webapps/varys/current && npm cache clean && npm install)'
+      execute '(cd /home/webapps/varys/current && gulp build)'
     end
   end
 end
