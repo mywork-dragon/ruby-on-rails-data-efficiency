@@ -285,8 +285,6 @@ GEM
       json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
       redis-namespace (~> 1.5, >= 1.5.2)
-    sidekiq-pro (2.1.1)
-      sidekiq (>= 3.4.2)
     similar_text (0.0.4)
     slack-notifier (1.2.1)
     slackiq (1.1.1)
@@ -392,7 +390,6 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
-  sidekiq-pro (= 2.1.1)!
   similar_text (= 0.0.4)
   slack-notifier (= 1.2.1)
   slackiq (= 1.1.1)
@@ -407,6 +404,3 @@ DEPENDENCIES
   whenever (= 0.9.4)
   whois (= 3.5.9)
   www-favicon (= 0.0.6)
-
-BUNDLED WITH
-   1.10.6
