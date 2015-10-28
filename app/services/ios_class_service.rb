@@ -15,7 +15,7 @@ class IosClassService
         url = classdump.class_dump.url
         contents = open(url).read
       elsif Rails.env.development?
-        
+
         snap = IpaSnapshot.find(snap_id)
         filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{snap.ios_app_id}"
         ext = classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
@@ -77,46 +77,6 @@ class IosClassService
 
       # end
     end
-
-    # def classify_classdump(snap_id)
-
-    #   ActiveRecord::Base.logger.level = 1
-
-    #   snap = IpaSnapshot.find(snap_id)
-
-    #   class_names(snap.id).each do |q|
-
-    #     r = code_search(q) || search(q)
-
-    #     next if r.nil? || q.nil?
-
-    #     begin
-
-    #       i = IosSdk.create(name: r.name, website: r.link, cocoapod: r)
-    #       os = r.link.include? 'github'
-
-    #       if !os
-    #         favicon = WWW::Favicon.new
-    #         favicon_url = favicon.find(url)
-    #         i.favicon = favicon_url
-    #       end
-
-    #       i.open_source = os
-    #       i.save
-
-    #     rescue
-    #       i = IosSdk.find_by_cocoapod_id(r.id)
-    #     end
-
-    #     begin
-    #       IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot: snap)
-    #     rescue
-    #       nil
-    #     end
-
-    #   end
-    #   nil
-    # end
 
     def search(q)
       s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
