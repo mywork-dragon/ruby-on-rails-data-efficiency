@@ -64,10 +64,6 @@ set :whenever_roles, [:scraper, :sdk_scraper]
 
 set :whenever_identifier, "#{fetch(:application)}"
 
-currentRev = fetch :current_revision
-puts currentRev
-abort
-
 namespace :deploy do
 
   desc 'Restart application'
@@ -89,8 +85,8 @@ namespace :deploy do
     # run bower install to get bower updates
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
-      execute '(cd /home/webapps/varys/current && npm install)'
-      execute '(cd /home/webapps/varys/current && npm run gulp-build)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm install)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm run gulp-build)'
     end
   end
 end
