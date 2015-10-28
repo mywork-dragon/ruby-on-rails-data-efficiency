@@ -26,7 +26,8 @@ angular.module("appApp")
       loginFailed: "STRING_REPRESENTS_EVENT_FAILED_LOGIN",
       notAuthenticated: "STRING_REPRESENTS_EVENT_FAILED_AUTH",
       notAuthorized: "STRING_REPRESENTS_EVENT_FAILURE_NOT_AUTHORIZED",
-      sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT"
+      sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT",
+      authRevoked: "STRING_REPRESENTS_AUTHORIZATION_REVOKED"
     }
   }])
   .factory("authService", ["$http", "$q", "$rootScope", "authToken", "authEvents", function($http, $q, $rootScope, authToken, authEvents) {
@@ -95,6 +96,7 @@ angular.module("appApp")
           $injector.get('$rootScope').$broadcast({
             401: authEvents.notAuthenticated,
             403: authEvents.notAuthorized,
+            418: authEvents.authRevoked,
             419: authEvents.sessionTimeout
           }[response.status], response);
         }

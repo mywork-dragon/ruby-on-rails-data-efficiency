@@ -21,8 +21,8 @@ class ApplicationController < ActionController::Base
   def set_current_user
     if decoded_auth_token
       @current_user ||= User.find(decoded_auth_token[:user_id])
-      if @current_user.access_revoked
-        render :json => {'error' => 'unauthorized'}, :status => :unauthorized
+      if @current_user.access_revoked?
+        render json: {'error' => 'authorization revoked'}, status: 418 # unofficial authorization revoked status code
       end
     end
   end

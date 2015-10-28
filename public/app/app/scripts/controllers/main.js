@@ -27,7 +27,8 @@ angular.module('appApp')
       }
 
       // Delete JWT Auth token if unauthorized (401) response
-      $scope.$on('STRING_REPRESENTS_EVENT_FAILED_AUTH', function(event) {
+      $scope.$on('STRING_REPRESENTS_AUTHORIZATION_REVOKED', function(event) {
+        $rootScope.isAuthenticated = false;
         authToken.deleteToken();
       });
 
