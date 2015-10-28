@@ -67,7 +67,7 @@ set :whenever_identifier, "#{fetch(:application)}"
 namespace :deploy do
 
   desc 'Restart application'
-  task :restart dobundle 
+  task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       # We just need to restart web server, not app server
     end
@@ -89,5 +89,4 @@ namespace :deploy do
       execute '(cd /home/webapps/varys && gulp build)'
     end
   end
-
 end
