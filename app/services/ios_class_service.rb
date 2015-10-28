@@ -2,79 +2,121 @@ class IosClassService
 
 	class << self
 
+    def bundle_prefixes
+      %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk eu fr)
+    end
+
     def classify(snap_id)
       ActiveRecord::Base.logger.level = 1
 
-      class_dump = IpaSnapshot.find(snap_id).class_dump
+      classdump = IpaSnapshot.find(snap_id).class_dump
+      if Rails.env.production?
 
-      if class_dump.method == 'classdump'
-        classify_classdump(snap_id)
-      else class_dump.method == 'strings'
-      	classify_strings(snap_id)
+        url = classdump.class_dump.url
+        contents = open(url).read
+      elsif Rails.env.development?
+        
+        snap = IpaSnapshot.find(snap_id)
+        filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{snap.ios_app_id}"
+        ext = classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
+        filename = filename + ext
+
+        contents = File.open(filename) {|f| f.read}.chomp
+      end
+
+      if classdump.method == 'classdump'
+        classify_classdump(snap_id, contents)
+      else classdump.method == 'strings'
+      	classify_strings(snap_id, contents)
       end
     end
 
-    def classify_strings(snap_id)
+    def classify_classdump(snap_id, contents)
+
+      classes = contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
+
+      search_classnames(classes, snap_id)
+    end
+
+    def classify_strings(snap_id, contents)
 
     	ActiveRecord::Base.logger.level = 1
 
-    	url = IpaSnapshot.find(snap_id).class_dump.class_dump.url
-    	lines = open(url).read
+      classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
+      bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
 
-    	# Look for delegates first
-    	delegates =	    	
+      search_classnames(classes, snap_id)
+      search_bundles(bundles, snap_id)
     end
 
-    def extract_by_regex(contents, regex)
-    	matches = lines.map {|line| regex.match(line)}.compact
-    	output = matches.map {|x| yield(x)}.uniq
-    end
+    def search_classnames(names, snap_id)
+      names.each do |name|
 
-    def classify_classdump(snap_id)
+        found = code_search(name) || search(name)
 
-      ActiveRecord::Base.logger.level = 1
-
-      snap = IpaSnapshot.find(snap_id)
-
-      class_names(snap.id).each do |q|
-
-        r = code_search(q) || search(q)
-
-        next if r.nil? || q.nil?
+        next if found.nil?
 
         begin
-
-          i = IosSdk.create(name: r.name, website: r.link, cocoapod: r)
-          os = r.link.include? 'github'
-
-          if !os
-            favicon = WWW::Favicon.new
-            favicon_url = favicon.find(url)
-            i.favicon = favicon_url
-          end
-
-          i.open_source = os
-          i.save
-
+          i = IosSdk.create(name: found.name, website: found.link, cocoapod: found)
         rescue
-          i = IosSdk.find_by_cocoapod_id(r.id)
+          i = IosSdk.find_by_cocoapod_id(found.id)
         end
 
         begin
-          IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot: snap)
+          IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot_id: snap_id)
         rescue
           nil
         end
-
       end
       nil
     end
 
-    def class_names(snap_id)
-      url = IpaSnapshot.find(snap_id).class_dump.class_dump.url
-      d = open(url).read
-      d.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
+    def search_bundles(bundles, snap_id)
+      nil
+      # bundles.each do |bundle|
+
+      # end
     end
+
+    # def classify_classdump(snap_id)
+
+    #   ActiveRecord::Base.logger.level = 1
+
+    #   snap = IpaSnapshot.find(snap_id)
+
+    #   class_names(snap.id).each do |q|
+
+    #     r = code_search(q) || search(q)
+
+    #     next if r.nil? || q.nil?
+
+    #     begin
+
+    #       i = IosSdk.create(name: r.name, website: r.link, cocoapod: r)
+    #       os = r.link.include? 'github'
+
+    #       if !os
+    #         favicon = WWW::Favicon.new
+    #         favicon_url = favicon.find(url)
+    #         i.favicon = favicon_url
+    #       end
+
+    #       i.open_source = os
+    #       i.save
+
+    #     rescue
+    #       i = IosSdk.find_by_cocoapod_id(r.id)
+    #     end
+
+    #     begin
+    #       IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot: snap)
+    #     rescue
+    #       nil
+    #     end
+
+    #   end
+    #   nil
+    # end
 
     def search(q)
       s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
@@ -83,8 +125,8 @@ class IosClassService
     end
 
     def code_search(q)
-      c = CocoapodSourceData.find_by_name(q)
-      c.cocoapod if c.present?
+      c = CocoapodSourceData.where(name: q)
+      c[0].cocoapod if c.length == 0 # ignore matches that don't uniquely identify
     end
 
 	end

@@ -139,12 +139,6 @@ class CocoapodServiceWorker
 
         entry.extract( dump + basename + '/' + entry.name )
 
-        # if File.extname(entry.name) == '.h'
-
-        #   parse_header(filename: dump + basename + '/' + entry.name, cocoapod_id: cocoapod_id)
-
-        # end
-
       end
 
     end
@@ -188,6 +182,7 @@ class CocoapodServiceWorker
 
     names.each do |name|
 
+      # TODO: uncomment in production
       # next if in_apple_docs?(name[1]) || name[1].blank?
 
       begin
