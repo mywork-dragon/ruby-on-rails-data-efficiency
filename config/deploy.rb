@@ -86,7 +86,7 @@ namespace :deploy do
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
       execute '(cd /home/webapps/varys/current && npm install)'
-      execute '(cd /home/webapps/varys/current && npm gulp-build)'
+      execute '(cd /home/webapps/varys/current && npm run gulp-build)'
     end
   end
 end
