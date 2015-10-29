@@ -26,8 +26,6 @@
 # Ignore db patches
 db.patch
 
-node_modules
-
 /public/app/bower_components
 /public/app/node_modules
 !/public/app/bower_components/slacktivity
