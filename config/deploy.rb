@@ -66,16 +66,6 @@ set :whenever_identifier, "#{fetch(:application)}"
 
 namespace :deploy do
 
-  after :updated, :deploy do
-    on roles(:web, :staging) do
-      execute '(cd /home/webapps/varys/current/public/app && bower install)'
-      #execute '(cd /home/deploy/varys_current && npm install)'
-      #execute '(cd /home/deploy/varys_current && npm run gulp-build)'
-      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm install)'
-      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm run gulp-build)'
-    end
-  end
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -91,8 +81,7 @@ namespace :deploy do
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
-    # run bower install to get bower updates
-=begin
+    # run bower & node updates
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
       # execute '(cd /home/deploy/varys_current && npm install)'
@@ -100,6 +89,5 @@ namespace :deploy do
       execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm install)'
       execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm run gulp-build)'
     end
-=end
   end
 end
