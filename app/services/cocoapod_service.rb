@@ -68,6 +68,23 @@ class CocoapodService
 
     end
 
+    def dump
+      classes_to_dump = [CocoapodAuthor, CocoapodTag, Cocoapod, CocoapodSourceData]
+
+      classes_to_dump.each do |the_class|
+        SeedDump.dump(the_class, file: "#{Rails.root.to_s}/db/#{the_class.to_s.underscore}.rb")
+      end
+    end
+
+    def seed
+      directory = "#{Rails.root_to_s}/db/cocoapods"
+      filenames = %w(cocoapod_author_seed cocoapod_tag_seed, cocoapod_seed, cocoapod_source_data_seed)
+
+      filenames.each do |filename|
+        require "./#{directory}/#{filename}"
+      end
+    end
+
     def apple_docs
 
       CocoapodSourceData.all.each do |d|
