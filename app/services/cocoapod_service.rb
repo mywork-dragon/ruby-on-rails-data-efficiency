@@ -38,7 +38,7 @@ class CocoapodService
 
     def inspect_source(start = 0)
 
-    	Cocoapod.all.each do |pod|
+    	Cocoapod.where("id >= ?", start) do |pod|
 
     		CocoapodServiceWorker.new.perform(pod.id) if pod.id >= start
 

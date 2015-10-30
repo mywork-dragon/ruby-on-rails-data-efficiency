@@ -38,6 +38,7 @@ class Proxy
           begin
   		      
             response = CurbFu.send(type, req, params) do |curb|
+            	curb.follow_location = true
   		        curb.ssl_verify_peer = false
   		        curb.max_redirects = 3
   		        curb.timeout = 120

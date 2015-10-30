@@ -110,9 +110,6 @@ class CocoapodServiceWorker
         parts = url.split('/')
         repo = parts.pop.gsub(/\.git$/, '')
         company = parts.pop
-        # company = url[/.com+[^a-zA-Z](?!.*.com+[^a-zA-Z])(.*?)\//,1]
-
-        # repo = url[/#{company}\/(.*?)\./,1]
 
         'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
       end
@@ -143,46 +140,63 @@ class CocoapodServiceWorker
 
     data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
 
+    puts "done with request"
+
     # if response failed, exit
     if data.class == String || data.status < 200 || data.status >= 300
       # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
       return "No source code found at #{source_code_url} or download failed with error #{data}"
     end
 
-    filename = dump + cocoapod.name + '.zip' 
+    ext = File.extname(source_code_url)
+    ext = '.zip' if ext.blank?
+
+    unzipped_file = nil
+    filename = dump + cocoapod.name + ext 
 
     File.open(filename, 'wb') { |f| f.write data.body }
 
-    unzipped_file = nil
+    # different encodings
+    if ext == ".tgz" || ext == ".gz"
 
+      unzipped_file = filename.gsub(/#{ext}$/, '')
+      Dir.mkdir(unzipped_file)
+      `tar -xzf #{filename} -C #{unzipped_file}`
+    elsif ext == ".bz2"
 
+      unzipped_file = filename.gsub(/#{ext}$/, '')
+      Dir.mkdir(unzipped_file)
+      `tar -xjf #{filename} -C #{unzipped_file}`
+    else
+      begin
+        Zip::ZipFile.open(filename) do |zip_file|
 
-    begin
-      Zip::ZipFile.open(filename) do |zip_file|
+          # get base directory it extracts to. If doesn't have one use cocoapod's name
+          root_file = zip_file.entries.map{|x| x.name}.sort_by {|x| x.count('/')}.first
+          prefix = ''
 
-        # get base directory it extracts to. If doesn't have one use cocoapod's name
-        root_file = zip_file.entries.map{|x| x.name}.sort_by {|x| x.count('/')}.first
-        prefix = ''
-        if root_file.count('/') < 1
-          unzipped_file = File.join(dump, cocoapod.name)
-          prefix = cocoapod.name
-        else
-          unzipped_file = dump + zip_file.entries.first.name.split('/').first
-        end
-
-        Dir.mkdir(unzipped_file)
-        zip_file.each do |entry|
-          begin
-            entry.extract(File.join(dump,prefix,entry.name))
-          rescue
-            puts "Missed a file"
+          # some files extract in current directory, some don't
+          if root_file.count('/') < 1
+            unzipped_file = File.join(dump, cocoapod.name)
+            prefix = cocoapod.name
+          else
+            unzipped_file = dump + zip_file.entries.first.name.split('/').first
           end
-        end
 
+          Dir.mkdir(unzipped_file)
+          zip_file.each do |entry|
+            begin
+              entry.extract(File.join(dump,prefix,entry.name))
+            rescue
+              puts "Missed a file"
+            end
+          end
+
+        end
+      rescue => e
+        return "malformed zip file" if e.message.match('signature not found')
+        raise e
       end
-    rescue => e
-      return "malformed zip file" if e.message.match('signature not found')
-      raise e
     end
 
     return nil if unzipped_file.nil?
@@ -194,9 +208,9 @@ class CocoapodServiceWorker
     else
       contents = File.open(podspec).read
 
-      globs = contents.scan(/(source_files |public_header_files )= (.*?)\n/).map{|k,v| v }
+      globs = contents.scan(/(source_files|public_header_files)\s*=(.*)\n/).map{|k, v| v.chomp}
 
-      globs = globs.map{|x| x.scan(/['"]{1}([^']+)['"]{1}/).flatten }.flatten
+      globs = globs.map{|x| x.scan(/['"]{1}([^'"]+)['"]{1}/).flatten }.flatten
 
       files = globs.map{|glob| Dir.glob(File.dirname(podspec)+'/'+glob) }.flatten
 

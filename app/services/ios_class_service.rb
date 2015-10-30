@@ -44,9 +44,11 @@ class IosClassService
 
       classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
       bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+      fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
 
       search_classnames(classes, snap_id)
       search_bundles(bundles, snap_id)
+      search_fw_folders(fw_folders, snap_id)
     end
 
     def search_classnames(names, snap_id)
@@ -76,6 +78,10 @@ class IosClassService
       # bundles.each do |bundle|
 
       # end
+    end
+
+    def search_fw_folders(folders, snap_id)
+      nil
     end
 
     def search(q)
