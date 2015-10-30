@@ -94,17 +94,28 @@ class CocoapodServiceWorker
 
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
+    return "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
+
     url = cocoapod.http
 
     source_code_url = if url.blank?
 
       url = cocoapod.git
 
-      company = url[/.com+[^a-zA-Z](?!.*.com+[^a-zA-Z])(.*?)\//,1]
+      return "not a valid url #{url}" if url.match(/^git@/)
 
-      repo = url[/#{company}\/(.*?)\./,1]
+      if url.match('bitbucket')
+        url.gsub(/\.git$/, '') + '/get/master.zip'
+      else # github
+        parts = url.split('/')
+        repo = parts.pop.gsub(/\.git$/, '')
+        company = parts.pop
+        # company = url[/.com+[^a-zA-Z](?!.*.com+[^a-zA-Z])(.*?)\//,1]
 
-      'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+        # repo = url[/#{company}\/(.*?)\./,1]
+
+        'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+      end
 
     else
 
@@ -118,42 +129,85 @@ class CocoapodServiceWorker
 
     dump = Rails.env.production? ? '/mnt/sdk_dump/' : '../sdk_dump/'
 
-    filename = dump + basename + '.zip'
-
     headers = {
       'Content-Type' => 'application/zip',
       'User-Agent' => UserAgent.random_web
     }
+    begin
+      uri = URI(source_code_url)
+    rescue
+      return "#{source_code_url} is not a valid URI"
+    end
 
-    uri = URI(source_code_url)
+    puts "starting request"
 
     data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
 
-    File.open(filename, 'wb') { |f| f.write data.body }
-
-    Dir.mkdir dump + basename
-
-    Zip::ZipFile.open(filename) do |zip_file|
-
-      zip_file.each do |entry|
-
-        entry.extract( dump + basename + '/' + entry.name )
-
-      end
-
+    # if response failed, exit
+    if data.class == String || data.status < 200 || data.status >= 300
+      # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
+      return "No source code found at #{source_code_url} or download failed with error #{data}"
     end
 
-    unzipped_file = dump + basename
+    filename = dump + cocoapod.name + '.zip' 
+
+    File.open(filename, 'wb') { |f| f.write data.body }
+
+    unzipped_file = nil
+
+
+
+    begin
+      Zip::ZipFile.open(filename) do |zip_file|
+
+        # get base directory it extracts to. If doesn't have one use cocoapod's name
+        root_file = zip_file.entries.map{|x| x.name}.sort_by {|x| x.count('/')}.first
+        prefix = ''
+        if root_file.count('/') < 1
+          unzipped_file = File.join(dump, cocoapod.name)
+          prefix = cocoapod.name
+        else
+          unzipped_file = dump + zip_file.entries.first.name.split('/').first
+        end
+
+        Dir.mkdir(unzipped_file)
+        zip_file.each do |entry|
+          begin
+            entry.extract(File.join(dump,prefix,entry.name))
+          rescue
+            puts "Missed a file"
+          end
+        end
+
+      end
+    rescue => e
+      return "malformed zip file" if e.message.match('signature not found')
+      raise e
+    end
+
+    return nil if unzipped_file.nil?
 
     podspec = Dir.glob("#{unzipped_file}/**/*.podspec").sort_by {|x| x.count('/')}.first
 
-    contents = File.open(podspec).read
+    if podspec.nil?
+      files = Dir.glob("#{unzipped_file}/**/*.{h,swift}").uniq
+    else
+      contents = File.open(podspec).read
 
-    globs = contents.scan(/(source_files |public_header_files )= (.*?)\n/).map{|k,v| v }
+      globs = contents.scan(/(source_files |public_header_files )= (.*?)\n/).map{|k,v| v }
 
-    globs = globs.map{|x| x.scan(/['"]{1}([^']+)['"]{1}/).flatten }.flatten
+      globs = globs.map{|x| x.scan(/['"]{1}([^']+)['"]{1}/).flatten }.flatten
 
-    files = globs.map{|glob| Dir.glob(File.dirname(podspec)+'/'+glob) }.flatten.uniq
+      files = globs.map{|glob| Dir.glob(File.dirname(podspec)+'/'+glob) }.flatten
+
+      files = files.map do |file|
+        if File.directory?(file)
+          Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
+        else
+          [file]
+        end
+      end.flatten.uniq
+    end
 
     files.each do |file|
       next if File.extname(file) == '.m'
@@ -168,9 +222,9 @@ class CocoapodServiceWorker
 
   def parse_header(filename:, cocoapod_id:, ext:)
 
-    return nil unless File.exist? filename
+    return nil if !File.exist?(filename) || File.directory?(filename)
 
-    file = File.open(filename).read
+    file = File.open(filename).read.scrub
 
     if ext == '.h'
       names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  

@@ -36,11 +36,11 @@ class CocoapodService
 
     end
 
-    def inspect_source
+    def inspect_source(start = 0)
 
     	Cocoapod.all.each do |pod|
 
-    		CocoapodServiceWorker.new.perform(pod.id)
+    		CocoapodServiceWorker.new.perform(pod.id) if pod.id >= start
 
     	end
 
