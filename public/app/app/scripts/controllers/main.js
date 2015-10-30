@@ -8,53 +8,53 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "listApiService", "$rootScope", "$route", "pageTitleService",
-    function ($scope, $location, authService, authToken, listApiService, $rootScope, $route, pageTitleService) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window",
+    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window) {
 
       $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
       $scope.pageTitleService = pageTitleService;
 
       $scope.checkIfOwnPage = function() {
-
-        return _.contains(["/404", "/pages/500", "/pages/login", "/pages/signin", "/pages/signin1", "/pages/signin2", "/pages/signup", "/pages/signup1", "/pages/signup2", "/pages/forgot", "/pages/lock-screen"], $location.path());
-
+        return _.contains(["/404", "/login", "/pages/signin"], $location.path());
       };
 
-      $scope.isAuthenticated = authToken.isAuthenticated();
+      $rootScope.isAuthenticated = authToken.isAuthenticated();
 
-      /* Login specific logic */
-      $scope.onLoginButtonClick = function() {
+      // If user not authenticated (and user not already on login page) redirect to login
+      if(!$rootScope.isAuthenticated) {
+        $window.location.href = "#/login";
+      }
 
-        authService.login($scope.userEmail, $scope.userPassword).then(function(){
-          $scope.isAuthenticated = authToken.isAuthenticated();
-          listApiService.getLists().success(function(data) {
-            $rootScope.usersLists = data;
-          });
-            location.reload();
-        },
-        function(){
-          alert('Incorrect Email or Password');
-        });
-      };
-
-      $scope.logUserOut = authToken.deleteToken;
-
-      $rootScope.$on('STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT', function() {
+      // Delete JWT Auth token if unauthorized (401) response
+      $scope.$on('STRING_REPRESENTS_AUTHORIZATION_REVOKED', function(event) {
+        $rootScope.isAuthenticated = false;
         authToken.deleteToken();
       });
 
-      authService.permissions()
-        .success(function(data) {
-          $scope.canViewSupportDesk = data.can_view_support_desk;
-          $scope.canViewAdSpend = data.can_view_ad_spend;
-          $scope.canViewSdks = data.can_view_sdks;
-        })
-        .error(function() {
-          $scope.canViewSupportDesk = false;
-          $scope.canViewAdSpend = true;
-          $scope.canViewSdks = false;
+      $scope.logUserOut = authToken.deleteToken;
+
+      if($rootScope.isAuthenticated) {
+
+        // Sets user permissions
+        authService.permissions()
+          .success(function(data) {
+            $scope.canViewSupportDesk = data.can_view_support_desk;
+            $scope.canViewAdSpend = data.can_view_ad_spend;
+            $scope.canViewSdks = data.can_view_sdks;
+          })
+          .error(function() {
+            $scope.canViewSupportDesk = false;
+            $scope.canViewAdSpend = true;
+            $scope.canViewSdks = false;
+          });
+
+        /* Populates "Categories" dropdown with list of categories */
+        apiService.getCategories().success(function(data) {
+          $rootScope.categoryFilterOptions = data;
         });
+
+      }
 
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",

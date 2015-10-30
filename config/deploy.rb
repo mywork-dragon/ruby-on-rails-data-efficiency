@@ -81,11 +81,13 @@ namespace :deploy do
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
-
-    # run bower install to get bower updates
+    # run bower & node updates
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
+      # execute '(cd /home/deploy/varys_current && npm install)'
+      # execute '(cd /home/deploy/varys_current && npm run gulp-build)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm install)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm run gulp-build)'
     end
   end
-
 end
