@@ -16,8 +16,8 @@ class SdkService
 			queries.uniq!
 
 			queries.each do |query|
-				url, company, kind = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-				sdks << {url: url, company: company, kind: kind}
+				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+				sdks << sdk if sdk
 				sdks.uniq{ |x| [x[:company], x[:url]] }
 			end
 
@@ -44,16 +44,13 @@ class SdkService
 				ext = exts(:before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query.capitalize
-				return url, company, :company if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
+				return {url: url, company: company, kind: :company} if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
 			end
 			nil
 		end
 
 		# Whether the SDK company is valid
 		def sdk_company_valid?(query:, platform:, url:, company:)
-
-			return false if company.blank?
-						
 			# Eliminate known companies
 			known_companies = %w(
 				Apple 
@@ -73,7 +70,7 @@ class SdkService
 			google_search(q: q).each do |url|
 				if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
 					company = url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1]
-					return url, company, :open_source
+					return {url: url, company: company, kind: :open_source}
 				end
 			end
 			nil
