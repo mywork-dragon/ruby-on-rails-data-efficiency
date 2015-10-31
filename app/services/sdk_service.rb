@@ -5,7 +5,7 @@ class SdkService
 		def find(package:, platform:)
 			query = query_from_package(package)
 			url, company, kind = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-			{url: url, company: company, kind: open_source}
+			{url: url, company: company, kind: kind}
 		end
 
 
@@ -29,9 +29,23 @@ class SdkService
 				ext = exts(:before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query.capitalize
-				return url, company, :company if url.include?(query.downcase)
+				return url, company, :company if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
 			end
 			nil
+		end
+
+		# Whether the SDK company is valid
+		def sdk_company_valid?(query:, platform:, url:, company:)
+						
+			# Eliminate known companies
+			known_companies = %w(
+				Apple 
+			)
+			return false if known_companies.include?(company)
+
+			return true if url.include?(query)
+
+			false
 		end
 
 		# Get the url and company name of an sdk from github if it is valid

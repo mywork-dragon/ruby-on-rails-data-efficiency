@@ -31,6 +31,7 @@ class IosClassService
       end
     end
 
+
     def classify_classdump(snap_id, contents)
 
       classes = contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
@@ -73,15 +74,21 @@ class IosClassService
       nil
     end
 
+    # for testing, entry point to classify string
+    def search_bundles_from_file(filename)
+      contents = File.open(filename) { |f| f.read }.chomp
+
+      bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+
+      search_bundles(bundles, nil)
+    end
+
     # Create entry in join table for every one that it finds
     def search_bundles(bundles, snap_id)
       bundles.each do |bundle|
-
-
-      nil
-      # bundles.each do |bundle|
-
-      # end
+        puts bundle.to_s.green
+        ap SdkService.find(package: bundle, platform: :ios)
+      end
     end
 
     def search_fw_folders(folders, snap_id)
