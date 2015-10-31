@@ -2,9 +2,10 @@ class SdkService
 
 	class << self
 
-		def inspectx(package:, platform:)
+		def find(package:, platform:)
 			query = query_from_package(package)
-			url, company, open_source = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+			url, company, kind = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+			{url: url, company: company, kind: open_source}
 		end
 
 
