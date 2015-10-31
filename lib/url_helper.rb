@@ -33,6 +33,10 @@ class UrlHelper
     def url_starts_with_http_or_https?(url)
       !url.match(/^(http[s]*:\/\/)*/)[0].blank?
     end
+
+    def http_with_url(url)
+        url_starts_with_http_or_https?(url) ? url : 'http://' + url
+    end
     
     def secondary_site?(url)
       app_page_regexes_strings = %w(
