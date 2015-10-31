@@ -65,6 +65,8 @@ class SdkService
 		# Get the url and company name of an sdk from github if it is valid
 
 		def google_github(query:, platform:)
+			return unless github_query_valid?(query)
+
 			q = "#{query} #{platform} site:github.com"
 			ap q
 			google_search(q: q).each do |url|
@@ -76,7 +78,16 @@ class SdkService
 			nil
 		end
 
+		def github_query_valid?(query)
+			query.downcase!
 
+			invalid_queries = %w(
+				apple
+			)
+			return false if invalid_queries.include?(query)
+
+			true
+		end
 
 		def google_search(q:, limit: 10)
 		  result = Proxy.get(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, nokogiri: true)
