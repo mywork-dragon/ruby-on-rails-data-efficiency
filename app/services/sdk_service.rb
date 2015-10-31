@@ -2,8 +2,7 @@ class SdkService
 
 	class << self
 
-
-		def inspect(package:, platform:)
+		def inspectx(package:, platform:)
 			query = query_from_package(package)
 			url, company, open_source = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
 		end
@@ -28,8 +27,8 @@ class SdkService
 			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
 				ext = exts(:before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
-		    company = q.capitalize
-				return url, company, :company if url.include?(q.downcase)
+		    company = query.capitalize
+				return url, company, :company if url.include?(query.downcase)
 			end
 			nil
 		end

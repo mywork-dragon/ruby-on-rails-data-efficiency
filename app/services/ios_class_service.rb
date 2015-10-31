@@ -75,6 +75,9 @@ class IosClassService
 
     # Create entry in join table for every one that it finds
     def search_bundles(bundles, snap_id)
+      bundles.each do |bundle|
+
+
       nil
       # bundles.each do |bundle|
 
