@@ -1,13 +1,28 @@
 class SdkService
 
+	#TODO: filter out "Apple" query beforehand
+
 	class << self
 
-		def find(package:, platform:)
-			query = query_from_package(package)
-			url, company, kind = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-			{url: url, company: company, kind: kind}
-		end
+		# @param packages: An Array of packages
+		# @platform: :ios or :android
+		def find(packages:, platform:)
+			sdks = []
 
+			queries = []
+			packages.each do |package|
+				queries << query_from_package(package)
+			end
+			queries.uniq!
+
+			queries.each do |query|
+				url, company, kind = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+				sdks << {url: url, company: company, kind: kind}
+				sdks.uniq{ |x| [x[:company], x[:url]] }
+			end
+
+			sdks
+		end
 
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
 
@@ -36,6 +51,8 @@ class SdkService
 
 		# Whether the SDK company is valid
 		def sdk_company_valid?(query:, platform:, url:, company:)
+
+			return false if company.blank?
 						
 			# Eliminate known companies
 			known_companies = %w(
@@ -43,7 +60,7 @@ class SdkService
 			)
 			return false if known_companies.include?(company)
 
-			return true if url.include?(query)
+			return true if url.downcase.include?(query.downcase)
 
 			false
 		end
@@ -51,7 +68,9 @@ class SdkService
 		# Get the url and company name of an sdk from github if it is valid
 
 		def google_github(query:, platform:)
-			google_search(q: "#{query} #{platform} site:github.com").each do |url|
+			q = "#{query} #{platform} site:github.com"
+			ap q
+			google_search(q: q).each do |url|
 				if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
 					company = url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1]
 					return url, company, :open_source

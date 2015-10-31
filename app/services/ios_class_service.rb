@@ -79,16 +79,14 @@ class IosClassService
       contents = File.open(filename) { |f| f.read }.chomp
 
       bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+      ap bundles
 
       search_bundles(bundles, nil)
     end
 
     # Create entry in join table for every one that it finds
     def search_bundles(bundles, snap_id)
-      bundles.each do |bundle|
-        puts bundle.to_s.green
-        ap SdkService.find(package: bundle, platform: :ios)
-      end
+      SdkService.find(packages: bundles, platform: :ios)
     end
 
     def search_fw_folders(folders, snap_id)
