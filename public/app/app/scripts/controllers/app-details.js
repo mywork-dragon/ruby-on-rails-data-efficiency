@@ -89,15 +89,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             */
             /* -------- Slacktivity Alerts End -------- */
             /* -------- Mixpanel Analytics Start -------- */
-            mixpanel.track(
-              "Hidden SDK Live Scan Viewed", {
-                "userEmail": userInfo.email,
-                'appName': $scope.appData.name,
-                'companyName': $scope.appData.company.name,
-                'appId': $scope.appData.id,
-                'displayStatus': $scope.appData.displayStatus
-              }
-            );
+            if($scope.appData.displayStatus != 'normal') {
+              mixpanel.track(
+                "Hidden SDK Live Scan Viewed", {
+                  "userEmail": userInfo.email,
+                  'appName': $scope.appData.name,
+                  'companyName': $scope.appData.company.name,
+                  'appId': $scope.appData.id,
+                  'displayStatus': $scope.appData.displayStatus
+                }
+              );
+            }
             /* -------- Mixpanel Analytics End -------- */
           }
         }).error(function(err) {
