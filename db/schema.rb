@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151025024136) do
+ActiveRecord::Schema.define(version: 20151102185819) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -394,6 +394,7 @@ ActiveRecord::Schema.define(version: 20151025024136) do
     t.boolean  "complete"
     t.integer  "error_code"
     t.integer  "ios_device_id"
+    t.boolean  "has_fw_folder"
   end
 
   add_index "class_dumps", ["complete"], name: "index_class_dumps_on_complete", using: :btree
@@ -401,6 +402,7 @@ ActiveRecord::Schema.define(version: 20151025024136) do
   add_index "class_dumps", ["dump_time"], name: "index_class_dumps_on_dump_time", using: :btree
   add_index "class_dumps", ["duration"], name: "index_class_dumps_on_duration", using: :btree
   add_index "class_dumps", ["error_code"], name: "index_class_dumps_on_error_code", using: :btree
+  add_index "class_dumps", ["has_fw_folder"], name: "index_class_dumps_on_has_fw_folder", using: :btree
   add_index "class_dumps", ["install_success"], name: "index_class_dumps_on_install_success", using: :btree
   add_index "class_dumps", ["install_time"], name: "index_class_dumps_on_install_time", using: :btree
   add_index "class_dumps", ["ios_device_id"], name: "index_class_dumps_on_ios_device_id", using: :btree
@@ -823,6 +825,14 @@ ActiveRecord::Schema.define(version: 20151025024136) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "ios_sdk_updates", force: true do |t|
+    t.string   "cocoapods_sha"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_updates", ["cocoapods_sha"], name: "index_ios_sdk_updates_on_cocoapods_sha", using: :btree
 
   create_table "ios_sdks", force: true do |t|
     t.string   "name"
