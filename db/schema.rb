@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151102185819) do
+ActiveRecord::Schema.define(version: 20151102233827) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -843,9 +843,12 @@ ActiveRecord::Schema.define(version: 20151102185819) do
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "summary"
+    t.boolean  "deprecated"
   end
 
   add_index "ios_sdks", ["cocoapod_id"], name: "index_ios_sdks_on_cocoapod_id", using: :btree
+  add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
