@@ -54,6 +54,9 @@ class Proxy
 
 		    Nokogiri::HTML(response.body) if nokogiri
 
+      else  # return HTML string is it's not in prod
+        return open(req).read
+
 		end
 
 	end
