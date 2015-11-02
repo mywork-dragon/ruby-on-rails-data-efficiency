@@ -9,7 +9,9 @@ class GithubService
         'https://api.github.com/repos/' + repo
       end
 
-    ap repos_api_url
+    @repo_html = Proxy.get(req: repos_api_url)
+
+    JSON.parse(@repo_html)
   end
 
   class << self

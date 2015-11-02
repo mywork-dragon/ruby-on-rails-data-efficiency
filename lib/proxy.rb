@@ -4,7 +4,10 @@ class Proxy
 
 		def get(req:, params: {}, type: :get, nokogiri: false)
 
-			if Rails.env.production?
+      if Rails.env.development?  # return HTML string is it's not in prod
+        return open(req).read
+
+			elsif Rails.env.production?
 
 		      begin
 
@@ -53,9 +56,6 @@ class Proxy
 		    end
 
 		    Nokogiri::HTML(response.body) if nokogiri
-
-      else  # return HTML string is it's not in prod
-        return open(req).read
 
 		end
 
