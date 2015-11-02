@@ -13,7 +13,11 @@ class SdkService
 			packages.each do |package|
 				queries << query_from_package(package)
 			end
+
 			queries.uniq!
+			queries.compact!
+
+			return {} if queries.empty?
 
 			queries.each do |query|
 				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
@@ -32,6 +36,7 @@ class SdkService
 	    package = package.capitalize if package == package.upcase && package.count('.').zero?
 	    first_word = package.split('.').first
 	    first_word = g_words(first_word) if package.include? 'google'
+	    return nil if first_word.nil?
 	    name = camel_split(first_word)
 	    return nil if name.nil? || name.length <= 1
 	    name
@@ -119,10 +124,12 @@ class SdkService
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
 		end
 
-		def g_words(str)
+		def g_words(package)
 			words = %w(ads maps wallet analytics drive admob doubleclick plus)
-			words.each{|g| str = 'google ' + g if package.include? g }
-			str
+			words.each do |g| 
+				return 'google ' + g if package.include? g
+			end
+			nil
 		end
 
 	end
