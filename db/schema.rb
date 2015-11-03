@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026185931) do
+ActiveRecord::Schema.define(version: 20151103013058) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -394,6 +394,7 @@ ActiveRecord::Schema.define(version: 20151026185931) do
     t.boolean  "complete"
     t.integer  "error_code"
     t.integer  "ios_device_id"
+    t.boolean  "has_fw_folder"
   end
 
   add_index "class_dumps", ["complete"], name: "index_class_dumps_on_complete", using: :btree
@@ -401,6 +402,7 @@ ActiveRecord::Schema.define(version: 20151026185931) do
   add_index "class_dumps", ["dump_time"], name: "index_class_dumps_on_dump_time", using: :btree
   add_index "class_dumps", ["duration"], name: "index_class_dumps_on_duration", using: :btree
   add_index "class_dumps", ["error_code"], name: "index_class_dumps_on_error_code", using: :btree
+  add_index "class_dumps", ["has_fw_folder"], name: "index_class_dumps_on_has_fw_folder", using: :btree
   add_index "class_dumps", ["install_success"], name: "index_class_dumps_on_install_success", using: :btree
   add_index "class_dumps", ["install_time"], name: "index_class_dumps_on_install_time", using: :btree
   add_index "class_dumps", ["ios_device_id"], name: "index_class_dumps_on_ios_device_id", using: :btree
@@ -466,20 +468,16 @@ ActiveRecord::Schema.define(version: 20151026185931) do
   add_index "cocoapod_tags", ["tag"], name: "index_cocoapod_tags_on_tag", using: :btree
 
   create_table "cocoapods", force: true do |t|
-    t.string   "name"
     t.string   "version"
-    t.text     "summary"
-    t.text     "link"
-    t.boolean  "cocoadocs"
     t.text     "git"
     t.text     "http"
     t.string   "tag"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ios_sdk_id"
   end
 
-  add_index "cocoapods", ["cocoadocs"], name: "index_cocoapods_on_cocoadocs", using: :btree
-  add_index "cocoapods", ["name", "version"], name: "index_cocoapods_on_name_and_version", unique: true, using: :btree
+  add_index "cocoapods", ["ios_sdk_id", "version"], name: "index_cocoapods_on_ios_sdk_id_and_version", unique: true, using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -824,20 +822,29 @@ ActiveRecord::Schema.define(version: 20151026185931) do
     t.integer  "price"
   end
 
+  create_table "ios_sdk_updates", force: true do |t|
+    t.string   "cocoapods_sha"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_updates", ["cocoapods_sha"], name: "index_ios_sdk_updates_on_cocoapods_sha", using: :btree
+
   create_table "ios_sdks", force: true do |t|
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
     t.boolean  "flagged",     default: false
-    t.integer  "cocoapod_id"
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "summary"
+    t.boolean  "deprecated"
   end
 
-  add_index "ios_sdks", ["cocoapod_id"], name: "index_ios_sdks_on_cocoapod_id", using: :btree
+  add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
-  add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", using: :btree
+  add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 

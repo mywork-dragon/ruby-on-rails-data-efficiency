@@ -53,6 +53,8 @@ angular.module("appApp")
             /* -------- Mixpanel Analytics End -------- */
             /* -------- Slacktivity Alerts -------- */
             window.Slacktivity.send({
+              "title": "User Login Success",
+              "fallback": "User Login Success",
               "Login Status": "Success",
               "User Email": email
             });
