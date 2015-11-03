@@ -41,7 +41,7 @@ class GithubService
     if data["content"] && data["encoding"] == "base64"
       Base64.decode64(data["content"])
     else
-      data
+      data # this handles JSON error responses
     end
 
   end

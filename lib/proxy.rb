@@ -25,6 +25,7 @@ class Proxy
 		          curb.ssl_verify_peer = false
 		          curb.max_redirects = 3
 		          curb.timeout = 120
+		          yield(curb) if block_given?
 		        end
 
 		      rescue
@@ -37,10 +38,10 @@ class Proxy
 
 	          begin
 	            response = CurbFu.send(type, req, params) do |curb|
+	            	curb.ssl_verify_peer = false
+	            	curb.max_redirects = 3
+	            	curb.timeout = 120
 	            	yield(curb) if block_given?
-	  		        curb.ssl_verify_peer = false
-	  		        curb.max_redirects = 3
-	  		        curb.timeout = 120
 	  		      end
 
 	          rescue => e
@@ -60,7 +61,7 @@ class Proxy
 	      uri = URI(url)
 	      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
 	    end
-	    
+
 	end
 
 end

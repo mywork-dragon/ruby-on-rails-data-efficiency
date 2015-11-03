@@ -1,8 +1,7 @@
 class IosSdkService
 
 	DUMP_PATH = Rails.env.production? ? '/mnt/cocoapods/Specs' : '/tmp/cocoapods/Specs'
-	MIN_DOWNLOADS = 1000
-
+	
 	class << self
 
 		# override allows for updating regardless if last version hasn't changed
@@ -10,6 +9,7 @@ class IosSdkService
 			return 'Git must be installed' if `which git`.chomp.blank?
 
 			# Validate that update needs to happen
+			# TODO: use github service api
 			repo_state = JSON.parse(open('https://api.github.com/repos/Cocoapods/Specs/branches/master').read())
 			raise "Error communcating with Github #{state}" if repo_state["name"].nil?
 
@@ -27,6 +27,9 @@ class IosSdkService
 			else
 				sdks = `cd #{DUMP_PATH} && git diff --name-only #{last_update.cocoapods_sha} Specs`.chomp.split("\n").map { x.split('/')[1] }.uniq
 			end
+
+
+			# Send all of them to ios_sdk_service_worker with the hash
 
 			# sdks = files.map {|x| x.split('/')[1]}
 			# new_sdks = sdks.select {|sdk| IosSdk.find_by_name(sdk).nil?}
