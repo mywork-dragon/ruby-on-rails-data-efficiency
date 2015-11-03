@@ -9,7 +9,15 @@ class GithubService
         'https://api.github.com/repos/' + repo
       end
 
-    @repo_html = Proxy.get(req: repos_api_url)
+      if match_data = repos_api_url.match(/\Ahttps?/)
+        protocol = match_data[0]
+        host = 
+      else
+        raise 'Only HTTP and HTTPS supported'
+      end
+
+
+    @repo_html = Proxy.get(req: {:host => "www.google.com/search", protocol: protocol}, params: {'q' => q}, nokogiri: true)
 
     JSON.parse(@repo_html)
   end
