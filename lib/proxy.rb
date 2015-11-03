@@ -2,7 +2,7 @@ class Proxy
 
 	class << self
 
-		def get(req:, params: {}, type: :get, nokogiri: false)
+		def get(req:, params: {}, type: :get)
 
 			if Rails.env.production?
 
@@ -35,24 +35,21 @@ class Proxy
 
 		    else
 
-          begin
-  		      
-            response = CurbFu.send(type, req, params) do |curb|
-            	curb.follow_location = true
-  		        curb.ssl_verify_peer = false
-  		        curb.max_redirects = 3
-  		        curb.timeout = 120
-  		      end
+	          begin
+	            response = CurbFu.send(type, req, params) do |curb|
+	            	yield(curb) if block_given?
+	  		        curb.ssl_verify_peer = false
+	  		        curb.max_redirects = 3
+	  		        curb.timeout = 120
+	  		      end
 
-          rescue => e
+	          rescue => e
 
-            e.message
+	            e.message
 
-          end
+	          end
 
 		    end
-
-		    Nokogiri::HTML(response.body) if nokogiri
 
 		end
 
