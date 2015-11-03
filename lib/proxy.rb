@@ -61,9 +61,10 @@ class Proxy
 
     # Wrapper that allows you to just pass in a URL
     # @author Jason Lew
+    # @note Also randomizes the User Agent
     def get_url(url, params: {})
       uri = URI(url)
-      get(req: {host: uri.host + uri.path, protocol: uri.scheme}, params: params, nokogiri: false)
+      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params, nokogiri: false)
     end
 
 	end
