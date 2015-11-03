@@ -431,6 +431,46 @@ angular.module("app.directives", []).directive("imgHolder", [
         controllerAs: 'appPlatformCtrl'
       }
     }])
+    .directive('customPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> <button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> <button type="button" ng-class="appPlatform.platform == \'sdks\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'sdks\')">SDKs</button></span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
+            $scope.appPlatform.platform = platform;
+            APP_PLATFORM = platform;
+            apiService.getCategories().success(function (data) {
+              $rootScope.categoryFilterOptions = data;
+            });
+            // Stops 'supportDesk' filter from being added
+            if ($scope.appPlatform == 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+            // Removes all categories upon platform switch
+            for (var index = 0; index < $rootScope.tags.length; index++) {
+              if ($rootScope.tags[index].parameter == 'categories') {
+                $rootScope.tags.splice(index, 1);
+                index -= 1;
+              }
+            }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
+    }])
     .directive('ddTextCollapse', ['$compile', function($compile) {
       return {
         restrict: 'A',

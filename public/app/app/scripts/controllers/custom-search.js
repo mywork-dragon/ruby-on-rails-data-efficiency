@@ -65,6 +65,16 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
       };
 
+      customSearchCtrl.searchPlaceholderText = function() {
+        if(customSearchCtrl.platform == 'ios') {
+          return 'Search for iOS app or company';
+        } else if(customSearchCtrl.platform == 'sdks') {
+          return 'Search for SDKs';
+        } else {
+          return 'Search for Android app or company';
+        }
+      };
+
       customSearchCtrl.addSelectedTo = function(list, selectedApps) {
         listApiService.addSelectedTo(list, selectedApps, customSearchCtrl.platform).success(function() {
           customSearchCtrl.notify('add-selected-success');

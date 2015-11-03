@@ -10,7 +10,10 @@
         data-ng-controller="MainCtrl"
         data-slim-scroll>
         <li ng-class="{active: $route.current.activeTab == 'search'}">
-            <a href="#/"> <i class="fa fa-search"></i> <span>Search</span></a>
+            <a href="#/"> <i class="fa fa-search"></i> <span>App Search</span></a>
+        </li>
+        <li ng-class="{active: $route.current.activeTab == 'sdks'}">
+          <a href="#sdk/search"> <i class="fa fa-search"></i> <span>SDK Search</span></a>
         </li>
         <!--
         <li ng-class="{active: $route.current.activeTab == 'chartNewest'}">
