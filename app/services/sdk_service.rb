@@ -105,6 +105,7 @@ class SdkService
 
 			invalid_queries = %w(
 				apple
+				queue
 			)
 			return false if invalid_queries.include?(query)
 
