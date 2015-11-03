@@ -22,10 +22,15 @@ class SdkService
 			queries.each do |query|
 				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
 				sdks << sdk if sdk
-				sdks.uniq{ |x| [x[:company], x[:url]] }
 			end
 
-			sdks
+			company_sdks = sdks.select{ |sdk| sdk[:kind] == :company}
+			company_sdks.uniq!{ |x| [x[:company], x[:url]] }
+
+			open_source_sdks = sdks.select{ |sdk| sdk[:kind] == :open_source}
+			open_source_sdks.uniq{ |x| x[:repo_id]}
+
+			company_sdks + open_source_sdks
 		end
 
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
@@ -83,7 +88,7 @@ class SdkService
 						repo_id: rd['id'],
 						repo_name: rd['name'],
 						repo_description: rd['description'],
-						repo_language: rd['language']
+						repo_language: rd['language'],
 						repo_owner_id: rd['owner']['id'],
 						repo_owner_name: rd['owner']['login'],
 						repo_owner_type: rd['owner']['type']
