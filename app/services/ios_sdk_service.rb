@@ -33,30 +33,67 @@ class IosSdkService
 			old_sdks = sdks - new_sdks
 
 			# validate the new sdks and create them
-			new_sdks.select! {|sdk| validate_sdk(sdk)}.map {|sdk| extract_pod_info(sdk)}.map {|pod| pod_to_row(pod)}.each do |row|
+			new_sdks.select! {|sdk| validate_sdk(sdk)}.map {|sdk| extract_pod_info(sdk)}.map {|pod| pod_to_ios_sdk_row(pod)}.each do |row|
 				IosSdk.create!(row)
 			end
 
 			# check the old ones, see if they've been deprecated
 			old_sdks.select! do |sdk|
-				# for now, assume that all modifications update the latest version. In the future, check to see that the latest version in directory has changed from what's in the cocoapods table
 				pod = extract_pod_info(sdk)
-				!check_deprecated(pod)
-			end.map { |pod| pod_to_row(pod) }.each do |row|
+				deprecated = check_deprecated(pod)
+
+				if deprecated
+					i = IosSdk.find_by_name(sdk)
+					i.deprecated = true
+					i.save
+				end
+
+				!deprecated # select by the non deprecated
+			end.map { |sdk| extract_pod_info(sdk) }.map { |pod| pod_to_ios_sdk_row(pod) }.each do |row|
 				i = IosSdk.find_by_name(row[:name])
 				row.keys.each {|key| i[key] = row[key]}
 				i.save
 			end
 
-			# now that we've created SDKs, go through and create the cocoapods
-			cocoapod_updates = old_sdks + new_sdks
-			cocoapod_updates.select! do |sdk|
+			# now that we have the SDKs, go through and create the cocoapods
+
+			created = []
+			cocoapod_updates = (old_sdks + new_sdks).uniq.each do |sdk|
 				i = IosSdk.find_by_name(sdk)
-				i.cocoapods
+				pod = extract_pod_info(sdk)
+
+				most_recent = i.cocoapods.sort_by { |x| x.version }.last
+
+
+				if !pod['version'].nil? && (most_recent.nil? || most_recent.version <= pod['version'])
+					row = pod_to_cocoapod_row(pod)
+					row[:ios_sdk_id] = i.id
+
+					c = Cocoapod.create!(row)
+
+					if Rails.env.production?
+						CocoapodServiceWorker.perform_async(c.id)
+					else
+						# CocoapodServiceWorker.new.perform(c.id)
+						created.push[pod['name']]
+					end
+				end
 			end
+
+			# IosSdkUpdate.create!(repo_state["commit"]["sha"])
+			created
 		end
 
-		def pod_to_row(pod)
+		def pod_to_cocoapod_row(pod)
+			{
+				version: pod['version'],
+				git: pod['git'],
+				http: pod['http'],
+				tag: pod['tag']
+			}
+		end
+
+		def pod_to_ios_sdk_row(pod)
 			website = pod['homepage'] || pod["http"]
 			name = pod['name']
 			summary = pod['summary']

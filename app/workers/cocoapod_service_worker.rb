@@ -87,9 +87,6 @@ class CocoapodServiceWorker
 
   end
 
-
-
-
   def download_source(cocoapod_id)
 
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
@@ -243,15 +240,14 @@ class CocoapodServiceWorker
     if ext == '.h'
       names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
     elsif ext == '.swift'
-      names = file.scan(/^public\s(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
+      names = file.scan(/^public\s+(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
     else
       names = []
     end
 
     names.each do |name|
 
-      # TODO: uncomment in production
-      # next if in_apple_docs?(name[1]) || name[1].blank?
+      next if Rails.env.production? && (in_apple_docs?(name[1]) || name[1].blank?)
 
       begin
 
