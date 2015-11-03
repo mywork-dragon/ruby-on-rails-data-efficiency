@@ -3,11 +3,6 @@ class Proxy
 	class << self
 
 		def get(req:, params: {}, type: :get, nokogiri: false)
-      ap req
-      ap params
-      ap type
-      ap nokogiri
-
 			if Rails.env.production?
 
 	      begin
