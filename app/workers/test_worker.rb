@@ -1,7 +1,7 @@
 class TestWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :scraper_master
+  sidekiq_options queue: :ios_live_scan
 
   def perform(string)
     puts "*******************TestWorker"

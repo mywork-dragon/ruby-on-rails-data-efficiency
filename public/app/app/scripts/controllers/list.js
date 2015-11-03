@@ -66,7 +66,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       mixpanel.track(
         "List Viewed",
         { "pageType": "Lists",
-          "userauthenticated": $scope.isAuthenticated,
+          "userauthenticated": $rootScope.isAuthenticated,
           "listId": listId,
           "listName": listName }
       );

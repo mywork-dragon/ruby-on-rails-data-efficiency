@@ -42,7 +42,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -51,6 +51,7 @@ set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
 set :scraper_master_concurrency, 50
 set :web_concurrency, 1
+set :darth_vader_concurrency, 10
 
 # set :sidekiq_queue, %w(critical default low)
 
@@ -59,6 +60,7 @@ set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default low)
 set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
 set :web_queue, %w(no_op)
+set :darth_vader_queue, %w(ios_live_scan)
 
 set :whenever_roles, [:scraper, :sdk_scraper]
 
@@ -81,11 +83,13 @@ namespace :deploy do
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
-
-    # run bower install to get bower updates
+    # run bower & node updates
     on roles(:web, :staging) do
       execute '(cd /home/webapps/varys/current/public/app && bower install)'
+      # execute '(cd /home/deploy/varys_current && npm install)'
+      # execute '(cd /home/deploy/varys_current && npm run gulp-build)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm install)'
+      execute '(cd /home/webapps/varys/releases/$(ls -t /home/webapps/varys/releases | head -n1) && npm run gulp-build)'
     end
   end
-
 end
