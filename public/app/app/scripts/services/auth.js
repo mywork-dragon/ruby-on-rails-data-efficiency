@@ -3,7 +3,7 @@
 // Manual auth based off guide: http://adamalbrecht.com/2014/12/04/add-json-web-token-authentication-to-your-angular-rails-app/
 
 angular.module("appApp")
-  .factory("authToken", [function() {
+  .factory("authToken", ["$window", function($window) {
     return {
       setToken: function(payload) {
         localStorage.setItem(JWT_TOKEN_NAME, payload);
@@ -16,7 +16,7 @@ angular.module("appApp")
       },
       deleteToken: function() {
         localStorage.removeItem(JWT_TOKEN_NAME);
-        location.reload();
+        $window.location.href = "#/login";
       }
     }
   }])
@@ -26,7 +26,8 @@ angular.module("appApp")
       loginFailed: "STRING_REPRESENTS_EVENT_FAILED_LOGIN",
       notAuthenticated: "STRING_REPRESENTS_EVENT_FAILED_AUTH",
       notAuthorized: "STRING_REPRESENTS_EVENT_FAILURE_NOT_AUTHORIZED",
-      sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT"
+      sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT",
+      authRevoked: "STRING_REPRESENTS_AUTHORIZATION_REVOKED"
     }
   }])
   .factory("authService", ["$http", "$q", "$rootScope", "authToken", "authEvents", function($http, $q, $rootScope, authToken, authEvents) {
@@ -44,15 +45,20 @@ angular.module("appApp")
             "$email": email,
             "jwtToken": resp.auth_token
           });
-          mixpanel.track(
-            "Login Success"
-          );
-          /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          window.Slacktivity.send({
-            "Login Status": "Success",
-            "User Email": email
-          });
+          // If on production
+          if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
+            mixpanel.track(
+              "Login Success"
+            );
+            /* -------- Mixpanel Analytics End -------- */
+            /* -------- Slacktivity Alerts -------- */
+            window.Slacktivity.send({
+              "title": "User Login Success",
+              "fallback": "User Login Success",
+              "Login Status": "Success",
+              "User Email": email
+            });
+          }
           /* -------- Slacktivity Alerts End -------- */
 
           authToken.setToken(resp.auth_token);
@@ -72,7 +78,7 @@ angular.module("appApp")
       }
     };
   }])
-  .factory("authInterceptor", function($q, $injector) {
+  .factory("authInterceptor", ["$q", "$injector", function($q, $injector) {
     return {
       // This will be called on every outgoing http request
       request: function(config) {
@@ -92,10 +98,11 @@ angular.module("appApp")
           $injector.get('$rootScope').$broadcast({
             401: authEvents.notAuthenticated,
             403: authEvents.notAuthorized,
+            418: authEvents.authRevoked,
             419: authEvents.sessionTimeout
           }[response.status], response);
         }
         return $q.reject(response);
       }
     };
-  });
+  }]);

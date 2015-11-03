@@ -1138,6 +1138,7 @@ ActiveRecord::Schema.define(version: 20151028231826) do
     t.datetime "updated_at"
     t.integer  "account_id"
     t.boolean  "tos_accepted",    default: false
+    t.boolean  "access_revoked",  default: false
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree

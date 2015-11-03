@@ -72,6 +72,8 @@ module MightyDeployer
     @sdk_scraper_servers = %w(
       54.88.39.109
       54.86.80.102
+      54.210.56.58
+      54.210.55.23
     )
   
     @app_roles += @sdk_scraper_servers

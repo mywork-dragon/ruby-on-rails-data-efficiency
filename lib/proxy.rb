@@ -2,7 +2,7 @@ class Proxy
 
 	class << self
 
-		def get(req:, params: {}, type: :get)
+		def get(req:, params: {}, type: :get, nokogiri: false)
 
 			if Rails.env.production?
 
@@ -42,6 +42,8 @@ class Proxy
 		      end
 
 		    end
+
+		    Nokogiri::HTML(response.body) if nokogiri
 
 		end
 
