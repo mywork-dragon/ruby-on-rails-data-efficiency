@@ -70,14 +70,25 @@ class SdkService
 		# Get the url and company name of an sdk from github if it is valid
 
 		def google_github(query:, platform:)
-			return unless github_query_valid?(query)
+			return nil unless github_query_valid?(query)
 
 			q = "#{query} #{platform} site:github.com"
-			ap q
 			google_search(q: q).each do |url|
-				if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
-					company = url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1]
-					return {url: url, company: company, kind: :open_source}
+				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	#if matches format like https://github.com/MightySignal/slackiq
+					rd = GithubService.get_repo_data(url)
+					next if rd['message'] == 'Not Found'	#repository is not valid; try the next link
+
+					#select repo data (srd) that we're interested in
+					srd = {
+						repo_id: rd['id'],
+						repo_name: rd['name'],
+						repo_description: rd['description'],
+						repo_owner_id: rd['owner']['id'],
+						repo_owner_name: rd['owner']['login'],
+						repo_owner_type: rd['owner']['type']
+					}
+
+					return {url: url, kind: :open_source}.merge(srd)
 				end
 			end
 			nil
