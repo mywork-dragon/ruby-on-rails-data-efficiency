@@ -83,6 +83,7 @@ class SdkService
 						repo_id: rd['id'],
 						repo_name: rd['name'],
 						repo_description: rd['description'],
+						repo_language: rd['language']
 						repo_owner_id: rd['owner']['id'],
 						repo_owner_name: rd['owner']['login'],
 						repo_owner_type: rd['owner']['type']
