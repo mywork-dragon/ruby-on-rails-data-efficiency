@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103005448) do
+ActiveRecord::Schema.define(version: 20151103013058) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -476,6 +476,8 @@ ActiveRecord::Schema.define(version: 20151103005448) do
     t.datetime "updated_at"
     t.integer  "ios_sdk_id"
   end
+
+  add_index "cocoapods", ["ios_sdk_id", "version"], name: "index_cocoapods_on_ios_sdk_id_and_version", unique: true, using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
