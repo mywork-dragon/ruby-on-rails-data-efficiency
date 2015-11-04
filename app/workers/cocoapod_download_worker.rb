@@ -57,9 +57,9 @@ class CocoapodDownloadWorker
 	  puts "done with request"
 
 	  # if response failed, exit
-	  if data.class == String || data.status < 200 || data.status >= 300
+	  if data.status < 200 || data.status >= 300
 	    # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
-	    return "No source code found at #{source_code_url} or download failed with error #{data}"
+	    return "No source code found at #{source_code_url}"
 	  end
 
 	  ext = File.extname(source_code_url)

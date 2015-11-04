@@ -79,7 +79,7 @@ class IosSdkServiceWorker
 			curb.max_redirects = 50
 		end
 
-		return "URL is not available" if data.class == String || data.status != 200
+		return "URL is not available" if data.status != 200
 
 		# only count it if it meets a minimum number of downloads
 		# Note: bitbucket downloads for whatever reason all have very diminished metrics
@@ -87,7 +87,7 @@ class IosSdkServiceWorker
 
 			uri = URI("http://metrics.cocoapods.org/api/v1/pods/#{pod['name']}.json")
 
-			data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme})
+			data = Proxy.get_from_url("http://metrics.cocoapods.org/api/v1/pods/#{pod['name']}.json")
 
 			return "Could not get metrics on the pod" if data.status != 200
 
