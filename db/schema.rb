@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151104182546) do
+ActiveRecord::Schema.define(version: 20151104212151) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -837,6 +837,18 @@ ActiveRecord::Schema.define(version: 20151104182546) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "ios_sdk_update_exceptions", force: true do |t|
+    t.string   "sdk_name"
+    t.integer  "ios_sdk_update_id"
+    t.string   "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_update_exceptions", ["ios_sdk_update_id"], name: "index_ios_sdk_update_exceptions_on_ios_sdk_update_id", using: :btree
+  add_index "ios_sdk_update_exceptions", ["sdk_name"], name: "index_ios_sdk_update_exceptions_on_sdk_name", using: :btree
 
   create_table "ios_sdk_updates", force: true do |t|
     t.string   "cocoapods_sha"
