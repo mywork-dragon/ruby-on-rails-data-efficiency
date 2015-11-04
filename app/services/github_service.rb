@@ -9,19 +9,38 @@ class GithubService
     end
   end
 
+  # Wrapper around Proxy for making a request and rotate github credentials to avoid rate limiting
+  # @body Boolean flag on whether or not to return the body (defaults to true)
+  # @returns either the body or a CurbFu::Response::Base object
+  def make_request(url, body = true)
+
+    response = if Rails.env.production?
+      acct = GithubAccount.transaction do
+        a = GithubAccount.lock.order(last_used: :asc).first
+        a.last_used = DateTime.now
+        a.save
+        a
+      end
+
+      Proxy.get_from_url(url, params: {'client_id' => acct.client_id, 'client_secret' => acct.client_secret})
+    else
+      # hard code account for dev
+      Proxy.get_from_url(url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
+    end
+
+    if body
+      response.body
+    else
+      response
+    end
+  end
+
   # Repo can be URL or user/repo
   def get_repo_data(repo)
     repos_api_url = repo_to_url(repo)
 
     # putting it an ivar in case want to do other options to it in the future
-    @repo_html = 
-      if Rails.env.production?
-        raise "Need to implement picker for production"
-      else
-        # hard code account for dev
-        Proxy.get_url(repos_api_url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
-      end
-
+    @repo_html = make_request(repos_api_url)
     JSON.parse(@repo_html)
   end
 
@@ -36,11 +55,7 @@ class GithubService
       repos_api_url = File.join(repos_api_url, 'contents', path)
     end
 
-    data = Proxy.get_url(repos_api_url)
-
-    raise data if data.class == String # TODO: add validation to make sure github didn't respond poorly
-
-    data = JSON.parse(data.body)
+    data = JSON.parse(make_request(repos_api_url))
 
     return data if data.class == Array
 
@@ -59,7 +74,6 @@ class GithubService
     def get_contents(repo, path=nil)
       self.new.get_contents(repo, path)
     end
-
   end
 
 end
