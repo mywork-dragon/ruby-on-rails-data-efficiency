@@ -1,7 +1,5 @@
 class SdkService
 
-	#TODO: filter out "Apple" query beforehand
-
 	class << self
 
 		# @param packages: An Array of packages
@@ -82,6 +80,9 @@ class SdkService
 				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	#if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
 					next if rd['message'] == 'Not Found'	#repository is not valid; try the next link
+					next if rd['message'].include?('API rate limit exceeded')
+
+					ap rd
 
 					#select repo data (srd) that we're interested in
 					srd = {
