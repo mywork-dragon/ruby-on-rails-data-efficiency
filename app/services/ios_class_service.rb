@@ -52,6 +52,38 @@ class IosClassService
       search_fw_folders(fw_folders, snap_id)
     end
 
+    def classify_strings(snap_id:, contents:, search_classes: true, search_bundles: true, search_fw_folders: true)
+
+      queries = []
+
+      if search_classes
+        classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact #query class names directly
+        queries << search_classes
+      end
+
+      if search_bundles
+        bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+        bundles = 
+      end
+
+     
+
+      bundles = 
+
+
+
+      fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
+
+    end
+
+    def store_strings
+    end
+
+    # For testing, entry point to classify entire strings dump
+    # @author Jason Lew
+    def classify_string_from_file
+    end
+
     def search_classnames(names, snap_id)
       names.each do |name|
 
@@ -94,6 +126,7 @@ class IosClassService
       nil
     end
 
+    # 
     def search(q)
       s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
       c = Cocoapod.find_by_name(s)

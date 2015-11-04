@@ -7,7 +7,7 @@ class SdkService
 
 		# @param packages: An Array of packages
 		# @platform: :ios or :android
-		def find(packages:, platform:)
+		def find_from_packages(packages:, platform:)
 			sdks = []
 
 			queries = []
@@ -15,10 +15,21 @@ class SdkService
 				queries << query_from_package(package)
 			end
 
-			queries.uniq!
-			queries.compact!
+			find_from_queries(queries: queries, platform: platform)
+		end
 
+		# Given the queries to search for, will find SDKs
+		# When you already know what the queries will be
+		# @author Jason Lew
+		# @param The queries to run
+		# @platform :ios or :android
+		# @note Will only search unique queries
+		def find_from_queries(queries:, platform:)
+			queries = queries.uniq.compact
+			
 			return {} if queries.empty?
+
+			sdks = []
 
 			queries.each do |query|
 				puts "Query: #{query}".green
@@ -37,8 +48,11 @@ class SdkService
 			company_sdks + open_source_sdks
 		end
 
-		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
+		def sdks_from_queries(queries:, platform:)
 
+		end
+
+		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
 		def query_from_package(package_name)
 	    package = strip_prefix(package_name)
 	    return nil if package.blank?
