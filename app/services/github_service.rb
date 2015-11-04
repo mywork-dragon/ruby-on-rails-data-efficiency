@@ -14,7 +14,13 @@ class GithubService
     repos_api_url = repo_to_url(repo)
 
     # putting it an ivar in case want to do other options to it in the future
-    @repo_html = Proxy.get_url(repos_api_url) 
+    @repo_html = 
+      if Rails.env.production?
+        raise "Need to implement picker for production"
+      else
+        # hard code account for dev
+        Proxy.get_url(repos_api_url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
+      end
 
     JSON.parse(@repo_html)
   end
