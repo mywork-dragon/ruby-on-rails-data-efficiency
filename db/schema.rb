@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103013058) do
+ActiveRecord::Schema.define(version: 20151104182546) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -524,6 +524,22 @@ ActiveRecord::Schema.define(version: 20151103013058) do
   end
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
+
+  create_table "github_accounts", force: true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "password"
+    t.string   "application_name"
+    t.string   "homepage_url"
+    t.string   "callback_url"
+    t.string   "client_id"
+    t.string   "client_secret"
+    t.datetime "last_used"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "github_accounts", ["last_used"], name: "index_github_accounts_on_last_used", using: :btree
 
   create_table "google_accounts", force: true do |t|
     t.string   "email"
