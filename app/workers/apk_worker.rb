@@ -102,7 +102,9 @@ module ApkWorker
 
       end
 
-      apk_snap.auth_token = nil
+      apk_snap.auth_token = ''
+
+      apk_snap.last_device = best_account.device.to_sym
 
       apk_snap.save
       
@@ -131,7 +133,8 @@ module ApkWorker
       # update snapshot with new data
 
       apk_snap.google_account_id = best_account.id
-      apk_snap.last_device = GoogleAccount.devices[best_account.device]
+      # apk_snap.last_device = GoogleAccount.devices[best_account.device]
+      apk_snap.last_device = best_account.device.to_sym
       apk_snap.download_time = download_time
       apk_snap.status = :success
       # apk_snap.auth_token = nil
@@ -161,13 +164,13 @@ module ApkWorker
 
   def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
 
-    is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
+    # is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
 
-    gac = GoogleAccount.where(scrape_type: is_single ? 1:0).count
+    gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id, is_single, bid)
+      account = fresh_account(apk_snap_id, bid)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -186,14 +189,19 @@ module ApkWorker
 
   end
 
-  def fresh_account(apk_snap_id, is_single, bid)
+  # Finds account used longest ago
+  def fresh_account(apk_snap_id, bid)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
-    d = if device.blank? then "IS NOT NULL" else "!= #{device}" end
 
-    stop = 10000000000
+    # Choose good phone, unless it already failed
+    d = device.blank? ? "= 2" : "!= #{device}"
+
+    iu = single_queue? ? " in_use IS FALSE" : ""
+
+    # stop = 100
 
     g = GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(scrape_type: is_single ? 1:0).where("blocked = 0 AND flags <= #{stop} AND device #{d}").order(:last_used).first
+      ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
       ga.last_used = DateTime.now
       ga.save
       ga
@@ -207,14 +215,14 @@ module ApkWorker
       # Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
       raise err_msg
 
-    elsif g.flags >= stop
+    # elsif g.flags >= stop
 
-      # Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
+    #   # Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
 
-      g.blocked = true
-      g.save
+    #   g.blocked = true
+    #   g.save
 
-      fresh_account(apk_snap_id, bid)
+    #   fresh_account(apk_snap_id, bid)
 
     else
       return g

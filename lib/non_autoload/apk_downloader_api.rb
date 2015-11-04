@@ -58,8 +58,6 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package, apk_snap_id
 
-      # @auth_token = nil
-
       mp = MicroProxy.transaction do
 
         p = MicroProxy.lock.order(last_used: :asc).where(active: true).first
@@ -93,10 +91,6 @@ if defined?(ApkDownloader)
         snap.status = :no_response
         snap.save
 
-        # aa = snap.android_app
-        # aa.data_flag = true
-        # aa.save
-
         raise "Google did not return url or cookie | status_code: #{status_code}"
 
       end
@@ -112,7 +106,6 @@ if defined?(ApkDownloader)
 
       headers = {
         'Accept-Encoding' => '',
-        # 'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)'
         'User-Agent' => 'AndroidDownloadManager/4.1.1 (Linux; U; Android 5.1.1; Nexus 9 Build/LMY48M)'
       }
 
@@ -138,21 +131,11 @@ if defined?(ApkDownloader)
         
     end
 
-    # Testing curl
-    # r = res(type: :get, req: {:host => "fabric.io", :protocol => "http"}, params: {}, proxy_ip: '172.31.29.18', proxy_port: '8888', apk_snap_id: nil)
-
     def res(req:, params:, type:, proxy_ip:, proxy_port:, apk_snap_id:)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
-      # proxy = '169.45.70.23:8888' if Rails.env.development?
-
-      puts "req: #{req}"
-      puts "params: #{params}"
-      puts "type: #{type}"
-      puts "proxy_ip: #{proxy_ip}"
-      puts "proxy_port: #{proxy_port}"
-      puts "apk_snap_id: #{apk_snap_id}"
+      proxy = '169.45.70.23:8888' if Rails.env.development?
 
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy
@@ -163,74 +146,35 @@ if defined?(ApkDownloader)
 
       if [200,302].include? response.status
 
-        mp = ApkSnapshot.find(apk_snap_id).micro_proxy
-        mp.flags = 0
-        mp.save
-
-        return response
-
-      elsif response.status == 500
-
-        ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
-        ga.flags = ga.flags + 1
-        ga.save
-
         return response
 
       else
 
-        if response.status == 503
-          
-          mp = ApkSnapshot.find(apk_snap_id).micro_proxy
-          mp.flags = mp.flags + 1
-          mp.save
-
-        elsif response.status == 403
-
-          if response.body.include? "This item cannot be installed in your country"
-
-            aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
-            aa.display_type = :foreign
-            aa.save
-
-          elsif response.body.include? "Your device is not compatible with this item"
-            
-            aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
-            aa.display_type = :device_incompatible
-            aa.save
-
-          else
-
-            ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
-            ga.flags = ga.flags + 1
-            ga.save
-
-          end
-
-          snap = ApkSnapshot.find_by_id(apk_snap_id)
-          snap.status = :forbidden
-          snap.save
-
-        elsif response.status == 404
-
-          aa = ApkSnapshot.find_by_id(apk_snap_id).android_app
-          aa.display_type = :taken_down
-          aa.save
-
-          snap = ApkSnapshot.find_by_id(apk_snap_id)
-          snap.status = :taken_down
-          snap.save
-
-        end
+        snap = ApkSnapshot.find_by_id(apk_snap_id)
+        aa = snap.android_app
 
         if response.status == 403
+          if response.body.include? "This item cannot be installed in your country"
+            snap.status = :out_of_country
+            aa.display_type = :foreign
+          elsif response.body.include? "Your device is not compatible with this item"
+            snap.status = :bad_device
+            aa.display_type = :device_incompatible
+          else
+            snap.status = :forbidden
+          end
+        elsif response.status == 404
+          aa.display_type = :taken_down
+          snap.status = :taken_down
+        end
 
+        snap.save
+        aa.save
+
+        if response.status == 403
           raise "#{response.body}, status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
-           
         else
-          
           raise "status code #{response.status} from #{caller[0][/`.*'/][1..-2]} on #{proxy_ip} | status_code: #{response.status}"
-        
         end
 
       end
@@ -242,12 +186,6 @@ if defined?(ApkDownloader)
       ga = GoogleAccount.joins(apk_snapshots: :google_account).where('apk_snapshots.id = ?', apk_snap_id).first
 
       auth_token = ApkSnapshot.find_by_id(apk_snap_id).auth_token
-
-      # raise "account or auth token was blank" if ga.blank? || auth_token.blank?
-
-      puts "Type : #{type.to_s}"
-      puts "Identifier : #{ga.android_identifier}"
-      puts "Auth Token : #{auth_token}"
 
       headers = {
         'Accept-Language' => 'en_US',
@@ -262,10 +200,6 @@ if defined?(ApkDownloader)
         'Accept-Encoding' => '',
         'Host' => 'android.clients.google.com'
       }
-
-
-        # 'User-Agent' => 'Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)',
-        # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
 
       headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8' if type == :post
 
