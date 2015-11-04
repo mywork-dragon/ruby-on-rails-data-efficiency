@@ -854,13 +854,19 @@ class ApiController < ApplicationController
 
         companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
+      elsif new_snap.present? && new_snap.status == "bad_device"
+
+        error_code = 6
+
+      elsif new_snap.present? && new_snap.status == "out_of_country"
+
+        error_code = 7
+
+      elsif new_snap.present? && new_snap.status == "taken_down"
+
+        error_code = 2
+
       else
-
-        apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      
-        apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
-
-        apk_snap.save
 
         error_code = 3
       
@@ -1057,7 +1063,19 @@ class ApiController < ApplicationController
 
         else
 
-          break if ss.try == 3
+          # break if ss.try == 3
+
+          if ss.try == 3
+
+            apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      
+            apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
+
+            apk_snap.save
+
+            break
+
+          end
 
         end
 
