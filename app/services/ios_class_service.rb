@@ -52,11 +52,17 @@ class IosClassService
       search_fw_folders(fw_folders, snap_id)
     end
 
-    def sdks_from_strings(contents:, search_classes: true, search_bundles: true, search_fw_folders: true)
+    # Get classes from strings
+    def classes_from_strings(contents)
+      contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
+    end
+
+    # Never string search classes for now (because its' too many)
+    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: true)
       queries = []
 
       if search_classes
-        classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact #query class names directly
+        classes = classes_from_strings(contents)
         queries += classes # query the classes without added filtering 
       end
 
@@ -94,7 +100,7 @@ class IosClassService
     # Entry point for
     def sdks_from_strings_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
-      sdks_from_strings(contents: contents, search_classes: true, search_bundles: true, search_fw_folders: true)
+      sdks_from_strings(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
     end
 
     def search_classnames(names, snap_id)
