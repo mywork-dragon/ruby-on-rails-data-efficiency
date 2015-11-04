@@ -63,6 +63,14 @@ class Proxy
       Nokogiri::HTML(get_body(req: req, params: params, type: type)) 
     end
 
+    # Convenience method to get the Response object from just a url
+    # @author Osman Khwaja
+    # @return The response (CurbFu::Response::Base)
+    def get_from_url(url, params: {})
+    	uri = URI(url)
+    	get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
+    end
+
     # Get the body, passing in only the URL
     # @author Jason Lew
     # @url The URL to get
