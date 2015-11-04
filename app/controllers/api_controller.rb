@@ -1357,7 +1357,7 @@ class ApiController < ApplicationController
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
-  def search_apis
+  def search_sdk
     query = params['query']
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
@@ -1384,12 +1384,67 @@ class ApiController < ApplicationController
     end
     render json: {sdkData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
 
+  end
 
+=begin
+  def get_sdk
+    sdkId = params['id']
+    render json: {sdkId: sdkId}
+  end
+=end
+
+  def get_sdk
+    sdk_id = params['id']
+    sdk = AndroidSdkCompany.find(sdk_id)
+
+    @sdk_json = {
+        id: sdk.id,
+        name: sdk.name,
+        website: sdk.website,
+        favicon: sdk.favicon,
+        open_source: sdk.open_source,
+        platform: 'android',
+=begin
+        iosApps: company.get_ios_apps.map{|app| {
+            id: app.id,
+            name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+            type: 'IosApp',
+            mobilePriority: app.mobile_priority,
+            adSpend: app.ios_fb_ad_appearances.present?,
+            userBase: app.user_base,
+            categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+            lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+            appIdentifier: app.app_identifier,
+            supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
+            appIcon: {
+                large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
+                small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
+            }
+        }},
+=end
+        androidApps: sdk.android_apps.map{|app| {
+            id: app.id,
+            name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+            type: 'AndroidApp',
+            mobilePriority: app.mobile_priority,
+            adSpend: app.android_fb_ad_appearances.present?,
+            userBase: app.user_base,
+            categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
+            lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+            appIdentifier: app.app_identifier,
+            supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
+            appIcon: {
+                large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
+            }
+          }
+        }
+    }
+    render json: @sdk_json
   end
 
   def test_timeout
     sleep 65
-    render json: {test:'complete'}
+    render json: {test: 'complete'}
   end
 
 end

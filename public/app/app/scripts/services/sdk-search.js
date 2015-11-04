@@ -6,7 +6,7 @@ angular.module('appApp')
       sdkSearch: function(query, page, numPerPage) {
         return $http({
           method: 'POST',
-          url: API_URI_BASE + 'api/search/sdks',
+          url: API_URI_BASE + 'api/search/sdk',
           data: {
             query: query,
             numPerPage: numPerPage,

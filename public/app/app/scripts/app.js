@@ -56,15 +56,22 @@ angular
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
-         controller: 'AppDetailsCtrl'
+         controller: 'AppDetailsCtrl',
+         activeTab: 'search'
        })
        .when('/company/:id', {
          templateUrl: '/app/app/views/company-details.html',
-         controller: 'CompanyDetailsCtrl'
+         controller: 'CompanyDetailsCtrl',
+         activeTab: 'search'
        })
        .when('/lists/:id', {
          templateUrl: '/app/app/views/list.html',
          activeTab: 'lists'
+       })
+       .when('/sdk/:id', {
+         templateUrl: '/app/app/views/sdk-details.html',
+         controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
+         activeTab: 'sdks'
        })
        .otherwise({
          redirectTo: '/search',

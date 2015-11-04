@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   post 'api/filter_android_apps' => 'api#filter_android_apps'
   post 'api/search/ios' => 'api#search_ios_apps'
   post 'api/search/android' => 'api#search_android_apps'
-  post 'api/search/sdks' => 'api#search_apis'
+  post 'api/search/sdk' => 'api#search_sdk'
   get 'api/get_ios_app' => 'api#get_ios_app'
   get 'api/get_android_app' => 'api#get_android_app'
   get 'api/get_company' => 'api#get_company'
@@ -44,6 +44,8 @@ Rails.application.routes.draw do
   put 'api/list/add_mixed' => 'api#add_mixed_to_list'
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
+
+  get 'api/sdk' => 'api#get_sdk'
 
   get 'api/export_newest_apps_chart_to_csv' => 'api#export_newest_apps_chart_to_csv'
 
