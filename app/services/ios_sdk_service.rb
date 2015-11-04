@@ -1,8 +1,7 @@
 class IosSdkService
 
 	DUMP_PATH = Rails.env.production? ? '/mnt/cocoapods/Specs' : '/tmp/cocoapods/Specs'
-	MIN_DOWNLOADS = 1000
-
+	
 	class << self
 
 		# override allows for updating regardless if last version hasn't changed
@@ -10,32 +9,54 @@ class IosSdkService
 			return 'Git must be installed' if `which git`.chomp.blank?
 
 			# Validate that update needs to happen
+			# TODO: use github service api
 			repo_state = JSON.parse(open('https://api.github.com/repos/Cocoapods/Specs/branches/master').read())
 			raise "Error communcating with Github #{state}" if repo_state["name"].nil?
 
 			last_update = IosSdkUpdate.last
+			current_sha = repo_state["commit"]["sha"]
 
-			if !override && !last_update.nil? && last_update.cocoapods_sha == repo_state["commit"]["sha"]
+			if !override && !last_update.nil? && last_update.cocoapods_sha == current_sha
 				return "Cocoapods have not changed since last update"
 			end
 
 			# Figure out which files changed (takes a while)
 			# `git clone https://github.com/CocoaPods/Specs.git #{DUMP_PATH}`
-
+			# TODO: if ignored something because didn't meet download criteria, will not be added to database until next version comes out 
 			if last_update.nil?
-				files = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
+				sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
 			else
-				files = `cd #{DUMP_PATH} && git diff --name-only #{last_update.cocoapods_sha} Specs`.chomp.split("\n")
+				sdks = `cd #{DUMP_PATH} && git diff --name-only #{last_update.cocoapods_sha} Specs`.chomp.split("\n").map { x.split('/')[1] }.uniq
 			end
 
-			sdks = files.map {|x| x.split('/')[1]}
-			new_sdks = sdks.select {|sdk| IosSdk.find_by_name(sdk).nil?}
+			# IosSdkUpdate.create!(repo_state["commit"]["sha"])
+
+			sdks.sample(10).each do |sdk|
+				if Rails.env.production?
+					IosSdkServiceWorker.perform_async(sdk, current_sha)
+				else
+					IosSdkServiceWorker.new.perform(sdk, current_sha)
+				end
+			end
+
+		end
+
+		def old
+			# Send all of them to ios_sdk_service_worker with the hash
+
+
+
+			# sdks = files.map {|x| x.split('/')[1]}
+			# new_sdks = sdks.select {|sdk| IosSdk.find_by_name(sdk).nil?}
+			new_sdks = sdks
 			old_sdks = sdks - new_sdks
+			byebug
 
 			# validate the new sdks and create them
 			new_sdks.select! {|sdk| validate_sdk(sdk)}.map {|sdk| extract_pod_info(sdk)}.map {|pod| pod_to_ios_sdk_row(pod)}.each do |row|
 				IosSdk.create!(row)
 			end
+			byebug
 
 			# check the old ones, see if they've been deprecated
 			old_sdks.select! do |sdk|
@@ -81,6 +102,7 @@ class IosSdkService
 			end
 
 			# IosSdkUpdate.create!(repo_state["commit"]["sha"])
+			# byebug
 			created
 		end
 
@@ -137,14 +159,20 @@ class IosSdkService
 			uri = pod["http"] || pod["git"]
 			return false if uri.nil?
 
-			uri = URI(uri)
+			# TODO: go from git@... to https://www.(github|bitbucket).com/...
+			# only ~30 sdks do it and they aren't important ones
+			begin
+				uri = URI(uri)
+			rescue
+				return false
+			end
 
 			data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme}) do |curb|
 				curb.follow_location = true
 				curb.set :nobody, true
 			end
 
-			return false if data.status != 200
+			return false if data.class == String || data.status != 200
 
 			# only count it if it meets a minimum number of downloads
 			# Note: bitbucket downloads for whatever reason all have very diminished metrics
@@ -155,8 +183,11 @@ class IosSdkService
 
 				return false if data.status != 200
 
-				json = JSON.parse(data)
-				return false if json["stats"]["download_total"] < MIN_DOWNLOADS
+
+				json = JSON.parse(data.body)
+
+				# throws out new ones...but low bar means if they're good, they'll get picked up eventually
+				return false if json["stats"].nil? || json["stats"]["download_total"] < MIN_DOWNLOADS
 			end
 
 			true
@@ -171,7 +202,7 @@ class IosSdkService
 			contents["git"] = contents["source"]["git"]
 			contents["http"] = contents["source"]["http"]
 			contents["tag"] = contents["source"]["tag"]
-
+			# byebug
 			contents
 		end
 	end
