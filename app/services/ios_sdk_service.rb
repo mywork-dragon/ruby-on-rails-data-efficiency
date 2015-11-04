@@ -14,22 +14,37 @@ class IosSdkService
 			raise "Error communcating with Github #{state}" if repo_state["name"].nil?
 
 			last_update = IosSdkUpdate.last
+			current_sha = repo_state["commit"]["sha"]
 
-			if !override && !last_update.nil? && last_update.cocoapods_sha == repo_state["commit"]["sha"]
+			if !override && !last_update.nil? && last_update.cocoapods_sha == current_sha
 				return "Cocoapods have not changed since last update"
 			end
 
 			# Figure out which files changed (takes a while)
 			# `git clone https://github.com/CocoaPods/Specs.git #{DUMP_PATH}`
-
+			# TODO: if ignored something because didn't meet download criteria, will not be added to database until next version comes out 
 			if last_update.nil?
 				sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
 			else
 				sdks = `cd #{DUMP_PATH} && git diff --name-only #{last_update.cocoapods_sha} Specs`.chomp.split("\n").map { x.split('/')[1] }.uniq
 			end
 
+			# IosSdkUpdate.create!(repo_state["commit"]["sha"])
 
+			sdks.sample(10).each do |sdk|
+				if Rails.env.production?
+					IosSdkServiceWorker.perform_async(sdk, current_sha)
+				else
+					IosSdkServiceWorker.new.perform(sdk, current_sha)
+				end
+			end
+
+		end
+
+		def old
 			# Send all of them to ios_sdk_service_worker with the hash
+
+
 
 			# sdks = files.map {|x| x.split('/')[1]}
 			# new_sdks = sdks.select {|sdk| IosSdk.find_by_name(sdk).nil?}

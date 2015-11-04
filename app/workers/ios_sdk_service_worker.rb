@@ -4,7 +4,7 @@ class IosSdkServiceWorker
 
 	sidekiq_options :retry => 2, queue: :scraper
 
-	MIN_DOWNLOADS = 1000
+	MIN_DOWNLOADS = 500
 
 	def perform(sdk_name, sha)
 
@@ -23,7 +23,6 @@ class IosSdkServiceWorker
 
 			# update info
 			row = pod_to_ios_sdk_row(pod)
-			byebug
 			row.keys.each { |key| i[key] = row[key] }
 			i.save
 		else
@@ -31,7 +30,6 @@ class IosSdkServiceWorker
 			return result if result != true
 
 			row = pod_to_ios_sdk_row(pod)
-			byebug
 			IosSdk.create!(row)
 		end
 
@@ -47,7 +45,8 @@ class IosSdkServiceWorker
 			if Rails.env.production?
 				CocoapodServiceWorker.perform_async(c.id)
 			else
-				CocoapodServiceWorker.new.perform(c.id)
+				# CocoapodServiceWorker.new.perform(c.id)
+        puts "created id #{c.id}"
 			end
 		end
 	end
@@ -74,7 +73,6 @@ class IosSdkServiceWorker
 			return "URL is not valid"
 		end
 
-		byebug
 		data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme}) do |curb|
 			curb.follow_location = true
 			curb.set :nobody, true
