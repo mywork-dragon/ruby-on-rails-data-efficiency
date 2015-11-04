@@ -52,39 +52,49 @@ class IosClassService
       search_fw_folders(fw_folders, snap_id)
     end
 
-    def classify_strings(snap_id:, contents:, search_classes: true, search_bundles: true, search_fw_folders: true)
-
+    def sdks_from_strings(contents:, search_classes: true, search_bundles: true, search_fw_folders: true)
       queries = []
 
       if search_classes
         classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact #query class names directly
-        queries << search_classes # query the classes without added filtering 
+        queries += classes # query the classes without added filtering 
       end
 
       if search_bundles
         bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-        queries << bundles.map{ |bundle| SdkService.query_from_package(bundl)} # pull out the package names to query
+        queries += bundles.map{ |bundle| SdkService.query_from_package(bundle)} # pull out the package names to query
       end
 
       if search_fw_folders
-        bundles = contents.scan(/^Folder:(.+)\n/).flatten.uniq
-        queries << bundles
+        fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
+        queries += fw_folders
       end
 
-      queries = queries.downcase.uniq.compact
+      if true # debug only
+        puts "Classes:".green
+        ap classes
+
+        puts "Bundles:".green
+        ap bundles
+
+        puts "FW Folders:".green
+        ap fw_folders
+      end
+
+      queries = queries.compact.uniq{ |x| x.downcase }
 
       puts "Queries".purple
       ap queries
 
+      return
+
       SdkService.find_from_queries(queries)
     end
 
-    def store_strings
-    end
-
-    # For testing, entry point to classify entire strings dump
-    # @author Jason Lew
-    def classify_string_from_file
+    # Entry point for
+    def sdks_from_strings_file(filename)
+      contents = File.open(filename) { |f| f.read }.chomp
+      sdks_from_strings(contents: contents, search_classes: true, search_bundles: true, search_fw_folders: true)
     end
 
     def search_classnames(names, snap_id)
