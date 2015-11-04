@@ -53,6 +53,7 @@ class SdkService
 		end
 
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
+		# @author Jason Lew
 		def query_from_package(package_name)
 	    package = strip_prefix(package_name)
 	    return nil if package.blank?

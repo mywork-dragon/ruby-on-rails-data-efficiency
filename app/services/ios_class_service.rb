@@ -58,22 +58,24 @@ class IosClassService
 
       if search_classes
         classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact #query class names directly
-        queries << search_classes
+        queries << search_classes # query the classes without added filtering 
       end
 
       if search_bundles
         bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-        bundles = 
+        queries << bundles.map{ |bundle| SdkService.query_from_package(bundl)} # pull out the package names to query
       end
 
-     
+      if search_fw_folders
+        bundles = contents.scan(/^Folder:(.+)\n/).flatten.uniq
+      end
 
-      bundles = 
+      queries = queries.downcase.uniq.compact
 
+      puts "Queries".purple
+      ap queries
 
-
-      fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
-
+      SdkService.find_from_queries(queries)
     end
 
     def store_strings
