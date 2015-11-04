@@ -4,13 +4,31 @@ class IosSdkServiceWorker
 
 	sidekiq_options :retry => 2, queue: :scraper
 
-	MIN_DOWNLOADS = 500
+	MIN_DOWNLOADS = 1000
+	BACKTRACE_SIZE = 5
 
-	def perform(sdk_name, sha)
+	def perform(sdk_name, update_id)
+		begin
+			update_sdk(sdk)
+		rescue => e
+
+			backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
+
+			IosSdkUpdateExceptions.create!({
+				sdk_name: sdk_name,
+				ios_sdk_updates_id: update_id,
+				error: e.message,
+				backtrace: backtrace
+			})
+
+			raise e
+		end
+	end
+
+	def update_sdk(sdk_name)
 
 		in_database = !IosSdk.find_by_name(sdk_name).nil?
 		pod = get_pod_contents(sdk_name)
-
 		if in_database
 			# know it's valid, just check deprecated and update stuff
 			i = IosSdk.find_by_name(sdk_name)
@@ -37,16 +55,15 @@ class IosSdkServiceWorker
 		i = IosSdk.find_by_name(sdk_name)
 		most_recent = i.cocoapods.sort_by { |x| x.version }.last
 
-		if !pod['version'].nil? && (most_recent.nil? || most_recent.version <= pod['version'])
+		if !pod['version'].nil? && (most_recent.nil? || most_recent.version < pod['version'])
 			row = pod_to_cocoapod_row(pod)
 			row[:ios_sdk_id] = i.id
 
 			c = Cocoapod.create!(row)
 			if Rails.env.production?
-				CocoapodServiceWorker.perform_async(c.id)
+				CocoapodDownloadWorker.perform_async(c.id)
 			else
-				# CocoapodServiceWorker.new.perform(c.id)
-        puts "created id #{c.id}"
+				CocoapodDownloadWorker.new.perform(c.id)
 			end
 		end
 	end
@@ -59,7 +76,11 @@ class IosSdkServiceWorker
 		return "Is deprecated" if check_deprecated(pod)
 
 		# if it specifies platforms...make sure it supports ios
-		return "Does not support ios" if !pod["platforms"].nil? && pod["platforms"]["ios"].nil?
+		platforms = pod["platforms"]
+		if platforms
+			return "Does not support ios" if platforms.class == String && platforms != "ios"
+			return "Does not support ios" if platforms.class == Hash && !platforms.keys.include?("ios")
+		end
 
 		# make sure the source link isn't dead
 		uri = pod["http"] || pod["git"]

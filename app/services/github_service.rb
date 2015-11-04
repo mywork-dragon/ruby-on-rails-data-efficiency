@@ -36,6 +36,7 @@ class GithubService
   end
 
   # Repo can be URL or user/repo
+  # Returns a JSON object of the repo's metadata
   def get_repo_data(repo)
     repos_api_url = repo_to_url(repo)
 
@@ -66,6 +67,14 @@ class GithubService
     end
 
   end
+
+  def get_branch_data(repo, branch)
+    repos_api_url = repo_to_url(repo)
+
+    url = "#{repos_api_url}/branches/#{branch}"
+    JSON.parse(make_request(url))
+  end
+
   class << self
     def get_repo_data(repo)
       self.new.get_repo_data(repo)
@@ -73,6 +82,12 @@ class GithubService
 
     def get_contents(repo, path=nil)
       self.new.get_contents(repo, path)
+    end
+
+    # Gets the branch metadata for the specified branch. Will use branch 'master' if not supplied
+    # @returns the Github API response object as JSON
+    def get_branch_data(repo, branch='master')
+      self.new.get_branch_data(repo, branch)
     end
   end
 

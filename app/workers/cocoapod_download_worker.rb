@@ -4,6 +4,18 @@ class CocoapodDownloadWorker
 
 	sidekiq_options :retry => 2, queue: :scraper
 
+	DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
+
+	def perform(cocoapod_id)
+		begin
+			download_source(cocoapod_id)
+		rescue => e
+			byebug
+			FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))
+			raise e
+		end
+	end
+
 	def download_source(cocoapod_id)
 
 	  cocoapod = Cocoapod.find_by_id(cocoapod_id)
@@ -36,9 +48,9 @@ class CocoapodDownloadWorker
 
 	  return nil if cocoapod.nil? || source_code_url.nil?
 
-	  basename = cocoapod.name
+	  dump = File.join(DUMP_PATH, cocoapod_id.to_s)
 
-	  dump = Rails.env.production? ? '/mnt/sdk_dump/' : '../sdk_dump/'
+	  Dir.mkdir(dump)	  
 
 	  headers = {
 	    'Content-Type' => 'application/zip',
@@ -66,7 +78,7 @@ class CocoapodDownloadWorker
 	  ext = '.zip' if ext.blank?
 
 	  unzipped_file = nil
-	  filename = dump + cocoapod.name + ext 
+	  filename = File.join(dump, cocoapod_id.to_s + ext)
 
 	  File.open(filename, 'wb') { |f| f.write data.body }
 
@@ -90,11 +102,12 @@ class CocoapodDownloadWorker
 	        prefix = ''
 
 	        # some files extract in current directory, some don't
+	        byebug
 	        if root_file.count('/') < 1
 	          unzipped_file = File.join(dump, cocoapod.name)
 	          prefix = cocoapod.name
 	        else
-	          unzipped_file = dump + zip_file.entries.first.name.split('/').first
+	          unzipped_file = File.join(dump, zip_file.entries.first.name.split('/').first)
 	        end
 
 	        Dir.mkdir(unzipped_file)
@@ -112,6 +125,8 @@ class CocoapodDownloadWorker
 	      raise e
 	    end
 	  end
+
+	  byebug
 
 	  return nil if unzipped_file.nil?
 
@@ -142,9 +157,8 @@ class CocoapodDownloadWorker
 	    parse_header(filename: file, cocoapod_id: cocoapod_id, ext: File.extname(file))
 	  end
 
-	  File.delete(filename)
-
-	  FileUtils.rm_rf(unzipped_file)
+	  byebug
+	  FileUtils.rm_rf(dump) if unzipped_file
 
 	end
 
