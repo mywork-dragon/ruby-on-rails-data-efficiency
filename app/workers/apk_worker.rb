@@ -42,7 +42,7 @@ module ApkWorker
 
       # raise "not in america" unless apk_snap.android_app.in_america?
 
-      best_account = optimal_account(apk_snapshot_job_id, bid, apk_snap.id)
+      best_account = optimal_account(apk_snap.id)
 
       raise "no best account" if best_account.blank?
 
@@ -104,7 +104,7 @@ module ApkWorker
 
       apk_snap.auth_token = ''
 
-      apk_snap.last_device = best_account.device.to_sym
+      apk_snap.last_device = best_account.device.to_sym unless best_account.blank?
 
       apk_snap.save
       
@@ -162,15 +162,13 @@ module ApkWorker
 
   end
 
-  def optimal_account(apk_snapshot_job_id, bid, apk_snap_id)
-
-    # is_single = ApkSnapshotJob.find(apk_snapshot_job_id).notes.include? 'SINGLE: '
+  def optimal_account(apk_snap_id)
 
     gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
 
     gac.times do |c|
 
-      account = fresh_account(apk_snap_id, bid)
+      account = fresh_account(apk_snap_id)
 
       if account.present?
         next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
@@ -190,15 +188,13 @@ module ApkWorker
   end
 
   # Finds account used longest ago
-  def fresh_account(apk_snap_id, bid)
+  def fresh_account(apk_snap_id)
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
 
     # Choose good phone, unless it already failed
     d = device.blank? ? "= 2" : "!= #{device}"
 
-    iu = single_queue? ? " in_use IS FALSE" : ""
-
-    # stop = 100
+    iu = single_queue? ? "" : " AND in_use IS FALSE"
 
     g = GoogleAccount.transaction do
       ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
@@ -212,17 +208,7 @@ module ApkWorker
       d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
 
       err_msg = "All the accounts on your #{d_name} are down."
-      # Slackiq.notify(webhook_name: :sdk_scraper, title: err_msg, bid: bid)
       raise err_msg
-
-    # elsif g.flags >= stop
-
-    #   # Slackiq.notify(webhook_name: :sdk_scraper, title: "#{g.email} needs to be fixed!", bid: bid)
-
-    #   g.blocked = true
-    #   g.save
-
-    #   fresh_account(apk_snap_id, bid)
 
     else
       return g
