@@ -9,89 +9,89 @@ angular.module('appApp')
       /* For query load when /search/:query path hit */
       sdkSearchCtrl.loadTableData = function() {
 
-        customSearchCtrl.queryInProgress = true;
+        sdkSearchCtrl.queryInProgress = true;
 
         var urlParams = $location.url().split('/search/sdk')[1]; // Get url params
         var routeParams = $location.search();
 
         sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage)
           .success(function(data) {
-            customSearchCtrl.apps = data.appData;
-            customSearchCtrl.appNum = data.appData.length;
-            customSearchCtrl.numApps = data.totalAppsCount;
-            customSearchCtrl.numPerPage = data.numPerPage;
-            customSearchCtrl.changeAppPlatform(routeParams.platform);
-            customSearchCtrl.searchInput = routeParams.query;
-            customSearchCtrl.currentPage = data.page;
-            customSearchCtrl.queryInProgress = false;
+            sdkSearchCtrl.sdks = data.sdkData;
+            sdkSearchCtrl.appNum = data.sdkData.length;
+            sdkSearchCtrl.numApps = data.totalAppsCount;
+            sdkSearchCtrl.numPerPage = data.numPerPage;
+            sdkSearchCtrl.changeAppPlatform(routeParams.platform);
+            sdkSearchCtrl.searchInput = routeParams.query;
+            sdkSearchCtrl.currentPage = data.page;
+            sdkSearchCtrl.queryInProgress = false;
           })
           .error(function(data) {
-            customSearchCtrl.appNum = 0;
-            customSearchCtrl.numApps = 0;
-            customSearchCtrl.queryInProgress = false;
+            sdkSearchCtrl.appNum = 0;
+            sdkSearchCtrl.numApps = 0;
+            sdkSearchCtrl.queryInProgress = false;
           });
 
       };
 
-      customSearchCtrl.loadTableData();
+      sdkSearchCtrl.loadTableData();
 
-      customSearchCtrl.changeAppPlatform = function(platform) {
-        customSearchCtrl.platform = platform;
+      sdkSearchCtrl.changeAppPlatform = function(platform) {
+        sdkSearchCtrl.platform = platform;
       };
 
-      customSearchCtrl.onPageChange = function(nextPage) {
-        customSearchCtrl.submitSearch(nextPage);
+      sdkSearchCtrl.onPageChange = function(nextPage) {
+        sdkSearchCtrl.submitSearch(nextPage);
       };
 
-      customSearchCtrl.submitSearch = function(newPageNum) {
+      sdkSearchCtrl.submitSearch = function(newPageNum) {
         var payload = {
-          query: customSearchCtrl.searchInput,
-          platform: customSearchCtrl.platform,
+          query: sdkSearchCtrl.searchInput,
+          platform: sdkSearchCtrl.platform,
           page: newPageNum || 1,
           numPerPage: 30
         };
         $location.url('/search/custom?' + $httpParamSerializer(payload));
-        customSearchCtrl.loadTableData();
+        sdkSearchCtrl.loadTableData();
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Custom Search", {
-            "query": customSearchCtrl.searchInput,
-            "platform": customSearchCtrl.platform
+            "query": sdkSearchCtrl.searchInput,
+            "platform": sdkSearchCtrl.platform
           }
         );
         /* -------- Mixpanel Analytics End -------- */
       };
 
-      customSearchCtrl.searchPlaceholderText = function() {
-        if(customSearchCtrl.platform == 'ios') {
+      sdkSearchCtrl.searchPlaceholderText = function() {
+        if(sdkSearchCtrl.platform == 'ios') {
           return 'Search for iOS app or company';
-        } else if(customSearchCtrl.platform == 'sdks') {
+        } else if(sdkSearchCtrl.platform == 'sdks') {
           return 'Search for SDKs';
         } else {
           return 'Search for Android app or company';
         }
       };
 
-      customSearchCtrl.addSelectedTo = function(list, selectedApps) {
-        listApiService.addSelectedTo(list, selectedApps, customSearchCtrl.platform).success(function() {
-          customSearchCtrl.notify('add-selected-success');
+      sdkSearchCtrl.addSelectedTo = function(list, selectedApps) {
+        listApiService.addSelectedTo(list, selectedApps, sdkSearchCtrl.platform).success(function() {
+          sdkSearchCtrl.notify('add-selected-success');
           $rootScope.selectedAppsForList = [];
         }).error(function() {
-          customSearchCtrl.notify('add-selected-error');
+          sdkSearchCtrl.notify('add-selected-error');
         });
         $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
       };
 
-      customSearchCtrl.notify = function(type) {
+      sdkSearchCtrl.notify = function(type) {
         listApiService.listAddNotify(type);
       };
 
-      customSearchCtrl.appsDisplayedCount = function() {
-        var lastPageMaxApps = customSearchCtrl.numPerPage * customSearchCtrl.currentPage;
-        var baseAppNum = customSearchCtrl.numPerPage * (customSearchCtrl.currentPage - 1) + 1;
+      sdkSearchCtrl.appsDisplayedCount = function() {
+        var lastPageMaxApps = sdkSearchCtrl.numPerPage * sdkSearchCtrl.currentPage;
+        var baseAppNum = sdkSearchCtrl.numPerPage * (sdkSearchCtrl.currentPage - 1) + 1;
 
-        if (lastPageMaxApps > customSearchCtrl.numApps) {
-          return "" + baseAppNum + " - " + customSearchCtrl.numApps;
+        if (lastPageMaxApps > sdkSearchCtrl.numApps) {
+          return "" + baseAppNum + " - " + sdkSearchCtrl.numApps;
         } else {
           return "" + baseAppNum + " - " + lastPageMaxApps;
         }

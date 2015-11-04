@@ -1361,7 +1361,30 @@ class ApiController < ApplicationController
     query = params['query']
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
-    render json: {query: query, page: page, numPerPage: num_per_page}
+    sdks = []
+    sdks << AndroidSdkCompany.find(1)
+
+    total_apps_count = sdks.length
+
+    results_json = []
+
+    sdks.each do |sdk|
+
+      app_hash = {
+          sdk: {
+              id: sdk.id,
+              name: sdk.name,
+              website: sdk.website,
+              favicon: sdk.favicon,
+              open_source: sdk.open_source,
+              platform: 'android'
+          }
+      }
+      results_json << app_hash
+    end
+    render json: {sdkData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+
+
   end
 
   def test_timeout

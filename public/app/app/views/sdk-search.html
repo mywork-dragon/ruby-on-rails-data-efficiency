@@ -7,7 +7,7 @@
   </div>
   <!--
   <div class="" id="appTypeHeaderLogo">
-    <i class="fa fa-2" ng-class="customSearchCtrl.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+    <i class="fa fa-2" ng-class="sdkSearchCtrl.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
   </div>
   -->
 </header>
@@ -16,22 +16,22 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps}}</span>
+      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="sdkSearchCtrl.numApps">| Displaying {{sdkSearchCtrl.appsDisplayedCount()}} of {{sdkSearchCtrl.numApps}}</span>
       <span class="ui-select pull-right">
-        <select ng-model="addSelectedToDropdown" ng-change="customSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
+        <select ng-model="addSelectedToDropdown" ng-change="sdkSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
           <option value="">Copy Selected to List</option>
           <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
         </select>
       </span>
     </div>
 
-    <div id="results-table-wrapper" data-ng-controller="CustomSearchCtrl as customSearchCtrl">
+    <div id="results-table-wrapper" data-ng-controller="SdkSearchCtrl as sdkSearchCtrl">
 
       <table class="table table-bordered table-striped table-responsive">
         <thead>
         <tr>
           <th class="selectAllCheckboxHeader">
-            <select-all-checkbox apps="customSearchCtrl.apps"></select-all-checkbox>
+            <select-all-checkbox apps="sdkSearchCtrl.apps"></select-all-checkbox>
           </th>
           <th><div class="th normal-right-padding">
             SDK Name
@@ -49,24 +49,26 @@
         </thead>
 
         <tbody data-ng-hide="queryInProgress">
-        <tr data-ng-repeat="app in customSearchCtrl.apps">
+        <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
           <td class="dashboardTableDataCheckbox">
-            <checkable-checkbox app="app.app" apps="customSearchCtrl.apps"></checkable-checkbox>
+            <checkable-checkbox app="sdk.sdk" apps="sdkSearchCtrl.sdks"></checkable-checkbox>
           </td>
-          <td class="resultsTableAppIcon">
+          <td>
               <span>
-                <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">{{app.app.name}}</a>
+                <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/android/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
               </span>
           </td>
-          <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-          <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-          <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
+          <td class="appTypeIndicator">
+            <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+          </td>
+          <td ng-if="sdk.sdk.website">{{sdk.sdk.website}}</td>
+          <td>{{sdk.sdk.open_source ? 'Yes' : 'No'}}</td>
         </tr>
         </tbody>
       </table>
-      <div id="dashboardTableStatusMessage" data-ng-show="customSearchCtrl.queryInProgress || !(customSearchCtrl.numApps > 0)">
-        <h5 data-ng-hide="customSearchCtrl.appNum > 0 || customSearchCtrl.queryInProgress">No Items</h5>
-        <div data-ng-show="customSearchCtrl.queryInProgress" id="wrap_spinner">
+      <div id="dashboardTableStatusMessage" data-ng-show="sdkSearchCtrl.queryInProgress || !(sdkSearchCtrl.numApps > 0)">
+        <h5 data-ng-hide="sdkSearchCtrl.appNum > 0 || sdkSearchCtrl.queryInProgress">No Items</h5>
+        <div data-ng-show="sdkSearchCtrl.queryInProgress" id="wrap_spinner">
           <div class="loading outer">
             <div class="loading inner"></div>
           </div>
@@ -96,11 +98,11 @@
         </div>
         <div class="col-md-6 text-right pagination-container">
           <pagination class="pagination-sm"
-                      ng-model="customSearchCtrl.currentPage"
-                      total-items="customSearchCtrl.numApps"
+                      ng-model="sdkSearchCtrl.currentPage"
+                      total-items="sdkSearchCtrl.numApps"
                       max-size="8"
-                      ng-change="customSearchCtrl.onPageChange(customSearchCtrl.currentPage)"
-                      items-per-page="customSearchCtrl.numPerPage"
+                      ng-change="sdkSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
+                      items-per-page="sdkSearchCtrl.numPerPage"
                       rotate="false"
                       boundary-links="true"></pagination>
 
