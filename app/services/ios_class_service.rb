@@ -74,7 +74,8 @@ class IosClassService
       nil
     end
 
-    # for testing, entry point to classify string
+    # For testing, entry point to classify string
+    # @author Jason Lew
     def search_bundles_from_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
 

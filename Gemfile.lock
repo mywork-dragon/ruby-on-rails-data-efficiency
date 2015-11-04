@@ -141,6 +141,7 @@ GEM
     foundation-rails (5.4.3.1)
       railties (>= 3.1.0)
       sass (>= 3.2.0)
+    fuzzy_match (2.1.0)
     haml (4.0.7)
       tilt
     haml-rails (0.9.0)
@@ -371,6 +372,7 @@ DEPENDENCIES
   faker (= 1.4.3)
   filesize (= 0.0.4)
   foundation-rails (= 5.4.3.1)
+  fuzzy_match (= 2.1.0)
   haml
   haml-rails
   httparty (= 0.13.3)

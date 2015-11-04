@@ -10,6 +10,8 @@ class GithubService
   end
 
   # Repo can be URL or user/repo
+  # @author Jason Lew
+  # @return The repo info in a Hash
   def get_repo_data(repo)
     repos_api_url = repo_to_url(repo)
 
@@ -19,7 +21,7 @@ class GithubService
         raise "Need to implement picker for production"
       else
         # hard code account for dev
-        Proxy.get_url(repos_api_url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
+        Proxy.get_body_from_url(repos_api_url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
       end
 
     JSON.parse(@repo_html)

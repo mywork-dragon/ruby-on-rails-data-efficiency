@@ -1,5 +1,8 @@
 class SdkService
 
+	QUERY_MINIMUM_LENGTH = 4
+	DICE_SIMILARITY_THRESHOLD = 0.9
+
 	class << self
 
 		# @param packages: An Array of packages
@@ -18,7 +21,10 @@ class SdkService
 			return {} if queries.empty?
 
 			queries.each do |query|
+				puts "Query: #{query}".green
 				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+				ap sdk
+				puts ""
 				sdks << sdk if sdk
 			end
 
@@ -41,7 +47,7 @@ class SdkService
 	    first_word = g_words(first_word) if package.include? 'google'
 	    return nil if first_word.nil?
 	    name = camel_split(first_word)
-	    return nil if name.nil? || name.length <= 1
+	    return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH	# no good if it's nil or less than QUERY_MINIMUM_LENGTH
 	    name
 		end
 
@@ -77,12 +83,9 @@ class SdkService
 
 			q = "#{query} #{platform} site:github.com"
 			google_search(q: q).each do |url|
-				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	#if matches format like https://github.com/MightySignal/slackiq
+				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	# if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
-					next if rd['message'] == 'Not Found'	#repository is not valid; try the next link
-					next if rd['message'].include?('API rate limit exceeded')
-
-					ap rd
+					next if rd['message'] == 'Not Found'	# repository is not valid; try the next link
 
 					#select repo data (srd) that we're interested in
 					srd = {
@@ -94,6 +97,11 @@ class SdkService
 						repo_owner_name: rd['owner']['login'],
 						repo_owner_type: rd['owner']['type']
 					}
+
+					if repo_name = srd[:repo_name]
+						dice_similarity = FuzzyMatch::Score::PureRuby.new(repo_name, query).dices_coefficient_similar
+						next if dice_similarity < DICE_SIMILARITY_THRESHOLD	# query not similar enough to repo name
+					end
 
 					return {url: url, kind: :open_source}.merge(srd)
 				end

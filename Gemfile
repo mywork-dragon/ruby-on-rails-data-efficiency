@@ -161,3 +161,5 @@ gem 'rubyzip', '0.9.9'
 gem 'diff_dirs', '0.1.2'
 
 gem 'seed_dump', group: :development
+
+gem 'fuzzy_match', '2.1.0'
