@@ -68,6 +68,7 @@ class IosClassService
 
       if search_fw_folders
         bundles = contents.scan(/^Folder:(.+)\n/).flatten.uniq
+        queries << bundles
       end
 
       queries = queries.downcase.uniq.compact
