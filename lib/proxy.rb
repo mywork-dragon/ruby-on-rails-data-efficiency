@@ -22,19 +22,27 @@ class Proxy
         proxy = "#{mp.private_ip}:8888"
 
         return CurbFu.send(type, req, params) do |curb|
+
+          # Defaults
           curb.proxy_url = proxy
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
           curb.timeout = 120
+
+          yield(curb) if block_given? # Can override
         end
 
 	    else
 
         return CurbFu.send(type, req, params) do |curb|
+
+          # Defaults
         	curb.follow_location = true
 	        curb.ssl_verify_peer = false
 	        curb.max_redirects = 3
 	        curb.timeout = 120
+
+          yield(curb) if block_given? # Can override
 	      end
 
 	    end
@@ -55,7 +63,7 @@ class Proxy
       Nokogiri::HTML(get_body(req: req, params: params, type: type)) 
     end
 
-    # Wrapper that allows you to just pass in a URL
+    # Get the body, passing in only the URL
     # @author Jason Lew
     # @url The URL to get
     # @param The HTTP params

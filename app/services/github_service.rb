@@ -10,7 +10,7 @@ class GithubService
       end
 
     # putting it an ivar in case want to do other options to it in the future
-    @repo_html = Proxy.get_url(repos_api_url) 
+    @repo_html = Proxy.get_body_from_url(repos_api_url) 
 
     JSON.parse(@repo_html)
   end
