@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   post 'api/filter_android_apps' => 'api#filter_android_apps'
   post 'api/search/ios' => 'api#search_ios_apps'
   post 'api/search/android' => 'api#search_android_apps'
+  post 'api/search/sdks' => 'api#search_apis'
   get 'api/get_ios_app' => 'api#get_ios_app'
   get 'api/get_android_app' => 'api#get_android_app'
   get 'api/get_company' => 'api#get_company'

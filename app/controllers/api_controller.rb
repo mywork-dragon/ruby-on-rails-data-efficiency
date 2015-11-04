@@ -1357,6 +1357,13 @@ class ApiController < ApplicationController
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
+  def search_apis
+    query = params['query']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+    render json: {query: query, page: page, numPerPage: num_per_page}
+  end
+
   def test_timeout
     sleep 65
     render json: {test:'complete'}

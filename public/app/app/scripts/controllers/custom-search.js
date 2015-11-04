@@ -42,7 +42,6 @@ angular.module('appApp')
       };
 
       customSearchCtrl.onPageChange = function(nextPage) {
-        console.log('NEXT PAGE', nextPage);
         customSearchCtrl.submitSearch(nextPage);
       };
 
@@ -53,7 +52,8 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        $location.url('/search/custom?' + $httpParamSerializer(payload));
+        var targetUrl = customSearchCtrl.platform == 'sdks' ? '/search/sdk?' : '/search/custom?';
+        $location.url(targetUrl + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(

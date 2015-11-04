@@ -46,7 +46,7 @@ angular
          activeTab: 'search',
          reloadOnSearch: false
        })
-       .when('/sdk/search', {
+       .when('/search/sdk', {
          templateUrl: '/app/app/views/sdk-search.html',
          activeTab: 'sdks'
        })
