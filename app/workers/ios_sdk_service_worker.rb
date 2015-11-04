@@ -9,9 +9,9 @@ class IosSdkServiceWorker
 
 	def perform(sdk_name, update_id)
 		begin
-			update_sdk(sdk)
+			update_sdk(sdk_name)
 		rescue => e
-
+			byebug
 			backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
 
 			IosSdkUpdateExceptions.create!({
@@ -63,9 +63,13 @@ class IosSdkServiceWorker
 			if Rails.env.production?
 				CocoapodDownloadWorker.perform_async(c.id)
 			else
-				CocoapodDownloadWorker.new.perform(c.id)
+				# CocoapodDownloadWorker.new.perform(c.id)
 			end
+		else
+			return "Latest cocoapod already exists"
 		end
+
+
 	end
 
 	# Returns true if the sdk is valid
@@ -130,7 +134,8 @@ class IosSdkServiceWorker
 			version: pod['version'],
 			git: pod['git'],
 			http: pod['http'],
-			tag: pod['tag']
+			tag: pod['tag'],
+			json_content: pod.to_json
 		}
 	end
 
