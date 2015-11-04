@@ -51,7 +51,9 @@ module PackageSearchWorker
 
     batch = Sidekiq::Batch.new
 
-    if !single_queue?
+    if single_queue?
+      batch.on(:complete, PackageSearchServiceSingleWorker, 'apk_snapshot_id' => apk_snapshot_id)
+    else
       batch.on(:complete, PackageSearchServiceWorker, 'apk_snapshot_id' => apk_snapshot_id)
     end
 
