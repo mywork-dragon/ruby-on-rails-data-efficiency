@@ -7,7 +7,7 @@ class Proxy
     # @author Stephen Kennedy
     # @author Osman Khwaja
     # @author Jason Lew
-    # @return The 
+    # @return The response (CurbFu::Response::Base)
     # @note Will run from local IP if not in production mode
     def get(req:, params: {}, type: :get) 
 			if Rails.env.production?
