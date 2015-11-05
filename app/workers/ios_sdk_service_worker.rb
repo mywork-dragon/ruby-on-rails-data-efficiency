@@ -2,9 +2,9 @@ class IosSdkServiceWorker
 
 	include Sidekiq::Worker
 
-	sidekiq_options :retry => 2, queue: :scraper
+	sidekiq_options :retry => 2, queue: :default
 
-	MIN_DOWNLOADS = 1000
+	MIN_DOWNLOADS = 500
 	BACKTRACE_SIZE = 5
 
 	def perform(sdk_name, update_id)

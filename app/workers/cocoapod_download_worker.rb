@@ -1,224 +1,244 @@
 class CocoapodDownloadWorker
 
-	include Sidekiq::Worker
+  include Sidekiq::Worker
 
-	sidekiq_options :retry => 2, queue: :scraper
+  sidekiq_options :retry => 2, queue: :default
 
-	DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
+  DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
 
-	def perform(cocoapod_id)
-		begin
-			download_source(cocoapod_id)
-		rescue => e
-			byebug
-			FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))
-			raise e
-		end
-	end
+  def perform(cocoapod_id)
+    begin
+      download_source(cocoapod_id)
+    rescue => e
+      byebug
+      # TODO: 
+      FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))
+      raise e
+    end
+  end
 
-	def download_source(cocoapod_id)
+  def download_source(cocoapod_id)
 
-	  cocoapod = Cocoapod.find_by_id(cocoapod_id)
+    cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
-	  return "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
+    return "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
 
-	  url = cocoapod.http
+    url = cocoapod.http
 
-	  source_code_url = if url.blank?
+    source_code_url = if url.blank?
 
-	    url = cocoapod.git
+      url = cocoapod.git
 
-	    return "not a valid url #{url}" if url.match(/^git@/)
+      return "not a valid url #{url}" if url.match(/^git@/)
 
-	    if url.match('bitbucket')
-	      url.gsub(/\.git$/, '') + '/get/master.zip'
-	    else # github
-	      parts = url.split('/')
-	      repo = parts.pop.gsub(/\.git$/, '')
-	      company = parts.pop
+      if url.match('bitbucket')
+        url.gsub(/\.git$/, '') + '/get/master.zip'
+      else # github
+        parts = url.split('/')
+        repo = parts.pop.gsub(/\.git$/, '')
+        company = parts.pop
 
-	      'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
-	    end
+        'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+      end
 
-	  else
+    else
 
-	    url.gsub(/(?<=.zip).+/,'')
+      url.gsub(/(?<=.zip).+/,'')
 
-	  end
+    end
 
-	  return nil if cocoapod.nil? || source_code_url.nil?
+    return nil if cocoapod.nil? || source_code_url.nil?
 
-	  dump = File.join(DUMP_PATH, cocoapod_id.to_s)
+    dump = File.join(DUMP_PATH, cocoapod_id.to_s)
 
-	  Dir.mkdir(dump)	  
+    Dir.mkdir(dump)   
 
-	  headers = {
-	    'Content-Type' => 'application/zip',
-	    'User-Agent' => UserAgent.random_web
-	  }
-	  begin
-	    uri = URI(source_code_url)
-	  rescue
-	    return "#{source_code_url} is not a valid URI"
-	  end
+    headers = {
+      'Content-Type' => 'application/zip',
+      'User-Agent' => UserAgent.random_web
+    }
+    begin
+      uri = URI(source_code_url)
+    rescue
+      return "#{source_code_url} is not a valid URI"
+    end
 
-	  puts "starting request"
+    puts "starting request"
 
-	  data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
+    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
 
-	  puts "done with request"
+    puts "done with request"
 
-	  # if response failed, exit
-	  if data.status < 200 || data.status >= 300
-	    # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
-	    return "No source code found at #{source_code_url}"
-	  end
+    # if response failed, exit
+    if data.status < 200 || data.status >= 300
+      # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
+      return "No source code found at #{source_code_url}"
+    end
 
-	  ext = File.extname(source_code_url)
-	  ext = '.zip' if ext.blank?
+    ext = File.extname(source_code_url)
+    ext = '.zip' if ext.blank?
 
-	  unzipped_file = nil
-	  filename = File.join(dump, cocoapod_id.to_s + ext)
+    unzipped_file = nil
+    filename = File.join(dump, cocoapod_id.to_s + ext)
 
-	  File.open(filename, 'wb') { |f| f.write data.body }
+    File.open(filename, 'wb') { |f| f.write data.body }
 
-	  # different encodings
-	  if ext == ".tgz" || ext == ".gz"
+    # different encodings
+    if ext == ".tgz" || ext == ".gz"
 
-	    unzipped_file = filename.gsub(/#{ext}$/, '')
-	    Dir.mkdir(unzipped_file)
-	    `tar -xzf #{filename} -C #{unzipped_file}`
-	  elsif ext == ".bz2"
+      unzipped_file = filename.gsub(/#{ext}$/, '')
+      Dir.mkdir(unzipped_file)
+      `tar -xzf #{filename} -C #{unzipped_file}`
+    elsif ext == ".bz2"
 
-	    unzipped_file = filename.gsub(/#{ext}$/, '')
-	    Dir.mkdir(unzipped_file)
-	    `tar -xjf #{filename} -C #{unzipped_file}`
-	  else
-	    begin
-	      Zip::ZipFile.open(filename) do |zip_file|
+      unzipped_file = filename.gsub(/#{ext}$/, '')
+      Dir.mkdir(unzipped_file)
+      `tar -xjf #{filename} -C #{unzipped_file}`
+    else
+      Zip::ZipFile.open(filename) do |zip_file|
 
-	        # get base directory it extracts to. If doesn't have one use cocoapod's name
-	        root_file = zip_file.entries.map{|x| x.name}.sort_by {|x| x.count('/')}.first
-	        prefix = ''
+        # get root directory it extracts to. If doesn't have one, create one related to cocoapod id
+        nested_sort = zip_file.entries.sort do |a, b|
+          if a.name.count('/') == a.name.count('/')
+            a.name.split('/').length <=> b.name.split('/').length
+          else
+            a.name.count('/') <=> b.name.count('/')
+          end
+        end
+        prefix = ''
 
-	        # some files extract in current directory, some don't
-	        byebug
-	        if root_file.count('/') < 1
-	          unzipped_file = File.join(dump, cocoapod.name)
-	          prefix = cocoapod.name
-	        else
-	          unzipped_file = File.join(dump, zip_file.entries.first.name.split('/').first)
-	        end
+        has_root = nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length ? true : false
 
-	        Dir.mkdir(unzipped_file)
-	        zip_file.each do |entry|
-	          begin
-	            entry.extract(File.join(dump,prefix,entry.name))
-	          rescue
-	            puts "Missed a file"
-	          end
-	        end
+        if has_root
+          unzipped_file = File.join(dump, nested_sort.first.name)
+        else
+          unzipped_file = File.join(dump, cocoapod_id.to_s)
+          prefix = cocoapod_id.to_s
+        end
 
-	      end
-	    rescue => e
-	      return "malformed zip file" if e.message.match('signature not found')
-	      raise e
-	    end
-	  end
+        Dir.mkdir(unzipped_file)
+        zip_file.each do |entry|
+          begin
+            entry.extract(File.join(dump,prefix,entry.name))
+          rescue
+            puts "Missed a file"
+          end
+        end
 
-	  byebug
+      end
+    end
 
-	  return nil if unzipped_file.nil?
 
-	  podspec = Dir.glob("#{unzipped_file}/**/*.podspec").sort_by {|x| x.count('/')}.first
+    return nil if unzipped_file.nil?
+    files = get_source_files(cocoapod, unzipped_file)
+    
+    files.each do |file|
+      next if File.extname(file) == '.m'
+      parse_header(filename: file, cocoapod_id: cocoapod_id, ext: File.extname(file))
+    end
 
-	  if podspec.nil?
-	    files = Dir.glob("#{unzipped_file}/**/*.{h,swift}").uniq
-	  else
-	    contents = File.open(podspec).read
+    FileUtils.rm_rf(dump) if unzipped_file
 
-	    globs = contents.scan(/(source_files|public_header_files)\s*=(.*)\n/).map{|k, v| v.chomp}
+  end
 
-	    globs = globs.map{|x| x.scan(/['"]{1}([^'"]+)['"]{1}/).flatten }.flatten
+  def get_source_files(cocoapod, root_path)
 
-	    files = globs.map{|glob| Dir.glob(File.dirname(podspec)+'/'+glob) }.flatten
+    all_files = Dir.glob("#{root_path}/**/*.{h,swift}").uniq
+    return all_files if cocoapod.json_content.nil?
 
-	    files = files.map do |file|
-	      if File.directory?(file)
-	        Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
-	      else
-	        [file]
-	      end
-	    end.flatten.uniq
-	  end
+    podspec = JSON.parse(cocoapod.json_content)
 
-	  files.each do |file|
-	    next if File.extname(file) == '.m'
-	    parse_header(filename: file, cocoapod_id: cocoapod_id, ext: File.extname(file))
-	  end
+    to_inspect = [podspec]
+    globs = []
+    properties = ["source_files", "public_header_files"]
 
-	  byebug
-	  FileUtils.rm_rf(dump) if unzipped_file
+    while to_inspect.length > 0
+      spec = to_inspect.shift
 
-	end
+      properties.each do |prop|
 
-	def parse_header(filename:, cocoapod_id:, ext:)
+        if !spec[prop].nil?
+          globs.push(spec[prop]) if spec[prop].class == String
+          globs.concat(spec[prop]) if spec[prop].class == Array
+        end
+      end
 
-	  return nil if !File.exist?(filename) || File.directory?(filename)
+      to_inspect.concat(spec["subspecs"]) if !spec["subspecs"].nil?
+    end
 
-	  file = File.open(filename).read.scrub
+    files = globs.map { |glob| Dir.glob(File.join(root_path, glob)) }.flatten do |file|
 
-	  if ext == '.h'
-	    names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
-	  elsif ext == '.swift'
-	    names = file.scan(/^public\s+(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
-	  else
-	    names = []
-	  end
+      if File.directory?(file)
+        Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
+      else
+        [file]
+      end
+    end.flatten.uniq
 
-	  names.each do |name|
+    if files.empty?
+      all_files
+    else
+      files
+    end
+  end
 
-	    next if Rails.env.production? && (in_apple_docs?(name[1]) || name[1].blank?)
+  def parse_header(filename:, cocoapod_id:, ext:)
 
-	    begin
+    return nil if !File.exist?(filename) || File.directory?(filename)
 
-	      CocoapodSourceData.find_or_create_by(name: name[1], cocoapod_id: cocoapod_id)
+    file = File.open(filename).read.scrub
 
-	    rescue
+    if ext == '.h'
+      names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
+    elsif ext == '.swift'
+      names = file.scan(/^public\s+(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
+    else
+      names = []
+    end
 
-	      nil
+    names.each do |name|
 
-	    end
+      next if Rails.env.production? && (in_apple_docs?(name[1]) || name[1].blank?)
 
-	  end
+      begin
 
-	end
+        CocoapodSourceData.find_or_create_by(name: name[1], cocoapod_id: cocoapod_id)
 
-	def in_apple_docs?(q)
+      rescue
 
-	  apple_docs = AppleDoc.find_by_name(q)
+        nil
 
-	  return true if apple_docs.present?
+      end
 
-	  uri = URI("https://developer.apple.com/search/search_data.php")
+    end
 
-	  headers = { 'User-Agent' => UserAgent.random_web }
+  end
 
-	  data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: {'q' => q})
+  def in_apple_docs?(q)
 
-	  in_docs = JSON.parse(data.body).any?{ |res| res['description'].downcase.include? q.downcase }
+    apple_docs = AppleDoc.find_by_name(q)
 
-	  if in_docs
+    return true if apple_docs.present?
 
-	    AppleDoc.create(name: q)
+    uri = URI("https://developer.apple.com/search/search_data.php")
 
-	    true
+    headers = { 'User-Agent' => UserAgent.random_web }
 
-	  else
+    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: {'q' => q})
 
-	    false
+    in_docs = JSON.parse(data.body).any?{ |res| res['description'].downcase.include? q.downcase }
 
-	  end
+    if in_docs
 
-	end
+      AppleDoc.create(name: q)
+
+      true
+
+    else
+
+      false
+
+    end
+
+  end
 end
