@@ -1,8 +1,5 @@
 class Cocoapod < ActiveRecord::Base
-
-	has_many :cocoapod_authors
-
-	has_many :cocoapod_tags
-
+	belongs_to :ios_sdk
 	has_many :cocoapod_source_datas
+  has_many :cocoapod_exceptions
 end
