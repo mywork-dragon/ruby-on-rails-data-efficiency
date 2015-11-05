@@ -32,10 +32,12 @@ class IosSdkService
 
 			i = IosSdkUpdate.create!(repo_state["commit"]["sha"])
 
-			sdks.each do |sdk|
-				if Rails.env.production?
+			if Rails.env.production?
+				sdks.each do |sdk|
 					IosSdkServiceWorker.perform_async(sdk, i.id)
-				else
+				end
+			else
+				sdks.sample(5) do |sdk|
 					IosSdkServiceWorker.new.perform(sdk, i.id)
 				end
 			end

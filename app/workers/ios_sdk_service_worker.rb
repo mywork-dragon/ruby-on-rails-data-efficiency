@@ -11,7 +11,6 @@ class IosSdkServiceWorker
 		begin
 			update_sdk(sdk_name)
 		rescue => e
-			byebug
 			backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
 
 			IosSdkUpdateExceptions.create!({
