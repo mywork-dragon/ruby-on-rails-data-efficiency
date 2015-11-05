@@ -57,34 +57,51 @@ class IosClassService
       contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
     end
 
-    # Never string search classes for now (because its' too many)
-    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: true)
+    # Never string search classes for now (because it's too many)
+    def sdks_from_strings(contents:, google_classes: false, google_bundles: true, google_fw_folders: false, search_cocoapods_fw_folders: true)
       queries = []
 
-      if search_classes
+      if google_classes
         classes = classes_from_strings(contents)
         queries += classes # query the classes without added filtering 
       end
 
-      if search_bundles
+      if google_bundles
         bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
         queries += bundles.map{ |bundle| SdkService.query_from_package(bundle)} # pull out the package names to query
       end
 
-      if search_fw_folders
+      if search_cocoapods_fw_folders || google_fw_folders
         fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
-        queries += fw_folders
+
+        if search_cocoapods_fw_folders 
+
+          fw_folders.each do |fw_folder|
+            ios_sdk = IosSdk.where('lower(name) = ?', fw_folder.downcase).first
+          end
+
+          
+        end
+
+        if google_fw_folders
+          queries += fw_folders
+        end
       end
+
+
 
       if true # debug only
         puts "Classes:".green
         ap classes
+        puts ""
 
         puts "Bundles:".green
         ap bundles
+        puts ""
 
         puts "FW Folders:".green
         ap fw_folders
+        puts ""
       end
 
       queries = queries.compact.uniq{ |x| x.downcase }
@@ -92,9 +109,7 @@ class IosClassService
       puts "Queries".purple
       ap queries
 
-      return
-
-      SdkService.find_from_queries(queries)
+      SdkService.find_from_queries(queries: queries, platform: :ios)
     end
 
     # Entry point for
