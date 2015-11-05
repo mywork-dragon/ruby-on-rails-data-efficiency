@@ -5,23 +5,36 @@ class CocoapodDownloadWorker
   sidekiq_options :retry => 2, queue: :default
 
   DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
+  BACKTRACE_SIZE = 5
 
   def perform(cocoapod_id)
     begin
       download_source(cocoapod_id)
     rescue => e
-      byebug
-      # TODO: 
+
+      
+      if Rails.env.production?
+        backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
+
+        CocoapodException.create!({
+          cocoapod_id: cocoapod_id,
+          error: e.message,
+          backtrace: backtrace
+        })
+      end
+
       FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))
       raise e
     end
   end
 
+  # Downloads source to directory DUMP_PATH + cocoapod_id, parses headers,
+  # and uploads results to source data table.
   def download_source(cocoapod_id)
 
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
-    return "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
+    raise "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
 
     url = cocoapod.http
 
@@ -29,7 +42,7 @@ class CocoapodDownloadWorker
 
       url = cocoapod.git
 
-      return "not a valid url #{url}" if url.match(/^git@/)
+      raise "not a valid url #{url}" if url.match(/^git@/)
 
       if url.match('bitbucket')
         url.gsub(/\.git$/, '') + '/get/master.zip'
@@ -47,7 +60,7 @@ class CocoapodDownloadWorker
 
     end
 
-    return nil if cocoapod.nil? || source_code_url.nil?
+    raise nil if cocoapod.nil? || source_code_url.nil?
 
     dump = File.join(DUMP_PATH, cocoapod_id.to_s)
 
@@ -60,7 +73,7 @@ class CocoapodDownloadWorker
     begin
       uri = URI(source_code_url)
     rescue
-      return "#{source_code_url} is not a valid URI"
+      raise "#{source_code_url} is not a valid URI"
     end
 
     puts "starting request"
@@ -72,7 +85,7 @@ class CocoapodDownloadWorker
     # if response failed, exit
     if data.status < 200 || data.status >= 300
       # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
-      return "No source code found at #{source_code_url}"
+      raise "No source code found at #{source_code_url}"
     end
 
     ext = File.extname(source_code_url)
@@ -129,7 +142,7 @@ class CocoapodDownloadWorker
     end
 
 
-    return nil if unzipped_file.nil?
+    raise "Could not unzip file #{unzipped_file}" if unzipped_file.nil?
     files = get_source_files(cocoapod, unzipped_file)
     
     files.each do |file|
