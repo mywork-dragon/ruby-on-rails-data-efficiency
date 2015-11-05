@@ -1063,9 +1063,7 @@ class ApiController < ApplicationController
 
         else
 
-          # break if ss.try == 3
-
-          if ss.try == 3
+          if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
 
             apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
       
