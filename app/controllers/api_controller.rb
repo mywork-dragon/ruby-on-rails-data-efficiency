@@ -1246,8 +1246,7 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_apps = []
-    result_ids.each{ |id| ios_apps << IosApp.find(id) }
+    ios_apps = result_ids.map{ |id| IosApp.find_by_id(id) }.compact
     results_json = []
 
     ios_apps.each do |app|
@@ -1319,8 +1318,7 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_apps = []
-    result_ids.each{ |id| android_apps << AndroidApp.find(id) }
+    android_apps = result_ids.map{ |id| AndroidApp.find_by_id(id) }.compact
     results_json = []
 
     android_apps.each do |app|
