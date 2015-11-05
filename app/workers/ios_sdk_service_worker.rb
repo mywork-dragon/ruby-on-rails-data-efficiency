@@ -63,7 +63,7 @@ class IosSdkServiceWorker
 			if Rails.env.production?
 				CocoapodDownloadWorker.perform_async(c.id)
 			else
-				# CocoapodDownloadWorker.new.perform(c.id)
+				CocoapodDownloadWorker.new.perform(c.id)
 			end
 		else
 			return "Latest cocoapod already exists"

@@ -204,12 +204,13 @@ class CocoapodDownloadWorker
     if ext == '.h'
       names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
     elsif ext == '.swift'
-      names = file.scan(/^public\s+(class|protocol|struct)\s(.*?)[^a-zA-Z]/i).uniq
+      names = file.scan(/^public\s+(class|protocol|struct)\s+(.*?)[^a-zA-Z]/i).uniq
     else
       names = []
     end
 
     names.each do |name|
+      next if name[1] == ''
 
       next if Rails.env.production? && (in_apple_docs?(name[1]) || name[1].blank?)
 
