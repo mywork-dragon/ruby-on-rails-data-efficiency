@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105191847) do
+ActiveRecord::Schema.define(version: 20151105204217) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -445,12 +445,11 @@ ActiveRecord::Schema.define(version: 20151105191847) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cocoapod_id"
-    t.string   "error"
+    t.text     "error"
     t.text     "backtrace"
   end
 
   add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
-  add_index "cocoapod_exceptions", ["error"], name: "index_cocoapod_exceptions_on_error", using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"
@@ -847,7 +846,7 @@ ActiveRecord::Schema.define(version: 20151105191847) do
   create_table "ios_sdk_update_exceptions", force: true do |t|
     t.string   "sdk_name"
     t.integer  "ios_sdk_update_id"
-    t.string   "error"
+    t.text     "error"
     t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
