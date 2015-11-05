@@ -89,6 +89,24 @@ class GithubService
     def get_branch_data(repo, branch='master')
       self.new.get_branch_data(repo, branch)
     end
+
+    # Gets all the github accounts and make sure they are valid (rate limit is 5000 on core)
+    def validate_tokens
+      GithubAccount.all.each do |acct|
+        params = {
+          'client_id' => acct.client_id,
+          'client_secret' => acct.client_secret
+        }
+
+        body = JSON.parse(Proxy.get_body_from_url('https://api.github.com/rate_limit',params: params))
+
+
+
+        if body["resources"]["core"]["limit"] != 5000
+          puts "Account #{acct.username} does not have a 5000 limit"
+        end
+      end
+    end
   end
 
 end

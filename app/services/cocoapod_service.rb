@@ -69,7 +69,7 @@ class CocoapodService
     end
 
     def dump
-      classes_to_dump = [CocoapodAuthor, CocoapodTag, Cocoapod, CocoapodSourceData]
+      classes_to_dump = [GithubAccount]
 
       classes_to_dump.each do |the_class|
         SeedDump.dump(the_class, file: "#{Rails.root.to_s}/db/#{the_class.to_s.underscore}.rb")
@@ -78,10 +78,21 @@ class CocoapodService
 
     def seed
       directory = "#{Rails.root_to_s}/db/cocoapods"
-      filenames = %w(cocoapod_author_seed cocoapod_tag_seed, cocoapod_seed, cocoapod_source_data_seed)
+      filenames = []
 
       filenames.each do |filename|
         require "./#{directory}/#{filename}"
+      end
+    end
+
+    def load_accts(arr)
+      def create_account(username, app, id, secret)
+        GithubAccount.create!({username: username, email: "#{username}@gmail.com", password: "iamhairy1", application_name: app, homepage_url: "http://www.tobedetermined.com", callback_url: "http://www.tobedetermined.com", client_id: id, client_secret: secret})
+      end
+
+      arr.each do |acct|
+        fields = acct.split(",").map {|x| x.lstrip.rstrip}
+        create_account(fields.first.gsub("@gmail.com", ""), fields[1], fields[2], fields[3])
       end
     end
 
