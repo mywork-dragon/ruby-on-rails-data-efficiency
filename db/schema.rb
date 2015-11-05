@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151028231826) do
+ActiveRecord::Schema.define(version: 20151105204217) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -442,10 +442,14 @@ ActiveRecord::Schema.define(version: 20151028231826) do
   add_index "cocoapod_authors", ["name"], name: "index_cocoapod_authors_on_name", using: :btree
 
   create_table "cocoapod_exceptions", force: true do |t|
-    t.text     "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cocoapod_id"
+    t.text     "error"
+    t.text     "backtrace"
   end
+
+  add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"
@@ -468,20 +472,17 @@ ActiveRecord::Schema.define(version: 20151028231826) do
   add_index "cocoapod_tags", ["tag"], name: "index_cocoapod_tags_on_tag", using: :btree
 
   create_table "cocoapods", force: true do |t|
-    t.string   "name"
     t.string   "version"
-    t.text     "summary"
-    t.text     "link"
-    t.boolean  "cocoadocs"
     t.text     "git"
     t.text     "http"
     t.string   "tag"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ios_sdk_id"
+    t.text     "json_content"
   end
 
-  add_index "cocoapods", ["cocoadocs"], name: "index_cocoapods_on_cocoadocs", using: :btree
-  add_index "cocoapods", ["name", "version"], name: "index_cocoapods_on_name_and_version", unique: true, using: :btree
+  add_index "cocoapods", ["ios_sdk_id", "version"], name: "index_cocoapods_on_ios_sdk_id_and_version", unique: true, using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -528,6 +529,22 @@ ActiveRecord::Schema.define(version: 20151028231826) do
   end
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
+
+  create_table "github_accounts", force: true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "password"
+    t.string   "application_name"
+    t.string   "homepage_url"
+    t.string   "callback_url"
+    t.string   "client_id"
+    t.string   "client_secret"
+    t.datetime "last_used"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "github_accounts", ["last_used"], name: "index_github_accounts_on_last_used", using: :btree
 
   create_table "google_accounts", force: true do |t|
     t.string   "email"
@@ -826,20 +843,41 @@ ActiveRecord::Schema.define(version: 20151028231826) do
     t.integer  "price"
   end
 
+  create_table "ios_sdk_update_exceptions", force: true do |t|
+    t.string   "sdk_name"
+    t.integer  "ios_sdk_update_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_update_exceptions", ["ios_sdk_update_id"], name: "index_ios_sdk_update_exceptions_on_ios_sdk_update_id", using: :btree
+  add_index "ios_sdk_update_exceptions", ["sdk_name"], name: "index_ios_sdk_update_exceptions_on_sdk_name", using: :btree
+
+  create_table "ios_sdk_updates", force: true do |t|
+    t.string   "cocoapods_sha"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_updates", ["cocoapods_sha"], name: "index_ios_sdk_updates_on_cocoapods_sha", using: :btree
+
   create_table "ios_sdks", force: true do |t|
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
     t.boolean  "flagged",     default: false
-    t.integer  "cocoapod_id"
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "summary"
+    t.boolean  "deprecated"
   end
 
-  add_index "ios_sdks", ["cocoapod_id"], name: "index_ios_sdks_on_cocoapod_id", using: :btree
+  add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
-  add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", using: :btree
+  add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
