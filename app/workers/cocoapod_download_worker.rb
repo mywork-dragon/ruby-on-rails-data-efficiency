@@ -60,7 +60,7 @@ class CocoapodDownloadWorker
 
     end
 
-    raise nil if cocoapod.nil? || source_code_url.nil?
+    raise "No cocoapod or no source_code_url: #{source_code_url}" if cocoapod.nil? || source_code_url.nil?
 
     dump = File.join(DUMP_PATH, cocoapod_id.to_s)
 
@@ -85,7 +85,7 @@ class CocoapodDownloadWorker
     # if response failed, exit
     if data.status < 200 || data.status >= 300
       # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
-      raise "No source code found at #{source_code_url}"
+      raise "No source code found at #{source_code_url} with status code: #{data.status}"
     end
 
     ext = File.extname(source_code_url)
