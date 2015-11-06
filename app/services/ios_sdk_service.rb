@@ -20,7 +20,7 @@ class IosSdkService
 			end
 
 			# Figure out which files changed (takes a while)
-			# `git clone https://github.com/CocoaPods/Specs.git #{DUMP_PATH}`
+			`git clone https://github.com/CocoaPods/Specs.git #{DUMP_PATH}`
 			# TODO: if ignored something because didn't meet download criteria, will not be added to database until next version comes out 
 			# if last_update.nil?
 			# 	sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
