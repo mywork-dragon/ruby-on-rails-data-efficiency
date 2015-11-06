@@ -13,15 +13,13 @@ class CocoapodDownloadWorker
     rescue => e
 
       
-      if Rails.env.production?
-        backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
+      backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
 
-        CocoapodException.create!({
-          cocoapod_id: cocoapod_id,
-          error: e.message,
-          backtrace: backtrace
-        })
-      end
+      CocoapodException.create!({
+        cocoapod_id: cocoapod_id,
+        error: e.message,
+        backtrace: backtrace
+      })
 
       FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))
       raise e
