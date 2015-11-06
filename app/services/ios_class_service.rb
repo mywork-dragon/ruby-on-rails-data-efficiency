@@ -80,8 +80,11 @@ class IosClassService
       # end
     end
 
-    def run_broken
-      CocoapodException.select(:cocoapod_id).map{|x| x.cocoapod_id}.uniq.each do |cocoapod_id|
+    def run_broken(arr = nil)
+
+      arr = CocoapodException.select(:cocoapod_id).map{|x| x.cocoapod_id} if arr.nil?
+
+      arr.uniq.each do |cocoapod_id|
         CocoapodDownloadWorker.perform_async(cocoapod_id)
       end
     end

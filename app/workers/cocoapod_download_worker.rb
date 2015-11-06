@@ -5,7 +5,7 @@ class CocoapodDownloadWorker
   sidekiq_options :retry => 2, queue: :default
 
   DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
-  BACKTRACE_SIZE = 5
+  BACKTRACE_SIZE = 10
 
   def perform(cocoapod_id)
     begin
@@ -78,7 +78,10 @@ class CocoapodDownloadWorker
 
     puts "starting request"
 
-    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers})
+    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}) do |curb|
+      curb.follow_location = true
+      curb.max_redirects = 50
+    end
 
     puts "done with request"
 
