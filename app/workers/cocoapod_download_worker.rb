@@ -228,6 +228,8 @@ class CocoapodDownloadWorker
 
   def in_apple_docs?(q)
 
+    return false # For now, ignore apple docs. Come back to it later
+
     apple_docs = AppleDoc.find_by_name(q)
 
     return true if apple_docs.present?
