@@ -41,15 +41,19 @@ class IosClassService
 
     def classify_strings(snap_id, contents)
 
-    	ActiveRecord::Base.logger.level = 1
+    	# ActiveRecord::Base.logger.level = 1
 
-      classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
-      bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-      fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
+     #  classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
+     #  bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+     #  fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
 
-      search_classnames(classes, snap_id)
-      search_bundles(bundles, snap_id)
-      search_fw_folders(fw_folders, snap_id)
+     #  search_classnames(classes, snap_id)
+     #  search_bundles(bundles, snap_id)
+     #  search_fw_folders(fw_folders, snap_id)
+
+     store_sdks_from_strings_googled(contents)
+
+
     end
 
     # Get classes from strings
@@ -57,8 +61,18 @@ class IosClassService
       contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
     end
 
+    # Get bundles from strings
+    def bundles_from_strings(contents)
+      contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+    end
+
+    # Get FW folders from strings
+    def fw_folders_from_strings(contents)
+      contents.scan(/^Folder:(.+)\n/).flatten.uniq
+    end
+
     # Never string search classes for now (because it's too many)
-    def sdks_from_strings(contents:, google_classes: false, google_bundles: true, google_fw_folders: false, search_cocoapods_fw_folders: true)
+    def sdks_from_strings_googled(contents:, google_classes: false, google_bundles: true, google_fw_folders: false)
       queries = []
 
       if google_classes
@@ -67,28 +81,14 @@ class IosClassService
       end
 
       if google_bundles
-        bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+        bundles = bundles_from_strings(contents)
         queries += bundles.map{ |bundle| SdkService.query_from_package(bundle)} # pull out the package names to query
       end
 
-      if search_cocoapods_fw_folders || google_fw_folders
-        fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
-
-        if search_cocoapods_fw_folders 
-
-          fw_folders.each do |fw_folder|
-            ios_sdk = IosSdk.where('lower(name) = ?', fw_folder.downcase).first
-          end
-
-          
-        end
-
-        if google_fw_folders
-          queries += fw_folders
-        end
+      if google_fw_folders
+        fw_folders = fw_folders_from_strings(contents)
+        queries += fw_folders
       end
-
-
 
       if true # debug only
         puts "Classes:".green
@@ -112,10 +112,25 @@ class IosClassService
       SdkService.find_from_queries(queries: queries, platform: :ios)
     end
 
+    def store_sdks_from_strings_googled(contents)
+      sdks_h = store_sdks_from_strings_googled(contents: contents)
+    end
+
+    def sdks_from_strings_cocoapods(contents)
+      fw_folders.each do |fw_folder|
+        ios_sdk = IosSdk.where('lower(name) = ?', fw_folder.downcase).first
+      end
+    end
+
+    def store_sdks_from_strings_cocoapods(contents)
+
+    end
+
+
     # Entry point for
     def sdks_from_strings_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
-      sdks_from_strings(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
+      sdks_from_strings_googled(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
     end
 
     def search_classnames(names, snap_id)
