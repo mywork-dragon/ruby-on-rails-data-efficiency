@@ -212,7 +212,7 @@ class CocoapodDownloadWorker
     names.each do |name|
       next if name[1] == ''
 
-      next if Rails.env.production? && (in_apple_docs?(name[1]) || name[1].blank?)
+      next if Rails.env.production? && (name[1].blank? || in_apple_docs?(name[1]))
 
       begin
 

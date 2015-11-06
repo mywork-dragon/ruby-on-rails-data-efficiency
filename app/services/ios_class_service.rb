@@ -80,6 +80,12 @@ class IosClassService
       # end
     end
 
+    def run_broken
+      CocoapodException.select(:cocoapod_id).map{|x| x.cocoapod_id}.uniq.each do |cocoapod_id|
+        CocoapodDownloadWorker.perform_async(cocoapod_id)
+      end
+    end
+
     def search_fw_folders(folders, snap_id)
       nil
     end
