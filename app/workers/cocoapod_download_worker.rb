@@ -12,13 +12,10 @@ class CocoapodDownloadWorker
       download_source(cocoapod_id)
     rescue => e
 
-      
-      backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
-
       CocoapodException.create!({
         cocoapod_id: cocoapod_id,
         error: e.message,
-        backtrace: backtrace
+        backtrace: e.backtrace
       })
 
       FileUtils.rm_rf(File.join(DUMP_PATH, cocoapod_id.to_s))

@@ -11,13 +11,12 @@ class IosSdkServiceWorker
 		begin
 			update_sdk(sdk_name)
 		rescue => e
-			backtrace = e.backtrace[0...BACKTRACE_SIZE].join(' ---- ')
 
 			IosSdkUpdateException.create!({
 				sdk_name: sdk_name,
 				ios_sdk_update_id: update_id,
 				error: e.message,
-				backtrace: backtrace
+				backtrace: e.backtrace
 			})
 
 			raise e

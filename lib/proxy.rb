@@ -12,16 +12,12 @@ class Proxy
     def get(req:, params: {}, type: :get) 
 			if Rails.env.production?
 
-        mp = MicroProxy.where(active: true).order(last_used: :asc).first
-        mp.last_used = DateTime.now
-        mp.save
-        
-        # mp = MicroProxy.transaction do
-        #   p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
-        #   p.last_used = DateTime.now
-        #   p.save
-        #   p
-        # end
+        mp = MicroProxy.transaction do
+          p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
+          p.last_used = DateTime.now
+          p.save
+          p
+        end
 
         proxy = "#{mp.private_ip}:8888"
 
