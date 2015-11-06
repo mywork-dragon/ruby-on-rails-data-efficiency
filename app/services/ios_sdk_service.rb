@@ -30,7 +30,7 @@ class IosSdkService
 
 			sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
 
-			i = IosSdkUpdate.create!(repo_state["commit"]["sha"])
+			i = IosSdkUpdate.create!(cocoapods_sha: repo_state["commit"]["sha"])
 
 			if Rails.env.production?
 				sdks.each do |sdk|
