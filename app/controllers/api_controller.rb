@@ -1049,7 +1049,7 @@ class ApiController < ApplicationController
 
       if ss.present? && ss.status.present?
 
-        if ss.status = "success"
+        if ss.status == "success"
 
           aa = ss.android_app
 
