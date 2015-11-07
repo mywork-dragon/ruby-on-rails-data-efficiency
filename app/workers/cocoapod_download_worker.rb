@@ -55,15 +55,15 @@ class CocoapodDownloadWorker
         # Get the tarball_url
         if !cocoapod['tag'].nil?
           tags = GithubService.get_tags([company, repo].join('/'))
-          tag = tags.select{|data| data['name'] = cocoapod['tag']}.first
+          tag = tags.select{|data| data['name'] == cocoapod['tag']}.first
           if !tag.nil?
             url = tag['tarball_url'] if !tag.nil?
             ext = '.gz'
           end
         end
-
-        url
       end
+
+      url
 
     else
 
