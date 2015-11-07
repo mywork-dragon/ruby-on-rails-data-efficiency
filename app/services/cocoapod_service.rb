@@ -1,28 +1,28 @@
 class CocoapodService
 
-	class << self
+  class << self
 
-		def get_everything
+    def get_everything
 
-			res_count = 100
+      res_count = 100
 
-			(0...36).map{ |i| i.to_s 36}.each do |char|
+      (0...36).map{ |i| i.to_s 36}.each do |char|
 
         total_res_count = CocoapodService.char_result_count(char)
 
         page_count = (total_res_count / res_count.to_f).ceil
 
-				page_count.times do |i|
+        page_count.times do |i|
 
           offset = res_count * i
 
           CocoapodServiceWorker.new.perform(char, res_count, offset)
-					
-				end
+          
+        end
 
-			end
+      end
 
-		end
+    end
 
     def char_result_count(char)
 
@@ -38,11 +38,11 @@ class CocoapodService
 
     def inspect_source(start = 0)
 
-    	Cocoapod.where("id >= ?", start) do |pod|
+      Cocoapod.where("id >= ?", start) do |pod|
 
-    		CocoapodServiceWorker.new.perform(pod.id) if pod.id >= start
+        CocoapodServiceWorker.new.perform(pod.id) if pod.id >= start
 
-    	end
+      end
 
     end
 
@@ -60,11 +60,11 @@ class CocoapodService
 
     def inspect_source_by_ids(ids = [14])
 
-    	ids.each do |id|
+      ids.each do |id|
 
-    		CocoapodServiceWorker.new.perform(id)
+        CocoapodServiceWorker.new.perform(id)
 
-    	end
+      end
 
     end
 
@@ -106,6 +106,18 @@ class CocoapodService
 
     end
 
-	end
+    def retry_broken(ids = nil)
+
+      ids = CocoapodException.select('cocoapod_id').map {|x| x.cocoapod_id} if ids.nil?
+
+      ids.uniq.each do |id|
+        if Rails.env.production?
+          CocoapodDownloadWorker.perform_async(id)
+        else
+          CocoapodDownloadWorker.new.perform(id)
+        end
+      end
+    end
+  end
 
 end

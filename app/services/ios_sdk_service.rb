@@ -45,5 +45,20 @@ class IosSdkService
 			`rm -rf #{DUMP_PATH}`
 
 		end
+
+		def run_broken(update_id, names = nil)
+
+			names = IosSdkUpdateException.where("ios_sdk_update_id=#{update_id}").map {|x| x.sdk_name} if names.nil?
+
+			names.uniq.each do |sdk_name|
+				if Rails.env.production?
+					IosSdkServiceWorker.perform_async(sdk_name, update_id)
+				else
+					IosSdkServiceWorker.new.perform(sdk_name, update_id)
+				end
+			end
+
+			
+		end
 	end
 end
