@@ -12,21 +12,34 @@ class GithubService
   # Wrapper around Proxy for making a request and rotate github credentials to avoid rate limiting
   # @body Boolean flag on whether or not to return the body (defaults to true)
   # @returns either the body or a CurbFu::Response::Base object
-  def make_request(url, body = true)
 
-    response = if Rails.env.production?
-      acct = GithubAccount.transaction do
-        a = GithubAccount.lock.order(last_used: :asc).first
-        a.last_used = DateTime.now
-        a.save
-        a
-      end
+  def get_credentials
+    acct = GithubAccount.transaction do
+      a = GithubAccount.lock.order(last_used: :asc).first
+      a.last_used = DateTime.now
+      a.save
+      a
+    end
 
-      Proxy.get_from_url(url, params: {'client_id' => acct.client_id, 'client_secret' => acct.client_secret})
+    {
+      client_id: acct.client_id,
+      client_secret: acct.client_secret
+    }
+  end
+
+  def make_request(url, body = true, headers: {}, params: {})
+
+    if Rails.env.production?
+      acct = get_credentials
+      client_id = acct[:client_id]
+      client_secret = acct[:client_secret]
     else
       # hard code account for dev
-      Proxy.get_from_url(url, params: {'client_id' => '47966b7ae432cb33ee4b', 'client_secret' => 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'})
+      client_id = '47966b7ae432cb33ee4b'
+      client_secret = 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'
     end
+
+    response = Proxy.get_from_url(url, headers: headers, params: {'client_id' => client_id, 'client_secret' => client_secret}.merge(params))
 
     if body
       response.body
@@ -75,13 +88,30 @@ class GithubService
     JSON.parse(make_request(url))
   end
 
+  # Gets the tags on a repo. Repo can be either user/repo or a url.
+  # Returns a JSON object 
+  def get_tags(repo)
+    repos_api_url = repo_to_url(repo)
+    url = File.join(repos_api_url, "tags")
+
+    JSON.parse(make_request(url, true))
+  end
+
   class << self
     def get_repo_data(repo)
       self.new.get_repo_data(repo)
     end
 
+    def get_tags(repo)
+      self.new.get_tags(repo)
+    end
+
     def get_contents(repo, path=nil)
       self.new.get_contents(repo, path)
+    end
+
+    def get_credentials
+      self.new.get_credentials
     end
 
     # Gets the branch metadata for the specified branch. Will use branch 'master' if not supplied

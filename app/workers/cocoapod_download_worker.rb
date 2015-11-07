@@ -29,9 +29,11 @@ class CocoapodDownloadWorker
 
     cocoapod = Cocoapod.find_by_id(cocoapod_id)
 
+    raise "No cocoapod available by id #{cocoapod_id}" if cocoapod.nil?
     raise "No download information available for pod #{cocoapod.id}" if cocoapod.http.nil? && cocoapod.git.nil? #should delete?
 
     url = cocoapod.http
+    ext = nil
 
     source_code_url = if url.blank?
 
@@ -41,12 +43,26 @@ class CocoapodDownloadWorker
 
       if url.match('bitbucket')
         url.gsub(/\.git$/, '') + '/get/master.zip'
+        ext = '.zip'
       else # github
         parts = url.split('/')
         repo = parts.pop.gsub(/\.git$/, '')
         company = parts.pop
 
-        'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+        url = 'https://codeload.github.com/' + company + '/' + repo + '/zip/master'
+        ext = '.zip'
+
+        # Get the tarball_url
+        if !cocoapod['tag'].nil?
+          tags = GithubService.get_tags([company, repo].join('/'))
+          tag = tags.select{|data| data['name'] = cocoapod['tag']}.first
+          if !tag.nil?
+            url = tag['tarball_url'] if !tag.nil?
+            ext = '.gz'
+          end
+        end
+
+        url
       end
 
     else
@@ -55,27 +71,45 @@ class CocoapodDownloadWorker
 
     end
 
-    raise "No cocoapod or no source_code_url: #{source_code_url}" if cocoapod.nil? || source_code_url.nil?
+    raise "Source code url could not be created for cocoapod: #{cocoapod_id}" if source_code_url.nil?
+
+    ext = ext || File.extname(source_code_url)
+    ext = '.zip' if ext.blank? # fallback
+
 
     dump = File.join(DUMP_PATH, cocoapod_id.to_s)
 
     Dir.mkdir(dump)   
 
-    headers = {
-      'Content-Type' => 'application/zip',
-      'User-Agent' => UserAgent.random_web
-    }
     begin
       uri = URI(source_code_url)
     rescue
       raise "#{source_code_url} is not a valid URI"
     end
 
+    headers = {
+      'Content-Type' => 'application/zip',
+      'User-Agent' => UserAgent.random_web
+    }
+
     puts "starting request"
 
-    data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}) do |curb|
-      curb.follow_location = true
-      curb.max_redirects = 50
+    if source_code_url.include?('api.github.com')
+      # do this manually because need special procedure block
+      acct = GithubService.get_credentials
+      params = {
+        'client_id' => acct[:client_id],
+        'client_secret' => acct[:client_secret]
+      }
+      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: params) do |curb|
+        curb.follow_location = true
+        curb.max_redirects = 50
+      end
+    else
+      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}) do |curb|
+        curb.follow_location = true
+        curb.max_redirects = 50
+      end
     end
 
     puts "done with request"
@@ -86,25 +120,25 @@ class CocoapodDownloadWorker
       raise "No source code found at #{source_code_url} with status code: #{data.status}"
     end
 
-    ext = File.extname(source_code_url)
-    ext = '.zip' if ext.blank?
-
     unzipped_file = nil
     filename = File.join(dump, cocoapod_id.to_s + ext)
 
     File.open(filename, 'wb') { |f| f.write data.body }
 
     # different encodings
-    if ext == ".tgz" || ext == ".gz"
+    if ext == ".tgz" || ext == ".gz" || ext == ".bz2"
+
+      flags = ext == ".bz2" ? "xjf" : "xzf"
 
       unzipped_file = filename.gsub(/#{ext}$/, '')
       Dir.mkdir(unzipped_file)
-      `tar -xzf #{filename} -C #{unzipped_file}`
-    elsif ext == ".bz2"
+      `tar -#{flags} #{filename} -C #{unzipped_file}`
 
-      unzipped_file = filename.gsub(/#{ext}$/, '')
-      Dir.mkdir(unzipped_file)
-      `tar -xjf #{filename} -C #{unzipped_file}`
+      # sometimes has a root directory, sometimes not
+      opened = `ls #{unzipped_file}`.chomp.split("\n")
+      if opened.length == 1
+        unzipped_file = File.join(unzipped_file, opened.first)
+      end
     else
       Zip::ZipFile.open(filename) do |zip_file|
 
@@ -148,7 +182,7 @@ class CocoapodDownloadWorker
       parse_header(filename: file, cocoapod_id: cocoapod_id, ext: File.extname(file))
     end
 
-    FileUtils.rm_rf(dump) if unzipped_file
+    FileUtils.rm_rf(dump)
 
   end
 

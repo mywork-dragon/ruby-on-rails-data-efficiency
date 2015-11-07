@@ -66,9 +66,9 @@ class Proxy
     # Convenience method to get the Response object from just a url
     # @author Osman Khwaja
     # @return The response (CurbFu::Response::Base)
-    def get_from_url(url, params: {})
+    def get_from_url(url, params: {}, headers: {})
     	uri = URI(url)
-    	get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
+    	get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
     end
 
     # Get the body, passing in only the URL
@@ -77,9 +77,9 @@ class Proxy
     # @param The HTTP params
     # @return The body (String)
     # @note Also randomizes the User Agent
-    def get_body_from_url(url, params: {})
+    def get_body_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
+      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
     end
 
 	end
