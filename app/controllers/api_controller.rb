@@ -1065,11 +1065,11 @@ class ApiController < ApplicationController
 
           if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
 
-            apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+            new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
       
-            apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
+            new_snap.scan_status = :scan_failure
 
-            apk_snap.save
+            new_snap.save
 
             break
 
