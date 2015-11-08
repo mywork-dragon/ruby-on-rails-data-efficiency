@@ -72,20 +72,20 @@ class IosClassService
     end
 
     # Never string search classes for now (because it's too many)
-    def sdks_from_strings_googled(contents:, google_classes: false, google_bundles: true, google_fw_folders: false)
+    def sdks_from_strings_googled(contents:, search_classes: false, search_bundles: true, search_fw_folders: false)
       queries = []
 
-      if google_classes
+      if search_classes
         classes = classes_from_strings(contents)
         queries += classes # query the classes without added filtering 
       end
 
-      if google_bundles
+      if search_bundles
         bundles = bundles_from_strings(contents)
         queries += bundles.map{ |bundle| SdkService.query_from_package(bundle)} # pull out the package names to query
       end
 
-      if google_fw_folders
+      if search_fw_folders
         fw_folders = fw_folders_from_strings(contents)
         queries += fw_folders
       end
@@ -114,6 +114,17 @@ class IosClassService
 
     def store_sdks_from_strings_googled(contents)
       sdks_h = store_sdks_from_strings_googled(contents: contents)
+
+      sdhks_h.each do |sdk|
+
+        if sdk[:kind] == :company
+
+        begin
+          ios_sdk = IosSdk.create(name: sdk.name, website: sdk.url, cocoapod: found)
+        rescue ActiveRecord::RecordNotUnique => e
+        end
+
+      end
     end
 
     def sdks_from_strings_cocoapods(contents)
@@ -124,6 +135,7 @@ class IosClassService
 
     def store_sdks_from_strings_cocoapods(contents)
 
+      
     end
 
 
