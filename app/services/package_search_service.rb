@@ -16,6 +16,8 @@ class PackageSearchService
 
     	snaps.each do |snap|
 
+        next if snap.android_app.nil?
+
     		app_id = snap.android_app.id
 
     		PackageSearchServiceWorker.perform_async(app_id)
