@@ -152,10 +152,20 @@ class CocoapodDownloadWorker
         end
         prefix = ''
 
-        has_root = nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length ? true : false
+        # sometimes everything is contained in a root file
+        has_root = nested_sort.map {|entry| entry.name.split('/').first}.uniq.length == 1 ? true : false
+        # has_root = if nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length
+        #   true
+        # elsif nested_sort.map {|entry| entry.name.split('/').first}.uniq.length == 1
+        #   # sometimes it isn't but everything is nested
+        #   true
+        # else
+        #   false
+        # end
+        # has_root = nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length ? true : false
 
         if has_root
-          unzipped_file = File.join(dump, nested_sort.first.name)
+          unzipped_file = File.join(dump, nested_sort.first.name.split('/').first)
         else
           unzipped_file = File.join(dump, cocoapod_id.to_s)
           prefix = cocoapod_id.to_s

@@ -1,6 +1,6 @@
 class Proxy
 
-	class << self
+  class << self
 
     # Get the response from a get request
     # If get fails, will throw an error
@@ -10,7 +10,7 @@ class Proxy
     # @return The response (CurbFu::Response::Base)
     # @note Will run from local IP if not in production mode
     def get(req:, params: {}, type: :get, hard_proxy: false) 
-			if Rails.env.production?
+      if Rails.env.production?
 
         if hard_proxy
 
@@ -38,22 +38,22 @@ class Proxy
           yield(curb) if block_given? # Can override
         end
 
-	    else
+      else
 
         return CurbFu.send(type, req, params) do |curb|
 
           # Defaults
-        	curb.follow_location = true
-	        curb.ssl_verify_peer = false
-	        curb.max_redirects = 3
-	        curb.timeout = 120
+          curb.follow_location = true
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+          curb.timeout = 120
 
           yield(curb) if block_given? # Can override
-	      end
+        end
 
-	    end
+      end
 
-		end
+    end
 
     # Gets the body only
     # @author Jason Lew
@@ -73,8 +73,8 @@ class Proxy
     # @author Osman Khwaja
     # @return The response (CurbFu::Response::Base)
     def get_from_url(url, params: {}, headers: {})
-    	uri = URI(url)
-    	get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
+      uri = URI(url)
+      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
     end
 
     # Get the body, passing in only the URL
@@ -144,6 +144,6 @@ class Proxy
         ).sample
     end
 
-	end
+  end
 
 end
