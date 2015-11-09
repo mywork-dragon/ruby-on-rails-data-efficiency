@@ -69,7 +69,7 @@ class CocoapodService
     end
 
     def dump
-      classes_to_dump = [GithubAccount]
+      classes_to_dump = [IosSdk, Cocoapod, CocoapodSourceData]
 
       classes_to_dump.each do |the_class|
         SeedDump.dump(the_class, file: "#{Rails.root.to_s}/db/#{the_class.to_s.underscore}.rb")
@@ -119,22 +119,7 @@ class CocoapodService
       end
     end
 
-    def osman
-      one = GithubAccount.order(last_used: :asc).first
-      two = GithubAccount.order(last_used: :asc).first
-
-      one.last_used = DateTime.now
-      one.save
-      sleep(1)
-      two.last_used = DateTime.now
-      begin
-        # byebug
-        two.save
-      rescue => e
-        # byebug
-        puts "hi"
-      end
-    end
+    def 
   end
 
 end

@@ -158,6 +158,6 @@ gem 'rubyzip', '0.9.9'
 
 gem 'diff_dirs', '0.1.2'
 
-gem 'seed_dump', group: :development
+gem 'seed_dump'
 
 gem 'byebug', group: :development
