@@ -11,21 +11,7 @@ class Proxy
     # @note Will run from local IP if not in production mode
     def get(req:, params: {}, type: :get, hard_proxy: false) 
       if Rails.env.production?
-
-        # if hard_proxy
-
-        #   proxy = "#{get_hard_proxy}:8888"
-        # else
-
-        #   mp = MicroProxy.transaction do
-        #     p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
-        #     p.last_used = DateTime.now
-        #     p.save
-        #     p
-        #   end
-        #   proxy = "#{mp.private_ip}:8888"
-        # end
-
+        
         # use randomization instead of locking
         mp = MicroProxy.select(:id, :private_ip).where(active: true).sample
         mp.last_used = DateTime.now

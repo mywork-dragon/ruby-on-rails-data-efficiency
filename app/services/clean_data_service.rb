@@ -2,19 +2,15 @@ class CleanDataService
 
 	class << self
 
-		def run
+    def delete_duplicate_android_apps
 
-			start = ApkSnapshot.where('scan_status IS NOT NULL').first
+      AndroidApp.group(:app_identifier).having('count(*) > 1').each do |app|
 
-			ApkSnapshot.where('id < ?', start.id).each.with_index do |snap, index|
+        CleanDataServiceWorker.new.(app.app_identifier)
 
-				#puts "app #{index}"
+      end
 
-				CleanDataServiceWorker.perform_async(snap.id)
-
-			end
-
-		end
+    end
 
 	end
 

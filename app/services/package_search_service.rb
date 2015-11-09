@@ -16,6 +16,8 @@ class PackageSearchService
 
     	snaps.each do |snap|
 
+        next if snap.android_app.nil?
+
     		app_id = snap.android_app.id
 
     		PackageSearchServiceWorker.perform_async(app_id)
@@ -23,6 +25,14 @@ class PackageSearchService
     	end
 
     	nil
+
+    end
+
+    def run_local(n)
+
+      AndroidApp.limit(n).each do |app|
+        PackageSearchServiceWorker.new.perform(app.id)
+      end
 
     end
 

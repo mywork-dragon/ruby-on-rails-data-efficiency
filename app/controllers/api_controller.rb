@@ -854,13 +854,19 @@ class ApiController < ApplicationController
 
         companies, updated, error_code = get_sdks(android_app_id: android_app_id)
 
+      elsif new_snap.present? && new_snap.status == "bad_device"
+
+        error_code = 6
+
+      elsif new_snap.present? && new_snap.status == "out_of_country"
+
+        error_code = 7
+
+      elsif new_snap.present? && new_snap.status == "taken_down"
+
+        error_code = 2
+
       else
-
-        apk_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      
-        apk_snap.scan_status = ApkSnapshot.scan_statuses[:scan_failure]
-
-        apk_snap.save
 
         error_code = 3
       
@@ -1043,7 +1049,7 @@ class ApiController < ApplicationController
 
       if ss.present? && ss.status.present?
 
-        if ss.status = "success"
+        if ss.status == "success"
 
           aa = ss.android_app
 
@@ -1057,7 +1063,17 @@ class ApiController < ApplicationController
 
         else
 
-          break if ss.try == 3
+          if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
+
+            new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      
+            new_snap.scan_status = :scan_failure
+
+            new_snap.save
+
+            break
+
+          end
 
         end
 
@@ -1246,8 +1262,7 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_apps = []
-    result_ids.each{ |id| ios_apps << IosApp.find(id) }
+    ios_apps = result_ids.map{ |id| IosApp.find_by_id(id) }.compact
     results_json = []
 
     ios_apps.each do |app|
@@ -1319,8 +1334,7 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_apps = []
-    result_ids.each{ |id| android_apps << AndroidApp.find(id) }
+    android_apps = result_ids.map{ |id| AndroidApp.find_by_id(id) }.compact
     results_json = []
 
     android_apps.each do |app|

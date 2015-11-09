@@ -2,7 +2,7 @@ module PackageSearchWorker
 
   def perform(app_id)
 
-    ActiveRecord::Base.logger.level = 1
+    # ActiveRecord::Base.logger.level = 1
     aa = AndroidApp.find(app_id)
     app_identifier = aa.app_identifier
     nas = aa.newest_apk_snapshot
@@ -35,7 +35,7 @@ module PackageSearchWorker
       file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
       apk = Android::Apk.new(open(file_name))
     elsif Rails.env.development?
-      file_name = '../../Documents/' + app_identifier + '.apk'
+      file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
     end
 
