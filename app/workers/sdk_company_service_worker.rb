@@ -478,15 +478,17 @@ class SdkCompanyServiceWorker
 
       begin
 
-        mp = MicroProxy.transaction do
+        # mp = MicroProxy.transaction do
 
-          p = MicroProxy.lock.order(last_used: :asc).first
-          p.last_used = DateTime.now
-          p.save
+        #   p = MicroProxy.lock.order(last_used: :asc).first
+        #   p.last_used = DateTime.now
+        #   p.save
 
-          p
+        #   p
 
-        end
+        # end
+
+        mp = MicroProxy.select(:private_ip).sample
 
         proxy = "#{mp.private_ip}:8888"
 
