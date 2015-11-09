@@ -14,12 +14,21 @@ class GithubService
   # @returns either the body or a CurbFu::Response::Base object
 
   def get_credentials
-    acct = GithubAccount.transaction do
-      a = GithubAccount.lock.order(last_used: :asc).first
-      a.last_used = DateTime.now
-      a.save
-      a
+    acct = GithubAccount.select(:id, :client_id, :client_secret).sample
+
+    acct.last_used = DateTime.now
+    begin
+      acct.save
+    rescue
+      nil
     end
+    
+    # acct = GithubAccount.transaction do
+    #   a = GithubAccount.lock.order(last_used: :asc).first
+    #   a.last_used = DateTime.now
+    #   a.save
+    #   a
+    # end
 
     {
       client_id: acct.client_id,

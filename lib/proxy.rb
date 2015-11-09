@@ -27,7 +27,7 @@ class Proxy
         # end
 
         # use randomization instead of locking
-        mp = MicroProxy.select(:private_ip).where(active: true).sample
+        mp = MicroProxy.select(:id, :private_ip).where(active: true).sample
         mp.last_used = DateTime.now
         begin
           mp.save
