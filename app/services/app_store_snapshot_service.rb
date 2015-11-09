@@ -120,8 +120,6 @@ class AppStoreSnapshotService
     # Last week
     def run_new_apps(notes)
 
-      raise "jason neeeds to fix to use IosApp"
-
       j = IosAppSnapshotJob.create!(notes: notes)
       
       batch = Sidekiq::Batch.new
