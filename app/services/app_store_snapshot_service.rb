@@ -120,8 +120,6 @@ class AppStoreSnapshotService
     # Last week
     def run_new_apps(notes)
 
-      raise "jason neeeds to fix to use IosApp"
-
       j = IosAppSnapshotJob.create!(notes: notes)
       
       batch = Sidekiq::Batch.new
@@ -130,9 +128,18 @@ class AppStoreSnapshotService
   
       batch.jobs do
         epf_full_feed_last = EpfFullFeed.last
-    
+
         newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
         week_before_newest = newest_date - 6.days
+
+        IosApp.where(released: week_before_newest..newest_date).each do |ios_app|
+          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        end
+
+        # epf_full_feed_last = EpfFullFeed.last
+    
+        # newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
+        # week_before_newest = newest_date - 6.days
 
 
         # IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
@@ -148,7 +155,6 @@ class AppStoreSnapshotService
         # end
     
       end
-      
     end
   
   end
