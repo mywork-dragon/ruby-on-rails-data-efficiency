@@ -128,10 +128,10 @@ class CocoapodService
       sleep(1)
       two.last_used = DateTime.now
       begin
-        byebug
+        # byebug
         two.save
       rescue => e
-        byebug
+        # byebug
         puts "hi"
       end
     end
