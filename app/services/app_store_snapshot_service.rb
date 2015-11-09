@@ -155,6 +155,7 @@ class AppStoreSnapshotService
         # end
     
       end
+    end
   
   end
 
