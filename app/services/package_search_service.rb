@@ -28,6 +28,14 @@ class PackageSearchService
 
     end
 
+    def run_local(n)
+
+      AndroidApp.limit(n).each do |app|
+        PackageSearchServiceWorker.new.perform(app.id)
+      end
+
+    end
+
   end
   
 end
