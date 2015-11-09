@@ -42,8 +42,15 @@ class CocoapodDownloadWorker
       raise "not a valid url #{url}" if url.match(/^git@/)
 
       if url.match('bitbucket')
-        url.gsub(/\.git$/, '') + '/get/master.zip'
-        ext = '.zip'
+
+        if !cocoapod['tag'].nil?
+          url = url.gsub(/\.git$/, '') + "/get/#{cocoapod['tag']}.tar.gz"
+          ext = '.gz'
+        else
+          url = url.gsub(/\.git$/, '') + '/get/master.tar.gz'
+          ext = '.gz'
+        end
+
       else # github
         parts = url.split('/')
         repo = parts.pop.gsub(/\.git$/, '')
