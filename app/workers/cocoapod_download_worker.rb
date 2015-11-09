@@ -204,7 +204,6 @@ class CocoapodDownloadWorker
   end
 
   def get_source_files(cocoapod, root_path)
-
     all_files = Dir.glob("#{root_path}/**/*.{h,swift}").uniq
     return all_files if cocoapod.json_content.nil?
 
@@ -228,7 +227,7 @@ class CocoapodDownloadWorker
       to_inspect.concat(spec["subspecs"]) if !spec["subspecs"].nil?
     end
 
-    files = globs.map { |glob| Dir.glob(File.join(root_path, glob)) }.flatten do |file|
+    files = globs.map { |glob| Dir.glob(File.join(root_path, glob)) }.flatten.map do |file|
 
       if File.directory?(file)
         Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
