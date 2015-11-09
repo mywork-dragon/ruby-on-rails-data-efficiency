@@ -228,9 +228,10 @@ class EpfService
             mighty_signal_id = ios_app.id
           
             row += [released, category, user_base, average_rating, number_of_ratings, mighty_signal_id]
+
+            csv << row
           end
-        
-          csv << row
+          
         end
       end
     
