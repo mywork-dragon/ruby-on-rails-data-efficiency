@@ -96,10 +96,15 @@ class IosSdkServiceWorker
 			return "URL is not valid"
 		end
 
-		data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme}) do |curb|
-			curb.follow_location = true
-			curb.set :nobody, true
-			curb.max_redirects = 50
+		# bitbucket returns a 200 even for not available repos so use their API instead
+		if uri.host.include?("bitbucket")
+			data = Proxy.get_from_url(File.join("https://api.bitbucket.org/2.0/repositories/", uri.path.gsub(/.git$/, '')))
+		else
+			data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme}) do |curb|
+				curb.follow_location = true
+				curb.set :nobody, true
+				curb.max_redirects = 50
+			end
 		end
 
 		return "URL is not available" if data.status != 200
