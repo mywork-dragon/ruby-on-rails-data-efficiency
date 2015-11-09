@@ -118,6 +118,23 @@ class CocoapodService
         end
       end
     end
+
+    def osman
+      one = GithubAccount.order(last_used: :asc).first
+      two = GithubAccount.order(last_used: :asc).first
+
+      one.last_used = DateTime.now
+      one.save
+      sleep(1)
+      two.last_used = DateTime.now
+      begin
+        byebug
+        two.save
+      rescue => e
+        byebug
+        puts "hi"
+      end
+    end
   end
 
 end

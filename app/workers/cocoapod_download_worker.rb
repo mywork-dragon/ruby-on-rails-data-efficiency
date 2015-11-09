@@ -108,12 +108,12 @@ class CocoapodDownloadWorker
         'client_id' => acct[:client_id],
         'client_secret' => acct[:client_secret]
       }
-      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: params, hard_proxy: true) do |curb|
+      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: params) do |curb|
         curb.follow_location = true
         curb.max_redirects = 50
       end
     else
-      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, hard_proxy: true) do |curb|
+      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}) do |curb|
         curb.follow_location = true
         curb.max_redirects = 50
       end
