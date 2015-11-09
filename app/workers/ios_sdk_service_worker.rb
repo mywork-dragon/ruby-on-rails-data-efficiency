@@ -96,7 +96,7 @@ class IosSdkServiceWorker
 			return "URL is not valid"
 		end
 
-		# bitbucket returns a 200 even for not available repos so use their API instead
+		# bitbucket returns a 200 even for not available repos so use their API instead (60000 per hour rate limit)
 		if uri.host.include?("bitbucket")
 			data = Proxy.get_from_url(File.join("https://api.bitbucket.org/2.0/repositories/", uri.path.gsub(/.git$/, '')))
 		else
