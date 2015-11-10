@@ -96,7 +96,7 @@ class IosClassService
         puts ""
 
         puts "Bundles:".green
-        ap bundles
+        ap bundlesx
         puts ""
 
         puts "FW Folders:".green
@@ -118,11 +118,20 @@ class IosClassService
       sdhks_h.each do |sdk|
 
         if sdk[:kind] == :company
-
-        begin
-          ios_sdk = IosSdk.create(name: sdk.name, website: sdk.url, cocoapod: found)
-        rescue ActiveRecord::RecordNotUnique => e
+        	begin
+          	ios_sdk = IosSdk.create(name: sdk[:company], website: sdk[:url], cocoapod: found)
+        	rescue ActiveRecord::RecordNotUnique => e
+        		ios_sdk = IosSdk.find_by_name(sdk[:company])
+        	end
+        elsif sdk[:kind] == :open_source
+        	begin
+          	# TODO: what do I query on? need to change to use unique GitHub ID?
+        	rescue ActiveRecord::RecordNotUnique => e
+        		# ios_sdk = Ios # TODO: find by GitHub ID?
+        	end
         end
+
+
 
       end
     end
