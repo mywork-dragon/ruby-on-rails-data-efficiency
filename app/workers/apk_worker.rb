@@ -198,12 +198,14 @@ module ApkWorker
 
     iu = single_queue? ? "" : " AND in_use IS FALSE"
 
-    g = GoogleAccount.transaction do
-      ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
-      ga.last_used = DateTime.now
-      ga.save
-      ga
-    end
+    # g = GoogleAccount.transaction do
+    #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
+    #   ga.last_used = DateTime.now
+    #   ga.save
+    #   ga
+    # end
+
+    ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").first
 
     if g.blank?
 

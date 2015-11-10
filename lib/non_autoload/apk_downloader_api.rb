@@ -58,15 +58,17 @@ if defined?(ApkDownloader)
 
     def fetch_apk_data package, apk_snap_id
 
-      mp = MicroProxy.transaction do
+      # mp = MicroProxy.transaction do
 
-        p = MicroProxy.lock.order(last_used: :asc).where(active: true).first
-        p.last_used = DateTime.now
-        p.save
+      #   p = MicroProxy.lock.order(last_used: :asc).where(active: true).first
+      #   p.last_used = DateTime.now
+      #   p.save
 
-        p
+      #   p
 
-      end
+      # end
+
+      mp = MicroProxy.select(:private_ip).sample
 
       apk_snap = ApkSnapshot.find_by_id(apk_snap_id)
       apk_snap.micro_proxy_id = mp.id
