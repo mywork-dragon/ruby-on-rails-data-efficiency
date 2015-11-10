@@ -7651,3 +7651,78 @@ pre {
 #nav-wrapper > div {
   padding-bottom: 100px;
 }
+
+/* -------------------------- AnguComplete-Alt Styles -------------------------- */
+
+.angucomplete-holder {
+  position: relative;
+}
+
+.angucomplete-dropdown {
+  border-color: #ececec;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  width: 220px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 9999;
+  position: absolute;
+  /*top: 32px;
+  left: 0px;
+  */
+  margin-top: -6px;
+  background-color: #ffffff;
+}
+
+.angucomplete-searching {
+  color: #acacac;
+  font-size: 14px;
+}
+
+.angucomplete-description {
+  font-size: 14px;
+}
+
+.angucomplete-row {
+  padding: 5px;
+  color: #000000;
+  margin-bottom: 4px;
+  clear: both;
+}
+
+.angucomplete-selected-row {
+  background-color: #0393dd;
+  color: #ffffff;
+}
+
+.angucomplete-title {
+  font-weight: normal;
+  text-transform: none;
+  color: #333333;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.angucomplete-image-holder {
+  float: left;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.angucomplete-image {
+  height: 20px;
+  width: 20px;
+}
+
+.angucomplete-image-default {
+  /* Add your own default image here
+   background-image: url('/assets/default.png');
+  */
+  background-position: center;
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+}
+
+/* -------------------------- AnguComplete-Alt Styles End -------------------------- */
