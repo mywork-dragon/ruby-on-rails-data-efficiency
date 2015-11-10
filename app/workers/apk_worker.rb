@@ -29,7 +29,7 @@ module ApkWorker
 
       else
 
-        raise "quit" if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
+        raise "quit" if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x } if single_queue?
         
         apk_snap.try += 1
         apk_snap.save
@@ -194,6 +194,7 @@ module ApkWorker
     device = ApkSnapshot.find(apk_snap_id).last_device.to_s
 
     # Choose good phone, unless it already failed
+
     d = device.blank? ? "= 2" : "!= #{device}"
 
     iu = single_queue? ? "" : " AND in_use IS FALSE"
@@ -205,7 +206,7 @@ module ApkWorker
     #   ga
     # end
 
-    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").first
+    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").sample
 
     if g.blank?
 
