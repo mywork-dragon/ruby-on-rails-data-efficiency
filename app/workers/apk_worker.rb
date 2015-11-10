@@ -205,7 +205,7 @@ module ApkWorker
     #   ga
     # end
 
-    ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").first
+    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").first
 
     if g.blank?
 
