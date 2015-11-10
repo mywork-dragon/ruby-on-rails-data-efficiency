@@ -1442,6 +1442,15 @@ class ApiController < ApplicationController
     render json: @sdk_json
   end
 
+  def get_sdk_autocomplete
+    search_str = params['searchstr']
+
+    render json: {
+               searchParam: search_str,
+               results: [{},{}]
+           }
+  end
+
   def test_timeout
     sleep 65
     render json: {test: 'complete'}

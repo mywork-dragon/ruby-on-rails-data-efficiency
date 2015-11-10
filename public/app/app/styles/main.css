@@ -7168,6 +7168,12 @@ i.infoTooltipIcon {
   top: 152px;
 }
 
+.sdk-autocomplete-filter {
+  width: 220px;
+  font-weight: normal;
+  display: inline-block;
+}
+
 #facebookMethodologySection > h4 {
   margin-top: 20px;
 }

@@ -81,6 +81,21 @@
                       <option value="desk">Desk</option>
                     </select>
                </span>
+               <span>
+                  <angucomplete-alt id="sdk-autocomplete-filter"
+                                   placeholder="Add an SDK filter"
+                                   pause="100"
+                                   selected-object="selectedSdk"
+                                   remote-url="api/sdk/autocomplete?searchstr="
+                                   remote-url-data-field="results"
+                                   search-fields="name"
+                                   title-field="_________PUT_NAME_OF_AUTOCOMPLETE_OBJECT_TITLE_HERE___________",
+                                   description-field="_________PUT_DESCRIPTION_HERE___________",
+                                   image-field="_________PUT_FAVICON_HERE___________",
+                                   match-class="_________CLASS_FOR_MATCHES___________"
+                                   minlength="1"
+                                   input-class="form-control form-control-small sdk-autocomplete-filter"/>
+               </span>
             </span>
             <span id="filterMethodButton">
               <button type="button" class="btn btn-sp-v btn-bordered-default pull-right" data-toggle="modal" data-target="#myModal" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')">Methodology</button>

@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   put 'api/list/delete' => 'api#delete_list'
 
   get 'api/sdk' => 'api#get_sdk'
+  get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
 
   get 'api/export_newest_apps_chart_to_csv' => 'api#export_newest_apps_chart_to_csv'
 
