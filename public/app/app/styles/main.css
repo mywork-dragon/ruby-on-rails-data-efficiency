@@ -7236,6 +7236,7 @@ i.infoTooltipIcon {
 
 #dashboardPlatformSwitch {
   margin-right: 10px;
+  top: 2px;
 }
 
 .dashboard-tag-filter-selects #dashboardPlatformSwitch {
@@ -7655,7 +7656,11 @@ pre {
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {
+  width: 220px;
+  display: inline-block;
   position: relative;
+  top: 4px;
+  margin-left: 4px;
 }
 
 .angucomplete-dropdown {
@@ -7671,7 +7676,7 @@ pre {
   /*top: 32px;
   left: 0px;
   */
-  margin-top: -6px;
+  margin-top: -2px;
   background-color: #ffffff;
 }
 
