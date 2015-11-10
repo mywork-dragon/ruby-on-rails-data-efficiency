@@ -21,7 +21,8 @@ angular
     'ngTagsInput',
     'app.directives',
     "ui.bootstrap",
-    "rt.encodeuri"
+    "rt.encodeuri",
+    'angucomplete-alt'
   ])
   .run(function ($http, $rootScope) {
 
