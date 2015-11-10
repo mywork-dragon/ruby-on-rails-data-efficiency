@@ -29,7 +29,7 @@ module ApkWorker
 
       else
 
-        raise "quit" if apk_snap.try > 1 && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
+        raise "quit" if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
         
         apk_snap.try += 1
         apk_snap.save
