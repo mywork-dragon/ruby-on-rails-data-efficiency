@@ -1386,13 +1386,7 @@ class ApiController < ApplicationController
 
   end
 
-=begin
-  def get_sdk
-    sdkId = params['id']
-    render json: {sdkId: sdkId}
-  end
-=end
-
+  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
   def get_sdk
     sdk_id = params['id']
     sdk = AndroidSdkCompany.find(sdk_id)
@@ -1444,6 +1438,10 @@ class ApiController < ApplicationController
 
   def get_sdk_autocomplete
     search_str = params['searchstr']
+
+    # Logic for processing ElasticSearch search from params
+
+    # Querying RDS for top x num of results
 
     render json: {
                searchParam: search_str,
