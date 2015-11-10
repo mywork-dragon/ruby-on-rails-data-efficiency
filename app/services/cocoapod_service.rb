@@ -68,8 +68,8 @@ class CocoapodService
 
     end
 
-    def dump
-      classes_to_dump = [IosSdk, Cocoapod, CocoapodSourceData]
+    def dump(classes_to_dump = nil)
+      classes_to_dump = [IosSdk, Cocoapod, CocoapodSourceData] if arr.nil?
 
       classes_to_dump.each do |the_class|
         SeedDump.dump(the_class, file: "#{Rails.root.to_s}/db/#{the_class.to_s.underscore}.rb")
