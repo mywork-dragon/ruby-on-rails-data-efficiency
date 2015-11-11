@@ -22,7 +22,7 @@
   }
 }(window, function (angular) {
 
-  angular.module('angucomplete-alt', []).directive('angucompleteAlt', ['$q', '$parse', '$http', '$sce', '$timeout', '$templateCache', '$interpolate', function ($q, $parse, $http, $sce, $timeout, $templateCache, $interpolate) {
+  angular.module('angucomplete-alt', []).directive('angucompleteAlt', ['$q', '$parse', '$http', '$sce', '$timeout', '$templateCache', '$interpolate', 'filterService', function ($q, $parse, $http, $sce, $timeout, $templateCache, $interpolate, filterService) {
     // keyboard events
     var KEY_DW  = 40;
     var KEY_RT  = 39;
@@ -154,7 +154,6 @@
         mousedownOn = null;
         scope.hideResults(event);
         document.body.removeEventListener('click', clickoutHandlerForDropdown);
-        console.log("OBJECT SELECTED");
       }
 
       // for IE8 quirkiness about event.which
@@ -676,6 +675,10 @@
       };
 
       scope.selectResult = function(result) {
+
+        // MightySignal code to add selected result as a tag filter
+        filterService.addFilter('sdkName', result.title, 'SDK', false);
+
         // Restore original values
         if (scope.matchClass) {
           result.title = extractTitle(result.originalObject);
