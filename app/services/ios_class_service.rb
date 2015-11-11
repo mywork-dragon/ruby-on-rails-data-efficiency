@@ -41,18 +41,7 @@ class IosClassService
 
     def classify_strings(snap_id, contents)
 
-    	# ActiveRecord::Base.logger.level = 1
-
-     #  classes = contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
-     #  bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-     #  fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
-
-     #  search_classnames(classes, snap_id)
-     #  search_bundles(bundles, snap_id)
-     #  search_fw_folders(fw_folders, snap_id)
-
-     store_sdks_from_strings_googled(contents)
-
+     store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
 
     end
 
@@ -112,7 +101,7 @@ class IosClassService
       SdkService.find_from_queries(queries: queries, platform: :ios)
     end
 
-    def store_sdks_from_strings_googled(contents)
+    def store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
       sdks_h = store_sdks_from_strings_googled(contents: contents)
 
       sdks_h.each do |sdk|
@@ -139,6 +128,7 @@ class IosClassService
         	end
         end
 
+        IosSdksIpaSnapshot.create!(ios_sdk_id: ios_sdk.id, ipa_snapshot_id: snap_id)
       end
     end
 
