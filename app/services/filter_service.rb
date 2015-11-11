@@ -148,7 +148,7 @@ class FilterService
 
       if app_filters['sdkNames']
         sdk_ids = app_filters['sdkIds']
-        queries << "joins(android_sdk_companies_android_apps: :android_sdk_companies).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids
+        queries << "joins(android_sdk_companies_android_apps: :android_sdk_companies).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids.present?
       end
       
       queries
