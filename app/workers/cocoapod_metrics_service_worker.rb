@@ -11,7 +11,7 @@ class CocoapodMetricsServiceWorker
     metrics_row = CocoapodMetric.find(metrics_row_id)
 
     begin
-      update_metrics(ios_sdk_id, metrics_row)
+      update_metrics(metrics_row.ios_sdk.id, metrics_row)
     rescue => e
       CocoapodMetricException.create!({
         cocoapod_metric_id: metrics_row.id,
@@ -21,7 +21,7 @@ class CocoapodMetricsServiceWorker
 
       metrics_row[:success] = false
       metrics_row.save
-      
+
       raise e
     end
   end
