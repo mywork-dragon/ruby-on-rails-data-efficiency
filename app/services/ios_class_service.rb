@@ -115,25 +115,29 @@ class IosClassService
     def store_sdks_from_strings_googled(contents)
       sdks_h = store_sdks_from_strings_googled(contents: contents)
 
-      sdhks_h.each do |sdk|
+      sdks_h.each do |sdk|
 
-        if sdk[:kind] == :company
+        sdk_kind = sdk[:kind]
+
+        if sdk_kind == :company
         	begin
-          	ios_sdk = IosSdk.create!(name: sdk[:company], website: sdk[:url], open_source: false)
-            ios_sdk.favicon = WWW::Favicon.new.find(sdk[:url])
+            url = sdk[:url]
+            company = sdk[:company]
+
+          	ios_sdk = IosSdk.create!(name: company, website: url, open_source: false)
+            ios_sdk.favicon = WWW::Favicon.new.find(url)
             ios_sdk.save!
         	rescue ActiveRecord::RecordNotUnique => e
-        		ios_sdk = IosSdk.find_by_name(sdk[:company])
+        		ios_sdk = IosSdk.find_by_name(company)
         	end
-        elsif sdk[:kind] == :open_source
+        elsif sdk_kind == :open_source
         	begin
-          	ios_sdk = IosSdk.create!(name: sdk[:company], website: sdk[:url], open_source: true)
+            repo_id = sdk[:repo_id]
+          	ios_sdk = IosSdk.create!(name: sdk[:repo_name], website: sdk[:url], favicon: sdk[:favicon], open_source: true, summary: sdk[:repo_description], github_repo_identifier: repo_id)
         	rescue ActiveRecord::RecordNotUnique => e
-        		# ios_sdk = Ios # TODO: find by GitHub ID?
+            ios_sdk = IosSdk.find_by_github_repo_identifier(repo_id)
         	end
         end
-
-
 
       end
     end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103013058) do
+ActiveRecord::Schema.define(version: 20151111051455) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -834,16 +834,18 @@ ActiveRecord::Schema.define(version: 20151103013058) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",                default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "summary"
     t.boolean  "deprecated"
+    t.integer  "github_repo_identifier"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
+  add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", unique: true, using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
