@@ -677,7 +677,7 @@
       scope.selectResult = function(result) {
 
         // MightySignal code to add selected result as a tag filter
-        filterService.addFilter('sdkName', result.title, 'SDK', false);
+        filterService.addFilter('sdkNames', result.title, 'SDK', false);
 
         // Restore original values
         if (scope.matchClass) {

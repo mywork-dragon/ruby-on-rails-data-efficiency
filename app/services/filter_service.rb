@@ -151,6 +151,10 @@ class FilterService
           queries << "joins(:newest_ios_app_snapshot).where('android_app_snapshots.seller_url LIKE \"%.#{support_desk}.%\"')"
         end
       end
+
+      if app_filters['sdkNames']
+        queries << "joins(:android_sdk_companies).where(android_sdk_companies.name: #{app_filters['sdkNames']})"
+      end
       
       queries
     end
@@ -251,7 +255,6 @@ class FilterService
     end
     
     def ios_app_keywords_query(keywords)
-
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
       keywords_with_quotes = keywords.map{|k| "\"#{k}%\", \"#{k}%\""}
       # name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ?"}

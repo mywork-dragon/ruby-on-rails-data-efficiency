@@ -52,7 +52,7 @@ angular.module("appApp")
                   requestData['custom'][tag.parameter] = [tag.value];
                 }
                 break;
-              case 'sdkName':
+              case 'sdkNames':
                 if (requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
                 } else {
@@ -133,7 +133,7 @@ angular.module("appApp")
               value: value
             };
             break;
-          case 'sdkName':
+          case 'sdkNames':
             return {
               parameter: param,
               text: "SDK" + ": " + value,

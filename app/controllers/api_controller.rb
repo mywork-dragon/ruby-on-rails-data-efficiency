@@ -101,6 +101,8 @@ class ApiController < ApplicationController
   
   def filter_android_apps
     app_filters = JSON.parse(params[:app])
+    puts "##############"
+    puts app_filters
     company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
     page_num = params[:pageNum]
