@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105204217) do
+ActiveRecord::Schema.define(version: 20151111184910) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -450,6 +450,70 @@ ActiveRecord::Schema.define(version: 20151105204217) do
   end
 
   add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
+
+  create_table "cocoapod_metric_exceptions", force: true do |t|
+    t.integer  "ios_sdk_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_metric_exceptions", ["ios_sdk_id"], name: "index_cocoapod_metric_exceptions_on_ios_sdk_id", using: :btree
+
+  create_table "cocoapod_metrics", force: true do |t|
+    t.integer  "ios_sdk_id"
+    t.integer  "stats_download_total"
+    t.integer  "stats_download_week"
+    t.integer  "stats_download_month"
+    t.integer  "stats_app_total"
+    t.integer  "stats_app_week"
+    t.integer  "stats_tests_total"
+    t.integer  "stats_tests_week"
+    t.datetime "stats_created_at"
+    t.datetime "stats_updated_at"
+    t.integer  "stats_extension_week"
+    t.integer  "stats_extension_total"
+    t.integer  "stats_watch_week"
+    t.integer  "stats_watch_total"
+    t.integer  "stats_pod_try_week"
+    t.integer  "stats_pod_try_total"
+    t.boolean  "stats_is_active"
+    t.integer  "github_subscribers"
+    t.integer  "github_stargazers"
+    t.integer  "github_forks"
+    t.integer  "github_contributors"
+    t.integer  "github_open_issues"
+    t.integer  "github_open_pull_requests"
+    t.datetime "github_created_at"
+    t.datetime "github_updated_at"
+    t.string   "github_language"
+    t.integer  "github_closed_issues"
+    t.integer  "github_closed_pull_requests"
+    t.integer  "cocoadocs_install_size"
+    t.integer  "cocoadocs_total_files"
+    t.integer  "cocoadocs_total_comments"
+    t.integer  "cocoadocs_total_lines_of_code"
+    t.integer  "cocoadocs_doc_percent"
+    t.integer  "cocoadocs_readme_complexity"
+    t.string   "cocoadocs_initial_commit_date"
+    t.string   "cocoadocs_rendered_readme_url"
+    t.datetime "cocoadocs_created_at"
+    t.datetime "cocoadocs_updated_at"
+    t.string   "cocoadocs_license_short_name"
+    t.string   "cocoadocs_license_canonical_url"
+    t.integer  "cocoadocs_total_test_expectations"
+    t.string   "cocoadocs_dominant_language"
+    t.integer  "cocoadocs_quality_estimate"
+    t.boolean  "cocoadocs_builds_independently"
+    t.boolean  "cocoadocs_is_vendored_framework"
+    t.string   "cocoadocs_rendered_changelog_url"
+    t.text     "cocoadocs_rendered_summary"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_metrics", ["ios_sdk_id"], name: "index_cocoapod_metrics_on_ios_sdk_id", unique: true, using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"
