@@ -17,7 +17,7 @@ class CocoapodMetricsService
           end
         end
       else
-        pod_sdks.each do |sdk|
+        pod_sdks.sample(2).each do |sdk|
           CocoapodMetricsServiceWorker.new.perform(sdk.id)
         end
       end
