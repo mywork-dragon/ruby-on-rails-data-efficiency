@@ -19,6 +19,9 @@ class CocoapodMetricsServiceWorker
         backtrace: e.backtrace
       })
 
+      metrics_row[:success] = false
+      metrics_row.save
+      
       raise e
     end
   end
