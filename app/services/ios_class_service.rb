@@ -39,6 +39,7 @@ class IosClassService
       search_classnames(classes, snap_id)
     end
 
+    # Entry point to integrate with @osman
     def classify_strings(snap_id, contents)
 
      store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
