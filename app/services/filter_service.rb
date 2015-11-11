@@ -146,14 +146,9 @@ class FilterService
         queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
-      if app_filters['supportDesk']
-        for support_desk in app_filters['supportDesk']
-          queries << "joins(:newest_ios_app_snapshot).where('android_app_snapshots.seller_url LIKE \"%.#{support_desk}.%\"')"
-        end
-      end
-
       if app_filters['sdkNames']
-        queries << "joins(:android_sdk_companies).where(android_sdk_companies.name: #{app_filters['sdkNames']})"
+        sdk_ids = app_filters['sdkIds']
+        queries << "joins(android_sdk_companies_android_apps: :android_sdk_companies).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids
       end
       
       queries
