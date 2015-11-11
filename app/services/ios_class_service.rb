@@ -189,7 +189,7 @@ class IosClassService
 
     # Create entry in join table for every one that it finds
     def search_bundles(bundles, snap_id)
-      SdkService.find(packages: bundles, platform: :ios)
+      SdkService.find_from_packages(packages: bundles, platform: :ios)
     end
 
     def search_fw_folders(folders, snap_id)
