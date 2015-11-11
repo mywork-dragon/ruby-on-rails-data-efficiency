@@ -70,25 +70,11 @@ class SdkService
 
 		def google_sdk(query:, platform:)
 			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
-				puts "Before".purple
-				ap url
-				ext = exts(:before).select{|s| url.include?(s) }.first
-		    url = remove_sub(url).split(ext).first + ext
-		    puts "After".blue
-		    ap url
+				puts "url: #{url}".yellow
 		    company = query.capitalize
 				return {url: url, company: company, kind: :company} if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
 			end
 			nil
-		end
-
-		def dummy(url)
-			puts "Before".purple
-			ap url
-			ext = exts(:before).select{|s| url.include?(s) }.first
-	    url = remove_sub(url).split(ext).first + ext
-	    puts "After".blue
-	    ap url
 		end
 
 		# Whether the SDK company is valid
@@ -100,7 +86,7 @@ class SdkService
 
 			return false if known_companies.include?(company)
 
-			return true if url.downcase.include?(query.downcase)
+			return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
 
 			false
 		end
@@ -132,7 +118,7 @@ class SdkService
 						next if dice_similarity < DICE_SIMILARITY_THRESHOLD	# query not similar enough to repo name
 					end
 
-					return {url: url, kind: :open_source}.merge(srd)
+					return {url: url, favicon: 'https://assets-cdn.github.com/favicon.ico', kind: :open_source}.merge(srd)
 				end
 			end
 			nil

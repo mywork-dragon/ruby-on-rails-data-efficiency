@@ -119,13 +119,15 @@ class IosClassService
 
         if sdk[:kind] == :company
         	begin
-          	ios_sdk = IosSdk.create(name: sdk[:company], website: sdk[:url], cocoapod: found)
+          	ios_sdk = IosSdk.create!(name: sdk[:company], website: sdk[:url], open_source: false)
+            ios_sdk.favicon = WWW::Favicon.new.find(sdk[:url])
+            ios_sdk.save!
         	rescue ActiveRecord::RecordNotUnique => e
         		ios_sdk = IosSdk.find_by_name(sdk[:company])
         	end
         elsif sdk[:kind] == :open_source
         	begin
-          	# TODO: what do I query on? need to change to use unique GitHub ID?
+          	ios_sdk = IosSdk.create!(name: sdk[:company], website: sdk[:url], open_source: true)
         	rescue ActiveRecord::RecordNotUnique => e
         		# ios_sdk = Ios # TODO: find by GitHub ID?
         	end
@@ -148,7 +150,7 @@ class IosClassService
     end
 
 
-    # Entry point for
+    # Entry point forC
     def sdks_from_strings_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
       sdks_from_strings_googled(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
