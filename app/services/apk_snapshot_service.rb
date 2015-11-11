@@ -74,8 +74,8 @@ class ApkSnapshotService
       clear_accounts()
 
       j = ApkSnapshotJob.create!(notes: notes)
-      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
-        ApkSnapshotServiceWorker.new.perform(j.id, app.id)
+      AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
+        ApkSnapshotServiceWorker.new.perform(j.id, nil, app.id)
       end
     end
 
