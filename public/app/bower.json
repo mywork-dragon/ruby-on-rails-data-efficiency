@@ -31,7 +31,6 @@
     "ng-token-auth": "0.0.24",
     "angular-cookie": "~4.0.6",
     "checklist-model": "~0.2.4",
-    "angular-scroll": "~0.7.1",
-    "angucomplete-alt": "~2.1.0"
+    "angular-scroll": "~0.7.1"
   }
 }
