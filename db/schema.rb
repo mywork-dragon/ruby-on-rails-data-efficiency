@@ -497,7 +497,7 @@ ActiveRecord::Schema.define(version: 20151111184910) do
     t.integer  "cocoadocs_total_lines_of_code"
     t.integer  "cocoadocs_doc_percent"
     t.integer  "cocoadocs_readme_complexity"
-    t.string   "cocoadocs_initial_commit_date"
+    t.datetime "cocoadocs_initial_commit_date"
     t.string   "cocoadocs_rendered_readme_url"
     t.datetime "cocoadocs_created_at"
     t.datetime "cocoadocs_updated_at"
@@ -515,6 +515,8 @@ ActiveRecord::Schema.define(version: 20151111184910) do
   end
 
   add_index "cocoapod_metrics", ["ios_sdk_id"], name: "index_cocoapod_metrics_on_ios_sdk_id", using: :btree
+  add_index "cocoapod_metrics", ["stats_app_total"], name: "index_cocoapod_metrics_on_stats_app_total", using: :btree
+  add_index "cocoapod_metrics", ["stats_download_total"], name: "index_cocoapod_metrics_on_stats_download_total", using: :btree
   add_index "cocoapod_metrics", ["success"], name: "index_cocoapod_metrics_on_success", using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
