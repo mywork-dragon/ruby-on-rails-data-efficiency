@@ -166,7 +166,7 @@ module ApkWorker
 
   def optimal_account(apk_snap_id)
 
-    GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: device(apk_snap_id)).sample
+    GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: new_device(apk_snap_id)).sample
 
     # gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
 
@@ -191,8 +191,13 @@ module ApkWorker
 
   end
 
-  def device(apk_snap_id)
-    ApkSnapshot.find_by_id(apk_snap_id).google_account.device.nil? ? 2 : 1
+  def new_device(apk_snap_id)
+    g = ApkSnapshot.find_by_id(apk_snap_id).google_account
+    if g.present?
+      g.device == 'moto_g_phone' ? 1 : 2
+    else
+      2
+    end
   end
 
   # Finds account used longest ago
