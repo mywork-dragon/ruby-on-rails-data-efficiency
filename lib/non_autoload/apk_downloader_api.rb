@@ -137,7 +137,7 @@ if defined?(ApkDownloader)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
-      proxy = '169.45.70.23:8888' if Rails.env.development?
+      proxy = '127.0.0.1:8888' if Rails.env.development?
 
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy

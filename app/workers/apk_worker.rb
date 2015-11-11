@@ -166,59 +166,65 @@ module ApkWorker
 
   def optimal_account(apk_snap_id)
 
-    gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
+    GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: device(apk_snap_id)).sample
 
-    gac.times do |c|
+    # gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
 
-      account = fresh_account(apk_snap_id)
+    # gac.times do |c|
 
-      if account.present?
-        next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-        account.in_use = true
-        account.save
-        return account
-      elsif c < gac
-        next
-      else
-        return false
-      end
+    #   account = fresh_account(apk_snap_id)
 
-    end
+    #   if account.present?
+    #     next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
+    #     account.in_use = true
+    #     account.save
+    #     return account
+    #   elsif c < gac
+    #     next
+    #   else
+    #     return false
+    #   end
 
-    false
+    # end
 
+    # false
+
+  end
+
+  def device(apk_snap_id)
+    ApkSnapshot.find_by_id(apk_snap_id).google_account.device.nil? ? 2 : 1
   end
 
   # Finds account used longest ago
-  def fresh_account(apk_snap_id)
-    device = ApkSnapshot.find(apk_snap_id).last_device.to_s
+  # def fresh_account(apk_snap_id)
+  #   device = ApkSnapshot.find(apk_snap_id).last_device.to_s
 
-    # Choose good phone, unless it already failed
+  #   # Choose good phone, unless it already failed
 
-    d = device.blank? ? "= 2" : "!= #{device}"
+  #   d = device.blank? ? "= 2" : "!= #{device}"
 
-    # iu = single_queue? ? "" : " AND in_use IS FALSE"
+  #   # iu = single_queue? ? "" : " AND in_use IS FALSE"
 
-    # g = GoogleAccount.transaction do
-    #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
-    #   ga.last_used = DateTime.now
-    #   ga.save
-    #   ga
-    # end
+  #   # g = GoogleAccount.transaction do
+  #   #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
+  #   #   ga.last_used = DateTime.now
+  #   #   ga.save
+  #   #   ga
+  #   # end
 
-    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}").sample
+  #   g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}").sample
 
-    if g.blank?
+  #   if g.blank?
 
-      d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
+  #     d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
 
-      err_msg = "All the accounts on your #{d_name} are down."
-      raise err_msg
+  #     err_msg = "All the accounts on your #{d_name} are down."
+  #     raise err_msg
 
-    else
-      return g
-    end
+  #   else
+  #     return g
+  #   end
 
-  end
+  # end
 
 end
