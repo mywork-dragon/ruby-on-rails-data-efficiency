@@ -39,7 +39,7 @@ class CreateCocoapodMetrics < ActiveRecord::Migration
       t.integer :cocoadocs_total_lines_of_code
       t.integer :cocoadocs_doc_percent
       t.integer :cocoadocs_readme_complexity
-      t.string :cocoadocs_initial_commit_date
+      t.datetime :cocoadocs_initial_commit_date
       t.string :cocoadocs_rendered_readme_url
       t.datetime :cocoadocs_created_at
       t.datetime :cocoadocs_updated_at
@@ -58,5 +58,7 @@ class CreateCocoapodMetrics < ActiveRecord::Migration
 
     add_index :cocoapod_metrics, :ios_sdk_id
     add_index :cocoapod_metrics, :success
+    add_index :cocoapod_metrics, :stats_download_total
+    add_index :cocoapod_metrics, :stats_app_total
   end
 end
