@@ -128,6 +128,35 @@ class CocoapodService
       end
     end
 
+    def find_sdk_similarities(sdks = nil)
+
+      SIMILARITY_REQUIREMENT = 0.9
+      sdks = IosSdk.all if sdks.nil?
+
+      sdks.each do |sdk|
+
+        similar = []
+        ids = sdk.cocoapods.map {|pod| pod.id}
+        names = CocoapodSourceData.find(ids).map {|source_row| source_row.name}
+
+        conflicts = names.map do |name|
+          conflicts = CocoapodSourceData.find_by_name(name)
+          conflicts.select {|row| !ids.include?(row.cocoapod_id) }
+        end
+
+        uniq_conflicts = conflicts.flatten.uniq
+        uniq_conflicts.each do |id|
+          count = conflicts.count {|conflicts_arr| arr.include?(id)}
+          if count > conflicts.length * SIMILARITY_REQUIREMENT
+            Cocoapod.find(id).ios_sdk
+          end
+        end
+
+
+      end
+
+    end
+
   end
 
 end
