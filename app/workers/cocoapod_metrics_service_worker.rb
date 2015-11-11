@@ -8,11 +8,13 @@ class CocoapodMetricsServiceWorker
 
 
   def perform(ios_sdk_id)
+    metrics_row = CocoapodMetric.create!(ios_sdk_id: ios_sdk_id)
+
     begin
-      update_metrics(ios_sdk_id)
+      update_metrics(ios_sdk_id, metrics_row)
     rescue => e
       CocoapodMetricException.create!({
-        ios_sdk_id: ios_sdk_id,
+        cocoapod_metric_id: metrics_row.id,
         error: e.message,
         backtrace: e.backtrace
       })
@@ -21,7 +23,7 @@ class CocoapodMetricsServiceWorker
     end
   end
 
-  def update_metrics(ios_sdk_id)
+  def update_metrics(ios_sdk_id, metrics_row)
 
     sdk_name = IosSdk.find(ios_sdk_id).name
     metrics = get_metrics(sdk_name)
@@ -42,14 +44,9 @@ class CocoapodMetricsServiceWorker
       row[col.name] = data
     end
 
-    ios_sdk = IosSdk.find_by_name(sdk_name)
-    row[:ios_sdk_id] = ios_sdk.id
+    row[:success] = true
+    metrics_row.update(row)
 
-    begin
-      CocoapodMetric.create!(row)
-    rescue
-      CocoapodMetric.find_by_ios_sdk_id(ios_sdk.id).update(row)
-    end
   end
 
   def get_metrics(sdk_name)

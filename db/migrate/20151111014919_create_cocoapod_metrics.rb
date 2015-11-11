@@ -3,6 +3,7 @@ class CreateCocoapodMetrics < ActiveRecord::Migration
     create_table :cocoapod_metrics do |t|
 
       t.integer :ios_sdk_id
+      t.boolean :success
       t.integer :stats_download_total
       t.integer :stats_download_week
       t.integer :stats_download_month
@@ -55,6 +56,7 @@ class CreateCocoapodMetrics < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :cocoapod_metrics, :ios_sdk_id, unique: true
+    add_index :cocoapod_metrics, :ios_sdk_id
+    add_index :cocoapod_metrics, :success
   end
 end

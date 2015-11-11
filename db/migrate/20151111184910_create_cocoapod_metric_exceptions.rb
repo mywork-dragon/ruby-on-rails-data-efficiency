@@ -2,13 +2,13 @@ class CreateCocoapodMetricExceptions < ActiveRecord::Migration
   def change
     create_table :cocoapod_metric_exceptions do |t|
 
-      t.integer :ios_sdk_id
+      t.integer :cocoapod_metric_id
       t.text :error
-      t.text :backtrace 
+      t.text :backtrace
 
       t.timestamps
     end
 
-    add_index :cocoapod_metric_exceptions, :ios_sdk_id
+    add_index :cocoapod_metric_exceptions, :cocoapod_metric_id
   end
 end

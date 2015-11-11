@@ -452,17 +452,18 @@ ActiveRecord::Schema.define(version: 20151111184910) do
   add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
 
   create_table "cocoapod_metric_exceptions", force: true do |t|
-    t.integer  "ios_sdk_id"
+    t.integer  "cocoapod_metric_id"
     t.text     "error"
     t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "cocoapod_metric_exceptions", ["ios_sdk_id"], name: "index_cocoapod_metric_exceptions_on_ios_sdk_id", using: :btree
+  add_index "cocoapod_metric_exceptions", ["cocoapod_metric_id"], name: "index_cocoapod_metric_exceptions_on_cocoapod_metric_id", using: :btree
 
   create_table "cocoapod_metrics", force: true do |t|
     t.integer  "ios_sdk_id"
+    t.boolean  "success"
     t.integer  "stats_download_total"
     t.integer  "stats_download_week"
     t.integer  "stats_download_month"
@@ -513,7 +514,8 @@ ActiveRecord::Schema.define(version: 20151111184910) do
     t.datetime "updated_at"
   end
 
-  add_index "cocoapod_metrics", ["ios_sdk_id"], name: "index_cocoapod_metrics_on_ios_sdk_id", unique: true, using: :btree
+  add_index "cocoapod_metrics", ["ios_sdk_id"], name: "index_cocoapod_metrics_on_ios_sdk_id", using: :btree
+  add_index "cocoapod_metrics", ["success"], name: "index_cocoapod_metrics_on_success", using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"

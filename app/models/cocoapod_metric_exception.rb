@@ -1,3 +1,3 @@
 class CocoapodMetricException < ActiveRecord::Base
-  belongs_to :ios_sdk
+  belongs_to :cocoapod_metric
 end
