@@ -27,6 +27,7 @@ class IosSdkServiceWorker
 
 		in_database = !IosSdk.find_by_name(sdk_name).nil?
 		pod = get_pod_contents(sdk_name)
+		byebug
 		if in_database
 			# know it's valid, just check deprecated and update stuff
 			i = IosSdk.find_by_name(sdk_name)

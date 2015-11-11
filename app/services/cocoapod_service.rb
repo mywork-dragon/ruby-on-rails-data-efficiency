@@ -96,6 +96,15 @@ class CocoapodService
       end
     end
 
+    # checks source data to see if there's a unique name
+    def get_unique_classes(sdk_name)
+      pod_ids = IosSdk.find_by_name(sdk_name).cocoapods.map {|pod| pod.id}
+      CocoapodSourceData.where(cocoapod_id: pod_ids).select do |source_row|
+        copies = CocoapodSourceData.where(name: source_row.name)
+        copies.select {|row| row.id != source_row.id}.length == 0
+      end.map {|row| row.name}
+    end
+
     def apple_docs
 
       CocoapodSourceData.all.each do |d|

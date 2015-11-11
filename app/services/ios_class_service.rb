@@ -46,31 +46,28 @@ class IosClassService
       bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
       fw_folders = contents.scan(/^Folder:(.+)\n/).flatten.uniq
 
-      search_classnames(classes, snap_id)
+      
       search_bundles(bundles, snap_id)
       search_fw_folders(fw_folders, snap_id)
+      search_classnames(classes, snap_id)
     end
 
     def search_classnames(names, snap_id)
+      result = []
       names.each do |name|
 
-        found = code_search(name) || search(name)
+        found = search(name) || code_search(name)
 
         next if found.nil?
 
         begin
-          i = IosSdk.create(name: found.name, website: found.link, cocoapod: found)
-        rescue
-          i = IosSdk.find_by_cocoapod_id(found.id)
-        end
-
-        begin
-          IosSdksIpaSnapshot.create(ios_sdk: i, ipa_snapshot_id: snap_id)
+          # IosSdksIpaSnapshot.create(ios_sdk: found.id, ipa_snapshot_id: snap_id)
+          result.push(found.name)
         rescue
           nil
         end
       end
-      nil
+      result.uniq
     end
 
     def search_bundles(bundles, snap_id)
@@ -95,13 +92,22 @@ class IosClassService
 
     def search(q)
       s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
-      c = Cocoapod.find_by_name(s)
+      c = IosSdk.find_by_name(s)
       c if c.present?
     end
 
-    def code_search(q)
-      c = CocoapodSourceData.where(name: q)
-      c[0].cocoapod if c.length == 0 # ignore matches that don't uniquely identify
+    def code_search(name)
+
+      c = CocoapodSourceData.where(name: name)
+      ios_sdks = c.map do |csd|
+        pod = csd.cocoapod
+        if !pod.nil?
+          pod.ios_sdk
+        end
+      end.compact.uniq
+
+      puts "found #{ios_sdks.length} matches for #{name}"
+      ios_sdks.first if ios_sdks.length == 1 # ignore matches that don't uniquely identify
     end
 
 	end
