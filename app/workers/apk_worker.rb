@@ -197,7 +197,7 @@ module ApkWorker
 
     d = device.blank? ? "= 2" : "!= #{device}"
 
-    iu = single_queue? ? "" : " AND in_use IS FALSE"
+    # iu = single_queue? ? "" : " AND in_use IS FALSE"
 
     # g = GoogleAccount.transaction do
     #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
@@ -206,7 +206,7 @@ module ApkWorker
     #   ga
     # end
 
-    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").sample
+    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}").sample
 
     if g.blank?
 
