@@ -168,6 +168,10 @@ if defined?(ApkDownloader)
         elsif response.status == 404
           aa.display_type = :taken_down
           snap.status = :taken_down
+        elsif response.status == 500
+          ga = snap.google_account
+          ga.blocked = true
+          ga.save
         end
 
         snap.save
