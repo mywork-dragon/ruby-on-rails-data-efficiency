@@ -7,8 +7,8 @@ class CocoapodMetricsServiceWorker
   IGNORE_ROWS = %w(id updated_at created_at ios_sdk_id)
 
 
-  def perform(ios_sdk_id)
-    metrics_row = CocoapodMetric.create!(ios_sdk_id: ios_sdk_id)
+  def perform(metrics_row_id)
+    metrics_row = CocoapodMetric.find(metrics_row_id)
 
     begin
       update_metrics(ios_sdk_id, metrics_row)

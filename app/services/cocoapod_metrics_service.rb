@@ -13,12 +13,14 @@ class CocoapodMetricsService
 
         batch.jobs do
           pod_sdks.each do |sdk|
-            CocoapodMetricsServiceWorker.perform_async(sdk.id)
+            row = CocoapodMetric.create!(ios_sdk_id: sdk.id)
+            CocoapodMetricsServiceWorker.perform_async(row.id)
           end
         end
       else
         pod_sdks.sample(2).each do |sdk|
-          CocoapodMetricsServiceWorker.new.perform(sdk.id)
+          row = CocoapodMetric.create!(ios_sdk_id: sdk.id)
+          CocoapodMetricsServiceWorker.new.perform(row.id)
         end
       end
     end
