@@ -107,7 +107,25 @@ class IosClassService
       end.compact.uniq
 
       puts "found #{ios_sdks.length} matches for #{name}"
-      ios_sdks.first if ios_sdks.length == 1 # ignore matches that don't uniquely identify
+      ios_sdks.length <= 1 ? ios_sdks.first : handle_collisions(ios_sdks)
+    end
+
+    def get_downloads_for_sdk(sdk)
+      most_recent = sdk.cocoapod_metrics.select {|metrics| metrics.success}.sort_by {|x| x.updated_at}.last
+      most_recent ? most_recent.stats_download_total : 0
+    end
+
+    def handle_collisions(sdks, req = 0.8)
+
+      puts "Collision between #{sdks.map {|x| x.name}.join(',')}"
+      # use total downloads as proxy
+      downloads = sdks.map {|sdk| get_downloads_for_sdk(sdk)}
+      total = downloads.reduce(0) {|x, y| x + y}
+
+      byebug
+
+      highest = downloads.max
+      sdks[downloads.find_index(highest)] if highest > req * total
     end
 
 	end
