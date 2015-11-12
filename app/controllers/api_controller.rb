@@ -101,8 +101,6 @@ class ApiController < ApplicationController
   
   def filter_android_apps
     app_filters = JSON.parse(params[:app])
-    puts "###########"
-    puts app_filters
     company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
     page_num = params[:pageNum]
@@ -716,10 +714,6 @@ class ApiController < ApplicationController
           domain = UrlHelper.url_with_domain_only(url)
 
           clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
-
-          puts "####"
-          puts clearbit_query
-          puts "####"
 
           get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
           new_clearbit_contacts = JSON.load(get.response.body)
