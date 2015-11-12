@@ -564,7 +564,7 @@
       }
 
       function processResults(responseData, str) {
-        var i, description, image, text, formattedText, formattedDesc;
+        var i, description, image, text, idField, formattedText, formattedDesc;
 
         if (responseData && responseData.length > 0) {
           scope.results = [];
@@ -572,6 +572,9 @@
           for (i = 0; i < responseData.length; i++) {
             if (scope.titleField && scope.titleField !== '') {
               text = formattedText = extractTitle(responseData[i]);
+            }
+            if (responseData[i].id) {
+              idField = responseData[i].id;
             }
 
             description = '';
@@ -591,6 +594,7 @@
 
             scope.results[scope.results.length] = {
               title: formattedText,
+              id: idField,
               description: formattedDesc,
               image: image,
               originalObject: responseData[i]
@@ -677,7 +681,7 @@
       scope.selectResult = function(result) {
 
         // MightySignal code to add selected result as a tag filter
-        filterService.addFilter('sdkNames', result.title, 'SDK', false);
+        filterService.addFilter('sdkNames', result.id, 'SDK', false, result.title);
 
         // Restore original values
         if (scope.matchClass) {
@@ -793,6 +797,7 @@
         titleField: '@',
         descriptionField: '@',
         imageField: '@',
+        idField: '@',
         inputClass: '@',
         pause: '@',
         searchFields: '@',

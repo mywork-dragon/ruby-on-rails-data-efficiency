@@ -4,7 +4,7 @@ angular.module("appApp")
   .factory("filterService", ["$rootScope",
     function($rootScope) {
       return {
-        addFilter: function(parameter, value, displayName, limitToOneFilter) {
+        addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
           console.log('Param:', parameter, 'Val:', value, 'DisName:', displayName);
           /* -------- Mixpanel Analytics Start -------- */
           var mixpanelProperties = {};
@@ -30,7 +30,7 @@ angular.module("appApp")
               // If replacing pre existing tag of limitToOneFilter = true category
               if (tag.parameter == parameter) {
                 tag.value = value;
-                tag.text = displayName + ': ' + value;
+                tag.text = displayName + ': ' + customName || value;
                 oneTagUpdated = true;
               }
             }
@@ -41,7 +41,7 @@ angular.module("appApp")
             $rootScope.tags.push({
               parameter: parameter,
               value: value,
-              text: displayName + ': ' + value
+              text: displayName + ': ' + customName || value
             });
           }
 
@@ -49,7 +49,7 @@ angular.module("appApp")
             $rootScope.tags.push({
               parameter: parameter,
               value: value,
-              text: displayName + ': ' + value
+              text: displayName + ': ' + customName || value
             });
           }
         }

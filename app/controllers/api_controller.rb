@@ -101,7 +101,7 @@ class ApiController < ApplicationController
   
   def filter_android_apps
     app_filters = JSON.parse(params[:app])
-    puts "##############"
+    puts "###########"
     puts app_filters
     company_filters = JSON.parse(params[:company])
     page_size = params[:pageSize]
@@ -1448,8 +1448,8 @@ class ApiController < ApplicationController
     render json: {
                searchParam: search_str,
                results: [
-                   {name: 'Example SDK', favicon: 'http://robohash.org/com.alpha322322300.png?size=300x300'},
-                   {name: 'Example SDK 2', favicon: 'http://robohash.org/com.biodex107107300.png?size=300x300'}
+                   {id: 1, name: 'Example SDK', favicon: 'http://robohash.org/com.alpha322322300.png?size=300x300'},
+                   {id: 2, name: 'Example SDK 2', favicon: 'http://robohash.org/com.biodex107107300.png?size=300x300'}
                ]
            }
   end
