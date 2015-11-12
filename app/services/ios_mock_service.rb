@@ -7,7 +7,7 @@ class IosMockService
 
       return "Nothing to run" if app_identifiers.nil?
 
-      job_id = IpaSnapshotJob.create!(notes: "running a mock ios scan job on apps #{app_identifiers.join(',')}", type: :mock).id
+      job_id = IpaSnapshotJob.create!(notes: "running a mock ios scan job on apps #{app_identifiers.join(',')}", job_type: :mock).id
 
       if Rails.env.production?
 
@@ -28,7 +28,8 @@ class IosMockService
     end
 
     def test_on_complete
-      nil
+      job = IpaSnapshotJob.create!(type: :mock)
+      snap = IpaSnapshot.create!(ios_app_id: 364297166, ipa_snapshot_job_id: job.id)
     end
 
   end

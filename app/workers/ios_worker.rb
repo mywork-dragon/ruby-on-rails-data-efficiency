@@ -44,6 +44,10 @@ module IosWorker
 				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
 			end
 
+			return nil if snapshot.status == :complete # make sure no duplicates in the job
+
+			# TODO: add logic to take previous results if app's version in the app store has not changed
+
 			classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
 			# get a device
@@ -51,15 +55,14 @@ module IosWorker
 
 			# no devices available...fail out and save
 			if device.nil?
-				classdump[:complete] = true
-				classdump[:error_code] = :devices_busy
+				classdump.complete = true
+				classdump.error_code = :devices_busy
 				classdump.save
 
-				raise "No devices available"
-				# return on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
+				return on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
 			end
 
-			classdump[:ios_device_id] = device.id
+			classdump.ios_device_id = device.id
 			classdump.save
 
 			# do the actual classdump
@@ -71,7 +74,7 @@ module IosWorker
 				classdump.update row
 
 				if row[:dump_success]
-					snapshot[:status] = :cleaning
+					snapshot.status = :cleaning
 					snapshot.save
 				end
 			end
@@ -89,7 +92,7 @@ module IosWorker
 
 			on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
 		rescue => e
-			on_complete(ipa_snapshot_job_id, app_id, bid, e)
+			on_complete(ipa_snapshot_job_id, app_identifier, bid, e)
 		end
 		
 	end
