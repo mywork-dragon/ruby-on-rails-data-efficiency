@@ -1406,8 +1406,9 @@ class ApiController < ApplicationController
         name: sdk.name,
         website: sdk.website,
         favicon: sdk.favicon,
-        open_source: sdk.open_source,
+        openSource: sdk.open_source,
         platform: 'android',
+        numOfApps: sdk.android_apps.count
 =begin
         iosApps: company.get_ios_apps.map{|app| {
             id: app.id,
@@ -1425,7 +1426,6 @@ class ApiController < ApplicationController
                 small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
             }
         }},
-=end
         androidApps: sdk.android_apps.map{|app| {
             id: app.id,
             name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
@@ -1442,6 +1442,7 @@ class ApiController < ApplicationController
             }
           }
         }
+=end
     }
     render json: @sdk_json
   end

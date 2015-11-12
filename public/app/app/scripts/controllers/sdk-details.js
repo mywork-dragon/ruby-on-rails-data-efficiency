@@ -16,22 +16,13 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
-        // var companyApps = data.iosApps.concat(data.androidApps);
-        var companyApps = data.androidApps;
-        sdkDetailsCtrl.apps = companyApps;
-        sdkDetailsCtrl.numApps = companyApps.length;
-        $rootScope.numApps = companyApps.length;
         sdkDetailsCtrl.queryInProgress = false;
         /* Sets html title attribute */
 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Company Page Viewed", {
-            "companyId": $routeParams.id,
-            "appPlatform": APP_PLATFORM,
-            "companyName": sdkDetailsCtrl.companyData.name,
-            "fortuneRank": sdkDetailsCtrl.companyData.fortuneRank,
-            "funding": sdkDetailsCtrl.companyData.funding
+            "sdkName": sdkDetailsCtrl.name
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -44,7 +35,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
     sdkDetailsCtrl.onAppTableAppClick = function(app) {
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
-        "App on Company Page Clicked", {
+        "SDK Page Clicked", {
           "companyName": sdkDetailsCtrl.companyData.name,
           "appName": app.name,
           "appId": app.id,
@@ -63,6 +54,11 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
         sdkDetailsCtrl.notify('add-selected-error');
       });
       sdkDetailsCtrl['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+    };
+
+    sdkDetailsCtrl.submitSdkQuery = function() {
+      var path = API_URI_BASE + "app/app#/search?app=%7B%22sdkNames%22:%5B%7B%22id%22:" + sdkDetailsCtrl.sdkData.id + ",%22name%22:%22" + encodeURI(sdkDetailsCtrl.sdkData.name) + "%22%7D%5D%7D&company=%7B%7D&custom=%7B%7D&pageNum=1&pageSize=100&platform=%7B%22appPlatform%22:%22android%22%7D";
+      $window.location.href = path;
     };
 
     sdkDetailsCtrl.notify = function(type) {
