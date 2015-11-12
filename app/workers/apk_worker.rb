@@ -165,71 +165,21 @@ module ApkWorker
   end
 
   def optimal_account(apk_snap_id)
-
-    GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: new_device(apk_snap_id)).sample
-
-    # gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
-
-    # gac.times do |c|
-
-    #   account = fresh_account(apk_snap_id)
-
-    #   if account.present?
-    #     next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-    #     account.in_use = true
-    #     account.save
-    #     return account
-    #   elsif c < gac
-    #     next
-    #   else
-    #     return false
-    #   end
-
-    # end
-
-    # false
-
+      ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: new_device(apk_snap_id)).sample
   end
 
   def new_device(apk_snap_id)
     g = ApkSnapshot.find_by_id(apk_snap_id).google_account
-    if g.present?
+    d = if g.present?
       g.device == 'moto_g_phone' ? 1 : 2
     else
       2
     end
+    GoogleAccount.where(device: d, blocked: false).blank? ? switch(d) : d
   end
 
-  # Finds account used longest ago
-  # def fresh_account(apk_snap_id)
-  #   device = ApkSnapshot.find(apk_snap_id).last_device.to_s
-
-  #   # Choose good phone, unless it already failed
-
-  #   d = device.blank? ? "= 2" : "!= #{device}"
-
-  #   # iu = single_queue? ? "" : " AND in_use IS FALSE"
-
-  #   # g = GoogleAccount.transaction do
-  #   #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
-  #   #   ga.last_used = DateTime.now
-  #   #   ga.save
-  #   #   ga
-  #   # end
-
-  #   g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}").sample
-
-  #   if g.blank?
-
-  #     d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
-
-  #     err_msg = "All the accounts on your #{d_name} are down."
-  #     raise err_msg
-
-  #   else
-  #     return g
-  #   end
-
-  # end
+  def switch(l)
+    l == 1 ? 2 : 1
+  end
 
 end

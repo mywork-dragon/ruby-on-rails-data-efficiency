@@ -1,3 +1,5 @@
+[com]sec
+[net]sourceforge
 uk.co
 co.uk
 main
