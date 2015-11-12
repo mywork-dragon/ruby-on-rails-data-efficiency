@@ -343,6 +343,7 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
 
+                <!--
                 <div style="text-align:center" ng-if="appData.displayStatus == 'taken_down'">
                   <strong>App is no longer listed in the app store - no SDK Live Scan available.</strong>
                 </div>
@@ -354,6 +355,7 @@
                 <div style="text-align:center" ng-if="appData.displayStatus == 'device_incompatible'">
                   <strong>SDK Live Scan is temporarily unavailable for this app.</strong>
                 </div>
+                -->
 
                 <li ng-show="sdkData && sdkData.errorCode == 0 && appData.displayStatus == 'normal' && !noAppSnapshot" id="sdkLiveScanDisplay">
                   <div class="sdksListView">
@@ -426,11 +428,11 @@
                   </div>
                 </li>
 
-                <!--
                 <div style="text-align:center">
                   <strong>SDK Live Scans are currently being updated - please check back later.</strong>
                 </div>
-                -->
+
+                <!--
 
                 <li id="appPageSdkScanStatus" ng-if="noSdkData && appData.displayStatus == 'normal' || sdkQueryInProgress && appData.displayStatus == 'normal'">
                   <div id="sdkScanErrorMessage" ng-show="noSdkData">
@@ -451,6 +453,7 @@
                     <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
                   </div>
                 </li>
+                -->
 
               </ul>
             </div>
