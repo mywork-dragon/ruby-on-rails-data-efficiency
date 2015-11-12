@@ -14,102 +14,93 @@
 
 <div class="page page-table" data-ng-controller="TableCtrl">
 
-  <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
-    <div class="panel-heading" id="listViewTableHeading">
-      <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="sdkSearchCtrl.numApps">| Displaying {{sdkSearchCtrl.appsDisplayedCount()}} of {{sdkSearchCtrl.numApps}}</span>
-      <span class="ui-select pull-right">
-        <select ng-model="addSelectedToDropdown" ng-change="sdkSearchCtrl.addSelectedTo(addSelectedToDropdown, selectedAppsForList)">
-          <option value="">Copy Selected to List</option>
-          <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
-        </select>
-      </span>
-    </div>
+  <div data-ng-controller="SdkSearchCtrl as sdkSearchCtrl">
 
-    <div id="results-table-wrapper" data-ng-controller="SdkSearchCtrl as sdkSearchCtrl">
+    <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
 
-      <table class="table table-bordered table-striped table-responsive">
-        <thead>
-        <tr>
-          <th class="selectAllCheckboxHeader">
-            <select-all-checkbox apps="sdkSearchCtrl.apps"></select-all-checkbox>
-          </th>
-          <th><div class="th normal-right-padding">
-            SDK Name
-          </div></th>
-          <th><div class="th normal-right-padding">
-            Platform
-          </div></th>
-          <th><div class="th normal-right-padding appDetailsHeader">
-            Website
-          </div></th>
-          <th><div class="th normal-right-padding">
-            Open Source
-          </div></th>
-        </tr>
-        </thead>
+      <div class="panel-heading" id="listViewTableHeading">
+        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="sdkSearchCtrl.numSdks">| Displaying {{sdkSearchCtrl.sdksDisplayedCount()}} of {{sdkSearchCtrl.numSdks}}</span>
+      </div>
 
-        <tbody data-ng-hide="queryInProgress">
-        <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
-          <td class="dashboardTableDataCheckbox">
-            <checkable-checkbox app="sdk.sdk" apps="sdkSearchCtrl.sdks"></checkable-checkbox>
-          </td>
-          <td>
-              <span>
-                <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
-              </span>
-          </td>
-          <td class="appTypeIndicator">
-            <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
-          </td>
-          <td ng-if="sdk.sdk.website">{{sdk.sdk.website}}</td>
-          <td>{{sdk.sdk.open_source ? 'Yes' : 'No'}}</td>
-        </tr>
-        </tbody>
-      </table>
-      <div id="dashboardTableStatusMessage" data-ng-show="sdkSearchCtrl.queryInProgress || !(sdkSearchCtrl.numApps > 0)">
-        <h5 data-ng-hide="sdkSearchCtrl.appNum > 0 || sdkSearchCtrl.queryInProgress">No Items</h5>
-        <div data-ng-show="sdkSearchCtrl.queryInProgress" id="wrap_spinner">
-          <div class="loading outer">
-            <div class="loading inner"></div>
+      <div id="results-table-wrapper">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th><div class="th normal-right-padding">
+              SDK Name
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Platform
+            </div></th>
+            <th><div class="th normal-right-padding appDetailsHeader">
+              Website
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Open Source
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="queryInProgress">
+          <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
+            <td>
+                <span>
+                  <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
+                </span>
+            </td>
+            <td class="appTypeIndicator">
+              <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+            </td>
+            <td ng-if="sdk.sdk.website">{{sdk.sdk.website}}</td>
+            <td>{{sdk.sdk.openSource ? 'Yes' : 'No'}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" data-ng-show="sdkSearchCtrl.queryInProgress || !(sdkSearchCtrl.numSdks > 0)">
+          <h5 data-ng-hide="sdkSearchCtrl.sdkNum > 0 || sdkSearchCtrl.queryInProgress">No Items</h5>
+          <div data-ng-show="sdkSearchCtrl.queryInProgress" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
           </div>
         </div>
+
+        <!-- Modals -->
+        <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+        <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+        <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
       </div>
 
-      <!-- Modals -->
-      <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-      <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
-      <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">
+            <!--
+                <span>
+                    Show
+                    <select data-ng-model="numPerPage"
+                            data-ng-options="num for num in numPerPageOpt"
+                            data-ng-change="onNumPerPageChange()">
+                    </select>
+                    entries per page
+                </span>
+            -->
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <pagination class="pagination-sm"
+                        ng-model="sdkSearchCtrl.currentPage"
+                        total-items="sdkSearchCtrl.numSdks"
+                        max-size="8"
+                        ng-change="sdkSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
+                        items-per-page="sdkSearchCtrl.numPerPage"
+                        rotate="false"
+                        boundary-links="true"></pagination>
 
-    </div>
-
-    <footer class="table-footer">
-      <div class="row">
-        <div class="col-md-6 page-num-info">
-          <!--
-              <span>
-                  Show
-                  <select data-ng-model="numPerPage"
-                          data-ng-options="num for num in numPerPageOpt"
-                          data-ng-change="onNumPerPageChange()">
-                  </select>
-                  entries per page
-              </span>
-          -->
+          </div>
         </div>
-        <div class="col-md-6 text-right pagination-container">
-          <pagination class="pagination-sm"
-                      ng-model="sdkSearchCtrl.currentPage"
-                      total-items="sdkSearchCtrl.numApps"
-                      max-size="8"
-                      ng-change="sdkSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
-                      items-per-page="sdkSearchCtrl.numPerPage"
-                      rotate="false"
-                      boundary-links="true"></pagination>
+      </footer>
 
-        </div>
-      </div>
-    </footer>
-
-  </section>
-
+    </section>
+  </div>
 </div>

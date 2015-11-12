@@ -17,8 +17,8 @@ angular.module('appApp')
         sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage)
           .success(function(data) {
             sdkSearchCtrl.sdks = data.sdkData;
-            sdkSearchCtrl.appNum = data.sdkData.length;
-            sdkSearchCtrl.numApps = data.totalAppsCount;
+            sdkSearchCtrl.sdkNum = data.sdkData.length;
+            sdkSearchCtrl.numSdks = data.totalSdksCount;
             sdkSearchCtrl.numPerPage = data.numPerPage;
             sdkSearchCtrl.changeAppPlatform(routeParams.platform);
             sdkSearchCtrl.searchInput = routeParams.query;
@@ -26,8 +26,8 @@ angular.module('appApp')
             sdkSearchCtrl.queryInProgress = false;
           })
           .error(function(data) {
-            sdkSearchCtrl.appNum = 0;
-            sdkSearchCtrl.numApps = 0;
+            sdkSearchCtrl.sdkNum = 0;
+            sdkSearchCtrl.numSdks = 0;
             sdkSearchCtrl.queryInProgress = false;
           });
 
@@ -86,12 +86,12 @@ angular.module('appApp')
         listApiService.listAddNotify(type);
       };
 
-      sdkSearchCtrl.appsDisplayedCount = function() {
+      sdkSearchCtrl.sdksDisplayedCount = function() {
         var lastPageMaxApps = sdkSearchCtrl.numPerPage * sdkSearchCtrl.currentPage;
         var baseAppNum = sdkSearchCtrl.numPerPage * (sdkSearchCtrl.currentPage - 1) + 1;
 
-        if (lastPageMaxApps > sdkSearchCtrl.numApps) {
-          return "" + baseAppNum + " - " + sdkSearchCtrl.numApps;
+        if (lastPageMaxApps > sdkSearchCtrl.numSdks) {
+          return "" + baseAppNum + " - " + sdkSearchCtrl.numSdks;
         } else {
           return "" + baseAppNum + " - " + lastPageMaxApps;
         }
