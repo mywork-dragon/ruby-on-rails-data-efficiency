@@ -985,7 +985,6 @@ ActiveRecord::Schema.define(version: 20151112223331) do
 
   create_table "ipa_snapshot_jobs", force: true do |t|
     t.integer  "job_type"
-    t.boolean  "complete"
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
