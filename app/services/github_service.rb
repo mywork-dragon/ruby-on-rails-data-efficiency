@@ -59,6 +59,8 @@ class GithubService
 
   # Repo can be URL or user/repo
   # Returns a JSON object of the repo's metadata
+  # @author Jason Lew
+  # @return The repo info in a Hash
   def get_repo_data(repo)
     repos_api_url = repo_to_url(repo)
 

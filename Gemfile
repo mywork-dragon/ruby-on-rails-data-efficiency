@@ -161,3 +161,4 @@ gem 'diff_dirs', '0.1.2'
 gem 'seed_dump'
 
 gem 'byebug', group: :development
+gem 'fuzzy_match', '2.1.0'
