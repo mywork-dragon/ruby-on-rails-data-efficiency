@@ -131,11 +131,13 @@ class CocoapodService
     def find_sdk_similarities(sdk_names = nil, req = 0.75)
 
 
-      sdks = sdk_names.nil? ? IosSdk.all : IosSdk.where(name: sdk_names)
+      sdks = sdk_names.nil? ? IosSdk.all.sample(10) : IosSdk.where(name: sdk_names)
+
+      similar = {}
 
       sdks.each do |sdk|
 
-        similar = []
+        
         ids = sdk.cocoapods.map {|pod| pod.id}
         names = CocoapodSourceData.where(cocoapod_id: ids).map {|source_row| source_row.name}.uniq
 
@@ -143,12 +145,15 @@ class CocoapodService
 
         conflicts.group_by {|x| x.cocoapod_id}.each do |cocoapod_id, collisions|
           if collisions.length > names.length * req
-            similar.push(Cocoapod.find(cocoapod_id).ios_sdk.name)
+            match = Cocoapod.find(cocoapod_id).ios_sdk.name
+            similar[sdk.name] = similar[sdk.name].nil? ? [match] : similar[sdk.name] + [match]
           end
         end
 
-        ap similar
       end
+
+      ap similar
+      similar
 
     end
 
