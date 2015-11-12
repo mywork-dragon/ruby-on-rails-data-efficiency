@@ -35,6 +35,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
                 break;
               case 2:
                 sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+                $scope.appData.displayStatus = "taken_down";
                 break;
               case 3:
                 sdkErrorMessage = "Error - Please Try Again";
@@ -44,6 +45,12 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
                 break;
               case 5:
                 $scope.noSdkData = false;
+                break;
+              case 6:
+                $scope.appData.displayStatus = "device_incompatible";
+                break;
+              case 7:
+                $scope.appData.displayStatus = "foreign";
                 break;
             }
           }
@@ -194,6 +201,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               break;
             case 2:
               sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+              $scope.appData.displayStatus = "taken_down";
               break;
             case 3:
               sdkErrorMessage = "Error - Please Try Again";
@@ -203,6 +211,12 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               break;
             case 5:
               $scope.noSdkData = false;
+              break;
+            case 6:
+              $scope.appData.displayStatus = "device_incompatible";
+              break;
+            case 7:
+              $scope.appData.displayStatus = "foreign";
               break;
           }
         }
@@ -217,8 +231,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             'errorMessage': sdkErrorMessage
           };
         }
+        var mixpanelEventTitle = "";
+        var liveScanSlacktivityColor = "";
+
+        if($scope.sdkData.errorCode == 0) {
+          mixpanelEventTitle = "SDK Live Scan Success";
+          liveScanSlacktivityColor = "#45825A";
+        } else if($scope.sdkData.errorCode == 2 || $scope.sdkData.errorCode > 5) {
+          mixpanelEventTitle = "SDK Live Scan Hidden";
+          liveScanSlacktivityColor = "#A45200";
+        } else {
+          mixpanelEventTitle = "SDK Live Scan Failed";
+          liveScanSlacktivityColor = "#E82020";
+        }
         /* -------- Mixpanel Analytics Start -------- */
-        var mixpanelEventTitle = "SDK Live Scan " + ($scope.sdkData.errorCode != 3 ? 'Success' : 'Failed');
         mixpanel.track(
           mixpanelEventTitle, {
             'platform': 'Android',
@@ -243,7 +269,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         var slacktivityData = {
           "title": mixpanelEventTitle,
           "fallback": mixpanelEventTitle,
-          "color": mixpanelEventTitle == "SDK Live Scan Success" ? "#45825A" : "#E82020",
+          "color": liveScanSlacktivityColor,
           "userEmail": userInfo.email,
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,
@@ -278,7 +304,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         var slacktivityData = {
           "title": "SDK Live Scan Failed",
           "fallback": "SDK Live Scan Failed",
-          "color": "#e82020",
+          "color": "#E82020",
           "userEmail": userInfo.email,
           'appName': $scope.appData.name,
           'companyName': $scope.appData.company.name,

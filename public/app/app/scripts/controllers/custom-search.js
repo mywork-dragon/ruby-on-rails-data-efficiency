@@ -26,6 +26,8 @@ angular.module('appApp')
             customSearchCtrl.searchInput = routeParams.query;
             customSearchCtrl.currentPage = data.page;
             customSearchCtrl.queryInProgress = false;
+            $rootScope.apps = customSearchCtrl.apps;
+            $rootScope.numApps = customSearchCtrl.numApps;
           })
           .error(function(data) {
             customSearchCtrl.appNum = 0;

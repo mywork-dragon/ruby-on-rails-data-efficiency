@@ -278,10 +278,70 @@ class GooglePlayService
     link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
   end
 
+    # Makes sure the scraping logic is still valid
+    # (Checks to see if Google has changed their DOM)
+    # @author Jason Lew
+    def dom_valid?
+
+      attributes = self.attributes('com.ubercab')
+
+      ap attributes
+
+      # ae: attributes expected 
+      ae = 
+        {
+          name: ->(x) { x == 'Uber' },
+          description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+          price: ->(x) { x == 0},
+          seller: ->(x) { x == 'Uber Technologies, Inc.' },
+          seller_url: ->(x) { x == 'http://uber.com' },
+          category: ->(x) { x == 'Transportation' },
+          released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015},
+          size: ->(x) { x.nil? },
+          top_dev: ->(x) { x == true },
+          in_app_purchases: ->(x) { x == false },
+          required_android_version: ->(x) { x.to_i >= 4 },
+          version: ->(x) { x.to_i >= 3 },
+          downloads: ->(x) { x.min >= 10e6},
+          content_rating: ->(x) { x == 'Everyone'},
+          ratings_all_stars: ->(x) { (1..5).include?(x) },
+          ratings_all_count: ->(x) { x > 300000 },
+          similar_apps: ->(x) { x.count > 0},
+          screenshot_urls: ->(x) { x.count > 0},
+          icon_url_300x300: ->(x) { x.present? },
+          developer_google_play_identifier: ->(x) { x.present? },
+        }
+
+        ret = true
+
+        ae.each do |expected_attribute_key, expected_attribute_value|
+          attribute_value = attributes[expected_attribute_key]
+
+          pass = ae[expected_attribute_key].call(attribute_value)
+
+          if pass
+            puts "#{expected_attribute_key}: PASS".green
+          else
+            ret = false
+            puts "#{expected_attribute_key}: FAIL".red
+            puts "#{attribute_value}".purple
+          end
+
+          puts ""
+
+        end
+
+      ret
+    end
+
   class << self
 
     def attributes(app_identifier)
       self.new.attributes(app_identifier)
+    end
+
+    def dom_valid?
+      self.new.dom_valid?
     end
 
   end

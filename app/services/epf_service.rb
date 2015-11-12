@@ -229,8 +229,9 @@ class EpfService
           
             row += [released, category, user_base, average_rating, number_of_ratings, mighty_signal_id]
           end
-        
+
           csv << row
+          
         end
       end
     

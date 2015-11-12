@@ -2,50 +2,136 @@ class Proxy
 
 	class << self
 
-		def get(req:, params: {}, type: :get, nokogiri: false)
-
+    # Get the response from a get request
+    # If get fails, will throw an error
+    # @author Stephen Kennedy
+    # @author Osman Khwaja
+    # @author Jason Lew
+    # @return The response (CurbFu::Response::Base)
+    # @note Will run from local IP if not in production mode
+    def get(req:, params: {}, type: :get, hard_proxy: false) 
 			if Rails.env.production?
 
-		      begin
+        if hard_proxy
+          proxy = "#{do_hard_proxy}:8888"
+        else
+          mp = MicroProxy.transaction do
+            p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
+            p.last_used = DateTime.now
+            p.save
+            p
+          end
 
-		        mp = MicroProxy.transaction do
+          proxy = "#{mp.private_ip}:8888"
+        end
 
-		          p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
-		          p.last_used = DateTime.now
-		          p.save
+        return CurbFu.send(type, req, params) do |curb|
 
-		          p
+          # Defaults
+          curb.proxy_url = proxy
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+          curb.timeout = 120
 
-		        end
+          yield(curb) if block_given? # Can override
+        end
 
-		        proxy = "#{mp.private_ip}:8888"
+	    else
 
-		        response = CurbFu.send(type, req, params) do |curb|
-		          curb.proxy_url = proxy
-		          curb.ssl_verify_peer = false
-		          curb.max_redirects = 3
-		          curb.timeout = 5
-		        end
+        return CurbFu.send(type, req, params) do |curb|
 
-		      rescue
+          # Defaults
+        	curb.follow_location = true
+	        curb.ssl_verify_peer = false
+	        curb.max_redirects = 3
+	        curb.timeout = 120
 
-		        nil
+          yield(curb) if block_given? # Can override
+	      end
 
-		      end
-
-		    else
-
-		      response = CurbFu.send(type, req, params) do |curb|
-		        curb.ssl_verify_peer = false
-		        curb.max_redirects = 3
-		        curb.timeout = 5
-		      end
-
-		    end
-
-		    Nokogiri::HTML(response.body) if nokogiri
+	    end
 
 		end
+
+    # Gets the body only
+    # @author Jason Lew
+    # @return The body (String)
+    def get_body(req:, params: {}, type: :get, hard_proxy: false)
+      get(req: req, params: params, type: type).body
+    end
+
+    # Get the body as Nokogiri
+    # @author Jason Lew
+    # @return A Nokogiri::HTML::Document of the page
+    def get_nokogiri(req:, params: {}, type: :get)
+      Nokogiri::HTML(get_body(req: req, params: params, type: type)) 
+    end
+
+    # Get the body, passing in only the URL
+    # @author Jason Lew
+    # @url The URL to get
+    # @param The HTTP params
+    # @return The body (String)
+    # @note Also randomizes the User Agent
+    def get_body_from_url(url, params: {}, hard_proxy: false)
+      uri = URI(url)
+      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
+    end
+
+    def do_hard_proxy
+      %w(
+        172.31.20.1
+        172.31.29.18
+        172.31.20.230
+        172.31.24.153
+        172.31.24.26
+        172.31.37.27
+        172.31.36.192
+        172.31.36.118
+        172.31.32.44
+        172.31.36.248
+        172.31.28.223
+        172.31.17.197
+        172.31.17.16
+        172.31.18.173
+        172.31.27.168
+        172.31.22.203
+        172.31.30.9
+        172.31.30.83
+        172.31.20.155
+        172.31.19.221
+        172.31.19.59
+        172.31.24.40
+        172.31.29.43
+        172.31.22.60
+        172.31.30.139
+        172.31.27.164
+        172.31.20.8
+        172.31.17.76
+        172.31.26.149
+        172.31.24.147
+        172.31.19.147
+        172.31.18.158
+        172.31.22.222
+        172.31.19.185
+        172.31.23.246
+        172.31.16.176
+        172.31.29.67
+        172.31.22.106
+        172.31.29.31
+        172.31.19.52
+        172.31.27.53
+        172.31.25.190
+        172.31.23.204
+        172.31.28.30
+        172.31.23.81
+        172.31.18.237
+        172.31.21.142
+        172.31.27.169
+        172.31.28.197
+        172.31.23.243
+        ).sample
+    end
 
 	end
 
