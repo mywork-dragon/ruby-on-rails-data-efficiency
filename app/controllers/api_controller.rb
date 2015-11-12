@@ -1439,12 +1439,23 @@ class ApiController < ApplicationController
 
     # Querying RDS for top x num of results
 
+    sdk_companies = AndroidSdkCompany.where("name like '#{params['searchstr']}%'")
+
+    results = []
+
+    sdk_companies.each do |sdk|
+      results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+    end
+
     render json: {
                searchParam: search_str,
+               results: results
+=begin
                results: [
                    {id: 1, name: 'Example SDK', favicon: 'http://robohash.org/com.alpha322322300.png?size=300x300'},
                    {id: 2, name: 'Example SDK 2', favicon: 'http://robohash.org/com.biodex107107300.png?size=300x300'}
                ]
+=end
            }
   end
 
