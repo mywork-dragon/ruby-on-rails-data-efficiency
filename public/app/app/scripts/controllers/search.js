@@ -13,8 +13,9 @@ angular.module('appApp')
         var urlParams = $location.url().split('/search')[1]; // If url params not provided
         var routeParams = $location.search();
 
-        /* Complile Object with All Filters from Params */
+        /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
+        console.log('APP PARAMS:', appParams);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);

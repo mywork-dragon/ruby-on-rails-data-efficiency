@@ -136,8 +136,8 @@ angular.module("appApp")
           case 'sdkNames':
             return {
               parameter: param,
-              text: "SDK" + ": " + value,
-              value: value
+              text: "SDK" + ": " + value.name,
+              value: value.id
             };
             break;
         }
