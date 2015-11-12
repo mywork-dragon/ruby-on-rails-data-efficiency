@@ -137,7 +137,7 @@ angular.module("appApp")
             return {
               parameter: param,
               text: "SDK" + ": " + value.name,
-              value: value.id
+              value: value
             };
             break;
         }

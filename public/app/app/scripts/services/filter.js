@@ -30,7 +30,7 @@ angular.module("appApp")
               // If replacing pre existing tag of limitToOneFilter = true category
               if (tag.parameter == parameter) {
                 tag.value = value;
-                tag.text = displayName + ': ' + customName || value;
+                tag.text = displayName + ': ' + (customName ? customName : value);
                 oneTagUpdated = true;
               }
             }
@@ -41,7 +41,7 @@ angular.module("appApp")
             $rootScope.tags.push({
               parameter: parameter,
               value: value,
-              text: displayName + ': ' + customName || value
+              text: displayName + ': ' + (customName ? customName : value)
             });
           }
 
@@ -49,7 +49,7 @@ angular.module("appApp")
             $rootScope.tags.push({
               parameter: parameter,
               value: value,
-              text: displayName + ': ' + customName || value
+              text: displayName + ': ' + (customName ? customName : value)
             });
           }
         }
