@@ -13,8 +13,6 @@ class ApkSnapshotService
 
       workers = Sidekiq::Workers.new.any?{ |w| w[2]["queue"] == 'sdk_scraper' }
 
-      clear_accounts()
-
       if !workers
 
         batch = Sidekiq::Batch.new
