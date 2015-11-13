@@ -165,7 +165,7 @@ module ApkWorker
   end
 
 
-  def optimal_account(apk_snap_id: apk_snap_id, interval: 0.5, wait: 60, max_flags: 5)
+  def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 5)
       (wait/interval).to_i.times do
         ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags)).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
         if ga.present?
