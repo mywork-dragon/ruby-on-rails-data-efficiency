@@ -69,7 +69,7 @@ angular
          templateUrl: '/app/app/views/list.html',
          activeTab: 'lists'
        })
-       .when('/sdk/:id', {
+       .when('/sdk/:platform/:id', {
          templateUrl: '/app/app/views/sdk-details.html',
          controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
          activeTab: 'sdks'

@@ -5,6 +5,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
+    var sdkPlatform = $routeParams.platform;
+
     sdkDetailsCtrl.load = function() {
 
       sdkDetailsCtrl.queryInProgress = true;
