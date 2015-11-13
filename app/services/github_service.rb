@@ -3,7 +3,8 @@ class GithubService
   # Repo can be URL or user/repo
   def repo_to_url(repo)
     if repo.match(/\Ahttps?:\/\//)  # if it looks like a url
-      repo.sub('github.com/', 'api.github.com/repos/')
+      new_path = URI(repo).path.split("/")[0..2].join("/").gsub('.git', '')
+      File.join('https://api.github.com/repos/', new_path)
     elsif repo.split('/').count == 2
       'https://api.github.com/repos/' + repo
     end
