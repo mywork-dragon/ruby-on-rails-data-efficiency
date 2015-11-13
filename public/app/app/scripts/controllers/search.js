@@ -1,11 +1,15 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService",
-    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService",
+    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
+
+      // User info set
+      var userInfo = {};
+      authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function() {
@@ -77,6 +81,18 @@ angular.module('appApp')
               searchQueryPairs
             );
             /* -------- Mixpanel Analytics End -------- */
+            /* -------- Slacktivity Alerts -------- */
+            var slacktivityData = {
+              "title": "SDK Filter Query",
+              "fallback": "SDK Filter Query",
+              "color": "#FFD94D", // yellow
+              "userEmail": userInfo.email,
+              "tags": searchQueryFields.join(', '),
+              "numOfApps": data.resultsCount
+            };
+            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+            window.Slacktivity.send(slacktivityData);
+            /* -------- Slacktivity Alerts End -------- */
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
