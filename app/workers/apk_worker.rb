@@ -167,7 +167,7 @@ module ApkWorker
 
   def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 10)
       (wait/interval).to_i.times do
-        ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags)).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
+        ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags), blocked: false).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
         if ga.present?
           ga.last_used = DateTime.now
           ga.save
@@ -179,9 +179,9 @@ module ApkWorker
 
   def new_device(apk_snap_id, max_flags)
     ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
-    last_device = ga.nil? ? nil : GoogleAccount.devices[ga.device]
-    d = GoogleAccount.where('flags <= ? AND device IS NOT ?', max_flags, last_device).sample.device
-    d.blank? ? GoogleAccount.where('flags <= ?', max_flags).sample.device : d
+    last_device = ga.nil? ? -1 : GoogleAccount.devices[ga.device]
+    d = GoogleAccount.where('flags <= ? AND device != ?', max_flags, last_device).where(blocked: false).sample.device
+    d.blank? ? GoogleAccount.where('flags <= ?', max_flags).where(blocked: false).sample.device : d
   end
 
 
