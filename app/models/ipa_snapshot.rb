@@ -1,6 +1,6 @@
 class IpaSnapshot < ActiveRecord::Base
 
-	has_many :class_dump
+	has_many :class_dumps
   has_many :ipa_snapshot_exceptions
 
 	belongs_to :ios_app

@@ -21,8 +21,6 @@ class IosScanSingleServiceWorker
 
     snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
 
-    byebug
-
     if result.class == ClassDump && result.success
       snapshot.status = :complete
       snapshot.success = true

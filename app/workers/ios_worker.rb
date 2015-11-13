@@ -27,6 +27,7 @@ module IosWorker
 			row = data.select { |key| data_keys.include? key }
 
 			# don't upload files in development mode
+			# TODO: Remove
 			file = if !Rails.env.development? && data[:outfile_path] && false
 				File.open(data[:outfile_path])
 			end
