@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112202614) do
+ActiveRecord::Schema.define(version: 20151112223331) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -125,7 +125,7 @@ ActiveRecord::Schema.define(version: 20151112202614) do
     t.integer  "display_type",                   default: 0
   end
 
-  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", unique: true, using: :btree
   add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
@@ -937,16 +937,18 @@ ActiveRecord::Schema.define(version: 20151112202614) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",                default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "summary"
     t.boolean  "deprecated"
+    t.integer  "github_repo_identifier"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
+  add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", unique: true, using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
@@ -971,13 +973,34 @@ ActiveRecord::Schema.define(version: 20151112202614) do
   add_index "ios_word_occurences", ["count"], name: "index_ios_word_occurences_on_count", using: :btree
   add_index "ios_word_occurences", ["word"], name: "index_ios_word_occurences_on_word", using: :btree
 
-  create_table "ipa_snapshots", force: true do |t|
-    t.integer  "ios_app_id"
+  create_table "ipa_snapshot_exceptions", force: true do |t|
+    t.integer  "ipa_snapshot_id"
+    t.integer  "ipa_snapshot_job_id"
+    t.integer  "error_code"
+    t.text     "error"
+    t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  create_table "ipa_snapshot_jobs", force: true do |t|
+    t.integer  "job_type"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ipa_snapshots", force: true do |t|
+    t.integer  "ios_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status"
+    t.boolean  "success"
+    t.integer  "ipa_snapshot_job_id"
+  end
+
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
+  add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
     t.string   "name"
