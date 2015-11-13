@@ -164,22 +164,16 @@ module ApkWorker
 
   end
 
+
   def optimal_account(apk_snap_id)
       ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: new_device(apk_snap_id)).sample
   end
 
   def new_device(apk_snap_id)
-    g = ApkSnapshot.find_by_id(apk_snap_id).google_account
-    d = if g.present?
-      g.device == 'moto_g_phone' ? 1 : 2
-    else
-      2
-    end
-    GoogleAccount.where(device: d, blocked: false).blank? ? switch(d) : d
+    last_device = ApkSnapshot.find_by_id(apk_snap_id).google_account.device
+    d = GoogleAccount.where(blocked: false).where('id != ?', last_device).sample.device
+    d.blank? ? GoogleAccount.where(blocked: false).sample.device : d
   end
 
-  def switch(l)
-    l == 1 ? 2 : 1
-  end
 
 end
