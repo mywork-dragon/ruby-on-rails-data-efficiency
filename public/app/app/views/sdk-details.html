@@ -26,7 +26,7 @@
                 <li ng-if="sdkDetailsCtrl.sdkData.website">
                   <span class="icon fa fa-bar-chart"></span>
                   <label>Website:</label>
-                  {{sdkDetailsCtrl.sdkData.website}}
+                  <a href="{{sdkDetailsCtrl.sdkData.website}}">{{sdkDetailsCtrl.sdkData.website}}</a>
                 </li>
                 <li>
                   <span class="icon fa fa-bar-chart"></span>
@@ -50,7 +50,7 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <div style="text-align:center">
-                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps}}</strong> apps
+                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps}}</strong> apps.
                 </div>
                 <div id="showSdksButton">
                   <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery()">See Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
