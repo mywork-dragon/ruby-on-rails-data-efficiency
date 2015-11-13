@@ -44,7 +44,7 @@
 
           <tbody data-ng-hide="queryInProgress">
           <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
-            <td>
+            <td class="resultsTableAppIcon">
                 <span>
                   <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
                 </span>
@@ -52,7 +52,9 @@
             <td class="appTypeIndicator">
               <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
             </td>
-            <td ng-if="sdk.sdk.website">{{sdk.sdk.website}}</td>
+            <td ng-if="sdk.sdk.website">
+              <a href="{{sdk.sdk.website}}">{{sdk.sdk.website}}</a>
+            </td>
             <td>{{sdk.sdk.openSource ? 'Yes' : 'No'}}</td>
           </tr>
           </tbody>
