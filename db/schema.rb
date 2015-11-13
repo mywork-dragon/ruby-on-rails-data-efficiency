@@ -125,7 +125,7 @@ ActiveRecord::Schema.define(version: 20151112223331) do
     t.integer  "display_type",                   default: 0
   end
 
-  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", unique: true, using: :btree
   add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
