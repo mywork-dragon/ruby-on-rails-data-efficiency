@@ -7236,7 +7236,6 @@ i.infoTooltipIcon {
 
 #dashboardPlatformSwitch {
   margin-right: 10px;
-  top: 2px;
 }
 
 .dashboard-tag-filter-selects #dashboardPlatformSwitch {
@@ -7337,7 +7336,7 @@ select option:empty {
 
 .resultsTableAppIcon img {
   max-width: 32px;
-  max-height: 32px;
+  height: 32px;
   margin-right: 5px;
 }
 
@@ -7661,6 +7660,7 @@ pre {
   position: relative;
   top: 4px;
   margin-left: 4px;
+  margin-bottom: 10px;
 }
 
 .angucomplete-dropdown {
@@ -7719,6 +7719,7 @@ pre {
 .angucomplete-image {
   height: 20px;
   width: 20px;
+  margin-top: 4px;
 }
 
 .angucomplete-image-default {
