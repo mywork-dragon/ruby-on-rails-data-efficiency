@@ -16,7 +16,7 @@ class IosMockService
 
         batch.jobs do
           app_identifiers.each do |app_id|
-            IosMockServiceWorker.perform_async(job_id, app_identifier, :one_off)            
+            IosMockServiceWorker.perform_async(job_id, app_identifier, :one_off, bid)
           end
         end
       else
