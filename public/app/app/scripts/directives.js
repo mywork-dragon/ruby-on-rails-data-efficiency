@@ -419,6 +419,15 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
               }
             }
+            // Removes all sdk filters upon platform switch to iOS
+            if ($scope.appPlatform != 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'sdkNames') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
             // Removes all categories upon platform switch
             for (var index = 0; index < $rootScope.tags.length; index++) {
               if ($rootScope.tags[index].parameter == 'categories') {
@@ -460,6 +469,15 @@ angular.module("app.directives", []).directive("imgHolder", [
             if ($scope.appPlatform == 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
                 if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+            // Removes all sdk filters upon platform switch to iOS
+            if ($scope.appPlatform != 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'sdkNames') {
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }

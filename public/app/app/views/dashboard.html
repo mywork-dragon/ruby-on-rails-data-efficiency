@@ -81,7 +81,7 @@
                       <option value="desk">Desk</option>
                     </select>
                </span>
-               <span ng-if="searchCtrl.canViewStorewideSdks">
+               <span ng-if="searchCtrl.canViewStorewideSdks && appPlatform.platform == 'android'"">
                   <angucomplete-alt id="sdk-autocomplete-filter"
                                    placeholder="Add an SDK filter"
                                    pause="100"
