@@ -178,8 +178,9 @@ module ApkWorker
   end
 
   def new_device(apk_snap_id, max_flags)
-    last_device = ApkSnapshot.find_by_id(apk_snap_id).google_account.device
-    d = GoogleAccount.where('flags <= ?', max_flags).where('id != ?', last_device).sample.device
+    ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
+    last_device = ga.nil? ? nil : ga.device
+    d = GoogleAccount.where('flags <= ? AND device IS NOT ?', max_flags, last_device).sample.device
     d.blank? ? GoogleAccount.where('flags <= ?', max_flags).sample.device : d
   end
 
