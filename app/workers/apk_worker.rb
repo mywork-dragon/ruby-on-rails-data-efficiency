@@ -44,7 +44,7 @@ module ApkWorker
 
       # raise "not in america" unless apk_snap.android_app.in_america?
 
-      best_account = optimal_account(apk_snap.id)
+      best_account = optimal_account(apk_snap_id: apk_snap.id)
 
       raise "no best account" if best_account.blank?
 
@@ -165,15 +165,24 @@ module ApkWorker
   end
 
 
-  def optimal_account(apk_snap_id)
-      ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, blocked: false, device: new_device(apk_snap_id)).sample
+  def optimal_account(apk_snap_id: apk_snap_id, interval: 0.5, wait: 60, max_flags: 5)
+      (wait/interval).to_i.times do
+        ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags)).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
+        if ga.present?
+          ga.last_used = DateTime.now
+          ga.save
+          return ga
+        end
+        sleep interval
+      end
   end
 
-  def new_device(apk_snap_id)
+  def new_device(apk_snap_id, max_flags)
     last_device = ApkSnapshot.find_by_id(apk_snap_id).google_account.device
-    d = GoogleAccount.where(blocked: false).where('id != ?', last_device).sample.device
-    d.blank? ? GoogleAccount.where(blocked: false).sample.device : d
+    d = GoogleAccount.where('flags <= ?', max_flags).where('id != ?', last_device).sample.device
+    d.blank? ? GoogleAccount.where('flags <= ?', max_flags).sample.device : d
   end
+
 
 
 end

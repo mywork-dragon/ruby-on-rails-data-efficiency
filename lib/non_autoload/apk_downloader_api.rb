@@ -156,6 +156,10 @@ if defined?(ApkDownloader)
 
       if [200,302].include? response.status
 
+        ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
+        ga.flags = 0
+        ga.save
+
         return response
 
       else
@@ -178,7 +182,7 @@ if defined?(ApkDownloader)
           snap.status = :taken_down
         elsif response.status == 500
           ga = snap.google_account
-          ga.blocked = true
+          ga.flags += 1
           ga.save
         end
 
