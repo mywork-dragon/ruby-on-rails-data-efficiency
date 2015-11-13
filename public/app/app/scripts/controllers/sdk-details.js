@@ -11,6 +11,13 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
     var userInfo = {};
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
+    authService.permissions()
+      .success(function(data) {
+        if(!data.can_view_storewide_sdks) {
+          $window.location.href = "#/search";
+        }
+      });
+
     sdkDetailsCtrl.load = function() {
 
       sdkDetailsCtrl.queryInProgress = true;

@@ -12,7 +12,7 @@
         <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/"> <i class="fa fa-search"></i> <span>App Search</span></a>
         </li>
-        <li ng-class="{active: $route.current.activeTab == 'sdks'}">
+        <li ng-if="canViewStorewideSdks" ng-class="{active: $route.current.activeTab == 'sdks'}">
           <a href="#search/sdk"> <i class="fa fa-cubes"></i> <span>SDKs</span></a>
         </li>
         <!--

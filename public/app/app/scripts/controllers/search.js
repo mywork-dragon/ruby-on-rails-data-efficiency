@@ -11,6 +11,12 @@ angular.module('appApp')
       var userInfo = {};
       authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
+      // Sets user permissions
+      authService.permissions()
+        .success(function(data) {
+          searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
+        });
+
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function() {
 

@@ -431,17 +431,23 @@ angular.module("app.directives", []).directive("imgHolder", [
         controllerAs: 'appPlatformCtrl'
       }
     }])
-    .directive('customPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
+    .directive('customPlatformToggle', ["apiService", "$rootScope", "AppPlatform", "authService", function (apiService, $rootScope, AppPlatform, authService) {
       return {
         replace: true,
         restrict: 'E',
         scope: {
           customSearchPlatform: '=customSearchPlatform'
         },
-        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android Apps</button> <button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS Apps</button> <button type="button" ng-class="appPlatform.platform == \'sdks\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'sdks\')">Android SDKs</button></span>',
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android Apps</button> <button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS Apps</button> <button type="button" ng-if="canViewStorewideSdks" ng-class="appPlatform.platform == \'sdks\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'sdks\')">Android SDKs</button></span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
+
+
+          authService.permissions()
+            .success(function(data) {
+              $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            });
 
           $scope.changeAppPlatform = function (platform) {
             $scope.customSearchPlatform = platform;

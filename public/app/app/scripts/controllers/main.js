@@ -42,6 +42,7 @@ angular.module('appApp')
             $scope.canViewSupportDesk = data.can_view_support_desk;
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
+            $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
           })
           .error(function() {
             $scope.canViewSupportDesk = false;
