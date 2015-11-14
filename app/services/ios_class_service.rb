@@ -9,7 +9,10 @@ class IosClassService
     def classify(snap_id)
       ActiveRecord::Base.logger.level = 1
 
-      classdump = IpaSnapshot.find(snap_id).class_dump
+      classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
+
+      return if classdump.nil?
+
       if Rails.env.production?
 
         url = classdump.class_dump.url
@@ -34,6 +37,7 @@ class IosClassService
 
     def classify_classdump(snap_id, contents)
 
+      puts "Classifying classdump".red
       classes = contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
 
       search_classnames(classes, snap_id)
@@ -42,16 +46,12 @@ class IosClassService
     # Entry point to integrate with @osman
     def classify_strings(snap_id, contents)
 
-     store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
+      puts "Classifying strings".blue
+      sdks_from_strings_googled(contents: contents, search_fw_folders: true)
+     # store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
 
     end
 
-<<<<<<< HEAD
-      
-      search_bundles(bundles, snap_id)
-      search_fw_folders(fw_folders, snap_id)
-      search_classnames(classes, snap_id)
-=======
     # Get classes from strings
     def classes_from_strings(contents)
       contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
@@ -92,7 +92,7 @@ class IosClassService
         puts ""
 
         puts "Bundles:".green
-        ap bundlesx
+        ap bundles
         puts ""
 
         puts "FW Folders:".green
@@ -109,7 +109,7 @@ class IosClassService
     end
 
     def store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
-      sdks_h = store_sdks_from_strings_googled(contents: contents)
+      sdks_h = sdks_from_strings_googled(contents: contents)
 
       sdks_h.each do |sdk|
 
@@ -155,7 +155,6 @@ class IosClassService
     def sdks_from_strings_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
       sdks_from_strings_googled(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
->>>>>>> ios_classification_dev_search_bundles_frameworks
     end
 
     def search_classnames(names, snap_id)
@@ -205,7 +204,6 @@ class IosClassService
       nil
     end
 
-    # 
     def search(q)
       s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
       c = IosSdk.find_by_name(s)
@@ -228,7 +226,7 @@ class IosClassService
 
     def get_downloads_for_sdk(sdk)
       most_recent = sdk.cocoapod_metrics.select {|metrics| metrics.success}.sort_by {|x| x.updated_at}.last
-      most_recent ? most_recent.stats_download_total : 0
+      res = most_recent ? most_recent.stats_download_total || 0 : 0
     end
 
     def handle_collisions(sdks, req = 0.8)
@@ -237,8 +235,6 @@ class IosClassService
       # use total downloads as proxy
       downloads = sdks.map {|sdk| get_downloads_for_sdk(sdk)}
       total = downloads.reduce(0) {|x, y| x + y}
-
-      byebug
 
       highest = downloads.max
       sdks[downloads.find_index(highest)] if highest > req * total

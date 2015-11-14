@@ -275,7 +275,9 @@ class IosDeviceService
     run_command(ssh, "mv #{Shellwords.escape(executable)}.decrypted #{outfile}", 'move it to a name without spaces for scp\'ing')
 
     # use system scp because it's much faster
+    puts "Starting download"
     `sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
+    puts "Download finished"
 
     # validate
     exists = `[ -f #{TEMP_DIRECTORY}/#{outfile} ] && echo 'exists' || echo 'dne'`.chomp

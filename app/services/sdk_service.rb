@@ -58,12 +58,25 @@ class SdkService
 	    package = strip_prefix(package_name)
 	    return nil if package.blank?
 	    package = package.capitalize if package == package.upcase && package.count('.').zero?
-	    first_word = package.split('.').first
-	    first_word = g_words(first_word) if package.include? 'google'
-	    return nil if first_word.nil?
-	    name = camel_split(first_word)
-	    return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH	# no good if it's nil or less than QUERY_MINIMUM_LENGTH
+
+	    name = if package.include? 'google'
+	    	g_words(package)
+	    else
+	    	package.split('.').first
+	    end
+
+	    return nil if name.nil?
+	    name = camel_split(name)
+
+	    return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH # no good if it's nil or less than QUERY_MINIMUM_LENGTH
+
 	    name
+	    # first_word = package.split('.').first
+	    # first_word = g_words(package) if package.include? 'google'
+	    # return nil if first_word.nil?
+	    # name = camel_split(first_word)
+	    # return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH	# no good if it's nil or less than QUERY_MINIMUM_LENGTH
+	    # name
 		end
 
 		# Get the url of an sdk if it is valid
