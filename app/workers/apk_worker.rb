@@ -94,7 +94,7 @@ module ApkWorker
         
         apk_snap.status = :could_not_connect
 
-      elsif message.include? "execution expired"
+      elsif message.include? "execution expired" || message.include? "Timeout was reached"
         
         apk_snap.status = :timeout
 

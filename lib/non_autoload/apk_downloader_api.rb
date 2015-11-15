@@ -174,6 +174,12 @@ if defined?(ApkDownloader)
           elsif response.body.include? "Your device is not compatible with this item"
             snap.status = :bad_device
             aa.display_type = :device_incompatible
+          elsif response.body.include? "This item is not available on your carrier."
+            snap.status = :bad_carrier
+            aa.display_type = :carrier_incompatible
+          elsif response.body.include? "The item you were attempting to purchase could not be found"
+            snap.status = :not_found
+            aa.display_type = :item_not_found
           else
             snap.status = :forbidden
           end
