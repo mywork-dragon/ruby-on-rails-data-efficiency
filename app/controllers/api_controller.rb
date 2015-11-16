@@ -1491,7 +1491,7 @@ class ApiController < ApplicationController
 
   def get_sdk_scanned_count
 
-    scanned_sdk_num = AndroidApp.where("newest_android_app_snapshot_id IS NOT NULL").count
+    scanned_sdk_num = AndroidApp.where("newest_apk_snapshot_id IS NOT NULL").count
 
     render json: {scannedSdkNum: scanned_sdk_num}
   end
