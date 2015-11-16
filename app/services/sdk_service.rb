@@ -52,6 +52,19 @@ class SdkService
 
 		end
 
+		def extract_known_parent(package)
+
+			known_companies = %w(google twitter)
+
+			known_companies.each do |co|
+				if package.match(/#{co}/i)
+					return "#{co} #{package.split('.').select {|part| !part.match(/#{co}/i) }.first}"
+				end
+			end
+
+			nil
+		end
+
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
 		# @author Jason Lew
 		def query_from_package(package_name)
@@ -71,12 +84,6 @@ class SdkService
 	    return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH # no good if it's nil or less than QUERY_MINIMUM_LENGTH
 
 	    name
-	    # first_word = package.split('.').first
-	    # first_word = g_words(package) if package.include? 'google'
-	    # return nil if first_word.nil?
-	    # name = camel_split(first_word)
-	    # return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH	# no good if it's nil or less than QUERY_MINIMUM_LENGTH
-	    # name
 		end
 
 		# Get the url of an sdk if it is valid
