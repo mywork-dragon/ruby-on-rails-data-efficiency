@@ -7637,6 +7637,19 @@ pre {
   height: 40px;
 }
 
+#mainSearchBoxWrapper .ui-select {
+  height: 40px;
+  margin-top: 0;
+  padding-top: 5px;
+  padding-left: 10px;
+  position: relative;
+  left: 1px;
+}
+
+#mainSearchBoxWrapper .ui-select > select {
+  font-size: 12px;
+}
+
 #mainSearchBox {
   padding-left: 0;
 }

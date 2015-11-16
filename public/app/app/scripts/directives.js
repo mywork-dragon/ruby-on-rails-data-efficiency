@@ -495,6 +495,31 @@ angular.module("app.directives", []).directive("imgHolder", [
         controllerAs: 'appPlatformCtrl'
       }
     }])
+    .directive('customPlatformSelect', ["apiService", "$rootScope", "AppPlatform", "authService", function (apiService, $rootScope, AppPlatform, authService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
+        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option value="sdks">Android SDKs</option> </select> </span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+
+          authService.permissions()
+            .success(function(data) {
+              $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            });
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
+    }])
     .directive('ddTextCollapse', ['$compile', function($compile) {
       return {
         restrict: 'A',
