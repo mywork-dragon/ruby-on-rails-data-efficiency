@@ -49,7 +49,7 @@ angular
        })
        .when('/search/sdk', {
          templateUrl: '/app/app/views/sdk-search.html',
-         activeTab: 'sdks'
+         activeTab: 'search'
        })
        .when('/search/custom', {
          templateUrl: '/app/app/views/custom-search-results.html',
