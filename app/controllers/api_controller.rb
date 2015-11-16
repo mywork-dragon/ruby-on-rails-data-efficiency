@@ -244,6 +244,7 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
+      userBase: android_app.user_base,
       displayStatus: android_app.display_type,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
@@ -1426,7 +1427,7 @@ class ApiController < ApplicationController
         favicon: sdk.favicon,
         openSource: sdk.open_source,
         platform: 'android',
-        numOfApps: sdk.android_apps.count
+        numOfApps: sdk.android_apps.count # .where("display_type LIKE 0")
 =begin
         iosApps: company.get_ios_apps.map{|app| {
             id: app.id,

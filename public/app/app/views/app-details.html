@@ -225,6 +225,11 @@
                   <label>Mobile Priority:</label>
                   {{appData.mobilePriority | capitalize}}
                 </li>
+                <li ng-if="appData.userBase">
+                  <span class="icon fa fa-user"></span>
+                  <label>User Base Size:</label>
+                  {{appData.userBase | capitalize}}
+                </li>
               </ul>
             </div>
           </div>
