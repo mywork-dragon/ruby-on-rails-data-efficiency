@@ -103,6 +103,12 @@
 
     </section>
 
+    <div class="row companyPageRow" ng-if="$root.sdkFilterPresent">
+      <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
+        <div ng-transclude=""><span class="ng-binding ng-scope">Note: SDK filter results are derived from <strong>{{$rootScope.scannedSdkNum}}</strong> presently scanned Android apps. We are scanning more every day.</span></div>
+      </div>
+    </div>
+
     <section class="panel panel-default table-dynamic">
       <div class="panel-heading" id="dashboardResultsTableHeading">
        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{searchCtrl.appsDisplayedCount()}} of {{searchCtrl.numApps}}</span>

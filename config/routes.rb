@@ -47,6 +47,7 @@ Rails.application.routes.draw do
 
   get 'api/sdk' => 'api#get_sdk'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
+  get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 
   get 'api/export_newest_apps_chart_to_csv' => 'api#export_newest_apps_chart_to_csv'
 

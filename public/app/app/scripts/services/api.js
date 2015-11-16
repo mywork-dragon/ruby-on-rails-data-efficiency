@@ -137,6 +137,12 @@ angular.module("appApp")
           url: API_URI_BASE + endPoint,
           params: {appId: appId}
         })
+      },
+      getScannedSdkNum: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/sdk/scanned_count'
+        })
       }
     };
   }]);

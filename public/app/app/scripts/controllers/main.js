@@ -57,6 +57,26 @@ angular.module('appApp')
 
       }
 
+      // For dashboard filter warning
+      apiService.getScannedSdkNum().success(function(data) {
+        $rootScope.scannedSdkNum = data.scannedSdkNum;
+      });
+
+      // Display num of apps scanned notice on dashboard upon SDK filter added
+      $scope.$watchCollection('$root.tags', function () {
+        var sdkNameFilterPresent = false;
+        if($rootScope.tags) {
+          $rootScope.tags.forEach(function(tag) {
+            if(tag.parameter == "sdkNames") {
+              sdkNameFilterPresent = true;
+            }
+          });
+          if(sdkNameFilterPresent) {
+            $rootScope.sdkFilterPresent = true;
+          }
+        }
+      });
+
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
     function($scope, apiService, $http, $rootScope, filterService) {
@@ -81,6 +101,7 @@ angular.module('appApp')
         filterService.addFilter(parameter, value, displayName, limitToOneFilter);
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };
+
     }
   ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
