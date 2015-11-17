@@ -42,6 +42,7 @@ angular.module('appApp')
             $scope.canViewSupportDesk = data.can_view_support_desk;
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
+            $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
           })
           .error(function() {
             $scope.canViewSupportDesk = false;
@@ -56,9 +57,27 @@ angular.module('appApp')
 
       }
 
+      // For dashboard filter warning
+      apiService.getScannedSdkNum().success(function(data) {
+        $rootScope.scannedSdkNum = data.scannedSdkNum;
+      });
+
+      // Display num of apps scanned notice on dashboard upon SDK filter added
+      $scope.$watchCollection('$root.tags', function () {
+        var sdkNameFilterPresent = false;
+        if($rootScope.tags) {
+          $rootScope.tags.forEach(function(tag) {
+            if(tag.parameter == "sdkNames") {
+              sdkNameFilterPresent = true;
+            }
+          });
+          $rootScope.sdkFilterPresent = sdkNameFilterPresent;
+        }
+      });
+
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope",
-    function($scope, apiService, $http, $rootScope) {
+  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
+    function($scope, apiService, $http, $rootScope, filterService) {
 
       /* Initializes all Bootstrap tooltips */
       $(function () {
@@ -77,55 +96,10 @@ angular.module('appApp')
       if(!$rootScope.tags) $rootScope.tags = [];
 
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
-
-        /* -------- Mixpanel Analytics Start -------- */
-        var mixpanelProperties = {};
-        mixpanelProperties['parameter'] = parameter;
-        mixpanelProperties[parameter] = value;
-        mixpanel.track(
-          "Filter Added",
-          mixpanelProperties
-        );
-        /* -------- Mixpanel Analytics End -------- */
-
-        var duplicateTag = false;
-        var oneTagUpdated = false;
-
-        $rootScope.tags.forEach(function (tag) {
-
-          // Determine if tag is a duplicate
-          if (tag.parameter == parameter && tag.value == value) {
-            duplicateTag = true;
-          }
-
-          if(limitToOneFilter && !duplicateTag) {
-            // If replacing pre existing tag of limitToOneFilter = true category
-            if (tag.parameter == parameter) {
-              tag.value = value;
-              tag.text = displayName + ': ' + value;
-              oneTagUpdated = true;
-            }
-          }
-        });
-
-        if(limitToOneFilter && !duplicateTag && !oneTagUpdated) {
-          // If first tag of limitToOneFilter = true category
-          $rootScope.tags.push({
-            parameter: parameter,
-            value: value,
-            text: displayName + ': ' + value
-          });
-        }
-
-        if(!limitToOneFilter && !duplicateTag || $rootScope.tags.length < 1) {
-          $rootScope.tags.push({
-            parameter: parameter,
-            value: value,
-            text: displayName + ': ' + value
-          });
-        }
+        filterService.addFilter(parameter, value, displayName, limitToOneFilter);
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };
+
     }
   ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",

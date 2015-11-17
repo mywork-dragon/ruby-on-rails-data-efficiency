@@ -1,0 +1,108 @@
+
+<header class="page-main-header ng-scope">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Custom SDK Search</h4>
+    </div>
+  </div>
+  <!--
+  <div class="" id="appTypeHeaderLogo">
+    <i class="fa fa-2" ng-class="sdkSearchCtrl.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+  </div>
+  -->
+</header>
+
+<div class="page page-table" data-ng-controller="TableCtrl">
+
+  <div data-ng-controller="SdkSearchCtrl as sdkSearchCtrl">
+
+    <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+
+      <div class="panel-heading" id="listViewTableHeading">
+        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="sdkSearchCtrl.numSdks">| Displaying {{sdkSearchCtrl.sdksDisplayedCount()}} of {{sdkSearchCtrl.numSdks}}</span>
+      </div>
+
+      <div id="results-table-wrapper">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th><div class="th normal-right-padding">
+              SDK Name
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Platform
+            </div></th>
+            <th><div class="th normal-right-padding appDetailsHeader">
+              Website
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Open Source
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="queryInProgress">
+          <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
+            <td id="sdkResultsTableAppIcon" class="resultsTableAppIcon">
+                <span>
+                  <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/android/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
+                </span>
+            </td>
+            <td class="appTypeIndicator">
+              <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+            </td>
+            <td ng-if="sdk.sdk.website">
+              <a href="{{sdk.sdk.website}}" target="_blank">{{sdk.sdk.website}}</a>
+            </td>
+            <td>{{sdk.sdk.openSource ? 'Yes' : 'No'}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" data-ng-show="sdkSearchCtrl.queryInProgress || !(sdkSearchCtrl.numSdks > 0)">
+          <h5 data-ng-hide="sdkSearchCtrl.sdkNum > 0 || sdkSearchCtrl.queryInProgress">No Items</h5>
+          <div data-ng-show="sdkSearchCtrl.queryInProgress" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modals -->
+        <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+        <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+        <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
+      </div>
+
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">
+            <!--
+                <span>
+                    Show
+                    <select data-ng-model="numPerPage"
+                            data-ng-options="num for num in numPerPageOpt"
+                            data-ng-change="onNumPerPageChange()">
+                    </select>
+                    entries per page
+                </span>
+            -->
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <pagination class="pagination-sm"
+                        ng-model="sdkSearchCtrl.currentPage"
+                        total-items="sdkSearchCtrl.numSdks"
+                        max-size="8"
+                        ng-change="sdkSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
+                        items-per-page="sdkSearchCtrl.numPerPage"
+                        rotate="false"
+                        boundary-links="true"></pagination>
+
+          </div>
+        </div>
+      </footer>
+
+    </section>
+  </div>
+</div>

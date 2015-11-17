@@ -21,7 +21,8 @@ angular
     'ngTagsInput',
     'app.directives',
     "ui.bootstrap",
-    "rt.encodeuri"
+    "rt.encodeuri",
+    'angucomplete-alt'
   ])
   .run(function ($http, $rootScope) {
 
@@ -46,21 +47,32 @@ angular
          activeTab: 'search',
          reloadOnSearch: false
        })
+       .when('/search/sdk', {
+         templateUrl: '/app/app/views/sdk-search.html',
+         activeTab: 'search'
+       })
        .when('/search/custom', {
          templateUrl: '/app/app/views/custom-search-results.html',
          activeTab: 'search'
        })
        .when('/app/:platform/:id', {
          templateUrl: '/app/app/views/app-details.html',
-         controller: 'AppDetailsCtrl'
+         controller: 'AppDetailsCtrl',
+         activeTab: 'search'
        })
        .when('/company/:id', {
          templateUrl: '/app/app/views/company-details.html',
-         controller: 'CompanyDetailsCtrl'
+         controller: 'CompanyDetailsCtrl',
+         activeTab: 'search'
        })
        .when('/lists/:id', {
          templateUrl: '/app/app/views/list.html',
          activeTab: 'lists'
+       })
+       .when('/sdk/:platform/:id', {
+         templateUrl: '/app/app/views/sdk-details.html',
+         controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
+         activeTab: 'sdks'
        })
        .otherwise({
          redirectTo: '/search',

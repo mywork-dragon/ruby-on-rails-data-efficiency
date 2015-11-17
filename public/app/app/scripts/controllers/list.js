@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService",
-  function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService", "$window",
+  function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService, $window) {
 
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
@@ -40,6 +40,8 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       listApiService.deleteList($routeParams.id).success(function() {
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
+          $window.location.href = "#/search";
+          $(".modal-backdrop").remove();
         });
       });
     };

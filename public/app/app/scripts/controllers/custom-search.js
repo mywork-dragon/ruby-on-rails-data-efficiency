@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService',
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService) {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService",
+    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService) {
 
       var customSearchCtrl = this;
 
       customSearchCtrl.platform = APP_PLATFORM; // default
+
+      // User info set
+      var userInfo = {};
+      authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {
@@ -44,7 +48,6 @@ angular.module('appApp')
       };
 
       customSearchCtrl.onPageChange = function(nextPage) {
-        console.log('NEXT PAGE', nextPage);
         customSearchCtrl.submitSearch(nextPage);
       };
 
@@ -55,16 +58,52 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        $location.url('/search/custom?' + $httpParamSerializer(payload));
+        var targetUrl = customSearchCtrl.platform == 'sdks' ? '/search/sdk?' : '/search/custom?';
+        $location.url(targetUrl + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "Custom Search", {
-            "query": customSearchCtrl.searchInput,
-            "platform": customSearchCtrl.platform
+        if(customSearchCtrl.platform == 'sdks') {
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "SDK Custom Search", {
+              "query": customSearchCtrl.searchInput,
+              "platform": "android"
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          if(userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+            var slacktivityData = {
+              "title": "SDK Custom Search",
+              "fallback": "SDK Custom Search",
+              "color": "#FFD94D", // yellow
+              "userEmail": userInfo.email,
+              "platform": customSearchCtrl.platform,
+              "query": customSearchCtrl.searchInput
+            };
+            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+            window.Slacktivity.send(slacktivityData);
           }
-        );
-        /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts End -------- */
+        } else {
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Custom Search", {
+              "query": customSearchCtrl.searchInput,
+              "platform": customSearchCtrl.platform
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+        }
+      };
+
+      customSearchCtrl.searchPlaceholderText = function() {
+        if(customSearchCtrl.platform == 'ios') {
+          return 'Search for iOS app or company';
+        } else if(customSearchCtrl.platform == 'sdks') {
+          return 'Search for SDKs';
+        } else {
+          return 'Search for Android app or company';
+        }
       };
 
       customSearchCtrl.addSelectedTo = function(list, selectedApps) {

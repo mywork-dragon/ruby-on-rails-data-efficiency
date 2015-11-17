@@ -1,11 +1,21 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService",
-    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService) {
+  .controller('SearchCtrl', ["$scope", "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService",
+    function ($scope, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
+
+      // User info set
+      var userInfo = {};
+      authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+      // Sets user permissions
+      authService.permissions()
+        .success(function(data) {
+          searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
+        });
 
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function() {
@@ -13,8 +23,9 @@ angular.module('appApp')
         var urlParams = $location.url().split('/search')[1]; // If url params not provided
         var routeParams = $location.search();
 
-        /* Complile Object with All Filters from Params */
+        /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
+        console.log('APP PARAMS:', appParams);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
@@ -63,9 +74,13 @@ angular.module('appApp')
             /* -------- Mixpanel Analytics Start -------- */
             var searchQueryPairs = {};
             var searchQueryFields = [];
+            var sdkNames = [];
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
+              if(tag.parameter == 'sdkNames') {
+                sdkNames.push(tag.value.name);
+              }
             });
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
@@ -76,6 +91,21 @@ angular.module('appApp')
               searchQueryPairs
             );
             /* -------- Mixpanel Analytics End -------- */
+            /* -------- Slacktivity Alerts -------- */
+            if($rootScope.sdkFilterPresent && userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+              var slacktivityData = {
+                "title": "SDK Filter Query",
+                "fallback": "SDK Filter Query",
+                "color": "#FFD94D", // yellow
+                "userEmail": userInfo.email,
+                "sdkNames": sdkNames.join(', '),
+                "tags": searchQueryFields.join(', '),
+                "numOfApps": data.resultsCount
+              };
+              if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+              window.Slacktivity.send(slacktivityData);
+            }
+            /* -------- Slacktivity Alerts End -------- */
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -133,8 +163,10 @@ angular.module('appApp')
         );
         /* -------- Mixpanel Analytics End -------- */
         var firstPage = 1;
+        $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
           .success(function(data) {
+            $scope.queryInProgress = false;
             searchCtrl.apps = data.results;
             searchCtrl.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -144,6 +176,7 @@ angular.module('appApp')
             searchCtrl.resultsOrderBy = order;
           })
           .error(function() {
+            $scope.queryInProgress = false;
             $rootScope.dashboardSearchButtonDisabled = false;
           });
         };
