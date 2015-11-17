@@ -11,15 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105204217) do
+ActiveRecord::Schema.define(version: 20151117014225) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: true,  null: false
-    t.boolean  "can_view_sdks",         default: false, null: false
+    t.boolean  "can_view_support_desk",   default: false, null: false
+    t.boolean  "can_view_ad_spend",       default: true,  null: false
+    t.boolean  "can_view_sdks",           default: false, null: false
+    t.boolean  "can_view_storewide_sdks", default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
@@ -125,7 +126,7 @@ ActiveRecord::Schema.define(version: 20151105204217) do
     t.integer  "display_type",                   default: 0
   end
 
-  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", using: :btree
+  add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", unique: true, using: :btree
   add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
@@ -193,9 +194,11 @@ ActiveRecord::Schema.define(version: 20151105204217) do
     t.datetime "updated_at"
     t.boolean  "open_source",       default: false
     t.integer  "parent_company_id"
+    t.boolean  "is_parent",         default: false
   end
 
   add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
+  add_index "android_sdk_companies", ["name", "flagged", "is_parent"], name: "index_android_sdk_companies_name_flagged_is_parent", using: :btree
   add_index "android_sdk_companies", ["name"], name: "index_android_sdk_companies_on_name", using: :btree
   add_index "android_sdk_companies", ["open_source"], name: "android_sdk_companies_open_source_index", using: :btree
   add_index "android_sdk_companies", ["parent_company_id"], name: "android_sdk_companies_parent_company_index", using: :btree
@@ -450,6 +453,74 @@ ActiveRecord::Schema.define(version: 20151105204217) do
   end
 
   add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
+
+  create_table "cocoapod_metric_exceptions", force: true do |t|
+    t.integer  "cocoapod_metric_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_metric_exceptions", ["cocoapod_metric_id"], name: "index_cocoapod_metric_exceptions_on_cocoapod_metric_id", using: :btree
+
+  create_table "cocoapod_metrics", force: true do |t|
+    t.integer  "ios_sdk_id"
+    t.boolean  "success"
+    t.integer  "stats_download_total"
+    t.integer  "stats_download_week"
+    t.integer  "stats_download_month"
+    t.integer  "stats_app_total"
+    t.integer  "stats_app_week"
+    t.integer  "stats_tests_total"
+    t.integer  "stats_tests_week"
+    t.datetime "stats_created_at"
+    t.datetime "stats_updated_at"
+    t.integer  "stats_extension_week"
+    t.integer  "stats_extension_total"
+    t.integer  "stats_watch_week"
+    t.integer  "stats_watch_total"
+    t.integer  "stats_pod_try_week"
+    t.integer  "stats_pod_try_total"
+    t.boolean  "stats_is_active"
+    t.integer  "github_subscribers"
+    t.integer  "github_stargazers"
+    t.integer  "github_forks"
+    t.integer  "github_contributors"
+    t.integer  "github_open_issues"
+    t.integer  "github_open_pull_requests"
+    t.datetime "github_created_at"
+    t.datetime "github_updated_at"
+    t.string   "github_language"
+    t.integer  "github_closed_issues"
+    t.integer  "github_closed_pull_requests"
+    t.integer  "cocoadocs_install_size"
+    t.integer  "cocoadocs_total_files"
+    t.integer  "cocoadocs_total_comments"
+    t.integer  "cocoadocs_total_lines_of_code"
+    t.integer  "cocoadocs_doc_percent"
+    t.integer  "cocoadocs_readme_complexity"
+    t.datetime "cocoadocs_initial_commit_date"
+    t.string   "cocoadocs_rendered_readme_url"
+    t.datetime "cocoadocs_created_at"
+    t.datetime "cocoadocs_updated_at"
+    t.string   "cocoadocs_license_short_name"
+    t.string   "cocoadocs_license_canonical_url"
+    t.integer  "cocoadocs_total_test_expectations"
+    t.string   "cocoadocs_dominant_language"
+    t.integer  "cocoadocs_quality_estimate"
+    t.boolean  "cocoadocs_builds_independently"
+    t.boolean  "cocoadocs_is_vendored_framework"
+    t.string   "cocoadocs_rendered_changelog_url"
+    t.text     "cocoadocs_rendered_summary"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cocoapod_metrics", ["ios_sdk_id"], name: "index_cocoapod_metrics_on_ios_sdk_id", using: :btree
+  add_index "cocoapod_metrics", ["stats_app_total"], name: "index_cocoapod_metrics_on_stats_app_total", using: :btree
+  add_index "cocoapod_metrics", ["stats_download_total"], name: "index_cocoapod_metrics_on_stats_download_total", using: :btree
+  add_index "cocoapod_metrics", ["success"], name: "index_cocoapod_metrics_on_success", using: :btree
 
   create_table "cocoapod_source_data", force: true do |t|
     t.string   "name"
@@ -867,16 +938,18 @@ ActiveRecord::Schema.define(version: 20151105204217) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",                default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "summary"
     t.boolean  "deprecated"
+    t.integer  "github_repo_identifier"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
+  add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", unique: true, using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
@@ -901,13 +974,34 @@ ActiveRecord::Schema.define(version: 20151105204217) do
   add_index "ios_word_occurences", ["count"], name: "index_ios_word_occurences_on_count", using: :btree
   add_index "ios_word_occurences", ["word"], name: "index_ios_word_occurences_on_word", using: :btree
 
-  create_table "ipa_snapshots", force: true do |t|
-    t.integer  "ios_app_id"
+  create_table "ipa_snapshot_exceptions", force: true do |t|
+    t.integer  "ipa_snapshot_id"
+    t.integer  "ipa_snapshot_job_id"
+    t.integer  "error_code"
+    t.text     "error"
+    t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  create_table "ipa_snapshot_jobs", force: true do |t|
+    t.integer  "job_type"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ipa_snapshots", force: true do |t|
+    t.integer  "ios_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status"
+    t.boolean  "success"
+    t.integer  "ipa_snapshot_job_id"
+  end
+
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
+  add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
     t.string   "name"
@@ -1087,6 +1181,18 @@ ActiveRecord::Schema.define(version: 20151105204217) do
 
   add_index "sdk_packages", ["package_name"], name: "index_sdk_packages_on_package_name", using: :btree
   add_index "sdk_packages", ["sdk_company_id"], name: "index_sdk_packages_on_sdk_company_id", using: :btree
+
+  create_table "sdk_regexes", force: true do |t|
+    t.string   "regex"
+    t.integer  "ios_sdk_id"
+    t.integer  "android_sdk_company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_regexes", ["android_sdk_company_id"], name: "index_sdk_regexes_on_android_sdk_company_id", using: :btree
+  add_index "sdk_regexes", ["ios_sdk_id"], name: "index_sdk_regexes_on_ios_sdk_id", using: :btree
+  add_index "sdk_regexes", ["regex"], name: "index_sdk_regexes_on_regex", unique: true, using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"

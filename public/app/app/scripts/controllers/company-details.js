@@ -24,7 +24,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Company Page Viewed", {
-            "companyid": $routeParams.id,
+            "companyId": $routeParams.id,
             "appPlatform": APP_PLATFORM,
             "companyName": $scope.companyData.name,
             "fortuneRank": $scope.companyData.fortuneRank,

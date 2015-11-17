@@ -4,7 +4,7 @@ class GooglePlayIdsServiceWorker
   # helper method - opens url, returning Nokogiri object
   def open_url(url)
 
-    page = open(url)
+    page = Proxy.get_body(req: url)
 
     Nokogiri::HTML(page)
 

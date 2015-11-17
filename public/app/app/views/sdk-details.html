@@ -1,0 +1,77 @@
+<div id="companyPage" data-ng-controller="ListCtrl">
+
+  <header class="page-main-header ng-scope">
+    <div class="row">
+      <div class="col-md-12">
+        <h4>
+          <img id="sdkPageTitleIcon" ng-src="{{sdkDetailsCtrl.sdkData.favicon}}">{{sdkDetailsCtrl.sdkData.name}} - SDK Page
+        </h4>
+      </div>
+    </div>
+  </header>
+
+  <div class="row companyPageRow">
+    <div class="col-md-6 info-column">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>General Details</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <li ng-if="sdkDetailsCtrl.sdkData.name">
+                  <span class="icon fa fa-briefcase"></span>
+                  <label>SDK Name:</label>
+                  {{sdkDetailsCtrl.sdkData.name}}
+                </li>
+                <li ng-if="sdkDetailsCtrl.sdkData.website">
+                  <span class="icon fa fa-globe"></span>
+                  <label>Website:</label>
+                  <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
+                </li>
+                <li>
+                  <span class="icon fa fa-code-fork"></span>
+                  <label>Open Source:</label>
+                  {{sdkDetailsCtrl.sdkData.openSource ? 'Yes' : 'No'}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-6 info-column">
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Actions</strong></div>
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-body">
+              <ul class="list-unstyled list-info">
+                <div style="text-align:center">
+                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps}}</strong> apps.
+                </div>
+                <div id="showSdksButton">
+                  <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery()">See Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="row companyPageRow">
+    <div class="page page-table" data-ng-controller="TableCtrl">
+  </div>
+
+  <!-- Modals -->
+  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
+</div>
+
+</div>

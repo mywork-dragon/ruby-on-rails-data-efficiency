@@ -146,10 +146,9 @@ class FilterService
         queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
-      if app_filters['supportDesk']
-        for support_desk in app_filters['supportDesk']
-          queries << "joins(:newest_ios_app_snapshot).where('android_app_snapshots.seller_url LIKE \"%.#{support_desk}.%\"')"
-        end
+      if app_filters['sdkNames']
+        sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
+        queries << "joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids.present?
       end
       
       queries
@@ -251,7 +250,6 @@ class FilterService
     end
     
     def ios_app_keywords_query(keywords)
-
       name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ? OR companies.name LIKE ?"}
       keywords_with_quotes = keywords.map{|k| "\"#{k}%\", \"#{k}%\""}
       # name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE ?"}

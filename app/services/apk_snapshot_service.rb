@@ -24,7 +24,7 @@ class ApkSnapshotService
         batch.jobs do
 
           j = ApkSnapshotJob.create!(notes: notes)
-          AndroidApp.where(newest_apk_snapshot_id: nil, mobile_priority: :high).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each.with_index do |app, index|
+          AndroidApp.where(newest_apk_snapshot_id: nil, mobile_priority: :high, display_type: 0).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(size).each.with_index do |app, index|
             li "app #{index}"
             ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
@@ -74,8 +74,8 @@ class ApkSnapshotService
       clear_accounts()
 
       j = ApkSnapshotJob.create!(notes: notes)
-      AndroidApp.where(taken_down: nil).joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
-        ApkSnapshotServiceWorker.new.perform(j.id, app.id)
+      AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
+        ApkSnapshotServiceWorker.new.perform(j.id, nil, app.id)
       end
     end
 

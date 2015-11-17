@@ -35,9 +35,17 @@ class UrlHelper
     end
 
     def http_with_url(url)
-        url_starts_with_http_or_https?(url) ? url : 'http://' + url
+      url_starts_with_http_or_https?(url) ? url : 'http://' + url
     end
-    
+
+    # Subdomain and domain
+    # @author Jason Lew
+    def full_domain(url)
+      main_domain = Domainator.parse(url)
+      prefix_plus_subdomain = url.split(main_domain).first # https[s]://www.
+      prefix_plus_subdomain.gsub(/^(http[s]*:\/\/)*(www.)*/, '') + main_domain
+    end
+
     def secondary_site?(url)
       app_page_regexes_strings = %w(
         facebook.com\/.+
