@@ -61,11 +61,7 @@ class SdkService
 	    return nil if package.blank?
 	    package = package.capitalize if package == package.upcase && package.count('.').zero?
 
-	    name = if package.include? 'google'
-	    	g_words(package)
-	    else
-	    	package.split('.').first
-	    end
+	    name = extract_known_parent(package) || package.split('.').first
 
 	    return nil if name.nil?
 	    name = camel_split(name)
@@ -259,14 +255,14 @@ class SdkService
 		def camel_split(str)
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
 		end
-
-		def g_words(package)
-			words = %w(ads maps wallet analytics drive admob doubleclick plus)
-			words.each do |g| 
-				return 'google ' + g if package.include? g
-			end
-			nil
-		end
+		
+		# def g_words(package)
+		# 	words = %w(ads maps wallet analytics drive admob doubleclick plus)
+		# 	words.each do |g| 
+		# 		return 'google ' + g if package.include? g
+		# 	end
+		# 	nil
+		# end
 
 		# ## OLD
 		# def create_sdk_with_query(proposed:, platform:, query:)
