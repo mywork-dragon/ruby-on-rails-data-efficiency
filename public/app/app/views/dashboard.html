@@ -114,7 +114,7 @@
 
     <div class="row companyPageRow" ng-if="$root.sdkFilterPresent && searchCtrl.canViewStorewideSdks">
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
-        <div ng-transclude=""><span class="ng-binding ng-scope">Note: SDK filter results are derived from <strong>{{$root.scannedSdkNum}}</strong> presently scanned Android apps. We are scanning more every day.</span></div>
+        <div ng-transclude=""><span class="ng-binding ng-scope">Note: SDK filter results are derived from <strong>{{$root.scannedSdkNum | number}}</strong> presently scanned Android apps. We are scanning more every day.</span></div>
       </div>
     </div>
 
