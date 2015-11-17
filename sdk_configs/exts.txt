@@ -1,16 +1,3 @@
-[com]sec
-[net]sourceforge
-uk.co
-co.uk
-main
-googlecode
-github
-forward
-pay
-common
-java
-main
-oauth
 com
 org
 net
@@ -18,6 +5,8 @@ int
 edu
 gov
 mil
+rx
+ui
 ac
 ad
 ae
