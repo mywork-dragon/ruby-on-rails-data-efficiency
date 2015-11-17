@@ -59,7 +59,7 @@ class IosClassService
 
     # Get bundles from strings
     def bundles_from_strings(contents)
-      contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
+      contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/)
     end
 
     # Get FW folders from strings
