@@ -1,6 +1,6 @@
 module IosWorker
 
-	def run_scan(app_identifier, purpose)
+	def run_scan(ipa_snapshot_job_id, app_identifier, purpose, bid)
 
 		# convert data coming from ios_device_service to classdump row information
 		def result_to_cd_row(data)
@@ -27,6 +27,7 @@ module IosWorker
 			row = data.select { |key| data_keys.include? key }
 
 			# don't upload files in development mode
+			# TODO: Remove
 			file = if !Rails.env.development? && data[:outfile_path] && false
 				File.open(data[:outfile_path])
 			end
@@ -37,46 +38,64 @@ module IosWorker
 		end
 
 		# create database rows
-		snapshot = IpaSnapshot.create!(ios_app_id: app_identifier)
-		classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
+		begin
+			begin
+				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier, status: :starting)
+			rescue
+				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
+			end
 
-		# get a device
-		device = reserve_device(purpose)
+			return nil if snapshot.status == :complete # make sure no duplicates in the job
 
-		# no devices available...fail out and save
-		if device.nil?
-			classdump[:complete] = true
-			classdump[:error_code] = :devices_busy
+			# TODO: add logic to take previous results if app's version in the app store has not changed
+
+			classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
+
+			# get a device
+			device = reserve_device(purpose)
+
+			# no devices available...fail out and save
+			if device.nil?
+				classdump.complete = true
+				classdump.error_code = :devices_busy
+				classdump.save
+
+				return on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
+			end
+
+			classdump.ios_device_id = device.id
 			classdump.save
 
-			return classdump
-		end
-
-		classdump[:ios_device_id] = device.id
-		classdump.save()
-
-		# do the actual classdump
-		# after install and dump, will run the procedure block which updates the classdump table. 
-		# Will be useful for polling or could add some logic to send status updates
-		final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose) do |incomplete_result|
+			# do the actual classdump
+			# after install and dump, will run the procedure block which updates the classdump table. 
+			# Will be useful for polling or could add some logic to send status updates
+			final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
 				classdump.update row
+
+				if row[:dump_success]
+					snapshot.status = :cleaning
+					snapshot.save
+				end
 			end
 
-		# upload the finished results
-		row = result_to_cd_row(final_result)
-		row.delete(:class_dump) # the state of the file hasn't changed since update after dump (don't want to reupload file)
-		row[:complete] = true
-		classdump.update row
-		release_device(device)
+			release_device(device)
 
-		# once we've finished uploading to s3, we can delete the file
-		if final_result[:outfile_path]
-			`rm -f #{final_result[:outfile_path]}` if Rails.env.production?
+			# upload the finished results
+			row = result_to_cd_row(final_result)
+			row.delete(:class_dump) # the state of the file hasn't changed since update after dump (don't want to reupload file)
+			row[:complete] = true
+			classdump.update row
+
+			# once we've finished uploading to s3, we can delete the file
+			`rm -f #{final_result[:outfile_path]}` if Rails.env.production? && final_result[:outfile_path]
+
+			on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
+		rescue => e
+			on_complete(ipa_snapshot_job_id, app_identifier, bid, e)
 		end
-
-		classdump
+		
 	end
 
 	def reserve_device(purpose, id = nil)

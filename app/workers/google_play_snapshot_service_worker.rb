@@ -18,16 +18,21 @@ class GooglePlaySnapshotServiceWorker
 
     s = AndroidAppSnapshot.create(android_app: android_app, android_app_snapshot_job_id: android_app_snapshot_job_id)
 
-    # tm = TestModel.create
-
-    # tm.string0 = s.id.to_s
-    # tm.save
-
     try = 0
 
     begin
 
-      a = GooglePlayService.attributes(android_app.app_identifier)
+      begin
+        a = GooglePlayService.attributes(android_app.app_identifier)
+      rescue Net::HTTPServerException => e
+        if e.message == '404 "Not Found"'
+          android_app.display_type = :taken_down
+          android_app.save!
+          return
+        end
+      end
+
+      
 
       # tm.text0 = a.inspect
       # tm.save

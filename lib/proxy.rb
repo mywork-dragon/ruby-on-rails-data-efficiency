@@ -1,6 +1,6 @@
 class Proxy
 
-	class << self
+  class << self
 
     # Get the response from a get request
     # If get fails, will throw an error
@@ -8,22 +8,22 @@ class Proxy
     # @author Osman Khwaja
     # @author Jason Lew
     # @return The response (CurbFu::Response::Base)
+
     # @note Will run from local IP if not in production mode
     def get(req:, params: {}, type: :get, hard_proxy: false) 
-			if Rails.env.production?
-
-        if hard_proxy
-          proxy = "#{do_hard_proxy}:8888"
-        else
-          mp = MicroProxy.transaction do
-            p = MicroProxy.lock.where(active: true).order(last_used: :asc).first
-            p.last_used = DateTime.now
-            p.save
-            p
-          end
-
-          proxy = "#{mp.private_ip}:8888"
+      if Rails.env.production?
+        
+        # use randomization instead of locking
+        mp = MicroProxy.select(:id, :private_ip).where(active: true).sample
+        mp.last_used = DateTime.now
+        begin
+          mp.save
+        rescue
+          nil
         end
+
+        
+        proxy = "#{mp.private_ip}:8888"
 
         return CurbFu.send(type, req, params) do |curb|
 
@@ -36,27 +36,27 @@ class Proxy
           yield(curb) if block_given? # Can override
         end
 
-	    else
+      else
 
         return CurbFu.send(type, req, params) do |curb|
 
           # Defaults
-        	curb.follow_location = true
-	        curb.ssl_verify_peer = false
-	        curb.max_redirects = 3
-	        curb.timeout = 120
+          curb.follow_location = true
+          curb.ssl_verify_peer = false
+          curb.max_redirects = 3
+          curb.timeout = 120
 
           yield(curb) if block_given? # Can override
-	      end
+        end
 
-	    end
+      end
 
-		end
+    end
 
     # Gets the body only
     # @author Jason Lew
     # @return The body (String)
-    def get_body(req:, params: {}, type: :get, hard_proxy: false)
+    def get_body(req:, params: {}, type: :get)
       get(req: req, params: params, type: type).body
     end
 
@@ -67,18 +67,27 @@ class Proxy
       Nokogiri::HTML(get_body(req: req, params: params, type: type)) 
     end
 
+    # Convenience method to get the Response object from just a url
+    # @author Osman Khwaja
+    # @return The response (CurbFu::Response::Base)
+    def get_from_url(url, params: {}, headers: {})
+      uri = URI(url)
+      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
+    end
+
     # Get the body, passing in only the URL
     # @author Jason Lew
     # @url The URL to get
     # @param The HTTP params
     # @return The body (String)
     # @note Also randomizes the User Agent
-    def get_body_from_url(url, params: {}, hard_proxy: false)
+    def get_body_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params)
+      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
     end
 
-    def do_hard_proxy
+    # workaround locking issues
+    def get_hard_proxy
       %w(
         172.31.20.1
         172.31.29.18
@@ -133,6 +142,6 @@ class Proxy
         ).sample
     end
 
-	end
+  end
 
 end

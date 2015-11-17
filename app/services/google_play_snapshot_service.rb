@@ -4,6 +4,13 @@ class GooglePlaySnapshotService
 
     def run(notes, options={})
 
+    if GooglePlayService.dom_valid?
+      puts "\nPassed DOM check!\n".green
+    else
+      puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
+      return
+    end
+
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
       AndroidApp.find_each.with_index do |android_app, index|
