@@ -7677,6 +7677,8 @@ pre {
   margin-right: 10px;
   max-width: 16px;
   height: 16px;
+  position: relative;
+  top: -1px;
 }
 
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
