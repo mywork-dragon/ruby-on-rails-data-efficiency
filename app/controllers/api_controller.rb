@@ -1369,124 +1369,112 @@ class ApiController < ApplicationController
   end
 
   def search_sdk
-    query = params['query']
-    page = !params['page'].nil? ? params['page'].to_i : 1
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
+
+    if !account || !account.can_view_storewide_sdks
+      render_result_json = {error: 'Unauthorized to view SDKs'}
+      render_result_status = :unauthorized
+    else
+      query = params['query']
+      page = !params['page'].nil? ? params['page'].to_i : 1
+      num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
 
 
-    result_ids = AppsIndex::AndroidSdkCompany.query(
-        multi_match: {
-            query: query,
-            operator: 'and',
-            fields: [:name],
-            type: 'cross_fields',
-            fuzziness: 1
-        }
-    ).limit(num_per_page).offset((page - 1) * num_per_page)
-    total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
-    result_ids = result_ids.map { |result| result.attributes["id"] }
-
-    android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
-
-    sdks = []
-    android_sdks.each do |sdk|
-      sdks << AndroidSdkCompany.find(sdk)
-    end
-
-    total_apps_count = sdks.length
-
-    results_json = []
-    sdks.each do |sdk|
-
-      sdk_hash = {
-          sdk: {
-              id: sdk.id,
-              name: sdk.name,
-              website: sdk.website,
-              favicon: sdk.favicon,
-              openSource: sdk.open_source,
-              platform: 'android'
+      result_ids = AppsIndex::AndroidSdkCompany.query(
+          multi_match: {
+              query: query,
+              operator: 'and',
+              fields: [:name],
+              type: 'cross_fields',
+              fuzziness: 1
           }
-      }
-      results_json << sdk_hash
+      ).limit(num_per_page).offset((page - 1) * num_per_page)
+      total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+      result_ids = result_ids.map { |result| result.attributes["id"] }
+
+      android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
+
+      sdks = []
+      android_sdks.each do |sdk|
+        sdks << AndroidSdkCompany.find(sdk)
+      end
+
+      total_apps_count = sdks.length
+
+      results_json = []
+      sdks.each do |sdk|
+
+        sdk_hash = {
+            sdk: {
+                id: sdk.id,
+                name: sdk.name,
+                website: sdk.website,
+                favicon: sdk.favicon,
+                openSource: sdk.open_source,
+                platform: 'android'
+            }
+        }
+        results_json << sdk_hash
+      end
+      render_result_json = {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+      render_result_status = 200
     end
-    render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+    render json: render_result_json, status: render_result_status
 
   end
 
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
   def get_sdk
-    sdk_id = params['id']
-    sdk = AndroidSdkCompany.find(sdk_id)
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
 
-    apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
+    if !account || !account.can_view_storewide_sdks
+      render_result_json = {error: 'Unauthorized to view SDKs'}
+      render_result_status = :unauthorized
+    else
+      sdk_id = params['id']
+      sdk = AndroidSdkCompany.find(sdk_id)
 
-    @sdk_json = {
-        id: sdk.id,
-        name: sdk.name,
-        website: sdk.website,
-        favicon: sdk.favicon,
-        openSource: sdk.open_source,
-        platform: 'android',
-        numOfApps: apps_count # .where("display_type LIKE 0")
-=begin
-        iosApps: company.get_ios_apps.map{|app| {
-            id: app.id,
-            name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
-            type: 'IosApp',
-            mobilePriority: app.mobile_priority,
-            adSpend: app.ios_fb_ad_appearances.present?,
-            userBase: app.user_base,
-            categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-            lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
-            appIdentifier: app.app_identifier,
-            supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
-            appIcon: {
-                large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
-                small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
-            }
-        }},
-        androidApps: sdk.android_apps.map{|app| {
-            id: app.id,
-            name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
-            type: 'AndroidApp',
-            mobilePriority: app.mobile_priority,
-            adSpend: app.android_fb_ad_appearances.present?,
-            userBase: app.user_base,
-            categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
-            lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
-            appIdentifier: app.app_identifier,
-            supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
-            appIcon: {
-                large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
-            }
-          }
-        }
-=end
-    }
-    render json: @sdk_json
+      apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
+
+      @sdk_json = {
+          id: sdk.id,
+          name: sdk.name,
+          website: sdk.website,
+          favicon: sdk.favicon,
+          openSource: sdk.open_source,
+          platform: 'android',
+          numOfApps: apps_count
+      }
+      render_result_json = @sdk_json
+      render_result_status = 200
+    end
+    render json: render_result_json, status: render_result_status
   end
 
   def get_sdk_autocomplete
-    search_str = params['searchstr']
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
 
-    # Logic for processing ElasticSearch search from params
+    if !account || !account.can_view_storewide_sdks
+      render_result_json = {error: 'Unauthorized to view SDKs'}
+      render_result_status = :unauthorized
+    else
+      search_str = params['searchstr']
 
-    # Querying RDS for top x num of results
+      sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
 
-    sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+      results = []
 
-    results = []
-
-    sdk_companies.each do |sdk|
-      results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+      end
+      render_result_json = {searchParam: search_str, results: results}
+      render_result_status = 200
     end
-
-    render json: {
-               searchParam: search_str,
-               results: results
-           }
+    render json: render_result_json, status: render_result_status
   end
 
   def get_sdk_scanned_count
