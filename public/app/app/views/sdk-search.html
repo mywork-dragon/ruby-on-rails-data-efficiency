@@ -44,7 +44,7 @@
 
           <tbody data-ng-hide="queryInProgress">
           <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
-            <td class="resultsTableAppIcon">
+            <td id="sdkResultsTableAppIcon" class="resultsTableAppIcon">
                 <span>
                   <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/android/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
                 </span>

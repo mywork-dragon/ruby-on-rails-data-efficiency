@@ -7665,6 +7665,20 @@ pre {
   padding-bottom: 100px;
 }
 
+#sdkResultsTableAppIcon img {
+  max-width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#sdkPageTitleIcon {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+}
+
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {
