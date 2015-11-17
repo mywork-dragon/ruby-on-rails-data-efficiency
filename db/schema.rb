@@ -17,9 +17,10 @@ ActiveRecord::Schema.define(version: 20151117014225) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "can_view_support_desk", default: false, null: false
-    t.boolean  "can_view_ad_spend",     default: true,  null: false
-    t.boolean  "can_view_sdks",         default: false, null: false
+    t.boolean  "can_view_support_desk",   default: false, null: false
+    t.boolean  "can_view_ad_spend",       default: true,  null: false
+    t.boolean  "can_view_sdks",           default: false, null: false
+    t.boolean  "can_view_storewide_sdks", default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
@@ -193,7 +194,7 @@ ActiveRecord::Schema.define(version: 20151117014225) do
     t.datetime "updated_at"
     t.boolean  "open_source",       default: false
     t.integer  "parent_company_id"
-    t.boolean  "is_parent"
+    t.boolean  "is_parent",         default: false
   end
 
   add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
