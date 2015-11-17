@@ -14,12 +14,13 @@ class SdkService
 			new_sdks = []
 
 			packages.each do |package|
+				put "Searching for package: #{package}".yellow
 				match = existing_sdk_from_package(package: package, platform: platform)
 
 				if match
 					found_sdks << match
 				else
-					created = create_sdk_from_package(package: package, platform: platform, read_only: true)
+					created = create_sdk_from_package(package: package, platform: platform, read_only: read_only)
 					new_sdks << created if created
 				end
 			end
@@ -38,7 +39,7 @@ class SdkService
 
 			raise "Android not implemented" if platform != :ios
 			# check if in hard coded regex table
-			col = platform == :ios ? :ios_sdk_id : :android_sdk_company_id
+			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
 
 			match = SdkRegex.all.find do |row|
 				Regexp.new(row.regex, true).match(package) != nil # true means case insensitive
@@ -47,7 +48,7 @@ class SdkService
 			return match[col] if match && match[col] != nil
 
 			# check if it already exists in the package prefix table
-			match = SdkPackage.find_by_package_name(package)
+			match = SdkPackage.find_by_package(package)
 
 			return match[col] if match && match[col] != nil
 
@@ -79,6 +80,7 @@ class SdkService
 		def create_sdk_from_package(package:, platform:, read_only: false)
 
 			raise "Android not implemented" if platform != :ios
+			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
 
 			query = query_from_package(package)
 
@@ -90,9 +92,9 @@ class SdkService
 
 			existing = find_sdk_from_proposed(proposed: sdk, platform: :ios)
 
-			return existing if !existing.nil? || read_only
+			return existing if read_only
 
-			sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
+			sdk = existing || create_sdk_from_proposed(proposed: sdk, platform: platform)
 
 			# Update table
 			begin
@@ -179,6 +181,7 @@ class SdkService
 
 			return false if known_companies.include?(company)
 
+			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
 			return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
 
 			false

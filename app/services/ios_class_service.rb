@@ -47,8 +47,9 @@ class IosClassService
     def classify_strings(snap_id, contents)
 
       puts "Classifying strings".blue
-      sdks_from_strings_googled(contents: contents, search_fw_folders: true)
+      # sdks_from_strings_googled(contents: contents, search_fw_folders: true)
      # store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
+     sdks_from_strings(contents: contents)
 
     end
 
@@ -65,6 +66,30 @@ class IosClassService
     # Get FW folders from strings
     def fw_folders_from_strings(contents)
       contents.scan(/^Folder:(.+)\n/).flatten.uniq
+    end
+
+    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: false)
+
+      sdks = []
+
+      if search_bundles
+        bundles = bundles_from_strings(contents)
+        sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, read_only: true) # TODO: remove read only flag
+        puts "SDKs via bundles"
+        ap sdks
+      end
+
+      if search_classes
+        classes = classes_from_strings(contents)
+        # TODO: write an SdkService.find_from_classes
+      end
+
+      if search_fw_folders
+        fw_folders = fw_folders_from_strings(contents)
+        # TODO: write an SdkService.find_from_fw_folders
+      end
+
+      sdks
     end
 
     # Never string search classes for now (because it's too many)
