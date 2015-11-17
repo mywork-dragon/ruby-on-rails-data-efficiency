@@ -60,6 +60,7 @@ GEM
     bootstrap-sass (3.2.0.0)
       sass (~> 3.2)
     builder (3.2.2)
+    byebug (6.0.2)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
@@ -114,6 +115,7 @@ GEM
     curb-fu (0.6.2)
       curb (>= 0.5.4.0)
       rack-test (>= 0.2.0)
+    diff_dirs (0.1.2)
     domainator (2.0.0)
     elasticsearch (1.0.14)
       elasticsearch-api (= 1.0.14)
@@ -140,6 +142,7 @@ GEM
     foundation-rails (5.4.3.1)
       railties (>= 3.1.0)
       sass (>= 3.2.0)
+    fuzzy_match (2.1.0)
     haml (4.0.7)
       tilt
     haml-rails (0.9.0)
@@ -282,8 +285,11 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    seed_dump (3.2.2)
+      activerecord (~> 4)
+      activesupport (~> 4)
     sexp_processor (4.6.0)
-    sidekiq (3.5.2)
+    sidekiq (3.5.3)
       celluloid (~> 0.17.2)
       connection_pool (~> 2.2, >= 2.2.0)
       json (~> 1.0)
@@ -351,6 +357,7 @@ DEPENDENCIES
   aws-sdk (< 2.0)
   bcrypt (= 3.1.10)
   bootstrap-sass (= 3.2.0)
+  byebug
   capistrano (= 3.2.1)
   capistrano-rails (= 1.1.2)
   capistrano-rvm (= 0.1.2)
@@ -360,12 +367,14 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   colorize (= 0.7.7)
   curb-fu (= 0.6.2)
+  diff_dirs (= 0.1.2)
   domainator (= 2.0.0)
   elasticsearch-model (= 0.1.7)
   elasticsearch-rails (= 0.1.7)
   faker (= 1.4.3)
   filesize (= 0.0.4)
   foundation-rails (= 5.4.3.1)
+  fuzzy_match (= 2.1.0)
   haml
   haml-rails
   httparty (= 0.13.3)
@@ -397,6 +406,7 @@ DEPENDENCIES
   sanitize (= 4.0.0)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+  seed_dump
   sidekiq-pro (= 2.1.1)!
   similar_text (= 0.0.4)
   slack-notifier (= 1.2.1)
