@@ -44,12 +44,20 @@ angular.module("appApp")
                   requestData['app'][tag.parameter].push(tag.value);
                 } else {
                   requestData['app'][tag.parameter] = [tag.value];
-                }                break;
+                }
+                break;
               case 'customKeywords':
                 if(requestData['custom'][tag.parameter]) {
                   requestData['custom'][tag.parameter].push(tag.value);
                 } else {
                   requestData['custom'][tag.parameter] = [tag.value];
+                }
+                break;
+              case 'sdkNames':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
             }
