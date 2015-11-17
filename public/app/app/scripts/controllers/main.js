@@ -71,9 +71,7 @@ angular.module('appApp')
               sdkNameFilterPresent = true;
             }
           });
-          if(sdkNameFilterPresent) {
-            $rootScope.sdkFilterPresent = true;
-          }
+          $rootScope.sdkFilterPresent = sdkNameFilterPresent;
         }
       });
 
