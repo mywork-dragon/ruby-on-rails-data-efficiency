@@ -41,14 +41,16 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
         );
         /* -------- Mixpanel Analytics End -------- */
         /* -------- Slacktivity Alerts -------- */
-        var slacktivityData = {
-          "title": "SDK Details Page Viewed",
-          "fallback": "SDK Details Page Viewed",
-          "color": "#FFD94D", // yellow
-          "userEmail": userInfo.email
-        };
-        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-        window.Slacktivity.send(slacktivityData);
+        if(userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+          var slacktivityData = {
+            "title": "SDK Details Page Viewed",
+            "fallback": "SDK Details Page Viewed",
+            "color": "#FFD94D", // yellow
+            "userEmail": userInfo.email
+          };
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+        }
         /* -------- Slacktivity Alerts End -------- */
       }).error(function() {
         sdkDetailsCtrl.queryInProgress = false;

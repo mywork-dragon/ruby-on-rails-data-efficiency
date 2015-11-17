@@ -79,7 +79,7 @@ angular.module('appApp')
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
               if(tag.parameter == 'sdkNames') {
-                sdkNames.push(tag.text);
+                sdkNames.push(tag.value.name);
               }
             });
             searchQueryPairs['tags'] = searchQueryFields;
@@ -92,7 +92,7 @@ angular.module('appApp')
             );
             /* -------- Mixpanel Analytics End -------- */
             /* -------- Slacktivity Alerts -------- */
-            if($rootScope.sdkFilterPresent) {
+            if($rootScope.sdkFilterPresent && userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
               var slacktivityData = {
                 "title": "SDK Filter Query",
                 "fallback": "SDK Filter Query",

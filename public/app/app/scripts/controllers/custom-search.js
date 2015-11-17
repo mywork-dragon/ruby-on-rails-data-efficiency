@@ -71,16 +71,18 @@ angular.module('appApp')
           );
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
-          var slacktivityData = {
-            "title": "SDK Custom Search",
-            "fallback": "SDK Custom Search",
-            "color": "#FFD94D", // yellow
-            "userEmail": userInfo.email,
-            "platform": customSearchCtrl.platform,
-            "query": customSearchCtrl.searchInput
-          };
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
+          if(userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+            var slacktivityData = {
+              "title": "SDK Custom Search",
+              "fallback": "SDK Custom Search",
+              "color": "#FFD94D", // yellow
+              "userEmail": userInfo.email,
+              "platform": customSearchCtrl.platform,
+              "query": customSearchCtrl.searchInput
+            };
+            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+            window.Slacktivity.send(slacktivityData);
+          }
           /* -------- Slacktivity Alerts End -------- */
         } else {
           /* -------- Mixpanel Analytics Start -------- */
