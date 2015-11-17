@@ -74,9 +74,13 @@ angular.module('appApp')
             /* -------- Mixpanel Analytics Start -------- */
             var searchQueryPairs = {};
             var searchQueryFields = [];
+            var sdkNames = [];
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
+              if(tag.parameter == 'sdkNames') {
+                sdkNames.push(tag.text);
+              }
             });
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
@@ -89,12 +93,12 @@ angular.module('appApp')
             /* -------- Mixpanel Analytics End -------- */
             /* -------- Slacktivity Alerts -------- */
             if($rootScope.sdkFilterPresent) {
-              console.log("SLACKTIVITY FILTER ALERT");
               var slacktivityData = {
                 "title": "SDK Filter Query",
                 "fallback": "SDK Filter Query",
                 "color": "#FFD94D", // yellow
                 "userEmail": userInfo.email,
+                "sdkNames": sdkNames.join(', '),
                 "tags": searchQueryFields.join(', '),
                 "numOfApps": data.resultsCount
               };
