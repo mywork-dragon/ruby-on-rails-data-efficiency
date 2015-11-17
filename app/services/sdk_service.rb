@@ -61,7 +61,7 @@ class SdkService
 	    return nil if package.blank?
 	    package = package.capitalize if package == package.upcase && package.count('.').zero?
 
-	    name = extract_known_parent(package) || package.split('.').first
+	    name = known_parent_query(package) || package.split('.').first
 
 	    return nil if name.nil?
 	    name = camel_split(name)
@@ -144,7 +144,10 @@ class SdkService
 			sdk
 		end
 
-		def extract_known_parent(package)
+		# For a hard coded list of known parents, builds a query of more relavent information
+		# @param package - "com.google.admob"
+		# @returns a query term like "Google admob"
+		def known_parent_query(package)
 
 			known_companies = %w(google twitter)
 
@@ -255,7 +258,7 @@ class SdkService
 		def camel_split(str)
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
 		end
-		
+
 		# def g_words(package)
 		# 	words = %w(ads maps wallet analytics drive admob doubleclick plus)
 		# 	words.each do |g| 
