@@ -156,8 +156,10 @@ angular.module('appApp')
         );
         /* -------- Mixpanel Analytics End -------- */
         var firstPage = 1;
+        $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
           .success(function(data) {
+            $scope.queryInProgress = false;
             searchCtrl.apps = data.results;
             searchCtrl.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -167,6 +169,7 @@ angular.module('appApp')
             searchCtrl.resultsOrderBy = order;
           })
           .error(function() {
+            $scope.queryInProgress = false;
             $rootScope.dashboardSearchButtonDisabled = false;
           });
         };
