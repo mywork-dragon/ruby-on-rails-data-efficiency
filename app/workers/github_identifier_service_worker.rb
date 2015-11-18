@@ -8,10 +8,8 @@ class GithubIdentifierServiceWorker
     last_pod = sdk.cocoapods.last
     url = (last_pod.git if last_pod && last_pod.git && last_pod.git.include?('github')) || sdk.website
     data = GithubService.get_repo_data(url)
-    if data['message'] == 'Not Found'
-      # should do something
-      return nil
-    end
+    return nil if data['message'] == 'Not Found'
+    # TODO: should do something about not finding
     begin
       sdk.update(github_repo_identifier: data['id'])
     rescue
