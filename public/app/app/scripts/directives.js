@@ -426,6 +426,10 @@ angular.module("app.directives", []).directive("imgHolder", [
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }
+                if ($rootScope.tags[index].parameter == 'downloads') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
               }
             }
             // Removes all categories upon platform switch
