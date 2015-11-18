@@ -15,8 +15,10 @@ class GithubIdentifierServiceWorker
     begin
       sdk.update(github_repo_identifier: data['id'])
     rescue
-      id = IosSdk.select(:id).where(github_repo_identifier: data['id']).first.id
-      `echo '#{id} #{sdk_id}' >> collisions.txt`
+      if Rails.env.development?
+        id = IosSdk.select(:id).where(github_repo_identifier: data['id']).first.id
+        `echo '#{id} #{sdk_id}' >> collisions.txt` if Rails.env.development?
+      end
     end
   end
 end
