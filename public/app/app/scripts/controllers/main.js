@@ -118,6 +118,10 @@ angular.module('appApp')
               customName = "1B - 50B";
               break;
           }
+          value = {
+            id: parseInt(value, 10),
+            name: customName
+          };
           filterService.addFilter(parameter, value, displayName, limitToOneFilter, customName);
         } else {
           filterService.addFilter(parameter, value, displayName, limitToOneFilter);

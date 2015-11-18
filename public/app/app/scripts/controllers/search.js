@@ -25,13 +25,14 @@ angular.module('appApp')
 
         /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
-        console.log('APP PARAMS:', appParams);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
         var allParams = appParams ? appParams : [];
         if (routeParams.custom && customParams['customKeywords'] && customParams['customKeywords'][0]) allParams['customKeywords'] = customParams['customKeywords'];
-        for (var attribute in companyParams) { allParams[attribute] = companyParams[attribute]; }
+        for (var attribute in companyParams) {
+          allParams[attribute] = companyParams[attribute];
+        }
 
         searchCtrl.appPlatform.platform = platform.appPlatform;
         var APP_PLATFORM = platform.appPlatform;
@@ -42,7 +43,6 @@ angular.module('appApp')
         for (var key in allParams) {
 
           var value = allParams[key];
-
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
               if (arrayItem) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
@@ -78,7 +78,7 @@ angular.module('appApp')
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
-              if(tag.parameter == 'sdkNames') {
+              if(tag.parameter == 'sdkNames' && tag.parameter == 'downloads' ) {
                 sdkNames.push(tag.value.name);
               }
             });
