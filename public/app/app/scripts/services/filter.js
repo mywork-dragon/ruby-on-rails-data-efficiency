@@ -19,7 +19,7 @@ angular.module("appApp")
           var oneTagUpdated = false;
 
           $rootScope.tags.forEach(function (tag) {
-            
+
             // Determine if tag is a duplicate (for tags with objects for values)
             if(tag.value.id !== undefined && tag.parameter == parameter && tag.value.id == value.id) {
               duplicateTag = true;
