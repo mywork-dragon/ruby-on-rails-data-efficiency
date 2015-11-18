@@ -57,6 +57,10 @@ class IosClassService
       contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
     end
 
+    def classes_from_classdump(contents)
+      contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
+    end
+
     # Get bundles from strings
     def bundles_from_strings(contents)
       contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/)
@@ -73,7 +77,7 @@ class IosClassService
       sdks = []
 
       if search_classes
-        classes = contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
+        classes = classes_from_classdump(contents)
         sdks += find_from_classes(classes: classes)
       end
 
@@ -87,7 +91,7 @@ class IosClassService
       # TODO: write to write join to ipa snapshot
     end
 
-    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: true)
+    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: false)
 
       sdks = []
 
@@ -100,7 +104,7 @@ class IosClassService
 
       if search_classes
         classes = classes_from_strings(contents)
-        sdks += find_from_classes(classes: classes)
+        sdks += find_from_classes(classes: classes, matches_threshold: 1)
       end
 
       if search_fw_folders
@@ -112,7 +116,8 @@ class IosClassService
       # TODO: write to write join to ipa snapshot
     end
 
-    def find_from_classes(classes: classes, remove_apple: false)
+    def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
+      byebug
       sdks = []
 
       if remove_apple
@@ -121,10 +126,11 @@ class IosClassService
 
       classes.each do |name|
         found = search(name) || code_search(name)
-        sdks << {term: name, sdk: found} if found
+        # sdks << {term: name, sdk: found} if found
+        sdks << found
       end
 
-      sdks
+      sdks.group_by {|x| x}.select {|k, v| v.length > min_matches}.keys
     end
 
     def find_from_fw_folders(fw_folders: fw_folders)
@@ -199,11 +205,6 @@ class IosClassService
 
     def search_fw_folders(folders, snap_id)
       nil
-    end
-
-    def remove_apple_docs(classes)
-      classes
-      # TODO: implement this
     end
 
     def search(q)

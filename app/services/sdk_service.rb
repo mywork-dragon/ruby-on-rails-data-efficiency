@@ -203,7 +203,7 @@ class SdkService
 		end
 
 		# For a hard coded list of known parents, builds a query of more relavent information
-		# @param package - "com.google.admob"
+		# @param package - "google.admob" (Notice no prefix)
 		# @returns a query term like "Google admob"
 		def known_parent_query(package)
 
