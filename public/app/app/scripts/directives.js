@@ -419,7 +419,7 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
               }
             }
-            // Removes all sdk filters upon platform switch to iOS
+            // Removes all sdk & download filters upon platform switch to iOS
             if ($scope.appPlatform != 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
                 if ($rootScope.tags[index].parameter == 'sdkNames') {
