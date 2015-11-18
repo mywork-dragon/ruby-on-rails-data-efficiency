@@ -16,7 +16,7 @@ class IosClassService
       if Rails.env.production?
 
         url = classdump.class_dump.url
-        contents = open(url).read
+        contents = open(url).read.scrub
       elsif Rails.env.development?
 
         snap = IpaSnapshot.find(snap_id)
@@ -24,7 +24,7 @@ class IosClassService
         ext = classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
         filename = filename + ext
 
-        contents = File.open(filename) {|f| f.read}.chomp
+        contents = File.open(filename) {|f| f.read}.chomp.scrub
       end
 
       if classdump.method == 'classdump'
@@ -34,29 +34,39 @@ class IosClassService
       end
     end
 
+    def attribute_sdks_to_snap(snap_id:, sdks:)
+      sdks.each do |sdk|
+        begin
+          IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id)
+        rescue
+          nil
+        end
+      end
+    end
 
     def classify_classdump(snap_id, contents)
 
       puts "Classifying classdump".red
-      classes = contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
 
-      sdks = sdks_from_classnames(contents: contents)
+      sdks = sdks_from_classdump(contents: contents)
+      # attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
 
-      search_classnames(classes, snap_id)
     end
 
     # Entry point to integrate with @osman
     def classify_strings(snap_id, contents)
-
       puts "Classifying strings".blue
-     sdks = sdks_from_strings(contents: contents)
+      sdks = sdks_from_strings(contents: contents)
+      attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
     end
 
     # Get classes from strings
     def classes_from_strings(contents)
-      contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
+      contents.scan(/@"<?([_\p{Alnum}]+)/).flatten.uniq # more generic
+      # contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
     end
 
+    # Get classes from classdump
     def classes_from_classdump(contents)
       contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
     end
@@ -88,10 +98,9 @@ class IosClassService
 
       sdks = sdks.compact.uniq {|sdk| sdk.id}
 
-      # TODO: write to write join to ipa snapshot
     end
 
-    def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: false)
+    def sdks_from_strings(contents:, search_classes: false, search_bundles: false, search_fw_folders: true)
 
       sdks = []
 
@@ -113,7 +122,6 @@ class IosClassService
       end
 
       sdks = sdks.compact.uniq {|sdk| sdk.id}
-      # TODO: write to write join to ipa snapshot
     end
 
     def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
@@ -136,46 +144,32 @@ class IosClassService
     def find_from_fw_folders(fw_folders: fw_folders)
       sdks = []
       fw_folders.each do |fw_folder|
-        match = IosSdk.find_by_name(fw_folder)
+        regex = convert_folder_to_regex(fw_folder)
+        match = IosSdk.where('name REGEXP ?', regex).first
         sdks << match if match
       end
       
       sdks
     end
 
-    def sdks_from_strings_cocoapods(contents)
-      fw_folders.each do |fw_folder|
-        ios_sdk = IosSdk.where('lower(name) = ?', fw_folder.downcase).first
-      end
+    # convert a folder name to a regex string (for running against sdk names)
+    def convert_folder_to_regex(folder_name)
+      regex = folder_name.chomp.split('').map do |char|
+        if /[^\p{Alnum}]/.match(char)
+          '[^a-zA-Z0-9]?' # mysql doesn't have Alnum...I think
+        else
+          char
+        end
+      end.join('')
+
+      # require entire match
+      "^#{regex}$"
     end
-
-    def store_sdks_from_strings_cocoapods(contents)
-
-    end
-
 
     # Entry point forC
     def sdks_from_strings_file(filename)
       contents = File.open(filename) { |f| f.read }.chomp
       sdks_from_strings_googled(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
-    end
-
-    def search_classnames(names, snap_id)
-      result = []
-      names.each do |name|
-
-        found = search(name) || code_search(name)
-
-        next if found.nil?
-
-        begin
-          # IosSdksIpaSnapshot.create(ios_sdk: found.id, ipa_snapshot_id: snap_id)
-          result.push(found.name)
-        rescue
-          nil
-        end
-      end
-      result.uniq
     end
 
     # For testing, entry point to classify string
@@ -192,19 +186,6 @@ class IosClassService
     # Create entry in join table for every one that it finds
     def search_bundles(bundles, snap_id)
       SdkService.find_from_packages(packages: bundles, platform: :ios)
-    end
-
-    def run_broken(arr = nil)
-
-      arr = CocoapodException.select(:cocoapod_id).map{|x| x.cocoapod_id} if arr.nil?
-
-      arr.uniq.each do |cocoapod_id|
-        CocoapodDownloadWorker.perform_async(cocoapod_id)
-      end
-    end
-
-    def search_fw_folders(folders, snap_id)
-      nil
     end
 
     def search(q)
@@ -235,7 +216,7 @@ class IosClassService
     def handle_collisions(sdks, req = 0.8)
 
       puts "Collision between #{sdks.map {|x| x.name}.join(',')}"
-      # use total downloads as proxy
+      # TODO: make this 1 query instead of 
       downloads = sdks.map {|sdk| get_downloads_for_sdk(sdk)}
       total = downloads.reduce(0) {|x, y| x + y}
 
@@ -244,79 +225,6 @@ class IosClassService
 
       # TODO: consider hard links
     end
-
-    # Never string search classes for now (because it's too many)
-    # def sdks_from_strings_googled(contents:, search_classes: false, search_bundles: true, search_fw_folders: false)
-    #   queries = []
-
-    #   if search_classes
-    #     classes = classes_from_strings(contents)
-    #     queries += classes # query the classes without added filtering 
-    #   end
-
-    #   if search_bundles
-    #     bundles = bundles_from_strings(contents)
-    #     queries += bundles.map{ |bundle| SdkService.query_from_package(bundle)} # pull out the package names to query
-    #   end
-
-    #   if search_fw_folders
-    #     fw_folders = fw_folders_from_strings(contents)
-    #     queries += fw_folders
-    #   end
-
-    #   if true # debug only
-    #     puts "Classes:".green
-    #     ap classes
-    #     puts ""
-
-    #     puts "Bundles:".green
-    #     ap bundles
-    #     puts ""
-
-    #     puts "FW Folders:".green
-    #     ap fw_folders
-    #     puts ""
-    #   end
-
-    #   queries = queries.compact.uniq{ |x| x.downcase }
-
-    #   puts "Queries".purple
-    #   ap queries
-
-    #   SdkService.find_from_queries(queries: queries, platform: :ios)
-    # end
-
-    # def store_sdks_from_strings_googled(snap_id: snap_id, contents: contents)
-    #   sdks_h = sdks_from_strings_googled(contents: contents)
-
-    #   sdks_h.each do |sdk|
-
-    #     sdk_kind = sdk[:kind]
-
-    #     if sdk_kind == :company
-    #       begin
-    #         url = sdk[:url]
-    #         company = sdk[:company]
-
-    #         ios_sdk = IosSdk.create!(name: company, website: url, open_source: false)
-    #         ios_sdk.favicon = WWW::Favicon.new.find(url)
-    #         ios_sdk.save!
-    #       rescue ActiveRecord::RecordNotUnique => e
-    #         ios_sdk = IosSdk.find_by_name(company)
-    #       end
-    #     elsif sdk_kind == :open_source
-    #       begin
-    #         repo_id = sdk[:repo_id]
-    #         ios_sdk = IosSdk.create!(name: sdk[:repo_name], website: sdk[:url], favicon: sdk[:favicon], open_source: true, summary: sdk[:repo_description], github_repo_identifier: repo_id)
-    #       rescue ActiveRecord::RecordNotUnique => e
-    #         ios_sdk = IosSdk.find_by_github_repo_identifier(repo_id)
-    #       end
-    #     end
-
-    #     IosSdksIpaSnapshot.create!(ios_sdk_id: ios_sdk.id, ipa_snapshot_id: snap_id)
-    #   end
-    # end
-
 	end
 
 end
