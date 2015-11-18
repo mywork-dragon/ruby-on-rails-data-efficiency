@@ -142,6 +142,8 @@ class ApiController < ApplicationController
           adSpend: app.android_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
+          downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
