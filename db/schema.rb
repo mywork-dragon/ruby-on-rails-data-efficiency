@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151117014225) do
+ActiveRecord::Schema.define(version: 20151117223026) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -194,7 +194,7 @@ ActiveRecord::Schema.define(version: 20151117014225) do
     t.datetime "updated_at"
     t.boolean  "open_source",       default: false
     t.integer  "parent_company_id"
-    t.boolean  "is_parent",         default: false
+    t.boolean  "is_parent"
   end
 
   add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
@@ -1173,14 +1173,16 @@ ActiveRecord::Schema.define(version: 20151117014225) do
   add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", using: :btree
 
   create_table "sdk_packages", force: true do |t|
-    t.string   "package_name"
-    t.integer  "sdk_company_id"
+    t.string   "package"
+    t.integer  "ios_sdk_id"
+    t.integer  "android_sdk_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "sdk_packages", ["package_name"], name: "index_sdk_packages_on_package_name", using: :btree
-  add_index "sdk_packages", ["sdk_company_id"], name: "index_sdk_packages_on_sdk_company_id", using: :btree
+  add_index "sdk_packages", ["android_sdk_id"], name: "index_sdk_packages_on_android_sdk_id", using: :btree
+  add_index "sdk_packages", ["ios_sdk_id"], name: "index_sdk_packages_on_ios_sdk_id", using: :btree
+  add_index "sdk_packages", ["package"], name: "index_sdk_packages_on_package", unique: true, using: :btree
 
   create_table "sdk_regexes", force: true do |t|
     t.string   "regex"
