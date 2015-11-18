@@ -96,7 +96,32 @@ angular.module('appApp')
       if(!$rootScope.tags) $rootScope.tags = [];
 
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
-        filterService.addFilter(parameter, value, displayName, limitToOneFilter);
+        if(parameter == 'downloads') {
+          var customName = "";
+          switch (value) {
+            case '0':
+              customName = "0 - 50K";
+              break;
+            case '1':
+              customName = "50K - 500K";
+              break;
+            case '2':
+              customName = "500K - 10M";
+              break;
+            case '3':
+              customName = "10M - 100M";
+              break;
+            case '4':
+              customName = "100M - 1B";
+              break;
+            case '5':
+              customName = "1B - 50B";
+              break;
+          }
+          filterService.addFilter(parameter, value, displayName, limitToOneFilter, customName);
+        } else {
+          filterService.addFilter(parameter, value, displayName, limitToOneFilter);
+        }
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };
 

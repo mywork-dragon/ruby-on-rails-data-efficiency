@@ -61,6 +61,17 @@
                       <option value="elite">Elite</option>
                     </select>
                </span>
+               <span class="ui-select" ng-show="appPlatform.platform == 'android'">
+                    <select ng-model="downloads" ng-change="onFilterChange('downloads', downloads, 'Downloads', false)">
+                      <option value="">Downloads</option>
+                      <option value="0">0 - 50K</option>
+                      <option value="1">50K - 500K</option>
+                      <option value="2">500K - 10M</option>
+                      <option value="3">10M - 100M</option>
+                      <option value="4">100M - 1B</option>
+                      <option value="5">1B - 50B</option>
+                    </select>
+               </span>
               <!--
                <span class="ui-select">
                     <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">

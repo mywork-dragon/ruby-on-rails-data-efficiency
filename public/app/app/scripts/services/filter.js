@@ -5,7 +5,6 @@ angular.module("appApp")
     function($rootScope) {
       return {
         addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
-          console.log('Param:', parameter, 'Val:', value, 'DisName:', displayName);
           /* -------- Mixpanel Analytics Start -------- */
           var mixpanelProperties = {};
           mixpanelProperties['parameter'] = parameter;
