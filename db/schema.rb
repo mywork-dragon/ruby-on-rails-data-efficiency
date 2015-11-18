@@ -195,7 +195,7 @@ ActiveRecord::Schema.define(version: 20151118182401) do
     t.datetime "updated_at"
     t.boolean  "open_source",       default: false
     t.integer  "parent_company_id"
-    t.boolean  "is_parent",         default: false
+    t.boolean  "is_parent"
   end
 
   add_index "android_sdk_companies", ["flagged"], name: "index_android_sdk_companies_on_flagged", using: :btree
