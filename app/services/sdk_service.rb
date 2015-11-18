@@ -10,20 +10,19 @@ class SdkService
 
 			raise "Android not implemented" if platform != :ios
 
-			found_sdks = []
-			new_sdks = []
+			packages = packages.uniq
 
-			packages.each do |package|
+			matches = packages.reduce({}) do |memo, package|
 				put "Searching for package: #{package}".yellow
 				match = existing_sdk_from_package(package: package, platform: platform)
-
-				if match
-					found_sdks << match
-				else
-					created = create_sdk_from_package(package: package, platform: platform, read_only: read_only)
-					new_sdks << created if created
-				end
+				memo[package] = match if match
+				memo
 			end
+
+			found_sdks = matches.values.uniq {|sdk| sdk.id}
+			remaining = packages - matches.keys
+
+			new_sdks = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only)
 
 			puts "Existing matches"
 			ap found_sdks
@@ -70,6 +69,62 @@ class SdkService
 	    return nil if name.nil? || name.length < QUERY_MINIMUM_LENGTH # no good if it's nil or less than QUERY_MINIMUM_LENGTH
 
 	    name
+		end
+
+		def create_sdks_from_packages(packages:, platform:, read_only: false)
+			raise "Android not implemented" if platform != :ios
+
+			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+
+			# get mapping from query to array of packages
+			query_hash = packages.reduce({}) do |memo, package|
+				query = query_from_package(package)
+
+				if !query.nil?
+					if memo[query].nil?
+						memo[query] = [package]
+					else
+						memo[query] << package
+					end
+				end
+				memo
+			end
+
+			results = query_hash.keys.map do |query|
+				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+
+				next if sdk.nil?
+
+				existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
+
+				if existing || read_only
+					{sdk: existing, query: query} if existing
+				else
+					sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
+					{sdk: sdk, query: query}
+				end
+			end.compact
+
+			sdks = results.map {|x| x[:sdk]}
+
+			return sdks if read_only
+
+			# Update packages table
+			results.each do |result|
+				query_hash[result[:query]].each do |package|
+					sdk = result[:sdk]
+					begin
+						SdkPackage.create!(package: package, col => sdk.id)
+					rescue ActiveRecord::RecordNotUnique => e
+						row = SdkPackage.find_by_package(package)
+						row[col] = sdk.id
+						row.save
+					end
+				end
+			end
+
+			sdks
+
 		end
 
 		# Create a new sdk or find existing one based on proposed sdk to create
