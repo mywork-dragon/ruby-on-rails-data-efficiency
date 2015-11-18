@@ -19,17 +19,14 @@ angular.module("appApp")
           var oneTagUpdated = false;
 
           $rootScope.tags.forEach(function (tag) {
-            console.log('TAG!!!!', tag);
-
+            
             // Determine if tag is a duplicate (for tags with objects for values)
-            if(tag.value.id && tag.parameter == parameter && tag.value.id == value.id) {
+            if(tag.value.id !== undefined && tag.parameter == parameter && tag.value.id == value.id) {
               duplicateTag = true;
-              console.log('ARRAY ENTERED', tag.value.id, value.id);
             }
             // Determine if tag is a duplicate for normal tags (with non-object values)
             if (tag.parameter == parameter && tag.value == value) {
               duplicateTag = true;
-              console.log('ARRAY NOT ENTERED', tag.value.id, value.id);
             }
 
             if(limitToOneFilter && !duplicateTag) {

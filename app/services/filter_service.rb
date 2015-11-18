@@ -146,10 +146,6 @@ class FilterService
         queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
-      # !!!!!!!!!!!!!!!!!!!!! FINISH THIS LOGIC !!!!!!!!!!!!!!!!!!!!!!!
-      # !!!!!!!!!!!!!!!!!!!!! FINISH THIS LOGIC !!!!!!!!!!!!!!!!!!!!!!!
-      # !!!!!!!!!!!!!!!!!!!!! FINISH THIS LOGIC !!!!!!!!!!!!!!!!!!!!!!!
-
       if app_filters['downloads']
 
         # Download Value Ranges - broken up to intervals of scraped data
