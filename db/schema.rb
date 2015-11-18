@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151118024326) do
+ActiveRecord::Schema.define(version: 20151118182401) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 20151118024326) do
   add_index "android_app_snapshots", ["android_app_snapshot_job_id"], name: "index_android_app_snapshots_on_android_app_snapshot_job_id", using: :btree
   add_index "android_app_snapshots", ["apk_access_forbidden"], name: "index_apk_access_forbidden", using: :btree
   add_index "android_app_snapshots", ["developer_google_play_identifier"], name: "index_developer_google_play_identifier", using: :btree
+  add_index "android_app_snapshots", ["downloads_min"], name: "index_downloads_min", using: :btree
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
 
