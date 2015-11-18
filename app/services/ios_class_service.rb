@@ -263,6 +263,8 @@ class IosClassService
 
       highest = downloads.max
       sdks[downloads.find_index(highest)] if highest > req * total
+
+      # TODO: consider hard links
     end
 
 	end

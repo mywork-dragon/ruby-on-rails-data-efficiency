@@ -159,13 +159,25 @@ class IosSdkServiceWorker
 		open_source = website.match(/(?:bitbucket|github|sourceforge)/) ? true : false
 		deprecated = check_deprecated(pod)
 
+		# if github, get the repo identifier
+		github_repo_identifier = if /github.(com|io)/.match(website)
+			url = pod['git'] && pod['git'].include?('github') ? pod['git'] || pod['website']
+
+			begin
+				GithubService.get_repo_data(url)['id']
+			rescue
+				nil
+			end
+		end
+
 		{
 			name: name,
 			website: website,
 			summary: summary,
 			favicon: favicon_url,
 			open_source: open_source,
-			deprecated: deprecated
+			deprecated: deprecated,
+			github_repo_identifier: github_repo_identifier
 		}
 	end
 
