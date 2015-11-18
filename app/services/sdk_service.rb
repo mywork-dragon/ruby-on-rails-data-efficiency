@@ -207,7 +207,7 @@ class SdkService
 		# @returns a query term like "Google admob"
 		def known_parent_query(package)
 
-			known_companies = %w(google twitter)
+			known_companies = %w(google)
 
 			known_companies.each do |co|
 				if package.match(/#{co}/i)
