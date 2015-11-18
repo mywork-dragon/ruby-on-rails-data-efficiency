@@ -114,6 +114,9 @@ module MightyDeployer
     @ios_live_scan_servers = %w(
       54.173.117.185
     )
+
+    @app_roles += @ios_live_scan_servers
+    @ios_live_scan_roles += @ios_live_scan_servers
   end
 
   private
