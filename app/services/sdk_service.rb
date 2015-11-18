@@ -4,7 +4,7 @@ class SdkService
 	DICE_SIMILARITY_THRESHOLD = 0.9
 
 	class << self
-
+		
 		# Given a list of packages (com.facebook.sdk, ...), return the sdks that exist and use google to find other ones. If create is turned on, will go ahead and create the sdks (should )
 		def find_from_packages(packages:, platform:, read_only: false)
 
