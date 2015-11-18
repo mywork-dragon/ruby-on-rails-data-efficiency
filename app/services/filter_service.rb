@@ -152,28 +152,24 @@ class FilterService
 
       if app_filters['downloads']
 
-        # AndroidAppSnapshot.where("downloads_min = 500000000 OR downloads_min = 1000000000")
-        download_query_pieces = "where('"
-
-        # Download Value Ranges
-        download_min_values = [0, 50000, 500000, 10000000, 100000000, 1000000000]
+        # Download Value Ranges - broken up to intervals of scraped data
+        download_min_values = [
+            [1, 5, 10, 50, 100, 500, 1000, 5000, 10000],  # 0 - 50K
+            [50000, 100000],                              # 50K - 500K
+            [500000, 1000000, 5000000],                   # 500K - 10M
+            [10000000, 50000000],                         # 10M - 100M
+            [100000000, 500000000],                       # 100M - 1B
+            [1000000000]                                  # 1B - 5B
+        ]
         download_ids = app_filters['downloads'].map{|x| x['id'].to_i}
 
-        count = 1
+        filter_values_array = []
+
         download_ids.each do |id|
-          if count == download_ids.size
-            download_query_pieces += "downloads_min = #{download_min_values[id]}"
-          else
-            download_query_pieces += "downloads_min = #{download_min_values[id]} OR "
-          end
-          count += 1
+          filter_values_array.push(*download_min_values[id])
         end
-        download_query_pieces += "')"
 
-        puts "##########"
-        puts download_query_pieces
-
-        queries << download_query_pieces
+        queries << "where('android_app_snapshots.downloads_min IN (?)', #{filter_values_array})"
       end
 
       if app_filters['sdkNames']
