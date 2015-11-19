@@ -214,8 +214,10 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">{{app.app.name}}</a>
+                  <img ng-src="{{app.app.appIcon.large}}" />
+                  <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">{{app.app.name}}</a>
                 </span>
+                <span class="badge badge-primary" ng-if="appPlatform.platform == 'ios' && 0 <= app.app.releasedDays && app.app.releasedDays <= 60">New {{app.app.releasedDays}}</span>
               </td>
               <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
               <td ng-if="!app.company.name">{{app.app.seller}}</td>              <td>{{app.company.fortuneRank}}</td>

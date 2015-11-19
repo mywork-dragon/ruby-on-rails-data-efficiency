@@ -75,6 +75,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
           lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
           adSpend: app.ios_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'IosApp',
