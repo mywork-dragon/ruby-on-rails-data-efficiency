@@ -6,10 +6,10 @@ class IosClassificationServiceWorker
 
   def perform(snap_id)
     snapshot = IpaSnapshot.find(snap_id)
-    snapshot.scan_status = :starting
+    snapshot.scan_status = :scanning
     snapshot.save
     classify(snap_id)
-    snapshot.scan_status = :complete
+    snapshot.scan_status = :scanned
     snapshot.save
   end
 

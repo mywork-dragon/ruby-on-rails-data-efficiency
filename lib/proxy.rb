@@ -72,7 +72,24 @@ class Proxy
     # @return The response (CurbFu::Response::Base)
     def get_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
+      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params_from_query(uri.query).merge(params))
+    end
+
+    # from a query string, build the params object
+    # "id=368677368&uslimit=1" --> {"id"=>"368677368", "uslimit"=>"1"}
+    def params_from_query(query)
+
+      return {} if query.nil?
+
+      query.split("&").reduce({}) do |memo, pair|
+        parts = pair.split("=")
+        if parts.length > 1
+          memo[parts.first] = parts.second
+          memo
+        else
+          memo
+        end
+      end
     end
 
     # Get the body, passing in only the URL
@@ -83,7 +100,7 @@ class Proxy
     # @note Also randomizes the User Agent
     def get_body_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params)
+      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}.merge(headers)}, params: params_from_query(uri.query).merge(params))
     end
 
     # workaround locking issues

@@ -1,6 +1,6 @@
 module IosWorker
 
-	def run_scan(ipa_snapshot_job_id:, app_identifier:, purpose:, start_classify: false, bid = nil)
+	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, bid = nil)
 
 		# convert data coming from ios_device_service to classdump row information
 		def result_to_cd_row(data)
@@ -40,9 +40,9 @@ module IosWorker
 		# create database rows
 		begin
 			begin
-				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier, download_status: :starting)
+				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting)
 			rescue
-				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
+				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).first
 			end
 
 			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
@@ -60,7 +60,7 @@ module IosWorker
 				classdump.error_code = :devices_busy
 				classdump.save
 
-				return on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
+				return on_complete(ipa_snapshot_job_id, ios_app_id, bid, classdump)
 			end
 
 			classdump.ios_device_id = device.id
@@ -69,6 +69,8 @@ module IosWorker
 			# do the actual classdump
 			# after install and dump, will run the procedure block which updates the classdump table. 
 			# Will be useful for polling or could add some logic to send status updates
+			app_identifier = IosApp.find(ios_app_id).app_identifier
+			raise "No app identifer for ios app #{ios_app_id}" if app_identifier.nil?
 			final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
