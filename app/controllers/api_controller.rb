@@ -74,6 +74,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
           adSpend: app.ios_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'IosApp',
@@ -150,7 +151,6 @@ class ApiController < ApplicationController
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
               large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
-              # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
           }
         },
         company: {
