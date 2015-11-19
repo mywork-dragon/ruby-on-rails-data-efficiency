@@ -7693,6 +7693,12 @@ pre {
   color: #ED5F5F;
 }
 
+.resultsTableAppIcon > .badge {
+  width: auto;
+  height: auto;
+  margin-left: 5px;
+}
+
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {
