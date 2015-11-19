@@ -135,6 +135,7 @@ class SdkService
 
 					if repo_name = srd[:repo_name]
 						dice_similarity = FuzzyMatch::Score::PureRuby.new(repo_name, query).dices_coefficient_similar
+						puts dice_similarity.to_s.purple
 						next if dice_similarity < DICE_SIMILARITY_THRESHOLD	# query not similar enough to repo name
 					end
 
