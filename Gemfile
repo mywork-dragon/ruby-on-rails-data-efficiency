@@ -41,6 +41,8 @@ gem 'spring', '1.3.6',       group: :development
 # gem 'rspec'
 # gem 'rspec-rails'
 
+gem 'rake', '10.4.2'
+
 gem 'whenever', '0.9.4', require: false
 
 gem 'nokogiri', '1.6.4.1'
