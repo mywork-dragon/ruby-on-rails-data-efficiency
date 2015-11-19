@@ -103,7 +103,7 @@ module MightyDeployer
 
   def self.define_darth_vader_servers
     @darth_vader_servers = %w(
-      192.168.1.4
+      192.168.2.101
     )
 
     @app_roles += @darth_vader_servers
