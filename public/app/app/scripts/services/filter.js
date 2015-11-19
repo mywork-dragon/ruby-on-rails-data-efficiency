@@ -5,7 +5,6 @@ angular.module("appApp")
     function($rootScope) {
       return {
         addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
-          console.log('Param:', parameter, 'Val:', value, 'DisName:', displayName);
           /* -------- Mixpanel Analytics Start -------- */
           var mixpanelProperties = {};
           mixpanelProperties['parameter'] = parameter;
@@ -21,7 +20,11 @@ angular.module("appApp")
 
           $rootScope.tags.forEach(function (tag) {
 
-            // Determine if tag is a duplicate
+            // Determine if tag is a duplicate (for tags with objects for values)
+            if(tag.value.id !== undefined && tag.parameter == parameter && tag.value.id == value.id) {
+              duplicateTag = true;
+            }
+            // Determine if tag is a duplicate for normal tags (with non-object values)
             if (tag.parameter == parameter && tag.value == value) {
               duplicateTag = true;
             }

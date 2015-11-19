@@ -146,6 +146,28 @@ class FilterService
         queries << "joins(newest_android_app_snapshot: {android_app_categories_snapshots: :android_app_category}).where('android_app_categories.name IN (?)', #{categories})"
       end
 
+      if app_filters['downloads']
+
+        # Download Value Ranges - broken up to intervals of scraped data
+        download_min_values = [
+            [1, 5, 10, 50, 100, 500, 1000, 5000, 10000],  # 0 - 50K
+            [50000, 100000],                              # 50K - 500K
+            [500000, 1000000, 5000000],                   # 500K - 10M
+            [10000000, 50000000],                         # 10M - 100M
+            [100000000, 500000000],                       # 100M - 1B
+            [1000000000]                                  # 1B - 5B
+        ]
+        download_ids = app_filters['downloads'].map{|x| x['id'].to_i}
+
+        filter_values_array = []
+
+        download_ids.each do |id|
+          filter_values_array.push(*download_min_values[id])
+        end
+
+        queries << "where('android_app_snapshots.downloads_min IN (?)', #{filter_values_array})"
+      end
+
       if app_filters['sdkNames']
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
         queries << "joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids.present?
@@ -173,7 +195,7 @@ class FilterService
       # add app filters
 
       parts << ios_apps_query(app_filters) if app_filters.present?
-      
+
       parts << "group('ios_apps.id')"
       
       # branch off parts for a first query to count the apps
