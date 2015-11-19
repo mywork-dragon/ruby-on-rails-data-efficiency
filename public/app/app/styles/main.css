@@ -7696,7 +7696,7 @@ pre {
 .resultsTableAppIcon > .badge {
   width: auto;
   height: auto;
-  margin-left: 5px;
+  margin: 5px;
 }
 
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
