@@ -29,13 +29,13 @@ class IosLiveScanService
 
       job = IpaSnapshotJob.find(job_id)
 
-      return nil if job.nil? || job.job_type != :one_off # might comment out while mocking
-
-
-
+      return nil if job.nil? || job.job_type != :one_off 
+      
       snapshot = job.ipa_snapshots.first
 
-      status = if snapshot.nil?
+      status = if job.status != :initiated
+        result_map[:validating]
+      elsif snapshot.nil?
         result_map[:preparing]
       elsif snapshot.scan_status == :scanned
         result_map[:complete]
