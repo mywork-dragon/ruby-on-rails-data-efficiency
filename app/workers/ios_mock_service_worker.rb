@@ -25,11 +25,9 @@ class IosMockServiceWorker
 
         snapshots = IpaSnapshot.uncached { IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier)}
 
-        snapshot = snapshots.select {|snap| snap.status == 'complete' || snap.status == 'cleaning'}.last
+        snapshot = snapshots.select {|snap| snap.download_status == 'complete' || snap.download_status == 'cleaning'}.last
 
         next if !snapshot.present?
-
-        next if !(snapshot.status == 'complete' || snapshot.status == 'cleaning')
 
         result = snapshot
 

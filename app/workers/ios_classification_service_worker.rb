@@ -6,7 +6,11 @@ class IosClassificationServiceWorker
 
   def perform(snap_id)
     snapshot = IpaSnapshot.find(snap_id)
+    snapshot.scan_status = :starting
+    snapshot.save
     classify(snap_id)
+    snapshot.scan_status = :complete
+    snapshot.save
   end
 
   def bundle_prefixes

@@ -40,12 +40,12 @@ module IosWorker
 		# create database rows
 		begin
 			begin
-				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier, status: :starting)
+				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier, download_status: :starting)
 			rescue
 				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
 			end
 
-			return nil if snapshot.status == :complete # make sure no duplicates in the job
+			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
 			# TODO: add logic to take previous results if app's version in the app store has not changed
 
@@ -75,7 +75,7 @@ module IosWorker
 				classdump.update row
 
 				if row[:dump_success]
-					snapshot.status = :cleaning
+					snapshot.download_status = :cleaning
 					snapshot.save
 					# don't start classifying while cleaning during development
 					if start_classify

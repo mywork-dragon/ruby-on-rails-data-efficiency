@@ -23,7 +23,7 @@ class IosScanSingleServiceWorker
 
     if result.class == ClassDump && result.success
       # TODO: maybe kick off new job here
-      snapshot.status = :complete
+      snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
       IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
@@ -40,11 +40,11 @@ class IosScanSingleServiceWorker
 
     if @retry < MAX_RETRIES && !(result.class == ClassDump && result.dump_success)
       @retry += 1
-      snapshot.status = :retrying
+      snapshot.download_status = :retrying
       snapshot.save
       run_scan(ipa_snapshot_job_id, app_identifier, :one_off, bid)
     else
-      snapshot.status = :complete
+      snapshot.download_status = :complete
       snapshot.success = false
       snapshot.save
     end
