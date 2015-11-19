@@ -227,7 +227,7 @@
               <td ng-show="appPlatform.platform == 'android'">{{app.app.downloadsMin | humanizeNum}} - {{app.app.downloadsMax | humanizeNum}}</td>
               <td>{{app.app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
-              <td><span ng-class="searchCtrl.getLastUpdatedDaysClass(app.app.lastUpdatedDays)"><strong>{{app.app.lastUpdatedDays}}</strong></span> days ago</td>
+              <td ng-show="app.app.lastUpdatedDays"><span ng-class="searchCtrl.getLastUpdatedDaysClass(app.app.lastUpdatedDays)"><strong>{{app.app.lastUpdatedDays}}</strong></span> days ago</td>
             </tr>
           </tbody>
         </table>
