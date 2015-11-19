@@ -194,13 +194,7 @@ angular.module('appApp')
 
       // Computes class for last updated data in Last Updated column rows
       searchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {
-        if(lastUpdatedDays <= 60) {
-          return 'last-updated-days-new';
-        } else if(60 < lastUpdatedDays && lastUpdatedDays < 181) {
-          return 'last-updated-days-medium';
-        } else {
-          return 'last-updated-days-old';
-        }
+        return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
       };
 
       searchCtrl.exportAllToCsv = function() {

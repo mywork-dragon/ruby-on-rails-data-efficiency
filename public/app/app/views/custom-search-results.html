@@ -78,6 +78,7 @@
                 <span>
                   <img ng-src="{{app.app.appIcon.large}}" /> <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">{{app.app.name}}</a>
                 </span>
+                <span class="badge badge-primary" ng-if="0 <= app.app.releasedDays && app.app.releasedDays <= 15">New</span>
             </td>
             <td class="appTypeIndicator">
               <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
@@ -95,7 +96,13 @@
             <td>{{app.app.categories.join(', ')}}</td>
             <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
             <td ng-if="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | humanizeNum}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | humanizeNum}}</td>
-            <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>
+            <td>
+                <span ng-show="app.app.lastUpdatedDays">
+                  <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.app.lastUpdatedDays)">
+                    <strong>{{app.app.lastUpdatedDays}}</strong>
+                  </span> days ago
+                </span>
+            </td>
           </tr>
           </tbody>
         </table>
