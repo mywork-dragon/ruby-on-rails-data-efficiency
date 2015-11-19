@@ -9,5 +9,5 @@ class IpaSnapshot < ActiveRecord::Base
 	has_many :ios_sdks_ipa_snapshots
 	has_many :ios_sdks, through: :ios_sdks_ipa_snapshots
 
-  enum status: [:starting, :retrying, :cleaning, :complete]
+  enum status: [:starting, :retrying, :cleaning, :classifying, :complete]
 end

@@ -1,6 +1,6 @@
 module IosWorker
 
-	def run_scan(ipa_snapshot_job_id, app_identifier, purpose, bid)
+	def run_scan(ipa_snapshot_job_id:, app_identifier:, purpose:, start_classify: false, bid = nil)
 
 		# convert data coming from ios_device_service to classdump row information
 		def result_to_cd_row(data)
@@ -77,6 +77,8 @@ module IosWorker
 				if row[:dump_success]
 					snapshot.status = :cleaning
 					snapshot.save
+					# don't start classifying while cleaning during development
+					IosClassificationServiceWorker.perform(snapshot.id) if start_classify && Rails.env.production?
 				end
 			end
 
