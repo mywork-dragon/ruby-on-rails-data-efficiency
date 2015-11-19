@@ -10,5 +10,5 @@ class IpaSnapshot < ActiveRecord::Base
 	has_many :ios_sdks, through: :ios_sdks_ipa_snapshots
 
   enum download_status: [:starting, :retrying, :cleaning, :complete]
-  enum scan_status: [:starting, :complete]
+  enum scan_status: [:scanning, :scanned]
 end
