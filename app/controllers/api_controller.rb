@@ -301,6 +301,8 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
           lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+          lastUpdatedDays: app.newest_ios_app_snapshot.present? && app.newest_ios_app_snapshot.released != nil ? (Time.now.to_date - app.newest_ios_app_snapshot.released.to_date).to_i : nil,
+          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
           appIdentifier: app.app_identifier,
           supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
           appIcon: {
@@ -317,6 +319,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+          lastUpdatedDays: app.newest_android_app_snapshot.present? && app.newest_android_app_snapshot.released != nil ? (Time.now.to_date - app.newest_android_app_snapshot.released.to_date).to_i : nil,
           appIdentifier: app.app_identifier,
           supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
           appIcon: {
