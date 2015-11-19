@@ -60,6 +60,13 @@ angular.module("appApp")
                   requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
+              case 'downloads':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
+                }
+                break;
             }
           });
         }

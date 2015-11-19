@@ -4,7 +4,8 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
-  
+  before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
+
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
     puts apps.count
@@ -142,6 +143,8 @@ class ApiController < ApplicationController
           adSpend: app.android_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
+          downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
@@ -1412,7 +1415,6 @@ class ApiController < ApplicationController
       results_json << sdk_hash
     end
     render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
-
   end
 
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
@@ -1429,51 +1431,13 @@ class ApiController < ApplicationController
         favicon: sdk.favicon,
         openSource: sdk.open_source,
         platform: 'android',
-        numOfApps: apps_count # .where("display_type LIKE 0")
-=begin
-        iosApps: company.get_ios_apps.map{|app| {
-            id: app.id,
-            name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
-            type: 'IosApp',
-            mobilePriority: app.mobile_priority,
-            adSpend: app.ios_fb_ad_appearances.present?,
-            userBase: app.user_base,
-            categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-            lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
-            appIdentifier: app.app_identifier,
-            supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
-            appIcon: {
-                large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
-                small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
-            }
-        }},
-        androidApps: sdk.android_apps.map{|app| {
-            id: app.id,
-            name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
-            type: 'AndroidApp',
-            mobilePriority: app.mobile_priority,
-            adSpend: app.android_fb_ad_appearances.present?,
-            userBase: app.user_base,
-            categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
-            lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
-            appIdentifier: app.app_identifier,
-            supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
-            appIcon: {
-                large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
-            }
-          }
-        }
-=end
+        numOfApps: apps_count
     }
     render json: @sdk_json
   end
 
   def get_sdk_autocomplete
     search_str = params['searchstr']
-
-    # Logic for processing ElasticSearch search from params
-
-    # Querying RDS for top x num of results
 
     sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
 
@@ -1482,11 +1446,7 @@ class ApiController < ApplicationController
     sdk_companies.each do |sdk|
       results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
     end
-
-    render json: {
-               searchParam: search_str,
-               results: results
-           }
+    render json: {searchParam: search_str, results: results}
   end
 
   def get_sdk_scanned_count
