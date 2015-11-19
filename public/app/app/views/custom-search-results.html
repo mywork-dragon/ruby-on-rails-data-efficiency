@@ -87,10 +87,12 @@
             <td ng-if="!app.company.name">{{app.app.seller}}</td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
-              <i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}
+              <span ng-if="app.app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</span>
             </td>
             <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
-              <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
+              <span ng-if="!isNaN(app.app.adSpend)">
+                <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
+              </span>
             </td>
             <td>{{app.app.userBase | capitalize}}</td>
             <td>{{app.app.categories.join(', ')}}</td>
