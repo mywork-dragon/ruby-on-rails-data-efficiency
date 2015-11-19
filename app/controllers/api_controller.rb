@@ -1,6 +1,6 @@
 # This is our internal API that talks to the frontend
 class ApiController < ApplicationController
-  
+
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
@@ -140,6 +140,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          lastUpdatedDays: newest_snapshot.present? ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
           adSpend: app.android_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
@@ -158,6 +159,7 @@ class ApiController < ApplicationController
           fortuneRank: company.present? ? company.fortune_1000_rank : nil
         }
       }
+
       results_json << app_hash
     end
     

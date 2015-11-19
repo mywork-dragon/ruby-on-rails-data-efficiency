@@ -7681,6 +7681,18 @@ pre {
   top: -1px;
 }
 
+.last-updated-days-new {
+  color: #1EAD4F;
+}
+
+.last-updated-days-medium {
+  color: #EEC95A;
+}
+
+.last-updated-days-old {
+  color: #ED5F5F;
+}
+
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {
