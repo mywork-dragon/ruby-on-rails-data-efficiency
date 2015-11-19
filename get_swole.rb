@@ -29,10 +29,11 @@ puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live sca
 puts "staging:".light_cyan + " Deploys to the staging server."
 puts "web".light_cyan + ": Deploys to the Web server."
 puts "darth_vader".light_cyan + ": Deploys to Vader."
+puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader ios_live_scan)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
