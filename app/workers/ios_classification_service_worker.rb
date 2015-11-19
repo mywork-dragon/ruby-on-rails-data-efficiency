@@ -60,20 +60,24 @@ class IosClassificationServiceWorker
     puts "Classifying classdump".red
 
     sdks = sdks_from_classdump(contents: contents)
+    # TODO: uncomment
     # attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-
   end
 
   # Entry point to integrate with @osman
   def classify_strings(snap_id, contents)
     puts "Classifying strings".blue
     sdks = sdks_from_strings(contents: contents)
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    # TODO: uncomment
+    # attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
   end
 
   # Get classes from strings
   def classes_from_strings(contents)
-    contents.scan(/@"<?([_\p{Alnum}]+)/).flatten.uniq # more generic
+    # more generic version, grabs any "string"
+    contents.scan(/@"<?([_\p{Alnum}]+)/).flatten.uniq
+
+    # more specific, focuses on classnames and delegates
     # contents.scan(/T@"<?([_\p{Alnum}]+)>?"(?:,.)*_?\p{Alpha}*/).flatten.uniq.compact
   end
 
@@ -111,13 +115,13 @@ class IosClassificationServiceWorker
 
   end
 
-  def sdks_from_strings(contents:, search_classes: false, search_bundles: false, search_fw_folders: true)
+  def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: true)
 
     sdks = []
 
     if search_bundles
       bundles = bundles_from_strings(contents)
-      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, read_only: Rails.env.development?) # TODO: remove read only flag
+      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, read_only: Rails.env.development?) # TODO: remove read only flag after regexes are linked and such
       puts "SDKs via bundles"
       ap sdks
     end
