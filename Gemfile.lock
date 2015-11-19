@@ -399,6 +399,7 @@ DEPENDENCIES
   public_suffix (= 1.4.6)
   rack-cors
   rails (= 4.1.6)
+  rake (= 10.4.2)
   rb-libsvm (= 1.3.1)
   restforce (= 1.5.0)
   ruby_apk (= 0.7.1)
