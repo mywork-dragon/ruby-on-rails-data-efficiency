@@ -78,7 +78,9 @@ module IosWorker
 					snapshot.status = :cleaning
 					snapshot.save
 					# don't start classifying while cleaning during development
-					IosClassificationServiceWorker.perform(snapshot.id) if start_classify && Rails.env.production?
+					if start_classify
+						Rails.env.production? ? IosClassificationServiceWorker.perform_async(snapshot.id) : IosClassificationServiceWorker.new.perform(snapshot.id)
+					else
 				end
 			end
 

@@ -13,7 +13,7 @@ class IosScanSingleServiceWorker
   end
 
 	def perform(ipa_snapshot_job_id, app_identifier, bid = nil)
-		run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, app_identifier: app_identifier, purpose: :one_off, bid: bid, start_classify: true)
+		run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, app_identifier: app_identifier, purpose: :one_off, bid: bid, start_classify: Rails.env.production?)
 	end
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
