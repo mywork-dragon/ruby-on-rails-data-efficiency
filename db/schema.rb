@@ -858,9 +858,11 @@ ActiveRecord::Schema.define(version: 20151120210051) do
     t.integer  "mobile_priority"
     t.date     "released"
     t.integer  "newest_ipa_snapshot_id"
+    t.integer  "display_type",               default: 0
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
+  add_index "ios_apps", ["display_type"], name: "index_ios_apps_on_display_type", using: :btree
   add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
   add_index "ios_apps", ["newest_ios_app_snapshot_id"], name: "index_ios_apps_on_newest_ios_app_snapshot_id", using: :btree
   add_index "ios_apps", ["newest_ipa_snapshot_id"], name: "index_ios_apps_on_newest_ipa_snapshot_id", using: :btree
