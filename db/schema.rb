@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120035318) do
+ActiveRecord::Schema.define(version: 20151120182720) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -986,6 +986,16 @@ ActiveRecord::Schema.define(version: 20151120035318) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "ipa_snapshot_job_exceptions", force: true do |t|
+    t.integer  "ipa_snapshot_job_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ipa_snapshot_job_exceptions", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_job_exceptions_on_ipa_snapshot_job_id", using: :btree
 
   create_table "ipa_snapshot_jobs", force: true do |t|
     t.integer  "job_type"
