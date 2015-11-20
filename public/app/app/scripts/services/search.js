@@ -52,6 +52,20 @@ angular.module("appApp")
                   requestData['custom'][tag.parameter] = [tag.value];
                 }
                 break;
+              case 'sdkNames':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
+                }
+                break;
+              case 'downloads':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
+                }
+                break;
             }
           });
         }
@@ -123,6 +137,20 @@ angular.module("appApp")
             return {
               parameter: param,
               text: "Custom" + ": " + value,
+              value: value
+            };
+            break;
+          case 'sdkNames':
+            return {
+              parameter: param,
+              text: "SDK" + ": " + value.name,
+              value: value
+            };
+            break;
+          case 'downloads':
+            return {
+              parameter: param,
+              text: "Downloads" + ": " + value.name,
               value: value
             };
             break;

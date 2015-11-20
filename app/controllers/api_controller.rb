@@ -4,7 +4,8 @@ class ApiController < ApplicationController
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
-  
+  before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
+
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
     puts apps.count
@@ -142,6 +143,8 @@ class ApiController < ApplicationController
           adSpend: app.android_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
+          downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
           supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
@@ -244,6 +247,7 @@ class ApiController < ApplicationController
       ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
       appIdentifier: android_app.app_identifier,
       supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
+      userBase: android_app.user_base,
       displayStatus: android_app.display_type,
       appIcon: {
         large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
@@ -715,10 +719,6 @@ class ApiController < ApplicationController
 
           clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
 
-          puts "####"
-          puts clearbit_query
-          puts "####"
-
           get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
           new_clearbit_contacts = JSON.load(get.response.body)
 
@@ -978,7 +978,7 @@ class ApiController < ApplicationController
 
           cc = company
 
-          { 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
+          { 'id' => cc.id, 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
 
         else
 
@@ -990,7 +990,7 @@ class ApiController < ApplicationController
 
           if co_hash[main_company.name].blank? || company.parent_company_id.blank?
 
-            os_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+            os_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
 
           else
 
@@ -1002,7 +1002,7 @@ class ApiController < ApplicationController
 
           if co_hash[main_company.name].blank? || company.parent_company_id.blank?
 
-            co_hash[main_company.name] = { 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
+            co_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
 
           else
 
@@ -1371,9 +1371,89 @@ class ApiController < ApplicationController
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
-  def test_timeout
-    sleep 65
-    render json: {test:'complete'}
+  def search_sdk
+    query = params['query']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+
+
+    result_ids = AppsIndex::AndroidSdkCompany.query(
+        multi_match: {
+            query: query,
+            operator: 'and',
+            fields: [:name],
+            type: 'cross_fields',
+            fuzziness: 1
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
+
+    android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
+
+    sdks = []
+    android_sdks.each do |sdk|
+      sdks << AndroidSdkCompany.find(sdk)
+    end
+
+    total_apps_count = sdks.length
+
+    results_json = []
+    sdks.each do |sdk|
+
+      sdk_hash = {
+          sdk: {
+              id: sdk.id,
+              name: sdk.name,
+              website: sdk.website,
+              favicon: sdk.favicon,
+              openSource: sdk.open_source,
+              platform: 'android'
+          }
+      }
+      results_json << sdk_hash
+    end
+    render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+  end
+
+  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
+  def get_sdk
+    sdk_id = params['id']
+    sdk = AndroidSdkCompany.find(sdk_id)
+
+    apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
+
+    @sdk_json = {
+        id: sdk.id,
+        name: sdk.name,
+        website: sdk.website,
+        favicon: sdk.favicon,
+        openSource: sdk.open_source,
+        platform: 'android',
+        numOfApps: apps_count
+    }
+    render json: @sdk_json
+  end
+
+  def get_sdk_autocomplete
+    search_str = params['searchstr']
+
+    sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+
+    results = []
+
+    sdk_companies.each do |sdk|
+      results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+    end
+    render json: {searchParam: search_str, results: results}
+  end
+
+  def get_sdk_scanned_count
+
+    scanned_sdk_num = AndroidApp.where('newest_apk_snapshot_id IS NOT NULL').joins(:newest_apk_snapshot).where('apk_snapshots.scan_status = 1').count
+
+    render json: {scannedSdkNum: scanned_sdk_num}
   end
 
 end

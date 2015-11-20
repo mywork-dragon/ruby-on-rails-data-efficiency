@@ -10,6 +10,7 @@ module MightyDeployer
   @scraper_roles = []
   @scraper_master_role = nil
   @darth_vader_roles = []
+  @ios_live_scan_roles = []
   
   @web_servers = []
   # @api_servers = []
@@ -18,9 +19,10 @@ module MightyDeployer
   @sdk_scraper_servers = []
   @sdk_scraper_live_scan_servers = []
   @darth_vader_servers = []
+  @ios_live_scan_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :staging]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :staging, :ios_live_scan]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
@@ -30,6 +32,7 @@ module MightyDeployer
     define_sdk_scraper_live_scan_servers if server_symbols.include?(:sdk_scraper_live_scan)
     define_staging_servers if server_symbols.include?(:staging)
     define_darth_vader_servers if server_symbols.include?(:darth_vader)
+    define_ios_live_scan_servers if server_symbols.include?(:ios_live_scan)
     
     define_roles
     
@@ -100,11 +103,20 @@ module MightyDeployer
 
   def self.define_darth_vader_servers
     @darth_vader_servers = %w(
-      192.168.1.4
+      192.168.2.101
     )
 
     @app_roles += @darth_vader_servers
     @darth_vader_roles += @darth_vader_servers
+  end
+
+  def self.define_ios_live_scan_servers
+    @ios_live_scan_servers = %w(
+      54.173.117.185
+    )
+
+    @app_roles += @ios_live_scan_servers
+    @ios_live_scan_roles += @ios_live_scan_servers
   end
 
   private
@@ -120,6 +132,7 @@ module MightyDeployer
     role :scraper_master, @scraper_master_role
     role :staging, @staging_roles
     role :darth_vader, @darth_vader_roles
+    role :ios_live_scan, @ios_live_scan_roles
   end
   
   def self.set_users
@@ -149,6 +162,10 @@ module MightyDeployer
 
     @darth_vader_servers.each do |darth_vader_server|
       server darth_vader_server, user: 'darth-vader'
+    end
+
+    @ios_live_scan_servers.each do |ios_live_scan_server|
+      server ios_live_scan_server, user: 'deploy'
     end
     
   end

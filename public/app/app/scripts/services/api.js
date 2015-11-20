@@ -44,12 +44,27 @@ angular.module("appApp")
                   requestData['app'][tag.parameter].push(tag.value);
                 } else {
                   requestData['app'][tag.parameter] = [tag.value];
-                }                break;
+                }
+                break;
               case 'customKeywords':
                 if(requestData['custom'][tag.parameter]) {
                   requestData['custom'][tag.parameter].push(tag.value);
                 } else {
                   requestData['custom'][tag.parameter] = [tag.value];
+                }
+                break;
+              case 'sdkNames':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
+                }
+                break;
+              case 'downloads':
+                if (requestData['app'][tag.parameter]) {
+                  requestData['app'][tag.parameter].push(tag.value);
+                } else {
+                  requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
             }
@@ -136,6 +151,12 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + endPoint,
           params: {appId: appId}
+        })
+      },
+      getScannedSdkNum: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/sdk/scanned_count'
         })
       }
     };

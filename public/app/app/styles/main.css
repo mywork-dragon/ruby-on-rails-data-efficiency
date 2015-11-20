@@ -3921,6 +3921,8 @@ fieldset[disabled] .btn-danger.active {
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out; }
 
+
+
 #nav a {
   font-size: 12px;
   text-transform: uppercase;
@@ -7163,7 +7165,13 @@ i.infoTooltipIcon {
 #filterMethodButton {
   position: absolute;
   right: 30px;
-  top: 152px;
+  top: 234px;
+}
+
+.sdk-autocomplete-filter {
+  width: 220px;
+  font-weight: normal;
+  display: inline-block;
 }
 
 #facebookMethodologySection > h4 {
@@ -7328,7 +7336,7 @@ select option:empty {
 
 .resultsTableAppIcon img {
   max-width: 32px;
-  max-height: 32px;
+  height: 32px;
   margin-right: 5px;
 }
 
@@ -7629,6 +7637,19 @@ pre {
   height: 40px;
 }
 
+#mainSearchBoxWrapper .ui-select {
+  height: 40px;
+  margin-top: 0;
+  padding-top: 5px;
+  padding-left: 10px;
+  position: relative;
+  left: 1px;
+}
+
+#mainSearchBoxWrapper .ui-select > select {
+  font-size: 12px;
+}
+
 #mainSearchBox {
   padding-left: 0;
 }
@@ -7643,3 +7664,101 @@ pre {
 #nav-wrapper > div {
   padding-bottom: 100px;
 }
+
+#sdkResultsTableAppIcon img {
+  max-width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#sdkPageTitleIcon {
+  margin-right: 10px;
+  max-width: 16px;
+  height: 16px;
+  position: relative;
+  top: -1px;
+}
+
+/* -------------------------- AnguComplete-Alt Styles -------------------------- */
+
+.angucomplete-holder {
+  width: 220px;
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  margin-left: 4px;
+  margin-bottom: 10px;
+}
+
+.angucomplete-dropdown {
+  border-color: #ececec;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  width: 220px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 9999;
+  position: absolute;
+  /*top: 32px;
+  left: 0px;
+  */
+  margin-top: -2px;
+  background-color: #ffffff;
+}
+
+.angucomplete-searching {
+  color: #acacac;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.angucomplete-description {
+  font-size: 14px;
+}
+
+.angucomplete-row {
+  padding: 5px;
+  color: #000000;
+  margin-bottom: 4px;
+  clear: both;
+}
+
+.angucomplete-selected-row {
+  background-color: #0393dd;
+  color: #ffffff;
+}
+
+.angucomplete-title {
+  font-weight: normal;
+  text-transform: none;
+  color: #333333;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.angucomplete-image-holder {
+  float: left;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.angucomplete-image {
+  height: 20px;
+  width: 20px;
+  margin-top: 4px;
+}
+
+.angucomplete-image-default {
+  /* Add your own default image here
+   background-image: url('/assets/default.png');
+  */
+  background-position: center;
+  background-size: contain;
+  height: 20px;
+  width: 20px;
+}
+
+/* -------------------------- AnguComplete-Alt Styles End -------------------------- */

@@ -36,6 +36,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_storewide_sdk_request
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
+
+    if !account || !account.can_view_storewide_sdks
+      fail NotAuthenticatedError
+    end
+  end
+
   def decoded_auth_token
     @decoded_auth_token ||= AuthToken.decode(http_auth_header_content)
   end

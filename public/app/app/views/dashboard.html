@@ -3,6 +3,14 @@
 
     <section class="panel panel-default table-dynamic" ng-controller="FilterCtrl">
 
+      <header class="page-main-header ng-scope">
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Filtered Search</h4>
+          </div>
+        </div>
+      </header>
+
       <div id="dashboard-tag-display" class="table-filters">
         <div><i class="fa fa-search"></i></div>
         <div class="row">
@@ -53,6 +61,17 @@
                       <option value="elite">Elite</option>
                     </select>
                </span>
+               <span class="ui-select" ng-show="appPlatform.platform == 'android'">
+                    <select ng-model="downloads" ng-change="onFilterChange('downloads', downloads, 'Downloads', false)">
+                      <option value="">Downloads</option>
+                      <option value="0">0 - 50K</option>
+                      <option value="1">50K - 500K</option>
+                      <option value="2">500K - 10M</option>
+                      <option value="3">10M - 100M</option>
+                      <option value="4">100M - 1B</option>
+                      <option value="5">1B - 50B</option>
+                    </select>
+               </span>
               <!--
                <span class="ui-select">
                     <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
@@ -81,6 +100,20 @@
                       <option value="desk">Desk</option>
                     </select>
                </span>
+               <span ng-if="searchCtrl.canViewStorewideSdks && appPlatform.platform == 'android'">
+                  <angucomplete-alt id="sdk-autocomplete-filter"
+                                   placeholder="Add an SDK filter"
+                                   pause="100"
+                                   selected-object="selectedSdk"
+                                   remote-url-data-field="results"
+                                   search-fields="name"
+                                   title-field="name"
+                                   id-feild="id"
+                                   clear-selected="true"
+                                   image-field="favicon"
+                                   minlength="1"
+                                   input-class="form-control form-control-small sdk-autocomplete-filter"/>
+               </span>
             </span>
             <span id="filterMethodButton">
               <button type="button" class="btn btn-sp-v btn-bordered-default pull-right" data-toggle="modal" data-target="#myModal" ng-click="mixpanelAnalyticsEventTooltip('Methodology Modal')">Methodology</button>
@@ -88,6 +121,12 @@
         </div>
 
     </section>
+
+    <div class="row companyPageRow" ng-if="$root.sdkFilterPresent && searchCtrl.canViewStorewideSdks">
+      <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
+        <div><span class="ng-binding ng-scope">Note: SDK filter results are derived from <strong>{{$root.scannedSdkNum | number}}</strong> presently scanned Android apps. We are scanning more every day.</span></div>
+      </div>
+    </div>
 
     <section class="panel panel-default table-dynamic">
       <div class="panel-heading" id="dashboardResultsTableHeading">
@@ -147,6 +186,9 @@
             <th><div class="th normal-right-padding">
               User Base Size
             </div></th>
+            <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
+              Downloads
+            </div></th>
             <th><div class="th normal-right-padding">
               Categories
             </div></th>
@@ -182,6 +224,7 @@
                 <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
               </td>
               <td>{{app.app.userBase | capitalize}}</td>
+              <td ng-show="appPlatform.platform == 'android'">{{app.app.downloadsMin | humanizeNum}} - {{app.app.downloadsMax | humanizeNum}}</td>
               <td>{{app.app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
               <td>{{app.app.lastUpdated | date : 'shortDate'}}</td>

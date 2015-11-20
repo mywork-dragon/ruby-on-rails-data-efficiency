@@ -419,6 +419,19 @@ angular.module("app.directives", []).directive("imgHolder", [
                 }
               }
             }
+            // Removes all sdk & download filters upon platform switch to iOS
+            if ($scope.appPlatform != 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'sdkNames') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+                if ($rootScope.tags[index].parameter == 'downloads') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
             // Removes all categories upon platform switch
             for (var index = 0; index < $rootScope.tags.length; index++) {
               if ($rootScope.tags[index].parameter == 'categories') {
@@ -426,6 +439,86 @@ angular.module("app.directives", []).directive("imgHolder", [
                 index -= 1;
               }
             }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
+    }])
+    .directive('customPlatformToggle', ["apiService", "$rootScope", "AppPlatform", "authService", function (apiService, $rootScope, AppPlatform, authService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android Apps</button> <button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS Apps</button> <button type="button" ng-if="canViewStorewideSdks" ng-class="appPlatform.platform == \'sdks\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'sdks\')">Android SDKs</button></span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+
+          authService.permissions()
+            .success(function(data) {
+              $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            });
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
+            $scope.appPlatform.platform = platform;
+            APP_PLATFORM = platform;
+            apiService.getCategories().success(function (data) {
+              $rootScope.categoryFilterOptions = data;
+            });
+            // Stops 'supportDesk' filter from being added
+            if ($scope.appPlatform == 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'supportDesk') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+            // Removes all sdk filters upon platform switch to iOS
+            if ($scope.appPlatform != 'android') {
+              for (var index = 0; index < $rootScope.tags.length; index++) {
+                if ($rootScope.tags[index].parameter == 'sdkNames') {
+                  $rootScope.tags.splice(index, 1);
+                  index -= 1;
+                }
+              }
+            }
+            // Removes all categories upon platform switch
+            for (var index = 0; index < $rootScope.tags.length; index++) {
+              if ($rootScope.tags[index].parameter == 'categories') {
+                $rootScope.tags.splice(index, 1);
+                index -= 1;
+              }
+            }
+          };
+        },
+        controllerAs: 'appPlatformCtrl'
+      }
+    }])
+    .directive('customPlatformSelect', ["apiService", "$rootScope", "AppPlatform", "authService", function (apiService, $rootScope, AppPlatform, authService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          customSearchPlatform: '=customSearchPlatform'
+        },
+        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="sdks">Android SDKs</option> </select> </span>',
+        controller: function ($scope) {
+
+          $scope.appPlatform = AppPlatform;
+
+
+          authService.permissions()
+            .success(function(data) {
+              $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            });
+
+          $scope.changeAppPlatform = function (platform) {
+            $scope.customSearchPlatform = platform;
           };
         },
         controllerAs: 'appPlatformCtrl'
