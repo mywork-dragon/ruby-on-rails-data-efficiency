@@ -55,7 +55,6 @@ class IosClassificationServiceWorker
       begin
         IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id)
       rescue => e
-        byebug
         nil
       end
     end
@@ -66,10 +65,7 @@ class IosClassificationServiceWorker
     puts "Classifying classdump".red
 
     sdks = sdks_from_classdump(contents: contents)
-    # TODO: uncomment
-    byebug
     attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-    byebug
     sdks
   end
 

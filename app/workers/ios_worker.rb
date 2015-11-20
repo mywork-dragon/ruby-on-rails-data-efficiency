@@ -42,7 +42,7 @@ module IosWorker
 		begin
 			begin
 				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting)
-			rescue
+			rescue ActiveRecord::RecordNotUnique => e
 				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).first
 			end
 
