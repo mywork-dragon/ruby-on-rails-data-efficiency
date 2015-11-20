@@ -807,6 +807,19 @@ class ApiController < ApplicationController
     render json: IosSdkService.get_sdk_response(ios_app_id).to_json
   end
 
+  def ios_scan_status
+    job_id = params['jobId']
+
+    code = IosLiveScanService.check_status(job_id: job_id)
+    render json: {status: code}
+  end
+
+  def ios_start_scan
+    job_id = params[:ios_app_id] || -1
+
+    render json: {scan_id: job_id}
+  end
+
 
   def android_sdks_exist
 
