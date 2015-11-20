@@ -7681,6 +7681,24 @@ pre {
   top: -1px;
 }
 
+.last-updated-days-new {
+  color: #1EAD4F;
+}
+
+.last-updated-days-medium {
+  color: #D6AE35;
+}
+
+.last-updated-days-old {
+  color: #ED5F5F;
+}
+
+.resultsTableAppIcon > .badge {
+  width: auto;
+  height: auto;
+  margin: 5px;
+}
+
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {

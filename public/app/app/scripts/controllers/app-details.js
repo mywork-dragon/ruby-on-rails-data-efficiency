@@ -320,6 +320,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
   authService.permissions()
     .success(function(data) {
       $scope.canViewSupportDesk = data.can_view_support_desk;
+      $scope.canViewExports = data.can_view_exports;
     })
     .error(function() {
       $scope.canViewSupportDesk = false;

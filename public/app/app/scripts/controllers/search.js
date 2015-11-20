@@ -192,6 +192,11 @@ angular.module('appApp')
         }
       };
 
+      // Computes class for last updated data in Last Updated column rows
+      searchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {
+        return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
+      };
+
       searchCtrl.exportAllToCsv = function() {
         apiService.exportAllToCsv($location.url().split('/search')[1])
           .success(function (content) {
