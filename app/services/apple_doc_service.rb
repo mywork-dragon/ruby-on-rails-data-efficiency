@@ -1,6 +1,6 @@
 class AppleDocService
 
-  DUMP_PATH = Rails.env.production? ? File.join('echo $HOME'.chomp, 'ios_headers') : '/tmp/ios_headers'
+  DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'ios_headers') : '/tmp/ios_headers'
 
   class << self
 
@@ -24,6 +24,8 @@ class AppleDocService
           end
         end
       end
+
+      `rm -rf #{DUMP_PATH}/*`
     end
   end
 end
