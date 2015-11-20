@@ -17,7 +17,7 @@ class IosLiveScanServiceWorker
         job.live_scan_status = :not_available
         job.save
 
-        IosApp.find(ios_app_id).update(display_type: :taken_down)
+        IosApp.find(ios_app_id).update(display_type: :taken_down) # not entirely correct...could be foreign
         return "Not available"
       end
 
@@ -60,7 +60,7 @@ class IosLiveScanServiceWorker
 
       job.live_scan_status = :initiated
       job.save
-      
+
     rescue => e
       IpaSnapshotJobException.create!({
         ipa_snapshot_job_id: ipa_snapshot_job_id,
