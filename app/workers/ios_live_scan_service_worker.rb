@@ -62,6 +62,11 @@ class IosLiveScanServiceWorker
         error: e.message,
         backtrace: e.backtrace
         })
+
+      if !job.nil?
+        job.live_scan_status = :failed
+        job.save
+      end
     end
   end
 

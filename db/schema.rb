@@ -887,6 +887,7 @@ ActiveRecord::Schema.define(version: 20151120184333) do
     t.boolean  "in_use"
     t.datetime "last_used"
     t.string   "ios_version"
+    t.text     "description"
   end
 
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
