@@ -16,6 +16,8 @@ class IosLiveScanServiceWorker
       if data.nil?
         job.live_scan_status = :not_available
         job.save
+
+        IosApp.find(ios_app_id).update(display_type: :taken_down)
         return "Not available"
       end
 
@@ -38,11 +40,10 @@ class IosLiveScanServiceWorker
       if !device_compatible(devices: data['devices'])
         job.live_scan_status = :device_incompatible
         job.save
+
+        IosApp.find(ios_app_id).update(display_type: :device_incompatible)
         return "No compatible devices available"
       end
-
-      job.live_scan_status = :initiated
-      job.save
 
       if Rails.env.production?
 
@@ -56,6 +57,10 @@ class IosLiveScanServiceWorker
       else
         IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id)
       end
+
+      job.live_scan_status = :initiated
+      job.save
+      
     rescue => e
       IpaSnapshotJobException.create!({
         ipa_snapshot_job_id: ipa_snapshot_job_id,
