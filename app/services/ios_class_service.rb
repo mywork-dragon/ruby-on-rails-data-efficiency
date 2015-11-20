@@ -125,7 +125,6 @@ class IosClassService
     end
 
     def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
-      byebug
       sdks = []
 
       if remove_apple

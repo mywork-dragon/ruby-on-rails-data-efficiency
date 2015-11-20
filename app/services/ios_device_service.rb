@@ -483,7 +483,6 @@ class IosDeviceService
 
     return infile if !infile # check if null
 
-    byebug
     `strings #{infile} > #{outfile}`
 
     outfile

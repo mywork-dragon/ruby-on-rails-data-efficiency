@@ -1,6 +1,6 @@
 module IosWorker
 
-	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, bid = nil)
+	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, bid:)
 
 		# convert data coming from ios_device_service to classdump row information
 		def result_to_cd_row(data)
@@ -38,6 +38,7 @@ module IosWorker
 		end
 
 		# create database rows
+		result = nil
 		begin
 			begin
 				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting)
@@ -82,7 +83,7 @@ module IosWorker
 					# don't start classifying while cleaning during development
 					if start_classify
 						Rails.env.production? ? IosClassificationServiceWorker.perform_async(snapshot.id) : IosClassificationServiceWorker.new.perform(snapshot.id)
-					else
+					end
 				end
 			end
 
@@ -97,11 +98,12 @@ module IosWorker
 			# once we've finished uploading to s3, we can delete the file
 			`rm -f #{final_result[:outfile_path]}` if Rails.env.production? && final_result[:outfile_path]
 
-			on_complete(ipa_snapshot_job_id, app_identifier, bid, classdump)
+			result = classdump
 		rescue => e
-			on_complete(ipa_snapshot_job_id, app_identifier, bid, e)
+			result = e
 		end
-		
+
+		on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
 	end
 
 	def reserve_device(purpose, id = nil)

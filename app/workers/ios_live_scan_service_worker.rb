@@ -10,15 +10,23 @@ class IosLiveScanServiceWorker
     # if it's available
     data = get_json(ios_app_id)
 
+    # TODO: if invalidated at different parts, update the ios_app table
+
     if data.nil?
       job.live_scan_status = :not_available
       job.save
       return "Not available"
     end
 
-    # if it's been changed
-    # In development mode, just scan it
-    if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
+    if data['price'].to_f > 0
+      job.live_scan_status = :paid
+      job.save
+      return "Cannot scan paid app"     
+    end
+
+    # if it's been changed (for now, just ignore that stuff)
+    if false
+      # if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
       job.live_scan_status = :unchanged
       job.save
       IosApp.find(ios_app_id)
@@ -26,7 +34,7 @@ class IosLiveScanServiceWorker
     end
 
     # check if devices compatible
-    if !device_compatible(data['devices'])
+    if !device_compatible(devices: data['devices'])
       job.live_scan_status = :device_incompatible
       job.save
       return "No compatible devices available"
@@ -69,8 +77,7 @@ class IosLiveScanServiceWorker
 
   def get_json(ios_app_id)
     begin
-      # app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
-      app_identifier = ios_app_id
+      app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
       url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
 
       json = JSON.parse(Proxy.get_body_from_url(url))

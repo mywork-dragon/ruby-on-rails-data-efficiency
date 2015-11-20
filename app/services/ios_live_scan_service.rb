@@ -19,12 +19,16 @@ class IosLiveScanService
 
       result_map = {
         validating: 0,
-        preparing: 1,
-        downloading: 2,
-        retrying: 3,
-        scanning: 4,
-        complete: 5,
-        failed: 6
+        unchanged: 1,
+        not_available: 2,
+        paid: 3,
+        device_incompatible: 4
+        preparing: 5,
+        downloading: 6,
+        retrying: 7,
+        scanning: 8,
+        complete: 9,
+        failed: 10
       }
 
       job = IpaSnapshotJob.find(job_id)
@@ -33,6 +37,7 @@ class IosLiveScanService
       
       snapshot = job.ipa_snapshots.first
 
+      # TODO: fix this to update new codes
       status = if job.status != :initiated
         result_map[:validating]
       elsif snapshot.nil?

@@ -790,6 +790,13 @@ class ApiController < ApplicationController
     end
   end
 
+  def ios_sdks_exist
+    ios_app_id = params['appId']
+
+    # TODO: someday we'll return a 404 if this doesn't exist
+    render json: IosSdkService.get_sdk_response(ios_app_id).to_json
+  end
+
 
   def android_sdks_exist
 

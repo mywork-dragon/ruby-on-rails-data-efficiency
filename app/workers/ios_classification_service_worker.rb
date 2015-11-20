@@ -8,9 +8,13 @@ class IosClassificationServiceWorker
     snapshot = IpaSnapshot.find(snap_id)
     snapshot.scan_status = :scanning
     snapshot.save
-    classify(snap_id)
+
+    sdks = classify(snap_id)
+
     snapshot.scan_status = :scanned
     snapshot.save
+
+    sdks
   end
 
   def bundle_prefixes
@@ -30,8 +34,9 @@ class IosClassificationServiceWorker
       contents = open(url).read.scrub
     elsif Rails.env.development?
 
-      snap = IpaSnapshot.find(snap_id)
-      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{snap.ios_app_id}"
+      ios_app = IpaSnapshot.find(snap_id).ios_app
+
+      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{ios_app.app_identifier}"
       ext = classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
       filename = filename + ext
 
@@ -49,7 +54,8 @@ class IosClassificationServiceWorker
     sdks.each do |sdk|
       begin
         IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id)
-      rescue
+      rescue => e
+        byebug
         nil
       end
     end
@@ -61,7 +67,10 @@ class IosClassificationServiceWorker
 
     sdks = sdks_from_classdump(contents: contents)
     # TODO: uncomment
-    # attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    byebug
+    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    byebug
+    sdks
   end
 
   # Entry point to integrate with @osman
@@ -69,7 +78,8 @@ class IosClassificationServiceWorker
     puts "Classifying strings".blue
     sdks = sdks_from_strings(contents: contents)
     # TODO: uncomment
-    # attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    sdks
   end
 
   # Get classes from strings
@@ -140,7 +150,6 @@ class IosClassificationServiceWorker
   end
 
   def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
-    byebug
     sdks = []
 
     if remove_apple
@@ -153,7 +162,7 @@ class IosClassificationServiceWorker
       sdks << found
     end
 
-    sdks.group_by {|x| x}.select {|k, v| v.length > min_matches}.keys
+    sdks.group_by {|x| x}.select {|k, v| v.length > matches_threshold}.keys
   end
 
   def find_from_fw_folders(fw_folders: fw_folders)

@@ -25,8 +25,7 @@ class IosScanSingleServiceWorker
       snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
-      IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
-      return
+      return IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
     end
 
     IpaSnapshotException.create!({
@@ -41,7 +40,7 @@ class IosScanSingleServiceWorker
       @retry += 1
       snapshot.download_status = :retrying
       snapshot.save
-      run_scan(ipa_snapshot_job_id, ios_app_id, :one_off, bid)
+      run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid)
     else
       snapshot.download_status = :complete
       snapshot.success = false
