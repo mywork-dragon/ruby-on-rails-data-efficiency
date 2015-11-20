@@ -24,30 +24,41 @@ class IosLiveScanService
         paid: 3,
         device_incompatible: 4,
         preparing: 5,
-        downloading: 6,
-        retrying: 7,
-        scanning: 8,
-        complete: 9,
-        failed: 10
+        devices_busy: 6,
+        downloading: 7,
+        retrying: 8,
+        scanning: 9,
+        complete: 10,
+        failed: 11
       }
 
       job = IpaSnapshotJob.find(job_id)
 
-      return nil if job.nil? || job.job_type != :one_off 
+      byebug
+
+      return nil if job.nil? || job.job_type != 'one_off'
       
       snapshot = job.ipa_snapshots.first
 
-      # TODO: fix this to update new codes
-      status = if job.status != :initiated
+      # first set of checks: validation stage
+      status = if %w(validating not_available paid unchanged device_incompatible).include?(job.live_scan_status)
+        result_map[job.status.to_sym]
+      elsif job.status != :initiated
         result_map[:validating]
-      elsif snapshot.nil?
+      end
+
+      return status if !status.nil?
+
+      # second set of checks: download and scan stages
+      stage = if snapshot.nil?
         result_map[:preparing]
       elsif snapshot.scan_status == :scanned
         result_map[:complete]
       elsif snapshot.scan_status == :scanning
         result_map[:scanning]
       elsif snapshot.download_status == :complete && snapshot.success == false
-        result_map[:failed]
+        exception = snapshot.ipa_snapshot_exceptions.last
+        exception && exception.error_code == "devices_busy" ? result_map[:devices_busy] : result_map[:failed]
       elsif snapshot.download_status == :starting
         result_map[:downloading]
       elsif snapshot.download_status == :retrying

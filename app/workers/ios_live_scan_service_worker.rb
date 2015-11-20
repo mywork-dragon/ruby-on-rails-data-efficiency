@@ -6,57 +6,63 @@ class IosLiveScanServiceWorker
 
   def perform(ipa_snapshot_job_id, ios_app_id)
 
-    job = IpaSnapshotJob.find(ipa_snapshot_job_id)
-    # if it's available
-    data = get_json(ios_app_id)
+    begin
+      job = IpaSnapshotJob.find(ipa_snapshot_job_id)
+      # if it's available
+      data = get_json(ios_app_id)
 
-    # TODO: if invalidated at different parts, update the ios_app table
+      # TODO: if invalidated at different parts, update the ios_app table
 
-    if data.nil?
-      job.live_scan_status = :not_available
-      job.save
-      return "Not available"
-    end
-
-    if data['price'].to_f > 0
-      job.live_scan_status = :paid
-      job.save
-      return "Cannot scan paid app"     
-    end
-
-    # if it's been changed (for now, just ignore that stuff)
-    if false
-      # if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
-      job.live_scan_status = :unchanged
-      job.save
-      IosApp.find(ios_app_id)
-      return "App has not updated"
-    end
-
-    # check if devices compatible
-    if !device_compatible(devices: data['devices'])
-      job.live_scan_status = :device_incompatible
-      job.save
-      return "No compatible devices available"
-    end
-
-    job.live_scan_status = :initiated
-    job.save
-
-    if Rails.env.production?
-
-      batch = Sidekiq::Batch.new
-      batch.description = "running a live scan job"
-      bid = batch.bid
-
-      batch.jobs do
-        IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+      if data.nil?
+        job.live_scan_status = :not_available
+        job.save
+        return "Not available"
       end
-    else
-      IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id)
-    end
 
-    # TODO: add an exceptions table
+      if data['price'].to_f > 0
+        job.live_scan_status = :paid
+        job.save
+        return "Cannot scan paid app"     
+      end
+
+      # if it's been changed (for now, just ignore that stuff)
+      if false
+        # if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
+        job.live_scan_status = :unchanged
+        job.save
+        IosApp.find(ios_app_id)
+        return "App has not updated"
+      end
+
+      # check if devices compatible
+      if !device_compatible(devices: data['devices'])
+        job.live_scan_status = :device_incompatible
+        job.save
+        return "No compatible devices available"
+      end
+
+      job.live_scan_status = :initiated
+      job.save
+
+      if Rails.env.production?
+
+        batch = Sidekiq::Batch.new
+        batch.description = "running a live scan job"
+        bid = batch.bid
+
+        batch.jobs do
+          IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+        end
+      else
+        IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id)
+      end
+    rescue => e
+      IpaSnapshotJobException.create!({
+        ipa_snapshot_job_id: ipa_snapshot_job_id,
+        error: e.message,
+        backtrace: e.backtrace
+        })
+    end
   end
 
   def device_compatible(devices: devices)
