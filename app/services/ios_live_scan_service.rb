@@ -22,7 +22,7 @@ class IosLiveScanService
         unchanged: 1,
         not_available: 2,
         paid: 3,
-        device_incompatible: 4
+        device_incompatible: 4,
         preparing: 5,
         downloading: 6,
         retrying: 7,
