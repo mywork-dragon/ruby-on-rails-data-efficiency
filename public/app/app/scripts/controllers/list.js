@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "pageTitleService", "$window",
-  function($scope, $http, $routeParams, $rootScope, listApiService, pageTitleService, $window) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window",
+  function($scope, $http, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window) {
 
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
@@ -62,6 +62,9 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         }
       });
       return false;
+    };
+    $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
+      return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
     };
     $scope.recordListViewEvent = function(listName, listId) {
       /* -------- Mixpanel Analytics Start -------- */

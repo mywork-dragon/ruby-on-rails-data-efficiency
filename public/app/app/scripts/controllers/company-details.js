@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService) {
 
     $scope.load = function() {
 
@@ -110,6 +110,10 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
           hiddenElement.download = 'contacts.csv';
           hiddenElement.click();
         });
+    };
+
+    $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
+      return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
     };
 
     $scope.contactsLoading = false;
