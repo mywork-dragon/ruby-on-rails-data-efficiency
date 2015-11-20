@@ -15,6 +15,13 @@ class IosSdkService
         error_code: nil
       }
 
+      error_map = {
+        price: 0
+        taken_down: 1,
+        foreign: 2,
+        device_incompatible: 3
+      }
+
       def format_sdk(sdk)
         {
           'id' => sdk.id,
@@ -24,13 +31,18 @@ class IosSdkService
         }
       end
 
-      # return error if it's not a free app
+      # return error if it violates some conditions
       app = IosApp.find(ios_app_id)
+
+      if app.display_type != "normal"
+        resp[:error_code] = error_map[app.display_type.to_sym]
+        return resp
+      end
 
       price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
 
       if !price.zero?
-        resp[:error_code] = 0
+        resp[:error_code] = error_map[:price]
         return resp
       end
 
