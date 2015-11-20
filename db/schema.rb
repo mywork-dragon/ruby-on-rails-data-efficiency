@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120184333) do
+ActiveRecord::Schema.define(version: 20151120210051) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -357,6 +357,17 @@ ActiveRecord::Schema.define(version: 20151120184333) do
 
   add_index "app_stores_ios_apps", ["app_store_id"], name: "index_app_stores_ios_apps_on_app_store_id", using: :btree
   add_index "app_stores_ios_apps", ["ios_app_id", "app_store_id"], name: "index_app_stores_ios_apps_on_ios_app_id_and_app_store_id", using: :btree
+
+  create_table "apple_accounts", force: true do |t|
+    t.string   "email"
+    t.string   "password"
+    t.integer  "ios_device_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apple_accounts", ["email"], name: "index_apple_accounts_on_email", using: :btree
+  add_index "apple_accounts", ["ios_device_id"], name: "index_apple_accounts_on_ios_device_id", using: :btree
 
   create_table "apple_docs", force: true do |t|
     t.string   "name"
