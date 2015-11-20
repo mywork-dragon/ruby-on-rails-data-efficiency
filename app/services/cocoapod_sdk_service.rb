@@ -1,4 +1,4 @@
-class IosSdkService
+class CocoapodSdkService
 
 	DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, '/cocoapods/Specs') : '/tmp/cocoapods/Specs'
 	
@@ -34,11 +34,11 @@ class IosSdkService
 
 			if Rails.env.production?
 				sdks.each do |sdk|
-					IosSdkServiceWorker.perform_async(sdk, i.id)
+					CocoapodSdkServiceWorker.perform_async(sdk, i.id)
 				end
 			else
 				sdks.sample(5) do |sdk|
-					IosSdkServiceWorker.new.perform(sdk, i.id)
+					CocoapodSdkServiceWorker.new.perform(sdk, i.id)
 				end
 			end
 
@@ -52,9 +52,9 @@ class IosSdkService
 
 			names.uniq.each do |sdk_name|
 				if Rails.env.production?
-					IosSdkServiceWorker.perform_async(sdk_name, update_id)
+					CocoapodSdkServiceWorker.perform_async(sdk_name, update_id)
 				else
-					IosSdkServiceWorker.new.perform(sdk_name, update_id)
+					CocoapodSdkServiceWorker.new.perform(sdk_name, update_id)
 				end
 			end
 
