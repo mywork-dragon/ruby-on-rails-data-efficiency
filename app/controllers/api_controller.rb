@@ -1,10 +1,11 @@
 # This is our internal API that talks to the frontend
 class ApiController < ApplicationController
-  
+
   skip_before_filter  :verify_authenticity_token
 
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
+  before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv]
 
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -74,6 +75,8 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
           adSpend: app.ios_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'IosApp',
@@ -140,6 +143,7 @@ class ApiController < ApplicationController
           mobilePriority: app.mobile_priority,
           userBase: app.user_base,
           lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
           adSpend: app.android_fb_ad_appearances.present?,
           seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
           type: 'AndroidApp',
@@ -149,7 +153,6 @@ class ApiController < ApplicationController
           categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
           appIcon: {
               large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
-              # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
           }
         },
         company: {
@@ -158,6 +161,7 @@ class ApiController < ApplicationController
           fortuneRank: company.present? ? company.fortune_1000_rank : nil
         }
       }
+
       results_json << app_hash
     end
     
@@ -298,6 +302,8 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
           lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+          lastUpdatedDays: app.newest_ios_app_snapshot.present? && app.newest_ios_app_snapshot.released != nil ? (Time.now.to_date - app.newest_ios_app_snapshot.released.to_date).to_i : nil,
+          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
           appIdentifier: app.app_identifier,
           supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
           appIcon: {
@@ -314,6 +320,7 @@ class ApiController < ApplicationController
           userBase: app.user_base,
           categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
           lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+          lastUpdatedDays: app.newest_android_app_snapshot.present? && app.newest_android_app_snapshot.released != nil ? (Time.now.to_date - app.newest_android_app_snapshot.released.to_date).to_i : nil,
           appIdentifier: app.app_identifier,
           supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
           appIcon: {
@@ -425,6 +432,8 @@ class ApiController < ApplicationController
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+              releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
               adSpend: app.ios_fb_ad_appearances.present?,
               categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
               supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
@@ -457,6 +466,7 @@ class ApiController < ApplicationController
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
               adSpend: app.android_fb_ad_appearances.present?,
               categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
               supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
@@ -1285,6 +1295,8 @@ class ApiController < ApplicationController
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+              releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
               adSpend: app.ios_fb_ad_appearances.present?,
               categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
               supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
@@ -1357,6 +1369,7 @@ class ApiController < ApplicationController
               mobilePriority: app.mobile_priority,
               userBase: app.user_base,
               lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
               adSpend: app.android_fb_ad_appearances.present?,
               downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
               downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,

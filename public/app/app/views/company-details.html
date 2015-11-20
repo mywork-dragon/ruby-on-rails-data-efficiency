@@ -105,7 +105,8 @@
 
       <div class="panel-heading" id="companyContactsTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
-        <button type="submit" class="btn btn-primary pull-right" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
+        <button type="submit" class="btn btn-primary pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
+        <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
       </div>
 
       <div id="results-table-wrapper">
@@ -160,7 +161,7 @@
 
     <div class="row companyPageRow">
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
-        <div ng-transclude=""><span class="ng-binding ng-scope">Note: We do our best to accurately link companies to apps. Due to limited source data, they may occasionally be incorrectly linked.</span></div>
+        <div><span class="ng-binding ng-scope">Note: We do our best to accurately link companies to apps. Due to limited source data, they may occasionally be incorrectly linked.</span></div>
       </div>
     </div>
 
@@ -240,20 +241,29 @@
                 <span>
                   <img ng-src="{{app.appIcon.large}}" /> <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">{{app.name}}</a>
                 </span>
+                <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
               </td>
               <td class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
               <td class="dashboardMobilePriorityView">
-                <i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}
+                <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
               </td>
               <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
-                <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+                <span ng-if="!isNaN(app.adSpend)">
+                  <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+                </span>
               </td>
               <td>{{app.userBase | capitalize}}</td>
               <td>{{app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
-              <td>{{app.lastUpdated | date : 'shortDate'}}</td>
+              <td>
+                <span ng-show="app.lastUpdatedDays">
+                  <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                    <strong>{{app.lastUpdatedDays}}</strong>
+                  </span> days ago
+                </span>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -278,6 +288,7 @@
   <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
   <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
   <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
 
 </div>
 
