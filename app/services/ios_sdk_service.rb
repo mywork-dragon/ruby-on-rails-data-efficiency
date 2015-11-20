@@ -16,7 +16,7 @@ class IosSdkService
       }
 
       error_map = {
-        price: 0
+        price: 0,
         taken_down: 1,
         foreign: 2,
         device_incompatible: 3
