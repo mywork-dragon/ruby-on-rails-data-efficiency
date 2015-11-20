@@ -50,18 +50,19 @@ class IosLiveScanService
       return status if !status.nil?
 
       # second set of checks: download and scan stages
+      # Note: the order of these checks matter
       status = if snapshot.nil?
         result_map[:preparing]
-      elsif snapshot.scan_status == "scanned"
+      elsif snapshot.scan_status == 'scanned'
         result_map[:complete]
-      elsif snapshot.scan_status == "scanning"
+      elsif snapshot.scan_status == 'scanning'
         result_map[:scanning]
-      elsif snapshot.download_status == "complete" && snapshot.success == false
+      elsif snapshot.download_status == 'complete' && snapshot.success == false
         exception = snapshot.ipa_snapshot_exceptions.last
-        exception && exception.error_code == "devices_busy" ? result_map[:devices_busy] : result_map[:failed]
-      elsif snapshot.download_status == "starting" || snapshot.download_status == "cleaning"
+        exception && exception.error_code == 'devices_busy' ? result_map[:devices_busy] : result_map[:failed]
+      elsif snapshot.download_status == 'starting' || snapshot.download_status == 'cleaning'
         result_map[:downloading]
-      elsif snapshot.download_status == "retrying"
+      elsif snapshot.download_status == 'retrying'
         result_map[:retrying]
       else
         result_map[:failed]

@@ -4,7 +4,7 @@ class IosSdkService
 
   class << self
 
-    # for front end - getting sdks in a display type
+    # for front end - getting sdks data into display type
     def get_sdk_response(ios_app_id)
       resp = {
         installed_sdk_companies: {},
@@ -48,6 +48,8 @@ class IosSdkService
             resp[:installed_sdk_companies][sdk.name] = format_sdk(sdk)
           end
         end
+
+        resp[:updated] = snap.updated_at
       end
 
       # count sdks, if none, return status code
