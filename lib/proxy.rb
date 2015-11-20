@@ -31,6 +31,7 @@ class Proxy
           curb.proxy_url = proxy
           curb.ssl_verify_peer = false
           curb.max_redirects = 3
+          curb.follow_location = true
           curb.timeout = 120
 
           yield(curb) if block_given? # Can override
