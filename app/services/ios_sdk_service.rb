@@ -27,7 +27,7 @@ class IosSdkService
       # return error if it's not a free app
       app = IosApp.find(ios_app_id)
 
-      price = app.newest_ios_app_snapshot.price.to_i
+      price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
 
       if !price.zero?
         resp[:error_code] = 0
@@ -50,11 +50,6 @@ class IosSdkService
         end
 
         resp[:updated] = snap.updated_at
-      end
-
-      # count sdks, if none, return status code
-      if resp[:installed_sdk_companies].length + resp[:installed_open_source_sdks].length == 0
-        resp[:error_code] = 1
       end
 
       resp
