@@ -23,13 +23,13 @@
             <strong>SDK Live Scan is temporarily unavailable for this app.</strong>
           </div>
 
-          <li ng-show="sdkData && sdkData.errorCode == 0 && appData.displayStatus == 'normal' && !noAppSnapshot" id="sdkLiveScanDisplay">
+          <li ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.errorCode == 0 && appData.displayStatus == 'normal' && !iosLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
             <div class="sdksListView">
               <div class="row">
-                <div class="col-md-6" ng-hide="isEmpty(sdkData.sdkCompanies) && isEmpty(sdkData.uninstalledSdkCompanies)">
-                  <strong ng-hide="isEmpty(sdkData.sdkCompanies)">SDK Companies</strong>
-                  <ul ng-hide="isEmpty(sdkData.sdkCompanies)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in sdkData.sdkCompanies">
+                <div class="col-md-6" ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies) && isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkCompanies)">
+                  <strong ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">SDK Companies</strong>
+                  <ul ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">
+                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.sdkCompanies">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
 
@@ -56,9 +56,9 @@
 
                     </li>
                   </ul>
-                  <strong ng-hide="isEmpty(sdkData.uninstalledSdkCompanies)">Uninstalled SDK Companies</strong>
-                  <ul ng-hide="isEmpty(sdkData.uninstalledSdkCompanies)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in sdkData.uninstalledSdkCompanies">
+                  <strong ng-hide="isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkCompanies)">Uninstalled SDK Companies</strong>
+                  <ul ng-hide="isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkCompanies)">
+                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.uninstalledSdkCompanies">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
                             <span ng-if="canViewStorewideSdks">
@@ -84,10 +84,10 @@
                     </li>
                   </ul>
                 </div>
-                <div class="col-md-6 sdkOpenSourceSection" ng-hide="isEmpty(sdkData.sdkOpenSource) && isEmpty(sdkData.uninstalledSdkOpenSource)">
-                  <strong ng-hide="isEmpty(sdkData.sdkOpenSource)">Open-Source SDKs</strong>
-                  <ul ng-hide="isEmpty(sdkData.sdkOpenSource)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in sdkData.sdkOpenSource">
+                <div class="col-md-6 sdkOpenSourceSection" ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource) && isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkOpenSource)">
+                  <strong ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource)">Open-Source SDKs</strong>
+                  <ul ng-hide="isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource)">
+                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.sdkOpenSource">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>
                             <span ng-if="canViewStorewideSdks">
@@ -112,9 +112,9 @@
                             </span>
                     </li>
                   </ul>
-                  <strong ng-hide="isEmpty(sdkData.uninstalledSdkOpenSource)">Uninstalled Open-Source SDKs</strong>
-                  <ul ng-hide="isEmpty(sdkData.uninstalledSdkOpenSource)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in sdkData.uninstalledSdkOpenSource">
+                  <strong ng-hide="isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkOpenSource)">Uninstalled Open-Source SDKs</strong>
+                  <ul ng-hide="isEmpty(iosLiveScanCtrl.sdkData.uninstalledSdkOpenSource)">
+                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.uninstalledSdkOpenSource">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
                             <span ng-if="canViewStorewideSdks">
@@ -152,20 +152,20 @@
           </li>
           -->
 
-          <li id="appPageSdkScanStatus" ng-if="noSdkData && appData.displayStatus == 'normal' || sdkQueryInProgress && appData.displayStatus == 'normal'">
-            <div id="sdkScanErrorMessage" ng-show="noSdkData">
-              <h5>{{sdkData.errorMessage}}</h5>
+          <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && appData.displayStatus == 'normal' || iosLiveScanCtrl.sdkQueryInProgress && appData.displayStatus == 'normal'">
+            <div id="sdkScanErrorMessage" ng-show="iosLiveScanCtrl.noSdkData">
+              <h5>{{iosLiveScanCtrl.sdkData.errorMessage}}</h5>
             </div>
-            <div data-ng-show="sdkQueryInProgress" id="wrap_spinner">
+            <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
               <div class="loading outer">
                 <div class="loading inner"></div>
               </div>
               <p>Scanning - this may take a minute.</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!sdkQueryInProgress && appData.displayStatus == 'normal'">
-            <div id="showSdksButtonTitle" ng-show="sdkData.lastUpdated">
-              Last Scanned on {{sdkData.lastUpdated | date : 'shortDate'}}
+          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && appData.displayStatus == 'normal'">
+            <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated">
+              Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
             <div id="showSdksButton">
               <button type="submit" class="btn btn-primary btn-block" ng-click="getSdks(appData.id)">Live Scan</button>
