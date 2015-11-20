@@ -1,10 +1,16 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window",
-  function($scope, $http, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService",
+  function($scope, $http, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService) {
 
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
+
+    // Sets user permissions
+    authService.permissions()
+      .success(function(data) {
+        $scope.canViewExports = data.can_view_exports;
+      });
 
     $scope.load = function() {
       $scope.queryInProgress = true;
