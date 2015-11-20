@@ -992,15 +992,18 @@ ActiveRecord::Schema.define(version: 20151120035318) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "live_scan_status"
   end
 
   create_table "ipa_snapshots", force: true do |t|
     t.integer  "ios_app_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "status"
+    t.integer  "download_status"
     t.boolean  "success"
     t.integer  "ipa_snapshot_job_id"
+    t.integer  "scan_status"
+    t.string   "version"
   end
 
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
