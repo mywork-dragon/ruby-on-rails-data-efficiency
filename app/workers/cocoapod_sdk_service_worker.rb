@@ -161,7 +161,7 @@ class CocoapodSdkServiceWorker
 
 		# if github, get the repo identifier
 		github_repo_identifier = if /github.(com|io)/.match(website)
-			url = pod['git'] && pod['git'].include?('github') ? pod['git'] || pod['website']
+			url = (pod['git'] && pod['git'].include?('github')) ? pod['git'] : pod['website']
 
 			begin
 				GithubService.get_repo_data(url)['id']
