@@ -3,8 +3,8 @@
 angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
 
-    var appDetailsCtrl = this;
-    
+    $scope.testingThisData = "TESTING !!! 1";
+
     $scope.appPlatform = $routeParams.platform;
 
     var userInfo = {}; // User info set
