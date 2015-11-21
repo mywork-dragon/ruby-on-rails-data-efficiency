@@ -8,7 +8,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
-    apiService.checkForSdks($scope.$parent.$parent.appData.id)
+    apiService.checkForSdks($scope.appData.id)
       .success(function(data) {
         var sdkErrorMessage = "";
         androidLiveScanCtrl.noSdkData = false;
@@ -24,7 +24,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               break;
             case 2:
               sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
-              $scope.$parent.$parent.appData.displayStatus = "taken_down";
+              $scope.appData.displayStatus = "taken_down";
               break;
             case 3:
               sdkErrorMessage = "Error - Please Try Again";
@@ -36,10 +36,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               androidLiveScanCtrl.noSdkData = false;
               break;
             case 6:
-              $scope.$parent.$parent.appData.displayStatus = "device_incompatible";
+              $scope.appData.displayStatus = "device_incompatible";
               break;
             case 7:
-              $scope.$parent.$parent.appData.displayStatus = "foreign";
+              $scope.appData.displayStatus = "foreign";
               break;
           }
         }
@@ -59,22 +59,22 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         mixpanel.track(
           "App Page Viewed", {
             "appId": $routeParams.id,
-            "appName": $scope.$parent.$parent.appData.name,
-            "companyName": $scope.$parent.$parent.appData.company.name,
+            "appName": $scope.appData.name,
+            "companyName": $scope.appData.company.name,
             "appPlatform": APP_PLATFORM
           }
         );
         /* -------- Mixpanel Analytics End -------- */
         if($routeParams.platform == 'android') {
           /* -------- Mixpanel Analytics Start -------- */
-          if($scope.$parent.$parent.appData.displayStatus != 'normal') {
+          if($scope.appData.displayStatus != 'normal') {
             mixpanel.track(
               "Hidden SDK Live Scan Viewed", {
                 "userEmail": userInfo.email,
-                'appName': $scope.$parent.$parent.appData.name,
-                'companyName': $scope.$parent.$parent.appData.company.name,
-                'appId': $scope.$parent.$parent.appData.id,
-                'displayStatus': $scope.$parent.$parent.appData.displayStatus
+                'appName': $scope.appData.name,
+                'companyName': $scope.appData.company.name,
+                'appId': $scope.appData.id,
+                'displayStatus': $scope.appData.displayStatus
               }
             );
           }
@@ -88,13 +88,13 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "SDK Live Scan Clicked", {
-          'companyName': $scope.$parent.$parent.appData.company.name,
-          'appName': $scope.$parent.$parent.appData.name,
-          'appId': $scope.$parent.$parent.appData.id,
-          'mobilePriority': $scope.$parent.$parent.appData.mobilePriority,
-          'fortuneRank': $scope.$parent.$parent.appData.company.fortuneRank,
-          'userBase': $scope.$parent.$parent.appData.userBase,
-          'ratingsAllCount': $scope.$parent.$parent.appData.ratingsCount
+          'companyName': $scope.appData.company.name,
+          'appName': $scope.appData.name,
+          'appId': $scope.appData.id,
+          'mobilePriority': $scope.appData.mobilePriority,
+          'fortuneRank': $scope.appData.company.fortuneRank,
+          'userBase': $scope.appData.userBase,
+          'ratingsAllCount': $scope.appData.ratingsCount
         }
       );
       /* -------- Mixpanel Analytics End -------- */
@@ -117,7 +117,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 break;
               case 2:
                 sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
-                $scope.$parent.$parent.appData.displayStatus = "taken_down";
+                $scope.appData.displayStatus = "taken_down";
                 break;
               case 3:
                 sdkErrorMessage = "Error - Please Try Again";
@@ -129,10 +129,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.noSdkData = false;
                 break;
               case 6:
-                $scope.$parent.$parent.appData.displayStatus = "device_incompatible";
+                $scope.appData.displayStatus = "device_incompatible";
                 break;
               case 7:
-                $scope.$parent.$parent.appData.displayStatus = "foreign";
+                $scope.appData.displayStatus = "foreign";
                 break;
             }
           }
@@ -164,9 +164,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           mixpanel.track(
             mixpanelEventTitle, {
               'platform': 'Android',
-              'appName': $scope.$parent.$parent.appData.name,
-              'companyName': $scope.$parent.$parent.appData.company.name,
-              'appId': $scope.$parent.$parent.appData.id,
+              'appName': $scope.appData.name,
+              'companyName': $scope.appData.company.name,
+              'appId': $scope.appData.id,
               'sdkCompanies': androidLiveScanCtrl.sdkData.sdkCompanies,
               'sdkOpenSource': androidLiveScanCtrl.sdkData.sdkOpenSource,
               'uninstalledSdkCompanies': androidLiveScanCtrl.sdkData.uninstalledSdkCompanies,
@@ -187,9 +187,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             "fallback": mixpanelEventTitle,
             "color": liveScanSlacktivityColor,
             "userEmail": userInfo.email,
-            'appName': $scope.$parent.$parent.appData.name,
-            'companyName': $scope.$parent.$parent.appData.company.name,
-            'appId': $scope.$parent.$parent.appData.id,
+            'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
+            'appId': $scope.appData.id,
             'sdkCompanies': sdkCompanies,
             'sdkOpenSource': sdkOpenSource,
             'uninstalledSdkCompanies': uninstalledSdkCompanies,
@@ -209,9 +209,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Live Scan Failed", {
-              'companyName': $scope.$parent.$parent.appData.company.name,
-              'appName': $scope.$parent.$parent.appData.name,
-              'appId': $scope.$parent.$parent.appData.id,
+              'companyName': $scope.appData.company.name,
+              'appName': $scope.appData.name,
+              'appId': $scope.appData.id,
               'errorStatus': status
             }
           );
@@ -222,9 +222,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             "fallback": "SDK Live Scan Failed",
             "color": "#E82020",
             "userEmail": userInfo.email,
-            'appName': $scope.$parent.$parent.appData.name,
-            'companyName': $scope.$parent.$parent.appData.company.name,
-            'appId': $scope.$parent.$parent.appData.id,
+            'appName': $scope.appData.name,
+            'companyName': $scope.appData.company.name,
+            'appId': $scope.appData.id,
             'errorStatus': status
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
