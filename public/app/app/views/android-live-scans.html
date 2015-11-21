@@ -11,19 +11,19 @@
           </div>
           -->
 
-          <div style="text-align:center" ng-if="appData.displayStatus == 'taken_down'">
+          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'taken_down'">
             <strong>App is no longer listed in the app store - no SDK Live Scan available.</strong>
           </div>
 
-          <div style="text-align:center" ng-if="appData.displayStatus == 'foreign'">
+          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'foreign'">
             <strong>App is not in the U.S. store - no SDK Live Scan available.</strong>
           </div>
 
-          <div style="text-align:center" ng-if="appData.displayStatus == 'device_incompatible'">
+          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'device_incompatible'">
             <strong>SDK Live Scan is temporarily unavailable for this app.</strong>
           </div>
 
-          <li ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.errorCode == 0 && appData.displayStatus == 'normal' && !androidLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
+          <li ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.errorCode == 0 && androidLiveScanCtrl.displayStatus == 'normal' && !androidLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies) && isEmpty(androidLiveScanCtrl.sdkData.uninstalledSdkCompanies)">
@@ -152,7 +152,7 @@
           </li>
           -->
 
-          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData && appData.displayStatus == 'normal' || androidLiveScanCtrl.sdkQueryInProgress && appData.displayStatus == 'normal'">
+          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData && androidLiveScanCtrl.displayStatus == 'normal' || androidLiveScanCtrl.sdkQueryInProgress && androidLiveScanCtrl.displayStatus == 'normal'">
             <div id="sdkScanErrorMessage" ng-show="androidLiveScanCtrl.noSdkData">
               <h5>{{androidLiveScanCtrl.sdkData.errorMessage}}</h5>
             </div>
@@ -163,7 +163,7 @@
               <p>Scanning - this may take a minute.</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && appData.displayStatus == 'normal'">
+          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && androidLiveScanCtrl.displayStatus == 'normal'">
             <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated">
               Last Scanned on {{androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
