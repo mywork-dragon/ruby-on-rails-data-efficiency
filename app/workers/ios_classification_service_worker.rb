@@ -109,7 +109,7 @@ class IosClassificationServiceWorker
 
     if search_classes
       classes = classes_from_classdump(contents)
-      sdks += find_from_classes(classes: classes)
+      sdks += sdks_from_classnames(classes: classes)
     end
 
     if search_fw_folders
@@ -155,7 +155,7 @@ class IosClassificationServiceWorker
     uniques = []
 
     classes.each do |name|
-      found = search(name) || source_search(name)
+      found = direct_search(name) || source_search(name)
       next if found.nil?
       if found.length == 1
         uniques << found.first
@@ -165,7 +165,8 @@ class IosClassificationServiceWorker
     end
 
     # get rid of collisions between the same set of sdks
-    to_resolve = collisions.values.uniq {|sdks| sdks}
+    # sort ids so ordering doesn't matter
+    to_resolve = collisions.values.uniq {|sdks| sdks.map{|x| x.id}.sort}
 
     # get rid of collisions that include sdks we've already found to exist via uniqueness
     to_resolve.select! do |sdks|
@@ -185,11 +186,10 @@ class IosClassificationServiceWorker
     puts "Resolved Collisions".yellow
     ap resolved_sdks
 
-    uniques + resolved_sdks
+    (uniques + resolved_sdks).uniq
   end
 
   def resolve_collision(sdks:, downloads_threshold: 0.75)
-    byebug
     # check if all map to the same source group
     group_ids = sdks.map {|sdk| sdk.ios_sdk_source_group_id}
     if group_ids.uniq.length == 1 && !group_ids.first.nil?
@@ -235,9 +235,11 @@ class IosClassificationServiceWorker
         pod.ios_sdk
       end
     end.compact.uniq
+
+    ios_sdks if !ios_sdks.first.nil? # don't return empty arrays
   end
 
-  def direct_search(name)
+  def direct_search(q)
     s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
     c = IosSdk.find_by_name(s)
     [c] if c.present?
