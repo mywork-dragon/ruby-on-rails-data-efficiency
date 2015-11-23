@@ -21,8 +21,8 @@ class AndroidSdkService
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
 			google_check[:matched].each do |result|
-				sdk_company = save_company(name: result[:name], url: result[:url])
-				sdk = save_sdk(name: result[:name], url: result[:url], open_source: result[:open_source], sdk_company_id: sdk_company.id)
+				# sdk_company = save_company(name: result[:name], url: result[:url])
+				sdk = save_sdk(name: result[:name], website: result[:url], open_source: result[:open_source])
 				result[:packages].each do |p| 
 					save_package(package: p['package'], android_sdk_id: sdk.id, snap_id: snap_id)
 				end
@@ -30,19 +30,24 @@ class AndroidSdkService
 
 		end
 
+		# def save_company(name:, url:)
+		# 	host = URI(url).host
+		# 	favicon = "https://www.google.com/s2/favicons?domain=#{host}"
+		# 	begin
+  #   		SdkCompany.create(name: name, url: url, favicon: favicon)
+  #   	rescue
+  #   		SdkCompany.where(name: name, url: url).first
+  #   	end
+		# end
 
-		def save_company(name:, url:)
-			host = URI(url).host
+		def save_sdk(name:, website:, open_source:)
+			host = URI(website).host
 			favicon = "https://www.google.com/s2/favicons?domain=#{host}"
 			begin
-    		SdkCompany.create(name: name, url: url, favicon: favicon)
+    		AndroidSdk.create(name: name, website: website, favicon: favicon)
     	rescue
-    		SdkCompany.where(name: name, url: url).first
+    		AndroidSdk.where(name: name, website: website).first
     	end
-		end
-
-		def save_sdk(name:, url:, open_source:, sdk_company_id:)
-
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
