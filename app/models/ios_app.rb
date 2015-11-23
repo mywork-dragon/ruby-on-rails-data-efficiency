@@ -7,6 +7,7 @@ class IosApp < ActiveRecord::Base
   belongs_to :app
   has_many :ios_fb_ad_appearances
   has_many :ios_app_download_snapshots
+  has_many :ipa_snapshots
   
   has_many :ios_apps_websites  
   has_many :websites, through: :ios_apps_websites
@@ -24,10 +25,19 @@ class IosApp < ActiveRecord::Base
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible]
   
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|
       snapshot.updated_at
+    end
+  end
+
+  def get_last_ipa_snapshot(success: false)
+    if success
+      self.ipa_snapshots.where(success: success).order(:updated_at).last
+    else
+      self.ipa_snapshots.order(:updated_at).last
     end
   end
   

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService) {
 
     $scope.load = function() {
 
@@ -41,6 +41,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
     authService.permissions()
       .success(function(data) {
         $scope.canViewSupportDesk = data.can_view_support_desk;
+        $scope.canViewExports = data.can_view_exports;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;
@@ -110,6 +111,10 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
           hiddenElement.download = 'contacts.csv';
           hiddenElement.click();
         });
+    };
+
+    $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
+      return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
     };
 
     $scope.contactsLoading = false;

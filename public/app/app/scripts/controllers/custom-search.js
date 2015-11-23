@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService",
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService) {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService",
+    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService) {
 
       var customSearchCtrl = this;
 
@@ -104,6 +104,10 @@ angular.module('appApp')
         } else {
           return 'Search for Android app or company';
         }
+      };
+
+      customSearchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {
+        return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
       };
 
       customSearchCtrl.addSelectedTo = function(list, selectedApps) {
