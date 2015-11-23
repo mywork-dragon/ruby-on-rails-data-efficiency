@@ -189,10 +189,11 @@ class IosClassificationServiceWorker
   end
 
   def resolve_collision(sdks:, downloads_threshold: 0.75)
+    byebug
     # check if all map to the same source group
     group_ids = sdks.map {|sdk| sdk.ios_sdk_source_group_id}
-    if group_ids.compact.uniq.length == 1
-      group = IosSdkSourceGroup.find(group_ids.compact.first)
+    if group_ids.uniq.length == 1 && !group_ids.first.nil?
+      group = IosSdkSourceGroup.find(group_ids.first)
       return IosSdk.find(group.ios_sdk_id)
     end
 
