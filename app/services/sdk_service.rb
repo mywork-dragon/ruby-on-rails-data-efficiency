@@ -12,12 +12,7 @@ class SdkService
 
 			packages = packages.uniq
 
-			matches = packages.reduce({}) do |memo, package|
-				puts "Searching for package: #{package}".yellow
-				match = existing_sdk_from_package(package: package, platform: platform)
-				memo[package] = match if match
-				memo
-			end
+			matches = existing_sdks_from_packages(packages: packages, platform: platform)
 
 			found_sdks = matches.values.uniq {|sdk| sdk.id}
 			remaining = packages - matches.keys
@@ -31,6 +26,33 @@ class SdkService
 			ap new_sdks
 
 			found_sdks + new_sdks
+		end
+
+		# Lookup the packages in our current data to find any matches
+		# @param packages - array of packages (ex: ['com.facebook.sdk', ...])
+		# @param platform - :android or :ios
+		# @result hash mapping package (string) to sdk (IosSdk or AndroidSdk)
+		def existing_sdks_from_packages(packages:, platform:)
+
+			raise "Android not implemented" if platform != :ios
+
+			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+			regexes = SdkRegex.where.not(col => nil).map do |row|
+				Regexp.new(row.regex, true) # true for case insensitive
+			end
+
+			packages.reduce({}) do |memo, package|
+				match = regexes.find {|regex| regex.match(package)}
+
+				if match.nil?
+					row = SdkPackage.find_by_package(package)
+					match = row if row && row[col]
+				end
+
+				memo[package] = IosSdk.find(match[col]) if match
+
+				memo
+			end
 		end
 
 		# Given a package ("com.facebook.sdk") and a platform (:ios or :android), find if an existing SDK matches
