@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", "sdkLiveScanService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, sdkLiveScanService) {
+angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", "sdkLiveScanService", "$interval",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, sdkLiveScanService, $interval) {
 
     var iosLiveScanCtrl = this;
 
@@ -23,12 +23,24 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     iosLiveScanCtrl.getSdks = function(appId) {
       sdkLiveScanService.startIosSdkScan(appId)
         .success(function(data) {
-
+          pullScanStatus();
         })
         .error(function(err) {
 
         });
-    }
+    };
+
+    var pullScanStatus = function() {
+      var msDelay = 3000;
+      var numRepeat = 60;
+
+      $interval(function() {
+        sdkLiveScanService.getIosScanStatus()
+          .success(function(data) {
+
+          });
+      }, msDelay, numRepeat);
+    };
 
   }
 
