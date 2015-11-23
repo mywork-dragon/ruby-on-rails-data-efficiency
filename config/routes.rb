@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   get 'api/android_sdks_exist' => 'api#android_sdks_exist'
   get 'api/scan_android_sdks' => 'api#scan_android_sdks'
   get 'api/ios_sdks_exist' => 'api#ios_sdks_exist'
-  get 'api/ios_start_scan' => 'api#ios_start_scan'
+  post 'api/ios_start_scan' => 'api#ios_start_scan'
   get 'api/ios_scan_status' => 'api#ios_scan_status'
 
   # Auth Endpoints (for Front-End)
