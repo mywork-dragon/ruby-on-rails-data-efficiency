@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService) {
+angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "authService", "appDataService", "sdkLiveScanService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, authService, appDataService, sdkLiveScanService) {
 
     var androidLiveScanCtrl = this;
 
@@ -13,7 +13,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       androidLiveScanCtrl.appData = appDataService.appData; // Service to share data between both controllers
       androidLiveScanCtrl.displayStatus = appDataService.appData.displayStatus;
 
-      apiService.checkForSdks(androidLiveScanCtrl.appData.id)
+      sdkLiveScanService.checkForAndroidSdks(androidLiveScanCtrl.appData.id)
         .success(function(data) {
           var sdkErrorMessage = "";
           androidLiveScanCtrl.noSdkData = false;
@@ -109,7 +109,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       );
       /* -------- Mixpanel Analytics End -------- */
       androidLiveScanCtrl.sdkQueryInProgress = true;
-      apiService.getSdks(appId, 'api/scan_android_sdks')
+      sdkLiveScanService.getAndroidSdks(appId)
         .success(function(data) {
           androidLiveScanCtrl.sdkQueryInProgress = false;
           androidLiveScanCtrl.noSdkSnapshot = false;
