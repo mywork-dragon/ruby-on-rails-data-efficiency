@@ -34,6 +34,21 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       var msDelay = 3000;
       var numRepeat = 60;
 
+      // Messages that correspond to (status == index number)
+      var statusCodeMessages = [
+        "Validating",
+        "Unchanged",
+        "Not Available",
+        "Paid App",
+        "Device Incompatible",
+        "Preparing",
+        "Downloading",
+        "Retrying",
+        "Scanning",
+        "Complete",
+        "Failed"
+      ];
+
       $interval(function() {
         sdkLiveScanService.getIosScanStatus()
           .success(function(data) {

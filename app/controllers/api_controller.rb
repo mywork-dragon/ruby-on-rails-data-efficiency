@@ -1469,4 +1469,48 @@ class ApiController < ApplicationController
     render json: {scannedSdkNum: scanned_sdk_num}
   end
 
+  def ios_sdks_exist
+    render json: {
+              error_code: nil,
+              installed_open_source_sdks: {
+                      PasswordExtension: {
+                      favicon: "https://assets-cdn.github.com/favicon.ico",
+                      id: 2,
+                      name: "1PasswordExtension",
+                      website: "https://github.com/AgileBits/onepassword-app-extension"
+                  },
+                      AFNetworking: {
+                      favicon: "https://assets-cdn.github.com/favicon.ico",
+                      id: 37,
+                      name: "AFNetworking",
+                      website: "https://github.com/AFNetworking/AFNetworking"
+                  }
+              },
+              installed_sdk_companies: {
+                      Adjust: {
+                      favicon: "https://www.adjust.com/assets/favicon-31e77e293b94a9cef221e33926c821d9.ico",
+                      id: 45,
+                      name: "Adjust",
+                      website: "http://adjust.com"
+                  }
+              },
+              uninstalled_open_source_sdks: {},
+              uninstalled_sdk_companies: {},
+              updated: "2015-11-19T20:46:04.000-08:00"
+          }
+  end
+
+  def ios_start_scan
+    render json: {
+               jobId: 123456
+           }
+  end
+
+  def ios_scan_status
+    render json: {
+               status: 2
+           }
+  end
+
+
 end
