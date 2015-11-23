@@ -1,9 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService) {
-
-    $scope.testingThisData = "TESTING !!! 1";
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -26,6 +24,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
+
+        appDataService.appData = data;
+        $scope.$broadcast('EVENT_ON_APP_DETAILS_LOAD_COMPLETION'); // Tells SDK Live Scan controller to check for SDKs
 
         /* Sets html title attribute */
         pageTitleService.setTitle($scope.appData.name);
