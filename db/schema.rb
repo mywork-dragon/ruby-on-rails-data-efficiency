@@ -1221,14 +1221,24 @@ ActiveRecord::Schema.define(version: 20151123201000) do
   add_index "sdk_packages", ["package"], name: "index_sdk_packages_on_package", unique: true, using: :btree
 
   create_table "sdk_packages_apk_snapshots", force: true do |t|
+    t.integer  "sdk_package_id"
+    t.integer  "apk_snapshot_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "sdk_packages_apk_snapshots", ["apk_snapshot_id", "sdk_package_id"], name: "index_apk_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_apk_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
+
   create_table "sdk_packages_ipa_snapshots", force: true do |t|
+    t.integer  "sdk_package_id"
+    t.integer  "ipa_snapshot_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "sdk_packages_ipa_snapshots", ["ipa_snapshot_id", "sdk_package_id"], name: "index_ipa_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_ipa_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
   create_table "sdk_regexes", force: true do |t|
     t.string   "regex"
