@@ -2,23 +2,74 @@ class AndroidSdkService
 
 	class << self
 
+		def classify(snap_id: 1, packages: ["com.google.admob.blah", "com.blah.whatever.nothing", "com.nonsense", "com.facebook.stetho.blah", "com.hasoffers.something", "blah.blah.blah", "com.bolts.whatever", "com.mparticle", "com.unity.ads"])
 
-		def validate_package(package:, platform:)
-			query = name_from_package(package)
-			known_name = known_sdks(query, package, platform)
-			
-			if known_name.nil?
-				data = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-			else
-				{'url'=>nil, 'name'=>known_name, 'type'=>:company}
+			# Save package if it matches a regex
+			regex_check = miss_match(data: packages, check: :match_regex)
+			regex_check[:matched].each do |p| 
+				save_package(package: p['package'], android_sdk_id: p['android_sdk_id'], snap_id: snap_id)
+			end
+
+
+			# Save package if it is already in the table
+			table_check = miss_match(data: regex_check[:missed], check: :match_table)
+			table_check[:matched].each do |p| 
+				save_package(package: p['package'], android_sdk_id: p['android_sdk_id'], snap_id: snap_id)
+			end
+
+
+			# Save package, sdk, and company if it matches a google search
+			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
+			google_check[:matched].each do |result|
+				sdk_company = save_company(name: result[:name], url: result[:url])
+				sdk = save_sdk(name: result[:name], url: result[:url], open_source: result[:open_source], sdk_company_id: sdk_company.id)
+				result[:packages].each do |p| 
+					save_package(package: p['package'], android_sdk_id: sdk.id, snap_id: snap_id)
+				end
 			end
 
 		end
 
 
+		def save_company(name:, url:)
+			host = URI(url).host
+			favicon = "https://www.google.com/s2/favicons?domain=#{host}"
+			begin
+    		SdkCompany.create(name: name, url: url, favicon: favicon)
+    	rescue
+    		SdkCompany.where(name: name, url: url).first
+    	end
+		end
+
+		def save_sdk(name:, url:, open_source:, sdk_company_id:)
+
+		end
+
+		def save_package(package:, android_sdk_id:, snap_id:)
+    	sdk_package = begin
+    		SdkPackage.create(package: package)
+    	rescue
+    		SdkPackage.find_by_package(package)
+    	end
+    	if sdk_package.android_sdk_id != android_sdk_id
+	    	sdk_package.android_sdk_id = android_sdk_id
+	    	sdk_package.save
+	    end
+    	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, snap_id: snap_id)
+    end
+
+		def querify(packages)
+			q = Hash.new
+			packages.each do |package|
+				query = query_from_package(package)
+				q[query] = build q[query], package
+			end
+			q
+		end
+
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
 
-		def name_from_package(package_name)
+		def query_from_package(package_name)
 	    package = strip_prefix(package_name)
 	    return nil if package.blank?
 	    package = package.capitalize if package == package.upcase && package.count('.').zero?
@@ -30,29 +81,27 @@ class AndroidSdkService
 
 		# Get the url of an sdk if it is valid
 
-		def google_sdk(query:, platform:)
+		def google_sdk(query:, platform: :android)
 			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
-				return {'url'=>url, 'name'=>company, 'type'=>:company} if url.include?(query.downcase)
+				return {:url=>url, :name=>company, :open_source=>false} if url.include?(query.downcase)
 			end
 			nil
 		end
 
 		# Get the url and company name of an sdk from github if it is valid
 
-		def google_github(query:, platform:)
+		def google_github(query:, platform: :android)
 			google_search(q: "#{query} #{platform} site:github.com").each do |url|
 				if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
 					company = camel_split(url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1])
-					return {'url'=>url, 'name'=>company, 'type'=>:open_source}
+					return {:url=>url, :name=>company, :open_source=>true}
 				end
 			end
 			nil
 		end
-
-
 
 		def google_search(q:, limit: 10)
 		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
@@ -69,7 +118,8 @@ class AndroidSdkService
 		end
 
 		def exts(dot: nil, subs: false)
-			ext_file = subs == true ? File.open('sdk_configs/bad_package_prefixes.txt') : File.open('sdk_configs/exts.txt')
+			path = subs == true ? 'bad_package_prefixes' : 'exts'		
+			ext_file = File.open("sdk_configs/#{path}.txt")
 			ext_arr = ext_file.read.split(/\n/)
 			ext_arr.map{|e| dot == :before ? ".#{e}" : (dot == :after ? "#{e}." : e)}
 		end
@@ -90,27 +140,55 @@ class AndroidSdkService
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
 		end
 
-		# def known_sdks(name, package_name, platform)
-		# 	str = nil
-		# 	JSON.parse(File.open("sdk_configs/known_#{platform}_sdks.json").read).each do |sdk_name,sdk_types|
-		# 		if name == sdk_name
-		# 			sdk_types.each{|type| str = sdk_name + ' ' + type if !!(package_name =~ /#{type}/i) }
-		# 		end
-		# 	end
-		# 	str
-		# end
-
-
-    def known_sdks(package_name)
-
-      regexes = ["facebook.*imagepipeline","google.*admob"]
-
-      regexes.each do |regex|
-
-        return "the id of #{regex}" if !!(package_name =~ /#{regex}/i)
-
+		def miss_match(data:, check:)
+			m = Hash.new
+      data.each do |d|
+        match = send check, d
+        if match
+        	m[:matched] = build m[:matched], match
+        else
+        	m[:missed] = build m[:missed], d
+        end
       end
+      m
+    end
 
+    def match_regex(package)
+      SdkRegex.all.each do |regex|
+        if !!(package =~ /#{regex.regex}/i)
+        	return { 
+        		:package => package, 
+        		:android_sdk_id => regex.android_sdk_id 
+        	}
+        end
+      end
+      nil
+    end
+
+    def match_table(package)
+    	sdk_package = SdkPackage.find_by_package(package)
+    	if sdk_package
+    		return {
+    			:package => package,
+    			:android_sdk_id => sdk_package.android_sdk_id
+    		}
+    	end
+    	nil
+    end
+
+    def match_google(package)
+    	results = google_sdk(query: package[0]) || google_github(query: package[0])
+    	if results
+    		return {
+    			:packages => package[1],
+    			:metadata => results
+    		}
+    	end
+    	nil
+    end
+
+    def build(key, value)
+    	key.nil? ? [value] : key << value
     end
 
 	end

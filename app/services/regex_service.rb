@@ -2,6 +2,8 @@ class RegexService
 
   class << self
 
+    # also need to link sdk_companies to android and ios sdks
+
     def populate_regex
       companies = JSON.parse(File.open('../../Desktop/regexes.json').read)
       companies.each do |company, data|
