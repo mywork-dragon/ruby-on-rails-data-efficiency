@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120210051) do
+ActiveRecord::Schema.define(version: 20151123201000) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -259,15 +259,17 @@ ActiveRecord::Schema.define(version: 20151120210051) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",        default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sdk_company_id"
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
   add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", using: :btree
   add_index "android_sdks", ["open_source"], name: "index_android_sdks_on_open_source", using: :btree
+  add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
   add_index "android_sdks", ["website"], name: "index_android_sdks_on_website", using: :btree
 
   create_table "api_keys", force: true do |t|
@@ -962,6 +964,7 @@ ActiveRecord::Schema.define(version: 20151120210051) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
+    t.integer  "sdk_company_id"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
@@ -969,6 +972,7 @@ ActiveRecord::Schema.define(version: 20151120210051) do
   add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
+  add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
   create_table "ios_sdks_ipa_snapshots", force: true do |t|
@@ -1201,8 +1205,8 @@ ActiveRecord::Schema.define(version: 20151120210051) do
   end
 
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
-  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", using: :btree
-  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", using: :btree
+  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
+  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
 
   create_table "sdk_packages", force: true do |t|
     t.string   "package"
@@ -1215,6 +1219,16 @@ ActiveRecord::Schema.define(version: 20151120210051) do
   add_index "sdk_packages", ["android_sdk_id"], name: "index_sdk_packages_on_android_sdk_id", using: :btree
   add_index "sdk_packages", ["ios_sdk_id"], name: "index_sdk_packages_on_ios_sdk_id", using: :btree
   add_index "sdk_packages", ["package"], name: "index_sdk_packages_on_package", unique: true, using: :btree
+
+  create_table "sdk_packages_apk_snapshots", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sdk_packages_ipa_snapshots", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sdk_regexes", force: true do |t|
     t.string   "regex"
