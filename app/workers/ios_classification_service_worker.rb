@@ -145,6 +145,103 @@ class IosClassificationServiceWorker
     sdks = sdks.compact.uniq {|sdk| sdk.id}
   end
 
+  def sdks_from_classnames(classes:, remove_apple: true, matches_threshold: 0)
+
+    if remove_apple
+      classes -= AppleDoc.select(:name).where(name: classes).map {|row| row.name}
+    end
+
+    collisions = {}
+    uniques = []
+
+    classes.each do |name|
+      found = search(name) || source_search(name)
+      next if found.nil?
+      if found.length == 1
+        uniques << found.first
+      else
+        collisions[name] = found
+      end
+    end
+
+    # get rid of collisions between the same set of sdks
+    to_resolve = collisions.values.uniq {|sdks| sdks}
+
+    # get rid of collisions that include sdks we've already found to exist via uniqueness
+    to_resolve.select! do |sdks|
+      sdks.find {|sdk| uniques.include?(sdk)}.nil?
+    end
+
+    resolved_sdks = []
+
+    to_resolve.each do |sdks|
+      sdk = resolve_collision(sdks: sdks)
+      resolved_sdks << sdk if !sdk.nil?
+    end
+
+    puts "Uniques".blue
+    ap uniques
+
+    puts "Resolved Collisions".yellow
+    ap resolved_sdks
+
+    uniques + resolved_sdks
+  end
+
+  def resolve_collision(sdks:, downloads_threshold: 0.75)
+    # check if all map to the same source group
+    group_ids = sdks.map {|sdk| sdk.ios_sdk_source_group_id}
+    if group_ids.compact.uniq.length == 1
+      group = IosSdkSourceGroup.find(group_ids.compact.first)
+      return IosSdk.find(group.ios_sdk_id)
+    end
+
+    # check the metrics to see if there's an overwhelming favorite
+    # aggregate by group
+    downloads = sdks.map {|sdk| get_downloads_for_sdk(sdk)}
+    total = downloads.reduce(0) {|x, y| x + y}
+
+    metrics_map = {}
+    sdks.each_with_index do |sdk, index|
+      if group_ids[index].nil?
+        metrics_map[sdk] = downloads[index]
+      else
+        # put group in table if doesn't exist, otherwise add to total
+        group = IosSdkSourceGroup.find(group_ids[index])
+        metrics_map[group] = (metrics_map[group] || 0) + downloads[index]
+      end
+    end
+
+    highest = metrics_map.values.max
+
+    if highest > downloads_threshold * total
+      match = metrics_map.key(highest)
+      if match.class == IosSdkSourceGroup
+        IosSdk.find(match.ios_sdk_id)
+      else # match.class == IosSdk
+        match
+      end
+    else
+      nil # could not resolve
+    end
+  end
+
+  def source_search(name)
+    c = CocoapodSourceData.where(name: name)
+    ios_sdks = c.map do |csd|
+      pod = csd.cocoapod
+      if !pod.nil?
+        pod.ios_sdk
+      end
+    end.compact.uniq
+  end
+
+  def direct_search(name)
+    s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
+    c = IosSdk.find_by_name(s)
+    [c] if c.present?
+  end
+
   def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
     sdks = []
 
