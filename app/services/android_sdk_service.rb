@@ -2,7 +2,11 @@ class AndroidSdkService
 
 	class << self
 
-		def classify(snap_id: 1, packages: ["com.google.admob.blah", "com.blah.whatever.nothing", "com.nonsense", "com.facebook.stetho.blah", "com.hasoffers.something", "blah.blah.blah", "com.bolts.whatever", "com.mparticle", "com.unity.ads"])
+		def classify(snap_id:, packages:)
+
+			packages.each{|x| puts x }.count
+
+			return nil
 
 			# Save package if it matches a regex
 			regex_check = miss_match(data: packages, check: :match_regex)
@@ -37,17 +41,7 @@ class AndroidSdkService
 
 		end
 
-		# def save_company(name:, url:)
-		# 	host = URI(url).host
-		# 	favicon = "https://www.google.com/s2/favicons?domain=#{host}"
-		# 	begin
-  #   		SdkCompany.create(name: name, url: url, favicon: favicon)
-  #   	rescue
-  #   		SdkCompany.where(name: name, url: url).first
-  #   	end
-		# end
-
-		def save_sdk(name:, website:, open_source:)
+		def save_sdk(name:, website:, open_source:, snap_id:)
 			begin
     		AndroidSdk.create(name: name, website: website, open_source: open_source)
     	rescue
@@ -66,6 +60,7 @@ class AndroidSdkService
 	    	sdk_package.save
 	    end
     	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+    	# AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk.id, apk_snapshot_id: snap_id)
     end
 
 		def querify(packages)
@@ -102,6 +97,9 @@ class AndroidSdkService
 		end
 
 		# Get the url and company name of an sdk from github if it is valid
+
+
+		# ADD JASON'S STUFF TO GOOGLE GITHUB
 
 		def google_github(query:, platform: :android)
 			google_search(q: "#{query} #{platform} site:github.com").each do |url|
