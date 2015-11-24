@@ -5,7 +5,7 @@
       <div class="media-body">
         <ul class="list-unstyled list-info">
 
-          <div style="text-align:center" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
+          <div id="sdkScanErrorCodeStatus" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
             <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
           </div>
 
@@ -65,7 +65,7 @@
           </li>
           -->
 
-          <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && iosLiveScanCtrl.sdkData.errorCode == null || iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
+          <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData || iosLiveScanCtrl.sdkQueryInProgress">
             <div id="sdkScanErrorMessage">
               <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
               <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan">Error - Please Try Again</h5>
@@ -75,7 +75,7 @@
               <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
+          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress">
             <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
               Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>

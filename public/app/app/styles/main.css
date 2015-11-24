@@ -7402,6 +7402,11 @@ span#dashboardResultsTableHeadingNumDisplayed {
   font-size: 20px;
 }
 
+#sdkScanErrorCodeStatus {
+  text-align: center;
+  margin-top: 15px;
+}
+
 #appPageSdkScanStatus, #showDataUpdatedMessage {
   padding: 0;
 }
