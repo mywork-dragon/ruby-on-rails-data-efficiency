@@ -5,7 +5,7 @@ class IosDeviceService
 
   DOWNLOAD_APP_SCRIPT_PATH = './server/download_app.cy'
   DEVICE_USERNAME = 'root'
-  DEVICE_PASSWORD = 'padme'
+  DEVICE_PASSWORD = 'padmemyboo'
 
   OPEN_APP_SCRIPT_PATH = './server/open_app.cy'
 
