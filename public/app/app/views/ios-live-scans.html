@@ -68,7 +68,7 @@
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData || iosLiveScanCtrl.sdkQueryInProgress">
             <div id="sdkScanErrorMessage">
               <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
-              <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan">Error - Please Try Again</h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
             </div>
             <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress">
               <progressbar class="progress-striped active" max="100" value="iosLiveScanCtrl.scanStatusPercentage" type="primary"></progressbar>

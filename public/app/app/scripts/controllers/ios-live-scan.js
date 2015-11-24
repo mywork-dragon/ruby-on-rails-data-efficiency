@@ -55,6 +55,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     iosLiveScanCtrl.getSdks = function(appId) {
       iosLiveScanCtrl.sdkQueryInProgress = true;
+      iosLiveScanCtrl.displayDataUnchangedStatus = false;
       sdkLiveScanService.startIosSdkScan(appId)
         .success(function(data) {
           iosLiveScanCtrl.scanJobId = data.job_id;
@@ -92,6 +93,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       var interval = $interval(function() {
         sdkLiveScanService.getIosScanStatus(iosLiveScanCtrl.scanJobId)
           .success(function(data) {
+
+            if(!data.status) { data.status = 10 } // If status is null, treat as failed (status 10)
 
             iosLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
 
