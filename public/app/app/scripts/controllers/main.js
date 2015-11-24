@@ -115,7 +115,7 @@ angular.module('appApp')
               customName = "100M - 1B";
               break;
             case '5':
-              customName = "1B - 50B";
+              customName = "1B - 5B";
               break;
           }
           value = {

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151123213627) do
+ActiveRecord::Schema.define(version: 20151124001114) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -259,16 +259,28 @@ ActiveRecord::Schema.define(version: 20151123213627) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",        default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sdk_company_id"
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
   add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", using: :btree
   add_index "android_sdks", ["open_source"], name: "index_android_sdks_on_open_source", using: :btree
+  add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
   add_index "android_sdks", ["website"], name: "index_android_sdks_on_website", using: :btree
+
+  create_table "android_sdks_apk_snapshots", force: true do |t|
+    t.integer  "android_sdk_id"
+    t.integer  "apk_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
+  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", using: :btree
 
   create_table "api_keys", force: true do |t|
     t.string   "key"
@@ -972,7 +984,11 @@ ActiveRecord::Schema.define(version: 20151123213627) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
+<<<<<<< HEAD
     t.integer  "ios_sdk_source_group_id"
+=======
+    t.integer  "sdk_company_id"
+>>>>>>> b5ef735d837ae70c11f73a920dac16f21980e70d
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
@@ -981,6 +997,7 @@ ActiveRecord::Schema.define(version: 20151123213627) do
   add_index "ios_sdks", ["ios_sdk_source_group_id"], name: "index_ios_sdks_on_ios_sdk_source_group_id", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
+  add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
   create_table "ios_sdks_ipa_snapshots", force: true do |t|
@@ -1213,8 +1230,8 @@ ActiveRecord::Schema.define(version: 20151123213627) do
   end
 
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
-  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", using: :btree
-  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", using: :btree
+  add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
+  add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
 
   create_table "sdk_packages", force: true do |t|
     t.string   "package"
@@ -1227,6 +1244,26 @@ ActiveRecord::Schema.define(version: 20151123213627) do
   add_index "sdk_packages", ["android_sdk_id"], name: "index_sdk_packages_on_android_sdk_id", using: :btree
   add_index "sdk_packages", ["ios_sdk_id"], name: "index_sdk_packages_on_ios_sdk_id", using: :btree
   add_index "sdk_packages", ["package"], name: "index_sdk_packages_on_package", unique: true, using: :btree
+
+  create_table "sdk_packages_apk_snapshots", force: true do |t|
+    t.integer  "sdk_package_id"
+    t.integer  "apk_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_packages_apk_snapshots", ["apk_snapshot_id", "sdk_package_id"], name: "index_apk_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_apk_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
+
+  create_table "sdk_packages_ipa_snapshots", force: true do |t|
+    t.integer  "sdk_package_id"
+    t.integer  "ipa_snapshot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_packages_ipa_snapshots", ["ipa_snapshot_id", "sdk_package_id"], name: "index_ipa_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_ipa_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
   create_table "sdk_regexes", force: true do |t|
     t.string   "regex"
