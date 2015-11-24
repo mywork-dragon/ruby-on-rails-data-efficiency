@@ -60,8 +60,8 @@
           -->
 
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && iosLiveScanCtrl.sdkData.errorCode == null || iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
-            <div id="sdkScanErrorMessage" ng-show="iosLiveScanCtrl.noSdkData">
-              <h5>{{iosLiveScanCtrl.errorCodeMessage}}</h5>
+            <div id="sdkScanErrorMessage">
+              <h5><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
             </div>
             <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
               <div class="loading outer">
