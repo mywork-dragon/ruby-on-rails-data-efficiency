@@ -4,9 +4,9 @@ class AndroidSdkService
 
 		def classify(snap_id:, packages:)
 
-			packages.each{|x| puts x }.count
+			# packages.each{|x| puts x }.count
 
-			return nil
+			# return nil
 
 			# Save package if it matches a regex
 			regex_check = miss_match(data: packages, check: :match_regex)
@@ -37,6 +37,10 @@ class AndroidSdkService
 						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
 					end
 				end
+			end
+
+			google_check[:missed].each do |res|
+				puts res
 			end
 
 		end
