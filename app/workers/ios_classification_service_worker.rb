@@ -134,7 +134,7 @@ class IosClassificationServiceWorker
 
     if search_classes
       classes = classes_from_strings(contents)
-      sdks += find_from_classes(classes: classes, matches_threshold: 1)
+      sdks += sdks_from_classnames(classes: classes)
     end
 
     if search_fw_folders
@@ -145,7 +145,7 @@ class IosClassificationServiceWorker
     sdks = sdks.compact.uniq {|sdk| sdk.id}
   end
 
-  def sdks_from_classnames(classes:, remove_apple: true, matches_threshold: 0)
+  def sdks_from_classnames(classes:, remove_apple: true)
 
     if remove_apple
       classes -= AppleDoc.select(:name).where(name: classes).map {|row| row.name}
@@ -187,6 +187,7 @@ class IosClassificationServiceWorker
     ap resolved_sdks
 
     (uniques + resolved_sdks).uniq
+
   end
 
   def resolve_collision(sdks:, downloads_threshold: 0.75)
@@ -245,22 +246,6 @@ class IosClassificationServiceWorker
     [c] if c.present?
   end
 
-  def find_from_classes(classes:, remove_apple: false, matches_threshold: 0)
-    sdks = []
-
-    if remove_apple
-      classes -= AppleDoc.select(:name).where(name: classes).map {|row| row.name}
-    end
-
-    classes.each do |name|
-      found = search(name) || code_search(name)
-      # sdks << {term: name, sdk: found} if found
-      sdks << found
-    end
-
-    sdks.group_by {|x| x}.select {|k, v| v.length > matches_threshold}.keys
-  end
-
   def find_from_fw_folders(fw_folders: fw_folders)
     sdks = []
     fw_folders.each do |fw_folder|
@@ -308,42 +293,9 @@ class IosClassificationServiceWorker
     SdkService.find_from_packages(packages: bundles, platform: :ios)
   end
 
-  def search(q)
-    s = %w(sdk -ios-sdk -ios -sdk).map{|p| q+p } << q
-    c = IosSdk.find_by_name(s)
-    c if c.present?
-  end
-
-  def code_search(name)
-
-    c = CocoapodSourceData.where(name: name)
-    ios_sdks = c.map do |csd|
-      pod = csd.cocoapod
-      if !pod.nil?
-        pod.ios_sdk
-      end
-    end.compact.uniq
-
-    puts "found #{ios_sdks.length} matches for #{name}"
-    ios_sdks.length <= 1 ? ios_sdks.first : handle_collisions(ios_sdks)
-  end
-
   def get_downloads_for_sdk(sdk)
     most_recent = sdk.cocoapod_metrics.select {|metrics| metrics.success}.sort_by {|x| x.updated_at}.last
     res = most_recent ? most_recent.stats_download_total || 0 : 0
-  end
-
-  def handle_collisions(sdks, req = 0.8)
-
-    puts "Collision between #{sdks.map {|x| x.name}.join(',')}"
-    # TODO: make this 1 query instead of 
-    downloads = sdks.map {|sdk| get_downloads_for_sdk(sdk)}
-    total = downloads.reduce(0) {|x, y| x + y}
-
-    highest = downloads.max
-    sdks[downloads.find_index(highest)] if highest > req * total
-
-    # TODO: consider hard links
   end
 
 end
