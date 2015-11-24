@@ -4,9 +4,9 @@ class IosMockService
 
     def mock_multiple_live_scans(app_identifiers)
 
-      return "Nothing to run" if app_identifier.nil?
+      return "Nothing to run" if app_identifiers.nil?
 
-      job_id = IpaSnapshotJob.create!(notes: "running multiple live scan jobs on #{app_identifier.join(',')}", job_type: :mock).id
+      job_id = IpaSnapshotJob.create!(notes: "running multiple live scan jobs on app identifiers #{app_identifiers.join(', ')}", job_type: :mock).id
 
       if Rails.env.production?
 
@@ -15,8 +15,9 @@ class IosMockService
         bid = batch.bid
 
         batch.jobs do
-          app_identifiers.each do |app_id|
-            IosMockServiceWorker.perform_async(job_id, app_identifier, :one_off, bid)
+          app_identifiers.each do |app_identifier|
+            ios_app_id = IosApp.find_by_app_identifer(app_identifier)
+            IosLiveScanServiceWorker.perform_async(job_id, ios_app_id)
           end
         end
       else
@@ -30,7 +31,11 @@ class IosMockService
 
       return "Nothing to run" if app_identifier.nil?
 
-      job_id = IpaSnapshotJob.create!(notes: "running a single live scan job on app #{app_identifier}", job_type: :mock).id
+      ios_app = IosApp.find_by_app_identifier(app_identifier)
+
+      return "No app by app identifier #{app_identifier}" if !ios_app.present?
+
+      job_id = IpaSnapshotJob.create!(notes: "running a single live scan job on app identifier #{app_identifier}", job_type: :mock).id
 
       if Rails.env.production?
 
@@ -39,10 +44,10 @@ class IosMockService
         bid = batch.bid
 
         batch.jobs do
-          IosMockServiceWorker.perform_async(job_id, app_identifier, :one_off, bid)
+          IosLiveScanServiceWorker.perform_async(job_id, ios_app.id)
         end
       else
-        IosMockServiceWorker.new.perform(job_id, app_identifier, :one_off)
+        IosLiveScanServiceWorker.new.perform(job_id, ios_app.id)
       end
     end
   end

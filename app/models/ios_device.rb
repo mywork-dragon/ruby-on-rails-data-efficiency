@@ -1,6 +1,8 @@
 class IosDevice < ActiveRecord::Base
 
 	has_many :class_dump
+  belongs_to :softlayer_proxy
+
 	validates :ip, uniqueness: true
 	validates :serial_number, uniqueness: true, presence: true
 

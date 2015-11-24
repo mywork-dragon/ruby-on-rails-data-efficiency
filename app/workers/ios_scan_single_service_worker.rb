@@ -12,20 +12,21 @@ class IosScanSingleServiceWorker
     @retry = 0
   end
 
-	def perform(ipa_snapshot_job_id, app_identifier, bid = nil)
-		run_scan(ipa_snapshot_job_id, app_identifier, :one_off, bid)
+	def perform(ipa_snapshot_job_id, ios_app_id, bid = nil)
+		run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid, start_classify: Rails.env.production?)
 	end
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
-  def on_complete(ipa_snapshot_job_id, app_identifier, bid, result)
+  def on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
 
-    snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: app_identifier).first
+    snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).first
 
     if result.class == ClassDump && result.success
-      snapshot.status = :complete
+      snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
-      return
+      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
+      return sdks
     end
 
     IpaSnapshotException.create!({
@@ -38,11 +39,11 @@ class IosScanSingleServiceWorker
 
     if @retry < MAX_RETRIES && !(result.class == ClassDump && result.dump_success)
       @retry += 1
-      snapshot.status = :retrying
+      snapshot.download_status = :retrying
       snapshot.save
-      run_scan(ipa_snapshot_job_id, app_identifier, :one_off, bid)
+      run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid)
     else
-      snapshot.status = :complete
+      snapshot.download_status = :complete
       snapshot.success = false
       snapshot.save
     end

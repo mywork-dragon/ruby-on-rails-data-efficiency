@@ -1,64 +1,71 @@
 class IosSdkService
 
-	DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, '/cocoapods/Specs') : '/tmp/cocoapods/Specs'
-	
-	class << self
+  DEFAULT_FAVICON = 'https://assets-cdn.github.com/pinned-octocat.svg'
 
-		# override allows for updating regardless if last version hasn't changed
-		def update_ios_sdks(override = false)
-			return 'Git must be installed' if `which git`.chomp.blank?
+  class << self
 
-			# Validate that update needs to happen
-			repo_state = GithubService.get_branch_data('Cocoapods/Specs', 'master')
-			raise "Error communcating with Github #{repo_state.to_s}" if repo_state["name"].nil?
+    # for front end - getting sdks data into display type
+    def get_sdk_response(ios_app_id)
+      resp = {
+        installed_sdk_companies: {},
+        installed_open_source_sdks: {},
+        uninstalled_sdk_companies: {},
+        uninstalled_open_source_sdks: {},
+        updated: nil,
+        error_code: nil
+      }
 
-			last_update = IosSdkUpdate.last
-			current_sha = repo_state["commit"]["sha"]
+      error_map = {
+        price: 0,
+        taken_down: 1,
+        foreign: 2,
+        device_incompatible: 3
+      }
 
-			if !override && !last_update.nil? && last_update.cocoapods_sha == current_sha
-				return "Cocoapods have not changed since last update"
-			end
+      def format_sdk(sdk)
+        {
+          'id' => sdk.id,
+          'name' => sdk.name,
+          'website' => sdk.website,
+          'favicon' => sdk.favicon || DEFAULT_FAVICON
+        }
+      end
 
-			# Figure out which files changed (takes a while)
-			`git clone https://github.com/CocoaPods/Specs.git #{DUMP_PATH}`
-			# TODO: if ignored something because didn't meet download criteria, will not be added to database until next version comes out 
-			# if last_update.nil?
-			# 	sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
-			# else
-			# 	sdks = `cd #{DUMP_PATH} && git diff --name-only #{last_update.cocoapods_sha} Specs`.chomp.split("\n").map { x.split('/')[1] }.uniq
-			# end
+      # return error if it violates some conditions
+      app = IosApp.find(ios_app_id)
 
-			sdks = `ls #{File.join(DUMP_PATH, "Specs")}`.chomp.split("\n")
+      if app.display_type != "normal"
+        resp[:error_code] = error_map[app.display_type.to_sym]
+        return resp
+      end
 
-			i = IosSdkUpdate.create!(cocoapods_sha: repo_state["commit"]["sha"])
+      price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
 
-			if Rails.env.production?
-				sdks.each do |sdk|
-					IosSdkServiceWorker.perform_async(sdk, i.id)
-				end
-			else
-				sdks.sample(5) do |sdk|
-					IosSdkServiceWorker.new.perform(sdk, i.id)
-				end
-			end
+      if !price.zero?
+        resp[:error_code] = error_map[:price]
+        return resp
+      end
 
-			`rm -rf #{DUMP_PATH}`
+      snap = app.get_last_ipa_snapshot(success: true)
 
-		end
+      # if no successful scan's done, return no data
+      if !snap.nil?
+        snap.ios_sdks.each do |sdk|
 
-		def run_broken(update_id, names = nil)
+          next if sdk.nil? || sdk.flagged
 
-			names = IosSdkUpdateException.where("ios_sdk_update_id=#{update_id}").map {|x| x.sdk_name} if names.nil?
+          if sdk.open_source
+            resp[:installed_open_source_sdks][sdk.name] = format_sdk(sdk)
+          else
+            resp[:installed_sdk_companies][sdk.name] = format_sdk(sdk)
+          end
+        end
 
-			names.uniq.each do |sdk_name|
-				if Rails.env.production?
-					IosSdkServiceWorker.perform_async(sdk_name, update_id)
-				else
-					IosSdkServiceWorker.new.perform(sdk_name, update_id)
-				end
-			end
+        resp[:updated] = snap.updated_at
+      end
 
-			
-		end
-	end
+      resp
+    end
+
+  end
 end
