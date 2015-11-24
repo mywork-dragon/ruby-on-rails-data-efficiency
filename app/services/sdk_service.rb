@@ -4,20 +4,80 @@ class SdkService
 	DICE_SIMILARITY_THRESHOLD = 0.9
 
 	class << self
+
+		def platform_map(platform:)
+			if platform == :ios
+				{
+					snapshot_table: IpaSnapshot,
+					snapshot_column: :ipa_snapshot_id,
+					sdk_column: :ios_sdk_id,
+					package_join_table: SdkPackagesIpaSnapshot
+				}
+			else
+				raise "Not implemented"
+				{
+					snapshot_table: ApkSnapshot,
+					snapshot_column: :apk_snapshot_id,
+					sdk_column: :android_sdk_id,
+					package_join_table: SdkPackagesApkSnapshot
+				}
+			end
+		end
 		
 		# Given a list of packages (com.facebook.sdk, ...), return the sdks that exist and use google to find other ones. If create is turned on, will go ahead and create the sdks (should )
-		def find_from_packages(packages:, platform:, read_only: false)
+		def find_from_packages(packages:, platform:, snapshot_id:, read_only: false)
 
 			raise "Android not implemented" if platform != :ios
 
+			# get references to tables
+			map = platform_map(platform: platform)
+			package_join_table = map[:package_join_table]
+			snapshot_column = map[:snapshot_column]
+			sdk_column = map[:sdk_column]
+
 			packages = packages.uniq
+
+			# add all packages to the join table
+
+			byebug
+			if !read_only
+				packages.each do |package|
+
+					package_row = SdkPackage.find_or_create_by(package: package)
+
+					begin
+						package_join_table.create!(sdk_package_id: package_row.id, snapshot_column => snapshot_id)
+					rescue ActiveRecord::RecordNotUnique => e
+						nil
+					end
+				end
+			end
 
 			matches = existing_sdks_from_packages(packages: packages, platform: platform)
 
-			found_sdks = matches.values.uniq {|sdk| sdk.id}
+			# update all the packages in the join table with the matching sdk
+			byebug
+			if !read_only
+				matches.each do |package, sdk|
+					SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
+				end
+			end
+
+			found_sdks = matches.values.uniq
 			remaining = packages - matches.keys
 
-			new_sdks = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only)
+			new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only)
+
+			byebug
+			if !read_only
+				new_matches.each do |package_arr, sdk|
+					package_arr.each do |package|
+						SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
+					end
+				end
+			end
+
+			new_sdks = new_matches.values.uniq
 
 			puts "Existing matches"
 			ap found_sdks
@@ -25,7 +85,7 @@ class SdkService
 			puts "New SDKs"
 			ap new_sdks
 
-			found_sdks + new_sdks
+			(found_sdks + new_sdks).uniq
 		end
 
 		# Lookup the packages in our current data to find any matches
@@ -36,13 +96,20 @@ class SdkService
 
 			raise "Android not implemented" if platform != :ios
 
-			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+			byebug
+
+			col = platform_map(platform: platform)[:sdk_column]
+			# col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+
 			regexes = SdkRegex.where.not(col => nil).map do |row|
-				Regexp.new(row.regex, true) # true for case insensitive
+				{
+					col => row[col],
+					regex: Regexp.new(row.regex, true) # true for case insensitive
+				}
 			end
 
 			packages.reduce({}) do |memo, package|
-				match = regexes.find {|regex| regex.match(package)}
+				match = regexes.find {|entry| entry[:regex].match(package)}
 
 				if match.nil?
 					row = SdkPackage.find_by_package(package)
@@ -94,9 +161,10 @@ class SdkService
 		end
 
 		def create_sdks_from_packages(packages:, platform:, read_only: false)
+
 			raise "Android not implemented" if platform != :ios
 
-			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+			col = platform_map(platform: platform)[:sdk_column]
 
 			# get mapping from query to array of packages
 			query_hash = packages.reduce({}) do |memo, package|
@@ -112,41 +180,60 @@ class SdkService
 				memo
 			end
 
-
-			results = query_hash.keys.map do |query|
+			# get mapping from array of packages back to sdk (either existing or new)
+			packages_to_sdk = query_hash.keys.reduce({}) do |memo, query|
 				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
 
-				next if sdk.nil?
+				if !sdk.nil?
+					existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
 
-				existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
-
-				if existing || read_only
-					{sdk: existing, query: query} if existing
-				else
-					sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
-					{sdk: sdk, query: query}
-				end
-			end.compact
-
-			sdks = results.map {|x| x[:sdk]}
-
-			return sdks if read_only
-
-			# Update packages table
-			results.each do |result|
-				query_hash[result[:query]].each do |package|
-					sdk = result[:sdk]
-					begin
-						SdkPackage.create!(package: package, col => sdk.id)
-					rescue ActiveRecord::RecordNotUnique => e
-						row = SdkPackage.find_by_package(package)
-						row[col] = sdk.id
-						row.save
+					if existing || read_only
+						memo[query_hash[query]] = existing if existing
+					else
+						sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
+						memo[query_hash[query]] = sdk
 					end
 				end
+
+				memo
 			end
 
-			sdks
+			# old solution
+			# results = query_hash.keys.map do |query|
+			# 	sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+
+			# 	next if sdk.nil?
+
+			# 	existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
+
+			# 	if existing || read_only
+			# 		{sdk: existing, query: query} if existing
+			# 	else
+			# 		sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
+			# 		{sdk: sdk, query: query}
+			# 	end
+			# end.compact
+
+			# sdks = results.map {|x| x[:sdk]}
+
+			# return sdks if read_only
+
+			# do this later now
+			# # Update packages table
+			# results.each do |result|
+			# 	query_hash[result[:query]].each do |package|
+			# 		sdk = result[:sdk]
+			# 		begin
+			# 			SdkPackage.create!(package: package, col => sdk.id)
+			# 		rescue ActiveRecord::RecordNotUnique => e
+			# 			row = SdkPackage.find_by_package(package)
+			# 			row[col] = sdk.id
+			# 			row.save
+			# 		end
+			# 	end
+			# end
+
+			# sdks
 
 		end
 

@@ -72,7 +72,7 @@ class IosClassificationServiceWorker
   # Entry point to integrate with @osman
   def classify_strings(snap_id, contents)
     puts "Classifying strings".blue
-    sdks = sdks_from_strings(contents: contents)
+    sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
     # TODO: uncomment
     attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
     sdks
@@ -121,13 +121,13 @@ class IosClassificationServiceWorker
 
   end
 
-  def sdks_from_strings(contents:, search_classes: false, search_bundles: true, search_fw_folders: true)
+  def sdks_from_strings(contents:, ipa_snapshot_id:, search_classes: false, search_bundles: true, search_fw_folders: true)
 
     sdks = []
 
     if search_bundles
       bundles = bundles_from_strings(contents)
-      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, read_only: Rails.env.development?) # TODO: remove read only flag after regexes are linked and such
+      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: Rails.env.development?) # TODO: remove read only flag after regexes are linked and such
       puts "SDKs via bundles"
       ap sdks
     end
