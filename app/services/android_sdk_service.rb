@@ -6,25 +6,32 @@ class AndroidSdkService
 
 			# Save package if it matches a regex
 			regex_check = miss_match(data: packages, check: :match_regex)
-			regex_check[:matched].each do |p| 
-				save_package(package: p['package'], android_sdk_id: p['android_sdk_id'], snap_id: snap_id)
+			if regex_check[:matched].present?
+				regex_check[:matched].each do |p| 
+					save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+				end
 			end
 
 
 			# Save package if it is already in the table
 			table_check = miss_match(data: regex_check[:missed], check: :match_table)
-			table_check[:matched].each do |p| 
-				save_package(package: p['package'], android_sdk_id: p['android_sdk_id'], snap_id: snap_id)
+			if table_check[:matched].present?
+				table_check[:matched].each do |p| 
+					save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+				end
 			end
 
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-			google_check[:matched].each do |result|
-				# sdk_company = save_company(name: result[:name], url: result[:url])
-				sdk = save_sdk(name: result[:name], website: result[:url], open_source: result[:open_source])
-				result[:packages].each do |p| 
-					save_package(package: p['package'], android_sdk_id: sdk.id, snap_id: snap_id)
+			if google_check[:matched].present?
+				google_check[:matched].each do |result|
+					# sdk_company = save_company(name: result[:name], url: result[:url])
+					meta = result[:metadata]
+					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source])
+					result[:packages].each do |p| 
+						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+					end
 				end
 			end
 
@@ -41,12 +48,10 @@ class AndroidSdkService
 		# end
 
 		def save_sdk(name:, website:, open_source:)
-			host = URI(website).host
-			favicon = "https://www.google.com/s2/favicons?domain=#{host}"
 			begin
-    		AndroidSdk.create(name: name, website: website, favicon: favicon)
+    		AndroidSdk.create(name: name, website: website, open_source: open_source)
     	rescue
-    		AndroidSdk.where(name: name, website: website).first
+    		AndroidSdk.where(name: name).first
     	end
 		end
 
@@ -60,7 +65,7 @@ class AndroidSdkService
 	    	sdk_package.android_sdk_id = android_sdk_id
 	    	sdk_package.save
 	    end
-    	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, snap_id: snap_id)
+    	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
     end
 
 		def querify(packages)
