@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124192729) do
+ActiveRecord::Schema.define(version: 20151124215146) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -890,6 +890,16 @@ ActiveRecord::Schema.define(version: 20151124192729) do
 
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id", "ios_app_id"], name: "index_website_id_and_ios_app_id", using: :btree
+
+  create_table "ios_classification_exceptions", force: true do |t|
+    t.integer  "ipa_snapshot_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_classification_exceptions", ["ipa_snapshot_id"], name: "index_ios_classification_exceptions_on_ipa_snapshot_id", using: :btree
 
   create_table "ios_developers", force: true do |t|
     t.string   "name"
