@@ -38,12 +38,12 @@ class IosLiveScanService
 
       return nil if job.nil? || job.job_type != 'one_off'
       
-      snapshot = job.ipa_snapshots.first
+      snapshot = job.ipa_snapshots.first # shouldn't matter...only one snapshot
 
       # first set of checks: validation stage
-      status = if %w(validating not_available paid unchanged device_incompatible).include?(job.live_scan_status)
+      status = if %w(validating not_available paid unchanged device_incompatible failed).include?(job.live_scan_status)
         result_map[job.live_scan_status.to_sym]
-      elsif job.live_scan_status !="initiated"
+      elsif job.live_scan_status != "initiated"
         result_map[:validating]
       end
 
@@ -57,6 +57,8 @@ class IosLiveScanService
         result_map[:complete]
       elsif snapshot.scan_status == 'scanning'
         result_map[:scanning]
+      elsif snapshot.scan_status == 'failed'
+        result_map[:failed]
       elsif snapshot.download_status == 'complete' && snapshot.success == false
         exception = snapshot.ipa_snapshot_exceptions.last
         exception && exception.error_code == 'devices_busy' ? result_map[:devices_busy] : result_map[:failed]

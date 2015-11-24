@@ -5,16 +5,28 @@ class IosClassificationServiceWorker
   sidekiq_options backtrace: true, queue: :ios_live_scan_cloud
 
   def perform(snap_id)
-    snapshot = IpaSnapshot.find(snap_id)
-    snapshot.scan_status = :scanning
-    snapshot.save
+    begin
+      snapshot = IpaSnapshot.find(snap_id)
+      snapshot.scan_status = :scanning
+      snapshot.save
 
-    sdks = classify(snap_id)
+      sdks = classify(snap_id)
 
-    snapshot.scan_status = :scanned
-    snapshot.save
+      snapshot.scan_status = :scanned
+      snapshot.save
 
-    sdks
+      sdks
+    rescue => e
+      IosClassificationException.create!({
+        ipa_snapshot_id: snap_id,
+        error: e.message,
+        backtrace: e.backtrace
+      })
+
+      snapshot = IpaSnapshot.find(snap_id)
+      snapshot.scan_status = :failed
+      snapshot.save
+    end
   end
 
   def bundle_prefixes
