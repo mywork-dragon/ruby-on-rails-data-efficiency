@@ -93,7 +93,7 @@ class SdkService
 		def existing_sdks_from_packages(packages:, platform:)
 
 			col = platform_map(platform: platform)[:sdk_column]
-			table = platform_map(platform: platform)[:sdk_table]
+			sdk_table = platform_map(platform: platform)[:sdk_table]
 
 			regexes = SdkRegex.where.not(col => nil).map do |row|
 				{
@@ -110,7 +110,7 @@ class SdkService
 					match = row if row && row[col]
 				end
 
-				memo[package] = table.find(match[col]) if match
+				memo[package] = sdk_table.find(match[col]) if match
 
 				memo
 			end
