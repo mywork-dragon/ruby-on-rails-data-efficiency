@@ -1510,7 +1510,7 @@ class ApiController < ApplicationController
 
   def ios_scan_status
     render json: {
-               status: 2
+               status: 1
            }
   end
 
