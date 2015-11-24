@@ -45,6 +45,8 @@ class IosDevice < ActiveRecord::Base
 
         apple_account = AppleAccount.create!(email: email, password: 'Somename1', ios_device: ios_device)
 
+        ap apple_account
+
         ios_device
       end
 
