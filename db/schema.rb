@@ -945,6 +945,16 @@ ActiveRecord::Schema.define(version: 20151124192729) do
     t.integer  "price"
   end
 
+  create_table "ios_sdk_source_groups", force: true do |t|
+    t.string   "name"
+    t.integer  "ios_sdk_id"
+    t.boolean  "flagged"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_source_groups", ["ios_sdk_id"], name: "index_ios_sdk_source_groups_on_ios_sdk_id", using: :btree
+
   create_table "ios_sdk_update_exceptions", force: true do |t|
     t.string   "sdk_name"
     t.integer  "ios_sdk_update_id"
@@ -969,19 +979,21 @@ ActiveRecord::Schema.define(version: 20151124192729) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",                default: false
+    t.boolean  "flagged",                 default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
+    t.integer  "ios_sdk_source_group_id"
     t.integer  "sdk_company_id"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
   add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", using: :btree
+  add_index "ios_sdks", ["ios_sdk_source_group_id"], name: "index_ios_sdks_on_ios_sdk_source_group_id", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree

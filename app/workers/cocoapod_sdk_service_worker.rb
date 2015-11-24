@@ -1,10 +1,11 @@
-class IosSdkServiceWorker
+class CocoapodSdkServiceWorker
 
 	include Sidekiq::Worker
 
 	sidekiq_options :retry => 2, queue: :default
 
-	MIN_DOWNLOADS = 500
+	MIN_OS_DOWNLOADS = 500
+	MIN_COMPANY_DOWNLOADS = 250
 	BACKTRACE_SIZE = 5
 
 	def perform(sdk_name, update_id)
@@ -123,7 +124,7 @@ class IosSdkServiceWorker
 			json = JSON.parse(data.body)
 
 			# throws out new ones...but low bar means if they're good, they'll get picked up eventually
-			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || json["stats"]["download_total"] < MIN_DOWNLOADS
+			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || json["stats"]["download_total"] < (is_open_source?(pod) ? MIN_OS_DOWNLOADS : MIN_COMPANY_DOWNLOADS)
 		end
 
 		true
@@ -143,8 +144,17 @@ class IosSdkServiceWorker
 		}
 	end
 
+	def get_website(pod)
+		pod['homepage'] || pod["http"] || ""
+	end
+
+	def is_open_source?(pod)
+		website = get_website(pod)
+		website.match(/(?:bitbucket|github|sourceforge)/) ? true : false
+	end
+
 	def pod_to_ios_sdk_row(pod)
-		website = pod['homepage'] || pod["http"]
+		website = get_website(pod)
 		name = pod['name']
 		summary = pod['summary']
 
@@ -156,8 +166,19 @@ class IosSdkServiceWorker
 		end
 
 		# determine open source
-		open_source = website.match(/(?:bitbucket|github|sourceforge)/) ? true : false
+		open_source = is_open_source?(pod)
 		deprecated = check_deprecated(pod)
+
+		# if github, get the repo identifier
+		github_repo_identifier = if /github.(com|io)/.match(website)
+			url = (pod['git'] && pod['git'].include?('github')) ? pod['git'] : pod['website']
+
+			begin
+				GithubService.get_repo_data(url)['id']
+			rescue
+				nil
+			end
+		end
 
 		{
 			name: name,
@@ -165,7 +186,8 @@ class IosSdkServiceWorker
 			summary: summary,
 			favicon: favicon_url,
 			open_source: open_source,
-			deprecated: deprecated
+			deprecated: deprecated,
+			github_repo_identifier: github_repo_identifier
 		}
 	end
 
