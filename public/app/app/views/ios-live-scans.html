@@ -61,12 +61,11 @@
 
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && iosLiveScanCtrl.sdkData.errorCode == null || iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
             <div id="sdkScanErrorMessage">
-              <h5><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 ng-if="iosLiveScanCtrl.failedLiveScan">Error - Please Try Again</h5>
             </div>
             <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
-              <div class="loading outer">
-                <div class="loading inner"></div>
-              </div>
+              <progressbar class="progress-striped active" max="100" value="5" type="primary"></progressbar>
               <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
@@ -77,6 +76,9 @@
             <div id="showSdksButton">
               <button type="submit" class="btn btn-primary btn-block" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
             </div>
+          </li>
+          <li id="showDataUpdatedMessage" ng-if="iosLiveScanCtrl.displayDataUnchangedStatus">
+            <em>Note: app data has not changed since last scan. Currently up-to-date.</em>
           </li>
 
         </ul>

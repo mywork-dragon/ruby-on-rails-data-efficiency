@@ -43,7 +43,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
         var errorCodeMessages = [
           "Sorry, SDKs Not Available for Paid Apps",
-          "Sorry, SDKs Not Available - Not in U.S. App Store",
+          "Sorry, SDKs Not Available - App Not in U.S. App Store",
           "Sorry, SDKs Temporarily Not Available for This App"
         ];
 
@@ -64,6 +64,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
         .error(function() {
           iosLiveScanCtrl.sdkQueryInProgress = false;
           iosLiveScanCtrl.noSdkSnapshot = false;
+          iosLiveScanCtrl.failedLiveScan = true;
         });
     };
 
@@ -74,36 +75,27 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
       // Messages that correspond to (status == index number)
       var statusCodeMessages = [
-        "Validating...",           // Non-terminating
-        "Unchanged",                // Unchanged
-        "Not Available",            // Not Avaliable
-        "Paid App",                 // Paid App
-        "Device Incompatible",      // Device incompatible
-        "Preparing...",            // Non-terminating
-        "Downloading...",          // Non-terminating
-        "Retrying...",             // Non-terminating
-        "Scanning...",             // Non-terminating
-        "Complete",               // Complete
-        "Failed"                  // Failed
+        "Validating...",                                            // Non-terminating
+        "Unchanged",                                                // Unchanged
+        "Sorry, SDKs Not Available - App Not in U.S. App Store",    // Not Available
+        "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
+        "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
+        "Preparing...",                                             // Non-terminating
+        "Downloading...",                                           // Non-terminating
+        "Retrying...",                                              // Non-terminating
+        "Scanning...",                                              // Non-terminating
+        "Complete",                                                 // Complete
+        "Failed"                                                    // Failed
       ];
 
-      $interval(function() {
+      var interval = $interval(function() {
         sdkLiveScanService.getIosScanStatus(iosLiveScanCtrl.scanJobId)
           .success(function(data) {
 
             iosLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
 
             // If status is a terminating status (e.g. 'Not Available')
-            if(data.status == 1) {
-              iosLiveScanCtrl.displayDataUnchangedStatus = true;
-
-
-
-              // Add corresponding code in view
-
-
-
-            } else if(data.status >= 2 && data.status <= 4) {
+            if(data.status >= 2 && data.status <= 4) {
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
               iosLiveScanCtrl.noSdkData = false;
@@ -111,18 +103,36 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.sdkData.errorCode = -1;
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
 
-              $interval.cancel(); // Exits interval loop
+              $interval.cancel(interval); // Exits interval loop
 
-            } else if(data.status == 9 || data.status == 10) {
+            } else if(data.status == 1 || data.status == 9 || data.status == 10) {
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              iosLiveScanCtrl.noSdkData = false;
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
 
-              $interval.cancel(); // Exits interval loop
+              switch (data.status) {
+                case 1:
+                  iosLiveScanCtrl.displayDataUnchangedStatus = true;
+                  sdkLiveScanService.checkForIosSdks(); // Loads new sdks on page
+                  break;
+                case 9:
+                  iosLiveScanCtrl.noSdkData = false;
+                  sdkLiveScanService.checkForIosSdks(); // Loads new sdks on page
+                  break;
+                case 10:
+                  iosLiveScanCtrl.noSdkData = true;
+                  iosLiveScanCtrl.failedLiveScan = true;
+                  break;
+              }
+
+              $interval.cancel(interval); // Exits interval loop
 
             }
+          })
+          .error(function() {
+            iosLiveScanCtrl.failedLiveScan = true;
           });
+
       }, msDelay, numRepeat);
     };
 

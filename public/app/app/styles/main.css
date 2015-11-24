@@ -7402,11 +7402,11 @@ span#dashboardResultsTableHeadingNumDisplayed {
   font-size: 20px;
 }
 
-#appPageSdkScanStatus {
+#appPageSdkScanStatus, #showDataUpdatedMessage {
   padding: 0 20px 0 0;
 }
 
-#appPageSdkScanStatus div {
+#appPageSdkScanStatus div, #showDataUpdatedMessage {
   text-align: center;
 }
 
