@@ -276,7 +276,14 @@ class IosDeviceService
 
     # use system scp because it's much faster
     puts "Starting download"
-    `sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
+    puts "DEBUG"
+    puts `echo $USER`.chomp
+    puts "path to sshpass"
+    puts `which sshpass`.chomp
+    puts "PATH"
+    puts `echo $PATH`
+
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
     puts "Download finished"
 
     # validate
@@ -489,7 +496,7 @@ class IosDeviceService
   end
 
   def class_dump(src, dest)
-    `class-dump \'#{src}\' > \'#{dest}\'`
+    `/usr/local/bin/class-dump \'#{src}\' > \'#{dest}\'`
   end
 
 end

@@ -2,7 +2,7 @@ class IosLiveScanServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, queue: :ios_live_scan
+  sidekiq_options backtrace: true, queue: :ios_live_scan_cloud
 
   def perform(ipa_snapshot_job_id, ios_app_id)
 

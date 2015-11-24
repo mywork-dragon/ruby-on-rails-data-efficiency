@@ -2,7 +2,7 @@ class IosClassificationServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, queue: :ios_live_scan
+  sidekiq_options backtrace: true, queue: :ios_live_scan_cloud
 
   def perform(snap_id)
     snapshot = IpaSnapshot.find(snap_id)
