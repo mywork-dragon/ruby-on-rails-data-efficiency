@@ -71,7 +71,7 @@ class IosParentService
     end
 
     def get_dump(app_identifier, device)
-      IosDeviceService.new(device, device.ip, "root", "padme").run(app_identifier)
+      IosDeviceService.new(device, device.ip, "root", "padmemyboo").run(app_identifier)
     end
 
     ########### Functions for local development only ###########
