@@ -803,7 +803,6 @@ class ApiController < ApplicationController
   def ios_sdks_exist
     ios_app_id = params['appId']
 
-    # TODO: someday we'll return a 404 if this doesn't exist
     render json: IosSdkService.get_sdk_response(ios_app_id).to_json
   end
 
@@ -815,7 +814,9 @@ class ApiController < ApplicationController
   end
 
   def ios_start_scan
-    job_id = params[:ios_app_id] || -1
+    ios_app_id = params['appId']
+
+    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id)
 
     render json: {scan_id: job_id}
   end

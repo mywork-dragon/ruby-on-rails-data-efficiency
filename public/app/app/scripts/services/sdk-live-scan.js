@@ -28,14 +28,14 @@ angular.module("appApp")
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/ios_start_scan',
-          data: {id: appId}
+          data: {appId: appId}
         })
       },
       getIosScanStatus: function(statusJobId) {
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_scan_status',
-          params: {id: statusJobId}
+          params: {jobId: statusJobId}
         })
       }
     };
