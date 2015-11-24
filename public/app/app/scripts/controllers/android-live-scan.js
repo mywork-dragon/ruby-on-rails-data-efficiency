@@ -90,9 +90,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
     });
 
-
-
-
     androidLiveScanCtrl.getSdks = function(appId) {
 
       /* -------- Mixpanel Analytics Start -------- */
