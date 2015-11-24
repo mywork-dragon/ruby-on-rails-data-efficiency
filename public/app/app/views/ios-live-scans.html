@@ -6,13 +6,12 @@
         <ul class="list-unstyled list-info">
 
           <div style="text-align:center" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
-            <strong>{{iosLiveScanCtrl.sdkData.errorCodeMessage}}</strong>
+            <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
           </div>
 
-          <li ng-show="iosLiveScanCtrl.sdkData && !iosLiveScanCtrl.sdkData.errorCode && !iosLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
+          <li ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.errorCode == null && !iosLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
             <div class="sdksListView">
               <div class="row">
-
                 <div class="col-md-6" ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">
                   <strong ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">SDK Companies</strong>
                   <ul ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">
@@ -62,7 +61,7 @@
 
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && iosLiveScanCtrl.sdkData.errorCode == null || iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
             <div id="sdkScanErrorMessage" ng-show="iosLiveScanCtrl.noSdkData">
-              <h5>{{iosLiveScanCtrl.sdkData.errorCodeMessage}}</h5>
+              <h5>{{iosLiveScanCtrl.errorCodeMessage}}</h5>
             </div>
             <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
               <div class="loading outer">

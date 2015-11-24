@@ -17,6 +17,12 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       catch(err) {}
     };
 
+    iosLiveScanCtrl.checkSdkSnapshotStatus = function(data) {
+      if(iosLiveScanCtrl.isEmpty(data.installed_sdk_companies) && iosLiveScanCtrl.isEmpty(data.installed_open_source_sdks)) {
+        iosLiveScanCtrl.noSdkSnapshot = true;
+      }
+    };
+
     sdkLiveScanService.checkForIosSdks()
       .success(function (data) {
         iosLiveScanCtrl.sdkData = {
@@ -33,15 +39,14 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"}
         }
 
-        if(iosLiveScanCtrl.isEmpty(data.installed_sdk_companies) && iosLiveScanCtrl.isEmpty(data.installed_open_source_sdks)) {
-          iosLiveScanCtrl.noSdkSnapshot = true;
-        }
+        iosLiveScanCtrl.checkSdkSnapshotStatus(data);
 
         var errorCodeMessages = [
-          "Price",
-          "Taken Down or Foreign",
-          "Device Incompatible"
+          "Sorry, SDKs Not Available for Paid Apps",
+          "Sorry, SDKs Not Available - Not in U.S. App Store",
+          "Sorry, SDKs Temporarily Not Available for This App"
         ];
+
         if (data.error_code != null) {
           iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
         }
@@ -53,11 +58,12 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       sdkLiveScanService.startIosSdkScan(appId)
         .success(function(data) {
           iosLiveScanCtrl.sdkQueryInProgress = false;
-          iosLiveScanCtrl.noSdkSnapshot = false;
           iosLiveScanCtrl.noSdkData = false;
+          iosLiveScanCtrl.checkSdkSnapshotStatus(data);
           pullScanStatus();
         })
         .error(function(err) {
+          console.log('ERROR!');
           iosLiveScanCtrl.sdkQueryInProgress = false;
           iosLiveScanCtrl.noSdkSnapshot = false;
         });
