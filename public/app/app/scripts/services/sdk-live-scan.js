@@ -31,11 +31,11 @@ angular.module("appApp")
           data: {id: appId}
         })
       },
-      getIosScanStatus: function(statusId) {
+      getIosScanStatus: function(statusJobId) {
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_scan_status',
-          params: {id: statusId}
+          params: {id: statusJobId}
         })
       }
     };

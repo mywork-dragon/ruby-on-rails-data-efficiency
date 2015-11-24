@@ -57,43 +57,70 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.sdkQueryInProgress = true;
       sdkLiveScanService.startIosSdkScan(appId)
         .success(function(data) {
-          iosLiveScanCtrl.sdkQueryInProgress = false;
-          iosLiveScanCtrl.noSdkData = false;
-          iosLiveScanCtrl.checkSdkSnapshotStatus(data);
+          iosLiveScanCtrl.scanJobId = data.job_id;
+          iosLiveScanCtrl.scanStatusMessage = "Validating...";
           pullScanStatus();
         })
-        .error(function(err) {
-          console.log('ERROR!');
+        .error(function() {
           iosLiveScanCtrl.sdkQueryInProgress = false;
           iosLiveScanCtrl.noSdkSnapshot = false;
         });
     };
 
+    // Helper method for getSdks() method
     var pullScanStatus = function() {
       var msDelay = 3000;
       var numRepeat = 60;
 
       // Messages that correspond to (status == index number)
       var statusCodeMessages = [
-        "Validating",           // Non-terminating
-        "Unchanged",
-        "Not Available",
-        "Paid App",
-        "Device Incompatible",
-        "Preparing",            // Non-terminating
-        "Downloading",          // Non-terminating
-        "Retrying",             // Non-terminating
-        "Scanning",             // Non-terminating
-        "Complete",
-        "Failed"
+        "Validating...",           // Non-terminating
+        "Unchanged",                // Unchanged
+        "Not Available",            // Not Avaliable
+        "Paid App",                 // Paid App
+        "Device Incompatible",      // Device incompatible
+        "Preparing...",            // Non-terminating
+        "Downloading...",          // Non-terminating
+        "Retrying...",             // Non-terminating
+        "Scanning...",             // Non-terminating
+        "Complete",               // Complete
+        "Failed"                  // Failed
       ];
 
       $interval(function() {
-        sdkLiveScanService.getIosScanStatus()
+        sdkLiveScanService.getIosScanStatus(iosLiveScanCtrl.scanJobId)
           .success(function(data) {
+
+            iosLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
+
             // If status is a terminating status (e.g. 'Not Available')
-            if((data.status >= 1 && data.status <= 4) || data.status == 9 || data.status == 10) {
+            if(data.status == 1) {
+              iosLiveScanCtrl.displayDataUnchangedStatus = true;
+
+
+
+              // Add corresponding code in view
+
+
+
+            } else if(data.status >= 2 && data.status <= 4) {
+              // Run for any qualifying status
+              iosLiveScanCtrl.sdkQueryInProgress = false;
+              iosLiveScanCtrl.noSdkData = false;
+              iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
+              iosLiveScanCtrl.sdkData.errorCode = -1;
+              iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
+
               $interval.cancel(); // Exits interval loop
+
+            } else if(data.status == 9 || data.status == 10) {
+              // Run for any qualifying status
+              iosLiveScanCtrl.sdkQueryInProgress = false;
+              iosLiveScanCtrl.noSdkData = false;
+              iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
+
+              $interval.cancel(); // Exits interval loop
+
             }
           });
       }, msDelay, numRepeat);

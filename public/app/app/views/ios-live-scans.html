@@ -67,7 +67,7 @@
               <div class="loading outer">
                 <div class="loading inner"></div>
               </div>
-              <p>Scanning - this may take a minute.</p>
+              <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
           <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">

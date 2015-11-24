@@ -1472,7 +1472,8 @@ class ApiController < ApplicationController
   def ios_sdks_exist
     render json: {
               error_code: nil,
-              installed_open_source_sdks: {
+              installed_open_source_sdks:
+                  {
                       PasswordExtension: {
                       favicon: "https://assets-cdn.github.com/favicon.ico",
                       id: 2,
@@ -1486,7 +1487,8 @@ class ApiController < ApplicationController
                       website: "https://github.com/AFNetworking/AFNetworking"
                   }
               },
-              installed_sdk_companies: {
+              installed_sdk_companies:
+                  {
                       Adjust: {
                       favicon: "https://www.adjust.com/assets/favicon-31e77e293b94a9cef221e33926c821d9.ico",
                       id: 45,
@@ -1502,7 +1504,7 @@ class ApiController < ApplicationController
 
   def ios_start_scan
     render json: {
-               jobId: 123456
+               job_id: 123456
            }
   end
 
