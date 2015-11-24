@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124001114) do
+ActiveRecord::Schema.define(version: 20151124192729) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -913,12 +913,14 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.datetime "last_used"
     t.string   "ios_version"
     t.text     "description"
+    t.integer  "softlayer_proxy_id"
   end
 
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
+  add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
@@ -1276,6 +1278,14 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "softlayer_proxies", force: true do |t|
+    t.string   "public_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "softlayer_proxies", ["public_ip"], name: "index_softlayer_proxies_on_public_ip", using: :btree
 
   create_table "super_proxies", force: true do |t|
     t.boolean  "active"
