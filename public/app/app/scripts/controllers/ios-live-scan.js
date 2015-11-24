@@ -107,15 +107,16 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 iosLiveScanCtrl.scanStatusPercentage = 10;
                 break;
               case 6:
-                iosLiveScanCtrl.scanStatusPercentage = 15;
+                iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 7:
-                iosLiveScanCtrl.scanStatusPercentage = 15;
+                iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 8:
-                iosLiveScanCtrl.scanStatusPercentage = 80;
+                iosLiveScanCtrl.scanStatusPercentage = 85;
                 break;
               case 9:
+                iosLiveScanCtrl.scanStatusPercentage = 100;
                 iosLiveScanCtrl.noSdkData = false;
                 sdkLiveScanService.checkForIosSdks(); // Loads new sdks on page
                 break;
@@ -135,8 +136,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
-
-            } else if(data.status === 0 || (5 <= data.status && data.status <= 8)) {
 
             } else if(data.status == 1 || data.status == 9 || data.status == 10) { // if status 1, 9 or 10
               // Run for any qualifying status

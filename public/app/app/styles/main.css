@@ -7403,7 +7403,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
 }
 
 #appPageSdkScanStatus, #showDataUpdatedMessage {
-  padding: 0 20px 0 0;
+  padding: 0;
 }
 
 #appPageSdkScanStatus div, #showDataUpdatedMessage {
@@ -7416,6 +7416,15 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #appPageSdkScanStatus #wrap_spinner p {
   padding-top: 15px;
+}
+
+.sdkScanGeneralInfo {
+  margin-top: 15px;
+}
+
+#appPageSdkScanStatus .progress-striped {
+  margin-bottom: 10px;
+  margin-top: 15px;
 }
 
 #appTypeHeaderLogo {

@@ -51,6 +51,12 @@
             </div>
           </li>
 
+          <li ng-if="iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.lastUpdated && iosLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>No SDKs in App</strong>
+            </div>
+          </li>
+
           <!--
           <li>
             <div style="text-align:center">
@@ -61,16 +67,16 @@
 
           <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData && iosLiveScanCtrl.sdkData.errorCode == null || iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
             <div id="sdkScanErrorMessage">
-              <h5 ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
-              <h5 ng-if="iosLiveScanCtrl.failedLiveScan">Error - Please Try Again</h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan">Error - Please Try Again</h5>
             </div>
-            <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
-              <progressbar class="progress-striped active" max="100" value="5" type="primary"></progressbar>
+            <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress">
+              <progressbar class="progress-striped active" max="100" value="iosLiveScanCtrl.scanStatusPercentage" type="primary"></progressbar>
               <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
           <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && iosLiveScanCtrl.sdkData.errorCode == null">
-            <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated">
+            <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
               Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
             <div id="showSdksButton">
