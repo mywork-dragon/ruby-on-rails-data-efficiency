@@ -127,7 +127,7 @@ class IosClassificationServiceWorker
 
     if search_bundles
       bundles = bundles_from_strings(contents)
-      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: Rails.env.development?) # TODO: remove read only flag after regexes are linked and such
+      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: false) # TODO: remove read only flag after regexes are linked and such
       puts "SDKs via bundles"
       ap sdks
     end

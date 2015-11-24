@@ -10,6 +10,7 @@ class SdkService
 				{
 					snapshot_table: IpaSnapshot,
 					snapshot_column: :ipa_snapshot_id,
+					sdk_table: IosSdk,
 					sdk_column: :ios_sdk_id,
 					package_join_table: SdkPackagesIpaSnapshot
 				}
@@ -18,6 +19,7 @@ class SdkService
 				{
 					snapshot_table: ApkSnapshot,
 					snapshot_column: :apk_snapshot_id,
+					sdk_table: AndroidSdk,
 					sdk_column: :android_sdk_id,
 					package_join_table: SdkPackagesApkSnapshot
 				}
@@ -38,8 +40,6 @@ class SdkService
 			packages = packages.uniq
 
 			# add all packages to the join table
-
-			byebug
 			if !read_only
 				packages.each do |package|
 
@@ -56,7 +56,6 @@ class SdkService
 			matches = existing_sdks_from_packages(packages: packages, platform: platform)
 
 			# update all the packages in the join table with the matching sdk
-			byebug
 			if !read_only
 				matches.each do |package, sdk|
 					SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
@@ -68,7 +67,6 @@ class SdkService
 
 			new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only)
 
-			byebug
 			if !read_only
 				new_matches.each do |package_arr, sdk|
 					package_arr.each do |package|
@@ -94,12 +92,8 @@ class SdkService
 		# @result hash mapping package (string) to sdk (IosSdk or AndroidSdk)
 		def existing_sdks_from_packages(packages:, platform:)
 
-			raise "Android not implemented" if platform != :ios
-
-			byebug
-
 			col = platform_map(platform: platform)[:sdk_column]
-			# col = platform == :ios ? :ios_sdk_id : :android_sdk_id
+			table = platform_map(platform: platform)[:sdk_table]
 
 			regexes = SdkRegex.where.not(col => nil).map do |row|
 				{
@@ -116,31 +110,10 @@ class SdkService
 					match = row if row && row[col]
 				end
 
-				memo[package] = IosSdk.find(match[col]) if match
+				memo[package] = table.find(match[col]) if match
 
 				memo
 			end
-		end
-
-		# Given a package ("com.facebook.sdk") and a platform (:ios or :android), find if an existing SDK matches
-		def existing_sdk_from_package(package:, platform:)
-
-			raise "Android not implemented" if platform != :ios
-			# check if in hard coded regex table
-			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
-
-			match = SdkRegex.all.find do |row|
-				Regexp.new(row.regex, true).match(package) != nil # true means case insensitive
-			end
-
-			return match[col] if match && match[col] != nil
-
-			# check if it already exists in the package prefix table
-			match = SdkPackage.find_by_package(package)
-
-			return match[col] if match && match[col] != nil
-
-			nil
 		end
 
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
@@ -161,8 +134,6 @@ class SdkService
 		end
 
 		def create_sdks_from_packages(packages:, platform:, read_only: false)
-
-			raise "Android not implemented" if platform != :ios
 
 			col = platform_map(platform: platform)[:sdk_column]
 
@@ -197,93 +168,20 @@ class SdkService
 
 				memo
 			end
-
-			# old solution
-			# results = query_hash.keys.map do |query|
-			# 	sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-
-			# 	next if sdk.nil?
-
-			# 	existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
-
-			# 	if existing || read_only
-			# 		{sdk: existing, query: query} if existing
-			# 	else
-			# 		sdk = create_sdk_from_proposed(proposed: sdk, platform: platform)
-			# 		{sdk: sdk, query: query}
-			# 	end
-			# end.compact
-
-			# sdks = results.map {|x| x[:sdk]}
-
-			# return sdks if read_only
-
-			# do this later now
-			# # Update packages table
-			# results.each do |result|
-			# 	query_hash[result[:query]].each do |package|
-			# 		sdk = result[:sdk]
-			# 		begin
-			# 			SdkPackage.create!(package: package, col => sdk.id)
-			# 		rescue ActiveRecord::RecordNotUnique => e
-			# 			row = SdkPackage.find_by_package(package)
-			# 			row[col] = sdk.id
-			# 			row.save
-			# 		end
-			# 	end
-			# end
-
-			# sdks
-
-		end
-
-		# Create a new sdk or find existing one based on proposed sdk to create
-		# @param package - package id like "com.facebook.sdk"
-		# @param platform - :ios or :android
-		# @param read_only - boolean flag (default: false)
-		# @return either an ActiveRecord sdk entry or nil if nothing viable found
-		def create_sdk_from_package(package:, platform:, read_only: false)
-
-			raise "Android not implemented" if platform != :ios
-			col = platform == :ios ? :ios_sdk_id : :android_sdk_id
-
-			query = query_from_package(package)
-
-			return nil if query.nil?
-
-			sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
-
-			return nil if sdk.nil?
-
-			existing = find_sdk_from_proposed(proposed: sdk, platform: :ios)
-
-			return existing if read_only
-
-			sdk = existing || create_sdk_from_proposed(proposed: sdk, platform: platform)
-
-			# Update table
-			begin
-				SdkPackage.create!(package: package, ios_sdk_id: sdk.id)
-			rescue ActiveRecord::RecordNotUnique => e
-				row = SdkPackage.find_by_package(package)
-				row[:ios_sdk_id] = sdk.id
-				row.save
-			end
-
-			sdk
 		end
 
 		# checks to see if the proposed sdk matches something that exists in the database. If so, returns that sdk. Otherwise returns nil
 		def find_sdk_from_proposed(proposed:, platform:)
 
-			raise "Not implemented for Android" if platform != :ios
+			sdk_table = platform_map(platform: platform)[:sdk_table]
 
-			return proposed if proposed.class == IosSdk
+			return proposed if proposed.class == sdk_table
 
-			match = IosSdk.find_by_name(proposed[:name])
+			# TODO: maybe revisit
+			match = sdk_table.find_by_name(proposed[:name])
 			return match if match
 
-			match = IosSdk.find_by_website(proposed[:website])
+			match = sdk_table.find_by_website(proposed[:website])
 			return match if match
 
 			nil
@@ -294,18 +192,22 @@ class SdkService
 		# @param platform - :ios or :android
 		# @returns ActiveRecord sdk object
 		def create_sdk_from_proposed(proposed:, platform:)
-			raise "Android not implemented" if platform != :ios
 
-			begin
-				favicon = proposed[:favicon] || WWW::Favicon.new.find(proposed[:website])
-			rescue
-				favicon = nil
-			end
+			# this function will use split paths rather than platform map because columns on the different sdk tables are different
+			if platform == :ios
+				begin
+					favicon = proposed[:favicon] || WWW::Favicon.new.find(proposed[:website])
+				rescue
+					favicon = nil
+				end
 
-			begin
-				sdk = IosSdk.create!(name: proposed[:name], website: proposed[:website], favicon: favicon, open_source: proposed[:open_source],github_repo_identifier: proposed[:github_repo_identifier])
-			rescue ActiveRecord::RecordNotUnique => e
-				sdk = IosSdk.find_by_name(proposed[:name])
+				begin
+					sdk = IosSdk.create!(name: proposed[:name], website: proposed[:website], favicon: favicon, open_source: proposed[:open_source],github_repo_identifier: proposed[:github_repo_identifier])
+				rescue ActiveRecord::RecordNotUnique => e
+					sdk = IosSdk.find_by_name(proposed[:name])
+				end
+			else
+				raise "Android not implemented"
 			end
 
 			sdk
@@ -404,10 +306,6 @@ class SdkService
 
 		def valid_domain?(url)
 			url.exclude?('...') && url != '0' && url.count('-') <= 1
-		end
-
-		def remove_sub(url)
-			url.gsub(/(www|doc|docs|dev|developer|developers|cloud|support|help|documentation|dashboard|sdk|wiki)\./,'')
 		end
 
 		def exts(dot = nil)
