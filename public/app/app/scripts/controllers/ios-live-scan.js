@@ -84,6 +84,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
         "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
         "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
         "Preparing...",                                             // Non-terminating
+        "All Devices Currently In Use - Please Try Again.",         // Device busy
         "Downloading...",                                           // Non-terminating
         "Retrying...",                                              // Non-terminating
         "Scanning...",                                              // Non-terminating
@@ -95,7 +96,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
         sdkLiveScanService.getIosScanStatus(iosLiveScanCtrl.scanJobId)
           .success(function(data) {
 
-            if(!data.status) { data.status = 10 } // If status is null, treat as failed (status 10)
+            if(!data.status) { data.status = 11 } // If status is null, treat as failed (status 10)
 
             iosLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
 
@@ -110,28 +111,28 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 5:
                 iosLiveScanCtrl.scanStatusPercentage = 10;
                 break;
-              case 6:
-                iosLiveScanCtrl.scanStatusPercentage = 25;
-                break;
               case 7:
                 iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 8:
-                iosLiveScanCtrl.scanStatusPercentage = 85;
+                iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 9:
-                iosLiveScanCtrl.scanStatusPercentage = 100;
-                iosLiveScanCtrl.noSdkData = false;
-                sdkLiveScanService.checkForIosSdks(); // Loads new sdks on page
+                iosLiveScanCtrl.scanStatusPercentage = 85;
                 break;
               case 10:
+                iosLiveScanCtrl.scanStatusPercentage = 100;
+                iosLiveScanCtrl.noSdkData = false;
+                sdkLiveScanService.checkForIosSdks(appDataService.appData.id); // Loads new sdks on page
+                break;
+              case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
                 break;
             }
 
             // If status 2, 3 or 4
-            if(data.status >= 2 && data.status <= 4) {
+            if((data.status >= 2 && data.status <= 4) || data.status == 6) {
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
               iosLiveScanCtrl.noSdkData = false;
@@ -141,7 +142,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
               $interval.cancel(interval); // Exits interval loop
 
-            } else if(data.status == 1 || data.status == 9 || data.status == 10) { // if status 1, 9 or 10
+            } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
