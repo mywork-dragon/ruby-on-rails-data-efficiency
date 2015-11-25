@@ -33,6 +33,7 @@ class IosDevice < ActiveRecord::Base
         ios_device.save!
 
         email = nil
+        google_account_password = nil
 
         GoogleAccount.all.each do |google_account|
           if AppleAccount.where(email: google_account.email).blank?
