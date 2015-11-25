@@ -40,8 +40,6 @@ angular.module("appApp")
       },
       androidHiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
 
-        console.log('Pre H LS', 'Platform:', platform, 'App ID:', appId, 'Display Status:', displayStatus);
-
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -200,6 +198,7 @@ angular.module("appApp")
         }).success(function(data) {
 
           console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+          console.log('Platform', platform, 'App ID', appId, 'SDK Data:', sdkData);
 
           appData = data;
 
@@ -219,8 +218,8 @@ angular.module("appApp")
           );
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
-          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
-          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
+          var sdkCompanies = Object.keys(sdkData.installed_sdk_companies).toString();
+          var sdkOpenSource = Object.keys(sdkData.installed_open_source_sdks).toString();
           var slacktivityData = {
             "title": "SDK Live Scan Success",
             "fallback": "SDK Live Scan Success",
@@ -263,6 +262,7 @@ angular.module("appApp")
         }).success(function(data) {
 
           console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+          console.log('Platform', platform, 'App ID', appId, 'Status Code', statusCode);
 
           appData = data;
 
