@@ -22,10 +22,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "App Page Viewed", {
-          "appId": appId,
+          "appId": $routeParams.id,
           "appName": appData.name,
           "companyName": appData.company.name,
-          "appPlatform": platform
+          "appPlatform": $routeParams.platform
         }
       );
       /* -------- Mixpanel Analytics End -------- */
