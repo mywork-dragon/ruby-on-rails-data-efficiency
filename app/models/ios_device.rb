@@ -51,6 +51,8 @@ class IosDevice < ActiveRecord::Base
 
         puts "Gmail password: #{google_account_password}".purple
 
+        puts "Proxy IP: #{ios_device.softlayer_proxy.public_ip}"
+
         ios_device
       end
 
