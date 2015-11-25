@@ -40,8 +40,6 @@ angular.module("appApp")
       },
       hiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
 
-        console.log('Hidden Live Scan', 'Platform:', platform, 'App ID:', appId, 'Display Status:', displayStatus);
-
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -53,19 +51,12 @@ angular.module("appApp")
         }).success(function(data) {
           appData = data;
 
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "App Page Viewed", {
-              "appId": appId,
-              "appName": appData.name,
-              "companyName": appData.company.name,
-              "appPlatform": platform
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
           if(platform == 'android') {
             /* -------- Mixpanel Analytics Start -------- */
             if(displayStatus != 'normal') {
+
+              console.log('Hidden Live Scan', 'Platform:', platform, 'App ID:', appId, 'Display Status:', displayStatus);
+
               mixpanel.track(
                 "Hidden SDK Live Scan Viewed", {
                   "userEmail": userInfo.email,
@@ -84,8 +75,6 @@ angular.module("appApp")
       },
       liveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
-        console.log('Live Scan Success', 'Platform:', platform, 'App ID:', appId, 'SDK Data:', sdkData);
-
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -95,6 +84,9 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log('Live Scan Success', 'Platform:', platform, 'App ID:', appId, 'SDK Data:', sdkData);
+
           appData = data;
 
           var mixpanelEventTitle = "";
@@ -157,8 +149,6 @@ angular.module("appApp")
       },
       liveScanFailRequestAnalytics: function(platform, appId, errorStatus) {
 
-        console.log('Live Scan Fail', 'Platform:', platform, 'App ID:', appId, 'Error Status:', errorStatus);
-
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -168,6 +158,9 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log('Live Scan Fail', 'Platform:', platform, 'App ID:', appId, 'Error Status:', errorStatus);
+
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
