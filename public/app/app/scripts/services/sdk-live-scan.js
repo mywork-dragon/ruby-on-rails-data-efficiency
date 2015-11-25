@@ -90,63 +90,65 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
-        }).success(function(data) { appData = data; });
+        }).success(function(data) {
+          appData = data;
 
+          var mixpanelEventTitle = "";
+          var liveScanSlacktivityColor = "";
 
-        var mixpanelEventTitle = "";
-        var liveScanSlacktivityColor = "";
-
-        if(sdkData.errorCode == 0) {
-          mixpanelEventTitle = "SDK Live Scan Success";
-          liveScanSlacktivityColor = "#45825A";
-        } else if(sdkData.errorCode == 2 || sdkData.errorCode > 5) {
-          mixpanelEventTitle = "SDK Live Scan Hidden";
-          liveScanSlacktivityColor = "#A45200";
-        } else {
-          mixpanelEventTitle = "SDK Live Scan Failed";
-          liveScanSlacktivityColor = "#E82020";
-        }
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          mixpanelEventTitle, {
-            'platform': platform,
+          if(sdkData.errorCode == 0) {
+            mixpanelEventTitle = "SDK Live Scan Success";
+            liveScanSlacktivityColor = "#45825A";
+          } else if(sdkData.errorCode == 2 || sdkData.errorCode > 5) {
+            mixpanelEventTitle = "SDK Live Scan Hidden";
+            liveScanSlacktivityColor = "#A45200";
+          } else {
+            mixpanelEventTitle = "SDK Live Scan Failed";
+            liveScanSlacktivityColor = "#E82020";
+          }
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            mixpanelEventTitle, {
+              'platform': platform,
+              'appName': appData.name,
+              'companyName': appData.company.name,
+              'appId': appData.id,
+              'sdkCompanies': sdkData.sdkCompanies,
+              'sdkOpenSource': sdkData.sdkOpenSource,
+              'uninstalledSdkCompanies': sdkData.uninstalledSdkCompanies,
+              'uninstalledSdkOpenSource': sdkData.uninstalledSdkOpenSource,
+              'lastUpdated': sdkData.lastUpdated,
+              'errorCode': sdkData.errorCode,
+              'errorMessage': sdkData.errorMessage
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
+          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
+          var uninstalledSdkCompanies = Object.keys(sdkData.uninstalledSdkCompanies).toString();
+          var uninstalledSdkOpenSource = Object.keys(sdkData.uninstalledSdkOpenSource).toString();
+          var slacktivityData = {
+            "title": mixpanelEventTitle,
+            "fallback": mixpanelEventTitle,
+            "color": liveScanSlacktivityColor,
+            "userEmail": userInfo.email,
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkCompanies': sdkData.sdkCompanies,
-            'sdkOpenSource': sdkData.sdkOpenSource,
-            'uninstalledSdkCompanies': sdkData.uninstalledSdkCompanies,
-            'uninstalledSdkOpenSource': sdkData.uninstalledSdkOpenSource,
+            'sdkCompanies': sdkCompanies,
+            'sdkOpenSource': sdkOpenSource,
+            'uninstalledSdkCompanies': uninstalledSdkCompanies,
+            'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-        /* -------- Slacktivity Alerts -------- */
-        var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
-        var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
-        var uninstalledSdkCompanies = Object.keys(sdkData.uninstalledSdkCompanies).toString();
-        var uninstalledSdkOpenSource = Object.keys(sdkData.uninstalledSdkOpenSource).toString();
-        var slacktivityData = {
-          "title": mixpanelEventTitle,
-          "fallback": mixpanelEventTitle,
-          "color": liveScanSlacktivityColor,
-          "userEmail": userInfo.email,
-          'appName': appData.name,
-          'companyName': appData.company.name,
-          'appId': appData.id,
-          'sdkCompanies': sdkCompanies,
-          'sdkOpenSource': sdkOpenSource,
-          'uninstalledSdkCompanies': uninstalledSdkCompanies,
-          'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
-          'lastUpdated': sdkData.lastUpdated,
-          'errorCode': sdkData.errorCode,
-          'errorMessage': sdkData.errorMessage
-        };
-        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-        window.Slacktivity.send(slacktivityData);
-        /* -------- Slacktivity Alerts End -------- */
+          };
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+          /* -------- Slacktivity Alerts End -------- */
+
+        });
 
       },
       liveScanFailRequestAnalytics: function(platform, appId, errorStatus) {
@@ -161,32 +163,35 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
-        }).success(function(data) { appData = data; });
+        }).success(function(data) {
+          appData = data;
 
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "SDK Live Scan Failed", {
-            'companyName': appData.company.name,
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "SDK Live Scan Failed", {
+              'companyName': appData.company.name,
+              'appName': appData.name,
+              'appId': appData.id,
+              'errorStatus': errorStatus
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          var slacktivityData = {
+            "title": "SDK Live Scan Failed",
+            "fallback": "SDK Live Scan Failed",
+            "color": "#E82020",
+            "userEmail": userInfo.email,
             'appName': appData.name,
+            'companyName': appData.company.name,
             'appId': appData.id,
             'errorStatus': errorStatus
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-        /* -------- Slacktivity Alerts -------- */
-        var slacktivityData = {
-          "title": "SDK Live Scan Failed",
-          "fallback": "SDK Live Scan Failed",
-          "color": "#E82020",
-          "userEmail": userInfo.email,
-          'appName': appData.name,
-          'companyName': appData.company.name,
-          'appId': appData.id,
-          'errorStatus': errorStatus
-        };
-        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-        window.Slacktivity.send(slacktivityData);
-        /* -------- Slacktivity Alerts End -------- */
+          };
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+          /* -------- Slacktivity Alerts End -------- */
+
+        });
 
       }
     };
