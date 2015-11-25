@@ -4,7 +4,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
   function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, sdkLiveScanService, $interval) {
 
     var iosLiveScanCtrl = this;
-
+    var iosAppId = $routeParams.id;
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -23,7 +23,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       }
     };
 
-    sdkLiveScanService.checkForIosSdks(appDataService.appData.id)
+    sdkLiveScanService.checkForIosSdks(iosAppId)
       .success(function (data) {
         iosLiveScanCtrl.sdkData = {
           'sdkCompanies': data.installed_sdk_companies,
@@ -106,7 +106,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 break;
               case 1:
                 iosLiveScanCtrl.displayDataUnchangedStatus = true;
-                sdkLiveScanService.checkForIosSdks(); // Loads new sdks on page
+                sdkLiveScanService.checkForIosSdks(iosAppId); // Loads new sdks on page
                 break;
               case 5:
                 iosLiveScanCtrl.scanStatusPercentage = 10;
@@ -123,7 +123,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 10:
                 iosLiveScanCtrl.scanStatusPercentage = 100;
                 iosLiveScanCtrl.noSdkData = false;
-                sdkLiveScanService.checkForIosSdks(appDataService.appData.id); // Loads new sdks on page
+                sdkLiveScanService.checkForIosSdks(iosAppId); // Loads new sdks on page
                 break;
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
