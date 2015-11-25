@@ -34,7 +34,7 @@ angular.module("appApp")
         })
       },
       getIosScanStatus: function(statusJobId) {
-        console.log('getIosScanStatus', appId);
+        console.log('getIosScanStatus', statusJobId);
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_scan_status',
