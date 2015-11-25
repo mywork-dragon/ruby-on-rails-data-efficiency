@@ -58,6 +58,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.displayDataUnchangedStatus = false;
       sdkLiveScanService.startIosSdkScan(appDataService.appData.id)
         .success(function(data) {
+          console.log('Data from startIosSdkScan', data);
           iosLiveScanCtrl.scanJobId = data.job_id;
           iosLiveScanCtrl.scanStatusMessage = "Validating...";
           iosLiveScanCtrl.scanStatusPercentage = 5;
