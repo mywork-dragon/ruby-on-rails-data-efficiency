@@ -13,6 +13,8 @@ function findTable() {
 }
 
 var table = findTable(),
-	delegate = table.delegate;
+delegate = table.delegate;
 
-[delegate tableView:table didSelectRowAtIndexPath:[table indexPathForCell:choose(_PSDeleteButtonCell)[0]]]
+indexPath = [NSIndexPath indexPathForRow:0 inSection:1];
+
+[delegate tableView:table didSelectRowAtIndexPath:indexPath];
