@@ -21,8 +21,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     iosLiveScanCtrl.checkForIosSdks = function(appId, calledAfterSuccess) {
 
-      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId);}
-
       sdkLiveScanService.checkForIosSdks(appId)
         .success(function (data) {
           iosLiveScanCtrl.sdkData = {
@@ -49,6 +47,11 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           if (data.error_code != null) {
             iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
+          }
+
+          // LS Success Analytics
+          if(calledAfterSuccess) {
+            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, data);
           }
 
         });

@@ -187,7 +187,7 @@ angular.module("appApp")
         });
 
       },
-      iosLiveScanSuccessRequestAnalytics: function(platform, appId) {
+      iosLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
@@ -202,6 +202,43 @@ angular.module("appApp")
           console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
 
           appData = data;
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "SDK Live Scan Success", {
+              'platform': platform,
+              'appName': appData.name,
+              'companyName': appData.company.name,
+              'appId': appData.id,
+              'sdkCompanies': sdkData.sdkCompanies,
+              'sdkOpenSource': sdkData.sdkOpenSource,
+              'lastUpdated': sdkData.lastUpdated,
+              'errorCode': sdkData.errorCode,
+              'errorMessage': sdkData.errorMessage
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
+          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
+          var slacktivityData = {
+            "title": "SDK Live Scan Success",
+            "fallback": "SDK Live Scan Success",
+            "color": "#45825A",
+            "userEmail": userInfo.email,
+            'appName': appData.name,
+            'companyName': appData.company.name,
+            'appId': appData.id,
+            'sdkCompanies': sdkCompanies,
+            'sdkOpenSource': sdkOpenSource,
+            'lastUpdated': sdkData.lastUpdated,
+            'errorCode': sdkData.errorCode,
+            'errorMessage': sdkData.errorMessage
+          };
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+          /* -------- Slacktivity Alerts End -------- */
+
         });
 
       },
