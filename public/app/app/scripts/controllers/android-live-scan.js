@@ -62,7 +62,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         }
 
         // Hidden SDK LS MixPanel & Slacktivity
-        sdkLiveScanService.hiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
+        sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
 
       }).error(function(err) {
       });
@@ -119,7 +119,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           }
 
           // Successful SDK LS MixPanel & Slacktivity
-          sdkLiveScanService.liveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
+          sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
 
         }).error(function(err, status) {
           androidLiveScanCtrl.sdkQueryInProgress = false;
@@ -128,7 +128,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           androidLiveScanCtrl.sdkData = {'errorMessage': "Error - Please Try Again Later"};
 
           // Failed SDK LS MixPanel & Slacktivity
-          sdkLiveScanService.liveScanFailRequestAnalytics($routeParams.platform, androidAppId, status);
+          sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, status);
 
         });
     };

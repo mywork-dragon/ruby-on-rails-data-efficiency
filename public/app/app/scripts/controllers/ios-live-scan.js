@@ -19,35 +19,42 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       }
     };
 
-    sdkLiveScanService.checkForIosSdks(iosAppId)
-      .success(function (data) {
-        iosLiveScanCtrl.sdkData = {
-          'sdkCompanies': data.installed_sdk_companies,
-          'sdkOpenSource': data.installed_open_source_sdks,
-          'lastUpdated': data.updated,
-          'errorCode': data.error_code
-        };
+    iosLiveScanCtrl.checkForIosSdks = function(appId, calledAfterSuccess) {
+      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics();}
 
-        iosLiveScanCtrl.noSdkData = false;
+      sdkLiveScanService.checkForIosSdks(appId)
+        .success(function (data) {
+          iosLiveScanCtrl.sdkData = {
+            'sdkCompanies': data.installed_sdk_companies,
+            'sdkOpenSource': data.installed_open_source_sdks,
+            'lastUpdated': data.updated,
+            'errorCode': data.error_code
+          };
 
-        if(data == null) {
-          iosLiveScanCtrl.noSdkData = true;
-          iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"}
-        }
+          iosLiveScanCtrl.noSdkData = false;
 
-        iosLiveScanCtrl.checkSdkSnapshotStatus(data);
+          if(data == null) {
+            iosLiveScanCtrl.noSdkData = true;
+            iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"}
+          }
 
-        var errorCodeMessages = [
-          "Sorry, SDKs Not Available for Paid Apps",
-          "Sorry, SDKs Not Available - App Not in U.S. App Store",
-          "Sorry, SDKs Temporarily Not Available for This App"
-        ];
+          iosLiveScanCtrl.checkSdkSnapshotStatus(data);
 
-        if (data.error_code != null) {
-          iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
-        }
+          var errorCodeMessages = [
+            "Sorry, SDKs Not Available for Paid Apps",
+            "Sorry, SDKs Not Available - App Not in U.S. App Store",
+            "Sorry, SDKs Temporarily Not Available for This App"
+          ];
 
-      });
+          if (data.error_code != null) {
+            iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
+          }
+
+        });
+
+    };
+
+    iosLiveScanCtrl.checkForIosSdks(iosAppId); // Call for initial SDKs load
 
     iosLiveScanCtrl.getSdks = function() {
       iosLiveScanCtrl.sdkQueryInProgress = true;
@@ -107,7 +114,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 break;
               case 1:
                 iosLiveScanCtrl.displayDataUnchangedStatus = true;
-                sdkLiveScanService.checkForIosSdks(iosAppId); // Loads new sdks on page
+                iosLiveScanCtrl.checkForIosSdks(iosAppId, true); // Loads new sdks on page
                 break;
               case 5:
                 iosLiveScanCtrl.scanStatusPercentage = 10;
@@ -124,7 +131,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 10:
                 iosLiveScanCtrl.scanStatusPercentage = 100;
                 iosLiveScanCtrl.noSdkData = false;
-                sdkLiveScanService.checkForIosSdks(iosAppId); // Loads new sdks on page
+                iosLiveScanCtrl.checkForIosSdks(iosAppId, true); // Loads new sdks on page
                 break;
               case 11:
                 iosLiveScanCtrl.noSdkData = true;

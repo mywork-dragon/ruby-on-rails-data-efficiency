@@ -38,7 +38,7 @@ angular.module("appApp")
           params: {jobId: statusJobId}
         })
       },
-      hiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
+      androidHiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
 
         console.log('Pre H LS', 'Platform:', platform, 'App ID:', appId, 'Display Status:', displayStatus);
 
@@ -75,7 +75,7 @@ angular.module("appApp")
         });
 
       },
-      liveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
+      androidLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
@@ -98,7 +98,7 @@ angular.module("appApp")
             mixpanelEventTitle = "SDK Live Scan Success";
             liveScanSlacktivityColor = "#45825A";
           } else if(sdkData.errorCode == 2 || sdkData.errorCode > 5) {
-            mixpanelEventTitle = "SDK Live Scan Hidden";
+            mixpanelEventTitle = "SDK Live Scan Status Error";
             liveScanSlacktivityColor = "#A45200";
           } else {
             mixpanelEventTitle = "SDK Live Scan Failed";
@@ -143,7 +143,7 @@ angular.module("appApp")
         });
 
       },
-      liveScanFailRequestAnalytics: function(platform, appId, errorStatus) {
+      androidLiveScanFailRequestAnalytics: function(platform, appId, errorStatus) {
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
@@ -185,6 +185,22 @@ angular.module("appApp")
           /* -------- Slacktivity Alerts End -------- */
 
         });
+
+      },
+      iosLiveScanSuccessRequestAnalytics: function() {
+
+        console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+
+        var userInfo = {}; // User info set
+        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+      },
+      iosLiveScanFailRequestAnalytics: function() {
+
+        console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+
+        var userInfo = {}; // User info set
+        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       }
     };
