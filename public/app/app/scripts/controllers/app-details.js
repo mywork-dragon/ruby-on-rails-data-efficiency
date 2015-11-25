@@ -19,17 +19,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     $scope.load = function() {
 
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "App Page Viewed", {
-          "appId": $routeParams.id,
-          "appName": appData.name,
-          "companyName": appData.company.name,
-          "appPlatform": $routeParams.platform
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $routeParams.platform + '_app',
@@ -42,6 +31,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         if(data.displayStatus) {
           $rootScope.sdkLiveScanDisplayStatus = data.displayStatus;
         }
+
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "App Page Viewed", {
+            "appId": $routeParams.id,
+            "appName": $scope.appData.name,
+            "companyName": $scope.appData.company.name,
+            "appPlatform": $routeParams.platform
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
 
         /* Sets html title attribute */
         pageTitleService.setTitle($scope.appData.name);
