@@ -62,9 +62,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       }).error(function(err) {
       });
 
-    androidLiveScanCtrl.getSdks = function(appId) {
+    androidLiveScanCtrl.getSdks = function() {
       androidLiveScanCtrl.sdkQueryInProgress = true;
-      sdkLiveScanService.getAndroidSdks(appId)
+      sdkLiveScanService.getAndroidSdks(androidAppId)
         .success(function(data) {
           androidLiveScanCtrl.sdkQueryInProgress = false;
           androidLiveScanCtrl.noSdkSnapshot = false;
