@@ -73,8 +73,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     // Helper method for getSdks() method
     var pullScanStatus = function() {
-      var msDelay = 3000;
-      var numRepeat = 60;
+      var msDelay = 2000;
+      var numRepeat = 90;
 
       // Messages that correspond to (status == index number)
       var statusCodeMessages = [
@@ -115,10 +115,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 8:
-                iosLiveScanCtrl.scanStatusPercentage = 25;
+                iosLiveScanCtrl.scanStatusPercentage = 35;
                 break;
               case 9:
-                iosLiveScanCtrl.scanStatusPercentage = 85;
+                iosLiveScanCtrl.scanStatusPercentage = 90;
                 break;
               case 10:
                 iosLiveScanCtrl.scanStatusPercentage = 100;
