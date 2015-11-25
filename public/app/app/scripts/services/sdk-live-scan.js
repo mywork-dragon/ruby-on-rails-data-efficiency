@@ -18,7 +18,6 @@ angular.module("appApp")
         })
       },
       checkForIosSdks: function(appId) {
-        console.log('checkForIosSdks', appId);
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_sdks_exist',
@@ -26,7 +25,6 @@ angular.module("appApp")
         })
       },
       startIosSdkScan: function(appId) {
-        console.log('startIosSdkScan', appId);
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/ios_start_scan',
@@ -34,7 +32,6 @@ angular.module("appApp")
         })
       },
       getIosScanStatus: function(statusJobId) {
-        console.log('getIosScanStatus', statusJobId);
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_scan_status',
