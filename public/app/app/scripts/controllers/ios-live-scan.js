@@ -23,7 +23,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       }
     };
 
-    sdkLiveScanService.checkForIosSdks()
+    sdkLiveScanService.checkForIosSdks(appDataService.appData.id)
       .success(function (data) {
         iosLiveScanCtrl.sdkData = {
           'sdkCompanies': data.installed_sdk_companies,
@@ -53,10 +53,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
       });
 
-    iosLiveScanCtrl.getSdks = function(appId) {
+    iosLiveScanCtrl.getSdks = function() {
       iosLiveScanCtrl.sdkQueryInProgress = true;
       iosLiveScanCtrl.displayDataUnchangedStatus = false;
-      sdkLiveScanService.startIosSdkScan(appId)
+      sdkLiveScanService.startIosSdkScan(appDataService.appData.id)
         .success(function(data) {
           iosLiveScanCtrl.scanJobId = data.job_id;
           iosLiveScanCtrl.scanStatusMessage = "Validating...";
