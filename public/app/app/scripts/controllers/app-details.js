@@ -26,7 +26,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.appData = data;
 
         appDataService.appData = data;
-        $scope.$broadcast('EVENT_ON_APP_DETAILS_LOAD_COMPLETION'); // Tells SDK Live Scan controller to check for SDKs
 
         /* Sets html title attribute */
         pageTitleService.setTitle($scope.appData.name);

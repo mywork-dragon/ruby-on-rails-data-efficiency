@@ -1,16 +1,12 @@
 'use strict';
 
-angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", "sdkLiveScanService", "$interval",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, sdkLiveScanService, $interval) {
+angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval) {
 
     var iosLiveScanCtrl = this;
     var iosAppId = $routeParams.id;
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
-    $scope.$on('EVENT_ON_APP_DETAILS_LOAD_COMPLETION', function () {
-      iosLiveScanCtrl.appData = appDataService.appData; // Service to share data between both controllers
-    });
 
     iosLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
@@ -56,7 +52,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     iosLiveScanCtrl.getSdks = function() {
       iosLiveScanCtrl.sdkQueryInProgress = true;
       iosLiveScanCtrl.displayDataUnchangedStatus = false;
-      sdkLiveScanService.startIosSdkScan(appDataService.appData.id)
+      sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
           console.log('Data from startIosSdkScan', data);
           iosLiveScanCtrl.scanJobId = data.job_id;
