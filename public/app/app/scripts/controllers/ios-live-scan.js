@@ -21,7 +21,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     iosLiveScanCtrl.checkForIosSdks = function(appId, calledAfterSuccess) {
 
-      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics(appId);}
+      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId);}
 
       sdkLiveScanService.checkForIosSdks(appId)
         .success(function (data) {
@@ -43,7 +43,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available for Paid Apps",
-            "Sorry, SDKs Not Available - App Not in U.S. App Store",
+            "Sorry, SDKs Not Available - App is Not in U.S. App Store",
             "Sorry, SDKs Temporarily Not Available for This App"
           ];
 
@@ -85,7 +85,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       var statusCodeMessages = [
         "Validating...",                                            // Non-terminating
         "Unchanged",                                                // Unchanged
-        "Sorry, SDKs Not Available - App Not in U.S. App Store",    // Not Available
+        "Sorry, SDKs Not Available - App is Not in U.S. App Store", // Not Available
         "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
         "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
         "Preparing...",                                             // Non-terminating
@@ -105,7 +105,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             // Reset 'query in progress' if pulling times out
             if(intervalCount == 120) {
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.iosLiveScanFailRequestAnalytics(iosAppId); // Failed analytics response
+              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response
             }
 
             if(!data.status) { data.status = 11 } // If status is null, treat as failed (status 10)
@@ -135,12 +135,12 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 10:
                 iosLiveScanCtrl.scanStatusPercentage = 100;
                 iosLiveScanCtrl.noSdkData = false;
-                iosLiveScanCtrl.checkForIosSdks(iosAppId, true); // Loads new sdks on page
+                iosLiveScanCtrl.checkForIosSdks(iosAppId, true, 10); // Loads new sdks on page
                 break;
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics(iosAppId); // Failed analytics response
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId); // Failed analytics response
                 break;
             }
 

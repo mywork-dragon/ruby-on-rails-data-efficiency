@@ -187,20 +187,73 @@ angular.module("appApp")
         });
 
       },
-      iosLiveScanSuccessRequestAnalytics: function(appId) {
-
-        console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+      iosLiveScanSuccessRequestAnalytics: function(platform, appId) {
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+        var appData = {}; // Load app data
+        $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/get_' + platform + '_app',
+          params: {id: appId}
+        }).success(function(data) {
+
+          console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+
+          appData = data;
+        });
 
       },
-      iosLiveScanFailRequestAnalytics: function(appId) {
+      iosLiveScanFailRequestAnalytics: function(platform, appId, statusCode) {
 
-        console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+        var error = "";
+
+        if(statusCode == 10) {
+          error = "Error (status 10)"
+        } else if(statusCode == -1) {
+          error = "Timeout"
+        }
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+        var appData = {}; // Load app data
+        $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/get_' + platform + '_app',
+          params: {id: appId}
+        }).success(function(data) {
+
+          console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
+
+          appData = data;
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "SDK Live Scan Failed", {
+              'companyName': appData.company.name,
+              'appName': appData.name,
+              'appId': appData.id,
+              'error': error
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          var slacktivityData = {
+            "title": "SDK Live Scan Failed",
+            "fallback": "SDK Live Scan Failed",
+            "color": "#E82020",
+            "userEmail": userInfo.email,
+            'appName': appData.name,
+            'companyName': appData.company.name,
+            'appId': appData.id,
+            'error': error
+          };
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+          /* -------- Slacktivity Alerts End -------- */
+        });
 
       }
     };
