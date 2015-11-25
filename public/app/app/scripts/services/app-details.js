@@ -4,6 +4,6 @@ angular.module("appApp")
   .service("appDataService", [
     function() {
       var appDataService = this;
-      appDataService.appData = {};
+      appDataService.displayStatus = {appId: -1, status: ""};
     }
   ]);

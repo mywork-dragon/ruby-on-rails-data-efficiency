@@ -40,6 +40,8 @@ angular.module("appApp")
       },
       hiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
 
+        console.log('Pre H LS', 'Platform:', platform, 'App ID:', appId, 'Display Status:', displayStatus);
+
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -111,8 +113,6 @@ angular.module("appApp")
               'appId': appData.id,
               'sdkCompanies': sdkData.sdkCompanies,
               'sdkOpenSource': sdkData.sdkOpenSource,
-              'uninstalledSdkCompanies': sdkData.uninstalledSdkCompanies,
-              'uninstalledSdkOpenSource': sdkData.uninstalledSdkOpenSource,
               'lastUpdated': sdkData.lastUpdated,
               'errorCode': sdkData.errorCode,
               'errorMessage': sdkData.errorMessage
@@ -122,8 +122,6 @@ angular.module("appApp")
           /* -------- Slacktivity Alerts -------- */
           var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
           var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
-          var uninstalledSdkCompanies = Object.keys(sdkData.uninstalledSdkCompanies).toString();
-          var uninstalledSdkOpenSource = Object.keys(sdkData.uninstalledSdkOpenSource).toString();
           var slacktivityData = {
             "title": mixpanelEventTitle,
             "fallback": mixpanelEventTitle,
@@ -134,8 +132,6 @@ angular.module("appApp")
             'appId': appData.id,
             'sdkCompanies': sdkCompanies,
             'sdkOpenSource': sdkOpenSource,
-            'uninstalledSdkCompanies': uninstalledSdkCompanies,
-            'uninstalledSdkOpenSource': uninstalledSdkOpenSource,
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage

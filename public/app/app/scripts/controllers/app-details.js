@@ -26,11 +26,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       }).success(function(data) {
         $scope.appData = data;
 
-        appDataService.appData = data;
-
-        if(data.displayStatus) {
-          $rootScope.sdkLiveScanDisplayStatus = data.displayStatus;
-        }
+        appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};
 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(

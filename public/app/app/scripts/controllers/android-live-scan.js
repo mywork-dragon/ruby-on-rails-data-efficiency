@@ -1,12 +1,17 @@
 'use strict';
 
-angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "authService", "sdkLiveScanService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, authService, sdkLiveScanService) {
+angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "authService", "sdkLiveScanService", "appDataService",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, authService, sdkLiveScanService, appDataService) {
 
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
 
-    androidLiveScanCtrl.displayStatus = $rootScope.sdkLiveScanDisplayStatus;
+    // If display status is correct, change ctrl value
+    if(appDataService.displayStatus.appId == $routeParams.id) {
+      androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
+    } else {
+      androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
+    }
 
     sdkLiveScanService.checkForAndroidSdks(androidAppId)
       .success(function(data) {
