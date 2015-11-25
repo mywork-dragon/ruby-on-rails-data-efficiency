@@ -49,7 +49,7 @@ class IosDeviceService
     @purpose = purpose
 
     def format_backtrace(backtrace)
-      backtrace[0..BACKTRACE_SIZE].join(' ---- ')
+      backtrace  # just return the trace
     end
 
     result = {
