@@ -6,6 +6,8 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
 
+    androidLiveScanCtrl.displayStatus = $rootScope.sdkLiveScanDisplayStatus;
+
     sdkLiveScanService.checkForAndroidSdks(androidAppId)
       .success(function(data) {
         var sdkErrorMessage = "";

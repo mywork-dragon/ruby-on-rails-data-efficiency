@@ -27,6 +27,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
         appDataService.appData = data;
 
+        if(data.displayStatus) {
+          $rootScope.sdkLiveScanDisplayStatus = data.displayStatus;
+        }
+
         /* Sets html title attribute */
         pageTitleService.setTitle($scope.appData.name);
       });
