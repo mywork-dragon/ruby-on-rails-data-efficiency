@@ -50,33 +50,37 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
-        }).success(function(data) { appData = data; });
+        }).success(function(data) {
+          appData = data;
 
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "App Page Viewed", {
-            "appId": appId,
-            "appName": appData.name,
-            "companyName": appData.company.name,
-            "appPlatform": platform
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-        if(platform == 'android') {
           /* -------- Mixpanel Analytics Start -------- */
-          if(displayStatus != 'normal') {
-            mixpanel.track(
-              "Hidden SDK Live Scan Viewed", {
-                "userEmail": userInfo.email,
-                'appName': appData.name,
-                'companyName': appData.company.name,
-                'appId': appData.id,
-                'displayStatus': displayStatus
-              }
-            );
-          }
+          mixpanel.track(
+            "App Page Viewed", {
+              "appId": appId,
+              "appName": appData.name,
+              "companyName": appData.company.name,
+              "appPlatform": platform
+            }
+          );
           /* -------- Mixpanel Analytics End -------- */
-        }
+          if(platform == 'android') {
+            /* -------- Mixpanel Analytics Start -------- */
+            if(displayStatus != 'normal') {
+              mixpanel.track(
+                "Hidden SDK Live Scan Viewed", {
+                  "userEmail": userInfo.email,
+                  'appName': appData.name,
+                  'companyName': appData.company.name,
+                  'appId': appData.id,
+                  'displayStatus': displayStatus
+                }
+              );
+            }
+            /* -------- Mixpanel Analytics End -------- */
+          }
+
+        });
+
       },
       liveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
