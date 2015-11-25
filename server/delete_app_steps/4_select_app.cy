@@ -27,7 +27,7 @@ for each (var cell in cells) {
 	}
 }
 
-if (target == null) { throw "Could not find app to delete"}
+if (target == null) { throw "Could not find app to delete"; }
 [delegate tableView:table didSelectRowAtIndexPath:[table indexPathForCell:target]]
 
 table.used = true

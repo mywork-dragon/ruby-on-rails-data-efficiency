@@ -14,7 +14,7 @@ function findTable() {
 
 // Select Manage Storage
 var table = findTable(),
-	delegate = table.delegate;
+delegate = table.delegate;
 
 [delegate tableView:table didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
 
