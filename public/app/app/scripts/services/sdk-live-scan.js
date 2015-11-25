@@ -187,7 +187,7 @@ angular.module("appApp")
         });
 
       },
-      iosLiveScanSuccessRequestAnalytics: function() {
+      iosLiveScanSuccessRequestAnalytics: function(appId) {
 
         console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
 
@@ -195,7 +195,7 @@ angular.module("appApp")
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       },
-      iosLiveScanFailRequestAnalytics: function() {
+      iosLiveScanFailRequestAnalytics: function(appId) {
 
         console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
 

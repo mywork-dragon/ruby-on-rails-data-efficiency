@@ -20,7 +20,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     };
 
     iosLiveScanCtrl.checkForIosSdks = function(appId, calledAfterSuccess) {
-      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics();}
+
+      if(calledAfterSuccess) {sdkLiveScanService.iosLiveScanSuccessRequestAnalytics(appId);}
 
       sdkLiveScanService.checkForIosSdks(appId)
         .success(function (data) {
@@ -102,7 +103,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             intervalCount++;
 
             // Reset 'query in progress' if pulling times out
-            if(intervalCount == 2) { iosLiveScanCtrl.sdkQueryInProgress = false; }
+            if(intervalCount == 120) {
+              iosLiveScanCtrl.sdkQueryInProgress = false;
+              sdkLiveScanService.iosLiveScanFailRequestAnalytics(iosAppId); // Failed analytics response
+            }
 
             if(!data.status) { data.status = 11 } // If status is null, treat as failed (status 10)
 
@@ -136,6 +140,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics(iosAppId); // Failed analytics response
                 break;
             }
 
