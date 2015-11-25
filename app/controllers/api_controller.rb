@@ -818,7 +818,7 @@ class ApiController < ApplicationController
 
     job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id)
 
-    render json: {scan_id: job_id}
+    render json: {job_id: job_id}
   end
 
 
