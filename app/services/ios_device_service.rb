@@ -143,6 +143,7 @@ class IosDeviceService
 
   def install(ssh, app_identifier, country_code = "us")
 
+    run_command(ssh, 'killall AppStore', 'Restarting AppStore')
     run_command(ssh, 'rm -f open_app.cy', 'Deleting old open_app.cy')
     run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"https://itunes.apple.com/#{country_code}/app/id#{app_identifier}\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
     run_command(ssh, "echo '[[SBUIController sharedInstance] clickedMenuButton];' > press_home_button.cy", 'Adding press_home_button.cy')
@@ -161,18 +162,19 @@ class IosDeviceService
     # open app page in app store
     5.times do |n|
       # make sure app store is open
-      run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
+      # run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
+      run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
       puts "Waiting 3s..."
       sleep(3)
       puts "Try #{n}"
-      ret = run_command(ssh, "cycript -p AppStore #{download_app_script_name}", 'click download app') 
-      if ret && ret.include?('_assert(CYRecvAll')
-        puts "UI not ready"
-      else
+      ret = run_command(ssh, "cycript -p AppStore #{download_app_script_name}", 'click download app')
+      # could be timing error if download succeeds in less than 3 seconds...
+      if ret && (ret.include?('Downloading'))
+        puts "Download started"
         break
+      else
+        puts "Did not start downloading"
       end
-
-      puts ''
     end
     
     # add some logic to ensure that app store is open
@@ -188,7 +190,6 @@ class IosDeviceService
       sleep(5)
       puts "Try #{n}"
       ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'click open app after download')
-
       if ret && ret.chomp == 'Could not find OPEN button'
         puts "Not downloaded yet"
         ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'open app store when not finished downloading')
@@ -366,13 +367,13 @@ class IosDeviceService
   def teardown(ssh, app_info)
 
     run_command(ssh, 'cycript -p SpringBoard press_home_button.cy', 'pressing Home button')
-    delete_application(ssh, app_info)
+    delete_applications(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
     run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
 
     # validate that it was deleted
-    resp = run_command(ssh, "[ -d #{app_info[:path]} ] && echo 'exists' || echo 'dne'", 'check if Frameworks folder exists').chomp
+    resp = run_command(ssh, "[ -d #{app_info[:path]} ] && echo 'exists' || echo 'dne'", 'check if app bundle exists').chomp
     if resp == 'exists'
       raise "Teardown unsuccessful: app is still installed"
     end
@@ -430,7 +431,11 @@ class IosDeviceService
       if res && res.chomp == 'exists'
         run_command(ssh, "plutil -convert json #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.strings", 'Converting plist to json', "Converted 1 files to json format")
 
-        more_data = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.json", 'Echoing json plist file'))
+        begin
+          more_data = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.json", 'Echoing json plist file'))
+        rescue
+          more_data = {}
+        end
 
         bundle_info.merge!(more_data)
       end
@@ -440,7 +445,41 @@ class IosDeviceService
     @bundle_info = bundle_info
   end
 
+  # deletes all the installed apps
+  def delete_applications(ssh)
 
+    # template the scripts with the app name and copy them over
+    files = `ls #{DELETE_APP_STEPS_DIR} | sort`.chomp.split("\n")
+    files.each do |fname|
+      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
+      ssh.exec! "echo '#{script}' > #{fname}"
+    end
+
+    # Find the number of apps to delete and go through the process for each one
+    apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
+    return "Nothing to do" if apps == nil
+
+    apps = apps.chomp.split
+
+    puts "Number of apps to delete: #{apps.length}"
+    apps.length.times do |i|
+      puts "Deleting app #{i+1}"
+
+      # make sure Preference page is loaded and on first page
+      run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
+      sleep(1)
+      run_command(ssh, "killall Preferences", 'Kill Preferences while open')
+      sleep(1)
+      run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
+
+      files.each do |fname|
+        sleep(2)
+        resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+      end
+    end
+  end
+
+  # NO LONGER IN USE. see delete_applications
   def delete_application(ssh, app_info)
 
     # need to get app's display name

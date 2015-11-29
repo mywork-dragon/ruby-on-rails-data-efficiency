@@ -25,7 +25,7 @@ class IosScanSingleServiceWorker
       snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
-      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
+      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development? && false
       return sdks
     end
 
