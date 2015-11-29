@@ -30,21 +30,21 @@ module PackageSearchWorker
       cls
     end.compact.uniq
 
-    apk_snap = ApkSnapshot.find_by_id(snap_id)
+    # apk_snap = ApkSnapshot.find_by_id(snap_id)
 
-    begin
-      AndroidSdkService.classify(snap_id: snap_id, packages: packages)
-    rescue => e
-      apk_snap.scan_status = :scan_failure
-    else
-      apk_snap.scan_status = :scan_success
-    end
+    # begin
+    #   as = AndroidSdkService.classify(snap_id: snap_id, packages: packages)
+    # rescue => e
+    #   apk_snap.scan_status = :scan_failure
+    # else
+    #   apk_snap.scan_status = :scan_success
+    # end
 
-    apk_snap.save
-
-
+    # apk_snap.save
 
 
+
+    AndroidSdkService.classify(snap_id: snap_id, packages: packages)
 
 
     # batch = Sidekiq::Batch.new

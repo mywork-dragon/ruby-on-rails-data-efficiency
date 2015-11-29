@@ -26,8 +26,11 @@ class AndroidSdkService
 			end
 
 
+			# FOR THE GITHUB SEARCH, SAVE THE REPO AS THE SDK AND THE AUTHOR AS THE COMPANY
+
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
+			# ap google_check[:matched]
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					# sdk_company = save_company(name: result[:name], url: result[:url])
@@ -39,9 +42,11 @@ class AndroidSdkService
 				end
 			end
 
-			google_check[:missed].each do |res|
-				puts res
-			end
+			return google_check
+
+			# google_check[:missed].each do |res|
+			# 	puts res
+			# end
 
 		end
 
@@ -189,6 +194,7 @@ class AndroidSdkService
     end
 
     def match_google(package)
+    	puts "googling #{package[0]}".green
     	results = google_sdk(query: package[0]) || google_github(query: package[0])
     	if results
     		return {

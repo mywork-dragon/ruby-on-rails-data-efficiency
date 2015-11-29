@@ -11,13 +11,13 @@ class ApkSnapshotService
 
     def run_n(notes, size = 10)
 
-      workers = Sidekiq::Workers.new.any?{ |w| w[2]["queue"] == 'sdk_scraper' }
+      workers = Sidekiq::Workers.new.any?{ |w| w[2]["queue"] == 'sdk' }
 
       if !workers
 
         batch = Sidekiq::Batch.new
-        batch.description = 'scrape n apks from google play'
-        batch.on(:complete, self)
+        # batch.description = 'scrape n apks from google play'
+        # batch.on(:complete, self)
 
         batch.jobs do
 
