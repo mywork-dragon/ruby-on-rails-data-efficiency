@@ -67,12 +67,12 @@ class ApkSnapshotService
 
     def run_local(notes)
 
-      ActiveRecord::Base.logger.level = 1
+      # ActiveRecord::Base.logger.level = 1
 
-      clear_accounts()
+      # clear_accounts()
 
       j = ApkSnapshotJob.create!(notes: notes)
-      AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(2).each do |app|
+      AndroidApp.joins(:newest_android_app_snapshot).where("android_app_snapshots.price = ?", 0).limit(1).each do |app|
         ApkSnapshotServiceWorker.new.perform(j.id, nil, app.id)
       end
     end
@@ -147,9 +147,9 @@ class ApkSnapshotService
   
   end
 
-  def on_complete(status, options)
-    # Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!')
-  end
+  # def on_complete(status, options)
+  #   # Slackiq.notify(webhook_name: :sdk_scraper, status: status, title: 'Scrape Completed!')
+  # end
 
   
 end
