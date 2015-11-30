@@ -1,4 +1,4 @@
-class IosTesterService
+class IosTesterServiceWorker
 
   include Sidekiq::Worker
 
