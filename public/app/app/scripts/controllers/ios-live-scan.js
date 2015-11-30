@@ -65,6 +65,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.displayDataUnchangedStatus = false;
       iosLiveScanCtrl.failedLiveScan = false;
       iosLiveScanCtrl.errorCodeMessage = null;
+      iosLiveScanCtrl.sdkData.lastUpdated = null;
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
           console.log('Data from startIosSdkScan', data);
