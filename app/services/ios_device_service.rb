@@ -43,9 +43,10 @@ class IosDeviceService
   def next_account
   end
 
-  def run(app_identifier, purpose, country_code: 'us')
+  def run(app_identifier, purpose, unique_id, country_code: 'us')
 
     @app_identifier = app_identifier
+    @unique_id = unique_id
     @purpose = purpose
 
     def format_backtrace(backtrace)
@@ -264,7 +265,7 @@ class IosDeviceService
     bundle_info = extract_bundle_info(ssh, app_info)
     executable = bundle_info['CFBundleExecutable']
 
-    outfile = "#{@app_identifier}.decrypted"
+    outfile = "#{@unique_id}.decrypted"
 
     # TODO: should throw or something if failed
     return executable if !executable
@@ -510,7 +511,7 @@ class IosDeviceService
   # assumes in home directory of root and dumpdecrypted.dylib is there as well
   def headers_using_classdump(ssh, app_info)
 
-    outfile = "#{DECRYPTED_FOLDER}/#{@app_identifier}.classdump.txt"
+    outfile = "#{DECRYPTED_FOLDER}/#{@unique_id}.classdump.txt"
 
     infile = get_decrypted_exec(ssh, app_info)
 
@@ -525,7 +526,7 @@ class IosDeviceService
   def get_strings(ssh, app_info)
 
     infile = get_decrypted_exec(ssh, app_info)
-    outfile = "#{DECRYPTED_FOLDER}/#{@app_identifier}.txt"
+    outfile = "#{DECRYPTED_FOLDER}/#{@unique_id}.txt"
 
     return infile if !infile # check if null
 

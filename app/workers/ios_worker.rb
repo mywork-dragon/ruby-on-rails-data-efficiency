@@ -71,7 +71,7 @@ module IosWorker
 			# Will be useful for polling or could add some logic to send status updates
 			app_identifier = IosApp.find(ios_app_id).app_identifier
 			raise "No app identifer for ios app #{ios_app_id}" if app_identifier.nil?
-			final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose) do |incomplete_result|
+			final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose, snapshot.id) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
 				classdump.update row
@@ -130,75 +130,5 @@ module IosWorker
 		device.in_use = false
 		device.save
 	end
-
-	def get_dump(app_identifier, device)
-		IosDeviceService.new(device.ip).run(app_identifier)
-	end
-
-	########### Functions for local development only ###########
-	def run_many(id = nil)
-
-		device = get_device(id)
-
-		# swift_apps = [
-		#   628677149, # yahoo
-		#   288429040, # linked in
-		#   376812381, # getty images
-		#   # 624329444, # argus - memory issues
-		#   419950680, # hipmunk
-		#   917418728, # slideshare (entirely Swift)
-		# ]
-
-		# other_apps = [
-		#   364297166, # zinio
-		#   529379082, # lyft
-		# ]
-
-		apps = [
-			577232024, # Lumosity
-			363590051, # Netflix
-			307906541, # Fandango
-			284235722, # Flixster
-			376510438,
-			530957474,
-			364191819,
-			342792525,
-			918820076,
-			429610587,
-			545519333,
-			377194688,
-			342643402,
-		]
-
-
-
-		puts "Trying apps"
-
-		results = []
-		apps.each do |app_identifier|
-			puts "app #{results.length}: #{app_identifier}"
-			results.push(single(app_identifier))
-		end
-
-		puts "Finished"
-		results
-	end
-
-	# for testing without uploading results to database
-	def single(app_identifier, id=nil)
-
-		# get a device
-		device = reserve_device(id)
-		return nil if device.blank?
-
-		res = get_dump(app_identifier, device)
-
-		release_device(device)
-
-		res
-
-	end
-
-
 
 end
