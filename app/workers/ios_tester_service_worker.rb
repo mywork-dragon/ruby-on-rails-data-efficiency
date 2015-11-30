@@ -24,7 +24,7 @@ class IosTesterServiceWorker
 
     data = nil
     b = Benchmark.measure do
-      ios_app_id = 502
+      ios_app_id = 614758
       data = get_json(ios_app_id)
     end.real
 
