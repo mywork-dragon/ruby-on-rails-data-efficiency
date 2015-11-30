@@ -2,7 +2,7 @@ class IosTesterServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, queue: :ios_live_scan
+  sidekiq_options backtrace: true, queue: :ios_live_scan_cloud # using cloud for get_json
 
   include IosWorker
 
