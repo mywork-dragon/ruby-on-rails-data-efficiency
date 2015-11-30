@@ -47,7 +47,7 @@ class IosLiveScanServiceWorker
       end
 
       puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
-      
+
       if Rails.env.production?
 
         batch = Sidekiq::Batch.new
@@ -102,8 +102,10 @@ class IosLiveScanServiceWorker
       json = JSON.parse(Proxy.get_body_from_url(url))
 
       json['results'].first
-    rescue
-      nil
+    rescue => e
+      puts "Failed to get json data about app_identifier #{app_identifier}"
+      puts e.message
+      puts e.backtrace
     end
   end
 

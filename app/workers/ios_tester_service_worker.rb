@@ -47,4 +47,50 @@ class IosTesterServiceWorker
       nil
     end
   end
+
+  def test_proxies(per_proxy: 5)
+
+    return "Proxies not accessible locally" if Rails.env.development?
+    uri = URI("https://itunes.apple.com/lookup?id=364297166&uslimit=1")
+
+    proxies = MicroProxy.select(:id, :private_ip).where(active: true)
+
+    proxies.each do |proxy|
+      success = 0
+      fail = 0
+      errors = []
+
+      begin
+        res = Proxy.get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params_from_query(uri.query)) do |curb|
+          curb.proxy_url = "#{proxy.private_ip}:8888"
+        end
+        success += 1
+      rescue => e
+        fail += 1
+        errors.push(e)
+      end
+
+      puts "Proxy #{proxy.id} failed #{fail} times out of #{per_proxy}"
+      puts "Errors"
+      errors.each do |e|
+        puts e.message
+        puts e.backtrace
+      end
+    end
+  end
+
+  def params_from_query(query)
+
+    return {} if query.nil?
+
+    query.split("&").reduce({}) do |memo, pair|
+      parts = pair.split("=")
+      if parts.length > 1
+        memo[parts.first] = parts.second
+        memo
+      else
+        memo
+      end
+    end
+  end
 end
