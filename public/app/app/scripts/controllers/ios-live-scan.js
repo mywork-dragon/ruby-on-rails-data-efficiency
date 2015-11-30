@@ -34,7 +34,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           if(data == null) {
             iosLiveScanCtrl.noSdkData = true;
-            iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"}
+            iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
           }
 
           iosLiveScanCtrl.checkSdkSnapshotStatus(data);
@@ -61,11 +61,14 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     iosLiveScanCtrl.checkForIosSdks(iosAppId); // Call for initial SDKs load
 
     iosLiveScanCtrl.getSdks = function() {
+
+      // Reset all view-changing vars
       iosLiveScanCtrl.sdkQueryInProgress = true;
       iosLiveScanCtrl.displayDataUnchangedStatus = false;
       iosLiveScanCtrl.failedLiveScan = false;
       iosLiveScanCtrl.errorCodeMessage = null;
-      iosLiveScanCtrl.sdkData.lastUpdated = null;
+      iosLiveScanCtrl.sdkData = null;
+
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
           console.log('Data from startIosSdkScan', data);
