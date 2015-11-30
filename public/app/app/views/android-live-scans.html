@@ -152,7 +152,7 @@
 
           <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData && androidLiveScanCtrl.displayStatus == 'normal' || androidLiveScanCtrl.sdkQueryInProgress && androidLiveScanCtrl.displayStatus == 'normal'">
             <div id="sdkScanErrorMessage" ng-show="androidLiveScanCtrl.noSdkData">
-              <h5>{{androidLiveScanCtrl.sdkData.errorMessage}}</h5>
+              <h5><strong>{{androidLiveScanCtrl.sdkData.errorMessage}}</strong></h5>
             </div>
             <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
               <div class="loading outer">
