@@ -75,7 +75,7 @@
               <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress">
+          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && !iosLiveScanCtrl.hideLiveScanButton">
             <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
               Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>

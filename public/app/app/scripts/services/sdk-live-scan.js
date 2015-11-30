@@ -152,9 +152,6 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-          console.log('Live Scan Fail', 'Platform:', platform, 'App ID:', appId, 'Error Status:', errorStatus);
-
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */

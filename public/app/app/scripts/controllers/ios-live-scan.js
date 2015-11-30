@@ -47,6 +47,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           if (data.error_code != null) {
             iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
+            iosLiveScanCtrl.hideLiveScanButton = true;
           }
 
           // LS Success Analytics
@@ -68,6 +69,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.failedLiveScan = false;
       iosLiveScanCtrl.errorCodeMessage = null;
       iosLiveScanCtrl.sdkData = null;
+      iosLiveScanCtrl.hideLiveScanButton = false;
 
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
@@ -163,6 +165,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
+
+              if(data.status != 6) {
+                iosLiveScanCtrl.hideLiveScanButton = true;
+              }
 
               $interval.cancel(interval); // Exits interval loop
 
