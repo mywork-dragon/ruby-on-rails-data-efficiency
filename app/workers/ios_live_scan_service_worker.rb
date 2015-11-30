@@ -7,6 +7,7 @@ class IosLiveScanServiceWorker
   def perform(ipa_snapshot_job_id, ios_app_id)
 
     begin
+      puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
       job = IpaSnapshotJob.find(ipa_snapshot_job_id)
       # if it's available
       data = get_json(ios_app_id)
@@ -45,6 +46,8 @@ class IosLiveScanServiceWorker
         return "No compatible devices available"
       end
 
+      puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
+      
       if Rails.env.production?
 
         batch = Sidekiq::Batch.new
