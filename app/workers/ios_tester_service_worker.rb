@@ -60,14 +60,16 @@ class IosTesterServiceWorker
       fail = 0
       errors = []
 
-      begin
-        res = Proxy.get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params_from_query(uri.query)) do |curb|
-          curb.proxy_url = "#{proxy.private_ip}:8888"
+      per_proxy.times do |n|
+        begin
+          res = Proxy.get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: {'User-Agent' => UserAgent.random_web}}, params: params_from_query(uri.query)) do |curb|
+            curb.proxy_url = "#{proxy.private_ip}:8888"
+          end
+          success += 1
+        rescue => e
+          fail += 1
+          errors.push(e)
         end
-        success += 1
-      rescue => e
-        fail += 1
-        errors.push(e)
       end
 
       puts "Proxy #{proxy.id} failed #{fail} times out of #{per_proxy}"
