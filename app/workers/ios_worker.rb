@@ -52,7 +52,9 @@ module IosWorker
 			classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
 			# get a device
+			puts "#{ipa_snapshot_job_id}: Reserving device #{Time.now}"
 			device = reserve_device(purpose)
+			puts "#{ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
 
 			# no devices available...fail out and save
 			if device.nil?

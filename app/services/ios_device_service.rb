@@ -164,7 +164,11 @@ class IosDeviceService
     5.times do |n|
       # make sure app store is open
       # run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
-      run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
+      ret = run_command(ssh, 'ps aux | grep AppStore | grep -v grep | wc -l', 'check if app store is open')
+      if ret && ret.include?('0')
+        puts "AppStore not open, opening app again"
+        run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
+      end
       puts "Waiting 3s..."
       sleep(3)
       puts "Try #{n}"
@@ -173,6 +177,8 @@ class IosDeviceService
       if ret && (ret.include?('Downloading'))
         puts "Download started"
         break
+      elsif ret && ret.include?('Pressed button')
+        puts "Pressed button"
       else
         puts "Did not start downloading"
       end
