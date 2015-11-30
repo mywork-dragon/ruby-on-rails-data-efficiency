@@ -136,7 +136,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 iosLiveScanCtrl.scanStatusPercentage = 25;
                 break;
               case 8:
-                iosLiveScanCtrl.scanStatusPercentage = 35;
+                iosLiveScanCtrl.scanStatusPercentage = 50;
                 break;
               case 9:
                 iosLiveScanCtrl.scanStatusPercentage = 90;
@@ -155,11 +155,13 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
             // If status 2, 3 or 4
             if((data.status >= 2 && data.status <= 4) || data.status == 6) {
+
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
               iosLiveScanCtrl.noSdkData = false;
               iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
-              iosLiveScanCtrl.sdkData.errorCode = -1;
+              iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
+
               iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
