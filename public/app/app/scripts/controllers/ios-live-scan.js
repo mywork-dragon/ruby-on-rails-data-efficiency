@@ -113,7 +113,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response
             }
 
-            if(!data.status) { data.status = 11 } // If status is null, treat as failed (status 10)
+            if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
 
             iosLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
 
