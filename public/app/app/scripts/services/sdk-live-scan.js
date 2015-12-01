@@ -40,9 +40,6 @@ angular.module("appApp")
       },
       androidHiddenLiveScanAnalytics: function(platform, appId, displayStatus) {
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -61,7 +58,6 @@ angular.module("appApp")
 
 
               console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
-                "userEmail": userInfo.email,
                 'appName': appData.name,
                 'companyName': appData.company.name,
                 'appId': appData.id,
@@ -75,7 +71,6 @@ angular.module("appApp")
 
               mixpanel.track(
                 "Hidden SDK Live Scan Viewed", {
-                  "userEmail": userInfo.email,
                   'appName': appData.name,
                   'companyName': appData.company.name,
                   'appId': appData.id,
@@ -415,9 +410,6 @@ angular.module("appApp")
       },
       iosLiveScanHiddenSdksAnalytics: function(platform, appId, statusCode, statusMessage) {
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -428,38 +420,35 @@ angular.module("appApp")
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
-          if(displayStatus != 'normal') {
 
 
 
 
 
 
-            console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
-              "userEmail": userInfo.email,
+          console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
+            'appName': appData.name,
+            'companyName': appData.company.name,
+            'appId': appData.id,
+            'statusCode': statusCode,
+            'displayStatus': statusMessage
+          });
+
+
+
+
+
+
+          mixpanel.track(
+            "Hidden SDK Live Scan Viewed", {
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
               'statusCode': statusCode,
               'displayStatus': statusMessage
-            });
+            }
+          );
 
-
-
-
-
-
-            mixpanel.track(
-              "Hidden SDK Live Scan Viewed", {
-                "userEmail": userInfo.email,
-                'appName': appData.name,
-                'companyName': appData.company.name,
-                'appId': appData.id,
-                'statusCode': statusCode,
-                'displayStatus': statusMessage
-              }
-            );
-          }
           /* -------- Mixpanel Analytics End -------- */
         });
       }

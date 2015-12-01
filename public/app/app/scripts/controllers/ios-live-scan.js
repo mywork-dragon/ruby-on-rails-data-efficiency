@@ -48,6 +48,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           if (data.error_code != null) {
             iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
             iosLiveScanCtrl.hideLiveScanButton = true;
+            sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, iosAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
           }
 
           // LS Success Analytics - MixPanel & Slacktivity
