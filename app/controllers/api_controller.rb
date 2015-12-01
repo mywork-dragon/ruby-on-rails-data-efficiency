@@ -816,7 +816,7 @@ class ApiController < ApplicationController
   def ios_start_scan
     ios_app_id = params['appId']
 
-    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id)
+    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id, job_type: :test)
 
     render json: {job_id: job_id}
   end
