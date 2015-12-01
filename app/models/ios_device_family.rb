@@ -4,6 +4,7 @@
 class IosDeviceFamily < ActiveRecord::Base
 
   has_many :ios_device_models
+  belongs_to :ios_device_arch
 
   validates :name, presence: true, uniqueness: true
 
