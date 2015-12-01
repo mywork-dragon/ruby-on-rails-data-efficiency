@@ -47,9 +47,6 @@ angular.module("appApp")
           params: {id: appId}
         }).success(function(data) {
           appData = data;
-
-          console.log('####', 'Android Hidden L.S. Viewed');
-
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Hidden SDK Live Scan Viewed", {
@@ -75,9 +72,6 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-          console.log('####', 'Android L.S. Success');
-
           appData = data;
 
           var mixpanelEventTitle = "";
@@ -143,9 +137,6 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-          console.log('####', 'Android L.S. Fail');
-
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
