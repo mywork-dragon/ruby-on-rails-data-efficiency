@@ -50,7 +50,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             iosLiveScanCtrl.hideLiveScanButton = true;
           }
 
-          // LS Success Analytics
+          // LS Success Analytics - MixPanel & Slacktivity
           if(calledAfterSuccess) {
             sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, data);
           }
@@ -73,7 +73,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
-          console.log('Data from startIosSdkScan', data);
           iosLiveScanCtrl.scanJobId = data.job_id;
           iosLiveScanCtrl.scanStatusMessage = "Validating...";
           iosLiveScanCtrl.scanStatusPercentage = 5;
@@ -116,7 +115,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             // Reset 'query in progress' if pulling times out
             if(intervalCount == 120) {
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response
+              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }
 
             if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
@@ -151,7 +150,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId); // Failed analytics response
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId); // Failed analytics response - MixPanel & Slacktivity
                 break;
             }
 
