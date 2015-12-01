@@ -112,6 +112,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.displayStatus = "foreign";
                 break;
             }
+
+            if(data.error_code > 1 && data.error_code != 5) {
+              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, sdkErrorMessage || androidLiveScanCtrl.displayStatus, data.error_code);
+            }
           }
           if(data) {
             androidLiveScanCtrl.sdkData = {
@@ -126,7 +130,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           }
 
           // Successful SDK LS MixPanel & Slacktivity
-          sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
+          if(data.error_code === 0) {
+            sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
+          }
 
         }).error(function(err, status) {
           androidLiveScanCtrl.sdkQueryInProgress = false;

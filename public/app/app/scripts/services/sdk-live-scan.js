@@ -111,6 +111,8 @@ angular.module("appApp")
             mixpanelEventTitle = "SDK Live Scan Failed";
             liveScanSlacktivityColor = "#E82020";
           }
+          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
+          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
           /* -------- Mixpanel Analytics Start -------- */
 
 
@@ -124,8 +126,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkCompanies': sdkData.sdkCompanies,
-            'sdkOpenSource': sdkData.sdkOpenSource,
+            'sdkCompanies': sdkCompanies,
+            'sdkOpenSource': sdkOpenSource,
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage
@@ -142,8 +144,8 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
-              'sdkCompanies': sdkData.sdkCompanies,
-              'sdkOpenSource': sdkData.sdkOpenSource,
+              'sdkCompanies': sdkCompanies,
+              'sdkOpenSource': sdkOpenSource,
               'lastUpdated': sdkData.lastUpdated,
               'errorCode': sdkData.errorCode,
               'errorMessage': sdkData.errorMessage
@@ -151,8 +153,6 @@ angular.module("appApp")
           );
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
-          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
-          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
           var slacktivityData = {
             "title": mixpanelEventTitle,
             "fallback": mixpanelEventTitle,
@@ -183,7 +183,7 @@ angular.module("appApp")
         });
 
       },
-      androidLiveScanFailRequestAnalytics: function(platform, appId, errorStatus) {
+      androidLiveScanFailRequestAnalytics: function(platform, appId, errorStatus, errorCode) {
 
         var userInfo = {}; // User info set
         authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
@@ -207,7 +207,8 @@ angular.module("appApp")
             'companyName': appData.company.name,
             'appName': appData.name,
             'appId': appData.id,
-            'errorStatus': errorStatus
+            'errorStatus': errorStatus,
+            'errorCode': errorCode
           });
 
 
@@ -219,7 +220,8 @@ angular.module("appApp")
               'companyName': appData.company.name,
               'appName': appData.name,
               'appId': appData.id,
-              'errorStatus': errorStatus
+              'errorStatus': errorStatus,
+              'errorCode': errorCode
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -232,7 +234,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'errorStatus': errorStatus
+            'errorStatus': errorStatus,
+            'errorCode': errorCode
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
@@ -264,6 +267,8 @@ angular.module("appApp")
 
           appData = data;
 
+          var sdkCompanies = Object.keys(sdkData.installed_sdk_companies).toString();
+          var sdkOpenSource = Object.keys(sdkData.installed_open_source_sdks).toString();
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Live Scan Success", {
@@ -271,15 +276,13 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
-              'sdkCompanies': sdkData.sdkCompanies,
-              'sdkOpenSource': sdkData.sdkOpenSource,
+              'sdkCompanies': sdkCompanies,
+              'sdkOpenSource': sdkOpenSource,
               'lastUpdated': sdkData.lastUpdated
             }
           );
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
-          var sdkCompanies = Object.keys(sdkData.installed_sdk_companies).toString();
-          var sdkOpenSource = Object.keys(sdkData.installed_open_source_sdks).toString();
           var slacktivityData = {
             "title": "SDK Live Scan Success",
             "fallback": "SDK Live Scan Success",
