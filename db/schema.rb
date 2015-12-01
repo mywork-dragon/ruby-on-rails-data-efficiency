@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201052822) do
+ActiveRecord::Schema.define(version: 20151201065515) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -940,8 +940,10 @@ ActiveRecord::Schema.define(version: 20151201052822) do
     t.string   "ios_version"
     t.text     "description"
     t.integer  "softlayer_proxy_id"
+    t.integer  "ios_device_model_id"
   end
 
+  add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
