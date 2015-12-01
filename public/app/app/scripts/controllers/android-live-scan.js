@@ -135,7 +135,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           }
 
           // Successful SDK LS MixPanel & Slacktivity
-          if(data.error_code === 0) {
+          if(data.error_code === 0 || data.error_code == 1) {
             sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
           }
 
