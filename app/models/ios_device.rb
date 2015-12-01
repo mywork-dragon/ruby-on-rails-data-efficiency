@@ -14,7 +14,7 @@ class IosDevice < ActiveRecord::Base
   # Eg. "armv7", "arm64"
   # @author Jason Lew
   def class_dump_arch
-    "arm64"
+    ios_device_model.ios_device_family.ios_device_arch.name
   end
 
   # The device family name
