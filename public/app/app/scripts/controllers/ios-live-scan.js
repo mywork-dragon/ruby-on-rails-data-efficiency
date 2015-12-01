@@ -71,13 +71,13 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.errorCodeMessage = null;
       iosLiveScanCtrl.sdkData = null;
       iosLiveScanCtrl.hideLiveScanButton = false;
-      iosLiveScanCtrl.scanStatusPercentage = 5; // default percentage
+      iosLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
 
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
           iosLiveScanCtrl.scanJobId = data.job_id;
           iosLiveScanCtrl.scanStatusMessage = "Validating...";
-          iosLiveScanCtrl.scanStatusPercentage = 5;
+          iosLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
           pullScanStatus();
         })
         .error(function() {

@@ -265,25 +265,6 @@ angular.module("appApp")
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
-
-
-
-
-          console.log('MixPanel: Live Scan Success', 'Title:', "SDK Live Scan Success", 'MixPanel Data:', {
-            'platform': platform,
-            'appName': appData.name,
-            'companyName': appData.company.name,
-            'appId': appData.id,
-            'sdkCompanies': Object.keys(sdkData.installed_sdk_companies).toString(),
-            'sdkOpenSource': Object.keys(sdkData.installed_open_source_sdks).toString(),
-            'lastUpdated': sdkData.lastUpdated,
-            'errorCode': sdkData.errorCode,
-            'errorMessage': sdkData.errorMessage
-          });
-
-
-
-
           mixpanel.track(
             "SDK Live Scan Success", {
               'platform': platform,
@@ -292,9 +273,7 @@ angular.module("appApp")
               'appId': appData.id,
               'sdkCompanies': sdkData.sdkCompanies,
               'sdkOpenSource': sdkData.sdkOpenSource,
-              'lastUpdated': sdkData.lastUpdated,
-              'errorCode': sdkData.errorCode,
-              'errorMessage': sdkData.errorMessage
+              'lastUpdated': sdkData.lastUpdated
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -311,21 +290,10 @@ angular.module("appApp")
             'appId': appData.id,
             'sdkCompanies': sdkCompanies,
             'sdkOpenSource': sdkOpenSource,
-            'lastUpdated': sdkData.lastUpdated,
-            'errorCode': sdkData.errorCode,
-            'errorMessage': sdkData.errorMessage
+            'lastUpdated': sdkData.lastUpdated
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
-
-
-
-
-          console.log('Slacktivity: iOS Live Scan Success', 'DATA', slacktivityData);
-
-
-
-
           /* -------- Slacktivity Alerts End -------- */
 
         });
@@ -350,25 +318,8 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
           appData = data;
-
           /* -------- Mixpanel Analytics Start -------- */
-
-
-
-
-          console.log('MixPanel: Live Scan Failed', 'Title:', "SDK Live Scan Failed", 'MixPanel Data:', {
-            'companyName': appData.company.name,
-            'appName': appData.name,
-            'appId': appData.id,
-            'error': errorMessage,
-            'statusCode': statusCode
-          });
-
-
-
-
           mixpanel.track(
             "SDK Live Scan Failed", {
               'companyName': appData.company.name,
@@ -391,19 +342,9 @@ angular.module("appApp")
             'appId': appData.id,
             'error': errorMessage,
             'statusCode': statusCode
-
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
-
-
-
-
-          console.log('Slacktivity: iOS Live Scan Failed', 'DATA', slacktivityData);
-
-
-
-
           /* -------- Slacktivity Alerts End -------- */
         });
 
@@ -420,25 +361,6 @@ angular.module("appApp")
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
-
-
-
-
-
-
-          console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
-            'appName': appData.name,
-            'companyName': appData.company.name,
-            'appId': appData.id,
-            'statusCode': statusCode,
-            'displayStatus': statusMessage
-          });
-
-
-
-
-
-
           mixpanel.track(
             "Hidden SDK Live Scan Viewed", {
               'appName': appData.name,
@@ -448,7 +370,6 @@ angular.module("appApp")
               'displayStatus': statusMessage
             }
           );
-
           /* -------- Mixpanel Analytics End -------- */
         });
       }
