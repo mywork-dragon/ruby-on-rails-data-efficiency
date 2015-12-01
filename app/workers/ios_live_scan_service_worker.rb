@@ -55,10 +55,18 @@ class IosLiveScanServiceWorker
         bid = batch.bid
 
         batch.jobs do
-          IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+          if job.job_type == 'one_off'
+            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+          elsif job.job_type == 'test'
+            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+          end
         end
       else
-        IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id)
+        if job.job_type == 'one_off'
+          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+        elsif job.job_type == 'test'
+          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+        end
       end
 
       job.live_scan_status = :initiated

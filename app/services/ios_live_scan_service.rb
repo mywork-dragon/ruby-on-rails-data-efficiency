@@ -1,12 +1,12 @@
 class IosLiveScanService
   class << self
-    def scan_ios_app(ios_app_id: ios_app_id)
+    def scan_ios_app(ios_app_id:, job_type: :one_off)
 
       app = IosApp.find(ios_app_id)
 
       return nil if app.nil?
 
-      job = IpaSnapshotJob.create!(job_type: :one_off, live_scan_status: :validating, notes: "running a single live scan job on app #{ios_app_id}")
+      job = IpaSnapshotJob.create!(job_type: job_type, live_scan_status: :validating, notes: "running a single live scan job on app #{ios_app_id} with type #{job_type}")
 
       if Rails.env.production?
         IosLiveScanServiceWorker.perform_async(job.id, ios_app_id)
