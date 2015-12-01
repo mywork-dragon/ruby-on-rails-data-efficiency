@@ -542,7 +542,9 @@ class IosDeviceService
   end
 
   def class_dump(src, dest)
-    arch = @device.class_dump_arch || "arm64"
+    # TODO: undo the below
+    arch = %w(192.168.2.106 192.168.2.107 192.168.2.108 192.168.2.109).include?(@device.ip) ? "armv7" : "arm64"
+    # arch = @device.class_dump_arch || "arm64"
     `/usr/local/bin/class-dump --arch #{arch} \'#{src}\' > \'#{dest}\'`
   end
 
