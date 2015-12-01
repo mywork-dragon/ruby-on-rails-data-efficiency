@@ -1025,8 +1025,8 @@ ActiveRecord::Schema.define(version: 20151201072745) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
+    t.integer  "sdk_company_id"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree

@@ -4,6 +4,8 @@ class IosMockService
 
     def mock_multiple_live_scans(app_identifiers)
 
+      raise "No longer in use"
+
       return "Nothing to run" if app_identifiers.nil?
 
       job_id = IpaSnapshotJob.create!(notes: "running multiple live scan jobs on app identifiers #{app_identifiers.join(', ')}", job_type: :mock).id
@@ -28,6 +30,8 @@ class IosMockService
 
 
     def mock_live_scan(app_identifier)
+
+      raise "No longer in use"
 
       return "Nothing to run" if app_identifier.nil?
 
