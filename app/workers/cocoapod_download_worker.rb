@@ -161,15 +161,6 @@ class CocoapodDownloadWorker
 
         # sometimes everything is contained in a root file
         has_root = nested_sort.map {|entry| entry.name.split('/').first}.uniq.length == 1 ? true : false
-        # has_root = if nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length
-        #   true
-        # elsif nested_sort.map {|entry| entry.name.split('/').first}.uniq.length == 1
-        #   # sometimes it isn't but everything is nested
-        #   true
-        # else
-        #   false
-        # end
-        # has_root = nested_sort.first.name.split('/').length < nested_sort.second.name.split('/').length ? true : false
 
         if has_root
           unzipped_file = File.join(dump, nested_sort.first.name.split('/').first)
@@ -203,7 +194,22 @@ class CocoapodDownloadWorker
 
   end
 
-  def get_source_files(cocoapod, root_path)
+  # safely get data nested in JSON object.
+  # @param json - a JSON object
+  # @param props - a string of properties, separated by periods (ex. 'parent.child1.child2')
+  # returns the value at the nested property if it exists, nil otherwise
+  def get_from_json(json:, props:)
+    list = props.split(".")
+    data = json
+    while list.length > 0
+      prop = list.shift
+      data = data ? data[prop] : nil
+    end
+
+    data
+  end
+
+  def get_source_files(cocoapod, root_path, v2: true)
     all_files = Dir.glob("#{root_path}/**/*.{h,swift}").uniq
     return all_files if cocoapod.json_content.nil?
 
@@ -211,16 +217,16 @@ class CocoapodDownloadWorker
 
     to_inspect = [podspec]
     globs = []
-    properties = ["source_files", "public_header_files"]
+    properties = v2 ? ['source_files', 'public_header_files', 'vendored_frameworks', 'ios.source_files', 'ios.public_header_files', 'ios.vendored_frameworks'] : ['source_files', 'public_header_files']
 
     while to_inspect.length > 0
       spec = to_inspect.shift
 
       properties.each do |prop|
-
-        if !spec[prop].nil?
-          globs.push(spec[prop]) if spec[prop].class == String
-          globs.concat(spec[prop]) if spec[prop].class == Array
+        entry = get_from_json(json: spec, props: prop)
+        if !entry.nil?
+          globs.push(entry) if entry.class == String
+          globs.concat(entry) if entry.class == Array
         end
       end
 
@@ -230,7 +236,7 @@ class CocoapodDownloadWorker
     files = globs.map { |glob| Dir.glob(File.join(root_path, glob)) }.flatten.map do |file|
 
       if File.directory?(file)
-        Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
+        v2 ? Dir.glob(File.join(file, '**/*.{h, swift}')).select {|f| File.file?(f)} : Dir.entries(file).map {|f| File.join(file, f)}.select {|f| File.file?(f)}
       else
         [file]
       end

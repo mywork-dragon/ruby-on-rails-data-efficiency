@@ -15,7 +15,8 @@ class IosClassificationServiceWorker
       snapshot.scan_status = :scanned
       snapshot.save
 
-      sdks
+      # sdks
+      puts "finished classify"
     rescue => e
       IosClassificationException.create!({
         ipa_snapshot_id: snap_id,
@@ -74,20 +75,19 @@ class IosClassificationServiceWorker
 
   def classify_classdump(snap_id, contents)
 
-    puts "Classifying classdump".red
-
     sdks = sdks_from_classdump(contents: contents)
     attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-    sdks
+    # sdks
+    puts "finished classdump"
   end
 
   # Entry point to integrate with @osman
   def classify_strings(snap_id, contents)
-    puts "Classifying strings".blue
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
     # TODO: uncomment
     attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-    sdks
+    # sdks
+    puts "finished strings"
   end
 
   # Get classes from strings
@@ -115,7 +115,6 @@ class IosClassificationServiceWorker
   end
 
   def sdks_from_classdump(contents: contents, search_classes: true, search_fw_folders: true)
-    puts "Classifying classdump".blue
 
     sdks = []
 
@@ -140,7 +139,6 @@ class IosClassificationServiceWorker
     if search_bundles
       bundles = bundles_from_strings(contents)
       sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: false) # TODO: remove read only flag after regexes are linked and such
-      puts "SDKs via bundles"
       ap sdks
     end
 
@@ -192,10 +190,8 @@ class IosClassificationServiceWorker
       resolved_sdks << sdk if !sdk.nil?
     end
 
-    puts "Uniques".blue
     ap uniques
 
-    puts "Resolved Collisions".yellow
     ap resolved_sdks
 
     (uniques + resolved_sdks).uniq

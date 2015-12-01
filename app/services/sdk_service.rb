@@ -77,10 +77,8 @@ class SdkService
 
 			new_sdks = new_matches.values.uniq
 
-			puts "Existing matches"
 			ap found_sdks
 
-			puts "New SDKs"
 			ap new_sdks
 
 			(found_sdks + new_sdks).uniq
@@ -232,7 +230,6 @@ class SdkService
 		# Get the url of an sdk if it is valid
 		def google_sdk(query:, platform:)
 			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
-				puts "url: #{url}".yellow
 		    company = query.capitalize
 		    return {website: url, name: company, open_source: false} if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
 			end

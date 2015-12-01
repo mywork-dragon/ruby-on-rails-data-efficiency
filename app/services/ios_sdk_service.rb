@@ -46,7 +46,7 @@ class IosSdkService
         return resp
       end
 
-      snap = app.get_last_ipa_snapshot(success: true)
+      snap = app.get_last_ipa_snapshot(scan_success: true)
 
       # if no successful scan's done, return no data
       if !snap.nil?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124215146) do
+ActiveRecord::Schema.define(version: 20151201072745) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -913,6 +913,33 @@ ActiveRecord::Schema.define(version: 20151124215146) do
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
 
+  create_table "ios_device_arches", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_device_arches", ["name"], name: "index_ios_device_arches_on_name", using: :btree
+
+  create_table "ios_device_families", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ios_device_arch_id"
+  end
+
+  add_index "ios_device_families", ["ios_device_arch_id"], name: "index_ios_device_families_on_ios_device_arch_id", using: :btree
+
+  create_table "ios_device_models", force: true do |t|
+    t.integer  "ios_device_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+  end
+
+  add_index "ios_device_models", ["ios_device_family_id"], name: "index_ios_device_models_on_ios_device_family_id", using: :btree
+  add_index "ios_device_models", ["name"], name: "index_ios_device_models_on_name", using: :btree
+
   create_table "ios_devices", force: true do |t|
     t.string   "serial_number"
     t.string   "ip"
@@ -924,8 +951,10 @@ ActiveRecord::Schema.define(version: 20151124215146) do
     t.string   "ios_version"
     t.text     "description"
     t.integer  "softlayer_proxy_id"
+    t.integer  "ios_device_model_id"
   end
 
+  add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree

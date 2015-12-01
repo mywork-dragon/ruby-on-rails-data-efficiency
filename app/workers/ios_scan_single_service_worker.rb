@@ -25,7 +25,7 @@ class IosScanSingleServiceWorker
       snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
-      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development?
+      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development? && false
       return sdks
     end
 
@@ -41,7 +41,7 @@ class IosScanSingleServiceWorker
       @retry += 1
       snapshot.download_status = :retrying
       snapshot.save
-      run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid)
+      run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid, start_classify: Rails.env.production?)
     else
       snapshot.download_status = :complete
       snapshot.success = false

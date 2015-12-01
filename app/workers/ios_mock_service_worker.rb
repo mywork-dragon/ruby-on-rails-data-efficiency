@@ -8,6 +8,8 @@ class IosMockServiceWorker
 
   def perform(ipa_snapshot_job_id, app_identifier, purpose, bid = nil)
 
+    raise "IosMockServiceWorker is no longer in use"
+
     # kick off and monitor an ios scan
     if purpose == :one_off
       if Rails.env.production?

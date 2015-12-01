@@ -7,6 +7,7 @@ class IosLiveScanServiceWorker
   def perform(ipa_snapshot_job_id, ios_app_id)
 
     begin
+      puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
       job = IpaSnapshotJob.find(ipa_snapshot_job_id)
       # if it's available
       data = get_json(ios_app_id)
@@ -45,6 +46,8 @@ class IosLiveScanServiceWorker
         return "No compatible devices available"
       end
 
+      puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
+
       if Rails.env.production?
 
         batch = Sidekiq::Batch.new
@@ -81,7 +84,7 @@ class IosLiveScanServiceWorker
   end
 
   def should_update(ios_app_id:, version:)
-    last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(success: true)
+    last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
 
     if !version.blank? && !(last_snap.nil? || last_snap.version.nil?) && version <= last_snap.version
       last_snap.touch # update the ipa snapshot with current date
@@ -99,8 +102,10 @@ class IosLiveScanServiceWorker
       json = JSON.parse(Proxy.get_body_from_url(url))
 
       json['results'].first
-    rescue
-      nil
+    rescue => e
+      puts "Failed to get json data about app_identifier #{app_identifier}"
+      puts e.message
+      puts e.backtrace
     end
   end
 
