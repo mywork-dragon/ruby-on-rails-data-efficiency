@@ -19,11 +19,26 @@ class IosDevice < ActiveRecord::Base
   def model_name 
   end
 
+  # Helper method to assign model
+  # @author Jason Lew
+  # @param model_name eg. A1533
+  def assign_model(model_name)
+    self.ios_device_model = self.class.check_for_model_name(model_name)
+    save!
+  end
+
+
   class << self
 
     # Helper method to create new device with proxy
     def create_with_proxy!(params)
       transaction do
+
+        model_name = params[:model_name]
+
+        ios_device_model = check_for_model_name(model_name)
+
+        params.delete(:model_name)
 
         free_proxy = nil
 
@@ -36,7 +51,7 @@ class IosDevice < ActiveRecord::Base
 
         raise 'Cannot find a free Softlayer proxy' if free_proxy.nil?
 
-        ios_device = new(params)
+        ios_device = new(params.merge(ios_device_model: ios_device_model))
 
         ios_device.softlayer_proxy = free_proxy
 
@@ -67,6 +82,16 @@ class IosDevice < ActiveRecord::Base
       end
 
 
+    end
+
+    # Check if the model name is in the DB
+    # @author Jason Lew
+    def check_for_model_name(model_name)
+      ios_device_model = IosDeviceModel.find_by_name(model_name)
+
+      raise "Could not find model #{model_name} in DB. Add it to the DB if it's a new model."
+
+      ios_device_model
     end
 
 
