@@ -115,8 +115,11 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 break;
             }
 
-            if(data.error_code > 1 && data.error_code != 5) {
+            if(data.error_code == 3 || data.error_code == 4) { // If error, but doesn't hide L.S. button
               sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, sdkErrorMessage || androidLiveScanCtrl.displayStatus, data.error_code);
+            } else if(data.error_code == 2 || data.error_code > 5) { // If error & hides L.S. button
+              sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
+
             }
           }
           if(data) {
