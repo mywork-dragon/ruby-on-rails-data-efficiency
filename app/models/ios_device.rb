@@ -9,6 +9,16 @@ class IosDevice < ActiveRecord::Base
 	# either dedicated for a one off scrape or for mass scrapes
 	enum purpose: [:one_off, :mass]
 
+  # Eg. "armv7", "arm64"
+  def class_dump_arch 
+  end
+
+  # Eg. "4S", "5"
+  def model_name 
+  end
+    
+  end
+
   class << self
 
     # Helper method to create new device with proxy
