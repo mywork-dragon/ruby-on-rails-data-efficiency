@@ -50,16 +50,14 @@ angular.module("appApp")
 
           if(platform == 'android') {
             /* -------- Mixpanel Analytics Start -------- */
-            if(displayStatus != 'normal') {
-              mixpanel.track(
-                "Hidden SDK Live Scan Viewed", {
-                  'appName': appData.name,
-                  'companyName': appData.company.name,
-                  'appId': appData.id,
-                  'displayStatus': displayStatus
-                }
-              );
-            }
+            mixpanel.track(
+              "Hidden SDK Live Scan Viewed", {
+                'appName': appData.name,
+                'companyName': appData.company.name,
+                'appId': appData.id,
+                'displayStatus': displayStatus
+              }
+            );
             /* -------- Mixpanel Analytics End -------- */
           }
 

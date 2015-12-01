@@ -62,7 +62,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         }
 
         // Hidden SDK LS MixPanel & Slacktivity
-        sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
+        if(androidLiveScanCtrl.displayStatus != 'normal') {
+          sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
+        }
 
       }).error(function(err) {
       });
