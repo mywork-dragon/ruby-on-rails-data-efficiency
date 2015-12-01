@@ -51,24 +51,6 @@ angular.module("appApp")
           if(platform == 'android') {
             /* -------- Mixpanel Analytics Start -------- */
             if(displayStatus != 'normal') {
-
-
-
-
-
-
-              console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
-                'appName': appData.name,
-                'companyName': appData.company.name,
-                'appId': appData.id,
-                'displayStatus': displayStatus
-              });
-
-
-
-
-
-
               mixpanel.track(
                 "Hidden SDK Live Scan Viewed", {
                   'appName': appData.name,
@@ -114,30 +96,6 @@ angular.module("appApp")
           var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
           var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
           /* -------- Mixpanel Analytics Start -------- */
-
-
-
-
-
-
-
-          console.log('MixPanel: Android Live Scan Success', 'Title:', mixpanelEventTitle, 'MixPanel Data:', {
-            'platform': platform,
-            'appName': appData.name,
-            'companyName': appData.company.name,
-            'appId': appData.id,
-            'sdkCompanies': sdkCompanies,
-            'sdkOpenSource': sdkOpenSource,
-            'lastUpdated': sdkData.lastUpdated,
-            'errorCode': sdkData.errorCode,
-            'errorMessage': sdkData.errorMessage
-          });
-
-
-
-
-
-
           mixpanel.track(
             mixpanelEventTitle, {
               'platform': platform,
@@ -169,15 +127,6 @@ angular.module("appApp")
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
-
-
-
-
-          console.log('Slacktivity: Android Live Scan Success', 'DATA', slacktivityData);
-
-
-
-
           /* -------- Slacktivity Alerts End -------- */
 
         });
@@ -197,24 +146,6 @@ angular.module("appApp")
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
-
-
-
-
-
-
-          console.log('MixPanel: Live Scan Failed', 'Title:', "SDK Live Scan Failed", 'MixPanel Data:', {
-            'companyName': appData.company.name,
-            'appName': appData.name,
-            'appId': appData.id,
-            'errorStatus': errorStatus,
-            'errorCode': errorCode
-          });
-
-
-
-
-
           mixpanel.track(
             "SDK Live Scan Failed", {
               'companyName': appData.company.name,
@@ -239,15 +170,6 @@ angular.module("appApp")
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
-
-
-
-
-          console.log('Slacktivity: Android Live Scan Failed', 'DATA', slacktivityData);
-
-
-
-
           /* -------- Slacktivity Alerts End -------- */
 
         });
