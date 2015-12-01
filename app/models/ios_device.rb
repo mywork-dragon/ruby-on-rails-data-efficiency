@@ -10,13 +10,18 @@ class IosDevice < ActiveRecord::Base
 	# either dedicated for a one off scrape or for mass scrapes
 	enum purpose: [:one_off, :mass]
 
+  # The class dump architecture to use
   # Eg. "armv7", "arm64"
+  # @author Jason Lew
   def class_dump_arch
     "arm64"
   end
 
-  # Eg. "4S", "5"
-  def model_name 
+  # The device family name
+  # Eg. "iPhone 4S", "iPhone 5"
+  # @author Jason Lew
+  def device_family_name
+    ios_device_model.ios_device_family.name 
   end
 
   # Helper method to assign model
