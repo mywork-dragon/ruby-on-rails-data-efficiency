@@ -71,6 +71,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       iosLiveScanCtrl.errorCodeMessage = null;
       iosLiveScanCtrl.sdkData = null;
       iosLiveScanCtrl.hideLiveScanButton = false;
+      iosLiveScanCtrl.scanStatusPercentage = 5; // default percentage
 
       sdkLiveScanService.startIosSdkScan(iosAppId)
         .success(function(data) {
