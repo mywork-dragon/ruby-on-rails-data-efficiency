@@ -279,8 +279,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkCompanies': sdkData.sdkCompanies,
-            'sdkOpenSource': sdkData.sdkOpenSource,
+            'sdkCompanies': Object.keys(sdkData.installed_sdk_companies).toString(),
+            'sdkOpenSource': Object.keys(sdkData.installed_open_source_sdks).toString(),
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage
@@ -338,12 +338,12 @@ angular.module("appApp")
       },
       iosLiveScanFailRequestAnalytics: function(platform, appId, statusCode) {
 
-        var error = "";
+        var errorMessage = "";
 
-        if(statusCode == 10) {
-          error = "Error (status 10)"
+        if(statusCode == 11) {
+          errorMessage = "Error (status 11)"
         } else if(statusCode == -1) {
-          error = "Timeout"
+          errorMessage = "Timeout"
         }
 
         var userInfo = {}; // User info set
@@ -367,7 +367,8 @@ angular.module("appApp")
             'companyName': appData.company.name,
             'appName': appData.name,
             'appId': appData.id,
-            'errorStatus': error
+            'error': errorMessage,
+            'statusCode': statusCode
           });
 
 
@@ -378,7 +379,9 @@ angular.module("appApp")
               'companyName': appData.company.name,
               'appName': appData.name,
               'appId': appData.id,
-              'error': error
+              'error': errorMessage,
+              'statusCode': statusCode
+
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -391,7 +394,9 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'error': error
+            'error': errorMessage,
+            'statusCode': statusCode
+
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
@@ -407,6 +412,56 @@ angular.module("appApp")
           /* -------- Slacktivity Alerts End -------- */
         });
 
+      },
+      iosLiveScanHiddenSdksAnalytics: function(platform, appId, statusCode, statusMessage) {
+
+        var userInfo = {}; // User info set
+        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+        var appData = {}; // Load app data
+        $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/get_' + platform + '_app',
+          params: {id: appId}
+        }).success(function(data) {
+
+          appData = data;
+
+          /* -------- Mixpanel Analytics Start -------- */
+          if(displayStatus != 'normal') {
+
+
+
+
+
+
+            console.log('MixPanel: Android Hidden Live Scan', 'Title:', "Hidden SDK Live Scan Viewed", 'MixPanel Data:', {
+              "userEmail": userInfo.email,
+              'appName': appData.name,
+              'companyName': appData.company.name,
+              'appId': appData.id,
+              'statusCode': statusCode,
+              'displayStatus': statusMessage
+            });
+
+
+
+
+
+
+            mixpanel.track(
+              "Hidden SDK Live Scan Viewed", {
+                "userEmail": userInfo.email,
+                'appName': appData.name,
+                'companyName': appData.company.name,
+                'appId': appData.id,
+                'statusCode': statusCode,
+                'displayStatus': statusMessage
+              }
+            );
+          }
+          /* -------- Mixpanel Analytics End -------- */
+        });
       }
     };
   }]);

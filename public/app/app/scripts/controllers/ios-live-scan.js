@@ -150,7 +150,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, 11); // Failed analytics response - MixPanel & Slacktivity
                 break;
             }
 
@@ -167,6 +167,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
               if(data.status != 6) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
+                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, iosAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
               }
 
               $interval.cancel(interval); // Exits interval loop
