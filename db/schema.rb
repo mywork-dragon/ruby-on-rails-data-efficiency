@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201050602) do
+ActiveRecord::Schema.define(version: 20151201052822) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -923,9 +923,11 @@ ActiveRecord::Schema.define(version: 20151201050602) do
     t.integer  "ios_device_family_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
   end
 
   add_index "ios_device_models", ["ios_device_family_id"], name: "index_ios_device_models_on_ios_device_family_id", using: :btree
+  add_index "ios_device_models", ["name"], name: "index_ios_device_models_on_name", using: :btree
 
   create_table "ios_devices", force: true do |t|
     t.string   "serial_number"
