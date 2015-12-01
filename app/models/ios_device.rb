@@ -2,12 +2,22 @@ class IosDevice < ActiveRecord::Base
 
 	has_many :class_dump
   belongs_to :softlayer_proxy
+  belongs_to :ios_device_model
 
 	validates :ip, uniqueness: true
 	validates :serial_number, uniqueness: true, presence: true
 
 	# either dedicated for a one off scrape or for mass scrapes
 	enum purpose: [:one_off, :mass]
+
+  # Eg. "armv7", "arm64"
+  def class_dump_arch
+    "arm64"
+  end
+
+  # Eg. "4S", "5"
+  def model_name 
+  end
 
   class << self
 
