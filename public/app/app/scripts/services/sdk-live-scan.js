@@ -267,9 +267,6 @@ angular.module("appApp")
           params: {id: appId}
         }).success(function(data) {
 
-          console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
-          console.log('Platform', platform, 'App ID', appId, 'SDK Data:', sdkData);
-
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
@@ -358,9 +355,6 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-          console.log('IOS LIVE SCAN SUCCESS ANALYTICS LOG');
-          console.log('Platform', platform, 'App ID', appId, 'Status Code', statusCode);
 
           appData = data;
 
