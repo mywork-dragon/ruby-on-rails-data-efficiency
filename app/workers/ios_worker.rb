@@ -112,7 +112,7 @@ module IosWorker
 		device = IosDevice.transaction do
 
 			d = if id.nil?
-				IosDevice.lock.where(in_use: false, purpose: purpose).order(:last_used).first
+				IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
 			else
 				IosDevice.lock.find_by_id(id)
 			end
