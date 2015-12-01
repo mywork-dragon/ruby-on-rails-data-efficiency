@@ -19,8 +19,8 @@ class IosDeviceService
   home = `echo $HOME`.chomp
   DECRYPTED_FOLDER = "#{home}/decrypted_ios_apps"
 
-  def initialize(ip)
-    @ip = ip
+  def initialize(device)
+    @device = device
   end
 
   def run_command(ssh, command, description, expected_output = nil)
@@ -65,7 +65,7 @@ class IosDeviceService
     app_info = nil
 
     begin
-      Net::SSH.start(@ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+      Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
         begin
           app_info = install(ssh, app_identifier, country_code)
           result[:install_time] = Time.now
@@ -113,7 +113,7 @@ class IosDeviceService
     # if teardown was still unsuccessful, try again. Likely because ssh booted when classdump failed
     begin
       if result[:install_success] && !result[:teardown_success]
-        Net::SSH.start(@ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+        Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
           result[:teardown_retry] = true
           teardown(ssh, app_info)
           result[:teardown_success] = true
@@ -291,7 +291,7 @@ class IosDeviceService
     puts "PATH"
     puts `echo $PATH`
 
-    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
     puts "Download finished"
 
     # validate
@@ -377,7 +377,7 @@ class IosDeviceService
     delete_applications(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
-    run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
+    # run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
 
     # validate that it was deleted
     resp = run_command(ssh, "[ -d #{app_info[:path]} ] && echo 'exists' || echo 'dne'", 'check if app bundle exists').chomp
@@ -410,7 +410,7 @@ class IosDeviceService
     run_command(ssh, "classdump-dyld #{app_info[:path]}/#{app_info[:name_escaped]}.app/ > #{app_info[:name_escaped]}.classdumpdylib", 'run classdump-dyld')
 
     # SCP does it's own escaping...so don't use escaped name
-    Net::SCP.download!(@ip, DEVICE_USERNAME, "/var/root/#{app_info[:name]}.classdumpdylib", DECRYPTED_FOLDER, ssh: { password: DEVICE_PASSWORD })
+    Net::SCP.download!(@device.ip, DEVICE_USERNAME, "/var/root/#{app_info[:name]}.classdumpdylib", DECRYPTED_FOLDER, ssh: { password: DEVICE_PASSWORD })
 
     return "#{DECRYPTED_FOLDER}/#{app_info[:name]}.classdumpdylib"
   end
@@ -542,7 +542,8 @@ class IosDeviceService
   end
 
   def class_dump(src, dest)
-    `/usr/local/bin/class-dump \'#{src}\' > \'#{dest}\'`
+    arch = @device.class_dump_arch || "arm64"
+    `/usr/local/bin/class-dump --arch #{arch} \'#{src}\' > \'#{dest}\'`
   end
 
 end

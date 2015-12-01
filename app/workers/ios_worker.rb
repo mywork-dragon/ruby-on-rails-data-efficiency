@@ -73,7 +73,7 @@ module IosWorker
 			# Will be useful for polling or could add some logic to send status updates
 			app_identifier = IosApp.find(ios_app_id).app_identifier
 			raise "No app identifer for ios app #{ios_app_id}" if app_identifier.nil?
-			final_result = IosDeviceService.new(device.ip).run(app_identifier, purpose, snapshot.id) do |incomplete_result|
+			final_result = IosDeviceService.new(device).run(app_identifier, purpose, snapshot.id) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
 				classdump.update row

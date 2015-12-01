@@ -10,13 +10,12 @@ class IosDevice < ActiveRecord::Base
 	enum purpose: [:one_off, :mass]
 
   # Eg. "armv7", "arm64"
-  def class_dump_arch 
+  def class_dump_arch
+    "arm64"
   end
 
   # Eg. "4S", "5"
   def model_name 
-  end
-    
   end
 
   class << self
