@@ -48,18 +48,18 @@ angular.module("appApp")
         }).success(function(data) {
           appData = data;
 
-          if(platform == 'android') {
-            /* -------- Mixpanel Analytics Start -------- */
-            mixpanel.track(
-              "Hidden SDK Live Scan Viewed", {
-                'appName': appData.name,
-                'companyName': appData.company.name,
-                'appId': appData.id,
-                'displayStatus': displayStatus
-              }
-            );
-            /* -------- Mixpanel Analytics End -------- */
-          }
+          console.log('####', 'Android Hidden L.S. Viewed');
+
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Hidden SDK Live Scan Viewed", {
+              'appName': appData.name,
+              'companyName': appData.company.name,
+              'appId': appData.id,
+              'displayStatus': displayStatus
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
 
         });
 
@@ -75,6 +75,8 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log('####', 'Android L.S. Success');
 
           appData = data;
 
@@ -141,6 +143,9 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log('####', 'Android L.S. Fail');
+
           appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
