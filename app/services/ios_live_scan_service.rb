@@ -36,7 +36,7 @@ class IosLiveScanService
 
       job = IpaSnapshotJob.find(job_id)
 
-      return nil if job.nil? || job.job_type != 'one_off'
+      return nil if job.nil? || job.job_type != 'one_off' || job.job_type != 'test'
       
       snapshot = job.ipa_snapshots.first # shouldn't matter...only one snapshot
 
