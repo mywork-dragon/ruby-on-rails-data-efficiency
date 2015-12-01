@@ -45,7 +45,8 @@ Rails.application.routes.draw do
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
 
-  get 'api/sdk' => 'api#get_sdk'
+  get 'api/sdk/android' => 'api#get_android_sdk'
+  get 'api/sdk/ios' => 'api#get_ios_sdk'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 

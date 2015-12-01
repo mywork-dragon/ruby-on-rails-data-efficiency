@@ -24,13 +24,12 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/sdk',
+        url: API_URI_BASE + 'api/sdk/' + $routeParams.platform,
         params: {id: $routeParams.id}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
         sdkDetailsCtrl.queryInProgress = false;
-        /* Sets html title attribute */
 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(

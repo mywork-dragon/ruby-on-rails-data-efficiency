@@ -821,7 +821,6 @@ class ApiController < ApplicationController
     render json: {job_id: job_id}
   end
 
-
   def android_sdks_exist
 
     android_app_id = params['appId']
@@ -1180,6 +1179,7 @@ class ApiController < ApplicationController
     render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
 
+  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
   def export_newest_apps_chart_to_csv
 
     apps = []
@@ -1451,8 +1451,7 @@ class ApiController < ApplicationController
     render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
-  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
-  def get_sdk
+  def get_android_sdk
     sdk_id = params['id']
     sdk = AndroidSdkCompany.find(sdk_id)
 
@@ -1466,6 +1465,24 @@ class ApiController < ApplicationController
         openSource: sdk.open_source,
         platform: 'android',
         numOfApps: apps_count
+    }
+    render json: @sdk_json
+  end
+
+  def get_ios_sdk
+    sdk_id = params['id']
+    # sdk =
+
+    # apps_count =
+
+    @sdk_json = {
+        id: -1,
+        name: "IOS TEST",
+        website: "",
+        favicon: "http://robohash.org/Alpha118350.png?size=350x350",
+        openSource: false,
+        platform: "ios",
+        numOfApps: -9999
     }
     render json: @sdk_json
   end
