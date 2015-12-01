@@ -28,14 +28,14 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               sdkErrorMessage = "No SDKs in App";
               break;
             case 2:
-              sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
+              sdkErrorMessage = "Sorry, SDKs Not Available - App Removed from Google Play";
               androidLiveScanCtrl.displayStatus = "taken_down";
               break;
             case 3:
               sdkErrorMessage = "Error - Please Try Again";
               break;
             case 4:
-              sdkErrorMessage = "SDKs Not Available for Paid Apps";
+              sdkErrorMessage = "Sorry, SDKs Not Available for Paid Apps";
               break;
             case 5:
               androidLiveScanCtrl.noSdkData = false;
