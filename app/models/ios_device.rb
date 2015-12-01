@@ -89,7 +89,7 @@ class IosDevice < ActiveRecord::Base
     def check_for_model_name(model_name)
       ios_device_model = IosDeviceModel.find_by_name(model_name)
 
-      raise "Could not find model #{model_name} in DB. Add it to the DB if it's a new model."
+      raise "Could not find model #{model_name} in DB. Add it to the DB if it's a new model." if ios_device_model.nil?
 
       ios_device_model
     end
