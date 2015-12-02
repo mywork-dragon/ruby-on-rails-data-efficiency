@@ -193,10 +193,9 @@ class CocoapodSdkServiceWorker
 
 		# if github, get the repo identifier
 		github_repo_identifier = if /github\.com/.match(source)
-			url = sourceß
 
 			begin
-				GithubService.get_repo_data(url)['id']
+				GithubService.get_repo_data(source)['id']
 			rescue
 				nil
 			end

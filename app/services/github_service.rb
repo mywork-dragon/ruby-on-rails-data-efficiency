@@ -162,6 +162,21 @@ class GithubService
         end
       end
     end
+
+    def check_limits
+      GithubAccount.all.each do |acct|
+        params = {
+          'client_id' => acct.client_id,
+          'client_secret' => acct.client_secret
+        }
+
+        body = JSON.parse(Proxy.get_body_from_url('https://api.github.com/rate_limit',params: params))
+
+        puts "Account #{acct.id} has #{body['resources']['core']['remaining']} / #{body['resources']['core']['limit']}"
+      end
+
+      nil
+    end
   end
 
 end
