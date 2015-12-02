@@ -38,7 +38,7 @@ class IosLiveScanServiceWorker
       end
 
       # check if devices compatible
-      if !device_compatible(devices: data['devices'])
+      if !device_compatible?(devices: data['devices'])
         job.live_scan_status = :device_incompatible
         job.save
 
@@ -86,10 +86,12 @@ class IosLiveScanServiceWorker
     end
   end
 
-  # jlew
-  def device_compatible(devices: devices)
-    # TODO: implement
-    true
+
+  # Are all devices compatible?
+  # @author Jason Lew
+  def device_compatible?(devices: devices)
+    available_devices = IosDeviceFamily.uniq.pluck(:lookup_name).compact
+    (available_devices - devices).empty? # whether all available devices support the app
   end
 
   def should_update(ios_app_id:, version:)
