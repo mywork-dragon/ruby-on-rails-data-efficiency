@@ -7674,8 +7674,12 @@ pre {
   top: 2px;
 }
 
-.sdkOpenSourceSection li > span {
+.sdksListView > .row > .col-md-6 li > span {
   word-break: break-all;
+}
+
+.sdkOpenSourceSection {
+  padding-left: 0;
 }
 
 #nav-wrapper > div {
