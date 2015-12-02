@@ -86,6 +86,7 @@ class IosLiveScanServiceWorker
     end
   end
 
+  # jlew
   def device_compatible(devices: devices)
     # TODO: implement
     true
