@@ -10,16 +10,13 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       // If display status is correct, change ctrl value
       if(appDataService.displayStatus.appId == $routeParams.id) {
         androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
-        console.log('$$$$', 'Display Updated by Service');
       }
     });
 
     if(appDataService.displayStatus.appId == $routeParams.id) {
       androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
-      console.log('$$$$', 'Display Updated by Service');
     } else {
       androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
-      console.log('$$$$', 'Display Set to Normal');
     }
 
     sdkLiveScanService.checkForAndroidSdks(androidAppId)
