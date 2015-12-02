@@ -138,7 +138,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 iosLiveScanCtrl.scanStatusPercentage = 10;
                 break;
               case 7:
-                iosLiveScanCtrl.scanStatusPercentage = 25;
+                iosLiveScanCtrl.scanStatusPercentage = 20;
                 break;
               case 8:
                 iosLiveScanCtrl.scanStatusPercentage = 50;
