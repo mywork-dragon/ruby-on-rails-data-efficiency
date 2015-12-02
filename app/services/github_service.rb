@@ -110,6 +110,19 @@ class GithubService
   end
 
   class << self
+
+    def get_author_info(repo)
+      service = self.new
+      repo_data = service.get_repo_data(repo)
+
+      if repo_data['owner'] && repo_data['owner']['url']
+        JSON.parse(service.make_request(repo_data['owner']['url']))
+      else
+        nil
+      end
+
+    end
+
     def get_repo_data(repo)
       self.new.get_repo_data(repo)
     end

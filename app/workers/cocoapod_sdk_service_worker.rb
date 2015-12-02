@@ -7,6 +7,7 @@ class CocoapodSdkServiceWorker
 	MIN_OS_DOWNLOADS = 500
 	MIN_COMPANY_DOWNLOADS = 250
 	BACKTRACE_SIZE = 5
+	OS_URL_REGEX = /(?:bitbucket|github|sourceforge)/
 
 	def perform(sdk_name, update_id)
 		begin
@@ -148,9 +149,30 @@ class CocoapodSdkServiceWorker
 		pod['homepage'] || pod["http"] || ""
 	end
 
-	def is_open_source?(pod)
+	def get_favicon_from_pod(pod: pod)
+
 		website = get_website(pod)
-		website.match(/(?:bitbucket|github|sourceforge)/) ? true : false
+
+		favicon = begin
+			if website.match(/github\.com/)
+				author = GithubService.get_author_info(website)
+				website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
+			end
+
+			FaviconService.get_favicon_from_url(url: website)
+		rescue
+			FaviconService.get_default_favicon
+		end
+
+		favicon
+
+	end
+
+	def is_open_source?(pod)
+
+		source = pod['http'] || pod['git'] || ""
+
+		source.match(OS_URL_REGEX) ? true : false
 	end
 
 	def pod_to_ios_sdk_row(pod)
@@ -159,11 +181,7 @@ class CocoapodSdkServiceWorker
 		summary = pod['summary']
 
 		# get the favicon
-		begin
-			favicon_url = WWW::Favicon.new.find(website)
-		rescue
-			favicon_url = nil
-		end
+		favicon_url = get_favicon_from_pod(pod: pod)
 
 		# determine open source
 		open_source = is_open_source?(pod)
@@ -213,9 +231,10 @@ class CocoapodSdkServiceWorker
 			raise "Unexpected malformed pod json: #{res}"
 		end
 
-		pod["git"] = pod["source"]["git"]
-		pod["http"] = pod["source"]["http"]
-		pod["tag"] = pod["source"]["tag"]
+		# custom properties moved to the top level
+		pod['git'] = pod['source']['git']
+		pod['http'] = pod['source']['http']
+		pod['tag'] = pod['source']['tag']
 
 		pod
 	end
