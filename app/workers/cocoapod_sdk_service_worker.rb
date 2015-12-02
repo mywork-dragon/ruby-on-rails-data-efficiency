@@ -168,9 +168,13 @@ class CocoapodSdkServiceWorker
 
 	end
 
+	def get_source(pod)
+		pod['http'] || pod['git'] || ""
+	end
+
 	def is_open_source?(pod)
 
-		source = pod['http'] || pod['git'] || ""
+		source = get_source(pod)
 
 		source.match(OS_URL_REGEX) ? true : false
 	end
@@ -183,13 +187,13 @@ class CocoapodSdkServiceWorker
 		# get the favicon
 		favicon_url = get_favicon_from_pod(pod: pod)
 
-		# determine open source
 		open_source = is_open_source?(pod)
 		deprecated = check_deprecated(pod)
+		source = get_source(pod)
 
 		# if github, get the repo identifier
-		github_repo_identifier = if /github.(com|io)/.match(website)
-			url = (pod['git'] && pod['git'].include?('github')) ? pod['git'] : pod['website']
+		github_repo_identifier = if /github\.com/.match(source)
+			url = sourceß
 
 			begin
 				GithubService.get_repo_data(url)['id']
