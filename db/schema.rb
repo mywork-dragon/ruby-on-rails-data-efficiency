@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202185144) do
+ActiveRecord::Schema.define(version: 20151202230713) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
   end
 
   add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
-  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", using: :btree
+  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", unique: true, using: :btree
 
   create_table "api_keys", force: true do |t|
     t.string   "key"
@@ -1049,7 +1049,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
   end
 
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
-  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", using: :btree
+  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", unique: true, using: :btree
 
   create_table "ios_word_occurences", force: true do |t|
     t.string   "word"
