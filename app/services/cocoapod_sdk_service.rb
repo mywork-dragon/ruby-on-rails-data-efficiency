@@ -33,9 +33,16 @@ class CocoapodSdkService
 			i = IosSdkUpdate.create!(cocoapods_sha: repo_state["commit"]["sha"])
 
 			if Rails.env.production?
-				sdks.each do |sdk|
-					CocoapodSdkServiceWorker.perform_async(sdk, i.id)
+				batch = Sidekiq::Batch.new
+				batch.description = 'scraping the cocoapods repository'
+				batch.on(:complete, 'CocoapodSdkService#on_complete')
+
+				batch.jobs do
+					sdks.each do |sdk|
+						CocoapodSdkServiceWorker.perform_async(sdk, i.id)
+					end
 				end
+				
 			else
 				sdks.sample(5) do |sdk|
 					CocoapodSdkServiceWorker.new.perform(sdk, i.id)
@@ -61,4 +68,10 @@ class CocoapodSdkService
 			
 		end
 	end
+
+	def on_complete(status, options)
+		Slackiq.notify(webhook_name: :main, status: status, title: 'cocoapods scrape')
+	end
+
+
 end

@@ -5,6 +5,8 @@ class IosParentService
 
     def run(app_identifier)
 
+      raise "DEPRECATED"
+
       # get a device
       device = reserve_device
       return nil if device.blank?
@@ -47,6 +49,8 @@ class IosParentService
 
     def reserve_device(purpose, id = nil)
 
+      raise "DEPRECATED"
+
       purpose = :one_off if purpose.nil?
 
       device = IosDevice.transaction do
@@ -76,6 +80,8 @@ class IosParentService
 
     ########### Functions for local development only ###########
     def run_many(id = nil)
+
+      raise "DEPRECATED"
 
       device = get_device(id)
 
@@ -125,6 +131,8 @@ class IosParentService
 
     # for testing without uploading results to database
     def single(app_identifier, id=nil)
+
+      raise "DEPRECATED"
 
       # get a device
       device = reserve_device(id)

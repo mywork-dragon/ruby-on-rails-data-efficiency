@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202185144) do
+ActiveRecord::Schema.define(version: 20151202020529) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -926,11 +926,9 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ios_device_arch_id"
-    t.string   "lookup_name"
   end
 
   add_index "ios_device_families", ["ios_device_arch_id"], name: "index_ios_device_families_on_ios_device_arch_id", using: :btree
-  add_index "ios_device_families", ["lookup_name"], name: "index_ios_device_families_on_lookup_name", using: :btree
 
   create_table "ios_device_models", force: true do |t|
     t.integer  "ios_device_family_id"
@@ -1027,8 +1025,9 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
+    t.integer  "sdk_company_id"
+    t.integer  "source"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
