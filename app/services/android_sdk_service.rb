@@ -30,7 +30,7 @@ class AndroidSdkService
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-			# ap google_check[:matched]
+			ap google_check[:matched]
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					# sdk_company = save_company(name: result[:name], url: result[:url])
@@ -50,7 +50,7 @@ class AndroidSdkService
 
 		end
 
-		def save_sdk(name:, website:, open_source:, snap_id:)
+		def save_sdk(name:, website:, open_source:)
 			begin
     		AndroidSdk.create(name: name, website: website, open_source: open_source)
     	rescue
@@ -69,7 +69,11 @@ class AndroidSdkService
 	    	sdk_package.save
 	    end
     	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-    	# AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk.id, apk_snapshot_id: snap_id)
+      begin
+        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk.id, apk_snapshot_id: snap_id)
+      rescue
+        nil
+      end
     end
 
 		def querify(packages)
