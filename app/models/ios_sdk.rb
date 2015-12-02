@@ -9,4 +9,6 @@ class IosSdk < ActiveRecord::Base
   has_many :ipa_snapshots, through: :ios_sdks_ipa_snapshots
   has_many :cocoapods
 
+  enum source: [:cocoapods, :package_lookup]
+
 end

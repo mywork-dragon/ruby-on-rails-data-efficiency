@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201072745) do
+ActiveRecord::Schema.define(version: 20151202020529) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1027,6 +1027,7 @@ ActiveRecord::Schema.define(version: 20151201072745) do
     t.integer  "github_repo_identifier"
     t.integer  "ios_sdk_source_group_id"
     t.integer  "sdk_company_id"
+    t.integer  "source"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
