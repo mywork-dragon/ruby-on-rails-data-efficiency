@@ -16,6 +16,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     iosLiveScanCtrl.checkSdkSnapshotStatus = function(data) {
       if(iosLiveScanCtrl.isEmpty(data.installed_sdk_companies) && iosLiveScanCtrl.isEmpty(data.installed_open_source_sdks)) {
         iosLiveScanCtrl.noSdkSnapshot = true;
+      } else {
+        iosLiveScanCtrl.noSdkSnapshot = false;
       }
     };
 
