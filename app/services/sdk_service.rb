@@ -193,14 +193,22 @@ class SdkService
 
 			# this function will use split paths rather than platform map because columns on the different sdk tables are different
 			if platform == :ios
+
 				begin
-					favicon = proposed[:favicon] || WWW::Favicon.new.find(proposed[:website])
+					favicon = proposed[:favicon] || FaviconService.get_favicon_from_url(url: proposed[:website])
 				rescue
-					favicon = nil
+					favicon = FaviconService.get_default_favicon
 				end
 
 				begin
-					sdk = IosSdk.create!(name: proposed[:name], website: proposed[:website], favicon: favicon, open_source: proposed[:open_source],github_repo_identifier: proposed[:github_repo_identifier])
+					sdk = IosSdk.create!({
+						name: proposed[:name],
+						website: proposed[:website],
+						favicon: favicon,
+						open_source: proposed[:open_source],
+						github_repo_identifier: proposed[:github_repo_identifier],
+						source: IosSdk.sources[:package_lookup]
+					})
 				rescue ActiveRecord::RecordNotUnique => e
 					sdk = IosSdk.find_by_name(proposed[:name])
 				end
@@ -301,7 +309,15 @@ class SdkService
 
 					next if app_name.match(/#{company}/i)
 
-					return {website: url, favicon: 'https://assets-cdn.github.com/favicon.ico', open_source: true, name: company, github_repo_identifier: srd['id']}.merge(srd)
+					favicon = begin
+						author = GithubService.get_author_info(website)
+						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
+						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
+					rescue
+						FaviconService.get_favicon_from_url(url: 'http://github.com')
+					end
+
+					return {website: url, favicon: favicon, open_source: true, name: company, github_repo_identifier: srd['id']}.merge(srd)
 				end
 			end
 			nil

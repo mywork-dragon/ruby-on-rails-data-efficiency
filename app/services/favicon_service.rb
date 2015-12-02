@@ -3,7 +3,9 @@ class FaviconService
 
     # returns a favicon url
     def get_favicon_from_url(url:)
-      host = URI(url).host
+      url = "http://#{url}" if URI.parse(url).scheme.nil? # put http on the front
+      host = URI.parse(url).host || ""
+      host = host.gsub(/^www\./, '')
       "https://www.google.com/s2/favicons?domain=#{host}"
     end
 

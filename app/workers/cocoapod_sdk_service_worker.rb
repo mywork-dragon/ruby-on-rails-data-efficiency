@@ -205,7 +205,8 @@ class CocoapodSdkServiceWorker
 			favicon: favicon_url,
 			open_source: open_source,
 			deprecated: deprecated,
-			github_repo_identifier: github_repo_identifier
+			github_repo_identifier: github_repo_identifier,
+			source: IosSdk.sources[:cocoapods]
 		}
 	end
 
