@@ -13,8 +13,14 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         console.log('$$$$', 'Display Updated by Service');
       }
     });
-    androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
-    console.log('$$$$', 'Display Set to Normal');
+
+    if(appDataService.displayStatus.appId == $routeParams.id) {
+      androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
+      console.log('$$$$', 'Display Updated by Service');
+    } else {
+      androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
+      console.log('$$$$', 'Display Set to Normal');
+    }
 
     sdkLiveScanService.checkForAndroidSdks(androidAppId)
       .success(function(data) {
