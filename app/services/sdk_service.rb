@@ -8,6 +8,8 @@ class SdkService
 		def platform_map(platform:)
 			if platform == :ios
 				{
+					app_table: IosApp,
+					app_column: :ios_app_id,
 					snapshot_table: IpaSnapshot,
 					snapshot_column: :ipa_snapshot_id,
 					sdk_table: IosSdk,
@@ -17,6 +19,8 @@ class SdkService
 			else
 				raise "Not implemented"
 				{
+					app_table: AndroidApp,
+					app_column: :android_app_id,
 					snapshot_table: ApkSnapshot,
 					snapshot_column: :apk_snapshot_id,
 					sdk_table: AndroidSdk,
@@ -65,7 +69,7 @@ class SdkService
 			found_sdks = matches.values.uniq
 			remaining = packages - matches.keys
 
-			new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only)
+			new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only, snapshot_id: snapshot_id)
 
 			if !read_only
 				new_matches.each do |package_arr, sdk|
@@ -76,10 +80,6 @@ class SdkService
 			end
 
 			new_sdks = new_matches.values.uniq
-
-			ap found_sdks
-
-			ap new_sdks
 
 			(found_sdks + new_sdks).uniq
 		end
@@ -131,7 +131,7 @@ class SdkService
 	    name
 		end
 
-		def create_sdks_from_packages(packages:, platform:, read_only: false)
+		def create_sdks_from_packages(packages:, platform:, snapshot_id:,read_only: false)
 
 			col = platform_map(platform: platform)[:sdk_column]
 
@@ -151,7 +151,7 @@ class SdkService
 
 			# get mapping from array of packages back to sdk (either existing or new)
 			packages_to_sdk = query_hash.keys.reduce({}) do |memo, query|
-				sdk = google_sdk(query: query, platform: platform) || google_github(query: query, platform: platform)
+				sdk = google_sdk(query: query, platform: platform, snapshot_id: snapshot_id) || google_github(query: query, platform: platform, snapshot_id: snapshot_id)
 
 				if !sdk.nil?
 					existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
@@ -193,14 +193,22 @@ class SdkService
 
 			# this function will use split paths rather than platform map because columns on the different sdk tables are different
 			if platform == :ios
+
 				begin
-					favicon = proposed[:favicon] || WWW::Favicon.new.find(proposed[:website])
+					favicon = proposed[:favicon] || FaviconService.get_favicon_from_url(url: proposed[:website])
 				rescue
-					favicon = nil
+					favicon = FaviconService.get_default_favicon
 				end
 
 				begin
-					sdk = IosSdk.create!(name: proposed[:name], website: proposed[:website], favicon: favicon, open_source: proposed[:open_source],github_repo_identifier: proposed[:github_repo_identifier])
+					sdk = IosSdk.create!({
+						name: proposed[:name],
+						website: proposed[:website],
+						favicon: favicon,
+						open_source: proposed[:open_source],
+						github_repo_identifier: proposed[:github_repo_identifier],
+						source: IosSdk.sources[:package_lookup]
+					})
 				rescue ActiveRecord::RecordNotUnique => e
 					sdk = IosSdk.find_by_name(proposed[:name])
 				end
@@ -228,22 +236,30 @@ class SdkService
 		end
 
 		# Get the url of an sdk if it is valid
-		def google_sdk(query:, platform:)
+		def google_sdk(query:, platform:, snapshot_id:)
 			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
 		    company = query.capitalize
-		    return {website: url, name: company, open_source: false} if sdk_company_valid?(query: query, platform: platform, url: url, company: company)
+		    return {website: url, name: company, open_source: false} if sdk_company_valid?(query: query, platform: platform, url: url, company: company, snapshot_id: snapshot_id)
 			end
 			nil
 		end
 
 		# Whether the SDK company is valid
-		def sdk_company_valid?(query:, platform:, url:, company:)
+		def sdk_company_valid?(query:, platform:, url:, company:, snapshot_id:)
 			# Eliminate known companies
 			known_companies = %w(
-				Apple 
+				Apple
+				Github
+				Bitbucket
+				Sourceforge
 			)
 
 			return false if known_companies.include?(company)
+
+			# if the proposed company exists in the app name, it's most likely not a real SDK
+			app_name = get_app_name(platform: platform, snapshot_id: snapshot_id)
+
+			return false if app_name.match(/#{company}/i)
 
 			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
 			return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
@@ -251,9 +267,19 @@ class SdkService
 			false
 		end
 
+		# given a snapshot id and a platform, return the app name
+		def get_app_name(platform:, snapshot_id:)
+			map = platform_map(platform: platform)
+
+			app_id = map[:snapshot_table].find(snapshot_id)[map[:app_column]]
+			app_name = map[:app_table].find(app_id).name
+
+			app_name || ""
+		end
+
 		# Get the url and company name of an sdk from github if it is valid
 
-		def google_github(query:, platform:)
+		def google_github(query:, platform:, snapshot_id:)
 			return nil unless github_query_valid?(query)
 
 			q = "#{query} #{platform} site:github.com"
@@ -278,7 +304,20 @@ class SdkService
 						next if dice_similarity < DICE_SIMILARITY_THRESHOLD	# query not similar enough to repo name
 					end
 
-					return {website: url, favicon: 'https://assets-cdn.github.com/favicon.ico', open_source: true, name: query.capitalize, github_repo_identifier: srd['id']}.merge(srd)
+					company = query.capitalize
+					app_name = get_app_name(platform: platform, snapshot_id: snapshot_id)
+
+					next if app_name.match(/#{company}/i)
+
+					favicon = begin
+						author = GithubService.get_author_info(website)
+						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
+						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
+					rescue
+						FaviconService.get_favicon_from_url(url: 'http://github.com')
+					end
+
+					return {website: url, favicon: favicon, open_source: true, name: company, github_repo_identifier: srd['id']}.merge(srd)
 				end
 			end
 			nil
@@ -320,6 +359,15 @@ class SdkService
 
 		def camel_split(str)
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
+		end
+
+		#### FOR TESTING #####
+		def find_source
+			IosSdk.where('id > 2865').map do |sdk|
+				snaps = IosSdksIpaSnapshot.where(ios_sdk_id: sdk.id).map {|x| x.snapshot}
+				apps = snaps.map {|s| s.ios_app.name}.uniq
+				{name: sdk.name, website: sdk.website, apps: apps}
+			end
 		end
 
 	end
