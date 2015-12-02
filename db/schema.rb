@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124001114) do
+ActiveRecord::Schema.define(version: 20151202230713) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 20151124001114) do
   end
 
   add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
-  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", using: :btree
+  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", unique: true, using: :btree
 
   create_table "api_keys", force: true do |t|
     t.string   "key"
@@ -891,6 +891,16 @@ ActiveRecord::Schema.define(version: 20151124001114) do
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id", "ios_app_id"], name: "index_website_id_and_ios_app_id", using: :btree
 
+  create_table "ios_classification_exceptions", force: true do |t|
+    t.integer  "ipa_snapshot_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_classification_exceptions", ["ipa_snapshot_id"], name: "index_ios_classification_exceptions_on_ipa_snapshot_id", using: :btree
+
   create_table "ios_developers", force: true do |t|
     t.string   "name"
     t.string   "identifier"
@@ -903,6 +913,35 @@ ActiveRecord::Schema.define(version: 20151124001114) do
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
 
+  create_table "ios_device_arches", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_device_arches", ["name"], name: "index_ios_device_arches_on_name", using: :btree
+
+  create_table "ios_device_families", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ios_device_arch_id"
+    t.string   "lookup_name"
+  end
+
+  add_index "ios_device_families", ["ios_device_arch_id"], name: "index_ios_device_families_on_ios_device_arch_id", using: :btree
+  add_index "ios_device_families", ["lookup_name"], name: "index_ios_device_families_on_lookup_name", using: :btree
+
+  create_table "ios_device_models", force: true do |t|
+    t.integer  "ios_device_family_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+  end
+
+  add_index "ios_device_models", ["ios_device_family_id"], name: "index_ios_device_models_on_ios_device_family_id", using: :btree
+  add_index "ios_device_models", ["name"], name: "index_ios_device_models_on_name", using: :btree
+
   create_table "ios_devices", force: true do |t|
     t.string   "serial_number"
     t.string   "ip"
@@ -913,12 +952,16 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.datetime "last_used"
     t.string   "ios_version"
     t.text     "description"
+    t.integer  "softlayer_proxy_id"
+    t.integer  "ios_device_model_id"
   end
 
+  add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
+  add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
@@ -942,6 +985,16 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "ios_sdk_source_groups", force: true do |t|
+    t.string   "name"
+    t.integer  "ios_sdk_id"
+    t.boolean  "flagged"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_source_groups", ["ios_sdk_id"], name: "index_ios_sdk_source_groups_on_ios_sdk_id", using: :btree
 
   create_table "ios_sdk_update_exceptions", force: true do |t|
     t.string   "sdk_name"
@@ -967,7 +1020,7 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",                default: false
+    t.boolean  "flagged",                 default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -975,11 +1028,14 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
     t.integer  "sdk_company_id"
+    t.integer  "ios_sdk_source_group_id"
+    t.integer  "source"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
   add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", using: :btree
+  add_index "ios_sdks", ["ios_sdk_source_group_id"], name: "index_ios_sdks_on_ios_sdk_source_group_id", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
@@ -993,7 +1049,7 @@ ActiveRecord::Schema.define(version: 20151124001114) do
   end
 
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
-  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", using: :btree
+  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", unique: true, using: :btree
 
   create_table "ios_word_occurences", force: true do |t|
     t.string   "word"
@@ -1276,6 +1332,14 @@ ActiveRecord::Schema.define(version: 20151124001114) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "softlayer_proxies", force: true do |t|
+    t.string   "public_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "softlayer_proxies", ["public_ip"], name: "index_softlayer_proxies_on_public_ip", using: :btree
 
   create_table "super_proxies", force: true do |t|
     t.boolean  "active"

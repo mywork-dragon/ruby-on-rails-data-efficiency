@@ -1,11 +1,13 @@
-class IosSdkServiceWorker
+class CocoapodSdkServiceWorker
 
 	include Sidekiq::Worker
 
 	sidekiq_options :retry => 2, queue: :default
 
-	MIN_DOWNLOADS = 500
+	MIN_OS_DOWNLOADS = 500
+	MIN_COMPANY_DOWNLOADS = 250
 	BACKTRACE_SIZE = 5
+	OS_URL_REGEX = /(?:bitbucket|github|sourceforge)/
 
 	def perform(sdk_name, update_id)
 		begin
@@ -123,7 +125,7 @@ class IosSdkServiceWorker
 			json = JSON.parse(data.body)
 
 			# throws out new ones...but low bar means if they're good, they'll get picked up eventually
-			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || json["stats"]["download_total"] < MIN_DOWNLOADS
+			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || json["stats"]["download_total"] < (is_open_source?(pod) ? MIN_OS_DOWNLOADS : MIN_COMPANY_DOWNLOADS)
 		end
 
 		true
@@ -143,21 +145,61 @@ class IosSdkServiceWorker
 		}
 	end
 
+	def get_website(pod)
+		pod['homepage'] || pod["http"] || ""
+	end
+
+	def get_favicon_from_pod(pod: pod)
+
+		website = get_website(pod)
+
+		favicon = begin
+			if website.match(/github\.com/)
+				author = GithubService.get_author_info(website)
+				website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
+			end
+
+			FaviconService.get_favicon_from_url(url: website)
+		rescue
+			FaviconService.get_default_favicon
+		end
+
+		favicon
+
+	end
+
+	def get_source(pod)
+		pod['http'] || pod['git'] || ""
+	end
+
+	def is_open_source?(pod)
+
+		source = get_source(pod)
+
+		source.match(OS_URL_REGEX) ? true : false
+	end
+
 	def pod_to_ios_sdk_row(pod)
-		website = pod['homepage'] || pod["http"]
+		website = get_website(pod)
 		name = pod['name']
 		summary = pod['summary']
 
 		# get the favicon
-		begin
-			favicon_url = WWW::Favicon.new.find(website)
-		rescue
-			favicon_url = nil
-		end
+		favicon_url = get_favicon_from_pod(pod: pod)
 
-		# determine open source
-		open_source = website.match(/(?:bitbucket|github|sourceforge)/) ? true : false
+		open_source = is_open_source?(pod)
 		deprecated = check_deprecated(pod)
+		source = get_source(pod)
+
+		# if github, get the repo identifier
+		github_repo_identifier = if /github\.com/.match(source)
+
+			begin
+				GithubService.get_repo_data(source)['id']
+			rescue
+				nil
+			end
+		end
 
 		{
 			name: name,
@@ -165,7 +207,9 @@ class IosSdkServiceWorker
 			summary: summary,
 			favicon: favicon_url,
 			open_source: open_source,
-			deprecated: deprecated
+			deprecated: deprecated,
+			github_repo_identifier: github_repo_identifier,
+			source: IosSdk.sources[:cocoapods]
 		}
 	end
 
@@ -191,9 +235,10 @@ class IosSdkServiceWorker
 			raise "Unexpected malformed pod json: #{res}"
 		end
 
-		pod["git"] = pod["source"]["git"]
-		pod["http"] = pod["source"]["http"]
-		pod["tag"] = pod["source"]["tag"]
+		# custom properties moved to the top level
+		pod['git'] = pod['source']['git']
+		pod['http'] = pod['source']['http']
+		pod['tag'] = pod['source']['tag']
 
 		pod
 	end
