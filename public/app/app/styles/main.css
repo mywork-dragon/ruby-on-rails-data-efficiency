@@ -7674,6 +7674,10 @@ pre {
   top: 2px;
 }
 
+.sdkOpenSourceSection li > span {
+  word-break: break-all;
+}
+
 #nav-wrapper > div {
   padding-bottom: 100px;
 }
