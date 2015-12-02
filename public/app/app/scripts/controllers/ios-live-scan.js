@@ -13,6 +13,17 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       catch(err) {}
     };
 
+    // Takes an array and number of slices as params, splits into two
+    var splitArray = function(a, n) {
+      var len = a.length,out = [], i = 0;
+      while (i < len) {
+        var size = Math.ceil((len - i) / n--);
+        out.push(a.slice(i, i + size));
+        i += size;
+      }
+      return out;
+    };
+
     iosLiveScanCtrl.checkSdkSnapshotStatus = function(data) {
       if(iosLiveScanCtrl.isEmpty(data.installed_sdk_companies) && iosLiveScanCtrl.isEmpty(data.installed_open_source_sdks)) {
         iosLiveScanCtrl.noSdkSnapshot = true;
@@ -25,9 +36,14 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
       sdkLiveScanService.checkForIosSdks(appId)
         .success(function (data) {
+          var installedSdks = splitArray(data.installed_sdks, 2);
           iosLiveScanCtrl.sdkData = {
+            'sdkCompanies': installedSdks[0],
+            'sdkOpenSource': installedSdks[1],
+            /*
             'sdkCompanies': data.installed_sdk_companies,
             'sdkOpenSource': data.installed_open_source_sdks,
+            */
             'lastUpdated': data.updated,
             'errorCode': data.error_code
           };

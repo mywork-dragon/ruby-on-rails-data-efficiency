@@ -9,40 +9,38 @@
             <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
           </div>
 
-          <li ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.errorCode == null && !iosLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.errorCode == null && !iosLiveScanCtrl.noSdkSnapshot">
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">
-                  <strong ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">SDK Companies</strong>
                   <ul ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkCompanies)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.sdkCompanies">
+                    <li ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkCompanies">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
                       <span ng-if="canViewStorewideSdks">
-                        <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                        <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
+                        <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                       </span>
                       <span ng-if="!canViewStorewideSdks">
-                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
+                        <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                       </span>
                     </li>
                   </ul>
                 </div>
 
                 <div class="col-md-6 sdkOpenSourceSection" ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource)">
-                  <strong ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource)">Open-Source SDKs</strong>
                   <ul ng-hide="iosLiveScanCtrl.isEmpty(iosLiveScanCtrl.sdkData.sdkOpenSource)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in iosLiveScanCtrl.sdkData.sdkOpenSource">
+                    <li ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkOpenSource">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>
                       <span ng-if="canViewStorewideSdks">
-                        <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                        <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
+                        <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                       </span>
                       <span ng-if="!canViewStorewideSdks">
-                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
+                        <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                       </span>
                     </li>
                   </ul>

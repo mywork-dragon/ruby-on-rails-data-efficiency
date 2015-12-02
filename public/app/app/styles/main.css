@@ -7608,6 +7608,10 @@ pre {
   border-bottom: none;
 }
 
+.iosSdkLiveScanDisplay {
+  padding-top: 0 !important;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
