@@ -202,7 +202,7 @@ class IosDeviceService
       sleep(5)
       puts "Try #{n}"
       ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
-      if ret && ret.chomp == 'Could not find OPEN button'
+      if ret && (ret.chomp == 'Could not find OPEN button' || ret.chomp == 'Cannot locate button')
         puts "Not downloaded yet"
         ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'open app store when not finished downloading')
       else
