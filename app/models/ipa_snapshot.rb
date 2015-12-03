@@ -15,4 +15,11 @@ class IpaSnapshot < ActiveRecord::Base
 
   enum download_status: [:starting, :retrying, :cleaning, :complete]
   enum scan_status: [:scanning, :scanned, :failed]
+
+  before_create :set_good_as_of_date
+
+  def set_good_as_of_date
+    self.good_as_of_date = Time.now
+  end
+  
 end
