@@ -60,7 +60,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           // LS Success Analytics - MixPanel & Slacktivity
           if(calledAfterSuccess) {
-            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, data);
+            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, iosLiveScanCtrl.sdkData);
           }
 
         });

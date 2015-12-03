@@ -87,10 +87,8 @@ angular.module("appApp")
             mixpanelEventTitle = "SDK Live Scan Failed";
             liveScanSlacktivityColor = "#E82020";
           }
-
-          var sdkInstalls = sdkData.installedSdks;
-          sdkInstalls.map(function(sdk) { return sdk.name; });
-
+          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
+          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             mixpanelEventTitle, {
@@ -98,7 +96,8 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
-              'sdkInstalls': sdkInstalls,
+              'sdkCompanies': sdkCompanies,
+              'sdkOpenSource': sdkOpenSource,
               'lastUpdated': sdkData.lastUpdated,
               'errorCode': sdkData.errorCode,
               'errorMessage': sdkData.errorMessage
@@ -114,7 +113,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkInstalls': sdkInstalls,
+            'sdkCompanies': sdkCompanies,
+            'sdkOpenSource': sdkOpenSource,
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage
@@ -185,6 +185,7 @@ angular.module("appApp")
 
           var sdkInstalls = sdkData.installedSdks;
           sdkInstalls.map(function(sdk) { return sdk.name; });
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Live Scan Success", {
