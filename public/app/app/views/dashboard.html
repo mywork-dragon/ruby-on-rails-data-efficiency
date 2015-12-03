@@ -214,8 +214,10 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.app.appIcon.large}}" />
-                  <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">{{app.app.name}}</a>
+                  <a href="#/app/{{appPlatform.platform}}/{{app.app.id}}">
+                    <img ng-src="{{app.app.appIcon.large}}" />
+                    {{app.app.name}}
+                  </a>
                 </span>
                 <span class="badge badge-primary" ng-if="0 <= app.app.releasedDays && app.app.releasedDays <= 15">New</span>
               </td>

@@ -239,7 +239,10 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{app.appIcon.large}}" /> <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">{{app.name}}</a>
+                  <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
+                    <img ng-src="{{app.appIcon.large}}" />
+                    {{app.name}}
+                  </a>
                 </span>
                 <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
               </td>
