@@ -87,8 +87,10 @@ angular.module("appApp")
             mixpanelEventTitle = "SDK Live Scan Failed";
             liveScanSlacktivityColor = "#E82020";
           }
-          var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
-          var sdkOpenSource = Object.keys(sdkData.sdkOpenSource).toString();
+
+          var sdkInstalls = sdkData.sdkCompanies.concat(sdkData.sdkOpenSource);
+          sdkInstalls.map(function(sdk) { return sdk.name; });
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             mixpanelEventTitle, {
@@ -96,8 +98,7 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
-              'sdkCompanies': sdkCompanies,
-              'sdkOpenSource': sdkOpenSource,
+              'sdkInstalls': sdkInstalls,
               'lastUpdated': sdkData.lastUpdated,
               'errorCode': sdkData.errorCode,
               'errorMessage': sdkData.errorMessage
@@ -113,8 +114,7 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkCompanies': sdkCompanies,
-            'sdkOpenSource': sdkOpenSource,
+            'sdkInstalls': sdkInstalls,
             'lastUpdated': sdkData.lastUpdated,
             'errorCode': sdkData.errorCode,
             'errorMessage': sdkData.errorMessage
@@ -183,8 +183,8 @@ angular.module("appApp")
 
           appData = data;
 
-          var sdkCompanies = Object.keys(sdkData.installed_sdk_companies).toString();
-          var sdkOpenSource = Object.keys(sdkData.installed_open_source_sdks).toString();
+          var sdkInstalls = sdkData.sdkCompanies.concat(sdkData.sdkOpenSource);
+          sdkInstalls.map(function(sdk) { return sdk.name; });
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Live Scan Success", {
@@ -192,8 +192,7 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
-              'sdkCompanies': sdkCompanies,
-              'sdkOpenSource': sdkOpenSource,
+              'sdkInstalls': sdkInstalls,
               'lastUpdated': sdkData.lastUpdated
             }
           );
@@ -207,8 +206,7 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkCompanies': sdkCompanies,
-            'sdkOpenSource': sdkOpenSource,
+            'sdkInstalls': sdkInstalls,
             'lastUpdated': sdkData.lastUpdated
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
