@@ -382,7 +382,7 @@ class IosDeviceService
     delete_applications(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
-    # run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
+    run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
 
     # validate that it was deleted
     resp = run_command(ssh, "[ -d #{app_info[:path]} ] && echo 'exists' || echo 'dne'", 'check if app bundle exists').chomp
