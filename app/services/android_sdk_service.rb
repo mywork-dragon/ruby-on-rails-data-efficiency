@@ -44,10 +44,6 @@ class AndroidSdkService
 
 			return google_check
 
-			# google_check[:missed].each do |res|
-			# 	puts res
-			# end
-
 		end
 
 		def save_sdk(name:, website:, open_source:)
@@ -59,6 +55,8 @@ class AndroidSdkService
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
+
+      # save sdk_packages
     	sdk_package = begin
     		SdkPackage.create(package: package)
     	rescue
@@ -68,9 +66,14 @@ class AndroidSdkService
 	    	sdk_package.android_sdk_id = android_sdk_id
 	    	sdk_package.save
 	    end
-    	SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+
+      # save sdk_packages_apk_snapshots
+      # MAKE THIS UNIQUE
+      SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+
+      # save android_sdks_apk_snapshots
       begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk.id, apk_snapshot_id: snap_id)
+        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
       rescue
         nil
       end
