@@ -49,7 +49,7 @@ angular.module("appApp")
           appData = data;
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "Hidden SDK Live Scan Viewed", {
+            "Hidden Android Live Scan Viewed", {
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
@@ -78,13 +78,13 @@ angular.module("appApp")
           var liveScanSlacktivityColor = "";
 
           if(sdkData.errorCode == 0) {
-            mixpanelEventTitle = "SDK Live Scan Success";
+            mixpanelEventTitle = "Android Live Scan Success";
             liveScanSlacktivityColor = "#45825A";
           } else if(sdkData.errorCode == 2 || sdkData.errorCode > 5) {
-            mixpanelEventTitle = "SDK Live Scan Status Error";
+            mixpanelEventTitle = "Android Live Scan Status Error";
             liveScanSlacktivityColor = "#A45200";
           } else {
-            mixpanelEventTitle = "SDK Live Scan Failed";
+            mixpanelEventTitle = "Android Live Scan Failed";
             liveScanSlacktivityColor = "#E82020";
           }
           var sdkCompanies = Object.keys(sdkData.sdkCompanies).toString();
@@ -141,7 +141,7 @@ angular.module("appApp")
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "SDK Live Scan Failed", {
+            "Android Live Scan Failed", {
               'companyName': appData.company.name,
               'appName': appData.name,
               'appId': appData.id,
@@ -152,8 +152,8 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
           var slacktivityData = {
-            "title": "SDK Live Scan Failed",
-            "fallback": "SDK Live Scan Failed",
+            "title": "Android Live Scan Failed",
+            "fallback": "Android Live Scan Failed",
             "color": "#E82020",
             "userEmail": userInfo.email,
             'appName': appData.name,
@@ -188,7 +188,7 @@ angular.module("appApp")
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "SDK Live Scan Success", {
+            "iOS Live Scan Success", {
               'platform': platform,
               'appName': appData.name,
               'companyName': appData.company.name,
@@ -200,8 +200,8 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
           var slacktivityData = {
-            "title": "SDK Live Scan Success",
-            "fallback": "SDK Live Scan Success",
+            "title": "iOS Live Scan Success",
+            "fallback": "iOS Live Scan Success",
             "color": "#45825A",
             "userEmail": userInfo.email,
             'appName': appData.name,
@@ -239,7 +239,7 @@ angular.module("appApp")
           appData = data;
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "SDK Live Scan Failed", {
+            "iOS Live Scan Failed", {
               'companyName': appData.company.name,
               'appName': appData.name,
               'appId': appData.id,
@@ -251,8 +251,8 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
           var slacktivityData = {
-            "title": "SDK Live Scan Failed",
-            "fallback": "SDK Live Scan Failed",
+            "title": "iOS Live Scan Failed",
+            "fallback": "iOS Live Scan Failed",
             "color": "#E82020",
             "userEmail": userInfo.email,
             'appName': appData.name,
@@ -280,7 +280,7 @@ angular.module("appApp")
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "Hidden SDK Live Scan Viewed", {
+            "Hidden iOS Live Scan Viewed", {
               'appName': appData.name,
               'companyName': appData.company.name,
               'appId': appData.id,
