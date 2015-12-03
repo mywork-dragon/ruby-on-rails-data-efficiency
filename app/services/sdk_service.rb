@@ -314,7 +314,7 @@ class SdkService
 						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
 						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
 					rescue
-						FaviconService.get_favicon_from_url(url: 'http://github.com')
+						FaviconService.get_favicon_from_url(url: 'http://github.com', try_backup: false)
 					end
 
 					return {website: url, favicon: favicon, open_source: true, name: company, github_repo_identifier: srd['id']}.merge(srd)
