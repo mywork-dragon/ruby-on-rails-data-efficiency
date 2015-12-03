@@ -24,14 +24,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       return out;
     };
 
-    iosLiveScanCtrl.checkSdkSnapshotStatus = function(data) {
-      if(iosLiveScanCtrl.isEmpty(data.installed_sdk_companies) && iosLiveScanCtrl.isEmpty(data.installed_open_source_sdks)) {
-        iosLiveScanCtrl.noSdkSnapshot = true;
-      } else {
-        iosLiveScanCtrl.noSdkSnapshot = false;
-      }
-    };
-
     iosLiveScanCtrl.checkForIosSdks = function(appId, calledAfterSuccess) {
 
       sdkLiveScanService.checkForIosSdks(appId)
@@ -51,7 +43,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
           }
 
-          iosLiveScanCtrl.checkSdkSnapshotStatus(data);
+          iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks;
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available for Paid Apps",
@@ -179,7 +171,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
               iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
-              iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
+              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
 
               if(data.status != 6) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
@@ -191,7 +183,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              iosLiveScanCtrl.checkSdkSnapshotStatus(data); // Will show/hide view elements depending on data returned
+              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
 
