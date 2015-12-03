@@ -98,7 +98,7 @@ class IosLiveScanServiceWorker
     last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
 
     if !version.blank? && !(last_snap.nil? || last_snap.version.nil?) && version <= last_snap.version
-      last_snap.touch # update the ipa snapshot with current date
+      last_snap.update(good_as_of_date: Time.now)
       false
     else
       true 

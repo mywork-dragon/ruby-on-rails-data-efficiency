@@ -11,7 +11,7 @@ class FaviconService
 
     # use google default by giving a non-existing domain
     def get_default_favicon
-      get_favicon_from_url(url: "http://hellostephenisneat.edu")
+      "https://www.google.com/s2/favicons?domain=hellostephenisneat.edu"
     end
 
   end

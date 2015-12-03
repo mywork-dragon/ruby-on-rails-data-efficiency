@@ -15,4 +15,5 @@ class IpaSnapshot < ActiveRecord::Base
 
   enum download_status: [:starting, :retrying, :cleaning, :complete]
   enum scan_status: [:scanning, :scanned, :failed]
+  
 end

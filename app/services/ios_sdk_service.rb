@@ -1,16 +1,13 @@
 class IosSdkService
 
-  DEFAULT_FAVICON = 'https://assets-cdn.github.com/pinned-octocat.svg'
+  DEFAULT_FAVICON = FaviconService.get_default_favicon
 
   class << self
 
     # for front end - getting sdks data into display type
     def get_sdk_response(ios_app_id)
       resp = {
-        installed_sdk_companies: {},
-        installed_open_source_sdks: {},
-        uninstalled_sdk_companies: {},
-        uninstalled_open_source_sdks: {},
+        installed_sdks: [],
         updated: nil,
         error_code: nil
       }
@@ -21,15 +18,6 @@ class IosSdkService
         foreign: 2,
         device_incompatible: 3
       }
-
-      def format_sdk(sdk)
-        {
-          'id' => sdk.id,
-          'name' => sdk.name,
-          'website' => sdk.website,
-          'favicon' => sdk.favicon || DEFAULT_FAVICON
-        }
-      end
 
       # return error if it violates some conditions
       app = IosApp.find(ios_app_id)
@@ -50,21 +38,55 @@ class IosSdkService
 
       # if no successful scan's done, return no data
       if !snap.nil?
-        snap.ios_sdks.each do |sdk|
 
-          next if sdk.nil? || sdk.flagged
+        partitions = snap.ios_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
+          if sdk.present? && !sdk.flagged
+            if has_os_favicon?(sdk.favicon)
+              memo[:os].push(sdk)
+            else
+              memo[:non_os].push(sdk)
+            end
+          end
 
-          if sdk.open_source
-            resp[:installed_open_source_sdks][sdk.name] = format_sdk(sdk)
-          else
-            resp[:installed_sdk_companies][sdk.name] = format_sdk(sdk)
+          memo
+        end
+
+        %i(os non_os).each do |property|
+          # use sort_by because it's an expensive operation and it's more efficient than sort for this type
+          partitions[property] = partitions[property].sort_by do |sdk|
+            sdk.get_current_apps(count_only: true)
           end
         end
+
+        resp[:installed_sdks] = partitions[:non_os] + partitions[:os]
 
         resp[:updated] = snap.updated_at
       end
 
       resp
+    end
+
+    def format_sdk(sdk)
+      {
+        'id' => sdk.id,
+        'name' => sdk.name,
+        'website' => sdk.website,
+        'favicon' => sdk.favicon || DEFAULT_FAVICON
+      }
+    end
+
+    def has_os_favicon?(favicon_url)
+
+      return nil if favicon_url.nil?
+
+      known_os_favicons = %w(
+        github
+        bitbucket
+        sourceforge
+        alamofire
+        afnetworking
+      )
+      favicon_url.match(/#{known_os_favicons.join('|')}/) ? true : false
     end
 
   end
