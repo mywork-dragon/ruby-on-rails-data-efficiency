@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151203012830) do
+ActiveRecord::Schema.define(version: 20151203014414) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1100,6 +1100,7 @@ ActiveRecord::Schema.define(version: 20151203012830) do
     t.integer  "ipa_snapshot_job_id"
     t.integer  "scan_status"
     t.string   "version"
+    t.datetime "good_as_of_date"
   end
 
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
