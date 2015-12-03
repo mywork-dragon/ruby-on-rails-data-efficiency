@@ -42,7 +42,7 @@ class IosLiveScanServiceWorker
       end
 
       # check if devices compatible
-      if !device_compatible?(devices: data['devices'])
+      if !device_compatible?(devices: data['supportedDevices'])
         job.live_scan_status = :device_incompatible
         job.save
 
