@@ -7404,7 +7404,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #sdkScanErrorCodeStatus {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 #appPageSdkScanStatus, #showDataUpdatedMessage {
@@ -7643,7 +7643,7 @@ pre {
 
 .sdksListView li {
   border: none;
-  padding: 5px;
+  padding: 4px;
 }
 
 #mainSearchBoxWrapper {
