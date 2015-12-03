@@ -32,6 +32,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           iosLiveScanCtrl.sdkData = {
             'sdkCompanies': installedSdks[0],
             'sdkOpenSource': installedSdks[1],
+            'installedSdks': data.installed_sdks,
             'lastUpdated': data.updated,
             'errorCode': data.error_code
           };

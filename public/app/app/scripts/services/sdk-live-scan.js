@@ -88,7 +88,7 @@ angular.module("appApp")
             liveScanSlacktivityColor = "#E82020";
           }
 
-          var sdkInstalls = sdkData.sdkCompanies.concat(sdkData.sdkOpenSource);
+          var sdkInstalls = sdkData.installedSdks;
           sdkInstalls.map(function(sdk) { return sdk.name; });
 
           /* -------- Mixpanel Analytics Start -------- */
@@ -183,7 +183,7 @@ angular.module("appApp")
 
           appData = data;
 
-          var sdkInstalls = sdkData.sdkCompanies.concat(sdkData.sdkOpenSource);
+          var sdkInstalls = sdkData.installedSdks;
           sdkInstalls.map(function(sdk) { return sdk.name; });
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
