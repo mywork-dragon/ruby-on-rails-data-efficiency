@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202185144) do
+ActiveRecord::Schema.define(version: 20151203014414) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
   end
 
   add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
-  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", using: :btree
+  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", unique: true, using: :btree
 
   create_table "api_keys", force: true do |t|
     t.string   "key"
@@ -1029,6 +1029,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.integer  "github_repo_identifier"
     t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
+    t.integer  "source"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
@@ -1048,7 +1049,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
   end
 
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
-  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", using: :btree
+  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", unique: true, using: :btree
 
   create_table "ios_word_occurences", force: true do |t|
     t.string   "word"
@@ -1099,6 +1100,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.integer  "ipa_snapshot_job_id"
     t.integer  "scan_status"
     t.string   "version"
+    t.datetime "good_as_of_date"
   end
 
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
@@ -1292,7 +1294,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.datetime "updated_at"
   end
 
-  add_index "sdk_packages_apk_snapshots", ["apk_snapshot_id", "sdk_package_id"], name: "index_apk_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_apk_snapshots", ["sdk_package_id", "apk_snapshot_id"], name: "index_sdk_package_id_apk_snapshot_id", unique: true, using: :btree
   add_index "sdk_packages_apk_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
   create_table "sdk_packages_ipa_snapshots", force: true do |t|
@@ -1302,7 +1304,7 @@ ActiveRecord::Schema.define(version: 20151202185144) do
     t.datetime "updated_at"
   end
 
-  add_index "sdk_packages_ipa_snapshots", ["ipa_snapshot_id", "sdk_package_id"], name: "index_ipa_snapshot_id_sdk_package_id", using: :btree
+  add_index "sdk_packages_ipa_snapshots", ["sdk_package_id", "ipa_snapshot_id"], name: "index_sdk_package_id_ipa_snapshot_id", unique: true, using: :btree
   add_index "sdk_packages_ipa_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
   create_table "sdk_regexes", force: true do |t|

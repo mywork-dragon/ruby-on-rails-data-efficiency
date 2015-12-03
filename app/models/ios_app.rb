@@ -35,9 +35,9 @@ class IosApp < ActiveRecord::Base
 
   def get_last_ipa_snapshot(scan_success: false)
     if scan_success
-      self.ipa_snapshots.where(scan_status: :scanned).order(:updated_at).last
+      self.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).order([:good_as_of_date, :id]).last
     else
-      self.ipa_snapshots.order(:updated_at).last
+      self.ipa_snapshots.order(:good_as_of_date).last
     end
   end
   

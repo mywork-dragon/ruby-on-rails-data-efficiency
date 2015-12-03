@@ -110,6 +110,19 @@ class GithubService
   end
 
   class << self
+
+    def get_author_info(repo)
+      service = self.new
+      repo_data = service.get_repo_data(repo)
+
+      if repo_data['owner'] && repo_data['owner']['url']
+        JSON.parse(service.make_request(repo_data['owner']['url']))
+      else
+        nil
+      end
+
+    end
+
     def get_repo_data(repo)
       self.new.get_repo_data(repo)
     end
@@ -148,6 +161,21 @@ class GithubService
           puts "Account #{acct.username} does not have a 5000 limit"
         end
       end
+    end
+
+    def check_limits
+      GithubAccount.all.each do |acct|
+        params = {
+          'client_id' => acct.client_id,
+          'client_secret' => acct.client_secret
+        }
+
+        body = JSON.parse(Proxy.get_body_from_url('https://api.github.com/rate_limit',params: params))
+
+        puts "Account #{acct.id} has #{body['resources']['core']['remaining']} / #{body['resources']['core']['limit']}"
+      end
+
+      nil
     end
   end
 

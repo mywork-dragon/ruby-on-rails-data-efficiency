@@ -33,9 +33,16 @@ class CocoapodSdkService
 			i = IosSdkUpdate.create!(cocoapods_sha: repo_state["commit"]["sha"])
 
 			if Rails.env.production?
-				sdks.each do |sdk|
-					CocoapodSdkServiceWorker.perform_async(sdk, i.id)
+				batch = Sidekiq::Batch.new
+				batch.description = 'scraping the cocoapods repository'
+				batch.on(:complete, 'CocoapodSdkService#on_complete')
+
+				batch.jobs do
+					sdks.each do |sdk|
+						CocoapodSdkServiceWorker.perform_async(sdk, i.id)
+					end
 				end
+				
 			else
 				sdks.sample(5) do |sdk|
 					CocoapodSdkServiceWorker.new.perform(sdk, i.id)
@@ -46,19 +53,62 @@ class CocoapodSdkService
 
 		end
 
-		def run_broken(update_id, names = nil)
+		def run_broken(update_id: nil, names: nil, non_existing_only: true)
+			names = if update_id.present?
+				names = IosSdkUpdateException.where("ios_sdk_update_id=#{update_id}").map {|x| x.sdk_name}
 
-			names = IosSdkUpdateException.where("ios_sdk_update_id=#{update_id}").map {|x| x.sdk_name} if names.nil?
-
-			names.uniq.each do |sdk_name|
-				if Rails.env.production?
-					CocoapodSdkServiceWorker.perform_async(sdk_name, update_id)
+				if non_existing_only
+					names.select! {|name| IosSdk.find_by_name(name).blank?}.uniq
 				else
-					CocoapodSdkServiceWorker.new.perform(sdk_name, update_id)
+					names.uniq!
 				end
+			elsif names.present?
+				names
+			else
+				return "Nothing to run"
+				nil
 			end
 
-			
+			if Rails.env.production?
+
+				batch = Sidekiq::Batch.new
+				batch.description = "retrying failed cocoapod runs" 
+				batch.on(:complete, 'CocoapodSdkService#broken_on_complete')
+
+				batch.jobs do
+				  names.each do |name|
+				  	CocoapodSdkServiceWorker.perform_async(name, update_id)
+				  end
+				end
+			else
+				return names
+				CocoapodSdkServiceWorker.new.perform(names.sample, update_id)
+			end
 		end
+
+		# def run_broken(update_id, repeated = false, names = nil)
+
+		# 	names = IosSdkUpdateException.where("ios_sdk_update_id=#{update_id}").map {|x| x.sdk_name} if names.nil?
+
+		# 	names.uniq.each do |sdk_name|
+		# 		if Rails.env.production?
+		# 			CocoapodSdkServiceWorker.perform_async(sdk_name, update_id)
+		# 		else
+		# 			CocoapodSdkServiceWorker.new.perform(sdk_name, update_id)
+		# 		end
+		# 	end
+
+			
+		# end
 	end
+
+	def on_complete(status, options)
+		Slackiq.notify(webhook_name: :main, status: status, title: 'cocoapods scrape')
+	end
+
+	def broken_on_complete(status, options)
+		Slackiq.notify(webhook_name: :main, status: status, title: 'cocoapods scrape')
+	end
+
+
 end
