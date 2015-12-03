@@ -48,6 +48,11 @@ if (isDownloading(button)) {
 
 title = (button.title === null ? null : button.title.toString())
 
+if (title === "OPEN")
+{
+  throw "Installed"
+}
+
 if (title === "GET" || title === "INSTALL" || title === null)  //GET: have not downloaded on this account; null: already downloaded
 {
   [button sendActionsForControlEvents:(1 << 17)]

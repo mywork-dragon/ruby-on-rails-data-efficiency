@@ -154,7 +154,7 @@ class IosDeviceService
     if prior_apps == nil
       prior_apps = []
     else
-      prior_apps = prior_apps.chomp.split()
+      prior_apps = prior_apps.chomp.split
     end
     puts "prior_apps: #{prior_apps.join(' ')}"
 
@@ -177,6 +177,11 @@ class IosDeviceService
       if ret && (ret.include?('Downloading'))
         puts "Download started"
         break
+      elsif ret && ret.include?('Installed')
+        puts "Already installed"
+        raise "App already installed and ambiguous prior installs or mistaken OPEN button" if prior_apps.length != 1
+        prior_apps = [] # assured only 1 and it's already installed. shortcut to let apps_after succeed
+        break
       elsif ret && ret.include?('Pressed button')
         puts "Pressed button"
       else
@@ -196,7 +201,7 @@ class IosDeviceService
       puts "Waiting 5s..."
       sleep(5)
       puts "Try #{n}"
-      ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'click open app after download')
+      ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
       if ret && ret.chomp == 'Could not find OPEN button'
         puts "Not downloaded yet"
         ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'open app store when not finished downloading')
