@@ -245,8 +245,12 @@ class SdkService
 
 			return false if known_companies.include?(company)
 
+			begin
 			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
-			return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
+				return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
+			rescue => e 	# catch invalid URIs
+				return false
+			end
 
 			false
 		end
