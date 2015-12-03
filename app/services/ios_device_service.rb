@@ -189,7 +189,7 @@ class IosDeviceService
     install_open_app_script(ssh)
 
     # wait for download and open app
-    20.times do |n|
+    24.times do |n| # 2 minutes
 
       # make sure app store is open
       run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
