@@ -6,7 +6,7 @@ class IosSdkFaviconService
       if ios_sdk_ids.present?
         sdks = IosSdk.find(ios_sdk_ids)
       else
-        sdks = IosSdk.where('favicon REGEXP s2/favicons')
+        sdks = IosSdk.where('favicon REGEXP "s2/favicons"')
       end
 
       if Rails.env.production?
