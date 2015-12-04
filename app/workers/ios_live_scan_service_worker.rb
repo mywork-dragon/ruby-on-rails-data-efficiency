@@ -2,17 +2,21 @@ class IosLiveScanServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, queue: :ios_live_scan_cloud
+  # retrying the json lookup ourselves, so disable
+  sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud
+
+  LOOKUP_ATTEMPTS = 2
 
   def perform(ipa_snapshot_job_id, ios_app_id)
 
     begin
       puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
       job = IpaSnapshotJob.find(ipa_snapshot_job_id)
-      # if it's available
       data = get_json(ios_app_id)
 
-      # TODO: if invalidated at different parts, update the ios_app table
+      raise "Could not perform iTunes lookup for app #{ios_app_id}" if data.nil?
+
+      data = data['results'].first
 
       if data.nil?
         job.live_scan_status = :not_available
@@ -106,18 +110,24 @@ class IosLiveScanServiceWorker
   end
 
   def get_json(ios_app_id)
-    begin
-      app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
-      url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
 
-      json = JSON.parse(Proxy.get_body_from_url(url))
+    data = nil
 
-      json['results'].first
-    rescue => e
-      puts "Failed to get json data about app_identifier #{app_identifier}"
-      puts e.message
-      puts e.backtrace
+    LOOKUP_ATTEMPTS.times do |i|
+      begin
+        app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
+        url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
+
+        data = JSON.parse(Proxy.get_body_from_url(url))
+        
+      rescue => e
+        nil
+      end
+
+      break if data.present?  
     end
+
+    data
   end
 
 end
