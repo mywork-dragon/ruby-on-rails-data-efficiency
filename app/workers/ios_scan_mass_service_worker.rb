@@ -12,13 +12,13 @@ class IosScanMassServiceWorker
     @retry = 0
   end
 
-  def perform(ipa_snapshot_job_id, ios_app_id, bid = nil)
-    execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, bid: bid)
+  def perform(ipa_snapshot_job_id, ios_app_id, version, bid = nil)
+    execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, bid: bid, version: version)
   end
 
   # unique parameters to mass live scan
-  def execute_scan_type(ipa_snapshot_job_id:, ios_app_id:, bid:)
-    run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :mass, bid: bid, start_classify: false)
+  def execute_scan_type(ipa_snapshot_job_id:, ios_app_id:, version:, bid:)
+    run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :mass, bid: bid, version: version, start_classify: false)
   end  
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
@@ -45,7 +45,7 @@ class IosScanMassServiceWorker
       @retry += 1
       snapshot.download_status = :retrying
       snapshot.save
-      execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id,bid: bid)
+      execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, version: version, bid: bid)
     else
       snapshot.download_status = :complete
       snapshot.success = false

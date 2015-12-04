@@ -49,6 +49,8 @@ class IosDeviceService
 
   def initialize(device)
     @device = device
+    @bundle_info = nil
+    @decrypted_file = nil
   end
 
   def run_command(ssh, command, description, expected_output = nil)
@@ -342,7 +344,6 @@ class IosDeviceService
 
     return @decrypted_file if @decrypted_file
 
-
     bundle_info = extract_bundle_info(ssh, app_info)
     executable = bundle_info['CFBundleExecutable']
 
@@ -440,7 +441,8 @@ class IosDeviceService
     {
       outfile_path: filename,
       method: method,
-      has_fw_folder: has_fw_folder
+      has_fw_folder: has_fw_folder,
+      bundle_version: @bundle_info.present? ? @bundle_info['CFBundleShortVersionString'] : nil
     }
 
   end

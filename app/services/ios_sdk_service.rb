@@ -61,7 +61,7 @@ class IosSdkService
           end
         end
 
-        resp[:updated] = snap.updated_at
+        resp[:updated] = snap.good_as_of_date
       end
 
       resp
