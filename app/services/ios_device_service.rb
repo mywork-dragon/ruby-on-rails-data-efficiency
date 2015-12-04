@@ -3,11 +3,12 @@ require 'shellwords'
 
 class IosDeviceService
 
-  DOWNLOAD_APP_SCRIPT_PATH = './server/download_app.cy'
   DEVICE_USERNAME = 'root'
   DEVICE_PASSWORD = 'padmemyboo'
 
   OPEN_APP_SCRIPT_PATH = './server/open_app.cy'
+  DOWNLOAD_APP_SCRIPT_PATH = './server/download_app.cy'
+  DEBUG_SCRIPT_PATH = './server/debug_status_method.cy'
 
   APPS_INSTALL_PATH = "/var/mobile/Containers/Bundle/Application/"
 
@@ -19,8 +20,37 @@ class IosDeviceService
   home = `echo $HOME`.chomp
   DECRYPTED_FOLDER = "#{home}/decrypted_ios_apps"
 
+  DISPLAY_STATUSES = {
+    start_decrypt: {
+      commands: "updateDebugStatus('Running Decrypt', [UIColor yellowColor]);",
+      filename: 'start_decrypt.cy'
+    },
+    start_scp: {
+      commands: "updateDebugStatus('Running SCP', [UIColor yellowColor]);",
+      filename: 'start_scp.cy'
+    },
+    start_classdump: {
+      commands: "updateDebugStatus('Running ClassDump', [UIColor yellowColor]);",
+      filename: 'start_classdump.cy'
+    },
+    start_strings: {
+      commands: "updateDebugStatus('Running Strings', [UIColor yellowColor]);",
+      filename: 'start_strings.cy'
+    },
+    finish_processing: {
+      commands: "updateDebugStatus('Finished Processing Decrypted File', [UIColor greenColor]);",
+      filename: 'finish_processing.cy'
+    },
+    s3_upload: {
+      commands: "updateDebugStatus('Starting s3 upload', [UIColor yellowColor]);",
+      filename: 's3_upload.cy'
+    }
+  }
+
   def initialize(device)
     @device = device
+    @bundle_info = nil
+    @decrypted_file = nil
   end
 
   def run_command(ssh, command, description, expected_output = nil)
@@ -67,6 +97,8 @@ class IosDeviceService
     begin
       Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
         begin
+          install_debug_script(ssh)
+          install_display_statuses(ssh)
           app_info = install(ssh, app_identifier, country_code)
           result[:install_time] = Time.now
           result[:install_success] = true
@@ -77,6 +109,7 @@ class IosDeviceService
           result[:dump_time] = Time.now
           result[:dump_success] = true
 
+          print_display_status(ssh, :s3_upload)
           yield(result) if block_given?
 
           teardown(ssh, app_info)
@@ -142,19 +175,40 @@ class IosDeviceService
     result
   end
 
+  # check if the app store is running
+  # returns a boolean
+  def is_app_store_running?(ssh)
+    ret = run_command(ssh, 'ps aux | grep AppStore | grep -v grep | wc -l', 'check if app store is open')
+    ret && ret.include?('0') ? false : true
+  end
+
+  # open app and bind debug method
+  # assumes both cycript scripts for both have been installed
+  def open_app_in_app_store(ssh)
+    run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
+    sleep(1)
+    run_command(ssh, "cycript -p AppStore #{debug_script_name}", 'add debug method to AppStore runtime')
+  end
+
+  def open_app_store(ssh)
+    run_command(ssh, 'open com.apple.AppStore', 'opening app in store script')
+    sleep(1)
+    run_command(ssh, "cycript -p AppStore #{debug_script_name}", 'add debug method to AppStore runtime')
+  end
+
   def install(ssh, app_identifier, country_code = "us")
 
     run_command(ssh, 'killall AppStore', 'Restarting AppStore')
     run_command(ssh, 'rm -f open_app.cy', 'Deleting old open_app.cy')
     run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"https://itunes.apple.com/#{country_code}/app/id#{app_identifier}\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
     run_command(ssh, "echo '[[SBUIController sharedInstance] clickedMenuButton];' > press_home_button.cy", 'Adding press_home_button.cy')
-    run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
+    open_app_in_app_store(ssh)
 
     prior_apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", 'get bundles before install')
     if prior_apps == nil
       prior_apps = []
     else
-      prior_apps = prior_apps.chomp.split()
+      prior_apps = prior_apps.chomp.split
     end
     puts "prior_apps: #{prior_apps.join(' ')}"
 
@@ -163,11 +217,9 @@ class IosDeviceService
     # open app page in app store
     5.times do |n|
       # make sure app store is open
-      # run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
-      ret = run_command(ssh, 'ps aux | grep AppStore | grep -v grep | wc -l', 'check if app store is open')
-      if ret && ret.include?('0')
+      if !is_app_store_running?(ssh)
         puts "AppStore not open, opening app again"
-        run_command(ssh, 'cycript -p SpringBoard open_app_in_app_store.cy', 'opening app in store script')
+        open_app_in_app_store(ssh)
       end
       puts "Waiting 3s..."
       sleep(3)
@@ -176,6 +228,11 @@ class IosDeviceService
       # could be timing error if download succeeds in less than 3 seconds...
       if ret && (ret.include?('Downloading'))
         puts "Download started"
+        break
+      elsif ret && ret.include?('Installed')
+        puts "Already installed"
+        raise "App already installed and ambiguous prior installs or mistaken OPEN button" if prior_apps.length != 1
+        prior_apps = [] # assured only 1 and it's already installed. shortcut to let apps_after succeed
         break
       elsif ret && ret.include?('Pressed button')
         puts "Pressed button"
@@ -189,17 +246,19 @@ class IosDeviceService
     install_open_app_script(ssh)
 
     # wait for download and open app
-    20.times do |n|
+    24.times do |n| # 2 minutes
 
       # make sure app store is open
-      run_command(ssh, 'open com.apple.AppStore', 'make sure app store is open')
+      if !is_app_store_running?(ssh)
+        puts "AppStore not open, opening app again"
+        open_app_in_app_store(ssh)
+      end
       puts "Waiting 5s..."
       sleep(5)
       puts "Try #{n}"
-      ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'click open app after download')
-      if ret && ret.chomp == 'Could not find OPEN button'
+      ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
+      if ret && (ret.chomp == 'Could not find OPEN button' || ret.chomp == 'Cannot locate button')
         puts "Not downloaded yet"
-        ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'open app store when not finished downloading')
       else
         break
       end
@@ -224,17 +283,30 @@ class IosDeviceService
     get_app_name_and_path(ssh, new_app_folder)
   end
 
+  def install_display_statuses(ssh)
+    DISPLAY_STATUSES.keys.each do |key|
+      command = DISPLAY_STATUSES[key][:commands]
+      filename = DISPLAY_STATUSES[key][:filename]
+      run_command(ssh, "echo \"#{command}\" > #{filename}", 'installing a display debug script')
+    end
+  end
+
   # Install the download_app_script if it's not already there
   def install_download_app_script(ssh)
 
     script = File.open(DOWNLOAD_APP_SCRIPT_PATH, 'rb') { |f| f.read }
     run_command(ssh, "echo '#{script}' > #{download_app_script_name}", 'writing download script to file')
-  end 
+  end
 
   def install_open_app_script(ssh)
 
     script = File.open(OPEN_APP_SCRIPT_PATH, 'rb') { |f| f.read }
     run_command(ssh, "echo '#{script}' > #{open_app_script_name}", 'writing open script to file')
+  end
+
+  def install_debug_script(ssh)
+    script = File.open(DEBUG_SCRIPT_PATH, 'rb') {|f| f.read}
+    run_command(ssh, "echo '#{script}' > #{debug_script_name}", 'writing open script to file')
   end
 
   def download_app_script_name
@@ -243,6 +315,10 @@ class IosDeviceService
 
   def open_app_script_name
     "open_app.cy"
+  end
+
+  def debug_script_name
+    "debug_status_method.cy"
   end
 
   def get_app_name_and_path(ssh, new_app_folder = nil)
@@ -273,8 +349,9 @@ class IosDeviceService
 
     outfile = "#{@unique_id}.decrypted"
 
-    # TODO: should throw or something if failed
-    return executable if !executable
+    raise "No executable name found" if !executable
+
+    print_display_status(ssh, :start_decrypt)
 
     run_command(ssh, "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper", "Use dumpdecrypted to decrypt")
 
@@ -284,12 +361,7 @@ class IosDeviceService
 
     # use system scp because it's much faster
     puts "Starting download"
-    puts "DEBUG"
-    puts `echo $USER`.chomp
-    puts "path to sshpass"
-    puts `which sshpass`.chomp
-    puts "PATH"
-    puts `echo $PATH`
+    print_display_status(ssh, :start_scp)
 
     `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
     puts "Download finished"
@@ -313,60 +385,64 @@ class IosDeviceService
     "#{DECRYPTED_FOLDER}/#{decrypted_file}"
   end
 
+  # execute any of the dump status commands against the AppStore
+  def print_display_status(ssh, status)
+    if !is_app_store_running?(ssh)
+      open_app_store(ssh)
+    end
+
+    raise "Status #{status} is not valid" if DISPLAY_STATUSES[status].nil?
+    run_command(ssh, "cycript -p AppStore #{DISPLAY_STATUSES[status][:filename]}", "Printing debug statement #{status}")
+  end
+
   def download_headers(ssh, app_info)
 
-    # TODO: add some logic to also use Frameworks folder
     filename = nil
     method = nil
     has_fw_folder = false
 
-    # mass just use ipa, live scan does the processing on the machine
-    if @purpose == :mass
+    # add in logic to insert framework_str into outputted contents
+    filename = headers_using_classdump(ssh, app_info)
+    method = "classdump"
 
-      filename = move_ipa(ssh, app_info)
-      method = "decrypted" # just decrypted file
-    else
-
-      # add in logic to insert framework_str into outputted contents
-      filename = headers_using_classdump(ssh, app_info)
-      method = "classdump"
-
-      # validate that decrypting was possible
-      if !filename
-        raise "Could not generate classdump"
-      end
-
-      # validate contents. Should use strings as a backup
-      contents = File.open(filename, 'rb') { |f| f.read }
-      if !(/Generated by class-dump/.match(contents))
-
-        # remove the old empty file
-        `rm -f #{filename}`
-
-        # TODO: add some strings validation
-        filename = get_strings(ssh, app_info)
-
-        if !filename
-          raise "Could not generate strings"
-        end
-
-        method = "strings"
-      end
-
-      # Check for frameworks folder and add it to the file
-      listed_frameworks = get_listed_frameworks(ssh, app_info)
-      if !listed_frameworks.nil?
-        listed_frameworks.split(/\n/).each do |framework|
-          `echo Folder:#{framework} >> #{filename}`
-        end
-        has_fw_folder = true
-      end
+    # validate that decrypting was possible
+    if !filename
+      raise "Could not generate classdump"
     end
+
+    # validate contents. Should use strings as a backup
+    contents = File.open(filename, 'rb') { |f| f.read }
+    if !(/Generated by class-dump/.match(contents))
+
+      # remove the old empty file
+      `rm -f #{filename}`
+
+      # TODO: add some strings validation
+      filename = get_strings(ssh, app_info)
+
+      if !filename
+        raise "Could not generate strings"
+      end
+
+      method = "strings"
+    end
+
+    # Check for frameworks folder and add it to the file
+    listed_frameworks = get_listed_frameworks(ssh, app_info)
+    if !listed_frameworks.nil?
+      listed_frameworks.split(/\n/).each do |framework|
+        `echo Folder:#{framework} >> #{filename}`
+      end
+      has_fw_folder = true
+    end
+
+    print_display_status(ssh, :finish_processing)
 
     {
       outfile_path: filename,
       method: method,
-      has_fw_folder: has_fw_folder
+      has_fw_folder: has_fw_folder,
+      bundle_version: @bundle_info.present? ? @bundle_info['CFBundleShortVersionString'] : nil
     }
 
   end
@@ -377,7 +453,9 @@ class IosDeviceService
     delete_applications(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
-    # run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
+    run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
+    run_command(ssh, 'rm /var/root/*.cy', 'removing all cycript files')
+    run_command(ssh, 'killall AppStore', 'kill the app store')
 
     # validate that it was deleted
     resp = run_command(ssh, "[ -d #{app_info[:path]} ] && echo 'exists' || echo 'dne'", 'check if app bundle exists').chomp
@@ -523,6 +601,7 @@ class IosDeviceService
 
     return infile if !infile # check if null
 
+    print_display_status(ssh, :start_classdump)
     class_dump(infile, outfile)
 
     outfile

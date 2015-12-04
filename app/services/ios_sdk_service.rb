@@ -57,10 +57,9 @@ class IosSdkService
             sdk.get_current_apps(count_only: true)
           end
         end
-
+        
         resp[:installed_sdks] = partitions[:non_os] + partitions[:os]
-
-        resp[:updated] = snap.updated_at
+        resp[:updated] = snap.good_as_of_date
       end
 
       resp
