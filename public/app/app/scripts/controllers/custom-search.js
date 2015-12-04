@@ -38,7 +38,6 @@ angular.module('appApp')
             customSearchCtrl.numApps = 0;
             customSearchCtrl.queryInProgress = false;
           });
-
       };
 
       customSearchCtrl.loadTableData();
@@ -58,7 +57,14 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        var targetUrl = customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks' ? '/search/sdk?' : '/search/custom?';
+        var targetUrl = '';
+        if(customSearchCtrl.platform == 'iosSdks') {
+          targetUrl = '/search/iosSdks?';
+        } else if(customSearchCtrl.platform == 'androidSdks') {
+          targetUrl = '/search/androidSdks?';
+        } else {
+          targetUrl = '/search/custom?';
+        }
         $location.url(targetUrl + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
         if(customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
