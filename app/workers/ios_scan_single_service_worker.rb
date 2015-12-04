@@ -6,7 +6,7 @@ class IosScanSingleServiceWorker
 
 	include IosWorker
 
-  MAX_RETRIES = 1
+  MAX_RETRIES = 0
 
   def initialize
     @retry = 0
