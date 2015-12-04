@@ -506,11 +506,10 @@ angular.module("app.directives", []).directive("imgHolder", [
         scope: {
           customSearchPlatform: '=customSearchPlatform'
         },
-        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="sdks">Android SDKs</option> </select> </span>',
+        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option> <option ng-if="canViewStorewideSdks" value="iosSdks">iOS SDKs</option> </select></span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
-
 
           authService.permissions()
             .success(function(data) {
@@ -520,6 +519,7 @@ angular.module("app.directives", []).directive("imgHolder", [
           $scope.changeAppPlatform = function (platform) {
             $scope.customSearchPlatform = platform;
           };
+
         },
         controllerAs: 'appPlatformCtrl'
       }

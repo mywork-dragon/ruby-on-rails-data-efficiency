@@ -58,15 +58,15 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        var targetUrl = customSearchCtrl.platform == 'sdks' ? '/search/sdk?' : '/search/custom?';
+        var targetUrl = customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks' ? '/search/sdk?' : '/search/custom?';
         $location.url(targetUrl + $httpParamSerializer(payload));
         customSearchCtrl.loadTableData();
-        if(customSearchCtrl.platform == 'sdks') {
+        if(customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Custom Search", {
               "query": customSearchCtrl.searchInput,
-              "platform": "android"
+              "platform": customSearchCtrl.platform.split('Sdks')[0] // grabs 'android' or 'ios'
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -99,10 +99,12 @@ angular.module('appApp')
       customSearchCtrl.searchPlaceholderText = function() {
         if(customSearchCtrl.platform == 'ios') {
           return 'Search for iOS app or company';
-        } else if(customSearchCtrl.platform == 'sdks') {
-          return 'Search for SDKs';
-        } else {
+        } else if(customSearchCtrl.platform == 'android') {
           return 'Search for Android app or company';
+        } else if(customSearchCtrl.platform == 'androidSdks') {
+          return 'Search for Android SDKs';
+        } else if(customSearchCtrl.platform == 'iosSdks') {
+          return 'Search for iOS SDKs';
         }
       };
 

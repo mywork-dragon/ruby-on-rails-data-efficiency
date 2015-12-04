@@ -1405,12 +1405,55 @@ class ApiController < ApplicationController
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
-  def search_sdk
+  def search_ios_sdk
     query = params['query']
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
+    result_ids = AppsIndex::AndroidSdkCompany.query(
+        multi_match: {
+            query: query,
+            operator: 'and',
+            fields: [:name],
+            type: 'cross_fields',
+            fuzziness: 1
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
 
+    android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
+
+    sdks = []
+    android_sdks.each do |sdk|
+      sdks << AndroidSdkCompany.find(sdk)
+    end
+
+    total_apps_count = sdks.length
+
+    results_json = []
+    sdks.each do |sdk|
+
+      sdk_hash = {
+          sdk: {
+              id: sdk.id,
+              name: sdk.name,
+              website: sdk.website,
+              favicon: sdk.favicon,
+              openSource: sdk.open_source,
+              platform: 'android'
+          }
+      }
+      results_json << sdk_hash
+    end
+    render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+  end
+
+  def search_android_sdk
+    query = params['query']
+    platform = params['platform']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::AndroidSdkCompany.query(
         multi_match: {
