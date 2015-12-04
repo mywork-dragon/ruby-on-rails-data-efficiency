@@ -29,8 +29,8 @@
                   </ul>
                 </div>
 
-                <div class="col-md-6 sdkOpenSourceSection" ng-hide="iosLiveScanCtrl.sdkData.sdkOpenSource">
-                  <ul ng-hide="iosLiveScanCtrl.sdkData.sdkOpenSource">
+                <div class="col-md-6 sdkOpenSourceSection" ng-hide="!iosLiveScanCtrl.sdkData.sdkOpenSource">
+                  <ul ng-hide="!iosLiveScanCtrl.sdkData.sdkOpenSource">
                     <li ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkOpenSource">
                       <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                       <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>

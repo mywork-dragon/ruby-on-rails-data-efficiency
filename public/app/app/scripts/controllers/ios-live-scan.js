@@ -44,7 +44,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             iosLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
           }
 
-          iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks;
+          iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length;
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available for Paid Apps",
