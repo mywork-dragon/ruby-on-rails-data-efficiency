@@ -33,11 +33,10 @@ class IosLiveScanServiceWorker
       end
 
       # if it's been changed (for now, just ignore that stuff)
-      #if false
-      if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
+      version = data['version']
+      if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: version)
         job.live_scan_status = :unchanged
         job.save
-        IosApp.find(ios_app_id)
         return "App has not updated"
       end
 
@@ -60,16 +59,16 @@ class IosLiveScanServiceWorker
 
         batch.jobs do
           if job.job_type == 'one_off'
-            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
           elsif job.job_type == 'test'
-            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
           end
         end
       else
         if job.job_type == 'one_off'
-          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
         elsif job.job_type == 'test'
-          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
         end
       end
 

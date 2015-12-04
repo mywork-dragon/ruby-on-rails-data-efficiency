@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151203014414) do
+ActiveRecord::Schema.define(version: 20151204004410) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1027,8 +1027,8 @@ ActiveRecord::Schema.define(version: 20151203014414) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
+    t.integer  "sdk_company_id"
     t.integer  "source"
   end
 
@@ -1101,6 +1101,7 @@ ActiveRecord::Schema.define(version: 20151203014414) do
     t.integer  "scan_status"
     t.string   "version"
     t.datetime "good_as_of_date"
+    t.string   "bundle_version"
   end
 
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree

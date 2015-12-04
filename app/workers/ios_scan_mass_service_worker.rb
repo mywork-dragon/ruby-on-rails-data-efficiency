@@ -1,25 +1,25 @@
-class IosScanSingleServiceWorker
+class IosScanMassServiceWorker
 
-	include Sidekiq::Worker
+  include Sidekiq::Worker
 
-	sidekiq_options backtrace: true, queue: :ios_live_scan
+  sidekiq_options backtrace: true, queue: :ios_mass_scan
 
-	include IosWorker
+  include IosWorker
 
-  MAX_RETRIES = 0
+  MAX_RETRIES = 1
 
   def initialize
     @retry = 0
   end
 
-	def perform(ipa_snapshot_job_id, ios_app_id, version, bid = nil)
-		execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, bid: bid, version: version)
-	end
-
-  # unique parameters to ios live scan
-  def execute_scan_type(ipa_snapshot_job_id:, ios_app_id:, bid:, version:)
-    run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :one_off, bid: bid, version: version, start_classify: Rails.env.production?)
+  def perform(ipa_snapshot_job_id, ios_app_id, version, bid = nil)
+    execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, bid: bid, version: version)
   end
+
+  # unique parameters to mass live scan
+  def execute_scan_type(ipa_snapshot_job_id:, ios_app_id:, version:, bid:)
+    run_scan(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, purpose: :mass, bid: bid, version: version, start_classify: false)
+  end  
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
   def on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
@@ -30,8 +30,7 @@ class IosScanSingleServiceWorker
       snapshot.download_status = :complete
       snapshot.success = true
       snapshot.save
-      sdks = IosClassificationServiceWorker.new.perform(snapshot.id) if Rails.env.development? && false
-      return sdks
+      return snapshot
     end
 
     IpaSnapshotException.create!({
@@ -46,7 +45,7 @@ class IosScanSingleServiceWorker
       @retry += 1
       snapshot.download_status = :retrying
       snapshot.save
-      execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, bid: bid, version: version)
+      execute_scan_type(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, version: version, bid: bid)
     else
       snapshot.download_status = :complete
       snapshot.success = false

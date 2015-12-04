@@ -1,25 +1,24 @@
-offerViews = choose(SKUIOfferView)
-offerView = null
+offerViews = choose(SKUIOfferView);
+offerView = null;
 
-found = false
+found = false;
 
-startTime = Date.now()
+startTime = Date.now();
 
 function isDownloading(b) {
-  var start = Date.now()
-  downloading = false
+  var start = Date.now();
+  downloading = false;
   // will poll for 2 seconds
   while (Date.now() - start < 2000 && !downloading) {
-    var contents = b.layer.contents.toString()
+    var contents = b.layer.contents.toString();
     // More than 1 buffers indicates activity 
     if (contents.match(/buffer/g).length > 1) {
       downloading = true;
     }
   }
 
-  return downloading
+  return downloading;
 }
-
 
 while(Date.now() - startTime < 10000 && !found)
 {
@@ -27,9 +26,9 @@ while(Date.now() - startTime < 10000 && !found)
   {
     if (anOfferView.superview != null)
     {
-      offerView = anOfferView
-      found = true
-      break
+      offerView = anOfferView;
+      found = true;
+      break;
     }
   }
 }
@@ -39,20 +38,29 @@ if (!found)
   throw "Could not find button";
 }
 
-offerViewSubviews = offerView.subviews
-button = offerViewSubviews[0]
+offerViewSubviews = offerView.subviews;
+button = offerViewSubviews[0];
 
 if (isDownloading(button)) {
+  updateDebugStatus("Downloading", [UIColor yellowColor]);
   throw "Downloading";
 }
 
-title = (button.title === null ? null : button.title.toString())
+title = (button.title === null ? null : button.title.toString());
+
+if (title === "OPEN")
+{
+  updateDebugStatus("Recognized already installed", [UIColor orangeColor]);
+  throw "Installed";
+}
 
 if (title === "GET" || title === "INSTALL" || title === null)  //GET: have not downloaded on this account; null: already downloaded
 {
+  updateDebugStatus("Pressing button", [UIColor cyanColor]);
   [button sendActionsForControlEvents:(1 << 17)]
 }
 
-throw "Pressed button"
+updateDebugStatus("Pressed button", null);
+throw "Pressed button";
 
 

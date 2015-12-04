@@ -1,6 +1,6 @@
 module IosWorker
 
-	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, bid:)
+	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, version:, bid:)
 
 		# convert data coming from ios_device_service to classdump row information
 		def result_to_cd_row(data)
@@ -40,9 +40,9 @@ module IosWorker
 		result = nil
 		begin
 			begin
-				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting)
+				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting, version: version)
 			rescue ActiveRecord::RecordNotUnique => e
-				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).first
+				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).last
 			end
 
 			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
@@ -80,6 +80,7 @@ module IosWorker
 
 				if row[:dump_success]
 					snapshot.download_status = :cleaning
+					snapshot.bundle_version = incomplete_result[:bundle_version]
 					snapshot.save
 					# don't start classifying while cleaning during development
 					if start_classify

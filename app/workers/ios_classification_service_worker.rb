@@ -254,6 +254,7 @@ class IosClassificationServiceWorker
     [c] if c.present?
   end
 
+  # debug -- jlew
   def find_from_fw_folders(fw_folders: fw_folders)
     sdks = []
     fw_folders.each do |fw_folder|

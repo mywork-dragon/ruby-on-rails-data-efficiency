@@ -40,6 +40,7 @@ class FaviconService
       url = ensure_scheme(host)
       begin
         WWW::Favicon.new.find(url)
+        # TODO: add backup check to make sure there's no SSL weirdness
       rescue
         nil
       end
