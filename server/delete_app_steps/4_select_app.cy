@@ -18,7 +18,7 @@ function selectAppToDelete(table) {
 	var end_index = [table numberOfRowsInSection:section_number] || 0;
 	var cell = null;
 	var result = null;
-	var known_texts = ["Mail", "Calendars & Reminders", "Health", "Safari", "iBooks", "Podcasts", "Photos & Camera"];
+	var known_texts = ["Mail", "Messages", "Calendars & Reminders", "Health", "Safari", "iBooks", "Podcasts", "Photos & Camera"];
 
 	while (start_index < end_index && !result) {
 		path = [NSIndexPath indexPathForRow:start_index inSection:section_number]
