@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService",
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService) {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService", "$window",
+    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService, $window) {
 
       var customSearchCtrl = this;
 
@@ -22,6 +22,7 @@ angular.module('appApp')
 
         customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage)
           .success(function(data) {
+            console.log('Custom Search DATA:', data);
             customSearchCtrl.apps = data.appData;
             customSearchCtrl.appNum = data.appData.length;
             customSearchCtrl.numApps = data.totalAppsCount;
@@ -57,17 +58,13 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        var targetUrl = '';
-        if(customSearchCtrl.platform == 'iosSdks') {
-          targetUrl = '/search/iosSdks?';
-        } else if(customSearchCtrl.platform == 'androidSdks') {
-          targetUrl = '/search/androidSdks?';
-        } else {
-          targetUrl = '/search/custom?';
-        }
-        $location.url(targetUrl + $httpParamSerializer(payload));
-        customSearchCtrl.loadTableData();
+        var targetUrl = (customSearchCtrl.platform == 'iosSdks' || customSearchCtrl.platform == 'androidSdks') ? '/search/sdk/' + customSearchCtrl.platform + '?' : '/search/custom?';
+
         if(customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
+
+          // Set URL & process/redirect to SDK Search Ctrl
+          $window.location.href = '#' + targetUrl + $httpParamSerializer(payload);
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Custom Search", {
@@ -90,7 +87,13 @@ angular.module('appApp')
             window.Slacktivity.send(slacktivityData);
           }
           /* -------- Slacktivity Alerts End -------- */
+
         } else {
+
+          // Set URL & process request using Custom Search Ctrl
+          $location.url(targetUrl + $httpParamSerializer(payload));
+          customSearchCtrl.loadTableData();
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Custom Search", {
