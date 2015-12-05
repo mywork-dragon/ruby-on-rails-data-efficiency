@@ -36,6 +36,9 @@
             <th><div class="th normal-right-padding appDetailsHeader">
               Website
             </div></th>
+            <th ng-if="sdkSearchCtrl.platform == 'iosSdks'"><div class="th normal-right-padding">
+              Description
+            </div></th>
             <th><div class="th normal-right-padding">
               Open Source
             </div></th>
@@ -58,6 +61,7 @@
             <td ng-if="sdk.sdk.website">
               <a href="{{sdk.sdk.website}}" target="_blank">{{sdk.sdk.website}}</a>
             </td>
+            <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.sdk.summary}}</td>
             <td>{{sdk.sdk.openSource ? 'Yes' : 'No'}}</td>
           </tr>
           </tbody>

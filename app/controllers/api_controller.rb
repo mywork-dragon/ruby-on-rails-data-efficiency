@@ -1441,6 +1441,7 @@ class ApiController < ApplicationController
               website: sdk.website,
               favicon: sdk.favicon,
               openSource: sdk.open_source,
+              summary: sdk.summary,
               platform: 'ios'
           }
       }
