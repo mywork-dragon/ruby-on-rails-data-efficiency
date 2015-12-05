@@ -39,43 +39,6 @@ angular.module('appApp')
         sdkSearchCtrl.platform = platform;
       };
 
-      sdkSearchCtrl.onPageChange = function(nextPage) {
-        sdkSearchCtrl.submitSearch(nextPage);
-      };
-
-      sdkSearchCtrl.submitSearch = function(newPageNum) {
-        var payload = {
-          query: sdkSearchCtrl.searchInput,
-          platform: sdkSearchCtrl.platform,
-          page: newPageNum || 1,
-          numPerPage: 30
-        };
-        $location.url('/search/custom?' + $httpParamSerializer(payload));
-        sdkSearchCtrl.loadTableData();
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "Custom Search", {
-            "query": sdkSearchCtrl.searchInput,
-            "platform": sdkSearchCtrl.platform
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-      };
-
-      sdkSearchCtrl.addSelectedTo = function(list, selectedApps) {
-        listApiService.addSelectedTo(list, selectedApps, sdkSearchCtrl.platform).success(function() {
-          sdkSearchCtrl.notify('add-selected-success');
-          $rootScope.selectedAppsForList = [];
-        }).error(function() {
-          sdkSearchCtrl.notify('add-selected-error');
-        });
-        $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
-      };
-
-      sdkSearchCtrl.notify = function(type) {
-        listApiService.listAddNotify(type);
-      };
-
       sdkSearchCtrl.sdksDisplayedCount = function() {
         var lastPageMaxApps = sdkSearchCtrl.numPerPage * sdkSearchCtrl.currentPage;
         var baseAppNum = sdkSearchCtrl.numPerPage * (sdkSearchCtrl.currentPage - 1) + 1;
