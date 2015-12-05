@@ -35,7 +35,7 @@ angular
         },300);
 
       });
-
+    
     })
   .config(['$routeProvider', function ($routeProvider) {
      $routeProvider
