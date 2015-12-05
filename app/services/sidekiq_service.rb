@@ -10,7 +10,8 @@ class SidekiqService
         last_size = cur_size
         if size_count > timeout/interval
           message = send action
-          break
+          sleep 10
+          cur_size = 1
         end
         sleep interval
       end

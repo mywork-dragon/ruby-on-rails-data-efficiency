@@ -13,18 +13,13 @@ class ApkSnapshotService
             ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
       end
+      # daemon :start
     end
     
-    # daemon :start
-
-    def test(command)
-      Daemons.run('app/services/sidekiq_service.rb')
-    end
-
     def daemon(command)
       ip = Socket.ip_address_list.detect{|intf| intf.ipv4_private?}.ip_address()
       if ip == '172.31.38.183'
-        Daemons.run('app/services/sidekiq_service.rb')
+        `ruby 'app/services/sidekiq_service_controller.rb' #{command}`
       else
         puts "You can only run the Sidekiq monitoring daemon on sdk_scraper1."
       end
@@ -33,7 +28,7 @@ class ApkSnapshotService
   end
 
   def on_complete(status, options)
-    self.class.daemon :stop
+    # self.class.daemon :stop
   end
   
 end

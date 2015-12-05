@@ -1,12 +1,12 @@
 class AndroidSdkService
 
+  EX_WORDS = "framework|android|sdk|\\W+"
+  LANGS = "java"
+
+
 	class << self
 
 		def classify(snap_id:, packages:)
-
-			# packages.each{|x| puts x }.count
-
-			# return nil
 
 			# Save package if it matches a regex
 			regex_check = miss_match(data: packages, check: :match_regex)
@@ -30,10 +30,8 @@ class AndroidSdkService
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-			ap google_check[:matched]
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
-					# sdk_company = save_company(name: result[:name], url: result[:url])
 					meta = result[:metadata]
 					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source])
 					result[:packages].each do |p| 
@@ -45,6 +43,9 @@ class AndroidSdkService
 			return google_check
 
 		end
+
+
+    # private
 
 		def save_sdk(name:, website:, open_source:)
 			begin
@@ -68,8 +69,11 @@ class AndroidSdkService
 	    end
 
       # save sdk_packages_apk_snapshots
-      # MAKE THIS UNIQUE
-      SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+      begin
+        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+      rescue
+        nil
+      end
 
       # save android_sdks_apk_snapshots
       begin
@@ -102,8 +106,8 @@ class AndroidSdkService
 
 		# Get the url of an sdk if it is valid
 
-		def google_sdk(query:, platform: :android)
-			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
+		def google_sdk(query:)
+			google_search(q: "#{query} android sdk", limit: 4).each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
@@ -117,15 +121,94 @@ class AndroidSdkService
 
 		# ADD JASON'S STUFF TO GOOGLE GITHUB
 
-		def google_github(query:, platform: :android)
-			google_search(q: "#{query} #{platform} site:github.com").each do |url|
-				if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
-					company = camel_split(url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1])
-					return {:url=>url, :name=>company, :open_source=>true}
-				end
-			end
-			nil
-		end
+		# def google_github(query:, platform: :android)
+		# 	google_search(q: "#{query} #{platform} site:github.com").each do |url|
+		# 		if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
+		# 			company = camel_split(url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1])
+		# 			return {:url=>url, :name=>company, :open_source=>true}
+		# 		end
+		# 	end
+		# 	nil
+		# end
+
+
+# com.jakewharton.disklrucache
+# com.jakewharton
+# com.jakewharton.android.viewpagerindicator
+# com.jakewharton.rxbinding.widget
+# com.jakewharton.rxbinding.internal
+# com.jakewharton.notificationcompat2
+# com.jakewharton.rxbinding
+# com.jakewharton.rxbinding.view
+# Jakewharton
+# Jakevin
+# Jake
+# Jakewp11
+
+
+    def google_github(query:, packages:, platform: :android)
+
+      r = find_suffixes(packages)
+
+      g = "https:\\/\\/github.com\\/[^\\/]*"
+      match_repo = g+"\\/[^\\/]*#{query}[^\\/]*\\z"
+
+      prefix = [[query,nil,match_repo]]
+      suffixes = r.map do |x|
+        reg = g+"#{query}*\\/[^\\/]*#{x}*[^\\/]*\\z"
+        [query,x,reg]
+      end
+
+      searches = prefix + suffixes
+
+      searches.each do |rowner, rname, regex|
+        q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
+        google_search(q: q, limit: 5).each do |url|
+          if !!(url =~ /#{regex}/i)
+            matched = github_data_match(url, rname, rowner)
+            return matched if matched.present?
+          end
+        end
+      end
+
+      nil
+    end
+
+    def github_data_match(url, rname, rowner)
+      rd = GithubService.get_repo_data(url)
+      if rd['message'] != 'Not Found' && !!(rd['language'] =~ /#{LANGS}/i)
+        rname_match = close_enough?(str1: rname, str2: rd['name'], ex: EX_WORDS)
+        rowner_match = close_enough?(str1: rowner, str2: rd['owner']['login'], ex: EX_WORDS)
+
+        if rname_match && rowner_match
+          result = {
+            url: url,
+            name: rd['name'],
+            open_source: true,
+            github_repo_identifier: rd['id']
+          }
+
+          return result
+        end
+      end
+      nil
+    end
+
+
+    def close_enough?(str1:, str2:, threshold: 0.9, ex: nil)
+      return false if [str1,str2].any?(&:nil?)
+      str1, str2 = [str1, str2].map{|x| x.gsub(/#{ex}/i,'') }
+      dice_similarity = FuzzyMatch::Score::PureRuby.new(str1, str2).dices_coefficient_similar
+      dice_similarity >= threshold
+    end
+
+    def find_suffixes(packages)
+      packages.map do |package|
+        s = strip_prefix(package).split('.').compact.select{|x| x.length > 1 }
+        s.shift
+        s
+      end.flatten.uniq
+    end
 
 		def google_search(q:, limit: 10)
 		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
@@ -202,7 +285,7 @@ class AndroidSdkService
 
     def match_google(package)
     	puts "googling #{package[0]}".green
-    	results = google_sdk(query: package[0]) || google_github(query: package[0])
+    	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
     	if results
     		return {
     			:packages => package[1],
