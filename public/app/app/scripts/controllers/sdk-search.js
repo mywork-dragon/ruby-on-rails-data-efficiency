@@ -14,7 +14,7 @@ angular.module('appApp')
         var urlParams = $location.url().split('/search/sdk')[1]; // Get url params
         var routeParams = $location.search();
 
-        sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage)
+        sdkSearchService.sdkSearch(routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.platform)
           .success(function(data) {
             sdkSearchCtrl.sdks = data.sdkData;
             sdkSearchCtrl.sdkNum = data.sdkData.length;

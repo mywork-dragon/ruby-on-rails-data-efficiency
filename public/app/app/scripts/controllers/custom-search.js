@@ -22,7 +22,6 @@ angular.module('appApp')
 
         customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage)
           .success(function(data) {
-            console.log('Custom Search DATA:', data);
             customSearchCtrl.apps = data.appData;
             customSearchCtrl.appNum = data.appData.length;
             customSearchCtrl.numApps = data.totalAppsCount;
