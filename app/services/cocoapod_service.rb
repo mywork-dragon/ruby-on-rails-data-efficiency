@@ -63,7 +63,7 @@ class CocoapodService
       end
     end
 
-    def find_sdk_similarities(sdk_names = nil, req = 0.75)
+    def find_sdk_similarities(sdk_names = nil, req = 0.2)
 
 
       sdks = sdk_names.nil? ? IosSdk.all.sample(10) : IosSdk.where(name: sdk_names)
