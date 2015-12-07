@@ -1515,18 +1515,19 @@ class ApiController < ApplicationController
 
   def get_ios_sdk
     sdk_id = params['id']
-    # sdk =
+    sdk = IosSdk.find(sdk_id)
 
-    # apps_count =
+    # apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
 
     @sdk_json = {
-        id: -1,
-        name: "IOS TEST",
-        website: "",
-        favicon: "http://robohash.org/Alpha118350.png?size=350x350",
-        openSource: false,
+        id: sdk.id,
+        name: sdk.name,
+        website: sdk.website,
+        favicon: sdk.favicon,
+        openSource: sdk.open_source?,
+        summary: sdk.summary,
         platform: "ios",
-        numOfApps: -9999
+        numOfApps: -999999
     }
     render json: @sdk_json
   end
@@ -1555,7 +1556,7 @@ class ApiController < ApplicationController
 
     scanned_android_sdk_num = AndroidApp.where('newest_apk_snapshot_id IS NOT NULL').joins(:newest_apk_snapshot).where('apk_snapshots.scan_status = 1').count
 
-    scanned_ios_sdk_num = IosApp.joins(:newest_ipa_snapshot).where('ipa_snapshots.success = true').count
+    scanned_ios_sdk_num = IosApp.where('newest_ipa_snapshot_id IS NOT NULL').joins(:newest_ipa_snapshot).where('ipa_snapshots.success = true').count
 
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
   end
