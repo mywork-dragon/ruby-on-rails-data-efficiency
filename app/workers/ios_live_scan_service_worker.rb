@@ -2,17 +2,21 @@ class IosLiveScanServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, queue: :ios_live_scan_cloud
+  # retrying the json lookup ourselves, so disable
+  sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud
+
+  LOOKUP_ATTEMPTS = 2
 
   def perform(ipa_snapshot_job_id, ios_app_id)
 
     begin
       puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
       job = IpaSnapshotJob.find(ipa_snapshot_job_id)
-      # if it's available
       data = get_json(ios_app_id)
 
-      # TODO: if invalidated at different parts, update the ios_app table
+      raise "Could not perform iTunes lookup for app #{ios_app_id}" if data.nil?
+
+      data = data['results'].first
 
       if data.nil?
         job.live_scan_status = :not_available
@@ -29,16 +33,15 @@ class IosLiveScanServiceWorker
       end
 
       # if it's been changed (for now, just ignore that stuff)
-      if false
-        # if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
+      version = data['version']
+      if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
         job.live_scan_status = :unchanged
         job.save
-        IosApp.find(ios_app_id)
         return "App has not updated"
       end
 
       # check if devices compatible
-      if !device_compatible?(devices: data['devices'])
+      if !device_compatible?(devices: data['supportedDevices'])
         job.live_scan_status = :device_incompatible
         job.save
 
@@ -56,16 +59,16 @@ class IosLiveScanServiceWorker
 
         batch.jobs do
           if job.job_type == 'one_off'
-            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
           elsif job.job_type == 'test'
-            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, bid)
+            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
           end
         end
       else
         if job.job_type == 'one_off'
-          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
         elsif job.job_type == 'test'
-          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, bid)
+          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
         end
       end
 
@@ -98,7 +101,8 @@ class IosLiveScanServiceWorker
     last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
 
     if !version.blank? && !(last_snap.nil? || last_snap.version.nil?) && version <= last_snap.version
-      last_snap.touch # update the ipa snapshot with current date
+      last_snap.good_as_of_date = Time.now # update the ipa snapshot with current date
+      last_snap.save
       false
     else
       true 
@@ -106,18 +110,24 @@ class IosLiveScanServiceWorker
   end
 
   def get_json(ios_app_id)
-    begin
-      app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
-      url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
 
-      json = JSON.parse(Proxy.get_body_from_url(url))
+    data = nil
 
-      json['results'].first
-    rescue => e
-      puts "Failed to get json data about app_identifier #{app_identifier}"
-      puts e.message
-      puts e.backtrace
+    LOOKUP_ATTEMPTS.times do |i|
+      begin
+        app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
+        url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
+
+        data = JSON.parse(Proxy.get_body_from_url(url))
+        
+      rescue => e
+        nil
+      end
+
+      break if data.present?  
     end
+
+    data
   end
 
 end

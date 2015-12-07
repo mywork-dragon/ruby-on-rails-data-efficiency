@@ -261,8 +261,12 @@ class SdkService
 
 			return false if app_name.match(/#{company}/i)
 
+			begin
 			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
-			return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
+				return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
+			rescue => e 	# catch invalid URIs
+				return false
+			end
 
 			false
 		end
@@ -315,7 +319,7 @@ class SdkService
 						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
 						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
 					rescue
-						FaviconService.get_favicon_from_url(url: 'http://github.com')
+						FaviconService.get_favicon_from_url(url: 'http://github.com', try_backup: false)
 					end
 
 					return {website: url, favicon: favicon, open_source: true, name: company, github_repo_identifier: srd['id']}.merge(srd)
