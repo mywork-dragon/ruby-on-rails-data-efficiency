@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204215354) do
+ActiveRecord::Schema.define(version: 20151207222737) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -552,10 +552,12 @@ ActiveRecord::Schema.define(version: 20151204215354) do
     t.integer  "cocoapod_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "flagged",     default: false
   end
 
   add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
-  add_index "cocoapod_source_data", ["name"], name: "index_cocoapod_source_data_on_name", using: :btree
+  add_index "cocoapod_source_data", ["flagged"], name: "index_cocoapod_source_data_on_flagged", using: :btree
+  add_index "cocoapod_source_data", ["name", "flagged"], name: "index_cocoapod_source_data_on_name_and_flagged", using: :btree
 
   create_table "cocoapod_tags", force: true do |t|
     t.string   "tag"
