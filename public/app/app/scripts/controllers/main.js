@@ -59,7 +59,8 @@ angular.module('appApp')
 
       // For dashboard filter warning
       apiService.getScannedSdkNum().success(function(data) {
-        $rootScope.scannedSdkNum = data.scannedSdkNum;
+        $rootScope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
+        $rootScope.scannedIosSdkNum = data.scannedIosSdkNum;
       });
 
       // Display num of apps scanned notice on dashboard upon SDK filter added

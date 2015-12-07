@@ -1553,9 +1553,11 @@ class ApiController < ApplicationController
 
   def get_sdk_scanned_count
 
-    scanned_sdk_num = AndroidApp.where('newest_apk_snapshot_id IS NOT NULL').joins(:newest_apk_snapshot).where('apk_snapshots.scan_status = 1').count
+    scanned_android_sdk_num = AndroidApp.where('newest_apk_snapshot_id IS NOT NULL').joins(:newest_apk_snapshot).where('apk_snapshots.scan_status = 1').count
 
-    render json: {scannedSdkNum: scanned_sdk_num}
+    scanned_ios_sdk_num = IosApp.where('newest_ipa_snapshot_id IS NOT NULL').joins(:newest_ipa_snapshot).where('ipa_snapshots.success = true').count
+
+    render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
   end
 
 end
