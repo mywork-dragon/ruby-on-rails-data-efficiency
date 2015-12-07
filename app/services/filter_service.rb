@@ -77,17 +77,29 @@ class FilterService
 
       if app_filters['sdkNames']
 
+        puts "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
+        puts app_filters['sdkNames']
+        puts "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
+
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{ |x| x['id'].to_i }
 
         IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
+
+        puts "######## - Apps With Sdk - ########"
+        puts apps_with_sdk
+        puts "######## - Apps With Sdk - ########"
 
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
         queries << "where('ios_apps.id IN (?)', #{apps_with_sdk})" if sdk_ids.present?
       end
-      
+
+      puts "######### --- QUERY --- ##########"
+      puts queries
+      puts "######### --- QUERY --- ##########"
+
       queries
     end
     
