@@ -49,7 +49,7 @@
           <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
             <td id="sdkResultsTableAppIcon" class="resultsTableAppIcon">
                 <span>
-                  <a href="#/sdk/android/{{sdk.sdk.id}}">
+                  <a href="#/sdk/{{sdk.sdk.platform}}/{{sdk.sdk.id}}">
                     <img ng-src="{{sdk.sdk.favicon}}" />
                     {{sdk.sdk.name}}
                   </a>
