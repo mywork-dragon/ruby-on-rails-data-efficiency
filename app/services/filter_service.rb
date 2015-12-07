@@ -75,7 +75,6 @@ class FilterService
         end
       end
 
-      # Implement filtering for sdkNames for iOS
       if app_filters['sdkNames']
 
         apps_with_sdk = []
@@ -83,8 +82,8 @@ class FilterService
 
         IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
-        apps_with_sdk = apps_with_sdk.flatten! # combines all arrays together
-        apps_with_sdk.uniq{|x| x.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
+        apps_with_sdk.flatten! # combines all arrays together
+        apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
         queries << "where('ios_apps.id IN (?)', #{apps_with_sdk})" if sdk_ids.present?
       end
