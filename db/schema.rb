@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204004410) do
+ActiveRecord::Schema.define(version: 20151204215354) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -995,6 +995,19 @@ ActiveRecord::Schema.define(version: 20151204004410) do
   end
 
   add_index "ios_sdk_source_groups", ["ios_sdk_id"], name: "index_ios_sdk_source_groups_on_ios_sdk_id", using: :btree
+
+  create_table "ios_sdk_source_matches", force: true do |t|
+    t.integer  "source_sdk_id"
+    t.integer  "match_sdk_id"
+    t.integer  "collisions"
+    t.integer  "total"
+    t.float    "ratio",         limit: 24
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdk_source_matches", ["ratio"], name: "index_ios_sdk_source_matches_on_ratio", using: :btree
+  add_index "ios_sdk_source_matches", ["source_sdk_id"], name: "index_ios_sdk_source_matches_on_source_sdk_id", using: :btree
 
   create_table "ios_sdk_update_exceptions", force: true do |t|
     t.string   "sdk_name"

@@ -5,9 +5,15 @@ class IosSdk < ActiveRecord::Base
 
   has_many :sdk_packages
   has_many :cocoapod_metrics
+
 	has_many :ios_sdks_ipa_snapshots
   has_many :ipa_snapshots, through: :ios_sdks_ipa_snapshots
+
   has_many :cocoapods
+  
+
+  has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
+  has_many :source_matches, through: :ios_sdk_source_matches, source: :match_sdk
 
   enum source: [:cocoapods, :package_lookup]
 
@@ -45,5 +51,7 @@ class IosSdk < ActiveRecord::Base
 
     count_only ? app_to_snap.keys.length : IosApp.find(app_to_snap.keys)
   end
+
+  
 
 end
