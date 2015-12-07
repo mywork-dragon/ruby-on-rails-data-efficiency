@@ -74,6 +74,12 @@ class FilterService
           queries << "joins(:newest_ios_app_snapshot).where('ios_app_snapshots.support_url LIKE \"%.#{support_desk}.%\"')"
         end
       end
+
+      # Implement filtering for sdkNames for iOS
+      if app_filters['sdkNames']
+        sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
+        # queries << "joins(android_sdk_companies_android_apps: :android_sdk_company).where('ios_sdks.id IN (?)', #{sdk_ids})" if sdk_ids.present?
+      end
       
       queries
     end
@@ -168,10 +174,13 @@ class FilterService
         queries << "where('android_app_snapshots.downloads_min IN (?)', #{filter_values_array})"
       end
 
+
+      ########## Add logic to only return apps that include the sdk in their *latest* snapshot ##########
       if app_filters['sdkNames']
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
         queries << "joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids.present?
       end
+
       
       queries
     end
