@@ -8,9 +8,9 @@ class ApkSnapshotService
       batch.on(:complete, ApkSnapshotService)
       batch.jobs do
         j = ApkSnapshotJob.create!(notes: notes)
-          AndroidApp.where(display_type: 0, newest_apk_snapshot_id: nil).joins(:newest_android_app_snapshot).where('android_app_snapshots.price = ? AND android_app_snapshots.downloads_min > ?',0,1000).limit(size).each.with_index do |app, index|
+          AndroidApp.where(display_type: 0, newest_apk_snapshot_id: nil).joins(:newest_android_app_snapshot).where('android_app_snapshots.price = ? AND android_app_snapshots.released > ?',0,1.year.ago).limit(size).each.with_index do |app, index|
             li "app #{index}"
-            # ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
+            ApkSnapshotServiceWorker.perform_async(j.id, batch.bid, app.id)
           end
       end
       # daemon :start
