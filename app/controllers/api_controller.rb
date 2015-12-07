@@ -1533,8 +1533,15 @@ class ApiController < ApplicationController
 
   def get_sdk_autocomplete
     search_str = params['searchstr']
+    platform = params['platform']
 
-    sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+    sdk_companies = []
+
+    if platform == 'android'
+      sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+    elsif platform == 'ios'
+      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
+    end
 
     results = []
 
