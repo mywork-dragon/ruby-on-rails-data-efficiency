@@ -57,8 +57,9 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
     };
     sdkDetailsCtrl.load();
 
-    sdkDetailsCtrl.submitSdkQuery = function() {
-      var path = API_URI_BASE + "app/app#/search?app=%7B%22sdkNames%22:%5B%7B%22id%22:" + sdkDetailsCtrl.sdkData.id + ",%22name%22:%22" + encodeURI(sdkDetailsCtrl.sdkData.name) + "%22%7D%5D%7D&company=%7B%7D&custom=%7B%7D&pageNum=1&pageSize=100&platform=%7B%22appPlatform%22:%22android%22%7D";
+    // Submits filtered search query via query string params
+    sdkDetailsCtrl.submitSdkQuery = function(platform) {
+      var path = API_URI_BASE + "app/app#/search?app=%7B%22sdkNames%22:%5B%7B%22id%22:" + sdkDetailsCtrl.sdkData.id + ",%22name%22:%22" + encodeURI(sdkDetailsCtrl.sdkData.name) + "%22%7D%5D%7D&company=%7B%7D&custom=%7B%7D&pageNum=1&pageSize=100&platform=%7B%22appPlatform%22:%22" + platform + "%22%7D";
       $window.location.href = path;
     };
 
