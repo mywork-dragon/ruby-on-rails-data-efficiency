@@ -52,6 +52,4 @@ class IosSdk < ActiveRecord::Base
     count_only ? app_to_snap.keys.length : IosApp.find(app_to_snap.keys)
   end
 
-  
-
 end
