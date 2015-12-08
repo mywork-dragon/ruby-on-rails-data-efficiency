@@ -96,7 +96,7 @@ class FilterService
         Rails.logger.info apps_with_sdk
         Rails.logger.info "######## - After Flattin - ########"
 
-        apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
+        apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
         Rails.logger.info "######## - After Unique & Map - ########"
         Rails.logger.info apps_with_sdk
