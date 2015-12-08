@@ -21,7 +21,7 @@ class AndroidSdkCompany < ActiveRecord::Base
 
       # If latest snapshot, add respective app to results
       if apk_snapshot.id == android_app.newest_apk_snapshot_id
-        result_apps << AndroidApp
+        result_apps << android_app
       end
     end
 
@@ -33,7 +33,7 @@ class AndroidSdkCompany < ActiveRecord::Base
         app_ids << app.id
       end
 
-      apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_apps.id IN (?)', [#{app_ids}]).group('android_apps.id').count.length")
+      apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_apps.id IN (?)', #{app_ids}).group('android_apps.id').count.length")
 
       result = apps_count
     else
