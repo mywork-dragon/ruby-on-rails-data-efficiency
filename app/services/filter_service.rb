@@ -184,13 +184,22 @@ class FilterService
 
       ########## Add logic to only return apps that include the sdk in their *latest* snapshot ##########
       if app_filters['sdkNames']
+
+        apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
+        #sdk_ids = [1]
 
-        ### FINISH logic here to limit Android SDKs to only newest snapshots
-        AndroidSdkCompany.where(id: sdk_ids).joins(android_sdk_companies_android_apps: :android_app).joins(android_sdk_companies_apk_snapshots: :apk_snapshots).where(newest_api_snapshot_id: :apk_snapshots.id)
+        AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
+        apps_with_sdk.flatten! # combines all arrays together
+        apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
-        queries << "joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', #{sdk_ids})" if sdk_ids.present?
+=begin
+        puts "##### APPS WITH SDK COUNT #####"
+        puts apps_with_sdk.length
+        puts "##### APPS WITH SDK COUNT #####"
+=end
+        queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
 
       
