@@ -316,7 +316,7 @@
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                 </li>
-                <li>
+                <li ng-if="appData.company.id">
                   <span class="icon fa fa-briefcase"></span>
                   <label>Company:</label>
                   <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
