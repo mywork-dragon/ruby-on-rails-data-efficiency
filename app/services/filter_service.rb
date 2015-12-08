@@ -187,18 +187,12 @@ class FilterService
 
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
-        #sdk_ids = [1]
 
         AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
-
-=begin
-        puts "##### APPS WITH SDK COUNT #####"
-        puts apps_with_sdk.length
-        puts "##### APPS WITH SDK COUNT #####"
-=end
+        
         queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
 
