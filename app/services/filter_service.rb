@@ -77,18 +77,18 @@ class FilterService
 
       if app_filters['sdkNames']
 
-        puts "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
-        puts app_filters['sdkNames']
-        puts "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
+        Rails.logger.info "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
+        Rails.logger.info app_filters['sdkNames']
+        Rails.logger.info "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
 
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{ |x| x['id'].to_i }
 
         IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
-        puts "######## - Apps With Sdk - ########"
-        puts apps_with_sdk
-        puts "######## - Apps With Sdk - ########"
+        Rails.logger.info "######## - Apps With Sdk - ########"
+        Rails.logger.info apps_with_sdk
+        Rails.logger.info "######## - Apps With Sdk - ########"
 
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
@@ -96,9 +96,9 @@ class FilterService
         queries << "where('ios_apps.id IN (?)', #{apps_with_sdk})" if sdk_ids.present?
       end
 
-      puts "######### --- QUERY --- ##########"
-      puts queries
-      puts "######### --- QUERY --- ##########"
+      Rails.logger.info "######### --- QUERY --- ##########"
+      Rails.logger.info queries
+      Rails.logger.info "######### --- QUERY --- ##########"
 
       queries
     end
