@@ -34,7 +34,8 @@ class IosLiveScanServiceWorker
 
       # if it's been changed (for now, just ignore that stuff)
       version = data['version']
-      if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: version)
+      if false
+      # if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
         job.live_scan_status = :unchanged
         job.save
         return "App has not updated"

@@ -534,60 +534,68 @@ class IosDeviceService
   def delete_applications(ssh)
 
     # template the scripts with the app name and copy them over
-    files = `ls #{DELETE_APP_STEPS_DIR} | sort`.chomp.split("\n")
-    files.each do |fname|
-      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
-      ssh.exec! "echo '#{script}' > #{fname}"
-    end
-
-    # Find the number of apps to delete and go through the process for each one
-    apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
-    return "Nothing to do" if apps == nil
-
-    apps = apps.chomp.split
-
-    puts "Number of apps to delete: #{apps.length}"
-    apps.length.times do |i|
-      puts "Deleting app #{i+1}"
-
-      # make sure Preference page is loaded and on first page
-      run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
-      sleep(1)
-      run_command(ssh, "killall Preferences", 'Kill Preferences while open')
-      sleep(1)
-      run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
-
-      files.each do |fname|
-        sleep(2)
-        resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+    
+    ios_version = @device.ios_version
+    bundle_id = @bundle_info['CFBundleIdentifier']
+    
+    files = 
+      if ios_version == '8.4'
+        %w(
+          1_select_general.cy                                  
+          2_select_usage.cy                   
+          3_select_storage.cy                 
+          4_select_app.cy
+          5_select_delete.cy 
+          6_confirm_delete.cy
+          )
+      elsif ios_version == '9.0.2'
+        %w(
+          1_delete_app_ios9.cy
+          2_unlock_device_ios9.cy
+          )
+      else
+        raise 'Device is not a valid iOS version'
       end
-    end
-  end
 
-  # NO LONGER IN USE. see delete_applications
-  def delete_application(ssh, app_info)
-
-    # need to get app's display name
-    bundle_info = extract_bundle_info(ssh, app_info)
-    display_name = bundle_info["CFBundleDisplayName"] || bundle_info["CFBundleName"]
-
-    # template the scripts with the app name and copy them over
-
-    files = `ls #{DELETE_APP_STEPS_DIR} | sort`.chomp.split("\n")
     files.each do |fname|
-      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [display_name]
+      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_id]
       ssh.exec! "echo '#{script}' > #{fname}"
     end
 
-    # make sure Preference page is loaded and on first page
-    run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
-    run_command(ssh, "killall Preferences", 'Kill Preferences while open')
-    run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
-    sleep(2)
 
-    files.each do |fname|
-      resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+    if ios_version == '8.4'
+      # Find the number of apps to delete and go through the process for each one
+      apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
+      return "Nothing to do" if apps == nil
+
+      apps = apps.chomp.split
+
+      puts "Number of apps to delete: #{apps.length}"
+      apps.length.times do |i|
+        puts "Deleting app #{i+1}"
+
+        # make sure Preference page is loaded and on first page
+        run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
+        sleep(1)
+        run_command(ssh, "killall Preferences", 'Kill Preferences while open')
+        sleep(1)
+        run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
+
+        files.each do |fname|
+          sleep(2)
+          resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+        end
+      end
+    else
+      resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
       sleep(2)
+      puts "#3"
+      run_command(ssh, "killall SpringBoard", "killing springboard")
+      sleep(5)
+      puts "#4"
+      resp = run_command(ssh, "cycript -p SpringBoard 2_unlock_device_ios9.cy", "running cycript file 2_unlock_device_ios9.cy")
+      sleep(2)
+      puts "Done"
     end
   end
 
