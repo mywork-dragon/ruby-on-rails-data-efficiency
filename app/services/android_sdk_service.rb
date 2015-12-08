@@ -25,9 +25,6 @@ class AndroidSdkService
 				end
 			end
 
-
-			# FOR THE GITHUB SEARCH, SAVE THE REPO AS THE SDK AND THE AUTHOR AS THE COMPANY
-
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
 			if google_check[:matched].present?
@@ -56,6 +53,8 @@ class AndroidSdkService
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
+
+      # return nil if %w(adjust retrofit branch).any?{|x| package.include? x }
 
       # save sdk_packages
     	sdk_package = begin
@@ -119,33 +118,6 @@ class AndroidSdkService
 		# Get the url and company name of an sdk from github if it is valid
 
 
-		# ADD JASON'S STUFF TO GOOGLE GITHUB
-
-		# def google_github(query:, platform: :android)
-		# 	google_search(q: "#{query} #{platform} site:github.com").each do |url|
-		# 		if !!(url =~ /https:\/\/github.com\/[a-z]*\/#{query}[^\/]*/i)
-		# 			company = camel_split(url[/\/([^\/]+)(?=\/[^\/]+\/?\Z)/i,1])
-		# 			return {:url=>url, :name=>company, :open_source=>true}
-		# 		end
-		# 	end
-		# 	nil
-		# end
-
-
-# com.jakewharton.disklrucache
-# com.jakewharton
-# com.jakewharton.android.viewpagerindicator
-# com.jakewharton.rxbinding.widget
-# com.jakewharton.rxbinding.internal
-# com.jakewharton.notificationcompat2
-# com.jakewharton.rxbinding
-# com.jakewharton.rxbinding.view
-# Jakewharton
-# Jakevin
-# Jake
-# Jakewp11
-
-
     def google_github(query:, packages:, platform: :android)
 
       r = find_suffixes(packages)
@@ -153,7 +125,7 @@ class AndroidSdkService
       g = "https:\\/\\/github.com\\/[^\\/]*"
       match_repo = g+"\\/[^\\/]*#{query}[^\\/]*\\z"
 
-      prefix = [[query,nil,match_repo]]
+      prefix = [[nil,query,match_repo]]
       suffixes = r.map do |x|
         reg = g+"#{query}*\\/[^\\/]*#{x}*[^\\/]*\\z"
         [query,x,reg]
@@ -163,8 +135,10 @@ class AndroidSdkService
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
+        puts q.green
         google_search(q: q, limit: 5).each do |url|
           if !!(url =~ /#{regex}/i)
+            puts url.purple
             matched = github_data_match(url, rname, rowner)
             return matched if matched.present?
           end
@@ -180,10 +154,10 @@ class AndroidSdkService
         rname_match = close_enough?(str1: rname, str2: rd['name'], ex: EX_WORDS)
         rowner_match = close_enough?(str1: rowner, str2: rd['owner']['login'], ex: EX_WORDS)
 
-        if rname_match && rowner_match
+        if rname_match || (rname_match && rowner_match)
           result = {
             url: url,
-            name: rd['name'],
+            name: cap_first_letter(rd['name']),
             open_source: true,
             github_repo_identifier: rd['id']
           }
@@ -246,6 +220,10 @@ class AndroidSdkService
 		def camel_split(str)
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
 		end
+
+    def cap_first_letter(str)
+      str.slice(0,1).capitalize + str.slice(1..-1)
+    end
 
 		def miss_match(data:, check:)
 			m = Hash.new
