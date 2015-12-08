@@ -77,37 +77,16 @@ class FilterService
 
       if app_filters['sdkNames']
 
-        Rails.logger.info "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
-        Rails.logger.info app_filters['sdkNames']
-        Rails.logger.info "SDK NAMES OBJECT $$$$$$$$$$$$$$$$$$$$$$$$$$"
-
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{ |x| x['id'].to_i }
 
         IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
-        Rails.logger.info "######## - Apps With Sdk - ########"
-        Rails.logger.info apps_with_sdk
-        Rails.logger.info "######## - Apps With Sdk - ########"
-
         apps_with_sdk.flatten! # combines all arrays together
-
-        Rails.logger.info "######## - After Flattin - ########"
-        Rails.logger.info apps_with_sdk
-        Rails.logger.info "######## - After Flattin - ########"
-
         apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
-
-        Rails.logger.info "######## - After Unique & Map - ########"
-        Rails.logger.info apps_with_sdk
-        Rails.logger.info "######## - After Unique & Map - ########"
 
         queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
-
-      Rails.logger.info "######### --- QUERY --- ##########"
-      Rails.logger.info queries
-      Rails.logger.info "######### --- QUERY --- ##########"
 
       queries
     end
