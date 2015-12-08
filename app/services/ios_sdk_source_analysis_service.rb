@@ -115,6 +115,66 @@ class IosSdkSourceAnalysisService
       end
     end
 
+    def inspect_sdk_matches(sdk_id, match_ids = nil, ratio = 0.1)
+      IosSdkSourceMatch.where(source_sdk_id: sdk_id, match_sdk_id: match_ids).where("ratio > #{ratio}").reduce({}) do |memo, match_row|
+        memo[IosSdk.find(match_row.match_sdk_id).name] = {
+          collisions: match_row.collisions,
+          total: match_row.total,
+          ratio: match_row.ratio
+        }
+        memo
+      end
+    end
+
+    def autocreate_groups(start_index: 0)
+      groups = File.open('groups.txt') {|f| f.read}.split("\n").reduce([[]]) do |memo, sdk|
+        if sdk.blank?
+          memo.push([])
+        else
+          memo.last.push(sdk)
+        end
+        memo
+      end
+
+      leftover = []
+
+      groups[start_index..-1].each_with_index do |group, index|
+        puts "Reviewing #{index + start_index} out of #{groups.length}"
+        puts "Group"
+        puts "----------------------------------"
+        puts group.join("\n")
+        puts "----------------------------------"
+        puts "Create? [y/n]"
+        ans = gets
+        if ans.match(/y/i)
+          puts "Enter the name: "
+          name = gets.chomp
+          puts "Which is the group leader? [0..#{group.length-1}]"
+          index = gets.chomp.to_i
+
+          sdk_id = group[index].split(":").first.chomp.to_i
+
+          group_row = IosSdkSourceGroup.create!(name: name, ios_sdk_id: sdk_id)
+
+          group.each_with_index do |sdk|
+            sdk_id = sdk.split(":").first.chomp.to_i
+            IosSdk.find(sdk_id).update(ios_sdk_source_group_id: group_row.id)
+          end
+        else
+          leftover.push(group)
+        end
+
+        puts "Continue? [y/n]"
+        ans = gets
+        break if ans.match(/n/i)
+      end
+
+
+      File.open('leftover.txt', 'w') {|f| f.write(leftover.map {|x| x.join("\n")}.join("\n"))}
+    end
+
+
+
   end
 
 
