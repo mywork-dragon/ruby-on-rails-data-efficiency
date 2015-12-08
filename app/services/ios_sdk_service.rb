@@ -16,7 +16,7 @@ class IosSdkService
       }
 
       error_map = {
-        price: 0,
+        paid: 0,
         taken_down: 1,
         foreign: 2,
         device_incompatible: 3
@@ -42,7 +42,7 @@ class IosSdkService
       price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
 
       if !price.zero?
-        resp[:error_code] = error_map[:price]
+        resp[:error_code] = error_map[:paid]
         return resp
       end
 
