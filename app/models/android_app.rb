@@ -55,6 +55,40 @@ class AndroidApp < ActiveRecord::Base
       return nil
     end
   end
+
+  def installed_sdks
+    newest_snap = self.apk_snapshots.last
+    newest_sdks = newest_snap.android_sdks
+
+    released_sdks = Hash.new
+    sdks.each do |sdk|
+      apk_snap = ApkSnapshot.find(apk_snap_id)
+      app_snap = AndroidAppSnapshot.where(android_app_id: apk_snap.android_app_id, version: apk_snap.version).first || AndroidAppSnapshot.where('created_at <',apk_snap.created_at).last
+      released_sdks[sdk_id] = app_snap.released
+    end
+
+    sdks.map do |sdk|
+      sdk.last_seen = released_sdks[sdk.id]
+      sdk
+    end
+
+  end
+
+  def uninstalled_sdks
+    newest_snap = self.apk_snapshots.last
+    newest_sdks = newest_snap.android_sdks.map(&:id)
+    snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
+    sdk_snaps = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
+    released_sdks = Hash.new
+    sdk_snaps.each do |sdk_id, apk_snap_id|
+      apk_snap = ApkSnapshot.find(apk_snap_id)
+      app_snap = AndroidAppSnapshot.where(android_app_id: apk_snap.android_app_id, version: apk_snap.version).first || AndroidAppSnapshot.where('created_at <',apk_snap.created_at).last
+      released_sdks[sdk_id] = app_snap.released
+    end
+    sdks = AndroidSdk.where(id:sdk_snaps.map(&:first))
+    sdks.each{ |sdk| sdk.last_seen = released_sdks[sdk.id] }
+    sdks
+  end
   
   ###############################
   # Mobile priority methods
