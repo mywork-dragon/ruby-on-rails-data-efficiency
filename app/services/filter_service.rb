@@ -91,7 +91,16 @@ class FilterService
         Rails.logger.info "######## - Apps With Sdk - ########"
 
         apps_with_sdk.flatten! # combines all arrays together
+
+        Rails.logger.info "######## - After Flattin - ########"
+        Rails.logger.info apps_with_sdk
+        Rails.logger.info "######## - After Flattin - ########"
+
         apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
+
+        Rails.logger.info "######## - After Unique & Map - ########"
+        Rails.logger.info apps_with_sdk
+        Rails.logger.info "######## - After Unique & Map - ########"
 
         queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
