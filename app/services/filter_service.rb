@@ -93,7 +93,7 @@ class FilterService
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
-        queries << "where('ios_apps.id IN (?)', #{apps_with_sdk})" if sdk_ids.present?
+        queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
 
       Rails.logger.info "######### --- QUERY --- ##########"
