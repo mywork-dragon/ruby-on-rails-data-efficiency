@@ -59,35 +59,26 @@ class AndroidApp < ActiveRecord::Base
   def installed_sdks
     newest_snap = self.apk_snapshots.last
     newest_sdks = newest_snap.android_sdks
-    sdk_snaps = newest_sdks.map{|x| [x.id, newest_snap.id] }
-    get_sdks(sdk_snaps, :first)
+    sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
+    get_sdks(sdk_apk, :first_seen)
   end
 
   def uninstalled_sdks
     newest_snap = self.apk_snapshots.last
     newest_sdks = newest_snap.android_sdks
     snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
-    sdk_snaps = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
-    get_sdks(sdk_snaps, :last)
+    sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
+    get_sdks(sdk_apk, :last_seen)
   end
 
   private
 
-  def get_sdks(sdk_snaps, first_last)
-    sdks = AndroidSdk.where(id:sdk_snaps.map(&:first))
-    released_sdks = Hash.new
-    sdk_snaps.each do |sdk_id, apk_snap_id|
-      apk_snap = ApkSnapshot.find(apk_snap_id)
-      a = {android_app_id: apk_snap.android_app_id, version: apk_snap.version}
-      b = ['created_at < ?',apk_snap.created_at]
-      [a,b].each do |x|
-        s = AndroidAppSnapshot.where(x).send(first_last)
-        released_sdks[sdk_id] = s.released; break if s
-      end
-    end
-    sdks = AndroidSdk.where(id:sdk_snaps.map(&:first))
-    seen = "#{first_last}_seen="
-    sdks.each{ |sdk| sdk.send(seen,released_sdks[sdk.id]) }
+  def get_sdks(sdk_apk, first_last)
+    sdks = AndroidSdk.where(id:sdk_apk.map(&:first))
+    r = Hash.new
+    sdk_apk.each{|sdk, apk| r[sdk] = ApkSnapshot.find(apk).send(first_last) }
+    sdks = AndroidSdk.where(id:sdk_apk.map(&:first))
+    sdks.each{ |sdk| sdk.send("#{first_last}=",r[sdk.id]) }
     sdks
   end
 

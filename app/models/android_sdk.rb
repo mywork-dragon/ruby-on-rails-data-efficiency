@@ -18,4 +18,8 @@ class AndroidSdk < ActiveRecord::Base
     end
   end
 
+  def uninstalled_apps(before: nil, after: nil)
+    self.apk_snapshots
+  end
+
 end
