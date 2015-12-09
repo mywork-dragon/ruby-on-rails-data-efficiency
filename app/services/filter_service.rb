@@ -181,8 +181,6 @@ class FilterService
         queries << "where('android_app_snapshots.downloads_min IN (?)', #{filter_values_array})"
       end
 
-
-      ########## Add logic to only return apps that include the sdk in their *latest* snapshot ##########
       if app_filters['sdkNames']
 
         apps_with_sdk = []
@@ -191,12 +189,11 @@ class FilterService
         AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
         apps_with_sdk.flatten! # combines all arrays together
-        apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
-        
+        apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
+
         queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
       end
 
-      
       queries
     end
     
