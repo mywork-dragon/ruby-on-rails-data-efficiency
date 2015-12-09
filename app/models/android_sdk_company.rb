@@ -12,7 +12,6 @@ class AndroidSdkCompany < ActiveRecord::Base
   def get_current_apps(count_only: false, filtered_count_only: false)
 
     # get all successful snapshots that have the sdk
-    # apk_snapshots = ApkSnapshot.find(AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: self.id).map{ |row| row.apk_snapshot_id})
     apk_snapshots = self.apk_snapshots
 
     result_apps = []

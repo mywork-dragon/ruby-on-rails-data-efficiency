@@ -21,7 +21,7 @@ class IosSdk < ActiveRecord::Base
   def get_current_apps(count_only: false, filtered_count_only: false)
 
     # get all the successful snapshots that have the sdk
-    snaps = IpaSnapshot.find(IosSdksIpaSnapshot.where(ios_sdk_id: self.id).map {|row| row.ipa_snapshot_id})
+    snaps = self.ipa_snapshots
 
     # get the latest snapshot for each app that found
     app_to_snap = snaps.reduce({}) do |memo, snapshot|
