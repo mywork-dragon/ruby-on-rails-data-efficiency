@@ -52,7 +52,7 @@ class IosSdk < ActiveRecord::Base
 
 
     if count_only
-      app_to_snap.keys.length
+      result = app_to_snap.keys.length
     elsif filtered_count_only
       app_ids = []
       IosApp.find(app_to_snap.keys).each do |app|
