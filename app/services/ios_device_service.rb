@@ -536,7 +536,6 @@ class IosDeviceService
     # template the scripts with the app name and copy them over
     
     ios_version = @device.ios_version
-    bundle_id = @bundle_info['CFBundleIdentifier']
     
     files = 
       if ios_version == '8.4'
@@ -557,20 +556,21 @@ class IosDeviceService
         raise 'Device is not a valid iOS version'
       end
 
-    files.each do |fname|
-      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_id]
-      ssh.exec! "echo '#{script}' > #{fname}"
-    end
+    apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
 
+    return "Nothing to do" if apps == nil
+
+    apps = apps.chomp.split
 
     if ios_version == '8.4'
-      # Find the number of apps to delete and go through the process for each one
-      apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
-      return "Nothing to do" if apps == nil
 
-      apps = apps.chomp.split
+      # template files
+      files.each do |fname|
+        script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
+        ssh.exec! "echo '#{script}' > #{fname}"
+      end
 
-      puts "Number of apps to delete: #{apps.length}"
+      # for each time, go through the app store
       apps.length.times do |i|
         puts "Deleting app #{i+1}"
 
@@ -586,7 +586,28 @@ class IosDeviceService
           resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
         end
       end
+
     else
+
+      # get the bundle ids of all the apps
+      bundle_ids = apps.reduce([]) do |memo, dir|
+        bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
+
+        if bundle_id
+          puts "found bundle_id: #{bundle_id}"
+          memo << bundle_id.chomp
+        end
+
+        memo
+      end
+
+      # template the file
+      files.each do |fname|
+        script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
+        ssh.exec! "echo '#{script}' > #{fname}"
+      end
+
+      # run the files
       resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
       sleep(2)
       puts "#3"
@@ -596,7 +617,10 @@ class IosDeviceService
       resp = run_command(ssh, "cycript -p SpringBoard 2_unlock_device_ios9.cy", "running cycript file 2_unlock_device_ios9.cy")
       sleep(2)
       puts "Done"
+
     end
+
+
   end
 
   # gets the classdump using class-dump tool, returns nil if it can't find executable or if dump generally fails
