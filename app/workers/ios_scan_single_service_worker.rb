@@ -22,7 +22,7 @@ class IosScanSingleServiceWorker
   end
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
-  def on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
+  def on_complete(ipa_snapshot_job_id, ios_app_id, version, bid, result)
 
     snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).first
 

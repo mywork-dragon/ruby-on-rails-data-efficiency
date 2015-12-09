@@ -62,7 +62,7 @@ module IosWorker
 				classdump.error_code = :devices_busy
 				classdump.save
 
-				return on_complete(ipa_snapshot_job_id, ios_app_id, bid, classdump)
+				return on_complete(ipa_snapshot_job_id, ios_app_id, version, bid, classdump)
 			end
 
 			classdump.ios_device_id = device.id
@@ -105,25 +105,55 @@ module IosWorker
 			result = e
 		end
 
-		on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
+		on_complete(ipa_snapshot_job_id, ios_app_id, version, bid, result)
 	end
 
 	def reserve_device(purpose, id = nil)
 
-		device = IosDevice.transaction do
+		if purpose == :one_off || purpose == :test
+			device = IosDevice.transaction do
 
-			d = if id.nil?
-				IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
-			else
-				IosDevice.lock.find_by_id(id)
+				d = if id.nil?
+					IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
+				else
+					IosDevice.lock.find_by_id(id)
+				end
+
+				if d
+					d.in_use = true
+					d.last_used = DateTime.now
+					d.save
+				end
+				d
+			end
+		else # mass
+
+			device = nil
+
+			start_time = Time.now
+
+			while device.nil? && Time.now - start_time < 60 * 60 * 24 * 365 # 1 year
+
+				puts "sleeping"
+				sleep(Random.new.rand(7...13))
+
+				device = IosDevice.transaction do
+
+					d = if id.nil?
+						IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
+					else
+						IosDevice.lock.find_by_id(id)
+					end
+
+					if d
+						d.in_use = true
+						d.last_used = DateTime.now
+						d.save
+					end
+					d
+				end
 			end
 
-			if d
-				d.in_use = true
-				d.last_used = DateTime.now
-				d.save
-			end
-			d
 		end
 
 		device
