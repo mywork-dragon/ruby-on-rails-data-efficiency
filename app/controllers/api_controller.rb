@@ -1528,7 +1528,7 @@ class ApiController < ApplicationController
         openSource: sdk.open_source?,
         summary: sdk.summary,
         platform: "ios",
-        numOfApps: sdk.get_current_apps(count_only: true)
+        numOfApps: sdk.get_current_apps(filtered_count_only: true)
     }
     render json: @sdk_json
   end

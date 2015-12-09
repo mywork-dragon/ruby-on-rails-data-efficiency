@@ -18,7 +18,7 @@ class IosSdk < ActiveRecord::Base
   enum source: [:cocoapods, :package_lookup]
 
 
-  def get_current_apps(count_only: false)
+  def get_current_apps(count_only: false, filtered_count_only: false)
 
     # get all the successful snapshots that have the sdk
     snaps = IpaSnapshot.find(IosSdksIpaSnapshot.where(ios_sdk_id: self.id).map {|row| row.ipa_snapshot_id})
@@ -49,7 +49,25 @@ class IosSdk < ActiveRecord::Base
       last_snap.id == snapshot.id ? true : false
     end
 
-    count_only ? app_to_snap.keys.length : IosApp.find(app_to_snap.keys)
+
+
+    if count_only
+      app_to_snap.keys.length
+    elsif filtered_count_only
+      app_ids = []
+      IosApp.find(app_to_snap.keys).each do |app|
+        app_ids << app.id
+      end
+
+      apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_apps.id IN (?)', #{app_ids}).group('android_apps.id').count.length")
+
+      result = apps_count
+    else
+      result = IosApp.find(app_to_snap.keys)
+    end
+
+
+    result
   end
 
 end

@@ -186,7 +186,33 @@ class FilterService
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
 
-        AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
+        # AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
+
+
+
+
+
+
+
+        #### MAKE THIS FASTER && USE AndroidSdkCompany Method!!!
+
+
+        apk_snapshots = ApkSnapshot.find(AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: sdk_ids).map{ |row| row.apk_snapshot_id})
+
+        apk_snapshots.each do |apk_snapshot|
+          android_app = AndroidApp.find(apk_snapshot.android_app_id)
+
+          # If latest snapshot, add respective app to results
+          if apk_snapshot.id == android_app.newest_apk_snapshot_id
+            apps_with_sdk << android_app
+          end
+        end
+
+
+
+
+
+
 
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
