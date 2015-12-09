@@ -4,15 +4,16 @@ class AndroidSdkCompany < ActiveRecord::Base
 	has_many :android_sdk_package_prefixes
 
 	has_many :android_sdk_companies_apk_snapshots
-    has_many :apk_snapshots, through: :android_sdk_companies_apk_snapshots
+  has_many :apk_snapshots, through: :android_sdk_companies_apk_snapshots
 
-    has_many :android_sdk_companies_android_apps
-    has_many :android_apps, through: :android_sdk_companies_android_apps
+  has_many :android_sdk_companies_android_apps
+  has_many :android_apps, through: :android_sdk_companies_android_apps
 
   def get_current_apps(count_only: false, filtered_count_only: false)
 
     # get all successful snapshots that have the sdk
-    apk_snapshots = ApkSnapshot.find(AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: self.id).map{ |row| row.apk_snapshot_id})
+    # apk_snapshots = ApkSnapshot.find(AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: self.id).map{ |row| row.apk_snapshot_id})
+    apk_snapshots = self.apk_snapshots
 
     result_apps = []
 
