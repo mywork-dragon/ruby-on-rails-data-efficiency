@@ -1,4 +1,4 @@
-<div id="companyPage" data-ng-controller="ListCtrl">
+<div id="companyPage" data-ng-controller="ListCtrl" ng-show="!sdkDetailsCtrl.sdkLiveScanPageLoading">
 
   <header class="page-main-header ng-scope">
     <div class="row">
@@ -74,4 +74,10 @@
 
 </div>
 
+</div>
+
+<div id="wrap_spinner" ng-if="sdkDetailsCtrl.sdkLiveScanPageLoading">
+  <div class="loading outer">
+    <div class="loading inner"></div>
+  </div>
 </div>
