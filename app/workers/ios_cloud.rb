@@ -5,7 +5,6 @@ module IosCloud
   def perform(ipa_snapshot_job_id, ios_app_id)
 
     begin
-      byebug
       puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
       job = IpaSnapshotJob.find(ipa_snapshot_job_id)
       data = get_json(ios_app_id)
