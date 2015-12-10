@@ -47,6 +47,11 @@ module IosWorker
 
 			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
+			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
+			lookup_content = JSON.parse(snapshot.lookup_content)
+			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
+			raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
+
 			snapshot.update(download_status: :starting) # update the status
 
 			# begin
@@ -63,7 +68,7 @@ module IosWorker
 
 			# get a device
 			puts "#{snapshot.ipa_snapshot_job_id}: Reserving device #{Time.now}"
-			device = reserve_device(purpose)
+			device = reserve_device(purpose: purpose, lookup_content: lookup_content)
 			puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
 
 			# no devices available...fail out and save
@@ -77,11 +82,6 @@ module IosWorker
 
 			classdump.ios_device_id = device.id
 			classdump.save
-
-			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
-			lookup_content = JSON.parse(snapshot.lookup_content)
-			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
-			raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
 
 			# do the actual classdump
 			# after install and dump, will run the procedure block which updates the classdump table. 
@@ -121,16 +121,20 @@ module IosWorker
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end
 
-	def reserve_device(purpose, id = nil)
+	def reserve_device(purpose:, lookup_content: nil)
+
+		byebug
+
+		any = IosDevice.where(build_query(purpose: purpose, in_use: nil, requirements: lookup_content)).take
+
+		raise "No devices compatible with requirements" if any.nil?
+
+		query = build_query(purpose: purpose, in_use: false, requirements: lookup_content)
 
 		if purpose == :one_off || purpose == :test
 			device = IosDevice.transaction do
 
-				d = if id.nil?
-					IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
-				else
-					IosDevice.lock.find_by_id(id)
-				end
+				d = IosDevice.lock.where(query).order(:last_used).first
 
 				if d
 					d.in_use = true
@@ -152,11 +156,7 @@ module IosWorker
 
 				device = IosDevice.transaction do
 
-					d = if id.nil?
-						IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
-					else
-						IosDevice.lock.find_by_id(id)
-					end
+					d = IosDevice.lock.where(query).order(:last_used).first
 
 					if d
 						d.in_use = true
@@ -170,6 +170,23 @@ module IosWorker
 		end
 
 		device
+	end
+
+	# returns a string to be passed into a where query for devices based on lookup data
+	# returns empty string if nothing required
+	def build_query(purpose:, in_use: nil, requirements: nil)
+
+		query_parts = []
+
+		query_parts << "purpose = #{IosDevice.purposes[purpose]}"
+
+		query_parts << "in_use = #{in_use}" if !in_use.nil?
+
+		if !requirements.blank?
+			query_parts << "ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'" if !requirements['minimumOsVersion'].blank?
+		end
+
+		query_parts.join(' and ')
 	end
 
 	def release_device(device)

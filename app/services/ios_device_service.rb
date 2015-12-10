@@ -704,7 +704,7 @@ class IosDeviceService
     resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
 
     t = Time.now
-    while Time.now - t < 30 # 30 seconds max
+    while Time.now - t < 60 # 60 seconds max
       sleep(2)
       puts "check if apps are gone"
       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
