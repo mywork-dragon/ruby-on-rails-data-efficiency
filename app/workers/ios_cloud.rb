@@ -24,7 +24,7 @@ module IosCloud
 
       puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
 
-      snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, version: version, lookup_content: data.to_s)
+      snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, version: version, lookup_content: data.to_json)
 
       start_job(ipa_snapshot_job_id, ios_app_id, snapshot.id)
 
