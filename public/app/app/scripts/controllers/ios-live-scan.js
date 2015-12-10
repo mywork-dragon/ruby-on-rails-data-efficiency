@@ -38,6 +38,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           };
 
           iosLiveScanCtrl.noSdkData = false;
+          iosLiveScanCtrl.sdkLiveScanPageLoading = false;
 
           if(data == null) {
             iosLiveScanCtrl.noSdkData = true;
@@ -67,6 +68,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     };
 
+    iosLiveScanCtrl.sdkLiveScanPageLoading = true; // on initial page load
     iosLiveScanCtrl.checkForIosSdks(iosAppId); // Call for initial SDKs load
 
     iosLiveScanCtrl.getSdks = function() {

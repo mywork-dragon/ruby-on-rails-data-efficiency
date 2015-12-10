@@ -7423,6 +7423,10 @@ span#dashboardResultsTableHeadingNumDisplayed {
   padding-top: 15px;
 }
 
+.media-body > #wrap_spinner {
+  text-align: center;
+}
+
 .sdkScanGeneralInfo {
   margin-top: 15px;
 }

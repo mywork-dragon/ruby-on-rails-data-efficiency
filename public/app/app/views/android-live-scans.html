@@ -3,7 +3,7 @@
   <div class="panel-body">
     <div class="media">
       <div class="media-body">
-        <ul class="list-unstyled list-info">
+        <ul class="list-unstyled list-info" ng-if="!androidLiveScanCtrl.sdkLiveScanPageLoading">
 
           <!--
           <div style="text-align:center">
@@ -179,6 +179,13 @@
           </li>
 
         </ul>
+
+        <div id="wrap_spinner" ng-if="androidLiveScanCtrl.sdkLiveScanPageLoading">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

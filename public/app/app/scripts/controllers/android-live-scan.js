@@ -19,10 +19,13 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
     }
 
+    androidLiveScanCtrl.sdkLiveScanPageLoading = true; // show loading spinner on initial page load
+
     sdkLiveScanService.checkForAndroidSdks(androidAppId)
       .success(function(data) {
         var sdkErrorMessage = "";
         androidLiveScanCtrl.noSdkData = false;
+        androidLiveScanCtrl.sdkLiveScanPageLoading = false;
         if(data == null) {
           androidLiveScanCtrl.noSdkData = true;
           androidLiveScanCtrl.sdkData = {'errorMessage': "Error - Please Try Again Later"}
