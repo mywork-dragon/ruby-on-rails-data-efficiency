@@ -20,10 +20,12 @@
                       <span ng-if="canViewStorewideSdks">
                         <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                         <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
+                        <span class="sdkLiveScanInstallDate">99 days ago</span>
                       </span>
                       <span ng-if="!canViewStorewideSdks">
                         <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                         <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
+                        <span class="sdkLiveScanInstallDate">99 days ago</span>
                       </span>
                     </li>
                   </ul>
@@ -37,10 +39,12 @@
                       <span ng-if="canViewStorewideSdks">
                         <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                         <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
+                        <span class="sdkLiveScanInstallDate">99 days ago</span>
                       </span>
                       <span ng-if="!canViewStorewideSdks">
                         <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                         <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
+                        <span class="sdkLiveScanInstallDate">99 days ago</span>
                       </span>
                     </li>
                   </ul>

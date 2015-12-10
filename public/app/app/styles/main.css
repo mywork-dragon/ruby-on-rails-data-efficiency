@@ -7612,6 +7612,11 @@ pre {
   padding-top: 0 !important;
 }
 
+.sdkLiveScanInstallDate {
+  font-size: 10px;
+  color: #1EAD4F;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
@@ -7723,6 +7728,8 @@ pre {
   height: auto;
   margin: 5px;
 }
+
+
 
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
