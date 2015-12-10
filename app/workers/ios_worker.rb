@@ -78,12 +78,15 @@ module IosWorker
 			classdump.ios_device_id = device.id
 			classdump.save
 
+			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
+			lookup_content = JSON.parse(snapshot.lookup_content)
+			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
+			raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
+
 			# do the actual classdump
 			# after install and dump, will run the procedure block which updates the classdump table. 
 			# Will be useful for polling or could add some logic to send status updates
-			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
-			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
-			final_result = IosDeviceService.new(device).run(app_identifier, purpose, snapshot.id) do |incomplete_result|
+			final_result = IosDeviceService.new(device).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
 				classdump.update row
