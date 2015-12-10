@@ -11,12 +11,12 @@ class AndroidSdkCompany < ActiveRecord::Base
 
   def get_current_apps(count_only: false, filtered_count_only: false)
 
-    logger.info "############### 1 - Entered Method ###############"
+    li "############### 1 - Entered Method ###############"
 
     # get all successful snapshots that have the sdk
     apk_snapshots = self.apk_snapshots
 
-    logger.info "############### 2 - Apk Snapshots Grabbed ###############"
+    li "############### 2 - Apk Snapshots Grabbed ###############"
 
     result_apps = []
 
@@ -29,7 +29,7 @@ class AndroidSdkCompany < ActiveRecord::Base
       end
     end
 
-    logger.info "############### 3 - Newest Snapshots Found ###############"
+    li "############### 3 - Newest Snapshots Found ###############"
 
     if count_only
       result = result_apps.length
@@ -39,7 +39,7 @@ class AndroidSdkCompany < ActiveRecord::Base
         app_ids << app.id
       end
 
-      apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_apps.id IN (?)', #{app_ids}).group('android_apps.id').count.length")
+      apps_count = AndroidApp.instance_eval("self.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where('ios_apps.id IN (?)', #{app_ids}).group('ios_apps.id').count.length")
 
       result = apps_count
     else
