@@ -246,7 +246,8 @@ class IosDeviceService
     install_open_app_script(ssh)
 
     # wait for download and open app
-    24.times do |n| # 2 minutes
+    wait_time = @purpose == :mass ? 120 : 24 # 10 vs 2 minutes
+    wait_time.times do |n| # 2 minutes
 
       # make sure app store is open
       if !is_app_store_running?(ssh)

@@ -3,6 +3,7 @@ class IosApp < ActiveRecord::Base
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
 
+  has_many :ipa_snapshot_job_exceptions
   has_many :ios_app_snapshots
   belongs_to :app
   has_many :ios_fb_ad_appearances
