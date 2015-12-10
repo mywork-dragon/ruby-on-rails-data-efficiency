@@ -11,8 +11,12 @@ class AndroidSdkCompany < ActiveRecord::Base
 
   def get_current_apps(count_only: false, filtered_count_only: false)
 
+    logger.info "############### 1 - Entered Method ###############"
+
     # get all successful snapshots that have the sdk
     apk_snapshots = self.apk_snapshots
+
+    logger.info "############### 2 - Apk Snapshots Grabbed ###############"
 
     result_apps = []
 
@@ -24,6 +28,8 @@ class AndroidSdkCompany < ActiveRecord::Base
         result_apps << android_app
       end
     end
+
+    logger.info "############### 3 - Newest Snapshots Found ###############"
 
     if count_only
       result = result_apps.length

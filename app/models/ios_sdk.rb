@@ -19,7 +19,6 @@ class IosSdk < ActiveRecord::Base
 
 
   def get_current_apps(count_only: false, filtered_count_only: false)
-
     # get all the successful snapshots that have the sdk
     snaps = self.ipa_snapshots
 
