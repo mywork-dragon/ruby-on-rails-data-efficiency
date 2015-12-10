@@ -1,60 +1,70 @@
 module IosWorker
 
-	def run_scan(ipa_snapshot_job_id:, ios_app_id:, purpose:, start_classify: false, version:, bid:)
+	def perform(ipa_snapshot_id, bid = nil)
+	  execute_scan_type(ipa_snapshot_id: ipa_snapshot_id, bid: bid)
+	end
 
-		# convert data coming from ios_device_service to classdump row information
-		def result_to_cd_row(data)
-			data_keys = [
-				:success,
-				:duration,
-				:install_time,
-				:install_success,
-				:dump_time,
-				:dump_success,
-				:teardown_success,
-				:teardown_time,
-				:error,
-				:trace,
-				:error_root,
-				:error_teardown,
-				:error_teardown_trace,
-				:teardown_retry,
-				:method,
-				:has_fw_folder,
-				:error_code
-			]
+	# convert data coming from ios_device_service to classdump row information
+	def result_to_cd_row(data)
+		data_keys = [
+			:success,
+			:duration,
+			:install_time,
+			:install_success,
+			:dump_time,
+			:dump_success,
+			:teardown_success,
+			:teardown_time,
+			:error,
+			:trace,
+			:error_root,
+			:error_teardown,
+			:error_teardown_trace,
+			:teardown_retry,
+			:method,
+			:has_fw_folder,
+			:error_code
+		]
 
-			row = data.select { |key| data_keys.include? key }
+		row = data.select { |key| data_keys.include? key }
 
-			# don't upload files in development mode
-			file = if !Rails.env.development? && data[:outfile_path]
-				File.open(data[:outfile_path])
-			end
-
-			row[:class_dump] = file
-
-			row
+		# don't upload files in development mode
+		file = if !Rails.env.development? && data[:outfile_path]
+			File.open(data[:outfile_path])
 		end
+
+		row[:class_dump] = file
+
+		row
+	end
+
+	def run_scan(ipa_snapshot_id:, purpose:, start_classify: false, bid:)
 
 		# create database rows
 		result = nil
 		begin
-			begin
-				snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting, version: version)
-			rescue ActiveRecord::RecordNotUnique => e
-				snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).last
-			end
+			snapshot = IpaSnapshot.find(ipa_snapshot_id)
 
 			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
+
+			snapshot.update(download_status: :starting) # update the status
+
+			# begin
+			# 	snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting, version: version)
+			# rescue ActiveRecord::RecordNotUnique => e
+			# 	snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).last
+			# end
+
+			# return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
 			# TODO: add logic to take previous results if app's version in the app store has not changed
 
 			classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
 			# get a device
-			puts "#{ipa_snapshot_job_id}: Reserving device #{Time.now}"
+			puts "#{snapshot.ipa_snapshot_job_id}: Reserving device #{Time.now}"
 			device = reserve_device(purpose)
-			puts "#{ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
+			puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
 
 			# no devices available...fail out and save
 			if device.nil?
@@ -62,7 +72,7 @@ module IosWorker
 				classdump.error_code = :devices_busy
 				classdump.save
 
-				return on_complete(ipa_snapshot_job_id, ios_app_id, bid, classdump)
+				return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
 			end
 
 			classdump.ios_device_id = device.id
@@ -71,8 +81,8 @@ module IosWorker
 			# do the actual classdump
 			# after install and dump, will run the procedure block which updates the classdump table. 
 			# Will be useful for polling or could add some logic to send status updates
-			app_identifier = IosApp.find(ios_app_id).app_identifier
-			raise "No app identifer for ios app #{ios_app_id}" if app_identifier.nil?
+			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
+			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
 			final_result = IosDeviceService.new(device).run(app_identifier, purpose, snapshot.id) do |incomplete_result|
 				row = result_to_cd_row(incomplete_result)
 				row[:complete] = false
@@ -105,25 +115,55 @@ module IosWorker
 			result = e
 		end
 
-		on_complete(ipa_snapshot_job_id, ios_app_id, bid, result)
+		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end
 
 	def reserve_device(purpose, id = nil)
 
-		device = IosDevice.transaction do
+		if purpose == :one_off || purpose == :test
+			device = IosDevice.transaction do
 
-			d = if id.nil?
-				IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
-			else
-				IosDevice.lock.find_by_id(id)
+				d = if id.nil?
+					IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
+				else
+					IosDevice.lock.find_by_id(id)
+				end
+
+				if d
+					d.in_use = true
+					d.last_used = DateTime.now
+					d.save
+				end
+				d
+			end
+		else # mass
+
+			device = nil
+
+			start_time = Time.now
+
+			while device.nil? && Time.now - start_time < 60 * 60 * 24 * 365 # 1 year
+
+				puts "sleeping"
+				sleep(Random.new.rand(7...13))
+
+				device = IosDevice.transaction do
+
+					d = if id.nil?
+						IosDevice.lock.where(in_use: false, purpose: IosDevice.purposes[purpose]).order(:last_used).first
+					else
+						IosDevice.lock.find_by_id(id)
+					end
+
+					if d
+						d.in_use = true
+						d.last_used = DateTime.now
+						d.save
+					end
+					d
+				end
 			end
 
-			if d
-				d.in_use = true
-				d.last_used = DateTime.now
-				d.save
-			end
-			d
 		end
 
 		device

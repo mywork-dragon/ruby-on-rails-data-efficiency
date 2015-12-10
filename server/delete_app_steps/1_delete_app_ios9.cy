@@ -1,20 +1,28 @@
-function appWithBundleId(bundleId) {
+function appsWithBundleId(bundleIds) {
 
   var apps = choose(SBApplication);
+  var result = []
 
-  for each (var app in apps) {
-    if (app.bundleIdentifier == bundleId) {
-      return app;
-    }
+  for (var i = 0; i < apps.length; i++) {
+  	if (bundleIds.indexOf(apps[i].bundleIdentifier.toString()) != -1) {
+  		result.push(apps[i])
+  	}
   }
 
-  throw "Could not find app";
-
-  return false;
+  if (result.length == 0) {
+  	throw "Could not find app"
+  }
+  return result;
 }
 
 var c = [SBApplicationController sharedInstance];
 
-var a = appWithBundleId("%s");
+var ids = "%s";
+var bundleIds = ids.split(",")
 
-[c uninstallApplication:a];
+var apps = appsWithBundleId(bundleIds);
+
+for (var i = 0; i < apps.length; i++) {
+	[c uninstallApplication:apps[i]];	
+}
+

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151207222737) do
+ActiveRecord::Schema.define(version: 20151209234112) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1094,6 +1094,7 @@ ActiveRecord::Schema.define(version: 20151207222737) do
     t.text     "backtrace"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ios_app_id"
   end
 
   add_index "ipa_snapshot_job_exceptions", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_job_exceptions_on_ipa_snapshot_job_id", using: :btree
@@ -1117,6 +1118,7 @@ ActiveRecord::Schema.define(version: 20151207222737) do
     t.string   "version"
     t.datetime "good_as_of_date"
     t.string   "bundle_version"
+    t.text     "lookup_content"
   end
 
   add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
