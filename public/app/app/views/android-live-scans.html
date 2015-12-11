@@ -29,38 +29,46 @@
                 <div class="col-md-6" ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies) && isEmpty(androidLiveScanCtrl.sdkData.uninstalledSdkCompanies)">
                   <strong ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies)">Installed SDKs</strong>
                   <ul ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkCompanies">
-                      <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
-                      <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
-                      <span ng-if="canViewStorewideSdks">
-                        <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
-                        <span class="sdkLiveScanInstallDate">99 days ago</span>
-                      </span>
-                      <span ng-if="!canViewStorewideSdks">
-                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
-                        <span class="sdkLiveScanInstallDate">99 days ago</span>
-                      </span>
+                    <li class="sdkLiveScanDisplayList" ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkCompanies">
+                      <div class="sdkLiveScanDisplayIconSection">
+                        <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
+                        <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
+                      </div>
+                      <div class="sdkLiveScanDisplayTitleSection">
+                        <span ng-if="canViewStorewideSdks">
+                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
+                          <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                        </span>
+                        <span ng-if="!canViewStorewideSdks">
+                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
+                          <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                        </span>
+                      </div>
                     </li>
                   </ul>
                 </div>
                 <div class="col-md-6 sdkOpenSourceSection" ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource) && isEmpty(androidLiveScanCtrl.sdkData.uninstalledSdkOpenSource)">
                   <strong ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource)">Installed SDKs</strong>
                   <ul ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource)">
-                    <li ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkOpenSource">
-                      <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
-                      <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>
-                      <span ng-if="canViewStorewideSdks">
-                        <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
-                        <span class="sdkLiveScanInstallDate">99 days ago</span>
-                      </span>
-                      <span ng-if="!canViewStorewideSdks">
-                        <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                        <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
-                        <span class="sdkLiveScanInstallDate">99 days ago</span>
-                      </span>
+                    <li class="sdkLiveScanDisplayList" ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkOpenSource">
+                      <div class="sdkLiveScanDisplayIconSection">
+                        <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
+                        <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>
+                      </div>
+                      <div class="sdkLiveScanDisplayTitleSection">
+                        <span ng-if="canViewStorewideSdks">
+                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
+                          <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                        </span>
+                        <span ng-if="!canViewStorewideSdks">
+                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
+                          <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                        </span>
+                      </div>
                     </li>
                   </ul>
                 </div>

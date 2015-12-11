@@ -7656,6 +7656,20 @@ pre {
   padding: 4px;
 }
 
+.sdksListView .sdkLiveScanDisplayIconSection {
+  float: left;
+  width: 25px;
+}
+
+.sdksListView .sdkLiveScanDisplayTitleSection {
+  width: 100%;
+  margin-left: 25px;
+}
+
+.sdksListView .sdkLiveScanDisplayList {
+  clear: both;
+}
+
 #mainSearchBoxWrapper {
   margin-top: -55px;
 }
