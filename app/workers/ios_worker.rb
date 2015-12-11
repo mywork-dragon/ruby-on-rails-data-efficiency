@@ -123,8 +123,6 @@ module IosWorker
 
 	def reserve_device(purpose:, lookup_content: nil)
 
-		byebug
-
 		any = IosDevice.where(build_query(purpose: purpose, in_use: nil, requirements: lookup_content)).take
 
 		raise "No devices compatible with requirements" if any.nil?
