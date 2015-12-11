@@ -7619,6 +7619,7 @@ pre {
 .sdkLiveScanInstallDate {
   font-size: 10px;
   color: #1EAD4F;
+  display: inline-block;
 }
 
 /* DdTextCollapse Directive Styling */
