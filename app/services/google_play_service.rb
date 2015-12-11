@@ -93,7 +93,8 @@ class GooglePlayService
   end
 
   def description
-    @html.at_css('div.id-app-orig-desc').text
+    #@html.at_css('div.details-section-contents').css('div')
+    @html.css('div').find{ |x| x['jsname'] == 'C4s9Ed'}.text
   end
 
   # Returns price in dollars as float, 0.0 if product is free
