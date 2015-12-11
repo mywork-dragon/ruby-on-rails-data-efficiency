@@ -46,6 +46,8 @@ class IosDevice < ActiveRecord::Base
 
         params.delete(:model_name)
 
+        ios_version_fmt = ios_version_to_fmt_version(params[:ios_version])
+
         free_proxy = nil
 
         SoftlayerProxy.all.each do |softlayer_proxy|
@@ -57,7 +59,7 @@ class IosDevice < ActiveRecord::Base
 
         raise 'Cannot find a free Softlayer proxy' if free_proxy.nil?
 
-        ios_device = new(params.merge(ios_device_model: ios_device_model))
+        ios_device = new(params.merge(ios_device_model: ios_device_model, ios_version_fmt: ios_version_fmt))
 
         ios_device.softlayer_proxy = free_proxy
 
@@ -98,6 +100,14 @@ class IosDevice < ActiveRecord::Base
       raise "Could not find model #{model_name} in DB. Add it to the DB if it's a new model." if ios_device_model.nil?
 
       ios_device_model
+    end
+
+    def ios_version_to_fmt_version(version)
+      semvers = version.split(".")
+      while semvers.length < 3
+        semvers << "0"
+      end
+      semvers.map {|d| "%03d" % d}.join(".")
     end
 
 
