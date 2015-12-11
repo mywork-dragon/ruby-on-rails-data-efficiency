@@ -22,4 +22,9 @@ class AndroidSdk < ActiveRecord::Base
     self.apk_snapshots
   end
 
+  def get_current_apps
+    snaps = self.apk_snapshots.select(:id).map(&:id)
+    AndroidApp.where(newest_apk_snapshot_id: snaps)
+  end
+
 end

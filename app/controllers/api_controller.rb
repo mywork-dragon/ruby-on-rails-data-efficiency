@@ -821,314 +821,154 @@ class ApiController < ApplicationController
   end
 
 
+
+
+
+
+  # APK stuff start
+
+
   def android_sdks_exist
-
-    android_app_id = params['appId']
-
-    aa = AndroidApp.find(android_app_id)
-
-    updated, companies, error_code = nil
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-    end
-
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
-
+    aa = AndroidApp.find(params['appId'])
+    s = aa.newest_android_app_snapshot
+    h = sdk_hash(aa.installed_sdks, aa.uninstalled_sdks, s.updated_at, scannable(s))
+    render json: h
   end
 
   def scan_android_sdks
-
-    android_app_id = params['appId']
-
-    updated, companies, error_code = nil
-
-    aa = AndroidApp.find(android_app_id)
-
-    error_code = 1
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    # if aa.taken_down?
-
-    #   error_code = 2
-
-    # els
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      app_identifier = aa.app_identifier
-
-      job_id, new_snap = download_apk(android_app_id, app_identifier)
-
-      aa = AndroidApp.find(android_app_id)
-
-      # new_snap = aa.newest_apk_snapshot
-
-      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
-
-      if new_snap.present? && new_snap.status == "success"
-
+    aa = AndroidApp.find(params['appId'])
+    s = aa.newest_android_app_snapshot
+    e = scannable(s)
+    if !e
+      ai = aa.app_identifier
+      job_id, new_snap = download_apk(aa.id, ai)
+      e = snap_error(new_snap)
+      if !e
         scan_apk(aa.id, job_id)
-
-        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-      elsif new_snap.present? && new_snap.status == "bad_device"
-
-        error_code = 6
-
-      elsif new_snap.present? && new_snap.status == "out_of_country"
-
-        error_code = 7
-
-      elsif new_snap.present? && new_snap.status == "taken_down"
-
-        error_code = 2
-
-      else
-
-        error_code = 3
-      
       end
-
     end
-
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
-
+    h = sdk_hash(aa.installed_sdks, aa.uninstalled_sdks, s.updated_at, e)
+    render json: h
   end
 
-  def get_sdks(android_app_id:)
+  def scannable(s)
+    s.price.to_i.zero? ? nil : 4
+  end
 
-    updated, companies = nil
+  def snap_error(s)
+    s = ApkSnapshot.statuses[s.status]
+    s == 1 ? nil : s
+  end
 
-    error_code = 0
+  def sdk_hash(installed_sdks, uninstalled_sdks, updated_at, error_code)
+    h = Hash.new
+    h[:installed] = features installed_sdks
+    h[:uninstalled] = features uninstalled_sdks
+    h[:updated] = updated_at
+    h[:error_code] = error_code
+    h.to_json
+  end
 
-    aa = AndroidApp.find(android_app_id)
-
-    if aa.newest_apk_snapshot.present?
-
-      new_snap = aa.newest_apk_snapshot
-
-      if new_snap.status == "success"
-
-        updated = new_snap.updated_at
-
-        companies = new_snap.android_sdk_companies
-
-        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
-
-        # error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
-
-        error_code = companies.count.zero? ? 1:0
-
-      else
-
-        error_code = 5
-
-      end
-
+  def features(h)
+    f = h.map do |x|
+      { :id => x.id,
+        :name => x.name,
+        :websites => x.website,
+        :favicon => x.favicon,
+        :app_count => x.android_apps.count }
     end
-
-    return companies, updated, error_code
-
-  end
-
-  def get_removed_companies(android_app:, companies:)
-
-    current_ids = companies.map(&:id)
-
-    total_ids = []
-
-    android_app.apk_snapshots.joins(:android_sdk_companies).each do |cos|
-
-      cos_ids = cos.android_sdk_companies.map(&:id)
-
-      total_ids = total_ids + cos_ids
-
-    end
-
-    AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
-
-  end
-
-  def sdk_hash(companies:, updated:, error_code:, snap:)
-
-    main_hash = Hash.new
-
-    installed_co_hash, installed_os_hash = form_hash(companies)
-
-    # uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
-
-    # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
-
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
-    
-    main_hash['installed_sdk_companies'] = installed_co_hash
-
-    main_hash['installed_open_source_sdks'] = installed_os_hash
-
-    main_hash['uninstalled_sdk_companies'] = {}
-
-    main_hash['uninstalled_open_source_sdks'] = {}
-
-    main_hash['updated'] = updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
-
-  end
-
-  def form_hash(companies)
-
-    co_hash = Hash.new
-
-    os_hash = Hash.new
-
-    if companies.present?
-
-      companies.each do |company|
-
-        next if company.nil? || company.flagged
-
-        main_company = company.parent_company_id.present? ? AndroidSdkCompany.find(company.parent_company_id) : company
-
-        children = if company.parent_company_id.present?
-
-          cc = company
-
-          { 'id' => cc.id, 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
-
-        else
-
-          nil
-
-        end
-
-        if company.open_source
-
-          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
-
-            os_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
-
-          else
-
-            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
-
-          end
-
-        else
-
-          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
-
-            co_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
-
-          else
-
-            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
-
-          end
-
-        end
-
-      end
-
-    end
-
-    co_hash = sort_hash(co_hash)
-
-    os_hash = sort_hash(os_hash)
-
-    return co_hash, os_hash
-
-  end
-
-  def sort_hash(hash)
-    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
+    f.sort_by{|x| -x[:app_count] }.to_h
   end
 
   def download_apk(android_app_id, app_identifier)
-
-    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
-
-    batch = Sidekiq::Batch.new
-    bid = batch.bid
-
-    batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
-    end
-
-    new_snap = nil
-
-    360.times do
-
-      sleep 0.25
-      
-      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-      if ss.present? && ss.status.present?
-
-        if ss.status == "success"
-
-          aa = ss.android_app
-
-          if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-
-            new_snap = ss
-
-            break
-
-          end
-
-        else
-
-          if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
-
-            new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      
-            new_snap.scan_status = :scan_failure
-
-            new_snap.save
-
-            break
-
-          end
-
-        end
-
-      end
-
-    end
-
-    return job_id, new_snap
 
   end
 
   def scan_apk(android_app_id, job_id)
 
-    PackageSearchServiceSingleWorker.perform_async(android_app_id)
-
-    360.times do
-
-      sleep 0.25
-
-      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-      break if ss.present? && ss.scan_status.present?
-    end
-
   end
+
+
+  # def download_apk(android_app_id, app_identifier)
+
+  #   job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
+
+  #   batch = Sidekiq::Batch.new
+  #   bid = batch.bid
+
+  #   batch.jobs do
+  #     ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+  #   end
+
+  #   new_snap = nil
+
+  #   360.times do
+
+  #     sleep 0.25
+      
+      # ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
+
+  #     if ss.present? && ss.status.present?
+
+  #       if ss.status == "success"
+
+  #         aa = ss.android_app
+
+  #         if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
+
+  #           new_snap = ss
+
+  #           break
+
+  #         end
+
+  #       else
+
+  #         if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
+
+  #           new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+      
+  #           new_snap.scan_status = :scan_failure
+
+  #           new_snap.save
+
+  #           break
+
+  #         end
+
+  #       end
+
+  #     end
+
+  #   end
+
+  #   return job_id, new_snap
+
+  # end
+
+  # def scan_apk(android_app_id, job_id)
+
+  #   PackageSearchServiceSingleWorker.perform_async(android_app_id)
+
+  #   360.times do
+
+  #     sleep 0.25
+
+  #     ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
+
+  #     break if ss.present? && ss.scan_status.present?
+  #   end
+
+  # end
+
+
+  # APK stuff end
+
+
+
+
+
+
 
   def export_all_search_results_to_csv
 

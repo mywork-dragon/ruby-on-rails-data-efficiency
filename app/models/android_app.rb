@@ -56,8 +56,13 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def get_newest_apk_snapshot
+    self.apk_snapshots.where(scan_status: 1).first
+  end
+
   def installed_sdks
     newest_snap = self.apk_snapshots.last
+    return nil if newest_snap.blank?
     newest_sdks = newest_snap.android_sdks
     sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
     get_sdks(sdk_apk, :first_seen)
@@ -65,6 +70,7 @@ class AndroidApp < ActiveRecord::Base
 
   def uninstalled_sdks
     newest_snap = self.apk_snapshots.last
+    return nil if newest_snap.blank?
     newest_sdks = newest_snap.android_sdks
     snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
     sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
