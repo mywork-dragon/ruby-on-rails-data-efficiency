@@ -298,7 +298,7 @@ class GooglePlayService
           seller_url: ->(x) { x == 'http://uber.com' },
           category: ->(x) { x == 'Transportation' },
           released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015},
-          size: ->(x) { x.nil? },
+          size: ->(x) { x.to_i > 1e7 },
           top_dev: ->(x) { x == true },
           in_app_purchases: ->(x) { x == false },
           required_android_version: ->(x) { x.to_i >= 4 },
