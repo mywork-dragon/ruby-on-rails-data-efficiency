@@ -238,6 +238,8 @@ class FilterService
       else
         parts << "joins(websites: :company)"
       end
+
+      parts << "where.not(display_type: 1)"
       
       # add app filters
 
@@ -288,7 +290,9 @@ class FilterService
       else
         parts << "joins(websites: :company)"
       end
-      
+
+      parts << "where.not(display_type: 1)"
+
       # add app filters
       parts << android_apps_query(app_filters) if app_filters.present?
       
