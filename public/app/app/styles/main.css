@@ -7620,6 +7620,8 @@ pre {
   font-size: 10px;
   color: #1EAD4F;
   display: inline-block;
+  position: relative;
+  bottom: 1px;
 }
 
 /* DdTextCollapse Directive Styling */
