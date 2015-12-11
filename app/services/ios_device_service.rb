@@ -568,109 +568,111 @@ class IosDeviceService
 
   # deletes all the installed apps
   # TODO: delete this
-  def delete_applications(ssh)
+  # def delete_applications(ssh)
 
-    # template the scripts with the app name and copy them over
-    ios_version = @device.ios_version
+  #   # template the scripts with the app name and copy them over
+  #   ios_version = @device.ios_version
     
-    files = 
-      if ios_version == '8.4'
-        %w(
-          1_select_general.cy                                  
-          2_select_usage.cy                   
-          3_select_storage.cy                 
-          4_select_app.cy
-          5_select_delete.cy 
-          6_confirm_delete.cy
-          )
-      elsif ios_version == '9.0.2'
-        %w(
-          1_delete_app_ios9.cy
-          2_ensure_uninstalled_ios9.cy
-          3_unlock_device_ios9.cy
-          )
-      else
-        raise 'Device is not a valid iOS version'
-      end
+  #   files = 
+  #     if ios_version == '8.4'
+  #       %w(
+  #         1_select_general.cy                                  
+  #         2_select_usage.cy                   
+  #         3_select_storage.cy                 
+  #         4_select_app.cy
+  #         5_select_delete.cy 
+  #         6_confirm_delete.cy
+  #         )
+  #     elsif ios_version == '9.0.2'
+  #       %w(
+  #         1_delete_app_ios9.cy
+  #         2_ensure_uninstalled_ios9.cy
+  #         3_unlock_device_ios9.cy
+  #         )
+  #     else
+  #       raise 'Device is not a valid iOS version'
+  #     end
 
-    apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
+  #   apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
 
-    return "Nothing to do" if apps == nil
+  #   return "Nothing to do" if apps == nil
 
-    apps = apps.chomp.split
+  #   apps = apps.chomp.split
 
-    if ios_version == '8.4'
+  #   if ios_version == '8.4'
 
-      # template files
-      files.each do |fname|
-        script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
-        ssh.exec! "echo '#{script}' > #{fname}"
-      end
+  #     # template files
+  #     files.each do |fname|
+  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
+  #       ssh.exec! "echo '#{script}' > #{fname}"
+  #     end
 
-      # for each time, go through the app store
-      apps.length.times do |i|
-        puts "Deleting app #{i+1}"
+  #     # for each time, go through the app store
+  #     apps.length.times do |i|
+  #       puts "Deleting app #{i+1}"
 
-        # make sure Preference page is loaded and on first page
-        run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
-        sleep(1)
-        run_command(ssh, "killall Preferences", 'Kill Preferences while open')
-        sleep(1)
-        run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
+  #       # make sure Preference page is loaded and on first page
+  #       run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
+  #       sleep(1)
+  #       run_command(ssh, "killall Preferences", 'Kill Preferences while open')
+  #       sleep(1)
+  #       run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
 
-        files.each do |fname|
-          sleep(2)
-          resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
-        end
-      end
+  #       files.each do |fname|
+  #         sleep(2)
+  #         resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+  #       end
+  #     end
 
-    else
+  #   else
 
-      # get the bundle ids of all the apps
-      bundle_ids = apps.reduce([]) do |memo, dir|
-        bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
+  #     # get the bundle ids of all the apps
+  #     bundle_ids = apps.reduce([]) do |memo, dir|
+  #       bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
 
-        if bundle_id
-          puts "found bundle_id: #{bundle_id}"
-          memo << bundle_id.chomp
-        end
+  #       if bundle_id
+  #         puts "found bundle_id: #{bundle_id}"
+  #         memo << bundle_id.chomp
+  #       end
 
-        memo
-      end
+  #       memo
+  #     end
 
-      # template the file
-      files.each do |fname|
-        script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
-        ssh.exec! "echo '#{script}' > #{fname}"
-      end
+  #     # template the file
+  #     files.each do |fname|
+  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
+  #       ssh.exec! "echo '#{script}' > #{fname}"
+  #     end
 
-      # run the files
-      resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
+  #     # run the files
+  #     
+  #     resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
 
-      t = Time.now
-      while Time.now - t < 30 # 30 seconds max
-        sleep(2)
-        puts "ensuring apps are gone"
-        resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
-        if resp && resp.include?('all gone')
-          break
-        else
-          puts resp.chomp if resp
-        end
-      end
-      puts Time.now - t
-      # sleep(2 * bundle_ids.length) # sleep preportionally to allow kill time
-      puts "#3"
-      run_command(ssh, "killall SpringBoard", "killing springboard")
-      sleep(13)
-      puts "#4"
-      resp = run_command(ssh, "cycript -p SpringBoard 3_unlock_device_ios9.cy", "unlocking the device")
-      sleep(2)
-      puts "Done"
+  #     t = Time.now
+  #     while Time.now - t < 300 # 120 seconds max
+  #       sleep(2)
+  #       puts "ensuring apps are gone"
+  #       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
+  #       if resp && resp.include?('all gone')
+  #         break
+  #       else
+  #         puts resp.chomp if resp
+  #       end
+  #     end
+  #     puts Time.now - t
+  #     
+  #     # sleep(2 * bundle_ids.length) # sleep preportionally to allow kill time
+  #     puts "#3"
+  #     run_command(ssh, "killall SpringBoard", "killing springboard")
+  #     sleep(13)
+  #     puts "#4"
+  #     resp = run_command(ssh, "cycript -p SpringBoard 3_unlock_device_ios9.cy", "unlocking the device")
+  #     sleep(2)
+  #     puts "Done"
 
-    end
+  #   end
 
-  end
+  # end
 
   def delete_applications_v2(ssh)
     files = %w(1_delete_app_ios9.cy 2_ensure_uninstalled_ios9.cy 3_unlock_device_ios9.cy)
@@ -704,7 +706,7 @@ class IosDeviceService
     resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
 
     t = Time.now
-    while Time.now - t < 60 # 60 seconds max
+    while Time.now - t < 300 # 5 minutes to delete...should only take a couple seconds
       sleep(2)
       puts "check if apps are gone"
       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')

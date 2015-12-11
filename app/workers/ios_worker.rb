@@ -54,12 +54,6 @@ module IosWorker
 
 			snapshot.update(download_status: :starting) # update the status
 
-			# begin
-			# 	snapshot = IpaSnapshot.create!(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id, download_status: :starting, version: version)
-			# rescue ActiveRecord::RecordNotUnique => e
-			# 	snapshot = IpaSnapshot.where(ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id).last
-			# end
-
 			# return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
 			# TODO: add logic to take previous results if app's version in the app store has not changed
