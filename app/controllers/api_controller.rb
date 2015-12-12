@@ -822,6 +822,67 @@ class ApiController < ApplicationController
   end
 
   def android_sdks_exist
+    render json:  {
+    installed:
+    [
+      {
+          id:4,
+          name:"Google Maps",
+          website:"https://developers.google.com/maps/",
+          favicon:"https://www.google.com/s2/favicons?domain=developers.google.com",
+          first_seen:"2015-03-08",
+          last_seen:nil,
+          app_count:1,
+          open_source:false
+      },
+      {
+          id:29,
+          name:"Network Connection Class",
+          website:"https://github.com/facebook/network-connection-class",
+          favicon:"https://www.google.com/s2/favicons?domain=github.com",
+          first_seen:"2015-03-08",
+          last_seen:nil,
+          app_count:1,
+          open_source:true
+      }
+      ],
+      uninstalled:[
+          {
+          id:55,
+          name:"Adjust",
+          website:"http://adjust.com",
+          favicon:"https://www.google.com/s2/favicons?domain=adjust.com",
+          first_seen:nil,
+          last_seen:"2015-03-08",
+          app_count:0,
+          open_source:false
+      },
+          {
+          id:67,
+          name:"Retrofit",
+          website:"https://github.com/square/retrofit",
+          favicon:"https://www.google.com/s2/favicons?domain=github.com",
+          first_seen:nil,
+          last_seen:"2015-03-08",
+          app_count:0,
+          open_source:true
+      }
+    ],
+    updated:"2015-12-09T18:17:08.000-08:00",
+    error_code:0
+    }
+  end
+
+  def android_scan_status
+    render json: {status: 0, error: nil}
+  end
+
+  def ios_start_scan
+    render json: {success:true}
+  end
+
+=begin
+  def android_sdks_exist
 
     android_app_id = params['appId']
 
@@ -907,6 +968,7 @@ class ApiController < ApplicationController
     render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
 
   end
+=end
 
   def get_sdks(android_app_id:)
 

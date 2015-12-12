@@ -3,6 +3,7 @@
 angular.module("appApp")
   .factory("sdkLiveScanService", ['$http', 'authService', function($http, authService) {
     return {
+      /*
       checkForAndroidSdks: function(appId) {
         return $http({
           method: 'GET',
@@ -15,6 +16,28 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/scan_android_sdks',
           params: {appId: appId}
+        })
+      },
+      */
+      checkForAndroidSdks: function(appId) {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/android_sdks_exist',
+          params: {appId: appId}
+        })
+      },
+      startAndroidSdkScan: function(appId) {
+        return $http({
+          method: 'POST',
+          url: API_URI_BASE + 'api/android_start_scan',
+          data: {appId: appId}
+        })
+      },
+      getAndroidScanStatus: function(statusJobId) {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/android_scan_status',
+          params: {jobId: statusJobId}
         })
       },
       checkForIosSdks: function(appId) {
