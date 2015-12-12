@@ -1,168 +1,205 @@
 'use strict';
 
-angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "authService", "sdkLiveScanService", "appDataService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, authService, sdkLiveScanService, appDataService) {
+angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval) {
 
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
-
-    $scope.$on('APP_DATA_FOR_APP_DATA_SERVICE_SET', function() {
-      // If display status is correct, change ctrl value
-      if(appDataService.displayStatus.appId == $routeParams.id) {
-        androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
-      }
-    });
-
-    if(appDataService.displayStatus.appId == $routeParams.id) {
-      androidLiveScanCtrl.displayStatus = appDataService.displayStatus.status;
-    } else {
-      androidLiveScanCtrl.displayStatus = "normal"; // default, shows LS button
-    }
-
-    androidLiveScanCtrl.sdkLiveScanPageLoading = true; // show loading spinner on initial page load
-
-    sdkLiveScanService.checkForAndroidSdks(androidAppId)
-      .success(function(data) {
-        var sdkErrorMessage = "";
-        androidLiveScanCtrl.noSdkData = false;
-        androidLiveScanCtrl.sdkLiveScanPageLoading = false;
-        if(data == null) {
-          androidLiveScanCtrl.noSdkData = true;
-          androidLiveScanCtrl.sdkData = {'errorMessage': "Error - Please Try Again Later"}
-        }
-        if(data.error_code > 0) {
-          androidLiveScanCtrl.noSdkData = true;
-          switch (data.error_code) {
-            case 1:
-              sdkErrorMessage = "No SDKs in App";
-              break;
-            case 2:
-              sdkErrorMessage = "Sorry, SDKs Not Available - App Removed from Google Play";
-              androidLiveScanCtrl.displayStatus = "taken_down";
-              break;
-            case 3:
-              sdkErrorMessage = "Error - Please Try Again";
-              break;
-            case 4:
-              sdkErrorMessage = "Sorry, SDKs Not Available for Paid Apps";
-              break;
-            case 5:
-              androidLiveScanCtrl.noSdkData = false;
-              break;
-            case 6:
-              androidLiveScanCtrl.displayStatus = "device_incompatible";
-              break;
-            case 7:
-              androidLiveScanCtrl.displayStatus = "foreign";
-              break;
-          }
-        }
-        androidLiveScanCtrl.sdkData = {
-          'sdkCompanies': data.installed_sdk_companies,
-          'sdkOpenSource': data.installed_open_source_sdks,
-          'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
-          'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
-          'lastUpdated': data.updated,
-          'errorCode': data.error_code,
-          'errorMessage': sdkErrorMessage
-        };
-        if(androidLiveScanCtrl.isEmpty(data.installed_sdk_companies) && androidLiveScanCtrl.isEmpty(data.installed_open_source_sdks) && androidLiveScanCtrl.isEmpty(data.uninstalled_sdk_companies) && androidLiveScanCtrl.isEmpty(data.uninstalled_open_source_sdks)) {
-          androidLiveScanCtrl.noSdkSnapshot = true;
-        }
-
-        // Hidden SDK LS MixPanel & Slacktivity
-        if(androidLiveScanCtrl.displayStatus != 'normal') {
-          sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
-        }
-
-      }).error(function(err) {
-      });
-
-    androidLiveScanCtrl.getSdks = function() {
-      androidLiveScanCtrl.sdkQueryInProgress = true;
-
-      // Reset data for new scan
-      androidLiveScanCtrl.sdkData = {};
-      if(androidLiveScanCtrl.sdkData.errorMessage) {
-        androidLiveScanCtrl.sdkData.errorMessage = "";
-      }
-
-      sdkLiveScanService.getAndroidSdks(androidAppId)
-        .success(function(data) {
-          androidLiveScanCtrl.sdkQueryInProgress = false;
-          androidLiveScanCtrl.noSdkSnapshot = false;
-          var sdkErrorMessage = "";
-          androidLiveScanCtrl.noSdkData = false;
-          if(data == null) {
-            androidLiveScanCtrl.noSdkData = true;
-            androidLiveScanCtrl.sdkData = {'errorMessage': "Error - Please Try Again Later"}
-          }
-          if(data.error_code > 0) {
-            androidLiveScanCtrl.noSdkData = true;
-            switch (data.error_code) {
-              case 1:
-                sdkErrorMessage = "No SDKs in App";
-                break;
-              case 2:
-                sdkErrorMessage = "SDKs Not Available - App Removed from Google Play";
-                androidLiveScanCtrl.displayStatus = "taken_down";
-                break;
-              case 3:
-                sdkErrorMessage = "Error - Please Try Again";
-                break;
-              case 4:
-                sdkErrorMessage = "SDKs Not Available for Paid Apps";
-                break;
-              case 5:
-                androidLiveScanCtrl.noSdkData = false;
-                break;
-              case 6:
-                androidLiveScanCtrl.displayStatus = "device_incompatible";
-                break;
-              case 7:
-                androidLiveScanCtrl.displayStatus = "foreign";
-                break;
-            }
-
-            if(data.error_code == 3 || data.error_code == 4) { // If error, but doesn't hide L.S. button
-              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, sdkErrorMessage || androidLiveScanCtrl.displayStatus, data.error_code);
-            } else if(data.error_code == 2 || data.error_code > 5) { // If error & hides L.S. button
-              sdkLiveScanService.androidHiddenLiveScanAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.displayStatus);
-
-            }
-          }
-          if(data) {
-            androidLiveScanCtrl.sdkData = {
-              'sdkCompanies': data.installed_sdk_companies,
-              'sdkOpenSource': data.installed_open_source_sdks,
-              'uninstalledSdkCompanies': data.uninstalled_sdk_companies,
-              'uninstalledSdkOpenSource': data.uninstalled_open_source_sdks,
-              'lastUpdated': data.updated,
-              'errorCode': data.error_code,
-              'errorMessage': sdkErrorMessage
-            };
-          }
-
-          // Successful SDK LS MixPanel & Slacktivity
-          if(data.error_code === 0 || data.error_code == 1) {
-            sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
-          }
-
-        }).error(function(err, status) {
-          androidLiveScanCtrl.sdkQueryInProgress = false;
-          androidLiveScanCtrl.noSdkSnapshot = false;
-          androidLiveScanCtrl.noSdkData = true;
-          androidLiveScanCtrl.sdkData = {'errorMessage': "Error - Please Try Again Later"};
-
-          // Failed SDK LS MixPanel & Slacktivity
-          sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, status);
-
-        });
-    };
+    var userInfo = {}; // User info set
+    authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
     androidLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
       catch(err) {}
     };
+
+    // Takes an array and number of slices as params, splits into two
+    var splitArray = function(a, n) {
+      var len = a.length,out = [], i = 0;
+      while (i < len) {
+        var size = Math.ceil((len - i) / n--);
+        out.push(a.slice(i, i + size));
+        i += size;
+      }
+      return out;
+    };
+
+    androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
+
+      sdkLiveScanService.checkForAndroidSdks(appId)
+        .success(function (data) {
+          var installedSdks = splitArray(data.installed_sdks, 2);
+          androidLiveScanCtrl.sdkData = {
+            'sdkCompanies': installedSdks[0],
+            'sdkOpenSource': installedSdks[1],
+            'installedSdks': data.installed_sdks,
+            'lastUpdated': data.updated,
+            'errorCode': data.error_code
+          };
+
+          androidLiveScanCtrl.noSdkData = false;
+          androidLiveScanCtrl.sdkLiveScanPageLoading = false;
+
+          if(data == null) {
+            androidLiveScanCtrl.noSdkData = true;
+            androidLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
+          }
+
+          androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length;
+
+          var errorCodeMessages = [
+            "Sorry, SDKs Not Available for Paid Apps",
+            "Sorry, SDKs Not Available - App is Not in U.S. App Store",
+            "Sorry, SDKs Temporarily Not Available for This App"
+          ];
+
+          if (data.error_code != null) {
+            androidLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
+            androidLiveScanCtrl.hideLiveScanButton = true;
+            sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
+          }
+
+          // LS Success Analytics - MixPanel & Slacktivity
+          if(calledAfterSuccess) {
+            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
+          }
+
+        });
+
+    };
+
+    androidLiveScanCtrl.sdkLiveScanPageLoading = true; // on initial page load
+    androidLiveScanCtrl.checkForAndroidSdks(androidAppId); // Call for initial SDKs load
+
+    androidLiveScanCtrl.getSdks = function() {
+
+      // Reset all view-changing vars
+      androidLiveScanCtrl.sdkQueryInProgress = true;
+      androidLiveScanCtrl.displayDataUnchangedStatus = false;
+      androidLiveScanCtrl.failedLiveScan = false;
+      androidLiveScanCtrl.errorCodeMessage = null;
+      androidLiveScanCtrl.sdkData = null;
+      androidLiveScanCtrl.hideLiveScanButton = false;
+      androidLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
+
+      sdkLiveScanService.startAndroidSdkScan(androidAppId)
+        .success(function(data) {
+          androidLiveScanCtrl.scanJobId = data.job_id;
+          androidLiveScanCtrl.scanStatusMessage = "Validating...";
+          androidLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
+          pullScanStatus();
+        })
+        .error(function() {
+          androidLiveScanCtrl.sdkQueryInProgress = false;
+          androidLiveScanCtrl.noSdkSnapshot = false;
+          androidLiveScanCtrl.failedLiveScan = true;
+        });
+    };
+
+    // Helper method for getSdks() method
+    var pullScanStatus = function() {
+      var msDelay = 2000;
+      var numRepeat = 120;
+      var intervalCount = 0;
+
+      // Messages that correspond to (status == index number)
+      var statusCodeMessages = [
+        "Validating...",                                            // Non-terminating
+        "Unchanged",                                                // Unchanged
+        "Sorry, SDKs Not Available - App is Not in U.S. App Store", // Not Available
+        "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
+        "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
+        "Preparing...",                                             // Non-terminating
+        "All Devices Currently In Use - Please Try Again.",         // Device busy
+        "Downloading...",                                           // Non-terminating
+        "Retrying...",                                              // Non-terminating
+        "Scanning...",                                              // Non-terminating
+        "Complete",                                                 // Complete
+        "Failed"                                                    // Failed
+      ];
+
+      var interval = $interval(function() {
+        sdkLiveScanService.getAndroidScanStatus(androidLiveScanCtrl.scanJobId)
+          .success(function(data) {
+            intervalCount++;
+
+            // Reset 'query in progress' if pulling times out
+            if(intervalCount == 120) {
+              androidLiveScanCtrl.sdkQueryInProgress = false;
+              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
+            }
+
+            if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
+
+            androidLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
+
+            switch(data.status) {
+              case 0:
+                androidLiveScanCtrl.scanStatusPercentage = 5;
+                break;
+              case 1:
+                androidLiveScanCtrl.displayDataUnchangedStatus = true;
+                androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true); // Loads new sdks on page
+                break;
+              case 5:
+                androidLiveScanCtrl.scanStatusPercentage = 10;
+                break;
+              case 7:
+                androidLiveScanCtrl.scanStatusPercentage = 20;
+                break;
+              case 8:
+                androidLiveScanCtrl.scanStatusPercentage = 50;
+                break;
+              case 9:
+                androidLiveScanCtrl.scanStatusPercentage = 90;
+                break;
+              case 10:
+                androidLiveScanCtrl.scanStatusPercentage = 100;
+                androidLiveScanCtrl.noSdkData = false;
+                androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true, 10); // Loads new sdks on page
+                break;
+              case 11:
+                androidLiveScanCtrl.noSdkData = true;
+                androidLiveScanCtrl.failedLiveScan = true;
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 11); // Failed analytics response - MixPanel & Slacktivity
+                break;
+            }
+
+            // If status 2, 3 or 4
+            if((data.status >= 2 && data.status <= 4) || data.status == 6) {
+
+              // Run for any qualifying status
+              androidLiveScanCtrl.sdkQueryInProgress = false;
+              androidLiveScanCtrl.noSdkData = false;
+              androidLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
+              androidLiveScanCtrl.sdkData = { 'errorCode': -1 };
+
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
+
+              if(data.status != 6) {
+                androidLiveScanCtrl.hideLiveScanButton = true;
+                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
+              }
+
+              $interval.cancel(interval); // Exits interval loop
+
+            } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10
+              // Run for any qualifying status
+              androidLiveScanCtrl.sdkQueryInProgress = false;
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
+
+              $interval.cancel(interval); // Exits interval loop
+
+            }
+          })
+          .error(function() {
+            androidLiveScanCtrl.failedLiveScan = true;
+          });
+
+      }, msDelay, numRepeat);
+
+    };
+
   }
+
 ]);

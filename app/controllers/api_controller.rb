@@ -832,7 +832,7 @@ class ApiController < ApplicationController
           favicon:"https://www.google.com/s2/favicons?domain=developers.google.com",
           first_seen:"2015-03-08",
           last_seen:nil,
-          app_count:1,
+          app_count:10,
           open_source:false
       },
       {
@@ -842,7 +842,7 @@ class ApiController < ApplicationController
           favicon:"https://www.google.com/s2/favicons?domain=github.com",
           first_seen:"2015-03-08",
           last_seen:nil,
-          app_count:1,
+          app_count:8,
           open_source:true
       }
       ],
@@ -854,7 +854,7 @@ class ApiController < ApplicationController
           favicon:"https://www.google.com/s2/favicons?domain=adjust.com",
           first_seen:nil,
           last_seen:"2015-03-08",
-          app_count:0,
+          app_count:3,
           open_source:false
       },
           {
@@ -874,6 +874,20 @@ class ApiController < ApplicationController
   end
 
   def android_scan_status
+=begin
+    statuses
+        0 => queueing
+        1 => downloading
+        2 => scanning
+        3 => successful scan
+        4 => failed
+    new errors
+        0 => error connecting with google
+        1 => taken down
+        2 => device problem
+        3 => country problem
+        4 => carrier problem
+=end
     render json: {status: 0, error: nil}
   end
 

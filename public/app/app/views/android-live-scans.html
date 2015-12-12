@@ -5,67 +5,54 @@
       <div class="media-body">
         <ul class="list-unstyled list-info" ng-if="!androidLiveScanCtrl.sdkLiveScanPageLoading">
 
-          <!--
-          <div style="text-align:center">
-            <strong>SDK Live Scans are currently being updated - please check back later.</strong>
-          </div>
-          -->
-
-          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'taken_down'">
-            <strong>App is no longer listed in the app store - no SDK Live Scan available.</strong>
+          <div id="sdkScanErrorCodeStatus" ng-if="androidLiveScanCtrl.sdkData.errorCode != null">
+            <strong>{{androidLiveScanCtrl.errorCodeMessage}}</strong>
           </div>
 
-          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'foreign'">
-            <strong>App is not in the U.S. store - no SDK Live Scan available.</strong>
-          </div>
-
-          <div style="text-align:center" ng-if="androidLiveScanCtrl.displayStatus == 'device_incompatible'">
-            <strong>SDK Live Scan is temporarily unavailable for this app.</strong>
-          </div>
-
-          <li ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.errorCode == 0 && androidLiveScanCtrl.displayStatus == 'normal' && !androidLiveScanCtrl.noSdkSnapshot" id="sdkLiveScanDisplay">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.errorCode == null && !androidLiveScanCtrl.noSdkSnapshot">
             <div class="sdksListView">
               <div class="row">
-                <div class="col-md-6" ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies) && isEmpty(androidLiveScanCtrl.sdkData.uninstalledSdkCompanies)">
-                  <strong ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies)">Installed SDKs</strong>
-                  <ul ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkCompanies)">
-                    <li class="sdkLiveScanDisplayList" ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkCompanies">
+                <div class="col-md-6" ng-hide="!androidLiveScanCtrl.sdkData.sdkCompanies">
+                  <strong ng-show="androidLiveScanCtrl.sdkData.sdkCompanies">Installed SDKs</strong>
+                  <ul ng-show="androidLiveScanCtrl.sdkData.sdkCompanies">
+                    <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in androidLiveScanCtrl.sdkData.sdkCompanies">
                       <div class="sdkLiveScanDisplayIconSection">
                         <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                         <i class="fa fa-circle" ng-hide="sdkValue['favicon']"></i>
                       </div>
                       <div class="sdkLiveScanDisplayTitleSection">
                         <span ng-if="canViewStorewideSdks">
-                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                          <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
+                          <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate">99 days ago</span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
-                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                          <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
+                          <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate">99 days ago</span>
                         </span>
                       </div>
                     </li>
                   </ul>
                 </div>
-                <div class="col-md-6 sdkOpenSourceSection" ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource) && isEmpty(androidLiveScanCtrl.sdkData.uninstalledSdkOpenSource)">
-                  <strong ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource)">Installed SDKs</strong>
-                  <ul ng-hide="isEmpty(androidLiveScanCtrl.sdkData.sdkOpenSource)">
-                    <li class="sdkLiveScanDisplayList" ng-repeat="(sdkCompName, sdkValue) in androidLiveScanCtrl.sdkData.sdkOpenSource">
+
+                <div class="col-md-6 sdkOpenSourceSection" ng-hide="!androidLiveScanCtrl.sdkData.sdkOpenSource">
+                  <strong ng-show="androidLiveScanCtrl.sdkData.sdkOpenSource">Uninstalled SDKs</strong>
+                  <ul ng-show="androidLiveScanCtrl.sdkData.sdkOpenSource">
+                    <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in androidLiveScanCtrl.sdkData.sdkOpenSource">
                       <div class="sdkLiveScanDisplayIconSection">
                         <img ng-src="{{sdkValue['favicon']}}" ng-show="sdkValue['favicon']">
                         <i class="fa fa-github" ng-hide="sdkValue['favicon']"></i>
                       </div>
                       <div class="sdkLiveScanDisplayTitleSection">
                         <span ng-if="canViewStorewideSdks">
-                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkCompName}}</a>
-                          <strong ng-hide="sdkValue['id']">{{sdkCompName}}</strong>
+                          <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
+                          <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate">99 days ago</span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
-                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkCompName}}</a>
-                          <strong ng-hide="sdkValue['website']">{{sdkCompName}}</strong>
+                          <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
+                          <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate">99 days ago</span>
                         </span>
                       </div>
@@ -73,6 +60,12 @@
                   </ul>
                 </div>
               </div>
+            </div>
+          </li>
+
+          <li ng-if="androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.lastUpdated && androidLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>No SDKs in App</strong>
             </div>
           </li>
 
@@ -84,24 +77,26 @@
           </li>
           -->
 
-          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData && androidLiveScanCtrl.displayStatus == 'normal' || androidLiveScanCtrl.sdkQueryInProgress && androidLiveScanCtrl.displayStatus == 'normal'">
-            <div id="sdkScanErrorMessage" ng-show="androidLiveScanCtrl.noSdkData">
-              <h5><strong>{{androidLiveScanCtrl.sdkData.errorMessage}}</strong></h5>
+          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData || androidLiveScanCtrl.sdkQueryInProgress">
+            <div id="sdkScanErrorMessage">
+              <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
             </div>
-            <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress" id="wrap_spinner">
-              <div class="loading outer">
-                <div class="loading inner"></div>
-              </div>
-              <p>Scanning - this may take a minute.</p>
+            <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
+              <progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></progressbar>
+              <p>{{androidLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && androidLiveScanCtrl.displayStatus == 'normal'">
-            <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated">
+          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && !androidLiveScanCtrl.hideLiveScanButton">
+            <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated && !androidLiveScanCtrl.failedLiveScan">
               Last Scanned on {{androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
             <div id="showSdksButton">
-              <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks()">Live Scan</button>
+              <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)">Live Scan</button>
             </div>
+          </li>
+          <li id="showDataUpdatedMessage" ng-if="androidLiveScanCtrl.displayDataUnchangedStatus">
+            <em>Note: app data has not changed since last scan. Currently up-to-date.</em>
           </li>
 
         </ul>
