@@ -139,40 +139,36 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
 
 
-            if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
+            if(!data.status && data.status !== 0) { data.status = 4 } // If status is null, treat as failed (status 4)
 
             androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
 
             switch(data.status) {
-              case 0:
+              case 0: // prepairing
                 androidLiveScanCtrl.scanStatusPercentage = 5;
                 break;
-              case 1:
-                androidLiveScanCtrl.displayDataUnchangedStatus = true;
-                androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true); // Loads new sdks on page
-                break;
-              case 5:
-                androidLiveScanCtrl.scanStatusPercentage = 10;
-                break;
-              case 7:
+              case 1: // downloading
                 androidLiveScanCtrl.scanStatusPercentage = 20;
                 break;
-              case 8:
-                androidLiveScanCtrl.scanStatusPercentage = 50;
+              case 2: // scanning
+                androidLiveScanCtrl.scanStatusPercentage = 70;
                 break;
-              case 9:
-                androidLiveScanCtrl.scanStatusPercentage = 90;
-                break;
-              case 10:
+              case 3: // complete
                 androidLiveScanCtrl.scanStatusPercentage = 100;
                 androidLiveScanCtrl.noSdkData = false;
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true, 10); // Loads new sdks on page
                 break;
-              case 11:
+              case 4: // failed
                 androidLiveScanCtrl.noSdkData = true;
                 androidLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 11); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
                 break;
+            }
+
+            if(data.error || data.error === 0) {
+              androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error];
+              androidLiveScanCtrl.hideLiveScanButton = true;
+              sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
             }
 
             // If status 2, 3 or 4
