@@ -6,6 +6,8 @@ class GooglePlaySnapshotServiceWorker
 
   MAX_TRIES = 0
 
+  MAX_STRING_LENGTH = 191
+
   def perform(android_app_snapshot_job_id, android_app_id)
 
     save_attributes(android_app_id: android_app_id, android_app_snapshot_job_id: android_app_snapshot_job_id)
@@ -60,6 +62,13 @@ class GooglePlaySnapshotServiceWorker
 
       single_column_attributes.each do |sca|
         value = a[sca.to_sym]
+
+        if AndroidAppSnapshot.columns_hash[sca].type == :string && value.length > MAX_STRING_LENGTH  # if it's a string and is too big
+          next if sca.to_sym == :developer_google_play_identifier # skip long google play identifiers
+
+          value = value.truncate(MAX_STRING_LENGTH)
+        end
+
         s.send("#{sca}=", value) if value
       end
 
