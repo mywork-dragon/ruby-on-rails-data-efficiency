@@ -35,6 +35,7 @@ class GooglePlayService
       icon_url_300x300
       developer_google_play_identifier
     )
+
     
     methods.each do |method|
       key = method.to_sym
@@ -61,7 +62,7 @@ class GooglePlayService
     #puts "url: #{url}"
 
 
-    page = Tor.get(url)
+    page = Tor.get(url, bypass: true)
 
     Nokogiri::HTML(page)
 
@@ -78,6 +79,7 @@ class GooglePlayService
   end
 
   # Returns string corresponding with supplied regex or nil if data not available
+  # Probably depricated 12/13/2015 -- jlew
   def app_info_helper(regex)
     app_info_div = @html.css('div.details-section-contents > div.meta-info')
     in_app_cost_div = app_info_div.select{|div| div.children.children.text.match(regex)}
@@ -124,21 +126,21 @@ class GooglePlayService
   end
 
   def released
-    date_text = @html.css('div.content').find{|c| c['itemprop'] == 'datePublished'}.text
+    date_text =  meta_infos_with_itemprop('datePublished')
     Date.parse(date_text)
   end
 
   # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
   def size
-    size_text = @html.css("div.details-section-contents > div:nth-child(2) > div.content").text.strip
+    size_text = meta_infos_with_itemprop('fileSize')
 
     if size_text == "Varies with device"
-      size_text = nil
+      size = nil
     else
-      size_text = Filesize.from(size_text + "iB").to_i # iB added to string to interface with filesize Gem convention
+      size = Filesize.from(size_text + "iB").to_i # iB added to string to interface with filesize Gem convention
     end
 
-    size_text
+    size
   end
 
   # Returns number GPlus "likes" as a integer, returns -1 if GPlus info span empty
@@ -180,63 +182,35 @@ class GooglePlayService
 
   # Returns string of price range if in app purchases available, nil not (in cents)
   def in_app_purchases_range
-    cost_array = app_info_helper(/In-app Products/)
-    if cost_array.nil?
-      return nil
-    end
 
-    cost_array = cost_array.gsub('$','').split(" ")
+    iap_s = meta_infos_with_title('In-app Products')
 
-    if cost_array.length > 3
-      min = (cost_array[0].to_f*100.0).to_i
-      max = (cost_array[2].to_f*100.0).to_i
-      
-      return min..max
-    else
-      min = (cost_array[0].to_f*100).to_i
-      max = min
-      
-      return min..max
-    end
+    iap_a = iap_s.gsub('per item', '').split(' - ').map{ |x| (x.gsub('$', '').strip.to_f*100).to_i }
+
+    return iap_a[0]..iap_a[1]
   end
 
   # Returns string of Android version required or "Varies with device"
   def required_android_version
-    result = app_info_helper(/Requires Android/).gsub(/[^0-9.]/,'')
-
-    if result.length < 1
-      return "Varies with device"
-    end
-
-    result
+    meta_infos_with_itemprop('operatingSystems')
   end
 
   # Returns string of current (app) version required or "Varies with device"
   def version
-    result = app_info_helper(/Current Version/).gsub(/[^0-9.]/,'')
-
-    if result.length < 1
-      return "Varies with device"
-    end
-
-    result
+    meta_infos_with_itemprop('softwareVersion')
   end
 
   # Returns string of range detailing how many installs the app has, returns nil if data not available
   def downloads
-    installs_array = app_info_helper(/Installs/)
-    if installs_array.nil?
-      return nil
-    end
-
-    installs_array_parsed = installs_array.gsub(',','').gsub(' -','').split(" ").map { |num| num.to_i }
+    downloads_s = meta_infos_with_itemprop('numDownloads')
+    downloads_a = downloads_s.split(' - ').map{ |x| x.strip.gsub(',', '').to_i }
     
-    (installs_array_parsed.first..installs_array_parsed.last)
+    (downloads_a[0]..downloads_a[1])
   end
 
   # Returns a string containing the content rating, or nil if data not available
   def content_rating
-    app_info_helper(/Content Rating/)
+    meta_infos_with_itemprop('contentRating')
   end
 
   # Returns float of app review rating (out of 5)
@@ -279,61 +253,70 @@ class GooglePlayService
     link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
   end
 
-    # Makes sure the scraping logic is still valid
-    # (Checks to see if Google has changed their DOM)
-    # @author Jason Lew
-    def dom_valid?
+  # gets all meta-info
+  def meta_infos_with_itemprop(itemprop_value)
+    @html.css('.meta-info').map(&:children).flatten.find{ |x| x['itemprop'] == itemprop_value}.text.strip
+  end
 
-      attributes = self.attributes('com.ubercab')
+  def meta_infos_with_title(title)
+     @html.css('.meta-info').map(&:children).find{ |c| c.find{ |cc| cc['class'] == 'title' && cc.text.strip == title} }.find{ |c| c['class'] == 'content' }.text.strip
+  end
 
-      ap attributes
+  # Makes sure the scraping logic is still valid
+  # (Checks to see if Google has changed their DOM)
+  # @author Jason Lew
+  def dom_valid?
 
-      # ae: attributes expected 
-      ae = 
-        {
-          name: ->(x) { x == 'Uber' },
-          description: ->(x) { x.include? 'Get a reliable ride in minutes' },
-          price: ->(x) { x == 0},
-          seller: ->(x) { x == 'Uber Technologies, Inc.' },
-          seller_url: ->(x) { x == 'http://uber.com' },
-          category: ->(x) { x == 'Transportation' },
-          released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015},
-          size: ->(x) { x.to_i > 1e7 },
-          top_dev: ->(x) { x == true },
-          in_app_purchases: ->(x) { x == false },
-          required_android_version: ->(x) { x.to_i >= 4 },
-          version: ->(x) { x.to_i >= 3 },
-          downloads: ->(x) { x.min >= 10e6},
-          content_rating: ->(x) { x == 'Everyone'},
-          ratings_all_stars: ->(x) { (1..5).include?(x) },
-          ratings_all_count: ->(x) { x > 300000 },
-          similar_apps: ->(x) { x.count > 0},
-          screenshot_urls: ->(x) { x.count > 0},
-          icon_url_300x300: ->(x) { x.present? },
-          developer_google_play_identifier: ->(x) { x.present? },
-        }
+    attributes = self.attributes('com.ubercab')
 
-        ret = true
+    ap attributes
 
-        ae.each do |expected_attribute_key, expected_attribute_value|
-          attribute_value = attributes[expected_attribute_key]
+    # ae: attributes expected 
+    ae = 
+      {
+        name: ->(x) { x == 'Uber' },
+        description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+        price: ->(x) { x == 0 },
+        seller: ->(x) { x == 'Uber Technologies, Inc.' },
+        seller_url: ->(x) { x == 'http://uber.com' },
+        category: ->(x) { x == 'Transportation' },
+        released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015},
+        size: ->(x) { x.to_i > 1e7 },
+        top_dev: ->(x) { x == true },
+        in_app_purchases: ->(x) { x == false },
+        required_android_version: ->(x) { x.to_i >= 4 },
+        version: ->(x) { x.to_i >= 3 },
+        downloads: ->(x) { x.min >= 10e6},
+        content_rating: ->(x) { x == 'Everyone'},
+        ratings_all_stars: ->(x) { (1..5).include?(x) },
+        ratings_all_count: ->(x) { x > 300000 },
+        similar_apps: ->(x) { x.count > 0},
+        screenshot_urls: ->(x) { x.count > 0},
+        icon_url_300x300: ->(x) { x.present? },
+        developer_google_play_identifier: ->(x) { x.present? },
+      }
 
-          pass = ae[expected_attribute_key].call(attribute_value)
+      ret = true
 
-          if pass
-            puts "#{expected_attribute_key}: PASS".green
-          else
-            ret = false
-            puts "#{expected_attribute_key}: FAIL".red
-            puts "#{attribute_value}".purple
-          end
+      ae.each do |expected_attribute_key, expected_attribute_value|
+        attribute_value = attributes[expected_attribute_key]
 
-          puts ""
+        pass = ae[expected_attribute_key].call(attribute_value)
 
+        if pass
+          puts "#{expected_attribute_key}: PASS".green
+        else
+          ret = false
+          puts "#{expected_attribute_key}: FAIL".red
+          puts "#{attribute_value}".purple
         end
 
-      ret
-    end
+        puts ""
+
+      end
+
+    ret
+  end
 
   class << self
 
