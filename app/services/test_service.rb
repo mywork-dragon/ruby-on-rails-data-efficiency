@@ -2,10 +2,10 @@ class TestService
 
 	class << self
 
-		def android_check_exist(id, job_id = nil)
+		def android_check_exist(id)
 	    # id = params['appId']
 	    aa = AndroidApp.find(id)
-	  	data = data_hash(aa, job_id, scannable(aa))
+	  	data = data_hash(aa, scannable(aa))
 	    # render json: data
 
 	  end
@@ -69,15 +69,13 @@ class TestService
 	    e
 	  end
 
-	  def data_hash(aa, job_id, error_code)
+	  def data_hash(aa, error_code)
 	    h = Hash.new
 	    if error_code.nil?
 		    h[:installed] = features aa.installed_sdks
 	    	h[:uninstalled] = features aa.uninstalled_sdks
 		  end
-		  # h[:updated] = aa.apk_snapshots.where(status:1).last && aa.apk_snapshots.where(status:1).last.updated_at
-		  j = ApkSnapshotJob.find_by_id(job_id)
-		  h[:updated] = j && j.created_at
+		  h[:updated] = aa.apk_snapshots.where(status:1).last && aa.apk_snapshots.where(status:1).last.last_updated
 		  h[:error_code] = error_code || 0
 	    h.to_json
 	  end
