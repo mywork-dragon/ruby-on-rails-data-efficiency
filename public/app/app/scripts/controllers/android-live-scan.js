@@ -103,19 +103,20 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       var intervalCount = 0;
 
       // Messages that correspond to (status == index number)
-      var statusCodeMessages = [
-        "Validating...",                                            // Non-terminating
-        "Unchanged",                                                // Unchanged
-        "Sorry, SDKs Not Available - App is Not in U.S. App Store", // Not Available
-        "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
-        "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
-        "Preparing...",                                             // Non-terminating
-        "All Devices Currently In Use - Please Try Again.",         // Device busy
-        "Downloading...",                                           // Non-terminating
-        "Retrying...",                                              // Non-terminating
-        "Scanning...",                                              // Non-terminating
-        "Complete",                                                 // Complete
-        "Failed"                                                    // Failed
+      var statusCheckStatusCodeMessages = [
+        "Preparing...",
+        "Downloading...",
+        "Scanning...",
+        "Complete",
+        "Failed"
+      ];
+
+      var statusCheckErrorCodeMessages = [
+        "Sorry, SDKs Temporarily Not Available for This App",           // 0 == error connecting with Google
+        "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 1 == taken down
+        "Sorry, SDKs Temporarily Not Available for This App",           // 2 == device problems
+        "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 3 == country problem
+        "Sorry, SDKs Temporarily Not Available for This App"            // 4 == carrier problem
       ];
 
       var interval = $interval(function() {
@@ -129,9 +130,18 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }
 
+
+
+
+
+
+
+
+
+
             if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
 
-            androidLiveScanCtrl.scanStatusMessage = statusCodeMessages[data.status]; // Sets scan status message
+            androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
 
             switch(data.status) {
               case 0:
@@ -171,14 +181,14 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               // Run for any qualifying status
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
-              androidLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
+              androidLiveScanCtrl.errorCodeMessage = statusCheckStatusCodeMessages[data.status];
               androidLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
               androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
 
               if(data.status != 6) {
                 androidLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.status, statusCheckStatusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
               }
 
               $interval.cancel(interval); // Exits interval loop
@@ -191,6 +201,15 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               $interval.cancel(interval); // Exits interval loop
 
             }
+
+
+
+
+
+
+
+
+
           })
           .error(function() {
             androidLiveScanCtrl.failedLiveScan = true;
