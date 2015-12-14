@@ -143,6 +143,8 @@ class GooglePlaySnapshotServiceWorker
         end
         
         android_app.mobile_priority = mobile_priority
+      else
+        android_app.mobile_priority = nil
       end
 
         if screenshot_urls = a[:screenshot_urls]
