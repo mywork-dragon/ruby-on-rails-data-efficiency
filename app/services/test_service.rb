@@ -7,22 +7,32 @@ class TestService
 	    aa = AndroidApp.find(id)
 	  	data = data_hash(aa, scannable(aa))
 	    # render json: data
-
 	  end
+
+	  # ERROR CODES FOR ANDROID_CHECK_EXIST
+		# errors
+		#   null => no error
+		# 	0 => taken down
+		# 	1 => country problem
+		# 	2 => device problem
+		# 	3 => carrier problem
+		#   4 => couldn't find
+		#   5 => paid app
 
 	  def start_job_android(id)
-	  	id = params['appId']
+	  	# id = params['appId']
 	  	aa = AndroidApp.find(id)
 	  	job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
-	  	batch = Sidekiq::Batch.new
-			bid = batch.bid
-			batch.jobs do
-			  ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
-			end
-			bid
+	  # 	batch = Sidekiq::Batch.new
+			# bid = batch.bid
+			# batch.jobs do
+			#   ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
+			# end
+			ApkSnapshotServiceSingleWorker.new.perform(job_id, nil, aa.id)
+			job_id
 	  end
 
-	  def check_status(id)
+	  def android_check_status(id)
 	  	# id = params['appId']
 	  	aa = AndroidApp.find(id)
 	  	# ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
@@ -31,6 +41,21 @@ class TestService
 	  	e = {:status => status, :error => error, :message => msg}
 	  	# render json: e
 	  end
+
+	  # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
+	  # statuses
+		#   0 => queueing
+		#   1 => downloading
+		#   2 => scanning
+		#   3 => successful scan
+		#   4 => failed
+		# errors
+		#   null => no error
+		# 	0 => error connecting with google
+		# 	1 => taken down
+		# 	2 => device problem
+		# 	3 => country problem
+		# 	4 => carrier problem
 
 	  def snap_status(ss)
 	  	[0,nil]
@@ -47,9 +72,6 @@ class TestService
 	  end
 
 	  def snap_error(ss)
-
-
-
 	  	# e = %w(failure no_response forbidden could_not_connect timeout deadlock not_found)
 	  	# o = %w(taken_down bad_device out_of_country bad_carrier)
 	  	e = %w(failure no_response forbidden could_not_connect timeout deadlock)
@@ -64,14 +86,14 @@ class TestService
 
 	  def scannable(aa)
 	  	s = aa.newest_android_app_snapshot
-	    e = s.price.to_i.zero? ? nil : 6
-	    e = aa.normal? ? nil : AndroidApp.display_types[aa.display_type] if e.nil?
+	    e = s.price.to_i.zero? ? nil : 5
+	    e = aa.normal? ? nil : AndroidApp.display_types[aa.display_type] - 1 if e.nil?
 	    e
 	  end
 
 	  def data_hash(aa, error_code)
 	    h = Hash.new
-	    if error_code.nil?
+	    if error_code.nil? || error_code == 6
 		    h[:installed] = features aa.installed_sdks
 	    	h[:uninstalled] = features aa.uninstalled_sdks
 		  end
@@ -95,6 +117,15 @@ class TestService
 	    f.sort_by{|x| [x[:open_source] ? 1:0 , -x[:app_count]] }
 	  end
 
+
+	  # def reproduce(n = 100)
+	  # 	Rails.application.eager_load!
+	  # 	a = ActiveRecord::Base.descendants.map{|x| x.split(' ').first }
+	  # 	a.each do |model|
+	  # 		columns = model
+	  # 	end
+	  # end
+
 	end
 
 end
@@ -108,34 +139,3 @@ end
 
 # account for when there is an error code 4, but there is also data
 
-
-
-
-# statuses
-#   0 => queueing
-#   1 => downloading
-#   2 => scanning
-#   3 => successful scan
-#   4 => failed
-# new errors
-# 	0 => error connecting with google
-# 	1 => taken down
-# 	2 => device problem
-# 	3 => country problem
-# 	4 => carrier problem
-
-
-
-# errors
-# 	0 => "failure"
-# 	1 => "success"
-# 	2 => "no response"
-# 	3 => "forbidden"
-# 	4 => "taken down"
-# 	5 => "could not connect"
-# 	6 => "timeout"
-# 	7 => "deadlock"
-# 	8 => "bad device"
-# 	9 => "out of country"
-# 	10 => "bad carrier"
-# 	11 => "not found"
