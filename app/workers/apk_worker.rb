@@ -148,6 +148,8 @@ module ApkWorker
       # debugging
       apk_snap.auth_token = ''
 
+      apk_snap.last_updated = DateTime.now
+
       apk_snap.save
 
       # save snapshot to app
