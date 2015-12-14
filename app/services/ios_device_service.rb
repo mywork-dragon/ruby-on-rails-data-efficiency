@@ -534,10 +534,22 @@ class IosDeviceService
     return @bundle_info if @bundle_info
 
     # get defaults in Info.plist
+    path_to_app = "#{app_info[:path]}/#{app_info[:name_escaped]}.app"
 
-    run_command(ssh, "plutil -convert json #{app_info[:path]}/#{app_info[:name_escaped]}.app/Info.plist", 'Converting plist to json', "Converted 1 files to json format")
+    impt_keys = %w(CFBundleExecutable CFBundleShortVersionString)
 
-    bundle_info = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/Info.json", 'Echoing json plist file'))
+    run_command(ssh, "plutil -convert json #{File.join(path_to_app, 'Info.plist')}", 'Converting plist to json', "Converted 1 files to json format")
+    begin
+      bundle_info = JSON.parse(run_command(ssh, "cat #{File.join(path_to_app, 'Info.json')}", 'Echoing json plist file').chomp)
+    rescue JSON::ParserError => e
+      # go with backup method of extracting important keys one by one
+      bundle_info = {}
+      # TODO: make sure these commands work
+      impt_keys.each do |key|
+        value = run_command(ssh, "plutil -key #{key} #{File.join(path_to_app, 'Info.plist')}", "Getting key #{key} from the main plist").chomp
+        bundle_info[key] = value
+      end
+    end
 
     # see if Base.lproj and en.lproj exists and overwrite. Order matters
     extra_plist_directories = [
