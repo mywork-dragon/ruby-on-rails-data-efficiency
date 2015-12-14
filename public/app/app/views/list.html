@@ -115,7 +115,7 @@
             <td>{{app.app.categories.join(', ')}}</td>
             <td ng-show="canViewSupportDesk">{{app.app.supportDesk | supportDeskName}}</td>
             <td>
-                <span ng-show="app.app.lastUpdatedDays">
+                <span ng-show="app.app.lastUpdatedDays && app.app.lastUpdatedDays >= 0">
                   <span ng-class="getLastUpdatedDaysClass(app.app.lastUpdatedDays)">
                     <strong>{{app.app.lastUpdatedDays}}</strong>
                   </span> days ago

@@ -102,7 +102,7 @@
             <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
             <td ng-if="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | humanizeNum}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | humanizeNum}}</td>
             <td>
-                <span ng-show="app.app.lastUpdatedDays">
+                <span ng-show="app.app.lastUpdatedDays && app.app.lastUpdatedDays >= 0">
                   <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.app.lastUpdatedDays)">
                     <strong>{{app.app.lastUpdatedDays}}</strong>
                   </span> days ago
