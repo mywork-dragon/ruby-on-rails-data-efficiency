@@ -62,7 +62,7 @@ class GooglePlayService
     #puts "url: #{url}"
 
 
-    page = Tor.get(url, bypass: true)
+    page = Tor.get(url)
 
     Nokogiri::HTML(page)
 
