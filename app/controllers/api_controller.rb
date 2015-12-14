@@ -869,8 +869,21 @@ class ApiController < ApplicationController
       }
     ],
     updated:"2015-12-09T18:17:08.000-08:00",
-    error_code:0
+    error_code:nil
     }
+
+=begin
+
+    null => no error
+    1 => taken down
+    2 => country problem
+    3 => device problem
+    4 => carrier problem
+    5 => couldn't find
+    6 => paid app
+
+=end
+
   end
 
   def android_scan_status

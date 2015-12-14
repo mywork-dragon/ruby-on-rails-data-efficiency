@@ -13,26 +13,13 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       catch(err) {}
     };
 
-    // Takes an array and number of slices as params, splits into two
-    var splitArray = function(a, n) {
-      var len = a.length,out = [], i = 0;
-      while (i < len) {
-        var size = Math.ceil((len - i) / n--);
-        out.push(a.slice(i, i + size));
-        i += size;
-      }
-      return out;
-    };
-
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
 
       sdkLiveScanService.checkForAndroidSdks(appId)
         .success(function (data) {
-          var installedSdks = splitArray(data.installed_sdks, 2);
           androidLiveScanCtrl.sdkData = {
-            'sdkCompanies': installedSdks[0],
-            'sdkOpenSource': installedSdks[1],
-            'installedSdks': data.installed_sdks,
+            'sdkCompanies': data.installed,
+            'sdkOpenSource': data.uninstalled,
             'lastUpdated': data.updated,
             'errorCode': data.error_code
           };
@@ -48,9 +35,12 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length;
 
           var errorCodeMessages = [
-            "Sorry, SDKs Not Available for Paid Apps",
-            "Sorry, SDKs Not Available - App is Not in U.S. App Store",
-            "Sorry, SDKs Temporarily Not Available for This App"
+            "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // taken down
+            "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // country problem
+            "Sorry, SDKs Temporarily Not Available for This App",         // device problem
+            "Sorry, SDKs Temporarily Not Available for This App",         // carrier problem
+            "Sorry, SDKs Temporarily Not Available for This App",         // couldn't find
+            "Sorry, SDKs Not Available for Paid Apps"                     // paid app
           ];
 
           if (data.error_code != null) {
