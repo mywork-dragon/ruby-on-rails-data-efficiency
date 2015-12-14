@@ -130,15 +130,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }
 
-
-
-
-
-
-
-
-
-
             if(!data.status && data.status !== 0) { data.status = 4 } // If status is null, treat as failed (status 4)
 
             androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
@@ -156,7 +147,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               case 3: // complete
                 androidLiveScanCtrl.scanStatusPercentage = 100;
                 androidLiveScanCtrl.noSdkData = false;
-                androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true, 10); // Loads new sdks on page
+                androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true); // Loads new sdks on page
                 break;
               case 4: // failed
                 androidLiveScanCtrl.noSdkData = true;
@@ -165,46 +156,23 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 break;
             }
 
-            if(data.error || data.error === 0) {
-              androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error];
-              androidLiveScanCtrl.hideLiveScanButton = true;
-              sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
-            }
-
-            // If status 2, 3 or 4
-            if((data.status >= 2 && data.status <= 4) || data.status == 6) {
-
-              // Run for any qualifying status
+            if(data.error || data.error === 0 || !data.status) { // if data.error is present, or both data.error and data.status not present
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
-              androidLiveScanCtrl.errorCodeMessage = statusCheckStatusCodeMessages[data.status];
-              androidLiveScanCtrl.sdkData = { 'errorCode': -1 };
+              androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
+              androidLiveScanCtrl.hideLiveScanButton = true;
+              androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
 
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
-
-              if(data.status != 6) {
-                androidLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.status, statusCheckStatusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
-              }
-
+              sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
               $interval.cancel(interval); // Exits interval loop
-
-            } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10
+            } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
               // Run for any qualifying status
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
-
             }
-
-
-
-
-
-
-
-
 
           })
           .error(function() {
