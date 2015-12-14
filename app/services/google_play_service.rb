@@ -250,7 +250,10 @@ class GooglePlayService
   def developer_google_play_identifier
     link = @html.css('a.document-subtitle.primary').first['href']
     
-    link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
+    ret = link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
+
+    # workaround for developer identifier
+    ret.length > 191 ? nil : ret
   end
 
   # gets all meta-info
