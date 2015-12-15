@@ -56,12 +56,12 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           if (data.error_code != null) {
             androidLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
             androidLiveScanCtrl.hideLiveScanButton = true;
-            sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
+            sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
           }
 
           // LS Success Analytics - MixPanel & Slacktivity
           if(calledAfterSuccess) {
-            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
+            sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
           }
 
         });
@@ -127,7 +127,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             // Reset 'query in progress' if pulling times out
             if(intervalCount == 120) {
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
+              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }
 
             if(!data.status && data.status !== 0) { data.status = 4 } // If status is null, treat as failed (status 4)
@@ -154,7 +154,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               case 4: // failed
                 androidLiveScanCtrl.noSdkData = true;
                 androidLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
                 break;
             }
 
@@ -165,7 +165,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               androidLiveScanCtrl.hideLiveScanButton = true;
               androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
               androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
-              sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
+              sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
               $interval.cancel(interval); // Exits interval loop
             } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
               // Run for any qualifying status

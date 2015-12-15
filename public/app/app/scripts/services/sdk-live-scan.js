@@ -3,22 +3,6 @@
 angular.module("appApp")
   .factory("sdkLiveScanService", ['$http', 'authService', function($http, authService) {
     return {
-      /*
-      checkForAndroidSdks: function(appId) {
-        return $http({
-          method: 'GET',
-          url: API_URI_BASE + 'api/android_sdks_exist',
-          params: {appId: appId}
-        })
-      },
-      getAndroidSdks: function(appId) {
-        return $http({
-          method: 'GET',
-          url: API_URI_BASE + 'api/scan_android_sdks',
-          params: {appId: appId}
-        })
-      },
-      */
       checkForAndroidSdks: function(appId) {
         return $http({
           method: 'GET',
@@ -75,8 +59,11 @@ angular.module("appApp")
 
           appData = data;
 
-          var sdkInstalls = sdkData.installedSdks;
+          var sdkInstalls = sdkData.installed;
+          var sdkUninstalls = sdkData.uninstalled;
           sdkInstalls.map(function(sdk) { return sdk.name; });
+          sdkUninstalls.map(function(sdk) { return sdk.name; });
+
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
@@ -86,6 +73,7 @@ angular.module("appApp")
               'companyName': appData.company.name,
               'appId': appData.id,
               'sdkInstalls': sdkInstalls,
+              'sdkUninstalls': sdkUninstalls,
               'lastUpdated': sdkData.lastUpdated
             }
           );
@@ -100,6 +88,7 @@ angular.module("appApp")
             'companyName': appData.company.name,
             'appId': appData.id,
             'sdkInstalls': sdkInstalls,
+            'sdkUninstalls': sdkUninstalls,
             'lastUpdated': sdkData.lastUpdated
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
