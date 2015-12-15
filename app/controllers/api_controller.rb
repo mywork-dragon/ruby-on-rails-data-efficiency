@@ -823,7 +823,8 @@ class ApiController < ApplicationController
 
   def android_sdks_exist
     render json:  {
-    installed:
+    installed: #[],
+#=begin
     [
       {
           id:4,
@@ -846,7 +847,11 @@ class ApiController < ApplicationController
           open_source:true
       }
       ],
-      uninstalled:[
+#=end
+      uninstalled: #[],
+#=begin
+
+      [
           {
           id:55,
           name:"Adjust",
@@ -868,19 +873,20 @@ class ApiController < ApplicationController
           open_source:true
       }
     ],
+#=end
     updated:"2015-12-09T18:17:08.000-08:00",
-    error_code:nil
+    error_code: nil
     }
 
 =begin
 
     null => no error
-    1 => taken down
-    2 => country problem
-    3 => device problem
-    4 => carrier problem
-    5 => couldn't find
-    6 => paid app
+    0 => taken down
+    1 => country problem
+    2 => device problem
+    3 => carrier problem
+    4 => couldn't find
+    5 => paid app
 
 =end
 
@@ -901,10 +907,10 @@ class ApiController < ApplicationController
         3 => country problem
         4 => carrier problem
 =end
-    render json: {status: 0, error: nil}
+    render json: {status: 3, error: nil}
   end
 
-  def ios_start_scan
+  def android_start_scan
     render json: {success:true}
   end
 
