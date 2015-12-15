@@ -13,6 +13,16 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       catch(err) {}
     };
 
+    androidLiveScanCtrl.calculateDaysAgo = function(date) {
+      var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+      var firstDate = new Date(date);
+      var secondDate = Date.now();
+
+      var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate)/(oneDay)));
+
+      return diffDays;
+    };
+
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
 
       sdkLiveScanService.checkForAndroidSdks(appId)
@@ -75,7 +85,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       sdkLiveScanService.startAndroidSdkScan(androidAppId)
         .success(function(data) {
           androidLiveScanCtrl.scanJobId = data.job_id;
-          androidLiveScanCtrl.scanStatusMessage = "Validating...";
+          androidLiveScanCtrl.scanStatusMessage = "Preparing...";
           androidLiveScanCtrl.scanStatusPercentage = 5; // default percentage for Validating
           pullScanStatus();
         })
@@ -86,7 +96,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         });
     };
 
-    // Helper method for getSdks() method
+    // Helper method for getSdks() method - 4min timeout (2s * 120)
     var pullScanStatus = function() {
       var msDelay = 2000;
       var numRepeat = 120;
@@ -124,6 +134,8 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
             androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
 
+            console.log('Entering Switch', data.status);
+
             switch(data.status) {
               case 0: // prepairing
                 androidLiveScanCtrl.scanStatusPercentage = 5;
@@ -146,19 +158,19 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 break;
             }
 
-            if(data.error || data.error === 0 || !data.status) { // if data.error is present, or both data.error and data.status not present
+            if(data.error && data.error === 0 || !data.status && data.status !== 0) { // if data.error is present, or both data.error and data.status not present
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
               androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
               androidLiveScanCtrl.hideLiveScanButton = true;
               androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed.length && !data.uninstalled.length; // Will show/hide view elements depending on data returned
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
               sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
               $interval.cancel(interval); // Exits interval loop
             } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
               // Run for any qualifying status
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed.length && !data.uninstalled.length; // Will show/hide view elements depending on data returned
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
             }

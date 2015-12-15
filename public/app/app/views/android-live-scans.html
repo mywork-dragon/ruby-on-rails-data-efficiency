@@ -24,12 +24,16 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']">
+                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
+                          </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']">
+                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
+                          </span>
                         </span>
                       </div>
                     </li>
@@ -48,12 +52,16 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['last_seen']">
+                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
+                          </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate">99 days ago</span>
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['last_seen']">
+                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
+                          </span>
                         </span>
                       </div>
                     </li>
