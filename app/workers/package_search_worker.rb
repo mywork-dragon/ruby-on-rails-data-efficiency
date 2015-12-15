@@ -9,7 +9,6 @@ module PackageSearchWorker
     find_packages(app_identifier: app_identifier, snap_id: snap_id)
   end
 
-
   def find_packages(app_identifier:, snap_id:)
 
     if Rails.env.production?
@@ -30,69 +29,12 @@ module PackageSearchWorker
       cls
     end.compact.uniq
 
-    # apk_snap = ApkSnapshot.find_by_id(snap_id)
-
-    # begin
-    #   as = AndroidSdkService.classify(snap_id: snap_id, packages: packages)
-    # rescue => e
-    #   apk_snap.scan_status = :scan_failure
-    # else
-    #   apk_snap.scan_status = :scan_success
-    # end
-
-    # apk_snap.save
-
-
-
     AndroidSdkService.classify(snap_id: snap_id, packages: packages)
 
     apk_snap = ApkSnapshot.find_by_id(snap_id)
     apk_snap.scan_status = :scan_success
     apk_snap.save
 
-    # batch = Sidekiq::Batch.new
-
-    # if single_queue?
-    #   batch.on(:complete, PackageSearchServiceSingleWorker, 'snap_id' => snap_id)
-    # else
-    #   batch.on(:complete, PackageSearchServiceWorker, 'snap_id' => snap_id)
-    # end
-
-    # names = clss.uniq.compact.uniq.map do |package_name|
-    #   SdkCompanyServiceWorker.new.name_from_package(package_name)
-    # end.uniq
-
-    # if Rails.env.development?
-    #   names.each do |package_name|
-    #     SavePackageServiceWorker.new.perform(snap_id: snap_id, packages: packages)
-    #   end
-    # else
-    #   batch.jobs do
-    #     names.each do |package_name|
-    #       if single_queue?
-    #       	SavePackageServiceSingleWorker.perform_async(package_name, snap_id)
-    #       else
-    #         apk_snap = ApkSnapshot.find_by_id(snap_id)
-    #         begin
-    #       	 SavePackageServiceWorker.new.perform(package_name, snap_id)
-    #         rescue => e
-    #           apk_snap.scan_status = :scan_failure
-    #           apk_snap.save
-    #         else
-    #           apk_snap.scan_status = :scan_success
-    #           apk_snap.save
-    #         end
-    #       end
-    #     end
-    #   end
-    # end
-
   end
-
-  # def on_complete(status, options)
-  #   apk_snap = ApkSnapshot.find_by_id(options['snap_id'])
-  #   apk_snap.scan_status = :scan_success
-  #   apk_snap.save
-  # end
 
 end

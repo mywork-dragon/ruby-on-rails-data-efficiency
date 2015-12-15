@@ -140,7 +140,7 @@ if defined?(ApkDownloader)
       # proxy = '50.23.206.66:8888' if Rails.env.development?
 
       response = CurbFu.send(type, req, params) do |curb|
-        # curb.proxy_url = proxy
+        curb.proxy_url = proxy
         curb.ssl_verify_peer = false
         curb.max_redirects = 3
         curb.timeout = 90
