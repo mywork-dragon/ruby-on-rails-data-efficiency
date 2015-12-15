@@ -17,25 +17,13 @@ class IosSdk < ActiveRecord::Base
 
   enum source: [:cocoapods, :package_lookup]
 
-=begin
-    if filtered_count_only
-      app_ids = []
-      IosApp.find(app_to_snap.keys).each do |app|
-        app_ids << app.id
-      end
-
-      apps_count = IosApp.instance_eval("self.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where('ios_apps.id IN (?)', #{app_ids}).group('ios_apps.id').count.length")
-
-      result = apps_count
-    else
-      result = IosApp.find(app_to_snap.keys)
-    end
-=end
-
-  def get_current_apps(count_only: false)
+  def get_current_apps(count_only: false, filtered_count_only: false)
 
     if count_only
       self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).length
+    elsif filtered_count_only
+      ios_apps = IosApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id)).map(&id)
+      IosApp.instance_eval("self.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null').joins(websites: :company).where('ios_apps.id IN (?)', #{ios_apps}).group('ios_apps.id').count.length")
     else
       # TODO: revisit this to make it 1 query
       IosApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id))
