@@ -32,7 +32,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             androidLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
           }
 
-          androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length;
+          androidLiveScanCtrl.noSdkSnapshot = !data.installed.length && !data.uninstalled.length;
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // taken down
@@ -152,14 +152,13 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
               androidLiveScanCtrl.hideLiveScanButton = true;
               androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
-
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed.length && !data.uninstalled.length; // Will show/hide view elements depending on data returned
               sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
               $interval.cancel(interval); // Exits interval loop
             } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
               // Run for any qualifying status
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              androidLiveScanCtrl.noSdkSnapshot = !data.installed && !data.uninstalled; // Will show/hide view elements depending on data returned
+              androidLiveScanCtrl.noSdkSnapshot = !data.installed.length && !data.uninstalled.length; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
             }
