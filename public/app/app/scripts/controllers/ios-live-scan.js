@@ -174,7 +174,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
               iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
-              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
+              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length; // Will show/hide view elements depending on data returned
 
               if(data.status != 6) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
@@ -186,7 +186,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10
               // Run for any qualifying status
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks; // Will show/hide view elements depending on data returned
+              iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
 
