@@ -7624,6 +7624,14 @@ pre {
   bottom: 1px;
 }
 
+.sdkLiveScanUninstallDate {
+  font-size: 10px;
+  color: #ED5F5F;
+  display: inline-block;
+  position: relative;
+  bottom: 1px;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
