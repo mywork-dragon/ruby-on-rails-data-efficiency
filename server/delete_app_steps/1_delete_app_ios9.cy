@@ -1,20 +1,32 @@
-function appWithBundleId(bundleId) {
+function appsWithBundleId(bundleIds) {
 
-  var apps = choose(SBApplication);
+  var c = [SBApplicationController sharedInstance];
+  var result = [];
+  var app = null;
 
-  for each (var app in apps) {
-    if (app.bundleIdentifier == bundleId) {
-      return app;
+  for (var i = 0; i < bundleIds.length; i++) {
+    app = [c applicationWithBundleIdentifier:bundleIds[i]]
+    if (app != nil) {
+      result.push(app);
     }
   }
 
-  throw "Could not find app";
-
-  return false;
+  if (result.length == 0) {
+  	throw "Could not find app";
+  }
+  return result;
 }
 
 var c = [SBApplicationController sharedInstance];
 
-var a = appWithBundleId("%s");
+var bundleIds = "%s".split(",").map(function(text) {
+  return [[NSString alloc] initWithUTF8String:text];
+});
 
-[c uninstallApplication:a];
+// free them afterwards?
+
+var apps = appsWithBundleId(bundleIds);
+
+for (var i = 0; i < apps.length; i++) {
+	[c uninstallApplication:apps[i]];	
+}

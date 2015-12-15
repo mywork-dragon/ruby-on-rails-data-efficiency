@@ -9,6 +9,7 @@ class IosDeviceService
   OPEN_APP_SCRIPT_PATH = './server/open_app.cy'
   DOWNLOAD_APP_SCRIPT_PATH = './server/download_app.cy'
   DEBUG_SCRIPT_PATH = './server/debug_status_method.cy'
+  VERIFY_INSTALL_SCRIPT_PATH = './server/verify_install.cy'
 
   APPS_INSTALL_PATH = "/var/mobile/Containers/Bundle/Application/"
 
@@ -21,6 +22,14 @@ class IosDeviceService
   DECRYPTED_FOLDER = "#{home}/decrypted_ios_apps"
 
   DISPLAY_STATUSES = {
+    downloading: {
+      commands: "updateDebugStatus('Waiting for download', [UIColor yellowColor]);",
+      filename: 'download_waiting.cy'
+    },
+    download_complete: {
+      commands: "updateDebugStatus('Finished download', [UIColor greenColor]);",
+      filename: 'download_complete.cy'
+    },
     start_decrypt: {
       commands: "updateDebugStatus('Running Decrypt', [UIColor yellowColor]);",
       filename: 'start_decrypt.cy'
@@ -73,9 +82,10 @@ class IosDeviceService
   def next_account
   end
 
-  def run(app_identifier, purpose, unique_id, country_code: 'us')
+  def run(app_identifier, lookup_content, purpose, unique_id, country_code: 'us')
 
     @app_identifier = app_identifier
+    @lookup_content = lookup_content
     @unique_id = unique_id
     @purpose = purpose
 
@@ -243,10 +253,11 @@ class IosDeviceService
     
     # add some logic to ensure that app store is open
 
-    install_open_app_script(ssh)
+    install_open_app_scripts(ssh)
 
     # wait for download and open app
-    24.times do |n| # 2 minutes
+    wait_time = @purpose == :mass ? 120 : 24 # 10 vs 2 minutes
+    wait_time.times do |n| # 2 minutes
 
       # make sure app store is open
       if !is_app_store_running?(ssh)
@@ -256,11 +267,18 @@ class IosDeviceService
       puts "Waiting 5s..."
       sleep(5)
       puts "Try #{n}"
-      ret = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
-      if ret && (ret.chomp == 'Could not find OPEN button' || ret.chomp == 'Cannot locate button')
-        puts "Not downloaded yet"
-      else
+
+      # button_check = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
+
+      bundle_check = run_command(ssh, "cycript -p SpringBoard #{verify_install_script_name}", 'check SpringBoard for app')
+
+      if bundle_check && bundle_check.chomp.include?('Completed')
+        puts "Finished install"
+        print_display_status(ssh, :download_complete)
         break
+      else
+        print_display_status(ssh, :downloading)
+        puts "Not downloaded yet"
       end
 
       puts ''
@@ -276,6 +294,12 @@ class IosDeviceService
 
     if apps_after.length <= prior_apps.length
       raise "No new installs. Install failed"
+    end
+
+    bundle_check = run_command(ssh, "cycript -p SpringBoard #{verify_install_script_name}", 'check SpringBoard for app')
+
+    if !(bundle_check && bundle_check.include?('Completed'))
+      raise "Springboard cannot locate newly installed app. Likely install timeout"
     end
 
     # find the new one and return it
@@ -298,10 +322,18 @@ class IosDeviceService
     run_command(ssh, "echo '#{script}' > #{download_app_script_name}", 'writing download script to file')
   end
 
-  def install_open_app_script(ssh)
+  # TODO: remove the old one...not used anymore
+  def install_open_app_scripts(ssh)
+    bundle_id = @lookup_content['bundleId']
+
+    raise "no bundle id available" if bundle_id.nil?
 
     script = File.open(OPEN_APP_SCRIPT_PATH, 'rb') { |f| f.read }
     run_command(ssh, "echo '#{script}' > #{open_app_script_name}", 'writing open script to file')
+
+    script = File.open(VERIFY_INSTALL_SCRIPT_PATH, 'rb') { |f| f.read } % [bundle_id]
+    run_command(ssh, "echo '#{script}' > #{verify_install_script_name}", 'writing verify script to file')
+
   end
 
   def install_debug_script(ssh)
@@ -315,6 +347,10 @@ class IosDeviceService
 
   def open_app_script_name
     "open_app.cy"
+  end
+
+  def verify_install_script_name
+    "verify_install.cy"
   end
 
   def debug_script_name
@@ -450,7 +486,7 @@ class IosDeviceService
   def teardown(ssh, app_info)
 
     run_command(ssh, 'cycript -p SpringBoard press_home_button.cy', 'pressing Home button')
-    delete_applications(ssh)
+    delete_applications_v2(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
     run_command(ssh, 'rm /var/root/*.decrypted', 'removing all decrypted files from root home directory')
@@ -498,10 +534,22 @@ class IosDeviceService
     return @bundle_info if @bundle_info
 
     # get defaults in Info.plist
+    path_to_app = "#{app_info[:path]}/#{app_info[:name_escaped]}.app"
 
-    run_command(ssh, "plutil -convert json #{app_info[:path]}/#{app_info[:name_escaped]}.app/Info.plist", 'Converting plist to json', "Converted 1 files to json format")
+    impt_keys = %w(CFBundleExecutable CFBundleShortVersionString)
 
-    bundle_info = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/Info.json", 'Echoing json plist file'))
+    run_command(ssh, "plutil -convert json #{File.join(path_to_app, 'Info.plist')}", 'Converting plist to json', "Converted 1 files to json format")
+    begin
+      bundle_info = JSON.parse(run_command(ssh, "cat #{File.join(path_to_app, 'Info.json')}", 'Echoing json plist file').chomp)
+    rescue JSON::ParserError => e
+      # go with backup method of extracting important keys one by one
+      bundle_info = {}
+      # TODO: make sure these commands work
+      impt_keys.each do |key|
+        value = run_command(ssh, "plutil -key #{key} #{File.join(path_to_app, 'Info.plist')}", "Getting key #{key} from the main plist").chomp
+        bundle_info[key] = value
+      end
+    end
 
     # see if Base.lproj and en.lproj exists and overwrite. Order matters
     extra_plist_directories = [
@@ -531,72 +579,166 @@ class IosDeviceService
   end
 
   # deletes all the installed apps
-  def delete_applications(ssh)
+  # TODO: delete this
+  # def delete_applications(ssh)
 
-    # template the scripts with the app name and copy them over
+  #   # template the scripts with the app name and copy them over
+  #   ios_version = @device.ios_version
     
-    ios_version = @device.ios_version
-    bundle_id = @bundle_info['CFBundleIdentifier']
-    
-    files = 
-      if ios_version == '8.4'
-        %w(
-          1_select_general.cy                                  
-          2_select_usage.cy                   
-          3_select_storage.cy                 
-          4_select_app.cy
-          5_select_delete.cy 
-          6_confirm_delete.cy
-          )
-      elsif ios_version == '9.0.2'
-        %w(
-          1_delete_app_ios9.cy
-          2_unlock_device_ios9.cy
-          )
-      else
-        raise 'Device is not a valid iOS version'
+  #   files = 
+  #     if ios_version == '8.4'
+  #       %w(
+  #         1_select_general.cy                                  
+  #         2_select_usage.cy                   
+  #         3_select_storage.cy                 
+  #         4_select_app.cy
+  #         5_select_delete.cy 
+  #         6_confirm_delete.cy
+  #         )
+  #     elsif ios_version == '9.0.2'
+  #       %w(
+  #         1_delete_app_ios9.cy
+  #         2_ensure_uninstalled_ios9.cy
+  #         3_unlock_device_ios9.cy
+  #         )
+  #     else
+  #       raise 'Device is not a valid iOS version'
+  #     end
+
+  #   apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
+
+  #   return "Nothing to do" if apps == nil
+
+  #   apps = apps.chomp.split
+
+  #   if ios_version == '8.4'
+
+  #     # template files
+  #     files.each do |fname|
+  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
+  #       ssh.exec! "echo '#{script}' > #{fname}"
+  #     end
+
+  #     # for each time, go through the app store
+  #     apps.length.times do |i|
+  #       puts "Deleting app #{i+1}"
+
+  #       # make sure Preference page is loaded and on first page
+  #       run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
+  #       sleep(1)
+  #       run_command(ssh, "killall Preferences", 'Kill Preferences while open')
+  #       sleep(1)
+  #       run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
+
+  #       files.each do |fname|
+  #         sleep(2)
+  #         resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
+  #       end
+  #     end
+
+  #   else
+
+  #     # get the bundle ids of all the apps
+  #     bundle_ids = apps.reduce([]) do |memo, dir|
+  #       bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
+
+  #       if bundle_id
+  #         puts "found bundle_id: #{bundle_id}"
+  #         memo << bundle_id.chomp
+  #       end
+
+  #       memo
+  #     end
+
+  #     # template the file
+  #     files.each do |fname|
+  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
+  #       ssh.exec! "echo '#{script}' > #{fname}"
+  #     end
+
+  #     # run the files
+  #     
+  #     resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
+
+  #     t = Time.now
+  #     while Time.now - t < 300 # 120 seconds max
+  #       sleep(2)
+  #       puts "ensuring apps are gone"
+  #       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
+  #       if resp && resp.include?('all gone')
+  #         break
+  #       else
+  #         puts resp.chomp if resp
+  #       end
+  #     end
+  #     puts Time.now - t
+  #     
+  #     # sleep(2 * bundle_ids.length) # sleep preportionally to allow kill time
+  #     puts "#3"
+  #     run_command(ssh, "killall SpringBoard", "killing springboard")
+  #     sleep(13)
+  #     puts "#4"
+  #     resp = run_command(ssh, "cycript -p SpringBoard 3_unlock_device_ios9.cy", "unlocking the device")
+  #     sleep(2)
+  #     puts "Done"
+
+  #   end
+
+  # end
+
+  def delete_applications_v2(ssh)
+    files = %w(1_delete_app_ios9.cy 2_ensure_uninstalled_ios9.cy 3_unlock_device_ios9.cy)
+
+    apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
+
+    return "Nothing to do" if apps == nil
+
+    apps = apps.chomp.split
+
+    # get the bundle ids of all the apps
+    bundle_ids = apps.reduce([]) do |memo, dir|
+      bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
+
+      if bundle_id
+        puts "found bundle_id: #{bundle_id}"
+        memo << bundle_id.chomp
       end
 
+      memo
+    end
+
+    # template the file
     files.each do |fname|
-      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_id]
+      script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
       ssh.exec! "echo '#{script}' > #{fname}"
     end
 
+    # run the files
+    puts "deleting the apps"
+    resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
 
-    if ios_version == '8.4'
-      # Find the number of apps to delete and go through the process for each one
-      apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
-      return "Nothing to do" if apps == nil
-
-      apps = apps.chomp.split
-
-      puts "Number of apps to delete: #{apps.length}"
-      apps.length.times do |i|
-        puts "Deleting app #{i+1}"
-
-        # make sure Preference page is loaded and on first page
-        run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
-        sleep(1)
-        run_command(ssh, "killall Preferences", 'Kill Preferences while open')
-        sleep(1)
-        run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
-
-        files.each do |fname|
-          sleep(2)
-          resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
-        end
+    t = Time.now
+    while Time.now - t < 300 # 5 minutes to delete...should only take a couple seconds
+      sleep(2)
+      puts "check if apps are gone"
+      resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
+      if resp && resp.include?('all gone')
+        break
+      else
+        puts resp.chomp if resp
       end
-    else
-      resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
-      sleep(2)
-      puts "#3"
-      run_command(ssh, "killall SpringBoard", "killing springboard")
-      sleep(5)
-      puts "#4"
-      resp = run_command(ssh, "cycript -p SpringBoard 2_unlock_device_ios9.cy", "running cycript file 2_unlock_device_ios9.cy")
-      sleep(2)
-      puts "Done"
+      puts ''
     end
+    puts Time.now - t
+    # sleep(2 * bundle_ids.length) # sleep preportionally to allow kill time
+    puts "#3"
+    run_command(ssh, "killall SpringBoard", "killing springboard")
+    sleep(13)
+    puts "#4"
+    resp = run_command(ssh, "cycript -p SpringBoard 3_unlock_device_ios9.cy", "unlocking the device")
+    sleep(2)
+    puts "Done"
+
   end
 
   # gets the classdump using class-dump tool, returns nil if it can't find executable or if dump generally fails
