@@ -2,7 +2,7 @@ class TestService
 
 	class << self
 
-		def android_check_exist(id)
+		def android_sdks_exist(id)
 	    # id = params['appId']
 	    aa = AndroidApp.find(id)
 	  	data = data_hash(aa, scannable(aa))
@@ -19,7 +19,7 @@ class TestService
 		#   4 => couldn't find
 		#   5 => paid app
 
-	  def start_job_android(id)
+	  def android_start_scan(id)
 	  	# id = params['appId']
 	  	aa = AndroidApp.find(id)
 	  	job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
@@ -32,11 +32,9 @@ class TestService
 			job_id
 	  end
 
-	  def android_check_status(id)
-	  	# id = params['appId']
-	  	aa = AndroidApp.find(id)
-	  	# ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-	  	ss = aa.newest_apk_snapshot
+	  def android_scan_status(job_id)
+	  	# job_id = params['appId']
+	  	ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
 	  	status, error, msg = snap_status(ss)
 	  	e = {:status => status, :error => error, :message => msg}
 	  	# render json: e
