@@ -137,7 +137,7 @@ if defined?(ApkDownloader)
 
       proxy = "#{proxy_ip}:#{proxy_port}"
 
-      proxy = '169.45.70.23:8888' if Rails.env.development?
+      # proxy = '50.23.206.66:8888' if Rails.env.development?
 
       response = CurbFu.send(type, req, params) do |curb|
         curb.proxy_url = proxy
@@ -146,7 +146,26 @@ if defined?(ApkDownloader)
         curb.timeout = 90
       end
 
+      # if Rails.env.production?
+      #   response = CurbFu.send(type, req, params) do |curb|
+      #     curb.proxy_url = proxy
+      #     curb.ssl_verify_peer = false
+      #     curb.max_redirects = 3
+      #     curb.timeout = 90
+      #   end
+      # else
+      #   response = CurbFu.send(type, req, params) do |curb|
+      #     curb.ssl_verify_peer = false
+      #     curb.max_redirects = 3
+      #     curb.timeout = 90
+      #   end
+      # end
+
       if [200,302].include? response.status
+
+        ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
+        ga.flags = 0
+        ga.save
 
         return response
 
@@ -162,12 +181,22 @@ if defined?(ApkDownloader)
           elsif response.body.include? "Your device is not compatible with this item"
             snap.status = :bad_device
             aa.display_type = :device_incompatible
+          elsif response.body.include? "This item is not available on your carrier."
+            snap.status = :bad_carrier
+            aa.display_type = :carrier_incompatible
+          elsif response.body.include? "The item you were attempting to purchase could not be found"
+            snap.status = :not_found
+            aa.display_type = :item_not_found
           else
             snap.status = :forbidden
           end
         elsif response.status == 404
           aa.display_type = :taken_down
           snap.status = :taken_down
+        elsif response.status == 500
+          ga = snap.google_account
+          ga.flags += 1
+          ga.save
         end
 
         snap.save

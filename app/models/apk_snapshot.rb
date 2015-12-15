@@ -19,7 +19,7 @@ class ApkSnapshot < ActiveRecord::Base
 
   belongs_to :apk_file
 
-	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country]
+	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found]
   enum scan_status: [:scan_failure, :scan_success]
 
   def first_seen
