@@ -821,63 +821,9 @@ class ApiController < ApplicationController
     render json: {job_id: job_id}
   end
 
-  def android_sdks_exist
-    render json:  {
-    installed: #[],
-#=begin
-    [
-      {
-          id:4,
-          name:"Google Maps",
-          website:"https://developers.google.com/maps/",
-          favicon:"https://www.google.com/s2/favicons?domain=developers.google.com",
-          first_seen:"2015-03-08",
-          last_seen:nil,
-          app_count:10,
-          open_source:false
-      },
-      {
-          id:29,
-          name:"Network Connection Class",
-          website:"https://github.com/facebook/network-connection-class",
-          favicon:"https://www.google.com/s2/favicons?domain=github.com",
-          first_seen:"2015-03-08",
-          last_seen:nil,
-          app_count:8,
-          open_source:true
-      }
-      ],
-#=end
-      uninstalled: #[],
-#=begin
 
-      [
-          {
-          id:55,
-          name:"Adjust",
-          website:"http://adjust.com",
-          favicon:"https://www.google.com/s2/favicons?domain=adjust.com",
-          first_seen:nil,
-          last_seen:"2015-03-08",
-          app_count:3,
-          open_source:false
-      },
-          {
-          id:67,
-          name:"Retrofit",
-          website:"https://github.com/square/retrofit",
-          favicon:"https://www.google.com/s2/favicons?domain=github.com",
-          first_seen:nil,
-          last_seen:"2015-03-08",
-          app_count:0,
-          open_source:true
-      }
-    ],
-#=end
-    updated:"2015-12-09T18:17:08.000-08:00",
-    error_code: nil
-    }
 
+  
 
   def android_sdks_exist
     id = params['appId']
