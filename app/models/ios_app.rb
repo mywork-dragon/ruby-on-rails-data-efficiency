@@ -3,6 +3,7 @@ class IosApp < ActiveRecord::Base
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
 
+  has_many :ipa_snapshot_job_exceptions
   has_many :ios_app_snapshots
   belongs_to :app
   has_many :ios_fb_ad_appearances
@@ -25,7 +26,7 @@ class IosApp < ActiveRecord::Base
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
-  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible]
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid]
   
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|

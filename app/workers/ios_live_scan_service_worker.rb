@@ -5,129 +5,66 @@ class IosLiveScanServiceWorker
   # retrying the json lookup ourselves, so disable
   sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud
 
-  LOOKUP_ATTEMPTS = 2
+  include IosCloud
 
-  def perform(ipa_snapshot_job_id, ios_app_id)
+  def no_data(ipa_snapshot_job_id, ios_app_id)
+    IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :not_available)
+    IosApp.find(ios_app_id).update(display_type: :taken_down) # not entirely correct...could be foreign
+    "Not available"
+  end
 
-    begin
-      puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
-      job = IpaSnapshotJob.find(ipa_snapshot_job_id)
-      data = get_json(ios_app_id)
+  def paid_app(ipa_snapshot_job_id, ios_app_id)
+    IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :paid)
+    IosApp.find(ios_app_id).update(display_type: :paid)
+    "Cannot scan paid app"
+  end
 
-      raise "Could not perform iTunes lookup for app #{ios_app_id}" if data.nil?
+  def allow_update_check?(ipa_snapshot_job_id, ios_app_id)
+    Rails.env.production?
+  end
 
-      data = data['results'].first
+  def no_update_required(ipa_snapshot_job_id, ios_app_id)
+    IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :unchanged)
+    "App has not updated"
+  end
 
-      if data.nil?
-        job.live_scan_status = :not_available
-        job.save
+  def not_device_compatible(ipa_snapshot_job_id, ios_app_id)
+    IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :device_incompatible)
+    IosApp.find(ios_app_id).update(display_type: :device_incompatible)
+    "No compatible devices available"
+  end
 
-        IosApp.find(ios_app_id).update(display_type: :taken_down) # not entirely correct...could be foreign
-        return "Not available"
-      end
+  def start_job(ipa_snapshot_job_id, ios_app_id, ipa_snapshot_id)
 
-      if data['price'].to_f > 0
-        job.live_scan_status = :paid
-        job.save
-        return "Cannot scan paid app"     
-      end
+    job = IpaSnapshotJob.find(ipa_snapshot_job_id)
+    if Rails.env.production?
 
-      # if it's been changed (for now, just ignore that stuff)
-      version = data['version']
-      if Rails.env.production? && !should_update(ios_app_id: ios_app_id, version: data['version'])
-        job.live_scan_status = :unchanged
-        job.save
-        return "App has not updated"
-      end
+      batch = Sidekiq::Batch.new
+      batch.description = "running a live scan job"
+      bid = batch.bid
 
-      # check if devices compatible
-      if !device_compatible?(devices: data['supportedDevices'])
-        job.live_scan_status = :device_incompatible
-        job.save
-
-        IosApp.find(ios_app_id).update(display_type: :device_incompatible)
-        return "No compatible devices available"
-      end
-
-      puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
-
-      if Rails.env.production?
-
-        batch = Sidekiq::Batch.new
-        batch.description = "running a live scan job"
-        bid = batch.bid
-
-        batch.jobs do
-          if job.job_type == 'one_off'
-            IosScanSingleServiceWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
-          elsif job.job_type == 'test'
-            IosScanSingleTestWorker.perform_async(ipa_snapshot_job_id, ios_app_id, version, bid)
-          end
-        end
-      else
+      batch.jobs do
         if job.job_type == 'one_off'
-          IosScanSingleServiceWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
+          IosScanSingleServiceWorker.perform_async(ipa_snapshot_id, bid)
         elsif job.job_type == 'test'
-          IosScanSingleTestWorker.new.perform(ipa_snapshot_job_id, ios_app_id, version, nil)
+          IosScanSingleTestWorker.perform_async(ipa_snapshot_id, bid)
         end
       end
-
-      job.live_scan_status = :initiated
-      job.save
-
-    rescue => e
-      IpaSnapshotJobException.create!({
-        ipa_snapshot_job_id: ipa_snapshot_job_id,
-        error: e.message,
-        backtrace: e.backtrace
-        })
-
-      if !job.nil?
-        job.live_scan_status = :failed
-        job.save
-      end
-    end
-  end
-
-
-  # Are all devices compatible?
-  # @author Jason Lew
-  def device_compatible?(devices: devices)
-    available_devices = IosDeviceFamily.uniq.pluck(:lookup_name).compact
-    (available_devices - devices).empty? # whether all available devices support the app
-  end
-
-  def should_update(ios_app_id:, version:)
-    last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
-
-    if !version.blank? && !(last_snap.nil? || last_snap.version.nil?) && version <= last_snap.version
-      last_snap.good_as_of_date = Time.now # update the ipa snapshot with current date
-      last_snap.save
-      false
     else
-      true 
+      if job.job_type == 'one_off'
+        IosScanSingleServiceWorker.new.perform(ipa_snapshot_id, nil)
+      elsif job.job_type == 'test'
+        IosScanSingleTestWorker.new.perform(ipa_snapshot_id, nil)
+      end
     end
+
+    job.live_scan_status = :initiated
+    job.save
   end
 
-  def get_json(ios_app_id)
-
-    data = nil
-
-    LOOKUP_ATTEMPTS.times do |i|
-      begin
-        app_identifier = IosApp.find(ios_app_id).app_identifier # TODO, uncomment this
-        url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
-
-        data = JSON.parse(Proxy.get_body_from_url(url))
-        
-      rescue => e
-        nil
-      end
-
-      break if data.present?  
-    end
-
-    data
+  def handle_error(error:, ipa_snapshot_job_id:, ios_app_id:)
+    job = IpaSnapshotJob.where(id: ipa_snapshot_job_id).first
+    job.update(live_scan_status: :failed) if !job.nil?
   end
 
 end
