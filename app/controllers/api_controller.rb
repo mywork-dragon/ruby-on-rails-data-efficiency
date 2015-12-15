@@ -825,146 +825,116 @@ class ApiController < ApplicationController
 
 
 
-  # APK stuff start
-
-
   def android_sdks_exist
-    aa = AndroidApp.find(params['appId'])
-    s = aa.newest_android_app_snapshot
-    h = sdk_hash(aa.installed_sdks, aa.uninstalled_sdks, s.updated_at, scannable(s))
-    render json: h
+    id = params['appId']
+    aa = AndroidApp.find(id)
+    data = data_hash(aa, scannable(aa))
+    render json: data
   end
 
-  def scan_android_sdks
-    aa = AndroidApp.find(params['appId'])
-    s = aa.newest_android_app_snapshot
-    e = scannable(s)
-    if !e
-      ai = aa.app_identifier
-      job_id, new_snap = download_apk(aa.id, ai)
-      e = snap_error(new_snap)
-      if !e
-        scan_apk(aa.id, job_id)
+  def android_start_scan
+    id = params['appId']
+    aa = AndroidApp.find(id)
+    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
+    batch = Sidekiq::Batch.new
+    bid = batch.bid
+    batch.jobs do
+      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
+    end
+    job_id
+  end
+
+  def android_scan_status
+    job_id = params['jobId']
+    ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+    status, error, msg = snap_status(ss)
+    e = {:status => status, :error => error, :message => msg}
+    render json: e
+  end
+
+  def snap_status(ss)
+    [0,nil]
+    if ss.present?
+      [1,nil]
+      if ss.status.present?
+        if ss.success? 
+          ss.scan_success? ? [3,nil] : [2,nil]
+        else
+          [4,snap_error(ss)]
+        end
       end
     end
-    h = sdk_hash(aa.installed_sdks, aa.uninstalled_sdks, s.updated_at, e)
-    render json: h
   end
 
-  def scannable(s)
-    s.price.to_i.zero? ? nil : 4
+  def snap_error(ss)
+    e = %w(failure no_response forbidden could_not_connect timeout deadlock not_found)
+    o = %w(taken_down bad_device out_of_country bad_carrier)
+    if e.any?{|x| ss.send(x+'?') }
+      0
+    else
+      a = o.index(o.select{|x| ss.send(x+'?') }.first)
+      a.present? && a + 1
+    end
   end
 
-  def snap_error(s)
-    s = ApkSnapshot.statuses[s.status]
-    s == 1 ? nil : s
+  def scannable(aa)
+    s = aa.newest_android_app_snapshot
+    e = s.price.to_i.zero? ? nil : 5
+    e = aa.normal? ? nil : AndroidApp.display_types[aa.display_type] - 1 if e.nil?
+    e
   end
 
-  def sdk_hash(installed_sdks, uninstalled_sdks, updated_at, error_code)
+  def data_hash(aa, error_code)
     h = Hash.new
-    h[:installed] = features installed_sdks
-    h[:uninstalled] = features uninstalled_sdks
-    h[:updated] = updated_at
-    h[:error_code] = error_code
+    if error_code.nil? || error_code == 6
+      h[:installed] = features aa.installed_sdks
+      h[:uninstalled] = features aa.uninstalled_sdks
+    end
+    h[:updated] = aa.apk_snapshots.where(status:1).last && aa.apk_snapshots.where(status:1).last.last_updated
+    h[:error_code] = error_code || 0
     h.to_json
   end
 
   def features(h)
+    return nil if h.nil?
     f = h.map do |x|
       { :id => x.id,
         :name => x.name,
-        :websites => x.website,
-        :favicon => x.favicon,
-        :app_count => x.android_apps.count }
+        :website => x.website,
+        :favicon => x.get_favicon,
+        :first_seen => x.first_seen,
+        :last_seen => x.last_seen,
+        :app_count => x.get_current_apps.count,
+        :open_source => x.open_source }
     end
-    f.sort_by{|x| -x[:app_count] }.to_h
-  end
-
-  def download_apk(android_app_id, app_identifier)
-
-  end
-
-  def scan_apk(android_app_id, job_id)
-
+    f.sort_by{|x| [x[:open_source] ? 1:0 , -x[:app_count]] }
   end
 
 
-  # def download_apk(android_app_id, app_identifier)
+  # ERROR CODES FOR ANDROID_CHECK_EXIST
+  # errors
+  #   null => no error
+  #   0 => taken down
+  #   1 => country problem
+  #   2 => device problem
+  #   3 => carrier problem
+  #   4 => couldn't find
+  #   5 => paid app
 
-  #   job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
-
-  #   batch = Sidekiq::Batch.new
-  #   bid = batch.bid
-
-  #   batch.jobs do
-  #     ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
-  #   end
-
-  #   new_snap = nil
-
-  #   360.times do
-
-  #     sleep 0.25
-      
-      # ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-  #     if ss.present? && ss.status.present?
-
-  #       if ss.status == "success"
-
-  #         aa = ss.android_app
-
-  #         if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-
-  #           new_snap = ss
-
-  #           break
-
-  #         end
-
-  #       else
-
-  #         if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
-
-  #           new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      
-  #           new_snap.scan_status = :scan_failure
-
-  #           new_snap.save
-
-  #           break
-
-  #         end
-
-  #       end
-
-  #     end
-
-  #   end
-
-  #   return job_id, new_snap
-
-  # end
-
-  # def scan_apk(android_app_id, job_id)
-
-  #   PackageSearchServiceSingleWorker.perform_async(android_app_id)
-
-  #   360.times do
-
-  #     sleep 0.25
-
-  #     ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-  #     break if ss.present? && ss.scan_status.present?
-  #   end
-
-  # end
-
-
-  # APK stuff end
-
-
+  # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
+  # statuses
+  #   0 => queueing
+  #   1 => downloading
+  #   2 => scanning
+  #   3 => successful scan
+  #   4 => failed
+  # errors
+  #   null => no error
+  #   0 => error connecting with google
+  #   1 => taken down
+  #   2 => device problem
+  #   3 => country problem
+  #   4 => carrier problem
 
 
 
