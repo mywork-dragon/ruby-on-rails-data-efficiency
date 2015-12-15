@@ -91,10 +91,6 @@ angular.module("appApp")
             'lastUpdated': sdkData.lastUpdated
           };
 
-
-          console.log('ANDROID LIVE SCAN SUCCESS', slacktivityData);
-
-
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
@@ -148,10 +144,6 @@ angular.module("appApp")
             'statusCode': statusCode
           };
 
-
-          console.log('ANDROID LIVE SCAN FAIL', slacktivityData);
-
-
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
@@ -168,14 +160,6 @@ angular.module("appApp")
         }).success(function(data) {
 
           appData = data;
-
-          console.log("Hidden Android Live Scan Viewed", {
-            'appName': appData.name,
-            'companyName': appData.company.name,
-            'appId': appData.id,
-            'statusCode': statusCode,
-            'displayStatus': statusMessage
-          });
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
