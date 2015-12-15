@@ -106,8 +106,8 @@ angular.module("appApp")
 
         var errorMessage = "";
 
-        if(statusCode == 11) {
-          errorMessage = "Error (status 11)"
+        if(statusCode == 4) {
+          errorMessage = "Error (status 4)"
         } else if(statusCode == -1) {
           errorMessage = "Timeout"
         }
@@ -121,8 +121,6 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-          console.log('ANDROID LIVE SCAN FAIL');
 
           appData = data;
           /* -------- Mixpanel Analytics Start -------- */
@@ -169,6 +167,8 @@ angular.module("appApp")
           params: {id: appId}
         }).success(function(data) {
 
+          appData = data;
+
           console.log("Hidden Android Live Scan Viewed", {
             'appName': appData.name,
             'companyName': appData.company.name,
@@ -176,8 +176,6 @@ angular.module("appApp")
             'statusCode': statusCode,
             'displayStatus': statusMessage
           });
-
-          appData = data;
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(

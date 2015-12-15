@@ -156,7 +156,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 break;
             }
 
-            if(data.error && data.error === 0 || !data.status && data.status !== 0) { // if data.error is present, or both data.error and data.status not present
+            if(data.error || data.error === 0 || !data.status && data.status !== 0) { // if data.error is present, or both data.error and data.status not present
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
               androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
