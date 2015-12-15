@@ -17,42 +17,8 @@ class IosSdk < ActiveRecord::Base
 
   enum source: [:cocoapods, :package_lookup]
 
-
-  def get_current_apps(count_only: false, filtered_count_only: false)
-    # get all the successful snapshots that have the sdk
-    snaps = self.ipa_snapshots
-
-    # get the latest snapshot for each app that found
-    app_to_snap = snaps.reduce({}) do |memo, snapshot|
-      current_value = memo[snapshot.ios_app_id]
-
-      if !snapshot.scanned? # WOAHHH
-        nil # do nothing. we don't count this result
-      elsif current_value.present? # store only the most recent one
-
-        if current_value.good_as_of_date == snapshot.good_as_of_date
-          memo[snapshot.ios_app_id] = snapshot if snapshot.id > current_value.id
-        else
-          memo[snapshot.ios_app_id] = snapshot if snapshot.good_as_of_date > current_value.good_as_of_date
-        end
-      else
-        memo[snapshot.ios_app_id] = snapshot
-      end
-
-      memo
-    end
-
-    # only keep those where the snapshot is the app's last snapshot
-    app_to_snap.select! do |ios_app_id, snapshot|
-      last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
-      last_snap.id == snapshot.id ? true : false
-    end
-
-
-
-    if count_only
-      result = app_to_snap.keys.length
-    elsif filtered_count_only
+=begin
+    if filtered_count_only
       app_ids = []
       IosApp.find(app_to_snap.keys).each do |app|
         app_ids << app.id
@@ -64,9 +30,16 @@ class IosSdk < ActiveRecord::Base
     else
       result = IosApp.find(app_to_snap.keys)
     end
+=end
 
+  def get_current_apps(count_only: false)
 
-    result
+    if count_only
+      self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).length
+    else
+      # TODO: revisit this to make it 1 query
+      IosApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id)
+    end
   end
 
 end

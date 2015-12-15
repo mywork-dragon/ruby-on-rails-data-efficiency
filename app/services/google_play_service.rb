@@ -127,7 +127,11 @@ class GooglePlayService
 
   def released
     date_text =  meta_infos_with_itemprop('datePublished')
-    Date.parse(date_text)
+    date = Date.parse(date_text)
+    
+    raise 'Release date is in the future' if date.future?
+
+    date
   end
 
   # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
@@ -251,9 +255,6 @@ class GooglePlayService
     link = @html.css('a.document-subtitle.primary').first['href']
     
     ret = link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
-
-    # workaround for developer identifier
-    ret.length > 191 ? nil : ret
   end
 
   # gets all meta-info
