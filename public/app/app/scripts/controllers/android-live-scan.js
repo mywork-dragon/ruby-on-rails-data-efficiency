@@ -133,9 +133,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             if(!data.status && data.status !== 0) { data.status = 4 } // If status is null, treat as failed (status 4)
 
             androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
-
-            console.log('Entering Switch', data.status);
-
+            
             switch(data.status) {
               case 0: // prepairing
                 androidLiveScanCtrl.scanStatusPercentage = 5;

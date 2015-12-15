@@ -61,8 +61,8 @@ angular.module("appApp")
 
           var sdkInstalls = sdkData.installed;
           var sdkUninstalls = sdkData.uninstalled;
-          sdkInstalls.map(function(sdk) { return sdk.name; });
-          sdkUninstalls.map(function(sdk) { return sdk.name; });
+          sdkInstalls && sdkInstalls.length > 0 ? sdkInstalls.map(function(sdk) { return sdk.name; }) : sdkInstalls = '';
+          sdkUninstalls && sdkUninstalls.length > 0 ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : sdkUninstalls = '';
 
 
           /* -------- Mixpanel Analytics Start -------- */
