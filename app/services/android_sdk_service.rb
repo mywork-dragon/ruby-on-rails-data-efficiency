@@ -185,8 +185,14 @@ class AndroidSdkService
     end
 
 		def google_search(q:, limit: 10)
-		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
-		  result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+      begin
+		    result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+      rescue => e
+        ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
+        raise
+      else
+		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+      end
 		end
 
 		def valid_domain?(url)
