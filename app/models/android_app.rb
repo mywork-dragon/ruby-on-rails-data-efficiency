@@ -61,7 +61,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def installed_sdks
-    newest_snap = self.apk_snapshots.last
+    newest_snap = self.newest_apk_snapshot
     return nil if newest_snap.blank?
     newest_sdks = newest_snap.android_sdks
     sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
@@ -69,7 +69,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def uninstalled_sdks
-    newest_snap = self.apk_snapshots.last
+    newest_snap = self.newest_apk_snapshot
     return nil if newest_snap.blank?
     newest_sdks = newest_snap.android_sdks
     snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
