@@ -389,7 +389,16 @@ class IosDeviceService
 
     print_display_status(ssh, :start_decrypt)
 
-    run_command(ssh, "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper", "Use dumpdecrypted to decrypt")
+    begin
+      Timeout::timeout(30) {
+        run_command(ssh, "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper", "Use dumpdecrypted to decrypt")        
+      }
+    rescue Timeout::Error
+      pids = run_command(ssh, "ps aux | grep 'decryption dumper' | grep -v grep | awk '{print $2}'", 'Get the hanging dumpdecrypted pids').chomp
+      if pids.present?
+        pids.split.each {|pid| run_command(ssh, "kill -9 #{pid}", 'kill the decrypted pid')}
+      end
+    end
 
     # move it to a non-spaced name for scp'ing later (combo of sh + scp messes up with spaces)
 
@@ -719,7 +728,7 @@ class IosDeviceService
 
     t = Time.now
     while Time.now - t < 300 # 5 minutes to delete...should only take a couple seconds
-      sleep(2)
+      sleep(5)
       puts "check if apps are gone"
       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
       if resp && resp.include?('all gone')
