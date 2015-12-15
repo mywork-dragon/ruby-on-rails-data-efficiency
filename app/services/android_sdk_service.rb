@@ -42,7 +42,7 @@ class AndroidSdkService
 		end
 
 
-    # private
+    private
 
 		def save_sdk(name:, website:, open_source:)
 			begin
@@ -53,8 +53,6 @@ class AndroidSdkService
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
-
-      # return nil if %w(adjust retrofit branch).any?{|x| package.include? x }
 
       # save sdk_packages
     	sdk_package = begin

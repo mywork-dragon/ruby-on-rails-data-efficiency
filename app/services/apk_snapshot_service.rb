@@ -17,14 +17,14 @@ class ApkSnapshotService
       puts Sidekiq::Queue.new('sdk').size
     end
     
-    def daemon(command)
-      ip = Socket.ip_address_list.detect{|intf| intf.ipv4_private?}.ip_address()
-      if ip == '172.31.38.183'
-        `ruby 'app/services/sidekiq_service_controller.rb' #{command}`
-      else
-        puts "You can only run the Sidekiq monitoring daemon on sdk_scraper1."
-      end
-    end
+    # def daemon(command)
+    #   ip = Socket.ip_address_list.detect{|intf| intf.ipv4_private?}.ip_address()
+    #   if ip == '172.31.38.183'
+    #     `ruby 'app/services/sidekiq_service_controller.rb' #{command}`
+    #   else
+    #     puts "You can only run the Sidekiq monitoring daemon on sdk_scraper1."
+    #   end
+    # end
 
   end
 
