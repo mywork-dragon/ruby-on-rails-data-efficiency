@@ -10,6 +10,8 @@ module SavePackageWorker
 
     name = SdkCompanyServiceWorker.new.name_from_package(package_name)
 
+    # needs to remove extra spaces
+
     if name.present?
 
       prefix = AndroidSdkPackagePrefix.find_or_create_by(prefix: name)

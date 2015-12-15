@@ -44,7 +44,7 @@ module ApkWorker
 
       # raise "not in america" unless apk_snap.android_app.in_america?
 
-      best_account = optimal_account(apk_snap.id)
+      best_account = optimal_account(apk_snap_id: apk_snap.id)
 
       raise "no best account" if best_account.blank?
 
@@ -94,7 +94,7 @@ module ApkWorker
         
         apk_snap.status = :could_not_connect
 
-      elsif message.include? "execution expired"
+      elsif message.include?("execution expired") || message.include?("Timeout was reached")
         
         apk_snap.status = :timeout
 
@@ -148,6 +148,8 @@ module ApkWorker
       # debugging
       apk_snap.auth_token = ''
 
+      apk_snap.last_updated = DateTime.now
+
       apk_snap.save
 
       # save snapshot to app
@@ -157,68 +159,33 @@ module ApkWorker
 
       File.delete(file_name)
 
-
-      # PackageSearchServiceWorker.perform_async(android_app_id) unless single_queue?
+      PackageSearchServiceWorker.perform_async(android_app_id) if single_queue?
       
     end
 
   end
 
-  def optimal_account(apk_snap_id)
 
-    gac = GoogleAccount.where(scrape_type: single_queue? ? 1:0).count
-
-    gac.times do |c|
-
-      account = fresh_account(apk_snap_id)
-
-      if account.present?
-        next if ApkSnapshot.where(google_account_id: account.id, :updated_at => (DateTime.now - 1)..DateTime.now).count > 1400
-        account.in_use = true
-        account.save
-        return account
-      elsif c < gac
-        next
-      else
-        return false
+  def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 10)
+      (wait/interval).to_i.times do
+        ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags), blocked: false).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
+        if ga.present?
+          ga.last_used = DateTime.now
+          ga.save
+          return ga
+        end
+        sleep interval
       end
-
-    end
-
-    false
-
   end
 
-  # Finds account used longest ago
-  def fresh_account(apk_snap_id)
-    device = ApkSnapshot.find(apk_snap_id).last_device.to_s
-
-    # Choose good phone, unless it already failed
-
-    d = device.blank? ? "= 2" : "!= #{device}"
-
-    # iu = single_queue? ? "" : " AND in_use IS FALSE"
-
-    # g = GoogleAccount.transaction do
-    #   ga = GoogleAccount.lock.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}#{iu}").order(:last_used).first
-    #   ga.last_used = DateTime.now
-    #   ga.save
-    #   ga
-    # end
-
-    g = GoogleAccount.where(scrape_type: single_queue? ? 1:0).where("blocked = 0 AND device #{d}").sample
-
-    if g.blank?
-
-      d_name = GoogleAccount.devices.find{|k,v| v == d}.first.gsub('_',' ')
-
-      err_msg = "All the accounts on your #{d_name} are down."
-      raise err_msg
-
-    else
-      return g
-    end
-
+  def new_device(apk_snap_id, max_flags)
+    ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
+    last_device = ga.nil? ? -1 : GoogleAccount.devices[ga.device]
+    d = GoogleAccount.where('flags <= ? AND device != ?', max_flags, last_device).where(blocked: false).sample.device
+    d_name = d.blank? ? GoogleAccount.where('flags <= ?', max_flags).where(blocked: false).sample.device : d
+    GoogleAccount.devices[d_name]
   end
+
+
 
 end
