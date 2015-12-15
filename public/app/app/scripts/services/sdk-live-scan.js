@@ -59,11 +59,10 @@ angular.module("appApp")
 
           appData = data;
 
-          var sdkInstalls = sdkData.installed;
-          var sdkUninstalls = sdkData.uninstalled;
-          sdkInstalls && sdkInstalls.length > 0 ? sdkInstalls.map(function(sdk) { return sdk.name; }) : sdkInstalls = '';
-          sdkUninstalls && sdkUninstalls.length > 0 ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : sdkUninstalls = '';
-
+          var sdkInstalls = sdkData.sdkCompanies;
+          var sdkUninstalls = sdkData.sdkOpenSource;
+          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }) : '';
+          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : '';
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
@@ -91,6 +90,11 @@ angular.module("appApp")
             'sdkUninstalls': sdkUninstalls,
             'lastUpdated': sdkData.lastUpdated
           };
+
+
+          console.log('ANDROID LIVE SCAN SUCCESS', slacktivityData);
+
+
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
@@ -117,6 +121,9 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log('ANDROID LIVE SCAN FAIL');
+
           appData = data;
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
@@ -142,6 +149,11 @@ angular.module("appApp")
             'error': errorMessage,
             'statusCode': statusCode
           };
+
+
+          console.log('ANDROID LIVE SCAN FAIL', slacktivityData);
+
+
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
@@ -156,6 +168,14 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
+
+          console.log("Hidden Android Live Scan Viewed", {
+            'appName': appData.name,
+            'companyName': appData.company.name,
+            'appId': appData.id,
+            'statusCode': statusCode,
+            'displayStatus': statusMessage
+          });
 
           appData = data;
 
