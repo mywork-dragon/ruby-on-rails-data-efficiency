@@ -18,7 +18,7 @@ angular.module('appApp')
         });
 
       /* For query load when /search/:query path hit */
-      searchCtrl.loadTableData = function() {
+      searchCtrl.loadTableData = function(isTablePageChange) {
 
         var urlParams = $location.url().split('/search')[1]; // If url params not provided
         var routeParams = $location.search();
@@ -65,8 +65,8 @@ angular.module('appApp')
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = data.pageNum;
             searchCtrl.currentPage = data.pageNum;
-            searchCtrl.resultsSortCategory = 'appName';
-            searchCtrl.resultsOrderBy = 'ASC';
+            if(!isTablePageChange) {searchCtrl.resultsSortCategory = 'appName'}; // if table page change, set default sort
+            if(!isTablePageChange) {searchCtrl.resultsOrderBy = 'ASC'}; // if table page change, set default order
 
             var submitSearchEndTime = new Date().getTime();
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
@@ -143,9 +143,12 @@ angular.module('appApp')
           }
         );
         /* -------- Mixpanel Analytics End -------- */
+
+        console.log('PAGE CHANGE', currentPage, 'CATEGORY', searchCtrl.resultsSortCategory, 'ORDER', searchCtrl.resultsOrderBy);
+
         var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
         $location.url('/search?' + urlParams);
-        searchCtrl.loadTableData();
+        searchCtrl.loadTableData(true);
         $rootScope.currentPage = currentPage;
         var end, start;
         return start = (currentPage - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
