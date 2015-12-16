@@ -19,7 +19,26 @@ class ApkSnapshot < ActiveRecord::Base
 
   belongs_to :apk_file
 
-	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country]
+	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found]
   enum scan_status: [:scan_failure, :scan_success]
+
+  def first_seen
+    app_released :first
+  end
+
+  def last_seen
+    app_released :last
+  end
+
+  private
+
+  def app_released(first_last)
+    a = {version: self.version}
+    b = ['created_at < ?',self.created_at]
+    [a,b].each do |x|
+      s = self.android_app.android_app_snapshots.where(x).send(first_last)
+      return s.released if s
+    end
+  end
 
 end
