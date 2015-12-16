@@ -50,7 +50,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           var errorCodeMessages = [
             "Sorry, SDKs Not Available for Paid Apps",
             "Sorry, SDKs Not Available - App is Not in U.S. App Store",
-            "Sorry, SDKs Temporarily Not Available for This App"
+            "Sorry, SDKs Temporarily Not Available for This App",
+            "Sorry, Live Scans Not Available for Non-Mobile Apps"
           ];
 
           if (data.error_code != null) {
