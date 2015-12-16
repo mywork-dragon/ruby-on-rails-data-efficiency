@@ -19,7 +19,8 @@ class IosSdkService
         paid: 0,
         taken_down: 1,
         foreign: 2,
-        device_incompatible: 3
+        device_incompatible: 3,
+        not_ios: 4
       }
 
       def format_sdk(sdk)

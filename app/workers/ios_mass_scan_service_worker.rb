@@ -12,6 +12,11 @@ class IosMassScanServiceWorker
     "Not available"
   end
 
+  def not_ios(ipa_snapshot_job_id, ios_app_id)
+    IosApp.find(ios_app_id).update(display_type: :not_ios)
+    "Not iOS"
+  end
+
   def paid_app(ipa_snapshot_job_id, ios_app_id)
     IosApp.find(ios_app_id).update(display_type: :paid)
     "Cannot scan paid app"

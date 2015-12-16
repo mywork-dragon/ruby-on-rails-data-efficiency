@@ -26,7 +26,7 @@ class IosApp < ActiveRecord::Base
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
-  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid]
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
   
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|

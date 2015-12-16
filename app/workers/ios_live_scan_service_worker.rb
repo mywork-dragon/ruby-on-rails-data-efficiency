@@ -13,6 +13,12 @@ class IosLiveScanServiceWorker
     "Not available"
   end
 
+  def not_ios(ipa_snapshot_job_id, ios_app_id)
+    IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :not_available)
+    IosApp.find(ios_app_id).update(display_type: :not_ios)
+    "Not iOS"
+  end
+
   def paid_app(ipa_snapshot_job_id, ios_app_id)
     IpaSnapshotJob.find(ipa_snapshot_job_id).update(live_scan_status: :paid)
     IosApp.find(ios_app_id).update(display_type: :paid)
