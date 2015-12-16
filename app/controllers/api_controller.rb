@@ -819,31 +819,6 @@ class ApiController < ApplicationController
     render json: {scan_id: job_id}
   end
 
-
-  def android_sdks_exist
-
-    android_app_id = params['appId']
-
-    aa = AndroidApp.find(android_app_id)
-
-    updated, companies, error_code = nil
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-    end
-
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
-
-  end
-
   def scan_android_sdks
 
     android_app_id = params['appId']
@@ -907,10 +882,6 @@ class ApiController < ApplicationController
 
     render json: {job_id: job_id}
   end
-
-
-
-  
 
   def android_sdks_exist
     id = params['appId']
@@ -978,7 +949,7 @@ class ApiController < ApplicationController
       h[:uninstalled] = features aa.uninstalled_sdks
     end
     h[:updated] = aa.apk_snapshots.where(status:1).last && aa.apk_snapshots.where(status:1).last.last_updated
-    h[:error_code] = error_code || 0
+    h[:error_code] = error_code || nil
     h.to_json
   end
 
