@@ -1044,8 +1044,8 @@ ActiveRecord::Schema.define(version: 20151214204514) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "ios_sdk_source_group_id"
     t.integer  "sdk_company_id"
+    t.integer  "ios_sdk_source_group_id"
     t.integer  "source"
   end
 

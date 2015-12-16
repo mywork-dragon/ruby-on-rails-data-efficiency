@@ -301,6 +301,14 @@ class FilterService
         return "order(\'ios_app_snapshots.released #{order_by}\')"
       when 'companyName'
         return "order(\'companies.name #{order_by}\')"
+      when 'mobilePriority'
+        return "order(\'ios_apps.mobile_priority #{order_by}\')"
+      when 'adSpend'
+        return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+      when 'userBases'
+        return "order(\'ios_apps.user_base #{order_by}\')"
+      when 'categories'
+        return "order(\'ios_app_categories.name #{order_by}\')"
       end
     end
     
@@ -314,6 +322,16 @@ class FilterService
         return "order(\'android_app_snapshots.released #{order_by}\')"
       when 'companyName'
         return "order(\'companies.name #{order_by}\')"
+      when 'mobilePriority'
+        return "order(\'android_apps.mobile_priority #{order_by}\')"
+      when 'adSpend'
+        return "order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
+      when 'userBases'
+        return "order(\'android_apps.user_base #{order_by}\')"
+      when 'downloads'
+        return "order(\'android_app_snapshots.downloads_min #{order_by}\')"
+      when 'categories'
+        return "order(\'android_app_categories.name #{order_by}\')"
       end
     end
     

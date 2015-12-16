@@ -179,18 +179,48 @@
             </div></th>
             <th><div class="th normal-right-padding">
               Mobile Priority
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('mobilePriority', 'ASC') "
+                                    data-ng-class="{active: row == 'mobilePriority'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('mobilePriority', 'DESC') "
+                                    data-ng-class="{active: row == '-mobilePriority'}"></span>
             </div></th>
             <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
               Ad Spend
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('adSpend', 'DESC') "
+                                    data-ng-class="{active: row == 'adSpend'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('adSpend', 'ASC') "
+                                    data-ng-class="{active: row == '-adSpend'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               User Base Size
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('userBases', 'ASC') "
+                                    data-ng-class="{active: row == 'userBases'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('userBases', 'DESC') "
+                                    data-ng-class="{active: row == '-userBases'}"></span>
             </div></th>
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('downloads', 'DESC') "
+                                    data-ng-class="{active: row == 'downloads'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('downloads', 'ASC') "
+                                    data-ng-class="{active: row == '-downloads'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Categories
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('categories', 'ASC') "
+                                    data-ng-class="{active: row == 'categories'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('categories', 'DESC') "
+                                    data-ng-class="{active: row == '-categories'}"></span>
             </div></th>
             <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
               Support Desk
