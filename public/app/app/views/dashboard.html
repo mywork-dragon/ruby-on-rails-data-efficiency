@@ -189,10 +189,10 @@
             <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
               Ad Spend
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('adSpend', 'ASC') "
+                                    data-ng-click="searchCtrl.sortApps('adSpend', 'DESC') "
                                     data-ng-class="{active: row == 'adSpend'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('adSpend', 'DESC') "
+                                    data-ng-click=" searchCtrl.sortApps('adSpend', 'ASC') "
                                     data-ng-class="{active: row == '-adSpend'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
@@ -224,12 +224,6 @@
             </div></th>
             <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
               Support Desk
-                              <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('supportDesk', 'ASC') "
-                                    data-ng-class="{active: row == 'supportDesk'}"></span>
-                              <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('supportDesk', 'DESC') "
-                                    data-ng-class="{active: row == '-supportDesk'}"></span>
             </div></th>
             <th><div class="th">
               Last Updated
