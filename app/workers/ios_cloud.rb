@@ -13,16 +13,32 @@ module IosCloud
 
       data = data['results'].first
 
-      return no_data(ipa_snapshot_job_id, ios_app_id) if data.nil?
+      if data.nil?
+        log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :no_data, data: data)
+        return no_data(ipa_snapshot_job_id, ios_app_id)
+      end
 
-      return not_ios(ipa_snapshot_job_id, ios_app_id) if !is_ios?(data)
+      if !is_ios?(data)
+        log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :not_ios, data: data)
+        return not_ios(ipa_snapshot_job_id, ios_app_id)
+      end
 
-      return paid_app(ipa_snapshot_job_id, ios_app_id) if data['price'].to_f > 0
+      if data['price'].to_f > 0
+        log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :paid, data: data)
+        return paid_app(ipa_snapshot_job_id, ios_app_id)
+      end
 
       version = data['version']
-      return no_update_required(ipa_snapshot_job_id, ios_app_id) if allow_update_check?(ipa_snapshot_job_id, ios_app_id) && !should_update(ios_app_id: ios_app_id, version: version)
 
-      return not_device_compatible(ipa_snapshot_job_id, ios_app_id) if !device_compatible?(devices: data['supportedDevices'])
+      if allow_update_check?(ipa_snapshot_job_id, ios_app_id) && !should_update(ios_app_id: ios_app_id, version: version)
+        log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :unchanged, data: data)
+        return no_update_required(ipa_snapshot_job_id, ios_app_id)
+      end
+
+      if !device_compatible?(devices: data['supportedDevices'])
+        log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :device_incompatible, data: data)
+        return not_device_compatible(ipa_snapshot_job_id, ios_app_id)
+      end
 
       puts "#{ipa_snapshot_job_id}: Finished validation #{Time.now}"
 
@@ -66,6 +82,15 @@ module IosCloud
     return false if data['wrapperType'] != 'software'
     return false if data['kind'] != 'software'
     true
+  end
+
+  def log_result(ipa_snapshot_job_id:, ios_app_id:, reason:, data: nil)
+    IpaSnapshotLookupFailure.create!({
+      ipa_snapshot_job_id: ipa_snapshot_job_id,
+      ios_app_id: ios_app_id,
+      reason: reason,
+      lookup_content: data.to_json
+    })
   end
 
   def get_json(ios_app_id)
