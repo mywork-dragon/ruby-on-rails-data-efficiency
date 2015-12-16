@@ -2,7 +2,7 @@ class PackageSearchServiceSingleWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => 2, queue: :sdk_live_scan
+  sidekiq_options backtrace: true, :retry => 2, queue: :sdk
 
   def single_queue?
     true
