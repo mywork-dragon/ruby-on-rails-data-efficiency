@@ -37,7 +37,7 @@ class AuthController < ApplicationController
                can_view_sdks: account.can_view_sdks,
                can_view_storewide_sdks: account.can_view_storewide_sdks,
                can_view_exports: account.can_view_exports,
-               god_mode: account.god_mode
+               god_mode: true #account.god_mode
            }
   end
 
