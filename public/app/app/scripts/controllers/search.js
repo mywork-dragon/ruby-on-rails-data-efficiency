@@ -15,6 +15,7 @@ angular.module('appApp')
       authService.permissions()
         .success(function(data) {
           searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
+          searchCtrl.godMode = data.god_mode;
         });
 
       /* For query load when /search/:query path hit */

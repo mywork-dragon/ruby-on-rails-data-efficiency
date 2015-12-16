@@ -12,6 +12,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       .success(function(data) {
         $scope.canViewSupportDesk = data.can_view_support_desk;
         $scope.canViewExports = data.can_view_exports;
+        $scope.godMode = data.god_mode;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;

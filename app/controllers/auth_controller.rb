@@ -31,11 +31,18 @@ class AuthController < ApplicationController
 
     account = Account.find(user.account_id)
 
-    render json: { :can_view_support_desk => account.can_view_support_desk, :can_view_ad_spend => account.can_view_ad_spend, :can_view_sdks => account.can_view_sdks, :can_view_storewide_sdks => account.can_view_storewide_sdks, :can_view_exports => account.can_view_exports }
+    render json: {
+               can_view_support_desk: account.can_view_support_desk,
+               can_view_ad_spend: account.can_view_ad_spend,
+               can_view_sdks: account.can_view_sdks,
+               can_view_storewide_sdks: account.can_view_storewide_sdks,
+               can_view_exports: account.can_view_exports,
+               god_mode: account.god_mode
+           }
   end
 
   def user_info
-    render json: { :email => User.find(decoded_auth_token[:user_id]).email }
+    render json: { email: User.find(decoded_auth_token[:user_id]).email }
   end
   
 end

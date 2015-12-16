@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151214204514) do
+ActiveRecord::Schema.define(version: 20151216210320) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20151214204514) do
     t.boolean  "can_view_sdks",           default: false, null: false
     t.boolean  "can_view_storewide_sdks", default: false
     t.boolean  "can_view_exports",        default: true
+    t.boolean  "god_mode",                default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree

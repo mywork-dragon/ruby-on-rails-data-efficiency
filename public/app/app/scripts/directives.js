@@ -506,7 +506,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         scope: {
           customSearchPlatform: '=customSearchPlatform'
         },
-        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option> <option ng-if="canViewStorewideSdks" value="iosSdks">iOS SDKs</option> </select></span>',
+        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option> <option ng-if="canViewStorewideSdks && godMode" value="iosSdks">iOS SDKs</option> </select></span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
@@ -514,6 +514,8 @@ angular.module("app.directives", []).directive("imgHolder", [
           authService.permissions()
             .success(function(data) {
               $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+              $scope.godMode = data.god_mode;
+
             });
 
           $scope.changeAppPlatform = function (platform) {
