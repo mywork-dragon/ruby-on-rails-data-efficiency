@@ -15,6 +15,8 @@ module IosCloud
 
       return no_data(ipa_snapshot_job_id, ios_app_id) if data.nil?
 
+      return not_ios(ipa_snapshot_job_id, ios_app_id) if !is_ios?(data)
+
       return paid_app(ipa_snapshot_job_id, ios_app_id) if data['price'].to_f > 0
 
       version = data['version']
@@ -56,6 +58,14 @@ module IosCloud
     else
       true 
     end
+  end
+
+  def is_ios?(data)
+    # wrapper type software
+    # kind == 'software' (as opposed to mac-software)
+    return false if data['wrapperType'] != 'software'
+    return false if data['kind'] != 'software'
+    true
   end
 
   def get_json(ios_app_id)

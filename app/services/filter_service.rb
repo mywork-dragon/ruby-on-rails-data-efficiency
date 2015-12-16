@@ -341,26 +341,44 @@ class FilterService
     def ios_sort_order_query(sort_by, order_by)
       case sort_by
       when 'appName'
-        return "order(\'ios_app_snapshots.name #{order_by}\')"
+        return "where(\'ios_app_snapshots.name is not null\').order(\'ios_app_snapshots.name #{order_by}\')"
       when 'fortuneRank'
-        return "order(\'companies.fortune_1000_rank #{order_by}\')"
+        return "where(\'companies.fortune_1000_rank is not null\').order(\'companies.fortune_1000_rank #{order_by}\')"
       when 'lastUpdated'
-        return "order(\'ios_app_snapshots.released #{order_by}\')"
+        return "where(\'ios_app_snapshots.released is not null\').order(\'ios_app_snapshots.released #{order_by}\')"
       when 'companyName'
-        return "order(\'companies.name #{order_by}\')"
+        return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
+      when 'mobilePriority'
+        return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
+      when 'adSpend'
+        return "where(\'ios_fb_ad_appearances.ios_app_id is not null\').order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+      when 'userBases'
+        return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
+      when 'categories'
+        return "where(\'ios_app_categories.name is not null\').order(\'ios_app_categories.name #{order_by}\')"
       end
     end
     
     def android_sort_order_query(sort_by, order_by)
       case sort_by
       when 'appName'
-        return "order(\'android_app_snapshots.name #{order_by}\')"
+        return "where(\'android_app_snapshots.name is not null\').order(\'android_app_snapshots.name #{order_by}\')"
       when 'fortuneRank'
-        return "order(\'companies.fortune_1000_rank #{order_by}\')"
+        return "where(\'companies.fortune_1000_rank is not null\').order(\'companies.fortune_1000_rank #{order_by}\')"
       when 'lastUpdated'
-        return "order(\'android_app_snapshots.released #{order_by}\')"
+        return "where(\'android_app_snapshots.released is not null\').order(\'android_app_snapshots.released #{order_by}\')"
       when 'companyName'
-        return "order(\'companies.name #{order_by}\')"
+        return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
+      when 'mobilePriority'
+        return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
+      when 'adSpend'
+        return "where(\'android_fb_ad_appearances.android_app_id is not null\').order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
+      when 'userBases'
+        return "where(\'android_apps.user_base is not null\').order(\'android_apps.user_base #{order_by}\')"
+      when 'downloads'
+        return "where(\'android_app_snapshots.downloads_min is not null\').order(\'android_app_snapshots.downloads_min #{order_by}\')"
+      when 'categories'
+        return "where(\'android_app_categories.name is not null\').order(\'android_app_categories.name #{order_by}\')"
       end
     end
     
