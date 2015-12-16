@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151214204514) do
+ActiveRecord::Schema.define(version: 20151216224137) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1108,6 +1108,18 @@ ActiveRecord::Schema.define(version: 20151214204514) do
     t.datetime "updated_at"
     t.integer  "live_scan_status"
   end
+
+  create_table "ipa_snapshot_lookup_failures", force: true do |t|
+    t.integer  "ipa_snapshot_job_id"
+    t.integer  "ios_app_id"
+    t.integer  "reason"
+    t.text     "lookup_content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ipa_snapshot_lookup_failures", ["ios_app_id"], name: "index_ipa_snapshot_lookup_failures_on_ios_app_id", using: :btree
+  add_index "ipa_snapshot_lookup_failures", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_lookup_failures_on_ipa_snapshot_job_id", using: :btree
 
   create_table "ipa_snapshots", force: true do |t|
     t.integer  "ios_app_id"
