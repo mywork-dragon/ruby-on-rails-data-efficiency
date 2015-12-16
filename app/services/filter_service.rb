@@ -186,12 +186,11 @@ class FilterService
 
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_ios_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
       
       # add app filters
@@ -238,12 +237,11 @@ class FilterService
       
       parts << android_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_android_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
 
       # add app filters
