@@ -26,11 +26,11 @@ class ApiController < ApplicationController
       format.csv { send_data f1000_csv }
     end
   end
-  
+
   def filter_ios_apps
-    
+
     li 'filter_ios_apps'
-    
+
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
     # app_filters = params[:app]
@@ -46,52 +46,52 @@ class ApiController < ApplicationController
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
 
     filter_args = {
-      app_filters: app_filters, 
-      company_filters: company_filters, 
-      custom_keywords: custom_keywords, 
-      page_size: (page_size.blank? ? nil : page_size.to_i), 
-      page_num: (page_num.blank? ? nil : page_num.to_i), 
-      sort_by: sort_by,
-      order_by: order_by
+        app_filters: app_filters,
+        company_filters: company_filters,
+        custom_keywords: custom_keywords,
+        page_size: (page_size.blank? ? nil : page_size.to_i),
+        page_num: (page_num.blank? ? nil : page_num.to_i),
+        sort_by: sort_by,
+        order_by: order_by
     }
-    
+
     filter_args.delete_if{ |k, v| v.nil? }
 
     filter_results = FilterService.filter_ios_apps(filter_args)
-    
+
     results = filter_results[:results]
     results_count = filter_results[:results_count]
-    
+
     results_json = []
     results.each do |app|
       # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
       newest_snapshot = app.newest_ios_app_snapshot
-      
+
       app_hash = {
-        app: {
-          id: app.id,
-          name: newest_snapshot.present? ? newest_snapshot.name : nil,
-          mobilePriority: app.mobile_priority,
-          userBase: app.user_base,
-          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
-          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
-          adSpend: app.ios_fb_ad_appearances.present?,
-          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
-          type: 'IosApp',
-          supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
-          categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-          appIcon: {
-              large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
-              small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+              releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
+              type: 'IosApp',
+              supportDesk: newest_snapshot.present? ? newest_snapshot.support_url : nil,
+              categories: newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_350x350 : nil,
+                  small: newest_snapshot.present? ? newest_snapshot.icon_url_175x175 : nil
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
           }
-        },
-        company: {
-          id: company.present? ? company.id : nil,
-          name: company.present? ? company.name : nil,
-          fortuneRank: company.present? ? company.fortune_1000_rank : nil
-        }
       }
 
       # li "app_hash: #{app_hash}"
@@ -99,10 +99,10 @@ class ApiController < ApplicationController
       results_json << app_hash
       # li "results_json: #{results_json}"
     end
-    
+
     render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
-  
+
   def filter_android_apps
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
@@ -114,60 +114,60 @@ class ApiController < ApplicationController
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
-    
+
     filter_args = {
-      app_filters: app_filters, 
-      company_filters: company_filters, 
-      custom_keywords: custom_keywords, 
-      page_size: (page_size.blank? ? nil : page_size.to_i), 
-      page_num: (page_num.blank? ? nil : page_num.to_i), 
-      sort_by: sort_by,
-      order_by: order_by
+        app_filters: app_filters,
+        company_filters: company_filters,
+        custom_keywords: custom_keywords,
+        page_size: (page_size.blank? ? nil : page_size.to_i),
+        page_num: (page_num.blank? ? nil : page_num.to_i),
+        sort_by: sort_by,
+        order_by: order_by
     }
-    
+
     filter_args.delete_if{ |k, v| v.nil? }
 
     filter_results = FilterService.filter_android_apps(filter_args)
-    
+
     results = filter_results[:results]
     results_count = filter_results[:results_count]
-    
+
     results_json = []
     results.each do |app|
       company = app.get_company
       newest_snapshot = app.newest_android_app_snapshot
       app_hash = {
-        app: {
-          id: app.id,
-          name: newest_snapshot.present? ? newest_snapshot.name : nil,
-          mobilePriority: app.mobile_priority,
-          userBase: app.user_base,
-          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
-          adSpend: app.android_fb_ad_appearances.present?,
-          seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
-          type: 'AndroidApp',
-          downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
-          downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
-          supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
-          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
-          appIcon: {
-              large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+          app: {
+              id: app.id,
+              name: newest_snapshot.present? ? newest_snapshot.name : nil,
+              mobilePriority: app.mobile_priority,
+              userBase: app.user_base,
+              lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+              lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+              adSpend: app.android_fb_ad_appearances.present?,
+              seller: newest_snapshot.present? ? newest_snapshot.seller : nil,
+              type: 'AndroidApp',
+              downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+              downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
+              supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
+              categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+              appIcon: {
+                  large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+              }
+          },
+          company: {
+              id: company.present? ? company.id : nil,
+              name: company.present? ? company.name : nil,
+              fortuneRank: company.present? ? company.fortune_1000_rank : nil
           }
-        },
-        company: {
-          id: company.present? ? company.id : nil,
-          name: company.present? ? company.name : nil,
-          fortuneRank: company.present? ? company.fortune_1000_rank : nil
-        }
       }
 
       results_json << app_hash
     end
-    
+
     render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
-  
+
   # Get details of iOS app.
   # Input: appId (the key for the app in our database; not the appIdentifier)
   def get_ios_app
@@ -177,156 +177,156 @@ class ApiController < ApplicationController
     newest_app_snapshot = ios_app.newest_ios_app_snapshot
     newest_download_snapshot = ios_app.get_newest_download_snapshot
     app_json = {
-      id: appId,
-      name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      appStoreId: newest_app_snapshot.present? ? newest_app_snapshot.developer_app_store_identifier : nil,
-      price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
-      releaseDate: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
-      size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
-      requiredIosVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_ios_version : nil,
-      recommendedAge: newest_app_snapshot.present? ? newest_app_snapshot.recommended_age : nil,
-      description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
-      categories: newest_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-      currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
-      currentVersionDescription: newest_app_snapshot.present? ? newest_app_snapshot.release_notes : nil,
-      rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
-      ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
-      mobilePriority: ios_app.mobile_priority, 
-      adSpend: ios_app.ios_fb_ad_appearances.present?, 
-      countriesDeployed: nil, #not part of initial launch
-      # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
-      userBase: ios_app.user_base,
-      lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
-      appIdentifier: ios_app.app_identifier,
-      supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.support_url : nil,
-      appIcon: {
-        large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
-        small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
-      },
-      company: {
-        name: company.present? ? company.name : nil,
-        id: company.present? ? company.id : nil,
-        fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
-        funding: company.present? ? company.funding : nil,
-        websites: ios_app.get_website_urls,
-        location: {
-          streetAddress: company.present? ? company.street_address : nil,
-          city: company.present? ? company.city : nil,
-          zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil,
-          country: company.present? ? company.country : nil
+        id: appId,
+        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+        appStoreId: newest_app_snapshot.present? ? newest_app_snapshot.developer_app_store_identifier : nil,
+        price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
+        releaseDate: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+        size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
+        requiredIosVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_ios_version : nil,
+        recommendedAge: newest_app_snapshot.present? ? newest_app_snapshot.recommended_age : nil,
+        description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
+        categories: newest_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+        currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
+        currentVersionDescription: newest_app_snapshot.present? ? newest_app_snapshot.release_notes : nil,
+        rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
+        ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
+        mobilePriority: ios_app.mobile_priority,
+        adSpend: ios_app.ios_fb_ad_appearances.present?,
+        countriesDeployed: nil, #not part of initial launch
+        # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
+        userBase: ios_app.user_base,
+        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released.to_s : nil,
+        appIdentifier: ios_app.app_identifier,
+        supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.support_url : nil,
+        appIcon: {
+            large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_350x350 : nil,
+            small: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+        },
+        company: {
+            name: company.present? ? company.name : nil,
+            id: company.present? ? company.id : nil,
+            fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+            funding: company.present? ? company.funding : nil,
+            websites: ios_app.get_website_urls,
+            location: {
+                streetAddress: company.present? ? company.street_address : nil,
+                city: company.present? ? company.city : nil,
+                zipCode: company.present? ? company.zip_code : nil,
+                state: company.present? ? company.state : nil,
+                country: company.present? ? company.country : nil
+            }
         }
-      }
     }
     render json: app_json
   end
-  
+
   def get_android_app
     appId = params['id']
     android_app = AndroidApp.find(appId)
     company = android_app.get_company
     newest_app_snapshot = android_app.newest_android_app_snapshot
-    
+
     app_json = {
-      id: appId,
-      name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
-      mobilePriority: android_app.mobile_priority, 
-      adSpend: android_app.android_fb_ad_appearances.present?, 
-      countriesDeployed: nil, #not part of initial launch
-      downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
-      lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
-      playStoreId: newest_app_snapshot.present? ? newest_app_snapshot.android_app_id : nil,
-      price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
-      size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
-      requiredAndroidVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_android_version : nil,
-      contentRating: newest_app_snapshot.present? ? newest_app_snapshot.content_rating : nil,
-      categories: newest_app_snapshot.present? ? newest_app_snapshot.android_app_categories.map{|c| c.name} : nil,
-      description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
-      currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
-      downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
-      downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
-      inAppPurchaseMin: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_min : nil,
-      inAppPurchaseMax: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_max : nil,
-      rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
-      ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
-      appIdentifier: android_app.app_identifier,
-      supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
-      userBase: android_app.user_base,
-      displayStatus: android_app.display_type,
-      appIcon: {
-        large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
-        # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
-      },
-      company: {
-        name: company.present? ? company.name : nil,
-        id: company.present? ? company.id : nil,
-        fortuneRank: company.present? ? company.fortune_1000_rank : nil, 
-        funding: company.present? ? company.funding : nil,
-        websites: android_app.get_website_urls, #this is an array
-        location: {
-          streetAddress: company.present? ? company.street_address : nil,
-          city: company.present? ? company.city : nil,
-          zipCode: company.present? ? company.zip_code : nil,
-          state: company.present? ? company.state : nil,
-          country: company.present? ? company.country : nil
+        id: appId,
+        name: newest_app_snapshot.present? ? newest_app_snapshot.name : nil,
+        mobilePriority: android_app.mobile_priority,
+        adSpend: android_app.android_fb_ad_appearances.present?,
+        countriesDeployed: nil, #not part of initial launch
+        downloads: newest_app_snapshot.present? ? "#{newest_app_snapshot.downloads_min}-#{newest_app_snapshot.downloads_max}" : nil,
+        lastUpdated: newest_app_snapshot.present? ? newest_app_snapshot.released : nil,
+        playStoreId: newest_app_snapshot.present? ? newest_app_snapshot.android_app_id : nil,
+        price: newest_app_snapshot.present? ? newest_app_snapshot.price : nil,
+        size: newest_app_snapshot.present? ? newest_app_snapshot.size : nil,
+        requiredAndroidVersion: newest_app_snapshot.present? ? newest_app_snapshot.required_android_version : nil,
+        contentRating: newest_app_snapshot.present? ? newest_app_snapshot.content_rating : nil,
+        categories: newest_app_snapshot.present? ? newest_app_snapshot.android_app_categories.map{|c| c.name} : nil,
+        description: newest_app_snapshot.present? ? newest_app_snapshot.description : nil,
+        currentVersion: newest_app_snapshot.present? ? newest_app_snapshot.version : nil,
+        downloadsMin: newest_app_snapshot.present? ? newest_app_snapshot.downloads_min : nil,
+        downloadsMax: newest_app_snapshot.present? ? newest_app_snapshot.downloads_max : nil,
+        inAppPurchaseMin: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_min : nil,
+        inAppPurchaseMax: newest_app_snapshot.present? ? newest_app_snapshot.in_app_purchase_max : nil,
+        rating: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_stars : nil,
+        ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
+        appIdentifier: android_app.app_identifier,
+        supportDesk: newest_app_snapshot.present? ? newest_app_snapshot.seller_url : nil,
+        userBase: android_app.user_base,
+        displayStatus: android_app.display_type,
+        appIcon: {
+            large: newest_app_snapshot.present? ? newest_app_snapshot.icon_url_300x300 : nil
+            # 'small' => newest_app_snapshot.present? ? newest_app_snapshot.icon_url_175x175 : nil
+        },
+        company: {
+            name: company.present? ? company.name : nil,
+            id: company.present? ? company.id : nil,
+            fortuneRank: company.present? ? company.fortune_1000_rank : nil,
+            funding: company.present? ? company.funding : nil,
+            websites: android_app.get_website_urls, #this is an array
+            location: {
+                streetAddress: company.present? ? company.street_address : nil,
+                city: company.present? ? company.city : nil,
+                zipCode: company.present? ? company.zip_code : nil,
+                state: company.present? ? company.state : nil,
+                country: company.present? ? company.country : nil
+            }
         }
-      }
     }
     render json: app_json
   end
-  
+
   def get_company
     companyId = params['id']
     company = Company.includes(websites: {ios_apps: :newest_ios_app_snapshot}).find(companyId)
     @company_json = {}
     if company.present?
       @company_json = {
-        id: companyId,
-        name: company.name,
-        websites: company.websites.to_a.map{|w| w.url},
-        funding: company.funding,
-        location: {
-          streetAddress: company.street_address,
-          city: company.city,
-          zipCode: company.zip_code,
-          state: company.state,
-          country: company.country
-        },
-        fortuneRank: company.fortune_1000_rank,
-        iosApps: company.get_ios_apps.map{|app| {
-          id: app.id,
-          name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
-          type: 'IosApp',
-          mobilePriority: app.mobile_priority,
-          adSpend: app.ios_fb_ad_appearances.present?,
-          userBase: app.user_base,
-          categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
-          lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
-          lastUpdatedDays: app.newest_ios_app_snapshot.present? && app.newest_ios_app_snapshot.released != nil ? (Time.now.to_date - app.newest_ios_app_snapshot.released.to_date).to_i : nil,
-          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
-          appIdentifier: app.app_identifier,
-          supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
-          appIcon: {
-            large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
-            small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
-          }
-        }},
-        androidApps: company.get_android_apps.map{|app| {
-          id: app.id,
-          name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
-          type: 'AndroidApp',
-          mobilePriority: app.mobile_priority,
-          adSpend: app.android_fb_ad_appearances.present?,
-          userBase: app.user_base,
-          categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
-          lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
-          lastUpdatedDays: app.newest_android_app_snapshot.present? && app.newest_android_app_snapshot.released != nil ? (Time.now.to_date - app.newest_android_app_snapshot.released.to_date).to_i : nil,
-          appIdentifier: app.app_identifier,
-          supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
-          appIcon: {
-            large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
-          }
-        }}
+          id: companyId,
+          name: company.name,
+          websites: company.websites.to_a.map{|w| w.url},
+          funding: company.funding,
+          location: {
+              streetAddress: company.street_address,
+              city: company.city,
+              zipCode: company.zip_code,
+              state: company.state,
+              country: company.country
+          },
+          fortuneRank: company.fortune_1000_rank,
+          iosApps: company.get_ios_apps.map{|app| {
+              id: app.id,
+              name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+              type: 'IosApp',
+              mobilePriority: app.mobile_priority,
+              adSpend: app.ios_fb_ad_appearances.present?,
+              userBase: app.user_base,
+              categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+              lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+              lastUpdatedDays: app.newest_ios_app_snapshot.present? && app.newest_ios_app_snapshot.released != nil ? (Time.now.to_date - app.newest_ios_app_snapshot.released.to_date).to_i : nil,
+              releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
+              appIdentifier: app.app_identifier,
+              supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
+              appIcon: {
+                  large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
+                  small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
+              }
+          }},
+          androidApps: company.get_android_apps.map{|app| {
+              id: app.id,
+              name: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.name : nil,
+              type: 'AndroidApp',
+              mobilePriority: app.mobile_priority,
+              adSpend: app.android_fb_ad_appearances.present?,
+              userBase: app.user_base,
+              categories: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.android_app_categories.map{|c| c.name} : nil,
+              lastUpdated: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.released.to_s : nil,
+              lastUpdatedDays: app.newest_android_app_snapshot.present? && app.newest_android_app_snapshot.released != nil ? (Time.now.to_date - app.newest_android_app_snapshot.released.to_date).to_i : nil,
+              appIdentifier: app.app_identifier,
+              supportDesk: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.seller_url : nil,
+              appIcon: {
+                  large: app.newest_android_app_snapshot.present? ? app.newest_android_app_snapshot.icon_url_300x300 : nil
+              }
+          }}
       }
     end
     render json: @company_json
@@ -335,63 +335,63 @@ class ApiController < ApplicationController
   def get_ios_categories
     # IosAppCategory.select(:name).joins(:ios_app_categories_snapshots).group('ios_app_categories.id').where('ios_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
     categories = [
-      'Books',
-      'Business',
-      'Catalogs',
-      'Education',
-      'Entertainment',
-      'Finance',
-      'Food & Drink',
-      'Games',
-      'Health & Fitness',
-      # 'Kids',
-      'Lifestyle',
-      # 'Magazines & Newspapers',
-      'Medical',
-      'Music',
-      'Navigation',
-      'News',
-      'Photo & Video',
-      'Productivity',
-      'Reference',
-      'Social Networking',
-      'Sports',
-      'Travel',
-      'Utilities',
-      'Weather'
+        'Books',
+        'Business',
+        'Catalogs',
+        'Education',
+        'Entertainment',
+        'Finance',
+        'Food & Drink',
+        'Games',
+        'Health & Fitness',
+        # 'Kids',
+        'Lifestyle',
+        # 'Magazines & Newspapers',
+        'Medical',
+        'Music',
+        'Navigation',
+        'News',
+        'Photo & Video',
+        'Productivity',
+        'Reference',
+        'Social Networking',
+        'Sports',
+        'Travel',
+        'Utilities',
+        'Weather'
     ]
     render json: categories
   end
-  
+
   def get_android_categories
     # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
     categories = [
-      'Books & Reference',
-      'Business',
-      'Comics',
-      'Communication',
-      'Education',
-      'Entertainment',
-      'Family',
-      'Finance',
-      'Games',
-      'Health & Fitness',
-      'Libraries & Demo',
-      'Lifestyle',
-      'Media & Video',
-      'Medical',
-      'Music & Audio',
-      'News & Magazines',
-      'Personalization',
-      'Photography',
-      'Productivity',
-      'Shopping',
-      'Social',
-      'Sports',
-      'Tools',
-      'Transportation',
-      'Travel & Local',
-      'Weather'
+        'Books & Reference',
+        'Business',
+        'Comics',
+        'Communication',
+        'Education',
+        'Entertainment',
+        'Family',
+        'Finance',
+        'Games',
+        'Health & Fitness',
+        'Libraries & Demo',
+        'Lifestyle',
+        'Media & Video',
+        'Medical',
+        'Music & Audio',
+        'News & Magazines',
+        'Personalization',
+        'Photography',
+        'Productivity',
+        'Shopping',
+        'Social',
+        'Sports',
+        'Tools',
+        'Transportation',
+        'Travel & Local',
+        'Weather'
     ]
     render json: categories
   end
@@ -560,7 +560,7 @@ class ApiController < ApplicationController
     list_csv = CSV.generate do |csv|
       csv << header
       apps.each do |app|
-          csv << app
+        csv << app
       end
     end
 
@@ -752,14 +752,14 @@ class ApiController < ApplicationController
               contact_linkedin = contact['linkedin']
 
               contacts << {
-                website_id: (website.present? ? website.id : nil),
-                clearBitId: contact_id,
-                givenName: contact_given_name,
-                familyName: contact_family_name,
-                fullName: contact_full_name,
-                title: contact_title,
-                email: contact_email,
-                linkedin: contact_linkedin
+                  website_id: (website.present? ? website.id : nil),
+                  clearBitId: contact_id,
+                  givenName: contact_given_name,
+                  familyName: contact_family_name,
+                  fullName: contact_full_name,
+                  title: contact_title,
+                  email: contact_email,
+                  linkedin: contact_linkedin
               }
 
               # save as new records to DB
@@ -778,20 +778,20 @@ class ApiController < ApplicationController
 
           end
 
-        # if record exists and is no more than 60 days old
+          # if record exists and is no more than 60 days old
         else
 
           clearbit_contacts_for_website.each do |clearbit_contact|
             # add to results hash (to return to front end)
             contacts << {
-              website_id: website.id,
-              clearBitId: clearbit_contact.id,
-              givenName: clearbit_contact.given_name,
-              familyName: clearbit_contact.family_name,
-              fullName: clearbit_contact.full_name,
-              title: clearbit_contact.title,
-              email: clearbit_contact.email,
-              linkedin: clearbit_contact.linkedin
+                website_id: website.id,
+                clearBitId: clearbit_contact.id,
+                givenName: clearbit_contact.given_name,
+                familyName: clearbit_contact.family_name,
+                fullName: clearbit_contact.full_name,
+                title: clearbit_contact.title,
+                email: clearbit_contact.email,
+                linkedin: clearbit_contact.linkedin
             }
           end
         end
@@ -899,7 +899,7 @@ class ApiController < ApplicationController
       else
 
         error_code = 3
-      
+
       end
 
     end
@@ -973,7 +973,7 @@ class ApiController < ApplicationController
     # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
 
     error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
-    
+
     main_hash['installed_sdk_companies'] = installed_co_hash
 
     main_hash['installed_open_source_sdks'] = installed_os_hash
@@ -1006,15 +1006,15 @@ class ApiController < ApplicationController
 
         children = if company.parent_company_id.present?
 
-          cc = company
+                     cc = company
 
-          { 'id' => cc.id, 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
+                     { 'id' => cc.id, 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
 
-        else
+                   else
 
-          nil
+                     nil
 
-        end
+                   end
 
         if company.open_source
 
@@ -1074,7 +1074,7 @@ class ApiController < ApplicationController
     360.times do
 
       sleep 0.25
-      
+
       ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
 
       if ss.present? && ss.status.present?
@@ -1096,7 +1096,7 @@ class ApiController < ApplicationController
           if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
 
             new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-      
+
             new_snap.scan_status = :scan_failure
 
             new_snap.save
