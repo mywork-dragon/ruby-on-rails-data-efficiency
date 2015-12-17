@@ -24,15 +24,15 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']">
-                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']" data-toggle="tooltip" data-placement="top" title="First seen date">
+                            ~{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
                           </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']">
-                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen']" data-toggle="tooltip" data-placement="top" title="First seen date">
+                            ~{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen'])}} days ago
                           </span>
                         </span>
                       </div>
@@ -52,15 +52,15 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen']">
-                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
+                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen']" data-toggle="tooltip" data-placement="top" title="Last seen date">
+                            ~{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
                           </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen']">
-                            {{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
+                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen']" data-toggle="tooltip" data-placement="top" title="Last seen date">
+                            ~{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen'])}} days ago
                           </span>
                         </span>
                       </div>
@@ -87,7 +87,7 @@
 
           <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData || androidLiveScanCtrl.sdkQueryInProgress">
             <div id="sdkScanErrorMessage">
-              <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 1-2 minutes.</em></h5>
               <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
             </div>
             <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">

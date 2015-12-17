@@ -8,6 +8,11 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
+    /* Initializes all Bootstrap tooltips */
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+
     iosLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
       catch(err) {}
