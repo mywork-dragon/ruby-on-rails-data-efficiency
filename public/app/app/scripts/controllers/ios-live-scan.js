@@ -18,6 +18,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       catch(err) {}
     };
 
+    iosLiveScanCtrl.calculateDaysAgo = function(date) {
+      return sdkLiveScanService.calculateDaysAgo(date);
+    };
+
     // Takes an array and number of slices as params, splits into two
     var splitArray = function(a, n) {
       var len = a.length,out = [], i = 0;
