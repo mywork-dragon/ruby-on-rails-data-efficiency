@@ -302,7 +302,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'ios_fb_ad_appearances.ios_app_id is not null\').order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+        return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
       when 'categories'
@@ -323,7 +323,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'android_fb_ad_appearances.android_app_id is not null\').order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
+        return "order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'android_apps.user_base is not null\').order(\'android_apps.user_base #{order_by}\')"
       when 'downloads'
