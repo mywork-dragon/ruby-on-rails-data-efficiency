@@ -1334,7 +1334,7 @@ class ApiController < ApplicationController
         openSource: sdk.open_source?,
         summary: sdk.summary,
         platform: "ios",
-        numOfApps: sdk.get_current_apps(filtered_count_only: true)
+        numOfApps: sdk.get_current_apps.count
     }
     render json: @sdk_json
   end
@@ -1346,7 +1346,7 @@ class ApiController < ApplicationController
     sdk_companies = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
     elsif platform == 'ios'
       sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
     end

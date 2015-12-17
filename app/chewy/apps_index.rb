@@ -25,7 +25,7 @@ class AppsIndex < Chewy::Index
     # field :company_name, value: ->(android_app) {!android_app.get_company.nil? ? android_app.get_company.name : ''}
   end
 
-  define_type AndroidSdkCompany do
+  define_type AndroidSdk do
     field :name
   end
 
