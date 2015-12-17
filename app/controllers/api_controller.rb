@@ -848,13 +848,14 @@ class ApiController < ApplicationController
   def snap_status(job_id)
     ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
     if ss.present?
-      [1,nil]
       if ss.status.present?
         if ss.success? 
           ss.scan_success? ? [3,nil] : [2,nil]
         else
           [4,snap_error(ss)]
         end
+      else
+        [1,nil]
       end
     else
       [0,nil]
