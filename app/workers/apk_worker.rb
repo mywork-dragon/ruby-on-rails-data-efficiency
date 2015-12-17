@@ -159,7 +159,7 @@ module ApkWorker
 
       File.delete(file_name)
 
-      PackageSearchServiceWorker.perform_async(android_app_id) if single_queue?
+      PackageSearchServiceSingleWorker.perform_async(android_app_id) if single_queue?
       
     end
 
