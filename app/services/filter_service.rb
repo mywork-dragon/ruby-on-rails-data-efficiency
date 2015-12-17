@@ -186,12 +186,11 @@ class FilterService
 
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_ios_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
       
       # add app filters
@@ -238,12 +237,11 @@ class FilterService
       
       parts << android_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_android_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
 
       # add app filters
@@ -304,7 +302,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'ios_fb_ad_appearances.ios_app_id is not null\').order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+        return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
       when 'categories'
@@ -325,7 +323,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'android_fb_ad_appearances.android_app_id is not null\').order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
+        return "order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'android_apps.user_base is not null\').order(\'android_apps.user_base #{order_by}\')"
       when 'downloads'
