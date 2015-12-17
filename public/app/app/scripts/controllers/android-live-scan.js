@@ -8,19 +8,18 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
+    /* Initializes all Bootstrap tooltips */
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+
     androidLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
       catch(err) {}
     };
 
     androidLiveScanCtrl.calculateDaysAgo = function(date) {
-      var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-      var firstDate = new Date(date);
-      var secondDate = Date.now();
-
-      var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate)/(oneDay)));
-
-      return diffDays;
+      return sdkLiveScanService.calculateDaysAgo(date);
     };
 
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {

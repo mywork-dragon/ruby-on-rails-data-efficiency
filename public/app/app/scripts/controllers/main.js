@@ -80,11 +80,6 @@ angular.module('appApp')
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
     function($scope, apiService, $http, $rootScope, filterService) {
 
-      /* Initializes all Bootstrap tooltips */
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      });
-
       $scope.mixpanelAnalyticsEventTooltip = function(name) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
