@@ -5,6 +5,7 @@ class IosSdkService
   class << self
 
     # for front end - getting sdks data into display type
+=begin
     def get_sdk_response(ios_app_id)
       resp = {
         installed_sdks: [],
@@ -65,8 +66,8 @@ class IosSdkService
 
       resp
     end
-
-    def get_sdk_response_v2(ios_app_id)
+=end
+    def get_sdk_response(ios_app_id)
       resp = {
         installed_sdks: [],
         uninstalled_sdks: [],
