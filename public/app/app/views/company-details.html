@@ -169,7 +169,7 @@
     <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
 
         <div class="panel-heading" id="listViewTableHeading">
-          <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps}} of {{numApps}}</span>
+          <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{companyData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps | number}} of {{numApps | number}}</span>
           <span class="ui-select pull-right">
             <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
               <option value="">Add Selected to List</option>
