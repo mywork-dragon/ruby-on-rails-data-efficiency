@@ -27,6 +27,8 @@ class RegexService
         # clear android_sdks
         AndroidSdk.delete_all
         AndroidSdksApkSnapshot.delete_all
+        AndroidSdk.connection.execute('ALTER TABLE android_sdks AUTO_INCREMENT = 1;')
+        AndroidSdksApkSnapshot.connection.execute('ALTER TABLE android_sdks_apk_snapshots AUTO_INCREMENT = 1;')
 
         # clear sdk_packages
         SdkPackage.where(ios_sdk_id: nil).where.not(android_sdk_id: nil).each(&:delete)
@@ -35,6 +37,7 @@ class RegexService
 
         # clear sdk_companies
         SdkCompany.delete_all
+        SdkCompany.connection.execute('ALTER TABLE sdk_companies AUTO_INCREMENT = 1;')
 
         # reset regexes
         populate_regex
