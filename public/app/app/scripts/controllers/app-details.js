@@ -18,6 +18,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.canViewSupportDesk = false;
       });
 
+    /* Initializes all Bootstrap tooltips */
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+
     $scope.load = function() {
 
       return $http({
