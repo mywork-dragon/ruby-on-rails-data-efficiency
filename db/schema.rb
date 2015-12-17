@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216224137) do
+ActiveRecord::Schema.define(version: 20151217212944) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -259,15 +259,17 @@ ActiveRecord::Schema.define(version: 20151216224137) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",        default: false
+    t.boolean  "flagged",                default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sdk_company_id"
+    t.integer  "github_repo_identifier"
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
-  add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", using: :btree
+  add_index "android_sdks", ["github_repo_identifier"], name: "index_android_sdks_on_github_repo_identifier", unique: true, using: :btree
+  add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", unique: true, using: :btree
   add_index "android_sdks", ["open_source"], name: "index_android_sdks_on_open_source", using: :btree
   add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
   add_index "android_sdks", ["website"], name: "index_android_sdks_on_website", using: :btree
