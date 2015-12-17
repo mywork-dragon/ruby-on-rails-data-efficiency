@@ -59,7 +59,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           }
 
           /* Initializes all Bootstrap tooltips */
-          $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          $timeout(function() {
+            $(function () { $('[data-toggle="tooltip"]').tooltip() });
+            console.log('TOOLTIP INIT APPLIED');
+          }, 1000);
 
         });
 

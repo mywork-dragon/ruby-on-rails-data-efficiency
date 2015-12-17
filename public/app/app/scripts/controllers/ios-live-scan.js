@@ -68,7 +68,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           }
 
           /* Initializes all Bootstrap tooltips */
-          $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          $timeout(function() {
+            $(function () { $('[data-toggle="tooltip"]').tooltip() });
+            console.log('TOOLTIP INIT APPLIED');
+          }, 1000);
 
         });
 
