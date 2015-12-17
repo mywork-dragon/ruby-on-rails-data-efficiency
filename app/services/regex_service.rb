@@ -20,19 +20,26 @@ class RegexService
     end
 
 
-    def match_regexes(packages = [])
-      packages.each do |package|
-        match_regex(package)
-      end
-    end
+    def delete_android_sdks_packages_and_companies
+      puts "Are you sure you want to do this? [yes/no]"
+      a = gets.chomp
+      if a == 'yes'
+        # clear android_sdks
+        AndroidSdk.delete_all
+        AndroidSdksApkSnapshot.delete_all
 
+        # clear sdk_packages
+        SdkPackage.where(ios_sdk_id: nil).where.not(android_sdk_id: nil).each(&:delete)
+        SdkPackage.where.not(ios_sdk_id: nil, android_sdk_id: nil).each{ |x| x.android_sdk_id = nil; x.save }
+        SdkPackagesApkSnapshot.delete_all
 
-    def match_regex(package)
-      SdkRegex.all.each do |regex|
-        if !!(package =~ /#{regex.regex}/i)
-          sdk_package = SdkPackage.create(package: package, android_sdk_id: regex.android_sdk_id)
-          SdkPackageApkSnapshot.create(sdk_package_id: sdk_package.id, android_sdk_id: regex.android_sdk_id)
-        end
+        # clear sdk_companies
+        SdkCompany.delete_all
+
+        # reset regexes
+        populate_regex
+      else
+        puts "Nothing will be deleted."
       end
     end
 

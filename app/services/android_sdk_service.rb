@@ -30,7 +30,7 @@ class AndroidSdkService
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					meta = result[:metadata]
-					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source])
+					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
 					result[:packages].each do |p| 
 						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
 					end
@@ -42,11 +42,11 @@ class AndroidSdkService
 		end
 
 
-    private
+    # private
 
-		def save_sdk(name:, website:, open_source:)
+		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
 			begin
-    		AndroidSdk.create(name: name, website: website, open_source: open_source)
+    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
     	rescue
     		AndroidSdk.where(name: name).first
     	end
@@ -74,7 +74,7 @@ class AndroidSdkService
 
       # save android_sdks_apk_snapshots
       begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
+        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
       rescue
         nil
       end
@@ -107,9 +107,11 @@ class AndroidSdkService
       return nil if query.blank?
 			google_search(q: "#{query} android sdk", limit: 4).each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
+        puts ext
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
-				return {:url=>url, :name=>company, :open_source=>false} if url.include?(query.downcase)
+        host = URI(url).host
+				return {:url=>url, :name=>company, :open_source=>false} if host && host.include?(query.downcase)
 			end
 			nil
 		end
@@ -137,7 +139,6 @@ class AndroidSdkService
         puts q.green
         google_search(q: q, limit: 5).each do |url|
           if !!(url =~ /#{regex}/i)
-            puts url.purple
             matched = github_data_match(url, rname, rowner)
             return matched if matched.present?
           end
@@ -267,7 +268,6 @@ class AndroidSdkService
     end
 
     def match_google(package)
-    	puts "googling #{package[0]}".green
     	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
     	if results
     		return {
