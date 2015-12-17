@@ -1,0 +1,660 @@
+{
+    "Android" :
+    {
+        "Android Volley" :
+        {
+            "website" : "https://android.googlesource.com/platform/frameworks/volley",
+            "open_source" : true,
+            "regexes" : [
+                "android.*volley"
+            ]
+        }
+    },
+
+    "Google" :
+    {
+        "YouTube" :
+        {
+            "website" : "https://developers.google.com/youtube/",
+            "open_source" : false,
+            "regexes" : [
+                "youtube"
+            ]
+        },
+    
+        "Mobile Vision" :
+        {
+            "website" : "https://developers.google.com/vision/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*vision"
+            ]
+        },
+
+        "Google Places" :
+        {
+            "website" : "https://developers.google.com/places/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*places"
+            ]
+        },
+
+        "Google Maps" :
+        {
+            "website" : "https://developers.google.com/maps/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*map"
+            ]
+        },
+
+        "Android Pay" :
+        {
+            "website" : "https://developers.google.com/android-pay/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*wallet",
+                "google.*pay"
+            ]
+        },
+
+        "Google Analytics" :
+        {
+            "website" : "https://developers.google.com/analytics/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*analytics"
+            ]
+        },
+
+        "Google Drive" :
+        {
+            "website" : "https://developers.google.com/drive/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*drive"
+            ]
+        },
+
+        "DoubleClick" :
+        {
+            "website" : "https://www.doubleclickbygoogle.com/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*doubleclick"
+            ]
+        },
+
+        "Google+" :
+        {
+            "website" : "https://developers.google.com/+/mobile/android/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*plus"
+            ]
+        },
+
+        "Google Cast" :
+        {
+            "website" : "https://developers.google.com/cast/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*cast"
+            ]
+        },
+
+        "Google Fit" :
+        {
+            "website" : "https://developers.google.com/fit/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*fit"
+            ]
+        },
+
+        "Android Wear" :
+        {
+            "website" : "http://developer.android.com/wear/index.html",
+            "open_source" : false,
+            "regexes" : [
+                "google.*wearable"
+            ]
+        },
+
+        "AdMob Mediation" :
+        {
+            "website" : "https://developers.google.com/admob/android/mediation",
+            "open_source" : false,
+            "regexes" : [
+                "google.*mediation"
+            ]
+        },
+
+        "AdMob" :
+        {
+            "website" : "https://www.google.com/admob/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*admob",
+                "google.*ads"
+            ]
+        },
+
+        "Android Auto" :
+        {
+            "website" : "http://developer.android.com/auto/index.html",
+            "open_source" : false,
+            "regexes" : [
+                "google.*car"
+            ]
+        },
+
+        "Google Tag Manager" :
+        {
+            "website" : "https://www.google.com/analytics/tag-manager/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*tagmanager"
+            ]
+        },
+
+        "ExoPlayer" :
+        {
+            "website" : "https://github.com/google/ExoPlayer",
+            "open_source" : true,
+            "regexes" : [
+                "google.*exoplayer"
+            ]
+        },
+
+        "Google Search" :
+        {
+            "website" : "https://developers.google.com/android/reference/com/google/android/gms/search/package-summary",
+            "open_source" : false,
+            "regexes" : [
+                "google.*search"
+            ]
+        },
+
+        "Google Play Service Location APIs" :
+        {
+            "website" : "http://developer.android.com/training/location/index.html",
+            "open_source" : false,
+            "regexes" : [
+                "google.*location"
+            ]
+        },
+
+        "Google gson" :
+        {
+            "website" : "https://github.com/google/gson",
+            "open_source" : false,
+            "regexes" : [
+                "google.*gson"
+            ]
+        }
+    },
+    
+    "Amazon" :
+    {
+        "Amazon Web Services" :
+        {
+            "website" : "https://aws.amazon.com/",
+            "open_source" : false,
+            "regexes" : [
+                "amazonaws",
+                "amazon.*aws",
+                "amazonwebservices"
+            ]
+        },
+
+        "Amazon Mobile Analytics" :
+        {
+            "website" : "http://aws.amazon.com/mobileanalytics/",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*insights"
+            ]
+        },
+
+        "Amazon Mobile Ads" :
+        {
+            "website" : "https://developer.amazon.com/public/apis/earn/mobile-ads",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*ads"
+            ]
+        },
+
+        "Amazon In-App Purchasing" :
+        {
+            "website" : "https://developer.amazon.com/public/apis/earn/in-app-purchasing",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*purchasing",
+                "amazon.*iap"
+            ]
+        },
+
+        "Amazon Mobile Associates" :
+        {
+            "website" : "https://developer.amazon.com/public/apis/earn/mobile-associates",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*retailsearch"
+            ]
+        },
+
+        "GameCircleSDK" :
+        {
+            "website" : "https://developer.amazon.com/appsandservices/apis/engage/gamecircle",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*ags",
+                "amazon.*headtracking"
+            ]
+        },
+
+        "Amazon Device Messaging" :
+        {
+            "website" : "https://developer.amazon.com/public/apis/engage/device-messaging",
+            "open_source" : false,
+            "regexes" : [
+                "amazon.*messaging"
+            ]
+        }
+    },
+
+    "Facebook" :
+    {
+        // "Facebook SDK" :
+        // {
+        //     "website" : "https://developers.facebook.com/",
+        //     "open_source" : false,
+        //     "regexes" : [
+        //         "facebook.*login",
+        //         "facebook.*messenger",
+        //         "facebook.*share"
+        //     ]
+        // },
+
+        "Fresco" :
+        {
+            "website" : "http://frescolib.org/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*imagepipeline",
+                "facebook.*fresco",
+                "facebook.*drawee"
+            ]
+        },
+
+        "Stetho" :
+        {
+            "website" : "http://facebook.github.io/stetho/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*stetho"
+            ]
+        },
+
+        "Device Year Class" :
+        {
+            "website" : "https://github.com/facebook/device-year-class",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*yearclass"
+            ]
+        },
+
+        "Network Connection Class" :
+        {
+            "website" : "https://github.com/facebook/network-connection-class",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*connectionclass"
+            ]
+        },
+
+        "Conceal" :
+        {
+            "website" : "http://facebook.github.io/conceal/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*conceal",
+                "facebook.*crypto"
+            ]
+        },
+
+        "Buck" :
+        {
+            "website" : "https://buckbuild.com/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*buck"
+            ]
+        },
+
+        "React Native" :
+        {
+            "website" : "http://facebook.github.io/react-native/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*react"
+            ]
+        },
+
+        "Infer" :
+        {
+            "website" : "http://fbinfer.com/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*infer"
+            ]
+        },
+
+        "Shimmer for Android" :
+        {
+            "website" : "http://facebook.github.io/shimmer-android/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*shimmer"
+            ]
+        },
+
+        "Rebound" :
+        {
+            "website" : "http://facebook.github.io/rebound/",
+            "open_source" : true,
+            "regexes" : [
+                "facebook.*rebound"
+            ]
+        },
+
+        "Facebook Audience Network" :
+        {
+            "website" : "https://developers.facebook.com/products/app-monetization/audience-network/",
+            "open_source" : false,
+            "regexes" : [
+                "facebook.*ads"
+            ]
+        }
+    },
+
+    "Tune" :
+    {
+        "HasOffers" :
+        {
+            "website" : "http://www.hasoffers.com/",
+            "open_source" : false,
+            "regexes" : [
+                "hasoffers"
+            ]
+        },
+
+        "Tune" :
+        {
+            "website" : "http://www.tune.com/",
+            "open_source" : false,
+            "regexes" : [
+                "mobileapptracker",
+                "tune"
+            ]
+        }
+    },
+
+    "Braintree" :
+    {
+        "Braintree" :
+        {
+            "website" : "https://www.braintreepayments.com/",
+            "open_source" : false,
+            "regexes" : [
+                "braintree"
+            ]
+        }
+    },
+
+    "Square" :
+    {
+        "Square" :
+        {
+            "website" : "https://squareup.com/",
+            "open_source" : false,
+            "regexes" : [
+                "squareup"
+            ]
+        }
+    },
+
+    "Urban Airship" :
+    {
+        "Urban Airship" :
+        {
+            "website" : "https://www.urbanairship.com/",
+            "open_source" : false,
+            "regexes" : [
+                "urbanairship",
+                "pushnotifications"
+            ]
+        }
+    },
+
+    "Fyber" :
+    {
+        "Fyber" :
+        {
+            "website" : "http://www.fyber.com/",
+            "open_source" : false,
+            "regexes" : [
+                "fyber",
+                "sponsorpay",
+                "s3esponsorpay"
+            ]
+        }
+    },
+
+    "ZXing Project" :
+    {
+        "ZXing" :
+        {
+            "website" : "https://github.com/zxing/zxing",
+            "open_source" : true,
+            "regexes" : [
+                "zing"
+            ]
+        }
+    },
+
+    "Unity" :
+    {
+        "Unity Ads" :
+        {
+            "website" : "https://unity3d.com/services/ads",
+            "open_source" : false,
+            "regexes" : [
+                "^([^.]*.){0,1}[^.]*(?:\\s|^)*unity.*ads"
+            ]
+        },
+
+        "Unity Everyplay" :
+        {
+            "website" : "https://developers.everyplay.com/",
+            "open_source" : false,
+            "regexes" : [
+                "^([^.]*.){0,1}[^.]*(?:\\s|^)*unity.*everplay"
+            ]
+        },
+
+        "Unity Cloud Build" :
+        {
+            "website" : "https://build.cloud.unity3d.com/landing/",
+            "open_source" : false,
+            "regexes" : [
+                "^([^.]*.){0,1}[^.]*(?:\\s|^)*unity.*cloud"
+            ]
+        },
+
+        "Unity Multiplayer" :
+        {
+            "website" : "https://unity3d.com/services/multiplayer",
+            "open_source" : false,
+            "regexes" : [
+                "^mp.unity"
+            ]
+        }
+    },
+
+    "Supersonic" :
+    {
+        "Supersonic" :
+        {
+            "website" : "https://www.supersonic.com/",
+            "open_source" : false,
+            "regexes" : [
+                "supersonic"
+            ]
+        }
+    },
+
+    "Fabric" :
+    {
+        "Crashlytics" :
+        {
+            "website" : "https://fabric.io/kits/android/crashlytics",
+            "open_source" : false,
+            "regexes" : [
+                "crashlytics"
+            ]
+        },
+
+        "Digits" :
+        {
+            "website" : "https://fabric.io/kits/android/digits",
+            "open_source" : false,
+            "regexes" : [
+                "com.digits"
+            ]
+        },
+
+        "Answers" :
+        {
+            "website" : "https://fabric.io/kits/android/answers",
+            "open_source" : false,
+            "regexes" : [
+                "answers"
+            ]
+        },
+
+        "MoPub" :
+        {
+            "website" : "https://fabric.io/kits/android/mopub",
+            "open_source" : false,
+            "regexes" : [
+                "com.mopub"
+            ]
+        }
+
+    },
+
+    "Apache" :
+    {
+        "Apache HttpComponents" :
+        {
+            "website" : "https://hc.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*httpcomponents"
+            ]
+        },
+
+        "Apache Commons Codec" :
+        {
+            "website" : "https://commons.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*commons*codec"
+            ]
+        },
+
+        "Apache Commons IO" :
+        {
+            "website" : "https://commons.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*commons*io"
+            ]
+        },
+
+        "Apache Commons Lang" :
+        {
+            "website" : "https://commons.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*commons*lang"
+            ]
+        },
+
+        "Apache Commons HttpClient" :
+        {
+            "website" : "https://commons.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*commons*httpclient"
+            ]
+        },
+
+        "Apache Commons Maven" :
+        {
+            "website" : "https://commons.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.*commons*maven"
+            ]
+        }
+    },
+
+    "greenrobot" :
+    {
+        "greenrobot EventBus" :
+        {
+            "website" : "http://greenrobot.org/eventbus/",
+            "open_source" : true,
+            "regexes" : [
+                "greenrobot.*event"
+            ]
+        },
+
+        "greenrobot greenDAO" :
+        {
+            "website" : "http://greenrobot.org/greendao/",
+            "open_source" : true,
+            "regexes" : [
+                "greenrobot.*dao"
+            ]
+        },
+
+        "greenrobot-common" :
+        {
+            "website" : "https://github.com/greenrobot/greenrobot-common",
+            "open_source" : true,
+            "regexes" : [
+                "greenrobot.*common"
+            ]
+        }
+
+    },
+
+    "ScribeJava" :
+    {
+        "ScribeJava" :
+        {
+            "website" : "https://github.com/scribejava/scribejava",
+            "open_source" : true,
+            "regexes" : [
+                "org.*scribe"
+            ]
+        }
+    }
+}

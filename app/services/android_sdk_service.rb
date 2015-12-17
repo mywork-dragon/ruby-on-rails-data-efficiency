@@ -104,6 +104,7 @@ class AndroidSdkService
 		# Get the url of an sdk if it is valid
 
 		def google_sdk(query:)
+      return nil if query.blank?
 			google_search(q: "#{query} android sdk", limit: 4).each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
