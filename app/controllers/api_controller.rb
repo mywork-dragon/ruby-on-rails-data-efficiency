@@ -819,70 +819,6 @@ class ApiController < ApplicationController
     render json: {scan_id: job_id}
   end
 
-  def scan_android_sdks
-
-    android_app_id = params['appId']
-
-    updated, companies, error_code = nil
-
-    aa = AndroidApp.find(android_app_id)
-
-    error_code = 1
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    # if aa.taken_down?
-
-    #   error_code = 2
-
-    # els
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      app_identifier = aa.app_identifier
-
-      job_id, new_snap = download_apk(android_app_id, app_identifier)
-
-      aa = AndroidApp.find(android_app_id)
-
-      # new_snap = aa.newest_apk_snapshot
-
-      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
-
-      if new_snap.present? && new_snap.status == "success"
-
-        scan_apk(aa.id, job_id)
-
-        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-      elsif new_snap.present? && new_snap.status == "bad_device"
-
-        error_code = 6
-
-      elsif new_snap.present? && new_snap.status == "out_of_country"
-
-        error_code = 7
-
-      elsif new_snap.present? && new_snap.status == "taken_down"
-
-        error_code = 2
-
-      else
-
-        error_code = 3
-
-      end
-
-    end
-
-    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id, job_type: :test)
-
-    render json: {job_id: job_id}
-  end
-
   def android_sdks_exist
     id = params['appId']
     aa = AndroidApp.find(id)
@@ -899,7 +835,7 @@ class ApiController < ApplicationController
     batch.jobs do
       ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
     end
-    job_id
+    render json: {job_id: job_id}.to_json
   end
 
   def android_scan_status
