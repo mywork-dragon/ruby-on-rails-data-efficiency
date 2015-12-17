@@ -1262,7 +1262,7 @@ class ApiController < ApplicationController
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-    result_ids = AppsIndex::AndroidSdkCompany.query(
+    result_ids = AppsIndex::AndroidSdk.query(
         multi_match: {
             query: query,
             operator: 'and',
@@ -1274,11 +1274,11 @@ class ApiController < ApplicationController
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
+    android_sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
 
     sdks = []
     android_sdks.each do |sdk|
-      sdks << AndroidSdkCompany.find(sdk)
+      sdks << AndroidSdk.find(sdk)
     end
 
     total_apps_count = sdks.length
@@ -1303,7 +1303,7 @@ class ApiController < ApplicationController
 
   def get_android_sdk
     sdk_id = params['id']
-    sdk = AndroidSdkCompany.find(sdk_id)
+    sdk = AndroidSdk.find(sdk_id)
 
     #apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
     apps_count = sdk.get_current_apps(filtered_count_only: true)
@@ -1312,7 +1312,7 @@ class ApiController < ApplicationController
         id: sdk.id,
         name: sdk.name,
         website: sdk.website,
-        favicon: sdk.favicon,
+        favicon: sdk.get_favicon,
         openSource: sdk.open_source,
         platform: 'android',
         numOfApps: apps_count
@@ -1346,7 +1346,7 @@ class ApiController < ApplicationController
     sdk_companies = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
+      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
     elsif platform == 'ios'
       sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
     end
