@@ -840,14 +840,13 @@ class ApiController < ApplicationController
 
   def android_scan_status
     job_id = params['jobId']
-    ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-    status, error = snap_status(ss)
+    status, error = snap_status(job_id)
     e = {:status => status, :error => error}
     render json: e
   end
 
-  def snap_status(ss)
-    [0,nil]
+  def snap_status(job_id)
+    ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
     if ss.present?
       [1,nil]
       if ss.status.present?
@@ -858,6 +857,7 @@ class ApiController < ApplicationController
         end
       end
     end
+    [0,nil]
   end
 
   def snap_error(ss)
