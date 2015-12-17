@@ -841,8 +841,8 @@ class ApiController < ApplicationController
   def android_scan_status
     job_id = params['jobId']
     ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-    status, error, msg = snap_status(ss)
-    e = {:status => status, :error => error, :message => msg}
+    status, error = snap_status(ss)
+    e = {:status => status, :error => error}
     render json: e
   end
 
