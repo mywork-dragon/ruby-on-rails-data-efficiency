@@ -856,8 +856,9 @@ class ApiController < ApplicationController
           [4,snap_error(ss)]
         end
       end
+    else
+      [0,nil]
     end
-    [0,nil]
   end
 
   def snap_error(ss)
