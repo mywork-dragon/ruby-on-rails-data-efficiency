@@ -1306,7 +1306,7 @@ class ApiController < ApplicationController
     sdk = AndroidSdk.find(sdk_id)
 
     #apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
-    apps_count = sdk.get_current_apps(filtered_count_only: true)
+    # apps_count = sdk.get_current_apps(filtered_count_only: true)
 
     @sdk_json = {
         id: sdk.id,
@@ -1315,7 +1315,7 @@ class ApiController < ApplicationController
         favicon: sdk.get_favicon,
         openSource: sdk.open_source,
         platform: 'android',
-        numOfApps: apps_count
+        numOfApps: sdk.get_current_apps.count
     }
     render json: @sdk_json
   end
