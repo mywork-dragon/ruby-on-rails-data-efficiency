@@ -42,7 +42,7 @@ class AndroidSdkService
 		end
 
 
-    # private
+    private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
 			begin
