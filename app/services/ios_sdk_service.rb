@@ -106,7 +106,8 @@ class IosSdkService
         # handle the installed ones
         first_snaps_with_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('min(good_as_of_date) as first_seen', :version, :ios_app_id, 'ios_sdk_id').where(id: app.ipa_snapshots.scanned, 'ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
-        max_current_date = first_snaps_with_current_sdks.max {|a, b| a.first_seen <=> b.first_seen}.first_seen
+        max_current_date = first_snaps_with_current_sdks.max {|a, b| a.first_seen <=> b.first_seen}
+        max_current_date = max_current_date ? max_current_date.first_seen : nil
 
         partioned_installed_sdks = partition_sdks(ios_sdks: installed_sdks)
 
@@ -115,7 +116,8 @@ class IosSdkService
         # handle the uninstalled ones
         last_snaps_without_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'ios_sdk_id').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
-        max_last_date = last_snaps_without_current_sdks.max {|a, b| a.last_seen <=> b.last_seen}.last_seen
+        max_last_date = last_snaps_without_current_sdks.max {|a, b| a.last_seen <=> b.last_seen}
+        max_last_date = max_last_date ? max_last_date.last_seen : nil
 
         uninstalled_sdks = IosSdk.where(id: last_snaps_without_current_sdks.pluck(:ios_sdk_id))
 
