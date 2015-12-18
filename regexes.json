@@ -193,6 +193,15 @@
             "regexes" : [
                 "google.*gson"
             ]
+        },
+
+        "Google Nearby" :
+        {
+            "website" : "https://developers.google.com/nearby/",
+            "open_source" : false,
+            "regexes" : [
+                "google.*nearby"
+            ]
         }
     },
     
@@ -612,6 +621,15 @@
             "regexes" : [
                 "apache.*commons*maven"
             ]
+        },
+
+        "Apache Cordova" :
+        {
+            "website" : "http://cordova.apache.org/",
+            "open_source" : true,
+            "regexes" : [
+                "apache.cordova"
+            ]
         }
     },
 
@@ -656,5 +674,253 @@
                 "org.*scribe"
             ]
         }
+    },
+
+    "Adobe" :
+    {
+        "Adobe Air" :
+        {
+            "website" : "http://www.adobe.com/devnet/air.html",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*air"
+            ]
+        },
+
+        "PhoneGap" :
+        {
+            "website" : "http://phonegap.com/",
+            "open_source" : false,
+            "regexes" : [
+                "phonegap"
+            ]
+        },
+
+        "Adobe Pass" :
+        {
+            "website" : "http://www.adobe.com/products/adobe-pass.html",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*adobepass"
+            ]
+        },
+
+        "Adobe Creative SDK" :
+        {
+            "website" : "https://creativesdk.adobe.com/",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*adobepass"
+            ]
+        },
+
+        "Aviary" :
+        {
+            "website" : "https://developers.aviary.com/",
+            "open_source" : false,
+            "regexes" : [
+                "aviary"
+            ]
+        },
+
+        "Adobe Auditude" :
+        {
+            "website" : "http://www.adobe.com/products/auditude.html",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*auditude"
+            ]
+        },
+
+        "Adobe XMP" :
+        {
+            "website" : "http://www.adobe.com/devnet/xmp.html",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*xmp"
+            ]
+        },
+
+        "Adobe Marketing Cloud" :
+        {
+            "website" : "https://marketing.adobe.com/developer/gallery/app-measurement-for-android-1",
+            "open_source" : false,
+            "regexes" : [
+                "adobe.*marketing"
+            ]
+        }
+
+    },
+
+    "Localytics" :
+    {
+        "Localytics" :
+        {
+            "website" : "https://www.localytics.com/",
+            "open_source" : false,
+            "regexes" : [
+                "localytics"
+            ]
+        }
+    },
+
+    "Clans" :
+    {
+        "FloatingActionButton" :
+        {
+            "website" : "https://github.com/Clans/FloatingActionButton",
+            "open_source" : true,
+            "regexes" : [
+                "clans"
+            ]
+        }
+    },
+
+    "AOL" :
+    {
+        "Millennial Media" :
+        {
+            "website" : "http://www.millennialmedia.com/",
+            "open_source" : false,
+            "regexes" : [
+                "millennialmedia",
+                "millenialmedia",
+                "nexage"
+            ]
+        }
+    },
+
+    "AdMarvel" :
+    {
+        "AdMarvel" :
+        {
+            "website" : "http://www.admarvel.com/",
+            "open_source" : false,
+            "regexes" : [
+                "admarvel"
+            ]
+        }
+    },
+
+    "CommonsWare" :
+    {
+        "CommonsWare Android Components" :
+        {
+            "website" : "https://commonsware.com/cwac",
+            "open_source" : false,
+            "regexes" : [
+                "commonsware"
+            ]
+        }
+    },
+
+    "Microsoft" :
+    {
+        "Microsoft Live SDK" :
+        {
+            "website" : "https://msdn.microsoft.com/en-us/library/dn631819.aspx",
+            "open_source" : false,
+            "regexes" : [
+                "microsoft.*live"
+            ]
+        },
+
+        "Windows Azure Mobile Services" :
+        {
+            "website" : "https://azure.microsoft.com/en-us/documentation/services/app-service/mobile/",
+            "open_source" : false,
+            "regexes" : [
+                "microsoft.*windowsazure",
+                "microsoft.*applicationinsights"
+            ]
+        },
+
+        "Hockeyapp" :
+        {
+            "website" : "http://hockeyapp.net/features/",
+            "open_source" : false,
+            "regexes" : [
+                "hockeyapp"
+            ]
+        }
+    },
+
+    "Baidu" :
+    {
+        "Baidu Push Service" :
+        {
+            "website" : "http://push.baidu.com/",
+            "open_source" : false,
+            "regexes" : [
+                "baidu.*push"
+            ]
+        },
+
+        "Baidu Map API" :
+        {
+            "website" : "http://developer.baidu.com/map/",
+            "open_source" : false,
+            "regexes" : [
+                "baidu.*map",
+                "baidu.*location"
+            ]
+        },
+
+        "Baidu Frontia" :
+        {
+            "website" : "http://developer.baidu.com/wiki/index.php?title=docs/frontia",
+            "open_source" : false,
+            "regexes" : [
+                "baidu.*frontia"
+            ]
+        },
+
+        "Baidu Light App" :
+        {
+            "website" : "http://developer.baidu.com/wiki/index.php?title=docs/lightapp",
+            "open_source" : false,
+            "regexes" : [
+                "baidu.*lightapp"
+            ]
+        }
+    },
+
+    "Yozio" :
+    {
+        "Yozio" :
+        {
+            "website" : "http://www.yozio.com/",
+            "open_source" : false,
+            "regexes" : [
+                "yozio"
+            ]
+        }
+    },
+
+    "dlew" :
+    {
+        "joda-time-android" :
+        {
+            "website" : "https://github.com/dlew/joda-time-android",
+            "open_source" : true,
+            "regexes" : [
+                "danlew.*joda"
+            ]
+        }
+    },
+
+    "Lingala" :
+    {
+        "zip4j" :
+        {
+            "website" : "http://www.lingala.net/zip4j/",
+            "open_source" : true,
+            "regexes" : [
+                "zip4j",
+                "lingala"
+            ]
+        }
     }
+
+
 }
