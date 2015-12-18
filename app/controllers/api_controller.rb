@@ -1344,18 +1344,20 @@ class ApiController < ApplicationController
     platform = params['platform']
 
     sdk_companies = []
-
-    if platform == 'android'
-      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
-    elsif platform == 'ios'
-      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false")
-    end
-
     results = []
 
-    sdk_companies.each do |sdk|
-      results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+    if platform == 'android'
+      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
+      end
+    elsif platform == 'ios'
+      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+      end
     end
+
     render json: {searchParam: search_str, results: results}
   end
 
