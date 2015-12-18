@@ -58,12 +58,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
           }
 
-          /* Initializes all Bootstrap tooltips */
-          $timeout(function() {
-            $(function () { $('[data-toggle="tooltip"]').tooltip() });
-            console.log('TOOLTIP INIT APPLIED');
-          }, 1000);
-
         });
 
     };

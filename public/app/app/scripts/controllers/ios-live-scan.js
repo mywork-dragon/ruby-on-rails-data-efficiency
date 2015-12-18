@@ -67,12 +67,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, iosLiveScanCtrl.sdkData);
           }
 
-          /* Initializes all Bootstrap tooltips */
-          $timeout(function() {
-            $(function () { $('[data-toggle="tooltip"]').tooltip() });
-            console.log('TOOLTIP INIT APPLIED');
-          }, 1000);
-
         });
 
     };
