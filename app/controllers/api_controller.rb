@@ -1291,7 +1291,7 @@ class ApiController < ApplicationController
               id: sdk.id,
               name: sdk.name,
               website: sdk.website,
-              favicon: sdk.favicon,
+              favicon: sdk.get_favicon,
               openSource: sdk.open_source,
               platform: 'android'
           }
