@@ -14,7 +14,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     };
 
     iosLiveScanCtrl.calculateDaysAgo = function(date) {
-      return sdkLiveScanService.calculateDaysAgo(date);
+      return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0]; // returns '5 days' for example
     };
 
     // Takes an array and number of slices as params, splits into two

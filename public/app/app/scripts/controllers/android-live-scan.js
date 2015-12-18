@@ -14,7 +14,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     };
 
     androidLiveScanCtrl.calculateDaysAgo = function(date) {
-      return sdkLiveScanService.calculateDaysAgo(date);
+      return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0]; // returns '5 days' for example
     };
 
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
