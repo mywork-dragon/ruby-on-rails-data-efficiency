@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval) {
+angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
 
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
@@ -14,7 +14,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     };
 
     androidLiveScanCtrl.calculateDaysAgo = function(date) {
-      return sdkLiveScanService.calculateDaysAgo(date);
+      return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0]; // returns '5 days' for example
     };
 
     androidLiveScanCtrl.checkForAndroidSdks = function(appId, calledAfterSuccess) {
@@ -59,7 +59,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           }
 
           /* Initializes all Bootstrap tooltips */
-          $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          $timeout(function() {
+            $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          }, 1000);
 
         });
 

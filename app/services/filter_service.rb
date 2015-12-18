@@ -186,34 +186,8 @@ class FilterService
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
 
-        # AndroidSdkCompany.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
-
-
-
-
-
-
-
-        #### MAKE THIS FASTER && USE AndroidSdkCompany Method!!!
-
-
-        apk_snapshots = ApkSnapshot.find(AndroidSdkCompaniesApkSnapshot.where(android_sdk_company_id: sdk_ids).map{ |row| row.apk_snapshot_id})
-
-        apk_snapshots.each do |apk_snapshot|
-          android_app = AndroidApp.find(apk_snapshot.android_app_id)
-
-          # If latest snapshot, add respective app to results
-          if apk_snapshot.id == android_app.newest_apk_snapshot_id
-            apps_with_sdk << android_app
-          end
-        end
-
-
-
-
-
-
-
+        android_sdks = AndroidSdk.find(sdk_ids)
+        android_sdks.each{|sdk| apps_with_sdk << sdk.get_current_apps}
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
 
@@ -233,12 +207,11 @@ class FilterService
 
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_ios_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
       
       # add app filters
@@ -285,12 +258,11 @@ class FilterService
       
       parts << android_app_keywords_query(custom_keywords) if custom_keywords.present?
       
-      if company_filters.present?
+      if company_filters.present? || order_by == 'fortuneRank'
         parts << company_android_apps_query(company_filters) if company_filters.present?
-      else
-        parts << "joins(websites: :company)"
       end
 
+      # Excludes taken down apps
       parts << "where.not(display_type: 1)"
 
       # add app filters
@@ -351,7 +323,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'ios_fb_ad_appearances.ios_app_id is not null\').order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+        return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
       when 'categories'
@@ -372,7 +344,7 @@ class FilterService
       when 'mobilePriority'
         return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
-        return "where(\'android_fb_ad_appearances.android_app_id is not null\').order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
+        return "order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'android_apps.user_base is not null\').order(\'android_apps.user_base #{order_by}\')"
       when 'downloads'

@@ -16,7 +16,7 @@
   <div data-ng-controller="CustomSearchCtrl as customSearchCtrl">
     <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
       <div class="panel-heading" id="listViewTableHeading">
-        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps}}</span>
+        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps | number}}</span>
         <span class="ui-select pull-right">
           <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="customSearchCtrl.addSelectedTo($root.addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
            <option value="">Copy Selected to List</option>

@@ -2,7 +2,7 @@
 
   <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
     <div class="panel-heading" id="listViewTableHeading">
-     <strong><i class="fa fa-list panel-ico"></i>Lists</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying 1 - {{$root.numApps}} of {{$root.numApps}}</span>
+     <strong><i class="fa fa-list panel-ico"></i>Lists</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="$root.numApps">| Displaying 1 - {{$root.numApps | number}} of {{$root.numApps | number}}</span>
      <button type="submit" class="btn btn-primary pull-right" ng-if="canViewExports" ng-click="exportListToCsv()">Export List to CSV</button>
      <button type="submit" class="btn btn-primary pull-right" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export List to CSV</button>
      <button type="submit" class="btn btn-danger pull-right" data-toggle="modal" data-target="#listDeleteModal">Delete List</button>

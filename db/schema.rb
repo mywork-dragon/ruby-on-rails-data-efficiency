@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216210320) do
+ActiveRecord::Schema.define(version: 20151217212944) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -260,15 +260,17 @@ ActiveRecord::Schema.define(version: 20151216210320) do
     t.string   "name"
     t.string   "website"
     t.string   "favicon"
-    t.boolean  "flagged",        default: false
+    t.boolean  "flagged",                default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sdk_company_id"
+    t.integer  "github_repo_identifier"
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
-  add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", using: :btree
+  add_index "android_sdks", ["github_repo_identifier"], name: "index_android_sdks_on_github_repo_identifier", unique: true, using: :btree
+  add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", unique: true, using: :btree
   add_index "android_sdks", ["open_source"], name: "index_android_sdks_on_open_source", using: :btree
   add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
   add_index "android_sdks", ["website"], name: "index_android_sdks_on_website", using: :btree
@@ -1109,6 +1111,18 @@ ActiveRecord::Schema.define(version: 20151216210320) do
     t.datetime "updated_at"
     t.integer  "live_scan_status"
   end
+
+  create_table "ipa_snapshot_lookup_failures", force: true do |t|
+    t.integer  "ipa_snapshot_job_id"
+    t.integer  "ios_app_id"
+    t.integer  "reason"
+    t.text     "lookup_content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ipa_snapshot_lookup_failures", ["ios_app_id"], name: "index_ipa_snapshot_lookup_failures_on_ios_app_id", using: :btree
+  add_index "ipa_snapshot_lookup_failures", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_lookup_failures_on_ipa_snapshot_job_id", using: :btree
 
   create_table "ipa_snapshots", force: true do |t|
     t.integer  "ios_app_id"

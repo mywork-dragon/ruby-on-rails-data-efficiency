@@ -7216,6 +7216,10 @@ i.infoTooltipIcon {
   font-size: 90%;
 }
 
+.sdkLiveScanDisplayTitleSection .tooltip {
+  padding: 3px !important;
+}
+
 .modal-body h4 {
   border-bottom: none;
   padding-bottom: 0px;
@@ -7622,6 +7626,7 @@ pre {
   display: inline-block;
   position: relative;
   bottom: 1px;
+  cursor: help;
 }
 
 .sdkLiveScanUninstallDate {
@@ -7630,6 +7635,7 @@ pre {
   display: inline-block;
   position: relative;
   bottom: 1px;
+  cursor: help;
 }
 
 /* DdTextCollapse Directive Styling */

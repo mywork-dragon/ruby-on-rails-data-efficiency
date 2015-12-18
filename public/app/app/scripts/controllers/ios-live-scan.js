@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval) {
+angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
 
     var iosLiveScanCtrl = this;
     var iosAppId = $routeParams.id;
@@ -13,8 +13,23 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       catch(err) {}
     };
 
-    iosLiveScanCtrl.calculateDaysAgo = function(date) {
-      return sdkLiveScanService.calculateDaysAgo(date);
+    iosLiveScanCtrl.calculateDaysAgo = function(sdkValue) {
+
+      console.log('Calculate Days Entered!', sdkValue);
+
+      var date = "";
+      // If latest_store_snapshot_date is present, use it. Otherwise fallback to first/last_seen_date
+      if(sdkValue['latest_store_snapshot_date']) {
+        date = sdkValue['latest_store_snapshot_date'];
+        console.log('LATEST SOTRE SNAPSHOT DATE', date);
+      } else if(sdkValue['first_seen_date']) {
+        date = sdkValue['first_seen_date'];
+        console.log('FIRST SEEN DATE', date);
+      } else if(sdkValue['last_seen_date']) {
+        date = sdkValue['last_seen_date'];
+        console.log('LAST SEEN DATE', date);
+      }
+      return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0]; // returns '5 days' for example
     };
 
     // Takes an array and number of slices as params, splits into two
@@ -68,7 +83,9 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           }
 
           /* Initializes all Bootstrap tooltips */
-          $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          $timeout(function() {
+            $(function () { $('[data-toggle="tooltip"]').tooltip() });
+          }, 1000);
 
         });
 

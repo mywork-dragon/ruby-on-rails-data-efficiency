@@ -190,9 +190,9 @@ angular.module('appApp')
         var baseAppNum = $rootScope.numPerPage * (searchCtrl.currentPage - 1) + 1;
 
         if (lastPageMaxApps > searchCtrl.numApps) {
-          return "" + baseAppNum + " - " + searchCtrl.numApps;
+          return "" + baseAppNum.toLocaleString() + " - " + searchCtrl.numApps.toLocaleString();
         } else {
-          return "" + baseAppNum + " - " + lastPageMaxApps;
+          return "" + baseAppNum.toLocaleString() + " - " + lastPageMaxApps.toLocaleString();
         }
       };
 

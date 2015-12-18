@@ -297,11 +297,14 @@ angular.module("appApp")
         });
       },
       calculateDaysAgo: function(date) {
+        /*
         var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
         var firstDate = new Date(date);
         var secondDate = Date.now();
         var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate)/(oneDay)));
         return diffDays;
+        */
+        return moment(date).fromNow(); // JS library for human readable dates
       }
     };
   }]);
