@@ -156,21 +156,23 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             }
 
             if(data.error || data.error === 0 || !data.status && data.status !== 0) { // if data.error is present, or both data.error and data.status not present
+
+              $interval.cancel(interval); // Exits interval loop
+
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
               androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
               androidLiveScanCtrl.hideLiveScanButton = true;
               androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
-              androidLiveScanCtrl.noSdkSnapshot = !androidLiveScanCtrl.sdkData.sdkCompanies || !androidLiveScanCtrl.sdkData.sdkCompanies.length || !androidLiveScanCtrl.sdkData.sdkOpenSource || !androidLiveScanCtrl.sdkData.sdkOpenSource.length; // Will show/hide view elements depending on data returned
 
               sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
-              $interval.cancel(interval); // Exits interval loop
+
             } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
-              // Run for any qualifying status
-              androidLiveScanCtrl.sdkQueryInProgress = false;
-              androidLiveScanCtrl.noSdkSnapshot = !androidLiveScanCtrl.sdkData.sdkCompanies || !androidLiveScanCtrl.sdkData.sdkCompanies.length || !androidLiveScanCtrl.sdkData.sdkOpenSource || !androidLiveScanCtrl.sdkData.sdkOpenSource.length; // Will show/hide view elements depending on data returned
 
               $interval.cancel(interval); // Exits interval loop
+
+              // Run for any qualifying status
+              androidLiveScanCtrl.sdkQueryInProgress = false;
             }
 
           })
