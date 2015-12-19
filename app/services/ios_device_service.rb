@@ -202,7 +202,7 @@ class IosDeviceService
 
   def open_app_store(ssh)
     run_command(ssh, 'open com.apple.AppStore', 'opening app in store script')
-    sleep(1)
+    sleep(2)
     run_command(ssh, "cycript -p AppStore #{debug_script_name}", 'add debug method to AppStore runtime')
   end
 
