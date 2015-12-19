@@ -7630,7 +7630,6 @@ pre {
   display: inline-block;
   position: relative;
   bottom: 1px;
-  cursor: help;
 }
 
 .sdkLiveScanUninstallDate {
@@ -7639,7 +7638,6 @@ pre {
   display: inline-block;
   position: relative;
   bottom: 1px;
-  cursor: help;
 }
 
 /* DdTextCollapse Directive Styling */
