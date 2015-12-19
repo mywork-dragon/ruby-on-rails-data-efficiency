@@ -888,7 +888,7 @@ class ApiController < ApplicationController
       h[:installed] = features aa.installed_sdks
       h[:uninstalled] = features aa.uninstalled_sdks
     end
-    h[:updated] = aa.apk_snapshots.where(status:1).last && aa.apk_snapshots.where(status:1).last.last_updated
+    h[:updated] = aa.apk_snapshots.where(status:1, scan_status:1).last && aa.apk_snapshots.where(status:1, scan_status:1).last.last_updated
     h[:error_code] = error_code || nil
     h.to_json
   end
