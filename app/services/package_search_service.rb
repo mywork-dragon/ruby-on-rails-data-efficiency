@@ -12,7 +12,7 @@ class PackageSearchService
 
     def sdks_from_snaps(n = nil)
 
-    	snaps = n.nil? ? ApkSnapshot.where(status: 1, scan_status: nil) : ApkSnapshot.where(status: 1, scan_status: nil).limit(n)
+    	snaps = n.nil? ? ApkSnapshot.where(status: 1) : ApkSnapshot.where(status: 1).limit(n)
 
     	snaps.each do |snap|
 
