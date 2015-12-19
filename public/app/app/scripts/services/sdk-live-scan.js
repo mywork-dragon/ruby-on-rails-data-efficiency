@@ -217,8 +217,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': appData.company.name,
             'appId': appData.id,
-            'sdkInstalls': sdkInstalls,
-            'sdkUninstalls': sdkUninstalls,
+            'sdkInstalls': sdkInstalls.join(', '),
+            'sdkUninstalls': sdkUninstalls.join(', '),
             'lastUpdated': sdkData.lastUpdated
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
