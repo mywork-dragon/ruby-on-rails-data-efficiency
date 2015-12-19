@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151217212944) do
+ActiveRecord::Schema.define(version: 20151219225719) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -843,6 +843,7 @@ ActiveRecord::Schema.define(version: 20151217212944) do
   add_index "ios_app_snapshots", ["ios_app_id"], name: "index_ios_app_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_snapshots", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshots_on_ios_app_snapshot_job_id", using: :btree
   add_index "ios_app_snapshots", ["name"], name: "index_ios_app_snapshots_on_name", using: :btree
+  add_index "ios_app_snapshots", ["ratings_all_count"], name: "index_ios_app_snapshots_on_ratings_all_count", using: :btree
   add_index "ios_app_snapshots", ["released"], name: "index_ios_app_snapshots_on_released", using: :btree
   add_index "ios_app_snapshots", ["support_url"], name: "index_ios_app_snapshots_on_support_url", using: :btree
 
@@ -1047,8 +1048,8 @@ ActiveRecord::Schema.define(version: 20151217212944) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
+    t.integer  "sdk_company_id"
     t.integer  "source"
   end
 
