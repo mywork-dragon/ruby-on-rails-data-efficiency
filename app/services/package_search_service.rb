@@ -2,11 +2,9 @@ class PackageSearchService
 
   class << self
 
-    def android_by_app_id
-      AndroidApp.where('newest_apk_snapshot_id IS NOT NULL AND taken_down IS NULL').find_each.with_index do |app, index|
-        li "App: #{index}"
-
-        PackageSearchService.perform_async(app.id)
+    def android_by_app_id(ids)
+      AndroidApp.where(id: ids).each do |app|
+        PackageSearchServiceWorker.perform_async(app.id)
       end
     end
 
@@ -38,4 +36,7 @@ class PackageSearchService
 
   end
   
-end
+
+
+
+ApkSnapshot.where('status = 1 AND updated_at > ?', 1.day.ago).count
