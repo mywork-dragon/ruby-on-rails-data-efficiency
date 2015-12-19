@@ -35,16 +35,8 @@ angular.module('appApp')
           allParams[attribute] = companyParams[attribute];
         }
 
-        console.log('Platform pre parse', routeParams.platform);
-        console.log('Platform post parse', platform);
-        console.log('platform.appPlatform!!', platform.appPlatform);
-        console.log('APP_PLATFORM', 'PRE', APP_PLATFORM);
-
         searchCtrl.appPlatform.platform = platform.appPlatform;
         var APP_PLATFORM = platform.appPlatform;
-
-        console.log('AppPlatform - SearchCtrl', searchCtrl.appPlatform.platform);
-        console.log('APP_PLATFORM', 'POST', APP_PLATFORM);
 
         $rootScope.tags = [];
 
