@@ -27,6 +27,7 @@ class AndroidSdkService
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
+      return nil if google_check.nil?
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					meta = result[:metadata]
@@ -82,6 +83,7 @@ class AndroidSdkService
     end
 
 		def querify(packages)
+      return nil if packages.nil?
 			q = Hash.new
 			packages.each do |package|
 				query = query_from_package(package)
@@ -232,6 +234,7 @@ class AndroidSdkService
 
 		def miss_match(data:, check:)
 			m = Hash.new
+      return nil if data.nil?
       data.each do |d|
         match = send check, d
         if match
