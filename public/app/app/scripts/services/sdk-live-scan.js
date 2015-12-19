@@ -61,8 +61,8 @@ angular.module("appApp")
 
           var sdkInstalls = sdkData.sdkCompanies;
           var sdkUninstalls = sdkData.sdkOpenSource;
-          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }) : '';
-          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : '';
+          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
+          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
@@ -191,8 +191,8 @@ angular.module("appApp")
           var sdkInstalls = sdkData.sdkCompanies;
           var sdkUninstalls = sdkData.sdkOpenSource;
           console.log('----------', 'sdkInstalls', sdkInstalls, 'sdkUninstalls', sdkUninstalls);
-          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }) : '';
-          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : '';
+          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
+          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
           console.log('----------', 'sdkInstalls', sdkInstalls, 'sdkUninstalls', sdkUninstalls);
 
           /* -------- Mixpanel Analytics Start -------- */
