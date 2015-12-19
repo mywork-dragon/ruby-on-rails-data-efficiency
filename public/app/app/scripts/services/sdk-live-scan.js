@@ -188,8 +188,10 @@ angular.module("appApp")
 
           appData = data;
 
-          var sdkInstalls = sdkData.installedSdks;
-          sdkInstalls.map(function(sdk) { return sdk.name; });
+          var sdkInstalls = sdkData.sdkCompanies;
+          var sdkUninstalls = sdkData.sdkOpenSource;
+          sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }) : '';
+          sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }) : '';
 
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
@@ -199,6 +201,7 @@ angular.module("appApp")
               'companyName': appData.company.name,
               'appId': appData.id,
               'sdkInstalls': sdkInstalls,
+              'sdkUninstalls': sdkUninstalls,
               'lastUpdated': sdkData.lastUpdated
             }
           );
@@ -213,6 +216,7 @@ angular.module("appApp")
             'companyName': appData.company.name,
             'appId': appData.id,
             'sdkInstalls': sdkInstalls,
+            'sdkUninstalls': sdkUninstalls,
             'lastUpdated': sdkData.lastUpdated
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
