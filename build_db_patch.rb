@@ -23,7 +23,7 @@ if !`git log HEAD..origin/#{current_branch}`.chomp.empty?
   abort
 end
 
-if !`git log origin/#{current_branch}..HEAD`.chomp.empty? && false
+if !`git log origin/#{current_branch}..HEAD`.chomp.empty?
   puts "Error: local is ahead remote. Push your changes".red
   abort
 end
