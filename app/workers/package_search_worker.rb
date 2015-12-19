@@ -32,7 +32,7 @@ module PackageSearchWorker
     AndroidSdkService.classify(snap_id: snap_id, packages: packages)
 
     apk_snap = ApkSnapshot.find_by_id(snap_id)
-    apk.scan_status = :scan_success
+    apk_snap.scan_status = :scan_success
     apk_snap.save
 
   end
