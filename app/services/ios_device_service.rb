@@ -22,6 +22,10 @@ class IosDeviceService
   DECRYPTED_FOLDER = "#{home}/decrypted_ios_apps"
 
   DISPLAY_STATUSES = {
+    starting_download: {
+      commands: "updateDebugStatus('Starting download', [UIColor greenColor]);",
+      filename: 'download_starting.cy'
+    },
     downloading: {
       commands: "updateDebugStatus('Waiting for download', [UIColor yellowColor]);",
       filename: 'download_waiting.cy'
@@ -188,7 +192,7 @@ class IosDeviceService
   # check if the app store is running
   # returns a boolean
   def is_app_store_running?(ssh)
-    ret = run_command(ssh, 'ps aux | grep AppStore | grep -v grep | wc -l', 'check if app store is open')
+    ret = run_command(ssh, 'ps aux | grep AppStore | grep -v grep | grep -v cycript | wc -l', 'check if app store is open')
     ret && ret.include?('0') ? false : true
   end
 
@@ -225,7 +229,11 @@ class IosDeviceService
     install_download_app_script(ssh)
 
     # open app page in app store
-    5.times do |n|
+
+    first_step_success = false
+    ret = nil
+
+    10.times do |n|
       # make sure app store is open
       if !is_app_store_running?(ssh)
         puts "AppStore not open, opening app again"
@@ -237,21 +245,33 @@ class IosDeviceService
       ret = run_command(ssh, "cycript -p AppStore #{download_app_script_name}", 'click download app')
       # could be timing error if download succeeds in less than 3 seconds...
       if ret && (ret.include?('Downloading'))
+        print_display_status(ssh, :starting_download)
         puts "Download started"
+        first_step_success = true
         break
       elsif ret && ret.include?('Installed')
         puts "Already installed"
         raise "App already installed and ambiguous prior installs or mistaken OPEN button" if prior_apps.length != 1
         prior_apps = [] # assured only 1 and it's already installed. shortcut to let apps_after succeed
+        first_step_success = true
         break
       elsif ret && ret.include?('Pressed button')
         puts "Pressed button"
+      elsif ret && (ret.include?('HTTP Failed') || ret.include?('Cannot connect'))
+        puts "Killing app store because of faulty connection"
+        run_command(ssh, "killall AppStore", 'closing AppStore because HTTP Request failed')
+        sleep(1)
+      elsif ret && ret.include?('Content Unavailable')
+        raise "Content Unavailable in AppStore"
       else
         puts "Did not start downloading"
       end
     end
-    
-    # add some logic to ensure that app store is open
+
+    if !first_step_success
+      raise ret if ret && ret.include?('ERROR')
+      raise "Unable to initiate download"  
+    end
 
     install_open_app_scripts(ssh)
 
@@ -268,11 +288,11 @@ class IosDeviceService
       sleep(5)
       puts "Try #{n}"
 
-      # button_check = run_command(ssh, "cycript -p AppStore #{open_app_script_name}", 'find open app after download')
+      button_check = run_command(ssh, "cycript -p AppStore #{download_app_script_name}", 'find open app after download')
 
       bundle_check = run_command(ssh, "cycript -p SpringBoard #{verify_install_script_name}", 'check SpringBoard for app')
 
-      if bundle_check && bundle_check.chomp.include?('Completed')
+      if (bundle_check && bundle_check.chomp.include?('Completed')) || (button_check && button_check.include?('Installed'))
         puts "Finished install"
         print_display_status(ssh, :download_complete)
         break
