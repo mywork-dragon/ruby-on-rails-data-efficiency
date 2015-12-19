@@ -43,6 +43,7 @@ angular.module('appApp')
         searchCtrl.appPlatform.platform = platform.appPlatform;
         var APP_PLATFORM = platform.appPlatform;
 
+        console.log('AppPlatform - SearchCtrl', searchCtrl.appPlatform.platform);
         console.log('APP_PLATFORM', 'POST', APP_PLATFORM);
 
         $rootScope.tags = [];
@@ -175,7 +176,7 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
         var firstPage = 1;
         $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
+        apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order, searchCtrl.appPlatform.platform)
           .success(function(data) {
             $scope.queryInProgress = false;
             searchCtrl.apps = data.results;
