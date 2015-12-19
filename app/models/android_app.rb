@@ -82,7 +82,7 @@ class AndroidApp < ActiveRecord::Base
   def get_sdks(sdk_apk, first_last)
     r = Hash.new
     sdk_apk.each{|sdk, apk| r[sdk] = ApkSnapshot.find(apk).send(first_last) }
-    sdks = AndroidSdk.where(id:sdk_apk.map(&:first) && flagged: false)
+    sdks = AndroidSdk.where(id:sdk_apk.map(&:first),flagged: false)
     sdks.each{ |sdk| sdk.send("#{first_last}=",r[sdk.id]) }
     sdks
   end
