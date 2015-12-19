@@ -30,7 +30,7 @@ class AndroidSdkService
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					meta = result[:metadata]
-					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
+					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source])
 					result[:packages].each do |p| 
 						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
 					end
@@ -44,9 +44,9 @@ class AndroidSdkService
 
     private
 
-		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
+		def save_sdk(name:, website:, open_source:)
 			begin
-    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
+    		AndroidSdk.create(name: name, website: website, open_source: open_source)
     	rescue
     		AndroidSdk.where(name: name).first
     	end
@@ -107,7 +107,6 @@ class AndroidSdkService
       return nil if query.blank?
 			google_search(q: "#{query} android sdk", limit: 4).each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
-        puts ext
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
         host = URI(url).host
@@ -136,7 +135,6 @@ class AndroidSdkService
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
-        puts q.green
         google_search(q: q, limit: 5).each do |url|
           if !!(url =~ /#{regex}/i)
             matched = github_data_match(url, rname, rowner)
