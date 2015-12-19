@@ -202,7 +202,7 @@ class IosDeviceService
 
   def open_app_store(ssh)
     run_command(ssh, 'open com.apple.AppStore', 'opening app in store script')
-    sleep(1)
+    sleep(2)
     run_command(ssh, "cycript -p AppStore #{debug_script_name}", 'add debug method to AppStore runtime')
   end
 
@@ -224,8 +224,9 @@ class IosDeviceService
 
     install_download_app_script(ssh)
 
+    first_step_success = false
     # open app page in app store
-    5.times do |n|
+    10.times do |n|
       # make sure app store is open
       if !is_app_store_running?(ssh)
         puts "AppStore not open, opening app again"
@@ -238,11 +239,13 @@ class IosDeviceService
       # could be timing error if download succeeds in less than 3 seconds...
       if ret && (ret.include?('Downloading'))
         puts "Download started"
+        first_step_success = true
         break
       elsif ret && ret.include?('Installed')
         puts "Already installed"
         raise "App already installed and ambiguous prior installs or mistaken OPEN button" if prior_apps.length != 1
         prior_apps = [] # assured only 1 and it's already installed. shortcut to let apps_after succeed
+        first_step_success = true
         break
       elsif ret && ret.include?('Pressed button')
         puts "Pressed button"
@@ -250,6 +253,8 @@ class IosDeviceService
         puts "Did not start downloading"
       end
     end
+
+    raise "Unable to initiate download" if !first_step_success
     
     # add some logic to ensure that app store is open
 
