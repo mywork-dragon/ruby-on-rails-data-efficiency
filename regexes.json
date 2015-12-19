@@ -920,6 +920,18 @@
                 "lingala"
             ]
         }
+    },
+
+    "ReactiveX" :
+    {
+        "RxJava" :
+        {
+            "website" : "https://github.com/ReactiveX/RxJava",
+            "open_source" : true,
+            "regexes" : [
+                "rx."
+            ]
+        }
     }
 
 
