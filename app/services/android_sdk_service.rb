@@ -56,11 +56,13 @@ class AndroidSdkService
 		def save_package(package:, android_sdk_id:, snap_id:)
 
       # save sdk_packages
-    	sdk_package = begin
+    	begin
     		SdkPackage.create(package: package)
     	rescue
-    		SdkPackage.find_by_package(package)
+    		nil
     	end
+      
+      sdk_package = SdkPackage.find_by_package(package)
     	if sdk_package.android_sdk_id != android_sdk_id
 	    	sdk_package.android_sdk_id = android_sdk_id
 	    	sdk_package.save
