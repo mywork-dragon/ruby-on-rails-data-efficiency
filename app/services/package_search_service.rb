@@ -35,8 +35,5 @@ class PackageSearchService
     end
 
   end
-  
 
-
-
-ApkSnapshot.where('status = 1 AND updated_at > ?', 1.day.ago).count
+end
