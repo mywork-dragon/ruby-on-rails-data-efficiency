@@ -61,8 +61,8 @@ class AndroidSdkService
     	rescue
     		nil
     	end
-      
-      sdk_package = SdkPackage.find_by_package(package)
+
+      sdk_package = SdkPackage.where(package: package).first
     	if sdk_package.android_sdk_id != android_sdk_id
 	    	sdk_package.android_sdk_id = android_sdk_id
 	    	sdk_package.save
