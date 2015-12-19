@@ -19,15 +19,14 @@ class AndroidSdkService
 
 			# Save package if it is already in the table
 			table_check = miss_match(data: regex_check[:missed], check: :match_table)
-			if table_check[:matched].present?
-				table_check[:matched].each do |p| 
-					save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-				end
-			end
+  		if table_check[:matched].present?
+  			table_check[:matched].each do |p| 
+  				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+  			end
+  		end
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-      return nil if google_check.nil?
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					meta = result[:metadata]
@@ -234,7 +233,7 @@ class AndroidSdkService
 
 		def miss_match(data:, check:)
 			m = Hash.new
-      return nil if data.nil?
+      return m if data.nil?
       data.each do |d|
         match = send check, d
         if match
