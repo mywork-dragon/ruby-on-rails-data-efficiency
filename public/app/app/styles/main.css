@@ -7620,6 +7620,10 @@ pre {
   padding-top: 0 !important;
 }
 
+.liveScanSdksCountDisplay {
+  font-size: 12px;
+}
+
 .sdkLiveScanInstallDate {
   font-size: 10px;
   color: #1EAD4F;
