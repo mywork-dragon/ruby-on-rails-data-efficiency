@@ -9,7 +9,7 @@ rescue => e
 end
 
 outfile = "db.patch"
-db_files = %w{db app/models test/models test/fixtures}
+db_files = %w(db)
 
 # update remote references
 puts "Updating remote references".light_blue
