@@ -13,7 +13,7 @@
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="!androidLiveScanCtrl.sdkData.sdkCompanies.length">
-                  <strong>Installed SDKs</strong> ({{androidLiveScanCtrl.sdkData.sdkCompanies.length}})
+                  <strong>Installed SDKs</strong> <span class="liveScanSdksCountDisplay">({{androidLiveScanCtrl.sdkData.sdkCompanies.length}})</span>
                   <ul ng-show="androidLiveScanCtrl.sdkData.sdkCompanies">
                     <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in androidLiveScanCtrl.sdkData.sdkCompanies">
                       <div class="sdkLiveScanDisplayIconSection">
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="col-md-6 sdkOpenSourceSection" ng-hide="!androidLiveScanCtrl.sdkData.sdkOpenSource.length">
-                  <strong>Uninstalled SDKs</strong> ({{androidLiveScanCtrl.sdkData.sdkOpenSource.length}})
+                  <strong>Uninstalled SDKs</strong> <span class="liveScanSdksCountDisplay">({{androidLiveScanCtrl.sdkData.sdkOpenSource.length}})</span>
                   <ul ng-show="androidLiveScanCtrl.sdkData.sdkOpenSource">
                     <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in androidLiveScanCtrl.sdkData.sdkOpenSource">
                       <div class="sdkLiveScanDisplayIconSection">
