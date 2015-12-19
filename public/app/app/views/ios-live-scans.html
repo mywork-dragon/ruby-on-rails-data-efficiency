@@ -13,7 +13,7 @@
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="!iosLiveScanCtrl.sdkData.sdkCompanies.length">
-                  <strong>Installed SDKs</strong>
+                  <strong>Installed SDKs</strong> ({{iosLiveScanCtrl.sdkData.sdkCompanies.length}})
                   <ul ng-show="iosLiveScanCtrl.sdkData.sdkCompanies">
                     <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkCompanies">
                       <div class="sdkLiveScanDisplayIconSection">
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="col-md-6 sdkOpenSourceSection" ng-hide="!iosLiveScanCtrl.sdkData.sdkOpenSource.length">
-                  <strong>Uninstalled SDKs</strong>
+                  <strong>Uninstalled SDKs</strong> ({{iosLiveScanCtrl.sdkData.sdkOpenSource.length}})
                   <ul ng-show="iosLiveScanCtrl.sdkData.sdkOpenSource">
                     <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkOpenSource">
                       <div class="sdkLiveScanDisplayIconSection">
