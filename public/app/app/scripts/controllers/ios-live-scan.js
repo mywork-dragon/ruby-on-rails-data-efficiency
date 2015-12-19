@@ -62,7 +62,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             "Sorry, SDKs Not Available for Paid Apps",
             "Sorry, SDKs Not Available - App is Not in U.S. App Store",
             "Sorry, SDKs Temporarily Not Available for This App",
-            "Sorry, Live Scans Not Available for Non-Mobile Apps"
+            "Sorry, SDKs Temporarily Not Available for This App",
+            "Sorry, SDKs Not Available for This App"
           ];
 
           if (data.error_code != null) {
@@ -191,7 +192,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
               iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
-              iosLiveScanCtrl.noSdkSnapshot = (!iosLiveScanCtrl.sdkData.sdkCompanies.length || !iosLiveScanCtrl.sdkData.sdkOpenSource.length); // Will show/hide view elements depending on data returned
+              iosLiveScanCtrl.noSdkSnapshot = !iosLiveScanCtrl.sdkData.sdkCompanies || !iosLiveScanCtrl.sdkData.sdkCompanies.length || !iosLiveScanCtrl.sdkData.sdkOpenSource || !iosLiveScanCtrl.sdkData.sdkOpenSource.length; // Will show/hide view elements depending on data returned
 
               if(data.status != 6) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
