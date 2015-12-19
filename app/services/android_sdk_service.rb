@@ -30,7 +30,8 @@ class AndroidSdkService
 			if google_check[:matched].present?
 				google_check[:matched].each do |result|
 					meta = result[:metadata]
-					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source])
+          g = meta[:github_repo_identifier] || nil
+					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
 					result[:packages].each do |p| 
 						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
 					end
@@ -44,9 +45,9 @@ class AndroidSdkService
 
     private
 
-		def save_sdk(name:, website:, open_source:)
+		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
 			begin
-    		AndroidSdk.create(name: name, website: website, open_source: open_source)
+    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
     	rescue
     		AndroidSdk.where(name: name).first
     	end
@@ -110,7 +111,7 @@ class AndroidSdkService
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
         host = URI(url).host
-				return {:url=>url, :name=>company, :open_source=>false} if host && host.include?(query.downcase)
+				return {:url=>url, :name=>company, :open_source=>false, :github_repo_identifier=>nil} if host && host.include?(query.downcase)
 			end
 			nil
 		end
