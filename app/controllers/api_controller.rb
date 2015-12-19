@@ -814,9 +814,11 @@ class ApiController < ApplicationController
   end
 
   def ios_start_scan
-    job_id = params[:ios_app_id] || -1
+    ios_app_id = params['appId']
 
-    render json: {scan_id: job_id}
+    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id, job_type: :test)
+
+    render json: {job_id: job_id}
   end
 
   def android_sdks_exist
