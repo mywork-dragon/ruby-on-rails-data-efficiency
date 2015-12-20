@@ -58,10 +58,21 @@ class Proxy
       mp.private_ip
     end
 
-    def get_proxy_with_wait(w = 3)
-      mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,w.seconds.ago).sample
-      mp.last_used = DateTime.now
-      mp.save
+    def get_proxy_with_wait
+      30.times do
+        p = pick_proxy
+        return p.private_ip if p.present?
+        sleep 1
+      end
+      get_proxy
+    end
+
+    def pick_proxy
+      mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,4.seconds.ago).sample
+      if mp.present?
+        mp.last_used = DateTime.now
+        mp.save
+      end
       mp
     end
 
@@ -80,8 +91,8 @@ class Proxy
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
-      mp = get_proxy_with_wait
-      Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: mp.private_ip))
+      get_proxy_with_wait
+      # Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
     end
 
     # Convenience method to get the Response object from just a url
