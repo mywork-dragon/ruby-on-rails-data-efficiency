@@ -10,7 +10,7 @@ class AndroidSdkService
 
       puts "#{snap_id} => starting scan"
 
-			Save package if it matches a regex
+			# Save package if it matches a regex
       regex_check = miss_match(data: packages, check: :match_regex)
       a = Benchmark.measure do
   			if regex_check[:matched].present?
