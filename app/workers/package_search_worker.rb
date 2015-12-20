@@ -12,14 +12,13 @@ module PackageSearchWorker
 
   def find_packages(app_identifier:, snap_id:)
 
-    start_time = Time.now
-
     if Rails.env.production?  
       file_name = ApkSnapshot.find(snap_id).apk_file.apk.url
 
       wait_for_open_download_spot
 
       begin
+        start_time = Time.now
         s3_file = open(file_name)
       rescue
         decrement_concurrent_downloads
