@@ -69,7 +69,7 @@ class Proxy
 
     def pick_proxy
       begin
-        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,4.seconds.ago).sample
+        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).order(last_used: :asc).limit(3).sample
         if mp.present?
           mp.last_used = DateTime.now
           mp.save
@@ -96,7 +96,15 @@ class Proxy
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
-      Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+      3.times do
+        begin
+          body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+        rescue
+          nil
+        else
+          return body
+        end
+      end
     end
 
     # Convenience method to get the Response object from just a url
