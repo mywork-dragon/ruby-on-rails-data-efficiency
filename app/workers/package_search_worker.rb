@@ -35,9 +35,7 @@ module PackageSearchWorker 
       cls
     end.compact.uniq
 
-    t = Benchmark.measure do
-      AndroidSdkService.classify(snap_id: snap_id, packages: packages)
-    end
+    t = Benchmark.measure{ AndroidSdkService.classify(snap_id: snap_id, packages: packages) }
 
     puts "#{snap_id} => finished job [#{t.real}]"
 
