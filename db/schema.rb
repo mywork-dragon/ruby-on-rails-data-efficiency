@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151219225719) do
+ActiveRecord::Schema.define(version: 20151220075451) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1048,8 +1048,8 @@ ActiveRecord::Schema.define(version: 20151219225719) do
     t.text     "summary"
     t.boolean  "deprecated"
     t.integer  "github_repo_identifier"
-    t.integer  "ios_sdk_source_group_id"
     t.integer  "sdk_company_id"
+    t.integer  "ios_sdk_source_group_id"
     t.integer  "source"
   end
 
@@ -1354,6 +1354,17 @@ ActiveRecord::Schema.define(version: 20151219225719) do
   add_index "sdk_regexes", ["android_sdk_id"], name: "index_sdk_regexes_on_android_sdk_id", using: :btree
   add_index "sdk_regexes", ["ios_sdk_id"], name: "index_sdk_regexes_on_ios_sdk_id", using: :btree
   add_index "sdk_regexes", ["regex"], name: "index_sdk_regexes_on_regex", unique: true, using: :btree
+
+  create_table "sdk_scrapers", force: true do |t|
+    t.string   "name"
+    t.string   "private_ip"
+    t.integer  "concurrent_apk_downloads"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_scrapers", ["concurrent_apk_downloads"], name: "index_sdk_scrapers_on_concurrent_apk_downloads", using: :btree
+  add_index "sdk_scrapers", ["private_ip"], name: "index_sdk_scrapers_on_private_ip", using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"
