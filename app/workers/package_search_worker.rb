@@ -6,6 +6,7 @@ module PackageSearchWorker
     nas = aa.newest_apk_snapshot
     return nil if nas.blank?
     snap_id = nas.id
+    @snap_id = snap_id
     find_packages(app_identifier: app_identifier, snap_id: snap_id)
   end
 

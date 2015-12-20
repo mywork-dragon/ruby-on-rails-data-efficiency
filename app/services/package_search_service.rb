@@ -3,7 +3,9 @@ class PackageSearchService
   class << self
 
     def run(n = 200)
-      SdkScraper.all.each{ |x| x.concurrent_apk_downloads = 0; x.save }
+      #SdkScraper.all.each{ |x| x.concurrent_apk_downloads = 0; x.save }
+      `rm /home/deploy/threads/*`
+
       apps = []
       AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each do |app|
         PackageSearchServiceWorker.perform_async(app.id)
