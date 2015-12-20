@@ -20,6 +20,9 @@ class AndroidSdkService
 				end
 			end
 
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "#{snap_id} => starting a package search"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
 
 			# Save package if it is already in the table
 			table_check = miss_match(data: regex_check[:missed], check: :match_table)
@@ -62,10 +65,6 @@ class AndroidSdkService
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
-
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
-      puts "#{snap_id} => saving package (#{package})"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
 
      #  # save sdk_packages
     	# begin
@@ -205,7 +204,7 @@ class AndroidSdkService
 		      result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
         end
         puts "~~~~~~~~~~~~~~~~~~~~~~~~"
-        puts "#{snap_id} => searching [#{q}]. time: #{b.real}"
+        puts "searching for [#{q}]. time: #{b.real}"
         puts "~~~~~~~~~~~~~~~~~~~~~~~~"
       rescue => e
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
