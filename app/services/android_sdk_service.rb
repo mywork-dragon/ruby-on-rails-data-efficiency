@@ -201,7 +201,7 @@ class AndroidSdkService
 
 		def google_search(q:, limit: 10)
       begin
-        result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+        result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
       rescue => e
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
         raise
