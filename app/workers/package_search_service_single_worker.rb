@@ -8,6 +8,14 @@ class PackageSearchServiceSingleWorker
     true
   end
 
+  # no-op
+  def wait_for_open_download_spot
+  end
+
+  # no-op
+  def decrement_current_downloads
+  end
+
   include PackageSearchWorker
 
   
