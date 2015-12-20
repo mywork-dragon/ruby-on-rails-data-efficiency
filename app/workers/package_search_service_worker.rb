@@ -33,7 +33,7 @@ class PackageSearchServiceWorker
 
   def decrement_concurrent_downloads
     sdk_scraper = SdkScraper.find_by_private_ip(ip)
-    sdk_scraper.concurrent_apk_downloads =+ 1
+    sdk_scraper.concurrent_apk_downloads -= 1
     sdk_scraper.save
   end
 
