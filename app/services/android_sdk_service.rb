@@ -59,8 +59,10 @@ class AndroidSdkService
     	begin
     		SdkPackage.create(package: package)
     	rescue ActiveRecord::RecordNotUnique => e
+        puts "ActiveRecord::RecordNotUnique exception"
     		nil
       rescue => e
+        puts "Another exception: #{e.message}"
         raise e
     	end
 
