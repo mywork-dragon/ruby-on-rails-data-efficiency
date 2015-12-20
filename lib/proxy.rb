@@ -91,8 +91,7 @@ class Proxy
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
-      get_proxy_with_wait
-      # Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+      Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
     end
 
     # Convenience method to get the Response object from just a url
