@@ -2,10 +2,6 @@ class PackageSearchServiceWorker
 
   MAX_CONCURRENT_DOWNLOADS = 10
 
-  class << self
-    attr_accessor :concurrent_downloads
-  end
-
   include Sidekiq::Worker
 
   sidekiq_options :backtrace => true, :retry => false, :queue => :sdk
@@ -49,9 +45,9 @@ class PackageSearchServiceWorker
     `rm /home/deploy/threads/t#{@snap_id}`
   end
 
-  def ip
-    `hostname -I`.strip
-  end
+  # def ip
+  #   `hostname -I`.strip
+  # end
 
 
   include PackageSearchWorker
