@@ -8,6 +8,10 @@ class AndroidSdkService
 
 		def classify(snap_id:, packages:)
 
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "#{snap_id} => starting scan"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+
 			# Save package if it matches a regex
 			regex_check = miss_match(data: packages, check: :match_regex)
 			if regex_check[:matched].present?
@@ -24,6 +28,10 @@ class AndroidSdkService
   				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
   			end
   		end
+
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "#{snap_id} => starting google search"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
 
 			# Save package, sdk, and company if it matches a google search
 			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
@@ -54,6 +62,10 @@ class AndroidSdkService
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
+
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "#{snap_id} => saving package (#{package})"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~"
 
      #  # save sdk_packages
     	# begin
@@ -189,7 +201,12 @@ class AndroidSdkService
 
 		def google_search(q:, limit: 10)
       begin
-		    result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+        b = Benchmark.measure do
+		      result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+        end
+        puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+        puts "#{snap_id} => searching [#{q}]. time: #{b.real}"
+        puts "~~~~~~~~~~~~~~~~~~~~~~~~"
       rescue => e
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
         raise
