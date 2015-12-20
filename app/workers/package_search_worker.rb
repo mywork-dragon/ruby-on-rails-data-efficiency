@@ -11,7 +11,9 @@ module PackageSearchWorker
 
   def find_packages(app_identifier:, snap_id:)
 
-    if Rails.env.production?
+    start_time = Time.now
+
+    if Rails.env.production?  
       file_name = ApkSnapshot.find(snap_id).apk_file.apk.url
       begin
         s3_file = open(file_name)
@@ -24,6 +26,10 @@ module PackageSearchWorker
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
     end
+
+    end_time = Time.now
+
+    puts "#{snap_id} => downloaded [#{end_time - start_time}]"
 
     dex = apk.dex
     packages = dex.classes.map do |cls|
