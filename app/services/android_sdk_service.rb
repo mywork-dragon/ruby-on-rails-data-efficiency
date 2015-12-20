@@ -3,6 +3,8 @@ class AndroidSdkService
   EX_WORDS = "framework|android|sdk|\\W+"
   LANGS = "java"
 
+  # don't let this get too big
+  @sdk_regex_all = SdkRegex.all.select(:regex, :android_sdk_id)
 
 	class << self
 
@@ -259,7 +261,7 @@ class AndroidSdkService
     end
 
     def match_regex(package)
-      SdkRegex.all.each do |regex|
+      @sdk_regex_all.each do |regex|
         if !!(package =~ /#{regex.regex}/i)
         	return { 
         		:package => package, 
