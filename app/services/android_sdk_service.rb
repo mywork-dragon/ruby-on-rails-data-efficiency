@@ -54,32 +54,32 @@ class AndroidSdkService
 
 		def save_package(package:, android_sdk_id:, snap_id:)
 
-     #  # save sdk_packages
-    	# begin
-    	# 	SdkPackage.create(package: package)
-    	# rescue ActiveRecord::RecordNotUnique => e
-    	# 	nil
-    	# end
+      # save sdk_packages
+    	begin
+    		SdkPackage.create(package: package)
+    	rescue ActiveRecord::RecordNotUnique => e
+    		nil
+    	end
 
-     #  sdk_package = SdkPackage.where(package: package).first
-    	# if sdk_package.android_sdk_id != android_sdk_id
-	    # 	sdk_package.android_sdk_id = android_sdk_id
-	    # 	sdk_package.save
-	    # end
+      sdk_package = SdkPackage.where(package: package).first
+    	if sdk_package.android_sdk_id != android_sdk_id
+	    	sdk_package.android_sdk_id = android_sdk_id
+	    	sdk_package.save
+	    end
 
-     #  # save sdk_packages_apk_snapshots
-     #  begin
-     #    SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-     #  rescue
-     #    nil
-     #  end
+      # save sdk_packages_apk_snapshots
+      begin
+        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+      rescue
+        nil
+      end
 
-     #  # save android_sdks_apk_snapshots
-     #  begin
-     #    AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
-     #  rescue
-     #    nil
-     #  end
+      # save android_sdks_apk_snapshots
+      begin
+        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
+      rescue
+        nil
+      end
       
     end
 
