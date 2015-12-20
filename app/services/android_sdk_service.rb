@@ -11,7 +11,7 @@ class AndroidSdkService
       puts "#{snap_id} => starting scan"
 
 			# Save package if it matches a regex
-      regex_check = miss_match(data: packages, check: :match_regex)
+      # regex_check = miss_match(data: packages, check: :match_regex)
      #  a = Benchmark.measure do
   			# if regex_check[:matched].present?
      #      puts "#{snap_id} => regexes were matched"
@@ -21,7 +21,7 @@ class AndroidSdkService
   			# end
      #  end
 
-      puts "#{snap_id} => matched regex" 
+      # puts "#{snap_id} => matched regex" 
 
 			# # Save package if it is already in the table
    #    table_check = miss_match(data: regex_check[:missed], check: :match_table)
