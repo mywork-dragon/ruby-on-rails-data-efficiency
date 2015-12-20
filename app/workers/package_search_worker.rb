@@ -1,4 +1,4 @@
-module PackageSearchWorker
+module PackageSearchWorker 
 
   def perform(app_id)
     aa = AndroidApp.find(app_id)
@@ -35,7 +35,11 @@ module PackageSearchWorker
       cls
     end.compact.uniq
 
-    AndroidSdkService.classify(snap_id: snap_id, packages: packages)
+    t = Benchmark.measure do
+      AndroidSdkService.classify(snap_id: snap_id, packages: packages)
+    end
+
+    puts "#{snap_id} => finished job [#{t.real}]"
 
     apk_snap = ApkSnapshot.find_by_id(snap_id)
     apk_snap.scan_status = :scan_success
