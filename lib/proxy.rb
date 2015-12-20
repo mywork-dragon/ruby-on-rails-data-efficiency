@@ -68,12 +68,17 @@ class Proxy
     end
 
     def pick_proxy
-      mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,4.seconds.ago).sample
-      if mp.present?
-        mp.last_used = DateTime.now
-        mp.save
+      begin
+        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,4.seconds.ago).sample
+        if mp.present?
+          mp.last_used = DateTime.now
+          mp.save
+        end
+      rescue
+        nil
+      else
+        mp
       end
-      mp
     end
 
     # Gets the body only
