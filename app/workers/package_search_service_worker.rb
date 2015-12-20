@@ -21,7 +21,7 @@ class PackageSearchServiceWorker
       while true
         sdk_scraper = SdkScraper.find_by_private_ip(private_ip)
         
-        concurrent_downloads = sdk_scraper.concurrent_downloads
+        concurrent_downloads = sdk_scraper.concurrent_apk_downloads
 
         if concurrent_downloads < MAX_CONCURRENT_DOWNLOADS
           sdk_scraper.concurrent_downloads = concurrent_downloads + 1
@@ -35,7 +35,7 @@ class PackageSearchServiceWorker
 
   def decrement_concurrent_downloads
     sdk_scraper = SdkScraper.find_by_private_ip(ip)
-    sdk_scraper.concurrent_downloads = concurrent_downloads + 1
+    sdk_scraper.concurrent_apk_downloads = concurrent_downloads + 1
     sdk_scraper.save
   end
 
