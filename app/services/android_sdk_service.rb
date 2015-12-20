@@ -58,8 +58,10 @@ class AndroidSdkService
       # save sdk_packages
     	begin
     		SdkPackage.create(package: package)
-    	rescue
+    	rescue ActiveRecord::RecordNotUnique => e
     		nil
+      rescue => e
+        raise e
     	end
 
       sdk_package = SdkPackage.where(package: package).first
