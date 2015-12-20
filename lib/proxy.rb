@@ -96,9 +96,12 @@ class Proxy
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
-      3.times do
+      5.times do
+        body = nil
         begin
-          body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+          timeout(3) do
+            body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+          end
         rescue
           nil
         else

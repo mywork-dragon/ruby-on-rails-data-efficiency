@@ -211,7 +211,7 @@ class AndroidSdkService
 		end
 
 		def valid_domain?(url)
-			url.exclude?('...') && url != '0' && url.count('-') <= 1
+			url.present? && url.exclude?('...') && url != '0' && url.count('-') <= 1
 		end
 
 		def remove_sub(url)
