@@ -13,7 +13,7 @@ class PackageSearchServiceSingleWorker
   end
 
   # no-op
-  def decrement_current_downloads
+  def decrement_concurrent_downloads
   end
 
   include PackageSearchWorker

@@ -29,7 +29,7 @@ class PackageSearchServiceWorker
       end
   end
 
-  def decrement_current_downloads
+  def decrement_concurrent_downloads
     self.class.concurrent_downloads -= 1
   end
 

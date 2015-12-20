@@ -21,11 +21,11 @@ module PackageSearchWorker
       begin
         s3_file = open(file_name)
       rescue
-        decrement_current_downloads
+        decrement_concurrent_downloads
         ApkSnapshotException.create(name: "couldn't download from s3 bucket")
         raise
       end
-      decrement_current_downloads
+      decrement_concurrent_downloads
       apk = Android::Apk.new(s3_file)
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
