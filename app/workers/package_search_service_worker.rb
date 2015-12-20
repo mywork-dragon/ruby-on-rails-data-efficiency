@@ -49,9 +49,6 @@ class PackageSearchServiceWorker
     `rm /home/deploy/threads/t#{@snap_id}`
   end
 
-  def thread_file
-  end
-
   def ip
     `hostname -I`.strip
   end
