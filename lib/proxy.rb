@@ -96,8 +96,8 @@ class Proxy
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
+      body = nil
       5.times do
-        body = nil
         begin
           timeout(3) do
             body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
@@ -105,9 +105,10 @@ class Proxy
         rescue
           nil
         else
-          return body
+          break
         end
       end
+      body
     end
 
     # Convenience method to get the Response object from just a url

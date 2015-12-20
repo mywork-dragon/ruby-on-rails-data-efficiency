@@ -206,7 +206,7 @@ class AndroidSdkService
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
         raise
       else
-		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
       end
 		end
 
