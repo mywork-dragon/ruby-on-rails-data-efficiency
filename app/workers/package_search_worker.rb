@@ -1,4 +1,4 @@
-module PackageSearchWorker 
+module PackageSearchWorker
 
   def perform(app_id)
     aa = AndroidApp.find(app_id)
