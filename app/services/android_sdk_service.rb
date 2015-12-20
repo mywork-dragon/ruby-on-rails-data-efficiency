@@ -11,8 +11,8 @@ class AndroidSdkService
       puts "#{snap_id} => starting scan"
 
 			# Save package if it matches a regex
+      regex_check = miss_match(data: packages, check: :match_regex)
       a = Benchmark.measure do
-  			regex_check = miss_match(data: packages, check: :match_regex)
   			if regex_check[:matched].present?
   				regex_check[:matched].each do |p| 
   					save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
@@ -23,8 +23,8 @@ class AndroidSdkService
       puts "#{snap_id} => regex match [#{a.real}]" 
 
 			# Save package if it is already in the table
+      table_check = miss_match(data: regex_check[:missed], check: :match_table)
       b = Benchmark.measure do
-  			table_check = miss_match(data: regex_check[:missed], check: :match_table)
     		if table_check[:matched].present?
     			table_check[:matched].each do |p| 
     				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
@@ -35,8 +35,8 @@ class AndroidSdkService
       puts "#{snap_id} => searching packages [#{b.real}]"
 
 			# Save package, sdk, and company if it matches a google search
+      google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
       c = Benchmark.measure do
-  			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
   			if google_check[:matched].present?
   				google_check[:matched].each do |result|
   					meta = result[:metadata]
