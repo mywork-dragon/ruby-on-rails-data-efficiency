@@ -15,17 +15,17 @@ module PackageSearchWorker
     if Rails.env.production?  
       file_name = ApkSnapshot.find(snap_id).apk_file.apk.url
 
-      wait_for_open_download_spot
+      # wait_for_open_download_spot
 
       begin
         start_time = Time.now
         s3_file = open(file_name)
       rescue
-        decrement_concurrent_downloads
+        # decrement_concurrent_downloads
         ApkSnapshotException.create(name: "couldn't download from s3 bucket")
         raise
       end
-      decrement_concurrent_downloads
+      # decrement_concurrent_downloads
       apk = Android::Apk.new(s3_file)
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'

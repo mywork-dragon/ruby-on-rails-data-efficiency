@@ -7,7 +7,8 @@ class PackageSearchService
       # `rm /home/deploy/threads/*`
 
       apps = []
-      AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each do |app|
+      # AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each do |app|
+      AndroidApp.where.not(newest_apk_snapshot_id: nil).random(n).each do |app|
         PackageSearchServiceWorker.perform_async(app.id)
         apps << app.id
       end
