@@ -58,7 +58,7 @@ class Proxy
       mp.private_ip
     end
 
-    def get_proxy_with_wait(w = 3)
+    def get_proxy_with_wait(w = 2)
       mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,w.seconds.ago).sample
       mp.last_used = DateTime.now
       mp.save
