@@ -1,5 +1,8 @@
 module PackageSearchWorker
 
+  MAX_CONCURRENT_DOWNLOADS = 10
+  @concurrent_downloads = 0
+
   def perform(app_id)
     aa = AndroidApp.find(app_id)
     app_identifier = aa.app_identifier
@@ -15,12 +18,26 @@ module PackageSearchWorker
 
     if Rails.env.production?  
       file_name = ApkSnapshot.find(snap_id).apk_file.apk.url
+
+      # ooh an infinite loop!
+      while true
+
+        if @concurrent_downloads < MAX_CONCURRENT_DOWNLOADS
+          @concurrent_downloads += 1
+          break
+        end
+
+        sleep(rand(0.1..0.125)) # sleep for a random time
+      end
+
       begin
         s3_file = open(file_name)
       rescue
+        @concurrent_downloads -= 1
         ApkSnapshotException.create(name: "couldn't download from s3 bucket")
         raise
       end
+      @concurrent_downloads -= 1
       apk = Android::Apk.new(s3_file)
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
