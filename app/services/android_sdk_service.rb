@@ -16,72 +16,67 @@ class AndroidSdkService
       regex_check = miss_match(data: packages, check: :match_regex)
   		if regex_check[:matched].present?
   			regex_check[:matched].each do |p| 
-  				# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-          puts "saving package"
+  				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
   			end
       end
 
       # puts "#{snap_id} => regex [#{a.real}]" 
 
-			# # Save package if it is already in the table
-   #    table_check = nil
-   #    b = Benchmark.measure{ table_check = miss_match(data: regex_check[:missed], check: :match_table) }
-   #  	if table_check[:matched].present?
-   #  		table_check[:matched].each do |p| 
-   #  			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-   #  		end
-   #  	end
+			# Save package if it is already in the table
+      table_check = miss_match(data: regex_check[:missed], check: :match_table)
+    	if table_check[:matched].present?
+    		table_check[:matched].each do |p| 
+    			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+    		end
+    	end
 
-   #    puts "#{snap_id} => packages [#{b.real}]"
+      # puts "#{snap_id} => packages [#{b.real}]"
 
 			# Save package, sdk, and company if it matches a google search
-    #   google_check = nil
-    #   c = Benchmark.measure{ google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google) }
-  		# if google_check[:matched].present?
-  		# 	google_check[:matched].each do |result|
-  		# 		meta = result[:metadata]
-    #       g = meta[:github_repo_identifier] || nil
-  		# 		# sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
-  		# 		result[:packages].each do |p| 
-  		# 			# save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
-  		# 		end
-  		# 	end
-  		# end
-
+      google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
+  		if google_check[:matched].present?
+  			google_check[:matched].each do |result|
+  				meta = result[:metadata]
+          g = meta[:github_repo_identifier] || nil
+  				# sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
+  				result[:packages].each do |p| 
+  					# save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+  				end
+  			end
+  		end
 
     #   puts "#{snap_id} => googling [#{c.real}]"
 
 		end
 
-
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
-			# begin
-   #  		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
-   #  	rescue ActiveRecord::RecordNotUnique => e
-   #  		AndroidSdk.where(name: name).first
-   #  	end
+			begin
+    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
+    	rescue ActiveRecord::RecordNotUnique => e
+    		AndroidSdk.where(name: name).first
+    	end
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
 
-      # save sdk_packages
-      sdk_package = begin
-        s = SdkPackage.create(package: package)
-        s.android_sdk_id = android_sdk_id
-        s.save
-        s
-      rescue ActiveRecord::RecordNotUnique => e
-        SdkPackage.where(package: package).first
-      end
+      # # save sdk_packages
+      # sdk_package = begin
+      #   s = SdkPackage.create(package: package)
+      #   s.android_sdk_id = android_sdk_id
+      #   s.save
+      #   s
+      # rescue ActiveRecord::RecordNotUnique => e
+      #   SdkPackage.where(package: package).first
+      # end
 
-      # save sdk_packages_apk_snapshots
-      begin
-        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-      rescue ActiveRecord::RecordNotUnique => e
-        nil
-      end
+      # # save sdk_packages_apk_snapshots
+      # begin
+      #   SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+      # rescue ActiveRecord::RecordNotUnique => e
+      #   nil
+      # end
 
       # save android_sdks_apk_snapshots
       begin
