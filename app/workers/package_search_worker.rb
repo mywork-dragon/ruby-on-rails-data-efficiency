@@ -10,6 +10,10 @@ module PackageSearchWorker
 
   def find_packages(app_identifier:, snap_id:)
 
+    apk = nil
+    apk_snap = nil
+    packages = nil
+
     b = Benchmark.measure { 
       if Rails.env.production?
       apk_snap = ApkSnapshot.find(snap_id)
