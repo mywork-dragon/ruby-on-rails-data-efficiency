@@ -69,7 +69,7 @@ class Proxy
 
     def pick_proxy
       begin
-        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).order(last_used: :asc).limit(3).sample
+        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).sample
         if mp.present?
           mp.last_used = DateTime.now
           mp.save
@@ -99,6 +99,7 @@ class Proxy
       body = nil
       5.times do
         begin
+          sleep(rand(0.5..1.5))
           timeout(3) do
             body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
           end
