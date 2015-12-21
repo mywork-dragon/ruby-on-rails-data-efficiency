@@ -12,6 +12,8 @@ class AndroidSdkService
 
       # puts "#{snap_id} => starting scan"
 
+      regex_check = nil
+
 			# Save package if it matches a regex
       b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex)
   		if regex_check[:matched].present?
