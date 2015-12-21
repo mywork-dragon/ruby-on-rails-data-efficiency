@@ -10,16 +10,16 @@ class AndroidSdkService
 
 		def classify(snap_id:, packages:)
 
-   #    puts "#{snap_id} => starting scan"
+      puts "#{snap_id} => starting scan"
 
-			# # Save package if it matches a regex
-   #    regex_check = miss_match(data: packages, check: :match_regex)
-  	# 	if regex_check[:matched].present?
-   #      # puts "#{snap_id} => regexes were matched"
-  	# 		regex_check[:matched].each do |p| 
-  	# 			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-  	# 		end
-   #    end
+			# Save package if it matches a regex
+      regex_check = miss_match(data: packages, check: :match_regex)
+  		# if regex_check[:matched].present?
+    #     # puts "#{snap_id} => regexes were matched"
+  		# 	regex_check[:matched].each do |p| 
+  		# 		save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+  		# 	end
+    #   end
 
       # puts "#{snap_id} => regex [#{a.real}]" 
 
@@ -100,7 +100,7 @@ class AndroidSdkService
 			q = Hash.new
 			packages.each do |package|
 				query = query_from_package(package)
-				q[query] = build q[query], package
+				q[query] = Array.wrap(q[query]) << package
 			end
 			q
 		end
@@ -255,9 +255,11 @@ class AndroidSdkService
       data.each do |d|
         match = send check, d
         if match
-        	m[:matched] = build m[:matched], match
+        	# m[:matched] = build m[:matched], match
+          m[:matched] = Array.wrap(m[:matched]) << match
         else
-        	m[:missed] = build m[:missed], d
+        	# m[:missed] = build m[:missed], d
+          m[:missed] = Array.wrap(m[:missed]) << d
         end
       end
       m
@@ -298,9 +300,9 @@ class AndroidSdkService
     	nil
     end
 
-    def build(key, value)
-    	key.nil? ? [value] : key << value
-    end
+    # def build(key, value)
+    # 	key.nil? ? [value] : key << value
+    # end
 
 	end
 
