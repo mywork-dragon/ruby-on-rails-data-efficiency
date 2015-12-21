@@ -10,21 +10,20 @@ module PackageSearchWorker
 
   def find_packages(app_identifier:, snap_id:)
 
-    a = Benchmark.measure do
-      if Rails.env.production?
-        apk_snap = ApkSnapshot.find(snap_id)
-        file_name = apk_snap.apk_file.apk.url
-        s3_file = open(file_name)
-        apk = Android::Apk.new(s3_file)
-      elsif Rails.env.development?
-        file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
-        apk = Android::Apk.new(file_name)
-      end
+    if Rails.env.production?
+      apk_snap = ApkSnapshot.find(snap_id)
+      file_name = apk_snap.apk_file.apk.url
+      s3_file = open(file_name)
+      apk = Android::Apk.new(s3_file)
+    elsif Rails.env.development?
+      file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
+      apk = Android::Apk.new(file_name)
     end
 
     # puts "#{snap_id} => downloaded [#{a.real}]"
 
-    packages = apk.dex.classes.map do |cls|
+    dex = apk.dex
+    packages = dex.classes.map do |cls|
       next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
       cls = cls.name.split('/')
       cls.pop
