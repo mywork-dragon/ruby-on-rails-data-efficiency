@@ -289,7 +289,7 @@ class AndroidSdkService
 
     def match_google(package)
     	# results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
-      results = google_sdk(query: package[0]))
+      results = google_sdk(query: package[0])
     	if results
     		return {
     			:packages => package[1],
