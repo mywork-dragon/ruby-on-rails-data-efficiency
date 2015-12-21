@@ -16,7 +16,8 @@ class AndroidSdkService
       regex_check = miss_match(data: packages, check: :match_regex)
   		if regex_check[:matched].present?
   			regex_check[:matched].each do |p| 
-  				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+  				# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+          puts "saving package"
   			end
       end
 
