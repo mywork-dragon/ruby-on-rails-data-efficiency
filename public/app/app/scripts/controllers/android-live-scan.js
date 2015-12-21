@@ -98,7 +98,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     // Helper method for getSdks() method - 4min timeout (2s * 120)
     var pullScanStatus = function() {
       var msDelay = 2000;
-      var numRepeat = 120;
+      var numRepeat = 60;
       var intervalCount = 0;
 
       // Messages that correspond to (status == index number)
