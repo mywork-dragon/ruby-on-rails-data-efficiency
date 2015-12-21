@@ -33,7 +33,7 @@ class AndroidSdkService
       # puts "#{snap_id} => packages [#{b.real}]"
 
 			# Save package, sdk, and company if it matches a google search
-      google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
+      google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
   		if google_check[:matched].present?
   			google_check[:matched].each do |result|
   				meta = result[:metadata]
