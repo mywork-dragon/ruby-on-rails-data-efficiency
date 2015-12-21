@@ -58,41 +58,41 @@ class AndroidSdkService
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
-			begin
-    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
-    	rescue
-    		AndroidSdk.where(name: name).first
-    	end
+			# begin
+   #  		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
+   #  	rescue ActiveRecord::RecordNotUnique => e
+   #  		AndroidSdk.where(name: name).first
+   #  	end
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
 
-      # save sdk_packages
-    	begin
-    		SdkPackage.create(package: package)
-    	rescue ActiveRecord::RecordNotUnique => e
-    		nil
-    	end
+     #  # save sdk_packages
+    	# begin
+    	# 	SdkPackage.create(package: package)
+    	# rescue ActiveRecord::RecordNotUnique => e
+    	# 	nil
+    	# end
 
-      sdk_package = SdkPackage.where(package: package).first
-    	if sdk_package.android_sdk_id != android_sdk_id
-	    	sdk_package.android_sdk_id = android_sdk_id
-	    	sdk_package.save
-	    end
+     #  sdk_package = SdkPackage.where(package: package).first
+    	# if sdk_package.android_sdk_id != android_sdk_id
+	    # 	sdk_package.android_sdk_id = android_sdk_id
+	    # 	sdk_package.save
+	    # end
 
-      # save sdk_packages_apk_snapshots
-      begin
-        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-      rescue
-        nil
-      end
+     #  # save sdk_packages_apk_snapshots
+     #  begin
+     #    SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+     #  rescue
+     #    nil
+     #  end
 
-      # save android_sdks_apk_snapshots
-      begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
-      rescue
-        nil
-      end
+     #  # save android_sdks_apk_snapshots
+     #  begin
+     #    AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
+     #  rescue
+     #    nil
+     #  end
       
     end
 
@@ -288,8 +288,8 @@ class AndroidSdkService
     end
 
     def match_google(package)
-    	# results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
-      results = google_sdk(query: package[0])
+    	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
+      # results = google_sdk(query: package[0])
     	if results
     		return {
     			:packages => package[1],
