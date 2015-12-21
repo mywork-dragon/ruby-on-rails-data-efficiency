@@ -13,13 +13,15 @@ class AndroidSdkService
       puts "#{snap_id} => starting scan"
 
 			# Save package if it matches a regex
-      regex_check = nil
+      regex_check = miss_match(data: packages, check: :match_regex)
   		if regex_check[:matched].present?
         puts "#{snap_id} => regexes were matched"
   			regex_check[:matched].each do |p| 
   				# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
   			end
       end
+
+      # puts "#{snap_id} => regex [#{a.real}]" 
 
 			# # Save package if it is already in the table
    #    table_check = nil
