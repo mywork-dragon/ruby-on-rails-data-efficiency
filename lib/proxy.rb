@@ -48,14 +48,14 @@ class Proxy
     end
 
     def get_proxy
-      mp = MicroProxy.select(:id, :private_ip).where(active: true).sample
+      MicroProxy.where(active: true).pluck(:private_ip).sample
       # mp.last_used = DateTime.now
       # begin
       #   mp.save
       # rescue
       #   nil
       # end
-      mp.private_ip
+      # mp.private_ip
     end
 
     def get_proxy_with_wait
@@ -94,7 +94,7 @@ class Proxy
     # @author Jason Lew
     # @return A Nokogiri::HTML::Document of the page
     def get_nokogiri(req:, params: {}, type: :get)
-      Nokogiri::HTML(get_body(req: req, params: params, type: type)) 
+      Nokogiri::HTML(get_body(req: req, params: params, type: type))
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
@@ -102,9 +102,8 @@ class Proxy
       5.times do
         begin
           sleep(rand(0.5..1.5))
-          timeout(3) do
-            body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
-          end
+          # body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
+          body = Nokogiri::HTML(get_body(req: req, params: params, type: type))
         rescue
           nil
         else
