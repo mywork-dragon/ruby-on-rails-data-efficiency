@@ -17,7 +17,7 @@ module PackageSearchWorker
         s3_file = open(file_name)
         # apk = Android::Apk.new(s3_file.body)
       end
-      puts a.real
+      puts "download => #{a.real}"
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
