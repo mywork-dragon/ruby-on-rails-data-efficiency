@@ -10,7 +10,7 @@ module PackageSearchWorker
 
   def find_packages(app_identifier:, snap_id:)
 
-    a = Benchmark.measure
+    a = Benchmark.measure do
       if Rails.env.production?
         apk_snap = ApkSnapshot.find(snap_id)
         file_name = apk_snap.apk_file.apk.url
@@ -22,7 +22,7 @@ module PackageSearchWorker
       end
     end
 
-    puts "#{snap_id} => downloaded [#{a.real}]"
+    # # puts "#{snap_id} => downloaded [#{a.real}]"
 
     # dex = apk.dex
     # packages = dex.classes.map do |cls|
