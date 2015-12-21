@@ -50,7 +50,7 @@ class AndroidSdkService
   		end
 
 
-    #   puts "#{snap_id} => googling [#{c.real}]"
+      puts "#{snap_id} => googling [#{c.real}]"
 
 		end
 
@@ -150,7 +150,7 @@ class AndroidSdkService
         [query,x,reg]
       end
 
-      searches = prefix
+      searches = prefix + suffixes
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
@@ -288,7 +288,8 @@ class AndroidSdkService
     end
 
     def match_google(package)
-    	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
+    	# results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
+      results = google_sdk(query: package[0]))
     	if results
     		return {
     			:packages => package[1],
