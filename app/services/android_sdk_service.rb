@@ -20,30 +20,30 @@ class AndroidSdkService
   			end
       end
 
-      # puts "#{snap_id} => regex [#{a.real}]" 
+   #    # puts "#{snap_id} => regex [#{a.real}]" 
 
-			# Save package if it is already in the table
-      table_check = miss_match(data: regex_check[:missed], check: :match_table)
-    	if table_check[:matched].present?
-    		table_check[:matched].each do |p| 
-    			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-    		end
-    	end
+			# # Save package if it is already in the table
+   #    table_check = miss_match(data: regex_check[:missed], check: :match_table)
+   #  	if table_check[:matched].present?
+   #  		table_check[:matched].each do |p| 
+   #  			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+   #  		end
+   #  	end
 
-      # puts "#{snap_id} => packages [#{b.real}]"
+   #    # puts "#{snap_id} => packages [#{b.real}]"
 
-			# Save package, sdk, and company if it matches a google search
-      google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
-  		if google_check[:matched].present?
-  			google_check[:matched].each do |result|
-  				meta = result[:metadata]
-          g = meta[:github_repo_identifier] || nil
-  				sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
-  				result[:packages].each do |p| 
-  					save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
-  				end
-  			end
-  		end
+			# # Save package, sdk, and company if it matches a google search
+   #    google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
+  	# 	if google_check[:matched].present?
+  	# 		google_check[:matched].each do |result|
+  	# 			meta = result[:metadata]
+   #        g = meta[:github_repo_identifier] || nil
+  	# 			sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
+  	# 			result[:packages].each do |p| 
+  	# 				save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+  	# 			end
+  	# 		end
+  	# 	end
 
     #   puts "#{snap_id} => googling [#{c.real}]"
 
