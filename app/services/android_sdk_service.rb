@@ -18,7 +18,7 @@ class AndroidSdkService
   		if regex_check[:matched].present?
         puts "#{snap_id} => regexes were matched"
   			regex_check[:matched].each do |p| 
-  				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+  				# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
   			end
       end
 
@@ -44,7 +44,7 @@ class AndroidSdkService
           g = meta[:github_repo_identifier] || nil
   				# sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
   				result[:packages].each do |p| 
-  					save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+  					# save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
   				end
   			end
   		end
