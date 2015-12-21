@@ -122,7 +122,9 @@ class AndroidSdkService
 
 		def google_sdk(query:)
       return nil if query.blank?
-			google_search(q: "#{query} android sdk", limit: 4).each do |url|
+      g = google_search(q: "#{query} android sdk", limit: 4)
+      return nil if g.blank?
+			g.each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
@@ -152,7 +154,9 @@ class AndroidSdkService
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
-        google_search(q: q, limit: 5).each do |url|
+        g = google_search(q: q, limit: 5)
+        next if g.nil?
+        g.each do |url|
           if !!(url =~ /#{regex}/i)
             matched = github_data_match(url, rname, rowner)
             return matched if matched.present?
