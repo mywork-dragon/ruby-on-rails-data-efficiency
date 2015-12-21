@@ -5,6 +5,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     $scope.appPlatform = $routeParams.platform;
 
+    $scope.initialPageLoadComplete = false; // shows page load spinner
+
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
@@ -26,6 +28,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
+
+        $scope.initialPageLoadComplete = true; // hides page load spinner
 
         // Updates displayStatus for use in android-live-scan ctrl
         appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};
