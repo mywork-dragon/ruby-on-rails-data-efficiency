@@ -3,84 +3,88 @@ class AndroidSdkService
   EX_WORDS = "framework|android|sdk|\\W+"
   LANGS = "java"
 
+  # don't let this get too big
+  @sdk_regex_all = SdkRegex.all.select(:regex, :android_sdk_id)
 
 	class << self
 
 		def classify(snap_id:, packages:)
 
-			# Save package if it matches a regex
-			regex_check = miss_match(data: packages, check: :match_regex)
-			if regex_check[:matched].present?
-				regex_check[:matched].each do |p| 
-					save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-				end
-			end
+      # puts "#{snap_id} => starting scan"
 
+			# Save package if it matches a regex
+      regex_check = miss_match(data: packages, check: :match_regex)
+  		if regex_check[:matched].present?
+  			regex_check[:matched].each do |p| 
+  				# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+  			end
+      end
+
+      # puts "#{snap_id} => regex [#{a.real}]" 
 
 			# Save package if it is already in the table
-			table_check = miss_match(data: regex_check[:missed], check: :match_table)
-  		if table_check[:matched].present?
-  			table_check[:matched].each do |p| 
-  				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+      table_check = miss_match(data: regex_check[:missed], check: :match_table)
+    	if table_check[:matched].present?
+    		table_check[:matched].each do |p| 
+    			# save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
+    		end
+    	end
+
+      # puts "#{snap_id} => packages [#{b.real}]"
+
+			# Save package, sdk, and company if it matches a google search
+      google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
+  		if google_check[:matched].present?
+  			google_check[:matched].each do |result|
+  				meta = result[:metadata]
+          g = meta[:github_repo_identifier] || nil
+  				# sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
+  				result[:packages].each do |p| 
+  					# save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+  				end
   			end
   		end
 
-			# Save package, sdk, and company if it matches a google search
-			google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-			if google_check[:matched].present?
-				google_check[:matched].each do |result|
-					meta = result[:metadata]
-          g = meta[:github_repo_identifier] || nil
-					sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
-					result[:packages].each do |p| 
-						save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
-					end
-				end
-			end
-
-			return google_check
+      # puts "#{snap_id} => googling [#{c.real}]"
 
 		end
-
 
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
 			begin
     		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
-    	rescue
+    	rescue ActiveRecord::RecordNotUnique => e
     		AndroidSdk.where(name: name).first
     	end
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
 
-      # save sdk_packages
-    	begin
-    		SdkPackage.create(package: package)
-    	rescue
-    		nil
-    	end
-      
-      sdk_package = SdkPackage.find_by_package(package)
-    	if sdk_package.android_sdk_id != android_sdk_id
-	    	sdk_package.android_sdk_id = android_sdk_id
-	    	sdk_package.save
-	    end
+      # # save sdk_packages
+      # sdk_package = begin
+      #   s = SdkPackage.create(package: package)
+      #   s.android_sdk_id = android_sdk_id
+      #   s.save
+      #   s
+      # rescue ActiveRecord::RecordNotUnique => e
+      #   SdkPackage.where(package: package).first
+      # end
 
-      # save sdk_packages_apk_snapshots
-      begin
-        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-      rescue
-        nil
-      end
+      # # save sdk_packages_apk_snapshots
+      # begin
+      #   SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+      # rescue ActiveRecord::RecordNotUnique => e
+      #   nil
+      # end
 
       # save android_sdks_apk_snapshots
       begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id) if android_sdk_id && snap_id
-      rescue
+        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
+      rescue ActiveRecord::RecordNotUnique => e
         nil
       end
+      
     end
 
 		def querify(packages)
@@ -88,7 +92,7 @@ class AndroidSdkService
 			q = Hash.new
 			packages.each do |package|
 				query = query_from_package(package)
-				q[query] = build q[query], package
+				q[query] = Array.wrap(q[query]) << package
 			end
 			q
 		end
@@ -109,7 +113,9 @@ class AndroidSdkService
 
 		def google_sdk(query:)
       return nil if query.blank?
-			google_search(q: "#{query} android sdk", limit: 4).each do |url|
+      g = google_search(q: "#{query} android sdk", limit: 4)
+      return nil if g.blank?
+			g.each do |url|
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
 		    url = remove_sub(url).split(ext).first + ext
 		    company = query
@@ -139,7 +145,9 @@ class AndroidSdkService
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
-        google_search(q: q, limit: 5).each do |url|
+        g = google_search(q: q, limit: 5)
+        next if g.nil?
+        g.each do |url|
           if !!(url =~ /#{regex}/i)
             matched = github_data_match(url, rname, rowner)
             return matched if matched.present?
@@ -188,17 +196,17 @@ class AndroidSdkService
 
 		def google_search(q:, limit: 10)
       begin
-		    result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+        result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
       rescue => e
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
         raise
       else
-		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
       end
 		end
 
 		def valid_domain?(url)
-			url.exclude?('...') && url != '0' && url.count('-') <= 1
+			url.present? && url.exclude?('...') && url != '0' && url.count('-') <= 1
 		end
 
 		def remove_sub(url)
@@ -239,16 +247,18 @@ class AndroidSdkService
       data.each do |d|
         match = send check, d
         if match
-        	m[:matched] = build m[:matched], match
+        	# m[:matched] = build m[:matched], match
+          m[:matched] = Array.wrap(m[:matched]) << match
         else
-        	m[:missed] = build m[:missed], d
+        	# m[:missed] = build m[:missed], d
+          m[:missed] = Array.wrap(m[:missed]) << d
         end
       end
       m
     end
 
     def match_regex(package)
-      SdkRegex.all.each do |regex|
+      @sdk_regex_all.each do |regex|
         if !!(package =~ /#{regex.regex}/i)
         	return { 
         		:package => package, 
@@ -272,6 +282,7 @@ class AndroidSdkService
 
     def match_google(package)
     	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
+      # results = google_sdk(query: package[0])
     	if results
     		return {
     			:packages => package[1],
@@ -281,9 +292,9 @@ class AndroidSdkService
     	nil
     end
 
-    def build(key, value)
-    	key.nil? ? [value] : key << value
-    end
+    # def build(key, value)
+    # 	key.nil? ? [value] : key << value
+    # end
 
 	end
 
