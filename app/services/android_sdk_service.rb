@@ -36,21 +36,21 @@ class AndroidSdkService
       puts "#{snap_id} => packages [#{b.real}]"
 
 			# Save package, sdk, and company if it matches a google search
-      google_check = nil
-      c = Benchmark.measure{ google_check = miss_match(data: querify(table_check[:missed]), check: :match_google) }
-  		if google_check[:matched].present?
-  			google_check[:matched].each do |result|
-  				meta = result[:metadata]
-          g = meta[:github_repo_identifier] || nil
-  				sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
-  				result[:packages].each do |p| 
-  					save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
-  				end
-  			end
-  		end
+    #   google_check = nil
+    #   c = Benchmark.measure{ google_check = miss_match(data: querify(table_check[:missed]), check: :match_google) }
+  		# if google_check[:matched].present?
+  		# 	google_check[:matched].each do |result|
+  		# 		meta = result[:metadata]
+    #       g = meta[:github_repo_identifier] || nil
+  		# 		sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
+  		# 		result[:packages].each do |p| 
+  		# 			save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
+  		# 		end
+  		# 	end
+  		# end
 
 
-      puts "#{snap_id} => googling [#{c.real}]"
+    #   puts "#{snap_id} => googling [#{c.real}]"
 
 		end
 
