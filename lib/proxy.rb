@@ -49,12 +49,12 @@ class Proxy
 
     def get_proxy
       mp = MicroProxy.select(:id, :private_ip).where(active: true).sample
-      mp.last_used = DateTime.now
-      begin
-        mp.save
-      rescue
-        nil
-      end
+      # mp.last_used = DateTime.now
+      # begin
+      #   mp.save
+      # rescue
+      #   nil
+      # end
       mp.private_ip
     end
 
@@ -68,17 +68,19 @@ class Proxy
     end
 
     def pick_proxy
-      begin
-        mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).sample
-        if mp.present?
-          mp.last_used = DateTime.now
-          mp.save
-        end
-      rescue
-        nil
-      else
-        mp
-      end
+      # begin
+      #   mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).sample
+      #   if mp.present?
+      #     mp.last_used = DateTime.now
+      #     mp.save
+      #   end
+      # rescue
+      #   nil
+      # else
+      #   mp
+      # end
+
+      MicroProxy.select(:id, :private_ip).where(active: true).sample
     end
 
     # Gets the body only
