@@ -17,12 +17,12 @@ class IosScanMassService
       ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
 
       if Rails.env.production?
-        IosApp.where(id: ids).each do |ios_app|
+        IosApp.where(id: ids).find_each do |ios_app|
           IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
         end
       else
-        ios_app = IosApp.where(id: ids).sample
-        IosMassScanServiceWorker.new.perform(ipa_snapshot_job.id, ios_app.id)
+        ios_app_id = IosApp.where(id: ids).pluck(:id).sample
+        IosMassScanServiceWorker.new.perform(ipa_snapshot_job.id, ios_app_id)
       end
     end
   end
