@@ -4,7 +4,7 @@ module PackageSearchWorker
     aa = AndroidApp.find(app_id)
     app_identifier = aa.app_identifier
     snap_id = aa.newest_apk_snapshot_id
-    return nil if nas.blank?
+    return nil if snap_id.blank?
     find_packages(app_identifier: app_identifier, snap_id: snap_id)
   end
 
