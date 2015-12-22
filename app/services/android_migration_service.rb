@@ -39,7 +39,14 @@ class AndroidMigrationService
       AndroidSdkCompany.find_each.with_index do |company, index|
         ap "Moving id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
         new_row = company_to_sdk_row(company)
-        AndroidSdk.create!(new_row)
+
+        previous = AndroidSdk.where(name: new_row[:name]).take
+        if previous.nil?
+          AndroidSdk.create!(new_row)
+        else
+          new_row[:name] = "DUPLICATE:#{previous.id}:#{new_row[:id]}"
+          AndroidSdk.create!(new_row)
+        end
       end
       ap "Completed after #{Time.now - s} seconds"
     end
