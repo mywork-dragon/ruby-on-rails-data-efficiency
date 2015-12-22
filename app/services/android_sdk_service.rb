@@ -80,28 +80,37 @@ class AndroidSdkService
 
 		def save_package(package:, android_sdk_id:, snap_id:)
 
-      # save sdk_packages
-      sdk_package = begin
-        s = SdkPackage.create(package: package)
-        s.android_sdk_id = android_sdk_id
-        s.save
-        s
-      rescue ActiveRecord::RecordNotUnique => e
-        SdkPackage.where(package: package).first
+      sdk_package = SdkPackage.find_by_package(package)
+      if sdk_package.nil?
+        # save sdk_packages
+        sdk_package = begin
+          s = SdkPackage.create(package: package)
+          s.android_sdk_id = android_sdk_id
+          s.save
+          s
+        rescue ActiveRecord::RecordNotUnique => e
+          SdkPackage.where(package: package).first
+        end
       end
 
-      # save sdk_packages_apk_snapshots
-      begin
-        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-      rescue ActiveRecord::RecordNotUnique => e
-        nil
+      spas = SdkPackagesApkSnapshot.where(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id).first
+      if spas.nil?
+        # save sdk_packages_apk_snapshots
+        begin
+          SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
+        rescue ActiveRecord::RecordNotUnique => e
+          nil
+        end
       end
 
-      # save android_sdks_apk_snapshots
-      begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
-      rescue ActiveRecord::RecordNotUnique => e
-        nil
+      asas = AndroidSdksApkSnapshot.where(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id).first
+      if asas.nil?
+        # save android_sdks_apk_snapshots
+        begin
+          AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
+        rescue ActiveRecord::RecordNotUnique => e
+          nil
+        end
       end
       
     end
