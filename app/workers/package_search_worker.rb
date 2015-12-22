@@ -13,23 +13,26 @@ module PackageSearchWorker
     apk = nil
     apk_snap = nil
     packages = nil
+    s3_file = nil
 
-    b = Benchmark.measure { 
-      if Rails.env.production?
+    
+    if Rails.env.production?
       apk_snap = ApkSnapshot.find(snap_id)
       file_name = apk_snap.apk_file.apk.url
-      s3_file = open(file_name)
-      apk = Android::Apk.new(s3_file)
+      b = Benchmark.measure { 
+      s3_file = open(file_name)}
+      c = Benchmark.measure {
+      apk = Android::Apk.new(s3_file)}
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
-    end }
+    end
 
     puts "#{snap_id}: Download time: #{b.real}"
+    puts "#{snap_id}: Unpack time: #{c.real}"
 
     # puts "#{snap_id} => downloaded [#{a.real}]"
 
-    b = Benchmark.measure {
     dex = apk.dex
     packages = dex.classes.map do |cls|
       next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
@@ -38,9 +41,7 @@ module PackageSearchWorker
       cls = cls.join('.')
       cls.slice!(0) if cls.slice(0) == 'L'
       cls
-    end.compact.uniq}
-
-    puts "#{snap_id}: Dex mapping time: #{b.real}"
+    end.compact.uniq
 
 
     b = Benchmark.measure {AndroidSdkService.classify(snap_id: snap_id, packages: packages)}
