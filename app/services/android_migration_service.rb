@@ -64,16 +64,36 @@ class AndroidMigrationService
     end
 
     def migrate_snapshots
+
+
       s = Time.now
-      AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
-        ap "Moving id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
-        new_row = {
-          android_sdk_id: row.android_sdk_company_id,
-          apk_snapshot_id: row.apk_snapshot_id
-        }
-        AndroidSdksApkSnapshot.create!(new_row)
+      if Rails.env.production?
+        AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
+          ap "Queueing id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
+          AndroidMigrationServiceWorker.perform_async(row.id)
+        end
+
+        ap "Completed queueing after #{Time.now - s} seconds"
+      else
+
+        AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
+          ap "Queueing id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
+          AndroidMigrationServiceWorker.new.perform(row.id)
+        end
+
+        ap "Completed after #{Time.now - s} seconds"
       end
-      ap "Completed after #{Time.now - s} seconds"
+
+      # s = Time.now
+      # AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
+      #   ap "Moving id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
+      #   new_row = {
+      #     android_sdk_id: row.android_sdk_company_id,
+      #     apk_snapshot_id: row.apk_snapshot_id
+      #   }
+      #   AndroidSdksApkSnapshot.create!(new_row)
+      # end
+      # ap "Completed after #{Time.now - s} seconds"
     end
 
 
