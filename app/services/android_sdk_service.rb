@@ -21,9 +21,12 @@ class AndroidSdkService
       regexes = SdkRegex.all.select(:regex, :android_sdk_id)
       b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex, regexes: regexes)
   		if regex_check[:matched].present?
-  			regex_check[:matched].each do |p| 
+
+  			c = Benchmark.measure {regex_check[:matched].each do |p| 
   				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-  			end
+  			end}
+
+        puts "#{snap_id}: Saving regexes (#{c.real})"
       end}
 
       puts "#{snap_id}: Regex time: #{b.real}"
@@ -33,9 +36,11 @@ class AndroidSdkService
 			# Save package if it is already in the table
       b = Benchmark.measure {table_check = miss_match(data: regex_check[:missed], check: :match_table)
     	if table_check[:matched].present?
-    		table_check[:matched].each do |p| 
+    		c = Benchmark.measure {table_check[:matched].each do |p| 
     			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-    		end
+    		end}
+
+        puts "#{snap_id}: Saving packages (#{c.real})"
     	end}
 
       puts "#{snap_id}: Table check time: #{b.real}"
@@ -262,7 +267,8 @@ class AndroidSdkService
 		def miss_match(data:, check:, regexes: nil)
 			m = Hash.new
       return m if data.nil?
-      data.each do |d|
+
+      b = Benchmark.measure {data.each do |d|
         if check == :match_regex
           match = send check, d, regexes
         else
@@ -273,7 +279,8 @@ class AndroidSdkService
         else
           m[:missed] = Array.wrap(m[:missed]) << d
         end
-      end
+      end}
+      puts "Splitting #{check.to_s}: #{b.real}"
       m
     end
 
