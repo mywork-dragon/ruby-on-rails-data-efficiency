@@ -10,6 +10,8 @@ class AndroidSdkService
 
 		def classify(snap_id:, packages:)
 
+      puts "#{snap_id}: Package count: #{packages.count}"
+
       # puts "#{snap_id} => starting scan"
 
       regex_check = nil
