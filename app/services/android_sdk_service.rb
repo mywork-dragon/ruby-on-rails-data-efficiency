@@ -71,6 +71,7 @@ class AndroidSdkService
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
+      puts "saving #{name}"
 			begin
     		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
     	rescue ActiveRecord::RecordNotUnique => e
@@ -169,7 +170,8 @@ class AndroidSdkService
         [query,x,reg]
       end
 
-      searches = prefix + suffixes
+      searches = prefix
+       # + suffixes
 
       searches.each do |rowner, rname, regex|
         q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
