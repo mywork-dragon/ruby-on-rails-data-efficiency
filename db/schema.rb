@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151220075451) do
+ActiveRecord::Schema.define(version: 20151222035216) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(version: 20151220075451) do
     t.integer  "apk_file_id"
     t.integer  "scan_status"
     t.datetime "last_updated"
+    t.integer  "scan_version"
   end
 
   add_index "apk_snapshots", ["android_app_id"], name: "index_apk_snapshots_on_android_app_id", using: :btree
@@ -354,6 +355,7 @@ ActiveRecord::Schema.define(version: 20151220075451) do
   add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree
   add_index "apk_snapshots", ["micro_proxy_id"], name: "index_apk_snapshots_on_micro_proxy_id", using: :btree
   add_index "apk_snapshots", ["scan_status"], name: "index_apk_snapshots_on_scan_status", using: :btree
+  add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
   create_table "app_stores", force: true do |t|

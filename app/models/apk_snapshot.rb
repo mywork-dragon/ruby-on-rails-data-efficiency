@@ -21,6 +21,7 @@ class ApkSnapshot < ActiveRecord::Base
 
 	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found]
   enum scan_status: [:scan_failure, :scan_success]
+  enum scan_version: [:first_attempt, :new_years_version] # the version of the scan algorithm
 
   def first_seen
     app_released :first
