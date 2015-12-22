@@ -70,7 +70,7 @@ class AndroidMigrationService
       if Rails.env.production?
         AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
           ap "Queueing id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
-          AndroidMigrationServiceWorker.perform_async(row.id)
+          AndroidMigrationSnapshotWorker.perform_async(row.id)
         end
 
         ap "Completed queueing after #{Time.now - s} seconds"
@@ -78,28 +78,30 @@ class AndroidMigrationService
 
         AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
           ap "Queueing id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
-          AndroidMigrationServiceWorker.new.perform(row.id)
+          AndroidMigrationSnapshotWorker.new.perform(row.id)
         end
 
         ap "Completed after #{Time.now - s} seconds"
       end
-
-      # s = Time.now
-      # AndroidSdkCompaniesApkSnapshot.find_each.with_index do |row, index|
-      #   ap "Moving id #{index} after #{Time.now - s} seconds" if index % 1000 == 0
-      #   new_row = {
-      #     android_sdk_id: row.android_sdk_company_id,
-      #     apk_snapshot_id: row.apk_snapshot_id
-      #   }
-      #   AndroidSdksApkSnapshot.create!(new_row)
-      # end
-      # ap "Completed after #{Time.now - s} seconds"
     end
 
-    def fix_attributes
+    def fix_attributions
 
+      s = Time.now
+      if Rails.env.production?
+        AndroidSdk.where("name like 'DUPLICATE:%'").find_each.with_index do |sdk, index|
+          ap "Queueing id #{index} after #{Time.now - s} seconds"
+          AndroidMigrationAttributionWorker.perform_async(sdk.id)
+        end
+      else
+        AndroidSdk.where("name like 'DUPLICATE:%'").find_each.with_index do |sdk, index|
+          ap "Queueing id #{index} after #{Time.now - s} seconds"
+          AndroidMigrationAttributionWorker.new.perform(sdk.id)
+        end
+      end
+
+      ap "Completed after #{Time.now - s} seconds"
     end
-
 
   end
 end
