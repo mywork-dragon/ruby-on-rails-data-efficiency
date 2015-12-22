@@ -1455,7 +1455,7 @@ class ApiController < ApplicationController
     sdk_id = params['id']
     sdk = AndroidSdkCompany.find(sdk_id)
 
-    apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').joins(websites: :company).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
+    apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').where.not(display_type: 1).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
 
     @sdk_json = {
         id: sdk.id,
