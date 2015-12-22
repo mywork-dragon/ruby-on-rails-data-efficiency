@@ -31,6 +31,7 @@ module PackageSearchWorker
 
     puts "#{snap_id}: Download time: #{b.real}"
     puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
+    puts "#{snap_id}: File Size: #{(file_size.to_f/1000000.0)} mb"
     puts "#{snap_id}: Unpack time: #{c.real}"
 
     # puts "#{snap_id} => downloaded [#{a.real}]"
