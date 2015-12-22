@@ -34,6 +34,7 @@ class RegexService
         SdkPackage.where(ios_sdk_id: nil).where.not(android_sdk_id: nil).each(&:delete)
         SdkPackage.where.not(android_sdk_id: nil).each{ |x| x.android_sdk_id = nil; x.save }
         SdkPackagesApkSnapshot.delete_all
+        SdkPackagesApkSnapshot.connection.execute('ALTER TABLE sdk_packages_apk_snapshots AUTO_INCREMENT = 1;')
 
         # clear sdk_companies
         SdkCompany.delete_all
