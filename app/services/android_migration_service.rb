@@ -96,31 +96,10 @@ class AndroidMigrationService
       # ap "Completed after #{Time.now - s} seconds"
     end
 
+    def fix_attributes
+
+    end
+
 
   end
 end
-
-# create_table "android_sdk_companies", force: true do |t|
-#   t.string   "name"
-#   t.string   "website"
-#   t.string   "favicon"
-#   t.boolean  "flagged",           default: false
-#   t.datetime "created_at"
-#   t.datetime "updated_at"
-#   t.boolean  "open_source",       default: false
-#   t.integer  "parent_company_id"
-#   t.boolean  "is_parent"
-# end
-
-# create_table "android_sdks", force: true do |t|
-#   t.string   "name"
-#   t.string   "website"
-#   t.string   "favicon"
-#   t.boolean  "flagged",                default: false
-#   t.boolean  "open_source"
-#   t.datetime "created_at"
-#   t.datetime "updated_at"
-#   t.integer  "sdk_company_id"
-#   t.integer  "github_repo_identifier"
-# end
-
