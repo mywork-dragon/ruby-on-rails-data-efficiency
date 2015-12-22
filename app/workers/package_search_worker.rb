@@ -19,6 +19,7 @@ module PackageSearchWorker
     if Rails.env.production?
       apk_snap = ApkSnapshot.find(snap_id)
       file_name = apk_snap.apk_file.apk.url
+      file_size = apk_snap.apk_file.apk.size
       b = Benchmark.measure { 
       s3_file = open(file_name)}
       c = Benchmark.measure {
@@ -29,6 +30,7 @@ module PackageSearchWorker
     end
 
     puts "#{snap_id}: Download time: #{b.real}"
+    puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
     puts "#{snap_id}: Unpack time: #{c.real}"
 
     # puts "#{snap_id} => downloaded [#{a.real}]"
