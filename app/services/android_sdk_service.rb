@@ -290,7 +290,9 @@ class AndroidSdkService
     end
 
     def match_table(package)
-    	sdk_package = SdkPackage.find_by_package(package)
+      sdk_package = nil
+    	b = Benchmark.measure{ sdk_package = SdkPackage.find_by_package(package) }
+      puts "table matching (#{package}) [#{b.real}]" if b.real >= 1.0
     	if sdk_package
     		return {
     			:package => package,
