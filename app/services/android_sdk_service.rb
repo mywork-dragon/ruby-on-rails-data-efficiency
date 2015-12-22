@@ -4,7 +4,7 @@ class AndroidSdkService
   LANGS = "java"
 
   # don't let this get too big
-  @sdk_regex_all = SdkRegex.all.select(:regex, :android_sdk_id)
+  # @sdk_regex_all = SdkRegex.all.select(:regex, :android_sdk_id)
 
 	class << self
 
@@ -18,7 +18,8 @@ class AndroidSdkService
       table_check = nil
 
 			# Save package if it matches a regex
-      b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex)
+      regexes = SdkRegex.all.select(:regex, :android_sdk_id)
+      b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex, regexes: regexes)
   		if regex_check[:matched].present?
   			regex_check[:matched].each do |p| 
   				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
@@ -258,11 +259,15 @@ class AndroidSdkService
       str.slice(0,1).capitalize + str.slice(1..-1)
     end
 
-		def miss_match(data:, check:)
+		def miss_match(data:, check:, regexes: nil)
 			m = Hash.new
       return m if data.nil?
       data.each do |d|
-        match = send check, d
+        if check == :match_regex
+          match = send check, d regexes
+        else
+          match = send check, d
+        end
         if match
           m[:matched] = Array.wrap(m[:matched]) << match
         else
@@ -272,8 +277,8 @@ class AndroidSdkService
       m
     end
 
-    def match_regex(package)
-      @sdk_regex_all.each do |regex|
+    def match_regex(package, regexes)
+      regexes.each do |regex|
         if !!(package =~ /#{regex.regex}/i)
         	return { 
         		:package => package, 
