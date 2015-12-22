@@ -13,6 +13,7 @@ class AndroidSdkService
       # puts "#{snap_id} => starting scan"
 
       regex_check = nil
+      table_check = nil
 
 			# Save package if it matches a regex
       b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex)
@@ -41,7 +42,7 @@ class AndroidSdkService
 			# Save package, sdk, and company if it matches a google search
 
       b = Benchmark.measure {
-      google_check = miss_match(data: querify(regex_check[:missed]), check: :match_google)
+      google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
   		if google_check[:matched].present?
   			google_check[:matched].each do |result|
   				meta = result[:metadata]
