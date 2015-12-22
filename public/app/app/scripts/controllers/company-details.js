@@ -3,6 +3,8 @@
 angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService",
   function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService) {
 
+    $scope.initialPageLoadComplete = false; // shows page load spinner
+
     $scope.load = function() {
 
       $scope.queryInProgress = true;
@@ -19,6 +21,9 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         $scope.numApps = companyApps.length;
         $rootScope.numApps = companyApps.length;
         $scope.queryInProgress = false;
+
+        $scope.initialPageLoadComplete = true; // hides page load spinner
+
         /* Sets html title attribute */
 
         /* -------- Mixpanel Analytics Start -------- */
