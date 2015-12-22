@@ -27,8 +27,7 @@ module PackageSearchWorker
       c = Benchmark.measure {
       apk = Android::Apk.new(s3_file)}
     elsif Rails.env.development?
-      #file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
-      file_name = '/Users/jason/Desktop/com.pinterest.apk'
+      file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
     end
 
