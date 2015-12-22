@@ -264,7 +264,7 @@ class AndroidSdkService
       return m if data.nil?
       data.each do |d|
         if check == :match_regex
-          match = send check, d regexes
+          match = send check, d, regexes
         else
           match = send check, d
         end
