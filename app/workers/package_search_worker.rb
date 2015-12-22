@@ -18,6 +18,8 @@ module PackageSearchWorker
     
     if Rails.env.production?
       apk_snap = ApkSnapshot.find(snap_id)
+      apk_snap.scan_version = :new_years_version
+      apk_snap.save
       file_name = apk_snap.apk_file.apk.url
       file_size = apk_snap.apk_file.apk.size
       b = Benchmark.measure { 
@@ -53,7 +55,6 @@ module PackageSearchWorker
 
     # apk_snap = ApkSnapshot.find_by_id(snap_id)
     apk_snap.scan_status = :scan_success
-    apk_snap.scan_version = :new_years_version
     apk_snap.last_updated = DateTime.now
     apk_snap.save
 
