@@ -11,39 +11,31 @@ module PackageSearchWorker
   def find_packages(app_identifier:, snap_id:)
 
     apk = nil
-    apk_snap = nil
     packages = nil
     s3_file = nil
 
+    apk_snap = ApkSnapshot.find(snap_id)
+    apk_snap.scan_version = :new_years_version
+    apk_snap.save
     
     if Rails.env.production?
-      apk_snap = ApkSnapshot.find(snap_id)
-      apk_snap.scan_version = :new_years_version
-      apk_snap.save
       file_name = apk_snap.apk_file.apk.url
       file_size = apk_snap.apk_file.apk.size
       b = Benchmark.measure { 
       s3_file = open(file_name)}
-      c = Benchmark.measure {
-      apk = Android::Apk.new(s3_file)}
+
+      puts "#{snap_id}: Download time: #{b.real}"
+      puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
+      puts "#{snap_id}: File Size: #{(file_size.to_f/1000000.0)} mb"
     elsif Rails.env.development?
-      apk_snap = ApkSnapshot.find(snap_id)
-      apk_snap.scan_version = :new_years_version
-      apk_snap.save
       file_size = nil
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
-      # b = Benchmark.measure { 
-      # s3_file = open(file_name)}
-      c = Benchmark.measure {
-      apk = Android::Apk.new(file_name)}
     end
 
-    # puts "#{snap_id}: Download time: #{b.real}"
-    # puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
-    puts "#{snap_id}: File Size: #{(file_size.to_f/1000000.0)} mb"
-    puts "#{snap_id}: Unpack time: #{c.real}"
+    c = Benchmark.measure {
+    apk = Android::Apk.new(file_name)}
 
-    # puts "#{snap_id} => downloaded [#{a.real}]"
+    puts "#{snap_id}: Unpack time: #{c.real}"
 
     dex = apk.dex
     packages = dex.classes.map do |cls|
@@ -59,7 +51,6 @@ module PackageSearchWorker
 
     puts "#{snap_id}: Classify Time: #{b.real}"
 
-    # apk_snap = ApkSnapshot.find_by_id(snap_id)
     apk_snap.scan_status = :scan_success
     apk_snap.last_updated = DateTime.now
     apk_snap.save
