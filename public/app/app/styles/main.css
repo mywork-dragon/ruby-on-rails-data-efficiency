@@ -7431,6 +7431,11 @@ span#dashboardResultsTableHeadingNumDisplayed {
   text-align: center;
 }
 
+#appPage > #wrap_spinner, #companyPage > #wrap_spinner {
+  text-align: center;
+  margin-top: 10%;
+}
+
 .sdkScanGeneralInfo {
   margin-top: 15px;
 }
