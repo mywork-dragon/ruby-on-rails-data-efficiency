@@ -26,7 +26,7 @@ class AndroidSdkService
   				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
   			end}
 
-        puts "#{snap_id}: Saving regexes (#{c.real})"
+        puts "#{snap_id}: Saving #{regex_check[:matched].length} regexes (#{c.real})"
       end}
 
       puts "#{snap_id}: Regex time: #{b.real}"
@@ -40,7 +40,7 @@ class AndroidSdkService
     			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
     		end}
 
-        puts "#{snap_id}: Saving packages (#{c.real})"
+        puts "#{snap_id}: Saving #{table_check[:matched].length} packages (#{c.real})"
     	end}
 
       puts "#{snap_id}: Table check time: #{b.real}"
