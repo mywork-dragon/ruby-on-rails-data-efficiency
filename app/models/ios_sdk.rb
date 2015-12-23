@@ -17,6 +17,7 @@ class IosSdk < ActiveRecord::Base
 
   enum source: [:cocoapods, :package_lookup]
 
+  # TODO: currently returns taken down. Maybe revisit and fix later
   def get_current_apps
     # TODO: revisit this to make it 1 query
     IosApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id))

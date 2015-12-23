@@ -20,7 +20,7 @@ class AndroidSdk < ActiveRecord::Base
 
   def get_current_apps
     snaps = self.apk_snapshots.select(:id).map(&:id)
-    AndroidApp.where(newest_apk_snapshot_id: snaps)
+    AndroidApp.where(newest_apk_snapshot_id: snaps).where.not(display_type: AndroidApp.display_types[:taken_down])
   end
 
 end
