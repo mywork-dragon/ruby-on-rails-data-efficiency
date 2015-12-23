@@ -67,6 +67,9 @@ class IosLiveScanService
       elsif snapshot.download_status == 'retrying'
         result_map[:retrying]
       else
+        ap "Failed to find in exception map"
+        ap snapshot
+        ap job
         result_map[:failed]
       end
 
