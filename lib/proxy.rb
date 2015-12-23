@@ -49,38 +49,6 @@ class Proxy
 
     def get_proxy
       MicroProxy.where(active: true).pluck(:private_ip).sample
-      # mp.last_used = DateTime.now
-      # begin
-      #   mp.save
-      # rescue
-      #   nil
-      # end
-      # mp.private_ip
-    end
-
-    def get_proxy_with_wait
-      30.times do
-        p = pick_proxy
-        return p.private_ip if p.present?
-        sleep 1
-      end
-      get_proxy
-    end
-
-    def pick_proxy
-      # begin
-      #   mp = MicroProxy.where('active = ? AND flags = ? AND last_used < ?',true,0,5.seconds.ago).sample
-      #   if mp.present?
-      #     mp.last_used = DateTime.now
-      #     mp.save
-      #   end
-      # rescue
-      #   nil
-      # else
-      #   mp
-      # end
-
-      MicroProxy.select(:id, :private_ip).where(active: true).sample
     end
 
     # Gets the body only
@@ -102,7 +70,6 @@ class Proxy
       5.times do
         begin
           sleep(rand(0.5..1.5))
-          # body = Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: get_proxy_with_wait))
           body = Nokogiri::HTML(get_body(req: req, params: params, type: type))
         rescue
           nil
