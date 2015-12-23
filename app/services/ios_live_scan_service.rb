@@ -47,7 +47,12 @@ class IosLiveScanService
         result_map[:validating]
       end
 
-      return status if !status.nil?
+      if !status.nil?
+        ap "Returning because snapshot job status"
+        ap job
+        ap snapshot
+        return status
+      end
 
       # second set of checks: download and scan stages
       # Note: the order of these checks matter
@@ -58,6 +63,9 @@ class IosLiveScanService
       elsif snapshot.scan_status == 'scanning'
         result_map[:scanning]
       elsif snapshot.scan_status == 'failed'
+        ap "Failing because scan status is failed"
+        ap job
+        ap snapshot
         result_map[:failed]
       elsif snapshot.download_status == 'complete' && snapshot.success == false
         exception = snapshot.ipa_snapshot_exceptions.last
@@ -67,7 +75,7 @@ class IosLiveScanService
       elsif snapshot.download_status == 'retrying'
         result_map[:retrying]
       else
-        ap "Failed to find in exception map"
+        ap "Failed to find in status map"
         ap snapshot
         ap job
         result_map[:failed]
