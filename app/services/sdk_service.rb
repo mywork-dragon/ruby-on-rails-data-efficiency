@@ -341,7 +341,7 @@ class SdkService
 		end
 
 		def google_search(q:, limit: 10)
-		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
 		  result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
 		end
 
