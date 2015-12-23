@@ -19,6 +19,8 @@ class IosLiveScanService
 
     def check_status(job_id: job_id)
 
+      ap "checking status"
+
       result_map = {
         validating: 0,
         unchanged: 1,
