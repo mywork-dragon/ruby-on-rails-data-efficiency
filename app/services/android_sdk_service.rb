@@ -18,7 +18,7 @@ class AndroidSdkService
       table_check = nil
 
 			# Save package if it matches a regex
-      regexes = SdkRegex.all.select(:regex, :android_sdk_id)
+      regexes = SdkRegex.all.select(:regex, :android_sdk_id).where.not(android_sdk_id: nil)
       b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex, regexes: regexes)
   		if regex_check[:matched].present?
 
