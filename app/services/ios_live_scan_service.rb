@@ -19,8 +19,6 @@ class IosLiveScanService
 
     def check_status(job_id: job_id)
 
-      ap "checking status"
-
       result_map = {
         validating: 0,
         unchanged: 1,
@@ -49,25 +47,17 @@ class IosLiveScanService
         result_map[:validating]
       end
 
-      if !status.nil?
-        ap "Returning because snapshot job status"
-        ap job
-        ap snapshot
-        return status
-      end
+      return status if !status.nil?
 
       # second set of checks: download and scan stages
       # Note: the order of these checks matter
-      status = if snapshot.nil?
+      status = if snapshot.nil? || snapshot.download_status.nil?
         result_map[:preparing]
       elsif snapshot.scan_status == 'scanned'
         result_map[:complete]
       elsif snapshot.scan_status == 'scanning'
         result_map[:scanning]
       elsif snapshot.scan_status == 'failed'
-        ap "Failing because scan status is failed"
-        ap job
-        ap snapshot
         result_map[:failed]
       elsif snapshot.download_status == 'complete' && snapshot.success == false
         exception = snapshot.ipa_snapshot_exceptions.last
@@ -77,9 +67,6 @@ class IosLiveScanService
       elsif snapshot.download_status == 'retrying'
         result_map[:retrying]
       else
-        ap "Failed to find in status map"
-        ap snapshot
-        ap job
         result_map[:failed]
       end
 
