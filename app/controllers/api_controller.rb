@@ -887,7 +887,8 @@ class ApiController < ApplicationController
     h = Hash.new
     if error_code.nil? || error_code == 6
       h[:installed] = features aa.installed_sdks
-      h[:uninstalled] = features aa.uninstalled_sdks
+      # h[:uninstalled] = features aa.uninstalled_sdks
+      h[:uninstalled] = []  # uninstalled workaround - don't show uninstalled
     end
     h[:updated] = aa.apk_snapshots.where(status:1, scan_status:1).last && aa.apk_snapshots.where(status:1, scan_status:1).last.last_updated
     h[:error_code] = error_code || nil
