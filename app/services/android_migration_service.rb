@@ -103,5 +103,22 @@ class AndroidMigrationService
       ap "Completed after #{Time.now - s} seconds"
     end
 
+    def reset_regexes(try_linking: true)
+      SdkRegex.where.not(android_sdk_id: nil).find_each.with_index do |row, index|
+        row.update(android_sdk_id: nil)
+        
+        fit = AndroidSdk.where(name: row.regex).take
+        if fit.present? && try_linking
+          ap fit
+          ap row
+          puts "Potential Match Found. Link them? [y/n]"
+          a = gets.chomp
+          if a == 'y'
+            row.update(android_sdk_id: fit.id)
+          end
+        end
+      end
+    end
+
   end
 end
