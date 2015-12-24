@@ -6,10 +6,11 @@ class IosMonitorService
 
       times = {}      
       devices = IosDevice.where(purpose: IosDevice.purposes[:mass]).find_each do |device|
+        ap "Starting device #{device.id}"
         times[device.id] = IosDeviceService.new(device).get_ssh_times
       end
 
-      ap times
+      times
     end
 
     def kill_ssh_sessions(ids:)
