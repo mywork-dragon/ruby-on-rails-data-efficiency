@@ -79,7 +79,47 @@ class IosDeviceService
     end
   end
 
-  def next_account
+  # Returns the current time
+  def get_ssh_times
+    begin
+      Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+        ssh_sessions = run_command(ssh, "ps aux | grep sshd | grep -v grep | awk '{print $2, $9}'", 'getting ssh times').chomp.split("\n").map do |row|
+          {
+            pid: row.split.first,
+            time: row.split.second
+          }
+        end
+        current_time = run_command(ssh, "ps aux | grep grep | awk '{print $9}'", 'getting current time').chomp.split("\n").last
+        {
+          ssh_sessions: ssh_sessions,
+          current_time: current_time
+        }
+      end
+    rescue => e
+      "unable to retrieve information because of error #{e.message}"
+    end
+  end
+
+  def kill_ssh_session
+    begin
+      Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+        kill = run_command(ssh, "killall sshd", 'kill all ssh sessions')
+      end
+    rescue => e
+      begin
+        raise if !e.message.include?('closed stream')
+        Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+          check_ssh = run_command(ssh, 'ps aux | grep sshd | grep -v grep | wc -l', 'checking remaining ssh').chomp
+          if check_ssh != '1'
+            "Error: SSH still running on device"
+          else
+            "Success"
+          end
+        end
+      rescue => e
+        "Error: #{e.message}"
+      end
+    end
   end
 
   def run(app_identifier, lookup_content, purpose, unique_id, country_code: 'us')
