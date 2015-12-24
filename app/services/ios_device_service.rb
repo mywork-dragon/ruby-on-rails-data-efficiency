@@ -107,7 +107,7 @@ class IosDeviceService
       end
     rescue => e
       begin
-        raise if !e.message.include?('closed stream')
+        raise "Cannot find closed stream message" if !e.message.include?('closed stream')
         Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
           check_ssh = run_command(ssh, 'ps aux | grep sshd | grep -v grep | wc -l', 'checking remaining ssh').chomp
           if check_ssh != '1'
