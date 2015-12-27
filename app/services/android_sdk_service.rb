@@ -75,7 +75,7 @@ class AndroidSdkService
       html = Nokogiri::HTML(html_text)
 
       gs = html.css('.g')
-      
+
       results_hash = gs.map do |g|
         begin
           h3_r_node = g.at_css('h3.r')
@@ -86,7 +86,9 @@ class AndroidSdkService
 
           title = url_node.children.text
 
-          {title: title, url: url}
+          summary = g.at_css('.st').text
+
+          {title: title, url: url, summary: summary}
         rescue => e
           nil
         end
