@@ -22,13 +22,19 @@ module GoogleParser
       html_text = File.open(file).read
 
       begin 
-        html = Nokogiri::HTML(html_text)
+        @html = Nokogiri::HTML(html_text)
       rescue => e
         raise "Nokogiri could not parse HTML"
       end
+    
+      AllResults.new(results: parse_results, count: 70)
+    end
 
+    private
+
+    def parse_results
       begin
-        gs = html.css('.g')
+        gs = @html.css('.g')
       rescue => e
         raise_could_not_find_any_results_exception
       end
@@ -72,7 +78,16 @@ module GoogleParser
         url
     end
 
+  end
 
+  class AllResults
+    attr_reader :count
+    attr_reader :results
+
+    def initialize(count:, results:)
+      @count = count
+      @results = results
+    end
   end
 
   class Result
