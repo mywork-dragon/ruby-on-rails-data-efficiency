@@ -74,11 +74,12 @@ class AndroidSdkService
       html_text = File.open(file).read
       html = Nokogiri::HTML(html_text)
 
-      h3_rs = html.css('h3.r')
-
-      results_hash = h3_rs.map do |node|
+      gs = html.css('.g')
+      
+      results_hash = gs.map do |g|
         begin
-          url_node = node.children.find{ |x| x.name = 'a' }
+          h3_r_node = g.at_css('h3.r')
+          url_node = h3_r_node.children.find{ |x| x.name = 'a' }
 
           url = url_node['href']
           url = clean_url(url)
