@@ -244,6 +244,11 @@ class AndroidSdkService
       end
 		end
 
+    def results(file)
+      html_text = File.open(file).read
+      html = Nokogiri::HTML(html_text)
+    end
+
 		def valid_domain?(url)
 			url.present? && url.exclude?('...') && url != '0' && url.count('-') <= 1
 		end
