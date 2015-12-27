@@ -71,19 +71,35 @@ class AndroidSdkService
     def results(file)
       html_text = File.open(file).read
       html = Nokogiri::HTML(html_text)
-      urls = html.css('h3.r').map{ |x| x.children.find{ |c| c.name = 'a' }['href'] }.compact
 
-      # url can look like, so probably need to clean it
+      h3_rs = html.css('h3.r')
+
+      results_hash = h3_rs.map do |node|
+        begin
+          url_node = node.children.find{ |x| x.name = 'a' }
+
+          url = url_node['href']
+          url = clean_url(url)
+
+          title = url_node.children.text
+
+          {title: title, url: url}
+        # rescue => e
+          # nil
+        end
+      end
+
+      results_hash.compact
+    end
+
+    # url can look like, so probably need to clean it
       # /url?q=https://parse.com/docs/ios/guide&sa=U&ved=0ahUKEwi8k7uju_zJAhVDwGMKHahiC7YQFggUMAA&usg=AFQjCNHYJPQQ7P9b6EhPqFJZSXxk_4_RCw
-
-      urls.map do |url|
-        if url.starts_with?('/url?q=')
+    def clean_url(url)
+      if url.starts_with?('/url?q=')
           url.sub!('/url?q=', '')
           # TODO: replace 'sa' and 'sg' params on URL
         end
         url
-      end
-
     end
 
     private
