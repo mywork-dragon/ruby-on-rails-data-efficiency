@@ -27,7 +27,7 @@ module GoogleParser
         raise "Nokogiri could not parse HTML"
       end
     
-      AllResults.new(results: parse_results, count: 70)
+      AllResults.new(results: parse_results, count: parse_count)
     end
 
     private
@@ -62,6 +62,11 @@ module GoogleParser
       raise_could_not_find_any_results_exception if results_hash_a_compact.empty?
 
       results_hash_a_compact.map{ |results_hash| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary]) }
+    end
+
+    # TODO: regex this into an integer
+    def parse_count
+      @html.at_css('.sd#resultStats').text
     end
 
     def raise_could_not_find_any_results_exception
