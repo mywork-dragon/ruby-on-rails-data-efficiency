@@ -68,6 +68,8 @@ class AndroidSdkService
 
 		end
 
+    # TODO: UTF-8
+    # TODO: replace google params
     def results(file)
       html_text = File.open(file).read
       html = Nokogiri::HTML(html_text)
@@ -84,8 +86,8 @@ class AndroidSdkService
           title = url_node.children.text
 
           {title: title, url: url}
-        # rescue => e
-          # nil
+        rescue => e
+          nil
         end
       end
 
