@@ -10,9 +10,18 @@ class GoogleParser
   # TODO: replace google params
   def results(file)
     html_text = File.open(file).read
-    html = Nokogiri::HTML(html_text)
 
-    gs = html.css('.g')
+    begin 
+      html = Nokogiri::HTML(html_text)
+    rescue => e
+      raise "Nokogiri could not parse HTML"
+    end
+
+    begin
+      gs = html.css('.g')
+    rescue => e
+      raise_could_not_find_any_results_exception
+    end
 
     results_hash = gs.map do |g|
       begin
@@ -34,9 +43,13 @@ class GoogleParser
 
     results_hash_compact = results_hash.compact
 
-    raise "Could not find any results" if results_hash_compact.empty?
+    raise_could_not_find_any_results_exception if results_hash_compact.empty?
 
     results_hash_compact
+  end
+
+  def raise_could_not_find_any_results_exception
+    raise "Could not find any results" 
   end
 
   # url can look like, so probably need to clean it
