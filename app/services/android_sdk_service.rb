@@ -68,6 +68,24 @@ class AndroidSdkService
 
 		end
 
+    def results(file)
+      html_text = File.open(file).read
+      html = Nokogiri::HTML(html_text)
+      urls = html.css('h3.r').map{ |x| x.children.find{ |c| c.name = 'a' }['href'] }.compact
+
+      # url can look like, so probably need to clean it
+      # /url?q=https://parse.com/docs/ios/guide&sa=U&ved=0ahUKEwi8k7uju_zJAhVDwGMKHahiC7YQFggUMAA&usg=AFQjCNHYJPQQ7P9b6EhPqFJZSXxk_4_RCw
+
+      urls.map do |url|
+        if url.starts_with?('/url?q=')
+          url.sub!('/url?q=', '')
+          # TODO: replace 'sa' and 'sg' params on URL
+        end
+        url
+      end
+
+    end
+
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
@@ -243,11 +261,6 @@ class AndroidSdkService
 		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
       end
 		end
-
-    def results(file)
-      html_text = File.open(file).read
-      html = Nokogiri::HTML(html_text)
-    end
 
 		def valid_domain?(url)
 			url.present? && url.exclude?('...') && url != '0' && url.count('-') <= 1
