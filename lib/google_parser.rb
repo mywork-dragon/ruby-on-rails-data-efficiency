@@ -1,4 +1,6 @@
-class GoogleParser
+module GoogleParser
+
+  class Parser
 
   class << self
     def results(file)
@@ -62,5 +64,7 @@ class GoogleParser
       url
   end
 
+
+end
 
 end
