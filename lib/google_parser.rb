@@ -32,7 +32,11 @@ class GoogleParser
       end
     end
 
-    results_hash.compact
+    results_hash_compact = results_hash.compact
+
+    raise "Could not find any results" if results_hash_compact.empty?
+
+    results_hash_compact
   end
 
   # url can look like, so probably need to clean it
