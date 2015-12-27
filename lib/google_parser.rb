@@ -55,7 +55,7 @@ module GoogleParser
 
       raise_could_not_find_any_results_exception if results_hash_a_compact.empty?
 
-      results_hash_a_compact.map{ |results_hash| SearchResult.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary]) }
+      results_hash_a_compact.map{ |results_hash| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary]) }
     end
 
     def raise_could_not_find_any_results_exception
@@ -75,7 +75,7 @@ module GoogleParser
 
   end
 
-  class SearchResult
+  class Result
     attr_reader :titles
     attr_reader :url
     attr_reader :summary
