@@ -6,11 +6,19 @@ module GoogleParser
       def results(file)
         self.new.results(file)
       end
+
+      # def parse(html_s)
+      #   self.new.parse(html_s)
+      # end
+
+      def parse(file)
+        self.new.parse(file)
+      end
     end
 
     # TODO: UTF-8
     # TODO: replace google params
-    def results(file)
+    def parse(file)
       html_text = File.open(file).read
 
       begin 
@@ -55,7 +63,7 @@ module GoogleParser
     end
 
     # url can look like, so probably need to clean it
-      # /url?q=https://parse.com/docs/ios/guide&sa=U&ved=0ahUKEwi8k7uju_zJAhVDwGMKHahiC7YQFggUMAA&usg=AFQjCNHYJPQQ7P9b6EhPqFJZSXxk_4_RCw
+    # /url?q=https://parse.com/docs/ios/guide&sa=U&ved=0ahUKEwi8k7uju_zJAhVDwGMKHahiC7YQFggUMAA&usg=AFQjCNHYJPQQ7P9b6EhPqFJZSXxk_4_RCw
     def clean_url(url)
       if url.starts_with?('/url?q=')
           url.sub!('/url?q=', '')
@@ -68,6 +76,9 @@ module GoogleParser
   end
 
   class SearchResult
+    attr_reader :titles
+    attr_reader :url
+    attr_reader :summary
 
     def initialize(title:, url:, summary:)
       @title = title
