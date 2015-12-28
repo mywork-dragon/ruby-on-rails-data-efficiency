@@ -78,7 +78,8 @@ module GoogleParser
     def clean_url(url)
       if url.starts_with?('/url?q=')
           url.sub!('/url?q=', '')
-          # TODO: replace 'sa' and 'sg' params on URL
+          # TODO: replace 'sa', 'ved', 'usg' params on URL
+          url.gsub!(/(&*)sa=(.*)&ved=(.*)&usg=(.*)/, '')
         end
         url
     end
@@ -107,5 +108,14 @@ module GoogleParser
     end
 
   end
+
+  class NoResultsFound < StandardError
+
+    def message
+      "alskfnlaskfnlaksnf wooooo"
+    end
+
+  end
+
 
 end
