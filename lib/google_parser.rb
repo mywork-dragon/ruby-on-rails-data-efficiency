@@ -28,7 +28,7 @@ module GoogleParser
       count = parse_count
       results = (count == 0 ? [] : parse_results)
 
-      Search.new(count: count, results: results) # make sure count is run first because it checks for no results
+      Search.new(count: count, results: results)
     end
 
     def parse_file(file)
