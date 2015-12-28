@@ -16,8 +16,8 @@ module GoogleParser
       end
     end
 
-    # TODO: UTF-8
-    # TODO: replace google params
+    # Call this on a String of HTML
+    # @author Jason Lew
     def parse(html_s)
       begin 
         @html = Nokogiri::HTML(html_s)
