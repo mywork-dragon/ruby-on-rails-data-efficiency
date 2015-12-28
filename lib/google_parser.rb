@@ -7,27 +7,29 @@ module GoogleParser
         self.new.results(file)
       end
 
-      # def parse(html_s)
-      #   self.new.parse(html_s)
-      # end
+      def parse(html_s)
+        self.new.parse(html_s)
+      end
 
-      def parse(file)
-        self.new.parse(file)
+      def parse_file(file)
+        self.new.parse_file(file)
       end
     end
 
     # TODO: UTF-8
     # TODO: replace google params
-    def parse(file)
-      html_text = File.open(file).read
-
+    def parse(html_s)
       begin 
-        @html = Nokogiri::HTML(html_text)
+        @html = Nokogiri::HTML(html_s)
       rescue => e
-        raise e, "Nokogiri could not parse HTML."
+        raise e, "Nokogiri could not parse HTML"
       end
     
       AllResults.new(results: parse_results, count: parse_count)
+    end
+
+    def parse_file(file)
+      parse File.open(file).read
     end
 
     private
@@ -96,7 +98,7 @@ module GoogleParser
   end
 
   class Result
-    attr_reader :titles
+    attr_reader :title
     attr_reader :url
     attr_reader :summary
     attr_reader :result_num
