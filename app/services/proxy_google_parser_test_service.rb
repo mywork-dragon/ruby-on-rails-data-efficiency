@@ -19,6 +19,13 @@ class ProxyGoogleParserTestService
       tune
       )
 
+    # sdks = %w(
+    #     optimizely
+    #     parse
+    #     marketo
+    #     cmcmcmmcmcmalsalsamflkamslkm
+    #     )
+
     results = sdks.each do |sdk|
       html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => "#{sdk} ios sdk"})
       ap GoogleParser::Parser.parse(html_s)
