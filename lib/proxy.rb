@@ -27,6 +27,10 @@ class Proxy
           curb.follow_location = true
           curb.timeout = 120
 
+          curb.on_complete do |curl_response|
+            configure_curb_encoding(curl_response)
+          end
+
           yield(curb) if block_given? # Can override
         end
 
@@ -40,13 +44,11 @@ class Proxy
           curb.max_redirects = 3
           curb.timeout = 120
 
-          # support UTF-8
           curb.on_complete do |curl_response|
-            encoding = 'UTF-8'
-            encoding = $1 if curl_response.header_str =~ /charset=([-a-z0-9]+)/i
-            encoding = $1 if curl_response.body_str =~ %r{<meta[^>]+content=[^>]*charset=([-a-z0-9]+)[^>]*>}mi
-            curl_response.body_str.force_encoding(encoding)
+            configure_curb_encoding(curl_response)
           end
+
+          
 
           yield(curb) if block_given? # Can override
         end
@@ -184,6 +186,18 @@ class Proxy
       172.31.30.170
       172.31.24.107
       )
+    end
+
+    private 
+
+    # Support UTF-8
+    # https://github.com/vcr/vcr/issues/150#issuecomment-4648446
+    # @author Jason Lew
+    def configure_curb_encoding(curl_response)
+      encoding = 'UTF-8'
+      encoding = $1 if curl_response.header_str =~ /charset=([-a-z0-9]+)/i
+      encoding = $1 if curl_response.body_str =~ %r{<meta[^>]+content=[^>]*charset=([-a-z0-9]+)[^>]*>}mi
+      curl_response.body_str.force_encoding(encoding)
     end
 
   end
