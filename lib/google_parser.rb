@@ -59,9 +59,6 @@ module GoogleParser
       results_count.gsub(',', '').to_i
     end
 
-    def check_for_0_documents
-    end
-
     def parse_results
       begin
         gs = @html.css('.g')
