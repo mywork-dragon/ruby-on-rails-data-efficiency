@@ -55,8 +55,6 @@ module GoogleParser
       results_text = results.text
       return 0 if results_text.blank?
 
-      
-
       /(?<results_count>\S+) results/ =~ results_text
       results_count.gsub(',', '').to_i
     end
