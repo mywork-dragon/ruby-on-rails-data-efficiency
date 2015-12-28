@@ -40,6 +40,14 @@ class Proxy
           curb.max_redirects = 3
           curb.timeout = 120
 
+          # support UTF-8
+          curb.on_complete do |curl_response|
+            encoding = 'UTF-8'
+            encoding = $1 if curl_response.header_str =~ /charset=([-a-z0-9]+)/i
+            encoding = $1 if curl_response.body_str =~ %r{<meta[^>]+content=[^>]*charset=([-a-z0-9]+)[^>]*>}mi
+            curl_response.body_str.force_encoding(encoding)
+          end
+
           yield(curb) if block_given? # Can override
         end
 
@@ -61,6 +69,7 @@ class Proxy
     # @return The body (String)
     def get_body(req:, params: {}, type: :get, proxy: nil)
       get(req: req, params: params, type: type, proxy: proxy).body
+      # get(req: req, params: params, type: type, proxy: proxy)
     end
 
     # Get the body as Nokogiri
