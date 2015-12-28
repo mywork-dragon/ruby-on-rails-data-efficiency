@@ -24,7 +24,7 @@ module GoogleParser
       begin 
         @html = Nokogiri::HTML(html_text)
       rescue => e
-        raise "Nokogiri could not parse HTML"
+        raise e, "Nokogiri could not parse HTML."
       end
     
       AllResults.new(results: parse_results, count: parse_count)
@@ -36,7 +36,7 @@ module GoogleParser
       begin
         gs = @html.css('.g')
       rescue => e
-        raise_could_not_find_any_results_exception
+        raise NoResultsFound
       end
 
       results_hash_a = gs.map do |g|
@@ -59,18 +59,16 @@ module GoogleParser
 
       results_hash_a_compact = results_hash_a.compact
 
-      raise_could_not_find_any_results_exception if results_hash_a_compact.empty?
+      raise NoResultsFound if results_hash_a_compact.empty?
 
       results_hash_a_compact.map{ |results_hash| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary]) }
     end
 
     # TODO: regex this into an integer
     def parse_count
-      @html.at_css('.sd#resultStats').text
-    end
-
-    def raise_could_not_find_any_results_exception
-      raise "Could not find any results" 
+      results_text = @html.at_css('.sd#resultStats').text
+      /(?<results_count>\S+) results/ =~ results_text
+      results_count.to_i
     end
 
     # url can look like, so probably need to clean it
@@ -110,9 +108,11 @@ module GoogleParser
   end
 
   class NoResultsFound < StandardError
+
     def initialize(message = 'Could not find any resuls in HTML. Check your HTML.')
       super
     end
+
   end
 
 
