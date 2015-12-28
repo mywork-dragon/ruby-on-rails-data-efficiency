@@ -62,7 +62,7 @@ module GoogleParser
 
       raise NoResultsFound if results_hash_a_compact.empty?
 
-      results_hash_a_compact.each_with_index.map{ |results_hash, index| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index) }
+      results_hash_a_compact.each_with_index.map{ |results_hash, index| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
 
     # TODO: regex this into an integer
@@ -112,7 +112,7 @@ module GoogleParser
 
   class NoResultsFound < StandardError
 
-    def initialize(message = 'Could not find any resuls in HTML. Check your HTML.')
+    def initialize(message = "Could not find any resuls in HTML. Check your HTML to make sure it's formed correctly.")
       super
     end
 
