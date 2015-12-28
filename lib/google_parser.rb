@@ -41,6 +41,9 @@ module GoogleParser
       results = @html.at_css('.sd#resultStats')
 
       if results.nil? || (results_text = results.text).blank?
+
+        detect_unusual_traffic_message
+
         if !@html.text.match(/Your search - .* - did not match any documents./)
           raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page"
         end
@@ -65,6 +68,7 @@ module GoogleParser
       begin
         gs = @html.css('.g')
       rescue => e
+        detect_unusual_traffic_message
         raise HtmlInvalid, "Couldn't find '.g' selector"
       end
 
@@ -102,6 +106,10 @@ module GoogleParser
         url
     end
 
+    def detect_unusual_traffic_message
+      raise UnusualTrafficDetected if @html.text.include?('Our systems have detected unusual traffic')
+    end
+
   end
 
   class Search
@@ -132,6 +140,14 @@ module GoogleParser
   class HtmlInvalid < StandardError
 
     def initialize(message = "Cannot find critical selector in HTML. Check your HTML to make sure it's valid.")
+      super
+    end
+
+  end
+
+  class UnusualTrafficDetected < StandardError
+
+    def initialize(message = "Unusual traffic detected")
       super
     end
 
