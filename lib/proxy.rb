@@ -71,7 +71,6 @@ class Proxy
     # @return The body (String)
     def get_body(req:, params: {}, type: :get, proxy: nil)
       get(req: req, params: params, type: type, proxy: proxy).body
-      # get(req: req, params: params, type: type, proxy: proxy)
     end
 
     # Get the body as Nokogiri
