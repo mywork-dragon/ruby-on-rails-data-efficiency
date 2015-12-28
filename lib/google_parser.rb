@@ -50,6 +50,7 @@ module GoogleParser
           title = url_node.children.text
 
           summary = g.at_css('.st').text
+          summary = nil if summary.blank?
 
           {title: title, url: url, summary: summary}
         rescue => e
@@ -61,7 +62,7 @@ module GoogleParser
 
       raise NoResultsFound if results_hash_a_compact.empty?
 
-      results_hash_a_compact.map{ |results_hash| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary]) }
+      results_hash_a_compact.each_with_index.map{ |results_hash, index| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index) }
     end
 
     # TODO: regex this into an integer
@@ -98,11 +99,13 @@ module GoogleParser
     attr_reader :titles
     attr_reader :url
     attr_reader :summary
+    attr_reader :result_num
 
-    def initialize(title:, url:, summary:)
+    def initialize(title:, url:, summary:, result_num:)
       @title = title
       @url = url
       @summary = summary
+      @result_num = result_num
     end
 
   end
