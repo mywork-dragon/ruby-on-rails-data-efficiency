@@ -98,7 +98,7 @@ module GoogleParser
           url.sub!('/url?q=', '')
           url.gsub!(/(&*)sa=(.*)&ved=(.*)&usg=(.*)/, '')
         end
-        url
+      url
     end
 
     def detect_unusual_traffic_message
