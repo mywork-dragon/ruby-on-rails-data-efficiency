@@ -110,11 +110,9 @@ module GoogleParser
   end
 
   class NoResultsFound < StandardError
-
-    def message
-      "alskfnlaskfnlaksnf wooooo"
+    def initialize(message = 'Could not find any resuls in HTML. Check your HTML.')
+      super
     end
-
   end
 
 
