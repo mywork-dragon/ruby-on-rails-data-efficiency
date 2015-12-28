@@ -25,7 +25,10 @@ module GoogleParser
         raise e, "Nokogiri could not parse HTML"
       end
     
-      AllResults.new(results: parse_results, count: parse_count)
+      count = parse_count
+      results = (count == 0 ? [] : parse_results)
+
+      Search.new(count: count, results: results) # make sure count is run first because it checks for no results
     end
 
     def parse_file(file)
@@ -34,11 +37,35 @@ module GoogleParser
 
     private
 
+    def parse_count
+      results = @html.at_css('.sd#resultStats')
+
+      if results.nil? || (results_text = results.text).blank?
+        if !@html.text.match(/Your search - .* - did not match any documents./)
+          raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page"
+        end
+        
+      end
+
+      return 0 if results.nil?
+
+      results_text = results.text
+      return 0 if results_text.blank?
+
+      
+
+      /(?<results_count>\S+) results/ =~ results_text
+      results_count.gsub(',', '').to_i
+    end
+
+    def check_for_0_documents
+    end
+
     def parse_results
       begin
         gs = @html.css('.g')
       rescue => e
-        raise NoResultsFound
+        raise HtmlInvalid, "Couldn't find '.g' selector"
       end
 
       results_hash_a = gs.map do |g|
@@ -62,16 +89,7 @@ module GoogleParser
 
       results_hash_a_compact = results_hash_a.compact
 
-      raise NoResultsFound if results_hash_a_compact.empty?
-
       results_hash_a_compact.each_with_index.map{ |results_hash, index| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
-    end
-
-    # TODO: regex this into an integer
-    def parse_count
-      results_text = @html.at_css('.sd#resultStats').text
-      /(?<results_count>\S+) results/ =~ results_text
-      results_count.gsub(',', '').to_i
     end
 
     # url can look like, so probably need to clean it
@@ -79,7 +97,6 @@ module GoogleParser
     def clean_url(url)
       if url.starts_with?('/url?q=')
           url.sub!('/url?q=', '')
-          # TODO: replace 'sa', 'ved', 'usg' params on URL
           url.gsub!(/(&*)sa=(.*)&ved=(.*)&usg=(.*)/, '')
         end
         url
@@ -87,7 +104,7 @@ module GoogleParser
 
   end
 
-  class AllResults
+  class Search
     attr_reader :count
     attr_reader :results
 
@@ -112,9 +129,9 @@ module GoogleParser
 
   end
 
-  class NoResultsFound < StandardError
+  class HtmlInvalid < StandardError
 
-    def initialize(message = "Could not find any resuls in HTML. Check your HTML to make sure it's formed correctly.")
+    def initialize(message = "Cannot find critical selector in HTML. Check your HTML to make sure it's valid.")
       super
     end
 
