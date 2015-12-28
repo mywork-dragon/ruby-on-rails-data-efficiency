@@ -83,7 +83,7 @@ module GoogleParser
           summary = g.at_css('.st').text
           summary = nil if summary.blank?
 
-          {title: title, url: url, summary: summary}
+          {title: title.chomp, url: url.chomp, summary: summary.chomp}
         rescue => e
           nil
         end
