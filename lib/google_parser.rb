@@ -68,7 +68,7 @@ module GoogleParser
     def parse_count
       results_text = @html.at_css('.sd#resultStats').text
       /(?<results_count>\S+) results/ =~ results_text
-      results_count.to_i
+      results_count.gsub(',', '').to_i
     end
 
     # url can look like, so probably need to clean it
