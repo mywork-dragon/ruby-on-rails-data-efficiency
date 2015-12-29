@@ -38,7 +38,7 @@ module GoogleParser
     private
 
     def parse_count
-      results = @html.at_css('.sd#resultStats')
+      results = @html.at_css('#resultStats')
 
       if results.nil? || (results_text = results.text).blank?
 
