@@ -154,15 +154,15 @@ class AndroidSdkService
       ap g
       return nil if g.blank?
 			g.each do |url|
-        puts "url: #{url}"
+        # puts "url: #{url}"
 				ext = exts(dot: :before).select{|s| url.include?(s) }.first
-        puts "ext: #{ext}"
+        # puts "ext: #{ext}"
 		    url = remove_sub(url).split(ext).first + ext
-        puts "url: #{url}"
+        # puts "url: #{url}"
 		    company = query
         host = URI(url).host
-        puts "host: #{host}"
-        puts "query.downcase: #{query.downcase}"
+        # puts "host: #{host}"
+        # puts "query.downcase: #{query.downcase}"
 				return {:url=>url, :name=>company, :open_source=>false, :github_repo_identifier=>nil} if host && host.include?(query.downcase)
 			end
 			nil
@@ -305,8 +305,8 @@ class AndroidSdkService
     end
 
 		def miss_match(data:, check:, regexes: nil)
-      puts "miss_match, data:"
-      ap data
+      # puts "miss_match, data:"
+      # ap data
 
 			m = Hash.new
       return m if data.nil?
