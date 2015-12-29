@@ -8,7 +8,6 @@ class Proxy
     # @author Osman Khwaja
     # @author Jason Lew
     # @return The response (CurbFu::Response::Base)
-
     # @note Will run from local IP if not in production mode
     def get(req:, params: {}, type: :get, proxy: nil, randomize_user_agent: true) 
 
@@ -20,7 +19,7 @@ class Proxy
 
         # puts "Headers: ".yellow
         # ap req[:headers]
-        # print ''
+        # puts ''
       end
 
       if Rails.env.production?
@@ -112,7 +111,7 @@ class Proxy
     # @return The response (CurbFu::Response::Base)
     def get_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers, params: params_from_query(uri.query).merge(params))
+      get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params))
     end
 
     # from a query string, build the params object
@@ -140,7 +139,7 @@ class Proxy
     # @note Also randomizes the User Agent
     def get_body_from_url(url, params: {}, headers: {})
       uri = URI(url)
-      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers, params: params_from_query(uri.query).merge(params))
+      get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params))
     end
 
     def ios_proxies
