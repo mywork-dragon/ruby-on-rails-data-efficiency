@@ -189,7 +189,7 @@ class AndroidSdkService
       searches = prefix + suffixes
 
       searches.each do |rowner, rname, regex|
-        q = [rowner, rname, platform, 'site:github.com'].compact.join(' ')
+        q = ['site:github.com', rowner, rname, platform].compact.join(' ')
         g = google_search(q: q, limit: 5)
         next if g.nil?
         g.each do |url|

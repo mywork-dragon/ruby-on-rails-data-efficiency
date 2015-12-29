@@ -286,7 +286,7 @@ class SdkService
 		def google_github(query:, platform:, snapshot_id:)
 			return nil unless github_query_valid?(query)
 
-			q = "#{query} #{platform} site:github.com"
+			q = "site:github.com #{query} #{platform}"
 			google_search(q: q).each do |url|
 				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	# if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
