@@ -10,7 +10,7 @@ class PackageSearchService
 
       if n < 5000
         return_ids_array = true 
-        android_app_ids
+        android_app_ids = []
       end
 
       AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each.with_index do |app, index|
