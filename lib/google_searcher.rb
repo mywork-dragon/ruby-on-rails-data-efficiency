@@ -11,8 +11,9 @@ module GoogleSearcher
     end
 
     def search(query, proxy: nil, proxy_type: nil)
+      @query = query
       html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
-      Parser.parse(html_s)
+      Parser.parse(html_s, query: query)
     end
 
   end
@@ -25,8 +26,8 @@ module GoogleSearcher
         self.new.results(file)
       end
 
-      def parse(html_s)
-        self.new.parse(html_s)
+      def parse(html_s, query: nil)
+        self.new.parse(html_s, query: query)
       end
 
       def parse_file(file)
@@ -37,17 +38,19 @@ module GoogleSearcher
 
     # Call this on a String of HTML
     # @author Jason Lew
-    def parse(html_s)
+    def parse(html_s, query: nil)
+      @query = query
+
       begin 
         @html = Nokogiri::HTML(html_s)
       rescue => e
-        raise e, "Nokogiri could not parse HTML"
+        raise e, "Nokogiri could not parse HTML (Query: #{@query})"
       end
     
       count = parse_count
       results = (count == 0 ? [] : parse_results)
 
-      Search.new(count: count, results: results)
+      Search.new(count: count, results: results, query: query)
     end
 
     def parse_file(file)
@@ -64,7 +67,7 @@ module GoogleSearcher
         detect_unusual_traffic_message
 
         if !@html.text.match(/Your search - .* - did not match any documents./)
-          raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page"
+          raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
         end
         
       end
@@ -74,8 +77,14 @@ module GoogleSearcher
       results_text = results.text
       return 0 if results_text.blank?
 
-      /(?<results_count>\S+) results/ =~ results_text
-      results_count.gsub(',', '').to_i
+      /(?<results_count>\S+) results?/ =~ results_text
+
+      if defined?(results_count)
+        return results_count.gsub(',', '').to_i
+      else
+        raise HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
+      end
+      
     end
 
     def parse_results
@@ -83,7 +92,7 @@ module GoogleSearcher
         gs = @html.css('.g')
       rescue => e
         detect_unusual_traffic_message
-        raise HtmlInvalid, "Couldn't find '.g' selector"
+        raise HtmlInvalid, "Couldn't find '.g' selector (Query: #{@query})"
       end
 
       results_hash_a = gs.map do |g|
@@ -121,7 +130,7 @@ module GoogleSearcher
     end
 
     def detect_unusual_traffic_message
-      raise UnusualTrafficDetected if @html.text.include?('Our systems have detected unusual traffic')
+      raise UnusualTrafficDetected "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
     end
 
   end
@@ -129,10 +138,12 @@ module GoogleSearcher
   class Search
     attr_reader :count
     attr_reader :results
+    attr_reader :query
 
-    def initialize(count:, results:)
+    def initialize(count:, results:, query: nil)
       @count = count
       @results = results
+      @query = query
     end
   end
 
