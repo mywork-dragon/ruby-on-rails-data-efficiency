@@ -24,7 +24,7 @@ class Proxy
 
       if Rails.env.production?
         
-        mp = proxy || get_proxy_by_type(proxy_type)
+        mp = proxy || get_proxy_by_type(type: proxy_type)
         
         proxy = "#{mp}:8888"
 
