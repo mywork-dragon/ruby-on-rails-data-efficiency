@@ -10,7 +10,18 @@ class Proxy
     # @return The response (CurbFu::Response::Base)
 
     # @note Will run from local IP if not in production mode
-    def get(req:, params: {}, type: :get, proxy: nil) 
+    def get(req:, params: {}, type: :get, proxy: nil, randomize_user_agent: true) 
+
+      # randomize User-Agent
+      if randomize_user_agent
+        user_agent_header = {'User-Agent' => UserAgent.random_web}
+        headers = req[:headers]
+        req[:headers] = (headers.nil? ? user_agent_header : headers.merge(user_agent_header))
+
+        puts "Headers: ".yellow
+        ap req[:headers]
+        print ''
+      end
 
       if Rails.env.production?
         
