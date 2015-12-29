@@ -20,6 +20,7 @@ module GoogleSearcher
   class Parser
 
     class << self
+
       def results(file)
         self.new.results(file)
       end
@@ -31,6 +32,7 @@ module GoogleSearcher
       def parse_file(file)
         self.new.parse_file(file)
       end
+      
     end
 
     # Call this on a String of HTML

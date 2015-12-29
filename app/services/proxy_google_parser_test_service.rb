@@ -27,8 +27,7 @@ class ProxyGoogleParserTestService
     #     )
 
     results = sdks.each do |sdk|
-      html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => "#{sdk} ios sdk"})
-      ap GoogleParser::Parser.parse(html_s)
+      ap GoogleSearcher::Searcher.search("#{sdk} ios sdk", proxy_type: :android_classification)
       sleep(rand(1.0..2.0)) # be nice to google
     end
 
