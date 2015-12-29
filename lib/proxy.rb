@@ -18,9 +18,9 @@ class Proxy
         headers = req[:headers]
         req[:headers] = (headers.nil? ? user_agent_header : headers.merge(user_agent_header))
 
-        puts "Headers: ".yellow
-        ap req[:headers]
-        print ''
+        # puts "Headers: ".yellow
+        # ap req[:headers]
+        # print ''
       end
 
       if Rails.env.production?
