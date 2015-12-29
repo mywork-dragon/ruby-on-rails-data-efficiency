@@ -1,3 +1,5 @@
 bicep_curl.gif export-ignore
 db/alexa export-ignore
 db/cocoapods export-ignore
+db/demo export-ignore
+db/test_files
