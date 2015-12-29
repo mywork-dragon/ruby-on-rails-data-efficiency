@@ -130,7 +130,7 @@ module GoogleSearcher
     end
 
     def detect_unusual_traffic_message
-      raise UnusualTrafficDetected "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
+      raise UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
     end
 
   end
