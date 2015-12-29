@@ -10,8 +10,8 @@ module GoogleSearcher
 
     end
 
-    def search(query)
-      html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query})
+    def search(query, proxy: nil, proxy_type: nil)
+      html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
       Parser.parse(html_s)
     end
 
