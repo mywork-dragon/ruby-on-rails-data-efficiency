@@ -1,5 +1,5 @@
-# To test Proxy with GoogleParser
-class ProxyGoogleParserTestService
+# To test Proxy with GoogleSearcher
+class ProxyGoogleSearcherTestService
 
   class << self
 

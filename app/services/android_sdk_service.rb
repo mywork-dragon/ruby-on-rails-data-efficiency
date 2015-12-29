@@ -249,6 +249,7 @@ class AndroidSdkService
           try = 0
 
           begin
+            sleep(rand(0.5..1.5)) # be easy on google
             search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
           rescue => e
             if (try += 1) < GOOGLE_MAX_RETRIES
