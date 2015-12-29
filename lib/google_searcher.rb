@@ -4,8 +4,8 @@ module GoogleSearcher
 
     class << self
 
-      def search(query)
-        self.new.search(query)
+      def search(query, proxy: nil, proxy_type: nil)
+        self.new.search(query, proxy: proxy, proxy_type: proxy_type)
       end
 
     end
