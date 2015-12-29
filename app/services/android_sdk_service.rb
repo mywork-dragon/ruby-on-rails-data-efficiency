@@ -244,6 +244,8 @@ class AndroidSdkService
         b = Benchmark.measure do
           # result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
 
+          try = 0
+
           begin
             search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
           rescue => e
