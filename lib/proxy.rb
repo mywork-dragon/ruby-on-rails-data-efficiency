@@ -9,7 +9,7 @@ class Proxy
     # @author Jason Lew
     # @return The response (CurbFu::Response::Base)
     # @note Will run from local IP if not in production mode
-    def get(req:, params: {}, type: :get, proxy: nil, randomize_user_agent: true) 
+    def get(req:, params: {}, type: :get, proxy: nil, proxy_type: nil, randomize_user_agent: true) 
 
       # randomize User-Agent
       if randomize_user_agent
@@ -24,7 +24,7 @@ class Proxy
 
       if Rails.env.production?
         
-        mp = proxy || get_proxy_by_type
+        mp = proxy || get_proxy_by_type(proxy_type)
         
         proxy = "#{mp}:8888"
 
@@ -71,6 +71,8 @@ class Proxy
 
       if type == :ios_classification
         ios_proxies.sample
+      elsif type == :android_classification
+        android_proxies.sample
       else
         MicroProxy.where(active: true).pluck(:private_ip).sample
       end
@@ -79,8 +81,8 @@ class Proxy
     # Gets the body only
     # @author Jason Lew
     # @return The body (String)
-    def get_body(req:, params: {}, type: :get, proxy: nil)
-      get(req: req, params: params, type: type, proxy: proxy).body
+    def get_body(req:, params: {}, type: :get, proxy: nil, proxy_type: nil)
+      get(req: req, params: params, type: type, proxy: proxy, proxy_type: proxy_type).body
     end
 
     # Get the body as Nokogiri
@@ -88,7 +90,7 @@ class Proxy
     # @return A Nokogiri::HTML::Document of the page
     def get_nokogiri(req:, params: {}, type: :get, proxy_type: nil)
       proxy = proxy_type.nil? ? nil : get_proxy_by_type(type: proxy_type)
-      Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: proxy))
+      Nokogiri::HTML(get_body(req: req, params: params, type: type, proxy: proxy, proxy_type: proxy_type))
     end
 
     def get_nokogiri_with_wait(req:, params: {}, type: :get)
@@ -195,6 +197,12 @@ class Proxy
       172.31.30.170
       172.31.24.107
       )
+    end
+
+    def android_proxies
+      %w(
+
+        )
     end
 
     private 
