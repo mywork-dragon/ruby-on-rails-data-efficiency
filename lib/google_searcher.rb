@@ -1,4 +1,21 @@
-module GoogleParser
+module GoogleSearcher
+
+  class Searcher
+
+    class << self
+
+      def search(query)
+        self.new.search(query)
+      end
+
+    end
+
+    def search(query)
+      html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query})
+      Parser.parse(html_s)
+    end
+
+  end
 
   class Parser
 
