@@ -233,14 +233,16 @@ class AndroidSdkService
       begin
         result = nil
         b = Benchmark.measure do
-          result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+          # result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+          search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
         end
         puts "searching (#{q}) [#{b.real}]"
       rescue => e
         ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
         raise
       else
-		    result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
+		    # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
+        search.results.map(&:url)
       end
 		end
 
