@@ -3,6 +3,8 @@ class AndroidSdkService
   EX_WORDS = "framework|android|sdk|\\W+"
   LANGS = "java"
 
+  GOOGLE_MAX_RETRIES = 5
+
   # don't let this get too big
   # @sdk_regex_all = SdkRegex.all.select(:regex, :android_sdk_id)
 
@@ -241,7 +243,18 @@ class AndroidSdkService
         search = nil
         b = Benchmark.measure do
           # result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
-          search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
+
+          begin
+            search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
+          rescue => e
+            if (try += 1) < GOOGLE_MAX_RETRIES
+              puts "Exception: #{e.message}, Retry #{try}"
+              retry
+            else
+              raise
+            end
+          end
+          
         end
         puts "searching (#{q}) [#{b.real}]"
       rescue => e
