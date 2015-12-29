@@ -71,11 +71,17 @@ class AndroidSdkService
     private
 
 		def save_sdk(name:, website:, open_source:, github_repo_identifier:)
-			begin
-    		AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
-    	rescue ActiveRecord::RecordNotUnique => e
-    		AndroidSdk.where(name: name).first
-    	end
+
+      android_sdk = AndroidSdk.where(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier).first
+
+      if android_sdk.nil?
+        begin
+          AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
+        rescue ActiveRecord::RecordNotUnique => e
+          AndroidSdk.where(name: name).first
+        end
+      end
+      
 		end
 
 		def save_package(package:, android_sdk_id:, snap_id:)
