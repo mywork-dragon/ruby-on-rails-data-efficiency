@@ -103,12 +103,15 @@ class Proxy
 
   def get_proxy_by_type(type: nil)
 
+    puts "get_proxy_by_type"
+
     if type == :ios_classification
       ios_proxies.sample
     elsif type == :android_classification
+      puts "get_proxy_by_type :android_classification"
       proxy = nil
       c = Benchmark.measure do 
-        proxy = unique_proxy_per_thread(queue: 'sdk') 
+        proxy = unique_proxy_per_thread(queue: 'sdk')
       end
       puts "unique_proxy_per_thread - #{c.real}s"
       proxy
@@ -119,6 +122,7 @@ class Proxy
 
   # Get a proxy depending on the current thread
   def unique_proxy_per_thread(queue:)
+    puts "unique_proxy_per_thread"
     raise "#@jid is nil, but it can't be" if @jid.nil?
 
     workers = Sidekiq::Workers.new
