@@ -92,7 +92,7 @@ module BingSearcher
 
       /(?<results_count>\S+) results?/ =~ results_text
 
-      if defined?(results_count)
+      if defined?(results_count) && results_count
         return results_count.gsub(',', '').to_i
       else
         raise HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
