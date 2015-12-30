@@ -131,16 +131,6 @@ module BingSearcher
       results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
 
-    # url can look like, so probably need to clean it
-    # /url?q=https://parse.com/docs/ios/guide&sa=U&ved=0ahUKEwi8k7uju_zJAhVDwGMKHahiC7YQFggUMAA&usg=AFQjCNHYJPQQ7P9b6EhPqFJZSXxk_4_RCw
-    def clean_url(url)
-      if url.starts_with?('/url?q=')
-          url.sub!('/url?q=', '')
-          url.gsub!(/(&*)sa=(.*)&ved=(.*)&usg=(.*)/, '')
-        end
-      url
-    end
-
     def detect_unusual_traffic_message
       return
       # raise UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
