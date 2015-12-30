@@ -50,7 +50,7 @@ module PackageSearchWorker
 
 
     b = Benchmark.measure do 
-      android_sdk_service.new(jid: self.jid)
+      AndroidSdkService.new(jid: self.jid)
       android_sdk_service.classify(snap_id: snap_id, packages: packages)
     end
 
