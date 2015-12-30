@@ -2,4 +2,6 @@ bicep_curl.gif export-ignore
 db/alexa export-ignore
 db/cocoapods export-ignore
 db/demo export-ignore
-db/test_files
+db/test_files export-ignore
+get_swole.rb export-ignore
+build_db_patch.rb export-ignore

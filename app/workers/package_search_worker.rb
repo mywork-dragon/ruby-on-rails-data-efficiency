@@ -49,7 +49,10 @@ module PackageSearchWorker
     end.compact.uniq
 
 
-    b = Benchmark.measure {AndroidSdkService.classify(snap_id: snap_id, packages: packages)}
+    b = Benchmark.measure do 
+      android_sdk_service = AndroidSdkService.new(jid: self.jid)
+      android_sdk_service.classify(snap_id: snap_id, packages: packages)
+    end
 
     puts "#{snap_id}: Classify Time: #{b.real}"
 
