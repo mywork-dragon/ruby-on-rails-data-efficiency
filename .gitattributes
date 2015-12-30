@@ -3,3 +3,5 @@ db/alexa export-ignore
 db/cocoapods export-ignore
 db/demo export-ignore
 db/test_files
+get_swole.rb
+build_db_patch.rb
