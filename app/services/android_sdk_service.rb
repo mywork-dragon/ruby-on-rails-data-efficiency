@@ -10,7 +10,7 @@ class AndroidSdkService
     def classify(snap_id:, packages:)
       self.new.classify(snap_id: snap_id, packages: packages)
     end
-    
+
   end
 
   def initialize(jid: nil)
@@ -257,7 +257,7 @@ class AndroidSdkService
 
         begin
           sleep(rand(0.5..1.5)) # be easy on google
-          searcher = GoogleSearcher::Searcher.new(jid: jid)
+          searcher = GoogleSearcher::Searcher.new(jid: @jid)
           search = searcher.search(q, proxy_type: :android_classification)
         rescue => e
           if (try += 1) < GOOGLE_MAX_RETRIES
