@@ -1,16 +1,16 @@
 module SearcherCommon
 
-  puts "module CommonSearcher"
-
   class Search
     attr_reader :count
     attr_reader :results
     attr_reader :query
+    attr_reader :search_url
 
     def initialize(count:, results:, query: nil)
       @count = count
       @results = results
       @query = query
+      @search_url = search_url
     end
   end
 
