@@ -256,9 +256,12 @@ class AndroidSdkService
         try = 0
 
         begin
-          sleep(rand(0.5..1.5)) # be easy on google
-          searcher = GoogleSearcher::Searcher.new(jid: @jid)
-          search = searcher.search(q, proxy_type: :android_classification)
+          # sleep(rand(0.5..1.5)) # be easy on google
+          # searcher = GoogleSearcher::Searcher.new(jid: @jid)
+          # search = searcher.search(q, proxy_type: :android_classification)
+
+          searcher = BingSearcher::Searcher.new(jid: @jid)
+          search = searcher.search(q)
         rescue => e
           if (try += 1) < GOOGLE_MAX_RETRIES
             puts "Exception: #{e.message}, Retry #{try}"
