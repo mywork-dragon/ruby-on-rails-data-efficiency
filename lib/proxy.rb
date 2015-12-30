@@ -103,12 +103,9 @@ class Proxy
 
   def get_proxy_by_type(type: nil)
 
-    puts "get_proxy_by_type"
-
     if type == :ios_classification
       ios_proxies.sample
     elsif type == :android_classification
-      puts "get_proxy_by_type :android_classification"
       proxy = nil
       c = Benchmark.measure do 
         proxy = unique_proxy_per_thread(queue: 'sdk')
@@ -122,7 +119,6 @@ class Proxy
 
   # Get a proxy depending on the current thread
   def unique_proxy_per_thread(queue:)
-    puts "unique_proxy_per_thread"
     raise "#@jid is nil, but it can't be" if @jid.nil?
 
     workers = Sidekiq::Workers.new
@@ -137,11 +133,7 @@ class Proxy
       {process_id: process_id, thread_id: thread_id}
     end.compact
 
-    puts "my_worker: #{my_worker}"
-
     workers_for_queue_sorted = workers_for_queue.sort_by{ |x| [x[:process_id], x[:thread_id]] }
-
-    puts "workers_for_queue_sorted: #{workers_for_queue_sorted}"
 
     my_worker_thread_id = my_worker[:thread_id]
     proxy_index = workers_for_queue_sorted.index{ |x| x[:thread_id] == my_worker_thread_id}
@@ -170,7 +162,7 @@ class Proxy
     body = nil
     5.times do
       begin
-        sleep(rand(0.5..1.5))
+        sleep(rand(0.0..1.0))
         body = Nokogiri::HTML(get_body(req: req, params: params, type: type))
       rescue
         nil
