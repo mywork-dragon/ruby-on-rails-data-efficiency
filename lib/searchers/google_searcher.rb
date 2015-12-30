@@ -1,5 +1,7 @@
 module GoogleSearcher
 
+  include SearcherCommon
+
   class Searcher
 
     class << self
@@ -55,7 +57,7 @@ module GoogleSearcher
       count = parse_count
       results = (count == 0 ? [] : parse_results)
 
-      Search.new(count: count, results: results, query: query)
+      SearcherCommon::Search.new(count: count, results: results, query: query)
     end
 
     def parse_file(file)
@@ -121,7 +123,7 @@ module GoogleSearcher
 
       results_hash_a_compact = results_hash_a.compact
 
-      results_hash_a_compact.each_with_index.map{ |results_hash, index| Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
+      results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
 
     # url can look like, so probably need to clean it
@@ -139,8 +141,6 @@ module GoogleSearcher
     end
 
   end
-
-  include SearcherCommon
 
 
 end
