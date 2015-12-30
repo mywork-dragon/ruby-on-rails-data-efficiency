@@ -58,9 +58,9 @@ module BingSearcher
         raise e, "Nokogiri could not parse HTML (Query: #{@query})"
       end
 
-      # return @html #temp
+      #return @html #temp
     
-      return count = parse_count
+      count = parse_count
       results = (count == 0 ? [] : parse_results)
 
       SearcherCommon::Search.new(count: count, results: results, query: @query, search_url: @search_url)
@@ -102,32 +102,32 @@ module BingSearcher
 
     def parse_results
       begin
-        gs = @html.css('.g')
+        b_algos = @html.css('.b_algo')
       rescue => e
         detect_unusual_traffic_message
-        raise HtmlInvalid, "Couldn't find '.g' selector (Query: #{@query})"
+        raise HtmlInvalid, "Couldn't find '.b_algo' selector (Query: #{@query})"
       end
 
-      results_hash_a = gs.map do |g|
+      results_hash_a = b_algos.map do |b_algo|
         begin
-          h3_r_node = g.at_css('h3.r')
-          url_node = h3_r_node.children.find{ |x| x.name = 'a' }
+          h2_node = b_algo.at_css('h2')
+          url_node = h2_node.children.find{ |x| x.name = 'a' }
 
           url = url_node['href']
-          url = clean_url(url)
 
-          title = url_node.children.text
+          # title = url_node.children.text
 
-          summary = g.at_css('.st').text
-          summary = nil if summary.blank?
+          # summary = g.at_css('.st').text
+          # summary = nil if summary.blank?
 
-          {title: title.chomp, url: url.chomp, summary: summary.chomp}
+          # {title: title.chomp, url: url.chomp, summary: summary.chomp}
+          {url: url.chomp}
         rescue => e
           nil
         end
       end
 
-      results_hash_a_compact = results_hash_a.compact
+      return results_hash_a_compact = results_hash_a.compact
 
       results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end

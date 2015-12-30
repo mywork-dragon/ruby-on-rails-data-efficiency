@@ -6,7 +6,7 @@ module SearcherCommon
     attr_reader :query
     attr_reader :search_url
 
-    def initialize(count:, results:, query: nil)
+    def initialize(count:, results:, query: nil, search_url: nil)
       @count = count
       @results = results
       @query = query
