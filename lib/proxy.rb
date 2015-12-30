@@ -106,7 +106,12 @@ class Proxy
     if type == :ios_classification
       ios_proxies.sample
     elsif type == :android_classification
-      unique_proxy_per_thread(queue: 'sdk')
+      proxy = nil
+      c = Benchmark.measure do 
+        proxy = unique_proxy_per_thread(queue: 'sdk') 
+      end
+      puts "unique_proxy_per_thread - #{c.real}s"
+      proxy
     else
       MicroProxy.where(active: true).pluck(:private_ip).sample
     end
@@ -128,12 +133,18 @@ class Proxy
       {process_id: process_id, thread_id: thread_id}
     end.compact
 
+    puts "my_worker: #{my_worker}"
+
     workers_for_queue_sorted = workers_for_queue.sort_by{ |x| [x[:process_id], x[:thread_id]] }
 
-    my_worker_thread_id = my_worker[:thread_id]
-    index = workers_for_queue_sorted.index{ |x| x[:thread_id] == my_worker_thread_id}
+    puts "workers_for_queue_sorted: #{workers_for_queue_sorted}"
 
-    android_proxies[index]
+    my_worker_thread_id = my_worker[:thread_id]
+    proxy_index = workers_for_queue_sorted.index{ |x| x[:thread_id] == my_worker_thread_id}
+
+    puts "proxy_index: #{proxy_index}"
+
+    android_proxies[proxy_index]
   end
 
   # Gets the body only
