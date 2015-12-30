@@ -10,9 +10,14 @@ module GoogleSearcher
 
     end
 
+    def initialize(jid: nil)
+      @jid = jid
+    end
+
     def search(query, proxy: nil, proxy_type: nil)
       @query = query
-      html_s = Proxy.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
+      p = Proxy.new(jid: @jid)
+      html_s = p.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
       Parser.parse(html_s, query: query)
     end
 
@@ -135,48 +140,7 @@ module GoogleSearcher
 
   end
 
-  class Search
-    attr_reader :count
-    attr_reader :results
-    attr_reader :query
-
-    def initialize(count:, results:, query: nil)
-      @count = count
-      @results = results
-      @query = query
-    end
-  end
-
-  class Result
-    attr_reader :title
-    attr_reader :url
-    attr_reader :summary
-    attr_reader :result_num
-
-    def initialize(title:, url:, summary:, result_num:)
-      @title = title
-      @url = url
-      @summary = summary
-      @result_num = result_num
-    end
-
-  end
-
-  class HtmlInvalid < StandardError
-
-    def initialize(message = "Cannot find critical selector in HTML. Check your HTML to make sure it's valid.")
-      super
-    end
-
-  end
-
-  class UnusualTrafficDetected < StandardError
-
-    def initialize(message = "Unusual traffic detected")
-      super
-    end
-
-  end
+  include SearcherCommon
 
 
 end

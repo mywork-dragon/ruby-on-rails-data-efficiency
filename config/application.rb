@@ -22,6 +22,7 @@ module Varys
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.autoload_paths << "#{config.root}/lib"
+    config.autoload_paths << "#{config.root}/lib/searchers"
     config.autoload_paths << "#{config.root}/app/services"
     #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
