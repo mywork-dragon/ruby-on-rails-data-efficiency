@@ -106,15 +106,16 @@ class Proxy
     if type == :ios_classification
       ios_proxies.sample
     elsif type == :android_classification
-
-      unique_per_thread_proxy(queue: 'sdk')
+      unique_proxy_per_thread(queue: 'sdk')
     else
       MicroProxy.where(active: true).pluck(:private_ip).sample
     end
   end
 
-  # Get a proxy depending on the cyrrent 
+  # Get a proxy depending on the current thread
   def unique_proxy_per_thread(queue:)
+    raise "#@jid is nil, but it can't be" if @jid.nil?
+
     workers = Sidekiq::Workers.new
 
     my_worker = nil
