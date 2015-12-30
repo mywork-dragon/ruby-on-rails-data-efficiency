@@ -36,7 +36,7 @@ module BingSearcher
       end
 
       def parse(html_s, query: nil, search_url: nil)
-        self.new.parse(html_s, query: query)
+        self.new.parse(html_s, query: query, search_url: search_url)
       end
 
       def parse_file(file)
@@ -117,17 +117,16 @@ module BingSearcher
 
           title = url_node.text
 
-          # summary = g.at_css('.st').text
-          # summary = nil if summary.blank?
+          summary = b_algo.at_css('.b_caption').at_css('p').text
+          summary = nil if summary.blank?
 
-          # {title: title.chomp, url: url.chomp, summary: summary.chomp}
-          {title: title.chomp, url: url.chomp}
+          {title: title.chomp, url: url.chomp, summary: summary.chomp}
         rescue => e
           nil
         end
       end
 
-      return results_hash_a_compact = results_hash_a.compact
+      results_hash_a_compact = results_hash_a.compact
 
       results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
