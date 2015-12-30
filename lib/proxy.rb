@@ -27,7 +27,7 @@ class Proxy
     end
 
     def get_body_from_url(url, params: {}, headers: {})
-      self.new(url, params: params, headers: headers)
+      self.new.get_body_from_url(url, params: params, headers: headers)
     end
 
   end
@@ -211,7 +211,6 @@ class Proxy
   # @url The URL to get
   # @param The HTTP params
   # @return The body (String)
-  # @note Also randomizes the User Agent
   def get_body_from_url(url, params: {}, headers: {})
     uri = URI(url)
     get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params))
