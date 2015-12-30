@@ -115,13 +115,13 @@ module BingSearcher
 
           url = url_node['href']
 
-          # title = url_node.children.text
+          title = url_node.text
 
           # summary = g.at_css('.st').text
           # summary = nil if summary.blank?
 
           # {title: title.chomp, url: url.chomp, summary: summary.chomp}
-          {url: url.chomp}
+          {title: title.chomp, url: url.chomp}
         rescue => e
           nil
         end
