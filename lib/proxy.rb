@@ -113,19 +113,26 @@ class Proxy
     end
   end
 
-  def unique_per_thread_proxy(queue:)
+  # Get a proxy depending on the cyrrent 
+  def unique_proxy_per_thread(queue:)
     workers = Sidekiq::Workers.new
+
+    my_worker = nil
 
     workers_for_queue = workers.map do |process_id, thread_id, work|
       next if work['queue'] != queue
+
+      my_worker = {process_id: process_id, thread_id: thread_id} if work['payload']['jid'] == @jid
+
       {process_id: process_id, thread_id: thread_id}
     end.compact
 
-    workers_for_queue.sort_by { |x| [x[:process_id], x[:thread_id]] }
+    workers_for_queue_sorted = workers_for_queue.sort_by{ |x| [x[:process_id], x[:thread_id]] }
 
-    jid
+    my_worker_thread_id = my_worker[:thread_id]
+    index = workers_for_queue_sorted.index{ |x| x[:thread_id] == my_worker_thread_id}
 
-    android_proxies.sample
+    android_proxies[index]
   end
 
   # Gets the body only
