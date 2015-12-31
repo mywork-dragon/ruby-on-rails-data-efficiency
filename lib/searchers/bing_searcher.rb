@@ -21,7 +21,7 @@ module BingSearcher
       query_url_safe = CGI::escape(query)
       p = Proxy.new(jid: @jid)
       @search_url = "http://www.bing.com/search?q=#{query_url_safe}"
-      html_s = Tor.get(@search_url)
+      html_s = Tor.get(@search_url, random: true)
       Parser.parse(html_s, query: @query, search_url: @search_url)
     end
 
