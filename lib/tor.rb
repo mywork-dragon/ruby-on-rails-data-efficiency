@@ -5,7 +5,8 @@ class Tor
   class << self
     
     # @param bypass using the local IP instead (only available in dev)
-    def get(url, bypass: false)
+    # @param random_node Use a random node instead
+    def get(url, bypass: false, random: false)
       
       if !Rails.env.production? 
         
@@ -21,12 +22,15 @@ class Tor
         raise 'Tor must be used in production'
       end
       
-      proxy = next_proxy
-      proxy.last_used = DateTime.now
-      proxy.save
-      
-      page = get_using_proxy(url, ip: proxy.private_ip, port: proxy.port)
-      
+      if random
+        node = random_node
+        page = get_using_proxy(url, ip: node[:ip], port: node[:port])
+      else
+        proxy = next_proxy
+        proxy.last_used = DateTime.now
+        proxy.save
+        page = get_using_proxy(url, ip: proxy.private_ip, port: proxy.port)
+      end
       page
     end
     
@@ -75,6 +79,21 @@ class Tor
     # For Stephen while we get new stuff set up
     def next_proxy_old
       Proxy.order(last_used: :asc).limit(5).sample
+    end
+
+    def random_node
+      ip = %w(
+        172.31.19.228
+        172.31.19.238
+        172.31.22.176
+        172.31.23.127
+        172.31.25.15
+        172.31.25.200
+        ).sample
+
+      port = rand(50000..50199)
+
+      {ip: ip, port: port}
     end
     
     def get_using_proxy(url, ip:, port: 9050, limit: 10)
