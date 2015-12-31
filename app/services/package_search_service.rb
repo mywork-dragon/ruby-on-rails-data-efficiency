@@ -13,8 +13,12 @@ class PackageSearchService
         android_app_ids = []
       end
 
+      # AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each.with_index do |app, index|
       AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each.with_index do |app, index|
         puts index if index % 1e3 == 0
+
+        next if (apk_ss = app.newest_apk_snapshot) && apk_ss.scan_version == "new_years_version"
+
         PackageSearchServiceWorker.perform_async(app.id)
 
         android_app_ids << app.id if return_ids_array
