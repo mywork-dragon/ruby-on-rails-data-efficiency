@@ -24,16 +24,16 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
+<!--                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
                             found <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
-                          </span>
+                          </span> -->
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
+<!--                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
                             found <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
-                          </span>
+                          </span> -->
                         </span>
                       </div>
                     </li>
