@@ -1,5 +1,5 @@
 class Mighty
-	
+
 	class << self
 
 

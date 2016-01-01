@@ -4,7 +4,7 @@ angular.module("appApp")
   .factory("apiService", ['$http', function($http) {
     return {
       /* Translates tag object values into a request object that matches format of back end api endpoints */
-      searchRequestPost: function(tags, currentPage, numPerPage, category, order) {
+      searchRequestPost: function(tags, currentPage, numPerPage, category, order, platform) {
         var requestData = {app: {}, company: {}, custom: {}};
         if(tags) {
           tags.forEach(function (tag) {
@@ -80,7 +80,7 @@ angular.module("appApp")
         }
         return $http({
           method: 'POST',
-          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps',
+          url: API_URI_BASE + 'api/filter_' + platform + '_apps',
           params: requestData
         });
       },

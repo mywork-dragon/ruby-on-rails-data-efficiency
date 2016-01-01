@@ -15,6 +15,7 @@ angular.module('appApp')
       authService.permissions()
         .success(function(data) {
           searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
+          searchCtrl.godMode = data.god_mode;
         });
 
       /* For query load when /search/:query path hit */
@@ -167,7 +168,7 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
         var firstPage = 1;
         $rootScope.dashboardSearchButtonDisabled = true;
-        apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order)
+        apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order, searchCtrl.appPlatform.platform)
           .success(function(data) {
             $scope.queryInProgress = false;
             searchCtrl.apps = data.results;

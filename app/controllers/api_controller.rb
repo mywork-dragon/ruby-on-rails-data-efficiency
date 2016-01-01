@@ -6,6 +6,7 @@ class ApiController < ApplicationController
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
   before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv]
+  before_action :authenticate_god_mode, only: [:ios_sdks_exist, :ios_scan_status, :ios_start_scan, :get_ios_sdk]
 
   def download_fortune_1000_csv
     apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
@@ -803,7 +804,6 @@ class ApiController < ApplicationController
   def ios_sdks_exist
     ios_app_id = params['appId']
 
-    # TODO: someday we'll return a 404 if this doesn't exist
     render json: IosSdkService.get_sdk_response(ios_app_id).to_json
   end
 
@@ -815,320 +815,130 @@ class ApiController < ApplicationController
   end
 
   def ios_start_scan
-    job_id = params[:ios_app_id] || -1
+    ios_app_id = params['appId']
 
-    render json: {scan_id: job_id}
+    job_id = IosLiveScanService.scan_ios_app(ios_app_id: ios_app_id, job_type: :test)
+
+    render json: {job_id: job_id}
   end
-
 
   def android_sdks_exist
-
-    android_app_id = params['appId']
-
-    aa = AndroidApp.find(android_app_id)
-
-    updated, companies, error_code = nil
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-    end
-
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
-
+    id = params['appId']
+    aa = AndroidApp.find(id)
+    data = data_hash(aa, scannable(aa))
+    render json: data
   end
 
-  def scan_android_sdks
-
-    android_app_id = params['appId']
-
-    updated, companies, error_code = nil
-
-    aa = AndroidApp.find(android_app_id)
-
-    error_code = 1
-
-    price = aa.newest_android_app_snapshot.price.to_i
-
-    # if aa.taken_down?
-
-    #   error_code = 2
-
-    # els
-    if !price.zero?
-
-      error_code = 4
-
-    else
-
-      app_identifier = aa.app_identifier
-
-      job_id, new_snap = download_apk(android_app_id, app_identifier)
-
-      aa = AndroidApp.find(android_app_id)
-
-      # new_snap = aa.newest_apk_snapshot
-
-      # TestModel.create(string0: android_app_id, string1: new_snap.id, string2: new_snap.status) if new_snap.present?
-
-      if new_snap.present? && new_snap.status == "success"
-
-        scan_apk(aa.id, job_id)
-
-        companies, updated, error_code = get_sdks(android_app_id: android_app_id)
-
-      elsif new_snap.present? && new_snap.status == "bad_device"
-
-        error_code = 6
-
-      elsif new_snap.present? && new_snap.status == "out_of_country"
-
-        error_code = 7
-
-      elsif new_snap.present? && new_snap.status == "taken_down"
-
-        error_code = 2
-
-      else
-
-        error_code = 3
-
-      end
-
-    end
-
-    render json: sdk_hash(companies: companies, updated: updated, error_code: error_code, snap: aa.newest_apk_snapshot)
-
-  end
-
-  def get_sdks(android_app_id:)
-
-    updated, companies = nil
-
-    error_code = 0
-
-    aa = AndroidApp.find(android_app_id)
-
-    if aa.newest_apk_snapshot.present?
-
-      new_snap = aa.newest_apk_snapshot
-
-      if new_snap.status == "success"
-
-        updated = new_snap.updated_at
-
-        companies = new_snap.android_sdk_companies
-
-        # removed_companies = get_removed_companies(android_app: aa, companies: companies)
-
-        # error_code = (companies.count.zero? && removed_companies.count.zero?) ? 1:0
-
-        error_code = companies.count.zero? ? 1:0
-
-      else
-
-        error_code = 5
-
-      end
-
-    end
-
-    return companies, updated, error_code
-
-  end
-
-  def get_removed_companies(android_app:, companies:)
-
-    current_ids = companies.map(&:id)
-
-    total_ids = []
-
-    android_app.apk_snapshots.joins(:android_sdk_companies).each do |cos|
-
-      cos_ids = cos.android_sdk_companies.map(&:id)
-
-      total_ids = total_ids + cos_ids
-
-    end
-
-    AndroidSdkCompany.where(id: (total_ids.uniq - current_ids))
-
-  end
-
-  def sdk_hash(companies:, updated:, error_code:, snap:)
-
-    main_hash = Hash.new
-
-    installed_co_hash, installed_os_hash = form_hash(companies)
-
-    # uninstalled_co_hash, uninstalled_os_hash = form_hash(removed_companies)
-
-    # error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && uninstalled_co_hash.empty? && uninstalled_os_hash.empty? && error_code.zero?
-
-    error_code = 1 if installed_co_hash.empty? && installed_os_hash.empty? && error_code.zero? && snap.present?
-
-    main_hash['installed_sdk_companies'] = installed_co_hash
-
-    main_hash['installed_open_source_sdks'] = installed_os_hash
-
-    main_hash['uninstalled_sdk_companies'] = {}
-
-    main_hash['uninstalled_open_source_sdks'] = {}
-
-    main_hash['updated'] = updated
-
-    main_hash['error_code'] = error_code
-
-    main_hash.to_json
-
-  end
-
-  def form_hash(companies)
-
-    co_hash = Hash.new
-
-    os_hash = Hash.new
-
-    if companies.present?
-
-      companies.each do |company|
-
-        next if company.nil? || company.flagged
-
-        main_company = company.parent_company_id.present? ? AndroidSdkCompany.find(company.parent_company_id) : company
-
-        children = if company.parent_company_id.present?
-
-                     cc = company
-
-                     { 'id' => cc.id, 'name' => cc.name, 'website' => cc.website, 'favicon' => (cc.favicon.nil? && cc.open_source) ? 'https://assets-cdn.github.com/pinned-octocat.svg' : cc.favicon }
-
-                   else
-
-                     nil
-
-                   end
-
-        if company.open_source
-
-          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
-
-            os_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
-
-          else
-
-            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
-
-          end
-
-        else
-
-          if co_hash[main_company.name].blank? || company.parent_company_id.blank?
-
-            co_hash[main_company.name] = {'id' => main_company.id, 'website' => main_company.website, 'favicon' => main_company.favicon, 'android_app_count' => main_company.android_apps.count, 'children' => [children].compact }
-
-          else
-
-            co_hash[main_company.name]['children'] << children if co_hash[main_company.name]['children'].exclude? children
-
-          end
-
-        end
-
-      end
-
-    end
-
-    co_hash = sort_hash(co_hash)
-
-    os_hash = sort_hash(os_hash)
-
-    return co_hash, os_hash
-
-  end
-
-  def sort_hash(hash)
-    hash = hash.sort_by{ |k,v| -v['android_app_count'] }.to_h
-  end
-
-  def download_apk(android_app_id, app_identifier)
-
-    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{app_identifier}").id
-
+  def android_start_scan
+    id = params['appId']
+    aa = AndroidApp.find(id)
+    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
     batch = Sidekiq::Batch.new
     bid = batch.bid
-
     batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, android_app_id)
+      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
     end
+    render json: {job_id: job_id}.to_json
+  end
 
-    new_snap = nil
+  def android_scan_status
+    job_id = params['jobId']
+    status, error = snap_status(job_id)
+    e = {:status => status, :error => error}
+    render json: e
+  end
 
-    360.times do
-
-      sleep 0.25
-
-      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-      if ss.present? && ss.status.present?
-
-        if ss.status == "success"
-
-          aa = ss.android_app
-
-          if aa.newest_apk_snapshot.present? && aa.newest_apk_snapshot.id == ss.id
-
-            new_snap = ss
-
-            break
-
-          end
-
+  def snap_status(job_id)
+    ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
+    if ss.present?
+      if ss.status.present?
+        if ss.success? 
+          ss.scan_success? ? [3,nil] : [2,nil]
         else
-
-          if Sidekiq::Batch::Status.new(bid).failures == 3 || %w(bad_device out_of_country taken_down).any?{|x| ss.status.include? x }
-
-            new_snap = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-
-            new_snap.scan_status = :scan_failure
-
-            new_snap.save
-
-            break
-
-          end
-
+          [4,snap_error(ss)]
         end
-
+      else
+        [1,nil]
       end
-
+    else
+      [0,nil]
     end
-
-    return job_id, new_snap
-
   end
 
-  def scan_apk(android_app_id, job_id)
-
-    PackageSearchServiceSingleWorker.perform_async(android_app_id)
-
-    360.times do
-
-      sleep 0.25
-
-      ss = ApkSnapshot.uncached{ ApkSnapshot.find_by_apk_snapshot_job_id(job_id) }
-
-      break if ss.present? && ss.scan_status.present?
+  def snap_error(ss)
+    e = %w(failure no_response forbidden could_not_connect timeout deadlock not_found)
+    o = %w(taken_down bad_device out_of_country bad_carrier)
+    if e.any?{|x| ss.send(x+'?') }
+      0
+    else
+      a = o.index(o.select{|x| ss.send(x+'?') }.first)
+      a.present? && a + 1
     end
-
   end
+
+  def scannable(aa)
+    s = aa.newest_android_app_snapshot
+    e = s.price.to_i.zero? ? nil : 5
+    e = aa.normal? ? nil : AndroidApp.display_types[aa.display_type] - 1 if e.nil?
+    e
+  end
+
+  def data_hash(aa, error_code)
+    h = Hash.new
+    if error_code.nil? || error_code == 6
+      h[:installed] = features aa.installed_sdks
+      # h[:uninstalled] = features aa.uninstalled_sdks
+      h[:uninstalled] = []  # uninstalled workaround - don't show uninstalled
+    end
+    h[:updated] = aa.apk_snapshots.where(status:1, scan_status:1).last && aa.apk_snapshots.where(status:1, scan_status:1).last.last_updated
+    h[:error_code] = error_code || nil
+    h.to_json
+  end
+
+  def features(h)
+    return nil if h.nil?
+    f = h.map do |x|
+      { :id => x.id,
+        :name => x.name,
+        :website => x.website,
+        :favicon => x.get_favicon,
+        :first_seen => x.first_seen,
+        :last_seen => x.last_seen,
+        # :app_count => x.get_current_apps.count, # this takes way too long
+        :open_source => x.open_source }
+    end
+      f.sort_by{|x| [x[:open_source] ? 1:0 , x[:id]] }  # sort by id for now, should be a proxy for number of installs
+  end
+
+
+  # ERROR CODES FOR ANDROID_CHECK_EXIST
+  # errors
+  #   null => no error
+  #   0 => taken down
+  #   1 => country problem
+  #   2 => device problem
+  #   3 => carrier problem
+  #   4 => couldn't find
+  #   5 => paid app
+
+  # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
+  # statuses
+  #   0 => queueing
+  #   1 => downloading
+  #   2 => scanning
+  #   3 => successful scan
+  #   4 => failed
+  # errors
+  #   null => no error
+  #   0 => error connecting with google
+  #   1 => taken down
+  #   2 => device problem
+  #   3 => country problem
+  #   4 => carrier problem
+
+
+
+
 
   def export_all_search_results_to_csv
 
@@ -1179,6 +989,7 @@ class ApiController < ApplicationController
     render json: {results: results_json, resultsCount: results_count, pageNum: page_num}
   end
 
+  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
   def export_newest_apps_chart_to_csv
 
     apps = []
@@ -1404,14 +1215,12 @@ class ApiController < ApplicationController
     render json: {appData: results_json, totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
-  def search_sdk
+  def search_ios_sdk
     query = params['query']
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-
-
-    result_ids = AppsIndex::AndroidSdkCompany.query(
+    result_ids = AppsIndex::IosSdk.query(
         multi_match: {
             query: query,
             operator: 'and',
@@ -1423,11 +1232,11 @@ class ApiController < ApplicationController
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_sdks = result_ids.map{ |id| AndroidSdkCompany.find_by_id(id) }.compact
+    ios_sdks = result_ids.map{ |id| IosSdk.find_by_id(id) }.compact
 
     sdks = []
-    android_sdks.each do |sdk|
-      sdks << AndroidSdkCompany.find(sdk)
+    ios_sdks.each do |sdk|
+      sdks << IosSdk.find(sdk)
     end
 
     total_apps_count = sdks.length
@@ -1442,6 +1251,52 @@ class ApiController < ApplicationController
               website: sdk.website,
               favicon: sdk.favicon,
               openSource: sdk.open_source,
+              summary: sdk.summary,
+              platform: 'ios'
+          }
+      }
+      results_json << sdk_hash
+    end
+    render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+  end
+
+  def search_android_sdk
+    query = params['query']
+    platform = params['platform']
+    page = !params['page'].nil? ? params['page'].to_i : 1
+    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+    result_ids = AppsIndex::AndroidSdk.query(
+        multi_match: {
+            query: query,
+            operator: 'and',
+            fields: [:name],
+            type: 'cross_fields',
+            fuzziness: 1
+        }
+    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
+    result_ids = result_ids.map { |result| result.attributes["id"] }
+
+    android_sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
+
+    sdks = []
+    android_sdks.each do |sdk|
+      sdks << AndroidSdk.find(sdk)
+    end
+
+    total_apps_count = sdks.length
+
+    results_json = []
+    sdks.each do |sdk|
+
+      sdk_hash = {
+          sdk: {
+              id: sdk.id,
+              name: sdk.name,
+              website: sdk.website,
+              favicon: sdk.get_favicon,
+              openSource: sdk.open_source,
               platform: 'android'
           }
       }
@@ -1450,43 +1305,68 @@ class ApiController < ApplicationController
     render json: {sdkData: results_json, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
-  # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
-  def get_sdk
+  def get_android_sdk
     sdk_id = params['id']
-    sdk = AndroidSdkCompany.find(sdk_id)
+    sdk = AndroidSdk.find(sdk_id)
 
-    apps_count = AndroidApp.instance_eval("self.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null').where.not(display_type: 1).joins(android_sdk_companies_android_apps: :android_sdk_company).where('android_sdk_companies.id IN (?)', [#{sdk_id}]).group('android_apps.id').count.length")
+    @sdk_json = {
+        id: sdk.id,
+        name: sdk.name,
+        website: sdk.website,
+        favicon: sdk.get_favicon,
+        openSource: sdk.open_source,
+        platform: 'android',
+        numOfApps: sdk.get_current_apps.count
+    }
+    render json: @sdk_json
+  end
+
+  def get_ios_sdk
+    sdk_id = params['id']
+    sdk = IosSdk.find(sdk_id)
 
     @sdk_json = {
         id: sdk.id,
         name: sdk.name,
         website: sdk.website,
         favicon: sdk.favicon,
-        openSource: sdk.open_source,
-        platform: 'android',
-        numOfApps: apps_count
+        openSource: sdk.open_source?,
+        summary: sdk.summary,
+        platform: "ios",
+        numOfApps: sdk.get_current_apps.count
     }
     render json: @sdk_json
   end
 
   def get_sdk_autocomplete
     search_str = params['searchstr']
+    platform = params['platform']
 
-    sdk_companies = AndroidSdkCompany.where("name LIKE '#{params['searchstr']}%'").where("flagged LIKE false").where("is_parent IS NULL")
-
+    sdk_companies = []
     results = []
 
-    sdk_companies.each do |sdk|
-      results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+    if platform == 'android'
+      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
+      end
+    elsif platform == 'ios'
+      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies.each do |sdk|
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+      end
     end
+
     render json: {searchParam: search_str, results: results}
   end
 
   def get_sdk_scanned_count
 
-    scanned_sdk_num = AndroidApp.where('newest_apk_snapshot_id IS NOT NULL').joins(:newest_apk_snapshot).where('apk_snapshots.scan_status = 1').count
+    scanned_android_sdk_num = ApkSnapshot.where(scan_status: 1).select(:android_app_id).distinct.count
 
-    render json: {scannedSdkNum: scanned_sdk_num}
+    scanned_ios_sdk_num = IpaSnapshot.where(scan_status: 1).select(:ios_app_id).distinct.count
+
+    render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
   end
 
 end

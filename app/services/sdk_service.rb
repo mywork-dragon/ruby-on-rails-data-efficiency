@@ -286,7 +286,7 @@ class SdkService
 		def google_github(query:, platform:, snapshot_id:)
 			return nil unless github_query_valid?(query)
 
-			q = "#{query} #{platform} site:github.com"
+			q = "site:github.com #{query} #{platform}"
 			google_search(q: q).each do |url|
 				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	# if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
@@ -305,6 +305,7 @@ class SdkService
 
 					if repo_name = srd[:repo_name]
 						dice_similarity = FuzzyMatch::Score::PureRuby.new(repo_name, query).dices_coefficient_similar
+						puts dice_similarity.to_s.purple
 						next if dice_similarity < DICE_SIMILARITY_THRESHOLD	# query not similar enough to repo name
 					end
 
@@ -340,8 +341,12 @@ class SdkService
 		end
 
 		def google_search(q:, limit: 10)
-		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
-		  result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+		  # result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
+		  # raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
+		  # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+
+		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+		  search.results.map(&:url).take(limit)
 		end
 
 		def valid_domain?(url)

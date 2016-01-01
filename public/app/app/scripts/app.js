@@ -35,7 +35,6 @@ angular
         },300);
 
       });
-
     })
   .config(['$routeProvider', function ($routeProvider) {
      $routeProvider
@@ -47,7 +46,7 @@ angular
          activeTab: 'search',
          reloadOnSearch: false
        })
-       .when('/search/sdk', {
+       .when('/search/sdk/:platform', {
          templateUrl: '/app/app/views/sdk-search.html',
          activeTab: 'search'
        })

@@ -3,7 +3,7 @@ class IosMassScanServiceWorker
   include Sidekiq::Worker
 
   # retrying the json lookup ourselves, so disable
-  sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud #queue should be ios_mass_scan_cloud for this
+  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_scan_cloud
 
   include IosCloud
 

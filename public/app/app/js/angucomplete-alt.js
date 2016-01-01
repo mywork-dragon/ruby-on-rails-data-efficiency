@@ -43,7 +43,11 @@
     var TEXT_NORESULTS = 'No results found';
     var TEMPLATE_URL = '/angucomplete-alt/index.html';
 
-    var REMOTE_URL = API_URI_BASE + "api/sdk/autocomplete?searchstr=";
+    // var REMOTE_URL = API_URI_BASE + "api/sdk/autocomplete?platform=searchstr=";
+
+    var GET_REMOTE_URL = function() {
+      return API_URI_BASE + "api/sdk/autocomplete?platform=" + APP_PLATFORM + "&searchstr=";
+    };
 
     // Set the default template for this directive
     $templateCache.put(TEMPLATE_URL,
@@ -467,10 +471,10 @@
 
       function getRemoteResults(str) {
         var params = {},
-          url = REMOTE_URL + encodeURIComponent(str);
+          url = GET_REMOTE_URL() + encodeURIComponent(str);
         if (scope.remoteUrlRequestFormatter) {
           params = {params: scope.remoteUrlRequestFormatter(str)};
-          url = REMOTE_URL;
+          url = GET_REMOTE_URL();
         }
         if (!!scope.remoteUrlRequestWithCredentials) {
           params.withCredentials = true;

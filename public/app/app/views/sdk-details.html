@@ -1,4 +1,4 @@
-<div id="companyPage" data-ng-controller="ListCtrl">
+<div id="companyPage" data-ng-controller="ListCtrl" ng-show="!sdkDetailsCtrl.sdkLiveScanPageLoading">
 
   <header class="page-main-header ng-scope">
     <div class="row">
@@ -53,7 +53,7 @@
                  Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps}}</strong> apps.
                 </div>
                 <div id="showSdksButton">
-                  <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery()">See Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
+                  <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
                 </div>
               </ul>
             </div>
@@ -74,4 +74,10 @@
 
 </div>
 
+</div>
+
+<div id="wrap_spinner" ng-if="sdkDetailsCtrl.sdkLiveScanPageLoading">
+  <div class="loading outer">
+    <div class="loading inner"></div>
+  </div>
 </div>

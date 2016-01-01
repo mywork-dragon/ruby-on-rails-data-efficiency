@@ -51,7 +51,7 @@ class IosLiveScanService
 
       # second set of checks: download and scan stages
       # Note: the order of these checks matter
-      status = if snapshot.nil?
+      status = if snapshot.nil? || snapshot.download_status.nil?
         result_map[:preparing]
       elsif snapshot.scan_status == 'scanned'
         result_map[:complete]

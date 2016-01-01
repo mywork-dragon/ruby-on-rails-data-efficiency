@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService",
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService) {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService", "$window",
+    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService, $window) {
 
       var customSearchCtrl = this;
 
@@ -38,7 +38,6 @@ angular.module('appApp')
             customSearchCtrl.numApps = 0;
             customSearchCtrl.queryInProgress = false;
           });
-
       };
 
       customSearchCtrl.loadTableData();
@@ -58,15 +57,18 @@ angular.module('appApp')
           page: newPageNum || 1,
           numPerPage: 30
         };
-        var targetUrl = customSearchCtrl.platform == 'sdks' ? '/search/sdk?' : '/search/custom?';
-        $location.url(targetUrl + $httpParamSerializer(payload));
-        customSearchCtrl.loadTableData();
-        if(customSearchCtrl.platform == 'sdks') {
+        var targetUrl = (customSearchCtrl.platform == 'iosSdks' || customSearchCtrl.platform == 'androidSdks') ? '/search/sdk/' + customSearchCtrl.platform + '?' : '/search/custom?';
+
+        if(customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
+
+          // Set URL & process/redirect to SDK Search Ctrl
+          $window.location.href = '#' + targetUrl + $httpParamSerializer(payload);
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Custom Search", {
               "query": customSearchCtrl.searchInput,
-              "platform": "android"
+              "platform": customSearchCtrl.platform.split('Sdks')[0] // grabs 'android' or 'ios'
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -84,7 +86,13 @@ angular.module('appApp')
             window.Slacktivity.send(slacktivityData);
           }
           /* -------- Slacktivity Alerts End -------- */
+
         } else {
+
+          // Set URL & process request using Custom Search Ctrl
+          $location.url(targetUrl + $httpParamSerializer(payload));
+          customSearchCtrl.loadTableData();
+
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Custom Search", {
@@ -99,10 +107,12 @@ angular.module('appApp')
       customSearchCtrl.searchPlaceholderText = function() {
         if(customSearchCtrl.platform == 'ios') {
           return 'Search for iOS app or company';
-        } else if(customSearchCtrl.platform == 'sdks') {
-          return 'Search for SDKs';
-        } else {
+        } else if(customSearchCtrl.platform == 'android') {
           return 'Search for Android app or company';
+        } else if(customSearchCtrl.platform == 'androidSdks') {
+          return 'Search for Android SDKs';
+        } else if(customSearchCtrl.platform == 'iosSdks') {
+          return 'Search for iOS SDKs';
         }
       };
 

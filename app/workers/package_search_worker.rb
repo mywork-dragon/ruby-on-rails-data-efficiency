@@ -1,97 +1,66 @@
 module PackageSearchWorker
 
   def perform(app_id)
-
-    # ActiveRecord::Base.logger.level = 1
     aa = AndroidApp.find(app_id)
     app_identifier = aa.app_identifier
-    nas = aa.newest_apk_snapshot
-    return nil if nas.blank?
-    apk_snapshot_id = nas.id
-    find_packages(app_identifier: app_identifier, apk_snapshot_id: apk_snapshot_id)
-
+    snap_id = aa.newest_apk_snapshot_id
+    return nil if snap_id.blank?
+    find_packages(app_identifier: app_identifier, snap_id: snap_id)
   end
 
-  # def clear_companies
+  def find_packages(app_identifier:, snap_id:)
 
-  #   AndroidSdkPackagesApkSnapshot.destroy_all
+    apk = nil
+    apk_snap = nil
+    packages = nil
+    s3_file = nil
 
-  #   AndroidSdkPackage.destroy_all
-
-  #   AndroidSdkPackagePrefix.destroy_all
-
-  #   AndroidSdkCompaniesApkSnapshot.destroy_all
-
-  #   AndroidSdkCompaniesAndroidApp.destroy_all
-
-  #   AndroidSdkCompany.destroy_all
-
-  # end
-
-
-  def find_packages(app_identifier:, apk_snapshot_id:)
-
+    
     if Rails.env.production?
-      file_name = ApkSnapshot.find(apk_snapshot_id).apk_file.apk.url
-      apk = Android::Apk.new(open(file_name))
+      apk_snap = ApkSnapshot.find(snap_id)
+      apk_snap.scan_version = :new_years_version
+      apk_snap.save
+      file_name = apk_snap.apk_file.apk.url
+      file_size = apk_snap.apk_file.apk.size
+      b = Benchmark.measure { 
+      s3_file = open(file_name)}
+      c = Benchmark.measure {
+      apk = Android::Apk.new(s3_file)}
     elsif Rails.env.development?
       file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
       apk = Android::Apk.new(file_name)
     end
 
+    # puts "#{snap_id}: Download time: #{b.real}"
+    # puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
+    # puts "#{snap_id}: File Size: #{(file_size.to_f/1000000.0)} mb"
+    # puts "#{snap_id}: Unpack time: #{c.real}"
+
+    # puts "#{snap_id} => downloaded [#{a.real}]"
+
     dex = apk.dex
-    clss = dex.classes.map do |cls|
+    packages = dex.classes.map do |cls|
       next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
       cls = cls.name.split('/')
       cls.pop
       cls = cls.join('.')
       cls.slice!(0) if cls.slice(0) == 'L'
       cls
+    end.compact.uniq
+
+
+    b = Benchmark.measure do 
+      android_sdk_service = AndroidSdkService.new(jid: self.jid)
+      android_sdk_service.classify(snap_id: snap_id, packages: packages)
     end
 
-    batch = Sidekiq::Batch.new
+    puts "#{snap_id}: Classify Time: #{b.real}"
 
-    if single_queue?
-      batch.on(:complete, PackageSearchServiceSingleWorker, 'apk_snapshot_id' => apk_snapshot_id)
-    else
-      batch.on(:complete, PackageSearchServiceWorker, 'apk_snapshot_id' => apk_snapshot_id)
-    end
-
-    names = clss.uniq.compact.uniq.map do |package_name|
-      SdkCompanyServiceWorker.new.name_from_package(package_name)
-    end.uniq
-
-    if Rails.env.development?
-      names.each do |package_name|
-        SavePackageServiceWorker.new.perform(package_name, apk_snapshot_id)
-      end
-    else
-      batch.jobs do
-        names.each do |package_name|
-          if single_queue?
-          	SavePackageServiceSingleWorker.perform_async(package_name, apk_snapshot_id)
-          else
-            apk_snap = ApkSnapshot.find_by_id(apk_snapshot_id)
-            begin
-          	 SavePackageServiceWorker.new.perform(package_name, apk_snapshot_id)
-            rescue => e
-              apk_snap.scan_status = :scan_failure
-              apk_snap.save
-            else
-              apk_snap.scan_status = :scan_success
-              apk_snap.save
-            end
-          end
-        end
-      end
-    end
-
-  end
-
-  def on_complete(status, options)
-    apk_snap = ApkSnapshot.find_by_id(options['apk_snapshot_id'])
+    # apk_snap = ApkSnapshot.find_by_id(snap_id)
     apk_snap.scan_status = :scan_success
+    apk_snap.last_updated = DateTime.now
     apk_snap.save
+
   end
 
 end

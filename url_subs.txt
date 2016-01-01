@@ -1,0 +1,13 @@
+www
+doc
+docs
+dev
+developer
+developers
+cloud
+support
+help
+documentation
+dashboard
+sdk
+wiki

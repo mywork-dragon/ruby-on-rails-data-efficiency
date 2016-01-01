@@ -27,7 +27,7 @@ class AndroidApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
 
-  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible]
+  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :carrier_incompatible, :item_not_found]
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
@@ -55,6 +55,38 @@ class AndroidApp < ActiveRecord::Base
       return nil
     end
   end
+
+  def get_newest_apk_snapshot
+    self.apk_snapshots.where(scan_status: 1).first
+  end
+
+  def installed_sdks
+    newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
+    return nil if newest_snap.blank?
+    newest_sdks = newest_snap.android_sdks
+    sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
+    get_sdks(sdk_apk, :first_seen)
+  end
+
+  def uninstalled_sdks
+    newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
+    return nil if newest_snap.blank?
+    newest_sdks = newest_snap.android_sdks
+    snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
+    sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
+    get_sdks(sdk_apk, :last_seen)
+  end
+
+  private
+
+  def get_sdks(sdk_apk, first_last)
+    r = Hash.new
+    sdk_apk.each{|sdk, apk| r[sdk] = ApkSnapshot.find(apk).send(first_last) }
+    sdks = AndroidSdk.where(id:sdk_apk.map(&:first),flagged: false)
+    sdks.each{ |sdk| sdk.send("#{first_last}=",r[sdk.id]) }
+    sdks
+  end
+
   
   ###############################
   # Mobile priority methods

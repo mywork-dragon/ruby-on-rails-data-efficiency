@@ -7216,6 +7216,10 @@ i.infoTooltipIcon {
   font-size: 90%;
 }
 
+.sdkLiveScanDisplayTitleSection .tooltip {
+  padding: 3px !important;
+}
+
 .modal-body h4 {
   border-bottom: none;
   padding-bottom: 0px;
@@ -7402,11 +7406,16 @@ span#dashboardResultsTableHeadingNumDisplayed {
   font-size: 20px;
 }
 
-#appPageSdkScanStatus {
-  padding: 0 20px 0 0;
+#sdkScanErrorCodeStatus {
+  text-align: center;
+  margin-top: 10px;
 }
 
-#appPageSdkScanStatus div {
+#appPageSdkScanStatus, #showDataUpdatedMessage {
+  padding: 0;
+}
+
+#appPageSdkScanStatus div, #showDataUpdatedMessage {
   text-align: center;
 }
 
@@ -7416,6 +7425,23 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #appPageSdkScanStatus #wrap_spinner p {
   padding-top: 15px;
+}
+
+.media-body > #wrap_spinner {
+  text-align: center;
+}
+
+#appPage > #wrap_spinner, #companyPage > #wrap_spinner {
+  text-align: center;
+  margin-top: 10%;
+}
+
+.sdkScanGeneralInfo {
+  margin-top: 15px;
+}
+
+#appPageSdkScanStatus .progress-striped {
+  margin: 15px 10px 10px 10px;
 }
 
 #appTypeHeaderLogo {
@@ -7595,6 +7621,30 @@ pre {
   border-bottom: none;
 }
 
+.iosSdkLiveScanDisplay {
+  padding-top: 0 !important;
+}
+
+.liveScanSdksCountDisplay {
+  font-size: 12px;
+}
+
+.sdkLiveScanInstallDate {
+  font-size: 10px;
+  color: #1EAD4F;
+  display: inline-block;
+  position: relative;
+  bottom: 1px;
+}
+
+.sdkLiveScanUninstallDate {
+  font-size: 10px;
+  color: #ED5F5F;
+  display: inline-block;
+  position: relative;
+  bottom: 1px;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
@@ -7626,7 +7676,21 @@ pre {
 
 .sdksListView li {
   border: none;
-  padding: 5px;
+  padding: 4px;
+}
+
+.sdksListView .sdkLiveScanDisplayIconSection {
+  float: left;
+  width: 25px;
+}
+
+.sdksListView .sdkLiveScanDisplayTitleSection {
+  width: 100%;
+  margin-left: 25px;
+}
+
+.sdksListView .sdkLiveScanDisplayList {
+  clear: both;
 }
 
 #mainSearchBoxWrapper {
@@ -7659,6 +7723,14 @@ pre {
   font-size: 18px;
   position: relative;
   top: 2px;
+}
+
+.sdksListView > .row > .col-md-6 li > span {
+  word-break: break-all;
+}
+
+.sdkOpenSourceSection {
+  padding-left: 5px;
 }
 
 #nav-wrapper > div {
@@ -7698,6 +7770,8 @@ pre {
   height: auto;
   margin: 5px;
 }
+
+
 
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 

@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   post 'api/filter_android_apps' => 'api#filter_android_apps'
   post 'api/search/ios' => 'api#search_ios_apps'
   post 'api/search/android' => 'api#search_android_apps'
-  post 'api/search/sdk' => 'api#search_sdk'
+  post 'api/search/iosSdks' => 'api#search_ios_sdk'
+  post 'api/search/androidSdks' => 'api#search_android_sdk'
   get 'api/get_ios_app' => 'api#get_ios_app'
   get 'api/get_android_app' => 'api#get_android_app'
   get 'api/get_company' => 'api#get_company'
@@ -45,7 +46,8 @@ Rails.application.routes.draw do
   put 'api/list/delete_items' => 'api#delete_from_list'
   put 'api/list/delete' => 'api#delete_list'
 
-  get 'api/sdk' => 'api#get_sdk'
+  get 'api/sdk/android' => 'api#get_android_sdk'
+  get 'api/sdk/ios' => 'api#get_ios_sdk'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 
@@ -73,10 +75,13 @@ Rails.application.routes.draw do
 
   get 'api/android_sdks_exist' => 'api#android_sdks_exist'
   get 'api/scan_android_sdks' => 'api#scan_android_sdks'
-
   get 'api/ios_sdks_exist' => 'api#ios_sdks_exist'
-  get 'api/ios_scan_status' => 'api#ios_scan_status'
   post 'api/ios_start_scan' => 'api#ios_start_scan'
+  get 'api/ios_scan_status' => 'api#ios_scan_status'
+
+  get 'api/android_sdks_exist' => 'api#android_sdks_exist'
+  post 'api/android_start_scan' => 'api#android_start_scan'
+  get 'api/android_scan_status' => 'api#android_scan_status'
 
   # Auth Endpoints (for Front-End)
   post 'auth/login' => 'auth#authenticate'

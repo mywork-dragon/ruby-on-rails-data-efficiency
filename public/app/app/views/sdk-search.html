@@ -36,8 +36,8 @@
             <th><div class="th normal-right-padding appDetailsHeader">
               Website
             </div></th>
-            <th><div class="th normal-right-padding">
-              Open Source
+            <th ng-if="sdkSearchCtrl.platform == 'iosSdks'"><div class="th normal-right-padding">
+              Description
             </div></th>
           </tr>
           </thead>
@@ -46,7 +46,10 @@
           <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
             <td id="sdkResultsTableAppIcon" class="resultsTableAppIcon">
                 <span>
-                  <img ng-src="{{sdk.sdk.favicon}}" /> <a href="#/sdk/android/{{sdk.sdk.id}}">{{sdk.sdk.name}}</a>
+                  <a href="#/sdk/{{sdk.sdk.platform}}/{{sdk.sdk.id}}">
+                    <img ng-src="{{sdk.sdk.favicon}}" />
+                    {{sdk.sdk.name}}
+                  </a>
                 </span>
             </td>
             <td class="appTypeIndicator">
@@ -55,7 +58,7 @@
             <td ng-if="sdk.sdk.website">
               <a href="{{sdk.sdk.website}}" target="_blank">{{sdk.sdk.website}}</a>
             </td>
-            <td>{{sdk.sdk.openSource ? 'Yes' : 'No'}}</td>
+            <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.sdk.summary}}</td>
           </tr>
           </tbody>
         </table>
@@ -94,7 +97,7 @@
                         ng-model="sdkSearchCtrl.currentPage"
                         total-items="sdkSearchCtrl.numSdks"
                         max-size="8"
-                        ng-change="sdkSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
+                        ng-change="customSearchCtrl.onPageChange(sdkSearchCtrl.currentPage)"
                         items-per-page="sdkSearchCtrl.numPerPage"
                         rotate="false"
                         boundary-links="true"></pagination>
