@@ -99,9 +99,9 @@
             <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
               Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
-            <div id="showSdksButton">
+<!--             <div id="showSdksButton">
               <button type="submit" class="btn btn-primary btn-block" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
-            </div>
+            </div> -->
           </li>
           <li id="showDataUpdatedMessage" ng-if="iosLiveScanCtrl.displayDataUnchangedStatus">
             <em>App data has not changed since last scan. Currently up-to-date.</em>
