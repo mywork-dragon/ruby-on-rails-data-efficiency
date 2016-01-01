@@ -341,9 +341,12 @@ class SdkService
 		end
 
 		def google_search(q:, limit: 10)
-		  result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
-		  raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
-		  result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+		  # result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
+		  # raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
+		  # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
+
+		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+		  search.results.map(&:url).take(limit)
 		end
 
 		def valid_domain?(url)
