@@ -904,10 +904,10 @@ class ApiController < ApplicationController
         :favicon => x.get_favicon,
         :first_seen => x.first_seen,
         :last_seen => x.last_seen,
-        :app_count => x.get_current_apps.count,
+        # :app_count => x.get_current_apps.count, # this takes way too long
         :open_source => x.open_source }
     end
-    f.sort_by{|x| [x[:open_source] ? 1:0 , -x[:app_count]] }
+      f.sort_by{|x| [x[:open_source] ? 1:0 , x[:id]] }  # sort by id for now, should be a proxy for number of installs
   end
 
 
