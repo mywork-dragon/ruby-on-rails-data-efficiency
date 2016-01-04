@@ -15,6 +15,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.canViewSupportDesk = data.can_view_support_desk;
         $scope.canViewExports = data.can_view_exports;
         $scope.godMode = data.god_mode;
+        $scope.canViewIosLiveScan = data.can_view_ios_live_scan;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;
