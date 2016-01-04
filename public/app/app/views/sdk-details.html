@@ -50,7 +50,7 @@
             <div class="media-body">
               <ul class="list-unstyled list-info">
                 <div style="text-align:center">
-                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps}}</strong> apps.
+                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps | number}}</strong> apps.
                 </div>
                 <div id="showSdksButton">
                   <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
