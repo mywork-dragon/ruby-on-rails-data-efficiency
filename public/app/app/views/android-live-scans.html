@@ -95,7 +95,7 @@
               <p>{{androidLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && !androidLiveScanCtrl.hideLiveScanButton">
+          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && !androidLiveScanCtrl.hideLiveScanButton && canViewSdks">
             <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated && !androidLiveScanCtrl.failedLiveScan">
               Last Scanned on {{androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
@@ -103,8 +103,10 @@
               <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)">Live Scan</button>
             </div>
           </li>
-          <li id="showDataUpdatedMessage" ng-if="androidLiveScanCtrl.displayDataUnchangedStatus">
-            <em>Note: app data has not changed since last scan. Currently up-to-date.</em>
+          <li ng-if="!canViewSdks && androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>App Has Not Been Scanned</strong>
+            </div>
           </li>
 
         </ul>

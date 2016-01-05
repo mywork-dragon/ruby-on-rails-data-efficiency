@@ -95,7 +95,7 @@
               <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
-          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && !iosLiveScanCtrl.hideLiveScanButton">
+          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && !iosLiveScanCtrl.hideLiveScanButton && canViewSdks && canViewIosLiveScan">
             <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
               Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
@@ -105,6 +105,11 @@
           </li>
           <li id="showDataUpdatedMessage" ng-if="iosLiveScanCtrl.displayDataUnchangedStatus">
             <em>App data has not changed since last scan. Currently up-to-date.</em>
+          </li>
+          <li ng-if="(!canViewSdks || !canViewIosLiveScan) && iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>App Has Not Been Scanned</strong>
+            </div>
           </li>
 
         </ul>
