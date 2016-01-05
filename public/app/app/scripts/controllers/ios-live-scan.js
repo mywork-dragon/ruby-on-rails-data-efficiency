@@ -82,6 +82,9 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             $(function () { $('[data-toggle="tooltip"]').tooltip() });
           }, 1000);
 
+        })
+        .error(function(error, status) {
+          iosLiveScanCtrl.sdkLiveScanPageLoading = false;
         });
 
     };
