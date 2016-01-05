@@ -33,6 +33,18 @@ class IosDevice < ActiveRecord::Base
     save!
   end
 
+  def switch_account
+    transaction do
+      # keep track of the old account
+      old_apple_account = AppleAccount.find_by_ios_device_id(self.id)
+
+      # get rid of the device ownership of the old apple account
+
+      # select an email address to use it with
+
+      # create parameters for a new apple account
+    end
+  end
 
   class << self
 
