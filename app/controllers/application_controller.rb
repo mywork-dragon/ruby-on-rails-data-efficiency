@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_ios_live_scan
-      fail NotAuthorizedError
+      fail NotAuthenticatedError
     end
   end
 
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.god_mode
-      fail NotAuthorizedError
+      fail NotAuthenticatedError
     end
   end
 
