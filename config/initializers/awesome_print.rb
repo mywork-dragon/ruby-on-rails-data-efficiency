@@ -2,5 +2,5 @@
 # @author Jason Lew
 
 AwesomePrint.defaults = {
-  raw: true   # ivars of objects print cleanly
+  raw: false   # ivars of objects print cleanly
 }

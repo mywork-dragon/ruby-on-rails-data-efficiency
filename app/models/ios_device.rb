@@ -33,8 +33,31 @@ class IosDevice < ActiveRecord::Base
     save!
   end
 
-
   class << self
+
+    def switch_account(ios_device_id:)
+      transaction do
+        # keep track of the old account
+        old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
+
+        # select an email address to use it with
+        account = pick_email_account
+
+        raise "No email addresses available. Add a new one" if account.blank?
+
+        # create parameters for a new apple account
+        new_apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device_id: ios_device_id)
+
+        old_apple_account.update!(ios_device_id: nil) if old_apple_account.present?
+
+        puts "Apple Account".purple
+        ap "Email: #{new_apple_account.email}"
+        ap "password: Somename1"
+        puts "Email Credentials".purple
+        ap "Email: #{account.email}"
+        ap "Password: #{account.password}"
+      end
+    end
 
     # Helper method to create new device with proxy
     def create_with_proxy!(params)
@@ -65,24 +88,20 @@ class IosDevice < ActiveRecord::Base
 
         ios_device.save!
 
-        email = nil
-        google_account_password = nil
+        account = pick_email_account
 
-        GoogleAccount.all.each do |google_account|
-          if AppleAccount.where(email: google_account.email).blank?
-            email = google_account.email
-            google_account_password = google_account.password
-            break
-          end
-        end
+        raise 'Cannot find a free email address' if account.nil?
 
-        raise 'Cannot find a free email address from google_accounts table' if email.nil?
-
-        apple_account = AppleAccount.create!(email: email, password: 'Somename1', ios_device: ios_device)
+        apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device: ios_device)
 
         ap apple_account
 
-        puts "Gmail password: #{google_account_password}".purple
+        puts "Apple Account".purple
+        ap "Email: #{apple_account.email}"
+        ap "password: Somename1"
+        puts "Email Credentials".purple
+        ap "Email: #{account.email}"
+        ap "Password: #{account.password}"
 
         puts "Proxy IP: #{ios_device.softlayer_proxy.public_ip}"
 
@@ -110,10 +129,17 @@ class IosDevice < ActiveRecord::Base
       semvers.map {|d| "%03d" % d}.join(".")
     end
 
+    # select an email account to use for creating a new Apple ID. Returns an ActiveRecord object that has both an email and password attribute or nil if nothing is available
+    def pick_email_account
 
+      existing = AppleAccount.pluck(:email)
+      account = IosEmailAccount.where.not(email: existing).take
+
+      return account if account.present?
+
+      account = GoogleAccount.where.not(email: existing).take
+    end
 
   end
-
-
 
 end
