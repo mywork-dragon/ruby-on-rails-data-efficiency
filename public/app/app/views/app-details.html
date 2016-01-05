@@ -350,10 +350,10 @@
         </div>
 
         <!-- Android Live Scan View -->
-        <div ng-if="appPlatform == 'android'" data-ng-include="'/app/app/views/android-live-scans.html'"></div>
+        <div ng-if="appPlatform == 'android' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/android-live-scans.html'"></div>
 
         <!-- iOS Live Scan View -->
-        <div ng-if="appPlatform == 'ios'" data-ng-include="'/app/app/views/ios-live-scans.html'"></div>
+        <div ng-if="appPlatform == 'ios' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/ios-live-scans.html'"></div>
 
         <div class="panel panel-default" ng-if="appData.company.name">
           <div class="panel-heading"><strong>Company Details</strong></div>
