@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160102000916) do
+ActiveRecord::Schema.define(version: 20160105215948) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -973,6 +973,16 @@ ActiveRecord::Schema.define(version: 20160102000916) do
   add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
   add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
+
+  create_table "ios_email_accounts", force: true do |t|
+    t.string   "email"
+    t.string   "password"
+    t.boolean  "flagged"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_email_accounts", ["email"], name: "index_ios_email_accounts_on_email", unique: true, using: :btree
 
   create_table "ios_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
