@@ -35,9 +35,8 @@ class IosDevice < ActiveRecord::Base
 
   class << self
 
-    def switch_account(ios_device_id)
+    def switch_account(ios_device_id:)
       transaction do
-        byebug
         # keep track of the old account
         old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
 
