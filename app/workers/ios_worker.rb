@@ -1,5 +1,10 @@
 module IosWorker
 
+	WARNING_LEVEL_MAP = {
+		'8' => 4000,
+		'9' => 2000
+	}
+
 	def perform(ipa_snapshot_id, bid = nil)
 	  execute_scan_type(ipa_snapshot_id: ipa_snapshot_id, bid: bid)
 	end
@@ -111,6 +116,9 @@ module IosWorker
 			`rm -f #{final_result[:outfile_path]}` if Rails.env.production? && final_result[:outfile_path]
 
 			result = classdump
+
+			# send notification if we've reached a threshold
+			check_account_limits(device) if Rails.env.production?
 		rescue => e
 			result = e
 		end
@@ -187,6 +195,24 @@ module IosWorker
 	def release_device(device)
 		device.in_use = false
 		device.save
+	end
+
+	def check_account_limits(device)
+		ios_major_version = device.ios_version.split(".").first
+
+		warning_level = WARNING_LEVEL_MAP[ios_major_version]
+
+		return if warning_level.nil?
+
+		apple_account = AppleAccount.find_by_ios_device_id(device.id)
+
+		downloads_count = apple_account.class_dumps.count
+
+		if downloads_count == warning_level
+			Slackiq.message("*CAUTION*:exclamation:: AppleAccount #{apple_account.id} has crossed the #{warning_level} downloads threshold. *Check device #{device.id} for slowness*", webhook_name: :main)
+		elsif downloads_count == warning_level * 2
+			Slackiq.message("*WARNING* :skull_and_crossbones:: AppleAccount #{apple_account.id} has crossed the limit of #{warning_level * 2} downloads. *Please reset the phone and it's Apple Account*", webhook_name: :main)
+		end
 	end
 
 end
