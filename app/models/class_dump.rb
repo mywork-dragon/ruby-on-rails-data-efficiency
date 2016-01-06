@@ -2,6 +2,7 @@ class ClassDump < ActiveRecord::Base
 
   belongs_to :ipa_snapshot
   belongs_to :ios_device
+  belongs_to :apple_account
 
   has_attached_file :class_dump
 

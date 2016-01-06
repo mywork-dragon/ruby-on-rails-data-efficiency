@@ -46,9 +46,11 @@ class IosDevice < ActiveRecord::Base
         raise "No email addresses available. Add a new one" if account.blank?
 
         # create parameters for a new apple account
-        new_apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device_id: ios_device_id)
+        new_apple_account = AppleAccount.create!(email: account.email, password: 'Somename1')
 
         old_apple_account.update!(ios_device_id: nil) if old_apple_account.present?
+
+        new_apple_account.update!(ios_device_id: ios_device_id)
 
         puts "Apple Account".purple
         ap "Email: #{new_apple_account.email}"

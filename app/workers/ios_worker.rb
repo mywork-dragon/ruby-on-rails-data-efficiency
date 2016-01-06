@@ -75,6 +75,9 @@ module IosWorker
 			end
 
 			classdump.ios_device_id = device.id
+			apple_account = AppleAccount.find_by_ios_device_id(device.id)
+			raise "Device #{device.id} is not tied to an Apple Account. Device will be left in reserved state" if apple_account.blank?
+			classdump.apple_account_id = apple_account.id
 			classdump.save
 
 			# do the actual classdump
