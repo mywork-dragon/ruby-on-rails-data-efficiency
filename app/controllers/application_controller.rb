@@ -54,6 +54,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_ios_live_scan
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
+
+    if !account || !account.can_view_ios_live_scan
+      fail NotAuthenticatedError
+    end
+  end
+
   def authenticate_god_mode
     user = User.find(decoded_auth_token[:user_id])
     account = Account.find(user.account_id)
