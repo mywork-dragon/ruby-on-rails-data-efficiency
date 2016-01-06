@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160105215948) do
+ActiveRecord::Schema.define(version: 20160106012839) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -430,8 +430,10 @@ ActiveRecord::Schema.define(version: 20160105215948) do
     t.integer  "error_code"
     t.integer  "ios_device_id"
     t.boolean  "has_fw_folder"
+    t.integer  "apple_account_id"
   end
 
+  add_index "class_dumps", ["apple_account_id"], name: "index_class_dumps_on_apple_account_id", using: :btree
   add_index "class_dumps", ["complete"], name: "index_class_dumps_on_complete", using: :btree
   add_index "class_dumps", ["dump_success"], name: "index_class_dumps_on_dump_success", using: :btree
   add_index "class_dumps", ["dump_time"], name: "index_class_dumps_on_dump_time", using: :btree
