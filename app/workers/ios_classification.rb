@@ -135,7 +135,6 @@ module IosClassification
     if search_bundles
       bundles = bundles_from_strings(contents)
       sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: false) # TODO: remove read only flag after regexes are linked and such
-      ap sdks
     end
 
     if search_classes
@@ -185,10 +184,6 @@ module IosClassification
       sdk = resolve_collision(sdks: sdks)
       resolved_sdks << sdk if !sdk.nil?
     end
-
-    ap uniques
-
-    ap resolved_sdks
 
     (uniques + resolved_sdks).uniq
 
@@ -288,7 +283,6 @@ module IosClassification
     contents = File.open(filename) { |f| f.read }.chomp
 
     bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-    ap bundles
 
     search_bundles(bundles, nil)
   end
