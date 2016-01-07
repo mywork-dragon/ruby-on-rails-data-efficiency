@@ -67,13 +67,11 @@ module IosCloud
   def should_update(ios_app_id:, version:)
     last_snap = IosApp.find(ios_app_id).get_last_ipa_snapshot(scan_success: true)
 
-    if !version.blank? && !(last_snap.nil? || last_snap.version.nil?) && version <= last_snap.version
-      last_snap.good_as_of_date = Time.now # update the ipa snapshot with current date
-      last_snap.save
-      false
-    else
-      true 
-    end
+    return true if version.blank? || last_snap.nil? || last_snap.version.nil? || last_snap.version.chomp != version.chomp
+
+    last_snap.good_as_of_date = Time.now
+    last_snap.save
+    false
   end
 
   def is_ios?(data)
