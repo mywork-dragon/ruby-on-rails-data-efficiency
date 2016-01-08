@@ -29,6 +29,7 @@ puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live sca
 puts "staging:".light_cyan + " Deploys to the staging server."
 puts "web".light_cyan + ": Deploys to the Web server."
 puts "darth_vader".light_cyan + ": Deploys to Vader."
+puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren."
 puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
 puts "\n"
 print "Deploy to: "
@@ -47,7 +48,7 @@ abort if !res.casecmp("yes").zero?
 
 ENV["MS_BRANCH"] = branch
 
-if stage == 'darth_vader'
+if stage == 'darth_vader' || stage == 'kylo_ren'
 
   puts %q(
 
