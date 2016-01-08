@@ -201,6 +201,7 @@ module IosWorker
 		ios_major_version = device.ios_version.split(".").first
 
 		warning_level = WARNING_LEVEL_MAP[ios_major_version]
+		error_level = warning_level * 2
 
 		return if warning_level.nil?
 
@@ -208,11 +209,15 @@ module IosWorker
 
 		downloads_count = apple_account.class_dumps.count
 
-		if downloads_count == warning_level
-			Slackiq.message("*CAUTION*:exclamation:: AppleAccount #{apple_account.id} has crossed the #{warning_level} downloads threshold. *Check device #{device.id} for slowness*", webhook_name: :main)
-		elsif downloads_count == warning_level * 2
-			Slackiq.message("*WARNING* :skull_and_crossbones:: AppleAccount #{apple_account.id} has crossed the limit of #{warning_level * 2} downloads. *Please reset the phone and it's Apple Account*", webhook_name: :main)
+		alert_frequency = device.purpose == 'one_off' ? 3 : 15
+
+		message = if downloads_count == warning_level
+			"*CAUTION*:exclamation:: AppleAccount #{apple_account.id} has crossed the #{warning_level} downloads threshold. *Check device #{device.id} for slowness*"
+		elsif downloads_count >= error_level && (downloads_count - error_level) % alert_frequency == 0
+			"*WARNING* :skull_and_crossbones:: AppleAccount #{apple_account.id} has crossed the limit of #{error_level} downloads. *Please reset the phone and it's Apple Account*"
 		end
+
+		Slackiq.message(message, webhook_name: :main) unless message.nil?
 	end
 
 end
