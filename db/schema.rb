@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160106012839) do
+ActiveRecord::Schema.define(version: 20160108230319) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -979,7 +979,7 @@ ActiveRecord::Schema.define(version: 20160106012839) do
   create_table "ios_email_accounts", force: true do |t|
     t.string   "email"
     t.string   "password"
-    t.boolean  "flagged"
+    t.boolean  "flagged",    default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
