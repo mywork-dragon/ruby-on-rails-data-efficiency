@@ -106,12 +106,7 @@ class Proxy
     if type == :ios_classification
       ios_proxies.sample
     elsif type == :android_classification
-      proxy = nil
-      c = Benchmark.measure do 
-        proxy = unique_proxy_per_thread(queue: 'sdk')
-      end
-      puts "unique_proxy_per_thread - #{c.real}s"
-      proxy
+      android_proxies.sample
     else
       MicroProxy.where(active: true).pluck(:private_ip).sample
     end
