@@ -10,6 +10,7 @@ module MightyDeployer
   @scraper_roles = []
   @scraper_master_role = nil
   @darth_vader_roles = []
+  @kylo_ren_roles = []
   @ios_live_scan_roles = []
   
   @web_servers = []
@@ -19,10 +20,11 @@ module MightyDeployer
   @sdk_scraper_servers = []
   @sdk_scraper_live_scan_servers = []
   @darth_vader_servers = []
+  @kylo_ren_servers = []
   @ios_live_scan_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :staging, :ios_live_scan]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
@@ -32,6 +34,7 @@ module MightyDeployer
     define_sdk_scraper_live_scan_servers if server_symbols.include?(:sdk_scraper_live_scan)
     define_staging_servers if server_symbols.include?(:staging)
     define_darth_vader_servers if server_symbols.include?(:darth_vader)
+    define_kylo_ren_servers if server_symbols.include?(:kylo_ren)
     define_ios_live_scan_servers if server_symbols.include?(:ios_live_scan)
     
     define_roles
@@ -117,6 +120,15 @@ module MightyDeployer
     @darth_vader_roles += @darth_vader_servers
   end
 
+  def self.define_kylo_ren_servers
+    @kylo_ren_servers = %w(
+      192.168.2.102
+    )
+
+    @app_roles += @kylo_ren_roles
+    @kylo_ren_roles += @kylo_ren_servers
+  end
+
   def self.define_ios_live_scan_servers
     @ios_live_scan_servers = %w(
       54.173.117.185
@@ -139,6 +151,7 @@ module MightyDeployer
     role :scraper_master, @scraper_master_role
     role :staging, @staging_roles
     role :darth_vader, @darth_vader_roles
+    role :kylo_ren, @kylo_ren_roles
     role :ios_live_scan, @ios_live_scan_roles
   end
   
@@ -171,12 +184,14 @@ module MightyDeployer
       server darth_vader_server, user: 'darth-vader'
     end
 
+    @kylo_ren_servers.each do |kylo_ren_server|
+      server kylo_ren_server, user: 'kylo-ren'
+    end
+
     @ios_live_scan_servers.each do |ios_live_scan_server|
       server ios_live_scan_server, user: 'deploy'
     end
     
   end
-
-
   
 end
