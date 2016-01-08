@@ -51,8 +51,8 @@ set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
 set :scraper_master_concurrency, 50
 set :web_concurrency, 1
-set :darth_vader_concurrency, 10
-set :kylo_ren_concurrency, 10
+set :darth_vader_concurrency, 10  # needs to be >= number of iOS devices
+set :kylo_ren_concurrency, 10     # needs to be >= number of iOS devices
 set :ios_live_scan_concurrency, 50
 
 # set :sidekiq_queue, %w(critical default low)
