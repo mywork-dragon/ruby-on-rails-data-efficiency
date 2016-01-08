@@ -9,7 +9,7 @@ class PackageSearchServiceSingleWorker
     true
   end
 
-  def package_type
+  def proxy_type
     :android_classification
   end
 
