@@ -1,6 +1,5 @@
 class AppStoreService
 
-  
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
@@ -15,6 +14,8 @@ class AppStoreService
     methods = []
     
     if @json
+      check_ios # check to make sure it's an iOS app
+
       methods += %w(
         name_json
         description_json
@@ -124,6 +125,13 @@ class AppStoreService
     end
     
     html
+  end
+
+  # Make sure it's an iOS app.
+  # Will throw an exception if not
+  def check_ios
+    raise NotIosApp if @json['wrapperType'] != 'software' || @json['kind'] != 'software'
+    true
   end
 
   def name_json
@@ -419,6 +427,14 @@ class AppStoreService
         #attributes(id)
         li ""
       end
+    end
+
+  end
+
+  class NotIosApp < StandardError
+
+    def initialize(message = "This is not an iOS app")
+      super
     end
 
   end
