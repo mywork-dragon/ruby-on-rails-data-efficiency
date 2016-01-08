@@ -50,7 +50,7 @@ module PackageSearchWorker
 
 
     b = Benchmark.measure do 
-      android_sdk_service = AndroidSdkService.new(jid: self.jid)
+      android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
       android_sdk_service.classify(snap_id: snap_id, packages: packages)
     end
 

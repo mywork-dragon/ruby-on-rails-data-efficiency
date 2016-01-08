@@ -10,6 +10,10 @@ class PackageSearchServiceWorker
     false
   end
 
+  def proxy_type
+    :tor
+  end
+
   # def wait_for_open_download_spot
   #   private_ip = ip
 

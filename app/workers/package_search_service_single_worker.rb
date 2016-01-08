@@ -8,6 +8,10 @@ class PackageSearchServiceSingleWorker
     true
   end
 
+  def package_type
+    :android_classification
+  end
+
   # # no-op
   # def wait_for_open_download_spot
   # end

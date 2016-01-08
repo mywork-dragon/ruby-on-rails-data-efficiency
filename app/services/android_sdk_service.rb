@@ -13,8 +13,9 @@ class AndroidSdkService
 
   end
 
-  def initialize(jid: nil)
+  def initialize(jid: nil, proxy_type: :tor)
     @jid = jid
+    @proxy_type = proxy_type
   end
 
 	def classify(snap_id:, packages:)
@@ -260,7 +261,7 @@ class AndroidSdkService
           # searcher = GoogleSearcher::Searcher.new(jid: @jid)
           # search = searcher.search(q, proxy_type: :android_classification)
 
-          searcher = BingSearcher::Searcher.new(jid: @jid)
+          searcher = BingSearcher::Searcher.new(jid: @jid, proxy_type: @proxy_type)
           search = searcher.search(q)
         rescue => e
           if (try += 1) < GOOGLE_MAX_RETRIES
