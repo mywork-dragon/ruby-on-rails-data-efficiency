@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(scraper sdk_scraper web staging darth_vader)
+set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren)
 
 set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
@@ -42,7 +42,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :ios_live_scan]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, kylo_ren, :ios_live_scan]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -52,6 +52,7 @@ set :scraper_concurrency, 50
 set :scraper_master_concurrency, 50
 set :web_concurrency, 1
 set :darth_vader_concurrency, 10
+set :kylo_ren_concurrency, 10
 set :ios_live_scan_concurrency, 50
 
 # set :sidekiq_queue, %w(critical default low)
@@ -62,6 +63,7 @@ set :scraper_queue, %w(critical default low)
 set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
 set :web_queue, %w(no_op)
 set :darth_vader_queue, %w(ios_live_scan_test ios_live_scan ios_mass_scan)
+set :kylo_ren_queue, %w(no_op)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud ios_mass_scan_cloud)
 
 set :whenever_roles, [:scraper, :sdk_scraper]
