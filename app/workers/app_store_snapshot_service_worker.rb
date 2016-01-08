@@ -34,6 +34,7 @@ class AppStoreSnapshotServiceWorker
         ios_app.display_type = :not_ios
         ios_app.save!
         s.delete
+        return nil
       end
       
       raise 'AppStoreService.attributes is empty' if a.empty?
