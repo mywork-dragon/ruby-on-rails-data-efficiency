@@ -42,7 +42,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, kylo_ren, :ios_live_scan]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :kylo_ren, :ios_live_scan]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
