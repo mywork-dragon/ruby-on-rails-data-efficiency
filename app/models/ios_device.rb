@@ -1,6 +1,7 @@
 class IosDevice < ActiveRecord::Base
 
 	has_many :class_dump
+  has_one :apple_account
   belongs_to :softlayer_proxy
   belongs_to :ios_device_model
 
