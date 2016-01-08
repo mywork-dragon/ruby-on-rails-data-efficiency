@@ -135,7 +135,7 @@ class IosDevice < ActiveRecord::Base
     def pick_email_account
 
       existing = AppleAccount.pluck(:email)
-      account = IosEmailAccount.where.not(email: existing).take
+      account = IosEmailAccount.where.not(email: existing, flagged: true).take
 
       return account if account.present?
 
