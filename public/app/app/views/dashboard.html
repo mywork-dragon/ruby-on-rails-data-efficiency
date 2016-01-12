@@ -126,10 +126,10 @@
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
         <div><span class="ng-binding ng-scope">
 					<span ng-if="appPlatform.platform == 'ios'">
-						Results from scanning the top {{$root.scannedIosSdkNum | number}} iOS apps. 
+						Results from scanning the top <strong>{{$root.scannedIosSdkNum | number}}</strong> iOS apps. 
 					</span>
 					<span ng-if="appPlatform.platform == 'android'">
-						Results from scanning all Android apps updated within a year ({{$root.scannedAndroidSdkNum | number}} apps).
+						Results from scanning all Android apps updated within a year (<strong>{{$root.scannedAndroidSdkNum | number}}</strong> apps).
 					</span>
 					<!--
 					Note: SDK filter results are derived from 
