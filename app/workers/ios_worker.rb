@@ -217,7 +217,7 @@ module IosWorker
 			"*WARNING* :skull_and_crossbones:: AppleAccount #{apple_account.id} has crossed the limit of #{error_level} downloads. *Please reset the phone and it's Apple Account*"
 		end
 
-		Slackiq.message(message, webhook_name: :main) unless message.nil?
+		Slackiq.message(message, webhook_name: :automated_alerts) unless message.nil?
 	end
 
 end
