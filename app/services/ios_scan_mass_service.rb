@@ -38,14 +38,7 @@ class IosScanMassService
 
       run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
     end
-
-
-    def test_tunnel
-      (0..500).each do |x|
-        SidekiqTesterServiceWorker.perform_async(x)
-        SidekiqDarthServiceWorker.perform_async(x)
-      end
-    end
+    
   end
 
 end
