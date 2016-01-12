@@ -38,6 +38,7 @@ class IosScanMassService
 
       run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
     end
+    
   end
 
 end
