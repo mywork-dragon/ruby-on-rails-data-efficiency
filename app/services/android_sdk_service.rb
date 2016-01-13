@@ -261,8 +261,8 @@ class AndroidSdkService
           # searcher = GoogleSearcher::Searcher.new(jid: @jid)
           # search = searcher.search(q, proxy_type: :android_classification)
 
-          searcher = BingSearcher::Searcher.new(jid: @jid, proxy_type: @proxy_type)
-          search = searcher.search(q)
+          searcher = BingSearcher::Searcher.new(jid: @jid)
+          search = searcher.search(q, proxy_type: @proxy_type)
         rescue => e
           if (try += 1) < GOOGLE_MAX_RETRIES
             puts "Exception: #{e.message}, Retry #{try}"
