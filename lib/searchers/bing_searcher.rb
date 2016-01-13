@@ -27,7 +27,7 @@ module BingSearcher
         html_s = Tor.get(@search_url, random: true)
       else
         p = Proxy.new(jid: @jid)
-        html_s = p.get_body(req: {:host => "www.bing.com/search", :protocol => "http"}, params: {'q' => query_url_safe}, proxy: proxy, proxy_type: proxy_type)
+        html_s = p.get_body(req: {:host => "www.bing.com/search", :protocol => "http"}, params: {'q' => query_url_safe}, proxy_type: proxy_type)
       end
       
       Parser.parse(html_s, query: @query, search_url: @search_url)

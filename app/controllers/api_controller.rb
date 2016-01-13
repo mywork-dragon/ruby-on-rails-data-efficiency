@@ -844,37 +844,14 @@ class ApiController < ApplicationController
 
   def android_scan_status
     job_id = params['jobId']
-    status, error = snap_status(job_id)
-    e = {:status => status, :error => error}
-    render json: e
-  end
 
-  def snap_status(job_id)
-    ss = ApkSnapshot.find_by_apk_snapshot_job_id(job_id)
-    if ss.present?
-      if ss.status.present?
-        if ss.success? 
-          ss.scan_success? ? [3,nil] : [2,nil]
-        else
-          [4,snap_error(ss)]
-        end
-      else
-        [1,nil]
-      end
-    else
-      [0,nil]
-    end
-  end
+    status_h = AndroidLiveScanService.check_status(job_id: job_id)
 
-  def snap_error(ss)
-    e = %w(failure no_response forbidden could_not_connect timeout deadlock not_found)
-    o = %w(taken_down bad_device out_of_country bad_carrier)
-    if e.any?{|x| ss.send(x+'?') }
-      0
-    else
-      a = o.index(o.select{|x| ss.send(x+'?') }.first)
-      a.present? && a + 1
-    end
+    render json: status_h
+
+    # status, error = snap_status(job_id)
+    # e = {:status => status, :error => error}
+    # render json: e
   end
 
   def scannable(aa)
