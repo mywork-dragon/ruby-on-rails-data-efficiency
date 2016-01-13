@@ -5,7 +5,7 @@ class IosMassScanService
     def test_callback
       batch = Sidekiq::Batch.new
       batch.description = 'iOS Download'
-      batch.on(:complete, 'IosMassScanService#test_complete', :example => 1)
+      batch.on(:complete, 'IosMassScanService#test_complete', example: 1)
 
       batch.jobs do
         [1].each do |id|
