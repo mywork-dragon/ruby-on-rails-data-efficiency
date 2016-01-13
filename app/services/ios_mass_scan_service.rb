@@ -47,6 +47,7 @@ class IosScanMassService
       batch.jobs do
         IpaSnapshot.where(ipa_snapshot_job: IpaSnapshotJob.where(job_type: 2)).where(success: true).where(scan_status: nil).pluck(:id).each do |id|
           IosMassScanServiceWorker.perform_async(id)
+        end
       end
     end
     
