@@ -87,19 +87,19 @@ if !`git status -uno`.include?("nothing to commit")
 end
 
 # run tests and abort on failure
-# test_cmd = 'bundle exec rake test:all'
-# last_line = nil
-# IO.popen(test_cmd).each do |line|
-#   puts line
-#   last_line = line
-# end.close # Without close, you won't be able to access $?
+test_cmd = 'bundle exec rake test:all'
+last_line = nil
+IO.popen(test_cmd).each do |line|
+  puts line
+  last_line = line
+end.close # Without close, you won't be able to access $?
  
-# #puts "The command's exit code was: #{$?.exitstatus}"
+#puts "The command's exit code was: #{$?.exitstatus}"
 
-# last_line.split(", ")
-# if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
-#   abort
-# end
+last_line.split(", ")
+if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
+  abort
+end
 
 puts ""
 system("bundle exec cap #{stage} deploy")
