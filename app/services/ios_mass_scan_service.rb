@@ -18,6 +18,8 @@ class IosMassScanService
 
       if Rails.env.production?
 
+        Slackiq.message("Starting an iOS download job for #{ids.length} apps", webhook_name: :main)
+
         batch = Sidekiq::Batch.new
         batch.description = 'iOS Download'
         batch.on(:complete, 'IosMassScanService#on_download_complete', job_id: ipa_snapshot_job.id)

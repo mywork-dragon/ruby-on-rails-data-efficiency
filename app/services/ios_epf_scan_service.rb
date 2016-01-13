@@ -3,10 +3,12 @@ class IosEpfScanService
 
     def scan_epf_apps(ids)
 
-      # Slackiq.message("Starting iOS EPF Scan for #{ids.length}", webhook_name: :main)
       ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: "Running EPF scan on #{Time.now.strftime '%m/%d/%Y'}")
 
       if Rails.env.production?
+
+        Slackiq.message("Starting iOS EPF Scan for #{ids.length}", webhook_name: :main)
+        
         batch = Sidekiq::Batch.new
         batch.description = 'iOS EPF Apps'
         batch.on(:complete, 'IosEpfScanService#on_epf_complete')
