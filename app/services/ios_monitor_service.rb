@@ -20,5 +20,14 @@ class IosMonitorService
         ap "Device #{device.id}: #{result}"
       end
     end
+
+    def check_apple_accounts
+      accts = AppleAccount.where.not(ios_device_id: nil)
+
+      accts.inject({}) do |mem, acct|
+        mem[acct.ios_device_id] = acct.class_dumps.count
+        mem
+      end
+    end
   end
 end
