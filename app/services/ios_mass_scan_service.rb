@@ -38,7 +38,22 @@ class IosScanMassService
 
       run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
     end
+
+    def scan_successful
+      batch = Sidekiq::Batch.new
+      batch.description = 'iOS Classification'
+      batch.on(:complete, 'IosMassScanService#on_classification_complete', test_field: 'sup')
+
+      batch.jobs do
+        IpaSnapshot.where(ipa_snapshot_job: IpaSnapshotJob.where(job_type: 2)).where(success: true).where(scan_status: nil).pluck(:id).each do |id|
+          IosMassScanServiceWorker.perform_async(id)
+      end
+    end
     
+  end
+
+  def on_classification_complete(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS classification for mass scan', test_field: options[:test_field])
   end
 
 end
