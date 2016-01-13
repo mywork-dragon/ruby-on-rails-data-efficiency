@@ -9,6 +9,10 @@ module IosWorker
 	  execute_scan_type(ipa_snapshot_id: ipa_snapshot_id, bid: bid)
 	end
 
+	def execute_scan_type(ipa_snapshot_id:, bid:)
+	  run_scan(ipa_snapshot_id: ipa_snapshot_id, purpose: @purpose, bid: bid, start_classify: @start_classify)
+	end
+
 	# convert data coming from ios_device_service to classdump row information
 	def result_to_cd_row(data)
 		data_keys = [
@@ -99,7 +103,23 @@ module IosWorker
 					snapshot.save
 					# don't start classifying while cleaning during development
 					if start_classify
-						Rails.env.production? ? IosClassificationServiceWorker.perform_async(snapshot.id) : IosClassificationServiceWorker.new.perform(snapshot.id)
+						classifier_class = if purpose == :one_off
+							IosClassificationServiceWorker
+						else
+							IosMassClassificationServiceWorker
+						end
+
+						if Rails.env.production?
+							unless batch.nil?
+								batch.jobs do
+									classifier_class.perform_async(snapshot.id)
+								end
+							else
+								classifier_class.perform_async(snapshot.id)
+							end
+						else
+							classifier_class.new.perform(snapshot.id)
+						end
 					end
 				end
 			end

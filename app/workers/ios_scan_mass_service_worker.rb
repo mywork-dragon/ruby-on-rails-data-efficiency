@@ -9,12 +9,13 @@ class IosScanMassServiceWorker
   MAX_RETRIES = 1
 
   def initialize
+    @purpose = :mass
+    @start_classify = false
     @retry = 0
   end
 
-  # unique parameters to mass live scan
-  def execute_scan_type(ipa_snapshot_id:, bid:)
-    run_scan(ipa_snapshot_id: ipa_snapshot_id, purpose: :mass, bid: bid, start_classify: false)
+  def test_inheritence
+    puts @start_classify
   end
 
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method

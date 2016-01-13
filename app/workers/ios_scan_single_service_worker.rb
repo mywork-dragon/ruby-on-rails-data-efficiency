@@ -10,13 +10,10 @@ class IosScanSingleServiceWorker
 
   def initialize
     @retry = 0
+    @start_classify = Rails.env.production?
+    @purpose = :one_off
   end
-
-  # unique parameters to ios live scan
-  def execute_scan_type(ipa_snapshot_id:, bid:)
-    run_scan(ipa_snapshot_id: ipa_snapshot_id, purpose: :one_off, bid: bid, start_classify: Rails.env.production?)
-  end
-
+  
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method
   def on_complete(ipa_snapshot_id:, bid:, result:)
 
