@@ -67,6 +67,11 @@ class IosMassScanService
 
   def test_complete(status, options)
     ap options
+
+    ap "string"
+    ap options['example']
+    ap "symbol"
+    ap options[:example]
   end
 
   def on_classification_complete(status, options)
