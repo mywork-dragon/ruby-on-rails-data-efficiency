@@ -80,17 +80,15 @@ class IosMassScanService
 
   def on_download_complete(status, options)
 
-    ap options
-
     ipa_snapshot_job = IpaSnapshotJob.find(options['job_id'])
 
     Slackiq.notify(webhook_name: :main,
       status: status,
       title: 'Completed iOS downloads for mass scan',
-      job_id: ipa_snapshot_job.id,
-      num_apps_selected: ipa_snapshot_job.ipa_snapshot_lookup_failures.count + ipa_snapshot_job.ipa_snapshots.count,
-      apps_attempted: ipa_snapshot_job.ipa_snapshots.count,
-      successes: ipa_snapshot_job.ipa_snapshots.where(success: true).count
+      'Job Id' => ipa_snapshot_job.id,
+      '# of Apps Queued' => ipa_snapshot_job.ipa_snapshot_lookup_failures.count + ipa_snapshot_job.ipa_snapshots.count,
+      '# of Apps Attempted' => ipa_snapshot_job.ipa_snapshots.count,
+      'Successes' => ipa_snapshot_job.ipa_snapshots.where(success: true).count
     )
   end
 
