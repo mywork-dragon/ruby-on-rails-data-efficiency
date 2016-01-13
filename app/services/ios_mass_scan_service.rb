@@ -25,7 +25,7 @@ class IosMassScanService
 
         batch = Sidekiq::Batch.new
         batch.description = 'iOS Download'
-        batch.on(:complete, 'IosMassScanService#on_download_complete', :job_id => ipa_snapshot_job.id)
+        batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
 
         batch.jobs do
           IosApp.where(id: ids).pluck(:id).each do |ios_app_id|
@@ -82,7 +82,7 @@ class IosMassScanService
 
     ap options
 
-    ipa_snapshot_job = IpaSnapshotJob.find(options[:job_id])
+    ipa_snapshot_job = IpaSnapshotJob.find(options['job_id'])
 
     Slackiq.notify(webhook_name: :main,
       status: status,
