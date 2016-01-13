@@ -2,15 +2,18 @@ class IosMassScanService
 
   class << self
 
-    def run_n(notes, n: 10)
-    
-    ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
+    def test_callback
+      batch = Sidekiq::Batch.new
+      batch.description = 'iOS Download'
+      batch.on(:complete, 'IosMassScanService#test_complete', :example => 1)
 
-      IosApp.first(n).each do |ios_app|
-        IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
+      batch.jobs do
+        [1].each do |id|
+          SidekiqTesterServiceWorker.perform_async(id)
+        end
       end
-      
     end
+
 
     def run_ids(notes, ids)
 
@@ -22,7 +25,7 @@ class IosMassScanService
 
         batch = Sidekiq::Batch.new
         batch.description = 'iOS Download'
-        batch.on(:complete, 'IosMassScanService#on_download_complete', job_id: ipa_snapshot_job.id)
+        batch.on(:complete, 'IosMassScanService#on_download_complete', :job_id => ipa_snapshot_job.id)
 
         batch.jobs do
           IosApp.where(id: ids).pluck(:id).each do |ios_app_id|
@@ -62,11 +65,17 @@ class IosMassScanService
     
   end
 
+  def test_complete(status, options)
+    ap options
+  end
+
   def on_classification_complete(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS classification for mass scan')
   end
 
   def on_download_complete(status, options)
+
+    ap options
 
     ipa_snapshot_job = IpaSnapshotJob.find(options[:job_id])
 
