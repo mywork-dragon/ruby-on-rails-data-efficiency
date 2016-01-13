@@ -1,4 +1,4 @@
-class IosScanMassService
+class IosMassScanService
 
   class << self
 
