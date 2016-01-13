@@ -2,19 +2,6 @@ class IosMassScanService
 
   class << self
 
-    def test_callback
-      batch = Sidekiq::Batch.new
-      batch.description = 'iOS Download'
-      batch.on(:complete, 'IosMassScanService#test_complete', example: 1)
-
-      batch.jobs do
-        [1].each do |id|
-          SidekiqTesterServiceWorker.perform_async(id)
-        end
-      end
-    end
-
-
     def run_ids(notes, ids)
 
       ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
@@ -63,15 +50,6 @@ class IosMassScanService
       end
     end
     
-  end
-
-  def test_complete(status, options)
-    ap options
-
-    ap "string"
-    ap options['example']
-    ap "symbol"
-    ap options[:example]
   end
 
   def on_classification_complete(status, options)
