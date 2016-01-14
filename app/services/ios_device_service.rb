@@ -250,7 +250,7 @@ class IosDeviceService
 
     run_command(ssh, 'killall AppStore', 'Restarting AppStore')
     run_command(ssh, 'rm -f open_app.cy', 'Deleting old open_app.cy')
-    run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"https://itunes.apple.com/#{country_code}/app/id#{app_identifier}\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
+    run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"itms-apps://itunes.apple.com/#{country_code}/app/id#{app_identifier}?mt=8\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
     run_command(ssh, "echo '[[SBUIController sharedInstance] clickedMenuButton];' > press_home_button.cy", 'Adding press_home_button.cy')
     open_app_in_app_store(ssh)
 
