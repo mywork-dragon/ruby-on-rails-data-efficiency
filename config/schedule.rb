@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "/home/kylo-ren/cron.log"
+set :output, "/home/cron.log"
 
 #this works! keep as a sample
 # every 1.minutes, roles: [:scraper] do
@@ -38,7 +38,7 @@ end
 #   command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
 # end
 
-every :day, :at => '5:00pm', roles: [:kylo_ren] do
+every :day, :at => '5:02pm', roles: [:kylo_ren] do
   command 'echo \'sup\''
 end
 
