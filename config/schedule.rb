@@ -34,12 +34,8 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper, :sdk_scraper_live_s
   command 's3cmd put /home/deploy/sidekiq.log s3://varys-backup/sidekiq_logs/sidekiq_"`hostname -I`"_` date +\'%Y_%m_%d_%H_%M_%S\' `.log; cat /dev/null > /home/deploy/sidekiq.log'
 end
 
-# every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
-#   command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
-# end
-
-every :day, :at => '5:00pm', roles: [:kylo_ren] do
-  command 'echo \'sup\'', :output => '/var/log/cron.log'
+every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
+  command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
 end
 
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
