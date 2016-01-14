@@ -259,6 +259,16 @@ class EpfService
       end
     
     end
+
+    def new_feed_available?
+      current_feed_name = epf_snapshot_urls[:current][:name]
+      current_feed_date = Date.parse(current_feed_name)
+
+      last_feed_date = Date.parse(EpfFullFeed.last.name)
+      # last_feed_date = Date.parse('20320111')
+
+      current_feed_date > last_feed_date
+    end
     
     private
     
