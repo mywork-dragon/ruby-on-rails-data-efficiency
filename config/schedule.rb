@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "/home/deploy/cron.log"
+set :output, "/home/kylo-ren/cron.log"
 
 #this works! keep as a sample
 # every 1.minutes, roles: [:scraper] do
@@ -39,7 +39,7 @@ end
 # end
 
 every :day, :at => '5:00pm', roles: [:kylo_ren] do
-  command 'echo \'sup\'', :output => '/var/log/cron.log'
+  command 'echo \'sup\''
 end
 
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
