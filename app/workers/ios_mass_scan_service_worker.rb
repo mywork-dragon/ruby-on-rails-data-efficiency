@@ -38,7 +38,13 @@ class IosMassScanServiceWorker
   def start_job(ipa_snapshot_job_id, ios_app_id, ipa_snapshot_id)
 
     if Rails.env.production?
-      IosScanMassServiceWorker.perform_async(ipa_snapshot_id)
+      unless batch.nil?
+        batch.jobs do
+          IosScanMassServiceWorker.perform_async(ipa_snapshot_id)
+        end
+      else
+        IosScanMassServiceWorker.perform_async(ipa_snapshot_id)
+      end
     else
       IosScanMassServiceWorker.new.perform(ipa_snapshot_id)
     end

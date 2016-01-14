@@ -34,6 +34,11 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper, :sdk_scraper_live_s
   command 's3cmd put /home/deploy/sidekiq.log s3://varys-backup/sidekiq_logs/sidekiq_"`hostname -I`"_` date +\'%Y_%m_%d_%H_%M_%S\' `.log; cat /dev/null > /home/deploy/sidekiq.log'
 end
 
+# delete old snapshot files older than 1 day on the dark-side machines
+every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
+  command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
+end
+
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
 #   notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
 #   runner "AppStoreSnapshotService.run('#{notes}')"

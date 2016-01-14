@@ -23,6 +23,8 @@ module IosClassification
       snapshot = IpaSnapshot.find(snap_id)
       snapshot.scan_status = :failed
       snapshot.save
+
+      raise e
     end
   end
 
