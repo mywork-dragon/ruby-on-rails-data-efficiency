@@ -38,7 +38,7 @@ end
 #   command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
 # end
 
-every :day, :at => '5:02pm', roles: [:kylo_ren] do
+every :day, :at => '5:10pm', roles: [:kylo_ren] do
   command 'echo \'sup\''
 end
 
