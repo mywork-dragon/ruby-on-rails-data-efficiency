@@ -69,7 +69,8 @@
                 <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
               </td>
               <td>
-                <a href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">www.linkedin.com/{{contact.linkedin}}</a>
+                <p ng-if='!contact.linkedin'> No Information Available </p>
+                <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">www.linkedin.com/{{contact.linkedin}}</a>
               </td>
             </tr>
             </tbody>
