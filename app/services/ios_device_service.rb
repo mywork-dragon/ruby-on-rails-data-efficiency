@@ -604,7 +604,7 @@ class IosDeviceService
       # TODO: make sure these commands work
       impt_keys.each do |key|
         # value = run_command(ssh, "plutil -key #{key} #{File.join(path_to_app, 'Info.plist')}", "Getting key #{key} from the main plist").chomp
-        value = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -name 'Info.plist' -exec plutil -key #{key} '{}' \\\;").chomp
+        value = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -name 'Info.plist' -exec plutil -key #{key} '{}' \\\;", "Getting key #{key} from the main plist").chomp
         bundle_info[key] = value
       end
     end
