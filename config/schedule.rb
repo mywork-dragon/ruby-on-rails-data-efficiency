@@ -36,7 +36,11 @@ end
 
 # delete old snapshot files older than 1 day on the dark-side machines
 every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
-  command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/cron.log'
+  command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' | xargs rm', :output => '/var/log/varys/cron.log'
+end
+
+every 30.minutes, roles: [:kylo_ren] do
+  rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
