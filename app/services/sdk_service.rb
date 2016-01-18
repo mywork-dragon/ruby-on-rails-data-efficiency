@@ -289,7 +289,13 @@ class SdkService
 
 			q = "site:github.com #{query} #{platform}"
 			google_search(q: q).each do |url|
-				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	# if matches format like https://github.com/MightySignal/slackiq
+				begin
+					url_re = Regexp.new(/https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)
+				rescue RegexpError
+					next
+				end
+				
+				if !!(url =~ url_re)	# if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
 					next if rd['message'] == 'Not Found'	# repository is not valid; try the next link
 
