@@ -164,7 +164,7 @@ class AppStoreSnapshotService
   end
   
   def on_complete_run_new_apps(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Run New Apps Completed')
+    Slackiq.notify(webhook_name: :main, status: status, title: 'New iOS apps scraped.')
 
     BusinessEntityService.ios_new_apps # Step 4
   end
