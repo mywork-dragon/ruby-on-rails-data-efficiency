@@ -16,6 +16,16 @@ class EpfService
   
 
   class << self
+
+    # Run this thr
+    def run_itunes_current_if_new_feed_available
+      if new_feed_available?
+        Slackiq.message("A new EPF feed is available!", webhook_name: :main)
+        run_itunes_current
+      else
+        Slackiq.message("There is no new EPF Feed available. Guess we'll try again tomorrow. :", webhook_name: :main)
+      end
+    end
     
     
     # Step 1
