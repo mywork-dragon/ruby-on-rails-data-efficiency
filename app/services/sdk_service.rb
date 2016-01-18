@@ -257,7 +257,7 @@ class SdkService
 			# if the proposed company exists in the app name, it's most likely not a real SDK
 			app_name = get_app_name(platform: platform, snapshot_id: snapshot_id)
 			begin
-				return false if app_name.match(Regexp.new(company), true) # case insensitive
+				return false if app_name.match(Regexp.new(company, true)) # case insensitive
 			rescue RegexpError
 				return false
 			end
