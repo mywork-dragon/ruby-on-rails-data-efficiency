@@ -23,10 +23,18 @@ class AppStoreSnapshotService
 
       batch.jobs do
         
-        IosApp.find_each.with_index do |ios_app, index|
-          li "App ##{index}" if index%10000 == 0
-          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-        end    
+        # IosApp.find_each.with_index do |ios_app, index|
+        #   li "App ##{index}" if index%10000 == 0
+        #   AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        # end    
+
+        IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+          li "App #{index*1000}"
+
+          args = batch.map{ |ios_app| [j.id, ios_app.id] }
+
+          Sidekiq::Client.push_bulk('class' => AppStoreSnapshotServiceWorker, 'args' => args)
+        end
       
       end
 
