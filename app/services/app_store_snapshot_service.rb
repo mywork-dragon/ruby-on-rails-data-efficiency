@@ -2,7 +2,7 @@ class AppStoreSnapshotService
 
   class << self
   
-    def run(notes, options={})
+    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
       
       if AppStoreService.dom_valid?
         puts "\nPassed DOM check!\n".green

@@ -2,14 +2,14 @@ class GooglePlaySnapshotService
   
   class << self
 
-    def run(notes, options={})
+    def run(notes = "Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
 
-    if GooglePlayService.dom_valid?
-      puts "\nPassed DOM check!\n".green
-    else
-      puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
-      return
-    end
+      if GooglePlayService.dom_valid?
+        puts "\nPassed DOM check!\n".green
+      else
+        puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
+        return
+      end
 
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
@@ -18,6 +18,10 @@ class GooglePlaySnapshotService
         GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
 
+    end
+
+    def run_
+      run("Full scrape #{Time.now.strftime("%m/%d/%Y")}")
     end
 
     def apps_per_minute(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
