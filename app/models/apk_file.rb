@@ -1,6 +1,6 @@
 class ApkFile < ActiveRecord::Base
 
-  has_many :apk_snapshot
+  has_many :apk_snapshots
 
   has_attached_file :apk
 
