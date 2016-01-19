@@ -392,10 +392,21 @@ class BusinessEntityService
   
   end
 
-    def on_complete_ios_new_apps(status, options)
+  def on_complete_ios_new_apps(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'New iOS apps linked to companies.')
 
-    EpfService.generate_weekly_newest_csv   #Step 5
+    # Step 5
+    batch = Sidekiq::Batch.new
+      batch.description = "Generate weekly newest CSV" 
+      batch.on(:complete, 'BusinessEntityService#on_complete_generate_weekly_newest_csv')
+
+      batch.jobs do
+        GenerateWeeklyNewestCsvWorker.perform_async
+    end
+  end
+
+  def on_complete_generate_weekly_newest_csv
+    Slackiq.message("Check the number of new apps. If it's a reasonable number (~15K), run a full app store scrape", webhook_name: :main)
   end
 
 end
