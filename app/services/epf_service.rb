@@ -202,7 +202,7 @@ class EpfService
     
     
     def add_apps
-    
+      
       batch = Sidekiq::Batch.new
       batch.description = "EpfServiceAddAppsWorker" 
       batch.on(:complete, 'EpfService#on_complete_add_apps')
