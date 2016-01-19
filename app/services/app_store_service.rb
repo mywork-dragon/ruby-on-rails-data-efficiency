@@ -1,5 +1,7 @@
 class AppStoreService
 
+  include AppAttributeChecker
+
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
@@ -370,6 +372,24 @@ class AppStoreService
     children = @html.css(".app-links").children
     children.select{ |c| c.text.match(/Support\z/) }.first.text
   end
+
+  def dom_valid?
+    attributes = self.attributes(368677368)
+
+    ap attributes
+
+    # ae: attributes expected 
+    ae = 
+      {
+        name: ->(x) { x == 'Uber' },
+        description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+        price: ->(x) { x == 0 },
+        seller: ->(x) { x == 'Uber Technologies, Inc.' },
+        seller_url: ->(x) { x == 'http://uber.com' },
+        categories: ->(x) { x[:primary] == 'Travel' }
+      }    
+
+  end
   
   private
   
@@ -427,6 +447,10 @@ class AppStoreService
         #attributes(id)
         li ""
       end
+    end
+
+    def dom_valid?
+      self.new.dom_valid?
     end
 
   end

@@ -1,5 +1,7 @@
 class GooglePlayService
 
+  include AppAttributeChecker
+
   def attributes(app_identifier)
     ret = {}
 
@@ -275,8 +277,7 @@ class GooglePlayService
 
     ap attributes
 
-    # ae: attributes expected 
-    ae = 
+    attributes_expected = 
       {
         name: ->(x) { x == 'Uber' },
         description: ->(x) { x.include? 'Get a reliable ride in minutes' },
@@ -300,26 +301,7 @@ class GooglePlayService
         developer_google_play_identifier: ->(x) { x.present? },
       }
 
-      ret = true
-
-      ae.each do |expected_attribute_key, expected_attribute_value|
-        attribute_value = attributes[expected_attribute_key]
-
-        pass = ae[expected_attribute_key].call(attribute_value)
-
-        if pass
-          puts "#{expected_attribute_key}: PASS".green
-        else
-          ret = false
-          puts "#{expected_attribute_key}: FAIL".red
-          puts "#{attribute_value}".purple
-        end
-
-        puts ""
-
-      end
-
-    ret
+      all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
   end
 
   class << self
