@@ -253,7 +253,7 @@ class EpfService
   def on_complete_add_apps(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'New apps from EPF added to ios_apps table.')
 
-    AppStoreSnapshotService.run_new_apps  # Step 3
+    AppStoreSnapshotService.run_new_apps("Run new apps #{Time.now.strftime("%m/%d/%Y")}")  # Step 3
   end
   
 
