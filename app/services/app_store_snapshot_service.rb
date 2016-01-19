@@ -4,6 +4,13 @@ class AppStoreSnapshotService
   
     def run(notes, options={})
       
+      if AppStoreService.dom_valid?
+        puts "\nPassed DOM check!\n".green
+      else
+        puts "\nThe DOM seems invalid. Check the AppStoreService scraping logic. Perhaps the DOM changed?".red
+        return
+      end
+
       j = IosAppSnapshotJob.create!(notes: notes)
 
       #batch = Sidekiq::Batch.new
