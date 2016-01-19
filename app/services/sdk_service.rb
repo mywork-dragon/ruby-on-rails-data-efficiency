@@ -256,8 +256,11 @@ class SdkService
 
 			# if the proposed company exists in the app name, it's most likely not a real SDK
 			app_name = get_app_name(platform: platform, snapshot_id: snapshot_id)
-
-			return false if app_name.match(/#{company}/i)
+			begin
+				return false if app_name.match(Regexp.new(company, true)) # case insensitive
+			rescue RegexpError
+				return false
+			end
 
 			begin
 			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
@@ -286,7 +289,13 @@ class SdkService
 
 			q = "site:github.com #{query} #{platform}"
 			google_search(q: q).each do |url|
-				if !!(url =~ /https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)	# if matches format like https://github.com/MightySignal/slackiq
+				begin
+					url_re = Regexp.new(/https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)
+				rescue RegexpError
+					next
+				end
+				
+				if !!(url =~ url_re)	# if matches format like https://github.com/MightySignal/slackiq
 					rd = GithubService.get_repo_data(url)
 					next if rd['message'] == 'Not Found'	# repository is not valid; try the next link
 

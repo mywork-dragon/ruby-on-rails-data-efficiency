@@ -250,7 +250,7 @@ class IosDeviceService
 
     run_command(ssh, 'killall AppStore', 'Restarting AppStore')
     run_command(ssh, 'rm -f open_app.cy', 'Deleting old open_app.cy')
-    run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"https://itunes.apple.com/#{country_code}/app/id#{app_identifier}\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
+    run_command(ssh, "echo '[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@\"itms-apps://itunes.apple.com/#{country_code}/app/id#{app_identifier}?mt=8\"]]' > open_app_in_app_store.cy", 'Adding open_app_in_app_store.cy')
     run_command(ssh, "echo '[[SBUIController sharedInstance] clickedMenuButton];' > press_home_button.cy", 'Adding press_home_button.cy')
     open_app_in_app_store(ssh)
 
@@ -426,17 +426,29 @@ class IosDeviceService
     return @decrypted_file if @decrypted_file
 
     bundle_info = extract_bundle_info(ssh, app_info)
-    executable = bundle_info['CFBundleExecutable']
 
     outfile = "#{@unique_id}.decrypted"
 
-    raise "No executable name found" if !executable
-
     print_display_status(ssh, :start_decrypt)
+
+    run_command(ssh, "rm *.decrypted", 'remove any leftover decrypted files')
+    num_execs = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -perm 755 -type f -not -name '*.*' | wc -l", 'see how many executable files are in app').chomp
+
+    decrypt_command = if num_execs == '1'
+      puts "#{@unique_id}: Found 1 executable"
+      "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -perm 755 -type f -not -name '*.*' -exec /bin/bash -c \"DYLD_INSERT_LIBRARIES=/var/root/dumpdecrypted.dylib '{}' mach-o decryption dumper\" \\\;"
+    else
+      puts "#{@unique_id}: Found other number of executables: #{num_execs}"
+
+      executable = bundle_info['CFBundleExecutable']
+      raise "No executable name found" if !executable
+
+      "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper"
+    end
 
     begin
       Timeout::timeout(30) {
-        run_command(ssh, "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper", "Use dumpdecrypted to decrypt")        
+        run_command(ssh, decrypt_command, "Use dumpdecrypted to decrypt")
       }
     rescue Timeout::Error
       pids = run_command(ssh, "ps aux | grep 'decryption dumper' | grep -v grep | awk '{print $2}'", 'Get the hanging dumpdecrypted pids').chomp
@@ -446,8 +458,7 @@ class IosDeviceService
     end
 
     # move it to a non-spaced name for scp'ing later (combo of sh + scp messes up with spaces)
-
-    run_command(ssh, "mv #{Shellwords.escape(executable)}.decrypted #{outfile}", 'move it to a name without spaces for scp\'ing')
+    run_command(ssh, "find . -maxdepth 1 -name '*.decrypted' -exec mv '{}' #{outfile} \\\;", 'move it to a name without spaces for scp\'ing')
 
     # use system scp because it's much faster
     puts "Starting download"
@@ -464,15 +475,6 @@ class IosDeviceService
     end
 
     @decrypted_file = "#{TEMP_DIRECTORY}/#{outfile}"
-  end
-
-  # for now, just move decrypted executable (revisit later)
-  def move_ipa(ssh, app_info)
-    decrypted_file = get_decrypted_exec(ssh, app_info)
-    
-    `cp #{decrypted_file} #{DECRYPTED_FOLDER}`
-
-    "#{DECRYPTED_FOLDER}/#{decrypted_file}"
   end
 
   # execute any of the dump status commands against the AppStore
@@ -557,50 +559,52 @@ class IosDeviceService
   # Some apps have frameworks folder. Returns string of them or nil if non available
   def get_listed_frameworks(ssh, app_info)
 
-    resp = run_command(ssh, "[ -d #{app_info[:path]}/#{app_info[:name_escaped]}.app/Frameworks ] && echo 'exists' || echo 'dne'", 'check if Frameworks folder exists').chomp
+    resp = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -mindepth 1 -maxdepth 1 -type d -name 'Frameworks' | wc -l", 'check if Frameworks folder exists').chomp
 
-    return nil if resp != 'exists'
+    return nil unless resp == '1'
 
-    frameworks = run_command(ssh, "ls -a #{app_info[:path]}/#{app_info[:name_escaped]}.app/Frameworks/ | grep .framework | cut -d '.' -f1", 'get frameworks in Frameworks folder')
-
-
+    frameworks = run_command(ssh, "find #{File.join(app_info[:path], '*.app', 'Frameworks')} -maxdepth 1 -name '*.framework' | awk -F '/' '{print $NF}' | cut -d '.' -f1", 'Get all the frameworks in the Frameworks folder')
 
     frameworks.chomp if !frameworks.nil? && !frameworks.chomp.empty?
   end
 
   ################ not used currently ################
-  def headers_using_classdump_dyld(ssh, app_info)
+  # def headers_using_classdump_dyld(ssh, app_info)
 
-    puts "classdump-dyld #{app_info[:path]}/#{app_info[:name_escaped]}.app/ > #{app_info[:name_escaped]}.classdumpdylib"
+  #   puts "classdump-dyld #{app_info[:path]}/#{app_info[:name_escaped]}.app/ > #{app_info[:name_escaped]}.classdumpdylib"
 
-    puts "/var/root/#{app_info[:name]}.classdumpdylib"
+  #   puts "/var/root/#{app_info[:name]}.classdumpdylib"
 
-    run_command(ssh, "classdump-dyld #{app_info[:path]}/#{app_info[:name_escaped]}.app/ > #{app_info[:name_escaped]}.classdumpdylib", 'run classdump-dyld')
+  #   run_command(ssh, "classdump-dyld #{app_info[:path]}/#{app_info[:name_escaped]}.app/ > #{app_info[:name_escaped]}.classdumpdylib", 'run classdump-dyld')
 
-    # SCP does it's own escaping...so don't use escaped name
-    Net::SCP.download!(@device.ip, DEVICE_USERNAME, "/var/root/#{app_info[:name]}.classdumpdylib", DECRYPTED_FOLDER, ssh: { password: DEVICE_PASSWORD })
+  #   # SCP does it's own escaping...so don't use escaped name
+  #   Net::SCP.download!(@device.ip, DEVICE_USERNAME, "/var/root/#{app_info[:name]}.classdumpdylib", DECRYPTED_FOLDER, ssh: { password: DEVICE_PASSWORD })
 
-    return "#{DECRYPTED_FOLDER}/#{app_info[:name]}.classdumpdylib"
-  end
+  #   return "#{DECRYPTED_FOLDER}/#{app_info[:name]}.classdumpdylib"
+  # end
 
   def extract_bundle_info(ssh, app_info)
 
     return @bundle_info if @bundle_info
 
     # get defaults in Info.plist
-    path_to_app = "#{app_info[:path]}/#{app_info[:name_escaped]}.app"
+    # path_to_app = "#{app_info[:path]}/#{app_info[:name_escaped]}.app"
 
     impt_keys = %w(CFBundleExecutable CFBundleShortVersionString)
 
-    run_command(ssh, "plutil -convert json #{File.join(path_to_app, 'Info.plist')}", 'Converting plist to json', "Converted 1 files to json format")
+    # run_command(ssh, "plutil -convert json #{File.join(path_to_app, 'Info.plist')}", 'Converting plist to json', "Converted 1 files to json format")
+
+    run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -name 'Info.plist' -exec plutil -convert json '{}' \\\;", 'Converting plist to json', 'Converted 1 files to json format')
     begin
-      bundle_info = JSON.parse(run_command(ssh, "cat #{File.join(path_to_app, 'Info.json')}", 'Echoing json plist file').chomp)
+      # bundle_info = JSON.parse(run_command(ssh, "cat #{File.join(path_to_app, 'Info.json')}", 'Echoing json plist file').chomp)
+      bundle_info = JSON.parse(run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -name 'Info.json' -exec cat '{}' \\\;", 'Echoing json plist file').chomp)
     rescue JSON::ParserError => e
       # go with backup method of extracting important keys one by one
       bundle_info = {}
       # TODO: make sure these commands work
       impt_keys.each do |key|
-        value = run_command(ssh, "plutil -key #{key} #{File.join(path_to_app, 'Info.plist')}", "Getting key #{key} from the main plist").chomp
+        # value = run_command(ssh, "plutil -key #{key} #{File.join(path_to_app, 'Info.plist')}", "Getting key #{key} from the main plist").chomp
+        value = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -name 'Info.plist' -exec plutil -key #{key} '{}' \\\;", "Getting key #{key} from the main plist").chomp
         bundle_info[key] = value
       end
     end
@@ -613,132 +617,38 @@ class IosDeviceService
 
     extra_plist_directories.each do |dir|
 
-      res = run_command(ssh, "[ -d #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/ ] && [ -f #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.strings ] && echo 'exists'", "Seeing if #{dir} and InfoPlist.strings exist")
+      res = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 2 -name 'InfoPlist.strings' -path '*/#{dir}/*' | wc -l", "Seeing if #{dir} has an InfoPlist.strings file")
 
-      if res && res.chomp == 'exists'
-        run_command(ssh, "plutil -convert json #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.strings", 'Converting plist to json', "Converted 1 files to json format")
+      if res && res.chomp == '1'
+        run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 2 -name 'InfoPlist.strings' -path '*/#{dir}/*' -exec plutil -convert json '{}' \\\;", 'Converting plist to json', 'Converted 1 files to json format')
 
         begin
-          more_data = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.json", 'Echoing json plist file'))
+          more_data = JSON.parse(run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 2 -name 'InfoPlist.json' -path '*/#{dir}/*' -exec cat '{}' \\\;").chomp)
         rescue
           more_data = {}
         end
 
         bundle_info.merge!(more_data)
       end
+
+      # res = run_command(ssh, "[ -d #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/ ] && [ -f #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.strings ] && echo 'exists'", "Seeing if #{dir} and InfoPlist.strings exist")
+
+      # if res && res.chomp == 'exists'
+      #   run_command(ssh, "plutil -convert json #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.strings", 'Converting plist to json', "Converted 1 files to json format")
+
+      #   begin
+      #     more_data = JSON.parse(run_command(ssh, "cat #{app_info[:path]}/#{app_info[:name_escaped]}.app/#{dir}/InfoPlist.json", 'Echoing json plist file'))
+      #   rescue
+      #     more_data = {}
+      #   end
+
+      #   bundle_info.merge!(more_data)
+      # end
     end
 
     # assign to @json for caching and return it
     @bundle_info = bundle_info
   end
-
-  # deletes all the installed apps
-  # TODO: delete this
-  # def delete_applications(ssh)
-
-  #   # template the scripts with the app name and copy them over
-  #   ios_version = @device.ios_version
-    
-  #   files = 
-  #     if ios_version == '8.4'
-  #       %w(
-  #         1_select_general.cy                                  
-  #         2_select_usage.cy                   
-  #         3_select_storage.cy                 
-  #         4_select_app.cy
-  #         5_select_delete.cy 
-  #         6_confirm_delete.cy
-  #         )
-  #     elsif ios_version == '9.0.2'
-  #       %w(
-  #         1_delete_app_ios9.cy
-  #         2_ensure_uninstalled_ios9.cy
-  #         3_unlock_device_ios9.cy
-  #         )
-  #     else
-  #       raise 'Device is not a valid iOS version'
-  #     end
-
-  #   apps = run_command(ssh, "ls #{APPS_INSTALL_PATH}", "Get installed apps")
-
-  #   return "Nothing to do" if apps == nil
-
-  #   apps = apps.chomp.split
-
-  #   if ios_version == '8.4'
-
-  #     # template files
-  #     files.each do |fname|
-  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % ["irrelevant"]
-  #       ssh.exec! "echo '#{script}' > #{fname}"
-  #     end
-
-  #     # for each time, go through the app store
-  #     apps.length.times do |i|
-  #       puts "Deleting app #{i+1}"
-
-  #       # make sure Preference page is loaded and on first page
-  #       run_command(ssh, "open com.apple.Preferences", 'Open preference before resetting it')
-  #       sleep(1)
-  #       run_command(ssh, "killall Preferences", 'Kill Preferences while open')
-  #       sleep(1)
-  #       run_command(ssh, "open com.apple.Preferences", 'Open preference after killing it')
-
-  #       files.each do |fname|
-  #         sleep(2)
-  #         resp = run_command(ssh, "cycript -p Preferences #{fname}", "running cycript file #{fname}")
-  #       end
-  #     end
-
-  #   else
-
-  #     # get the bundle ids of all the apps
-  #     bundle_ids = apps.reduce([]) do |memo, dir|
-  #       bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
-
-  #       if bundle_id
-  #         puts "found bundle_id: #{bundle_id}"
-  #         memo << bundle_id.chomp
-  #       end
-
-  #       memo
-  #     end
-
-  #     # template the file
-  #     files.each do |fname|
-  #       script = File.open("#{DELETE_APP_STEPS_DIR}/#{fname}", 'rb') { |f| f.read } % [bundle_ids.join(",")]
-  #       ssh.exec! "echo '#{script}' > #{fname}"
-  #     end
-
-  #     # run the files
-  #     
-  #     resp = run_command(ssh, "cycript -p SpringBoard 1_delete_app_ios9.cy", "running cycript file 1_delete_app_ios9.cy")
-
-  #     t = Time.now
-  #     while Time.now - t < 300 # 120 seconds max
-  #       sleep(2)
-  #       puts "ensuring apps are gone"
-  #       resp = run_command(ssh, "cycript -p SpringBoard 2_ensure_uninstalled_ios9.cy", 'make sure all the apps are uninstalled')
-  #       if resp && resp.include?('all gone')
-  #         break
-  #       else
-  #         puts resp.chomp if resp
-  #       end
-  #     end
-  #     puts Time.now - t
-  #     
-  #     # sleep(2 * bundle_ids.length) # sleep preportionally to allow kill time
-  #     puts "#3"
-  #     run_command(ssh, "killall SpringBoard", "killing springboard")
-  #     sleep(13)
-  #     puts "#4"
-  #     resp = run_command(ssh, "cycript -p SpringBoard 3_unlock_device_ios9.cy", "unlocking the device")
-  #     sleep(2)
-  #     puts "Done"
-
-  #   end
-
-  # end
 
   def delete_applications_v2(ssh)
     files = %w(1_delete_app_ios9.cy 2_ensure_uninstalled_ios9.cy 3_unlock_device_ios9.cy)
@@ -750,16 +660,10 @@ class IosDeviceService
     apps = apps.chomp.split
 
     # get the bundle ids of all the apps
-    bundle_ids = apps.reduce([]) do |memo, dir|
-      bundle_id = run_command(ssh, "plutil -key MCMMetadataIdentifier #{File.join(APPS_INSTALL_PATH, dir, '.com.apple.mobile_container_manager.metadata.plist')}", "Get an installed apps bundle id")
 
-      if bundle_id
-        puts "found bundle_id: #{bundle_id}"
-        memo << bundle_id.chomp
-      end
-
-      memo
-    end
+    bundle_ids = run_command(ssh, "find #{APPS_INSTALL_PATH} -maxdepth 2 -name '.com.apple.mobile_container_manager*' -exec plutil -key MCMMetadataIdentifier '{}' \\\;", 'Get installed bundle ids') || ''
+    bundle_ids = bundle_ids.chomp.split(/\n/)
+    puts "Found ids: #{bundle_ids.join(', ')}"
 
     # template the file
     files.each do |fname|
