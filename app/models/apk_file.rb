@@ -6,4 +6,6 @@ class ApkFile < ActiveRecord::Base
 
   validates_attachment_file_name :apk, :matches => [/apk\Z/]
 
+  has_attached_file :class_dump
+
 end

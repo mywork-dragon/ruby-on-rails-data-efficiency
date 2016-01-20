@@ -141,7 +141,13 @@ module ApkWorker
       apk_snap.status = :success
       # apk_snap.auth_token = nil
       
-      af = ApkFile.create!(apk: open(file_name))
+      # af = ApkFile.create!(apk: open(file_name))  # jlew -- don't upload entire thing anymore
+
+      # jlew -- save dex
+      af = ApkFile.new
+      af.class_dump = class_dump(file_name)
+      af.class_dump_file_name = "#{aa.app_identifier}.txt"
+      af.save!
 
       apk_snap.apk_file = af
 
@@ -186,6 +192,14 @@ module ApkWorker
     GoogleAccount.devices[d_name]
   end
 
-
+  # Gets a class dump file 
+  # (Uses the dex file to do so)
+  # @author Jason lew
+  def class_dump(apk_file_name)
+    apk = Android::Apk.new(apk_file_path)
+    dex = apk.dex
+    class_dump_s = dex.classes.map(&:name).join("\n") # class dump as a string
+    StringIO.new(class_dump_s)
+  end
 
 end
