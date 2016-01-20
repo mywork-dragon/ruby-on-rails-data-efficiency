@@ -39,6 +39,8 @@ module PackageSearchWorker
 
       # puts "#{snap_id} => downloaded [#{a.real}]"
 
+      # TODO: jlew -- download class_dump file instead, and run similar line-by-line parsing to pull out meaningful classes
+
       dex = apk.dex
       packages = dex.classes.map do |cls|
         next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
