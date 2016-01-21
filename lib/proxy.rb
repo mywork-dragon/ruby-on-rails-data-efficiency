@@ -171,9 +171,9 @@ class Proxy
   # Convenience method to get the Response object from just a url
   # @author Osman Khwaja
   # @return The response (CurbFu::Response::Base)
-  def get_from_url(url, params: {}, headers: {})
+  def get_from_url(url, params: {}, headers: {}, randomize_user_agent: true)
     uri = URI(url)
-    get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params))
+    get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), randomize_user_agent: randomize_user_agent)
   end
 
   # from a query string, build the params object
