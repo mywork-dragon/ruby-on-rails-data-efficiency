@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108230319) do
+ActiveRecord::Schema.define(version: 20160121195411) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1268,6 +1268,34 @@ ActiveRecord::Schema.define(version: 20160108230319) do
   add_index "micro_proxies", ["last_used"], name: "index_micro_proxies_on_last_used", using: :btree
   add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
+
+  create_table "ms_lead_emails", force: true do |t|
+    t.string   "email"
+    t.boolean  "flagged",    default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ms_lead_finding_jobs", force: true do |t|
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ms_leads", force: true do |t|
+    t.integer  "ms_lead_finding_job_id"
+    t.string   "name"
+    t.string   "email"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "company"
+    t.text     "website"
+  end
+
+  add_index "ms_leads", ["email"], name: "index_ms_leads_on_email", unique: true, using: :btree
+  add_index "ms_leads", ["ios_sdk_id"], name: "index_ms_leads_on_ios_sdk_id", using: :btree
+  add_index "ms_leads", ["ms_lead_finding_job_id"], name: "index_ms_leads_on_ms_lead_finding_job_id", using: :btree
 
   create_table "oauth_users", force: true do |t|
     t.string   "provider"
