@@ -98,11 +98,15 @@ gem 'bcrypt', '3.1.10'
 
 gem 'minitest-fail-fast', '0.0.1'
 
+<<<<<<< HEAD
 gem 'whois', '3.5.9'
 
 gem 'text', '1.3.1'
 
 gem 'iso_country_codes', '0.7.1'
+=======
+gem 'apk_downloader'
+>>>>>>> 27931484ecbb0fd2ffddc808d41aa9eabd538b79
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

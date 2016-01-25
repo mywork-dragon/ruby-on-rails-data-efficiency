@@ -267,6 +267,7 @@ GEM
       hashie (>= 1.2.0, < 2.1)
       json (>= 1.7.5, < 1.9.0)
     ruby-protocol-buffers (1.6.1)
+<<<<<<< HEAD
     ruby_apk (0.7.1)
       rubyzip (< 1.0.0)
     ruby_parser (3.7.2)
@@ -276,6 +277,8 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
       nokogumbo (= 1.4.1)
+=======
+>>>>>>> 27931484ecbb0fd2ffddc808d41aa9eabd538b79
     sass (3.2.19)
     sass-rails (4.0.5)
       railties (>= 4.0.0, < 5.0)
@@ -351,7 +354,11 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 4.2.1)
+<<<<<<< HEAD
   apk_downloader (= 1.1.5)
+=======
+  apk_downloader
+>>>>>>> 27931484ecbb0fd2ffddc808d41aa9eabd538b79
   autoprefixer-rails
   awesome_print (= 1.6.1)
   aws-sdk (< 2.0)
