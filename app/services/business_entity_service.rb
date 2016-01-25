@@ -406,7 +406,7 @@ class BusinessEntityService
   end
 
   def on_complete_generate_weekly_newest_csv(status, options)
-    Slackiq.message("Check the number of new apps. If it's a reasonable number (~15K), run a full app store scrape", webhook_name: :main)
+    Slackiq.message("Check the number of new apps. If it's a reasonable number (~15K), run a full app store scrape with `AppStoreSnapshotService.run` on scraper0", webhook_name: :main)
   end
 
 end
