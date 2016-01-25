@@ -38,7 +38,7 @@ class AppStoreSnapshotService
       
       end
 
-      Slackiq.message("Done queing apps (#{ios_app_count}.", webhook_name: :main)
+      Slackiq.message("Done queing apps (#{ios_app_count})", webhook_name: :main)
        
     end
     
