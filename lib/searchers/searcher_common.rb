@@ -16,12 +16,14 @@ module SearcherCommon
 
   class Result
     attr_reader :title
+    attr_reader :subtitle
     attr_reader :url
     attr_reader :summary
     attr_reader :result_num
 
-    def initialize(title:, url:, summary:, result_num:)
+    def initialize(title:, subtitle: , url:, summary:, result_num:)
       @title = title
+      @subtitle = subtitle
       @url = url
       @summary = summary
       @result_num = result_num
