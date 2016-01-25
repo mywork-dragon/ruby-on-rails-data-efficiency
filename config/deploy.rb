@@ -66,7 +66,7 @@ set :darth_vader_queue, %w(ios_live_scan ios_live_scan_test)
 set :kylo_ren_queue, %w(ios_epf_mass_scan ios_mass_scan kylo)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud ios_mass_scan_cloud)
 
-set :whenever_roles, [:scraper, :sdk_scraper, :kylo_ren, :darth_vader, :sdk_scraper_live_scan, :ios_live_scan]
+set :whenever_roles, [:scraper, :scraper_master, :sdk_scraper, :kylo_ren, :darth_vader, :sdk_scraper_live_scan, :ios_live_scan]
 
 set :whenever_identifier, "#{fetch(:application)}"
 
