@@ -28,7 +28,7 @@ class AppStoreSnapshotService
         #   AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
         # end    
 
-        IosApp.find_in_batches(batch_size: 1000).with_index do |batch, index|
+        IosApp.where(display_type: [IosApp.display_types[:normal], IosApp.display_types[:paid]]).find_in_batches(batch_size: 1000).with_index do |batch, index|
           li "App #{index*1000}"
 
           args = batch.map{ |ios_app| [j.id, ios_app.id] }

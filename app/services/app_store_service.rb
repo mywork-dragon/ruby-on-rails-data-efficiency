@@ -101,7 +101,12 @@ class AppStoreService
       url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
       page = Tor.get(url)
       loaded_json = JSON.load(page)
+
+      raise AppDoesNotExist if loaded_json['resultCount'] == 0
+
       loaded_json['results'].first
+    rescue AppDoesNotExist => e
+      raise
     rescue
       le "Could not get JSON for app #{id}"
       nil
@@ -474,6 +479,14 @@ class AppStoreService
   class NotIosApp < StandardError
 
     def initialize(message = "This is not an iOS app")
+      super
+    end
+
+  end
+
+  class AppDoesNotExist < StandardError
+
+    def initialize(message = "This app does not exist. Perhaps it was taken down.")
       super
     end
 
