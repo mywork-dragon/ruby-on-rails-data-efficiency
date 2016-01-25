@@ -43,8 +43,8 @@ every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
-every :day, :at => '11:38pm', roles: [:scraper_master] do
-  rake "epf:run_itunes_current_if_new_feed_available", output: "/home/deploy/epf_run_itunes_current.log"
+every :day, :at => '11:44pm', roles: [:scraper_master] do
+  command "cd varys_current && nohup bundle exec rake epf:run_itunes_current RAILS_ENV=production > ~/epf_run_itunes_current.log &"
 end
 
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
