@@ -35,6 +35,11 @@ class AppStoreSnapshotServiceWorker
         ios_app.save!
         s.delete
         return "Not an iOS app. IosApp marked accordingly."
+      rescue AppStoreService::AppDoesNotExist => e
+        ios_app.display_type = :taken_down
+        ios_app.save!
+        s.delete
+        return "App was taken down. IosApp marked accordingly."
       end
       
       raise 'AppStoreService.attributes is empty' if a.empty?
