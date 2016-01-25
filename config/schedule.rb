@@ -43,6 +43,10 @@ every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
+every :day, :at => '11:33pm', roles: [:scraper] do
+  rake "epf:run_itunes_current_if_new_feed_available", output: "/home/deploy/epf_run_itunes_current.log"
+end
+
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
 #   notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
 #   runner "AppStoreSnapshotService.run('#{notes}')"
