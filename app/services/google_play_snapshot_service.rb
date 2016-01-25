@@ -2,14 +2,14 @@ class GooglePlaySnapshotService
   
   class << self
 
-    def run(notes, options={})
+    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
 
-    if GooglePlayService.dom_valid?
-      puts "\nPassed DOM check!\n".green
-    else
-      puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
-      return
-    end
+      if GooglePlayService.dom_valid?
+        puts "\nPassed DOM check!\n".green
+      else
+        puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
+        return
+      end
 
       j = AndroidAppSnapshotJob.create!(notes: notes)
 

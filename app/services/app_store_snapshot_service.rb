@@ -2,28 +2,43 @@ class AppStoreSnapshotService
 
   class << self
   
-    def run(notes, options={})
+    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
       
+      if AppStoreService.dom_valid?
+        puts "\nPassed DOM check!\n".green
+      else
+        puts "\nThe DOM seems invalid. Check the AppStoreService scraping logic. Perhaps the DOM changed?".red
+        return
+      end
+
       j = IosAppSnapshotJob.create!(notes: notes)
 
-      #batch = Sidekiq::Batch.new
-      #batch.description = "run: #{notes}" 
-      #batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
+      batch = Sidekiq::Batch.new
+      batch.description = "run: #{notes}" 
+      batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
   
       Slackiq.message('Starting to queue apps...', webhook_name: :main)
 
       ios_app_count = IosApp.count
 
-      #batch.jobs do
+      batch.jobs do
         
-        IosApp.find_each.with_index do |ios_app, index|
-          li "App ##{index}" if index%10000 == 0
-          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-        end    
-      
-      #end
+        # IosApp.find_each.with_index do |ios_app, index|
+        #   li "App ##{index}" if index%10000 == 0
+        #   AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
+        # end    
 
-      Slackiq.message("Done queing apps (#{ios_app_count}.", webhook_name: :main)
+        IosApp.where(display_type: [IosApp.display_types[:normal], IosApp.display_types[:paid]]).find_in_batches(batch_size: 1000).with_index do |batch, index|
+          li "App #{index*1000}"
+
+          args = batch.map{ |ios_app| [j.id, ios_app.id] }
+
+          Sidekiq::Client.push_bulk('class' => AppStoreSnapshotServiceWorker, 'args' => args)
+        end
+      
+      end
+
+      Slackiq.message("Done queing apps (#{ios_app_count})", webhook_name: :main)
        
     end
     
@@ -164,7 +179,7 @@ class AppStoreSnapshotService
   end
   
   def on_complete_run_new_apps(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Run New Apps Completed')
+    Slackiq.notify(webhook_name: :main, status: status, title: 'New iOS apps scraped.')
 
     BusinessEntityService.ios_new_apps # Step 4
   end
