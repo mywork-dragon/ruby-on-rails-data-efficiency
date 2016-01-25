@@ -121,6 +121,18 @@ class CocoapodService
 
     end
 
+    def create_email_account
+      data = HTTParty.get('https://randomuser.me/api')
+      user = JSON.load(data.body)['results'][0]['user']
+      email = "#{user['email'].split('@').first}#{rand(0..1000)}@openmailbox.org"
+      password = "thisisapassword"
+      IosEmailAccount.create!(email: email, password: password)
+
+      puts "New Account Created".purple
+      puts "Email: #{email}".blue
+      puts "Password: #{password}".blue
+    end
+
   end
 
   def retry_no_data_on_complete(status, options)
