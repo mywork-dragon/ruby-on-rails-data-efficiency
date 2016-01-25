@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108230319) do
+ActiveRecord::Schema.define(version: 20160121231322) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1087,6 +1087,16 @@ ActiveRecord::Schema.define(version: 20160108230319) do
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
   add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", unique: true, using: :btree
 
+  create_table "ios_sdks_ms_clearbit_leads", force: true do |t|
+    t.integer  "ios_sdk_id"
+    t.integer  "ms_clearbit_lead_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_sdks_ms_clearbit_leads", ["ios_sdk_id"], name: "index_ios_sdk_id", using: :btree
+  add_index "ios_sdks_ms_clearbit_leads", ["ms_clearbit_lead_id", "ios_sdk_id"], name: "index_clearbit_id_ios_sdk_id", using: :btree
+
   create_table "ios_word_occurences", force: true do |t|
     t.string   "word"
     t.integer  "count"
@@ -1268,6 +1278,18 @@ ActiveRecord::Schema.define(version: 20160108230319) do
   add_index "micro_proxies", ["last_used"], name: "index_micro_proxies_on_last_used", using: :btree
   add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
+
+  create_table "ms_clearbit_leads", force: true do |t|
+    t.text     "first_name"
+    t.text     "last_name"
+    t.text     "full_name"
+    t.text     "title"
+    t.text     "email"
+    t.text     "linkedin"
+    t.text     "json_content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "oauth_users", force: true do |t|
     t.string   "provider"
