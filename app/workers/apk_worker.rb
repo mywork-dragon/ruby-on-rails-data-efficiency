@@ -146,7 +146,7 @@ module ApkWorker
       # jlew -- save dex
       af = ApkFile.new
       af.class_dump = class_dump(file_name)
-      af.class_dump_file_name = "#{aa.app_identifier}.txt"
+      af.class_dump_file_name = "#{aa.app_identifier}.classdump.txt"
       af.save!
 
       apk_snap.apk_file = af
