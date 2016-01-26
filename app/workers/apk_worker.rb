@@ -195,7 +195,7 @@ module ApkWorker
   # Gets a class dump file 
   # (Uses the dex file to do so)
   # @author Jason lew
-  def class_dump(apk_file_name)
+  def class_dump(apk_file_path)
     apk = Android::Apk.new(apk_file_path)
     dex = apk.dex
     class_dump_s = dex.classes.map(&:name).join("\n") # class dump as a string
