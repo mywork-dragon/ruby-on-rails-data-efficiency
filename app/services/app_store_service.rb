@@ -1,5 +1,7 @@
 class AppStoreService
 
+  include AppAttributeChecker
+
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
@@ -99,7 +101,12 @@ class AppStoreService
       url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
       page = Tor.get(url)
       loaded_json = JSON.load(page)
+
+      raise AppDoesNotExist if loaded_json['resultCount'] == 0
+
       loaded_json['results'].first
+    rescue AppDoesNotExist => e
+      raise
     rescue
       le "Could not get JSON for app #{id}"
       nil
@@ -370,6 +377,40 @@ class AppStoreService
     children = @html.css(".app-links").children
     children.select{ |c| c.text.match(/Support\z/) }.first.text
   end
+
+  def dom_valid?
+    attributes = self.attributes(368677368)
+
+    ap attributes
+
+    attributes_expected = 
+      {
+        name: ->(x) { x == 'Uber' },
+        description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+        version: ->(x) { x.to_i >= 2 },
+        price: ->(x) { x == 0 },
+        seller_url: ->(x) { x == 'https://uber.com' },
+        categories: ->(x) { x[:primary] == 'Travel'},
+        size: ->(x) { x.to_i > 40e6 },
+        seller: ->(x) { x == 'Uber Technologies, Inc.' },
+        by: ->(x) { x == 'Uber Technologies, Inc.' },
+        developer_app_store_identifier: ->(x) { x == 368677371 },
+        ratings: ->(x) { x[:all][:stars] > 3.0 && x[:all][:count] > 25e3 },
+        recommended_age: ->(x) { x == '4+' },
+        required_ios_version: ->(x) { x.split('.').first.to_i > 2},
+        first_released: -> (x) { x == Date.new(2010, 5, 21) },
+        screenshot_urls: -> (x) { x.first.include?('Purple') },
+        support_url: -> (x) { x.include?('support.uber') },
+        released: -> (x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2016 },
+        languages: -> (x) { (['English', 'Japanese', 'Italian'] - x).empty? },
+        icon_urls: -> (x) { x.values.first.include?('Purple') },
+        copywright: -> (x) { x.include?('©') }, 
+        seller_url_text: -> (x) { x.include?('Uber Technologies') },
+        support_url_text: -> (x) { x.include?('Support') }
+      }    
+
+    all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
+  end
   
   private
   
@@ -429,11 +470,23 @@ class AppStoreService
       end
     end
 
+    def dom_valid?
+      self.new.dom_valid?
+    end
+
   end
 
   class NotIosApp < StandardError
 
     def initialize(message = "This is not an iOS app")
+      super
+    end
+
+  end
+
+  class AppDoesNotExist < StandardError
+
+    def initialize(message = "This app does not exist. Perhaps it was taken down.")
       super
     end
 
