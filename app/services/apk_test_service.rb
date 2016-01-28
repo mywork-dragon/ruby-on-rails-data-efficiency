@@ -9,17 +9,28 @@ class ApkTestService
 	    # render json: data
 	  end
 
-	  def android_start_scan(id, local: true)
+
+	  # type: :single or :mass
+	  def android_start_scan(id, local: true, type: :mass)
+	  	case type
+			when :mass
+			  worker = ApkSnapshotServiceWorker
+			when :single
+				worker = ApkSnapshotServiceSingleWorker
+			else
+			  raise "Type must be :mass or :single"
+			end
+
 	    aa = AndroidApp.find(id)
 	    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
 
 	    if local
-	    	ApkSnapshotServiceSingleWorker.new.perform(job_id, bid, aa.id)
+	    	worker.new.perform(job_id, nil, aa.id)
 	    else
 	    	batch = Sidekiq::Batch.new
 	   	 	bid = batch.bid
 	    	batch.jobs do
-	      	ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
+	      	worker.perform_async(job_id, bid, aa.id)
 	    	end
 	    end
 	    
