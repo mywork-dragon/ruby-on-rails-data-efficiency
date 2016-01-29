@@ -115,6 +115,10 @@ if run_tests
   if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
     abort
   end
+
+elsif %w(web sdk_scraper_live_scan darth_vader ios_live_scan).include?(stage)
+  puts "Stage #{stage} is a live production stage. You're not allowed to bypass tests.".red
+  abort
 end
 
 puts ""
