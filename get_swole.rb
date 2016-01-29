@@ -8,6 +8,20 @@ rescue => e
   abort
 end
 
+arg0 = ARGV[0]
+ARGV.clear
+
+run_tests = true
+
+if arg0
+  if arg0 == '--skip-tests'
+    run_tests = false
+  else
+    puts "Illegal argument.".red
+    abort
+  end
+end
+
 swole_string = %q(
 
  ___  _                 _                    _                     _       _ 
@@ -86,19 +100,21 @@ if !`git status -uno`.include?("nothing to commit")
   abort
 end
 
-# run tests and abort on failure
-test_cmd = 'bundle exec rake test:all'
-last_line = nil
-IO.popen(test_cmd).each do |line|
-  puts line
-  last_line = line
-end.close # Without close, you won't be able to access $?
- 
-#puts "The command's exit code was: #{$?.exitstatus}"
+if run_tests
+  # run tests and abort on failure
+  test_cmd = 'bundle exec rake test:all'
+  last_line = nil
+  IO.popen(test_cmd).each do |line|
+    puts line
+    last_line = line
+  end.close # Without close, you won't be able to access $?
+   
+  #puts "The command's exit code was: #{$?.exitstatus}"
 
-last_line.split(", ")
-if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
-  abort
+  last_line.split(", ")
+  if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
+    abort
+  end
 end
 
 puts ""
