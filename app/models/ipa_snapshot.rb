@@ -14,7 +14,7 @@ class IpaSnapshot < ActiveRecord::Base
   has_many :sdk_packages, through: :sdk_packages_ipa_snapshots
 
   enum download_status: [:starting, :retrying, :cleaning, :complete]
-  enum scan_status: [:scanning, :scanned, :failed, :bad_arch]
+  enum scan_status: [:scanning, :scanned, :failed, :arch_issue]
 
   before_create :set_good_as_of_date
 
