@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160128223050) do
+ActiveRecord::Schema.define(version: 20160129190541) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -935,6 +935,7 @@ ActiveRecord::Schema.define(version: 20160128223050) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "deprecated", default: false
   end
 
   add_index "ios_device_arches", ["name"], name: "index_ios_device_arches_on_name", using: :btree
