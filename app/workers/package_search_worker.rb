@@ -19,37 +19,56 @@ module PackageSearchWorker
     begin
       if Rails.env.production?
         apk_snap = ApkSnapshot.find(snap_id)
-        apk_snap.scan_version = :new_years_version
-        apk_snap.save
-        file_name = apk_snap.apk_file.apk.url
-        file_size = apk_snap.apk_file.apk.size
-        b = Benchmark.measure { 
-        s3_file = open(file_name)}
-        c = Benchmark.measure {
-        apk = Android::Apk.new(s3_file)}
+        apk_file = apk_snap.apk_file
+
+        if apk_file.apk.exists?   # old version, where the ENTIRE APK was stored...
+          version = :apk
+          file_name = apk_snap.apk_file.apk.url
+          file_size = apk_snap.apk_file.apk.size
+          b = Benchmark.measure { 
+          s3_file = open(file_name)}
+          c = Benchmark.measure {
+          apk = Android::Apk.new(s3_file)}
+        else
+          version = :class_dump
+        end
       elsif Rails.env.development?
-        file_name = '../../Documents/sample_apps/' + app_identifier + '.apk'
-        apk = Android::Apk.new(file_name)
+        raise "Not implemented yet"
       end
 
-      # puts "#{snap_id}: Download time: #{b.real}"
-      # puts "#{snap_id}: Download rate: #{(file_size.to_f/1000000.0)/b.real} mb/s"
-      # puts "#{snap_id}: File Size: #{(file_size.to_f/1000000.0)} mb"
-      # puts "#{snap_id}: Unpack time: #{c.real}"
+      if version == :apk
+        dex = apk.dex
+        packages = dex.classes.map do |cls|
+          next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
+          cls = cls.name.split('/')
+          cls.pop
+          cls = cls.join('.')
+          cls.slice!(0) if cls.slice(0) == 'L'
+          cls
+        end.compact.uniq
+      elsif version == :class_dump
+        class_dump = apk_file.class_dump
+        raise NoClassDump if !class_dump.exists?
+        class_dump_file = open(class_dump.url)
+        
+        packages = []
 
-      # puts "#{snap_id} => downloaded [#{a.real}]"
+        File.foreach(filename) do |line|
+          next if line.blank? || line.downcase.include?(app_identifier.split('.')[1].downcase)
 
+          package = line
+
+          package.sub!(/\AL/, '') # remove leading L
+          
+
+        end
+
+        packages = packages.compact.uniq
+
+
+      end
+      
       # TODO: jlew -- download class_dump file instead, and run similar line-by-line parsing to pull out meaningful classes
-
-      dex = apk.dex
-      packages = dex.classes.map do |cls|
-        next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
-        cls = cls.name.split('/')
-        cls.pop
-        cls = cls.join('.')
-        cls.slice!(0) if cls.slice(0) == 'L'
-        cls
-      end.compact.uniq
 
 
       b = Benchmark.measure do 
@@ -69,6 +88,14 @@ module PackageSearchWorker
       apk_snap.scan_status = :scan_success
       apk_snap.last_updated = DateTime.now
       apk_snap.save!
+    end
+
+  end
+
+  class NoClassDump < StandardError
+
+    def initialize(message = "A class dump does not exist for this ApkFile.")
+      super
     end
 
   end
