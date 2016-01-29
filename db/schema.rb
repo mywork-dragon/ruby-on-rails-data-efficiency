@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129190541) do
+ActiveRecord::Schema.define(version: 20160129232035) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1171,7 +1171,7 @@ ActiveRecord::Schema.define(version: 20160129190541) do
     t.text     "lookup_content"
   end
 
-  add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
+  add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
   add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
