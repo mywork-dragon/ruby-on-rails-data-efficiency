@@ -11,6 +11,9 @@ module IosClassification
       snapshot.scan_status = :scanned
       snapshot.save
 
+      # invalidate bad scans
+      invalidate_bad_scans(snapshot)
+
       # sdks
       puts "finished classify"
     rescue => e
@@ -26,6 +29,12 @@ module IosClassification
 
       raise e
     end
+  end
+
+  def invalidate_bad_scans(snapshot)
+    # Invalidate ones affected by https://github.com/MightySignal/varys/issues/401
+    # Within window of bug, set all the scanned ones to ignored
+    IpaSnapshot.where(ios_app_id: snapshot.ios_app_id, scan_status: IpaSnapshot.scan_statuses[:scanned]).where('created_at < ?', DateTime.strptime('Fri Jan 29 14:32:49 2016 -0800', '%a %b %d %H:%M:%S %Y %z')).where('created_at > ?', DateTime.strptime('Thu Jan 7 09:55:33 2016 -0800', '%a %b %d %H:%M:%S %Y %z')).update_all(scan_status: IpaSnapshot.scan_statuses[:ignored])
   end
 
   def bundle_prefixes
