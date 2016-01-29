@@ -730,7 +730,7 @@ class IosDeviceService
 
   def class_dump(src, dest)
     arch = @device.class_dump_arch || "arm64"
-    accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.chomp.split("\n")
+    accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.split
     arch_flag = accepted_arches.include?(arch) ? "--arch #{arch}" : "" # let class-dump decide if not
     `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' > \'#{dest}\'`
   end
