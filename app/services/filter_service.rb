@@ -291,8 +291,6 @@ class FilterService
       #run the main query
       results = AndroidApp.instance_eval("self.#{query}")
 
-      puts "query: #{query}"
-
       {results_count: results_count, results: results}
     end
     
