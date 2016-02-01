@@ -123,3 +123,49 @@ end
 
 puts ""
 system("bundle exec cap #{stage} deploy")
+
+# Post deployment to Slack
+url = 'https://hooks.slack.com/services/T02T20A54/B0KTNR7RT/O2jPFin7ZGstDJSvJCPFyn9'  # the webhook for the deployment channel
+user = `echo $USER`
+title = "`#{user}` deployed `#{branch}` to `#{stage}`."
+
+fields =  [
+            {
+              'title' => 'Who',
+              'value' => user,
+              'short' => true
+            },
+            {
+              'title' => 'Branch',
+              'value' => branch,
+              'short' => true
+            },
+            {
+              'title' => 'Stage',
+              'value' => stage,
+              'short' => true
+            }
+          ]
+
+attachments = [
+                {
+                  'fallback' => description,
+
+                  'color' => '#00ff66',
+
+                  'title' => title,
+
+                  # 'text' => description,
+
+                  'fields' => fields,
+                }
+              ]
+
+body = {attachments: attachments}.to_json
+
+uri = URI(url)
+req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+req.body = body
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
