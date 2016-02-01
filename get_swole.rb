@@ -161,22 +161,12 @@ fields =  [
             },
             {
               'title' => 'Commit Hash',
-              'value' => commit_hash,
+              'value' => "<https://github.com/MightySignal/varys/commit/#{commit_hash}|#{commit_hash}>",
               'short' => true
-            },
-            {
-              'title' => 'Commit Link',
-              'value' => "https://github.com/MightySignal/varys/commit/#{commit_hash}",
-              'short' => true
-            },
+            }
             {
               'title' => 'Commit Message',
               'value' => commit_message,
-              'short' => true
-            },
-            {
-              'title' => 'Test Link',
-              'value' => "<http://www.foo.com|www.foo.com>",
               'short' => true
             }
           ]
