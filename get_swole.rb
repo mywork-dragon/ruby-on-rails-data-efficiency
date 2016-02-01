@@ -149,7 +149,7 @@ fields =  [
 
 attachments = [
                 {
-                  'fallback' => description,
+                  'fallback' => title,
 
                   'color' => '#00ff66',
 
