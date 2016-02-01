@@ -178,7 +178,7 @@ attachments = [
                 {
                   'fallback' => title,
 
-                  'color' => '#00ff66',
+                  'color' => '#6600FF',
 
                   'title' => title,
 
