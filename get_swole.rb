@@ -11,7 +11,11 @@ gems.each do |gem_name|
     abort
   end
 end
-
+=begin
+  
+rescue Exception => e
+  
+end
 arg0 = ARGV[0]
 ARGV.clear
 
@@ -127,6 +131,11 @@ end
 
 puts ""
 system("bundle exec cap #{stage} deploy")
+=end
+
+user = 'kanye'
+branch = 'mastah'
+stage = 'cr8zy_servers'
 
 # Post deployment to Slack
 url = 'https://hooks.slack.com/services/T02T20A54/B0KTNR7RT/O2jPFin7ZGstDJSvJCPFyn9'  # the webhook for the deployment channel
@@ -170,7 +179,6 @@ body = {attachments: attachments}.to_json
 uri = URI(url)
 req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
 req.body = body
-res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
   http.request(req)
-  http.use_ssl = true
 end
