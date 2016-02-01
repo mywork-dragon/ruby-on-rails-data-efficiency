@@ -9,6 +9,7 @@ gems.each do |gem_name|
     puts "\nYou need to install the #{gem_name} gem to get swole."
     puts "gem install #{gem_name}"
     abort
+  end
 end
 
 arg0 = ARGV[0]
