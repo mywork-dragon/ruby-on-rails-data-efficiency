@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160201195827) do
+ActiveRecord::Schema.define(version: 20160201202650) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -654,6 +654,8 @@ ActiveRecord::Schema.define(version: 20160201195827) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "fb_activity_exceptions", ["fb_account_id"], name: "index_fb_activity_exceptions_on_fb_account_id", using: :btree
 
   create_table "fb_statuses", force: true do |t|
     t.text     "status"
