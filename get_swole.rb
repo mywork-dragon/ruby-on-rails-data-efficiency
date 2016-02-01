@@ -1,19 +1,14 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'colorize'
-rescue => e
-  puts "\nYou need to install the colorize gem to get swole."
-  puts "gem install colorize"
-  abort
-end
+gems = %w(colorize json net/http)
 
-begin
-  require 'json'
-rescue => e
-  puts "\nYou need to install the json gem to get swole."
-  puts "gem install json"
-  abort
+gems.each do |gem_name|
+  begin
+    require gem_name
+  rescue => e
+    puts "\nYou need to install the #{gem_name} gem to get swole."
+    puts "gem install #{gem_name}"
+    abort
 end
 
 arg0 = ARGV[0]
