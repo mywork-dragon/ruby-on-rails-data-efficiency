@@ -130,14 +130,15 @@ system("bundle exec cap #{stage} deploy")
 
 # Post deployment to Slack
 url = 'https://hooks.slack.com/services/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'  # the webhook for the deployment channel
-user = `echo $USER`.chomp
 title = "#{user} deployed #{branch} to #{stage}."
-description = title
+commit_hash = `git rev-parse --verify HEAD`
+author = `git --no-pager show -s --format='%an' #{commit_hash}`
+commit_message = `git show -s --format=%B #{commit_hash}`
 
 fields =  [
             {
-              'title' => 'Who',
-              'value' => user,
+              'title' => 'Author',
+              'value' => author,
               'short' => true
             },
             {
@@ -149,6 +150,16 @@ fields =  [
               'title' => 'Stage',
               'value' => stage,
               'short' => true
+            }
+            {
+              'title' => 'Commit Hash',
+              'value' => commit_hash,
+              'short' => true
+            }
+            {
+              'title' => 'Commit Message',
+              'value' => commit_hash,
+              'short' => false
             }
           ]
 
