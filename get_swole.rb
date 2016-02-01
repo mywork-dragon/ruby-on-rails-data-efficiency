@@ -11,11 +11,7 @@ gems.each do |gem_name|
     abort
   end
 end
-=begin
-  
-rescue Exception => e
-  
-end
+
 arg0 = ARGV[0]
 ARGV.clear
 
@@ -131,16 +127,12 @@ end
 
 puts ""
 system("bundle exec cap #{stage} deploy")
-=end
-
-user = 'kanye'
-branch = 'mastah'
-stage = 'cr8zy_servers'
 
 # Post deployment to Slack
-url = 'https://hooks.slack.com/services/T02T20A54/B0KTNR7RT/O2jPFin7ZGstDJSvJCPFyn9'  # the webhook for the deployment channel
-user = `echo $USER`
-title = "`#{user}` deployed `#{branch}` to `#{stage}`."
+url = 'https://hooks.slack.com/services/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'  # the webhook for the deployment channel
+user = `echo $USER`.chomp
+title = "#{user} deployed #{branch} to #{stage}."
+description = title
 
 fields =  [
             {
@@ -167,8 +159,6 @@ attachments = [
                   'color' => '#00ff66',
 
                   'title' => title,
-
-                  # 'text' => description,
 
                   'fields' => fields,
                 }
