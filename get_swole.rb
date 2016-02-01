@@ -150,7 +150,7 @@ fields =  [
               'title' => 'Stage',
               'value' => stage,
               'short' => true
-            }
+            },
             {
               'title' => 'Commit Hash',
               'value' => commit_hash,
