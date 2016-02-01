@@ -155,7 +155,7 @@ fields =  [
               'title' => 'Commit Hash',
               'value' => commit_hash,
               'short' => true
-            }
+            },
             {
               'title' => 'Commit Message',
               'value' => commit_hash,
