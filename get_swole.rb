@@ -133,7 +133,7 @@ url = 'https://hooks.slack.com/services/T02T20A54/B0KTNR7RT/O2jPFin7ZGstDJSvJCPF
 commit_hash = `git rev-parse --verify HEAD`.chomp
 author = `git --no-pager show -s --format='%an' #{commit_hash}`.chomp
 commit_message = `git show -s --format=%B #{commit_hash}`.chomp
-title = "#{author} deployed #{branch} to #{stage}."
+title = "#{author} deployed #{branch} to #{stage}.".chomp
 
 fields =  [
             {
