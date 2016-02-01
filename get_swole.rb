@@ -104,6 +104,14 @@ if !`git status -uno`.include?("nothing to commit")
   abort
 end
 
+# collect attributes now for later Slack notification
+user = `echo $USER`.chomp
+url = 'https://hooks.slack.com/services/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'  # the webhook for the deployment channel
+commit_hash = `git rev-parse --verify HEAD`.chomp
+author = `git --no-pager show -s --format='%an' #{commit_hash}`.chomp
+commit_message = `git show -s --format=%B #{commit_hash}`.chomp
+title = "#{user} deployed #{branch} to #{stage}.".chomp
+
 if run_tests
   # run tests and abort on failure
   test_cmd = 'bundle exec rake test:all'
@@ -129,12 +137,6 @@ puts ""
 system("bundle exec cap #{stage} deploy")
 
 # Post deployment to Slack
-user = `echo $USER`.chomp
-url = 'https://hooks.slack.com/services/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'  # the webhook for the deployment channel
-commit_hash = `git rev-parse --verify HEAD`.chomp
-author = `git --no-pager show -s --format='%an' #{commit_hash}`.chomp
-commit_message = `git show -s --format=%B #{commit_hash}`.chomp
-title = "#{user} deployed #{branch} to #{stage}.".chomp
 
 fields =  [
             {
@@ -171,6 +173,11 @@ fields =  [
               'title' => 'Commit Message',
               'value' => commit_message,
               'short' => true
+            },
+            {
+              'title' => 'Test Link'
+              'value' => "<http://www.foo.com|www.foo.com>"
+              'short' => true
             }
           ]
 
@@ -183,6 +190,8 @@ attachments = [
                   'title' => title,
 
                   'fields' => fields,
+
+                  'mrkdwn_in' => ['fields']
                 }
               ]
 
