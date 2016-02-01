@@ -169,6 +169,7 @@ body = {attachments: attachments}.to_json
 
 uri = URI(url)
 req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+req.use_ssl = true
 req.body = body
 res = Net::HTTP.start(uri.hostname, uri.port) do |http|
   http.request(req)
