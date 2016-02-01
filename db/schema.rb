@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160128222123) do
+ActiveRecord::Schema.define(version: 20160129232035) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -303,10 +303,6 @@ ActiveRecord::Schema.define(version: 20160128222123) do
     t.string   "apk_content_type"
     t.integer  "apk_file_size"
     t.datetime "apk_updated_at"
-    t.string   "class_dump_file_name"
-    t.string   "class_dump_content_type"
-    t.integer  "class_dump_file_size"
-    t.datetime "class_dump_updated_at"
   end
 
   create_table "apk_snapshot_exceptions", force: true do |t|
@@ -641,6 +637,12 @@ ActiveRecord::Schema.define(version: 20160128222123) do
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
 
+  create_table "fb_statuses", force: true do |t|
+    t.text     "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "github_accounts", force: true do |t|
     t.string   "username"
     t.string   "email"
@@ -933,6 +935,7 @@ ActiveRecord::Schema.define(version: 20160128222123) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "deprecated", default: false
   end
 
   add_index "ios_device_arches", ["name"], name: "index_ios_device_arches_on_name", using: :btree
@@ -1168,7 +1171,7 @@ ActiveRecord::Schema.define(version: 20160128222123) do
     t.text     "lookup_content"
   end
 
-  add_index "ipa_snapshots", ["ios_app_id"], name: "index_ipa_snapshots_on_ios_app_id", using: :btree
+  add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
   add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|

@@ -1,11 +1,29 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'colorize'
-rescue => e
-  puts "\nYou need to install the colorize gem to get swole."
-  puts "gem install colorize"
-  abort
+gems = %w(colorize json net/http)
+
+gems.each do |gem_name|
+  begin
+    require gem_name
+  rescue => e
+    puts "\nYou need to install the #{gem_name} gem to get swole."
+    puts "gem install #{gem_name}"
+    abort
+  end
+end
+
+arg0 = ARGV[0]
+ARGV.clear
+
+run_tests = true
+
+if arg0
+  if arg0 == '--skip-tests'
+    run_tests = false
+  else
+    puts "Illegal argument.".red
+    abort
+  end
 end
 
 swole_string = %q(
@@ -86,20 +104,92 @@ if !`git status -uno`.include?("nothing to commit")
   abort
 end
 
-# run tests and abort on failure
-test_cmd = 'bundle exec rake test:all'
-last_line = nil
-IO.popen(test_cmd).each do |line|
-  puts line
-  last_line = line
-end.close # Without close, you won't be able to access $?
- 
-#puts "The command's exit code was: #{$?.exitstatus}"
+# collect attributes now for later Slack notification
+user = `echo $USER`.chomp
+url = 'https://hooks.slack.com/services/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'  # the webhook for the deployment channel
+commit_hash = `git rev-parse --verify HEAD`.chomp
+author = `git --no-pager show -s --format='%an' #{commit_hash}`.chomp
+commit_message = `git show -s --format=%B #{commit_hash}`.chomp
+title = "#{user} deployed #{branch} to #{stage}.".chomp
 
-last_line.split(", ")
-if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
+if run_tests
+  # run tests and abort on failure
+  test_cmd = 'bundle exec rake test:all'
+  last_line = nil
+  IO.popen(test_cmd).each do |line|
+    puts line
+    last_line = line
+  end.close # Without close, you won't be able to access $?
+   
+  #puts "The command's exit code was: #{$?.exitstatus}"
+
+  last_line.split(", ")
+  if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
+    abort
+  end
+
+elsif %w(web sdk_scraper_live_scan darth_vader ios_live_scan).include?(stage)
+  puts "Stage #{stage} is a live production stage. You're not allowed to bypass tests for this stage.".red
   abort
 end
 
 puts ""
 system("bundle exec cap #{stage} deploy")
+
+# Post deployment to Slack
+
+fields =  [
+            {
+              'title' => 'User',
+              'value' => user,
+              'short' => true
+            },
+            {
+              'title' => 'Branch',
+              'value' => branch,
+              'short' => true
+            },
+            {
+              'title' => 'Stage',
+              'value' => stage,
+              'short' => true
+            },
+            {
+              'title' => 'Commit Author',
+              'value' => author,
+              'short' => true
+            },
+            {
+              'title' => 'Commit Hash',
+              'value' => "<https://github.com/MightySignal/varys/commit/#{commit_hash}|#{commit_hash}>",
+              'short' => true
+            },
+            {
+              'title' => 'Commit Message',
+              'value' => commit_message,
+              'short' => true
+            }
+          ]
+
+attachments = [
+                {
+                  'fallback' => title,
+
+                  'color' => '#6600FF',
+
+                  'title' => title,
+
+                  'fields' => fields,
+
+                  'mrkdwn_in' => ['fields']
+                }
+              ]
+
+body = {attachments: attachments}.to_json
+
+uri = URI(url)
+req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+req.body = body
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(req)
+end

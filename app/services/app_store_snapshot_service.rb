@@ -31,9 +31,19 @@ class AppStoreSnapshotService
         IosApp.where(display_type: [IosApp.display_types[:normal], IosApp.display_types[:paid]]).find_in_batches(batch_size: 1000).with_index do |batch, index|
           li "App #{index*1000}"
 
+          debug = false
+
+          debug = true if index*1000 > 1600000
+
+          puts '#0' if debug
+
           args = batch.map{ |ios_app| [j.id, ios_app.id] }
 
+          puts '#1' if debug
+
           Sidekiq::Client.push_bulk('class' => AppStoreSnapshotServiceWorker, 'args' => args)
+
+          puts '#2' if debug
         end
       
       end
