@@ -8,6 +8,14 @@ rescue => e
   abort
 end
 
+begin
+  require 'json'
+rescue => e
+  puts "\nYou need to install the json gem to get swole."
+  puts "gem install json"
+  abort
+end
+
 arg0 = ARGV[0]
 ARGV.clear
 
