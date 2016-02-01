@@ -175,8 +175,8 @@ fields =  [
               'short' => true
             },
             {
-              'title' => 'Test Link'
-              'value' => "<http://www.foo.com|www.foo.com>"
+              'title' => 'Test Link',
+              'value' => "<http://www.foo.com|www.foo.com>",
               'short' => true
             }
           ]
