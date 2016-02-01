@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129232035) do
+ActiveRecord::Schema.define(version: 20160201195827) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -636,6 +636,24 @@ ActiveRecord::Schema.define(version: 20160129232035) do
   end
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
+
+  create_table "fb_accounts", force: true do |t|
+    t.string   "username"
+    t.string   "password"
+    t.datetime "last_browsed"
+    t.datetime "last_scraped"
+    t.boolean  "flagged",      default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "fb_activity_exceptions", force: true do |t|
+    t.integer  "fb_account_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "fb_statuses", force: true do |t|
     t.text     "status"
