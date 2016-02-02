@@ -203,8 +203,11 @@ module ApkWorker
   end
 
   def json_dump(apk_file_path)
+    @unzipped_apk = Zip::File.open(apk_file_path)
 
-    hash = {'dex_classes' => dex_classes}
+    return js_tags
+
+    #hash = {'dex_classes' => dex_classes}
   end
 
   def dex_classes
@@ -213,10 +216,16 @@ module ApkWorker
     dex_classes = dex.classes.map(&:name)
   end
 
+  def js_tags
+    files = @unzipped_apk.glob('assets/www/*')
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/<script src=.*\/(.*.js)/)
+    end.flatten.compact.uniq
+  end
+
   def meta_info_dlls(apk_file_path)
-    z = Zip::File.open(apk_file_path)
-    files = [z.glob('META-INF/*.SF').first, z.glob('META-INF/*.MF').first].compact
-    puts "files: #{files}"
+    files = [@unzipped_apk.glob('META-INF/*.SF').first, @unzipped_apk.glob('META-INF/*.MF').first].compact
     files.map do |file|
       contents = file.get_input_stream.read
       contents.scan(/Name: .*\/(.*.dll)/).flatten
