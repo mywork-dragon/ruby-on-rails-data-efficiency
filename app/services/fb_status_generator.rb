@@ -1,0 +1,2 @@
+class FbStatusGenerator
+end
