@@ -30,7 +30,7 @@ module PackageSearchWorker
           c = Benchmark.measure {
           apk = Android::Apk.new(s3_file)}
         else
-          version = :class_dump
+          version = :json_dump
         end
       elsif Rails.env.development?
         raise "Not implemented yet"
@@ -46,38 +46,23 @@ module PackageSearchWorker
           cls.slice!(0) if cls.slice(0) == 'L'
           cls
         end.compact.uniq
-      elsif version == :class_dump
-        class_dump = apk_file.class_dump
-        raise NoClassDump if !class_dump.exists?
-        class_dump_file = open(class_dump.url)
-        
-        packages = []
 
-        File.foreach(filename) do |line|
-          next if line.blank? || line.downcase.include?(app_identifier.split('.')[1].downcase)
 
-          package = line
-
-          package.sub!(/\AL/, '') # remove leading L
-          
-
+        b = Benchmark.measure do 
+          android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
+          android_sdk_service.classify(snap_id: snap_id, packages: packages)
         end
 
-        packages = packages.compact.uniq
+        puts "#{snap_id}: Classify Time: #{b.real}"
 
+      elsif version == :json_dump
+        json_dump = apk_file.json_dump
+        raise NoJsonDump if !json_dump.exists?
+        json_dump_file = open(json_dump.url)
 
+        classify(json_dump_file)
       end
       
-      # TODO: jlew -- download class_dump file instead, and run similar line-by-line parsing to pull out meaningful classes
-
-
-      b = Benchmark.measure do 
-        android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
-        android_sdk_service.classify(snap_id: snap_id, packages: packages)
-      end
-
-      puts "#{snap_id}: Classify Time: #{b.real}"
-
     rescue => e
       ase = ApkSnapshotException.create!(name: e.message, backtrace: e.backtrace, apk_snapshot: apk_snap)
       
@@ -92,9 +77,40 @@ module PackageSearchWorker
 
   end
 
-  class NoClassDump < StandardError
+  def classify
+    parser = Yajl::Parser.new
+    json = parser.parse(json_dump_file)
 
-    def initialize(message = "A class dump does not exist for this ApkFile.")
+    # the order matters here
+    classify_js_tags(json)
+    classify_dlls(json)
+    classify_dex_classes(json)
+  end
+
+  def classify_dex_classes
+    packages = []
+
+    File.foreach(filename) do |line|
+      next if line.blank? || line.downcase.include?(app_identifier.split('.')[1].downcase)
+
+      package = line
+
+      package.sub!(/\AL/, '') # remove leading L
+    end
+
+    packages = packages.compact.uniq
+
+  end
+
+  def classify_js_tags
+  end
+
+  def classify_dlls
+  end
+
+  class NoJsonDump < StandardError
+
+    def initialize(message = "A JSON dump does not exist for this ApkFile.")
       super
     end
 
