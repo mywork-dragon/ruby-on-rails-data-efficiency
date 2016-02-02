@@ -198,7 +198,8 @@ module ApkWorker
   def json_dump(apk_file_path)
     unzipped_apk = Zip::File.open(apk_file_path)
 
-    {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}.to_json
+    json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}.to_json
+    StringIO.new(json)
   end
 
   # Get all of the classes from the DEX

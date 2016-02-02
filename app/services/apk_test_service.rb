@@ -111,8 +111,20 @@ class ApkTestService
 	  # 	end
 	  # end
 
-	  def add_accounts
-	  	GoogleAccount.create!(email: 'grifawnduh@gmail.com', password: 'thisisapassword', android_identifier: '306154D3931FB917', blocked: 0, in_use: 0, device: 1, scrape_type: 0)
+	  def prepare
+	  	email = 'grifawnduh@gmail.com'
+	  	if GoogleAccount.find_by_email(email)
+	  		puts "Account already exists".green
+	  	else 
+	  		GoogleAccount.create!(email: email, password: 'thisisapassword', android_identifier: '306154D3931FB917', blocked: 0, flags: 0, last_used: DateTime.now, in_use: 0, device: 1, scrape_type: 0)
+	  	end	  	
+
+	  	ip = '50.22.154.251'
+	  	if MicroProxy.find_by_private_ip(ip)
+	  		puts "MicroProxy already exists"
+	  	else
+	  		MicroProxy.create!(active: 1, private_ip: ip, last_used: DateTime.now)
+	  	end
 	  end
 
 	end
