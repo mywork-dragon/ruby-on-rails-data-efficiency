@@ -202,4 +202,25 @@ module ApkWorker
     StringIO.new(class_dump_s)
   end
 
+  def json_dump
+
+    # dex classes
+    apk = Android::Apk.new(apk_file_path)
+    dex = apk.dex
+    dex_classes = dex.classes.map(&:name)
+
+    hash = {'dex_classes': dex_classes}
+  end
+
+  def meta_inf_dlls(apk_file_path)
+    meta_inf_directory = 'META-INF'
+    files_to_check = ['CERT.SF', 'MANIFEST.SF']
+    files_to_check.map do |file|
+      full_path = "#{meta_inf_directory/file}"
+      next unless File.exist?(full_path)
+
+      `strings full_path | grep .dll$`
+    end.flatten.uniq.compact
+  end
+
 end
