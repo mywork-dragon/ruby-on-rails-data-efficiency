@@ -202,25 +202,25 @@ module ApkWorker
     StringIO.new(class_dump_s)
   end
 
-  def json_dump
+  def json_dump(apk_file_path)
 
-    # dex classes
+    hash = {'dex_classes' => dex_classes}
+  end
+
+  def dex_classes
     apk = Android::Apk.new(apk_file_path)
     dex = apk.dex
     dex_classes = dex.classes.map(&:name)
-
-    hash = {'dex_classes': dex_classes}
   end
 
-  def meta_inf_dlls(apk_file_path)
-    meta_inf_directory = 'META-INF'
-    files_to_check = ['CERT.SF', 'MANIFEST.SF']
-    files_to_check.map do |file|
-      full_path = "#{meta_inf_directory/file}"
-      next unless File.exist?(full_path)
-
-      `strings full_path | grep .dll$`
-    end.flatten.uniq.compact
+  def meta_info_dlls(apk_file_path)
+    z = Zip::File.open(apk_file_path)
+    files = [z.glob('META-INF/*.SF').first, z.glob('META-INF/*.MF').first].compact
+    puts "files: #{files}"
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/Name: .*\/(.*.dll)/).flatten
+    end.flatten.compact.uniq
   end
 
 end
