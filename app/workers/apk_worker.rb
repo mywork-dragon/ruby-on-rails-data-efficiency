@@ -198,12 +198,18 @@ module ApkWorker
     {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}.to_json
   end
 
+  # Get all of the classes from the DEX
+  # @author Jason Lew
+  # @param apk_file_path The path to the zipped APK
   def dex_classes(apk_file_path)
     apk = Android::Apk.new(apk_file_path)
     dex = apk.dex
     dex_classes = dex.classes.map(&:name)
   end
 
+  # Get all of the JS tags
+  # @author Jason Lew
+  # @param unzipped_apk The unzipped APK
   def js_tags(unzipped_apk)
     files = unzipped_apk.glob('assets/www/*')
     files.map do |file|
@@ -212,6 +218,9 @@ module ApkWorker
     end.flatten.compact.uniq
   end
 
+  # Get all of the DLLs
+  # @author Jason Lew
+  # @param unzipped_apk The unzipped APK
   def dlls(unzipped_apk)
     files = [unzipped_apk.glob('META-INF/*.SF').first, unzipped_apk.glob('META-INF/*.MF').first].compact
     files.map do |file|
