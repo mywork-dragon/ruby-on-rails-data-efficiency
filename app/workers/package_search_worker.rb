@@ -87,25 +87,36 @@ module PackageSearchWorker
     classify_dex_classes(json)
   end
 
-  def classify_dex_classes
+  def classify_dex_classes(json)
+    classes = json['dex_classes']
+
     packages = []
 
-    File.foreach(filename) do |line|
-      next if line.blank? || line.downcase.include?(app_identifier.split('.')[1].downcase)
+    packages = classes.each.map |c|
+      next if c.blank? || c.downcase.include?(app_identifier.split('.')[1].downcase)
 
-      package = line
+      package = c.name.split('/')  # split by /
+      package.pop   #remove last
 
       package.sub!(/\AL/, '') # remove leading L
+
+      package.join('.')
+    end.compact.uniq
+
+    b = Benchmark.measure do 
+      android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
+      android_sdk_service.classify(snap_id: snap_id, packages: packages)
     end
 
-    packages = packages.compact.uniq
+    puts "#{snap_id}: Classify Time: #{b.real}"
 
+    true
   end
 
-  def classify_js_tags
+  def classify_js_tags(json)
   end
 
-  def classify_dlls
+  def classify_dlls(json)
   end
 
   class NoJsonDump < StandardError
