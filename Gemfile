@@ -165,3 +165,5 @@ gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
 
 # gem 'daemons', '1.2.3'
+
+gem 'yajl-ruby', '1.2.1', require: 'yajl'
