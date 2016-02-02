@@ -107,7 +107,7 @@ gem 'iso_country_codes', '0.7.1'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'ruby_apk', '0.7.1'
+gem 'ruby_apk', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/ruby_apk.git', branch: 'use_rubyzip_v_1_1_7'
 
 # gem 'ruby-protocol-buffers', '1.6.1'
 
@@ -131,7 +131,8 @@ gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
 
 # gem 'sinatra', '1.4.6', require: nil
 
-gem 'slackiq', '1.1.2'
+gem 'slackiq', '1.1.3'
+# gem 'slackiq', git: 'https://github.com/okhwaja/slackiq.git', branch: 'master'
 
 gem 'slack-notifier', '1.2.1'
 
@@ -155,7 +156,7 @@ gem 'colorize', '0.7.7'
 
 gem 'awesome_print', '1.6.1'
 
-gem 'rubyzip', '0.9.9'
+gem 'rubyzip', '1.1.7'
 
 gem 'diff_dirs', '0.1.2'
 
@@ -163,6 +164,9 @@ gem 'seed_dump'
 
 gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
+
+gem 'capybara'
+gem 'selenium-webdriver'
 
 # gem 'daemons', '1.2.3'
 
