@@ -192,6 +192,9 @@ module ApkWorker
     GoogleAccount.devices[d_name]
   end
 
+  # A JSON dump of DEX classes, JS Tags, and DLLs
+  # @author Jason Lew
+  # @param apk_file_path The path to the zipped APK
   def json_dump(apk_file_path)
     unzipped_apk = Zip::File.open(apk_file_path)
 
