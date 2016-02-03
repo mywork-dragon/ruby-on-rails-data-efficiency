@@ -196,11 +196,16 @@ module ApkWorker
   # @author Jason Lew
   # @param apk_file_path The path to the zipped APK
   def json_dump(apk_file_path)
+    StringIO.new(json_dump_hash(apk_file_path.to_json))
+  end
+
+  def json_dump_hash(apk_file_path)
     unzipped_apk = Zip::File.open(apk_file_path)
 
-    json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}.to_json
-    StringIO.new(json)
+    json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}
   end
+
+
 
   # Get all of the classes from the DEX
   # @author Jason Lew
