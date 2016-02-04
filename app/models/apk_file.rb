@@ -6,6 +6,8 @@ class ApkFile < ActiveRecord::Base
   validates_attachment_file_name :apk, matches: [/apk\Z/]
 
   # a dump of data that contains possible SDKs
-  has_attached_file :json_dump
-  validates_attachment_file_name :json_dump, matches: [/json\Z/]
+  has_attached_file :text_files
+  validates_attachment_file_name :text_files, matches: [/\.tar\.gz\z/]
+
+
 end
