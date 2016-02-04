@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160201222620) do
+ActiveRecord::Schema.define(version: 20160203180424) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -416,10 +416,10 @@ ActiveRecord::Schema.define(version: 20160201222620) do
     t.boolean  "dump_success"
     t.boolean  "teardown_success"
     t.boolean  "teardown_retry"
-    t.float    "duration",                limit: 24
-    t.float    "install_time",            limit: 24
-    t.float    "dump_time",               limit: 24
-    t.float    "teardown_time",           limit: 24
+    t.float    "duration",                 limit: 24
+    t.float    "install_time",             limit: 24
+    t.float    "dump_time",                limit: 24
+    t.float    "teardown_time",            limit: 24
     t.text     "error"
     t.text     "trace"
     t.text     "error_root"
@@ -431,6 +431,10 @@ ActiveRecord::Schema.define(version: 20160201222620) do
     t.integer  "ios_device_id"
     t.boolean  "has_fw_folder"
     t.integer  "apple_account_id"
+    t.string   "app_content_file_name"
+    t.string   "app_content_content_type"
+    t.integer  "app_content_file_size"
+    t.datetime "app_content_updated_at"
   end
 
   add_index "class_dumps", ["apple_account_id"], name: "index_class_dumps_on_apple_account_id", using: :btree
