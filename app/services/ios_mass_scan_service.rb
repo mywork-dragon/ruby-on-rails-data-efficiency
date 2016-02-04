@@ -26,7 +26,7 @@ class IosMassScanService
     end
 
     # helper method for running scans
-    def run_nightly(n)
+    def run_new(n)
       tried = (IpaSnapshot.all.pluck(:ios_app_id).uniq + IpaSnapshotLookupFailure.all.pluck(:ios_app_id).uniq).uniq
 
       puts "Found all #{tried.length} tried apps"
@@ -36,6 +36,20 @@ class IosMassScanService
       puts "Selected #{mb_high_by_ratings.length} apps in mobile priority high that haven't been tried"
 
       run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
+    end
+
+    def run_recently_updated(n: 5000)
+      recent = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where('ios_app_snapshots.released > ?', 1.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+
+      puts "Got #{recent.count} entries"
+      # filter out to only those
+
+      # TODO: make this faster
+      relevant = recent.select {|x| IosAppSnapshot.where(ios_app_id: x).last.ratings_all_count > 0}
+
+      puts "filtered to relevant #{relevant.count}"
+
+      run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
     end
 
     def scan_successful
