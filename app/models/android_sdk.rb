@@ -6,6 +6,8 @@ class AndroidSdk < ActiveRecord::Base
   has_many :android_sdks_apk_snapshots
   has_many :apk_snapshots, through: :android_sdks_apk_snapshots
 
+  enum kind: [:native, :js]
+
   attr_accessor :first_seen
   attr_accessor :last_seen
 
