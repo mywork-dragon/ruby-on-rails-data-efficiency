@@ -37,12 +37,11 @@ module IosWorker
 
 		row = data.select { |key| data_keys.include? key }
 
-		# don't upload files in development mode
-		file = if !Rails.env.development? && data[:outfile_path]
-			File.open(data[:outfile_path])
-		end
+		class_dump_file = File.open(data[:summary_path]) if Rails.env.production? && data[:summary_path]
+		app_content_file = File.open(data[:app_contents_path]) if Rails.env.production? && data[:app_contents_path]
 
-		row[:class_dump] = file
+		row[:class_dump] = class_dump_file
+		row[:app_content] = app_content_file
 
 		row
 	end
@@ -128,12 +127,17 @@ module IosWorker
 
 			# upload the finished results
 			row = result_to_cd_row(final_result)
-			row.delete(:class_dump) # the state of the file hasn't changed since update after dump (don't want to reupload file)
+
+			# the state of the file hasn't changed since update after dump (don't want to reupload file)
+			row.delete(:class_dump) 
+			row.delete(:app_content)
+
 			row[:complete] = true
 			classdump.update row
 
-			# once we've finished uploading to s3, we can delete the file
-			`rm -f #{final_result[:outfile_path]}` if Rails.env.production? && final_result[:outfile_path]
+			# once we've finished uploading to s3, we can delete the files
+			`rm -f #{final_result[:summary_path]}` if Rails.env.production? && final_result[:summary_path]
+			`rm -f #{final_result[:app_contents_path]}` if Rails.env.production? && final_result[:app_contents_path]
 
 			result = classdump
 
