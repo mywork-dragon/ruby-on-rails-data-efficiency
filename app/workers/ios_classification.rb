@@ -76,7 +76,7 @@ module IosClassification
     end
 
     unless is_new_classdump?(snap_id, classdump)
-      sdks = classdump.method == 'classdump' ? classify_classdump(snap_id, contents) : classify_strings(snap_id, contents)
+      sdks = classdump.method == 'classdump' ? classify_classdump(contents) : classify_strings(contents)
       attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: classdump.method == 'classdump' ? :classdump : :strings)
     else
       classify_all_sources(ipa_snapshot_id: snap_id, classdump: classdump, summary: JSON.load(contents))
@@ -93,11 +93,11 @@ module IosClassification
     # need to acommodate for some new classdumps that only have one type 
     type = summary['binary']['type']
     if type
-      classdump_sdks = type == 'classdump' ? classify_classdump(ipa_snapshot_id, summary['binary']['contents'])
-      strings_sdks = type == 'strings' ? classify_strings(ipa_snapshot_id, summary['binary']['contents'])
+      classdump_sdks = type == 'classdump' ? classify_classdump(summary['binary']['contents'])
+      strings_sdks = type == 'strings' ? classify_strings(summary['binary']['contents'])
     else
-      classdump_sdks = classify_classdump(ipa_snapshot_id, summary['binary']['classdump'])
-      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
+      classdump_sdks = classify_classdump(summary['binary']['classdump'])
+      strings_sdks = classify_strings(summary['binary']['strings'])
     end
 
     # find them from frameworks folders
@@ -122,23 +122,19 @@ module IosClassification
     end
   end
 
-  def classify_classdump(snap_id, contents)
+  def classify_classdump(contents)
 
     sdks = sdks_from_classdump(contents: contents)
-    puts "Fin"
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: :classdump)
-    # sdks
-    puts "finished classdump"
+    puts "Finished classdump"
+    sdks
   end
 
   # Entry point to integrate with @osman
-  def classify_strings(snap_id, contents)
+  def classify_strings(contents)
 
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
-    # TODO: uncomment
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: :strings)
-    # sdks
-    puts "finished strings"
+    puts "Finished strings"
+    sdks
   end
 
   # Get classes from strings
