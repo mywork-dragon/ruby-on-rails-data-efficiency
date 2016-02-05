@@ -85,8 +85,6 @@ module IosClassification
 
   def classify_all_sources(ipa_snapshot_id:, classdump:, summary:)
 
-    byebug
-
     classdump_sdks = nil
     strings_sdks = nil
     folders_sdks = nil
