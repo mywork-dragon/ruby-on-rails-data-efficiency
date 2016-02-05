@@ -86,10 +86,10 @@ module IosClassification
     end
   end
 
-  def attribute_sdks_to_snap(snap_id:, sdks:)
+  def attribute_sdks_to_snap(snap_id:, sdks:, method:)
     sdks.each do |sdk|
       begin
-        IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id)
+        IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: method)
       rescue => e
         nil
       end
@@ -99,7 +99,7 @@ module IosClassification
   def classify_classdump(snap_id, contents)
 
     sdks = sdks_from_classdump(contents: contents)
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: :classdump)
     # sdks
     puts "finished classdump"
   end
@@ -109,7 +109,7 @@ module IosClassification
 
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
     # TODO: uncomment
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
+    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: :strings)
     # sdks
     puts "finished strings"
   end
