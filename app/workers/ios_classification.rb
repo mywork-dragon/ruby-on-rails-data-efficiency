@@ -76,7 +76,7 @@ module IosClassification
     end
 
     unless is_new_classdump?(snap_id, classdump)
-      sdks = classdump.method == 'classdump' ? classify_classdump(contents) : classify_strings(contents)
+      sdks = classdump.method == 'classdump' ? classify_classdump(contents) : classify_strings(snap_id, contents)
       attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: classdump.method == 'classdump' ? :classdump : :strings)
     else
       classify_all_sources(ipa_snapshot_id: snap_id, classdump: classdump, summary: JSON.load(contents))
@@ -94,10 +94,10 @@ module IosClassification
     type = summary['binary']['type']
     if type
       classdump_sdks = classify_classdump(summary['binary']['contents']) if type == 'classdump'
-      strings_sdks = classify_strings(summary['binary']['contents']) if type == 'strings'
+      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['contents']) if type == 'strings'
     else
       classdump_sdks = classify_classdump(summary['binary']['classdump'])
-      strings_sdks = classify_strings(summary['binary']['strings'])
+      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
     end
 
     # find them from frameworks folders
@@ -108,8 +108,8 @@ module IosClassification
     end
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks || [], method: :classdump)
-    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks || [], method: :strings)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: frameworks_sdks, method: :frameworks)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks || [], method: :strings) # leave to last because it creates sdks
   end
 
   def attribute_sdks_to_snap(snap_id:, sdks:, method:)
@@ -130,7 +130,7 @@ module IosClassification
   end
 
   # Entry point to integrate with @osman
-  def classify_strings(contents)
+  def classify_strings(snap_id, contents)
 
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
     puts "Finished strings"
