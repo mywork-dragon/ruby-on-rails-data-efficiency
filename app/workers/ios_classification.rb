@@ -54,9 +54,11 @@ module IosClassification
 
     classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
 
-    return if classdump.nil?
+    raise "No successful classdump" if classdump.nil?
 
     if Rails.env.production?
+
+      raise "Empty classdump" unless classdump.class_dump.present?
 
       url = classdump.class_dump.url
       contents = open(url).read.scrub
