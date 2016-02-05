@@ -510,15 +510,15 @@ class IosDeviceService
     # build summary
     summary_contents = {
       binary: {
-        classdump: File.open(headers_info[:classdump_contents_path]) {|f| f.read},
-        strings: File.open(headers_info[:strings_contents_path]) {|f| f.read}
+        classdump: File.open(headers_info[:classdump_contents_path]) {|f| f.read}.scrub,
+        strings: File.open(headers_info[:strings_contents_path]) {|f| f.read}.scrub
       }
     }
 
     # load file tree into summary
     tree_dump_path = File.join(TEMP_DIRECTORY, contents_info[:file_tree_name])
     `tar -xzf #{File.join(contents_info[:app_contents_dir], contents_info[:app_contents_name])} -C #{TEMP_DIRECTORY} #{contents_info[:file_tree_name]}`
-    summary_contents[:files] = File.open(tree_dump_path) {|f| f.read}.split(/\n/)
+    summary_contents[:files] = File.open(tree_dump_path) {|f| f.read}.scrub.split(/\n/)
 
     # load fw folders into summary
     summary_contents[:frameworks] = summary_contents[:files].map do |path|
