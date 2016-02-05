@@ -41,6 +41,14 @@ module IosClassification
     %w(com co net org edu io ui gov cn jp me forward pay common de se oauth main java pl nl rx uk eu fr)
   end
 
+  def is_new_classdump?(snap_id, classdump)
+    if Rails.env.production?
+      classdump.app_content.present? 
+    else
+      `find /$HOME/decrypted_ios_apps/ -maxdepth 1 -name '#{snap_id}.json.txt'`.chomp.present?
+    end
+  end
+
   def classify(snap_id)
     ActiveRecord::Base.logger.level = 1
 
@@ -54,19 +62,25 @@ module IosClassification
       contents = open(url).read.scrub
     elsif Rails.env.development?
 
-      ios_app = IpaSnapshot.find(snap_id).ios_app
-
-      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{ios_app.app_identifier}"
-      ext = classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
+      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{snap_id}"
+      ext = if is_new_classdump?(snap_id, classdump)
+        '.json.txt'
+      else
+        classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
+      end
       filename = filename + ext
 
       contents = File.open(filename) {|f| f.read}.chomp.scrub
     end
 
-    if classdump.method == 'classdump'
-      classify_classdump(snap_id, contents)
-    else classdump.method == 'strings'
-      classify_strings(snap_id, contents)
+    unless is_new_classdump?(snap_id, classdump)
+      classdump.method == 'classdump' ? classify_classdump(snap_id, contents) : classify_strings(snap_id, contents)
+    else
+      summary = JSON.load(contents)
+      type = summary['binary']['type']
+      binary_data = summary['binary']['contents']
+
+      type == 'classdump' ? classify_classdump(snap_id, binary_data) : classify_strings(snap_id, binary_data)
     end
   end
 
@@ -90,6 +104,7 @@ module IosClassification
 
   # Entry point to integrate with @osman
   def classify_strings(snap_id, contents)
+
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
     # TODO: uncomment
     attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)

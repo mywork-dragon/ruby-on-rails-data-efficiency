@@ -35,7 +35,7 @@ class IosDeviceService
       filename: 'start_decrypt.cy'
     },
     start_scp: {
-      commands: "updateDebugStatus('Running SCP', [UIColor yellowColor]);",
+      commands: "updateDebugStatus('SCP Binary', [UIColor yellowColor]);",
       filename: 'start_scp.cy'
     },
     start_classdump: {
@@ -49,6 +49,18 @@ class IosDeviceService
     finish_processing: {
       commands: "updateDebugStatus('Finished Processing Decrypted File', [UIColor greenColor]);",
       filename: 'finish_processing.cy'
+    },
+    building_tar: {
+      commands: "updateDebugStatus('Building Tar file', [UIColor yellowColor]);",
+      filename: 'building_tar.cy'
+    },
+    copying_tar: {
+      commands: "updateDebugStatus('SCP Tar', [UIColor yellowColor]);",
+      filename: 'copying_tar.cy'
+    },
+    complete_packaging: {
+      commands: "updateDebugStatus('Finished summary', [UIColor greenColor]);",
+      filename: 'complete_packaging.cy'
     },
     s3_upload: {
       commands: "updateDebugStatus('Starting s3 upload', [UIColor yellowColor]);",
@@ -155,7 +167,9 @@ class IosDeviceService
 
           yield(result) if block_given?
 
-          result.merge!(download_headers(ssh, app_info))
+          result.merge!(build_summary(ssh, app_info))
+          # result.merge!(download_headers(ssh, app_info))
+
           result[:dump_time] = Time.now
           result[:dump_success] = true
 
@@ -487,6 +501,72 @@ class IosDeviceService
     run_command(ssh, "cycript -p AppStore #{DISPLAY_STATUSES[status][:filename]}", "Printing debug statement #{status}")
   end
 
+  def build_summary(ssh, app_info)
+
+    headers_info = download_headers(ssh, app_info)
+    contents_info = download_app_contents(ssh, app_info)
+
+
+    # build summary
+    summary_contents = {
+      binary: {
+        type: headers_info[:method],
+        contents: File.open(headers_info[:binary_contents_path]) {|f| f.read}
+      }
+    }
+
+    # load file tree into summary
+    tree_dump_path = File.join(TEMP_DIRECTORY, contents_info[:file_tree_name])
+    `tar -xzf #{File.join(contents_info[:app_contents_dir], contents_info[:app_contents_name])} -C #{TEMP_DIRECTORY} #{contents_info[:file_tree_name]}`
+
+    summary_contents[:files] = File.open(tree_dump_path).read.split(/\n/)
+
+    # write summary to file
+    summary_path = File.join(DECRYPTED_FOLDER, "#{@unique_id}.json.txt")
+    File.open(summary_path, 'w') {|f| f.write(summary_contents.to_json)}
+
+    print_display_status(ssh, :complete_packaging)
+
+    {
+      summary_path: summary_path,
+      app_contents_path: File.join(contents_info[:app_contents_dir], contents_info[:app_contents_name]),
+      method: headers_info[:method],
+      has_fw_folder: headers_info[:has_fw_folder],
+      bundle_version: headers_info[:bundle_Version]
+    }
+  end
+
+  def download_app_contents(ssh, app_info)
+
+    tar_name = "#{@unique_id}.tgz"
+    file_tree_name = "#{@unique_id}.tree.txt"
+
+    puts "Starting to download app contents"
+
+    print_display_status(ssh, :building_tar)
+
+    run_command(ssh, "pushd #{app_info[:path]} && find . > #{file_tree_name}", 'build the file tree in the install directory')
+
+    puts "Created tree file"
+
+    run_command(ssh, "pushd #{app_info[:path]} && find . -type f -exec grep . \"{}\" -Iq \\\; -and -print0 | tar cfz #{@unique_id}.tgz --null -T -", 'build the tar file')
+
+    puts "Created tar file"
+
+    print_display_status(ssh, :copying_tar)
+
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:#{File.join(app_info[:path], tar_name)} #{DECRYPTED_FOLDER}`
+
+    puts "Downloaded tar file"
+
+    {
+      app_contents_dir: DECRYPTED_FOLDER,
+      app_contents_name: tar_name,
+      file_tree_name: file_tree_name
+    }
+
+  end
+
   def download_headers(ssh, app_info)
 
     filename = nil
@@ -531,7 +611,7 @@ class IosDeviceService
     print_display_status(ssh, :finish_processing)
 
     {
-      outfile_path: filename,
+      binary_contents_path: filename,
       method: method,
       has_fw_folder: has_fw_folder,
       bundle_version: @bundle_info.present? ? @bundle_info['CFBundleShortVersionString'] : nil
@@ -723,6 +803,7 @@ class IosDeviceService
 
     return infile if !infile # check if null
 
+    print_display_status(ssh, :start_strings)
     `strings #{infile} > #{outfile}`
 
     outfile

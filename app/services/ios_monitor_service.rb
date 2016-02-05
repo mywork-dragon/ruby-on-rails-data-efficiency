@@ -75,5 +75,15 @@ class IosMonitorService
 
       Slackiq.message("Redis tunnel failed at #{fail_time.getlocal}. Found #{num_stuck} devices stuck. Re-enabled. *Check to see if devices are unlocked*", webhook_name: :automated_alerts)
     end
+
+    def attempt_tar
+      Net::SSH.start('localhost', 'root', :password => 'padmemyboo', :port => 2222) do |ssh|
+
+        res1 = ssh.exec!("pushd /var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ && find . > ms_file_tree.txt")
+        res2 = ssh.exec!("pushd /var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ && find . -type f -exec grep . \"{}\" -Iq \\\; -and -print0 | tar cfz ms_contents.tgz --null -T -")
+        `/usr/local/bin/sshpass -p padmemyboo scp -P 2222 root@localhost:/var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ms_contents.tgz .`
+        byebug
+      end
+    end
   end
 end
