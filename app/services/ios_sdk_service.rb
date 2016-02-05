@@ -110,7 +110,7 @@ class IosSdkService
       %i(os non_os).each do |property|
         # use sort_by because it's an expensive operation and it's more efficient than sort for this type
         partitions[property] = partitions[property].sort_by do |sdk|
-          sdk.get_current_apps.count
+          sdk.name.downcase
         end
       end
 
