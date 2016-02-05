@@ -30,8 +30,6 @@ module IosWorker
 			:error_teardown,
 			:error_teardown_trace,
 			:teardown_retry,
-			:method,
-			:has_fw_folder,
 			:error_code
 		]
 
