@@ -511,7 +511,7 @@ class IosDeviceService
     summary_contents = {
       binary: {
         type: headers_info[:method],
-        contents: File.open(headers_info[:binary_contents_path]) {|f| f.read}
+        contents: File.open(headers_info[:binary_contents_path]) {|f| f.read}.scrub
       }
     }
 
@@ -519,7 +519,7 @@ class IosDeviceService
     tree_dump_path = File.join(TEMP_DIRECTORY, contents_info[:file_tree_name])
     `tar -xzf #{File.join(contents_info[:app_contents_dir], contents_info[:app_contents_name])} -C #{TEMP_DIRECTORY} #{contents_info[:file_tree_name]}`
 
-    summary_contents[:files] = File.open(tree_dump_path).read.split(/\n/)
+    summary_contents[:files] = File.open(tree_dump_path).read.scrub.split(/\n/)
 
     # write summary to file
     summary_path = File.join(DECRYPTED_FOLDER, "#{@unique_id}.json.txt")
