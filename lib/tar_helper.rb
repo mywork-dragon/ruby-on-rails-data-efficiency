@@ -5,9 +5,8 @@ class TarHelper
       `find #{path} -type f -exec grep -Iq . {} \\; -and -print`.chomp.split("\n")
     end
 
-    def tar_text_files(input_directory_path, output_file_path)
-      `cd #{input_directory_path} && find . -type f -exec grep . "{}" -Iq \\; -and -print0 | tar cfz #{output_file_path} --null -T -`
-      output_file_path
+    def tar_text_files(path)
+      `cd #{path} && find . -type f -exec grep . "{}" -Iq \\; -and -print0 | tar cfz ../test.tgz --null -T -`
     end
 
     def untar(path, output_dir)

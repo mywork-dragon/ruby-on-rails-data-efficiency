@@ -205,7 +205,18 @@ module ApkWorker
     json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}
   end
 
-
+  def text_files_tar_path(unzipped_apk)
+    extn = File.extname(unzipped_apk.name)
+    original_filename = File.basename(unzipped_apk.name, extn)
+    unique_string = SecureRandom.uuid
+    filename = "#{original_filename}_#{unique_string}"
+    tar_path = "/tmp/#{filename}"
+    
+    TarHelper.tar_text_files(unzipped_apk, tar_path)
+    yield(tar_path) if block_given?
+    # `rm #{tar_path}`
+    true
+  end
 
   # Get all of the classes from the DEX
   # @author Jason Lew
