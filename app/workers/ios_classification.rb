@@ -85,6 +85,8 @@ module IosClassification
 
   def classify_all_sources(ipa_snapshot_id:, classdump:, summary:)
 
+    byebug
+
     classdump_sdks = nil
     strings_sdks = nil
     folders_sdks = nil
@@ -93,8 +95,8 @@ module IosClassification
     # need to acommodate for some new classdumps that only have one type 
     type = summary['binary']['type']
     if type
-      classdump_sdks = type == 'classdump' ? classify_classdump(summary['binary']['contents'])
-      strings_sdks = type == 'strings' ? classify_strings(summary['binary']['contents'])
+      classdump_sdks = classify_classdump(summary['binary']['contents']) if type == 'classdump'
+      strings_sdks = classify_strings(summary['binary']['contents']) if type == 'strings'
     else
       classdump_sdks = classify_classdump(summary['binary']['classdump'])
       strings_sdks = classify_strings(summary['binary']['strings'])
@@ -104,7 +106,7 @@ module IosClassification
     frameworks_sdks = if type
       sdks_from_frameworks(fw_folders_from_strings(summary['binary']['contents']))
     else
-      sdks_from_frameworks(summary[:frameworks])
+      sdks_from_frameworks(summary['frameworks'])
     end
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks || [], method: :classdump)
@@ -302,7 +304,7 @@ module IosClassification
   end
 
   # debug -- jlew
-  def find_from_fw_folders(fw_folders: fw_folders)
+  def find_from_fw_folders(fw_folders:)
     sdks = []
     fw_folders.each do |fw_folder|
       regex = convert_folder_to_regex(fw_folder)
