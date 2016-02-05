@@ -65,6 +65,10 @@ class IosDeviceService
     s3_upload: {
       commands: "updateDebugStatus('Starting s3 upload', [UIColor yellowColor]);",
       filename: 's3_upload.cy'
+    },
+    begin_teardown: {
+      commands: "updateDebugStatus('Beginning uninstall', [UIColor greenColor]);",
+      filename: 'begin_teardown.cy'
     }
   }
 
@@ -506,7 +510,6 @@ class IosDeviceService
     headers_info = download_headers(ssh, app_info)
     contents_info = download_app_contents(ssh, app_info)
 
-    byebug
     # build summary
     summary_contents = {
       binary: {
@@ -621,7 +624,7 @@ class IosDeviceService
 
   def teardown(ssh, app_info)
 
-    run_command(ssh, 'cycript -p SpringBoard press_home_button.cy', 'pressing Home button')
+    print_display_status(ssh, :begin_teardown)
     delete_applications_v2(ssh)
     sleep(1) # sometimes deleting the app isn't instantaneous
 
