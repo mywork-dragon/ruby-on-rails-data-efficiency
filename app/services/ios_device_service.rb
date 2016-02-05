@@ -783,7 +783,7 @@ class IosDeviceService
   # assumes in home directory of root and dumpdecrypted.dylib is there as well
   def headers_using_classdump(ssh, app_info)
 
-    outfile = "#{DECRYPTED_FOLDER}/#{@unique_id}.classdump.txt"
+    outfile = "#{TEMP_DIRECTORY}/#{@unique_id}.classdump.txt"
 
     infile = get_decrypted_exec(ssh, app_info)
 
@@ -799,7 +799,7 @@ class IosDeviceService
   def get_strings(ssh, app_info)
 
     infile = get_decrypted_exec(ssh, app_info)
-    outfile = "#{DECRYPTED_FOLDER}/#{@unique_id}.txt"
+    outfile = "#{TEMP_DIRECTORY}/#{@unique_id}.strings.txt"
 
     return infile if !infile # check if null
 
