@@ -54,7 +54,7 @@ module IosClassification
 
     classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
 
-    raise "No successful classdump" if classdump.nil?
+    raise "No successful classdumps available" if classdump.nil?
 
     if Rails.env.production?
 
