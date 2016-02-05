@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203180424) do
+ActiveRecord::Schema.define(version: 20160205194820) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1134,10 +1134,11 @@ ActiveRecord::Schema.define(version: 20160203180424) do
     t.integer  "ipa_snapshot_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "method"
   end
 
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
-  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id"], name: "index_ipa_snapshot_id_ios_sdk_id", unique: true, using: :btree
+  add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id", "method"], name: "index_ipa_snapshot_id_ios_sdk_id_method", unique: true, using: :btree
 
   create_table "ios_sdks_ms_clearbit_leads", force: true do |t|
     t.integer  "ios_sdk_id"
