@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160208061002) do
+ActiveRecord::Schema.define(version: 20160208100728) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -364,6 +364,16 @@ ActiveRecord::Schema.define(version: 20160208061002) do
   add_index "apk_snapshots", ["scan_status"], name: "index_apk_snapshots_on_scan_status", using: :btree
   add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
+
+  create_table "apk_snapshots_sdk_js_tags", force: true do |t|
+    t.integer  "apk_snapshot_id"
+    t.integer  "sdk_js_tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
+  add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
 
   create_table "app_stores", force: true do |t|
     t.string   "country_code"
@@ -1418,6 +1428,14 @@ ActiveRecord::Schema.define(version: 20160208061002) do
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
   add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
   add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
+
+  create_table "sdk_js_tags", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_js_tags", ["name"], name: "index_sdk_js_tags_on_name", using: :btree
 
   create_table "sdk_packages", force: true do |t|
     t.string   "package"
