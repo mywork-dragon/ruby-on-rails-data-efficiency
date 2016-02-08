@@ -24,7 +24,7 @@ class Zipper
 
       zipped_path = "/tmp/#{basename}_#{random_hex}.zip" 
 
-      `zip -r #{zipped_path} #{path}`
+      `cd #{path} && zip -r #{zipped_path} *`
 
       yield zipped_path
 

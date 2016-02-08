@@ -145,7 +145,7 @@ module ApkWorker
 
       # jlew -- save dex
       af = ApkFile.new
-      zip_and_save(af)
+      zip_and_save(apk_file: af, apk_file_path: file_name, android_app_identifier: aa.app_identifier)
 
       apk_snap.apk_file = af
 
@@ -190,14 +190,16 @@ module ApkWorker
   end
 
   # Given an APK, unzip it, remove multimedia files, and zip it up again
-  def zip_and_save(apk_file)
-    Zipper.unzip(apk_file_path) do |unzipped_path|
+  # @param apk_file An instance of the ApkFile model
+  # @param apk_file_path The path to the APK on disk
+  def zip_and_save(apk_file:, apk_file_path:, android_app_identifier:)
+    Zipper.unzip(apk_file_path, delete: false) do |unzipped_path|
       FileRemover.remove_multimedia_files(unzipped_path)
 
-      Zipper.zip(unzipped_path) do |zipped_path|
-        apk_file.zip = zipped_path
-        apk_file_path.zip_file_name = "#{aa.app_identifier}.zip"
-        af.save!
+      Zipper.zip(unzipped_path, delete: false) do |zipped_path|
+        apk_file.zip = File.open(zipped_path)
+        apk_file.zip_file_name = "#{android_app_identifier}.zip"
+        apk_file.save!
       end
     end
   end
