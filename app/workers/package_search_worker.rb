@@ -30,7 +30,7 @@ module PackageSearchWorker
           c = Benchmark.measure {
           apk = Android::Apk.new(s3_file)}
         else
-          version = :json_dump
+          version = :zip
         end
       elsif Rails.env.development?
         raise "Not implemented yet"
@@ -55,12 +55,11 @@ module PackageSearchWorker
 
         puts "#{snap_id}: Classify Time: #{b.real}"
 
-      elsif version == :json_dump
-        json_dump = apk_file.json_dump
-        raise NoJsonDump if !json_dump.exists?
-        json_dump_file = open(json_dump.url)
-
-        classify(json_dump_file)
+      elsif version == :zip
+        zip = apk_file.zip
+        raise NoJsonDump if !zip.exists?
+        zip_file = File.open(zip)
+        classify(zip_file: zip_file, android_app: aa)
       end
       
     rescue => e
@@ -77,38 +76,47 @@ module PackageSearchWorker
 
   end
 
-  def classify
-    parser = Yajl::Parser.new
-    json = parser.parse(json_dump_file)
+  def classify(zip_file:, android_app:)
 
-    # the order matters here
-    classify_js_tags(json)
-    classify_dlls(json)
-    classify_dex_classes(json)
+    unzipped_apk = Zip::File.open(zip_file)
+
+    classify_dex_classes(zip_file: zip_file, android_app: android_app)
+
+    # parser = Yajl::Parser.new
+    # json = parser.parse(json_dump_file)
+
+    # # the order matters here
+    # classify_js_tags(json)
+    # classify_dlls(json)
+    # classify_dex_classes(json)
   end
 
-  def classify_dex_classes(json)
-    classes = json['dex_classes']
+  def classify_dex_classes(zip_file:, android_app:)
+    apk = Android::Apk.new(zip_file)
+    dex = apk.dex
+    classes = dex.classes.map(&:name)
 
     packages = []
 
-    packages = classes.each.map |c|
-      next if c.blank? || c.downcase.include?(app_identifier.split('.')[1].downcase)
+    packages = classes.each.map do |c|
+      next if c.blank? || c.downcase.include?(android_app.app_identifier.split('.')[1].downcase)
 
-      package = c.name.split('/')  # split by /
+      c.sub!(/\AL/, '') # remove leading L
+
+      package = c.split('/')  # split by /
       package.pop   #remove last
-
-      package.sub!(/\AL/, '') # remove leading L
 
       package.join('.')
     end.compact.uniq
 
-    b = Benchmark.measure do 
-      android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
-      android_sdk_service.classify(snap_id: snap_id, packages: packages)
-    end
+    puts packages
 
-    puts "#{snap_id}: Classify Time: #{b.real}"
+    # b = Benchmark.measure do 
+    #   android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
+    #   android_sdk_service.classify(snap_id: snap_id, packages: packages)
+    # end
+
+    # puts "#{snap_id}: Classify Time: #{b.real}"
 
     true
   end
@@ -119,9 +127,9 @@ module PackageSearchWorker
   def classify_dlls(json)
   end
 
-  class NoJsonDump < StandardError
+  class NoZip < StandardError
 
-    def initialize(message = "A JSON dump does not exist for this ApkFile.")
+    def initialize(message = "A Zip does not exist for this ApkFile.")
       super
     end
 
