@@ -199,6 +199,10 @@ module ApkWorker
     StringIO.new(json_dump_hash(apk_file_path.to_json))
   end
 
+  def unzip(apk_file_path, output_directory)
+    `unzip #{apk_file_path} -d `
+  end
+
   def json_dump_hash(apk_file_path)
     unzipped_apk = Zip::File.open(apk_file_path)
 
