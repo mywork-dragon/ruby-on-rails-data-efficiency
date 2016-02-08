@@ -54,9 +54,11 @@ module IosClassification
 
     classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
 
-    return if classdump.nil?
+    raise "No successful classdumps available" if classdump.nil?
 
     if Rails.env.production?
+
+      raise "Empty classdump" unless classdump.class_dump.present?
 
       url = classdump.class_dump.url
       contents = open(url).read.scrub
@@ -74,42 +76,65 @@ module IosClassification
     end
 
     unless is_new_classdump?(snap_id, classdump)
-      classdump.method == 'classdump' ? classify_classdump(snap_id, contents) : classify_strings(snap_id, contents)
+      sdks = classdump.method == 'classdump' ? classify_classdump(contents) : classify_strings(snap_id, contents)
+      attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: classdump.method == 'classdump' ? :classdump : :strings)
     else
-      summary = JSON.load(contents)
-      type = summary['binary']['type']
-      binary_data = summary['binary']['contents']
-
-      type == 'classdump' ? classify_classdump(snap_id, binary_data) : classify_strings(snap_id, binary_data)
+      classify_all_sources(ipa_snapshot_id: snap_id, classdump: classdump, summary: JSON.load(contents))
     end
   end
 
-  def attribute_sdks_to_snap(snap_id:, sdks:)
+  def classify_all_sources(ipa_snapshot_id:, classdump:, summary:)
+
+    classdump_sdks = nil
+    strings_sdks = nil
+    folders_sdks = nil
+
+    # search the binary files
+    # need to acommodate for some new classdumps that only have one type 
+    type = summary['binary']['type']
+    if type
+      classdump_sdks = classify_classdump(summary['binary']['contents']) if type == 'classdump'
+      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['contents']) if type == 'strings'
+    else
+      classdump_sdks = classify_classdump(summary['binary']['classdump'])
+      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
+    end
+
+    # find them from frameworks folders
+    frameworks_sdks = if type
+      sdks_from_frameworks(fw_folders_from_strings(summary['binary']['contents']))
+    else
+      sdks_from_frameworks(summary['frameworks'])
+    end
+
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks || [], method: :classdump)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: frameworks_sdks, method: :frameworks)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks || [], method: :strings) # leave to last because it creates sdks
+  end
+
+  def attribute_sdks_to_snap(snap_id:, sdks:, method:)
     sdks.each do |sdk|
       begin
-        IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id)
+        IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: method)
       rescue => e
         nil
       end
     end
   end
 
-  def classify_classdump(snap_id, contents)
+  def classify_classdump(contents)
 
     sdks = sdks_from_classdump(contents: contents)
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-    # sdks
-    puts "finished classdump"
+    puts "Finished classdump"
+    sdks
   end
 
   # Entry point to integrate with @osman
   def classify_strings(snap_id, contents)
 
     sdks = sdks_from_strings(contents: contents, ipa_snapshot_id: snap_id)
-    # TODO: uncomment
-    attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks)
-    # sdks
-    puts "finished strings"
+    puts "Finished strings"
+    sdks
   end
 
   # Get classes from strings
@@ -131,12 +156,17 @@ module IosClassification
     contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/)
   end
 
+  # do this for now...eventually delete the old stuff
+  def sdks_from_frameworks(frameworks)
+    find_from_fw_folders(fw_folders: frameworks)
+  end
+
   # Get FW folders from strings
   def fw_folders_from_strings(contents)
     contents.scan(/^Folder:(.+)\n/).flatten.uniq
   end
 
-  def sdks_from_classdump(contents: contents, search_classes: true, search_fw_folders: true)
+  def sdks_from_classdump(contents: contents, search_classes: true, search_fw_folders: false)
 
     sdks = []
 
@@ -272,7 +302,7 @@ module IosClassification
   end
 
   # debug -- jlew
-  def find_from_fw_folders(fw_folders: fw_folders)
+  def find_from_fw_folders(fw_folders:)
     sdks = []
     fw_folders.each do |fw_folder|
       regex = convert_folder_to_regex(fw_folder)
