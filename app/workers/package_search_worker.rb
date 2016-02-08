@@ -5,10 +5,10 @@ module PackageSearchWorker
     app_identifier = aa.app_identifier
     snap_id = aa.newest_apk_snapshot_id
     return nil if snap_id.blank?
-    find_packages(app_identifier: app_identifier, snap_id: snap_id)
+    find_packages(app_identifier: app_identifier, snap_id: snap_id, android_app: aa)
   end
 
-  def find_packages(app_identifier:, snap_id:)
+  def find_packages(app_identifier:, snap_id:, android_app:)
 
     apk = nil
     apk_snap = nil
@@ -23,12 +23,6 @@ module PackageSearchWorker
 
         if apk_file.apk.exists?   # old version, where the ENTIRE APK was stored...
           version = :apk
-          file_name = apk_snap.apk_file.apk.url
-          file_size = apk_snap.apk_file.apk.size
-          b = Benchmark.measure { 
-          s3_file = open(file_name)}
-          c = Benchmark.measure {
-          apk = Android::Apk.new(s3_file)}
         else
           version = :zip
         end
@@ -37,29 +31,15 @@ module PackageSearchWorker
       end
 
       if version == :apk
-        dex = apk.dex
-        packages = dex.classes.map do |cls|
-          next if cls.name.blank? || cls.name.downcase.include?(app_identifier.split('.')[1].downcase)
-          cls = cls.name.split('/')
-          cls.pop
-          cls = cls.join('.')
-          cls.slice!(0) if cls.slice(0) == 'L'
-          cls
-        end.compact.uniq
-
-
-        b = Benchmark.measure do 
-          android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
-          android_sdk_service.classify(snap_id: snap_id, packages: packages)
-        end
-
-        puts "#{snap_id}: Classify Time: #{b.real}"
-
+        apk = apk_file.apk
+        raise NoApk if !apk.exists?
+        apk_file = File.open(apk)
+        classify(zip_file: apk_file, android_app: android_app, apk_ss: apk_snap)
       elsif version == :zip
         zip = apk_file.zip
-        raise NoJsonDump if !zip.exists?
+        raise NoZip if !zip.exists?
         zip_file = File.open(zip)
-        classify(zip_file: zip_file, android_app: aa, apk_ss: apk_snap)
+        classify(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
       end
       
     rescue => e
@@ -211,6 +191,14 @@ module PackageSearchWorker
   class NoZip < StandardError
 
     def initialize(message = "A Zip does not exist for this ApkFile.")
+      super
+    end
+
+  end
+
+  class NoApk < StandardError
+
+    def initialize(message = "An APK does not exist for this ApkFile.")
       super
     end
 
