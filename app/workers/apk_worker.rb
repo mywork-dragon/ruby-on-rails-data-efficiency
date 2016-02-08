@@ -145,9 +145,7 @@ module ApkWorker
 
       # jlew -- save dex
       af = ApkFile.new
-      af.json_dump = json_dump(file_name)
-      af.json_dump_file_name = "#{aa.app_identifier}.json"
-      af.save!
+      zip_and_save(af)
 
       apk_snap.apk_file = af
 
@@ -171,7 +169,6 @@ module ApkWorker
 
   end
 
-
   def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 10)
       (wait/interval).to_i.times do
         ga = GoogleAccount.where(scrape_type: single_queue? ? 1:0, device: new_device(apk_snap_id, max_flags), blocked: false).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
@@ -192,6 +189,19 @@ module ApkWorker
     GoogleAccount.devices[d_name]
   end
 
+  # Given an APK, unzip it, remove multimedia files, and zip it up again
+  def zip_and_save(apk_file)
+    Zipper.unzip(apk_file_path) do |unzipped_path|
+      FileRemover.remove_multimedia_files(unzipped_path)
+
+      Zipper.zip(unzipped_path) do |zipped_path|
+        apk_file.zip = zipped_path
+        apk_file_path.zip_file_name = "#{aa.app_identifier}.zip"
+        af.save!
+      end
+    end
+  end
+
   # A JSON dump of DEX classes, JS Tags, and DLLs
   # @author Jason Lew
   # @param apk_file_path The path to the zipped APK
@@ -199,25 +209,10 @@ module ApkWorker
     StringIO.new(json_dump_hash(apk_file_path.to_json))
   end
 
-
-
   def json_dump_hash(apk_file_path)
     unzipped_apk = Zip::File.open(apk_file_path)
 
     json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}
-  end
-
-  def text_files_tar_path(unzipped_apk)
-    extn = File.extname(unzipped_apk.name)
-    original_filename = File.basename(unzipped_apk.name, extn)
-    unique_string = SecureRandom.uuid
-    filename = "#{original_filename}_#{unique_string}"
-    tar_path = "/tmp/#{filename}"
-    
-    TarHelper.tar_text_files(unzipped_apk, tar_path)
-    yield(tar_path) if block_given?
-    # `rm #{tar_path}`
-    true
   end
 
   # Get all of the classes from the DEX
