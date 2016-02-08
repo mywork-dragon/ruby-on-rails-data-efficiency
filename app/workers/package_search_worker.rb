@@ -59,7 +59,7 @@ module PackageSearchWorker
         zip = apk_file.zip
         raise NoJsonDump if !zip.exists?
         zip_file = File.open(zip)
-        classify(zip_file: zip_file, android_app: aa)
+        classify(zip_file: zip_file, android_app: aa, apk_ss: apk_snap)
       end
       
     rescue => e
@@ -76,16 +76,16 @@ module PackageSearchWorker
 
   end
 
-  def classify(zip_file:, android_app:)
+  def classify(zip_file:, android_app:, apk_ss)
 
     unzipped_apk = Zip::File.open(zip_file)
 
-    classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
-    #classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app)
-    # classify_dex_classes(zip_file: zip_file, android_app: android_app)
+    classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_snap)
+    #classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_snap)
+    # classify_dex_classes(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
   end
 
-  def classify_dex_classes(zip_file:, android_app:)
+  def classify_dex_classes(zip_file:, android_app:, apk_ss:)
     apk = Android::Apk.new(zip_file)
     dex = apk.dex
     classes = dex.classes.map(&:name)
@@ -105,7 +105,7 @@ module PackageSearchWorker
 
     b = Benchmark.measure do 
       android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
-      android_sdk_service.classify(snap_id: snap_id, packages: packages)
+      android_sdk_service.classify(snap_id: apk_ss, packages: packages)
     end
 
     puts "#{snap_id}: Classify Time: #{b.real}"
@@ -113,7 +113,7 @@ module PackageSearchWorker
     true
   end
 
-  def classify_js_tags(unzipped_apk:, android_app:)
+  def classify_js_tags(unzipped_apk:, android_app:, apk_ss)
     js_tags = js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
 
     js_tags_s = js_tags.join("\n")
@@ -123,6 +123,7 @@ module PackageSearchWorker
         regex = Regexp.new(js_tag_regex.regex)
         if js_tags_s.match(regex)
           puts "match #{regex}"
+          AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_snapshot)
         end
       end
     end
@@ -146,7 +147,7 @@ module PackageSearchWorker
     (js_tags + js_files).uniq
   end
 
-  def classify_dlls(unzipped_apk:, android_app:)
+  def classify_dlls(unzipped_apk:, android_app:, apk_ss: apk_snap)
     dlls(unzipped_apk: unzipped_apk, android_app: android_app)
   end
 
