@@ -123,12 +123,21 @@ module PackageSearchWorker
   end
 
   def classify_js_tags(unzipped_apk:, android_app:)
-    puts "hi"
-    files = unzipped_apk.glob('assets/www/*')
-    files.map do |file|
-      contents = file.get_input_stream.read
+    entries = unzipped_apk.glob('assets/www/*')
+    js_tags = entries.map do |entry|
+      contents = entry.get_input_stream.read
       contents.scan(/<script src=.*\/(.*.js)/)
-    end.flatten.compact.uniq
+    end.flatten.compact
+
+    js_files = []
+
+    unzipped_apk.each do |entry|
+      basename = File.basename(entry.name.chomp)
+      next unless basename.match(/.js\z/)
+      js_files << basename 
+    end
+
+    (js_tags + js_files).uniq
   end
 
   def classify_dlls(unzipped_apk:, android_app:)
