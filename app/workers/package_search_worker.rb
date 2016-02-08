@@ -80,7 +80,10 @@ module PackageSearchWorker
 
     unzipped_apk = Zip::File.open(zip_file)
 
-    classify_dex_classes(zip_file: zip_file, android_app: android_app)
+    return classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+    classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app)
+
+    # classify_dex_classes(zip_file: zip_file, android_app: android_app)
 
     # parser = Yajl::Parser.new
     # json = parser.parse(json_dump_file)
@@ -119,10 +122,16 @@ module PackageSearchWorker
     true
   end
 
-  def classify_js_tags(json)
+  def classify_js_tags(unzipped_apk:, android_app:)
+    puts "hi"
+    files = unzipped_apk.glob('assets/www/*')
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/<script src=.*\/(.*.js)/)
+    end.flatten.compact.uniq
   end
 
-  def classify_dlls(json)
+  def classify_dlls(unzipped_apk:, android_app:)
   end
 
   class NoZip < StandardError
