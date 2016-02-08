@@ -80,18 +80,9 @@ module PackageSearchWorker
 
     unzipped_apk = Zip::File.open(zip_file)
 
-    return classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+    # classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
     classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app)
-
     # classify_dex_classes(zip_file: zip_file, android_app: android_app)
-
-    # parser = Yajl::Parser.new
-    # json = parser.parse(json_dump_file)
-
-    # # the order matters here
-    # classify_js_tags(json)
-    # classify_dlls(json)
-    # classify_dex_classes(json)
   end
 
   def classify_dex_classes(zip_file:, android_app:)
@@ -141,6 +132,11 @@ module PackageSearchWorker
   end
 
   def classify_dlls(unzipped_apk:, android_app:)
+    files = [unzipped_apk.glob('META-INF/*.SF').first, unzipped_apk.glob('META-INF/*.MF').first].compact
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/Name: .*\/(.*.dll)/).flatten
+    end.flatten.compact.uniq
   end
 
   class NoZip < StandardError
