@@ -1435,7 +1435,7 @@ ActiveRecord::Schema.define(version: 20160208100728) do
     t.datetime "updated_at"
   end
 
-  add_index "sdk_js_tags", ["name"], name: "index_sdk_js_tags_on_name", using: :btree
+  add_index "sdk_js_tags", ["name"], name: "index_sdk_js_tags_on_name", unique: true, using: :btree
 
   create_table "sdk_packages", force: true do |t|
     t.string   "package"

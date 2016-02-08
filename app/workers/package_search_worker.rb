@@ -113,8 +113,26 @@ module PackageSearchWorker
     true
   end
 
-  def classify_js_tags(unzipped_apk:, android_app:, apk_ss)
+  def classify_js_tags(unzipped_apk:, android_app:, apk_ss:)
     js_tags = js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+
+    # Put all tags in sdk_js_tags
+    js_tags.each do |js_tag|
+      sdk_js_tag = SdkJsTag.find_by_name(js_tag)
+
+      if sdk_js_tag.nil?
+        begin
+          sdk_js_tag = SdkJsTag.create!(name: js_tag)
+        rescue ActiveRecord::RecordNotUnique => e
+          puts "Tag already exists for #{js_tag}"
+          sdk_js_tag = SdkJsTag.find_by_name(js_tag)
+        end
+      end
+
+      # Put entry in apk_snapshots_sdk_js_tags join table
+      ApkSnapshotsSdkJsTag.create!(apk_snapshot: apk_ss, sdk_js_tag: sdk_js_tag)
+
+    end
 
     js_tags_s = js_tags.join("\n")
 
