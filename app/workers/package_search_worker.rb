@@ -114,6 +114,10 @@ module PackageSearchWorker
   end
 
   def classify_js_tags(unzipped_apk:, android_app:)
+    js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+  end
+
+  def js_tags(unzipped_apk:, android_app:)
     entries = unzipped_apk.glob('assets/www/*')
     js_tags = entries.map do |entry|
       contents = entry.get_input_stream.read
@@ -132,6 +136,10 @@ module PackageSearchWorker
   end
 
   def classify_dlls(unzipped_apk:, android_app:)
+    dlls(unzipped_apk: unzipped_apk, android_app: android_app)
+  end
+
+  def dlls(unzipped_apk:, android_app:)
     files = [unzipped_apk.glob('META-INF/*.SF').first, unzipped_apk.glob('META-INF/*.MF').first].compact
     files.map do |file|
       contents = file.get_input_stream.read
