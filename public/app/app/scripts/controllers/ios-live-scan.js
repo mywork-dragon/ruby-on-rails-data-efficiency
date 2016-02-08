@@ -119,7 +119,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     // Helper method for getSdks() method
     var pullScanStatus = function() {
-      var msDelay = 2000;
+      var msDelay = 3000;
       var numRepeat = 120;
       var intervalCount = 0;
 
