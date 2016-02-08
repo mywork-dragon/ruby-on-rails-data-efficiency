@@ -80,8 +80,8 @@ module PackageSearchWorker
 
     unzipped_apk = Zip::File.open(zip_file)
 
-    # classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
-    classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app)
+    classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+    #classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app)
     # classify_dex_classes(zip_file: zip_file, android_app: android_app)
   end
 
@@ -114,7 +114,18 @@ module PackageSearchWorker
   end
 
   def classify_js_tags(unzipped_apk:, android_app:)
-    js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+    js_tags = js_tags(unzipped_apk: unzipped_apk, android_app: android_app)
+
+    js_tags_s = js_tags.join("\n")
+
+    JsTagRegex.find_in_batches(batch_size: 1000).with_index do |batch, index|
+      batch.each do |js_tag_regex|
+        regex = Regexp.new(js_tag_regex.regex)
+        if js_tags_s.match(regex)
+          puts "match #{regex}"
+        end
+      end
+    end
   end
 
   def js_tags(unzipped_apk:, android_app:)
