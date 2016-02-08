@@ -114,7 +114,7 @@ class IosSdkService
         end
       end
 
-      partitions[:non_os] + partitions[:os]
+      (partitions[:non_os] + partitions[:os]).uniq
     end
 
     def format_sdk(sdk)
