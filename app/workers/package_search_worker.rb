@@ -76,11 +76,11 @@ module PackageSearchWorker
 
   end
 
-  def classify(zip_file:, android_app:, apk_ss)
+  def classify(zip_file:, android_app:, apk_ss:)
 
     unzipped_apk = Zip::File.open(zip_file)
 
-    classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_snap)
+    classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_ss)
     #classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_snap)
     # classify_dex_classes(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
   end
@@ -141,7 +141,7 @@ module PackageSearchWorker
         regex = Regexp.new(js_tag_regex.regex)
         if js_tags_s.match(regex)
           puts "match #{regex}"
-          AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_snapshot)
+          AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_ss)
         end
       end
     end
@@ -193,7 +193,7 @@ module PackageSearchWorker
         regex = Regexp.new(dll_regex.regex)
         if dlls_s.match(regex)
           puts "match #{regex}"
-          AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_snapshot)
+          AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_ss)
         end
       end
     end
