@@ -165,8 +165,39 @@ module PackageSearchWorker
     (js_tags + js_files).uniq
   end
 
-  def classify_dlls(unzipped_apk:, android_app:, apk_ss: apk_snap)
-    dlls(unzipped_apk: unzipped_apk, android_app: android_app)
+  def classify_dlls(unzipped_apk:, android_app:, apk_ss:)
+    dlls = dlls(unzipped_apk: unzipped_apk, android_app: android_app)
+
+    # Put all tags in sdk_dlls
+    dlls.each do |dll|
+      sdk_dll = SdkDll.find_by_name(dll)
+
+      if sdk_dll.nil?
+        begin
+          sdk_dll = SdkDll.create!(name: dll)
+        rescue ActiveRecord::RecordNotUnique => e
+          puts "Tag already exists for #{dll}"
+          sdk_dll = SdkJsTag.find_by_name(dll)
+        end
+      end
+
+      # Put entry in apk_snapshots_sdk_js_tags join table
+      ApkSnapshotsSdkDll.create!(apk_snapshot: apk_ss, sdk_dll: sdk_dll)
+
+    end
+
+    dlls_s = dlls.join("\n")
+
+    DllRegex.find_in_batches(batch_size: 1000).with_index do |batch, index|
+      batch.each do |dll_regex|
+        regex = Regexp.new(dll_regex.regex)
+        if dlls_s.match(regex)
+          puts "match #{regex}"
+          AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_snapshot)
+        end
+      end
+    end
+
   end
 
   def dlls(unzipped_apk:, android_app:)

@@ -129,6 +129,8 @@ class ApkTestService
 	  	game_sparks = AndroidSdk.create!(name: "GameSparks", kind: :js)
 
 	  	js_tag_regex = JsTagRegex.create!(regex: /gamesparks/i.to_s, android_sdk: game_sparks)
+
+	  	dll_regex = DllRegex.create!(regex: /gamesparks/i.to_s, android_sdk: game_sparks)
 	  end
 
 	end

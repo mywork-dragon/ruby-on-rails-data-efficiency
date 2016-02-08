@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160208100728) do
+ActiveRecord::Schema.define(version: 20160208103450) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -365,6 +365,16 @@ ActiveRecord::Schema.define(version: 20160208100728) do
   add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
 
+  create_table "apk_snapshots_sdk_dlls", force: true do |t|
+    t.integer  "apk_snapshot_id"
+    t.integer  "sdk_dll_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshots_sdk_dlls", ["apk_snapshot_id", "sdk_dll_id"], name: "index_apk_snapshot_id_sdk_dll_id", using: :btree
+  add_index "apk_snapshots_sdk_dlls", ["sdk_dll_id"], name: "index_sdk_dll_id", using: :btree
+
   create_table "apk_snapshots_sdk_js_tags", force: true do |t|
     t.integer  "apk_snapshot_id"
     t.integer  "sdk_js_tag_id"
@@ -638,6 +648,14 @@ ActiveRecord::Schema.define(version: 20160208100728) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "dll_regexes", force: true do |t|
+    t.string   "regex"
+    t.integer  "android_sdk_id"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "dupes", force: true do |t|
     t.string   "app_identifier"
@@ -1428,6 +1446,14 @@ ActiveRecord::Schema.define(version: 20160208100728) do
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
   add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
   add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
+
+  create_table "sdk_dlls", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_dlls", ["name"], name: "index_sdk_dlls_on_name", using: :btree
 
   create_table "sdk_js_tags", force: true do |t|
     t.string   "name"
