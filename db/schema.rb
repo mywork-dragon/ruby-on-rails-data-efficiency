@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205194820) do
+ActiveRecord::Schema.define(version: 20160208103450) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -267,10 +267,12 @@ ActiveRecord::Schema.define(version: 20160205194820) do
     t.datetime "updated_at"
     t.integer  "sdk_company_id"
     t.integer  "github_repo_identifier"
+    t.integer  "kind"
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
   add_index "android_sdks", ["github_repo_identifier"], name: "index_android_sdks_on_github_repo_identifier", unique: true, using: :btree
+  add_index "android_sdks", ["kind"], name: "index_android_sdks_on_kind", using: :btree
   add_index "android_sdks", ["name"], name: "index_android_sdks_on_name", unique: true, using: :btree
   add_index "android_sdks", ["open_source"], name: "index_android_sdks_on_open_source", using: :btree
   add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
@@ -303,6 +305,10 @@ ActiveRecord::Schema.define(version: 20160205194820) do
     t.string   "apk_content_type"
     t.integer  "apk_file_size"
     t.datetime "apk_updated_at"
+    t.string   "zip_file_name"
+    t.string   "zip_content_type"
+    t.integer  "zip_file_size"
+    t.datetime "zip_updated_at"
   end
 
   create_table "apk_snapshot_exceptions", force: true do |t|
@@ -358,6 +364,26 @@ ActiveRecord::Schema.define(version: 20160205194820) do
   add_index "apk_snapshots", ["scan_status"], name: "index_apk_snapshots_on_scan_status", using: :btree
   add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
+
+  create_table "apk_snapshots_sdk_dlls", force: true do |t|
+    t.integer  "apk_snapshot_id"
+    t.integer  "sdk_dll_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshots_sdk_dlls", ["apk_snapshot_id", "sdk_dll_id"], name: "index_apk_snapshot_id_sdk_dll_id", using: :btree
+  add_index "apk_snapshots_sdk_dlls", ["sdk_dll_id"], name: "index_sdk_dll_id", using: :btree
+
+  create_table "apk_snapshots_sdk_js_tags", force: true do |t|
+    t.integer  "apk_snapshot_id"
+    t.integer  "sdk_js_tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
+  add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
 
   create_table "app_stores", force: true do |t|
     t.string   "country_code"
@@ -622,6 +648,14 @@ ActiveRecord::Schema.define(version: 20160205194820) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "dll_regexes", force: true do |t|
+    t.string   "regex"
+    t.integer  "android_sdk_id"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "dupes", force: true do |t|
     t.string   "app_identifier"
@@ -1118,12 +1152,14 @@ ActiveRecord::Schema.define(version: 20160205194820) do
     t.integer  "sdk_company_id"
     t.integer  "ios_sdk_source_group_id"
     t.integer  "source"
+    t.integer  "kind"
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
   add_index "ios_sdks", ["flagged"], name: "index_ios_sdks_on_flagged", using: :btree
   add_index "ios_sdks", ["github_repo_identifier"], name: "index_ios_sdks_on_github_repo_identifier", using: :btree
   add_index "ios_sdks", ["ios_sdk_source_group_id"], name: "index_ios_sdks_on_ios_sdk_source_group_id", using: :btree
+  add_index "ios_sdks", ["kind"], name: "index_ios_sdks_on_kind", using: :btree
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
@@ -1255,6 +1291,17 @@ ActiveRecord::Schema.define(version: 20160205194820) do
   add_index "jp_ios_app_snapshots", ["job_identifier"], name: "index_jp_ios_app_snapshots_on_job_identifier", using: :btree
   add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
   add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
+
+  create_table "js_tag_regexes", force: true do |t|
+    t.text     "regex"
+    t.integer  "android_sdk_id"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "js_tag_regexes", ["android_sdk_id"], name: "index_js_tag_regexes_on_android_sdk_id", using: :btree
+  add_index "js_tag_regexes", ["ios_sdk_id"], name: "index_js_tag_regexes_on_ios_sdk_id", using: :btree
 
   create_table "known_ios_words", force: true do |t|
     t.string "word"
@@ -1400,6 +1447,22 @@ ActiveRecord::Schema.define(version: 20160205194820) do
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
   add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
   add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
+
+  create_table "sdk_dlls", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_dlls", ["name"], name: "index_sdk_dlls_on_name", using: :btree
+
+  create_table "sdk_js_tags", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_js_tags", ["name"], name: "index_sdk_js_tags_on_name", unique: true, using: :btree
 
   create_table "sdk_packages", force: true do |t|
     t.string   "package"
