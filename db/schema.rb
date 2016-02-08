@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204022315) do
+ActiveRecord::Schema.define(version: 20160208061002) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -305,10 +305,10 @@ ActiveRecord::Schema.define(version: 20160204022315) do
     t.string   "apk_content_type"
     t.integer  "apk_file_size"
     t.datetime "apk_updated_at"
-    t.string   "text_files_file_name"
-    t.string   "text_files_content_type"
-    t.integer  "text_files_file_size"
-    t.datetime "text_files_updated_at"
+    t.string   "zip_file_name"
+    t.string   "zip_content_type"
+    t.integer  "zip_file_size"
+    t.datetime "zip_updated_at"
   end
 
   create_table "apk_snapshot_exceptions", force: true do |t|
