@@ -63,11 +63,21 @@ module PackageSearchWorker
 
   def classify(zip_file:, android_app:, apk_ss:)
 
+    puts "classify"
+
     unzipped_apk = Zip::File.open(zip_file)
 
+    puts "unzipped_apk"
+
+    puts "#0"
+
     classify_js_tags(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_ss)
-    #classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_snap)
-    # classify_dex_classes(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
+    puts "#1"
+    classify_dlls(unzipped_apk: unzipped_apk, android_app: android_app, apk_ss: apk_ss)
+    puts "#2"
+    classify_dex_classes(zip_file: zip_file, android_app: android_app, apk_ss: apk_ss)
+
+    puts "done classifying"
   end
 
   def classify_dex_classes(zip_file:, android_app:, apk_ss:)
