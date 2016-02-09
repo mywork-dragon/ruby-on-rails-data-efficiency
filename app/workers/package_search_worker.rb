@@ -120,7 +120,9 @@ module PackageSearchWorker
       batch.each do |js_tag_regex|
         if js_tags_s.match(js_tag_regex.regex)
           puts "match #{regex}"
-          AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_ss)
+          unless AndroidSdksApkSnapshot.where(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_ss).present?
+            AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_ss)
+          end
         end
       end
     end
@@ -171,7 +173,9 @@ module PackageSearchWorker
       batch.each do |dll_regex|
         if dlls_s.match(dll_regex.regex)
           puts "match #{regex}"
-          AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_ss)
+          unless AndroidSdksApkSnapshot.where(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_ss).present?
+            AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_ss)
+          end
         end
       end
     end
