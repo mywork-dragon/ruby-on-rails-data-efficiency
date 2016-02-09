@@ -118,8 +118,7 @@ module PackageSearchWorker
 
     JsTagRegex.find_in_batches(batch_size: 1000).with_index do |batch, index|
       batch.each do |js_tag_regex|
-        regex = Regexp.new(js_tag_regex.regex)
-        if js_tags_s.match(regex)
+        if js_tags_s.match(js_tag_regex.regex)
           puts "match #{regex}"
           AndroidSdksApkSnapshot.create!(android_sdk: js_tag_regex.android_sdk, apk_snapshot: apk_ss)
         end
@@ -170,8 +169,7 @@ module PackageSearchWorker
 
     DllRegex.find_in_batches(batch_size: 1000).with_index do |batch, index|
       batch.each do |dll_regex|
-        regex = Regexp.new(dll_regex.regex)
-        if dlls_s.match(regex)
+        if dlls_s.match(dll_regex.regex)
           puts "match #{regex}"
           AndroidSdksApkSnapshot.create!(android_sdk: dll_regex.android_sdk, apk_snapshot: apk_ss)
         end
