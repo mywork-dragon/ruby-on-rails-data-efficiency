@@ -35,8 +35,8 @@ every :day, :at => '6:05am', roles: [:scraper, :sdk_scraper, :sdk_scraper_live_s
 end
 
 # delete old snapshot files older than 1 day on the dark-side machines
-every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do/
-  command 'find /tmp/ -mtime +0 \( -name \'*.decrypted\' -or -name \'*.classdump.txt\' -or -name \'*.tree.txt\' -or -name \'*.strings.txt\' -or -name \'*_decrypted\' \)', :output => '/var/log/varys/cron.log'
+every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
+  runner "IosMonitorService.delete_old_classdumps", :output => '/var/log/varys/cron.log'
 end
 
 every 6.hours, roles: [:kylo_ren] do

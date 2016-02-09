@@ -2,6 +2,10 @@ class IosMonitorService
 
   class << self
 
+    def delete_old_classdumps
+      `#{File.join(Rails.root, 'server', 'ios_utils', 'dark_side_clean.sh')}`
+    end
+
     def check_hanging_mass_ssh
 
       times = {}      
