@@ -8,6 +8,8 @@ class AndroidSdk < ActiveRecord::Base
 
   enum kind: [:native, :js]
 
+  validates :kind, presence: true
+
   attr_accessor :first_seen
   attr_accessor :last_seen
 
