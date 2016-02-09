@@ -38,13 +38,13 @@ module PackageSearchWorker
         apk = apk_file.apk
         puts "apk"
         raise NoApk if !apk.exists?
-        apk_file = open(apk)
+        apk_file = open(apk.url)
         puts "opened"
         classify(zip_file: apk_file, android_app: android_app, apk_ss: apk_snap)
       elsif version == :zip
         zip = apk_file.zip
         raise NoZip if !zip.exists?
-        zip_file = open(zip)
+        zip_file = open(zip.url)
         classify(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
       end
       
