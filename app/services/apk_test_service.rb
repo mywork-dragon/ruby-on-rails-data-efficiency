@@ -126,7 +126,7 @@ class ApkTestService
 	  		MicroProxy.create!(active: 1, private_ip: ip, last_used: DateTime.now)
 	  	end
 
-	  	game_sparks = AndroidSdk.create!(name: "GameSparks", kind: :js)
+	  	game_sparks = AndroidSdk.create!(name: "GameSparks (JS)", kind: :js)
 
 	  	js_tag_regex = JsTagRegex.create!(regex: /gamesparks/i.to_s, android_sdk: game_sparks)
 
