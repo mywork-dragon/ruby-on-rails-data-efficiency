@@ -24,7 +24,7 @@ module PackageSearchWorker
         puts "apk_snap: #{apk_snap}"
         puts "apk_file: #{apk_file}"
 
-        if apk_file.apk.exists?   # old version, where the ENTIRE APK was stored...
+        if apk_file.apk?  # old version, where the ENTIRE APK was stored...
           puts "version: :apk"
           version = :apk
         else
@@ -35,16 +35,12 @@ module PackageSearchWorker
       end
 
       if version == :apk
-        apk = apk_file.apk
-        puts "apk"
-        raise NoApk if !apk.exists?
-        apk_file = open(apk.url)
+        zip_file = open(apk_file.apk.url)
         puts "opened"
-        classify(zip_file: apk_file, android_app: android_app, apk_ss: apk_snap)
+        classify(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
       elsif version == :zip
-        zip = apk_file.zip
-        raise NoZip if !zip.exists?
-        zip_file = open(zip.url)
+        raise NoZip unless apk_file.zip?
+        zip_file = open(apk_file.zip.url)
         classify(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
       end
       
@@ -58,6 +54,8 @@ module PackageSearchWorker
       apk_snap.scan_status = :scan_success
       apk_snap.last_updated = DateTime.now
       apk_snap.save!
+    ensure
+      zip_file.close if defined?(zip_file)
     end
 
   end
