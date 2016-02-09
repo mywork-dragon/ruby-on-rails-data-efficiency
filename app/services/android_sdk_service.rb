@@ -86,7 +86,7 @@ class AndroidSdkService
 
     if android_sdk.nil?
       begin
-        return AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier)
+        return AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier, kind: :native)
       rescue ActiveRecord::RecordNotUnique => e
         return AndroidSdk.where(name: name).first
       end

@@ -9,7 +9,7 @@ class RegexService
       companies.each do |company, data|
         sdk_company = SdkCompany.find_or_create_by(name: company)
         data.each do |sdk, sdk_data|
-          android_sdk = AndroidSdk.create_with(website: sdk_data['website'], open_source: sdk_data['open_source'], sdk_company_id: sdk_company.id).find_or_create_by(name: sdk)
+          android_sdk = AndroidSdk.create_with(website: sdk_data['website'], open_source: sdk_data['open_source'], sdk_company_id: sdk_company.id, kind: :native).find_or_create_by(name: sdk)
           sdk_data['regexes'].each do |regex|
             sr = SdkRegex.find_or_create_by(regex: regex)
             sr.android_sdk_id = android_sdk.id
