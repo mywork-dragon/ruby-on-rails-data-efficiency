@@ -45,7 +45,7 @@ class AndroidMigrationService
           AndroidSdk.create!(new_row.merge({kind: :native}))
         else
           new_row[:name] = "DUPLICATE:#{previous.id}:#{new_row[:id]}"
-          AndroidSdk.create!(new_row.merge({kind: :native})
+          AndroidSdk.create!(new_row.merge({kind: :native}))
         end
       end
       ap "Completed after #{Time.now - s} seconds"
