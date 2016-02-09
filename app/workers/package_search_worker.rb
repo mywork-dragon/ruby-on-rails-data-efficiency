@@ -104,7 +104,7 @@ module PackageSearchWorker
       android_sdk_service.classify(snap_id: apk_ss, packages: packages)
     end
 
-    puts "#{snap_id}: Classify Time: #{b.real}"
+    puts "#{apk_ss.id}: Classify Time: #{b.real}"
 
     true
   end
