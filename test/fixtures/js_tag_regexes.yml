@@ -2,10 +2,10 @@
 
 one:
   regex: MyText
-  android_sdk_integer: MyString
+  android_sdk_id: 1
   ios_sdk_id: 1
 
 two:
   regex: MyText
-  android_sdk_integer: MyString
+  android_sdk_id: 1
   ios_sdk_id: 1
