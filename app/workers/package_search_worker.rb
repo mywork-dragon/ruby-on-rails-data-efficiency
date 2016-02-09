@@ -21,7 +21,11 @@ module PackageSearchWorker
         apk_snap = ApkSnapshot.find(snap_id)
         apk_file = apk_snap.apk_file
 
+        puts "apk_snap: #{apk_snap}"
+        puts "apk_file: #{apk_file}"
+
         if apk_file.apk.exists?   # old version, where the ENTIRE APK was stored...
+          puts "version: :apk"
           version = :apk
         else
           version = :zip
@@ -32,6 +36,7 @@ module PackageSearchWorker
 
       if version == :apk
         apk = apk_file.apk
+        puts "apk"
         raise NoApk if !apk.exists?
         apk_file = File.open(apk)
         classify(zip_file: apk_file, android_app: android_app, apk_ss: apk_snap)
