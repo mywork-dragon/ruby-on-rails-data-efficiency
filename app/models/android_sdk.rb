@@ -37,4 +37,10 @@ class AndroidSdk < ActiveRecord::Base
     AndroidApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id))
   end
 
+  # Debug method, not safe for prod since it uses map
+  # @author Jason Lew
+  def android_apps
+    apk_snapshots.map(&:android_app)
+  end
+
 end
