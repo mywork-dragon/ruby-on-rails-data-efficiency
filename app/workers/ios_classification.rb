@@ -142,13 +142,15 @@ module IosClassification
 
     # These go last because they have side effects (ex. autogenerate sdks)
     js_tag_sdks = sdks_from_js_tags(ipa_snapshot_id, summary['files'])
+    dll_sdks = sdks_from_dlls(ipa_snapshot_id, summary['files'])
     strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks, method: :strings)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: frameworks_sdks, method: :frameworks)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: files_sdks, method: :file_regex)
-    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_regexes, method: :js_tag_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_sdks, method: :js_tag_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: dll_sdks, method: :dll_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_regex_sdks, method: :string_regex)
   end
 
@@ -183,6 +185,37 @@ module IosClassification
 
     combined = files.join("\n")
     regexes = SdkFileRegex.where.not(ios_sdk_id: nil)
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    sdks.uniq
+  end
+
+  def sdks_from_dlls(ipa_snapshot_id, files)
+
+    sdks = []
+
+    dlls = files.map do |path|
+      match = path.match(/\/([^\/]+\.dll\z)/)
+      match[1] if match
+    end.compact.uniq
+
+    dlls.each do |dll|
+      dll_row = SdkDll.find_or_create_by(name: dll)
+
+      begin
+        IpaSnapshotsSdkDll.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_js_tag_id: dll_row.id)
+      rescue ActiveRecord::RecordNotUnique
+        nil
+      end
+    end
+
+    regexes = DllRegex.where.not(ios_sdk_id: nil)
+    combined = dlls.join("\n")
 
     regexes.each do |regex_row|
       if regex_row.regex.match(combined)
@@ -232,7 +265,7 @@ module IosClassification
     regexes = SdkStringRegex.where.not(ios_sdk_id: nil)
 
     regexes.each do |regex_row|
-      if regex_row.scan(regex_row.regex).count > regex_row.min_matches
+      if contents.scan(regex_row.regex).count > regex_row.min_matches
         sdks << IosSdk.find(regex_row.ios_sdk_id)
       end
     end

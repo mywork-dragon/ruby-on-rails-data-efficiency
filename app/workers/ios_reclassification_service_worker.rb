@@ -2,10 +2,14 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
 
   # only classify the below sources
   def classify_all_sources(ipa_snapshot_id:, classdump:, summary:)
-    classdump_sdks = classify_classdump(summary['binary']['classdump'])
+    # classdump_sdks = classify_classdump(summary['binary']['classdump'])
     files_sdks = sdks_from_files(summary['files'])
     strings_regex_sdks = sdks_from_string_regex(summary['binary']['strings'])
-    js_tag_sdks = sdks_from_js_tags(ipa_snapshot_id, summary['files'])
+    # js_tag_sdks = sdks_from_js_tags(ipa_snapshot_id, summary['files'])
+
+    ap files_sdks
+    ap strings_regex_sdks
+    return
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: files_sdks, method: :file_regex)
