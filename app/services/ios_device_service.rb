@@ -456,6 +456,8 @@ class IosDeviceService
     else
       puts "#{@unique_id}: Found other number of executables: #{num_execs}"
 
+      bundle_info = extract_bundle_info(ssh, app_info)
+      
       executable = bundle_info['CFBundleExecutable']
       raise "No executable name found" if !executable
 
