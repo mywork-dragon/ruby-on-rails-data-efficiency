@@ -19,6 +19,8 @@ class PackageSearchService
 
         # next if (apk_ss = app.newest_apk_snapshot) && apk_ss.scan_status == "scan_success"  #rescan
 
+        next if (apk_ss = app.newest_apk_snapshot) && apk_ss.updated_at > 12.hours.ago #special condition
+
         PackageSearchServiceWorker.perform_async(app.id)
 
         android_app_ids << app.id if return_ids_array
