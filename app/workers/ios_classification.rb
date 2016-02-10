@@ -192,6 +192,7 @@ module IosClassification
       end
     end
 
+    puts "Finished files"
     sdks.uniq
   end
 
@@ -223,6 +224,7 @@ module IosClassification
       end
     end
 
+    puts "Finished dlls"
     sdks.uniq
   end
 
@@ -256,6 +258,7 @@ module IosClassification
       end
     end
 
+    puts "Finished js tags"
     sdks.uniq
   end
 
@@ -270,6 +273,7 @@ module IosClassification
       end
     end
 
+    puts "Finished string regex"
     sdks.uniq
   end
 
@@ -294,7 +298,9 @@ module IosClassification
 
   # do this for now...eventually delete the old stuff
   def sdks_from_frameworks(frameworks)
-    find_from_fw_folders(fw_folders: frameworks)
+    sdks = find_from_fw_folders(fw_folders: frameworks)
+    puts "Finished js tags"
+    sdks
   end
 
   # Get FW folders from strings
