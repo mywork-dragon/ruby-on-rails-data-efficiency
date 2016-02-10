@@ -137,11 +137,11 @@ module IosClassification
 
     classdump_sdks = classify_classdump(summary['binary']['classdump'])
     frameworks_sdks = sdks_from_frameworks(summary['frameworks'])
-    files_sdks = sdks_from_files(summary['files'])    
+    files_sdks = sdks_from_files(summary['files'])
     strings_regex_sdks = sdks_from_string_regex(summary['binary']['strings'])
 
     # These go last because they have side effects (ex. autogenerate sdks)
-    js_tag_sdks = sdks_from_files(ipa_snapshot_id, summary['files'])
+    js_tag_sdks = sdks_from_js_tags(ipa_snapshot_id, summary['files'])
     strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
@@ -211,7 +211,7 @@ module IosClassification
       end
     end
 
-    sdks
+    sdks.uniq
   end
 
   def sdks_from_string_regex(contents)
