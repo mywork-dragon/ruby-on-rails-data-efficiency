@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210074500) do
+ActiveRecord::Schema.define(version: 20160210083022) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1539,6 +1539,16 @@ ActiveRecord::Schema.define(version: 20160210074500) do
 
   add_index "sdk_scrapers", ["concurrent_apk_downloads"], name: "index_sdk_scrapers_on_concurrent_apk_downloads", using: :btree
   add_index "sdk_scrapers", ["private_ip"], name: "index_sdk_scrapers_on_private_ip", using: :btree
+
+  create_table "sdk_string_regexes", force: true do |t|
+    t.text     "regex"
+    t.integer  "min_matches", default: 0
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_string_regexes", ["ios_sdk_id"], name: "index_sdk_string_regexes_on_ios_sdk_id", using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"
