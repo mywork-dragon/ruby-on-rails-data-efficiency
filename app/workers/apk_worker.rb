@@ -163,7 +163,16 @@ module ApkWorker
 
       File.delete(file_name)
 
-      PackageSearchServiceSingleWorker.perform_async(android_app_id) if single_queue?
+      if single_queue?
+        if Rails.env.production?
+          PackageSearchServiceSingleWorker.perform_async(android_app_id)
+        else
+          # PackageSearchServiceSingleWorker.new.perform(android_app_id)
+          puts "Not classifying right now. Done with APK download and upload though."
+        end
+      end
+
+      
       
     end
 
