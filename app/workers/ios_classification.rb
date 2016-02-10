@@ -173,6 +173,14 @@ module IosClassification
     sdks
   end
 
+  def sdks_from_files(files)
+    sdks = []
+  end
+
+  def sdks_from_string_regex(contents)
+    sdks = []
+  end
+
   # Get classes from strings
   def classes_from_strings(contents)
     # more generic version, grabs any "string"
