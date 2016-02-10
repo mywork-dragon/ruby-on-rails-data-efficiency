@@ -228,6 +228,16 @@ module IosClassification
 
   def sdks_from_string_regex(contents)
     sdks = []
+
+    regexes = SdkStringRegex.where.not(ios_sdk_id: nil)
+
+    regexes.each do |regex_row|
+      if regex_row.scan(regex_row.regex).count > regex_row.min_matches
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    sdks.uniq
   end
 
   # Get classes from strings
