@@ -178,7 +178,19 @@ module IosClassification
   end
 
   def sdks_from_files(files)
+
     sdks = []
+
+    combined = files.join("\n")
+    regexes = SdkFileRegex.where.not(ios_sdk_id: nil)
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    sdks.uniq
   end
 
   def sdks_from_js_tags(ipa_snapshot_id, files)
