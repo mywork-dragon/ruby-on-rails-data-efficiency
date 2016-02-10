@@ -13,11 +13,6 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
     # attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_sdks method: :js_tag_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: dll_sdks, method: :dll_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_regex_sdks, method: :string_regex)
-
-    ap files_sdks
-    ap strings_regex_sdks
-    ap dll_sdks
-    return
   end
 
   def attribute_sdks_to_snap(snap_id:, sdks:, method:)
