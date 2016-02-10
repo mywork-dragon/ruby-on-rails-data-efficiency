@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160208103450) do
+ActiveRecord::Schema.define(version: 20160210061606) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1255,6 +1255,16 @@ ActiveRecord::Schema.define(version: 20160208103450) do
 
   add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
   add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
+
+  create_table "ipa_snapshots_sdk_js_tags", force: true do |t|
+    t.integer  "ipa_snapshot_id"
+    t.integer  "sdk_js_tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ipa_snapshots_sdk_js_tags", ["ipa_snapshot_id", "sdk_js_tag_id"], name: "index_ipa_snapshot_id_sdk_js_tag_id", using: :btree
+  add_index "ipa_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_ipa_snapshots_sdk_js_tags_on_sdk_js_tag_id", using: :btree
 
   create_table "jp_ios_app_snapshots", force: true do |t|
     t.string   "name"
