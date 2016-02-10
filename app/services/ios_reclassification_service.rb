@@ -8,6 +8,7 @@ class IosReclassificationService
       batch.on(:complete, 'IosReclassificationService#on_complete')
 
       apps.find_in_batches(batch_size: 1000).with_index do |query_batch, index|
+        puts "Batch #{index}" if index % 10 == 0
         batch.jobs do
           query_batch.each do |ios_app|
             ipa_snapshot = ios_app.get_last_ipa_snapshot(scan_success: true)
