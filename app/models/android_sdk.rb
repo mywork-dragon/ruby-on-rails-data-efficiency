@@ -6,6 +6,10 @@ class AndroidSdk < ActiveRecord::Base
   has_many :android_sdks_apk_snapshots
   has_many :apk_snapshots, through: :android_sdks_apk_snapshots
 
+  enum kind: [:native, :js]
+
+  validates :kind, presence: true
+
   attr_accessor :first_seen
   attr_accessor :last_seen
 
@@ -31,6 +35,12 @@ class AndroidSdk < ActiveRecord::Base
 
   def get_current_apps_faster
     AndroidApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id))
+  end
+
+  # Debug method, not safe for prod since it uses map
+  # @author Jason Lew
+  def android_apps
+    apk_snapshots.map(&:android_app)
   end
 
 end

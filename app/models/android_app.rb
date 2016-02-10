@@ -24,6 +24,8 @@ class AndroidApp < ActiveRecord::Base
   
   belongs_to :android_developer
 
+  has_many :sdk_js_tags
+
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
 

@@ -17,6 +17,9 @@ class IosSdk < ActiveRecord::Base
 
   enum source: [:cocoapods, :package_lookup, :manual]
 
+  enum kind: [:native, :js]
+  validates :kind, presence: true
+
   # TODO: currently returns taken down. Maybe revisit and fix later
   def get_current_apps
     # TODO: revisit this to make it 1 query
