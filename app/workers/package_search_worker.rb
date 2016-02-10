@@ -120,6 +120,8 @@ module PackageSearchWorker
         rescue ActiveRecord::RecordNotUnique => e
           puts "Tag already exists for #{js_tag}"
           sdk_js_tag = SdkJsTag.find_by_name(js_tag)
+        rescue Mysql2::Error => e
+          nil
         end
       end
 
@@ -175,6 +177,8 @@ module PackageSearchWorker
         rescue ActiveRecord::RecordNotUnique => e
           puts "Tag already exists for #{dll}"
           sdk_dll = SdkJsTag.find_by_name(dll)
+        rescue Mysql2::Error => e
+          nil
         end
       end
 
