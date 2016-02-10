@@ -147,6 +147,7 @@ module PackageSearchWorker
     entries = unzipped_apk.glob('assets/www/*')
     js_tags = entries.map do |entry|
       contents = entry.get_input_stream.read
+      contents.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       contents.scan(/<script src=.*\/(.*.js)/)
     end.flatten.compact
 
@@ -202,6 +203,7 @@ module PackageSearchWorker
     files = [unzipped_apk.glob('META-INF/*.SF').first, unzipped_apk.glob('META-INF/*.MF').first].compact
     files.map do |file|
       contents = file.get_input_stream.read
+      contents.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       contents.scan(/Name: .*\/(.*.dll)/).flatten
     end.flatten.compact.uniq
   end
