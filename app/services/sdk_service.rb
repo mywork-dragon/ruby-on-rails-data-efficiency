@@ -205,7 +205,8 @@ class SdkService
 						favicon: favicon,
 						open_source: proposed[:open_source],
 						github_repo_identifier: proposed[:github_repo_identifier],
-						source: IosSdk.sources[:package_lookup]
+						source: IosSdk.sources[:package_lookup],
+						kind: :native
 					})
 				rescue ActiveRecord::RecordNotUnique => e
 					sdk = IosSdk.find_by_name(proposed[:name])
