@@ -76,6 +76,7 @@ class IosDeviceService
     @device = device
     @bundle_info = nil
     @decrypted_file = nil
+    @decrypted_path = nil
   end
 
   def run_command(ssh, command, description, expected_output = nil)
@@ -436,16 +437,13 @@ class IosDeviceService
     }
   end
 
-  # decrypts and scp's executable from device into temp directory
-  # only runs once per instance
-  # NOTE: this means you should not delete it once it's there until the teardown stage
-  def get_decrypted_exec(ssh, app_info)
+  def get_decrypted_execs(ssh, app_info)
 
-    return @decrypted_file if @decrypted_file
+    return @decrypted_path if @decrypted_path
 
-    bundle_info = extract_bundle_info(ssh, app_info)
 
-    outfile = "#{@unique_id}.decrypted"
+    outpath = File.join(TEMP_DIRECTORY, "#{@unique_id}_decrypted")
+    `mkdir #{outpath}`
 
     print_display_status(ssh, :start_decrypt)
 
@@ -458,6 +456,8 @@ class IosDeviceService
     else
       puts "#{@unique_id}: Found other number of executables: #{num_execs}"
 
+      bundle_info = extract_bundle_info(ssh, app_info)
+      
       executable = bundle_info['CFBundleExecutable']
       raise "No executable name found" if !executable
 
@@ -476,24 +476,94 @@ class IosDeviceService
     end
 
     # move it to a non-spaced name for scp'ing later (combo of sh + scp messes up with spaces)
-    run_command(ssh, "find . -maxdepth 1 -name '*.decrypted' -exec mv '{}' #{outfile} \\\;", 'move it to a name without spaces for scp\'ing')
+    num_decrypted = run_command(ssh, "ls *.decrypted | wc -l", 'find number of decrypted files').strip.to_i
+
+    puts "#{@unique_id}: decrypted files count: #{num_decrypted}"
+
+    # create entries 
+    run_command(ssh, "find *.decrypted -exec ./move_decrypted.sh \"{}\" \\\;", 'move decrypted files to a friendly name')
+
+    if num_decrypted > 1
+      num_decrypted = run_command(ssh, "ls *.decrypted | wc -l", 'find number of decrypted files').strip.to_i
+
+      puts "#{@unique_id}: decrypted count after renaming: #{num_decrypted}"
+    end
 
     # use system scp because it's much faster
     puts "Starting download"
     print_display_status(ssh, :start_scp)
 
-    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:/var/root/*.decrypted #{outpath}`
     puts "Download finished"
 
-    # validate
-    exists = `[ -f #{TEMP_DIRECTORY}/#{outfile} ] && echo 'exists' || echo 'dne'`.chomp
+    # TODO: validate
+    num_transmitted = `ls #{outpath}/*.decrypted | wc -l`.strip.to_i
 
-    if exists != 'exists'
-      raise "Could not get decrypted app from device"
-    end
+    raise "Expected #{num_decrypted} decrypted files. Got #{num_transmitted}" if num_decrypted != num_transmitted
+    @decrypted_path = outpath
 
-    @decrypted_file = "#{TEMP_DIRECTORY}/#{outfile}"
   end
+
+  # decrypts and scp's executable from device into temp directory
+  # only runs once per instance
+  # NOTE: this means you should not delete it once it's there until the teardown stage
+  # def get_decrypted_exec(ssh, app_info)
+
+  #   return @decrypted_file if @decrypted_file
+
+  #   bundle_info = extract_bundle_info(ssh, app_info)
+
+  #   outfile = "#{@unique_id}.decrypted"
+
+  #   print_display_status(ssh, :start_decrypt)
+
+  #   run_command(ssh, "rm *.decrypted", 'remove any leftover decrypted files')
+  #   num_execs = run_command(ssh, "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -perm 755 -type f -not -name '*.*' | wc -l", 'see how many executable files are in app').chomp
+
+  #   decrypt_command = if num_execs == '1'
+  #     puts "#{@unique_id}: Found 1 executable"
+  #     "find #{File.join(app_info[:path], '*.app')} -maxdepth 1 -perm 755 -type f -not -name '*.*' -exec /bin/bash -c \"DYLD_INSERT_LIBRARIES=/var/root/dumpdecrypted.dylib '{}' mach-o decryption dumper\" \\\;"
+  #   else
+  #     puts "#{@unique_id}: Found other number of executables: #{num_execs}"
+
+  #     executable = bundle_info['CFBundleExecutable']
+  #     raise "No executable name found" if !executable
+
+  #     "DYLD_INSERT_LIBRARIES=$PWD/dumpdecrypted.dylib \"#{app_info[:path]}/#{app_info[:name]}.app/#{executable}\" mach-o decryption dumper"
+  #   end
+
+  #   begin
+  #     Timeout::timeout(30) {
+  #       run_command(ssh, decrypt_command, "Use dumpdecrypted to decrypt")
+  #     }
+  #   rescue Timeout::Error
+  #     pids = run_command(ssh, "ps aux | grep 'decryption dumper' | grep -v grep | awk '{print $2}'", 'Get the hanging dumpdecrypted pids').chomp
+  #     if pids.present?
+  #       pids.split.each {|pid| run_command(ssh, "kill -9 #{pid}", 'kill the decrypted pid')}
+  #     end
+  #   end
+
+  #   # if there's 1 decrypted file (as expected), use the old process
+
+  #   # move it to a non-spaced name for scp'ing later (combo of sh + scp messes up with spaces)
+  #   run_command(ssh, "find . -maxdepth 1 -name '*.decrypted' -exec mv '{}' #{outfile} \\\;", 'move it to a name without spaces for scp\'ing')
+
+  #   # use system scp because it's much faster
+  #   puts "Starting download"
+  #   print_display_status(ssh, :start_scp)
+
+  #   `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{DEVICE_USERNAME}@#{@device.ip}:/var/root/#{outfile} #{TEMP_DIRECTORY}`
+  #   puts "Download finished"
+
+  #   # validate
+  #   exists = `[ -f #{TEMP_DIRECTORY}/#{outfile} ] && echo 'exists' || echo 'dne'`.chomp
+
+  #   if exists != 'exists'
+  #     raise "Could not get decrypted app from device"
+  #   end
+
+  #   @decrypted_file = "#{TEMP_DIRECTORY}/#{outfile}"
+  # end
 
   # execute any of the dump status commands against the AppStore
   def print_display_status(ssh, status)
@@ -786,28 +856,35 @@ class IosDeviceService
   # assumes in home directory of root and dumpdecrypted.dylib is there as well
   def headers_using_classdump(ssh, app_info)
 
+
     outfile = "#{TEMP_DIRECTORY}/#{@unique_id}.classdump.txt"
 
-    infile = get_decrypted_exec(ssh, app_info)
+    inpath = get_decrypted_execs(ssh, app_info)
 
-    return infile if !infile # check if null
+    return inpath if !inpath # check if null
 
     print_display_status(ssh, :start_classdump)
-    class_dump(infile, outfile)
+
+    Dir.glob(File.join(inpath, '*.decrypted')).each do |file|
+      class_dump(file, outfile)
+    end
 
     outfile
-
   end
 
   def get_strings(ssh, app_info)
 
-    infile = get_decrypted_exec(ssh, app_info)
+
+    inpath = get_decrypted_execs(ssh, app_info)
     outfile = "#{TEMP_DIRECTORY}/#{@unique_id}.strings.txt"
 
-    return infile if !infile # check if null
+    return inpath if !inpath # check if null
 
     print_display_status(ssh, :start_strings)
-    `strings #{infile} > #{outfile}`
+
+    Dir.glob(File.join(inpath, '*.decrypted')).each do |file|
+      `strings #{file} >> #{outfile}`
+    end
 
     outfile
   end
@@ -816,7 +893,7 @@ class IosDeviceService
     arch = @device.class_dump_arch || "arm64"
     accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.split
     arch_flag = accepted_arches.include?(arch) ? "--arch #{arch}" : "" # let class-dump decide if not
-    `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' > \'#{dest}\'`
+    `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' >> \'#{dest}\' 2>/dev/null`
   end
 
 end

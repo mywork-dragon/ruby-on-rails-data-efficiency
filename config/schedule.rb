@@ -36,7 +36,7 @@ end
 
 # delete old snapshot files older than 1 day on the dark-side machines
 every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
-  command 'find /tmp/ -type f -mtime +0 -name \'*.decrypted\' -or -name \'*.tree.txt\' -or -name \'*.classdump.txt\' -or -name \'*.strings.txt\' | xargs rm', :output => '/var/log/varys/cron.log'
+  runner "IosMonitorService.delete_old_classdumps", :output => '/var/log/varys/cron.log'
 end
 
 every 6.hours, roles: [:kylo_ren] do
