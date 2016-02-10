@@ -22,7 +22,7 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
       begin
         IosSdksIpaSnapshot.find_or_create_by(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: IosSdksIpaSnapshot.methods[method])
       rescue ActiveRecord::RecordNotUnique
-        puts "error"
+        nil
       end
     end
   end
