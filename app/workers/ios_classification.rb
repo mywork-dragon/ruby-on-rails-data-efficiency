@@ -137,14 +137,18 @@ module IosClassification
 
     classdump_sdks = classify_classdump(summary['binary']['classdump'])
     frameworks_sdks = sdks_from_frameworks(summary['frameworks'])
-    files_sdks = sdks_from_files(summary['files'])
+    files_sdks = sdks_from_files(summary['files'])    
     strings_regex_sdks = sdks_from_string_regex(summary['binary']['strings'])
-    strings_sdks = classify_strings(summary['binary']['strings']) # this is last because it autogenerates sdks
+
+    # These go last because they have side effects (ex. autogenerate sdks)
+    js_tag_sdks = sdks_from_files(ipa_snapshot_id, summary['files'])
+    strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks, method: :strings)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: frameworks_sdks, method: :frameworks)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: files_sdks, method: :file_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_regexes, method: :js_tag_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_regex_sdks, method: :string_regex)
   end
 
@@ -175,6 +179,39 @@ module IosClassification
 
   def sdks_from_files(files)
     sdks = []
+  end
+
+  def sdks_from_js_tags(ipa_snapshot_id, files)
+
+    sdks = []
+
+    tags = files.map do |path|
+      match = path.match(/\/([^\/]+\.js\z)/)
+      match[1] if match
+    end.compact.uniq
+
+    # create the tags and entries in join table
+    tags.each do |tag|
+      tag_row = SdkJsTag.find_or_create_by(name: tag)
+
+      begin
+        IpaSnapshotsSdkJsTag.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_js_tag_id: tag_row.id)
+      rescue ActiveRecord::RecordNotUnique
+        nil
+      end
+    end
+
+    # match tags against regexes
+    regexes = JsTagRegex.where.not(ios_sdk_id: nil)
+    combined = tags.join("\n")
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    sdks
   end
 
   def sdks_from_string_regex(contents)
