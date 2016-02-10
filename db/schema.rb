@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210061606) do
+ActiveRecord::Schema.define(version: 20160210073213) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1465,6 +1465,17 @@ ActiveRecord::Schema.define(version: 20160210061606) do
   end
 
   add_index "sdk_dlls", ["name"], name: "index_sdk_dlls_on_name", using: :btree
+
+  create_table "sdk_file_regexes", force: true do |t|
+    t.text     "regex"
+    t.integer  "android_sdk_id"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sdk_file_regexes", ["android_sdk_id"], name: "index_sdk_file_regexes_on_android_sdk_id", using: :btree
+  add_index "sdk_file_regexes", ["ios_sdk_id"], name: "index_sdk_file_regexes_on_ios_sdk_id", using: :btree
 
   create_table "sdk_js_tags", force: true do |t|
     t.string   "name"
