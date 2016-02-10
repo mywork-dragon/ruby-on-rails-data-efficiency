@@ -208,7 +208,7 @@ module IosClassification
       dll_row = SdkDll.find_or_create_by(name: dll)
 
       begin
-        IpaSnapshotsSdkDll.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_js_tag_id: dll_row.id)
+        IpaSnapshotsSdkDll.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_dll_id: dll_row.id)
       rescue ActiveRecord::RecordNotUnique
         nil
       end
