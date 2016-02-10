@@ -19,11 +19,10 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
     sdks.each do |sdk|
 
       IosSdksIpaSnapshot.where(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: nil).delete_all 
-
       begin
-        IosSdksIpaSnapshot.create!(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: method)
+        IosSdksIpaSnapshot.find_or_create_by(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: IosSdksIpaSnapshot.methods[method])
       rescue ActiveRecord::RecordNotUnique
-        nil
+        puts "error"
       end
     end
   end
