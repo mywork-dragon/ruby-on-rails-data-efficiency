@@ -10,7 +10,7 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
 
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: files_sdks, method: :file_regex)
-    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_sdks method: :js_tag_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_sdks, method: :js_tag_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: dll_sdks, method: :dll_regex)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_regex_sdks, method: :string_regex)
   end
