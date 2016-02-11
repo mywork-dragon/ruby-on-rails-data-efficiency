@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  regex: MyString
+  android_sdk_id: 
+  ios_sdk_id: 1
+
+two:
+  regex: MyString
+  android_sdk_id: 
+  ios_sdk_id: 1

@@ -20,6 +20,7 @@ module GoogleSearcher
       @query = query
       p = Proxy.new(jid: @jid)
       html_s = p.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
+      puts html_s
       Parser.parse(html_s, query: query)
     end
 
@@ -112,18 +113,21 @@ module GoogleSearcher
 
           title = url_node.children.text
 
-          summary = g.at_css('.st').text
+          subtitle = g.at_css('.f.slp').text
+          subtitle = nil if subtitle.blank?
+
+          summary = g.at_css('.st').text.strip
           summary = nil if summary.blank?
 
-          {title: title.chomp, url: url.chomp, summary: summary.chomp}
-        rescue => e
-          nil
+          {title: title.strip, subtitle: subtitle.strip, url: url.strip, summary: summary.strip}
+        # rescue => e
+        #   nil
         end
       end
 
       results_hash_a_compact = results_hash_a.compact
 
-      results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
+      results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], subtitle: results_hash[:subtitle], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
 
     # url can look like, so probably need to clean it

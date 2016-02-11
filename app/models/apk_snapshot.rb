@@ -17,6 +17,14 @@ class ApkSnapshot < ActiveRecord::Base
   has_many :android_sdks_apk_snapshots
   has_many :android_sdks, through: :android_sdks_apk_snapshots
 
+  has_many :apk_snapshots_sdk_js_tags
+  has_many :sdk_js_tags, through: :apk_snapshots_sdk_js_tags
+
+  has_many :apk_snapshots_sdk_dlls
+  has_many :sdk_dlls, through: :apk_snapshots_sdk_dlls
+
+  has_many :apk_snaphshot_exceptions
+
   belongs_to :apk_file
 
 	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found]
