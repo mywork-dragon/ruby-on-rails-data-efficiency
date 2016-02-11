@@ -26,4 +26,8 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
       end
     end
   end
+
+  def invalidate_bad_scans(snapshot)
+    nil
+  end
 end
