@@ -143,6 +143,27 @@ class IosDevice < ActiveRecord::Base
       account = GoogleAccount.where.not(email: existing).take
     end
 
+    def reset_helper(output_str)
+      entries = output_str.split("\n")
+      map = entries.reduce({}) do |memo, entry|
+        parts = entry.split(':')
+        memo[parts.first.to_i] = parts.second.strip
+        memo
+      end
+
+      map.each do |ios_device_id, email_prefix|
+        email = IosEmailAccount.create!(email: "#{email_prefix}@openmailbox.org", password: "thisisapassword")
+
+        new_apple_account = AppleAccount.create!(email: email.email, password: 'Somename1')
+        old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
+
+        old_apple_account.update!(ios_device_id: nil) if old_apple_account.present?
+
+        new_apple_account.update!(ios_device_id: ios_device_id)
+      end
+
+    end
+
   end
 
 end
