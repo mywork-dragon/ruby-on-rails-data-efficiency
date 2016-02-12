@@ -12,6 +12,8 @@ module ApkDownloader
         raise "empty app"
        end
 
+       puts "Got download contents: #{Time.now}"
+
       File.open(destination, 'wb') { |f| f.write data }
       
     end

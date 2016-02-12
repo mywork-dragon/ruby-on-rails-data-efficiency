@@ -40,11 +40,13 @@ module ApkWorker
 
       end
 
+
       raise "no snap id" if apk_snap.id.blank?
 
       # raise "not in america" unless apk_snap.android_app.in_america?
 
       best_account = optimal_account(apk_snap_id: apk_snap.id)
+
 
       raise "no best account" if best_account.blank?
 
@@ -59,17 +61,21 @@ module ApkWorker
         config.android_id = best_account.android_identifier
       end
 
+
       aa = AndroidApp.find_by_id(android_app_id)
 
       app_identifier = aa.app_identifier
 
       raise "no app_identifier" if app_identifier.blank?
 
-      file_name = apk_file_path + app_identifier + ".apk"
+      file_name = apk_file_path + app_identifier + "_#{apk_snap.id}_#{@try_count}" + ".apk"
+
 
       ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
     rescue => e
+
+
 
       # li "\n"
       # li e.backtrace
@@ -144,6 +150,7 @@ module ApkWorker
       # af = ApkFile.create!(apk: open(file_name))  # jlew -- don't upload entire thing anymore
 
       # jlew -- save dex
+
       af = ApkFile.new
       zip_and_save(apk_file: af, apk_file_path: file_name, android_app_identifier: aa.app_identifier)
 
@@ -171,8 +178,6 @@ module ApkWorker
           puts "Not classifying right now. Done with APK download and upload though."
         end
       end
-
-      
       
     end
 
@@ -203,8 +208,9 @@ module ApkWorker
   # @param apk_file_path The path to the APK on disk
   def zip_and_save(apk_file:, apk_file_path:, android_app_identifier:)
     Zipper.unzip(apk_file_path) do |unzipped_path|
-      FileRemover.remove_multimedia_files(unzipped_path)
 
+      # Uncomment for now...This takes too long. ~2 min
+      # FileRemover.remove_multimedia_files(unzipped_path)
       Zipper.zip(unzipped_path) do |zipped_path|
         apk_file.zip = File.open(zipped_path)
         apk_file.zip_file_name = "#{android_app_identifier}.zip"
