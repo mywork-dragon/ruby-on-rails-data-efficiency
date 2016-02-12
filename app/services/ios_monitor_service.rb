@@ -47,16 +47,14 @@ class IosMonitorService
 
       # puts "Jobs waiting: #{waiting_jobs}"
 
-      ap waiting_jobs
-      # return if waiting_jobs <= 0
+      return if waiting_jobs <= 0
 
       # find any devices stuck on in_use
       stuck_devices = IosDevice.where(purpose: IosDevice.purposes[:mass], in_use: true).where('last_used < ?', Time.now - wait_time)
 
       num_stuck = stuck_devices.count
 
-      ap num_stuck
-      # return if num_stuck == 0
+      return if num_stuck == 0
 
       puts "#{Time.now.utc}: Rescuing #{num_stuck} phones"
       stuck_devices.update_all(in_use: false)
