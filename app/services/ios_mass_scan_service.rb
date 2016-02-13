@@ -50,9 +50,10 @@ class IosMassScanService
         true if ratings && ratings > 0
       end
 
-      puts "filtered to relevant #{relevant.count}"
+      puts "Filtered to relevant #{relevant.count}: Continue? [y/n]"
+      return unless gets.chomp.include?('y')
 
-      # run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
+      run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
     end
 
     def scan_successful
