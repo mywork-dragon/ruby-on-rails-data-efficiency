@@ -40,11 +40,13 @@ module ApkWorker
 
       end
 
+
       raise "no snap id" if apk_snap.id.blank?
 
       # raise "not in america" unless apk_snap.android_app.in_america?
 
       best_account = optimal_account(apk_snap_id: apk_snap.id)
+
 
       raise "no best account" if best_account.blank?
 
@@ -59,17 +61,21 @@ module ApkWorker
         config.android_id = best_account.android_identifier
       end
 
+
       aa = AndroidApp.find_by_id(android_app_id)
 
       app_identifier = aa.app_identifier
 
       raise "no app_identifier" if app_identifier.blank?
 
-      file_name = apk_file_path + app_identifier + ".apk"
+      file_name = apk_file_path + app_identifier + "_#{apk_snap.id}_#{@try_count}" + ".apk"
+
 
       ApkDownloader.download!(app_identifier, file_name, apk_snap.id)
 
     rescue => e
+
+
 
       # li "\n"
       # li e.backtrace
@@ -141,7 +147,12 @@ module ApkWorker
       apk_snap.status = :success
       # apk_snap.auth_token = nil
       
-      af = ApkFile.create!(apk: open(file_name))
+      # af = ApkFile.create!(apk: open(file_name))  # jlew -- don't upload entire thing anymore
+
+      # jlew -- save dex
+
+      af = ApkFile.new
+      zip_and_save(apk_file: af, apk_file_path: file_name, android_app_identifier: aa.app_identifier)
 
       apk_snap.apk_file = af
 
@@ -159,12 +170,18 @@ module ApkWorker
 
       File.delete(file_name)
 
-      PackageSearchServiceSingleWorker.perform_async(android_app_id) if single_queue?
+      if single_queue?
+        if Rails.env.production?
+          PackageSearchServiceSingleWorker.perform_async(android_app_id)
+        else
+          # PackageSearchServiceSingleWorker.new.perform(android_app_id)
+          puts "Not classifying right now. Done with APK download and upload though."
+        end
+      end
       
     end
 
   end
-
 
   def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 10)
       (wait/interval).to_i.times do
@@ -186,6 +203,64 @@ module ApkWorker
     GoogleAccount.devices[d_name]
   end
 
+  # Given an APK, unzip it, remove multimedia files, and zip it up again
+  # @param apk_file An instance of the ApkFile model
+  # @param apk_file_path The path to the APK on disk
+  def zip_and_save(apk_file:, apk_file_path:, android_app_identifier:)
+    Zipper.unzip(apk_file_path) do |unzipped_path|
 
+      # Uncomment for now...This takes too long. ~2 min
+      # FileRemover.remove_multimedia_files(unzipped_path)
+      Zipper.zip(unzipped_path) do |zipped_path|
+        apk_file.zip = File.open(zipped_path)
+        apk_file.zip_file_name = "#{android_app_identifier}.zip"
+        apk_file.save!
+      end
+    end
+  end
+
+  # A JSON dump of DEX classes, JS Tags, and DLLs
+  # @author Jason Lew
+  # @param apk_file_path The path to the zipped APK
+  def json_dump(apk_file_path)
+    StringIO.new(json_dump_hash(apk_file_path.to_json))
+  end
+
+  def json_dump_hash(apk_file_path)
+    unzipped_apk = Zip::File.open(apk_file_path)
+
+    json = {'dex_classes' => dex_classes(apk_file_path), 'js_tags' => js_tags(unzipped_apk), 'dlls' => dlls(unzipped_apk)}
+  end
+
+  # Get all of the classes from the DEX
+  # @author Jason Lew
+  # @param apk_file_path The path to the zipped APK
+  def dex_classes(apk_file_path)
+    apk = Android::Apk.new(apk_file_path)
+    dex = apk.dex
+    dex_classes = dex.classes.map(&:name)
+  end
+
+  # Get all of the JS tags
+  # @author Jason Lew
+  # @param unzipped_apk The unzipped APK
+  def js_tags(unzipped_apk)
+    files = unzipped_apk.glob('assets/www/*')
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/<script src=.*\/(.*.js)/)
+    end.flatten.compact.uniq
+  end
+
+  # Get all of the DLLs
+  # @author Jason Lew
+  # @param unzipped_apk The unzipped APK
+  def dlls(unzipped_apk)
+    files = [unzipped_apk.glob('META-INF/*.SF').first, unzipped_apk.glob('META-INF/*.MF').first].compact
+    files.map do |file|
+      contents = file.get_input_stream.read
+      contents.scan(/Name: .*\/(.*.dll)/).flatten
+    end.flatten.compact.uniq
+  end
 
 end

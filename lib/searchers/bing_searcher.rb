@@ -65,8 +65,6 @@ module BingSearcher
       rescue => e
         raise e, "Nokogiri could not parse HTML (Query: #{@query})"
       end
-
-      #return @html #temp
     
       count = parse_count
       results = (count == 0 ? [] : parse_results)
@@ -125,10 +123,13 @@ module BingSearcher
 
           title = url_node.text
 
+          b_factrownosep = b_algo.at_css('.b_factrownosep')
+          subtitle = b_factrownosep ? b_factrownosep.text : nil
+
           summary = b_algo.at_css('.b_caption').at_css('p').text
           summary = nil if summary.blank?
 
-          {title: title.chomp, url: url.chomp, summary: summary.chomp}
+          {title: title.strip, subtitle: subtitle, url: url.strip, summary: summary.strip}
         rescue => e
           nil
         end
@@ -136,7 +137,7 @@ module BingSearcher
 
       results_hash_a_compact = results_hash_a.compact
 
-      results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
+      results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], subtitle: results_hash[:subtitle], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
     end
 
     def detect_unusual_traffic_message

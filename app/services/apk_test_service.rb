@@ -1,4 +1,4 @@
-class TestService
+class ApkTestService
 
 	class << self
 
@@ -9,15 +9,31 @@ class TestService
 	    # render json: data
 	  end
 
-	  def android_start_scan(id)
-	    # id = params['appId']
+
+	  # type: :single or :mass
+	  def android_start_scan(id, local: true, type: :mass)
+	  	case type
+			when :mass
+			  worker = ApkSnapshotServiceWorker
+			when :single
+				worker = ApkSnapshotServiceSingleWorker
+			else
+			  raise "Type must be :mass or :single"
+			end
+
 	    aa = AndroidApp.find(id)
 	    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
-	    batch = Sidekiq::Batch.new
-	    bid = batch.bid
-	    batch.jobs do
-	      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
+
+	    if local
+	    	worker.new.perform(job_id, nil, aa.id)
+	    else
+	    	batch = Sidekiq::Batch.new
+	   	 	bid = batch.bid
+	    	batch.jobs do
+	      	worker.perform_async(job_id, bid, aa.id)
+	    	end
 	    end
+	    
 	    job_id
 	  end
 
@@ -94,6 +110,28 @@ class TestService
 	  # 		columns = model
 	  # 	end
 	  # end
+
+	  def prepare
+	  	email = 'grifawnduh@gmail.com'
+	  	if GoogleAccount.find_by_email(email)
+	  		puts "Account already exists".green
+	  	else 
+	  		GoogleAccount.create!(email: email, password: 'thisisapassword', android_identifier: '306154D3931FB917', blocked: 0, flags: 0, last_used: DateTime.now, in_use: 0, device: 1, scrape_type: 0)
+	  	end	  	
+
+	  	ip = '50.22.154.251'
+	  	if MicroProxy.find_by_private_ip(ip)
+	  		puts "MicroProxy already exists"
+	  	else
+	  		MicroProxy.create!(active: 1, private_ip: ip, last_used: DateTime.now)
+	  	end
+
+	  	game_sparks = AndroidSdk.create!(name: "GameSparks (JS)", kind: :js)
+
+	  	js_tag_regex = JsTagRegex.create!(regex: /gamesparks/i, android_sdk: game_sparks)
+
+	  	dll_regex = DllRegex.create!(regex: /gamesparks/i, android_sdk: game_sparks)
+	  end
 
 	end
 
