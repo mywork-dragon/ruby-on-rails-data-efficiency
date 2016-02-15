@@ -29,35 +29,7 @@ function getFeed() {
   return false;
 };
 
-function select(source, targetClass) {
-  var current = null,
-    subviews = [],
-    found = [],
-    queue = [],
-    v;
-
-  queue.push(source);
-
-  while (queue.length > 0) {
-    current = queue.shift()
-    if (current && current.subviews) {
-      subviews = current.subviews
-
-      for (var i = 0; i < subviews.length; i++) {
-        v = subviews[i];
-        if (v.class && v.class.toString() == targetClass) {
-          found.push(v)
-        } else if (v) {
-          queue.push(v)
-        }
-      }
-    }
-  }
-
-  return found;
-}
-
-function select_fn(source, match_fn) {
+function select(source, match_fn) {
   var current = null,
     subviews = [],
     found = [],
@@ -83,6 +55,39 @@ function select_fn(source, match_fn) {
   }
 
   return found;
+}
+
+function classMatcher(className) {
+  return function(el) {
+    return el.class && el.class.toString() == className;
+  }
+}
+
+function first(source, match_fn) {
+  var current = null,
+    subviews = [],
+    queue = [],
+    v;
+
+  queue.push(source);
+
+  while (queue.length > 0) {
+    current = queue.shift()
+    if (current && current.subviews) {
+      subviews = current.subviews
+
+      for (var i = 0; i < subviews.length; i++) {
+        v = subviews[i];
+        if (match_fn(v)) {
+          return v;
+        } else if (v) {
+          queue.push(v)
+        }
+      }
+    }
+  }
+
+  return nil
 }
 
 function select(source, targetClass) {
