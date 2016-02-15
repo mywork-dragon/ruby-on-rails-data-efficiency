@@ -49,7 +49,7 @@ class SdkService
 					package_row = SdkPackage.find_or_create_by(package: package[0..174]) # MYSQL errors if it's >= 180
 					begin
 						package_join_table.create!(sdk_package_id: package_row.id, snapshot_column => snapshot_id)
-					rescue ActiveRecord::RecordNotUnique => e
+					rescue ActiveRecord::RecordNotUnique
 						nil
 					end
 				end
@@ -205,7 +205,8 @@ class SdkService
 						favicon: favicon,
 						open_source: proposed[:open_source],
 						github_repo_identifier: proposed[:github_repo_identifier],
-						source: IosSdk.sources[:package_lookup]
+						source: IosSdk.sources[:package_lookup],
+						kind: :native
 					})
 				rescue ActiveRecord::RecordNotUnique => e
 					sdk = IosSdk.find_by_name(proposed[:name])

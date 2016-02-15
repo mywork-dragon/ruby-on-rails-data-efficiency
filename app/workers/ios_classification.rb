@@ -49,12 +49,18 @@ module IosClassification
     end
   end
 
-  def classify(snap_id)
-    ActiveRecord::Base.logger.level = 1
+  def convert_to_summary(ipa_snapshot_id:,classdump:)
 
-    classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
+    summary_defaults = {
+      'binary' => {
+        'classdump' => '',
+        'strings' => ''
+      },
+      'files' => [],
+      'frameworks' => []
+    }
 
-    raise "No successful classdumps available" if classdump.nil?
+    summary = {}
 
     if Rails.env.production?
 
@@ -62,10 +68,10 @@ module IosClassification
 
       url = classdump.class_dump.url
       contents = open(url).read.scrub
-    elsif Rails.env.development?
 
-      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{snap_id}"
-      ext = if is_new_classdump?(snap_id, classdump)
+    else
+      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{ipa_snapshot_id}"
+      ext = if is_new_classdump?(ipa_snapshot_id, classdump)
         '.json.txt'
       else
         classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
@@ -75,41 +81,77 @@ module IosClassification
       contents = File.open(filename) {|f| f.read}.chomp.scrub
     end
 
-    unless is_new_classdump?(snap_id, classdump)
-      sdks = classdump.method == 'classdump' ? classify_classdump(contents) : classify_strings(snap_id, contents)
-      attribute_sdks_to_snap(snap_id: snap_id, sdks: sdks, method: classdump.method == 'classdump' ? :classdump : :strings)
+    if is_new_classdump?(ipa_snapshot_id, classdump)
+
+      contents = JSON.load(contents)
+
+      type = contents['binary']['type']
+
+      if type == nil
+        summary['binary'] = contents['binary']
+      elsif type == 'classdump' || type == 'strings'
+        summary['binary'] = {}
+        summary['binary']['classdump'] = type == 'classdump' ? contents['binary']['contents'] : summary_defaults['binary']['classdump']
+        summary['binary']['strings'] = type == 'strings' ? contents['binary']['contents'] : summary_defaults['binary']['strings']
+      else
+        raise "Unrecognized type"
+      end
+
+      summary['frameworks'] = contents['frameworks'] || summary_defaults['frameworks']
+      summary['files'] = contents['files'] || summary_defaults['files']
     else
-      classify_all_sources(ipa_snapshot_id: snap_id, classdump: classdump, summary: JSON.load(contents))
+      if classdump.method == 'classdump'
+        summary['binary'] = {
+          'classdump' => contents,
+          'strings' => summary_defaults['binary']['strings']
+        }
+      elsif classdump.method == 'strings'
+        summary['binary'] = {
+          'classdump' => summary_defaults['binary']['classdump'],
+          'strings' => contents
+        }
+      else
+        raise "Unrecognized classdump method"
+      end
+
+      summary['frameworks'] = fw_folders_from_strings(contents)
+      summary['files'] = summary_defaults['files']
     end
+
+    summary
+  end
+
+  def classify(snap_id)
+    ActiveRecord::Base.logger.level = 1
+
+    classdump = ClassDump.where(ipa_snapshot_id: snap_id, dump_success: true).last
+
+    raise "No successful classdumps available" if classdump.nil?
+
+    summary = convert_to_summary(ipa_snapshot_id: snap_id, classdump: classdump)
+
+    classify_all_sources(ipa_snapshot_id: snap_id, classdump: classdump, summary: summary)
   end
 
   def classify_all_sources(ipa_snapshot_id:, classdump:, summary:)
 
-    classdump_sdks = nil
-    strings_sdks = nil
-    folders_sdks = nil
+    classdump_sdks = classify_classdump(summary['binary']['classdump'])
+    frameworks_sdks = sdks_from_frameworks(summary['frameworks'])
+    files_sdks = sdks_from_files(summary['files'])
+    strings_regex_sdks = sdks_from_string_regex(summary['binary']['strings'])
 
-    # search the binary files
-    # need to acommodate for some new classdumps that only have one type 
-    type = summary['binary']['type']
-    if type
-      classdump_sdks = classify_classdump(summary['binary']['contents']) if type == 'classdump'
-      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['contents']) if type == 'strings'
-    else
-      classdump_sdks = classify_classdump(summary['binary']['classdump'])
-      strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
-    end
+    # These go last because they have side effects (ex. autogenerate sdks)
+    js_tag_sdks = sdks_from_js_tags(ipa_snapshot_id, summary['files'])
+    dll_sdks = sdks_from_dlls(ipa_snapshot_id, summary['files'])
+    strings_sdks = classify_strings(ipa_snapshot_id, summary['binary']['strings'])
 
-    # find them from frameworks folders
-    frameworks_sdks = if type
-      sdks_from_frameworks(fw_folders_from_strings(summary['binary']['contents']))
-    else
-      sdks_from_frameworks(summary['frameworks'])
-    end
-
-    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks || [], method: :classdump)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: classdump_sdks, method: :classdump)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks, method: :strings)
     attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: frameworks_sdks, method: :frameworks)
-    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_sdks || [], method: :strings) # leave to last because it creates sdks
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: files_sdks, method: :file_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: js_tag_sdks, method: :js_tag_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: dll_sdks, method: :dll_regex)
+    attribute_sdks_to_snap(snap_id: ipa_snapshot_id, sdks: strings_regex_sdks, method: :string_regex)
   end
 
   def attribute_sdks_to_snap(snap_id:, sdks:, method:)
@@ -137,6 +179,104 @@ module IosClassification
     sdks
   end
 
+  def sdks_from_files(files)
+
+    sdks = []
+
+    combined = files.join("\n")
+    regexes = SdkFileRegex.where.not(ios_sdk_id: nil)
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    puts "Finished files"
+    sdks.uniq
+  end
+
+  def sdks_from_dlls(ipa_snapshot_id, files)
+
+    sdks = []
+
+    dlls = files.map do |path|
+      match = path.match(/\/([^\/]+\.dll\z)/)
+      match[1] if match
+    end.compact.uniq
+
+    dlls.each do |dll|
+      dll_row = SdkDll.find_or_create_by(name: dll)
+
+      begin
+        IpaSnapshotsSdkDll.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_dll_id: dll_row.id)
+      rescue ActiveRecord::RecordNotUnique
+        nil
+      end
+    end
+
+    regexes = DllRegex.where.not(ios_sdk_id: nil)
+    combined = dlls.join("\n")
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    puts "Finished dlls"
+    sdks.uniq
+  end
+
+  def sdks_from_js_tags(ipa_snapshot_id, files)
+
+    sdks = []
+
+    tags = files.map do |path|
+      match = path.match(/\/([^\/]+\.js\z)/)
+      match[1] if match
+    end.compact.uniq
+
+    # create the tags and entries in join table
+    tags.each do |tag|
+      tag_row = SdkJsTag.find_or_create_by(name: tag)
+
+      begin
+        IpaSnapshotsSdkJsTag.create!(ipa_snapshot_id: ipa_snapshot_id, sdk_js_tag_id: tag_row.id)
+      rescue ActiveRecord::RecordNotUnique
+        nil
+      end
+    end
+
+    # match tags against regexes
+    regexes = JsTagRegex.where.not(ios_sdk_id: nil)
+    combined = tags.join("\n")
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    puts "Finished js tags"
+    sdks.uniq
+  end
+
+  def sdks_from_string_regex(contents)
+    sdks = []
+
+    regexes = SdkStringRegex.where.not(ios_sdk_id: nil)
+
+    regexes.each do |regex_row|
+      if contents.scan(regex_row.regex).count > regex_row.min_matches
+        sdks << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
+
+    puts "Finished string regex"
+    sdks.uniq
+  end
+
   # Get classes from strings
   def classes_from_strings(contents)
     # more generic version, grabs any "string"
@@ -158,7 +298,9 @@ module IosClassification
 
   # do this for now...eventually delete the old stuff
   def sdks_from_frameworks(frameworks)
-    find_from_fw_folders(fw_folders: frameworks)
+    sdks = find_from_fw_folders(fw_folders: frameworks)
+    puts "Finished js tags"
+    sdks
   end
 
   # Get FW folders from strings
@@ -184,7 +326,7 @@ module IosClassification
 
   end
 
-  def sdks_from_strings(contents:, ipa_snapshot_id:, search_classes: false, search_bundles: true, search_fw_folders: true)
+  def sdks_from_strings(contents:, ipa_snapshot_id:, search_classes: false, search_bundles: true, search_fw_folders: false)
 
     sdks = []
 
