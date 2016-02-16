@@ -27,7 +27,7 @@ class IosSdk < ActiveRecord::Base
   end
 
   class << self
-    def create_manual(name:, website:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
+    def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
       IosSdk.create!({
         name: name,
         website: website,
@@ -35,7 +35,8 @@ class IosSdk < ActiveRecord::Base
         open_source: open_source || /(?:bitbucket|github|sourceforge)/.match(website),
         summary: summary,
         github_repo_identifier: github_repo_identifier,
-        source: :manual
+        source: :manual,
+        kind: kind
         })
     end
   end

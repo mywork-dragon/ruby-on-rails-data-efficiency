@@ -209,7 +209,8 @@ class CocoapodSdkServiceWorker
 			open_source: open_source,
 			deprecated: deprecated,
 			github_repo_identifier: github_repo_identifier,
-			source: IosSdk.sources[:cocoapods]
+			source: IosSdk.sources[:cocoapods],
+			kind: :native
 		}
 	end
 

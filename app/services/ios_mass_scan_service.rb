@@ -45,9 +45,13 @@ class IosMassScanService
       # filter out to only those
 
       # TODO: make this faster
-      relevant = recent.select {|x| IosAppSnapshot.where(ios_app_id: x).last.ratings_all_count > 0}
+      relevant = recent.select do |ios_app_id|
+        ratings = IosAppSnapshot.where(ios_app_id: x).last.ratings_all_count
+        true if ratings && ratings > 0
+      end
 
-      puts "filtered to relevant #{relevant.count}"
+      puts "Filtered to relevant #{relevant.count}: Continue? [y/n]"
+      return unless gets.chomp.include?('y')
 
       run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
     end
