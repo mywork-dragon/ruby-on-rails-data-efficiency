@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210214546) do
+ActiveRecord::Schema.define(version: 20160217215109) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -759,6 +759,15 @@ ActiveRecord::Schema.define(version: 20160210214546) do
   add_index "google_accounts", ["last_used"], name: "index_google_accounts_on_last_used", using: :btree
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
   add_index "google_accounts", ["scrape_type"], name: "index_google_accounts_on_scrape_type", using: :btree
+
+  create_table "header_regexes", force: true do |t|
+    t.text     "regex"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "header_regexes", ["ios_sdk_id"], name: "index_header_regexes_on_ios_sdk_id", using: :btree
 
   create_table "installations", force: true do |t|
     t.integer  "company_id"

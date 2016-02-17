@@ -356,7 +356,7 @@ module IosClassification
     uniques = []
 
     # match classnames against regexes
-    regexes = ClassRegex.where.not(ios_sdk_id: nil)
+    regexes = HeaderRegex.where.not(ios_sdk_id: nil)
     combined = classes.join("\n")
 
     regexes.each do |regex_row|
