@@ -21,7 +21,7 @@ class AppStoreSnapshotService
 
       ios_app_count = IosApp.count
 
-      batch.jobs do
+      # batch.jobs do
         
         # IosApp.find_each.with_index do |ios_app, index|
         #   li "App ##{index}" if index%10000 == 0
@@ -46,7 +46,7 @@ class AppStoreSnapshotService
           puts '#2' if debug
         end
       
-      end
+      # end
 
       Slackiq.message("Done queing apps (#{ios_app_count})", webhook_name: :main)
        
