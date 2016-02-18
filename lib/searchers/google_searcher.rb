@@ -127,8 +127,6 @@ module GoogleSearcher
         {title: title, subtitle: subtitle, url: url, summary: summary}
       end.compact
 
-      puts results_hash_a
-
       results_hash_a_compact = results_hash_a.compact
 
       results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], subtitle: results_hash[:subtitle], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
