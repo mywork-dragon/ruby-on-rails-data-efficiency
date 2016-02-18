@@ -360,7 +360,7 @@ module IosClassification
     combined = classes.join("\n")
 
     regexes.each do |regex_row|
-      if regex_row.match(combined)
+      if regex_row.regex.match(combined)
         uniques << IosSdk.find(regex_row.ios_sdk_id)
       end
     end
