@@ -127,6 +127,8 @@ module GoogleSearcher
         {title: title, subtitle: subtitle, url: url, summary: summary}
       end.compact
 
+      raise HtmlInvalid, "Couldn't find h3.r selector for anything on page" if results_hash_a.empty?
+
       results_hash_a_compact = results_hash_a.compact
 
       results_hash_a_compact.each_with_index.map{ |results_hash, index| SearcherCommon::Result.new(title: results_hash[:title], subtitle: results_hash[:subtitle], url: results_hash[:url], summary: results_hash[:summary], result_num: index)}
