@@ -350,12 +350,20 @@ module IosClassification
 
   def sdks_from_classnames(classes:, remove_apple: true)
 
-    if remove_apple
-      classes -= AppleDoc.select(:name).where(name: classes).map {|row| row.name}
-    end
+    classes -= AppleDoc.where(name: classes).pluck(:name) if remove_apple
 
     collisions = {}
     uniques = []
+
+    # match classnames against regexes
+    regexes = HeaderRegex.where.not(ios_sdk_id: nil)
+    combined = classes.join("\n")
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        uniques << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
 
     classes.each do |name|
       found = direct_search(name) || source_search(name)
