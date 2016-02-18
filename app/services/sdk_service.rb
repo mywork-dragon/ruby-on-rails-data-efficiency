@@ -352,7 +352,8 @@ class SdkService
 		  # raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
 		  # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
 
-		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+		  search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
+		  # search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
 		  search.results.map(&:url).take(limit)
 		end
 
