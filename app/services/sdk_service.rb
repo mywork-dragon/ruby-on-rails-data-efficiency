@@ -46,7 +46,7 @@ class SdkService
 			# add all packages to the join table
 			if !read_only
 				packages.each do |package|
-					package_row = SdkPackage.find_or_create_by(package: package[0..174]) # MYSQL errors if it's >= 180
+					package_row = SdkPackage.find_or_create_by(package: mysql_friendly(package)) # MYSQL errors if it's >= 180
 					begin
 						package_join_table.create!(sdk_package_id: package_row.id, snapshot_column => snapshot_id)
 					rescue ActiveRecord::RecordNotUnique
@@ -60,7 +60,7 @@ class SdkService
 			# update all the packages in the join table with the matching sdk
 			if !read_only
 				matches.each do |package, sdk|
-					SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
+					SdkPackage.find_by_package(mysql_friendly(package)).update(sdk_column => sdk.id)
 				end
 			end
 
@@ -72,7 +72,7 @@ class SdkService
 			if !read_only
 				new_matches.each do |package_arr, sdk|
 					package_arr.each do |package|
-						SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
+						SdkPackage.find_by_package(mysql_friendly(package)).update(sdk_column => sdk.id)
 					end
 				end
 			end
@@ -102,7 +102,7 @@ class SdkService
 				match = regexes.find {|entry| entry[:regex].match(package)}
 
 				if match.nil?
-					row = SdkPackage.find_by_package(package)
+					row = SdkPackage.find_by_package(mysql_friendly(package))
 					match = row if row && row[col]
 				end
 
@@ -375,6 +375,10 @@ class SdkService
 
 		def camel_split(str)
 			str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
+		end
+
+		def mysql_friendly(package)
+			package[0..174]
 		end
 
 		#### FOR TESTING #####
