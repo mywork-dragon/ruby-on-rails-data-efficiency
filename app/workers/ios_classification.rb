@@ -294,7 +294,7 @@ module IosClassification
   # Get bundles from strings
   def bundles_from_strings(contents)
     contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/).map do |package|
-      package[0..174]
+      package[0..174] # convert to 175 characters for MYSQL reasons
     end
   end
 
