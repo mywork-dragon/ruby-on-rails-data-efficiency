@@ -19,8 +19,10 @@ module GoogleSearcher
     def search(query, proxy: nil, proxy_type: nil)
       @query = query
       p = Proxy.new(jid: @jid)
-      html_s = p.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query}, proxy: proxy, proxy_type: proxy_type)
-      puts html_s
+
+      # http://stackoverflow.com/questions/23995700/what-is-the-porpose-of-the-google-search-parameter-gbv
+      html_s = p.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query, 'gbv' => '1'}, proxy: proxy, proxy_type: proxy_type)
+      
       Parser.parse(html_s, query: query)
     end
 
@@ -104,26 +106,28 @@ module GoogleSearcher
       end
 
       results_hash_a = gs.map do |g|
-        begin
-          h3_r_node = g.at_css('h3.r')
-          url_node = h3_r_node.children.find{ |x| x.name = 'a' }
+        h3_r_node = g.at_css('h3.r')
+        
+        next nil if h3_r_node.nil?
+        
+        url_node = h3_r_node.children.find{ |x| x.name = 'a' }
 
-          url = url_node['href']
-          url = clean_url(url)
+        url = url_node['href']
+        url = clean_url(url)
+        url.strip!
 
-          title = url_node.children.text
+        title = url_node.children.text.strip
 
-          subtitle = g.at_css('.f.slp').text
-          subtitle = nil if subtitle.blank?
+        subtitle_node = g.at_css('.f.slp')
+        subtitle = subtitle_node.nil? ? nil : subtitle_node.text.strip
 
-          summary = g.at_css('.st').text.strip
-          summary = nil if summary.blank?
+        summary_node = g.at_css('.st')
+        summary = summary_node.nil? ? nil : summary_node.text.strip
 
-          {title: title.strip, subtitle: subtitle.strip, url: url.strip, summary: summary.strip}
-        # rescue => e
-        #   nil
-        end
-      end
+        {title: title, subtitle: subtitle, url: url, summary: summary}
+      end.compact
+
+      raise HtmlInvalid, "Couldn't find h3.r selector for anything on page" if results_hash_a.empty?
 
       results_hash_a_compact = results_hash_a.compact
 
