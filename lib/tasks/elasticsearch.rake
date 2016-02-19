@@ -1,3 +1,6 @@
+# Usage
+# cd varys_current && nohup bundle exec rake elasticsearch:run_whatever RAILS_ENV=production > /dev/null 2>&1 &
+
 namespace 'elasticsearch' do
 
   desc 'run test'
@@ -32,6 +35,8 @@ namespace 'elasticsearch' do
 
   def test_method
     puts "test_method called!!"
+    sleep(10)
+    Slackiq.notify(webhook_name: :main, title: 'Test Method called', 'whatever' => 'yippee')
   end
 
 end
