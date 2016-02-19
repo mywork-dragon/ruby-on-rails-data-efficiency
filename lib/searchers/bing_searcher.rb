@@ -79,7 +79,6 @@ module BingSearcher
     private
 
     def parse_count
-      raise SearcherCommon::HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
 
       results = @html.at_css('.sb_count')
 
