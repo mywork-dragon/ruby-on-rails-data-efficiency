@@ -19,8 +19,6 @@ module BingSearcher
     # Run a search
     # Proxy type can be :tor or anything that Proxy accepts
     def search(query, proxy_type: :tor)
-      raise SearcherCommon::HtmlInvalid, "FAKE ERROR"
-
       @query = query
       query_url_safe = CGI::escape(query)
       p = Proxy.new(jid: @jid)
