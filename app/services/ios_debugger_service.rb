@@ -51,9 +51,11 @@ class IosDebuggerService
         summary[:packages] = bundles_from_strings(snap_summary['binary']['strings'])
 
         summary[:sdks] = IosSdk.joins(:ios_sdks_ipa_snapshots).select(:name, :method).where('ios_sdks_ipa_snapshots.ipa_snapshot_id = ?', @ipa_snapshot_id).map do |row|
+
+          method = IosSdksIpaSnapshot.methods.keys[row[:method]] if row[:method]
           {
             sdk: row.name,
-            method: IosSdksIpaSnapshot.methods.keys[row[:method]]
+            method: method
           }
         end.sort_by {|entry| entry[:sdk]}
 
