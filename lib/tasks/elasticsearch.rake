@@ -50,7 +50,7 @@ namespace 'elasticsearch' do
     Slackiq.message(message, webhook_name: :main)
   end
 
-  def notify_complete(name)
+  def notify_end(name)
     message = "#{name} Elasticsearch index completed."
     puts message
     Slackiq.message(message, webhook_name: :main)
