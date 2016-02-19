@@ -1,4 +1,5 @@
 class CocoapodManualServiceWorker < CocoapodSdkServiceWorker
+  # Class for manually creating SDKs that are *not* available in cocoapods, but can be 'faked' by giving a dummy podspec JSON
 
   # pod is a JSON string of a podspec
   # example: https://github.com/CocoaPods/Specs/blob/master/Specs/AFNetworking/0.10.0/AFNetworking.podspec.json
