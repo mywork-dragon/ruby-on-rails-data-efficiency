@@ -86,8 +86,8 @@ module BingSearcher
 
         detect_unusual_traffic_message
 
-        if @html.at_css('.b_no').nil?
-          raise SearcherCommon::HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
+        if !@html.text.match(/No results found for/)
+          raise SearcherCommon::HtmlInvalid, "Couldn't match regex /No results found for/ on page (Query: #{@query})"
         end
         
       end
