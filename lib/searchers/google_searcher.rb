@@ -77,7 +77,7 @@ module GoogleSearcher
         detect_unusual_traffic_message
 
         if !@html.text.match(/Your search - .* - did not match any documents./)
-          raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
+          raise SearcherCommon::HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
         end
         
       end
@@ -92,7 +92,7 @@ module GoogleSearcher
       if defined?(results_count)
         return results_count.gsub(',', '').to_i
       else
-        raise HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
+        raise SearcherCommon::HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
       end
       
     end
@@ -102,7 +102,7 @@ module GoogleSearcher
         gs = @html.css('.g')
       rescue => e
         detect_unusual_traffic_message
-        raise HtmlInvalid, "Couldn't find '.g' selector (Query: #{@query})"
+        raise SearcherCommon::HtmlInvalid, "Couldn't find '.g' selector (Query: #{@query})"
       end
 
       results_hash_a = gs.map do |g|
@@ -145,7 +145,7 @@ module GoogleSearcher
     end
 
     def detect_unusual_traffic_message
-      raise UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
+      raise SearcherCommon::UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
     end
 
   end
