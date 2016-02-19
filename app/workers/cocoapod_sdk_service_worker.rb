@@ -125,7 +125,7 @@ class CocoapodSdkServiceWorker
 			json = JSON.parse(data.body)
 
 			# throws out new ones...but low bar means if they're good, they'll get picked up eventually
-			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || json["stats"]["download_total"] < (is_open_source?(pod) ? MIN_OS_DOWNLOADS : MIN_COMPANY_DOWNLOADS)
+			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || below_minimum_threshold?(pod,json["stats"]["download_total"])
 		end
 
 		true
@@ -242,6 +242,10 @@ class CocoapodSdkServiceWorker
 		pod['tag'] = pod['source']['tag']
 
 		pod
+	end
+
+	def below_minimum_threshold?(pod, downloads)
+		downloads < (is_open_source?(pod) ? MIN_OS_DOWNLOADS : MIN_COMPANY_DOWNLOADS)
 	end
 
 end
