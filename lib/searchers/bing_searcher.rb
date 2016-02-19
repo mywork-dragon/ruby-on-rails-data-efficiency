@@ -19,6 +19,8 @@ module BingSearcher
     # Run a search
     # Proxy type can be :tor or anything that Proxy accepts
     def search(query, proxy_type: :tor)
+      raise SearcherCommon::HtmlInvalid, "FAKE ERROR"
+
       @query = query
       query_url_safe = CGI::escape(query)
       p = Proxy.new(jid: @jid)
@@ -79,6 +81,8 @@ module BingSearcher
     private
 
     def parse_count
+      raise SearcherCommon::HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
+
       results = @html.at_css('.sb_count')
 
       if results.nil? || (results_text = results.text).blank?
@@ -86,7 +90,7 @@ module BingSearcher
         detect_unusual_traffic_message
 
         if @html.at_css('.b_no').nil?
-          raise HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
+          raise SearcherCommon::HtmlInvalid, "Couldn't match regex /Your search - .* - did not match any documents./ on page (Query: #{@query})"
         end
         
       end
@@ -101,7 +105,7 @@ module BingSearcher
       if defined?(results_count) && results_count
         return results_count.gsub(',', '').to_i
       else
-        raise HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
+        raise SearcherCommon::HtmlInvalid, "Couldn't find number of results text in HTML (Query: #{@query})"
       end
       
     end
@@ -111,7 +115,7 @@ module BingSearcher
         b_algos = @html.css('.b_algo')
       rescue => e
         detect_unusual_traffic_message
-        raise HtmlInvalid, "Couldn't find '.b_algo' selector (Query: #{@query})"
+        raise SearcherCommon::HtmlInvalid, "Couldn't find '.b_algo' selector (Query: #{@query})"
       end
 
       results_hash_a = b_algos.map do |b_algo|
@@ -142,7 +146,7 @@ module BingSearcher
 
     def detect_unusual_traffic_message
       return
-      # raise UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
+      # raise SearcherCommon::UnusualTrafficDetected, "(Query: #{@query})" if @html.text.include?('Our systems have detected unusual traffic')
     end
 
   end
