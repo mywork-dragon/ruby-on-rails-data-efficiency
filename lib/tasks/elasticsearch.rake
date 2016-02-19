@@ -3,6 +3,7 @@
 
 namespace 'elasticsearch' do
 
+  # So we can pull data from the task object in the task blocks
   Rake::TaskManager.record_task_metadata = true
 
   desc 'IosApp'
