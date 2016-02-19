@@ -15,6 +15,7 @@ namespace 'elasticsearch' do
   desc 'AndroidApp'
   task run_android_app: [:environment] do |task|
     notify_start(task.full_comment)
+    AppsIndex::AndroidApp.import
     notify_end(task.full_comment)
   end
 
