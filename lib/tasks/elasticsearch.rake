@@ -1,47 +1,55 @@
 # Usage
-# cd varys_current && nohup bundle exec rake elasticsearch:run_whatever RAILS_ENV=production > /dev/null 2>&1 &
+# cd varys_current && nohup bundle exec rake elasticsearch:run_whatever RAILS_ENV=production > ~/elasticsearch.log 2>&1 &
 
 namespace 'elasticsearch' do
 
+  Rake::TaskManager.record_task_metadata = true
+
   desc 'IosApp'
-  task run_ios_app: [:environment] do
+  task run_ios_app: [:environment] do |task|
+    notify_start(task.full_comment)
     AppsIndex::IosApp.import
-    Slackiq.message(webhook_name: :main, 'IosApp Elasticsearch index completed.')
+    notify_end(task.full_comment)
   end
   
   desc 'AndroidApp'
   task run_android_app: [:environment] do
-    AppsIndex::AndroidApp.import
-    Slackiq.message(webhook_name: :main, 'AndroidApp Elasticsearch index completed.')
+    notify_start(task.full_comment)
+    notify_end(task.full_comment)
   end
 
   desc 'IosSdk'
   task run_ios_sdk: [:environment] do
+    notify_start(task.full_comment)
     AppsIndex::IosSdk.import
-    Slackiq.message(webhook_name: :main, 'IosSdk Elasticsearch index completed.')
+    notify_end(task.full_comment)
   end
   
   desc 'AndroidSdk'
   task run_android_sdk: [:environment] do
+    notify_start(task.full_comment)
     AppsIndex::AndroidSdk.import
-    Slackiq.message(webhook_name: :main, 'AndroidSdk Elasticsearch index completed.')
+    notify_end(task.full_comment)
   end
 
   desc 'Cocoapod'
   task cocoapod: [:environment] do
+    notify_start(task.full_comment)
     AppsIndex::Cocoapod.import
-    Slackiq.message(webhook_name: :main, 'Cocoapod Elasticsearch index completed.')
+    notify_end(task.full_comment)
   end
 
   desc 'run test'
-  task run_test: [:environment] do
-    test_method
+  task run_test: [:environment] do |task|
+    puts "I am running #{task.full_comment}"
   end
 
-  def test_method
-    puts "test_method called!!"
-    sleep(10)
-    Slackiq.message(webhook_name: :main, 'hi')
+  def notify_start(name)
+    Slackiq.message("#{name} Elasticsearch index started.", webhook_name: :main)
+  end
+
+  def notify_complete(name)
+    Slackiq.message("#{name} Elasticsearch index completed.", webhook_name: :main)
   end
 
 end
