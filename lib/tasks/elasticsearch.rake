@@ -13,27 +13,27 @@ namespace 'elasticsearch' do
   end
   
   desc 'AndroidApp'
-  task run_android_app: [:environment] do
+  task run_android_app: [:environment] do |task|
     notify_start(task.full_comment)
     notify_end(task.full_comment)
   end
 
   desc 'IosSdk'
-  task run_ios_sdk: [:environment] do
+  task run_ios_sdk: [:environment] do |task|
     notify_start(task.full_comment)
     AppsIndex::IosSdk.import
     notify_end(task.full_comment)
   end
   
   desc 'AndroidSdk'
-  task run_android_sdk: [:environment] do
+  task run_android_sdk: [:environment] do |task|
     notify_start(task.full_comment)
     AppsIndex::AndroidSdk.import
     notify_end(task.full_comment)
   end
 
   desc 'Cocoapod'
-  task cocoapod: [:environment] do
+  task cocoapod: [:environment] do |task|
     notify_start(task.full_comment)
     AppsIndex::Cocoapod.import
     notify_end(task.full_comment)
