@@ -46,7 +46,7 @@ class IosMassScanService
 
       # TODO: make this faster
       relevant = recent.select do |ios_app_id|
-        ratings = IosAppSnapshot.where(ios_app_id: x).last.ratings_all_count
+        ratings = IosAppSnapshot.where(ios_app_id: ios_app_id).last.ratings_all_count
         true if ratings && ratings > 0
       end
 

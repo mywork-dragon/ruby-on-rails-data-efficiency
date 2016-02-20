@@ -293,7 +293,9 @@ module IosClassification
 
   # Get bundles from strings
   def bundles_from_strings(contents)
-    contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/)
+    contents.scan(/^(?:#{bundle_prefixes.join('|')})\..*/).map do |package|
+      package[0..174] # convert to 175 characters for MYSQL reasons
+    end
   end
 
   # do this for now...eventually delete the old stuff
@@ -350,12 +352,20 @@ module IosClassification
 
   def sdks_from_classnames(classes:, remove_apple: true)
 
-    if remove_apple
-      classes -= AppleDoc.select(:name).where(name: classes).map {|row| row.name}
-    end
+    classes -= AppleDoc.where(name: classes).pluck(:name) if remove_apple
 
     collisions = {}
     uniques = []
+
+    # match classnames against regexes
+    regexes = HeaderRegex.where.not(ios_sdk_id: nil)
+    combined = classes.join("\n")
+
+    regexes.each do |regex_row|
+      if regex_row.regex.match(combined)
+        uniques << IosSdk.find(regex_row.ios_sdk_id)
+      end
+    end
 
     classes.each do |name|
       found = direct_search(name) || source_search(name)

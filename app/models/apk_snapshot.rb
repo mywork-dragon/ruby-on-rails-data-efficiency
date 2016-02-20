@@ -23,7 +23,7 @@ class ApkSnapshot < ActiveRecord::Base
   has_many :apk_snapshots_sdk_dlls
   has_many :sdk_dlls, through: :apk_snapshots_sdk_dlls
 
-  has_many :apk_snaphshot_exceptions
+  has_many :apk_snapshot_exceptions
 
   belongs_to :apk_file
 

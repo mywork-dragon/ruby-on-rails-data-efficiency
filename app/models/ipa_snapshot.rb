@@ -13,6 +13,12 @@ class IpaSnapshot < ActiveRecord::Base
   has_many :sdk_packages_ipa_snapshots
   has_many :sdk_packages, through: :sdk_packages_ipa_snapshots
 
+  has_many :ipa_snapshots_sdk_dlls
+  has_many :sdk_dlls, through: :ipa_snapshots_sdk_dlls
+
+  has_many :ipa_snapshots_sdk_js_tags
+  has_many :sdk_js_tags, through: :ipa_snapshots_sdk_js_tags
+
   enum download_status: [:starting, :retrying, :cleaning, :complete]
   enum scan_status: [:scanning, :scanned, :failed, :arch_issue]
 

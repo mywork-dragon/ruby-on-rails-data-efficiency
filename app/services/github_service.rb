@@ -1,5 +1,8 @@
 class GithubService
 
+  DEV_CLIENT_ID = '47966b7ae432cb33ee4b'
+  DEV_CLIENT_SECRET = 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'
+
   # Repo can be URL or user/repo
   def repo_to_url(repo)
     if repo.match(/\Ahttps?:\/\//)  # if it looks like a url
@@ -15,39 +18,36 @@ class GithubService
   # @returns either the body or a CurbFu::Response::Base object
 
   def get_credentials
-    acct = GithubAccount.select(:id, :client_id, :client_secret).sample
 
-    acct.last_used = DateTime.now
-    begin
-      acct.save
-    rescue
-      nil
+    if Rails.env.production?
+      acct = GithubAccount.select(:id, :client_id, :client_secret).sample
+
+      acct.last_used = DateTime.now
+      begin
+        acct.save
+      rescue
+        nil
+      end
+
+      client_id = acct.client_id
+      client_secret = acct.client_secret
+    else
+
+      client_id = DEV_CLIENT_ID
+      client_secret = DEV_CLIENT_SECRET
     end
-    
-    # acct = GithubAccount.transaction do
-    #   a = GithubAccount.lock.order(last_used: :asc).first
-    #   a.last_used = DateTime.now
-    #   a.save
-    #   a
-    # end
 
     {
-      client_id: acct.client_id,
-      client_secret: acct.client_secret
+      client_id: client_id,
+      client_secret: client_secret
     }
   end
 
   def make_request(url, body = true, headers: {}, params: {})
 
-    if Rails.env.production?
-      acct = get_credentials
-      client_id = acct[:client_id]
-      client_secret = acct[:client_secret]
-    else
-      # hard code account for dev
-      client_id = '47966b7ae432cb33ee4b'
-      client_secret = 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'
-    end
+    acct = get_credentials
+    client_id = acct[:client_id]
+    client_secret = acct[:client_secret]
 
     response = Proxy.get_from_url(url, headers: headers, params: {'client_id' => client_id, 'client_secret' => client_secret}.merge(params))
 
@@ -139,8 +139,7 @@ class GithubService
       self.new.get_credentials
     end
 
-    # Gets the branch metadata for the specified branch. Will use branch 'master' if not supplied
-    # @returns the Github API response object as JSON
+    # Gets the branch metadata for the specified branch. Will use branch 'master' if not supplied # @returns the Github API response object as JSON
     def get_branch_data(repo, branch='master')
       self.new.get_branch_data(repo, branch)
     end
