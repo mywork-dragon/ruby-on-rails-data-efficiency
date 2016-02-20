@@ -2,6 +2,10 @@ class AndroidSdkHelperService
 
   class << self
 
+    def freq(name)
+      {sdk_package_freq: sdk_package_freq(name), dll_freq: dll_freq(name), js_tag_freq: js_tag_freq(name)}
+    end
+
     def sdk_package_freq(name)
       freq_hash(SdkPackage, SdkPackagesApkSnapshot, :sdk_package_id, :package, name)
     end
