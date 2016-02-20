@@ -13,10 +13,14 @@ class GooglePlaySnapshotService
 
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
+      Slackiq.message('Starting to queue Google Play apps...', webhook_name: :main)
+
       AndroidApp.find_each.with_index do |android_app, index|
         li "App ##{index}" if index%10000 == 0
         GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
+
+      Slackiq.message("Done queueing Google Play apps", webhook_name: :main)
 
     end
 
