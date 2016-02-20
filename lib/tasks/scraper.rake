@@ -1,3 +1,5 @@
+# cd varys_current && nohup bundle exec rake elasticsearch:scrape_whtaever RAILS_ENV=production > ~/scraper.log 2>&1 &
+
 namespace 'scraper' do
 
   desc 'Scrape App Store'
@@ -8,8 +10,6 @@ namespace 'scraper' do
   desc 'Scrape Google Play'
   task scrape_google_play: [:environment] do |task|
     GooglePlaySnapshotService.run
-  end 
-
-  
+  end   
   
 end
