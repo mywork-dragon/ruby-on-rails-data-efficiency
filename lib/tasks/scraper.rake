@@ -1,4 +1,4 @@
-# cd varys_current && nohup bundle exec rake elasticsearch:scrape_whtaever RAILS_ENV=production > ~/scraper.log 2>&1 &
+# cd varys_current && nohup bundle exec rake scraper:scrape_whatever RAILS_ENV=production > ~/scraper.log 2>&1 &
 
 namespace 'scraper' do
 

@@ -17,7 +17,7 @@ class AppStoreSnapshotService
       batch.description = "run: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
   
-      Slackiq.message('Starting to queue apps...', webhook_name: :main)
+      Slackiq.message('Starting to queue App Store apps...', webhook_name: :main)
 
       ios_app_count = IosApp.count
 
@@ -48,7 +48,7 @@ class AppStoreSnapshotService
       
       # end
 
-      Slackiq.message("Done queueing apps (#{ios_app_count})", webhook_name: :main)
+      Slackiq.message("Done queueing App Store apps", webhook_name: :main)
        
     end
     
