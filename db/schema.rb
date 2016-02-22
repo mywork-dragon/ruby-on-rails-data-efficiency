@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160217215109) do
+ActiveRecord::Schema.define(version: 20160222180636) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1260,6 +1260,7 @@ ActiveRecord::Schema.define(version: 20160217215109) do
     t.datetime "good_as_of_date"
     t.string   "bundle_version"
     t.text     "lookup_content"
+    t.datetime "first_valid_date",    default: '2016-02-22 18:08:15'
   end
 
   add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
