@@ -49,8 +49,6 @@ class IosSdkService
 
         partioned_installed_sdks = partition_sdks(ios_sdks: installed_sdks)
 
-
-
         # handle the uninstalled ones
         last_snaps_without_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'ios_sdk_id').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
