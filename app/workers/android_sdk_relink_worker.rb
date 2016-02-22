@@ -27,7 +27,13 @@ class AndroidSdkRelinkWorker
         regex = Regexp.new(regex_s)
 
         if regex.match(package)
-          AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: sdk_regex.android_sdk_id)
+          if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: sdk_regex.android_sdk_id).empty?
+            begin
+              AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: sdk_regex.android_sdk_id)
+            rescue ActiveRecord::RecordNotUnique => e
+              # do nothing
+            end
+          end
         end
       end
     end
@@ -44,7 +50,13 @@ class AndroidSdkRelinkWorker
         next if regex.blank?
 
         if regex.match(name)
-          AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: dll_regex.android_sdk_id)
+          if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: dll_regex.android_sdk_id).empty?
+            begin
+              AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: dll_regex.android_sdk_id)
+            rescue ActiveRecord::RecordNotUnique => e
+              # do nothing
+            end
+          end
         end
       end
     end
@@ -61,7 +73,13 @@ class AndroidSdkRelinkWorker
         next if regex.blank?
 
         if regex.match(name)
-          AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: js_tag_regex.android_sdk_id)
+          if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: js_tag_regex.android_sdk_id).empty?
+            begin
+              AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: js_tag_regex.android_sdk_id)
+            rescue ActiveRecord::RecordNotUnique => e
+              # do nothing
+            end
+          end
         end
       end
     end
