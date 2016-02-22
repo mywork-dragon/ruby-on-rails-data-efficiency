@@ -67,7 +67,28 @@ class IosMassScanService
         end
       end
     end
+
+    def update_first_valid
+
+      batch = Sidekiq::Batch.new
+      batch.description = "update the first valid dates"
+      batch.on(:complete, 'IosMassScanService#on_update_complete')
+
+      IpaSnapshot.select(:id).find_in_batches(batch_size: 1000).with_index do |query_batch, index|
+        puts "Batch #{index}" if index % 1000
+        batch.jobs do
+          query_batch.each do |ipa_snapshot|
+            FirstValidDateWorker.perform_async(ipa_snapshot.id)
+          end
+        end
+        
+      end
+    end
     
+  end
+
+  def on_update_complete(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Finished setting correct first valid dates')
   end
 
   def on_classification_complete(status, options)
