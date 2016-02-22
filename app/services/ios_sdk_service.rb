@@ -42,7 +42,7 @@ class IosSdkService
         installed_sdks = snap.ios_sdks
 
         # handle the installed ones
-        first_snaps_with_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('min(good_as_of_date) as first_seen', :version, :ios_app_id, 'ios_sdk_id').where(id: app.ipa_snapshots.scanned, 'ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
+        first_snaps_with_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('min(created_at) as first_seen', :version, :ios_app_id, 'ios_sdk_id').where(id: app.ipa_snapshots.scanned, 'ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
         max_current_date = first_snaps_with_current_sdks.max {|a, b| a.first_seen <=> b.first_seen}
         max_current_date = max_current_date ? max_current_date.first_seen : nil
