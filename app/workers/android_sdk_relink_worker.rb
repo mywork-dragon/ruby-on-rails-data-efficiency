@@ -5,7 +5,7 @@ class AndroidSdkRelinkWorker
 
   def perform(android_app_id)
     android_app = AndroidApp.find(android_app_id)
-    apk_ss = android_app.newest_apk_snapshot
+    apk_ss = android_app.apk_snapshots.where(status: 1, scan_status: 1).last
     return if apk_ss.blank?
 
     link_packages(apk_ss)
@@ -20,6 +20,7 @@ class AndroidSdkRelinkWorker
 
     sdk_packages.each do |sdk_package|
       package = sdk_package.package
+      next if package.blank?
 
       SdkRegex.find_each do |sdk_regex|
         regex_s = sdk_regex.regex
@@ -44,6 +45,7 @@ class AndroidSdkRelinkWorker
 
     sdk_dlls.each do |sdk_dll|
       name = sdk_dll.name
+      next if name.blank?
 
       DllRegex.find_each do |dll_regex|
         regex = dll_regex.regex
@@ -67,6 +69,7 @@ class AndroidSdkRelinkWorker
 
     sdk_js_tags.each do |sdk_js_tag|
       name = sdk_js_tag.name
+      next if name.blank?
 
       JsTagRegex.find_each do |js_tag_regex|
         regex = js_tag_regex.regex
