@@ -35,29 +35,41 @@ class AndroidSdkRelinkService
     def seed
       raise 'You need to be in dev' unless Rails.env.development?
 
-      aa = AndroidApp.create!(app_identifer: 'com.fakeassthing.whatever')
+      aa = AndroidApp.create!(app_identifier: 'com.fakeassthing.whatever')
 
-      apk_ss = ApkSnapshot.create!
+      apk_ss = ApkSnapshot.create(status: :success, scan_status: :scan_success)
+
+      aa.apk_snapshots << apk_ss
 
       aa.newest_apk_snapshot = apk_ss
       aa.save!
 
-      sdk_package_packages = %w(com.xamarin.blah com.gamedonia.yippee com.bunchofcrap)
+      xamarin_android_sdk = AndroidSdk.create!(name: 'Xamarin', kind: :native)
+      SdkRegex.create!(regex: 'xamarin', android_sdk_id: xamarin_android_sdk.id)
+
+      ionic_android_sdk = AndroidSdk.create!(name: 'Ionic', kind: :native)
+      DllRegex.create!(regex: /Ionic\./, android_sdk_id: ionic_android_sdk.id)
+
+      ac_android_sdk = AndroidSdk.create!(name: 'Appcelerator (JS)', kind: :js)
+      JsTagRegex.create!(regex: /appcelerator/i, android_sdk_id: ac_android_sdk.id)
+
+
+      sdk_package_packages = %w(com.xamarin.blah com.bunchofcrap)
       sdk_package_packages.each do |package|
         sdk_package = SdkPackage.create!(package: package)
         SdkPackagesApkSnapshot.create!(sdk_package_id: sdk_package.id, apk_snapshot_id: apk_ss.id)
       end
 
-      sdk_dll_names = %w(Ionic.dll GameUpSdk.dll Fakie.dll)
+      sdk_dll_names = %w(Ionic.dll Fakie.dll)
       sdk_dll_names.each do |name|
         sdk_dll = SdkDll.create!(name: name)
         ApkSnapshotsSdkDll.create!(sdk_dll_id: sdk_dll.id, apk_snapshot_id: apk_ss.id)
       end
 
-      sdk_js_tag_names = %w(Appcelerator.js bootstrap.min.js thisdoesnothing.js)
+      sdk_js_tag_names = %w(Appcelerator.js thisdoesnothing.js)
       sdk_js_tag_names.each do |name|
         sdk_js_tag = SdkJsTag.create!(name: name)
-        ApkSnapshotsSdkJsTag!(sdk_js_tag_id: sdk_js_tag.id, apk_snapshot_id: apk_ss.id)
+        ApkSnapshotsSdkJsTag.create!(sdk_js_tag_id: sdk_js_tag.id, apk_snapshot_id: apk_ss.id)
       end
 
     end
