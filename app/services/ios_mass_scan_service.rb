@@ -74,7 +74,8 @@ class IosMassScanService
       batch.description = "update the first valid dates"
       batch.on(:complete, 'IosMassScanService#on_update_complete')
 
-      IpaSnapshot.select(:id).find_in_batches(batch_size: 1000).with_index do |query_batch, index|
+      # already ran it on everything else. Just need the ones afterwards
+      IpaSnapshot.select(:id).where('id > 259763').find_in_batches(batch_size: 1000).with_index do |query_batch, index|
         puts "Batch #{index}" if index % 1000
         batch.jobs do
           query_batch.each do |ipa_snapshot|
