@@ -18,16 +18,18 @@ class AndroidSdkRelinkWorker
   def link_packages(apk_ss)
     sdk_packages = apk_ss.sdk_packages
 
-    sdk_packages.each do |sdk_package|
+    packages_s = sdk_packages.map do |sdk_package|
       package = sdk_package.package
-      next if package.blank?
+      package.blank? ? nil : package
+    end.compact.join("\n")
 
-      SdkRegex.find_each do |sdk_regex|
+    SdkRegex.find_in_batches(batch_size: 1000) do |batch|
+      batch.each do |sdk_regex|
         regex_s = sdk_regex.regex
         next if regex_s.blank?
         regex = Regexp.new(regex_s)
 
-        if regex.match(package)
+        if regex.match(packages_s)
           if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: sdk_regex.android_sdk_id).empty?
             begin
               AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: sdk_regex.android_sdk_id)
@@ -43,15 +45,17 @@ class AndroidSdkRelinkWorker
   def link_dlls(apk_ss)
     sdk_dlls = apk_ss.sdk_dlls
 
-    sdk_dlls.each do |sdk_dll|
+    names_s = sdk_dlls.map do |sdk_dll|
       name = sdk_dll.name
-      next if name.blank?
+      name.blank? ? nil : name
+    end.compact.join("\n")
 
-      DllRegex.find_each do |dll_regex|
+    DllRegex.find_in_batches(batch_size: 1000) do |batch|
+      batch.each do |dll_regex|
         regex = dll_regex.regex
         next if regex.blank?
 
-        if regex.match(name)
+        if regex.match(names_s)
           if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: dll_regex.android_sdk_id).empty?
             begin
               AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: dll_regex.android_sdk_id)
@@ -67,15 +71,17 @@ class AndroidSdkRelinkWorker
   def link_js_tags(apk_ss)
     sdk_js_tags = apk_ss.sdk_js_tags
 
-    sdk_js_tags.each do |sdk_js_tag|
+    names_s = sdk_js_tags.map do |sdk_js_tag|
       name = sdk_js_tag.name
-      next if name.blank?
+      name.blank? ? nil : name
+    end.compact.join("\n")
 
-      JsTagRegex.find_each do |js_tag_regex|
+    JsTagRegex.find_in_batches(batch_size: 1000) do |batch|
+      batch.each do |js_tag_regex|
         regex = js_tag_regex.regex
         next if regex.blank?
 
-        if regex.match(name)
+        if regex.match(names_s)
           if AndroidSdksApkSnapshot.where(apk_snapshot_id: apk_ss.id, android_sdk_id: js_tag_regex.android_sdk_id).empty?
             begin
               AndroidSdksApkSnapshot.create!(apk_snapshot_id: apk_ss.id, android_sdk_id: js_tag_regex.android_sdk_id)
