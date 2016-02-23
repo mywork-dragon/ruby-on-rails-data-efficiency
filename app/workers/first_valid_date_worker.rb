@@ -1,7 +1,7 @@
 class FirstValidDateWorker
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_scan_cloud
+  sidekiq_options backtrace: true, retry: false, queue: :low
 
   def perform(ipa_snapshot_id)
     snapshot = IpaSnapshot.find(ipa_snapshot_id)
