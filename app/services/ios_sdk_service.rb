@@ -44,34 +44,20 @@ class IosSdkService
         # handle the installed ones
         first_snaps_with_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('min(first_valid_date) as first_seen', :version, :ios_app_id, 'ios_sdk_id').where(id: app.ipa_snapshots.scanned, 'ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
-        max_current_date = first_snaps_with_current_sdks.max {|a, b| a.first_seen <=> b.first_seen}
-        max_current_date = max_current_date ? max_current_date.first_seen : nil
-
         partioned_installed_sdks = partition_sdks(ios_sdks: installed_sdks)
 
         # handle the uninstalled ones
         last_snaps_without_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'ios_sdk_id').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
-        max_last_date = last_snaps_without_current_sdks.max {|a, b| a.last_seen <=> b.last_seen}
-        max_last_date = max_last_date ? max_last_date.last_seen : nil
-
         uninstalled_sdks = IosSdk.where(id: last_snaps_without_current_sdks.pluck(:ios_sdk_id))
 
         partioned_uninstalled_sdks = partition_sdks(ios_sdks: uninstalled_sdks)
-
-        # get store snapshots
-        store_snaps = IosAppSnapshot.select(:version, :released).where(ios_app_id: ios_app_id).where('released < ?', [max_current_date, max_last_date].compact.max).order(released: :desc)
 
         # format the responses
         resp[:installed_sdks] = partioned_installed_sdks.map do |sdk|
           formatted = format_sdk(sdk)
           ipa_snap = first_snaps_with_current_sdks.find {|row| row.ios_sdk_id == sdk.id}
           formatted['first_seen_date'] = ipa_snap ? ipa_snap.first_seen : nil
-
-          store_snap = store_snaps.find {|s| s.released < ipa_snap.first_seen} # depends on reverse sort
-
-          formatted['latest_store_snapshot_version'] = store_snap ? store_snap.version : nil
-          formatted['latest_store_snapshot_date'] = store_snap ? store_snap.released : nil
           formatted
         end
 
@@ -79,10 +65,6 @@ class IosSdkService
           formatted = format_sdk(sdk)
           ipa_snap = last_snaps_without_current_sdks.find {|row| row.ios_sdk_id == sdk.id}
           formatted['last_seen_date'] = ipa_snap ? ipa_snap.last_seen : nil
-
-          store_snap = store_snaps.find {|s| s.released < ipa_snap.last_seen} # depends on reverse sort
-          formatted['latest_store_snapshot_version'] = store_snap ? store_snap.version : nil
-          formatted['latest_store_snapshot_date'] = store_snap ? store_snap.released : nil
           formatted
         end
 
