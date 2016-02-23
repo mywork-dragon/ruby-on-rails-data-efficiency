@@ -4,7 +4,9 @@ class AndroidSdkRelinkService
 
   class << self
 
-    def run
+    def run(start: nil)
+
+      start = AndroidApp.first.id if start.nil?
 
       prod = Rails.env.production?
 
