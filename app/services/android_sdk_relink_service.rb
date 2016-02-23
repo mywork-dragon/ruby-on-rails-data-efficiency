@@ -16,7 +16,7 @@ class AndroidSdkRelinkService
         batch.on(:complete, 'AndroidSdkRelinkService#on_complete_run')
       end
 
-      AndroidApp.find_in_batches(batch_size: 10000).with_index do |batch, index|
+      AndroidApp.find_in_batches(batch_size: 10000, start: start).with_index do |batch, index|
         li "App #{index*10000}"
 
         args = batch.map{ |android_app| [android_app.id] }
