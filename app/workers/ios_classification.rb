@@ -436,13 +436,19 @@ module IosClassification
   end
 
   def source_search(name)
+
+    ios_sdks = []
+
     c = CocoapodSourceData.where(name: name)
-    ios_sdks = c.map do |csd|
+    ios_sdks += c.map do |csd|
       pod = csd.cocoapod
       if !pod.nil?
         pod.ios_sdk
       end
     end.compact.uniq
+
+    s = IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name).where.not('ios_sdk_source_data.ios_sdk_id' => nil)
+    ios_sdks += s
 
     ios_sdks if !ios_sdks.first.nil? # don't return empty arrays
   end
