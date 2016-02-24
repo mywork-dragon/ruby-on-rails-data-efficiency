@@ -357,8 +357,6 @@ class SdkService
 		  q = q.gsub(/[^\w\s]/, ' ')
 		  q = "site:#{site} " + q if site.present?
 
-		  return q
-
 		  # search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
 		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
 		  search.results.map(&:url).take(limit)
