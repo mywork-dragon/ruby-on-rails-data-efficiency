@@ -206,6 +206,7 @@ class Proxy
   end
 
   def ios_proxies
+    # proxies minus those that are broken
     %w(
     172.31.27.59
     172.31.17.15
@@ -257,6 +258,11 @@ class Proxy
     172.31.22.202
     172.31.30.170
     172.31.24.107
+    ) - %w(
+      172.31.29.18
+      172.31.27.22
+      172.31.18.235
+      172.31.17.134
     )
   end
 
