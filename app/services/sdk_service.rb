@@ -354,8 +354,8 @@ class SdkService
 
 		  q = q.gsub(/[^\w\s]/, ' ')
 
-		  search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
-		  # search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+		  # search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
+		  search = GoogleSearcher::Searcher.search(q, proxy_type: :android_classification)
 		  search.results.map(&:url).take(limit)
 		end
 
