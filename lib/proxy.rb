@@ -62,6 +62,8 @@ class Proxy
       
       proxy = "#{mp}:8888"
 
+      puts "using proxy: #{proxy}"
+
       return CurbFu.send(type, req, params) do |curb|
 
         # Defaults
