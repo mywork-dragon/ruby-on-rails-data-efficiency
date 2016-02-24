@@ -288,8 +288,8 @@ class SdkService
 		def google_github(query:, platform:, snapshot_id:)
 			return nil unless github_query_valid?(query)
 
-			q = "site:github.com #{query} #{platform}"
-			google_search(q: q).each do |url|
+			q = "#{query} #{platform}"
+			google_search(q: q, site: 'github.com').each do |url|
 				begin
 					url_re = Regexp.new(/https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)
 				rescue RegexpError
@@ -347,12 +347,17 @@ class SdkService
 			true
 		end
 
-		def google_search(q:, limit: 10)
+		# q - string for the query (ex. 'parse ios')
+		# site - string to of a domain to restrict search results (ex. 'github.com')
+		def google_search(q:, site: nil, limit: 10)
 		  # result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
 		  # raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
 		  # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
 
 		  q = q.gsub(/[^\w\s]/, ' ')
+		  q = "site:#{site} " + q if site.present?
+
+		  return q
 
 		  # search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
 		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
