@@ -23,6 +23,7 @@ class IosDebuggerService
         success: ipa_snapshot.success,
         scan_status: ipa_snapshot.scan_status,
         version: ipa_snapshot.version,
+        first_valid_date: ipa_snapshot.first_valid_date,
         valid_date: ipa_snapshot.good_as_of_date,
         created: ipa_snapshot.created_at
       }

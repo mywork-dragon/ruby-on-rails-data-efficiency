@@ -24,23 +24,23 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-<!--                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
-                            found <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
-                          </span> -->
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date']" title="first seen in app on {{sdkValue['first_seen_date'] | date : shortDate}}">
+                            first seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                          </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-<!--                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date'] || sdkValue['latest_store_snapshot_date']" title="first found in app on {{(sdkValue['latest_store_snapshot_date'] || sdkValue['first_seen_date']) | date : shortDate}}">
-                            found <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
-                          </span> -->
+                          <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date']" title="first seen in app on {{sdkValue['first_seen_date'] | date : shortDate}}">
+                            first seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                          </span>
                         </span>
                       </div>
                     </li>
                   </ul>
                 </div>
 
-                <div class="col-md-6 sdkOpenSourceSection" ng-hide="true || !iosLiveScanCtrl.sdkData.sdkOpenSource.length">
+                <div class="col-md-6 sdkOpenSourceSection" ng-hide="!iosLiveScanCtrl.sdkData.sdkOpenSource.length">
                   <strong>Uninstalled SDKs</strong> <span class="liveScanSdksCountDisplay">({{iosLiveScanCtrl.sdkData.sdkOpenSource.length}})</span>
                   <ul ng-show="iosLiveScanCtrl.sdkData.sdkOpenSource">
                     <li class="sdkLiveScanDisplayList" ng-repeat="sdkValue in iosLiveScanCtrl.sdkData.sdkOpenSource">
@@ -52,14 +52,14 @@
                         <span ng-if="canViewStorewideSdks">
                           <a href="#/sdk/ios/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date'] || sdkValue['latest_store_snapshot_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
+                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
                             last seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
                           </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
-                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date'] || sdkValue['latest_store_snapshot_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
+                          <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
                             last seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
                           </span>
                         </span>
