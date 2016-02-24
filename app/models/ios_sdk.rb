@@ -10,7 +10,9 @@ class IosSdk < ActiveRecord::Base
   has_many :ipa_snapshots, through: :ios_sdks_ipa_snapshots
 
   has_many :cocoapods
+  has_many :cocoapod_source_datas, through: :cocoapods
   
+  has_many :ios_sdk_source_datas
 
   has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
   has_many :source_matches, through: :ios_sdk_source_matches, source: :match_sdk
