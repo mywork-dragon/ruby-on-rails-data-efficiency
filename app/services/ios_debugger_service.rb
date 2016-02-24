@@ -44,6 +44,7 @@ class IosDebuggerService
       else
 
         summary[:meta][:summary_url] = classdump.class_dump.url
+        summary[:meta][:content_url] = classdump.app_content.url
         snap_summary = convert_to_summary(ipa_snapshot_id: @ipa_snapshot_id, classdump: classdump)
 
         summary[:frameworks] = snap_summary['frameworks']
