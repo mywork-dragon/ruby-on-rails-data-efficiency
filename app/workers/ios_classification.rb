@@ -439,14 +439,6 @@ module IosClassification
 
     ios_sdks = []
 
-    # c = CocoapodSourceData.where(name: name)
-    # ios_sdks += c.map do |csd|
-    #   pod = csd.cocoapod
-    #   if !pod.nil?
-    #     pod.ios_sdk
-    #   end
-    # end.compact.uniq
-
     ios_sdks += IosSdk.joins(:cocoapod_source_datas).where('cocoapod_source_data.name' => name)
     ios_sdks += IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name)
 
