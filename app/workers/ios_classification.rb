@@ -452,7 +452,7 @@ module IosClassification
 
     ios_sdks.uniq!
 
-    ios_sdks if !ios_sdks.first.nil? # don't return empty arrays
+    ios_sdks unless ios_sdks.first.nil? # don't return empty arrays
   end
 
   def direct_search(q)
