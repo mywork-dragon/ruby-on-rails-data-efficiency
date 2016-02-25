@@ -439,8 +439,8 @@ module IosClassification
 
     ios_sdks = []
 
-    ios_sdks += IosSdk.joins(:cocoapod_source_datas).where('cocoapod_source_data.name' => name)
-    ios_sdks += IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name)
+    ios_sdks += IosSdk.joins(:cocoapod_source_datas).where('cocoapod_source_data.name' => name, 'cocoapod_source_data.flagged' => false)
+    ios_sdks += IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name, 'ios_sdk_source_data.flagged' => false)
 
     ios_sdks.uniq!
 
