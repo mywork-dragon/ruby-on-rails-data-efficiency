@@ -50,7 +50,7 @@ set :sdk_scraper_concurrency, 50
 set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
 set :scraper_master_concurrency, 50
-set :web_concurrency, 1
+set :web_concurrency, 5
 set :darth_vader_concurrency, 10  # needs to be >= number of iOS devices
 set :kylo_ren_concurrency, 10     # needs to be >= number of iOS devices
 set :ios_live_scan_concurrency, 50
@@ -61,7 +61,7 @@ set :sdk_scraper_queue, %w(sdk)
 set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default low)
 set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
-set :web_queue, %w(no_op)
+set :web_queue, %w(mailers)
 set :darth_vader_queue, %w(ios_live_scan ios_live_scan_test)
 set :kylo_ren_queue, %w(ios_epf_mass_scan ios_mass_scan kylo)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud ios_mass_scan_cloud)
