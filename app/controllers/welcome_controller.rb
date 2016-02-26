@@ -16,7 +16,7 @@ class WelcomeController < ApplicationController
       @installed_sdks = sdk_response[:installed_sdks]
       @uninstalled_sdks = sdk_response[:uninstalled_sdks]
       # remove pinterest from Etsy's uninstalled
-      if @app.name == "Etsy"
+      if @app.app_identifier == 477128284
         @uninstalled_sdks.shift
       end
     end
