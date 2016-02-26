@@ -9,12 +9,22 @@ $(document).ready(function() {
         window.location = '/apps/' +  $('.dd-selected-value').val()
     })
 
+    $('a[data-featherlight]').hover(function() {
+        var img = $(this).find('img')
+        $('<i class="fa fa-search-plus fa-lg"></i>').css({
+            'top': img.height()/2,
+            'left': img.width()/2
+        }).appendTo($(this))
+    }, function() {
+        $(this).find('i.fa').remove()
+    })
+
     if ($('.app-sdks').length) {
         $('#progressModal').modal('show')
         var progress = 0;
         function moveProgress() {
             // add progress between 10 and 30%
-            var newProgress = Math.floor(Math.random() * (40 - 10 + 1)) + 10
+            var newProgress = Math.floor(Math.random() * (40 - 30 + 1)) + 30
             progress = Math.min(progress + newProgress, 100)
             if (progress >= 100) {
                 clearInterval(timer)

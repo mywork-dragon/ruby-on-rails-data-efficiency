@@ -41,6 +41,7 @@ h1, h2, h3, h4, h5, h6, body {
     font-size: 18px;
     margin-top: 2px;
     margin-left: -64px;
+    line-height: 51px !important;
 }
 #app-select  .dd-option-description, #app-select  .dd-selected-description {
     margin-right: 64px;

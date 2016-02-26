@@ -4,10 +4,10 @@
     canvas#demo-canvas
     #engineer_message.domain
       #heading
-        h1 Realtime Mobile App Intelligence
+        h1 Hard to get data on any mobile app right at your fingertips
         select#app-select
           - @apps.each do |app|
-            option data-description="#{app.sdk_response[:installed_sdks].size} SDKs installed" data-imagesrc=app.icon_url('350x350') value=app.app_identifier
+            option data-imagesrc=app.icon_url('350x350') value=app.app_identifier
               = app.name
         a href='#' class='btn btn-lg btn-primary livescan' Live Scan
 
