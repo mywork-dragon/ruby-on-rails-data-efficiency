@@ -4,15 +4,18 @@ class WelcomeController < ApplicationController
   layout "marketing" 
   
   def index
-    @apps = IosApp.where(app_identifier: [404249815,389801252,297606951,447188370,368677368,324684580,477128284,
-                                          529479190, 547702041,591981144,618783545,317469184,401626263]).to_a.shuffle
+    @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
   end
 
   def app_sdks
-    @app = IosApp.find_by_app_identifier(params[:app_identifier])
-    sdk_response = @app.sdk_response
-    @installed_sdks = sdk_response[:installed_sdks]
-    @uninstalled_sdks = sdk_response[:uninstalled_sdks]
+    if !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
+      redirect_to action: :index
+    else
+      @app = IosApp.find_by_app_identifier(params[:app_identifier])
+      sdk_response = @app.sdk_response
+      @installed_sdks = sdk_response[:installed_sdks]
+      @uninstalled_sdks = sdk_response[:uninstalled_sdks]
+    end
   end
   
   def contact_us

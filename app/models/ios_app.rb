@@ -28,6 +28,9 @@ class IosApp < ActiveRecord::Base
   enum user_base: [:elite, :strong, :moderate, :weak]
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
   
+  WHITELISTED_APPS = [404249815,389801252,297606951,447188370,368677368,324684580,477128284,
+                      529479190, 547702041,591981144,618783545,317469184,401626263]
+
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|
       snapshot.updated_at
