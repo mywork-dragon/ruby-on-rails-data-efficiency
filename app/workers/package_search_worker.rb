@@ -148,9 +148,13 @@ module PackageSearchWorker
   def js_tags(unzipped_apk:, android_app:)
     entries = unzipped_apk.glob('assets/www/*')
     js_tags = entries.map do |entry|
-      contents = entry.get_input_stream.read
-      contents.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
-      contents.scan(/<script src=.*\/(.*.js)/)
+      begin
+        contents = entry.get_input_stream.read
+        contents.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+        contents.scan(/<script src=.*\/(.*.js)/)
+      rescue => e
+        nil
+      end
     end.flatten.compact
 
     js_files = []
