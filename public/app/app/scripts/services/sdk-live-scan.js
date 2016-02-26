@@ -101,9 +101,11 @@ angular.module("appApp")
       androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode) {
 
         var errorMessage = "";
+        var color = "#E82020";
 
         if(statusCode == 4) {
-          errorMessage = "Error (status 4)"
+          errorMessage = "Error (status 4: Taken down or not in US Store)"
+          color = "#FFD94D"; // yellow
         } else if(statusCode == -1) {
           errorMessage = "Timeout"
         }
@@ -135,7 +137,7 @@ angular.module("appApp")
           var slacktivityData = {
             "title": "Android Live Scan Failed",
             "fallback": "Android Live Scan Failed",
-            "color": "#E82020",
+            "color": color,
             "userEmail": userInfo.email,
             'appName': appData.name,
             'companyName': appData.company.name,
