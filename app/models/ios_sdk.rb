@@ -10,7 +10,16 @@ class IosSdk < ActiveRecord::Base
   has_many :ipa_snapshots, through: :ios_sdks_ipa_snapshots
 
   has_many :cocoapods
+  has_many :cocoapod_source_datas, through: :cocoapods
   
+  has_many :ios_sdk_source_datas
+
+  has_many :dll_regexes
+  has_many :js_tag_regexes
+  has_many :sdk_file_regexes
+  has_many :header_regexes
+  has_many :sdk_regexes
+  has_many :sdk_string_regexes
 
   has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
   has_many :source_matches, through: :ios_sdk_source_matches, source: :match_sdk
@@ -21,6 +30,16 @@ class IosSdk < ActiveRecord::Base
   validates :kind, presence: true
 
   # TODO: currently returns taken down. Maybe revisit and fix later
+
+  # this is the mysql version of the query (2362 is parse...substitute)
+  # 
+  # select distinct ios_apps.*
+  # from ios_apps
+  # join ipa_snapshots i1 on (i1.ios_app_id = ios_apps.id and i1.success = true and i1.scan_status = 1)
+  # join (select max(good_as_of_date) as good_as_of_date, ios_app_id from ipa_snapshots where ipa_snapshots.success = true and ipa_snapshots.scan_status = 1 group by ios_app_id) i2 on i1.ios_app_id = i2.ios_app_id and i1.good_as_of_date = i2.good_as_of_date
+  # join ios_sdks_ipa_snapshots on (i1.id = ios_sdks_ipa_snapshots.ipa_snapshot_id)
+  # where (ios_sdks_ipa_snapshots.ios_sdk_id = 2362)
+  
   def get_current_apps
     # TODO: revisit this to make it 1 query
     IosApp.where(id: self.ipa_snapshots.select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: 1).group(:ios_app_id).pluck(:ios_app_id))

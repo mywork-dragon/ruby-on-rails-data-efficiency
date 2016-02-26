@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160223011138) do
+ActiveRecord::Schema.define(version: 20160225013839) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1103,6 +1103,18 @@ ActiveRecord::Schema.define(version: 20160223011138) do
     t.integer  "ios_app_snapshot_id"
     t.integer  "price"
   end
+
+  create_table "ios_sdk_source_data", force: true do |t|
+    t.string   "name"
+    t.integer  "ios_sdk_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "flagged",    default: false
+  end
+
+  add_index "ios_sdk_source_data", ["flagged"], name: "index_ios_sdk_source_data_on_flagged", using: :btree
+  add_index "ios_sdk_source_data", ["ios_sdk_id"], name: "index_ios_sdk_source_data_on_ios_sdk_id", using: :btree
+  add_index "ios_sdk_source_data", ["name", "flagged"], name: "index_ios_sdk_source_data_on_name_and_flagged", using: :btree
 
   create_table "ios_sdk_source_groups", force: true do |t|
     t.string   "name"
