@@ -38,7 +38,7 @@ If you having trouble in editing css. please send a mail to support@surjithctly.
 
 body {
 	font-family:"Montserrat", Arial, Helvetica, sans-serif;
-	background:#FFF;
+	background:#f3f3f3;
 	position:relative;
 }
 /*a {
@@ -78,13 +78,12 @@ p {
 .jumbotron {
 	position: relative;
 	color: #fff;
-	/*text-align: center;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);*/
+	text-align: center;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
 /*	background: url("header-bg.jpg") no-repeat #232a31; */ /* Old browsers */
 	background-color: #232a31;
 	height:630px;
 	background-size:cover;
-	overflow:hidden;
 }
 .navbar {
   background:  #232a31;
@@ -237,7 +236,7 @@ p {
 .PageHead h1, .PageHead h3 {
 	text-align:center;
 }
-.PageHead h3 {
+.PageHead h3, .app-sdks h3 {
 	color: #9AA5AA;
 	font-weight: 200;
 	margin-bottom: 20px;
@@ -254,11 +253,16 @@ p {
 }
 .features img {
 	float:left;
-	padding:10px 20px 0 0;
+	margin:10px 20px 0 0;
+	border: 1px solid transparent;
 }
-.features p {
-/*	padding-left: 80px;*/
+.features a:hover img {
+	border: 1px solid #ddd;
 }
+.features h4 {
+	margin-top: 40px;
+}
+
 /*==========4. FEATURES LAYOUT==============*/
 
 .FeatLayout {
@@ -284,6 +288,82 @@ p {
 	box-sizing:border-box;
 	background:url(../images/tick.png) no-repeat left;
 }
+/*==========5. APP SDKS ==============*/
+
+.app-sdks {
+	visibility: hidden;
+}
+.app-sdks.header {
+	margin-top: 120px !important;
+}
+.app-sdks h1 {
+	margin-top: 0;
+	margin-bottom: 0px;
+}
+.app-sdks .large-3 {
+	padding-left: 30px;
+}
+.app-sdks ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.app-sdks li {
+	margin: 5px 0;
+}
+.app-sdks .block {
+	background-color: white;
+	padding: 20px;
+	overflow: auto;
+}
+.app-sdks li img, .app-sdks li a {
+	margin-right: 5px;
+}
+.app-sdks h1 i {
+	font-size: 20px;
+	color: #ccc;
+}
+.app-sdks .first-seen {
+	font-size: 10px;
+    color: #1EAD4F;
+    display: inline-block;
+    position: relative;
+    bottom: 1px;
+}
+.app-sdks .last-seen {
+	font-size: 10px;
+    color: #ED5F5F;
+    display: inline-block;
+    position: relative;
+    bottom: 1px;
+}
+.app-sdks .app-details {
+	margin-top: 10px;
+}
+.app-sdks .app-details span {
+	margin: 5px 0;
+	font-size: 14px;
+	display: block;
+	color: #9AA5AA;
+}
+.app-details label {
+	cursor: default;
+	display: inline;
+	font-size: 14px;
+}
+.app-details p {
+	margin-bottom: 10px;
+	font-size: 12px;
+}
+#progressModal .modal-dialog {
+	margin: 100px auto;
+}
+.alert {
+	margin-top: 80px;
+    margin-bottom: -67px;
+}
+
+
 /*==========5. TESTIMONIALS==============*/
 
 
@@ -477,8 +557,7 @@ p {
 .domain {
 	position: relative;
 	background-size:cover;
-	overflow:hidden;
-	margin-top: 150px;
+	margin-top: 80px;
 	text-align: center;
 }
 .domain h1 {

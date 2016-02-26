@@ -1,3 +1,6 @@
+h1, h2, h3, h4, h5, h6, body {
+    font-family: 'Montserrat', sans-serif;
+}
 /* line 9, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */
 .container#contact {
     position: relative;
@@ -25,6 +28,36 @@
 
 #headerLogo {
     width: 140px;
+}
+#app-select {
+    margin: 0 auto;
+    width: 90% !important;
+    text-shadow: none;
+}
+#app-select a:hover {
+    text-decoration: none;
+}
+#app-select .dd-option-text, #app-select .dd-selected-text {
+    font-size: 18px;
+    margin-top: 2px;
+    margin-left: -64px;
+}
+#app-select  .dd-option-description, #app-select  .dd-selected-description {
+    margin-right: 64px;
+}
+.livescan {
+    width: 90%;
+    font-size: 25px;
+}
+
+#heading {
+    position: relative;
+}
+#heading h1 {
+    font-size: 40px;
+}
+#heading .dd-option-image, #heading .dd-selected-image {
+    max-width: 50px;
 }
 
 /* line 34, /Users/patrickellis/Documents/MightySignal/varys/app/assets/stylesheets/index.css.scss */

@@ -1,0 +1,84 @@
+/! ==============HEADER =================
+#large-header.jumbotron.masthead.vertical-center
+  .container
+    canvas#demo-canvas
+    #engineer_message.domain
+      #heading
+        h1 Realtime Mobile App Intelligence
+        select#app-select
+          - @apps.each do |app|
+            option data-description="#{app.sdk_response[:installed_sdks].size} SDKs installed" data-imagesrc=app.icon_url('350x350') value=app.app_identifier
+              = app.name
+        a href='#' class='btn btn-lg btn-primary livescan' Live Scan
+
+
+/! ==============Content Area=================
+.container
+  /! ============== Other Features ==============
+  div
+    a#about_anchor.anchor
+  .row.PageHead
+    .col-md-12
+      h1#about About Us
+      h3
+        | Mobile is becoming universal but there is no visibility into the market.
+        br>/
+        | We provide crystal-clear insight into the mobile app economy.
+  .row
+    .col-sm-6.features
+      a data-featherlight='/lib/images/screenshot3.png'
+        = image_tag '/lib/images/screenshot3.png'
+    .col-sm-6.features
+      h4 Gathering and Indexing Data
+      p.feature_description Mobile app companies leave fingerprints on what technologies they use, how much they spend, their user bases, and more. We gather and make sense of this data for you.
+  .row
+    .col-sm-6.features
+      h4 The Most Accurate Realtime Data
+      p.feature_description Our Live Scan feature will gather new SDK data in realtime ensuring that you always have accurate results.
+    .col-sm-6.features
+      a data-featherlight='/lib/images/screenshot2.png'
+        = image_tag '/lib/images/screenshot2.png'
+      
+  .row
+    .col-sm-6.features
+      a data-featherlight='/lib/images/screenshot1.png'
+        = image_tag '/lib/images/screenshot1.png'
+    .col-sm-6.features
+      h4 Making the Data Accessible to You
+      p.feature_description Filter for apps through a web portal. Be alerted when apps exhibit certain behavior. Access the data through an API.
+
+     
+  /! ============== Contact us ==============
+  div
+    a#contact_anchor.anchor
+  #contact.container
+    .row.PageHead
+      .col-md-12
+        h1 Contact Us
+        h3 Fill this out and we'll be in touch.
+    .col-md-3
+    .col-md-6
+      form accept-charset="UTF-8" action="/contact_us?method=post" method="post" 
+        div style="display:none" 
+          input name="utf8" type="hidden" value="✓" /
+          input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
+        .form-group
+          input#first_name.form-control name="first_name" placeholder=("Full Name") type="text" /
+        .form-group
+          input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" /
+        .form-group
+          input#company.form-control name="company" placeholder="Company" type="text" /
+        .form-group
+          input#email.form-control name="email" placeholder="Email" type="email" /
+        .form-group
+          input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+        .form-group
+          input#sdk.form-control name="sdk" placeholder=("Does your company have SDKs for iOS and/or Android?") type="text" /
+        .form-group
+          textarea#message.form-control name="message" placeholder=("Your Message") 
+        .form-group.text-center
+          p
+            input#submit_contact_btn.btn.btn-primary.btn-lg name="commit" type="submit" value="Submit" /
+          span.loading
+    .col-md-3
+/! Container Closed

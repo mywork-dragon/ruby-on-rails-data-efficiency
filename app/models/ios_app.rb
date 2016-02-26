@@ -54,12 +54,32 @@ class IosApp < ActiveRecord::Base
   def get_website_urls
     self.websites.to_a.map{|w| w.url}
   end
+
+  def website
+    self.get_website_urls.first
+  end
+
+  def icon_url(size) # size should be string eg '350x350'
+    if newest_ios_app_snapshot.present?
+      return newest_ios_app_snapshot.send("icon_url_#{size}")
+    end
+  end
+
+  def sdk_response
+    IosSdkService.get_sdk_response(self.id)
+  end
   
   def name
     if newest_ios_app_snapshot.present?
       return newest_ios_app_snapshot.name
     else
       return nil
+    end
+  end
+
+  def price
+    if newest_ios_app_snapshot.present?
+      (newest_ios_app_snapshot.price.to_i > 0) ? "$#{newest_ios_app_snapshot.price}" : 'Free' 
     end
   end
   

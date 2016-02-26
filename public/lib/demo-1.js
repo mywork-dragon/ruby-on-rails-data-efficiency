@@ -1,5 +1,7 @@
 window.onload = function() {
-
+    if (!document.getElementById('large-header')) {
+        return;
+    }
     var width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
     // Main
     initHeader();
