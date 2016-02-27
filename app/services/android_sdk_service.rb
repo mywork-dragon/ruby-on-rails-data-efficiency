@@ -168,6 +168,8 @@ class AndroidSdkService
 			ext = exts(dot: :before).select{|s| url.include?(s) }.first
       # puts "ext: #{ext}"
 	    url = remove_sub(url).split(ext).first + ext
+      next if remove_sub_first.blank? # fix for this being nil sometimes
+      url = remove_sub_first + ext
       # puts "url: #{url}"
 	    company = query
       host = URI(url).host

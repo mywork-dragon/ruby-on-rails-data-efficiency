@@ -11,7 +11,7 @@ class ApkTestService
 
 
 	  # type: :single or :mass
-	  def android_start_scan(id, local: true, type: :mass)
+	  def android_start_scan(id, sync: true, type: :mass)
 	  	case type
 			when :mass
 			  worker = ApkSnapshotServiceWorker
@@ -24,7 +24,7 @@ class ApkTestService
 	    aa = AndroidApp.find(id)
 	    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
 
-	    if local
+	    if sync
 	    	worker.new.perform(job_id, nil, aa.id)
 	    else
 	    	batch = Sidekiq::Batch.new
