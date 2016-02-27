@@ -27,9 +27,9 @@ class IosMassScanService
 
     # helper method for running scans
     def run_new(n)
-      tried = (IpaSnapshot.all.pluck(:ios_app_id).uniq + IpaSnapshotLookupFailure.all.pluck(:ios_app_id).uniq).uniq
+      tried = IosApp.joins(:ipa_snapshots, :ipa_snapshot_lookup_failures).distinct
 
-      puts "Found all #{tried.length} tried apps"
+      puts "Found all #{tried.count} tried apps"
 
       mb_high_by_ratings = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where.not(id: tried).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
 
