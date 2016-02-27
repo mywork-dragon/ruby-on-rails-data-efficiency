@@ -167,7 +167,7 @@ class AndroidSdkService
       # puts "url: #{url}"
 			ext = exts(dot: :before).select{|s| url.include?(s) }.first
       # puts "ext: #{ext}"
-	    url = remove_sub(url).split(ext).first + ext
+      remove_sub_first = remove_sub(url).split(ext).first
       next if remove_sub_first.blank? # fix for this being nil sometimes
       url = remove_sub_first + ext
       # puts "url: #{url}"
