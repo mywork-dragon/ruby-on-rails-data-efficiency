@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160225013839) do
+ActiveRecord::Schema.define(version: 20160229100954) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1536,6 +1536,7 @@ ActiveRecord::Schema.define(version: 20160225013839) do
     t.datetime "updated_at"
   end
 
+  add_index "sdk_packages_apk_snapshots", ["apk_snapshot_id"], name: "index_apk_snapshot_id", using: :btree
   add_index "sdk_packages_apk_snapshots", ["sdk_package_id", "apk_snapshot_id"], name: "index_sdk_package_id_apk_snapshot_id", unique: true, using: :btree
   add_index "sdk_packages_apk_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
