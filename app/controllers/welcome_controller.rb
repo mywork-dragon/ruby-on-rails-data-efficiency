@@ -45,7 +45,8 @@ class WelcomeController < ApplicationController
       
     end
     
-    EmailWorker.perform_async(lead_options)
+    #EmailWorker.perform_async(lead_options)
+    ContactUsMailer.contact_us_email(lead_options).deliver
     flash[:success] = "We will be in touch soon!"
     redirect_to action: :index
   end
