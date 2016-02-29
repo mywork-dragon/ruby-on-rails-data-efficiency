@@ -59,7 +59,7 @@ class IosMonitorService
       puts "#{Time.now.utc}: Rescuing #{num_stuck} phones"
       stuck_devices.update_all(in_use: false)
 
-      Slackiq.message("Found #{num_stuck} devices stuck. Re-enabled. *Check to see if devices are unlocked*", webhook_name: :automated_alerts)
+      Slackiq.message("Found #{num_stuck} devices stuck: #{stuck_devices.pluck(:id).join(', ')}. Re-enabled. *Check to see if devices are unlocked*", webhook_name: :automated_alerts)
     end
 
     def attempt_tar
