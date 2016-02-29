@@ -84,7 +84,6 @@ class IosSdkService
         # format the responses
         resp[:installed_sdks] = partioned_installed_sdks.map do |sdk|
           formatted = format_sdk(sdk)
-          ipa_snap = first_snaps_with_current_sdks.find {|row| row.ios_sdk_id == sdk.id}
           ipa_snap = installed_display_sdk_to_snap[sdk.id]
           formatted['first_seen_date'] = ipa_snap ? ipa_snap.first_seen : nil
           formatted
