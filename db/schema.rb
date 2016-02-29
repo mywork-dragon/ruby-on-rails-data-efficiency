@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229193449) do
+ActiveRecord::Schema.define(version: 20160229233229) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1194,6 +1194,7 @@ ActiveRecord::Schema.define(version: 20160229193449) do
   add_index "ios_sdks", ["name"], name: "index_ios_sdks_on_name", unique: true, using: :btree
   add_index "ios_sdks", ["open_source"], name: "index_ios_sdks_on_open_source", using: :btree
   add_index "ios_sdks", ["sdk_company_id"], name: "index_ios_sdks_on_sdk_company_id", using: :btree
+  add_index "ios_sdks", ["source"], name: "index_ios_sdks_on_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
   create_table "ios_sdks_ipa_snapshots", force: true do |t|
