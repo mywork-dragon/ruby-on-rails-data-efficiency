@@ -1340,8 +1340,7 @@ class ApiController < ApplicationController
 
   def get_sdk_scanned_count
 
-    # scanned_android_sdk_num = ApkSnapshot.where(scan_status: 1).select(:android_app_id).distinct.count
-    scanned_android_sdk_num = 984624  # workaround... query is taking forever for some reason -- jlew
+    scanned_android_sdk_num = ApkSnapshot.where(scan_status: 1).select(:android_app_id).distinct.count
 
     scanned_ios_sdk_num = IpaSnapshot.where(scan_status: 1).select(:ios_app_id).distinct.count
 
