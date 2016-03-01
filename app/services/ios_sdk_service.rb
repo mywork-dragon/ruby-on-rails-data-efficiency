@@ -44,29 +44,58 @@ class IosSdkService
         # handle the installed ones
         first_snaps_with_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('min(first_valid_date) as first_seen', :version, :ios_app_id, 'ios_sdk_id').where(id: app.ipa_snapshots.scanned, 'ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
-        partioned_installed_sdks = partition_sdks(ios_sdks: installed_sdks)
-
         # handle the uninstalled ones
         last_snaps_without_current_sdks = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'ios_sdk_id').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => installed_sdks.pluck(:id)).group('ios_sdk_id')
 
         uninstalled_sdks = IosSdk.where(id: last_snaps_without_current_sdks.pluck(:ios_sdk_id))
 
-        partioned_uninstalled_sdks = partition_sdks(ios_sdks: uninstalled_sdks)
+        installed_display_sdk_to_snap = IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').select('ios_sdks.id as k, IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id) as v').where(id: installed_sdks).reduce({}) do |memo, map_row|
+
+          key = map_row['v']
+
+          current_snapshot = first_snaps_with_current_sdks.find { |snapshot| snapshot.ios_sdk_id == map_row['k'] }
+
+          if memo[key].nil? || current_snapshot.first_seen < memo[key].first_seen
+            memo[key] = current_snapshot
+          end
+
+          memo
+        end
+
+        # need to only show the "display sdks", ones that are linked. Build a mapping and load the SDKs into memory
+        uninstalled_display_sdk_to_snap = IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').select('ios_sdks.id as k, IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id) as v').where(id: uninstalled_sdks).reduce({}) do |memo, map_row|
+
+          key = map_row['v']
+          current_snapshot = last_snaps_without_current_sdks.find {|snapshot| snapshot.ios_sdk_id == map_row['k']}
+
+          if memo[key].nil? || current_snapshot.last_seen > memo[key].last_seen
+            memo[key] = current_snapshot
+          end
+
+          memo
+        end
+
+        installed_display_sdks = IosSdk.where(id: IosSdk.select('IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id)').joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where(id: installed_sdks))
+        uninstalled_display_sdks = IosSdk.where(id: IosSdk.select('IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id)').joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where(id: uninstalled_sdks))
+
+        partioned_installed_sdks = partition_sdks(ios_sdks: installed_display_sdks)
+        partioned_uninstalled_sdks = partition_sdks(ios_sdks: uninstalled_display_sdks)
 
         # format the responses
         resp[:installed_sdks] = partioned_installed_sdks.map do |sdk|
           formatted = format_sdk(sdk)
-          ipa_snap = first_snaps_with_current_sdks.find {|row| row.ios_sdk_id == sdk.id}
+          ipa_snap = installed_display_sdk_to_snap[sdk.id]
           formatted['first_seen_date'] = ipa_snap ? ipa_snap.first_seen : nil
           formatted
-        end
+        end.uniq
 
         resp[:uninstalled_sdks] = partioned_uninstalled_sdks.map do |sdk|
+          next unless installed_display_sdk_to_snap[sdk.id].nil?
           formatted = format_sdk(sdk)
-          ipa_snap = last_snaps_without_current_sdks.find {|row| row.ios_sdk_id == sdk.id}
+          ipa_snap = uninstalled_display_sdk_to_snap[sdk.id]
           formatted['last_seen_date'] = ipa_snap ? ipa_snap.last_seen : nil
           formatted
-        end
+        end.compact.uniq
 
         resp[:updated] = snap.good_as_of_date
       end

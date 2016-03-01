@@ -24,6 +24,13 @@ class IosSdk < ActiveRecord::Base
   has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
   has_many :source_matches, through: :ios_sdk_source_matches, source: :match_sdk
 
+  has_one :outbound_sdk_link, class_name: 'IosSdkLink', foreign_key: :source_sdk_id
+  has_one :outbound_sdk, through: :outbound_sdk_link, source: :dest_sdk
+
+  has_many :inbound_sdk_links, class_name: 'IosSdkLink', foreign_key: :dest_sdk_id
+  has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
+  
+
   enum source: [:cocoapods, :package_lookup, :manual]
 
   enum kind: [:native, :js]
