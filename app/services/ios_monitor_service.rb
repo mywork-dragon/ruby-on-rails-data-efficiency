@@ -1,5 +1,9 @@
 class IosMonitorService
 
+  DEVICE_USERNAME = 'root'
+  DEVICE_PASSWORD = 'padmemyboo'
+  APPS_INSTALL_PATH = "/var/mobile/Containers/Bundle/Application/"
+
   class << self
 
     def delete_old_classdumps
@@ -62,16 +66,53 @@ class IosMonitorService
       Slackiq.message("Found #{num_stuck} devices stuck: #{stuck_devices.pluck(:id).join(', ')}. Re-enabled. *Check to see if devices are unlocked*", webhook_name: :automated_alerts)
     end
 
-    def attempt_tar
-      Net::SSH.start('localhost', 'root', :password => 'padmemyboo', :port => 2222) do |ssh|
+    def delete_ios_remnants(ios_device_ids: nil)
+      ios_device_ids = IosDevice.where(purpose: 1).pluck(:id) if ios_device_ids.nil?
 
-        res1 = ssh.exec!("pushd /var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ && find . > ms_file_tree.txt")
-        res2 = ssh.exec!("pushd /var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ && find . -type f -exec grep . \"{}\" -Iq \\\; -and -print0 | tar cfz ms_contents.tgz --null -T -")
-        `/usr/local/bin/sshpass -p padmemyboo scp -P 2222 root@localhost:/var/mobile/Containers/Bundle/Application/D331B0E0-6507-4560-BAFD-89E47BE5E3EF/ms_contents.tgz .`
-        byebug
+      devices = IosDevice.where(id: ios_device_ids)
+
+      devices.each do |device|
+        ap "Running Device #{device.id}: #{device.ip}"
+
+        begin
+          Net::SSH.start(device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+            resp = ssh.exec!("ls #{APPS_INSTALL_PATH} | wc -l").chomp
+
+            puts "Found #{resp} entries in apps folder"
+
+            if resp.to_i != 0
+              ssh.exec!("cd #{APPS_INSTALL_PATH} && find . -mindepth 3 -maxdepth 3 -exec rm -rf \"{}\" \\\;")
+              remaining = ssh.exec!("cd #{APPS_INSTALL_PATH} && find . -mindepth 3 -maxdepth 3 | wc -l").chomp.to_i
+              raise "Expected 0 files remaining. Found #{remaining}" if remaining != 0
+            end
+
+            puts "Now cleaning ~/ directory"
+
+            files = [
+              "Documents",
+              "tmp",
+              "logs"
+            ]
+
+            files.each do |file|
+              puts "Cleaning ~/#{file}"
+              resp = ssh.exec!("find ~/#{file} -mindepth 1 -maxdepth 1 2>/dev/null | wc -l").chomp
+
+              puts "Found #{resp} entries in ~/#{file}"
+
+              if resp.to_i != 0
+                ssh.exec!("find ~/#{file} -maxdepth 1 -mindepth 1 -exec rm -rf \"{}\" \\\;")
+                remaining = ssh.exec!("find ~/#{file} -mindepth 1 | wc -l").chomp.to_i
+                raise "Expected 0 files remaining. Found #{remaining}" if remaining != 0
+              end
+            end
+
+            puts "Finished"
+          end
+        rescue => e
+          raise e
+        end
       end
     end
-
-
   end
 end
