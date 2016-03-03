@@ -8,8 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window",
-    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter',
+    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter) {
 
       $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
@@ -52,7 +52,7 @@ angular.module('appApp')
 
         /* Populates "Categories" dropdown with list of categories */
         apiService.getCategories().success(function(data) {
-          $rootScope.categoryFilterOptions = data;
+          $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
         });
 
       }
@@ -90,6 +90,18 @@ angular.module('appApp')
       };
 
       if(!$rootScope.tags) $rootScope.tags = [];
+
+      $scope.selectEvents = {
+        onItemSelect: function(item) {
+          $scope.onFilterChange('categories', item.label, 'Category', false)
+        },
+        onItemDeselect: function(item) {
+          filterService.removeFilter('categories', item.id)
+        },
+        onDeselectAll: function() {
+          filterService.removeFilter('categories')
+        }
+      };
 
       $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
         if(parameter == 'downloads') {

@@ -214,6 +214,16 @@ angular.module("app.directives", []).directive("imgHolder", [
         return size.toFixed(0) + ' TB';
       };
     })
+    .filter('dropdownCategory', function () {
+      return function (categories) {
+        var newCategories = [];
+        for (var i = 0; i < categories.length; i++) {
+          var category = categories[i]
+          newCategories.push({'id': category, 'label': category})
+        }
+        return newCategories
+      }
+    })
     .filter('thousandSuffix', function () {
       return function (input, decimals) {
         var exp, rounded,
@@ -350,7 +360,6 @@ angular.module("app.directives", []).directive("imgHolder", [
           };
 
           $scope.$watch('selectedAppsForList', function () {
-
             /* Controls 'checked' status of master checkbox (top checkbox). Three states: [ ], [X] and [-] */
             if($scope.selectedAppsForList.length == $scope.apps.length) {
               $element.prop('checked', true);
@@ -391,14 +400,14 @@ angular.module("app.directives", []).directive("imgHolder", [
         }
       };
     }])
-    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", function (apiService, $rootScope, AppPlatform) {
+    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", 'dropdownCategoryFilter', function (apiService, $rootScope, AppPlatform, dropdownCategoryFilter) {
       return {
         replace: true,
         restrict: 'E',
         scope: {
           customSearchPlatform: '=customSearchPlatform'
         },
-        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button> <button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button> </span>',
+        template: '<span class="btn-group" id="dashboardPlatformSwitch"><button type="button" ng-class="appPlatform.platform == \'ios\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'ios\')">iOS</button><button type="button" ng-class="appPlatform.platform == \'android\' ? \'btn-primary\' : \'btn-default\'" class="btn" ng-click="changeAppPlatform(\'android\')">Android</button></span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;
@@ -408,7 +417,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             $scope.appPlatform.platform = platform;
             APP_PLATFORM = platform;
             apiService.getCategories().success(function (data) {
-              $rootScope.categoryFilterOptions = data;
+              $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
+              $rootScope.categoryModel = []
             });
             // Stops 'supportDesk' filter from being added
             if ($scope.appPlatform == 'android') {
@@ -422,7 +432,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             // Removes all sdk & download filters upon platform switch to iOS
             if ($scope.appPlatform != 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
-                if ($rootScope.tags[index].parameter == 'sdkNames') {
+                if ($rootScope.tags[index].parameter == 'sdkNames' || $rootScope.tags[index].parameter == 'sdkOperator') {
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }
@@ -506,7 +516,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         scope: {
           customSearchPlatform: '=customSearchPlatform'
         },
-        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'android\'" ng-change="changeAppPlatform(searchPlatform)"> <option value="android" selected="selected">Android Apps</option> <option value="ios">iOS Apps</option> <option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option> <option ng-if="canViewStorewideSdks" value="iosSdks">iOS SDKs</option> </select></span>',
+        template: '<span class="ui-select"> <select ng-model="searchPlatform" ng-init="searchPlatform = \'ios\'" ng-change="changeAppPlatform(searchPlatform)"><option value="ios">iOS Apps</option><option value="android" selected="selected">Android Apps</option><option ng-if="canViewStorewideSdks" value="iosSdks">iOS SDKs</option><option ng-if="canViewStorewideSdks" value="androidSdks">Android SDKs</option></select></span>',
         controller: function ($scope) {
 
           $scope.appPlatform = AppPlatform;

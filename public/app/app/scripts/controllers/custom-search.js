@@ -3,9 +3,7 @@
 angular.module('appApp')
   .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService", "$window",
     function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService, $window) {
-
       var customSearchCtrl = this;
-
       customSearchCtrl.platform = APP_PLATFORM; // default
 
       // User info set
@@ -41,7 +39,7 @@ angular.module('appApp')
       };
 
       customSearchCtrl.loadTableData();
-
+      
       customSearchCtrl.changeAppPlatform = function(platform) {
         customSearchCtrl.platform = platform;
       };

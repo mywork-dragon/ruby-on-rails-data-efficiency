@@ -4,6 +4,22 @@ angular.module("appApp")
   .factory("filterService", ["$rootScope",
     function($rootScope) {
       return {
+        hasFilter: function(parameter) {
+          for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
+              if($rootScope.tags[i].parameter == parameter){
+                  return true;
+              }
+          }
+          return false
+        },
+        removeFilter: function(parameter, value) {
+          for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
+              // only check for value if value exists
+              if($rootScope.tags[i].parameter == parameter && (!value || ($rootScope.tags[i].value == value))){
+                  $rootScope.tags.splice(i, 1);
+              }
+          }
+        },
         addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
           /* -------- Mixpanel Analytics Start -------- */
           var mixpanelProperties = {};

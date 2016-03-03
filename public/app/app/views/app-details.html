@@ -26,71 +26,193 @@
       </div>
     </header>
 
-    <div class="page page-table" data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
+    <div class="">
+      <div class="col-md-6 info-column">
 
-      <!-- Company Apps Table -->
-      <section class="panel panel-default table-dynamic" id="companyContactsTable">
+        <!-- Android Live Scan View -->
+        <div ng-if="appPlatform == 'android' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/android-live-scans.html'"></div>
 
-        <div class="panel-heading" id="companyContactsTableHeading">
-          <strong><i class="fa fa-list panel-ico"></i>Company Contact Information</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">| Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span>
-          <button type="submit" class="btn btn-primary pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
-          <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
-        </div>
+        <!-- iOS Live Scan View -->
+        <div ng-if="appPlatform == 'ios' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/ios-live-scans.html'"></div>
 
-        <div id="results-table-wrapper">
-
-          <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
-            <thead>
-            <tr>
-              <th><div class="th normal-right-padding">
-                Full Name
-              </div></th>
-              <th><div class="th normal-right-padding appDetailsHeader">
-                Title
-              </div></th>
-              <th><div class="th normal-right-padding">
-                Email
-              </div></th>
-              <th><div class="th normal-right-padding">
-                LinkedIn
-              </div></th>
-            </tr>
-            </thead>
-
-            <tbody data-ng-hide="queryInProgress">
-            <tr data-ng-repeat="contact in companyContacts">
-              <td>
-                {{contact.fullName}}
-              </td>
-              <td>
-                {{contact.title}}
-              </td>
-              <td>
-                <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
-              </td>
-              <td>
-                <p ng-if='!contact.linkedin'> No Information Available </p>
-                <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">www.linkedin.com/{{contact.linkedin}}</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="tableStatusMessage" ng-show="contactsLoading || companyContacts.length < 1">
-            <h5 data-ng-hide="companyContacts.length > 0 || !contactsLoaded">Sorry, No Contacts Available</h5>
-            <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
-              <div class="loading outer">
-                <div class="loading inner"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>MightySignal Insights</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="appData.appIdentifier">
+                    <span class="icon fa fa-user"></span>
+                    <label>MightySignal ID:</label>
+                    {{appData.id}}
+                  </li>
+                  <li ng-if="appData.adSpend && canViewAdSpend">
+                    <span class="icon glyphicon glyphicon-envelope"></span>
+                    <label>Ad Spend:</label>
+                    {{appData.adSpend ? 'Yes' : 'No'}}
+                  </li>
+                  <li ng-if="appData.mobilePriority">
+                    <span class="icon glyphicon glyphicon-home"></span>
+                    <label>Mobile Priority:</label>
+                    {{appData.mobilePriority | capitalize}}
+                  </li>
+                  <li ng-if="appData.userBase">
+                    <span class="icon fa fa-user"></span>
+                    <label>User Base Size:</label>
+                    {{appData.userBase | capitalize}}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-
         </div>
 
-      </section>
-    </div>
+        <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount != null">
+          <div class="panel-heading"><strong>Reviews</strong></div>
+          <div class="panel-body">
+            <div class="media" ng-if="appData.rating || appData.ratingsCount != null">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="appData.rating != 0">
+                    <span class="icon fa fa-star"></span>
+                    <label>Aggregate Rating:</label>
+                    <span>{{appData.rating}} of 5.0</span>
+                  </li>
+                  <li ng-if="appData.ratingsCount">
+                    <span class="icon fa fa-star"></span>
+                    <label>Ratings Count:</label>
+                    <span ng-if="appData.ratingsCount == 0">No Ratings</span>
+                    {{appData.ratingsCount}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="">
+        <!-- Support Platform Optional Display Panel -->
+        <div class="panel panel-default" ng-show="canViewSupportDesk && appData.supportDesk"> <!-- && appData.supportDesk"> -->
+          <div class="panel-heading"><strong>Support Desk</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="appData.supportDesk | supportDeskName">
+                    <span class="icon fa fa-question-circle"></span>
+                    <label>Name:</label>
+                    <span ng-if="appData.supportDesk">{{appData.supportDesk | supportDeskName}}</span>
+                  </li>
+                  <li ng-if="appData.supportDesk">
+                    <span class="icon fa fa-question-circle"></span>
+                    <label>Portal:</label>
+                    <a href="{{appData.supportDesk}}" target="_blank">{{appData.supportDesk}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <div class="col-md-6 info-column">
+
+        <div id="appPageActionsPanel" class="panel panel-default">
+          <div class="panel-heading"><strong>Actions</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li>
+                    <span class="icon fa fa-plus"></span>
+                    <label>Add to List:</label>
+                    <span class="ui-select">
+                      <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown)">
+                        <option value="">Add Selected to List</option>
+                        <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+                      </select>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
+                    <label>App Store Page:</label>
+                    <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
+                    <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
+                  </li>
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-linkedin"></span>
+                    <label>LinkedIn Links:</label>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+                  </li>
+                  <li id="showCompanyEmailsButtonLi">
+                    <div id="showCompanyEmailsContainer">
+                      <div id="showCompanyEmailsButton">
+                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load Contact Emails</button>
+                      </div>
+                      <div id="showCompanyEmailsTextField">
+                        <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) Filter contacts by job title. e.g. Sales, marketing, CEO">
+                      </div>
+                    </div>
+                    <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                      <div class="loading outer">
+                        <div class="loading inner"></div>
+                      </div>
+                    </div>
+                    <div data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
+
+                      <!-- Company Apps Table -->
+                      <div class="panel-heading" id="companyContactsTableHeading">
+                        <strong><span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">Displaying 1 - {{companyContacts.length}} of {{companyContacts.length}}</span></strong>
+                        <button type="submit" class="btn btn-primary pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv()">Export Contacts to CSV</button>
+                        <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
+                      </div>
+
+                      <div id="results-table-wrapper">
+
+                        <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+                          <thead>
+                          <tr>
+                            <th><div class="th normal-right-padding">
+                              Contact
+                            </div></th>
+                            <th><div class="th normal-right-padding">
+                              Email
+                            </div></th>
+                          </tr>
+                          </thead>
+
+                          <tbody data-ng-hide="queryInProgress">
+                          <tr data-ng-repeat="contact in companyContacts">
+                            <td>
+                              <p ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
+                              <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">{{contact.fullName}} - {{contact.title}}</a>
+                            </td>
+                            <td>
+                              <div><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                        <div class="tableStatusMessage" ng-show="contactsLoading || companyContacts.length < 1">
+                          <h5 data-ng-hide="companyContacts.length > 0 || !contactsLoaded">Sorry, No Contacts Available</h5>
+                          <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                            <div class="loading outer">
+                              <div class="loading inner"></div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="panel panel-default">
           <div class="panel-heading"><strong>General Details</strong></div>
           <div class="panel-body">
@@ -212,149 +334,6 @@
             </div>
           </div>
         </div>
-
-        <div class="panel panel-default">
-          <div class="panel-heading"><strong>MightySignal Insights</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li ng-if="appData.appIdentifier">
-                    <span class="icon fa fa-user"></span>
-                    <label>MightySignal ID:</label>
-                    {{appData.id}}
-                  </li>
-                  <li ng-if="appData.adSpend && canViewAdSpend">
-                    <span class="icon glyphicon glyphicon-envelope"></span>
-                    <label>Ad Spend:</label>
-                    {{appData.adSpend ? 'Yes' : 'No'}}
-                  </li>
-                  <li ng-if="appData.mobilePriority">
-                    <span class="icon glyphicon glyphicon-home"></span>
-                    <label>Mobile Priority:</label>
-                    {{appData.mobilePriority | capitalize}}
-                  </li>
-                  <li ng-if="appData.userBase">
-                    <span class="icon fa fa-user"></span>
-                    <label>User Base Size:</label>
-                    {{appData.userBase | capitalize}}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount != null">
-          <div class="panel-heading"><strong>Reviews</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li ng-if="appData.rating != 0">
-                    <span class="icon fa fa-star"></span>
-                    <label>Aggregate Rating:</label>
-                    <span>{{appData.rating}} of 5.0</span>
-                  </li>
-                  <li ng-if="appData.ratingsCount">
-                    <span class="icon fa fa-star"></span>
-                    <label>Ratings Count:</label>
-                    <span ng-if="appData.ratingsCount == 0">No Ratings</span>
-                    {{appData.ratingsCount}}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Support Platform Optional Display Panel -->
-        <div class="panel panel-default" ng-show="canViewSupportDesk && appData.supportDesk"> <!-- && appData.supportDesk"> -->
-          <div class="panel-heading"><strong>Support Desk</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li ng-if="appData.supportDesk | supportDeskName">
-                    <span class="icon fa fa-question-circle"></span>
-                    <label>Name:</label>
-                    <span ng-if="appData.supportDesk">{{appData.supportDesk | supportDeskName}}</span>
-                  </li>
-                  <li ng-if="appData.supportDesk">
-                    <span class="icon fa fa-question-circle"></span>
-                    <label>Portal:</label>
-                    <a href="{{appData.supportDesk}}" target="_blank">{{appData.supportDesk}}</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="col-md-6 info-column">
-
-        <div id="appPageActionsPanel" class="panel panel-default">
-          <div class="panel-heading"><strong>Actions</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li>
-                    <span class="icon fa fa-plus"></span>
-                    <label>Add to List:</label>
-                    <span class="ui-select">
-                      <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown)">
-                        <option value="">Add Selected to List</option>
-                        <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
-                      </select>
-                    </span>
-                  </li>
-                  <li>
-                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                    <label>App Store Page:</label>
-                    <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
-                    <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
-                  </li>
-                  <li id="linkedinLinksList">
-                    <span class="icon fa fa-linkedin"></span>
-                    <label>LinkedIn Links:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
-                  </li>
-                  <li ng-if="appData.company.id">
-                    <span class="icon fa fa-briefcase"></span>
-                    <label>Company:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="linkTo('#/company/' + appData.company.id)">{{appData.company.name}}</button>
-                  </li>
-                  <li id="showCompanyEmailsButtonLi">
-                    <div id="showCompanyEmailsContainer">
-                      <div id="showCompanyEmailsButton">
-                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(appData.company.websites, companyContactFilter)">Load Contact Emails</button>
-                      </div>
-                      <div id="showCompanyEmailsTextField">
-                        <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) filter for contact title ">
-                      </div>
-                    </div>
-                    <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
-                      <div class="loading outer">
-                        <div class="loading inner"></div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Android Live Scan View -->
-        <div ng-if="appPlatform == 'android' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/android-live-scans.html'"></div>
-
-        <!-- iOS Live Scan View -->
-        <div ng-if="appPlatform == 'ios' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'/app/app/views/ios-live-scans.html'"></div>
 
         <div class="panel panel-default" ng-if="appData.company.name">
           <div class="panel-heading"><strong>Company Details</strong></div>

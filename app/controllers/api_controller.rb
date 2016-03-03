@@ -1059,23 +1059,13 @@ class ApiController < ApplicationController
         }
     ).boost_factor(
         3,
-        filter: {
-            range:{
-                ratings_all: {
-                    gte: 150000
-                }
-            }
-        }
+        filter: { term: {user_base: 'elite'} }
     ).boost_factor(
         2,
-        filter: {
-            range:{
-                ratings_all: {
-                    gte: 100000,
-                    lt: 150000
-                }
-            }
-        }
+        filter: { term: {user_base: 'strong'} }
+    ).boost_factor(
+        1,
+        filter: { term: {user_base: 'moderate'} }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
 
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
@@ -1134,23 +1124,13 @@ class ApiController < ApplicationController
         }
     ).boost_factor(
         3,
-        filter: {
-            range:{
-                ratings_all: {
-                    gte: 1000000
-                }
-            }
-        }
+        filter: { term: {user_base: 'elite'} }
     ).boost_factor(
         2,
-        filter: {
-            range:{
-                ratings_all: {
-                    gte: 1000000,
-                    lt: 140000
-                }
-            }
-        }
+        filter: { term: {user_base: 'strong'} }
+    ).boost_factor(
+        1,
+        filter: { term: {user_base: 'moderate'} }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
@@ -1288,13 +1268,34 @@ class ApiController < ApplicationController
     sdk = AndroidSdk.find(sdk_id)
 
     @sdk_json = {
-        id: sdk.id,
-        name: sdk.name,
-        website: sdk.website,
-        favicon: sdk.get_favicon,
-        openSource: sdk.open_source,
-        platform: 'android',
-        numOfApps: sdk.get_current_apps.count
+      id: sdk.id,
+      name: sdk.name,
+      website: sdk.website,
+      favicon: sdk.get_favicon,
+      openSource: sdk.open_source,
+      platform: 'android',
+      apps: sdk.get_current_apps(10, 'user_base').map{|app| 
+        newest_snapshot = app.newest_android_app_snapshot
+        {
+          id: app.id,
+          name: newest_snapshot.present? ? newest_snapshot.name : nil,
+          type: 'AndroidApp',
+          mobilePriority: app.mobile_priority,
+          userBase: app.user_base,
+          lastUpdated: newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
+          lastUpdatedDays: newest_snapshot.present? && newest_snapshot.released != nil ? (Time.now.to_date - newest_snapshot.released.to_date).to_i : nil,
+          adSpend: app.android_fb_ad_appearances.present?,
+          downloadsMin: newest_snapshot.present? ? newest_snapshot.downloads_min : nil,
+          downloadsMax: newest_snapshot.present? ? newest_snapshot.downloads_max : nil,
+          categories: newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name} : nil,
+          supportDesk: newest_snapshot.present? ? newest_snapshot.seller_url : nil,
+          appIcon: {
+              large: newest_snapshot.present? ? newest_snapshot.icon_url_300x300 : nil
+          },
+          seller: newest_snapshot.present? ? newest_snapshot.seller : nil
+        }
+      },
+      numOfApps: sdk.get_current_apps.count
     }
     render json: @sdk_json
   end
@@ -1311,6 +1312,24 @@ class ApiController < ApplicationController
         openSource: sdk.open_source?,
         summary: sdk.summary,
         platform: "ios",
+        apps: sdk.get_current_apps(10, 'user_base').map{|app| {
+          id: app.id,
+          name: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.name : nil,
+          type: 'IosApp',
+          mobilePriority: app.mobile_priority,
+          adSpend: app.ios_fb_ad_appearances.present?,
+          userBase: app.user_base,
+          categories: app.newest_ios_app_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: app.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name} : nil,
+          lastUpdated: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.released.to_s : nil,
+          lastUpdatedDays: app.newest_ios_app_snapshot.present? && app.newest_ios_app_snapshot.released != nil ? (Time.now.to_date - app.newest_ios_app_snapshot.released.to_date).to_i : nil,
+          releasedDays: app.released != nil ? (Time.now.to_date - app.released.to_date).to_i : -1,
+          appIdentifier: app.app_identifier,
+          supportDesk: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.support_url : nil,
+          appIcon: {
+              large: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_350x350 : nil,
+              small: app.newest_ios_app_snapshot.present? ? app.newest_ios_app_snapshot.icon_url_175x175 : nil
+          }
+        }},
         numOfApps: sdk.get_current_apps.count
     }
     render json: @sdk_json

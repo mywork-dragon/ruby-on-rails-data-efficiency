@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", "$window", "pageTitleService", "authService",
-  function($http, $routeParams, $window, pageTitleService, authService) {
+angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$routeParams", "$window", "pageTitleService", "authService",
+  function($scope, $http, $routeParams, $window, pageTitleService, authService) {
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
@@ -18,9 +18,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
         }
       });
 
+    $scope.initialPageLoadComplete = false;
     sdkDetailsCtrl.load = function() {
-
-      sdkDetailsCtrl.queryInProgress = true;
 
       return $http({
         method: 'GET',
@@ -29,7 +28,12 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
-        sdkDetailsCtrl.queryInProgress = false;
+
+        sdkDetailsCtrl.apps = data.apps;
+        $scope.apps = data.apps
+        sdkDetailsCtrl.numApps = data.apps.length;
+
+        $scope.initialPageLoadComplete = true;
 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
@@ -56,6 +60,43 @@ angular.module('appApp').controller("SdkDetailsCtrl", ["$http", "$routeParams", 
       });
     };
     sdkDetailsCtrl.load();
+
+    $scope.notify = function(type) {
+      switch (type) {
+        case "add-selected-success":
+          return loggitService.logSuccess("Items were added successfully.");
+        case "add-selected-error":
+          return loggitService.logError("Error! Something went wrong while adding to list.");
+      }
+    };
+
+    sdkDetailsCtrl.addSelectedTo = function(list) {
+      var selectedApp = [{
+        id: $routeParams.id,
+        type: $routeParams.platform == 'IosApp' ? 'ios' : 'android'
+      }];
+      listApiService.addSelectedTo(list, selectedApp, $scope.appPlatform).success(function() {
+        $scope.notify('add-selected-success');
+        $rootScope.selectedAppsForList = [];
+      }).error(function() {
+        $scope.notify('add-selected-error');
+      });
+      $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
+    };
+
+    $scope.onAppTableAppClick = function(app) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "App on SDK Page Clicked", {
+          "sdkName": sdkDetailsCtrl.sdkData.name,
+          "appName": app.name,
+          "appId": app.id,
+          "appPlatform": app.type
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+      $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
+    };
 
     // Submits filtered search query via query string params
     sdkDetailsCtrl.submitSdkQuery = function(platform) {

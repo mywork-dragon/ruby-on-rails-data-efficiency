@@ -23,9 +23,12 @@ class AndroidSdk < ActiveRecord::Base
     end
   end
 
-  def get_current_apps
+  def get_current_apps(limit=nil, sort=nil)
     snaps = self.apk_snapshots.select(:id).map(&:id)
-    AndroidApp.where(newest_apk_snapshot_id: snaps).where.not(display_type: AndroidApp.display_types[:taken_down])
+    apps = AndroidApp.where(newest_apk_snapshot_id: snaps).where.not(display_type: AndroidApp.display_types[:taken_down])
+    apps = apps.order("#{sort} ASC") if sort
+    apps = apps.limit(limit) if limit
+    apps
   end
 
   def test

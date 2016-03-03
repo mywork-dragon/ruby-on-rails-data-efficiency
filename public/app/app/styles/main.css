@@ -599,14 +599,11 @@ pre {
   background-color: #ffddd4; }
 
 .table-dynamic .table-filters {
-  margin: 10px 0;
   padding: 8px; }
 
 #dashboard-tag-display {
-  padding-top: 25px;
-  padding-left: 30px;
   clear: both;
-  height: 100px;
+  min-height: 65px;
 }
 
 #dashboard-tag-display .fa-search {
@@ -629,7 +626,7 @@ pre {
   float: right;
   position: absolute;
   right: 30px;
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .table-dynamic .filter-result-info {
@@ -2254,7 +2251,7 @@ input.input-dark:focus {
 
 .ui-tags-input .host {
   position: relative;
-  margin: 5px 0; }
+}
 
 .ui-tags-input .host:active {
   outline: none; }
@@ -4777,7 +4774,6 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   border-bottom-right-radius: -1; }
 
 #results-table-wrapper {
-  overflow: scroll;
   font-size: 12px;
 }
 
@@ -7207,10 +7203,6 @@ i.infoTooltipIcon {
   text-align: center;
 }
 
-.dashboard-tag-filter-selects {
-  margin-right: 120px;
-}
-
 .dashboard-tag-filter-selects > .tooltip {
   text-transform: none;
   font-size: 90%;
@@ -7852,5 +7844,64 @@ pre {
   height: 20px;
   width: 20px;
 }
+
+.tooltip-inner {
+  max-width: 350px;
+  /* If max-width does not work, try using width instead */
+  width: 350px; 
+}
+
+.multiselect-parent.btn-group.dropdown-multiselect {
+  display: block;
+}
+
+button.dropdown-toggle {
+  background: none;
+  border: none;
+  padding: 5px 33px 5px 8px;
+  font-size: 11px;
+}
+
+button.dropdown-toggle .caret {
+  display: none;
+}
+
+.dropdown-menu.dropdown-menu-form {
+  font-size: 11px;
+  width: 170px;
+  min-width: 0;
+  margin-left: -1px;
+}
+
+.dropdown-menu.dropdown-menu-form > li > a {
+  cursor: pointer;  
+}
+
+.dropdown-menu.dropdown-menu-form > li > a:hover {
+  background-image: none;
+  background-color: #0393dd;
+}
+
+.dropdown-menu.dropdown-menu-form > li > a:focus {
+  background-image: none;
+  background-color: white;
+  color: #262626;
+}
+
+.dropdown-menu.dropdown-menu-form .checkbox {
+  min-height: 0;
+  margin: 0;
+}
+
+.ui-select.sdkOperator {
+  margin-left: -5px;
+  border-left: none;
+  padding: 3px 3px 4px 3px;
+}
+
+.ui-select .tooltip.bottom-left .tooltip-arrow {
+  left: 30px !important;
+}
+
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */

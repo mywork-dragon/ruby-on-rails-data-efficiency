@@ -7,7 +7,7 @@
 /* Constants */
 // var API_URI_BASE = "http://mightysignal.com/";
 var API_URI_BASE = "http://" + location.host + "/";
-var APP_PLATFORM = "android"; // Default
+var APP_PLATFORM = "ios"; // Default
 var JWT_TOKEN_NAME = "ms_jwt_auth_token";
 
 if (location.host == "localhost:3000") {
@@ -22,12 +22,12 @@ angular
     'app.directives',
     "ui.bootstrap",
     "rt.encodeuri",
-    'angucomplete-alt'
+    'angucomplete-alt',
+    'angularjs-dropdown-multiselect'
   ])
   .run(function ($http, $rootScope) {
 
-      $(document).ready(function(){
-
+      $(document).ready(function(){ 
         /* Disables loading spinner */
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
@@ -80,6 +80,11 @@ angular
   }])
   .config(['$httpProvider', function($httpProvider) {
      return $httpProvider.interceptors.push("authInterceptor");
+  }])
+  .config(['$uibTooltipProvider', function($tooltipProvider){
+    $tooltipProvider.setTriggers({
+      'mouseenter': 'mouseleave click'
+    });
   }])
   .filter('capitalize', function() {
     return function(input, all) {

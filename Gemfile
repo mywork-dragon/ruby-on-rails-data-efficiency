@@ -76,7 +76,6 @@ source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '3.0.2'
 end
 
-
 gem 'filesize', '0.0.4'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
@@ -106,6 +105,8 @@ gem 'text', '1.3.1'
 
 gem 'iso_country_codes', '0.7.1'
 
+gem "bugsnag", '3.0.0'
+
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
@@ -130,8 +131,6 @@ gem 'apk_downloader', '1.1.5'
 gem 'parallel', '1.6.0'
 
 gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
-
-# gem 'sinatra', '1.4.6', require: nil
 
 gem 'slackiq', '1.1.4'
 # gem 'slackiq', git: 'https://github.com/okhwaja/slackiq.git', branch: 'master'

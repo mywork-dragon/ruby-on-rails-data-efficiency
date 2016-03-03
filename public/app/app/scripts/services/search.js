@@ -59,6 +59,9 @@ angular.module("appApp")
                   requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
+              case 'sdkOperator':
+                requestData['app'][tag.parameter] = [tag.value];
+                break;
               case 'downloads':
                 if (requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
@@ -144,6 +147,13 @@ angular.module("appApp")
             return {
               parameter: param,
               text: "SDK" + ": " + value.name,
+              value: value
+            };
+            break;
+          case 'sdkOperator':
+            return {
+              parameter: param,
+              text: "SDK Operator" + ": " + value,
               value: value
             };
             break;

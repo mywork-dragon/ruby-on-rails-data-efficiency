@@ -91,7 +91,7 @@
               <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
             </div>
             <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
-              <progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></progressbar>
+              <uib-progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
               <p>{{androidLiveScanCtrl.scanStatusMessage}}</p>
             </div>
           </li>
