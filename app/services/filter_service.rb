@@ -82,7 +82,7 @@ class FilterService
 
         IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
 
-        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and")
+        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
 
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
@@ -190,7 +190,7 @@ class FilterService
 
         android_sdks = AndroidSdk.find(sdk_ids)
         android_sdks.each{|sdk| apps_with_sdk << sdk.get_current_apps}
-        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and")
+        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
 

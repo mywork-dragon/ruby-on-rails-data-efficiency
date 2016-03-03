@@ -43,6 +43,17 @@ angular.module('appApp')
         buttonDefaultText: 'CATEGORIES',
       };
 
+      $scope.removedTag = function(tag) {
+        if (tag.parameter == 'categories') {
+          for(var i = $rootScope.categoryModel.length - 1; i >= 0 ; i--){
+            // only check for value if value exists
+            if($rootScope.categoryModel[i].label == tag.value){
+              $rootScope.categoryModel.splice(i, 1);
+            }
+          }
+        }
+      }
+
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function(isTablePageChange) {
 

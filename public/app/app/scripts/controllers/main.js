@@ -8,8 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter',
-    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService',
+    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService) {
 
       $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
@@ -65,14 +65,17 @@ angular.module('appApp')
 
       // Display num of apps scanned notice on dashboard upon SDK filter added
       $scope.$watchCollection('$root.tags', function () {
-        var sdkNameFilterPresent = false;
+        var sdkNameFilters = [];
         if($rootScope.tags) {
           $rootScope.tags.forEach(function(tag) {
             if(tag.parameter == "sdkNames") {
-              sdkNameFilterPresent = true;
+              sdkNameFilters.push(tag);
             }
           });
-          $rootScope.sdkFilterPresent = sdkNameFilterPresent;
+          $rootScope.sdkNameFilters = sdkNameFilters;
+          if ($rootScope.sdkNameFilters.length == 1) {
+            filterService.removeFilter('sdkOperator')
+          }
         }
       });
 

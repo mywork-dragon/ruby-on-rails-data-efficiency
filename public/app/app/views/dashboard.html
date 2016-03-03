@@ -29,7 +29,7 @@
                                   minlength="1"
                                   input-class="form-control form-control-small sdk-autocomplete-filter"/>
               </span>
-              <span class="ui-select sdkOperator" ng-if="searchCtrl.canViewStorewideSdks && $root.sdkFilterPresent">
+              <span class="ui-select sdkOperator" ng-if="searchCtrl.canViewStorewideSdks && $root.sdkNameFilters.length > 1">
                    <select ng-model="sdkOperator" ng-change="onFilterChange('sdkOperator', sdkOperator, 'SDK Operator', true)" tooltip-placement="bottom-left" uib-tooltip-html="sdkOperatorExplanation" tooltip-popup-delay="200">
                       <option value="">Or</option>
                       <option value="and">And</option>
@@ -106,7 +106,7 @@
         <div id="dashboard-tag-display" class="table-filters">
           <div class="row">
             <div class="col-md-11">
-              <tags-input ng-model="tags" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+              <tags-input ng-model="tags" on-tag-removed="removedTag($tag)" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
               </tags-input>
             </div>
             <div id="searchResultsControl">
@@ -117,7 +117,7 @@
 
     </section>
 
-    <div class="row companyPageRow" ng-if="$root.sdkFilterPresent && searchCtrl.canViewStorewideSdks">
+    <div class="row companyPageRow" ng-if="$root.sdkNameFilters.length > 0 && searchCtrl.canViewStorewideSdks">
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
         <div><span class="ng-binding ng-scope">
 					<span ng-if="appPlatform.platform == 'ios'">

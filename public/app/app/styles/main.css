@@ -7903,5 +7903,9 @@ button.dropdown-toggle .caret {
   left: 30px !important;
 }
 
+.tag-item.ng-scope.sdkOperator {
+  display: none;
+}
+
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */

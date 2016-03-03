@@ -1,164 +1,172 @@
 <div id="companyPage" data-ng-controller="ListCtrl" ng-show="!sdkDetailsCtrl.sdkLiveScanPageLoading">
 
-  <header class="page-main-header ng-scope">
-    <div class="row">
-      <div class="col-md-12">
-        <h4>
-          <img id="sdkPageTitleIcon" ng-src="{{sdkDetailsCtrl.sdkData.favicon}}">{{sdkDetailsCtrl.sdkData.name}} - SDK Page
-        </h4>
-      </div>
-    </div>
-  </header>
-
-  <div class="row companyPageRow">
-    <div class="col-md-6 info-column">
-      <div class="panel panel-default">
-        <div class="panel-heading"><strong>General Details</strong></div>
-        <div class="panel-body">
-          <div class="media">
-            <div class="media-body">
-              <ul class="list-unstyled list-info">
-                <li ng-if="sdkDetailsCtrl.sdkData.name">
-                  <span class="icon fa fa-briefcase"></span>
-                  <label>SDK Name:</label>
-                  {{sdkDetailsCtrl.sdkData.name}}
-                </li>
-                <li ng-if="sdkDetailsCtrl.sdkData.website">
-                  <span class="icon fa fa-globe"></span>
-                  <label>Website:</label>
-                  <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
-                </li>
-                <li>
-                  <span class="icon fa fa-code-fork"></span>
-                  <label>Open Source:</label>
-                  {{sdkDetailsCtrl.sdkData.openSource ? 'Yes' : 'No'}}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6 info-column">
-      <div class="panel panel-default">
-        <div class="panel-heading"><strong>Actions</strong></div>
-        <div class="panel-body">
-          <div class="media">
-            <div class="media-body">
-              <ul class="list-unstyled list-info">
-                <div style="text-align:center">
-                 Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps | number}}</strong> apps.
-                </div>
-                <div id="showSdksButton">
-                  <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See All Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
-                </div>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
+    <div class="loading outer">
+      <div class="loading inner"></div>
     </div>
   </div>
-  <div class="row companyPageRow" ng-if="initialPageLoadComplete">
-    <div class="page page-table" data-ng-controller="TableCtrl">
-      <!-- SDK Apps Table -->
-      <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
-        <div class="panel-heading" id="listViewTableHeading">
-          <strong><i class="fa fa-list panel-ico"></i>Top 10 Apps with {{sdkDetailsCtrl.sdkData.name}} installed</strong>
-          <span class="ui-select pull-right">
-            <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
-              <option value="">Add Selected to List</option>
-              <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
-            </select>
-          </span>
+
+  <div ng-if="initialPageLoadComplete">
+
+    <header class="page-main-header ng-scope">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>
+            <img id="sdkPageTitleIcon" ng-src="{{sdkDetailsCtrl.sdkData.favicon}}">{{sdkDetailsCtrl.sdkData.name}} - SDK Page
+          </h4>
         </div>
+      </div>
+    </header>
 
-        <div id="results-table-wrapper">
-          <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
-             <thead>
-             <tr>
-               <th class="selectAllCheckboxHeader">
-                 <select-all-checkbox-two apps="sdkDetailsCtrl.apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
-               </th>
-               <th><div class="th normal-right-padding">
-                 App Name
-               </div></th>
-               <th><div class="th normal-right-padding">
-                 Mobile Priority
-               </div></th>
-               <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
-                 Ad Spend
-               </div></th>
-               <th><div class="th normal-right-padding">
-                 User Base Size
-               </div></th>
-               <th><div class="th normal-right-padding">
-                 Categories
-
-               </div></th>
-               <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
-                 Support Desk
-               </div></th>
-               <th><div class="th normal-right-padding">
-                 Last Updated
-               </div></th>
-             </tr>
-             </thead>
-
-             <tbody data-ng-hide="queryInProgress">
-             <tr data-ng-repeat="app in sdkDetailsCtrl.apps">
-               <td class="dashboardTableDataCheckbox">
-                 <checkable-checkbox-two app="app" apps="sdkDetailsCtrl.apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
-               </td>
-               <td class="resultsTableAppIcon">
-                 <span>
-                   <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
-                     <img ng-src="{{app.appIcon.large}}" />
-                     {{app.name}}
-                   </a>
-                 </span>
-                 <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
-               </td>
-               <td class="dashboardMobilePriorityView">
-                 <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
-               </td>
-               <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
-                 <span ng-if="!isNaN(app.adSpend)">
-                   <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
-                 </span>
-               </td>
-               <td>{{app.userBase | capitalize}}</td>
-               <td>{{app.categories.join(', ')}}</td>
-               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
-               <td>
-                 <span ng-show="app.app.lastUpdatedDays >= 0 && app.app.lastUpdatedDays != null">
-                   <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
-                     <strong>{{app.lastUpdatedDays}}</strong>
-                   </span> days ago
-                 </span>
-               </td>
-             </tr>
-             </tbody>
-          </table>
-          <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(sdkDetailsCtrl.apps.length > 0)">
-            <h5 data-ng-hide="sdkDetailsCtrl.apps.length > 0 || queryInProgress">No Items</h5>
-            <div data-ng-show="queryInProgress" id="wrap_spinner">
-              <div class="loading outer">
-                <div class="loading inner"></div>
+    <div class="row companyPageRow">
+      <div class="col-md-6 info-column">
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>General Details</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="sdkDetailsCtrl.sdkData.name">
+                    <span class="icon fa fa-briefcase"></span>
+                    <label>SDK Name:</label>
+                    {{sdkDetailsCtrl.sdkData.name}}
+                  </li>
+                  <li ng-if="sdkDetailsCtrl.sdkData.website">
+                    <span class="icon fa fa-globe"></span>
+                    <label>Website:</label>
+                    <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
+                  </li>
+                  <li>
+                    <span class="icon fa fa-code-fork"></span>
+                    <label>Open Source:</label>
+                    {{sdkDetailsCtrl.sdkData.openSource ? 'Yes' : 'No'}}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+      <div class="col-md-6 info-column">
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>Actions</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <div style="text-align:center">
+                   Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps | number}}</strong> apps.
+                  </div>
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See All Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="row companyPageRow" ng-if="initialPageLoadComplete">
+      <div class="page page-table" data-ng-controller="TableCtrl">
+        <!-- SDK Apps Table -->
+        <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+          <div class="panel-heading" id="listViewTableHeading">
+            <strong><i class="fa fa-list panel-ico"></i>Top 10 Apps with {{sdkDetailsCtrl.sdkData.name}} installed</strong>
+            <span class="ui-select pull-right">
+              <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
+                <option value="">Add Selected to List</option>
+                <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+              </select>
+            </span>
+          </div>
+
+          <div id="results-table-wrapper">
+            <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+               <thead>
+               <tr>
+                 <th class="selectAllCheckboxHeader">
+                   <select-all-checkbox-two apps="sdkDetailsCtrl.apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
+                 </th>
+                 <th><div class="th normal-right-padding">
+                   App Name
+                 </div></th>
+                 <th><div class="th normal-right-padding">
+                   Mobile Priority
+                 </div></th>
+                 <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
+                   Ad Spend
+                 </div></th>
+                 <th><div class="th normal-right-padding">
+                   User Base Size
+                 </div></th>
+                 <th><div class="th normal-right-padding">
+                   Categories
+
+                 </div></th>
+                 <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+                   Support Desk
+                 </div></th>
+                 <th><div class="th normal-right-padding">
+                   Last Updated
+                 </div></th>
+               </tr>
+               </thead>
+
+               <tbody data-ng-hide="queryInProgress">
+               <tr data-ng-repeat="app in sdkDetailsCtrl.apps">
+                 <td class="dashboardTableDataCheckbox">
+                   <checkable-checkbox-two app="app" apps="sdkDetailsCtrl.apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
+                 </td>
+                 <td class="resultsTableAppIcon">
+                   <span>
+                     <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
+                       <img ng-src="{{app.appIcon.large}}" />
+                       {{app.name}}
+                     </a>
+                   </span>
+                   <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
+                 </td>
+                 <td class="dashboardMobilePriorityView">
+                   <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
+                 </td>
+                 <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
+                   <span ng-if="!isNaN(app.adSpend)">
+                     <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+                   </span>
+                 </td>
+                 <td>{{app.userBase | capitalize}}</td>
+                 <td>{{app.categories.join(', ')}}</td>
+                 <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
+                 <td>
+                   <span ng-show="app.app.lastUpdatedDays >= 0 && app.app.lastUpdatedDays != null">
+                     <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                       <strong>{{app.lastUpdatedDays}}</strong>
+                     </span> days ago
+                   </span>
+                 </td>
+               </tr>
+               </tbody>
+            </table>
+            <div id="dashboardTableStatusMessage" data-ng-show="queryInProgress || !(sdkDetailsCtrl.apps.length > 0)">
+              <h5 data-ng-hide="sdkDetailsCtrl.apps.length > 0 || queryInProgress">No Items</h5>
+              <div data-ng-show="queryInProgress" id="wrap_spinner">
+                <div class="loading outer">
+                  <div class="loading inner"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+
   </div>
-
-  <!-- Modals -->
-  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-  <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
-  <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
-
-</div>
 
 </div>
 
