@@ -1,3 +1,4 @@
+# nohup bundle exec rake epf:run_itunes_current_if_new_feed_available RAILS_ENV=production > ~/epf_run_itunes_current.log &
 namespace 'epf' do
 
   desc 'Run iTunes current'
