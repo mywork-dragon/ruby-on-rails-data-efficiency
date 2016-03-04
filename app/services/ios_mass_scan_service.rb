@@ -27,11 +27,12 @@ class IosMassScanService
 
     # helper method for running scans
     def run_new(n)
-      tried = IosApp.joins(:ipa_snapshots, :ipa_snapshot_lookup_failures).distinct
+      tried = IosApp.joins(:ipa_snapshots).distinct
+      checked = IosApp.joins(:ipa_snapshot_lookup_failures).distinct
 
-      puts "Found all #{tried.count} tried apps"
+      puts "Found all #{tried.count + checked.count} tried apps"
 
-      mb_high_by_ratings = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where.not(id: tried).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      mb_high_by_ratings = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where.not(id: tried).where.not(id: checked).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
 
       puts "Selected #{mb_high_by_ratings.length} apps in mobile priority high that haven't been tried"
 
@@ -39,7 +40,7 @@ class IosMassScanService
     end
 
     def run_recently_updated(n: 5000)
-      recent = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where('ios_app_snapshots.released > ?', 1.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      recent = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where('ios_app_snapshots.released > ?', 2.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
 
       puts "Got #{recent.count} entries"
       # filter out to only those
