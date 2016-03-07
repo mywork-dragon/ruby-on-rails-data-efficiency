@@ -195,6 +195,7 @@ class ApiController < ApplicationController
         ratingsCount: newest_app_snapshot.present? ? newest_app_snapshot.ratings_all_count : nil,
         mobilePriority: ios_app.mobile_priority,
         adSpend: ios_app.ios_fb_ad_appearances.present?,
+        inAppPurchases: newest_app_snapshot.try(:ios_in_app_purchases).try(:any?),
         countriesDeployed: nil, #not part of initial launch
         # downloads: newest_download_snapshot.present? ? newest_download_snapshot.downloads : nil,
         userBase: ios_app.user_base,
