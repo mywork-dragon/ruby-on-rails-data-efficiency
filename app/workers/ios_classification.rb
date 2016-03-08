@@ -67,7 +67,7 @@ module IosClassification
       raise "Empty classdump" unless classdump.class_dump.present?
 
       url = classdump.class_dump.url
-      contents = open(url).read.scrub
+      contents = open(url) { |f| f.read }.scrub
 
     else
       filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{ipa_snapshot_id}"
