@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160304004506) do
+ActiveRecord::Schema.define(version: 20160308022514) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1023,7 +1023,7 @@ ActiveRecord::Schema.define(version: 20160304004506) do
 
   create_table "ios_developers", force: true do |t|
     t.string   "name"
-    t.string   "identifier"
+    t.integer  "identifier"
     t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
