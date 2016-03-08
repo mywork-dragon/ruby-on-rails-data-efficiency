@@ -24,11 +24,16 @@ end
   for i in 1..500
     name = Faker::App.name
     ios_app = IosApp.find_or_initialize_by(app_identifier: i)
-    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100), ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500))
+    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), 
+                                             icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,
+                                             description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100),
+                                            ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500), seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_app_store_identifier: Faker::Number.between(1, 50))
     ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/(Date.tomorrow - ios_app_snapshot.released).to_f
     ios_app.newest_ios_app_snapshot = ios_app_snapshot
     ios_app.app_stores << AppStore.all.sample
     ios_app.save
+    ios_app_snapshot.ios_app = ios_app
+    ios_app_snapshot.save
     ios_app.set_mobile_priority
     ios_app.set_user_base
     
@@ -40,11 +45,15 @@ end
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
     
     android_app = AndroidApp.find_or_create_by(app_identifier: name)
-    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3, downloads_max: 100e6, android_app_id: i+1)
+    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), 
+                                                     price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3,
+                                                    downloads_max: 100e6, android_app_id: i+1, seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_google_play_identifier: Faker::Number.between(1, 50))
     android_app.newest_android_app_snapshot = android_app_snapshot
     android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample
     android_app.save
+    android_app_snapshot.android_app = android_app
+    android_app_snapshot.save
     
     android_cat = AndroidAppCategory.all.sample
     AndroidAppCategoriesSnapshot.create(android_app_category: android_cat, android_app_snapshot: android_app_snapshot, kind: AndroidAppCategoriesSnapshot.kinds.values.sample)
@@ -109,6 +118,8 @@ end
 
   apk_snapshot = ApkSnapshot.create(android_app_id: 1)
 
+  account = Account.create(name: 'MightSignal', can_view_support_desk: true, can_view_ad_spend: true, can_view_sdks: true, can_view_storewide_sdks: true, can_view_exports: true, god_mode: true, can_view_ios_live_scan: true)
+  user = User.create(email: 'matt@mightysignal.com', account_id: account.id, password: '12345')
   # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')
 
   # android_app = AndroidApp.find(1)

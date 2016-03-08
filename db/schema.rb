@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229233229) do
+ActiveRecord::Schema.define(version: 20160304004506) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -128,8 +128,10 @@ ActiveRecord::Schema.define(version: 20160229233229) do
     t.integer  "mobile_priority"
     t.integer  "newest_apk_snapshot_id"
     t.integer  "display_type",                   default: 0
+    t.integer  "android_developer_id"
   end
 
+  add_index "android_apps", ["android_developer_id"], name: "index_android_apps_on_android_developer_id", using: :btree
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", unique: true, using: :btree
   add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
   add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
@@ -158,6 +160,16 @@ ActiveRecord::Schema.define(version: 20160229233229) do
   add_index "android_developers", ["company_id"], name: "index_android_developers_on_company_id", using: :btree
   add_index "android_developers", ["identifier"], name: "index_android_developers_on_identifier", using: :btree
   add_index "android_developers", ["name"], name: "index_android_developers_on_name", using: :btree
+
+  create_table "android_developers_websites", force: true do |t|
+    t.integer  "android_developer_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "android_developers_websites", ["android_developer_id", "website_id"], name: "android_dev_id_and_website_id", using: :btree
+  add_index "android_developers_websites", ["website_id"], name: "index_android_developers_websites_on_website_id", using: :btree
 
   create_table "android_fb_ad_appearances", force: true do |t|
     t.string   "aws_assignment_identifier"
@@ -977,10 +989,12 @@ ActiveRecord::Schema.define(version: 20160229233229) do
     t.date     "released"
     t.integer  "newest_ipa_snapshot_id"
     t.integer  "display_type",               default: 0
+    t.integer  "ios_developer_id"
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
   add_index "ios_apps", ["display_type"], name: "index_ios_apps_on_display_type", using: :btree
+  add_index "ios_apps", ["ios_developer_id"], name: "index_ios_apps_on_ios_developer_id", using: :btree
   add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
   add_index "ios_apps", ["newest_ios_app_snapshot_id"], name: "index_ios_apps_on_newest_ios_app_snapshot_id", using: :btree
   add_index "ios_apps", ["newest_ipa_snapshot_id"], name: "index_ios_apps_on_newest_ipa_snapshot_id", using: :btree
@@ -1018,6 +1032,16 @@ ActiveRecord::Schema.define(version: 20160229233229) do
   add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
+
+  create_table "ios_developers_websites", force: true do |t|
+    t.integer  "ios_developer_id"
+    t.integer  "website_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_developers_websites", ["ios_developer_id", "website_id"], name: "index_ios_developers_websites_on_ios_developer_id_and_website_id", using: :btree
+  add_index "ios_developers_websites", ["website_id"], name: "index_ios_developers_websites_on_website_id", using: :btree
 
   create_table "ios_device_arches", force: true do |t|
     t.string   "name"
