@@ -168,13 +168,13 @@
                                     data-ng-class="{active: row == '-appName'}"></span>
             </div></th>
             <th><div class="th">
-              Company
+              Publisher
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click=" searchCtrl.sortApps('companyName', 'ASC') "
-                                    data-ng-class="{active: row == 'companyName'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('developerName', 'ASC') "
+                                    data-ng-class="{active: row == 'developerName'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('companyName', 'DESC') "
-                                    data-ng-class="{active: row == '-companyName'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('developerName', 'DESC') "
+                                    data-ng-class="{active: row == '-developerName'}"></span>
             </div></th>
             <th><div class="th">
               Fortune Rank
@@ -259,8 +259,7 @@
                 </span>
                 <span class="badge badge-primary" ng-if="0 <= app.app.releasedDays && app.app.releasedDays <= 15">New</span>
               </td>
-              <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-              <td ng-if="!app.company.name">{{app.app.seller}}</td>
+              <td ng-if="app.developer.name"><a href="#/publisher/{{appPlatform.platform}}/{{app.developer.id}}">{{app.developer.name}}</a></td>
               <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</span>

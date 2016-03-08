@@ -38,6 +38,9 @@ Rails.application.routes.draw do
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
   get 'api/search/export_results_to_csv' => 'api#export_all_search_results_to_csv'
 
+  get 'api/get_ios_developer' => 'api#get_ios_developer'
+  get 'api/get_android_developer' => 'api#get_android_developer'
+
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'
   get 'api/list/export_to_csv' => 'api#export_list_to_csv'

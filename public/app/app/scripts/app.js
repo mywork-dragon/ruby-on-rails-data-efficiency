@@ -50,6 +50,11 @@ angular
          templateUrl: '/app/app/views/sdk-search.html',
          activeTab: 'search'
        })
+       .when('/publisher/:platform/:id', {
+         templateUrl: '/app/app/views/publisher-details.html',
+         controller: 'PublisherDetailsCtrl',
+         activeTab: 'search'
+       })
        .when('/search/custom', {
          templateUrl: '/app/app/views/custom-search-results.html',
          activeTab: 'search'
@@ -89,6 +94,17 @@ angular
   .filter('capitalize', function() {
     return function(input, all) {
       return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+    }
+  })
+  .filter('uniqueStrings', function() {
+    return function(arr) {
+      var newArr = []
+      for (var i in arr) {
+        if (newArr.indexOf(arr[i]) == -1) {
+          newArr.push(arr[i]) 
+        }
+      }
+      return newArr
     }
   });
 

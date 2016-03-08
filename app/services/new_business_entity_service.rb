@@ -3,28 +3,6 @@ class NewBusinessEntityService
   class << self
     
     def ios_app_snapshot_ids
-      ids = []
-      
-      # https://github.com/MightySignal/varys/issues/154
-      ids << IosAppSnapshot.find(1819705)
-      
-      #https://github.com/MightySignal/varys/issues/155
-      #https://github.com/MightySignal/varys/issues/157
-      ids << IosAppSnapshot.find(2909066)
-      
-      #https://github.com/MightySignal/varys/issues/156
-      ids << IosAppSnapshot.find(2909501)
-      
-      #https://github.com/MightySignal/varys/issues/158
-      ids << IosAppSnapshot.find(2909093)
-      
-      #https://github.com/MightySignal/varys/issues/159
-      ids << IosAppSnapshot.find(2909535)
-      
-      # ids += IosAppSnapshot.where.not(name: nil).limit(50)
-      # ids += IosAppSnapshot.where.not(name: nil).order('created_at DESC').limit(50)
-      
-      ids
     end
     
     def write_csv_line(csv: nil, ios_app_snapshot_id: nil, ios_app_snapshot_seller_url: nil, ios_app_snapshot_support_url: nil, website_id: nil, website_url: nil, company_id: nil, company_website: nil, ios_app_id: nil)
@@ -106,96 +84,36 @@ class NewBusinessEntityService
       nil
       
     end
-    
-    def run_ios_new
-      
-      ios_app_snapshot_ids.each do |ss|
-        
-        ss = IosAppSnapshot.find(ios_app_snapshot_id)
-        ios_app = ss.ios_app
-        
-        next if ss.nil?
-        
-        # 1. Link all apps to developer by developer ID.
-        dasi = ss.developer_app_store_identifier
-        next if dasi.blank?
-        
-        if dasi
-          ios_developer = IosDeveloper.find_by_identifier(developer_app_store_identifier)
-          ios_developer = IosDeveloper.create(identifier: dasi, name: ss.seller) if ios_developer.nil?
-          c = Company.find_by_app_store_identifier(dasi)
-        end 
-        
-        # 2. Link the app to the developer if it's not already
-        ios_app.ios_developer = ios_developer if ios_app.ios_developer.blank?
-        
-        # 3.
-        link_developer_to_company_and_add_websites
-      end
-      
-    end
-    
-    def link_developer_to_company_and_add_websites(ios_app_snapshot:, ios_app:, ios_developer:)
-      
-      # 1. Is the website legit (is it an actual website for the company or person that owns the app)?
-      the_legit_websites = legit_websites(ios_app_snapshot)  #need to implement
-      
-      #2. For all legit websites, create a company for the developer if it doesn't already exist, and add the website to the company
-      the_legit_websites.each do |website_url|
-        company = ios_developer.company
-        
-        if company.blank?
-          company = Company.create(name: ios_developer.name)
+
+    def create_android_developers
+      batch = Sidekiq::Batch.new
+      batch.description = "Create android developer objects"
+      batch.on(:complete, "NewBusinessEntityService#on_complete")
+      AndroidApp.find_in_batches(batch_size: 10000).with_index do |the_batch, index|
+        batch.jobs do
+          li "App #{index*10000}"
+          args = the_batch.map{ |android_app| [android_app.id, 'android'] }
+          Sidekiq::Client.push_bulk('class' => CreateDevelopersWorker, 'args' => args)
         end
-        
-        website = Website.find_or_create_by_url(website_url)
-        
-        company.websites << website
       end
-      
     end
 
-    def legit_websites(ios_app_snapshot:)
-      websites = [ios_app_snapshot.seller_url, support_url].select{ |url| url.present? }
-      
-      # 1. Remove all websites that are common sites (like Blogspot)
-      websites.reject do |website|
-        
+    def create_ios_developers
+      batch = Sidekiq::Batch.new
+      batch.description = "Create ios developer objects"
+      batch.on(:complete, "NewBusinessEntityService#on_complete")
+      IosApp.find_in_batches(batch_size: 10000).with_index do |the_batch, index|
+        batch.jobs do
+          li "App #{index*10000}"
+          args = the_batch.map{ |ios_app| [ios_app.id, 'ios'] }
+          Sidekiq::Client.push_bulk('class' => CreateDevelopersWorker, 'args' => args)
+        end
       end
-
-      # 2. run through SVM
-      something = MachineLearningService.method_name(ios_app_snapshot: ios_app_snapshot, websites: websites) #need to build this
-      
-      
     end
 
-    #need to fix this logic
-    def hosted_sites
-      %w(
-        facebook.com\/.+
-        sites.google.com\/+.*
-        plus.google.com\/+.*
-        twitter.com\/.+
-        pinterest.com\/.+
-        facebook.com\/.+
-        instagram.com\/.+
-        apple.com\/.+
-      )
+    def on_complete(status, options)
+      Slackiq.notify(webhook_name: :main, status: status, title: 'Created developer objects')
     end
-    
-    # THE PROBLEM: does the website actually belong to the app?
-    def thresh
-      # ss = IosAppSnapshot.find(2909535)
-      ss = IosAppSnapshot.find(2909093)
-      
-      #input: count of other listing for same snapshot with same developer ID with the same website
-      appearances = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, seller_url: ss.seller_url, developer_app_store_identifier: ss.developer_app_store_identifier).count
-      total = IosAppSnapshot.where(ios_app_snapshot_job_id: ss.ios_app_snapshot_job_id, developer_app_store_identifier: ss.developer_app_store_identifier).count
-      
-      (appearances.to_f)/(total.to_f)
-      
-    end
-    
   end
 
 end

@@ -206,7 +206,7 @@ class FilterService
       # all elements of the array will be chained together
       parts = []
       
-      parts << "includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
+      parts << "includes(:ios_developer, :ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where('ios_app_snapshots.name IS NOT null')"
 
       parts << ios_app_keywords_query(custom_keywords) if custom_keywords.present?
       
@@ -256,7 +256,7 @@ class FilterService
       # parts << "where.not(taken_down: true)"
       # parts << "where(taken_down: nil)"
       
-      parts << "includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')"
+      parts << "includes(:android_developer, :android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')"
       
       parts << android_app_keywords_query(custom_keywords) if custom_keywords.present?
       
@@ -322,6 +322,8 @@ class FilterService
         return "where(\'ios_app_snapshots.released is not null\').order(\'ios_app_snapshots.released #{order_by}\')"
       when 'companyName'
         return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
+      when 'developerName'
+        return "where(\'ios_developers.name is not null\').order(\'ios_developers.name #{order_by}\')"
       when 'mobilePriority'
         return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
@@ -343,6 +345,8 @@ class FilterService
         return "where(\'android_app_snapshots.released is not null\').order(\'android_app_snapshots.released #{order_by}\')"
       when 'companyName'
         return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
+      when 'developerName'
+        return "where(\'android_developers.name is not null\').order(\'android_developers.name #{order_by}\')"
       when 'mobilePriority'
         return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
       when 'adSpend'
