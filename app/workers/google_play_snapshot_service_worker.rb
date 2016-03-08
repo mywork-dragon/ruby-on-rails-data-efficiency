@@ -63,7 +63,7 @@ class GooglePlaySnapshotServiceWorker
       single_column_attributes.each do |sca|
         value = a[sca.to_sym]
 
-        if AndroidAppSnapshot.columns_hash[sca].type == :string && value.length > MAX_STRING_LENGTH  # if it's a string and is too big
+        if value.present? AndroidAppSnapshot.columns_hash[sca].type == :string && value.length > MAX_STRING_LENGTH  # if it's a string and is too big
           next if sca.to_sym == :developer_google_play_identifier # skip long google play identifiers
 
           value = value.truncate(MAX_STRING_LENGTH)
