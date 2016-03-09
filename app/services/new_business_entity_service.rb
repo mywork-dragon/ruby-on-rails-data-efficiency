@@ -89,10 +89,10 @@ class NewBusinessEntityService
       batch = Sidekiq::Batch.new
       batch.description = "Create android developer objects"
       batch.on(:complete, "NewBusinessEntityService#on_complete")
-      AndroidApp.find_in_batches(batch_size: 10000).with_index do |the_batch, index|
+      AndroidApp.where(android_developer_id: nil).find_in_batches(batch_size: 10000).with_index do |the_batch, index|
         batch.jobs do
           li "App #{index*10000}"
-          args = the_batch.map{ |android_app| [android_app.id, 'android'] }
+          args = the_batch.map{ |android_app| [:create_developers, android_app.id, 'android'] }
           Sidekiq::Client.push_bulk('class' => CreateDevelopersWorker, 'args' => args)
         end
       end
@@ -102,12 +102,24 @@ class NewBusinessEntityService
       batch = Sidekiq::Batch.new
       batch.description = "Create ios developer objects"
       batch.on(:complete, "NewBusinessEntityService#on_complete")
-      IosApp.find_in_batches(batch_size: 10000).with_index do |the_batch, index|
+      IosApp.where(ios_developer_id: nil).find_in_batches(batch_size: 10000).with_index do |the_batch, index|
         batch.jobs do
           li "App #{index*10000}"
-          args = the_batch.map{ |ios_app| [ios_app.id, 'ios'] }
+          args = the_batch.map{ |ios_app| [:create_developers, ios_app.id, 'ios'] }
           Sidekiq::Client.push_bulk('class' => CreateDevelopersWorker, 'args' => args)
         end
+      end
+    end
+
+    def dedupe_ios_developers
+      IosDeveloper.pluck(:identifier).group_by{ |e| e }.select { |k, v| v.size > 1 }.map(&:first).each do |identifier|
+        CreateDevelopersWorker.perform_async(:dedupe_developers, identifier, 'ios')
+      end
+    end
+
+    def dedupe_android_developers
+      AndroidDeveloper.pluck(:identifier).group_by{ |e| e }.select { |k, v| v.size > 1 }.map(&:first).each do |identifier|
+        CreateDevelopersWorker.perform_async(:dedupe_developers, identifier, 'android')
       end
     end
 

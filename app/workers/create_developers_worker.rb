@@ -2,9 +2,13 @@ class  CreateDevelopersWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => 2, queue: :default
+  sidekiq_options backtrace: true, :retry => false, queue: :default
+
+  def perform(method, *args)
+    self.send(method.to_sym, *args)
+  end
     
-  def perform(app_id, platform)
+  def create_developers(app_id, platform)
     if platform == 'ios'
       app_class = IosApp
       developer_class = IosDeveloper
@@ -35,6 +39,25 @@ class  CreateDevelopersWorker
     elsif app.android_developer.blank?
       app.android_developer = developer
       app.save
+    end
+  end
+
+  def dedupe_developers(dev_id, platform)
+    if platform == 'ios'
+      developer_class = IosDeveloper
+    else
+      developer_class = AndroidDeveloper
+    end
+
+    developers = developer_class.where(identifier: dev_id).to_a
+    developer_to_keep = developers.shift
+    developers.each do |dupe_developer|
+      if platform == 'ios'
+        dupe_developer.ios_apps.update_all(ios_developer_id: developer_to_keep.id)
+      else
+        dupe_developer.android_apps.update_all(android_developer_id: developer_to_keep.id)
+      end
+      dupe_developer.destroy
     end
   end
 end
