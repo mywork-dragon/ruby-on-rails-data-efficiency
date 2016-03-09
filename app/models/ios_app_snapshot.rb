@@ -10,6 +10,7 @@ class IosAppSnapshot < ActiveRecord::Base
   has_many :ios_app_categories, through: :ios_app_categories_snapshots
 
   has_many :ios_app_snapshot_exceptions
+  has_many :ios_in_app_purchases
   
   enum status: [:failure, :success]
 
