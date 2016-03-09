@@ -54,8 +54,10 @@ class  CreateDevelopersWorker
     developers.each do |dupe_developer|
       if platform == 'ios'
         dupe_developer.ios_apps.update_all(ios_developer_id: developer_to_keep.id)
+        dupe_developer.ios_developers_websites.update_all(ios_developer_id: developer_to_keep.id)
       else
         dupe_developer.android_apps.update_all(android_developer_id: developer_to_keep.id)
+        dupe_developer.android_developers_websites.update_all(android_developer_id: developer_to_keep.id)
       end
       dupe_developer.destroy
     end
