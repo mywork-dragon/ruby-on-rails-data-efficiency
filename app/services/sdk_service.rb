@@ -263,14 +263,16 @@ class SdkService
 				return false
 			end
 
+			return false if url.length > 170 # for mysql reasons...also if website url is that long, it's probably garbage 99% of the time
+
 			begin
 			# TODO, change this to catch mutliword examples "Google admob". Won't currently work but those are hard coded into regex table
-				return true if UrlHelper.full_domain(url).downcase.include?(query.downcase)
-			rescue => e 	# catch invalid URIs
+				return false unless UrlHelper.full_domain(url).downcase.include?(query.downcase)
+			rescue 	# catch invalid URIs
 				return false
 			end
 
-			false
+			true
 		end
 
 		# given a snapshot id and a platform, return the app name
