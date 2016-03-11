@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160310091051) do
+ActiveRecord::Schema.define(version: 20160311013458) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -699,6 +699,17 @@ ActiveRecord::Schema.define(version: 20160310091051) do
     t.datetime "updated_at"
   end
 
+  create_table "fb_accounts_ios_devices", force: true do |t|
+    t.integer  "fb_account_id"
+    t.integer  "ios_device_id"
+    t.boolean  "flagged",       default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "fb_accounts_ios_devices", ["fb_account_id", "ios_device_id"], name: "index_fb_account_id_ios_device_id", using: :btree
+  add_index "fb_accounts_ios_devices", ["ios_device_id"], name: "index_fb_accounts_ios_devices_on_ios_device_id", using: :btree
+
   create_table "fb_activities", force: true do |t|
     t.integer  "fb_activity_job_id"
     t.integer  "fb_account_id"
@@ -1121,6 +1132,66 @@ ActiveRecord::Schema.define(version: 20160310091051) do
   add_index "ios_fb_ad_appearances", ["hit_identifier"], name: "index_ios_fb_ad_appearances_on_hit_identifier", using: :btree
   add_index "ios_fb_ad_appearances", ["ios_app_id"], name: "index_ios_fb_ad_appearances_on_ios_app_id", using: :btree
   add_index "ios_fb_ad_appearances", ["m_turk_worker_id"], name: "index_ios_fb_ad_appearances_on_m_turk_worker_id", using: :btree
+
+  create_table "ios_fb_ad_exceptions", force: true do |t|
+    t.integer  "ios_fb_ad_job_id"
+    t.integer  "fb_account_id"
+    t.integer  "ios_device_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_fb_ad_exceptions", ["fb_account_id"], name: "index_ios_fb_ad_exceptions_on_fb_account_id", using: :btree
+  add_index "ios_fb_ad_exceptions", ["ios_device_id"], name: "index_ios_fb_ad_exceptions_on_ios_device_id", using: :btree
+  add_index "ios_fb_ad_exceptions", ["ios_fb_ad_job_id"], name: "index_ios_fb_ad_exceptions_on_ios_fb_ad_job_id", using: :btree
+
+  create_table "ios_fb_ad_jobs", force: true do |t|
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ios_fb_ad_processing_exceptions", force: true do |t|
+    t.integer  "ios_fb_ad_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ios_fb_ad_processing_exceptions", ["ios_fb_ad_id"], name: "index_ios_fb_ad_processing_exceptions_on_ios_fb_ad_id", using: :btree
+
+  create_table "ios_fb_ads", force: true do |t|
+    t.integer  "ios_fb_ad_job_id"
+    t.integer  "ios_app_id"
+    t.integer  "fb_account_id"
+    t.integer  "ios_device_id"
+    t.integer  "status"
+    t.boolean  "flagged",                    default: false
+    t.text     "link_contents"
+    t.text     "ad_info_html"
+    t.integer  "feed_index"
+    t.boolean  "carousel"
+    t.datetime "date_seen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "ad_image_file_name"
+    t.string   "ad_image_content_type"
+    t.integer  "ad_image_file_size"
+    t.datetime "ad_image_updated_at"
+    t.string   "ad_info_image_file_name"
+    t.string   "ad_info_image_content_type"
+    t.integer  "ad_info_image_file_size"
+    t.datetime "ad_info_image_updated_at"
+  end
+
+  add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
+  add_index "ios_fb_ads", ["ios_app_id", "status", "flagged"], name: "index_ios_fb_ads_on_ios_app_id_and_status_and_flagged", using: :btree
+  add_index "ios_fb_ads", ["ios_device_id"], name: "index_ios_fb_ads_on_ios_device_id", using: :btree
+  add_index "ios_fb_ads", ["ios_fb_ad_job_id"], name: "index_ios_fb_ads_on_ios_fb_ad_job_id", using: :btree
+  add_index "ios_fb_ads", ["status", "flagged"], name: "index_ios_fb_ads_on_status_and_flagged", using: :btree
 
   create_table "ios_in_app_purchases", force: true do |t|
     t.datetime "created_at"
@@ -1619,6 +1690,17 @@ ActiveRecord::Schema.define(version: 20160310091051) do
   end
 
   add_index "sdk_string_regexes", ["ios_sdk_id"], name: "index_sdk_string_regexes_on_ios_sdk_id", using: :btree
+
+  create_table "service_statuses", force: true do |t|
+    t.integer  "service",                       null: false
+    t.boolean  "active",         default: true
+    t.text     "description"
+    t.text     "outage_message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "service_statuses", ["service"], name: "index_service_statuses_on_service", unique: true, using: :btree
 
   create_table "services", force: true do |t|
     t.string   "name"
