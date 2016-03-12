@@ -40,7 +40,7 @@ class IosMassScanService
     end
 
     def run_recently_updated(n: 5000)
-      recent = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where('ios_app_snapshots.released > ?', 2.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      recent = IosApp.joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', 2.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
 
       puts "Got #{recent.count} entries"
       # filter out to only those
