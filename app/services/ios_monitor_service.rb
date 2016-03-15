@@ -72,7 +72,7 @@ class IosMonitorService
     end
 
     def delete_ios_remnants(ios_device_ids: nil)
-      ios_device_ids = IosDevice.where(purpose: 1).pluck(:id) if ios_device_ids.nil?
+      ios_device_ids = IosDevice.where(purpose: IosDevice.purposes[:mass]).pluck(:id) if ios_device_ids.nil?
 
       devices = IosDevice.where(id: ios_device_ids)
 
