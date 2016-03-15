@@ -5,11 +5,17 @@ class IosDevice < ActiveRecord::Base
   belongs_to :softlayer_proxy
   belongs_to :ios_device_model
 
+  has_many :ios_fb_ads
+  has_many :ios_fb_ad_exceptions
+
+  has_many :fb_accounts_ios_devices
+  has_many :fb_accounts, through: :fb_accounts_ios_devices
+
 	validates :ip, uniqueness: true
 	validates :serial_number, uniqueness: true, presence: true
 
 	# either dedicated for a one off scrape or for mass scrapes
-	enum purpose: [:one_off, :mass, :test]
+	enum purpose: [:one_off, :mass, :test, :fb_ad_scrape, :disabled]
 
   # The class dump architecture to use
   # Eg. "armv7", "arm64"

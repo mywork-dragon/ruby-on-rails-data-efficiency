@@ -5,7 +5,7 @@ class FbActivityService
       Slackiq.message('Starting to simulate facebook activity', webhook_name: :main)
 
       job = FbActivityJob.create!(notes: "Simulating user activity for all accounts")
-      FbAccount.all.each do |account|
+      FbAccount.where(flagged: false, browsable: true).each do |account|
         FbActivityServiceWorker.new.perform(job.id, account.id) # do this synchronously...only want 1 instance of firefox at a time
       end
 

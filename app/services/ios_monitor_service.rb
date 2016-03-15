@@ -57,17 +57,18 @@ class IosMonitorService
       stuck_devices = IosDevice.where(purpose: IosDevice.purposes[:mass], in_use: true).where('last_used < ?', Time.now - wait_time)
 
       num_stuck = stuck_devices.count
+      ids = stuck_devices.pluck(:id)
 
       return if num_stuck == 0
 
       puts "#{Time.now.utc}: Rescuing #{num_stuck} phones"
       stuck_devices.each do |ios_device|
         puts "Trying device #{ios_device.id}"
-        ios_device.update(purpose: nil)
+        ios_device.update(purpose: :disabled)
         IosDeviceService.new(ios_device).kill_ssh_session
       end
 
-      Slackiq.message("Found #{num_stuck} devices stuck: #{stuck_devices.pluck(:id).join(', ')}. Killed SSH session and disabled. *Check device and re-enable when ready*", webhook_name: :automated_alerts)
+      Slackiq.message("Found #{num_stuck} devices stuck: #{ids.join(', ')}. Killed SSH session and disabled. *Check device and re-enable when ready*", webhook_name: :automated_alerts)
     end
 
     def delete_ios_remnants(ios_device_ids: nil)

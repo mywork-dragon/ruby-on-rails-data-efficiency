@@ -1,0 +1,1 @@
+selectAlbumType(/Recently Deleted/, 'Recently Deleted');
