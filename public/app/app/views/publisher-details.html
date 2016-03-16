@@ -35,7 +35,7 @@
                   <li ng-if="appPlatform">
                     <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                     <label>Platform:</label>
-                    iOS
+                    {{appPlatform == 'ios' ? 'iOS' : 'Android'}}
                   </li>
                   <li ng-if="publisherData.websites">
                     <span class="icon fa fa-globe"></span>
