@@ -193,12 +193,10 @@ class IosFbAdDeviceService
 
   def open_fb(ssh)
     log_debug "Opening FB"
-
-    run_command(ssh, 'killall Facebook', 'Ensure facebook is closed')
-    sleep 1.5
     run_command(ssh, 'open com.facebook.Facebook', 'Open the facebook app')
     sleep 1.5
-    run_command(ssh, "cycript -p Facebook #{File.join(SCRIPTS_PREFIX, 'fb_utilities.cy')}", 'Bind FB utilities to FB')
+    run_file(ssh, 'Facebook', 'fb_utilities.cy')
+    sleep 1.5
   end
 
   def get_feed_info(ssh)
@@ -507,7 +505,7 @@ class IosFbAdDeviceService
     outfile = take_screenshot(ssh, 'FB_AD_INFO')
     html_content = run_file(ssh, 'Facebook', 'get_ad_info_html.cy')
 
-    raise html_content if known_command_error?(html_content)
+    html_content = nil if known_command_error?(html_content)
 
     run_and_validate_success(ssh, 'Facebook', 'navigate_back_from_preferences.cy')
     sleep 1
@@ -564,7 +562,7 @@ class IosFbAdDeviceService
     resp = run_command(ssh, "cycript -p Facebook #{outfile}", 'Running log in file').chomp
 
     raise "Failed with message: #{resp}" unless resp.match(/Pressed/i)
-    sleep 5 # Let the request get sent
+    sleep 7 # Let the request get sent
 
     # verify
     log_debug "Verifying log in"
