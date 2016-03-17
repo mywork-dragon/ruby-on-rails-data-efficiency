@@ -2,7 +2,7 @@ class ProxyMonitorWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :scraper
+  sidekiq_options retry: false, queue: :low
 
   TEST_SITES = [
     'https://www.apple.com',
