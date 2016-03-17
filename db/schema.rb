@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317050724) do
+ActiveRecord::Schema.define(version: 20160317204448) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1556,14 +1556,14 @@ ActiveRecord::Schema.define(version: 20160317050724) do
     t.date     "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "flags"
+    t.integer  "purpose"
   end
 
   add_index "micro_proxies", ["active"], name: "index_micro_proxies_on_active", using: :btree
-  add_index "micro_proxies", ["flags"], name: "index_micro_proxies_on_flags", using: :btree
   add_index "micro_proxies", ["last_used"], name: "index_micro_proxies_on_last_used", using: :btree
   add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
+  add_index "micro_proxies", ["purpose", "active"], name: "index_micro_proxies_on_purpose_and_active", using: :btree
 
   create_table "ms_clearbit_leads", force: true do |t|
     t.text     "first_name"
