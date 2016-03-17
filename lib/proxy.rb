@@ -104,11 +104,16 @@ class Proxy
   def get_proxy_by_type(type: nil)
 
     # ios and android share...for now
-    if type == :ios_classification || type == :android_classification
-      MicroProxy.where(purpose: MicroProxy.purposes[:ios], active: true).pluck(:private_ip).sample
+
+    proxies = if type == :ios_classification
+      ios_proxies
+    elsif type == :android_classification
+      android_proxies
     else
-      MicroProxy.where(purpose: MicroProxy.purposes[:general], active: true).pluck(:private_ip).sample
+      general_proxies
     end
+
+    proxies.sample
   end
 
   # Get a proxy depending on the current thread
@@ -202,65 +207,12 @@ class Proxy
     get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), proxy: proxy, proxy_type: proxy_type)
   end
 
+  def general_proxies
+    MicroProxy.where(purpose: MicroProxy.purposes[:general], active:true).pluck(:private_ip)
+  end
+
   def ios_proxies
-    # proxies minus those that are broken
-    %w(
-    172.31.27.59
-    172.31.17.15
-    172.31.27.144
-    172.31.30.200
-    172.31.22.114
-    172.31.16.195
-    172.31.23.89
-    172.31.23.147
-    172.31.19.236
-    172.31.29.96
-    172.31.28.34
-    172.31.23.178
-    172.31.21.224
-    172.31.17.134
-    172.31.23.251
-    172.31.21.179
-    172.31.22.31
-    172.31.29.14
-    172.31.31.239
-    172.31.20.95
-    172.31.28.15
-    172.31.30.182
-    172.31.22.36
-    172.31.30.103
-    172.31.27.154
-    172.31.17.27
-    172.31.31.209
-    172.31.31.187
-    172.31.19.7
-    172.31.18.65
-    172.31.28.255
-    172.31.19.115
-    172.31.30.179
-    172.31.21.75
-    172.31.17.81
-    172.31.19.76
-    172.31.23.173
-    172.31.27.245
-    172.31.29.215
-    172.31.30.151
-    172.31.16.142
-    172.31.24.33
-    172.31.25.235
-    172.31.24.161
-    172.31.24.164
-    172.31.22.250
-    172.31.27.22
-    172.31.22.202
-    172.31.30.170
-    172.31.24.107
-    ) - %w(
-      172.31.29.18
-      172.31.27.22
-      172.31.18.235
-      172.31.17.134
-    )
+    MicroProxy.where(purpose: MicroProxy.purposes[:ios], active:true).pluck(:private_ip)
   end
 
   def android_proxies
