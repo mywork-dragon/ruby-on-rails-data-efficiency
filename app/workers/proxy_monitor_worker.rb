@@ -10,7 +10,7 @@ class ProxyMonitorWorker
     'https://wtfismyip.com/json'
   ]
 
-  def perform(method, args*)
+  def perform(method, *args)
     self.send(method.to_sym, args)
   end
 
