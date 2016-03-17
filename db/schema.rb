@@ -28,6 +28,11 @@ ActiveRecord::Schema.define(version: 20160316232117) do
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
 
+  create_table "activities", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -765,6 +770,17 @@ ActiveRecord::Schema.define(version: 20160316232117) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "follow_relationships", force: true do |t|
+    t.integer  "user_id",         null: false
+    t.integer  "followable_id",   null: false
+    t.string   "followable_type", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", unique: true, using: :btree
+  add_index "follow_relationships", ["user_id"], name: "index_follow_relationships_on_user_id", using: :btree
 
   create_table "github_accounts", force: true do |t|
     t.string   "username"
@@ -1838,6 +1854,30 @@ ActiveRecord::Schema.define(version: 20160316232117) do
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
+
+  create_table "weekly_batches", force: true do |t|
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.integer  "activity_type"
+    t.integer  "activities_count", default: 0, null: false
+    t.date     "week",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "weekly_batches", ["activity_type"], name: "index_weekly_batches_on_activity_type", using: :btree
+  add_index "weekly_batches", ["owner_id", "owner_type"], name: "index_weekly_batches_on_owner_id_and_owner_type", using: :btree
+  add_index "weekly_batches", ["week"], name: "index_weekly_batches_on_week", using: :btree
+
+  create_table "weekly_batches_activities", force: true do |t|
+    t.integer  "weekly_batch_id", null: false
+    t.integer  "activity_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "weekly_batches_activities", ["activity_id"], name: "index_weekly_batches_activities_on_activity_id", using: :btree
+  add_index "weekly_batches_activities", ["weekly_batch_id", "activity_id"], name: "weekly_batch_id_activity_id_index", using: :btree
 
   create_table "word_occurences", force: true do |t|
     t.string   "word"

@@ -21,7 +21,7 @@ puts 'creating App Stores...'
 end
 
   puts "creating ios and android apps, and creating snapshots for each..."
-  for i in 1..500
+  for i in 1..1000
     name = Faker::App.name
     ios_app = IosApp.find_or_initialize_by(app_identifier: i)
     ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), 
@@ -41,7 +41,7 @@ end
     IosAppCategoriesSnapshot.create(ios_app_category: ios_cat, ios_app_snapshot: ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds.values.sample)
   end
   
-  500.times do |i|
+  1000.times do |i|
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
     
     android_app = AndroidApp.find_or_create_by(app_identifier: name)
@@ -109,6 +109,22 @@ end
     ad = AndroidFbAdAppearance.create
     app = AndroidApp.all.sample
     app.android_fb_ad_appearances << ad
+  end
+
+  ios_apps = IosApp.all
+  ios_sdks = IosSdk.all
+  30.times do 
+    IosSdk.create(name: Faker::Company.name, website: Faker::Internet.url, favicon: Faker::Avatar.image, summary: Faker::Company.catch_phrase, kind: 0)
+  end
+  10000.times do
+    ios_app = ios_apps.sample
+    ios_sdk = ios_sdks.sample
+    Activity.log_activity(:uninstall, ios_app, ios_sdk)
+  end
+  10000.times do
+    ios_app = ios_apps.sample
+    ios_sdk = ios_sdks.sample
+    Activity.log_activity(:install, ios_app, ios_sdk)
   end
   
   #Create local IP for Tor
