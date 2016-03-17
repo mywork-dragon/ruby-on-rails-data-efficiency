@@ -103,12 +103,11 @@ class Proxy
 
   def get_proxy_by_type(type: nil)
 
-    if type == :ios_classification
-      ios_proxies.sample
-    elsif type == :android_classification
-      android_proxies.sample
+    # ios and android share...for now
+    if type == :ios_classification || type == :android_classification
+      MicroProxy.where(purpose: MicroProxy.purposes[:ios], active: true).pluck(:private_ip).sample
     else
-      MicroProxy.where(active: true).pluck(:private_ip).sample
+      MicroProxy.where(purpose: MicroProxy.purposes[:general], active: true).pluck(:private_ip).sample
     end
   end
 

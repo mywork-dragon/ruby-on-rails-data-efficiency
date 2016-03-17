@@ -3,7 +3,7 @@ class ProxyMonitor
     def check_proxies
 
       batch = Sidekiq::Batch.new
-      batch.description = "Checking reachability of proxies" 
+      batch.description = "Checking reachability of proxies"
       batch.on(:complete, 'ProxyMonitor#on_complete')
 
       batch.jobs do
