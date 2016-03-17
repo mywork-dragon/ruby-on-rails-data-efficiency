@@ -10,7 +10,8 @@ class IosSdkService
         installed_sdks: [],
         uninstalled_sdks: [],
         updated: nil,
-        error_code: nil
+        error_code: nil,
+        live_scan_enabled: nil
       }
 
       error_map = {
@@ -20,6 +21,9 @@ class IosSdkService
         device_incompatible: 3,
         not_ios: 4
       }
+
+      # pass flag through
+      resp[:live_scan_enabled] = ServiceStatus.is_active?(:ios_live_scan) || Rails.application.config.env['stage'] != 'web'
 
       # return error if it violates some conditions
       app = IosApp.find(ios_app_id)

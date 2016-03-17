@@ -43,7 +43,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             'sdkCompanies': data.installed_sdks,
             'sdkOpenSource': data.uninstalled_sdks,
             'lastUpdated': data.updated,
-            'errorCode': data.error_code
+            'errorCode': data.error_code,
+            'liveScanEnabled': data.live_scan_enabled
           };
 
           iosLiveScanCtrl.noSdkData = false;
