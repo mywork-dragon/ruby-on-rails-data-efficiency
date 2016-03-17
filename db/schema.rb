@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317210150) do
+ActiveRecord::Schema.define(version: 20160317214611) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -369,17 +369,17 @@ ActiveRecord::Schema.define(version: 20160317210150) do
   add_index "apk_snapshot_scrape_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_exceptions_on_apk_snapshot_job_id", using: :btree
 
   create_table "apk_snapshot_scrape_failures", force: true do |t|
-    t.integer  "apk_snapshot_id"
     t.integer  "android_app_id"
     t.integer  "reason"
     t.text     "scrape_content"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "version"
+    t.integer  "apk_snapshot_job_id"
   end
 
   add_index "apk_snapshot_scrape_failures", ["android_app_id"], name: "index_apk_snapshot_scrape_failures_on_android_app_id", using: :btree
-  add_index "apk_snapshot_scrape_failures", ["apk_snapshot_id"], name: "index_apk_snapshot_scrape_failures_on_apk_snapshot_id", using: :btree
+  add_index "apk_snapshot_scrape_failures", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_failures_on_apk_snapshot_job_id", using: :btree
 
   create_table "apk_snapshots", force: true do |t|
     t.string   "version"
