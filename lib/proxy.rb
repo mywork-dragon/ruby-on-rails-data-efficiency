@@ -18,16 +18,16 @@ class Proxy
       self.new.get_nokogiri_with_wait(req: req, params: params, type: type)
     end
 
-    def get_from_url(url, params: {}, headers: {})
-      self.new.get_from_url(url, params: params, headers: headers)
+    def get_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: nil)
+      self.new.get_from_url(url, params: params, headers: headers, proxy: proxy, proxy_type: proxy_type)
     end
 
     def params_from_query(query)
       self.new.params_from_query(query)
     end
 
-    def get_body_from_url(url, params: {}, headers: {})
-      self.new.get_body_from_url(url, params: params, headers: headers)
+    def get_body_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: nil)
+      self.new.get_body_from_url(url, params: params, headers: headers, proxy: proxy, proxy_type: proxy_type)
     end
 
   end
@@ -171,9 +171,9 @@ class Proxy
   # Convenience method to get the Response object from just a url
   # @author Osman Khwaja
   # @return The response (CurbFu::Response::Base)
-  def get_from_url(url, params: {}, headers: {}, randomize_user_agent: true)
+  def get_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: nil,randomize_user_agent: true)
     uri = URI(url)
-    get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), randomize_user_agent: randomize_user_agent)
+    get(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), randomize_user_agent: randomize_user_agent, proxy: proxy, proxy_type: proxy_type)
   end
 
   # from a query string, build the params object
@@ -198,9 +198,9 @@ class Proxy
   # @url The URL to get
   # @param The HTTP params
   # @return The body (String)
-  def get_body_from_url(url, params: {}, headers: {})
+  def get_body_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: proxy_type)
     uri = URI(url)
-    get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params))
+    get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), proxy: proxy, proxy_type: proxy_type)
   end
 
   def ios_proxies
