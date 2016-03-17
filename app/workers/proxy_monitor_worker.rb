@@ -11,7 +11,7 @@ class ProxyMonitorWorker
   ]
 
   def perform(method, *args)
-    self.send(method.to_sym, args)
+    self.send(method.to_sym, *args)
   end
 
   def test_microproxy(micro_proxy_id)
@@ -35,5 +35,10 @@ class ProxyMonitorWorker
 
     proxy.update(active: false)
     Slackiq.message("MicroProxy #{proxy.id} failed health check. Disabling", webhook_name: :automated_alerts)
+  end
+
+  def test_concurrency
+    p = MicroProxy.where(purpose: MicroProxy.purposes[:ios], active: true).pluck(:private_ip).sample
+    puts p.private_ip
   end
 end

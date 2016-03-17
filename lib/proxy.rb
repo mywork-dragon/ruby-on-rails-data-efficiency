@@ -30,6 +30,12 @@ class Proxy
       self.new.get_body_from_url(url, params: params, headers: headers, proxy: proxy, proxy_type: proxy_type)
     end
 
+    def test_concurrency
+      10000.times do |n|
+        ProxyMonitorWorker.perform_async(:test_concurrency)
+      end
+    end
+
   end
 
   def initialize(jid: nil)
