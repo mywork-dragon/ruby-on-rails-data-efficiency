@@ -793,7 +793,7 @@ ActiveRecord::Schema.define(version: 20160317210150) do
     t.datetime "updated_at"
   end
 
-  add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", unique: true, using: :btree
+  add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", using: :btree
   add_index "follow_relationships", ["user_id"], name: "index_follow_relationships_on_user_id", using: :btree
 
   create_table "github_accounts", force: true do |t|
