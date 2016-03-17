@@ -30,12 +30,6 @@ class Proxy
       self.new.get_body_from_url(url, params: params, headers: headers, proxy: proxy, proxy_type: proxy_type)
     end
 
-    def check_proxies
-      MicroProxy.where(active: true).find_each do |proxy|
-        ProxyMonitorWorker.perform_async(:test_microproxy, proxy.id)
-      end
-    end
-
   end
 
   def initialize(jid: nil)
