@@ -19,7 +19,7 @@ class ProxyMonitorWorker
 
     puts "Trying proxy #{proxy.id}: #{proxy.private_ip}"
 
-    # just make sure any of the sites work
+    # just make sure at least one of the sites work
     resp = nil
     while resp.nil?
       TEST_SITES.each do |site|
@@ -35,10 +35,5 @@ class ProxyMonitorWorker
 
     proxy.update(active: false)
     Slackiq.message("MicroProxy #{proxy.id} failed health check. Disabling", webhook_name: :automated_alerts)
-  end
-
-  def test_concurrency
-    p = MicroProxy.where(purpose: MicroProxy.purposes[:ios], active: true).pluck(:private_ip).sample
-    puts p
   end
 end
