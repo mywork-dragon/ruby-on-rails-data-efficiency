@@ -198,7 +198,7 @@ class Proxy
   # @url The URL to get
   # @param The HTTP params
   # @return The body (String)
-  def get_body_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: proxy_type)
+  def get_body_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: nil)
     uri = URI(url)
     get_body(req: {host: uri.host + uri.path, protocol: uri.scheme, headers: headers}, params: params_from_query(uri.query).merge(params), proxy: proxy, proxy_type: proxy_type)
   end
