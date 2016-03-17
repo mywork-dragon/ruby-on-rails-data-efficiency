@@ -39,6 +39,6 @@ class ProxyMonitorWorker
 
   def test_concurrency
     p = MicroProxy.where(purpose: MicroProxy.purposes[:ios], active: true).pluck(:private_ip).sample
-    puts p.private_ip
+    puts p
   end
 end
