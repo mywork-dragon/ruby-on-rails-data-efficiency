@@ -15,6 +15,6 @@ class ProxyMonitor
   end
 
   def on_complete(status, options)
-    Slackiq.notify(webhook_name: :debug, status: status, title: 'checked proxies')
+    Slackiq.notify(webhook_name: :background, status: status, title: 'checked proxies')
   end
 end
