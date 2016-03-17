@@ -102,9 +102,7 @@ class Proxy
   end
 
   def get_proxy_by_type(type: nil)
-
-    # ios and android share...for now
-
+    
     proxies = if type == :ios_classification
       ios_proxies
     elsif type == :android_classification
