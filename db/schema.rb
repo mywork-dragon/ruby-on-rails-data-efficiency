@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317204448) do
+ActiveRecord::Schema.define(version: 20160317214611) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -356,17 +356,30 @@ ActiveRecord::Schema.define(version: 20160317204448) do
 
   add_index "apk_snapshot_jobs", ["job_type"], name: "index_apk_snapshot_jobs_on_job_type", using: :btree
 
+  create_table "apk_snapshot_scrape_exceptions", force: true do |t|
+    t.integer  "apk_snapshot_job_id"
+    t.text     "error"
+    t.text     "backtrace"
+    t.integer  "android_app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apk_snapshot_scrape_exceptions", ["android_app_id"], name: "index_apk_snapshot_scrape_exceptions_on_android_app_id", using: :btree
+  add_index "apk_snapshot_scrape_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_exceptions_on_apk_snapshot_job_id", using: :btree
+
   create_table "apk_snapshot_scrape_failures", force: true do |t|
-    t.integer  "apk_snapshot_id"
     t.integer  "android_app_id"
     t.integer  "reason"
     t.text     "scrape_content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "version"
+    t.integer  "apk_snapshot_job_id"
   end
 
   add_index "apk_snapshot_scrape_failures", ["android_app_id"], name: "index_apk_snapshot_scrape_failures_on_android_app_id", using: :btree
-  add_index "apk_snapshot_scrape_failures", ["apk_snapshot_id"], name: "index_apk_snapshot_scrape_failures_on_apk_snapshot_id", using: :btree
+  add_index "apk_snapshot_scrape_failures", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_failures_on_apk_snapshot_job_id", using: :btree
 
   create_table "apk_snapshots", force: true do |t|
     t.string   "version"
@@ -780,7 +793,7 @@ ActiveRecord::Schema.define(version: 20160317204448) do
     t.datetime "updated_at"
   end
 
-  add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", unique: true, using: :btree
+  add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", using: :btree
   add_index "follow_relationships", ["user_id"], name: "index_follow_relationships_on_user_id", using: :btree
 
   create_table "github_accounts", force: true do |t|
