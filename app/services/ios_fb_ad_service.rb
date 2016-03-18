@@ -34,7 +34,7 @@ class IosFbAdService
   def on_complete(status, options)
     ios_fb_ad_job = IosFbAdJob.find(options['job_id'])
 
-    Slackiq.notify(webhook_name: :debug,
+    Slackiq.notify(webhook_name: :background,
       status: status,
       title: 'Completed iOS Facebook ad spend scrape',
       'Job Id' => ios_fb_ad_job.id,

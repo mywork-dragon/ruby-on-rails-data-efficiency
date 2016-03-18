@@ -49,10 +49,11 @@ puts "web".light_cyan + ": Deploys to the Web server."
 puts "darth_vader".light_cyan + ": Deploys to Vader (iOS Live Scan)."
 puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Dev)."
 puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
+puts "monitor".light_cyan + ": Deploys to monitor servers"
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
@@ -134,6 +135,7 @@ elsif %w(web sdk_scraper_live_scan darth_vader ios_live_scan).include?(stage)
 end
 
 puts ""
+puts "Stage: #{stage}"
 system("bundle exec cap #{stage} deploy")
 
 # Post deployment to Slack
