@@ -135,6 +135,7 @@ elsif %w(web sdk_scraper_live_scan darth_vader ios_live_scan).include?(stage)
 end
 
 puts ""
+puts "Stage: #{stage}"
 system("bundle exec cap #{stage} deploy")
 
 # Post deployment to Slack
