@@ -136,7 +136,7 @@ module MightyDeployer
 
   def self.define_monitor_servers
     @monitor_servers = %w(
-      54.209.27.133
+      54.88.95.195
     )
 
     @app_roles += @monitor_servers
