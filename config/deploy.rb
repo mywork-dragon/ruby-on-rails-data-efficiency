@@ -61,7 +61,7 @@ set :monitor_concurrency, 10
 set :sdk_scraper_queue, %w(sdk)
 set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default low)
-set :scraper_master_queue, %w(critical scraper_master default low)  #needs to go after scraper_queue definition
+set :scraper_master_queue, %w(critical scraper_master default)  #needs to go after scraper_queue definition
 set :web_queue, %w(mailers)
 set :darth_vader_queue, %w(ios_live_scan ios_live_scan_test)
 set :kylo_ren_queue, %w(ios_fb_ads ios_epf_mass_scan ios_mass_scan kylo)
