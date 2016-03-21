@@ -7,8 +7,10 @@ class ProxyMonitorWorker
   TEST_SITES = [
     'https://www.apple.com',
     'https://www.google.com',
-    'https://wtfismyip.com/json'
+    'https://github.com/'
   ]
+
+  MAX_ATTEMPTS = 3
 
   def perform(method, *args)
     self.send(method.to_sym, *args)
@@ -21,14 +23,19 @@ class ProxyMonitorWorker
 
     # just make sure at least one of the sites work
     resp = nil
-    while resp.nil?
-      TEST_SITES.each do |site|
-        resp = begin
-          Proxy.get_from_url(site, proxy: proxy.private_ip)
-        rescue Curl::Err::TimeoutError
-          nil
-        end
+    attempts = 0
+    while resp.nil? && attempts < MAX_ATTEMPTS
+
+      attempts += 1
+
+      resp = begin
+        site = TEST_SITES.sample
+        puts "#{proxy.id}: #{site}"
+        Proxy.get_from_url(site, proxy: proxy.private_ip)
+      rescue Curl::Err::TimeoutError
+        nil
       end
+
     end
 
     return if resp
