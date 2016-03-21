@@ -1,7 +1,7 @@
 class EpfServiceAddAppsWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :low
+  sidekiq_options queue: :default
 
   def perform(ios_app_epf_snapshot_ids)
     ios_app_epf_snapshot_ids.each do |id|
