@@ -7921,6 +7921,7 @@ button.dropdown-toggle .caret {
 
 .newsfeedPageRow {
   padding: 20px 35px;
+  margin: 0;
 }
 
 .newsfeedPageRow .panel-heading {
@@ -7961,6 +7962,8 @@ button.dropdown-toggle .caret {
 
 .newsfeedPageRow .week {
   border: none;
+  font-size: 24px;
+  margin: 30px 0 20px 0;
 }
 
 #followButton {
