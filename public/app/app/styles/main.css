@@ -7988,5 +7988,11 @@ ul.following li #followButton {
   float: right;
 }
 
+#nav .label-danger {
+  padding: 1px 5px;
+  margin-left: 10px;
+}
+
+
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */
