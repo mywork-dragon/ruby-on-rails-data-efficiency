@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService',
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -30,7 +30,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
-
+        $scope.isFollowing = data.following
         $scope.initialPageLoadComplete = true; // hides page load spinner
 
         // Updates displayStatus for use in android-live-scan ctrl
@@ -92,13 +92,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           return loggitService.logSuccess("Items were added successfully.");
         case "add-selected-error":
           return loggitService.logError("Error! Something went wrong while adding to list.");
+        case "followed":
+          return loggitService.logSuccess("You will now see updates for this app on your Timeline");
+        case "unfollowed":
+          return loggitService.logSuccess("You will stop seeing updates for this app on your Timeline");
       }
     };
 
     $scope.addSelectedTo = function(list) {
       var selectedApp = [{
         id: $routeParams.id,
-        type: $routeParams.platform == 'IosApp' ? 'ios' : 'android'
+        type: $routeParams.platform
       }];
       listApiService.addSelectedTo(list, selectedApp, $scope.appPlatform).success(function() {
         $scope.notify('add-selected-success');
@@ -108,6 +112,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       });
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };
+
+    $scope.followApp = function(id) {
+      var appType = $routeParams.platform == 'ios' ? 'IosApp' : 'AndroidApp'
+      newsfeedService.follow(id, appType, $scope.appData.name).success(function(data) {
+        $scope.isFollowing = data.following
+        if (data.following) {
+          $scope.notify('followed');
+        } else {
+          $scope.notify('unfollowed');
+        }
+      });
+    }
 
     $scope.exportContactsToCsv = function() {
       apiService.exportContactsToCsv($scope.companyContacts, $scope.appData.company.name)

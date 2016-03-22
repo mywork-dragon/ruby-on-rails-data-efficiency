@@ -35,3 +35,6 @@ db.patch
 
 /public/app/dist
 /public/app/app/index.html
+
+/db/.DS_Store
+/db/migrate/.DS_Store

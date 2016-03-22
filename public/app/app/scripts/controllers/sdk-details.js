@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$routeParams", "$window", "pageTitleService", "authService",
-  function($scope, $http, $routeParams, $window, pageTitleService, authService) {
+angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$routeParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService',
+  function($scope, $http, $routeParams, $window, loggitService, pageTitleService, authService, newsfeedService) {
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
@@ -28,7 +28,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$rout
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
-
+        $scope.isFollowing = data.following
         sdkDetailsCtrl.apps = data.apps;
         $scope.apps = data.apps
         sdkDetailsCtrl.numApps = data.apps.length;
@@ -67,6 +67,10 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$rout
           return loggitService.logSuccess("Items were added successfully.");
         case "add-selected-error":
           return loggitService.logError("Error! Something went wrong while adding to list.");
+        case "followed":
+          return loggitService.logSuccess("You will now see updates for this SDK on your Timeline");
+        case "unfollowed":
+          return loggitService.logSuccess("You will stop seeing updates for this SDK on your Timeline");
       }
     };
 
@@ -83,6 +87,18 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$rout
       });
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };
+
+    $scope.followSdk = function(id) {
+      var sdkType = $routeParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk'
+      newsfeedService.follow(id, sdkType, sdkDetailsCtrl.sdkData.name).success(function(data) {
+        $scope.isFollowing = data.following
+        if (data.following) {
+          $scope.notify('followed');
+        } else {
+          $scope.notify('unfollowed');
+        }
+      });
+    }
 
     $scope.onAppTableAppClick = function(app) {
       /* -------- Mixpanel Analytics Start -------- */

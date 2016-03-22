@@ -36,7 +36,7 @@ class  CreateDevelopersWorker
     if platform == 'ios' && app.ios_developer.blank?
       app.ios_developer = developer 
       app.save
-    elsif app.android_developer.blank?
+    elsif app.respond_to?(:android_developer) && app.android_developer.blank?
       app.android_developer = developer
       app.save
     end

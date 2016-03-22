@@ -25,6 +25,9 @@ class IosApp < ActiveRecord::Base
   
   belongs_to :ios_developer
 
+  has_many :weekly_batches, as: :owner
+  has_many :follow_relationships
+  has_many :followers, as: :followable, through: :follow_relationships
   has_many :ios_fb_ads
   
   enum mobile_priority: [:high, :medium, :low]
@@ -56,6 +59,10 @@ class IosApp < ActiveRecord::Base
     end
     return nil
   end
+
+  def platform
+    'ios'
+  end
   
   def get_website_urls
     self.websites.to_a.map{|w| w.url}
@@ -65,7 +72,7 @@ class IosApp < ActiveRecord::Base
     self.get_website_urls.first
   end
 
-  def icon_url(size) # size should be string eg '350x350'
+  def icon_url(size='350x350') # size should be string eg '350x350'
     if newest_ios_app_snapshot.present?
       return newest_ios_app_snapshot.send("icon_url_#{size}")
     end

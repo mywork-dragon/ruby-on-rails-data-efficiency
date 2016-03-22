@@ -41,6 +41,10 @@ Rails.application.routes.draw do
   get 'api/get_ios_developer' => 'api#get_ios_developer'
   get 'api/get_android_developer' => 'api#get_android_developer'
 
+  get 'api/newsfeed' => 'api#newsfeed'
+  get 'api/newsfeed_details' => 'api#newsfeed_details'
+  post 'api/newsfeed/follow' => 'api#newsfeed_follow'
+
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'
   get 'api/list/export_to_csv' => 'api#export_list_to_csv'

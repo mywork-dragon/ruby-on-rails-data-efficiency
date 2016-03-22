@@ -46,7 +46,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
       listApiService.deleteList($routeParams.id).success(function() {
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
-          $window.location.href = "#/search";
+          $window.location.href = "#/timeline";
           $(".modal-backdrop").remove();
         });
       });

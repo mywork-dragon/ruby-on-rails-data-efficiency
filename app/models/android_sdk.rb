@@ -6,6 +6,8 @@ class AndroidSdk < ActiveRecord::Base
   has_many :android_sdks_apk_snapshots
   has_many :apk_snapshots, through: :android_sdks_apk_snapshots
 
+  has_many :weekly_batches, as: :owner
+
   enum kind: [:native, :js]
 
   validates :kind, presence: true
@@ -46,4 +48,7 @@ class AndroidSdk < ActiveRecord::Base
     apk_snapshots.map(&:android_app)
   end
 
+  def platform
+    'android'
+  end
 end

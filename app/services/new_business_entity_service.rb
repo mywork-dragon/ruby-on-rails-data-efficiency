@@ -122,10 +122,10 @@ class NewBusinessEntityService
         CreateDevelopersWorker.perform_async(:dedupe_developers, identifier, 'android')
       end
     end
+  end
 
-    def on_complete(status, options)
-      Slackiq.notify(webhook_name: :main, status: status, title: 'Created developer objects')
-    end
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Created developer objects')
   end
 
 end

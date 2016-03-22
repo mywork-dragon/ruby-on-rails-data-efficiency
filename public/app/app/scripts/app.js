@@ -50,6 +50,11 @@ angular
          templateUrl: '/app/app/views/sdk-search.html',
          activeTab: 'search'
        })
+       .when('/timeline', {
+         templateUrl: '/app/app/views/newsfeed.html',
+         controller: 'NewsfeedCtrl',
+         activeTab: 'newsfeed'
+       })
        .when('/publisher/:platform/:id', {
          templateUrl: '/app/app/views/publisher-details.html',
          controller: 'PublisherDetailsCtrl',
@@ -79,8 +84,8 @@ angular
          activeTab: 'sdks'
        })
        .otherwise({
-         redirectTo: '/search',
-         activeTab: 'search'
+         redirectTo: '/timeline',
+         activeTab: 'newsfeed'
        });
   }])
   .config(['$httpProvider', function($httpProvider) {

@@ -109,7 +109,7 @@ class IosSdkService
 
     def partition_sdks(ios_sdks:)
       partitions = ios_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
-        if sdk.present? && !sdk.flagged
+        if sdk.present? && (!sdk.flagged || sdk.flagged == 0) 
           if has_os_favicon?(sdk.favicon)
             memo[:os].push(sdk)
           else

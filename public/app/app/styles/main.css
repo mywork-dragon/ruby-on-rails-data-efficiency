@@ -7423,7 +7423,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
   text-align: center;
 }
 
-#appPage > #wrap_spinner, #companyPage > #wrap_spinner {
+#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner {
   text-align: center;
   margin-top: 10%;
 }
@@ -7534,6 +7534,10 @@ span#dashboardResultsTableHeadingNumDisplayed {
   margin-left: 20%;
 }
 
+#showSdksDetailsButton {
+  display: inline-block;
+}
+
 #showSdksButtonTitle {
   text-align: center;
 }
@@ -7635,6 +7639,14 @@ pre {
   display: inline-block;
   position: relative;
   bottom: 1px;
+}
+
+.uninstall {
+  color: #ED5F5F;
+}
+
+.install {
+  color: #1EAD4F;
 }
 
 /* DdTextCollapse Directive Styling */
@@ -7905,6 +7917,75 @@ button.dropdown-toggle .caret {
 
 .tag-item.ng-scope.sdkOperator {
   display: none;
+}
+
+.newsfeedPageRow {
+  padding: 20px 35px;
+}
+
+.newsfeedPageRow .panel-heading {
+  cursor: pointer;
+}
+
+.newsfeedPageRow .panel-heading img {
+  max-width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.newsfeedPageRow .feed-body table img {
+  max-width: 32px;
+  height: 32px;
+  margin-right: 5px;
+}
+
+.newsfeedPageRow .feed-body li img, ul.following img {
+  max-width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.newsfeedPageRow .feed-body ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+.newsfeedPageRow .feed-body li {
+  padding: 10px 0;
+}
+
+.newsfeedPageRow .panel-heading strong {
+  font-size: 14px;
+  text-transform: none;
+}
+
+.newsfeedPageRow .week {
+  border: none;
+}
+
+#followButton {
+  width: 175px;
+  display: inline-block;
+}
+
+.newsfeedPageRow .empty-message {
+  border: none;
+  text-align: center;
+  margin-top: 10%;
+}
+
+.newsfeedPageRow .btn-default {
+  float: right;
+}
+
+ul.following li {
+  list-style: none;
+  padding: 12px 0;
+  overflow: auto;
+}
+
+ul.following li #followButton {
+  float: right;
 }
 
 

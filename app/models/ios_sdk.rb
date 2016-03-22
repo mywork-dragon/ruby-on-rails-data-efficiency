@@ -30,6 +30,7 @@ class IosSdk < ActiveRecord::Base
   has_many :inbound_sdk_links, class_name: 'IosSdkLink', foreign_key: :dest_sdk_id
   has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
   
+  has_many :weekly_batches, as: :owner
 
   enum source: [:cocoapods, :package_lookup, :manual]
 
@@ -53,6 +54,10 @@ class IosSdk < ActiveRecord::Base
     apps = apps.order("#{sort} ASC") if sort
     apps = apps.limit(limit) if limit
     apps
+  end
+
+  def platform
+    'ios'
   end
 
   class << self

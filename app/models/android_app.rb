@@ -26,6 +26,10 @@ class AndroidApp < ActiveRecord::Base
 
   has_many :sdk_js_tags
 
+  has_many :weekly_batches, as: :owner
+  has_many :follow_relationships
+  has_many :followers, as: :followable, through: :follow_relationships
+
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
 
@@ -58,6 +62,10 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def platform
+    'android'
+  end
+
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
   end
@@ -77,6 +85,12 @@ class AndroidApp < ActiveRecord::Base
     snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
     sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
     get_sdks(sdk_apk, :last_seen)
+  end
+
+  def icon_url(size='300x300') # size should be string eg '350x350'
+    if newest_android_app_snapshot.present?
+      return newest_android_app_snapshot.send("icon_url_#{size}")
+    end
   end
 
   private

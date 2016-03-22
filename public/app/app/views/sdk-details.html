@@ -54,12 +54,21 @@
             <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info">
-                  <div style="text-align:center">
-                   Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps | number}}</strong> apps.
-                  </div>
-                  <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See All Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
-                  </div>
+                  <li ng-if="sdkDetailsCtrl.sdkData.platform == 'ios'">
+                    <span class="icon fa fa-newspaper-o"></span>
+                    <label>Add to Timeline:</label>
+                    <div id="followButton">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="!isFollowing">Follow SDK</button>
+                      <button type="submit" class="btn btn-danger btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="isFollowing">Unfollow SDK</button>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="icon fa fa-mobile"></span>
+                    <label>Appears in <strong>{{sdkDetailsCtrl.sdkData.numOfApps | number}}</strong> apps.</label>
+                    <div id="showSdksDetailsButton">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See All Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
+                    </div>
+                  </li>               
                 </ul>
               </div>
             </div>

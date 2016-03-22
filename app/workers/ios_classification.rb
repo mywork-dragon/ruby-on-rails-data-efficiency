@@ -13,6 +13,7 @@ module IosClassification
 
       # invalidate bad scans
       invalidate_bad_scans(snapshot)
+      ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
 
       # sdks
       puts "finished classify"

@@ -54,6 +54,7 @@ module PackageSearchWorker
       apk_snap.scan_status = :scan_success
       apk_snap.last_updated = DateTime.now
       apk_snap.save!
+      #ActivityWorker.new.perform(:log_android_sdks, apk_snap.android_app_id)
     ensure
       zip_file.close if defined?(zip_file)
     end
