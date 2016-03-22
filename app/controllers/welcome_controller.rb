@@ -39,12 +39,6 @@ class WelcomeController < ApplicationController
       lead_options[:company] = email.match(email_regex).to_s[1..-1]
     end
     
-    begin
-      MightySignalSalesforceService.create_lead(lead_options)  #temp out as SF is down
-    rescue => e
-      
-    end
-    
     #EmailWorker.perform_async(lead_options)
     ContactUsMailer.contact_us_email(lead_options).deliver
     flash[:success] = "We will be in touch soon!"
