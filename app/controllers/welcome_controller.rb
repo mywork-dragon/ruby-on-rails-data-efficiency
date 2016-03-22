@@ -32,13 +32,6 @@ class WelcomeController < ApplicationController
     sdk = params['sdk']
     message = params['message']
     
-    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message).merge({lead_source: "Web"})
-    
-    if company.blank?
-      email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-      lead_options[:company] = email.match(email_regex).to_s[1..-1]
-    end
-    
     #EmailWorker.perform_async(lead_options)
     ContactUsMailer.contact_us_email(lead_options).deliver
     flash[:success] = "We will be in touch soon!"
