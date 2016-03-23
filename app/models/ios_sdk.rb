@@ -62,7 +62,7 @@ class IosSdk < ActiveRecord::Base
   end
 
   def get_current_apps_v3(limit=nil, sort = nil, associated: true)
-    IosApp.distinct.joins("INNER JOIN ipa_snapshots i1 on (i1.ios_app_id = ios_apps.id and i1.success = true and i1.scan_status = #{IpaSnapshot.scan_statuses[:scanned]}) INNER JOIN (select max(good_as_of_date) as good_as_of_date, ios_app_id from ipa_snapshots where ipa_snapshots.success = true and ipa_snapshots.scan_status = #{IpaSnapshot.scan_statuses[:scanned]} group by ios_app_id) i2 on i1.ios_app_id = i2.ios_app_id and i1.good_as_of_date = i2.good_as_of_date INNER JOIN ios_sdks_ipa_snapshots on i1.id = ios_sdks_ipa_snapshots.ipa_snapshot_id").where('ios_sdks_ipa_snapshots.ios_sdk_id in (?)', associated ? self.associated_sdks : [self.id])
+    IosApp.distinct.joins("INNER JOIN ipa_snapshots i1 on (i1.ios_app_id = ios_apps.id and i1.success = true and i1.scan_status = #{IpaSnapshot.scan_statuses[:scanned]}) INNER JOIN (select max(good_as_of_date) as good_as_of_date, ios_app_id from ipa_snapshots where ipa_snapshots.success = true and ipa_snapshots.scan_status = #{IpaSnapshot.scan_statuses[:scanned]} group by ios_app_id) i2 on i1.ios_app_id = i2.ios_app_id and i1.good_as_of_date = i2.good_as_of_date INNER JOIN ios_sdks_ipa_snapshots on i1.id = ios_sdks_ipa_snapshots.ipa_snapshot_id").where('ios_sdks_ipa_snapshots.ios_sdk_id in (?)', associated ? self.associated_sdks.select(:id) : [self.id])
   end
 
   def associated_sdks
@@ -79,12 +79,12 @@ class IosSdk < ActiveRecord::Base
       IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL')
     end
 
-    # this returns an array, not an association :(
+    
     def sdk_clusters(ios_sdk_ids:)
 
       vertices_str = "(#{ios_sdk_ids.join(', ')})"
 
-      IosSdk.where('id in (?) or id in (?)', ios_sdk_ids, IosSdk.joins(:outbound_sdk).select("IF(dest_sdk_id in #{vertices_str}, ios_sdks.id, dest_sdk_id) as id").where('dest_sdk_id in (?) or source_sdk_id in (?)', ios_sdk_ids, ios_sdk_ids))
+      IosSdk.where('id in (?) or id in (?)', ios_sdk_ids, IosSdk.joins('INNER JOIN ios_sdk_links on ios_sdks.id = ios_sdk_links.source_sdk_id').select("IF(dest_sdk_id in #{vertices_str}, ios_sdks.id, dest_sdk_id) as id").where('dest_sdk_id in (?) or source_sdk_id in (?)', ios_sdk_ids, ios_sdk_ids))
 
       # IosSdk.find_by_sql("select * from ios_sdks where id in #{vertices_str} UNION select ios_sdks.* from ios_sdks INNER JOIN ios_sdk_links on ios_sdk_links.dest_sdk_id = ios_sdks.id where source_sdk_id in #{vertices_str} UNION select ios_sdks.* from ios_sdks INNER JOIN ios_sdk_links on ios_sdk_links.source_sdk_id = ios_sdks.id where dest_sdk_id in #{vertices_str}")
     end
