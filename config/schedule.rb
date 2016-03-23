@@ -55,9 +55,9 @@ every 3.hours, roles: [:kylo_ren] do
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
 end
 
-every 20.minutes, roles: [:monitor] do
-  runner "ProxyMonitor.check_proxies"
-end
+# every 20.minutes, roles: [:monitor] do
+#   runner "ProxyMonitor.check_proxies"
+# end
 
 # every :wednesday, at: '11:55am', roles: [:scraper_master] do
 #   notes = DateTime.now.strftime("%m/%d/%Y %I:%M%p")
