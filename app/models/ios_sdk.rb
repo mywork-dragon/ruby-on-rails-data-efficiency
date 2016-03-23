@@ -56,6 +56,15 @@ class IosSdk < ActiveRecord::Base
     apps
   end
 
+  def get_current_apps_v2(limit=nil, sort=nil)
+    IosSdk.where(id: IosSdk.where(id: self.id) + self.inbound_sdks + (self.outbound_sdk || [])).joins(:ipa_snapshots).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where('ipa_snapshots.scan_status = ?', IpaSnapshot.scan_statuses[:scanned]).group('ios_app_id').pluck(:ios_app_id)
+    # apps = IosApp.where(IpaSnapshot.joins(:ios_sdk).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: IpaSnapshot.scan_statuses[:scanned]).group(:ios_app_id).pluck(:ios_app_id))
+  end
+
+  def associated_sdks
+    IosSdk.
+  end
+
   def platform
     'ios'
   end
