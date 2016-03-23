@@ -31,11 +31,7 @@ class AppsIndex < Chewy::Index
     field :name
   end
 
-  define_type IosSdk do
-    field :name
-  end
-
-  define_type Cocoapod do
+  define_type IosSdk.display_sdks do
     field :name
   end
 
