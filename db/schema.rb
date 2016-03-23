@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317214611) do
+ActiveRecord::Schema.define(version: 20160323183103) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1432,8 +1432,11 @@ ActiveRecord::Schema.define(version: 20160317214611) do
     t.datetime "first_valid_date"
   end
 
+  add_index "ipa_snapshots", ["ios_app_id", "good_as_of_date"], name: "index_ipa_snapshots_on_ios_app_id_and_good_as_of_date", using: :btree
   add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
   add_index "ipa_snapshots", ["ipa_snapshot_job_id", "ios_app_id"], name: "index_ipa_snapshots_on_ipa_snapshot_job_id_and_ios_app_id", unique: true, using: :btree
+  add_index "ipa_snapshots", ["scan_status"], name: "index_ipa_snapshots_on_scan_status", using: :btree
+  add_index "ipa_snapshots", ["success", "scan_status"], name: "index_ipa_snapshots_on_success_and_scan_status", using: :btree
 
   create_table "ipa_snapshots_sdk_dlls", force: true do |t|
     t.integer  "ipa_snapshot_id"
