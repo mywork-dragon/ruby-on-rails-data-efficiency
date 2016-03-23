@@ -7184,7 +7184,7 @@ i.infoTooltipIcon {
 }
 
 #dashboardTableStatusMessage {
-  width: 50px;
+  width: 250px;
   height: 150px;
   margin-left: auto;
   margin-right: auto;
@@ -7920,7 +7920,7 @@ button.dropdown-toggle .caret {
 }
 
 .newsfeedPageRow {
-  padding: 20px 35px;
+  padding: 20px;
   margin: 0;
 }
 

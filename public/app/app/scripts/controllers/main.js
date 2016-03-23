@@ -73,7 +73,7 @@ angular.module('appApp')
             }
           });
           $rootScope.sdkNameFilters = sdkNameFilters;
-          if ($rootScope.sdkNameFilters.length == 1) {
+          if ($rootScope.sdkNameFilters.length == 0) {
             filterService.removeFilter('sdkOperator')
           }
         }
