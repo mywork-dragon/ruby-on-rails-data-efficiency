@@ -20,7 +20,7 @@ class ActivityWorker
       next_snapshot = snapshots[i+1]
       snapshot_sdks = snapshot.ios_sdks.to_a
       next_snapshot_sdks = next_snapshot.try(:ios_sdks).try(:to_a) || []
-      (snapshot_sdks - next_snapshot_sdks).each do |sdk|
+      (snapshot_sdks - next_snapshot_sdks).uniq.each do |sdk|
         if (sdk.cluster & next_snapshot_sdks).empty?
           sdk.cluster.each do |cluster_sdk|
             Activity.log_activity(:install, snapshot.first_valid_date, app, cluster_sdk)
@@ -31,7 +31,7 @@ class ActivityWorker
           end
         end
       end
-      (next_snapshot_sdks - snapshot_sdks).each do |sdk|
+      (next_snapshot_sdks - snapshot_sdks).uniq.each do |sdk|
         if (sdk.cluster & next_snapshot_sdks).empty?
           sdk.cluster.each do |cluster_sdk|
             Activity.log_activity(:uninstall, snapshot.first_valid_date, app, cluster_sdk)

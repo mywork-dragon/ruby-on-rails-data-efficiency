@@ -64,7 +64,7 @@ class IosSdk < ActiveRecord::Base
     if self.outbound_sdk.blank?
       self.inbound_sdks.to_a + [self]
     else
-      self.outbound_sdk.inbound_sdks.to_a + [self]
+      self.outbound_sdk.inbound_sdks.to_a + [self.outbound_sdk]
     end
   end
 
