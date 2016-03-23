@@ -63,9 +63,9 @@ class IosSdk < ActiveRecord::Base
   class << self
 
     def display_sdks
-      IosSdk.where(id: IosSdk.select('IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id) as id').joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where(flagged: false).distinct)
+      IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL').where(flagged: false)
     end
-    
+
     def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
       IosSdk.create!({
         name: name,
