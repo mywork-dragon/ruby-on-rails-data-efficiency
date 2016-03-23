@@ -60,6 +60,14 @@ class IosSdk < ActiveRecord::Base
     'ios'
   end
 
+  def cluster
+    if self.outbound_sdk.blank?
+      self.inbound_sdks.to_a + [self]
+    else
+      self.outbound_sdk.inbound_sdks.to_a + [self]
+    end
+  end
+
   class << self
     def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
       IosSdk.create!({
