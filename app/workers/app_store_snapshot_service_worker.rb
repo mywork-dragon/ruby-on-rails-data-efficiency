@@ -61,7 +61,6 @@ class AppStoreSnapshotServiceWorker
         icon_url_175x175
         first_released
         by
-        copywright
         seller_url_text
         support_url_text
       )
@@ -69,6 +68,10 @@ class AppStoreSnapshotServiceWorker
       single_column_attributes.each do |sca|
         value = a[sca.to_sym]
         s.send("#{sca}=", value) if value
+      end
+
+      if copywright = a[:copywright]
+        s.copywright = DbSanitizer.truncate_string(copywright)
       end
     
       # Categories
