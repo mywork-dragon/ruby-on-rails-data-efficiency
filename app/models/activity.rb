@@ -49,7 +49,11 @@ class Activity < ActiveRecord::Base
     weekly_batches = activity.weekly_batches.to_a
     activity.destroy
     weekly_batches.each do |batch|
-      batch.destroy if batch.reload.activities.empty?
+      if batch.reload.activities.empty?
+        batch.destroy 
+      else
+        WeeklyBatch.reset_counters(batch.id, :activities)
+      end
     end
   end
 
