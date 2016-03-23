@@ -57,8 +57,12 @@ class IosSdk < ActiveRecord::Base
   end
 
   def get_current_apps_v2(limit=nil, sort=nil)
-    IosSdk.where(id: IosSdk.where(id: self.id) + self.inbound_sdks + (self.outbound_sdk || [])).joins(:ipa_snapshots).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where('ipa_snapshots.scan_status = ?', IpaSnapshot.scan_statuses[:scanned]).group('ios_app_id').pluck(:ios_app_id)
-    # apps = IosApp.where(IpaSnapshot.joins(:ios_sdk).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where(scan_status: IpaSnapshot.scan_statuses[:scanned]).group(:ios_app_id).pluck(:ios_app_id))
+
+    IosApp.where(id: IosSdk.where(id: self.associated_sdks).joins(:ipa_snapshots).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where('ipa_snapshots.scan_status = ?', IpaSnapshot.scan_statuses[:scanned]).group('ios_app_id').pluck(:ios_app_id))
+  end
+
+  def get_current_apps_v3(associated: true)
+    IosApp.distinct.joins("INNER JOIN ipa_snapshots i1 on (i1.ios_app_id = ios_apps.id and i1.success = true and i1.scan_status = #{IpaSnapshot.scan_statuses[:scanned]}) INNER JOIN (select max(good_as_of_date) as good_as_of_date, ios_app_id from ipa_snapshots where ipa_snapshots.success = true and ipa_snapshots.scan_status = #{IpaSnapshot.scan_statuses[:scanned]} group by ios_app_id) i2 on i1.ios_app_id = i2.ios_app_id and i1.good_as_of_date = i2.good_as_of_date INNER JOIN ios_sdks_ipa_snapshots on i1.id = ios_Sdks_ipa_snapshots.ipa_snapshot_id").where('ios_sdks_ipa_snapshots.ios_sdk_id in (?)', associated ? self.associated_sdks : [self.id])
   end
 
   def associated_sdks
@@ -77,10 +81,6 @@ class IosSdk < ActiveRecord::Base
 
     # this returns an array, not an association :(
     def sdk_clusters(ios_sdk_ids:)
-
-      vertices = IosSdk.where(id: ios_sdk_ids)
-
-      return vertices unless vertices.any?
 
       vertices_str = "(#{ios_sdk_ids.join(', ')})"
 
