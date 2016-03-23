@@ -1532,7 +1532,7 @@ class ApiController < ApplicationController
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
       end
     elsif platform == 'ios'
-      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies = IosSdk.display_sdks.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
       end
