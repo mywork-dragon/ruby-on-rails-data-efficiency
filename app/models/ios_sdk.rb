@@ -62,7 +62,7 @@ class IosSdk < ActiveRecord::Base
   end
 
   def associated_sdks
-    IosSdk.
+    IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
   end
 
   def platform
@@ -73,6 +73,18 @@ class IosSdk < ActiveRecord::Base
 
     def display_sdks
       IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL')
+    end
+
+    # this returns an array, not an association :(
+    def sdk_clusters(ios_sdk_ids:)
+
+      vertices = IosSdk.where(id: ios_sdk_ids)
+
+      return vertices unless vertices.any?
+
+      vertices_str = "(#{ios_sdk_ids.join(', ')})"
+
+      IosSdk.find_by_sql("select * from ios_sdks where id in #{vertices_str} UNION select ios_sdks.* from ios_sdks INNER JOIN ios_sdk_links on ios_sdk_links.dest_sdk_id = ios_sdks.id where source_sdk_id in #{vertices_str} UNION select ios_sdks.* from ios_sdks INNER JOIN ios_sdk_links on ios_sdk_links.source_sdk_id = ios_sdks.id where dest_sdk_id in #{vertices_str}")
     end
 
     def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
