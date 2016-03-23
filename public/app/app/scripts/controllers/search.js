@@ -90,6 +90,7 @@ angular.module('appApp')
         }
 
         $rootScope.dashboardSearchButtonDisabled = true;
+        $rootScope.searchError = false
         var submitSearchStartTime = new Date().getTime();
         $scope.queryInProgress = true;
         return $http({
@@ -146,6 +147,7 @@ angular.module('appApp')
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
+            $rootScope.searchError = true
             mixpanel.track(
               "Filter Query Failed",
               {

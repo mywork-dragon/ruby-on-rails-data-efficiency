@@ -29,10 +29,11 @@
                                   minlength="1"
                                   input-class="form-control form-control-small sdk-autocomplete-filter"/>
               </span>
-              <span class="ui-select sdkOperator" ng-if="searchCtrl.canViewStorewideSdks && $root.sdkNameFilters.length > 1">
+              <span class="ui-select sdkOperator" ng-if="searchCtrl.canViewStorewideSdks && $root.sdkNameFilters.length > 0">
                    <select ng-model="sdkOperator" ng-change="onFilterChange('sdkOperator', sdkOperator, 'SDK Operator', true)" tooltip-placement="bottom-left" uib-tooltip-html="sdkOperatorExplanation" tooltip-popup-delay="200">
                       <option value="">Or</option>
                       <option value="and">And</option>
+                      <option value="not">Not</option>
                    </select>
               </span>
                <span class="ui-select">
@@ -284,7 +285,8 @@
           </tbody>
         </table>
         <div id="dashboardTableStatusMessage" data-ng-show="$root.dashboardSearchButtonDisabled || !(searchCtrl.numApps > 0)">
-          <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled">No Results</h5>
+          <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled || $root.searchError">No Results</h5>
+          <h5 data-ng-show="$root.searchError">There was an error. Please try again.</h5>
           <div data-ng-show="$root.dashboardSearchButtonDisabled" id="wrap_spinner">
             <div class="loading outer">
               <div class="loading inner"></div>

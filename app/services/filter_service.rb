@@ -87,7 +87,13 @@ class FilterService
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
 
-        queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
+        if sdk_ids.present? 
+          if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("not")
+            queries << "where.not(id: #{apps_with_sdk}).joins(:ipa_snapshots).where('ipa_snapshots.scan_status' => #{IpaSnapshot.scan_statuses[:scanned]})" 
+          else
+            queries << "where(id: #{apps_with_sdk})"
+          end
+        end
       end
 
       queries
@@ -194,7 +200,13 @@ class FilterService
         apps_with_sdk.flatten! # combines all arrays together
         apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
 
-        queries << "where(id: #{apps_with_sdk})" if sdk_ids.present?
+        if sdk_ids.present? 
+          if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("not")
+            queries << "where.not(id: #{apps_with_sdk}).joins(:apk_snapshots).where('apk_snapshots.scan_status' => #{ApkSnapshot.scan_statuses[:scan_success]})" 
+          else
+            queries << "where(id: #{apps_with_sdk})"
+          end
+        end
       end
 
       queries
