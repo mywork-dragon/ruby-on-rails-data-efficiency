@@ -14,6 +14,12 @@ class ActivityService
         end
       end
     end
+
+    def fix_ios_apps
+      (IosSdk.joins(:inbound_sdks).pluck(:id) + IosSdk.joins(:outbound_sdk).pluck(:id)).uniq.map{|sdk| sdk.get_current_apps.pluck(:id)}.flatten.uniq.each do |id|
+        ActivityWorker.perform_async(:log_ios_sdks, id, true)
+      end
+    end
   end
 
   def on_complete(status, options)
