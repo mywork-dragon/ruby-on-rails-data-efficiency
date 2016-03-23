@@ -23,21 +23,25 @@ class ActivityWorker
       (snapshot_sdks - next_snapshot_sdks).uniq.each do |sdk|
         if (sdk.cluster & next_snapshot_sdks).empty?
           sdk.cluster.each do |cluster_sdk|
+            #puts "Add install cluster #{app.name} #{cluster_sdk.name}\n"
             Activity.log_activity(:install, snapshot.first_valid_date, app, cluster_sdk)
           end
         else
           sdk.cluster.each do |cluster_sdk|
+            #puts "Remove install cluster #{app.name} #{cluster_sdk.name}\n"
             Activity.remove_activity(:install, snapshot.first_valid_date, app, cluster_sdk)
           end
         end
       end
       (next_snapshot_sdks - snapshot_sdks).uniq.each do |sdk|
-        if (sdk.cluster & next_snapshot_sdks).empty?
+        if (sdk.cluster & snapshot_sdks).empty?
           sdk.cluster.each do |cluster_sdk|
+            #puts "Add uninstall cluster #{app.name} #{cluster_sdk.name}\n"
             Activity.log_activity(:uninstall, snapshot.first_valid_date, app, cluster_sdk)
           end
         else
           sdk.cluster.each do |cluster_sdk|
+            #puts "Remove uninstall cluster #{app.name} #{cluster_sdk.name}\n"
             Activity.remove_activity(:uninstall, snapshot.first_valid_date, app, cluster_sdk)
           end
         end
