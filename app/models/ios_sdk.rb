@@ -49,7 +49,7 @@ class IosSdk < ActiveRecord::Base
   # where (ios_sdks_ipa_snapshots.ios_sdk_id = 2362)
   
   def get_current_apps(limit=nil, sort=nil, with_associated: true)
-    apps = IosSdk.sdk_clusters_current_apps(ios_sdk_ids: [self.id], with_associated: with_associated)
+    apps = IosSdk.current_apps_with_sdk_clusters(ios_sdk_ids: [self.id], with_associated: with_associated)
 
     apps = apps.order("#{sort} ASC") if sort
     apps = apps.limit(limit) if limit
@@ -70,13 +70,13 @@ class IosSdk < ActiveRecord::Base
       IosSdk.joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').where('dest_sdk_id is NULL')
     end
 
-    # Get all the SDKs in the cluster
+    # Get all the SDKs in the cluster (only moving in 1 direction)
     # Ex. suppose A --> B <-- C    X --> Y
     # sdk_clusters(ios_sdk_ids: [X]) = [X, Y]
     # sdk_clusters(ios_sdk_ids: [Y]) = [X, Y]
     # sdk_clusters(ios_sdk_ids: [B]) = [A, B, C]
-    # sdk_clusters(ios_sdk_ids: [A]) = [A, B] <-- NOTE: does not include A
-    # sdk_clusters(ios_sdk_ids: [Y, A]) = [X, Y, A, B] <-- Union
+    # sdk_clusters(ios_sdk_ids: [A]) = [A, B] <-- NOTE: does not include C (maybe change later)
+    # sdk_clusters(ios_sdk_ids: [X, A]) = [X, Y, A, B] <-- Union
     def sdk_clusters(ios_sdk_ids:)
 
       vertices_str = "(#{ios_sdk_ids.join(', ')})"
@@ -84,7 +84,7 @@ class IosSdk < ActiveRecord::Base
       IosSdk.where('id in (?) or id in (?)', ios_sdk_ids, IosSdk.joins('INNER JOIN ios_sdk_links on ios_sdks.id = ios_sdk_links.source_sdk_id').select("IF(dest_sdk_id in #{vertices_str}, ios_sdks.id, dest_sdk_id) as id").where('dest_sdk_id in (?) or source_sdk_id in (?)', ios_sdk_ids, ios_sdk_ids))
     end
 
-    def sdk_clusters_current_apps(ios_sdk_ids:, with_associated: true)
+    def current_apps_with_sdk_clusters(ios_sdk_ids:, with_associated: true)
       IosApp.distinct.joins("INNER JOIN ipa_snapshots i1 on (i1.ios_app_id = ios_apps.id and i1.success = true and i1.scan_status = #{IpaSnapshot.scan_statuses[:scanned]}) INNER JOIN (select max(good_as_of_date) as good_as_of_date, ios_app_id from ipa_snapshots where ipa_snapshots.success = true and ipa_snapshots.scan_status = #{IpaSnapshot.scan_statuses[:scanned]} group by ios_app_id) i2 on i1.ios_app_id = i2.ios_app_id and i1.good_as_of_date = i2.good_as_of_date INNER JOIN ios_sdks_ipa_snapshots on i1.id = ios_sdks_ipa_snapshots.ipa_snapshot_id").where('ios_sdks_ipa_snapshots.ios_sdk_id in (?)', with_associated ? sdk_clusters(ios_sdk_ids: ios_sdk_ids).select(:id) : ios_sdk_ids)
     end
 

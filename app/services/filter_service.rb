@@ -80,12 +80,12 @@ class FilterService
         apps_with_sdk = []
         sdk_ids = app_filters['sdkNames'].map{ |x| x['id'].to_i }
 
-        IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
-
-        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
-
-        apps_with_sdk.flatten! # combines all arrays together
-        apps_with_sdk = apps_with_sdk.uniq{|app| app.id}.map{ |app| app.id } # create array of unique AR objects & map to ids
+        if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
+          IosSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
+          apps_with_sdk = apps_with_sdk.inject(:&).flatten.map {|app| app.id }.uniq # create array of unique AR objects & map to ids
+        else
+          apps_with_sdk = IosSdk.current_apps_with_sdk_clusters(ios_sdk_ids: sdk_ids).pluck(:id).uniq
+        end
 
         if sdk_ids.present? 
           if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("not")
