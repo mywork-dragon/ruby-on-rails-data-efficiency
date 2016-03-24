@@ -5,6 +5,7 @@ class EwokController < ApplicationController
   before_action :set_current_user, only: [:ewok_app_page]
 
   def authenticate_ewok
+    key = params['key']
     fail InvalidKey.new(key: key) unless EwokService.correct_key?(key)
   end
 
