@@ -93,7 +93,7 @@ Rails.application.routes.draw do
 
   # TODO: change from ewok to extension name
   post 'ewok/check_app_exists' => 'ewok#check_app_exists'
-  post 'ewok/app_page' => 'ewok#ewok_app_page'
+  get 'ewok/app_page' => 'ewok#ewok_app_page'
 
   # Auth Endpoints (for Front-End)
   post 'auth/login' => 'auth#authenticate'

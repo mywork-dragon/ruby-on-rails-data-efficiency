@@ -26,7 +26,7 @@ class EwokController < ApplicationController
     app_url = EwokService.app_url(url)
 
     if app_url.nil?    
-      redirect_to :currently_scraping 
+      redirect_to 'http://espn.com' 
       return
     end
 
