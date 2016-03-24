@@ -51,11 +51,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         if ($routeParams.from == 'ewok' && userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
           var slacktivityData = {
             "title": "A wild Ewok appeared",
-            "color": "#E82020",
+            "color": "#FFD94D",
             "userEmail": userInfo.email,
             'appName': $scope.appData.name,
-            "appPlatform": $routeParams.platform
-            'appId': $routeParams.id,
+            "appPlatform": $routeParams.platform,
+            'appId': $routeParams.id
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
