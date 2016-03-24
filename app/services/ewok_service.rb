@@ -1,7 +1,7 @@
 # Service for the Ewok Chrome Extension
 class EwokService
 
-  STAGING = true
+  STAGING = false
   KEY = 'db5be718bbaf446cf24e39d61c82e9c7'
 
   class << self
