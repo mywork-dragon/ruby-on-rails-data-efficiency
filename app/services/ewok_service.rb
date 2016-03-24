@@ -1,6 +1,7 @@
 # Service for the Ewok Chrome Extension
 class EwokService
 
+  STAGING = true
   KEY = 'db5be718bbaf446cf24e39d61c82e9c7'
 
   class << self
@@ -24,6 +25,8 @@ class EwokService
       nil
     end
 
+
+
     def app_url(url)
       ais = app_id_and_store(url)
       
@@ -32,10 +35,12 @@ class EwokService
       id = ais[:id]
       store = ais[:store]
 
+      domain = STAGING ? '52.7.134.183' : 'mightysignal.com'
+
       if store == :ios
-        ret = "http://mightysignal.com/app/app#/app/ios/#{id}"
+        ret = "http://#{domain}/app/app#/app/ios/#{id}"
       elsif store == :android
-        ret = "http://mightysignal.com/app/app#/app/android/#{id}" 
+        ret = "http://#{domain}/app/app#/app/android/#{id}" 
       end
 
       ret
