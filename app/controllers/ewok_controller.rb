@@ -4,7 +4,7 @@ class EwokController < ActionController::Base
   before_action :authenticate_ewok only: [:ewok_app_page, :ewok_check_exists]
 
   def authenticate_ewok
-    
+    fail InvalidKey.new(key: key) unless EwokService.correct_key?(key)
   end
 
   # @osman
@@ -15,6 +15,12 @@ class EwokController < ActionController::Base
   def ewok_app_page
 
     render json: EwokService.app_page.to_json
+  end
+
+  class InvalidKey < StandardError
+    def initialize(message = "The Ewok key is invalid.", key: nil)
+      super("The Ewok key #{key}is invalid.")
+    end
   end
 
 end
