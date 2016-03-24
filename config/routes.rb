@@ -92,7 +92,7 @@ Rails.application.routes.draw do
   get 'api/android_scan_status' => 'api#android_scan_status'
 
   # TODO: change from ewok to extension name
-  get 'ewok/app_page' => 'ewok#ewok_app_page'
+  get 'button/app_page' => 'ewok#ewok_app_page'
 
   # Auth Endpoints (for Front-End)
   post 'auth/login' => 'auth#authenticate'
