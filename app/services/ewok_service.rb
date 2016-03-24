@@ -39,21 +39,6 @@ class EwokService
       ret
     end
 
-    def ios_app_url(id)
-    end
-
-    def android_app_url
-
-    def store
-      if 
-    end
-
-    def ios_app_in_db?
-    end
-
-    def android_app_in_db?
-    end
-
     def app_page
 
     end
