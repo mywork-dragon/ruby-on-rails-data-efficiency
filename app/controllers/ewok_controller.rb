@@ -35,7 +35,7 @@ class EwokController < ApplicationController
 
   class InvalidKey < StandardError
     def initialize(message = "The Ewok key is invalid.", key: nil)
-      super("The Ewok key #{key}is invalid.")
+      super("The Ewok key #{key} is invalid.")
     end
   end
 
