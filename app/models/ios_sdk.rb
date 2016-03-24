@@ -49,7 +49,7 @@ class IosSdk < ActiveRecord::Base
   # where (ios_sdks_ipa_snapshots.ios_sdk_id = 2362)
 
   def get_current_apps(limit=nil, sort=nil, with_associated: true)
-    IosApp.where(id: IosSdk.where(id: with_associated ? self.associated_sdks : [self.id]).joins(:ipa_snapshots).select('ios_app_id, max(good_as_of_date) as good_as_of_date').where('ipa_snapshots.success = ? and ipa_snapshots.scan_status = ?', true, IpaSnapshot.scan_statuses[:scanned]).group('ios_app_id').pluck(:ios_app_id))
+    apps = IosApp.where(id: IosSdk.where(id: with_associated ? self.associated_sdks : [self.id]).joins(:ipa_snapshots).select('ios_app_id').where('ipa_snapshots.success = ? and ipa_snapshots.scan_status = ?', true, IpaSnapshot.scan_statuses[:scanned]).pluck(:ios_app_id))
 
     apps = apps.order("#{sort} ASC") if sort
     apps = apps.limit(limit) if limit

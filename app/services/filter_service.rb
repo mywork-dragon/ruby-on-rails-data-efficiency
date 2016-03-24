@@ -86,7 +86,7 @@ class FilterService
           apps_with_sdk = apps_with_sdk.inject(:&)
         end
 
-        apps_with_sdk = apps_with_sdk.flatten.map {|app| app.id }.uniq # create array of unique AR objects & map to ids
+        apps_with_sdk = apps_with_sdk.flatten.map {|app| app.id if app }.compact.uniq # create array of unique AR objects & map to ids
 
         if sdk_ids.present? 
           if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("not")
