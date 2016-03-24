@@ -1551,11 +1551,4 @@ class ApiController < ApplicationController
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
   end
 
-  # @osman
-  def ewok_check_app_exists
-  end
-
-  def ewok_app_page
-  end
-
 end
