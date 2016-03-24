@@ -10,14 +10,15 @@ class EwokController < ApplicationController
 
   def ewok_app_page
     url = params['url']
-    app_url = EwokService.app_url(url)
 
-    if app_url.nil?    
+    begin
+      app_url = EwokService.app_url(url)
+      redirect_to root_url if app_url.nil?
+    rescue EwokService::AppNotInDb => e
+      EwokService.scrape_async(app_identifier: e.app_identifier, store: e.store)
       redirect_to 'http://apple.com' 
       return
     end
-
-    puts "good"
 
     redirect_to app_url
   end

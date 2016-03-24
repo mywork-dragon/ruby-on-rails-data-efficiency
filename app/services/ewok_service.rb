@@ -13,11 +13,11 @@ class EwokService
       if md = url.match(/itunes\.apple\.com\/.*id(\d+)/)
         app_identifier = md.captures.first
         ios_app = IosApp.find_by_app_identifier(app_identifier)
-        return ios_app ? {id: ios_app.id, store: :ios} : nil
+        return ios_app ? {id: ios_app.id, store: :ios} : raise AppNotInDb.new(store: :ios, app_identifier: app_identifier)
       elsif md = url.match(/play.google.com\/store\/apps\/details\?id=([^&]*)/)
-        app_identifer = md.captures.first
+        app_identifier = md.captures.first
         android_app = AndroidApp.find_by_app_identifier(app_identifier)
-        return android_app ? {id: android_app.id, store: :android} : nil
+        return android_app ? {id: android_app.id, store: :android} : raise AppNotInDb.new(store: :android, app_identifier: app_identifier)
       end
       nil
     end
@@ -39,10 +39,20 @@ class EwokService
       ret
     end
 
-    def app_page
-
+    def scrape_async(app_identifier:, store:)
+      if store == :ios
+        :scrape_ios
+      elsif store == :android
+        :scrape_ios
+      end
     end
 
+  end
+
+  class AppNotInDb < StandardError
+    def initialize(message = "The app is not in the DB.", store:, app_identifier:)
+      super("The app with identifier #{app_identifier} is not in the #{store.to_s} store.")
+    end
   end
 
 end
