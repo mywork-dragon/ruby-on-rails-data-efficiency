@@ -18,6 +18,7 @@ class EwokController < ApplicationController
     begin 
       authenticate_request
     rescue => e
+      raise
       redirect_to root_url
       return
     end
