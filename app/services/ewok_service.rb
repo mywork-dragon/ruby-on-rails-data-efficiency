@@ -13,11 +13,13 @@ class EwokService
       if md = url.match(/itunes\.apple\.com\/.*id(\d+)/)
         app_identifier = md.captures.first
         ios_app = IosApp.find_by_app_identifier(app_identifier)
-        return ios_app ? {id: ios_app.id, store: :ios} : raise AppNotInDb.new(store: :ios, app_identifier: app_identifier)
+        raise AppNotInDb.new(store: :ios, app_identifier: app_identifier) unless ios_app
+        return {id: ios_app.id, store: :ios} 
       elsif md = url.match(/play.google.com\/store\/apps\/details\?id=([^&]*)/)
         app_identifier = md.captures.first
         android_app = AndroidApp.find_by_app_identifier(app_identifier)
-        return android_app ? {id: android_app.id, store: :android} : raise AppNotInDb.new(store: :android, app_identifier: app_identifier)
+        raise AppNotInDb.new(store: :android, app_identifier: app_identifier) unless android_app  
+        return {id: android_app.id, store: :android}
       end
       nil
     end
