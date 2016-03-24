@@ -9,9 +9,6 @@ class EwokController < ApplicationController
   end
 
   def ewok_app_page
-    redirect_to action: 'scanning_app' 
-    return
-
     url = params['url']
 
     begin
