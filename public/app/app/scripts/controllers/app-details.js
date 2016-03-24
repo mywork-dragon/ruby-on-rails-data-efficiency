@@ -54,8 +54,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
             "color": "#E82020",
             "userEmail": userInfo.email,
             'appName': $scope.appData.name,
-            "appPlatform": $routeParams.platform
-            'appId': $routeParams.id,
+            "appPlatform": $routeParams.platform,
+            'appId': $routeParams.id
           };
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
