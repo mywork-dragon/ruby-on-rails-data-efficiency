@@ -21,7 +21,6 @@ class EwokController < ApplicationController
     puts "good"
 
     redirect_to app_url
-    render nothing: true
   end
 
   class InvalidKey < StandardError
