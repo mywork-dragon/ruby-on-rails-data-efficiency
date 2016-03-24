@@ -9,16 +9,14 @@ class EwokController < ApplicationController
     fail InvalidKey.new(key: key) unless EwokService.correct_key?(key)
   end
 
-  # @osman
-  def ewok_check_app_exists
-  end
-
   def ewok_app_page
     # redirect to landing if app doesn't exist (if authenticate_request throws exception)
     begin 
       authenticate_request
     rescue => e
-      raise
+      puts e.message
+      puts e.backtrace
+      puts "redirect root"
       redirect_to root_url
       return
     end
@@ -27,9 +25,12 @@ class EwokController < ApplicationController
     app_url = EwokService.app_url(url)
 
     if app_url.nil?    
+      puts "app_url is nil"
       redirect_to 'http://apple.com' 
       return
     end
+
+    puts "good"
 
     redirect_to app_url
     render nothing: true
