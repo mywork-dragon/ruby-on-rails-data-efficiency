@@ -15,7 +15,7 @@ class EwokController < ApplicationController
 
     begin
       app_url = EwokService.app_url(url)
-      redirect_to app_url if app_url
+      redirect_to app_url(from: 'ewok')  if app_url
     rescue EwokService::AppNotInDb => e
       EwokService.scrape_async(app_identifier: e.app_identifier, store: e.store)
     end
