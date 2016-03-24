@@ -40,14 +40,27 @@ class EwokService
     end
 
     def scrape_async(app_identifier:, store:)
-      if store == :ios
+      method = if store == :ios
         :scrape_ios
       elsif store == :android
-        :scrape_ios
+        :scrape_android
+      end
+
+      batch = Sidekiq::Batch.new
+      batch.description = "New app Ewok scrape (#{store}): #{app}_identifier" 
+      batch.on(:complete, 'EwokService#on_complete_scrape_async')
+
+      batch.jobs do 
+        EwokScrapeWorker.perform_async(method, app_identifier)
       end
     end
 
   end
+
+  def on_complete_scrape_async(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
+  end
+  
 
   class AppNotInDb < StandardError
     def initialize(message = "The app is not in the DB.", store:, app_identifier:)
