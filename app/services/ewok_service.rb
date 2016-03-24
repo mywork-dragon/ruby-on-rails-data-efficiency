@@ -65,7 +65,12 @@ class EwokService
   
 
   class AppNotInDb < StandardError
+    attr_reader :store
+    attr_reader :app_identifier
+
     def initialize(message = "The app is not in the DB.", store:, app_identifier:)
+      @store = store
+      @app_identifier = app_identifier
       super("The app with identifier #{app_identifier} is not in the #{store.to_s} store.")
     end
   end
