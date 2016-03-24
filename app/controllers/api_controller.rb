@@ -197,7 +197,7 @@ class ApiController < ApplicationController
           id: batch.id,
           page: 1,
           activity_type: batch.activity_type,
-          activities_count: batch.activities.size,
+          activities_count: batch.activities.count,
           owner: {
             id: batch.owner_id,
             type: batch.owner_type,
@@ -219,7 +219,7 @@ class ApiController < ApplicationController
       page: page_num.to_i,
       id: batch.id,
       activity_type: batch.activity_type,
-      activities_count: batch.activities.size,
+      activities_count: batch.activities.count,
       owner: {
         id: batch.owner_id,
         type: batch.owner_type,
