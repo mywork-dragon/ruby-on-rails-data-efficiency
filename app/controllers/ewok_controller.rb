@@ -9,6 +9,9 @@ class EwokController < ApplicationController
   end
 
   def ewok_app_page
+    redirect_to action: 'scanning_app' 
+    return
+
     url = params['url']
 
     begin
@@ -16,11 +19,14 @@ class EwokController < ApplicationController
       redirect_to root_url if app_url.nil?
     rescue EwokService::AppNotInDb => e
       EwokService.scrape_async(app_identifier: e.app_identifier, store: e.store)
-      redirect_to 'http://apple.com' 
+      redirect_to action: 'scanning_app' 
       return
     end
 
     redirect_to app_url
+  end
+
+  def scanning_app
   end
 
   class InvalidKey < StandardError
