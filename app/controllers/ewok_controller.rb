@@ -13,7 +13,6 @@ class EwokController < ApplicationController
     app_url = EwokService.app_url(url)
 
     if app_url.nil?    
-      puts "app_url is nil"
       redirect_to 'http://apple.com' 
       return
     end
