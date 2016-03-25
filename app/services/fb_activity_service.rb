@@ -2,7 +2,7 @@ class FbActivityService
   class << self
 
     def simulate
-      Slackiq.message('Starting to simulate facebook activity', webhook_name: :main)
+      Slackiq.message('Starting to simulate facebook activity', webhook_name: :background)
 
       job = FbActivityJob.create!(notes: "Simulating user activity for all accounts")
       FbAccount.where(flagged: false, browsable: true).each do |account|

@@ -11,16 +11,8 @@ module IosClassification
       snapshot.scan_status = :scanned
       snapshot.save
 
-      # invalidate bad scans
       invalidate_bad_scans(snapshot)
-
-      begin
-        ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
-      rescue => e
-        "Activity Worker failed"
-        puts e.message
-        puts e.backtrace
-      end
+      log_activities(snapshot)
 
       # sdks
       puts "finished classify"
@@ -36,6 +28,16 @@ module IosClassification
       snapshot.save
 
       raise e
+    end
+  end
+
+  def log_activities(snapshot)
+    begin
+      ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
+    rescue => e
+      "Activity Worker failed"
+      puts e.message
+      puts e.backtrace
     end
   end
 
