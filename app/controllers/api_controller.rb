@@ -1368,7 +1368,9 @@ class ApiController < ApplicationController
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    sdks = IosSdk.where(id: result_ids)
+    sdks = result_ids.map {|id| IosSdk.find_by_id(id) }.compact
+
+    # sdks = IosSdk.where(id: result_ids)
 
     results_json = []
     sdks.each do |sdk|
