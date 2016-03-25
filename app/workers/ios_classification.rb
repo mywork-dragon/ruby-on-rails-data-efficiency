@@ -13,11 +13,13 @@ module IosClassification
 
       # invalidate bad scans
       invalidate_bad_scans(snapshot)
-      
+
       begin
         ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
-      rescue
-        nil
+      rescue => e
+        "Activity Worker failed"
+        puts e.message
+        puts e.backtrace
       end
 
       # sdks
