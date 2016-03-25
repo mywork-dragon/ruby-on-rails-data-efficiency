@@ -9,7 +9,7 @@ class ActivityService
       IosApp.find_in_batches(batch_size: 10000).with_index do |the_batch, index|
         batch.jobs do
           li "App #{index*10000}"
-          args = the_batch.map{ |ios_app| [:log_ios_sdks, ios_app.id, true] }
+          args = the_batch.map{ |ios_app| [:log_ios_sdks, ios_app.id] }
           Sidekiq::Client.push_bulk('class' => ActivityWorker, 'args' => args)
         end
       end
@@ -17,7 +17,7 @@ class ActivityService
 
     def fix_ios_apps
       (IosSdk.joins(:inbound_sdks).to_a + IosSdk.joins(:outbound_sdk).to_a).uniq.map{|sdk| sdk.get_current_apps.pluck(:id)}.flatten.uniq.each do |id|
-        ActivityWorker.perform_async(:log_ios_sdks, id, true)
+        ActivityWorker.perform_async(:log_ios_sdks, id)
       end
     end
   end
