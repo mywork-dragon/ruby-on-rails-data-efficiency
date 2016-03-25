@@ -66,20 +66,12 @@ class IosSdk < ActiveRecord::Base
   #   apps
   # end
 
-  def associated_sdks
-    IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
-  end
-
   def platform
     'ios'
   end
 
   def cluster
-    if self.outbound_sdk.blank?
-      self.inbound_sdks.to_a + [self]
-    else
-      self.outbound_sdk.inbound_sdks.to_a + [self.outbound_sdk]
-    end
+    IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
   end
 
   class << self
