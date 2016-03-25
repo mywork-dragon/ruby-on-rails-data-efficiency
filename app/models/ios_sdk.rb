@@ -74,6 +74,14 @@ class IosSdk < ActiveRecord::Base
     'ios'
   end
 
+  def cluster
+    if self.outbound_sdk.blank?
+      self.inbound_sdks.to_a + [self]
+    else
+      self.outbound_sdk.inbound_sdks.to_a + [self.outbound_sdk]
+    end
+  end
+
   class << self
 
     def display_sdks
