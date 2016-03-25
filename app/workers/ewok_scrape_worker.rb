@@ -3,7 +3,7 @@ class EwokScrapeWorker
 
   sidekiq_options retry: false, queue: :sdk_live_scan
 
-  RETRES = 2
+  RETRIES = 2
 
   def perform(method, *args)
     self.send(method.to_sym, *args)
