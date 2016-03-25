@@ -1364,7 +1364,11 @@ class ApiController < ApplicationController
         default_field: 'name',
         analyze_wildcard: true
       }
+    ).boost_factor(
+      5,
+      filter: { term: { name: query } }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
+
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
