@@ -1,7 +1,7 @@
 class EwokScrapeWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :sdk_scraper_live_scan
+  sidekiq_options retry: false, queue: :sdk
 
   RETRES = 2
 
