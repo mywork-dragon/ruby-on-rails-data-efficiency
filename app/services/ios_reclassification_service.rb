@@ -18,6 +18,24 @@ class IosReclassificationService
       end
 
     end
+
+    def reclassify_all
+      snapshots = IpaSnapshot.select(:id).distinct.where(success: true, scan_status: IpaSnapshot.scan_statuses[:scanned])
+
+      batch = Sidekiq::Batch.new
+      batch.description = "reclassifying snapshots" 
+      batch.on(:complete, 'IosReclassificationService#on_complete')
+
+      snapshots.find_in_batches(batch_size: 1000).with_index do |query_batch, index|
+        puts "Batch #{index}" if index % 10 == 0
+        batch.jobs do
+          query_batch.each do |ipa_snapshot|
+            IosReclassificationServiceWorker.perform_async(ipa_snapshot.id)
+          end
+        end
+      end
+      
+    end
   end
 
   def on_complete(status, options)

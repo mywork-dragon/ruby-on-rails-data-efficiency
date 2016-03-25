@@ -54,7 +54,7 @@ class EwokService
       end
 
       batch = Sidekiq::Batch.new
-      batch.description = "New app Ewok scrape (#{store}): #{app}_identifier" 
+      batch.description = "New app Ewok scrape (#{store}): #{app_identifier}" 
       batch.on(:complete, 'EwokService#on_complete_scrape_async')
 
       batch.jobs do 
