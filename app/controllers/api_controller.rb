@@ -1354,30 +1354,27 @@ class ApiController < ApplicationController
   end
 
   def search_ios_sdk
-    query = params['query']
+    query = params['query'].downcase
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
     result_ids = AppsIndex::IosSdk.query(
-      multi_match: {
-        query: query,
-        operator: 'and',
-        fields: [:name],
-        type: 'cross_fields',
-        fuzziness: 1
+      query_string: {
+        query: "#{query}*",
+        default_field: 'name',
+        analyze_wildcard: true
       }
+    ).boost_factor(
+      5,
+      filter: { term: { name: query } }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
+
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_sdks = result_ids.map{ |id| IosSdk.find_by_id(id) }.compact
+    sdks = result_ids.map {|id| IosSdk.find_by_id(id) }.compact
 
-    sdks = []
-    ios_sdks.each do |sdk|
-      sdks << IosSdk.find(sdk)
-    end
-
-    total_apps_count = sdks.length
+    # sdks = IosSdk.where(id: result_ids)
 
     results_json = []
     sdks.each do |sdk|
@@ -1532,7 +1529,7 @@ class ApiController < ApplicationController
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
       end
     elsif platform == 'ios'
-      sdk_companies = IosSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies = IosSdk.display_sdks.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
       end

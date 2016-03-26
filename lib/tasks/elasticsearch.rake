@@ -34,13 +34,6 @@ namespace 'elasticsearch' do
     notify_end(task.full_comment)
   end
 
-  desc 'Cocoapod'
-  task cocoapod: [:environment] do |task|
-    notify_start(task.full_comment)
-    AppsIndex::Cocoapod.import
-    notify_end(task.full_comment)
-  end
-
   desc 'run test'
   task run_test: [:environment] do |task|
     puts "I am running #{task.full_comment}"
