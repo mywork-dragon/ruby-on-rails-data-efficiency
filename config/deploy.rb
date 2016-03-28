@@ -58,7 +58,7 @@ set :monitor_concurrency, 3
 
 # set :sidekiq_queue, %w(critical default low)
 
-set :sdk_scraper_queue, %w(sdk)
+set :sdk_scraper_queue, %w(sdk ios_mass_scan_cloud)
 set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default)
 set :scraper_master_queue, %w(critical scraper_master default)  #needs to go after scraper_queue definition
