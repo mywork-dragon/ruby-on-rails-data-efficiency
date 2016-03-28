@@ -48,8 +48,8 @@ set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
 set :sdk_scraper_concurrency, 10
 set :sdk_scraper_live_scan_concurrency, 30
-set :scraper_concurrency, 5
-set :scraper_master_concurrency, 5
+set :scraper_concurrency, 50
+set :scraper_master_concurrency, 50
 set :web_concurrency, 5
 set :darth_vader_concurrency, 10
 set :kylo_ren_concurrency, 10
