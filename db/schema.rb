@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160323202241) do
+ActiveRecord::Schema.define(version: 20160328195628) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -402,6 +402,7 @@ ActiveRecord::Schema.define(version: 20160323202241) do
     t.integer  "version_code"
     t.datetime "first_valid_date"
     t.datetime "good_as_of_date"
+    t.datetime "last_scanned"
   end
 
   add_index "apk_snapshots", ["android_app_id", "scan_status", "good_as_of_date"], name: "index_android_app_id_scan_status_good_as_of_date", using: :btree
@@ -410,6 +411,7 @@ ActiveRecord::Schema.define(version: 20160323202241) do
   add_index "apk_snapshots", ["apk_snapshot_job_id"], name: "index_apk_snapshots_on_apk_snapshot_job_id", using: :btree
   add_index "apk_snapshots", ["google_account_id"], name: "index_apk_snapshots_on_google_account_id", using: :btree
   add_index "apk_snapshots", ["last_device"], name: "index_apk_snapshots_on_last_device", using: :btree
+  add_index "apk_snapshots", ["last_scanned"], name: "index_apk_snapshots_on_last_scanned", using: :btree
   add_index "apk_snapshots", ["micro_proxy_id"], name: "index_apk_snapshots_on_micro_proxy_id", using: :btree
   add_index "apk_snapshots", ["scan_status"], name: "index_apk_snapshots_on_scan_status", using: :btree
   add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
