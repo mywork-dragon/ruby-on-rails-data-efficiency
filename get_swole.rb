@@ -60,6 +60,8 @@ if !valid_servers.include?(stage)
   abort
 end
 
+rand(1..5).times{ `afplay aviato.mp3` } if stage == 'aviato'
+
 # validate
 branch = `git rev-parse --abbrev-ref HEAD`.chomp
 print "\nDeploying branch #{branch.light_blue} to #{stage.light_cyan}. Is that correct? [yes/no]: "
