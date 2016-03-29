@@ -39,9 +39,9 @@ every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader] do
   runner "IosMonitorService.delete_old_classdumps", :output => '/var/log/varys/cron.log'
 end
 
-every 6.hours, roles: [:kylo_ren] do
-  rake 'fb:simulate', :output => '/var/log/varys/cron.log'
-end
+# every 6.hours, roles: [:kylo_ren] do
+#   rake 'fb:simulate', :output => '/var/log/varys/cron.log'
+# end
 
 every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
