@@ -19,4 +19,9 @@ class IosNewestIpaSnapshot
 
     end
   end
+
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'updated newest ipa snapshot pointers')
+  end
+
 end
