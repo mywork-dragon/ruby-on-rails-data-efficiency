@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren ios_live_scan monitor sdk_scraper_live_scan)
+set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren ios_live_scan monitor sdk_scraper_live_scan aviato)
 
 set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
@@ -42,7 +42,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :kylo_ren, :ios_live_scan, :monitor]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :kylo_ren, :ios_live_scan, :monitor, :aviato]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -55,6 +55,7 @@ set :darth_vader_concurrency, 10
 set :kylo_ren_concurrency, 10
 set :ios_live_scan_concurrency, 50
 set :monitor_concurrency, 3
+set :aviato_concurrency, 20
 
 # set :sidekiq_queue, %w(critical default low)
 
@@ -67,8 +68,9 @@ set :darth_vader_queue, %w(ios_live_scan ios_live_scan_test)
 set :kylo_ren_queue, %w(ios_fb_ads ios_epf_mass_scan ios_mass_scan kylo)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud ios_fb_ads_cloud ios_mass_scan_cloud)
 set :monitor_queue, %w(monitor)
+set :aviato_queue, %w(aviato)
 
-set :whenever_roles, [:scraper, :scraper_master, :sdk_scraper, :kylo_ren, :darth_vader, :sdk_scraper_live_scan, :ios_live_scan, :monitor]
+set :whenever_roles, [:scraper, :scraper_master, :sdk_scraper, :kylo_ren, :darth_vader, :sdk_scraper_live_scan, :ios_live_scan, :monitor, :aviato]
 
 set :whenever_identifier, "#{fetch(:application)}"
 

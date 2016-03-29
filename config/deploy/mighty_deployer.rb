@@ -13,6 +13,7 @@ module MightyDeployer
   @kylo_ren_roles = []
   @ios_live_scan_roles = []
   @monitor_roles = []
+  @aviato_roles = []
   
   @web_servers = []
   # @api_servers = []
@@ -24,9 +25,10 @@ module MightyDeployer
   @kylo_ren_servers = []
   @ios_live_scan_servers = []
   @monitor_servers = []
+  @aviato_servers = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan, :monitor]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan, :monitor, :aviato]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
     
@@ -39,6 +41,7 @@ module MightyDeployer
     define_kylo_ren_servers if server_symbols.include?(:kylo_ren)
     define_ios_live_scan_servers if server_symbols.include?(:ios_live_scan)
     define_monitor_servers if server_symbols.include?(:monitor)
+    define_aviato_servers if server_symbols.include?(:aviato)
     
     define_roles
     
@@ -143,6 +146,15 @@ module MightyDeployer
     @monitor_roles += @monitor_servers
   end
 
+  def self.define_aviato_servers
+    @aviato_servers = %w(
+      54.172.182.43
+    )
+
+    @app_roles += @aviato_servers
+    @aviato_roles += @aviato_servers
+  end
+
   private
 
   def self.define_roles
@@ -159,6 +171,7 @@ module MightyDeployer
     role :kylo_ren, @kylo_ren_roles
     role :ios_live_scan, @ios_live_scan_roles
     role :monitor, @monitor_roles
+    role :aviato, @aviato_roles
   end
   
   def self.set_users
@@ -200,6 +213,10 @@ module MightyDeployer
 
     @monitor_servers.each do |monitor_server|
       server monitor_server, user: 'deploy'
+    end
+
+    @aviato_servers.each do |aviato_server|
+      server aviato_server, user: 'deploy'
     end
     
   end

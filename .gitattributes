@@ -5,3 +5,4 @@ db/demo export-ignore
 db/test_files export-ignore
 get_swole.rb export-ignore
 build_db_patch.rb export-ignore
+aviato.mp3 export-ignore

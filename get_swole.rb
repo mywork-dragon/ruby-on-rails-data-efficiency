@@ -50,14 +50,17 @@ puts "darth_vader".light_cyan + ": Deploys to Vader (iOS Live Scan)."
 puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Dev)."
 puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
 puts "monitor".light_cyan + ": Deploys to monitor servers"
+puts "aviato".light_cyan + ": Deploys to Aviato"
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor aviato)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
 end
+
+rand(1..5).times{ `afplay aviato.mp3` } if stage == 'aviato'
 
 # validate
 branch = `git rev-parse --abbrev-ref HEAD`.chomp
