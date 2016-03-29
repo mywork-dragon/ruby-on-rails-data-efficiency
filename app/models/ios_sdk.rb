@@ -65,7 +65,7 @@ class IosSdk < ActiveRecord::Base
 
       dest_sdk_ids = IosSdk.joins('left join ios_sdk_links on ios_sdks.id = ios_sdk_links.source_sdk_id').select('IFNULL(dest_sdk_id, ios_sdks.id) as id').where(id: ios_sdk_ids).to_a
 
-      dest_sdk_ids.map! { |x| x.id }.uniq
+      dest_sdk_ids = dest_sdk_ids.map(&:id).uniq
 
       inbound_sdk_ids = IosSdk.joins(:outbound_sdk).where('ios_sdk_links.dest_sdk_id in (?)', dest_sdk_ids)
 
