@@ -1223,7 +1223,7 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: [:name, :seller_url, :seller],
+            fields: ['name^2', 'seller_url', 'seller'],
             type: 'cross_fields',
             fuzziness: 1
         }
@@ -1293,7 +1293,7 @@ class ApiController < ApplicationController
       multi_match: {
         query: query,
         operator: 'and',
-        fields: [:name, :seller_url, :seller],
+        fields: ['name^2', 'seller_url', 'seller'],
         type: 'cross_fields',
         fuzziness: 1
       }
@@ -1358,7 +1358,7 @@ class ApiController < ApplicationController
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-    result_ids = AppsIndex::IosSdk.query(
+    result_ids = IosSdkIndex::IosSdk.query(
       query_string: {
         query: "#{query}*",
         default_field: 'name',

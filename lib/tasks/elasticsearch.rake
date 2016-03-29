@@ -20,10 +20,17 @@ namespace 'elasticsearch' do
     notify_end(task.full_comment)
   end
 
-  desc 'IosSdk'
-  task run_ios_sdk: [:environment] do |task|
+  desc 'rebuild IosSdk'
+  task rebuild_ios_sdk: [:environment] do |task|
     notify_start(task.full_comment)
-    AppsIndex::IosSdk.import
+    IosSdkIndex.reset!
+    notify_end(task.full_comment)
+  end
+
+  desc 'update IosSdk'
+  task update_ios_sdk: [:environment] do |task|
+    notify_start(task.full_comment)
+    IosSdkIndex.import
     notify_end(task.full_comment)
   end
   

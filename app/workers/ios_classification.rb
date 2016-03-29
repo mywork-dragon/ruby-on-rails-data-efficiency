@@ -1,44 +1,41 @@
 module IosClassification
   
   def perform(snap_id)
-    begin
-      snapshot = IpaSnapshot.find(snap_id)
-      snapshot.scan_status = :scanning
-      snapshot.save
+    snapshot = IpaSnapshot.find(snap_id)
 
-      sdks = classify(snap_id)
+    snapshot.update(scan_status: :scanning)
 
-      snapshot.scan_status = :scanned
-      snapshot.save
+    sdks = classify(snap_id)
 
-      invalidate_bad_scans(snapshot)
-      log_activities(snapshot)
+    snapshot.update(scan_status: :scanned)
 
-      # sdks
-      puts "finished classify"
-    rescue => e
-      IosClassificationException.create!({
-        ipa_snapshot_id: snap_id,
-        error: e.message,
-        backtrace: e.backtrace
-      })
+    invalidate_bad_scans(snapshot)
+    log_activities(snapshot)
 
-      snapshot = IpaSnapshot.find(snap_id)
-      snapshot.scan_status = :failed
-      snapshot.save
+    # sdks
+    puts "finished classify"
+  rescue => e
+    IosClassificationException.create!({
+      ipa_snapshot_id: snap_id,
+      error: e.message,
+      backtrace: e.backtrace
+    })
 
-      raise e
-    end
+    snapshot = IpaSnapshot.find(snap_id)
+    snapshot.scan_status = :failed
+    snapshot.save
+
+    raise e
+  ensure
+    IosApp.find(snapshot.ios_app_id).update_newest_ipa_snapshot
   end
 
   def log_activities(snapshot)
-    begin
-      ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
-    rescue => e
-      "Activity Worker failed"
-      puts e.message
-      puts e.backtrace
-    end
+    ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
+  rescue => e
+    "Activity Worker failed"
+    puts e.message
+    puts e.backtrace
   end
 
   def invalidate_bad_scans(snapshot)

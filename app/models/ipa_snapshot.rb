@@ -20,7 +20,7 @@ class IpaSnapshot < ActiveRecord::Base
   has_many :sdk_js_tags, through: :ipa_snapshots_sdk_js_tags
 
   enum download_status: [:starting, :retrying, :cleaning, :complete]
-  enum scan_status: [:scanning, :scanned, :failed, :arch_issue]
+  enum scan_status: [:scanning, :scanned, :failed, :arch_issue, :invalidated]
 
   before_create :set_dates
 
@@ -28,6 +28,12 @@ class IpaSnapshot < ActiveRecord::Base
     x = Time.now
     self.good_as_of_date = x
     self.first_valid_date = x
+  end
+
+  def invalidate
+    self.update(scan_status: :invalidated)
+
+    IosApp.find(self.ios_app_id).update_newest_ipa_snapshot if self.ios_app_id
   end
   
 end

@@ -37,6 +37,21 @@ class IosApp < ActiveRecord::Base
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
                       529479190, 547702041,591981144,618783545,317469184,401626263]
 
+  def invalidate_newest_ipa_snapshot
+    ipa_snapshot = get_last_ipa_snapshot(scan_success: true)
+
+    ipa_snapshot.update(scan_status: :invalidated)
+
+    update_newest_ipa_snapshot
+  end
+
+  def update_newest_ipa_snapshot
+
+    ipa_snapshot = get_last_ipa_snapshot(scan_success: true)
+    
+    self.update(newest_ipa_snapshot: ipa_snapshot)
+  end
+
   def get_newest_download_snapshot
     self.ios_app_download_snapshots.max_by do |snapshot|
       snapshot.updated_at
@@ -45,9 +60,9 @@ class IosApp < ActiveRecord::Base
 
   def get_last_ipa_snapshot(scan_success: false)
     if scan_success
-      self.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).order([:good_as_of_date, :id]).last
+        self.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).order([:good_as_of_date, :id]).last
     else
-      self.ipa_snapshots.order(:good_as_of_date).last
+        self.ipa_snapshots.order(:good_as_of_date).last
     end
   end
   
