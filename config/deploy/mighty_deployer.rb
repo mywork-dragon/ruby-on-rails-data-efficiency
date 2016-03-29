@@ -152,7 +152,7 @@ module MightyDeployer
     )
 
     @app_roles += @aviato_servers
-    @aviato_roles += @aviato_roles
+    @aviato_roles += @aviato_servers
   end
 
   private
