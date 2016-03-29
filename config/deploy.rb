@@ -4,7 +4,7 @@ require 'sshkit/dsl'
 lock '3.2.1'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
-set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren ios_live_scan monitor sdk_scraper_live_scan)
+set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren ios_live_scan monitor sdk_scraper_live_scan aviato)
 
 set :application, 'varys'
 set :repo_url, 'git@github.com:MightySignal/varys.git'
