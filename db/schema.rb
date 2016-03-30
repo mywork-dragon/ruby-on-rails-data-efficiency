@@ -34,6 +34,12 @@ ActiveRecord::Schema.define(version: 20160329200227) do
     t.datetime "happened_at"
   end
 
+  create_table "ad_platforms", force: true do |t|
+    t.string   "platform"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "android_app_categories", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
