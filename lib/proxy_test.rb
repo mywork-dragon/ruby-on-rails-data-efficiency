@@ -1,6 +1,7 @@
 class ProxyTest
   include HTTParty
   include ProxyBase
+  include ProxyParty
 
   base_uri 'https://wtfismyip.com'
   format :json
