@@ -6,7 +6,12 @@ class ProxyTest
   format :json
 
   def self.check_ip
-    http_proxy('52.90.155.249', 8888) if Rails.env.production?
+    proxy_request {
+      get('/json')
+    }
+  end
+
+  def self.side_effects
     get('/json')
   end
 end
