@@ -146,7 +146,10 @@ class BusinessEntityIosServiceWorker
 
   def link_ios_and_web(ios_app:, website:)
     if !ios_app.websites.include?(website)
-      ios_app.websites << website
+      begin
+        ios_app.websites << website
+      rescue ActiveRecord::RecordInvalid => e
+      end
     end
   end
 
