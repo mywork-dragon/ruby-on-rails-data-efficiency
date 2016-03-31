@@ -3,7 +3,6 @@ class ItunesApi
   LOOKUP_ATTEMPTS = 2
 
   include HTTParty
-  include ProxyBase
   include ProxyParty
 
   base_uri 'https://itunes.apple.com'

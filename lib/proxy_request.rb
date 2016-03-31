@@ -3,13 +3,15 @@ class ProxyRequest
   include HTTParty
   include ProxyParty
 
-  def self.head(url)
-    proxy_request {
-      get(url)
-    }
+  # TODO: not working. Returning the body. Not blocking though
+  def self.head(url, opts: {})
+    proxy_opts = get_proxy_options(opts: opts)
+    HTTParty.head(url, proxy_opts.merge(opts))
   end
 
-  def self.get(url)
-    HTTParty.get(url)
+  def self.get(url, opts: {})
+    proxy_opts = get_proxy_options(opts: opts)
+    HTTParty.get(url, proxy_opts.merge(opts))
   end
+
 end
