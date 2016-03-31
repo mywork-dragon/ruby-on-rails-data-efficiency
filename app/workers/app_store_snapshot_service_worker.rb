@@ -67,11 +67,8 @@ class AppStoreSnapshotServiceWorker
     
       single_column_attributes.each do |sca|
         value = a[sca.to_sym]
+        value = DbSanitizer.truncate_string(value) if IosAppSnapshot.columns_hash[sca].type == :string # auto truncate
         s.send("#{sca}=", value) if value
-      end
-
-      if copywright = a[:copywright]
-        s.copywright = DbSanitizer.truncate_string(copywright)
       end
     
       # Categories
@@ -115,13 +112,13 @@ class AppStoreSnapshotServiceWorker
       end
     
       if seller_url = a[:seller_url]
-        s.seller_url = seller_url
+        s.seller_url = DbSanitizer.truncate_string(seller_url)
         #TODO: add logic around company
       end
     
     
       if support_url = a[:support_url]
-         s.support_url = support_url
+         s.support_url = DbSanitizer.truncate_string(support_url)
          #TODO: add logic around company
       end
    
