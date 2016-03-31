@@ -17,7 +17,7 @@ class ItunesApi
 
       while data.nil? && attempts < LOOKUP_ATTEMPTS
         begin
-          data = get('/lookup', query: {id: app_identifier, uslimit: 1})
+          data = JSON.parse(get('/lookup', query: {id: app_identifier, uslimit: 1}).body)
         rescue => e
           puts "HTTParty Error"
           puts e.class
