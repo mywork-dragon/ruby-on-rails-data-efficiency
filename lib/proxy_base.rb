@@ -1,9 +1,9 @@
 module ProxyBase
   
-  def select_proxy(type: nil)
-    proxies = if type == :ios_classification
+  def select_proxy(proxy_type: nil)
+    proxies = if proxy_type == :ios_classification
       ios_proxies
-    elsif type == :android_classification
+    elsif proxy_type == :android_classification
       android_proxies
     else
       general_proxies
