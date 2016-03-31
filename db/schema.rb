@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160329200227) do
+ActiveRecord::Schema.define(version: 20160331000346) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1252,11 +1252,13 @@ ActiveRecord::Schema.define(version: 20160329200227) do
     t.string   "ad_info_image_content_type"
     t.integer  "ad_info_image_file_size"
     t.datetime "ad_info_image_updated_at"
+    t.integer  "ios_fb_ad_appearances_id"
   end
 
   add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
   add_index "ios_fb_ads", ["ios_app_id", "status", "flagged"], name: "index_ios_fb_ads_on_ios_app_id_and_status_and_flagged", using: :btree
   add_index "ios_fb_ads", ["ios_device_id"], name: "index_ios_fb_ads_on_ios_device_id", using: :btree
+  add_index "ios_fb_ads", ["ios_fb_ad_appearances_id"], name: "index_ios_fb_ads_on_ios_fb_ad_appearances_id", using: :btree
   add_index "ios_fb_ads", ["ios_fb_ad_job_id"], name: "index_ios_fb_ads_on_ios_fb_ad_job_id", using: :btree
   add_index "ios_fb_ads", ["status", "flagged"], name: "index_ios_fb_ads_on_status_and_flagged", using: :btree
 
