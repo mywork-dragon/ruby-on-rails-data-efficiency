@@ -24,6 +24,7 @@ module Varys
     config.autoload_paths << "#{config.root}/lib"
     config.autoload_paths << "#{config.root}/lib/searchers"
     config.autoload_paths << "#{config.root}/app/services"
+    config.autoload_paths << "#{config.root}/lib/clients"
     #config.autoload_paths << "#{config.root}/app/workers"
     config.autoload_paths << "#{config.root}/jobs"
     
