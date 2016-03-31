@@ -61,6 +61,7 @@ class AppStoreSnapshotServiceWorker
         icon_url_175x175
         first_released
         by
+        copywright
         seller_url_text
         support_url_text
       )
