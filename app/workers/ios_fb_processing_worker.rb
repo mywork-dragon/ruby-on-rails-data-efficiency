@@ -23,6 +23,9 @@ class IosFbProcessingWorker
     end
   end
 
+  class FailedLookup < RuntimeError
+  end
+
   def process(ios_fb_ad_id)
 
     ios_fb_ad = IosFbAd.find(ios_fb_ad_id)
