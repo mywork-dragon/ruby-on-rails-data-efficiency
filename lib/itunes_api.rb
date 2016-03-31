@@ -8,6 +8,9 @@ class ItunesApi
   base_uri 'https://itunes.apple.com'
   format :json
 
+  class FailedRequest < RuntimeError
+  end
+
   def self.lookup_app_info(app_identifier)
     proxy_request {
       data, attempts = nil, 0
@@ -23,6 +26,7 @@ class ItunesApi
         end
       end
 
+      raise FailedRequest, "Could not contact iTunes API, looking for app identifier #{app_identifier}" if data.nil?
       data
     }
   end

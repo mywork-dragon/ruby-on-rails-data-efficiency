@@ -92,23 +92,28 @@ module IosCloud
   end
 
   def get_json(ios_app_id)
-
-    data = nil
-
-    LOOKUP_ATTEMPTS.times do |i|
-      begin
-        app_identifier = IosApp.find(ios_app_id).app_identifier 
-        url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
-        data = JSON.parse(Proxy.get_body_from_url(url))
-        
-      rescue => e
-        nil
-      end
-
-      break if data.present?  
-    end
-
-    data
+    app_identifier = IosApp.find(ios_app_id).app_identifier
+    ItunesApi.lookup_app_info(app_identifier)
   end
+
+  # def get_json(ios_app_id)
+
+  #   data = nil
+
+  #   LOOKUP_ATTEMPTS.times do |i|
+  #     begin
+  #       app_identifier = IosApp.find(ios_app_id).app_identifier 
+  #       url = "https://itunes.apple.com/lookup?id=#{app_identifier.to_s}&uslimit=1"
+  #       data = JSON.parse(Proxy.get_body_from_url(url))
+        
+  #     rescue => e
+  #       nil
+  #     end
+
+  #     break if data.present?  
+  #   end
+
+  #   data
+  # end
 
 end
