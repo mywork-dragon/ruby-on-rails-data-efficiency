@@ -23,6 +23,9 @@ class IosFbProcessingWorker
     end
   end
 
+  class FailedLookup < RuntimeError
+  end
+
   def process(ios_fb_ad_id)
 
     ios_fb_ad = IosFbAd.find(ios_fb_ad_id)
@@ -50,39 +53,20 @@ class IosFbProcessingWorker
 
     valid_itunes_url_regex = /https?:\/\/itunes.apple.com.*id(?<id>[\d]+)/
 
-    response = http_with_retries(short_url)
+    response = ProxyRequest.get(short_url)
 
-    redirected_url = response.headers['location'] # should redirect to itunes page
+    redirected_url = response.headers['x-apple-orig-url'] # should redirect to itunes page
 
-    raise "No redirect location available" if redirected_url.blank?
+    raise FailedLookup, "No redirect location available" if redirected_url.blank?
 
-    raise "Invalid redirect url" unless valid_itunes_url_regex.match(redirected_url)
+    raise FailedLookup, "Invalid redirect url" unless valid_itunes_url_regex.match(redirected_url)
 
     app_identifier = valid_itunes_url_regex.match(redirected_url)[:id].to_i
 
-    raise "Failed to get valid app identifier from #{short_url}" if app_identifier == 0 # to_i returns 0 if not a valid number
+    raise FailedLookup, "Failed to get valid app identifier from #{short_url}" if app_identifier == 0 # to_i returns 0 if not a valid number
 
     app_identifier
-  end
 
-  def http_with_retries(url)
-    attempts = 2
-    count = 0
-    response = nil
-    last_error = nil
-
-    while count < attempts && response.blank?
-      response = begin
-        Proxy.get_from_url(url)
-      rescue => e
-        last_error = e
-        nil
-      end
-      count += 1
-    end
-
-    raise last_error if response.nil?
-    response
   end
 
   def test_extracting(link_contents)
