@@ -11,7 +11,7 @@ class ItunesApi
 
   def self.lookup_app_info(app_identifier)
     proxy_request {
-      data, attemps = nil, 0
+      data, attempts = nil, 0
 
       while data.nil? && attempts < LOOKUP_ATTEMPTS
         begin
