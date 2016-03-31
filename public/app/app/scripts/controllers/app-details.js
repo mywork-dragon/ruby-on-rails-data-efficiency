@@ -42,7 +42,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           "App Page Viewed", {
             "appId": $routeParams.id,
             "appName": $scope.appData.name,
-            "companyName": $scope.appData.company.name,
+            "companyName": $scope.appData.publisher.name,
             "appPlatform": $routeParams.platform
           }
         );
@@ -73,15 +73,15 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       var linkedinLink = "";
 
       if (linkedinLinkType == 'company') {
-        linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.appData.company.name);
+        linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.appData.publisher.name);
       } else {
-        linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.appData.company.name) + "+" + linkedinLinkType;
+        linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.appData.publisher.name) + "+" + linkedinLinkType;
       }
 
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "LinkedIn Link Clicked", {
-          "companyName": $scope.appData.company.name,
+          "companyName": $scope.appData.publisher.name,
           "companyPosition": linkedinLinkType
         }
       );
@@ -139,7 +139,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     }
 
     $scope.exportContactsToCsv = function() {
-      apiService.exportContactsToCsv($scope.companyContacts, $scope.appData.company.name)
+      apiService.exportContactsToCsv($scope.companyContacts, $scope.appData.publisher.name)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
 
@@ -164,7 +164,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           mixpanel.track(
             "Company Contacts Requested", {
               'websites': websites,
-              'companyName': $scope.appData.company.name,
+              'companyName': $scope.appData.publisher.name,
               'requestResults': data.contacts,
               'requestResultsCount': data.contacts.length,
               'titleFilter': filter || ''
@@ -176,7 +176,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           mixpanel.track(
             "Company Contacts Requested", {
               'websites': websites,
-              'companyName': $scope.appData.company.name,
+              'companyName': $scope.appData.publisher.name,
               'requestError': err,
               'titleFilter': filter || ''
             }
