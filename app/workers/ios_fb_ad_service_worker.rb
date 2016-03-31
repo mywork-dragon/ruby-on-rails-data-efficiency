@@ -20,7 +20,7 @@ class IosFbAdServiceWorker
       fb_account.update(last_scraped: Time.now)
 
       # run the scrape
-      IosFbAdDeviceService.new(ios_fb_ad_job_id, device_reserver.device, fb_account, bid: bid).scrape
+      IosFbAdDeviceService.new(ios_fb_ad_job_id, device_reserver.device, fb_account, bid: bid).start_scrape
 
       # release the device
       device_reserver.release
