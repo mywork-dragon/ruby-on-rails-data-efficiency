@@ -198,3 +198,6 @@ req.body = body
 res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
   http.request(req)
 end
+
+puts ""
+puts "Deployment to " stage.light_cyan + " is complete."
