@@ -8,6 +8,25 @@ class IosFbAdDeviceService
   SCRIPTS_PATH = File.join(Rails.root, 'server', 'ios_fb_scripts')
   SCRIPTS_PREFIX = SCRIPTS_PATH.split('/').last
 
+  APPS_INFO_KEY = {
+      facebook: {
+        name: 'Facebook',
+        bundle_id: 'com.facebook.Facebook'
+      },
+      photos: {
+        name: 'MobileSlideShow',
+        bundle_id: 'com.apple.mobileslideshow'
+      },
+      springboard: {
+        name: 'SpringBoard',
+        bundle_id: nil
+      },
+      app_store: {
+        name: 'AppStore',
+        bundle_id: 'com.apple.AppStore'
+      }
+  }
+
   # Error types
   class CriticalDeviceError < StandardError
     attr_reader :ios_device_id
@@ -29,7 +48,10 @@ class IosFbAdDeviceService
 
   def start_scrape
     connect
+
     scrape
+    # teardown
+
   rescue => e
     store_exception(e)
     raise e if e.class == CriticalDeviceError
@@ -65,6 +87,8 @@ class IosFbAdDeviceService
   end
 
   def scrape
+
+    close_applications # ensure starting from scratch
 
     setup
 
@@ -362,6 +386,10 @@ class IosFbAdDeviceService
 
   def scroll_screen(start:, finish:, duration: 0.5)
     run_command("stouch swipe #{start[:x]} #{start[:y]} #{finish[:x]} #{finish[:y]} #{duration}", "Scroll screen from #{start[:x]},#{start[:y]} to #{finish[:x]},#{finish[:y]}")
+  end
+
+  def swipe_left
+    scroll_screen({x: 200, y: 200, x: 400, y: 400, duration: 0.2})
   end
 
 
@@ -805,18 +833,8 @@ class IosFbAdDeviceService
   end
 
   def open_app(app)
-    key = {
-      facebook: {
-        name: 'Facebook',
-        bundle_id: 'com.facebook.Facebook'
-      },
-      photos: {
-        name: 'MobileSlideShow',
-        bundle_id: 'com.apple.mobileslideshow'
-      }
-    }
 
-    info = key[app]
+    info = APPS_INFO_KEY[app]
 
     raise "#{app} is not recognized" if info.nil?
 
@@ -827,13 +845,60 @@ class IosFbAdDeviceService
     run_command("cycript -p #{info[:name]} #{File.join(SCRIPTS_PREFIX, 'fb_utilities.cy')}", "Bind the utilities to #{info[:name]}")
   end
 
+  def close_applications
+
+    apps_count = get_open_apps_count
+    log_debug "Closing #{apps_count} apps"
+
+    open_apps_carousel
+    sleep 2
+
+    apps_count.times do |n|
+      log_debug "Closing #{n}"
+      scroll_screen(start: {x: 200, y: 200}, finish: {x: 400, y: 200}, duration: 0.2) # Swipe left
+      sleep 0.25
+      scroll_screen(start: {x: 100, y: 400}, finish: {x: 100, y: 200}, duration: 0.2) # Swipe up
+      sleep 0.25
+    end
+
+    apps_count = get_open_apps_count
+    log_debug "Apps remaining: #{apps_count}"
+    log_debug "Ensuring primary ones closed"
+
+    %i(facebook photos app_store).each do |app_key|
+      ensure_closed(APPS_INFO_KEY[app_key][:name])
+    end
+
+    return_to_home_screen
+
+    log_debug "Finished closing apps"
+
+  end
+
+  def ensure_closed(app_name)
+    resp = run_command("ps aux | grep -v grep | grep #{app_name} | wc -l", "Check if app #{app_name} is still running")
+    puts "#{app_name} is not closed" unless resp.include?('0')
+  end
+
+  def get_open_apps_count
+    run_command("ps aux | grep -v grep | grep Application | grep -v private/var | wc -l", "Get current apps count").to_i
+  end
+
+  def open_apps_carousel
+    return_to_home_screen
+    sleep 0.5
+    run_and_validate_success('SpringBoard', 'open_active_apps.cy')
+  end
+  
+  def return_to_home_screen
+    run_and_validate_success('SpringBoard', 'return_to_home.cy')
+  end
+
   def teardown
     log_debug "Teardown"
+    close_applications
     delete_screenshots
-
-    run_command('killall Facebook', 'Close Facebook')
-    run_command('killall MobileSlideShow', 'Close Photos')
-    run_command('killall AppStore', 'Close Photos')
+    
     # run_command('rm -rf ios_fb_scripts *.cy', 'Remove cycript scripts')
     run_command('rm -rf *.cy', 'Remove cycript scripts')
   end
