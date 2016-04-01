@@ -51,7 +51,10 @@ class EpfServiceDbWorker
         rescue => e
         end
       else
-        ss.send("#{field}=", value) if (field && value)
+        if (field && value)
+          value = DbSanitizer.truncate_string(value) if IosAppEpfSnapshot.columns_hash[field].type == :string
+          ss.send("#{field}=", value)
+        end
       end
     end
     
