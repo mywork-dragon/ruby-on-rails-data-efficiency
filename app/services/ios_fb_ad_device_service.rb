@@ -59,6 +59,19 @@ class IosFbAdDeviceService
     disconnect
   end
 
+  # For cleaning the device
+  def clean
+    connect
+
+    teardown
+
+  rescue => e
+    store_exception(e)
+    raise e if e.class == CriticalDeviceError
+  ensure
+    disconnect
+  end
+
   # restart: flag to indicate whether to completely overwrite ssh connection
   def connect(restart: false)
     disconnect unless restart
@@ -88,9 +101,9 @@ class IosFbAdDeviceService
 
   def scrape
 
-    close_applications # ensure starting from scratch
-
     setup
+
+    close_applications # ensure starting from scratch
 
     open_fb
 
@@ -683,7 +696,7 @@ class IosFbAdDeviceService
     resp.match(/True/i)
   end
 
-  def press_coordinates_from_file(filename, app)
+  def press_coordinates_from_file(filename, app, mini_swipe: false)
     coordinates = run_file(app, filename)
 
     coordinates_json = nil
@@ -693,7 +706,11 @@ class IosFbAdDeviceService
       raise "Could not parse coordinates json with contents: #{coordinates}"
     end
 
-    press_screen(x: coordinates_json['x'], y: coordinates_json['y'])
+    if mini_swipe
+      scroll_screen(start: {x: coordinates_json['x'], y: coordinates_json['y']}, finish: {x: coordinates_json['x'] + 5, y: coordinates_json['y']}, duration: 0.1)
+    else
+      press_screen(x: coordinates_json['x'], y: coordinates_json['y'])
+    end
   end
 
   def delete_screenshots
@@ -815,7 +832,7 @@ class IosFbAdDeviceService
   def confirm_submit_alert_action(app, coordinates_file, verify_file)
     2.times do |n|
       log_debug "Attempt #{n}"
-      press_coordinates_from_file(coordinates_file, app)
+      press_coordinates_from_file(coordinates_file, app, mini_swipe: true)
       sleep 2 # confirming an alert action normally triggers a large UI change 
       resp = run_file(app, verify_file)
       return if known_command_error?(resp) # Should error...cannot find coordinates
