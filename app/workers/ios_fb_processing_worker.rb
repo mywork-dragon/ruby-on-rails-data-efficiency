@@ -35,9 +35,16 @@ class IosFbProcessingWorker
 
     ios_app = IosApp.find_by_app_identifier(app_identifier)
 
-    raise "Could not find ios app by app identifier #{app_identifier}" if ios_app.nil?
+    ios_app = add_app_to_db(app_identifier) if ios_app.nil?
+
+    raise FailedLookup, "Could not find app with identifier #{app_identifier}" if ios_app.nil?
 
     ios_fb_ad.update(ios_app_id: ios_app.id)
+  end
+
+  def add_app_to_db(app_identifier)
+    EwokScrapeWorker.new.scrape_ios(app_identifier)
+    IosApp.find_by_app_identifier(app_identifier)
   end
 
   def get_short_url(link_contents)
