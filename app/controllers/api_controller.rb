@@ -519,7 +519,7 @@ class ApiController < ApplicationController
       'Food & Drink',
       'Games',
       'Health & Fitness',
-      # 'Kids',
+      'Kids',
       'Lifestyle',
       'Magazines & Newspapers',
       'Medical',
