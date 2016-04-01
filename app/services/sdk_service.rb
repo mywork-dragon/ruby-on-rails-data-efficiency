@@ -369,8 +369,7 @@ class SdkService
 		end
 
 		def exts(dot = nil)
-			ext_file = File.open('exts.txt')
-			ext_arr = ext_file.read.split(/\n/)
+      ext_arr = File.open('exts.txt') {|f| f.read}.split(/\n/)
 			ext_arr.map{|e| dot == :before ? ".#{e}" : (dot == :after ? "#{e}." : e)}
 		end
 
