@@ -200,4 +200,4 @@ res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
 end
 
 puts ""
-puts "Deployment to " stage.light_cyan + " is complete."
+puts "Deployment to " + stage.light_cyan + " is complete."
