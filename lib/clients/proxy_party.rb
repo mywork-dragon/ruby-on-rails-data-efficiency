@@ -20,20 +20,40 @@ module ProxyParty
         res[:http_proxyaddr], res[:http_proxyport] = proxy_info[:ip], proxy_info[:port]
       end
 
+      if opts[:random_user_agent]
+        res[:headers] = opts[:headers] || {}
+        res[:headers].merge!(random_browser_header)
+      end
+
       res
       
     end
 
     # For modifying the default options on the client
-    def proxy_request(proxy_type: nil)
-      if Rails.env.production?
-        proxy_info = select_proxy(proxy_type: proxy_type)
-        http_proxy(proxy_info[:ip], proxy_info[:port])
-      end
+    def proxy_request(proxy_type: :general)
+
+      set_proxy(proxy_type: proxy_type) if Rails.env.production?
+
       res = yield
-      http_proxy(nil, nil) if Rails.env.production?
+
+      release_proxy if Rails.env.production?
+
       res
     end
+
+    def set_proxy(proxy_type: :general)
+      proxy_info = select_proxy(proxy_type: proxy_type)
+      http_proxy(proxy_info[:ip], proxy_info[:port])
+    end
+
+    def release_proxy
+      http_proxy(nil, nil)
+    end
+
+    def random_browser_header
+      {'User-Agent' => UserAgent.random_web}
+    end
+
   end
 end
 

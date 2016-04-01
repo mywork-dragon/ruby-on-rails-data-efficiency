@@ -12,7 +12,8 @@ class ItunesApi
   end
 
   def self.lookup_app_info(app_identifier)
-    proxy_request {
+    proxy_request do
+
       data, attempts = nil, 0
 
       while data.nil? && attempts < LOOKUP_ATTEMPTS
@@ -27,8 +28,10 @@ class ItunesApi
       end
 
       raise FailedRequest, "Could not contact iTunes API, looking for app identifier #{app_identifier}" if data.nil?
+      
       data
-    }
+
+    end
   end
 
 end
