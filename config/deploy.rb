@@ -53,7 +53,7 @@ set :scraper_master_concurrency, 50
 set :web_concurrency, 5
 set :darth_vader_concurrency, 10
 set :kylo_ren_concurrency, 10
-set :ios_live_scan_concurrency, 50
+set :ios_live_scan_concurrency, 25
 set :monitor_concurrency, 3
 set :aviato_concurrency, 20
 
