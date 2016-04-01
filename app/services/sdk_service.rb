@@ -324,7 +324,7 @@ class SdkService
 					next if app_name.match(/#{company}/i)
 
 					favicon = begin
-						author = GithubService.get_author_info(website)
+						author = GithubService.get_author_info(url)
 						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
 						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
 					rescue
