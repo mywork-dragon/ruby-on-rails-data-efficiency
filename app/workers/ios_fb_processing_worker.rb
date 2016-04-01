@@ -53,7 +53,7 @@ class IosFbProcessingWorker
 
     valid_itunes_url_regex = /https?:\/\/itunes.apple.com.*id(?<id>[\d]+)/
 
-    response = ProxyRequest.get(short_url)
+    response = ProxyRequest.get(short_url, random_user_agent: true)
 
     redirected_url = response.headers['x-apple-orig-url'] # should redirect to itunes page
 
