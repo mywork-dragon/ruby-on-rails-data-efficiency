@@ -179,6 +179,7 @@ module AndroidSdkService
           formatted['last_seen_date'] = apk_snap ? apk_snap.last_seen : nil
           formatted
         end.compact.uniq
+        h[:uninstalled] = {}  # show no uninstalls for now
         h[:updated] = snap.good_as_of_date
         h[:error_code] = ec || nil
         h
