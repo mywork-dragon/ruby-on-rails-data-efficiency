@@ -177,20 +177,35 @@ angular.module("appApp")
         });
       },
       androidLiveScanUnchangedVersionSuccess: function(platform, appId) {
-      /* -------- Slacktivity Alerts -------- */
-          var slacktivityData = {
-            "title": "Android Live Scan Success (Unchanged Version)",
-            "fallback": "Android Live Scan Success (Unchanged Version)",
-            "color": "#45825A",
-            "userEmail": userInfo.email,
-            'appName': appData.name,
-            'companyName': appData.company.name,
-            'appId': appData.id,
-          };
+        var errorMessage = "";
 
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+        var userInfo = {}; // User info set
+        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+        var appData = {}; // Load app data
+        $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/get_' + platform + '_app',
+          params: {id: appId}
+        }).success(function(data) {
+
+        appData = data;
+
+        /* -------- Slacktivity Alerts -------- */
+        var slacktivityData = {
+          "title": "Android Live Scan Success (Unchanged Version)",
+          "fallback": "Android Live Scan Success (Unchanged Version)",
+          "color": "#45825A",
+          "userEmail": userInfo.email,
+          'appName': appData.name,
+          'companyName': appData.company.name,
+          'appId': appData.id,
+        };
+
+        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
+        });
       },
       iosLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
