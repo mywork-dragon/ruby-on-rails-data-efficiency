@@ -94,6 +94,7 @@ class IosApp < ActiveRecord::Base
       supportDesk: self.support_url,
       categories: self.categories,
       icon: self.icon_url,
+      adSpend: self.old_ad_spend?,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name),

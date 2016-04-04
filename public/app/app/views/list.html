@@ -56,7 +56,7 @@
           <th><div class="th normal-right-padding">
             Mobile Priority
           </div></th>
-          <th ng-show="canViewAdSpend"><div class="th normal-right-padding">
+          <th><div class="th normal-right-padding">
             Ad Spend
           </div></th>
           <th><div class="th normal-right-padding">
@@ -106,7 +106,7 @@
             <td class="dashboardMobilePriorityView">
               <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
             </td>
-            <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
+            <td class="dashboardAdSpendView">
               <span ng-if="!isNaN(app.adSpend)">
                 <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
               </span>
