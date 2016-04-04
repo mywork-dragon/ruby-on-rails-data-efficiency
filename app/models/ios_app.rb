@@ -159,7 +159,7 @@ class IosApp < ActiveRecord::Base
 
   def last_updated_days
     if released = self.newest_ios_app_snapshot.try(:released)
-      (Time.now.to_date - self.newest_ios_app_snapshot.released.to_date).to_i
+      (Time.now.to_date - released.to_date).to_i
     end
   end
 

@@ -77,10 +77,14 @@ class AndroidApp < ActiveRecord::Base
       mobilePriority: self.mobile_priority,
       adSpend: self.old_ad_spend?,
       lastUpdated: newest_snapshot.try(:released),
+      lastUpdatedDays: self.last_updated_days,
       categories: self.categories,
+      seller: newest_snapshot.try(:seller),
       supportDesk: newest_snapshot.try(:seller_url),
       userBase: self.user_base,
       icon: newest_snapshot.try(:icon_url_300x300),
+      downloadsMin: newest_snapshot.try(:downloads_min),
+      downloadsMax: newest_snapshot.try(:downloads_max),
       company: company,
       publisher: {
         id: self.try(:android_developer).try(:id),
@@ -99,8 +103,6 @@ class AndroidApp < ActiveRecord::Base
         contentRating: newest_snapshot.try(:content_rating),
         description: newest_snapshot.try(:description),
         currentVersion: newest_snapshot.try(:version),
-        downloadsMin: newest_snapshot.try(:downloads_min),
-        downloadsMax: newest_snapshot.try(:downloads_max),
         inAppPurchaseMin: newest_snapshot.try(:in_app_purchase_min),
         inAppPurchaseMax: newest_snapshot.try(:in_app_purchase_max),
         rating: newest_snapshot.try(:ratings_all_stars),
@@ -118,6 +120,12 @@ class AndroidApp < ActiveRecord::Base
 
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
+  end
+
+  def last_updated_days
+    if released = self.newest_android_app_snapshot.try(:released)
+      (Time.now.to_date - released.to_date).to_i
+    end
   end
 
   def categories
