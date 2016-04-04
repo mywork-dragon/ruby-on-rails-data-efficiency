@@ -37,6 +37,7 @@ class GooglePlaySnapshotServiceWorker
       # tm.text0 = a.inspect
       # tm.save
 
+      raise 'GooglePlayService.attributes is nil' if a.nil?
       raise 'GooglePlayService.attributes is empty' if a.empty?
 
       single_column_attributes = %w(
