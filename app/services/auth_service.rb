@@ -18,6 +18,7 @@ class AuthService
       account.can_view_storewide_sdks = true
       account.can_view_exports = true
       account.can_view_ios_live_scan = true
+      account.save
 
       accounts = []
       emails.each do |email|
