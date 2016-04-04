@@ -171,7 +171,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId);
                 androidLiveScanCtrl.versionUnchanged = true;
                 androidLiveScanCtrl.hideLiveScanButton = false;
-                sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
+                sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, androidAppId, androidLiveScanCtrl.sdkData);
               }
               else {
                 androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
