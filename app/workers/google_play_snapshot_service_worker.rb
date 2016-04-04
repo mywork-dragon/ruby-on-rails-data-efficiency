@@ -157,12 +157,13 @@ class GooglePlaySnapshotServiceWorker
         android_app_save_success = android_app.save
 
     rescue => e
-      ise = AndroidAppSnapshotException.create(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)
+      ise = AndroidAppSnapshotException.create!(android_app_snapshot: s, name: e.message, backtrace: e.backtrace, try: try, android_app_snapshot_job_id: android_app_snapshot_job_id)
       if (try += 1) < MAX_TRIES
         retry
       else
         s.status = :failure
         s.save!
+        raise
       end
     else
       s.status = :success
