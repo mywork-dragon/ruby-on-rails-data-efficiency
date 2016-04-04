@@ -176,6 +176,22 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics End -------- */
         });
       },
+      androidLiveScanUnchangedVersionSuccess: function(platform, appId) {
+      /* -------- Slacktivity Alerts -------- */
+          var slacktivityData = {
+            "title": "Android Live Scan Success (Unchanged Version)",
+            "fallback": "Android Live Scan Success (Unchanged Version)",
+            "color": color,
+            "userEmail": userInfo.email,
+            'appName': appData.name,
+            'companyName': appData.company.name,
+            'appId': appData.id,
+          };
+
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+          /* -------- Slacktivity Alerts End -------- */
+      },
       iosLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
         var userInfo = {}; // User info set
@@ -223,7 +239,6 @@ angular.module("appApp")
           if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
           window.Slacktivity.send(slacktivityData);
           /* -------- Slacktivity Alerts End -------- */
-
         });
 
       },
