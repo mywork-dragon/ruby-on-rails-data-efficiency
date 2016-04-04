@@ -448,6 +448,12 @@ class IosFbAdDeviceService
   end
 
   def analyze_ad(index, section)
+    results_info = {}
+
+    # Take the screenshot before leaving FB
+    results_info.merge!(take_ad_screenshot(section, index))
+
+    # Now actually click the ad
     success = click_ad(index, section)
 
     unless success
@@ -455,6 +461,7 @@ class IosFbAdDeviceService
       return
     end
     @has_switched = true
+
 
     link_contents = get_link
 
@@ -464,8 +471,7 @@ class IosFbAdDeviceService
     sleep 1 # let fb load
     run_command("killall AppStore", 'kill the AppStore')
 
-    results_info = {}
-    results_info.merge!(take_ad_screenshot(section, index))
+    # Now get the ad information screenshot
     results_info.merge!(take_ad_info_screenshot(section, index))
     results_info[:link_contents] = link_contents
     results_info[:feed_index] = index
