@@ -20,9 +20,7 @@ module GoogleSearcher
       @query = query
       p = Proxy.new(jid: @jid)
 
-      # http://stackoverflow.com/questions/23995700/what-is-the-porpose-of-the-google-search-parameter-gbv
-      html_s = p.get_body(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => query, 'gbv' => '1'}, proxy: proxy, proxy_type: proxy_type)
-      
+      html_s = GoogleSearch.query(query, proxy_type: proxy_type)
       Parser.parse(html_s, query: query)
     end
 

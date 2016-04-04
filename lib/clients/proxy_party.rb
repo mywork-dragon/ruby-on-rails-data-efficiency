@@ -30,7 +30,7 @@ module ProxyParty
     end
 
     # For modifying the default options on the client
-    def proxy_request(proxy_type: :general)
+    def proxy_request(proxy_type: nil)
 
       set_proxy(proxy_type: proxy_type) if Rails.env.production?
 
