@@ -67,7 +67,7 @@ class AndroidApp < ActiveRecord::Base
 
   def as_json(options={})
     company = self.get_company
-    newest_snapshot = ios_app.newest_ios_app_snapshot
+    newest_snapshot = self.newest_android_app_snapshot
 
     batch_json = {
       id: self.id,
