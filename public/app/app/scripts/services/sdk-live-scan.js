@@ -181,7 +181,7 @@ angular.module("appApp")
           var slacktivityData = {
             "title": "Android Live Scan Success (Unchanged Version)",
             "fallback": "Android Live Scan Success (Unchanged Version)",
-            "color": color,
+            "color": "#45825A",
             "userEmail": userInfo.email,
             'appName': appData.name,
             'companyName': appData.company.name,
