@@ -197,13 +197,15 @@ class FilterService
       if app_filters['sdkNames']
 
         apps_with_sdk = []
-        sdk_ids = app_filters['sdkNames'].map{|x| x['id'].to_i}
+        sdk_ids = app_filters['sdkNames'].map{ |x| x['id'].to_i }
 
-        android_sdks = AndroidSdk.find(sdk_ids)
-        android_sdks.each{|sdk| apps_with_sdk << sdk.get_current_apps}
-        apps_with_sdk = apps_with_sdk.inject(:&) if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
-        apps_with_sdk.flatten! # combines all arrays together
-        apps_with_sdk = apps_with_sdk.uniq{ |app| app.id }.map{ |app| app.id } # create array of unique AR objects & map to ids
+        AndroidSdk.find(sdk_ids).each { |sdk| apps_with_sdk << sdk.get_current_apps }
+
+        if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("and") && sdk_ids.count > 1
+          apps_with_sdk = apps_with_sdk.inject(:&)
+        end
+
+        apps_with_sdk = apps_with_sdk.flatten.map {|app| app.id if app }.compact.uniq # create array of unique AR objects & map to ids
 
         if sdk_ids.present? 
           if app_filters['sdkOperator'] && app_filters['sdkOperator'].include?("not")
