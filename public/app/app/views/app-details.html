@@ -10,7 +10,7 @@
     <header class="page-main-header ng-scope">
       <div class="row">
         <div class="col-md-1" id="appPageLogoBox">
-          <img ng-src="{{appData.appIcon.large}}" id="appDetailsPageAppLogo" />
+          <img ng-src="{{appData.icon}}" id="appDetailsPageAppLogo" />
         </div>
         <div class="col-md-6">
           <h4>
@@ -218,6 +218,20 @@
                 </ul>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default" ng-if="appData.facebookAds.length && canViewAdSpend">
+          <div class="panel-heading"><strong>Facebook Ads</strong></div>
+          <div class="panel-body">
+            <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+              <uib-slide ng-repeat="ad in appData.facebookAds track by ad.id" index="ad.id">
+                <img ng-src="{{ad.ad_image}}" style="margin:auto; width:50%;">
+                <div class="carousel-caption">
+                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
+                </div>
+              </uib-slide>
+            </uib-carousel>
           </div>
         </div>
 

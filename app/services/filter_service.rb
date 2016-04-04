@@ -45,7 +45,8 @@ class FilterService
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
-      queries << 'joins(:ios_fb_ad_appearances)' if app_filters['adSpend']
+      queries << 'joins(:ios_fb_ad_appearances)' if app_filters['oldAdSpend']
+      queries << 'joins(:ios_fb_ads)' if app_filters['adSpend']
       
       if app_filters['userBases']
         user_bases = []
@@ -114,7 +115,7 @@ class FilterService
         queries << "where(mobile_priority: #{mobile_priorities})"
       end
       
-      queries << 'joins(:android_fb_ad_appearances)' if app_filters['adSpend']
+      queries << 'joins(:android_fb_ad_appearances)' if app_filters['oldAdSpend']
       
       if app_filters['userBases']
         user_bases = []
@@ -342,8 +343,10 @@ class FilterService
         return "where(\'ios_developers.name is not null\').order(\'ios_developers.name #{order_by}\')"
       when 'mobilePriority'
         return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
-      when 'adSpend'
+      when 'oldAdSpend'
         return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
+      when 'adSpend'
+        return "order(\'ios_fb_ads.ios_app_id #{order_by}\')"
       when 'userBases'
         return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
       when 'categories'

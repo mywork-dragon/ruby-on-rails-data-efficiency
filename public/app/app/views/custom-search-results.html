@@ -76,34 +76,34 @@
             </td>
             <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{app.app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.app.id}}">
-                    <img ng-src="{{app.app.appIcon.large}}" />
-                    {{app.app.name}}
+                  <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">
+                    <img ng-src="{{app.icon}}" />
+                    {{app.name}}
                   </a>
                 </span>
-                <span class="badge badge-primary" ng-if="0 <= app.app.releasedDays && app.app.releasedDays <= 15">New</span>
+                <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
             </td>
             <td class="appTypeIndicator">
-              <i class="fa fa-2" ng-class="app.app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+              <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
             </td>
             <td ng-if="app.publisher.name"><a href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
-              <span ng-if="app.app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.app.mobilePriority"></i>{{app.app.mobilePriority | capitalize}}</span>
+              <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
             </td>
             <td class="dashboardAdSpendView" ng-show="canViewAdSpend">
-              <span ng-if="!isNaN(app.app.adSpend)">
-                <i class="fa fa-circle" ng-class="'status-' + app.app.adSpend"></i>{{app.app.adSpend ? 'Yes' : 'No'}}
+              <span ng-if="!isNaN(app.adSpend)">
+                <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
               </span>
             </td>
-            <td>{{app.app.userBase | capitalize}}</td>
-            <td>{{app.app.categories.join(', ')}}</td>
-            <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.app.supportDesk | supportDeskName}}</td>
-            <td ng-if="customSearchCtrl.platform == 'android'">{{app.app.downloadsMin | humanizeNum}}<span ng-show="app.app.downloadsMax"> - </span>{{app.app.downloadsMax | humanizeNum}}</td>
+            <td>{{app.userBase | capitalize}}</td>
+            <td>{{app.categories.join(', ')}}</td>
+            <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.supportDesk | supportDeskName}}</td>
+            <td ng-if="customSearchCtrl.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>
             <td>
-                <span ng-show="app.app.lastUpdatedDays >= 0 && app.app.lastUpdatedDays != null">
-                  <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.app.lastUpdatedDays)">
-                    <strong>{{app.app.lastUpdatedDays}}</strong>
+                <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
+                  <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                    <strong>{{app.lastUpdatedDays}}</strong>
                   </span> days ago
                 </span>
             </td>

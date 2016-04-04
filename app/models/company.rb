@@ -35,5 +35,13 @@ class Company < ActiveRecord::Base
     end
     ios_apps.uniq
   end
+
+  def as_json(options={})
+    {
+      id: self.id,
+      name: self.name,
+      fortuneRank: self.fortune_1000_rank,
+    }
+  end
       
 end

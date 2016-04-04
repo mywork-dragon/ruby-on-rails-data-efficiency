@@ -6,8 +6,12 @@ class IosFbAd < ActiveRecord::Base
   belongs_to :ios_app
 
   has_many :ios_fb_ad_processing_exceptions
+  has_many :weekly_batches, as: :owner
 
   enum status: [:preprocessed, :processing, :complete, :failed]
+
+  default_scope { order(date_seen: :desc) }
+  scope :has_image, -> { where(ios_fb_ad_appearances_id: nil) }
 
   has_attached_file :ad_image, 
     PaperclipSettings.obfuscation_defaults.merge(
@@ -31,5 +35,22 @@ class IosFbAd < ActiveRecord::Base
 
   def get_s3_bucket
     "ms-ios-fb-ads" if Rails.env.production?
+  end
+
+  def invalidate
+    self.update(flagged: true)
+    self.weekly_batches.each do |batch|
+      batch.activities.destroy_all
+      batch.destroy if batch.activities.count == 0
+    end
+  end
+
+  def as_json(options={})
+    {
+      id: self.id,
+      ad_image: self.ad_image.url,
+      app: self.ios_app,
+      date_seen: self.date_seen
+    }
   end
 end

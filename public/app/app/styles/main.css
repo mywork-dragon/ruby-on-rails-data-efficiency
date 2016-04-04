@@ -7641,14 +7641,6 @@ pre {
   bottom: 1px;
 }
 
-.uninstall {
-  color: #ED5F5F;
-}
-
-.install {
-  color: #1EAD4F;
-}
-
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
@@ -7994,6 +7986,52 @@ ul.following li #followButton {
   padding: 1px 5px;
   margin-left: 10px;
 }
+
+.ad_seen .ad {
+  max-width: 25%;
+  float: left;
+  padding: 10px;
+  text-align: center;
+}
+
+.ad_seen .ad img.creative {
+  width: 100%;
+  margin-bottom: -15px;
+}
+
+.ad_seen .ad img.icon {
+  width: 20px;
+}
+
+.ad_seen a {
+  padding-bottom: 15px;
+  display: inline-block;
+}
+
+span.uninstall {
+  color: #ED5F5F;
+}
+
+span.install {
+  color: #1EAD4F;
+}
+
+span.ad_seen {
+  color: #3B5998;
+}
+
+#appPage .carousel-indicators {
+  display: none;
+}
+
+#appPage .carousel-caption {
+  margin-bottom: -10px;
+  background-color: #fff;
+  padding-bottom: 0;
+  color: #767676;
+  text-shadow: none;
+}
+
 
 
 

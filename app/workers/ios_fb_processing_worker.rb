@@ -20,6 +20,9 @@ class IosFbProcessingWorker
       })
 
       IosFbAd.find(ios_fb_ad_id).update(status: :failed)
+    else
+      ios_fb_ad = IosFbAd.find(ios_fb_ad_id)
+      Activity.log_activity(:ad_seen, ios_fb_ad.date_seen, AdPlatform.facebook, ios_fb_ad)
     end
   end
 

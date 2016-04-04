@@ -46,19 +46,19 @@
           <tr data-ng-repeat="sdk in sdkSearchCtrl.sdks">
             <td id="sdkResultsTableAppIcon" class="resultsTableAppIcon">
                 <span>
-                  <a href="#/sdk/{{sdk.sdk.platform}}/{{sdk.sdk.id}}">
-                    <img ng-src="{{sdk.sdk.favicon}}" />
-                    {{sdk.sdk.name}}
+                  <a href="#/sdk/{{sdk.platform}}/{{sdk.id}}">
+                    <img ng-src="{{sdk.icon}}" />
+                    {{sdk.name}}
                   </a>
                 </span>
             </td>
             <td class="appTypeIndicator">
-              <i class="fa fa-2" ng-class="sdk.sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+              <i class="fa fa-2" ng-class="sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
             </td>
-            <td ng-if="sdk.sdk.website">
-              <a href="{{sdk.sdk.website}}" target="_blank">{{sdk.sdk.website}}</a>
+            <td ng-if="sdk.website">
+              <a href="{{sdk.website}}" target="_blank">{{sdk.website}}</a>
             </td>
-            <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.sdk.summary}}</td>
+            <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.summary}}</td>
           </tr>
           </tbody>
         </table>

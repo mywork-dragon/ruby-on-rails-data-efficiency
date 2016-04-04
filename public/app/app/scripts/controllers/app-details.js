@@ -1,20 +1,27 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService',
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService',
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService) {
 
     $scope.appPlatform = $routeParams.platform;
 
     $scope.initialPageLoadComplete = false; // shows page load spinner
+    $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo
 
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
+
+    // Facebook ads slideshow
+    $scope.myInterval = 0;
+    $scope.noWrapSlides = false;
+    $scope.active = 0;
 
     authService.permissions()
       .success(function(data) {
         $scope.canViewSupportDesk = data.can_view_support_desk;
         $scope.canViewExports = data.can_view_exports;
         $scope.canViewSdks = data.can_view_sdks;
+        $scope.canViewAdSpend = data.can_view_ad_spend;
         $scope.canViewIosLiveScan = data.can_view_ios_live_scan;
         $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
       })
@@ -32,6 +39,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.appData = data;
         $scope.isFollowing = data.following
         $scope.initialPageLoadComplete = true; // hides page load spinner
+        for (var i = 0; i < data.facebookAds.length; i++) {
+          var ad = data.facebookAds[i]
+          ad.id = i
+        }
 
         // Updates displayStatus for use in android-live-scan ctrl
         appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};

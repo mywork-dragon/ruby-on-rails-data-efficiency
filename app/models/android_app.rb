@@ -65,12 +65,75 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
-  def platform
-    'android'
+  def as_json(options={})
+    company = self.get_company
+    newest_snapshot = ios_app.newest_ios_app_snapshot
+
+    batch_json = {
+      id: self.id,
+      type: self.class.name,
+      name: newest_snapshot.try(:name),
+      platform: 'android',
+      mobilePriority: self.mobile_priority,
+      adSpend: self.old_ad_spend?,
+      lastUpdated: newest_snapshot.try(:released),
+      categories: self.categories,
+      supportDesk: newest_snapshot.try(:seller_url),
+      userBase: self.user_base,
+      icon: newest_snapshot.try(:icon_url_300x300),
+      company: company,
+      publisher: {
+        name: publisher.try(:name),
+        id: publisher.try(:id),
+        websites: publisher.try(:get_website_urls)
+      }
+    }
+
+    if options[:details]
+      batch_json.merge!({
+        downloads: self.downloads,
+        playStoreId: newest_snapshot.try(:android_app_id),
+        price: newest_snapshot.try(:price),
+        size: newest_snapshot.try(:size),
+        requiredAndroidVersion: newest_snapshot.try(:required_android_version),
+        contentRating: newest_snapshot.try(:content_rating),
+        description: newest_snapshot.try(:description),
+        currentVersion: newest_snapshot.try(:version),
+        downloadsMin: newest_snapshot.try(:downloads_min),
+        downloadsMax: newest_snapshot.try(:downloads_max),
+        inAppPurchaseMin: newest_snapshot.try(:in_app_purchase_min),
+        inAppPurchaseMax: newest_snapshot.try(:in_app_purchase_max),
+        rating: newest_snapshot.try(:ratings_all_stars),
+        ratingsCount: newest_snapshot.try(:ratings_all_count),
+        appIdentifier: self.app_identifier,
+        displayStatus: self.display_type,
+      })
+    end
+
+    if options[:user]
+      batch_json[:following] = options[:user].following?(self) 
+    end
+    batch_json
   end
 
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
+  end
+
+  def categories
+    if newest_snapshot = self.newest_android_app_snapshot
+      newest_snapshot.android_app_categories.map{|c| c.name}
+    end
+  end
+
+  def old_ad_spend?
+    self.android_fb_ad_appearances.present?
+  end
+
+  def downloads
+    if newest_snapshot = self.newest_android_app_snapshot
+      "#{newest_snapshot.downloads_min}-#{newest_snapshot.downloads_max}"
+    end
   end
 
   def installed_sdks

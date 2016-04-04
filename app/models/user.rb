@@ -35,10 +35,14 @@ class User < ActiveRecord::Base
   end
 
   def weekly_batches
-    batches = (self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
-               self.followed_ios_apps.to_a).map{|object| 
+    following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
+               self.followed_ios_apps.to_a
+    following << AdPlatform.facebook if self.account.can_view_ad_spend
+    
+    batches = following.map{|object| 
       object.weekly_batches.to_a
     }.flatten
+
     batches_by_week = {}
     batches.each do |batch|
       if batches_by_week[batch.week] 

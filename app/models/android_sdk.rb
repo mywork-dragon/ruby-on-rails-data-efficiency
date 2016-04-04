@@ -57,8 +57,18 @@ class AndroidSdk < ActiveRecord::Base
     apk_snapshots.map(&:android_app)
   end
 
-  def platform
-    'android'
+  def as_json(options={})
+    batch_json = {
+      id: self.id,
+      type: self.class.name,
+      platform: 'android',
+      name: self.name,
+      icon: self.get_favicon,
+      website: self.website,
+      openSource: self.open_source
+    }
+    batch_json[:following] = options[:user].following?(self) if options[:user]
+    batch_json
   end
 
   def cluster

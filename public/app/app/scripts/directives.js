@@ -293,7 +293,7 @@ angular.module("app.directives", []).directive("imgHolder", [
                   $rootScope.selectedAppsForList = [];
 
                   angular.forEach($scope.apps, function (app) {
-                    $rootScope.selectedAppsForList.push({id: app.app.id, type: app.app.type});
+                    $rootScope.selectedAppsForList.push({id: app.id, type: app.type});
                   });
                 } else {
                   $rootScope.selectedAppsForList = [];

@@ -33,6 +33,13 @@ class ActivityService
         ActivityWorker.perform_async(:log_ios_sdks, id)
       end
     end
+
+    def backfill_ios_fb_ads
+      platform = AdPlatform.facebook
+      IosFbAd.has_image.each do |ad|
+        Activity.log_activity(:ad_seen, ad.date_seen, ad, platform)
+      end
+    end
   end
 
   def on_complete(status, options)

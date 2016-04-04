@@ -16,6 +16,7 @@ angular.module("appApp")
                   requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
+              case 'oldAdSpend':
               case 'adSpend':
                 requestData['app'][tag.parameter] = tag.value;
                 break;

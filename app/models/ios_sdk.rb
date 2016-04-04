@@ -47,12 +47,23 @@ class IosSdk < ActiveRecord::Base
 
   end
 
-  def platform
-    'ios'
-  end
-
   def cluster
     IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
+  end
+
+  def as_json(options={})
+    batch_json = {
+      id: self.id,
+      type: self.class.name,
+      platform: 'ios',
+      name: self.name,
+      icon: self.favicon,
+      openSource: self.open_source,
+      website: self.website,
+      summary: self.summary,
+    }
+    batch_json[:following] = options[:user].following?(self) if options[:user]
+    batch_json
   end
 
   class << self

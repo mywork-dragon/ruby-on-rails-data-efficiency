@@ -75,12 +75,92 @@ class IosApp < ActiveRecord::Base
     return nil
   end
 
-  def platform
-    'ios'
+  def as_json(options={})
+    company = self.get_company
+    newest_snapshot = self.newest_ios_app_snapshot
+    
+    batch_json = {
+      id: self.id,
+      type: self.class.name,
+      platform: 'ios',
+      releaseDate: newest_snapshot.try(:released),
+      name: self.name,
+      mobilePriority: self.mobile_priority,
+      userBase: self.user_base,
+      releasedDays: self.released,
+      lastUpdated: self.last_updated,
+      lastUpdatedDays: self.last_updated_days,
+      seller: self.seller,
+      supportDesk: self.support_url,
+      categories: self.categories,
+      icon: self.icon_url,
+      publisher: {
+        id: self.try(:ios_developer).try(:id),
+        name: self.try(:ios_developer).try(:name),
+        websites: self.try(:ios_developer).try(:get_website_urls)
+      },
+      company: company
+    }
+
+    if options[:details]
+      batch_json.merge!({
+        currentVersion: newest_snapshot.try(:version),
+        currentVersionDescription: newest_snapshot.try(:release_notes),
+        rating: newest_snapshot.try(:ratings_all_stars),
+        ratingsCount: newest_snapshot.try(:ratings_all_count),
+        inAppPurchases: newest_snapshot.try(:ios_in_app_purchases).try(:any?),
+        appIdentifier: self.app_identifier,
+        appStoreId: newest_snapshot.try(:developer_app_store_identifier),
+        price: newest_snapshot.try(:price),
+        size: newest_snapshot.try(:size),
+        requiredIosVersion: newest_snapshot.try(:required_ios_version),
+        recommendedAge: newest_snapshot.try(:recommended_age),
+        description: newest_snapshot.try(:description),
+        facebookAds: self.ios_fb_ads.has_image
+      })
+    end
+    
+    if options[:user]
+      batch_json[:following] = options[:user].following?(self) 
+      batch_json[:adSpend] = options[:user].account.can_view_ad_spend? ? self.ad_spend? : self.old_ad_spend?
+    end
+    batch_json
+  end
+
+  def categories
+    if self.newest_ios_app_snapshot
+      IosAppCategoriesSnapshot.where(ios_app_snapshot: self.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}
+    end
+  end
+
+  def old_ad_spend?
+    self.ios_fb_ad_appearances.any?
+  end
+
+  def ad_spend?
+    self.ios_fb_ads.any?
+  end
+
+  def support_url
+    self.newest_ios_app_snapshot.try(:support_url)
   end
   
   def get_website_urls
     self.websites.to_a.map{|w| w.url}
+  end
+
+  def seller
+    self.newest_ios_app_snapshot.try(:seller)
+  end
+
+  def last_updated
+    self.newest_ios_app_snapshot.try(:released).try(:to_s)
+  end
+
+  def last_updated_days
+    if released = self.newest_ios_app_snapshot.try(:released)
+      (Time.now.to_date - self.newest_ios_app_snapshot.released.to_date).to_i
+    end
   end
 
   def website
@@ -100,8 +180,6 @@ class IosApp < ActiveRecord::Base
   def name
     if newest_ios_app_snapshot.present?
       return newest_ios_app_snapshot.name
-    else
-      return nil
     end
   end
 
