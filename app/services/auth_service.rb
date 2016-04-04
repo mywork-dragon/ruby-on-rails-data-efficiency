@@ -13,7 +13,7 @@ class AuthService
     def create_accounts(account_name, *emails)
       account = Account.find_or_create_by(name: account_name)
       account.can_view_support_desk = false
-      account.can_view_ad_spend = true
+      account.can_view_ad_spend = false
       account.can_view_sdks = true
       account.can_view_storewide_sdks = true
       account.can_view_exports = true
