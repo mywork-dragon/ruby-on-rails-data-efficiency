@@ -1,7 +1,7 @@
 module IosWorker
 
 	WARNING_LEVEL_MAP = {
-		'8' => 4000,
+		'8' => 3000,
 		'9' => 2000
 	}
 
