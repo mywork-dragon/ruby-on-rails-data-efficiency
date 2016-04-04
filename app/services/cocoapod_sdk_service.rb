@@ -9,7 +9,7 @@ class CocoapodSdkService
 			return 'Git must be installed' if `which git`.chomp.blank?
 
 			# Validate that update needs to happen
-			repo_state = GithubService.get_branch_data('Cocoapods/Specs', 'master')
+      repo_state = GithubApi.branch_info('Cocoapods/Specs', 'master')
 			raise "Error communcating with Github #{repo_state.to_s}" if repo_state["name"].nil?
 
 			last_update = IosSdkUpdate.last

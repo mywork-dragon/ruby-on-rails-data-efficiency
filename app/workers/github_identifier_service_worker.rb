@@ -7,7 +7,7 @@ class GithubIdentifierServiceWorker
     sdk = IosSdk.find(sdk_id)
     last_pod = sdk.cocoapods.last
     url = (last_pod.git if last_pod && last_pod.git && last_pod.git.include?('github')) || sdk.website
-    data = GithubService.get_repo_data(url)
+    data = GithubApi.repo_info_from_url(url)
     return nil if data['message'] == 'Not Found'
     # TODO: should do something about not finding
     begin

@@ -299,7 +299,7 @@ class SdkService
 				end
 				
 				if !!(url =~ url_re)	# if matches format like https://github.com/MightySignal/slackiq
-					rd = GithubService.get_repo_data(url)
+          rd = GithubApi.repo_info_from_url(url)
 					next if rd['message'] == 'Not Found'	# repository is not valid; try the next link
 
 					#select repo data (srd) that we're interested in
@@ -324,7 +324,7 @@ class SdkService
 					next if app_name.match(/#{company}/i)
 
 					favicon = begin
-						author = GithubService.get_author_info(url)
+            author = GithubApi.author_info_from_url(url)
 						website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
 						FaviconService.get_favicon_from_url(url: website || 'http://github.com')
 					rescue

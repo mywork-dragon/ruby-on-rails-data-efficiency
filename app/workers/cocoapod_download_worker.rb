@@ -61,7 +61,7 @@ class CocoapodDownloadWorker
 
         # Get the tarball_url
         if !cocoapod['tag'].nil?
-          tags = GithubService.get_tags([company, repo].join('/'))
+          tags = GithubApi.tags([company, repo].join('/'))
           tag = tags.select{|data| data['name'] == cocoapod['tag']}.first
           if !tag.nil?
             url = tag['tarball_url'] if !tag.nil?
@@ -103,7 +103,7 @@ class CocoapodDownloadWorker
 
     if source_code_url.include?('api.github.com')
       # do this manually because need special procedure block
-      acct = GithubService.get_credentials
+      acct = GithubApi.get_credentials
       params = {
         'client_id' => acct[:client_id],
         'client_secret' => acct[:client_secret]

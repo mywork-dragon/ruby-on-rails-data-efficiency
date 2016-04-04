@@ -155,7 +155,7 @@ class CocoapodSdkServiceWorker
 
 		favicon = begin
 			if website.match(/github\.com/)
-				author = GithubService.get_author_info(website)
+        author = GithubApi.author_info_from_url(website)
 				website = author['blog'] if author && author['type'] == 'Organization' && author['blog']
 			end
 
@@ -195,7 +195,7 @@ class CocoapodSdkServiceWorker
 		github_repo_identifier = if /github\.com/.match(source)
 
 			begin
-				GithubService.get_repo_data(source)['id']
+        GithubApi.repo_data_from_url(source)['id']
 			rescue
 				nil
 			end
@@ -219,14 +219,14 @@ class CocoapodSdkServiceWorker
 
 		if version.nil?
 			# Get the latest version
-			versions = GithubService.get_contents("Cocoapods/Specs", "Specs/#{sdk_name}")
+      versions = GithubApi.contents("Cocoapods/Specs", "Specs/#{sdk_name}")
 
 			raise "Error getting pod #{sdk_name} with response: #{JSON.generate(versions)}" if versions.class != Array # expecting directory
 
 			version = versions.sort_by { |x| x["name"] }.last["name"]
 		end
 		filename = "#{sdk_name}.podspec.json"
-		res = GithubService.get_contents("Cocoapods/Specs", "Specs/#{sdk_name}/#{version}/#{filename}")
+    res = GithubApi.contents("Cocoapods/Specs", "Specs/#{sdk_name}/#{version}/#{filename}")
 
 		raise "Error getting pod #{sdk_name} of version #{version || "Nil"} with response: #{JSON.generate(res)}" if res.class != String
 
