@@ -83,10 +83,10 @@ class AndroidApp < ActiveRecord::Base
       icon: newest_snapshot.try(:icon_url_300x300),
       company: company,
       publisher: {
-        name: publisher.try(:name),
-        id: publisher.try(:id),
-        websites: publisher.try(:get_website_urls)
-      }
+        id: self.try(:android_developer).try(:id),
+        name: self.try(:android_developer).try(:name),
+        websites: self.try(:android_developer).try(:get_website_urls)
+      },
     }
 
     if options[:details]
