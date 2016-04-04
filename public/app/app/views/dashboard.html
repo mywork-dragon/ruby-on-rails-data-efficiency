@@ -266,7 +266,7 @@
                 </span>
                 <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
               </td>
-              <td ng-if="app.publisher.name"><a href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
