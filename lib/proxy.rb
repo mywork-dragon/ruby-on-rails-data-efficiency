@@ -26,6 +26,7 @@ class Proxy
       self.new.params_from_query(query)
     end
 
+
     def get_body_from_url(url, params: {}, headers: {}, proxy: nil, proxy_type: nil)
       self.new.get_body_from_url(url, params: params, headers: headers, proxy: proxy, proxy_type: proxy_type)
     end

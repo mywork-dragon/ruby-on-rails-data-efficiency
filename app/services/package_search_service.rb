@@ -2,45 +2,48 @@ class PackageSearchService
 
   class << self
 
-    def run(n = 200)
-      # SdkScraper.all.each{ |x| x.concurrent_apk_downloads = 0; x.save }
-      # AndroidApp.where(newest_apk_snapshot_id: nil).joins(:newest_apk_snapshot).where('apk_snapshots.scan_version = ?',1).limit(n).each.with_index do |app, index|
-      
-      return_ids_array = false  # whether to return an array of ids (only do for small sample size)
+    def classify_jobs(apk_snapshot_job_ids)
+      raise "Must be an Array of apk_snapshot_job_ids" unless apk_snapshot_job_ids.is_a?(Array)
 
-      if n < 5000
-        return_ids_array = true 
-        android_app_ids = []
+      batch = Sidekiq::Batch.new
+      size = jobs_apk_snapshots(apk_snapshot_job_ids).count
+      notes = "Classify Jobs #{apk_snapshot_job_ids} #{Time.now.strftime("%m/%d/%Y")}"
+      batch.description = "Classify ApkSnapshotJobs: ~#{size} ApkSnapshots"
+      batch.on(:complete, "PackageSearchService#on_complete_classify_jobs", 'apk_snapshot_job_ids' => apk_snapshot_job_ids, 'apps_queued' => size)
+      batch_size = 10e3.to_i
+      jobs_apk_snapshots(apk_snapshot_job_ids).find_in_batches(batch_size: batch_size).with_index do |the_batch, index|
+        batch.jobs do
+          li "App #{index*batch_size}"
+          args = the_batch.map{ |x| [x.id] }
+          Sidekiq::Client.push_bulk('class' => PackageSearchServiceWorker, 'args' => args)
+        end  
       end
 
-      # AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each.with_index do |app, index|
-      AndroidApp.where.not(newest_apk_snapshot_id: nil).limit(n).each.with_index do |app, index|
-        puts index if index % 1e3 == 0
+      message = "Queued #{size} Android apps for classification."
+      Slackiq.message(message, webhook_name: :main)
 
-        # next if (apk_ss = app.newest_apk_snapshot) && apk_ss.scan_status == "scan_success"  #rescan
-
-        next if (apk_ss = app.newest_apk_snapshot) && apk_ss.updated_at > 12.hours.ago #special condition
-
-        PackageSearchServiceWorker.perform_async(app.id)
-
-        android_app_ids << app.id if return_ids_array
-      end
-
-      return_ids_array ? android_app_ids : true
+      true
     end
 
-    def android_by_app_id(ids)
-      AndroidApp.where(id: ids).each do |app|
-        PackageSearchServiceWorker.perform_async(app.id)
-      end
-    end
+    private
 
-    def run_local(n)
-      AndroidApp.limit(n).each do |app|
-        PackageSearchServiceWorker.new.perform(app.id)
-      end
+    def jobs_apk_snapshots(apk_snapshot_job_ids)
+      ApkSnapshot.where(apk_snapshot_job_id: apk_snapshot_job_ids)
     end
 
   end
+
+    def on_complete_classify_jobs(status, options)
+      apk_snapshot_job_ids = options['apk_snapshot_job_ids']
+
+      apps_classified = begin
+        ApkSnapshot.where(apk_snapshot_job_id: apk_snapshot_job_ids, scan_status: ApkSnapshot.scan_statuses[:scan_success]).count
+      rescue => e
+        "e.message | e.backtrace"
+      end
+      
+      apps_queued = options['apps_queued']
+      Slackiq.notify(webhook_name: :main, status: status, title: "Android App Classification Complete", 'Apps Classified' => apps_classified, 'Apps Queued' => apps_queued, 'apk_snapshot_job_ids' => apk_snapshot_job_ids.to_s)
+    end
 
 end

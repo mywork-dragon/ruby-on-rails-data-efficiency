@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  source_sdk_id: 1
+  dest_sdk_id: 1
+
+two:
+  source_sdk_id: 2
+  dest_sdk_id: 2

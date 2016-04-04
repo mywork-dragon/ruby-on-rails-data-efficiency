@@ -48,24 +48,43 @@ class ActivityWorker
     end  
   end
 
-  # def log_android_sdks(app_id, backfill=false)
-  #   app = AndroidApp.find(app_id)
-  #   snapshots = app.apk_snapshots.where(scan_status: 1)
-  #   snapshots = snapshots.last(2) unless backfill
+  def log_android_sdks(app_id)
+    app = AndroidApp.find(app_id)
+    snapshots = app.apk_snapshots.where(scan_status: ApkSnapshot.scan_statuses[:scan_success]).order([:good_as_of_date, :id]).to_a
 
-  #   return if snapshots.empty?
+    return if snapshots.empty?
 
-  #   snapshots.reverse!
-  #   snapshots.each_with_index do |snapshot,i|
-  #     next_snapshot = snapshots[i+1]
-  #     snapshot_sdks = snapshot.android_sdks.to_a
-  #     next_snapshot_sdks = next_snapshot.try(:android_sdks).try(:to_a) || []
-  #     (snapshot_sdks - next_snapshot_sdks).each do |sdk|
-  #       Activity.log_activity(:install, snapshot.first_valid_date, app, sdk)
-  #     end
-  #     (next_snapshot_sdks - snapshot_sdks).each do |sdk|
-  #       Activity.log_activity(:uninstall, snapshot.first_valid_date, app, sdk)
-  #     end
-  #   end  
-  # end
+    snapshots.reverse!
+    snapshots.each_with_index do |snapshot,i|
+      next_snapshot = snapshots[i+1]
+      snapshot_sdks = snapshot.android_sdks.to_a
+      next_snapshot_sdks = next_snapshot.try(:android_sdks).try(:to_a) || []
+      (snapshot_sdks - next_snapshot_sdks).uniq.each do |sdk|
+        if (sdk.cluster & next_snapshot_sdks).empty?
+          sdk.cluster.each do |cluster_sdk|
+            #puts "Add install cluster #{app.name} #{cluster_sdk.name}\n"
+            Activity.log_activity(:install, snapshot.first_valid_date, app, cluster_sdk)
+          end
+        else
+          sdk.cluster.each do |cluster_sdk|
+            #puts "Remove install cluster #{app.name} #{cluster_sdk.name}\n"
+            Activity.remove_activity(:install, snapshot.first_valid_date, app, cluster_sdk)
+          end
+        end
+      end
+      (next_snapshot_sdks - snapshot_sdks).uniq.each do |sdk|
+        if (sdk.cluster & snapshot_sdks).empty?
+          sdk.cluster.each do |cluster_sdk|
+            #puts "Add uninstall cluster #{app.name} #{cluster_sdk.name}\n"
+            Activity.log_activity(:uninstall, snapshot.first_valid_date, app, cluster_sdk)
+          end
+        else
+          sdk.cluster.each do |cluster_sdk|
+            #puts "Remove uninstall cluster #{app.name} #{cluster_sdk.name}\n"
+            Activity.remove_activity(:uninstall, snapshot.first_valid_date, app, cluster_sdk)
+          end
+        end
+      end
+    end  
+  end
 end

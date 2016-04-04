@@ -2,7 +2,9 @@ class GooglePlayService
 
   include AppAttributeChecker
 
-  def attributes(app_identifier)
+  def attributes(app_identifier, proxy_type: :tor)
+    @proxy_type = proxy_type
+
     ret = {}
 
     @html = google_play_html(app_identifier)
@@ -55,8 +57,14 @@ class GooglePlayService
     ret
   end
 
-
-  #private
+  def get(url)
+    case @proxy_type
+    when :tor
+      Tor.get(url)
+    when :proxy
+      Proxy.get_body_from_url(url, proxy_type: :android_classification)
+    end    
+  end
 
   def google_play_html(app_identifier)
     url = "https://play.google.com/store/apps/details?id=#{app_identifier}"
@@ -64,7 +72,7 @@ class GooglePlayService
     #puts "url: #{url}"
 
 
-    page = Tor.get(url)
+    page = get(url)
 
     Nokogiri::HTML(page)
 
@@ -159,7 +167,7 @@ class GooglePlayService
       return -1
     end
 
-    gplus_iframe = Tor.get(gplus_iframe_urls.first['src'])
+    gplus_iframe = get(gplus_iframe_urls.first['src'])
 
     if gplus_iframe.css(".A8").text == ""
       return -1
@@ -306,8 +314,8 @@ class GooglePlayService
 
   class << self
 
-    def attributes(app_identifier)
-      self.new.attributes(app_identifier)
+    def attributes(app_identifier, proxy_type: :tor)
+      self.new.attributes(app_identifier, proxy_type: proxy_type)
     end
 
     def dom_valid?

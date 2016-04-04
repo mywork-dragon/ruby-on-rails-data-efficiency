@@ -1,24 +1,21 @@
 module PackageSearchWorker
 
-  def perform(app_id)
-    aa = AndroidApp.find(app_id)
-    app_identifier = aa.app_identifier
-    snap_id = aa.newest_apk_snapshot_id
+  def perform(snap_id)
     return nil if snap_id.blank?
-    find_packages(app_identifier: app_identifier, snap_id: snap_id, android_app: aa)
+    find_packages(snap_id)
   end
 
-  def find_packages(app_identifier:, snap_id:, android_app:)
-
+  def find_packages(snap_id)
     apk = nil
     apk_snap = nil
     packages = nil
     s3_file = nil
-
     
     begin
       if Rails.env.production?
         apk_snap = ApkSnapshot.find(snap_id)
+        android_app = apk_snap.android_app
+        app_identifier = android_app.app_identifier
         apk_file = apk_snap.apk_file
 
         puts "apk_snap: #{apk_snap}"
@@ -42,21 +39,24 @@ module PackageSearchWorker
         raise NoZip unless apk_file.zip?
         zip_file = open(apk_file.zip.url)
         classify(zip_file: zip_file, android_app: android_app, apk_ss: apk_snap)
-      end
-      
+      end      
     rescue => e
-      ase = ApkSnapshotException.create!(name: e.message, backtrace: e.backtrace, apk_snapshot: apk_snap)
+      ase = ApkSnapshotException.create!(name: e.message, backtrace: e.backtrace, apk_snapshot: apk_snap, apk_snapshot_job: apk_snap.apk_snapshot_job)
       
       apk_snap.scan_status = :scan_failure
       apk_snap.last_updated = DateTime.now
       apk_snap.save!
+      raise
     else
       apk_snap.scan_status = :scan_success
-      apk_snap.last_updated = DateTime.now
+      now = DateTime.now
+      apk_snap.last_updated = now
+      apk_snap.last_scanned = now
       apk_snap.save!
-      #ActivityWorker.new.perform(:log_android_sdks, apk_snap.android_app_id)
+      log_activities(apk_snap)
     ensure
-      zip_file.close if defined?(zip_file)
+      android_app.update_newest_apk_snapshot
+      zip_file.close if defined?(zip_file) && zip_file
     end
 
   end
@@ -64,6 +64,8 @@ module PackageSearchWorker
   def classify(zip_file:, android_app:, apk_ss:)
 
     puts "classify"
+
+    fail ZipFileNil if zip_file.nil?
 
     unzipped_apk = Zip::File.open(zip_file)
 
@@ -83,6 +85,7 @@ module PackageSearchWorker
   def classify_dex_classes(zip_file:, android_app:, apk_ss:)
     apk = Android::Apk.new(zip_file)
     dex = apk.dex
+    return true if dex.nil?
     classes = dex.classes.map(&:name)
 
     packages = []
@@ -99,7 +102,7 @@ module PackageSearchWorker
     end.compact.uniq
 
     b = Benchmark.measure do 
-      android_sdk_service = AndroidSdkService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
+      android_sdk_service = AndroidSdkClassificationService.new(jid: self.jid, proxy_type: proxy_type)  # proxy_type is a method on the classes that import this module
       android_sdk_service.classify(snap_id: apk_ss.id, packages: packages)
     end
 
@@ -113,11 +116,11 @@ module PackageSearchWorker
 
     # Put all tags in sdk_js_tags
     js_tags.each do |js_tag|
+      js_tag = DbSanitizer.truncate_string(js_tag)
       sdk_js_tag = SdkJsTag.find_by_name(js_tag)
 
       if sdk_js_tag.nil?
-        begin
-          sdk_js_tag = SdkJsTag.create!(name: js_tag)
+        begin          sdk_js_tag = SdkJsTag.create!(name: js_tag)
         rescue ActiveRecord::RecordNotUnique => e
           puts "Tag already exists for #{js_tag}"
           sdk_js_tag = SdkJsTag.find_by_name(js_tag)
@@ -217,20 +220,29 @@ module PackageSearchWorker
     end.flatten.compact.uniq
   end
 
-  class NoZip < StandardError
+  def log_activities(snapshot)
+    ActivityWorker.new.perform(:log_android_sdks, snapshot.android_app_id)
+  rescue => e
+    "Activity Worker failed"
+    puts e.message
+    puts e.backtrace
+  end
 
+  class NoZip < StandardError
     def initialize(message = "A Zip does not exist for this ApkFile.")
       super
     end
-
   end
 
   class NoApk < StandardError
-
     def initialize(message = "An APK does not exist for this ApkFile.")
       super
     end
-
   end
 
+  class ZipFileNil < StandardError
+    def initialize(message = "The zip_file is nil.")
+      super
+    end
+  end
 end

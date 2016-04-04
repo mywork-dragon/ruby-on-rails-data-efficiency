@@ -11,7 +11,7 @@ class ApkTestService
 
 
 	  # type: :single or :mass
-	  def android_start_scan(id, sync: true, type: :mass)
+	  def android_start_scan(id, sync: true, type: :mass, google_account_id: nil)
 	  	case type
 			when :mass
 			  worker = ApkSnapshotServiceWorker
@@ -22,10 +22,10 @@ class ApkTestService
 			end
 
 	    aa = AndroidApp.find(id)
-	    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
+	    job_id = ApkSnapshotJob.create!(notes: "TEST #{type.to_s}: #{aa.app_identifier}", job_type: :test).id
 
 	    if sync
-	    	worker.new.perform(job_id, nil, aa.id)
+	    	worker.new.perform(job_id, nil, aa.id, google_account_id)
 	    else
 	    	batch = Sidekiq::Batch.new
 	   	 	bid = batch.bid
@@ -35,6 +35,25 @@ class ApkTestService
 	    end
 	    
 	    job_id
+	  end
+
+	  def check_accounts(google_accounts: GoogleAccount.all)
+	  	google_accounts.map do |google_account|
+
+	  		pass = false
+	  		begin 
+	  			# 656407: sample app
+	  			job_id = ApkTestService.android_start_scan(656407, google_account_id: google_account.id)	# check account
+	  			apk_file = ApkSnapshotJob.find(job_id).apk_snapshots.last.apk_file
+	  			pass = apk_file.zip?
+	  		rescue => e
+	  			{google_account_id: google_account.id, pass: false}	
+	  		else
+	  			{google_account_id: google_account.id, pass: pass}	
+	  		end
+
+	  	end
+
 	  end
 
 	  def android_scan_status(job_id)
@@ -95,7 +114,7 @@ class ApkTestService
 	        :name => x.name,
 	        :website => x.website,
 	        :favicon => x.get_favicon,
-	        :first_seen => x.first_seen,
+	        # :first_seen => x.first_seen,
 	        :last_seen => x.last_seen,
 	        :app_count => x.get_current_apps.count,
 	        :open_source => x.open_source }

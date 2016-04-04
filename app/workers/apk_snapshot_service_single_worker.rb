@@ -2,8 +2,10 @@ class ApkSnapshotServiceSingleWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, :retry => 2, queue: :sdk_live_scan
-  #sidekiq_options backtrace: true, :retry => 2, queue: :sdk   # use this to test on scrapers
+  sidekiq_options backtrace: true, retry: false, queue: :sdk_live_scan
+  # sidekiq_options backtrace: true, retry: 2, queue: :sdk   # use this to test on scrapers
+
+  RETRIES = 2
 
   include ApkWorker
 
@@ -20,8 +22,38 @@ class ApkSnapshotServiceSingleWorker
     false
   end
 
-  def single_queue?
-    true
+  def choose_google_account(google_account_id: nil, try: 1)
+    if google_account_id
+      GoogleAccount.find(google_account_id)
+    else
+      if try == 2
+        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :live, device: :nexus_9_tablet).sample
+      else
+        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :live, device: [:moto_g_phone_1, :moto_g_phone_2]).sample
+      end
+    end
+  end
+
+  # Stop the retries early if it looks unrecoverable
+  def raise_early_stop(apk_snap)
+    raise ApkWorker::EarlyStop if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
+  end
+
+  def classify_if_necessary(apk_ss_id)
+    if Rails.env.production?
+      PackageSearchServiceSingleWorker.perform_async(apk_ss_id)
+    else
+      # PackageSearchServiceSingleWorker.new.perform(apk_ss_id)
+      puts "Not classifying right now. Done with APK download and upload though."
+    end
+  end
+
+  def scrape_type
+    :live
+  end
+
+  def retries
+    RETRIES
   end
 
 end

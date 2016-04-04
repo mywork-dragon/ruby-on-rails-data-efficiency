@@ -115,7 +115,8 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 1 == taken down
         "Sorry, SDKs Temporarily Not Available for This App",           // 2 == device problems
         "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 3 == country problem
-        "Sorry, SDKs Temporarily Not Available for This App"            // 4 == carrier problem
+        "Sorry, SDKs Temporarily Not Available for This App",            // 4 == carrier problem
+        "App data has not changed since last scan. Currently up-to-date." // 5 == unchanged version (message not actually used)
       ];
 
       var interval = $interval(function() {
@@ -134,7 +135,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
 
             switch(data.status) {
-              case 0: // prepairing
+              case 0: // preparing
                 androidLiveScanCtrl.scanStatusPercentage = 5;
                 break;
               case 1: // downloading
@@ -151,7 +152,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               case 4: // failed
                 androidLiveScanCtrl.noSdkData = true;
                 androidLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
+                if(data.error != 5) { // don't count no now version as fail
+                  sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
+                }
                 break;
             }
 
@@ -162,10 +165,19 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               androidLiveScanCtrl.sdkQueryInProgress = false;
               androidLiveScanCtrl.noSdkData = false;
               androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
-              androidLiveScanCtrl.hideLiveScanButton = true;
-              androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
+              // androidLiveScanCtrl.hideLiveScanButton = true;
 
-              sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]); // Failed analytics response - MixPanel & Slacktivity
+              if(data.error == 5) {
+                androidLiveScanCtrl.checkForAndroidSdks(androidAppId);
+                androidLiveScanCtrl.versionUnchanged = true;
+                androidLiveScanCtrl.hideLiveScanButton = false;
+                sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
+              }
+              else {
+                androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
+                androidLiveScanCtrl.hideLiveScanButton = true;
+                sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]);
+              }
 
             } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
 

@@ -996,101 +996,20 @@ class ApiController < ApplicationController
 
   def android_sdks_exist
     id = params['appId']
-    aa = AndroidApp.find(id)
-    data = data_hash(aa, scannable(aa))
-    render json: data
+    json = AndroidSdkService::App.get_sdk_response(id).to_json
+    render json: json
   end
 
   def android_start_scan
     id = params['appId']
-    aa = AndroidApp.find(id)
-    job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}").id
-    batch = Sidekiq::Batch.new
-    bid = batch.bid
-    batch.jobs do
-      ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
-    end
+    job_id = AndroidSdkService::LiveScan.start_scan(id)
     render json: {job_id: job_id}.to_json
   end
 
   def android_scan_status
     job_id = params['jobId']
-
-    status_h = AndroidLiveScanService.check_status(job_id: job_id)
-
+    status_h = AndroidSdkService::LiveScan.check_status(job_id: job_id)
     render json: status_h
-
-    # status, error = snap_status(job_id)
-    # e = {:status => status, :error => error}
-    # render json: e
-  end
-
-  def scannable(aa)
-    s = aa.newest_android_app_snapshot
-    e = s.price.to_i.zero? ? nil : 5
-    e = aa.normal? ? nil : AndroidApp.display_types[aa.display_type] - 1 if e.nil?
-    e
-  end
-
-  def data_hash(aa, error_code)
-    h = Hash.new
-    if error_code.nil? || error_code == 6
-      h[:installed] = features aa.installed_sdks
-      # h[:uninstalled] = features aa.uninstalled_sdks
-      h[:uninstalled] = []  # uninstalled workaround - don't show uninstalled
-    end
-    h[:updated] = aa.apk_snapshots.where(status:1, scan_status:1).last && aa.apk_snapshots.where(status:1, scan_status:1).last.last_updated
-    h[:error_code] = error_code || nil
-    h.to_json
-  end
-
-  def features(h)
-    return nil if h.nil?
-    f = h.map do |x|
-      { :id => x.id,
-        :name => x.name,
-        :website => x.website,
-        :favicon => x.get_favicon,
-        :first_seen => x.first_seen,
-        :last_seen => x.last_seen,
-        # :app_count => x.get_current_apps.count, # this takes way too long
-        :open_source => x.open_source }
-    end
-      f.sort_by{|x| [x[:open_source] ? 1:0 , x[:id]] }  # sort by id for now, should be a proxy for number of installs
-  end
-
-
-  # ERROR CODES FOR ANDROID_CHECK_EXIST
-  # errors
-  #   null => no error
-  #   0 => taken down
-  #   1 => country problem
-  #   2 => device problem
-  #   3 => carrier problem
-  #   4 => couldn't find
-  #   5 => paid app
-
-  # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
-  # statuses
-  #   0 => queueing
-  #   1 => downloading
-  #   2 => scanning
-  #   3 => successful scan
-  #   4 => failed
-  # errors
-  #   null => no error
-  #   0 => error connecting with google
-  #   1 => taken down
-  #   2 => device problem
-  #   3 => country problem
-  #   4 => carrier problem
-
-
-
-
-
-  def export_all_search_results_to_csv
-
   end
 
   def newest_apps_chart
@@ -1397,31 +1316,25 @@ class ApiController < ApplicationController
   end
 
   def search_android_sdk
-    query = params['query']
-    platform = params['platform']
+    query = params['query'].downcase
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
-    result_ids = AppsIndex::AndroidSdk.query(
-      multi_match: {
-        query: query,
-        operator: 'and',
-        fields: [:name],
-        type: 'cross_fields',
-        fuzziness: 1
+    result_ids = AndroidSdkIndex::AndroidSdk.query(
+      query_string: {
+        query: "#{query}*",
+        default_field: 'name',
+        analyze_wildcard: true
       }
+    ).boost_factor(
+      5,
+      filter: { term: { name: query } }
     ).limit(num_per_page).offset((page - 1) * num_per_page)
+
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
-
-    sdks = []
-    android_sdks.each do |sdk|
-      sdks << AndroidSdk.find(sdk)
-    end
-
-    total_apps_count = sdks.length
+    sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
 
     results_json = []
     sdks.each do |sdk|
@@ -1525,7 +1438,7 @@ class ApiController < ApplicationController
     results = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdk.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies = AndroidSdk.display_sdks.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
       end
@@ -1540,10 +1453,7 @@ class ApiController < ApplicationController
   end
 
   def get_sdk_scanned_count
-
-    # scanned_android_sdk_num = ApkSnapshot.where(scan_status: 1).select(:android_app_id).distinct.count
-    scanned_android_sdk_num = 984624  # workaround... query is taking forever for some reason -- jlew
-
+    scanned_android_sdk_num = ApkSnapshot.where(scan_status: 1).select(:android_app_id).distinct.count
     scanned_ios_sdk_num = IpaSnapshot.where(scan_status: 1).select(:ios_app_id).distinct.count
 
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}

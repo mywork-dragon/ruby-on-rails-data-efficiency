@@ -1,383 +1,224 @@
-class AndroidSdkService
+module AndroidSdkService
 
-  EX_WORDS = "framework|android|sdk|\\W+"
-  LANGS = "java"
+  class LiveScan
 
-  GOOGLE_MAX_RETRIES = 5
+    class << self
 
-  class << self
-
-    def classify(snap_id:, packages:)
-      self.new.classify(snap_id: snap_id, packages: packages)
-    end
-
-  end
-
-  def initialize(jid: nil, proxy_type: :tor)
-    @jid = jid
-    @proxy_type = proxy_type
-  end
-
-	def classify(snap_id:, packages:)
-
-    puts "#{snap_id}: Package count: #{packages.count}"
-
-    # puts "#{snap_id} => starting scan"
-
-    regex_check = nil
-    table_check = nil
-
-		# Save package if it matches a regex
-    regexes = SdkRegex.all.select(:regex, :android_sdk_id).where.not(android_sdk_id: nil)
-    b = Benchmark.measure {regex_check = miss_match(data: packages, check: :match_regex, regexes: regexes)
-		if regex_check[:matched].present?
-
-			c = Benchmark.measure {regex_check[:matched].each do |p| 
-				save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-			end}
-
-      puts "#{snap_id}: Saving #{regex_check[:matched].length} regexes (#{c.real})"
-    end}
-
-    puts "#{snap_id}: Regex time: #{b.real}"
-
-    # puts "#{snap_id} => regex [#{a.real}]" 
-
-		# Save package if it is already in the table
-    b = Benchmark.measure {table_check = miss_match(data: regex_check[:missed], check: :match_table)
-  	if table_check[:matched].present?
-  		c = Benchmark.measure {table_check[:matched].each do |p| 
-  			save_package(package: p[:package], android_sdk_id: p[:android_sdk_id], snap_id: snap_id)
-  		end}
-
-      puts "#{snap_id}: Saving #{table_check[:matched].length} packages (#{c.real})"
-  	end}
-
-    puts "#{snap_id}: Table check time: #{b.real}"
-
-    # puts "#{snap_id} => packages [#{b.real}]"
-
-		# Save package, sdk, and company if it matches a google search
-
-    b = Benchmark.measure {
-    google_check = miss_match(data: querify(table_check[:missed]), check: :match_google)
-		if google_check[:matched].present?
-			google_check[:matched].each do |result|
-				meta = result[:metadata]
-        g = meta[:github_repo_identifier] || nil
-				sdk = save_sdk(name: meta[:name], website: meta[:url], open_source: meta[:open_source], github_repo_identifier: meta[:github_repo_identifier])
-				result[:packages].each do |p| 
-					save_package(package: p, android_sdk_id: sdk.id, snap_id: snap_id)
-				end
-			end
-		end}
-
-    puts "#{snap_id}: Google time: #{b.real}"
-
-    # puts "#{snap_id} => googling [#{c.real}]"
-
-	end
-
-  private
-
-	def save_sdk(name:, website:, open_source:, github_repo_identifier:)
-
-    android_sdk = AndroidSdk.where(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier).first
-
-    if android_sdk.nil?
-      begin
-        return AndroidSdk.create(name: name, website: website, open_source: open_source, github_repo_identifier: github_repo_identifier, kind: :native)
-      rescue ActiveRecord::RecordNotUnique => e
-        return AndroidSdk.where(name: name).first
+      # Starts the Live Scan
+      # @return the job_id
+      def start_scan(android_app_id)
+        aa = AndroidApp.find(android_app_id)
+        job_id = ApkSnapshotJob.create!(notes: "SINGLE: #{aa.app_identifier}", job_type: :one_off).id
+        batch = Sidekiq::Batch.new
+        bid = batch.bid
+        batch.jobs do
+          ApkSnapshotServiceSingleWorker.perform_async(job_id, bid, aa.id)
+        end
+        job_id
       end
-    else
-      return android_sdk
-    end
-    
-	end
 
-	def save_package(package:, android_sdk_id:, snap_id:)
+      # 0: Preparing
+      # 1: Downloading
+      # 2: Scanning
+      # 3: Complete
+      # 4: Failed
+      # 5: Unchanged version
+      # @return :status and :error in a Hash
+      def check_status(job_id: job_id)
+        ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).last
+        if ss.present?
+          if ss.status.present?
+            if ss.success? 
 
-    sdk_package = SdkPackage.find_by_package(package)
-    if sdk_package.nil?
-      # save sdk_packages
-      sdk_package = begin
-        s = SdkPackage.create(package: package)
-        s.android_sdk_id = android_sdk_id
-        s.save
-        s
-      rescue ActiveRecord::RecordNotUnique => e
-        SdkPackage.where(package: package).first
-      end
-    end
-
-    spas = SdkPackagesApkSnapshot.where(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id).first
-    if spas.nil?
-      # save sdk_packages_apk_snapshots
-      begin
-        SdkPackagesApkSnapshot.create(sdk_package_id: sdk_package.id, apk_snapshot_id: snap_id)
-      rescue ActiveRecord::RecordNotUnique => e
-        nil
-      end
-    end
-
-    asas = AndroidSdksApkSnapshot.where(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id).first
-    if asas.nil?
-      # save android_sdks_apk_snapshots
-      begin
-        AndroidSdksApkSnapshot.create(android_sdk_id: android_sdk_id, apk_snapshot_id: snap_id)
-      rescue ActiveRecord::RecordNotUnique => e
-        nil
-      end
-    end
-    
-  end
-
-	def querify(packages)
-    return nil if packages.nil?
-		q = Hash.new
-		packages.each do |package|
-			query = query_from_package(package)
-			q[query] = Array.wrap(q[query]) << package
-		end
-		q
-	end
-
-	# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
-
-	def query_from_package(package_name)
-    package = strip_prefix(package_name)
-    return nil if package.blank?
-    package = package.capitalize if package == package.upcase && package.count('.').zero?
-    first_word = package.split('.').first
-    name = camel_split(first_word)
-    return nil if name.nil? || name.length <= 1
-    name
-	end
-
-	# Get the url of an sdk if it is valid
-
-	def google_sdk(query:)
-    return nil if query.blank?
-    g = google_search(q: "#{query} android sdk", limit: 4)
-    puts "g:"
-    ap g
-    return nil if g.blank?
-		g.each do |url|
-      # puts "url: #{url}"
-			ext = exts(dot: :before).select{|s| url.include?(s) }.first
-      # puts "ext: #{ext}"
-      remove_sub_first = remove_sub(url).split(ext).first
-      next if remove_sub_first.blank? # fix for this being nil sometimes
-      url = remove_sub_first + ext
-      # puts "url: #{url}"
-	    company = query
-      host = URI(url).host
-      # puts "host: #{host}"
-      # puts "query.downcase: #{query.downcase}"
-			return {:url=>url, :name=>company, :open_source=>false, :github_repo_identifier=>nil} if host && host.include?(query.downcase)
-		end
-		nil
-	end
-
-	# Get the url and company name of an sdk from github if it is valid
-
-
-  def google_github(query:, packages:, platform: :android)
-
-    r = find_suffixes(packages)
-
-    g = "https:\\/\\/github.com\\/[^\\/]*"
-    match_repo = g+"\\/[^\\/]*#{query}[^\\/]*\\z"
-
-    prefix = [[nil,query,match_repo]]
-    suffixes = r.map do |x|
-      reg = g+"#{query}*\\/[^\\/]*#{x}*[^\\/]*\\z"
-      [query,x,reg]
-    end
-
-    searches = prefix + suffixes
-
-    searches.each do |rowner, rname, regex|
-      q = ['site:github.com', rowner, rname, platform].compact.join(' ')
-      g = google_search(q: q, limit: 5)
-      next if g.nil?
-      g.each do |url|
-        if !!(url =~ /#{regex}/i)
-          matched = github_data_match(url, rname, rowner)
-          return matched if matched.present?
+              if ss.scan_success?
+                return {status: 3, error: nil}
+              elsif ss.scan_failure?
+                return {status: 4, error: snap_error(ss)}
+              elsif ss.unchanged_version?
+              else # nil (still pending)
+                return {status: 2, error: nil}
+              end
+            else
+              return {status: 4, error: snap_error(ss)}
+            end
+          else
+            return {status: 1, error: nil}
+          end
+        else
+          return {status: 0, error: nil}
         end
       end
-    end
 
-    nil
-  end
-
-  def github_data_match(url, rname, rowner)
-    rd = GithubService.get_repo_data(url)
-    if rd['message'] != 'Not Found' && !!(rd['language'] =~ /#{LANGS}/i)
-      rname_match = close_enough?(str1: rname, str2: rd['name'], ex: EX_WORDS)
-      rowner_match = close_enough?(str1: rowner, str2: rd['owner']['login'], ex: EX_WORDS)
-
-      if rname_match || (rname_match && rowner_match)
-        result = {
-          url: url,
-          name: cap_first_letter(rd['name']),
-          open_source: true,
-          github_repo_identifier: rd['id']
+      def snap_error(ss)
+        e = %w(failure no_response forbidden could_not_connect timeout deadlock not_found)
+        o_h = {
+          'taken_down' => 1,
+          'bad_device' => 2, 
+          'out_of_country' => 3, 
+          'bad_carrier' => 4,
+          'unchanged_version' => 5
         }
-
-        return result
+        o = %w(taken_down bad_device out_of_country bad_carrier)
+        if e.any?{ |x| ss.send(x + '?') }  # if any error from e
+          return 0 # (error connecting with Google) 
+        else
+          o_h.each do |status, code|
+            if ss.send(status + '?')
+              return code
+            end
+          end
+          return nil
+        end
       end
+
     end
-    nil
+
   end
 
+  class App
 
-  def close_enough?(str1:, str2:, threshold: 0.9, ex: nil)
-    return false if [str1,str2].any?(&:nil?)
-    str1, str2 = [str1, str2].map{|x| x.gsub(/#{ex}/i,'') }
-    dice_similarity = FuzzyMatch::Score::PureRuby.new(str1, str2).dices_coefficient_similar
-    dice_similarity >= threshold
-  end
+    class << self
 
-  def find_suffixes(packages)
-    packages.map do |package|
-      s = strip_prefix(package).split('.').compact.select{|x| x.length > 1 }
-      s.shift
-      s
-    end.flatten.uniq
-  end
+      def get_sdk_response(android_app_id)
+        aa = AndroidApp.find(android_app_id)
+        data = sdk_response_h(aa)
+      end
 
-	def google_search(q:, limit: 10)
-    begin
-      #result = nil
-      search = nil
-      b = Benchmark.measure do
-        # result = Proxy.get_nokogiri_with_wait(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q})
+      # Gets the error code
+      #
+      # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
+      # statuses
+      #   0 => queueing
+      #   1 => downloading
+      #   2 => scanning
+      #   3 => successful scan
+      #   4 => failed
+      def error_code(aa)
+        ss = aa.newest_android_app_snapshot
 
-        try = 0
+        return 5 unless ss.price.to_i.zero? # paid is code 5
 
-        begin
-          # sleep(rand(0.5..1.5)) # be easy on google
-          # searcher = GoogleSearcher::Searcher.new(jid: @jid)
-          # search = searcher.search(q, proxy_type: :android_classification)
+        display_type_to_error_code(aa.display_type)
+      end
 
-          searcher = BingSearcher::Searcher.new(jid: @jid)
-          search = searcher.search(q, proxy_type: @proxy_type)
-        rescue => e
-          if (try += 1) < GOOGLE_MAX_RETRIES
-            puts "Exception: #{e.message}, Retry #{try}"
-            retry
-          else
-            raise
+      # Maps the display type to the error code
+      def display_type_to_error_code(display_type)
+        display_type = display_type.to_sym
+        mapping = {
+          normal: nil,
+          taken_down: 0, 
+          foreign: 1, 
+          device_incompatible: 2, 
+          carrier_incompatible: 3,
+          item_not_found: 4, 
+        }
+        mapping[display_type]
+      end
+
+      # Helper for get_sdk_response
+      def sdk_response_h(aa)
+        h = {}
+        ec = error_code(aa)
+
+        return h unless ec.nil?
+
+        snap = aa.newest_successful_apk_snapshot
+        
+        return h if snap.nil?
+
+        installed_sdks = snap.android_sdks
+
+        first_snaps_with_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('min(first_valid_date) as first_seen', :version, :android_app_id, 'android_sdk_id').where(id: aa.apk_snapshots.scan_success, 'android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
+        last_snaps_without_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'android_sdk_id').where(id: aa.apk_snapshots.scan_success).where.not('android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
+
+        uninstalled_sdks = AndroidSdk.where(id: last_snaps_without_current_sdks.pluck(:android_sdk_id))
+
+        installed_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: installed_sdks).reduce({}) do |memo, map_row|
+
+          key = map_row['v']
+
+          current_snapshot = first_snaps_with_current_sdks.find { |snapshot| snapshot.android_sdk_id == map_row['k'] }
+
+          if memo[key].nil? || current_snapshot.first_seen < memo[key].first_seen
+            memo[key] = current_snapshot
+          end
+
+          memo
+        end
+
+        uninstalled_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: uninstalled_sdks).reduce({}) do |memo, map_row|
+
+          key = map_row['v']
+          current_snapshot = last_snaps_without_current_sdks.find {|snapshot| snapshot.android_sdk_id == map_row['k']}
+
+          if memo[key].nil? || current_snapshot.last_seen > memo[key].last_seen
+            memo[key] = current_snapshot
+          end
+
+          memo
+        end
+
+        installed_display_sdks = AndroidSdk.where(id: AndroidSdk.select('IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id)').joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').where(id: installed_sdks))
+        uninstalled_display_sdks = AndroidSdk.where(id: AndroidSdk.select('IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id)').joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').where(id: uninstalled_sdks))
+
+        partioned_installed_sdks = partition_sdks(android_sdks: installed_display_sdks)
+        partioned_uninstalled_sdks = partition_sdks(android_sdks: uninstalled_display_sdks)
+
+        # format the responses
+        h[:installed] = partioned_installed_sdks.map do |sdk|
+          formatted = format_sdk(sdk)
+          apk_snap = installed_display_sdk_to_snap[sdk.id]
+          formatted['first_seen_date'] = apk_snap ? apk_snap.first_seen : nil
+          formatted
+        end.uniq
+
+        h[:uninstalled] = partioned_uninstalled_sdks.map do |sdk|
+          next unless installed_display_sdk_to_snap[sdk.id].nil?
+          formatted = format_sdk(sdk)
+          apk_snap = uninstalled_display_sdk_to_snap[sdk.id]
+          formatted['last_seen_date'] = apk_snap ? apk_snap.last_seen : nil
+          formatted
+        end.compact.uniq
+        h[:updated] = snap.good_as_of_date
+        h[:error_code] = ec || nil
+        h
+      end
+
+      def partition_sdks(android_sdks:)
+        partitions = android_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
+          if sdk.present? && (!sdk.flagged || sdk.flagged == 0) 
+            if FaviconHelper.has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
+              memo[:os].push(sdk)
+            elsif !memo[:non_os].include?(sdk)
+              memo[:non_os].push(sdk)
+            end
+          end
+
+          memo
+        end
+
+        %i(os non_os).each do |property|
+          # use sort_by because it's an expensive operation and it's more efficient than sort for this type
+          partitions[property] = partitions[property].sort_by do |sdk|
+            sdk.name.downcase
           end
         end
-        
+
+        (partitions[:non_os] + partitions[:os]).uniq
       end
-      puts "searching (#{q}) [#{b.real}]"
-    rescue => e
-      ApkSnapshotException.create(name: "search failed (#{q})", status_code: 1)
-      raise
-    else
-	    # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit) if result
-      search.results.map(&:url)
+
+      def format_sdk(android_sdk)
+        {
+          'id' => android_sdk.id,
+          'name' => android_sdk.name,
+          'website' => android_sdk.website,
+          'favicon' => android_sdk.get_favicon,
+          'open_source' => android_sdk.open_source
+        }
+      end
+
     end
-	end
 
-	def valid_domain?(url)
-		url.present? && url.exclude?('...') && url != '0' && url.count('-') <= 1
-	end
-
-	def remove_sub(url)
-		sub_exts = File.open('sdk_configs/bad_url_prefixes.txt').read.gsub("\n","|")
-		url.gsub(/(#{sub_exts})\./,'')
-	end
-
-	def exts(dot: nil, subs: false)
-		path = subs == true ? 'bad_package_prefixes' : 'exts'		
-		ext_file = File.open("sdk_configs/#{path}.txt")
-		ext_arr = ext_file.read.split(/\n/)
-		ext_arr.map{|e| dot == :before ? ".#{e}" : (dot == :after ? "#{e}." : e)}
-	end
-
-	def strip_prefix(package)
-		package_name = strip(package, exts)
-		strip(package_name, exts(subs: true))
-	end
-
-	def strip(package, extentions)
-    package_arr = package.split(/\./)
-    prefix = package_arr.first
-    package_arr.shift if extentions.include?(prefix) || prefix.blank?
-    package_arr.join('.')
-	end
-
-	def camel_split(str)
-		str.split(/(?=[A-Z])/).map(&:capitalize).join(' ').strip
-	end
-
-  def cap_first_letter(str)
-    str.slice(0,1).capitalize + str.slice(1..-1)
-  end
-
-	def miss_match(data:, check:, regexes: nil)
-    # puts "miss_match, data:"
-    # ap data
-
-		m = Hash.new
-    return m if data.nil?
-
-    b = Benchmark.measure {data.each do |d|
-      if check == :match_regex
-        match = send check, d, regexes
-      else
-        match = send check, d
-      end
-      if match
-        m[:matched] = Array.wrap(m[:matched]) << match
-      else
-        m[:missed] = Array.wrap(m[:missed]) << d
-      end
-    end}
-    puts "Splitting #{check.to_s}: #{b.real}"
-    m
-  end
-
-  def match_regex(package, regexes)
-    regexes.each do |regex|
-      if !!(package =~ /#{regex.regex}/i)
-      	return { 
-      		:package => package, 
-      		:android_sdk_id => regex.android_sdk_id 
-      	}
-      end
-    end
-    nil
-  end
-
-  def match_table(package)
-    sdk_package = nil
-  	b = Benchmark.measure{ sdk_package = SdkPackage.find_by_package(package) }
-    puts "table matching (#{package}) [#{b.real}]" if b.real >= 1.0
-  	if sdk_package
-  		return {
-  			:package => package,
-  			:android_sdk_id => sdk_package.android_sdk_id
-  		}
-  	end
-  	nil
-  end
-
-  def match_google(package)
-  	results = google_sdk(query: package[0]) || google_github(query: package[0], packages: package[1])
-  	if results
-  		return {
-  			:packages => package[1],
-  			:metadata => results
-  		}
-  	end
-  	nil
   end
 
 end

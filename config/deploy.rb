@@ -46,7 +46,7 @@ set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scra
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sdk_scraper_concurrency, 10
+set :sdk_scraper_concurrency, 13
 set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 50
 set :scraper_master_concurrency, 50
@@ -55,11 +55,11 @@ set :darth_vader_concurrency, 10
 set :kylo_ren_concurrency, 10
 set :ios_live_scan_concurrency, 25
 set :monitor_concurrency, 3
-set :aviato_concurrency, 20
+set :aviato_concurrency, 50
 
 # set :sidekiq_queue, %w(critical default low)
 
-set :sdk_scraper_queue, %w(sdk ios_mass_scan_cloud)
+set :sdk_scraper_queue, %w(sdk)
 set :sdk_scraper_live_scan_queue, %w(sdk_live_scan)
 set :scraper_queue, %w(critical default)
 set :scraper_master_queue, %w(critical scraper_master default)  #needs to go after scraper_queue definition

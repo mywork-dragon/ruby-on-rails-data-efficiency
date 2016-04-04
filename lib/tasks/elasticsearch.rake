@@ -33,6 +33,20 @@ namespace 'elasticsearch' do
     IosSdkIndex.import
     notify_end(task.full_comment)
   end
+
+  desc 'rebuild AndroidSdk'
+  task rebuild_android_sdk: [:environment] do |task|
+    notify_start(task.full_comment)
+    AndroidSdkIndex.reset!
+    notify_end(task.full_comment)
+  end
+
+  desc 'update AndroidSdk'
+  task update_android_sdk: [:environment] do |task|
+    notify_start(task.full_comment)
+    AndroidSdkIndex.import
+    notify_end(task.full_comment)
+  end
   
   desc 'AndroidSdk'
   task run_android_sdk: [:environment] do |task|

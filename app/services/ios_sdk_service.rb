@@ -110,7 +110,7 @@ class IosSdkService
     def partition_sdks(ios_sdks:)
       partitions = ios_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
         if sdk.present? && (!sdk.flagged || sdk.flagged == 0) 
-          if has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
+          if FaviconHelper.has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
             memo[:os].push(sdk)
           elsif !memo[:non_os].include?(sdk)
             memo[:non_os].push(sdk)
@@ -137,20 +137,6 @@ class IosSdkService
         'website' => sdk.website,
         'favicon' => sdk.favicon || DEFAULT_FAVICON
       }
-    end
-
-    def has_os_favicon?(favicon_url)
-
-      return nil if favicon_url.nil?
-
-      known_os_favicons = %w(
-        github
-        bitbucket
-        sourceforge
-        alamofire
-        afnetworking
-      )
-      favicon_url.match(/#{known_os_favicons.join('|')}/) ? true : false
     end
 
   end

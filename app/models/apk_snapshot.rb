@@ -27,27 +27,26 @@ class ApkSnapshot < ActiveRecord::Base
 
   belongs_to :apk_file
 
-	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found]
-  enum scan_status: [:scan_failure, :scan_success]
+  before_create :set_dates, :set_try
+
+	enum status: [:failure, :success, :no_response, :forbidden, :taken_down, :could_not_connect, :timeout, :deadlock, :bad_device, :out_of_country, :bad_carrier, :not_found, :unchanged_version]
+  enum scan_status: [:scan_failure, :scan_success, :invalidated]
   enum scan_version: [:first_attempt, :new_years_version] # the version of the scan algorithm
 
-  def first_seen
-    app_released :first
+  def set_dates
+    x = Time.now
+    self.good_as_of_date = x
+    self.first_valid_date = x
   end
 
-  def last_seen
-    app_released :last
+  def set_try
+    self.try = 1
   end
 
-  private
+  def invalidate
+    self.update(scan_status: :invalidated)
 
-  def app_released(first_last)
-    a = {version: self.version}
-    b = ['created_at < ?',self.created_at]
-    [a,b].each do |x|
-      s = self.android_app.android_app_snapshots.where(x).send(first_last)
-      return s.released if s
-    end
+    AndroidApp.find(self.android_app_id).update_newest_apk_snapshot if self.android_app_id
   end
 
 end
