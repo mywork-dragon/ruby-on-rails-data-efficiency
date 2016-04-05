@@ -55,7 +55,7 @@ class EwokService
 
       batch = Sidekiq::Batch.new
       batch.description = "New app Ewok scrape (#{store}): #{app_identifier}" 
-      batch.on(:complete, 'EwokService#on_complete_scrape_async')
+      batch.on(:complete, 'EwokService#on_complete_scrape_async', 'store' => store.to_s, 'app_identifier' => app_identifier)
 
       batch.jobs do 
         EwokScrapeWorker.perform_async(method, app_identifier)
@@ -65,7 +65,17 @@ class EwokService
   end
 
   def on_complete_scrape_async(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
+    if status.failures.zero?
+      app_identifier = options['app_identifier']
+      store = options['store']
+      app = if store == 'ios'
+        IosApp.find_by_app_identifier(app_identifier)
+      elsif store == 'android'
+        AndroidApp.find_by_app_identifier(app_identifier)
+      end
+      CreateDevelopersWorker.new.create_developers(app.id, store)
+      Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
+    end
   end
   
 
