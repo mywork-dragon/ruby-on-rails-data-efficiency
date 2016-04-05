@@ -65,6 +65,7 @@ class EwokService
   end
 
   def on_complete_scrape_async(status, options)
+    puts "options: #{options}"
     if status.failures.zero?
       app_identifier = options['app_identifier']
       store = options['store']
