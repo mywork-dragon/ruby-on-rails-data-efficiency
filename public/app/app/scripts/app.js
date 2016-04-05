@@ -23,7 +23,8 @@ angular
     "ui.bootstrap",
     "rt.encodeuri",
     'angucomplete-alt',
-    'angularjs-dropdown-multiselect'
+    'angularjs-dropdown-multiselect',
+    'infinite-scroll',
   ])
   .run(function ($http, $rootScope) {
 

@@ -6,12 +6,12 @@
   </div>
 
   <div ng-if="initialPageLoadComplete">
-    <div class="row newsfeedPageRow">
+    <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
       <h4 class="empty-message" ng-hide="newsfeedCtrl.weeks.length">
         You are not following any apps or SDKs. Follow some to see your newsfeed!
       </h4>
       <button type="submit" class="btn btn-default" ng-show="newsfeedCtrl.weeks.length" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
-      <div data-ng-repeat="week in newsfeedCtrl.weeks">
+      <div ng-repeat="week in newsfeedCtrl.weeks" >
         <h4 class="week">{{week.label}}</h4>
         <div data-ng-repeat="batch in week.batches" class="panel panel-default">
           <div class="panel-heading" ng-click="isCollapsed = !isCollapsed; loadBatch(batch.id, batch, 1, batch.pageSize)">

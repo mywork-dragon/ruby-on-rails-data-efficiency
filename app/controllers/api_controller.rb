@@ -104,7 +104,8 @@ class ApiController < ApplicationController
 
   def newsfeed
     user = User.find(decoded_auth_token[:user_id])
-    weeks = user.weekly_batches
+    page = [params[:page].to_i, 1].max
+    weeks = user.weekly_batches(page)
     newsfeed_json = {
       following: user.following.map{|follow| follow.as_json({user: user})},
       weeks: weeks.map{|week,batches| {

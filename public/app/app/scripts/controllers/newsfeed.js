@@ -6,15 +6,17 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
     var newsfeedCtrl = this;
     $scope.initialPageLoadComplete = false;
     $scope.isCollapsed = true;
-    $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo
+    $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
+    $scope.page = 1;
+    newsfeedCtrl.weeks = []
 
     newsfeedCtrl.load = function() {
-
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/newsfeed'
+        url: API_URI_BASE + 'api/newsfeed',
+        params: {page: $scope.page}
       }).success(function(data) {
-        newsfeedCtrl.weeks = data.weeks;
+        newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
         $scope.following = data.following
         $scope.initialPageLoadComplete = true;
 
@@ -53,6 +55,12 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
       });
     }
 
+    $scope.loadMoreBatches = function() {
+      $scope.page++;
+      newsfeedCtrl.load();
+    }
+
     mixpanel.track("Timeline Viewed");
+
   }
 ]);

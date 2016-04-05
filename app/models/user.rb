@@ -34,13 +34,14 @@ class User < ActiveRecord::Base
     followed_ios_sdks.to_a + followed_android_apps.to_a + followed_ios_apps.to_a + followed_android_sdks.to_a
   end
 
-  def weekly_batches
+  def weekly_batches(page_num)
+    time = Time.now - page_num.months
     following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
                self.followed_ios_apps.to_a
     following << AdPlatform.facebook if self.account.can_view_ad_spend
     
     batches = following.map{|object| 
-      object.weekly_batches.to_a
+      object.weekly_batches.where('week >= ? and week < ?', time, time + 1.month).order(week: :desc).to_a
     }.flatten
 
     batches_by_week = {}
