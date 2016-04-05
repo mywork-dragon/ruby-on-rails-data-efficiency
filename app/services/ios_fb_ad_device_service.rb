@@ -50,7 +50,8 @@ class IosFbAdDeviceService
     connect
 
     scrape
-    # teardown
+
+    teardown
 
   rescue => e
     store_exception(e)

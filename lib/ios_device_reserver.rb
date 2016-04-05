@@ -128,11 +128,16 @@ class IosDeviceReserver
 
     query_parts << "purpose = #{IosDevice.purposes[purpose]}"
 
-    query_parts << "in_use = false" if available_only
+    if available_only
+      query_parts << "in_use = false"
+    end
+    
+    # Exclude disabled devices
+    query_parts << "disabled = false"
 
     # custom hooks
-    if requirements[:minimum_os_version]
-      query_parts << "ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements[:minimum_os_version])}'"
+    if requirements['minimumOsVersion']
+      query_parts << "ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'"
     end
 
     if requirements[:fb_account_id]

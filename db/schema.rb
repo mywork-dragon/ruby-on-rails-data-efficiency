@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160331000346) do
+ActiveRecord::Schema.define(version: 20160404222522) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1166,12 +1166,14 @@ ActiveRecord::Schema.define(version: 20160331000346) do
     t.integer  "softlayer_proxy_id"
     t.integer  "ios_device_model_id"
     t.string   "ios_version_fmt"
+    t.boolean  "disabled",            default: false
   end
 
+  add_index "ios_devices", ["disabled"], name: "index_ios_devices_on_disabled", using: :btree
   add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
-  add_index "ios_devices", ["purpose"], name: "index_ios_devices_on_purpose", using: :btree
+  add_index "ios_devices", ["purpose", "disabled"], name: "index_ios_devices_on_purpose_and_disabled", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
   add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
 

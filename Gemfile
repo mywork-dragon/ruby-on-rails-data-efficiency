@@ -11,7 +11,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer', '0.11.3'
+gem 'therubyracer', '0.12.2'
 
 gem 'slim', '3.0.6'
 gem 'slim-rails', '3.0.1'
@@ -70,7 +70,7 @@ gem 'newrelic_rpm'
 gem 'restforce', '1.5.0'
 gem 'omniauth-salesforce', '1.0.5'
 
-gem 'httparty', '0.13.3'
+gem 'httparty', '0.13.7'
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '3.0.2'

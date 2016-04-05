@@ -47,176 +47,106 @@ module IosWorker
 	def run_scan(ipa_snapshot_id:, purpose:, start_classify: false, bid:)
 
 		# create database rows
-		result = nil
-		begin
-			snapshot = IpaSnapshot.find(ipa_snapshot_id)
+    result, device_reserver = nil, nil
+    snapshot = IpaSnapshot.find(ipa_snapshot_id)
 
-			return nil if snapshot.download_status == :complete # make sure no duplicates in the job
+    return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
-			app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
-			lookup_content = JSON.parse(snapshot.lookup_content)
-			raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
-			raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
+    app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
+    lookup_content = JSON.parse(snapshot.lookup_content)
+    raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
+    raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
 
-			snapshot.update(download_status: :starting) # update the status
+    snapshot.update(download_status: :starting) # update the status
 
-			# return nil if snapshot.download_status == :complete # make sure no duplicates in the job
+    # return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
-			# TODO: add logic to take previous results if app's version in the app store has not changed
+    # TODO: add logic to take previous results if app's version in the app store has not changed
 
-			classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
+    classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
-			# get a device
-			puts "#{snapshot.ipa_snapshot_job_id}: Reserving device #{Time.now}"
-			device = reserve_device(purpose: purpose, lookup_content: lookup_content)
-			puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
+    # get a device
+    puts "#{snapshot.ipa_snapshot_job_id}: Reserving device #{Time.now}"
+    device_reserver = IosDeviceReserver.new(snapshot)
+    device_reserver.reserve(purpose, lookup_content)
+    device = device_reserver.device
+    puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
 
-			# no devices available...fail out and save
-			if device.nil?
-				classdump.complete = true
-				classdump.error_code = :devices_busy
-				classdump.save
+    # no devices available...fail out and save
+    if device.nil?
+      classdump.complete = true
+      classdump.error_code = :devices_busy
+      classdump.save
 
-				return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
-			end
+      return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
+    end
 
-			classdump.ios_device_id = device.id
-			apple_account = AppleAccount.find_by_ios_device_id(device.id)
-			raise "Device #{device.id} is not tied to an Apple Account. Device will be left in reserved state" if apple_account.blank?
-			classdump.apple_account_id = apple_account.id
-			classdump.save
+    classdump.ios_device_id = device.id
+    apple_account = AppleAccount.find_by_ios_device_id(device.id)
+    raise "Device #{device.id} is not tied to an Apple Account. Device will be left in reserved state" if apple_account.blank?
+    classdump.apple_account_id = apple_account.id
+    classdump.save
 
-			# do the actual classdump
-			# after install and dump, will run the procedure block which updates the classdump table. 
-			# Will be useful for polling or could add some logic to send status updates
-			final_result = IosDeviceService.new(device).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
-				row = result_to_cd_row(incomplete_result)
-				row[:complete] = false
-				classdump.update row
+    # do the actual classdump
+    # after install and dump, will run the procedure block which updates the classdump table. 
+    # Will be useful for polling or could add some logic to send status updates
+    final_result = IosDeviceService.new(device).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
+      row = result_to_cd_row(incomplete_result)
+      row[:complete] = false
+      classdump.update row
 
-				if row[:dump_success]
-					snapshot.download_status = :cleaning
-					snapshot.bundle_version = incomplete_result[:bundle_version]
-					snapshot.save
-					# don't start classifying while cleaning during development
-					if start_classify
-						classifier_class = if purpose == :one_off
-							IosClassificationServiceWorker
-						else
-							IosMassClassificationServiceWorker
-						end
+      if row[:dump_success]
+        snapshot.download_status = :cleaning
+        snapshot.bundle_version = incomplete_result[:bundle_version]
+        snapshot.save
+        # don't start classifying while cleaning during development
+        if start_classify
+          classifier_class = if purpose == :one_off
+            IosClassificationServiceWorker
+          else
+            IosMassClassificationServiceWorker
+          end
 
-						if Rails.env.production?
-							unless batch.nil?
-								batch.jobs do
-									classifier_class.perform_async(snapshot.id)
-								end
-							else
-								classifier_class.perform_async(snapshot.id)
-							end
-						else
-							classifier_class.new.perform(snapshot.id)
-						end
-					end
-				end
-			end
+          if Rails.env.production?
+            unless batch.nil?
+              batch.jobs do
+                classifier_class.perform_async(snapshot.id)
+              end
+            else
+              classifier_class.perform_async(snapshot.id)
+            end
+          else
+            classifier_class.new.perform(snapshot.id)
+          end
+        end
+      end
+    end
 
-			release_device(device)
+    device_reserver.release if device_reserver.has_device?
 
-			# upload the finished results
-			row = result_to_cd_row(final_result)
+    # upload the finished results
+    row = result_to_cd_row(final_result)
 
-			# the state of the file hasn't changed since update after dump (don't want to reupload file)
-			row.delete(:class_dump) 
-			row.delete(:app_content)
+    # the state of the file hasn't changed since update after dump (don't want to reupload file)
+    row.delete(:class_dump) 
+    row.delete(:app_content)
 
-			row[:complete] = true
-			classdump.update row
+    row[:complete] = true
+    classdump.update row
 
-			# once we've finished uploading to s3, we can delete the files
-			`rm -f #{final_result[:summary_path]}` if Rails.env.production? && final_result[:summary_path]
-			`rm -f #{final_result[:app_contents_path]}` if Rails.env.production? && final_result[:app_contents_path]
+    # once we've finished uploading to s3, we can delete the files
+    `rm -f #{final_result[:summary_path]}` if Rails.env.production? && final_result[:summary_path]
+    `rm -f #{final_result[:app_contents_path]}` if Rails.env.production? && final_result[:app_contents_path]
 
-			result = classdump
+    result = classdump
 
-			# send notification if we've reached a threshold
-			check_account_limits(device) if Rails.env.production?
-		rescue => e
-			result = e
-		end
-
+    # send notification if we've reached a threshold
+    check_account_limits(device) if Rails.env.production?
+  rescue => e
+    result = e
+  ensure
+    device_reserver.release if device_reserver && device_reserver.has_device?
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
-	end
-
-	def reserve_device(purpose:, lookup_content: nil)
-
-		any = IosDevice.where(build_query(purpose: purpose, in_use: nil, requirements: lookup_content)).take
-
-		raise "No devices compatible with requirements" if any.nil?
-
-		query = build_query(purpose: purpose, in_use: false, requirements: lookup_content)
-
-		if purpose == :one_off || purpose == :test
-			device = IosDevice.transaction do
-
-				d = IosDevice.lock.where(query).order(:last_used).first
-
-				if d
-					d.in_use = true
-					d.last_used = DateTime.now
-					d.save
-				end
-				d
-			end
-		else # mass
-
-			device = nil
-
-			start_time = Time.now
-
-			while device.nil? && Time.now - start_time < 60 * 60 * 24 * 365 # 1 year
-
-				puts "sleeping"
-				sleep(Random.new.rand(7...13))
-
-				device = IosDevice.transaction do
-
-					d = IosDevice.lock.where(query).order(:last_used).first
-
-					if d
-						d.in_use = true
-						d.last_used = DateTime.now
-						d.save
-					end
-					d
-				end
-			end
-
-		end
-
-		device
-	end
-
-	# returns a string to be passed into a where query for devices based on lookup data
-	# returns empty string if nothing required
-	def build_query(purpose:, in_use: nil, requirements: nil)
-
-		query_parts = []
-
-		query_parts << "purpose = #{IosDevice.purposes[purpose]}"
-
-		query_parts << "in_use = #{in_use}" if !in_use.nil?
-
-		if !requirements.blank?
-			query_parts << "ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'" if !requirements['minimumOsVersion'].blank?
-		end
-
-		query_parts.join(' and ')
-	end
-
-	def release_device(device)
-		device.in_use = false
-		device.save
 	end
 
 	def check_account_limits(device)

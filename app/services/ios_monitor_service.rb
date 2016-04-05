@@ -64,7 +64,7 @@ class IosMonitorService
       puts "#{Time.now.utc}: Rescuing #{num_stuck} phones"
       stuck_devices.each do |ios_device|
         puts "Trying device #{ios_device.id}"
-        ios_device.update(purpose: :disabled)
+        ios_device.update(disabled: true)
         IosDeviceService.new(ios_device).kill_ssh_session
       end
 

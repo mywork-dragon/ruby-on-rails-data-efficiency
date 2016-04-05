@@ -27,7 +27,7 @@ class IosFbAdServiceWorker
     rescue IosFbAdDeviceService::CriticalDeviceError => e
       # main difference: alert + do not "unreserve" device
       if Rails.env.production?
-        device_reserver.device.update(purpose: :disabled)
+        device_reserver.device.update(disabled: true)
         Slackiq.message("Critical Error on Device #{e.ios_device_id}. It will remain unavailable for use. Error message:\n```#{e.message}```", webhook_name: :automated_alerts)
       end
 
