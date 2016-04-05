@@ -49,7 +49,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
 
     $scope.newFollow = function(id, type, name, follow) {
       newsfeedService.follow(id, type, name).success(function(data) {
-        follow.isFollowing = data.following
+        follow.following = data.following
       });
     }
 

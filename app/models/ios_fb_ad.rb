@@ -11,7 +11,7 @@ class IosFbAd < ActiveRecord::Base
   enum status: [:preprocessed, :processing, :complete, :failed]
 
   default_scope { order(date_seen: :desc) }
-  scope :has_image, -> { where(ios_fb_ad_appearances_id: nil) }
+  scope :has_image, -> { where(ios_fb_ad_appearances_id: nil, flagged: false) }
 
   has_attached_file :ad_image, 
     PaperclipSettings.obfuscation_defaults.merge(
