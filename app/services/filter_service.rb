@@ -63,14 +63,7 @@ class FilterService
       
       if app_filters['categories']
         cats = app_filters['categories'] #.map{|c| "\"#{c}\""}
-
-        if cats.include?("Kids")  # workaround for Kids categories, which are technically secondary but show up as primary
-          queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?)', #{cats})"
-        else
-          queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats}, #{IosAppCategoriesSnapshot.kinds[:primary]})"
-        end
-
-        
+        queries << "joins(newest_ios_app_snapshot: {ios_app_categories_snapshots: :ios_app_category}).where('ios_app_categories.name IN (?) AND ios_app_categories_snapshots.kind = ?', #{cats}, #{IosAppCategoriesSnapshot.kinds[:primary]})"  
       end
 
       if app_filters['supportDesk']

@@ -217,7 +217,6 @@ class ApiController < ApplicationController
       'Food & Drink',
       'Games',
       'Health & Fitness',
-      'Kids',
       'Lifestyle',
       'Magazines & Newspapers',
       'Medical',
