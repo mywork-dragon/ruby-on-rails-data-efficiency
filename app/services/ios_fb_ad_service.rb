@@ -9,7 +9,7 @@ class IosFbAdService
         return
       end
 
-      ios_fb_ad_job = IosFbAdJob.create!(notes: "Running scrape at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}")
+      ios_fb_ad_job = IosFbAdJob.create!(job_type: :scrape, notes: "Running scrape at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}")
 
       batch = Sidekiq::Batch.new
       batch.description = 'iOS Facebook Ad Spend'

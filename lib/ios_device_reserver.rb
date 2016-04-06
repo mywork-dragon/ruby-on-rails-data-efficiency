@@ -6,7 +6,7 @@ class IosDeviceReserver
     one_off: :immediate_reserve,
     test: :immediate_reserve,
     mass: :patient_reserve,
-    fb_ad_scrape: :patient_reserve # switch to patient reserve later
+    fb_ad_scrape: :patient_reserve, # switch to patient reserve later
   }
 
   attr_reader :device, :owner, :max_wait
@@ -126,6 +126,8 @@ class IosDeviceReserver
   def build_query(purpose, requirements, available_only: true)
     query_parts = []
 
+    query_parts << "id = #{requirements[:ios_device_id]}" if requirements[:ios_device_id]
+
     query_parts << "purpose = #{IosDevice.purposes[purpose]}"
 
     if available_only
@@ -133,7 +135,7 @@ class IosDeviceReserver
     end
     
     # Exclude disabled devices
-    query_parts << "disabled = false"
+    query_parts << "disabled = false" unless requirements[:include_disabled]
 
     # custom hooks
     if requirements['minimumOsVersion']

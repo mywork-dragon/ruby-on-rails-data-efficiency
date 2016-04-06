@@ -28,7 +28,7 @@ class IosFbAdDeviceService
   }
 
   # Error types
-  class CriticalDeviceError < StandardError
+  class CriticalDeviceError < RuntimeError
     attr_reader :ios_device_id
     def initialize(msg, ios_device_id)
       @ios_device_id = ios_device_id
@@ -36,7 +36,9 @@ class IosFbAdDeviceService
     end
   end
 
-  def initialize(ios_fb_ad_job_id, device, fb_account, bid: nil)
+  class UnspecifiedFbAccount < RuntimeError; end
+
+  def initialize(ios_fb_ad_job_id, device, fb_account = nil, bid: nil)
     @ssh = nil
     @device = device
     @fb_account = fb_account
@@ -47,6 +49,9 @@ class IosFbAdDeviceService
   end
 
   def start_scrape
+
+    raise UnspecifiedFbAccount, "FB Account unspecified" unless @fb_account
+    
     connect
 
     scrape
@@ -68,7 +73,7 @@ class IosFbAdDeviceService
 
   rescue => e
     store_exception(e)
-    raise e if e.class == CriticalDeviceError
+    raise e
   ensure
     disconnect
   end
@@ -202,9 +207,12 @@ class IosFbAdDeviceService
 
   # this function cannot fail
   def store_exception(error)
+
+    fb_account_id = @fb_account.id if @fb_account
+
     IosFbAdException.create!({
       ios_fb_ad_job_id: @ios_fb_ad_job_id,
-      fb_account_id: @fb_account.id,
+      fb_account_id: fb_account_id,
       ios_device_id: @device.id,
       error: error.message,
       backtrace: error.backtrace
@@ -270,7 +278,7 @@ class IosFbAdDeviceService
   end
 
   def log_debug(str)
-    prefix = "acct#{@fb_account.id},dev#{@device.id}: "
+    prefix = @fb_account ? "acct#{@fb_account.id},dev#{@device.id}: " : "dev#{@device.id}: "
     puts prefix + str
   end
 
@@ -812,7 +820,8 @@ class IosFbAdDeviceService
     confirm_photo_delete
     sleep 1
 
-    run_command('killall MobileSlideShow', 'Killing Photos app')
+    return_to_home_screen
+
   end
 
   def confirm_photo_delete
@@ -877,7 +886,7 @@ class IosFbAdDeviceService
     open_apps_carousel
     sleep 2
 
-    apps_count.times do |n|
+    (apps_count + 1).times do |n| # swipe at least once (if there are none, will essentially do nothing)
       log_debug "Closing #{n}"
       scroll_screen(start: {x: 200, y: 200}, finish: {x: 400, y: 200}, duration: 0.2) # Swipe left
       sleep 0.25

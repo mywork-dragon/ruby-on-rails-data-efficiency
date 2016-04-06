@@ -55,6 +55,10 @@ every 3.hours, roles: [:kylo_ren] do
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
 end
 
+every 1.hours, roles: [:kylo_ren] do
+  runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
+end
+
 # every 20.minutes, roles: [:monitor] do
 #   runner "ProxyMonitor.check_proxies"
 # end
