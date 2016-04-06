@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406185503) do
+ActiveRecord::Schema.define(version: 20160406234612) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1799,8 +1799,10 @@ ActiveRecord::Schema.define(version: 20160406185503) do
     t.string   "public_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "host"
   end
 
+  add_index "softlayer_proxies", ["host"], name: "index_softlayer_proxies_on_host", using: :btree
   add_index "softlayer_proxies", ["public_ip"], name: "index_softlayer_proxies_on_public_ip", using: :btree
 
   create_table "super_proxies", force: true do |t|

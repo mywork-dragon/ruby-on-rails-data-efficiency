@@ -4,4 +4,6 @@ class SoftlayerProxy < ActiveRecord::Base
 
   validates :public_ip, uniqueness: true
 
+  enum host: [:softlayer, :digital_ocean]
+
 end
