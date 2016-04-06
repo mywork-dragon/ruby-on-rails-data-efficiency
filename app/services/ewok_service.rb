@@ -64,7 +64,7 @@ class EwokService
 
   end
 
-  def on_complete_scrape_async(status)
+  def on_complete_scrape_async(status, options)
     if status.failures.zero?
       Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
     else 
