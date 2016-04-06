@@ -3,8 +3,7 @@ class GoogleSearch
   include HTTParty
   include ProxyParty
 
-  # :(. Cannot get RVM + Homebrew + OpenSSL working correctly. Should only affect Mac's (dev + dark side machines)
-  base_uri ENV['rvm_path'].nil? ? 'https://www.google.com' : 'http://www.google.com'
+  base_uri 'https://www.google.com'
   format :html
 
   # http://stackoverflow.com/questions/23995700/what-is-the-porpose-of-the-google-search-parameter-gbv
