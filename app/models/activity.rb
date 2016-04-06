@@ -17,7 +17,7 @@ class Activity < ActiveRecord::Base
       first_owner = owners.first
       second_owner = owners.last
       if weekly_batch = first_owner.weekly_batches.where(activity_type: WeeklyBatch.activity_types[activity_type], week: current_week).first
-        return if weekly_batch.activities.where(happened_at: time).joins(:weekly_batches).where("owner_type = ? and owner_id = ?", second_owner.class.name, second_owner.id).any?
+        return if weekly_batch.activities.joins(:weekly_batches).where("owner_type = ? and owner_id = ?", second_owner.class.name, second_owner.id).any?
       end
     end
 
@@ -39,9 +39,9 @@ class Activity < ActiveRecord::Base
     if owners.count > 1
       first_owner = owners.first
       second_owner = owners.last
-      activity = weekly_batch.activities.where(happened_at: time).joins(:weekly_batches).where("owner_type = ? and owner_id = ?", second_owner.class.name, second_owner.id).first
+      activity = weekly_batch.activities.joins(:weekly_batches).where("owner_type = ? and owner_id = ?", second_owner.class.name, second_owner.id).first
     else
-      activity = weekly_batch.activities.where(happened_at: time).first
+      activity = weekly_batch.activities.first
     end
 
     return unless activity
