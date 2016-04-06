@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService',
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
+  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -59,17 +59,15 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         );
         /* -------- Mixpanel Analytics End -------- */
 
-        if ($routeParams.from == 'ewok' && userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+        if ($routeParams.from == 'ewok') {
           var slacktivityData = {
             "title": "A wild Ewok appeared",
             "color": "#FFD94D",
-            "userEmail": userInfo.email,
             'appName': $scope.appData.name,
             "appPlatform": $routeParams.platform,
             'appId': $routeParams.id
           };
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
+          slacktivity.notifySlack(slacktivityData);
         }
 
         /* Sets html title attribute */

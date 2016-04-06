@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
-  function($scope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
+angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', 'slacktivity',
+  function($scope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, slacktivity) {
 
     var newsfeedCtrl = this;
     $scope.initialPageLoadComplete = false;
@@ -39,6 +39,16 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
         type: batch.owner.type
       });
 
+      var slacktivityData = {
+        "title": "Expanded Timeline Item",
+        "color": "#FFD94D",
+        activityType: batch.activity_type,
+        owner: batch.owner.name,
+        platform: batch.owner.platform,
+        type: batch.owner.type
+      };
+      slacktivity.notifySlack(slacktivityData);
+
       $http({
         method: 'GET',
         url: API_URI_BASE + 'api/newsfeed_details',
@@ -58,6 +68,34 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
     $scope.loadMoreBatches = function() {
       $scope.page++;
       newsfeedCtrl.load();
+    }
+
+    $scope.clickedTimelineItem = function(type, id, activity_type, name, platform) {
+      mixpanel.track("Clicked Timeline Item", {
+        activityType: activity_type,
+        clickedName: name,
+        clickedId: id,
+        clickedType: type
+      });
+
+      var platform = 'ios'
+      var class_name = 'app'
+      
+      if (type == 'AndroidSdk' || type == 'AndroidApp') {
+        platform = 'android'
+      }
+      if (type == 'AndroidSdk' || type == 'IosSdk') {
+        class_name = 'sdk'
+      }
+
+      var slacktivityData = {
+        "title": "Clicked Timeline Item",
+        "color": "#FFD94D",
+        'type': type,
+        'name': name,
+        'url': "http://mightysignal.com/app/app#/" + class_name + '/' + platform + '/' + id,
+      };
+      slacktivity.notifySlack(slacktivityData);
     }
 
     mixpanel.track("Timeline Viewed");

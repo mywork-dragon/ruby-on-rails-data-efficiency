@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("sdkLiveScanService", ['$http', 'authService', function($http, authService) {
+  .factory("sdkLiveScanService", ['$http', 'slacktivity', function($http, slacktivity) {
     return {
       checkForAndroidSdks: function(appId) {
         return $http({
@@ -47,9 +47,6 @@ angular.module("appApp")
       },
       androidLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -69,7 +66,7 @@ angular.module("appApp")
             "Android Live Scan Success", {
               'platform': platform,
               'appName': appData.name,
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
               'sdkInstalls': sdkInstalls,
               'sdkUninstalls': sdkUninstalls,
@@ -82,17 +79,14 @@ angular.module("appApp")
             "title": "Android Live Scan Success",
             "fallback": "Android Live Scan Success",
             "color": "#45825A",
-            "userEmail": userInfo.email,
             'appName': appData.name,
-            'companyName': appData.company.name,
+            'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
             'sdkInstalls': sdkInstalls,
             'sdkUninstalls': sdkUninstalls,
             'lastUpdated': sdkData.lastUpdated
           };
-
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
+          slacktivity.notifySlack(slacktivityData, true);
           /* -------- Slacktivity Alerts End -------- */
 
         });
@@ -110,9 +104,6 @@ angular.module("appApp")
           errorMessage = "Timeout"
         }
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -124,7 +115,7 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Android Live Scan Failed", {
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appName': appData.name,
               'appId': appData.id,
               'error': errorMessage,
@@ -138,16 +129,14 @@ angular.module("appApp")
             "title": "Android Live Scan Failed",
             "fallback": "Android Live Scan Failed",
             "color": color,
-            "userEmail": userInfo.email,
             'appName': appData.name,
-            'companyName': appData.company.name,
+            'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
             'error': errorMessage,
             'statusCode': statusCode
           };
 
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
+          slacktivity.notifySlack(slacktivityData, true);
           /* -------- Slacktivity Alerts End -------- */
         });
 
@@ -167,7 +156,7 @@ angular.module("appApp")
           mixpanel.track(
             "Hidden Android Live Scan Viewed", {
               'appName': appData.name,
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
               'statusCode': statusCode,
               'displayStatus': statusMessage
@@ -179,9 +168,6 @@ angular.module("appApp")
       androidLiveScanUnchangedVersionSuccess: function(platform, appId) {
         var errorMessage = "";
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -191,26 +177,19 @@ angular.module("appApp")
 
         appData = data;
 
-        /* -------- Slacktivity Alerts -------- */
-        var slacktivityData = {
-          "title": "Android Live Scan Success (Unchanged Version)",
-          "fallback": "Android Live Scan Success (Unchanged Version)",
-          "color": "#45825A",
-          "userEmail": userInfo.email,
-          'appName': appData.name,
-          'companyName': appData.company.name,
-          'appId': appData.id,
-        };
-
-        if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
-          /* -------- Slacktivity Alerts End -------- */
-        });
+          /* -------- Slacktivity Alerts -------- */
+          var slacktivityData = {
+            "title": "Android Live Scan Success (Unchanged Version)",
+            "fallback": "Android Live Scan Success (Unchanged Version)",
+            "color": "#45825A",
+            'appName': appData.name,
+            'companyName': (appData.publisher || {}).name,
+            'appId': appData.id,
+          };
+          slacktivity.notifySlack(slacktivityData, true);
+        })
       },
       iosLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
-
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
         var appData = {}; // Load app data
         $http({
@@ -230,7 +209,7 @@ angular.module("appApp")
             "iOS Live Scan Success", {
               'platform': platform,
               'appName': appData.name,
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
               'sdkInstalls': sdkInstalls,
               'sdkUninstalls': sdkUninstalls,
@@ -243,17 +222,14 @@ angular.module("appApp")
             "title": "iOS Live Scan Success",
             "fallback": "iOS Live Scan Success",
             "color": "#45825A",
-            "userEmail": userInfo.email,
             'appName': appData.name,
-            'companyName': appData.company.name,
+            'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
             'sdkInstalls': sdkInstalls,
             'sdkUninstalls': sdkUninstalls,
             'lastUpdated': sdkData.lastUpdated
           };
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
-          /* -------- Slacktivity Alerts End -------- */
+          slacktivity.notifySlack(slacktivityData, true);
         });
 
       },
@@ -267,9 +243,6 @@ angular.module("appApp")
           errorMessage = "Timeout"
         }
 
-        var userInfo = {}; // User info set
-        authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
-
         var appData = {}; // Load app data
         $http({
           method: 'GET',
@@ -280,7 +253,7 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "iOS Live Scan Failed", {
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appName': appData.name,
               'appId': appData.id,
               'error': errorMessage,
@@ -294,15 +267,13 @@ angular.module("appApp")
             "title": "iOS Live Scan Failed",
             "fallback": "iOS Live Scan Failed",
             "color": "#E82020",
-            "userEmail": userInfo.email,
             'appName': appData.name,
-            'companyName': appData.company.name,
+            'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
             'error': errorMessage,
             'statusCode': statusCode
           };
-          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-          window.Slacktivity.send(slacktivityData);
+          slacktivity.notifySlack(slacktivityData, true);
           /* -------- Slacktivity Alerts End -------- */
         });
 
@@ -322,7 +293,7 @@ angular.module("appApp")
           mixpanel.track(
             "Hidden iOS Live Scan Viewed", {
               'appName': appData.name,
-              'companyName': appData.company.name,
+              'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
               'statusCode': statusCode,
               'displayStatus': statusMessage

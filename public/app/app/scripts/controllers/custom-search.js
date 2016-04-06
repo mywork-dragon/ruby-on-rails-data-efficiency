@@ -1,14 +1,10 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "authService", "searchService", "$window",
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, authService, searchService, $window) {
+  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "slacktivity", "searchService", "$window",
+    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window) {
       var customSearchCtrl = this;
       customSearchCtrl.platform = APP_PLATFORM; // default
-
-      // User info set
-      var userInfo = {};
-      authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {
@@ -62,28 +58,21 @@ angular.module('appApp')
           // Set URL & process/redirect to SDK Search Ctrl
           $window.location.href = '#' + targetUrl + $httpParamSerializer(payload);
 
-          /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "SDK Custom Search", {
               "query": customSearchCtrl.searchInput,
               "platform": customSearchCtrl.platform.split('Sdks')[0] // grabs 'android' or 'ios'
             }
           );
-          /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          if(userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
-            var slacktivityData = {
-              "title": "SDK Custom Search",
-              "fallback": "SDK Custom Search",
-              "color": "#FFD94D", // yellow
-              "userEmail": userInfo.email,
-              "platform": customSearchCtrl.platform,
-              "query": customSearchCtrl.searchInput
-            };
-            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-            window.Slacktivity.send(slacktivityData);
-          }
-          /* -------- Slacktivity Alerts End -------- */
+
+          var slacktivityData = {
+            "title": "SDK Custom Search",
+            "fallback": "SDK Custom Search",
+            "color": "#FFD94D", // yellow
+            "platform": customSearchCtrl.platform,
+            "query": customSearchCtrl.searchInput
+          };
+          slacktivity.notifySlack(slacktivityData);
 
         } else {
 

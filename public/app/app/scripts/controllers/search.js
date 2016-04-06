@@ -1,14 +1,11 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$sce', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService",
-    function ($scope, $sce, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService) {
+  .controller('SearchCtrl', ["$scope", '$sce', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity',
+    function ($scope, $sce, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
-      // User info set
-      var userInfo = {};
-      authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
       // Sets user permissions
       authService.permissions()
@@ -128,20 +125,17 @@ angular.module('appApp')
               "Filter Query Successful",
               searchQueryPairs
             );
-            /* -------- Mixpanel Analytics End -------- */
-            /* -------- Slacktivity Alerts -------- */
-            if($rootScope.sdkFilterPresent && userInfo.email && userInfo.email.indexOf('mightysignal') < 0) {
+
+            if($rootScope.sdkFilterPresent) {
               var slacktivityData = {
                 "title": "SDK Filter Query",
                 "fallback": "SDK Filter Query",
                 "color": "#FFD94D", // yellow
-                "userEmail": userInfo.email,
                 "sdkNames": sdkNames.join(', '),
                 "tags": searchQueryFields.join(', '),
                 "numOfApps": data.resultsCount
               };
-              if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-              window.Slacktivity.send(slacktivityData);
+              slacktivity.notifySlack(slacktivityData);
             }
             /* -------- Slacktivity Alerts End -------- */
           })

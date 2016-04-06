@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("newsfeedService", ["$http", 'authService', function($http, authService) {
+  .factory("newsfeedService", ["$http", "slacktivity", function($http, slacktivity) {
     return {
       follow: function(id, type, name) {
         return $http({
@@ -20,28 +20,22 @@ angular.module("appApp")
           if (type == 'AndroidSdk' || type == 'IosSdk') {
             class_name = 'sdk'
           }
-          
-          authService.userInfo().success(function(data) {   
-            mixpanel.track(
-              action, {
-                type: type,
-                name: name
-              }
-            );
-            /* -------- Mixpanel Analytics End -------- */
-            /* -------- Slacktivity Alerts -------- */
-            var slacktivityData = {
-              "title": action,
-              "fallback": action,
-              "color": "#45825A",
-              'type': type,
-              'name': name,
-              'url': "http://mightysignal.com/app/app#/" + class_name + '/' + platform + '/' + id,
-              'email': data.email
-            };
-            if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
-            window.Slacktivity.send(slacktivityData);
-          });
+
+          mixpanel.track(
+            action, {
+              type: type,
+              name: name
+            }
+          );
+          var slacktivityData = {
+            "title": action,
+            "fallback": action,
+            "color": "#45825A",
+            'type': type,
+            'name': name,
+            'url': "http://mightysignal.com/app/app#/" + class_name + '/' + platform + '/' + id,
+          };
+          slacktivity.notifySlack(slacktivityData);
         });
       }
     }

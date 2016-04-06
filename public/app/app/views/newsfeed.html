@@ -51,10 +51,10 @@
             <div class="media">
               <div class="media-body" ng-if="batch.owner.type == 'AdPlatform'">
                 <div class='ad' data-ng-repeat="activity in batch.activities">
-                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank">
+                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.app.type, activity.other_owner.app.id, batch.activity_type, activity.other_owner.app.name, activity.other_owner.app.platform)">
                     <img class="creative" ng-src="{{activity.other_owner.ad_image}}">
                   </a>
-                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank">
+                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.app.type, activity.other_owner.app.id, batch.activity_type, activity.other_owner.app.name, activity.other_owner.app.platform)">
                     <img class="icon" ng-src="{{activity.other_owner.app.icon}}" ng-show="activity.other_owner.app.icon">
                     {{activity.other_owner.app.name}}
                   </a>
@@ -87,7 +87,7 @@
                   <tr data-ng-repeat="activity in batch.activities">
                     <td class="resultsTableAppIcon">
                         <span>
-                          <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank">
+                          <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
                             <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                             {{activity.other_owner.name}}
                           </a>
@@ -113,7 +113,7 @@
                   <div class="col-md-6">
                     <ul ng-show="batch.activities">
                       <li ng-repeat="activity in batch.activities.slice(0, 10)">
-                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank">
+                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
                           <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                           {{activity.other_owner.name}}
                         </a>
@@ -124,7 +124,7 @@
                   <div class="col-md-6">
                     <ul ng-show="batch.activities">
                       <li ng-repeat="activity in batch.activities.slice(10,21)">
-                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank">
+                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
                           <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                           {{activity.other_owner.name}}
                         </a>

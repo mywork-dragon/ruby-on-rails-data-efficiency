@@ -35,4 +35,18 @@ angular.module("appApp")
   })
   .factory('AppPlatform', function() {
     return {platform: APP_PLATFORM};
-  });
+  })
+  .factory('slacktivity', ["authService", function(authService) {
+    return {
+      notifySlack: function(slacktivityData, showMightySignal=false) {
+        authService.userInfo().success(function(data) {
+          if (!showMightySignal && data.email.indexOf('mightysignal') > -1) {
+            return;
+          }  
+          slacktivityData.email = data.email;
+          if (API_URI_BASE.indexOf('mightysignal.com') < 0) { slacktivityData['channel'] = '#staging-slacktivity' } // if on staging server
+          window.Slacktivity.send(slacktivityData);
+        });
+      }
+    }
+  }]);
