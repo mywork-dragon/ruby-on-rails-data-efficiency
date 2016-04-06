@@ -9,7 +9,7 @@
           div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"
         
 
-.row.app-sdks.header
+.row.app-sdks.show-modal.header
   .column.large-2
     h1 
       => @app.name
@@ -55,7 +55,7 @@
           li No SDKs have been uninstalled since we started tracking this app
         - if @uninstalled_sdks.size > 10
           li and #{@uninstalled_sdks.size - 10} more
-.row.app-sdks: .column.large-12.text-center
+.row.app-sdks.show-modal: .column.large-12.text-center
   br
   = link_to 'Contact us to see current SDKs used by any iOS or Android app', '/#contact_anchor', class: 'btn btn-lg btn-primary'
     

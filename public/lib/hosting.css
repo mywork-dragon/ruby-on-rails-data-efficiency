@@ -290,7 +290,7 @@ p {
 }
 /*==========5. APP SDKS ==============*/
 
-.app-sdks {
+.app-sdks.show-modal {
 	visibility: hidden;
 }
 .app-sdks.header {

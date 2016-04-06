@@ -19,7 +19,7 @@ $(document).ready(function() {
         $(this).find('i.fa').remove()
     })
 
-    if ($('.app-sdks').length) {
+    if ($('.app-sdks.show-modal').length) {
         $('#progressModal').modal('show')
         var progress = 0;
         function moveProgress() {
