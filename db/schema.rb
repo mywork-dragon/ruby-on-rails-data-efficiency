@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160404222522) do
+ActiveRecord::Schema.define(version: 20160406185503) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1220,7 +1220,10 @@ ActiveRecord::Schema.define(version: 20160404222522) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "job_type"
   end
+
+  add_index "ios_fb_ad_jobs", ["job_type"], name: "index_ios_fb_ad_jobs_on_job_type", using: :btree
 
   create_table "ios_fb_ad_processing_exceptions", force: true do |t|
     t.integer  "ios_fb_ad_id"
