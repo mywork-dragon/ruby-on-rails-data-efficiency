@@ -4,7 +4,7 @@ class IosFbAdDeviceService
   DEVICE_PASSWORD = 'padmemyboo'
   MAX_SCROLL_ITEMS = 50
   MAX_COMMAND_ATTEMPTS = 2
-  IMAGE_FOLDER_PATH = File.join('/var', 'mobile', 'Media', 'DCIM', '100APPLE')
+  IMAGE_FOLDER_PATH = File.join('/var', 'mobile', 'Media', 'DCIM')
   SCRIPTS_PATH = File.join(Rails.root, 'server', 'ios_fb_scripts')
   SCRIPTS_PREFIX = SCRIPTS_PATH.split('/').last
 
@@ -163,7 +163,7 @@ class IosFbAdDeviceService
 
     # Store the image columns
     row[:ad_image] = File.open(entry[:ad_image_path]) if Rails.env.production?
-    row[:ad_info_image] = File.open(entry[:ad_info_image_path]) if Rails.env.production?
+    row[:ad_info_image] = File.open(entry[:ad_info_image_path]) if Rails.env.production? && entry[:ad_info_image_path] # can skip
 
     entry_columns = [
       :link_contents,
@@ -180,7 +180,7 @@ class IosFbAdDeviceService
     row[:ios_fb_ad_job_id] = @ios_fb_ad_job_id
     row[:fb_account_id] = @fb_account.id
     row[:ios_device_id] = @device.id
-    row[:softlayer_proxy_id] = @device.softlayer_proxy.id if @device.softlayer_proxy
+    row[:softlayer_proxy_id] = @device.softlayer_proxy_id
 
     row[:status] = :preprocessed
 
@@ -610,13 +610,21 @@ class IosFbAdDeviceService
 
     run_and_validate_success('Facebook', 'select_ad_explanation.cy')
     sleep 4 # takes a while to load web view
+    
+    available = run_file('Facebook', 'validate_ad_info_visible.cy') 
 
-    run_and_validate_success('Facebook', 'validate_ad_info_visible.cy')
+    if command_success?(available)
+      log_debug "Ad info: available"
 
-    outfile = take_screenshot('FB_AD_INFO')
-    html_content = run_file('Facebook', 'get_ad_info_html.cy')
+      outfile = take_screenshot('FB_AD_INFO')
+      html_content = run_file('Facebook', 'get_ad_info_html.cy')
 
-    html_content = nil if known_command_error?(html_content)
+      html_content = nil if known_command_error?(html_content)
+    else
+      log_debug "Ad info: unavailable"
+      outfile = nil
+      html_content = nil
+    end
 
     run_and_validate_success('Facebook', 'navigate_back_from_preferences.cy')
     sleep 1
@@ -634,9 +642,11 @@ class IosFbAdDeviceService
 
     raise resp unless command_success?(resp)
 
-    image_path = run_command("./#{File.join(SCRIPTS_PREFIX, 'get_recent_image_path.sh')}", 'take screenshot').chomp
+    image_path = run_command("./#{File.join(SCRIPTS_PREFIX, 'get_recent_image_path.sh')}", 'take screenshot')
 
-    raise "No image available" if image_path.nil?
+    raise "No image available" if image_path.blank?
+
+    image_path = image_path.chomp
 
     log_debug "Copying image"
 
@@ -731,7 +741,7 @@ class IosFbAdDeviceService
 
   def delete_screenshots
     log_debug "Deleting screenshots"
-    image_count = run_command("find #{IMAGE_FOLDER_PATH} -mindepth 1 | wc -l", 'Get image count').chomp
+    image_count = run_command("find #{IMAGE_FOLDER_PATH} -mindepth 2 -path '*APPLE/*' | wc -l", 'Get image count').chomp
 
     if image_count == '0'
       log_debug "No images to delete"
@@ -882,12 +892,13 @@ class IosFbAdDeviceService
   def close_applications
 
     apps_count = get_open_apps_count
+    apps_count += 1 if apps_count == 0
     log_debug "Closing #{apps_count} apps"
 
     open_apps_carousel
     sleep 2
 
-    (apps_count + 1).times do |n| # swipe at least once (if there are none, will essentially do nothing)
+    apps_count.times do |n| # swipe at least once (if there are none, will essentially do nothing)
       log_debug "Closing #{n}"
       scroll_screen(start: {x: 200, y: 200}, finish: {x: 400, y: 200}, duration: 0.2) # Swipe left
       sleep 0.25
