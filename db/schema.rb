@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406234612) do
+ActiveRecord::Schema.define(version: 20160407002203) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1258,6 +1258,7 @@ ActiveRecord::Schema.define(version: 20160406234612) do
     t.integer  "ad_info_image_file_size"
     t.datetime "ad_info_image_updated_at"
     t.integer  "ios_fb_ad_appearances_id"
+    t.integer  "softlayer_proxy_id"
   end
 
   add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
@@ -1265,6 +1266,7 @@ ActiveRecord::Schema.define(version: 20160406234612) do
   add_index "ios_fb_ads", ["ios_device_id"], name: "index_ios_fb_ads_on_ios_device_id", using: :btree
   add_index "ios_fb_ads", ["ios_fb_ad_appearances_id"], name: "index_ios_fb_ads_on_ios_fb_ad_appearances_id", using: :btree
   add_index "ios_fb_ads", ["ios_fb_ad_job_id"], name: "index_ios_fb_ads_on_ios_fb_ad_job_id", using: :btree
+  add_index "ios_fb_ads", ["softlayer_proxy_id"], name: "index_ios_fb_ads_on_softlayer_proxy_id", using: :btree
   add_index "ios_fb_ads", ["status", "flagged"], name: "index_ios_fb_ads_on_status_and_flagged", using: :btree
 
   create_table "ios_in_app_purchases", force: true do |t|
