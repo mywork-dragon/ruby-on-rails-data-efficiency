@@ -13,7 +13,14 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       catch(err) {}
     };
 
-    androidLiveScanCtrl.calculateDaysAgo = function(date) {
+    androidLiveScanCtrl.calculateDaysAgo = function(sdkValue) {
+      var date = "";
+      // If latest_store_snapshot_date is present, use it. Otherwise fallback to first/last_seen_date
+      if(sdkValue['first_seen_date']) {
+        date = sdkValue['first_seen_date'];
+      } else if(sdkValue['last_seen_date']) {
+        date = sdkValue['last_seen_date'];
+      }
       return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0]; // returns '5 days' for example
     };
 
