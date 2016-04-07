@@ -323,7 +323,7 @@ class ApiController < ApplicationController
         app.mobile_priority,
         app.user_base,
         newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-        user.can_view_ad_spend? ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
+        user.account.try(:can_view_ad_spend?) ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
         newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
         company.present? ? company.id : nil,
         company.present? ? company.name : nil,
