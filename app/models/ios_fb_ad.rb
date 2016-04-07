@@ -4,6 +4,7 @@ class IosFbAd < ActiveRecord::Base
   belongs_to :ios_device
   belongs_to :fb_account
   belongs_to :ios_app
+  belongs_to :softlayer_proxy
 
   has_many :ios_fb_ad_processing_exceptions
   has_many :weekly_batches, as: :owner

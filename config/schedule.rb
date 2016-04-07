@@ -55,7 +55,7 @@ every 3.hours, roles: [:kylo_ren] do
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
 end
 
-every 1.hours, roles: [:kylo_ren] do
+every "30 * * * *", roles: [:kylo_ren] do # every hour at the 30 minute mark
   runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
 end
 
