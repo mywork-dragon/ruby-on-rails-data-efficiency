@@ -226,32 +226,29 @@ class IosFbAdDeviceService
     while attempt < MAX_COMMAND_ATTEMPTS
       attempt += 1
 
-      begin
-        resp = @ssh.exec! command
+      resp = begin
+        @ssh.exec! command
       rescue Net::SSH::Disconnect => e
-        resp = e
+        e
       rescue IOError => e
-        resp = e
+        e
       rescue Errno::ECONNRESET => e
-        resp = e
+        e
       rescue => e
         log_debug "Uncaught Error type: #{e.class} : #{e.message}"
       end
 
       return nil unless resp
 
-      if resp.class == Net::SSH::Disconnect || resp.class == Errno::ECONNRESET
+      if resp.class == Net::SSH::Disconnect || resp.class == Errno::ECONNRESET || resp.class == IOError
         log_debug "#{resp.class}: restarting connection"
-        connect(restart: true)
-      elsif resp.class == IOError
-        log_debug "reconnecting"
         connect(restart: true)
       elsif resp.match(/ST Error:/)
       else
         return resp
       end
 
-      log_debug "Retrying command after attempt #{attempt}. Command response: #{resp}"
+      log_debug "Retrying command #{command} after attempt #{attempt}. Command response: #{resp}"
     end
 
     raise CriticalDeviceError.new("Failed retry command #{command} with response: #{resp}", @device.id)
