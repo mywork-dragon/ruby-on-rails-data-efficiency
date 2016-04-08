@@ -51,11 +51,11 @@ every :day, :at => '11:56pm', roles: [:scraper_master] do
   runner 'EpfService.run_itunes_current_if_new_feed_available'
 end
 
-every 3.hours, roles: [:kylo_ren] do
+every 2.hours, roles: [:kylo_ren] do # every 2 hours
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
 end
 
-every "30 0,2,4,6,8,10,12,14,16,18,20,22 * * *", roles: [:kylo_ren] do # every 2 hours at the 30 minute mark 
+every "0 1,3,5,7,9,11,13,15,17,19,21,23 * * *", roles: [:kylo_ren] do # every 2 hours at the 30 minute mark
   runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
 end
 
