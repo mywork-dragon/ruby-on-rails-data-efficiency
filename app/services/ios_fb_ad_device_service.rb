@@ -254,7 +254,7 @@ class IosFbAdDeviceService
       log_debug "Retrying command after attempt #{attempt}. Command response: #{resp}"
     end
 
-    raise CriticalDeviceError.new("Failed retry ssh commands with response: #{resp}", @device.id)
+    raise CriticalDeviceError.new("Failed retry command #{command} with response: #{resp}", @device.id)
   end
 
   def run_command(command, description, expected_output = nil)
