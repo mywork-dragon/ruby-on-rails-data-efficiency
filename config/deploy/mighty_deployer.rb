@@ -121,7 +121,7 @@ module MightyDeployer
 
   def self.define_kylo_ren_servers
     @kylo_ren_servers = %w(
-      192.168.2.102
+      173.247.196.70:50001
     )
 
     @app_roles += @kylo_ren_roles
