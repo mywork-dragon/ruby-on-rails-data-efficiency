@@ -27,7 +27,7 @@ class IosFbAdServiceWorker
       Slackiq.message("Critical Error on Device #{e.ios_device_id}. It will remain unavailable for use. Error message:\n```#{e.message}```", webhook_name: :automated_alerts)
     end
 
-    raise e
+    # raise e
   rescue => e
     IosFbAdException.create!({
       ios_fb_ad_job_id: ios_fb_ad_job_id,
@@ -36,7 +36,7 @@ class IosFbAdServiceWorker
       backtrace: e.backtrace
     })
 
-    raise e
+    # raise e
   ensure
     device_reserver.release if device_reserver && device_reserver.has_device?
   end

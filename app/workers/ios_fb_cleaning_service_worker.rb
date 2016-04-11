@@ -19,7 +19,7 @@ class IosFbCleaningServiceWorker
 
   rescue => e
     puts "Device #{ios_device_id} failed cleaning, will not re-enable" if ios_device.disabled
-    raise e # throw for sidekiq monitoring
+    # raise e # throw for sidekiq monitoring
   else
     if ios_device.disabled
       puts "Re-enabling device #{ios_device_id} after successful cleaning"

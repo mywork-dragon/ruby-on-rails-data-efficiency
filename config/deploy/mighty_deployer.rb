@@ -1,5 +1,7 @@
 module MightyDeployer
 
+  MIGHTY_SIGNAL_PUBLIC_IP = '173.247.196.70'
+
   @app_roles = []
   @web_roles = []
   # @api_roles = []
@@ -111,18 +113,30 @@ module MightyDeployer
   end
 
   def self.define_darth_vader_servers
-    @darth_vader_servers = %w(
-      192.168.2.101
-    )
+    @darth_vader_servers = if inside_mighty_signal_network?
+      %w(
+        192.168.2.101
+      )
+    else
+      [
+        "#{MIGHTY_SIGNAL_PUBLIC_IP}:50000"
+      ]
+    end
 
     @app_roles += @darth_vader_servers
     @darth_vader_roles += @darth_vader_servers
   end
 
   def self.define_kylo_ren_servers
-    @kylo_ren_servers = %w(
-      173.247.196.70:50001
-    )
+    @kylo_ren_servers = if inside_mighty_signal_network?
+      %w(
+        192.168.2.102
+      )
+    else
+      [
+        "#{MIGHTY_SIGNAL_PUBLIC_IP}:50001"
+      ]
+    end
 
     @app_roles += @kylo_ren_roles
     @kylo_ren_roles += @kylo_ren_servers
@@ -219,6 +233,15 @@ module MightyDeployer
       server aviato_server, user: 'deploy'
     end
     
+  end
+
+  def self.inside_mighty_signal_network?
+    resp = `curl -m 15 ipv4.wtfismyip.com/json`
+    resp_json = JSON.load(resp)
+    ip = resp_json['YourFuckingIPAddress'].strip
+    ip == MIGHTY_SIGNAL_PUBLIC_IP
+  rescue => e   # assume inside the network if it broke
+    false
   end
   
 end
