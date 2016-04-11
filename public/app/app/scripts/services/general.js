@@ -38,7 +38,8 @@ angular.module("appApp")
   })
   .factory('slacktivity', ["authService", function(authService) {
     return {
-      notifySlack: function(slacktivityData, showMightySignal=false) {
+      notifySlack: function(slacktivityData, showMightySignal) {
+        showMightySignal = typeof showMightySignal !== 'undefined' ? showMightySignal : false;
         authService.userInfo().success(function(data) {
           if (!showMightySignal && data.email.indexOf('mightysignal') > -1) {
             return;

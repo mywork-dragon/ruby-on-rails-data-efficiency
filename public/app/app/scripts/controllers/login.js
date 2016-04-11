@@ -17,7 +17,7 @@ angular.module('appApp')
             listApiService.getLists().success(function(data) {
               $rootScope.usersLists = data;
             });
-            $window.location.href = "#/frontpage";
+            $window.location.href = "#/timeline";
           },
           function(){
             alert('Incorrect Email or Password');
