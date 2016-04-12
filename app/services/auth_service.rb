@@ -14,10 +14,10 @@ class AuthService
       account = Account.find_or_initialize_by(name: account_name)
       if account.new_record?
         account.can_view_support_desk = false
-        account.can_view_ad_spend = false
+        account.can_view_ad_spend = true
         account.can_view_sdks = true
         account.can_view_storewide_sdks = true
-        account.can_view_exports = true
+        account.can_view_exports = false
         account.can_view_ios_live_scan = true
         account.save
       end
