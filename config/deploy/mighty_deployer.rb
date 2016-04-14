@@ -1,3 +1,5 @@
+require 'json'
+
 module MightyDeployer
 
   MIGHTY_SIGNAL_PUBLIC_IP = '173.247.196.70'
@@ -236,12 +238,10 @@ module MightyDeployer
   end
 
   def self.inside_mighty_signal_network?
-    resp = `curl -m 15 ipv4.wtfismyip.com/json`
+    resp = `curl -s -m 15 ipv4.wtfismyip.com/json`
     resp_json = JSON.load(resp)
     ip = resp_json['YourFuckingIPAddress'].strip
     ip == MIGHTY_SIGNAL_PUBLIC_IP
-  rescue => e   # assume inside the network if it broke
-    false
   end
   
 end
