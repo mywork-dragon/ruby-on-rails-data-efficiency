@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h3>We have good news!</h3>
+
+    <p>You have been invited to the <%= @account.name %> account on MightySignal. Simply click the link below and connect either LinkedIn or Google to get started.</p>
+
+    <p><a href="http://www.mightysignal.com/app/app#/login?token=<%= @user.generate_auth_token %>">Join MightySignal</a></p>
+
+    <p>If you have any questions feel free to respond to this email.</p>
+
+    <p>Thanks,</p>
+    <p>The MightySignal team</p>
+
+    <img src="http://mightysignal.com/app/app/images/mighty_signal_logo.png" height="50"></img>
+  </body>
+</html>
