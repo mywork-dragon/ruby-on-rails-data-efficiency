@@ -32,7 +32,7 @@
             App Type
           </div></th>
           <th><div class="th normal-right-padding">
-            Company
+            Publisher
             <!--
                             <span class="glyphicon glyphicon-chevron-up"
                                   data-ng-click=" sortApps('companyName', 'ASC') "
@@ -100,8 +100,8 @@
             <td class="appTypeIndicator">
               <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
             </td>
-            <td ng-if="app.company.name"><a href="#/company/{{app.company.id}}">{{app.company.name}}</a></td>
-            <td ng-if="!app.company.name">{{app.seller}}</td>
+            <td ng-if="app.publisher.name"><a href="#/publisher/{{app.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+            <td ng-if="!app.publisher.name">{{app.seller}}</td>
             <td>{{app.company.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
               <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
