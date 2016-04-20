@@ -16,6 +16,7 @@ angular.module("appApp")
       },
       deleteToken: function() {
         localStorage.removeItem(JWT_TOKEN_NAME);
+        console.log("remove token")
         $window.location.href = "#/login";
       }
     }
@@ -69,6 +70,32 @@ angular.module("appApp")
           d.reject(resp.error);
         });
         return d.promise;
+      },
+      loginWithToken: function(auth_token, email) {
+        var d = $q.defer();
+        mixpanel.identify(email);
+        mixpanel.people.set({
+          "$email": email,
+          "jwtToken": auth_token
+        });
+        // If on production
+        if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
+          mixpanel.track(
+            "Login Success"
+          );
+          /* -------- Mixpanel Analytics End -------- */
+          /* -------- Slacktivity Alerts -------- */
+          window.Slacktivity.send({
+            "title": "User Login Success",
+            "fallback": "User Login Success",
+            "Login Status": "Success",
+            "User Email": email
+          });
+        }
+        /* -------- Slacktivity Alerts End -------- */
+
+        authToken.setToken(auth_token);
+        $rootScope.$broadcast(authEvents.loginSuccess);
       },
       permissions: function() {
         return $http.get('/auth/permissions');

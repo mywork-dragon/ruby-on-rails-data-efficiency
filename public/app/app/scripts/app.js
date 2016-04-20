@@ -25,6 +25,7 @@ angular
     'angucomplete-alt',
     'angularjs-dropdown-multiselect',
     'infinite-scroll',
+    'satellizer'
   ])
   .run(function ($http, $rootScope) {
 
@@ -38,56 +39,61 @@ angular
       });
     })
   .config(['$routeProvider', function ($routeProvider) {
-     $routeProvider
-       .when('/login', {
-         templateUrl: '/app/app/views/signin.html'
-       })
-       .when('/search', {
-         templateUrl: '/app/app/views/dashboard.html',
-         activeTab: 'search',
-         reloadOnSearch: false
-       })
-       .when('/search/sdk/:platform', {
-         templateUrl: '/app/app/views/sdk-search.html',
-         activeTab: 'search'
-       })
-       .when('/timeline', {
-         templateUrl: '/app/app/views/newsfeed.html',
-         controller: 'NewsfeedCtrl',
-         activeTab: 'newsfeed'
-       })
-       .when('/publisher/:platform/:id', {
-         templateUrl: '/app/app/views/publisher-details.html',
-         controller: 'PublisherDetailsCtrl',
-         activeTab: 'search'
-       })
-       .when('/search/custom', {
-         templateUrl: '/app/app/views/custom-search-results.html',
-         activeTab: 'search'
-       })
-       .when('/app/:platform/:id', {
-         templateUrl: '/app/app/views/app-details.html',
-         controller: 'AppDetailsCtrl',
-         activeTab: 'search'
-       })
-       .when('/company/:id', {
-         templateUrl: '/app/app/views/company-details.html',
-         controller: 'CompanyDetailsCtrl',
-         activeTab: 'search'
-       })
-       .when('/lists/:id', {
-         templateUrl: '/app/app/views/list.html',
-         activeTab: 'lists'
-       })
-       .when('/sdk/:platform/:id', {
-         templateUrl: '/app/app/views/sdk-details.html',
-         controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
-         activeTab: 'sdks'
-       })
-       .otherwise({
-         redirectTo: '/timeline',
-         activeTab: 'newsfeed'
-       });
+      $routeProvider
+        .when('/login', {
+          templateUrl: '/app/app/views/signin.html'
+        })
+        .when('/search', {
+          templateUrl: '/app/app/views/dashboard.html',
+          activeTab: 'search',
+          reloadOnSearch: false
+        })
+        .when('/search/sdk/:platform', {
+          templateUrl: '/app/app/views/sdk-search.html',
+          activeTab: 'search'
+        })
+        .when('/timeline', {
+          templateUrl: '/app/app/views/newsfeed.html',
+          controller: 'NewsfeedCtrl',
+          activeTab: 'newsfeed'
+        })
+        .when('/admin', {
+          templateUrl: '/app/app/views/admin.html',
+          controller: 'AdminCtrl',
+          activeTab: 'admin'
+        })
+        .when('/publisher/:platform/:id', {
+          templateUrl: '/app/app/views/publisher-details.html',
+          controller: 'PublisherDetailsCtrl',
+          activeTab: 'search'
+        })
+        .when('/search/custom', {
+          templateUrl: '/app/app/views/custom-search-results.html',
+          activeTab: 'search'
+        })
+        .when('/app/:platform/:id', {
+          templateUrl: '/app/app/views/app-details.html',
+          controller: 'AppDetailsCtrl',
+          activeTab: 'search'
+        })
+        .when('/company/:id', {
+          templateUrl: '/app/app/views/company-details.html',
+          controller: 'CompanyDetailsCtrl',
+          activeTab: 'search'
+        })
+        .when('/lists/:id', {
+          templateUrl: '/app/app/views/list.html',
+          activeTab: 'lists'
+        })
+        .when('/sdk/:platform/:id', {
+          templateUrl: '/app/app/views/sdk-details.html',
+          controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
+          activeTab: 'sdks'
+        })
+        .otherwise({
+          redirectTo: '/timeline',
+          activeTab: 'newsfeed'
+        });
   }])
   .config(['$httpProvider', function($httpProvider) {
      return $httpProvider.interceptors.push("authInterceptor");
@@ -97,6 +103,15 @@ angular
       'mouseenter': 'mouseleave click'
     });
   }])
+  .config(function($authProvider) {
+    $authProvider.linkedin({
+      clientId: '755ulzsox4aboj'
+    });
+    
+    $authProvider.google({
+      clientId: '341121226980-egcfb2qebu8skkjq63i1cdfpvahrcuak.apps.googleusercontent.com'
+    })
+  })
   .filter('capitalize', function() {
     return function(input, all) {
       return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';

@@ -38,6 +38,9 @@
 		<li>
 			<a href="mailto:support@mightysignal.com" target="_blank"><span><i class="fa fa-support"></i>Support</span></a>
 		</li>
+        <li ng-class="{active: $route.current.activeTab == 'admin'}" ng-if="isAdmin">
+            <a href="#/admin"><span><i class="fa fa-cog"></i>Admin</span></a>
+        </li>
         <li ng-click="logUserOut()">
             <a href="#/logout" ng-click="event.preventDefault()"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
         </li>

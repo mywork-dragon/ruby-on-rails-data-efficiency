@@ -22,7 +22,7 @@ angular.module('appApp')
       $rootScope.isAuthenticated = authToken.isAuthenticated();
 
       // If user not authenticated (and user not already on login page) redirect to login
-      if(!$rootScope.isAuthenticated) {
+      if(!$rootScope.isAuthenticated && !_.contains(["/login"], $location.path())) {
         $window.location.href = "#/login";
       }
 
@@ -43,11 +43,21 @@ angular.module('appApp')
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
             $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            $scope.isAdmin = data.is_admin;
+            $scope.isAdminAccount = data.is_admin_account;
+            $rootScope.connectedOauth = data.connected_oauth;
+
+            if (!$rootScope.connectedOauth) {
+              $window.location.href = "#/login?token=" + authToken.get();
+            }
           })
           .error(function() {
             $scope.canViewSupportDesk = false;
             $scope.canViewAdSpend = true;
             $scope.canViewSdks = false;
+            $scope.isAdmin = false;
+            $scope.isAdminAccount = false;
+            $scope.connectedOauth = true;
           });
 
         /* Populates "Categories" dropdown with list of categories */

@@ -62,7 +62,7 @@
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
 
-        <section data-ng-view="" id="content" class="animate-fade-up" ng-class="!$root.isAuthenticated ? 'contentHidden' : ''"></section>
+        <section data-ng-view="" id="content" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth ? 'contentHidden' : ''"></section>
       </div>
     </div>
     <div class="page-loading-overlay"> <div class="loader-2"></div> </div>
@@ -126,6 +126,7 @@
     <script src="/app/app/scripts/controllers/android-live-scan.js"></script>
     <script src="/app/app/scripts/controllers/company-details.js"></script>
     <script src="/app/app/scripts/controllers/sdk-details.js"></script>
+    <script src="/app/app/scripts/controllers/admin.js"></script>
 
     <!-- Custom Scripts -->
     <script src="/app/app/js/ng-infinite-scroll.min.js"></script>
@@ -136,6 +137,11 @@
     <script src="/app/app/js/bootstrap-angular.min.js"></script>
     <script src="/app/app/js/moment.min.js"></script>
     <script src="/app/app/js/main.js"></script>
+
+    <!--[if lte IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
+    <![endif]-->
+    <script src="//cdn.jsdelivr.net/satellizer/0.14.0/satellizer.min.js"></script>
 
   </body>
 </html>

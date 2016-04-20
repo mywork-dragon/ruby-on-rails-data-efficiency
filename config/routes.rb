@@ -90,6 +90,13 @@ Rails.application.routes.draw do
   post 'api/android_start_scan' => 'api#android_start_scan'
   get 'api/android_scan_status' => 'api#android_scan_status'
 
+  namespace :api, defaults: {format: 'json'} do
+    get '/admin' => 'admin#index'
+    post '/admin/update' => 'admin#update'
+    post '/admin/create_account' => 'admin#create_account'
+    post '/admin/create_user' => 'admin#create_user'
+  end
+
   # TODO: change from ewok to extension name
   get 'button/app_page' => 'ewok#ewok_app_page'
 
@@ -98,6 +105,7 @@ Rails.application.routes.draw do
   post 'auth/validate_token' => 'auth#validate_token'
   get 'auth/permissions' => 'auth#permissions'
   get 'auth/user/info' => 'auth#user_info'
+  post 'auth/:provider', to: 'auth#authenticate_provider'
 
   # API for customers
   get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }

@@ -7423,7 +7423,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
   text-align: center;
 }
 
-#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner {
+#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner, #adminPage > #wrap_spinner {
   text-align: center;
   margin-top: 10%;
 }
@@ -7911,12 +7911,12 @@ button.dropdown-toggle .caret {
   display: none;
 }
 
-.newsfeedPageRow {
+.newsfeedPageRow, .adminPageRow {
   padding: 20px;
   margin: 0;
 }
 
-.newsfeedPageRow .panel-heading {
+.newsfeedPageRow .panel-heading, .adminPageRow .panel-heading  {
   cursor: pointer;
 }
 
@@ -7938,12 +7938,12 @@ button.dropdown-toggle .caret {
   margin-right: 5px;
 }
 
-.newsfeedPageRow .feed-body ul {
+.newsfeedPageRow ul, .adminPageRow ul {
   list-style: none;
   padding-left: 15px;
 }
 
-.newsfeedPageRow .feed-body li {
+.newsfeedPageRow li, .adminPageRow li {
   padding: 10px 0;
 }
 
@@ -8008,7 +8008,7 @@ ul.following li #followButton {
   display: inline-block;
 }
 
-span.uninstall {
+span.uninstall, span.red {
   color: #ED5F5F;
 }
 
@@ -8032,6 +8032,41 @@ span.ad_seen {
   text-shadow: none;
 }
 
+#create-account {
+  margin-bottom: 20px;
+}
+
+.adminPageRow .checkbox label {
+  margin-left: 20px;
+}
+
+.adminPageRow .checkbox label.select {
+  margin-left: 0px;
+}
+
+.social-button {
+  margin: 20px -15px;
+}
+
+.social-button a {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 18px;
+}
+
+.social-button a i {
+  margin-right: 10px;
+}
+
+h4.message {
+  margin: 30px 0;
+  border: none;
+  text-align: center;
+}
+
+h4.red {
+  color: #a94442;
+}
 
 
 

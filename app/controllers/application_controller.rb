@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   def set_current_user
     if decoded_auth_token
       @current_user ||= User.find(decoded_auth_token[:user_id])
+      @current_user.touch(:last_active)
       if @current_user.access_revoked?
         render json: {'error' => 'authorization revoked'}, status: 418 # unofficial authorization revoked status code
       end
@@ -45,6 +46,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_admin
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
+
+    if !user.is_admin? && !account.is_admin_account?
+      fail NotAuthenticatedError
+    end
+  end
+
   def authenticate_export_request
     user = User.find(decoded_auth_token[:user_id])
     account = Account.find(user.account_id)
@@ -59,15 +69,6 @@ class ApplicationController < ActionController::Base
     account = Account.find(user.account_id)
 
     if !account || !account.can_view_ios_live_scan
-      fail NotAuthenticatedError
-    end
-  end
-
-  def authenticate_god_mode
-    user = User.find(decoded_auth_token[:user_id])
-    account = Account.find(user.account_id)
-
-    if !account || !account.god_mode
       fail NotAuthenticatedError
     end
   end

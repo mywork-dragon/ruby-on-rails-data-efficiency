@@ -13,6 +13,30 @@ class User < ActiveRecord::Base
   has_secure_password
   validates_uniqueness_of :email
 
+  def as_json(options={})
+    super(except: :password_digest).merge(type: self.class.name)
+  end
+
+  def self.from_auth(params, token)
+    params = params.with_indifferent_access
+    # if the user is coming from an invite
+    if token && decoded_token = AuthToken.decode(token)
+      return if User.where("#{params[:provider]}_uid = ?", params[:uid]).first
+      user = User.find(decoded_token["user_id"])
+      if user.send("#{params[:provider]}_uid").blank?
+        user.send("#{params[:provider]}_uid=", params[:uid])
+        user.send("#{params[:provider]}_token=", params[:token])
+        user.save
+        user
+      end
+    # we are logging in a user that has already previously connected linkedin or google
+    elsif user = User.where("#{params[:provider]}_uid = ?", params[:uid]).first
+      user.send("#{params[:provider]}_token=", params[:token])
+      user.save
+      user
+    end
+  end
+
   def generate_auth_token
     payload = { user_id: self.id }
     AuthToken.encode(payload)

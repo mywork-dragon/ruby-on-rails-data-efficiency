@@ -1,0 +1,130 @@
+<div id="adminPage" data-ng-controller="AdminCtrl">
+  <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
+    <div class="loading outer">
+      <div class="loading inner"></div>
+    </div>
+  </div>
+
+  <div ng-if="initialPageLoadComplete">
+    <div class="row adminPageRow">
+      <h4>Admin</h4>
+      <form id="create-account" class="form-inline" name="accountForm" ng-if="isAdminAccount">
+        <div class="form-group">
+          <label class="sr-only" for="name">Account name</label>
+          <input type="text" class="form-control" id="name" placeholder="Account name" ng-model="account.name">
+        </div>
+        <button type="submit" class="btn btn-default" ng-click="createAccount(account, accountForm)">Create account</button>
+      </form>
+      <div data-ng-repeat="account in accounts" class="panel panel-default">
+        <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
+          {{account.name}}
+          <span ng-if="isAdminAccount" class="pull-right {{account.active_users > account.seats_count ? 'red' : ''}}">
+            {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}} / {{account.seats_count}} Seats
+          </span>
+          <span ng-if="!isAdminAccount" class="pull-right">
+            {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}}
+          </span>
+        </div>
+        <div class="panel-body" uib-collapse="isCollapsed">
+          <div class="media">
+            <div class="media-body">
+              <strong ng-if="isAdminAccount">Account Settings</strong>
+              <br>
+              <div class="checkbox" ng-if="isAdminAccount">
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_support_desk" ng-click="settingChanged('can_view_support_desk', account)"> Support Desk
+                </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_ad_spend" ng-click="settingChanged('can_view_ad_spend', account)">Ad Spend
+                </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_sdks" ng-click="settingChanged('can_view_sdks', account)"> SDKs
+                </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_storewide_sdks" ng-click="settingChanged('can_view_storewide_sdks', account)"> Storewide SDKs
+                </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_exports" ng-click="settingChanged('can_view_exports', account)"> Exports
+                </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_view_ios_live_scan" ng-click="settingChanged('can_view_ios_live_scan', account)"> iOS Live Scan
+                </label>
+                <label class="select">
+                  <select ng-model="account.seats_count" ng-options="i for i in range(50)" ng-change="settingChanged('seats_count', account, i)">
+                  </select>
+                  Seats
+                </label>
+              </div>
+              <strong>Users</strong>
+              <br>
+              <br>
+              <table class="table table-striped table-responsive table-bordered">
+                <thead>
+                  <tr>
+                    <th><div class="th normal-right-padding">
+                      Email
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Created
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Last Active
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Linked Accounts
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Deactivated?
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Admin?
+                    </div></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr data-ng-repeat="user in account.users">
+                    <td>
+                      {{user.email}}
+                    </td>
+                    <td>
+                      {{calculateDaysAgo(user.created_at)}}
+                    </td>
+                    <td>
+                      {{user.last_active ? calculateDaysAgo(user.last_active) : ''}}
+                    </td>
+                    <td>
+                      <span ng-if="user.google_uid">Google</span>{{user.google_uid && user.linkedin_uid ? ', ' : ''}}
+                      <span ng-if="user.linkedin_uid">LinkedIn</span>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="checkbox" ng-checked="user.access_revoked" ng-click="settingChanged('access_revoked', user)">
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="checkbox" ng-checked="user.is_admin" ng-click="settingChanged('is_admin', user)">
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="6">
+                      <form novalidate class="form-inline" name="userForm">
+                        <div class="form-group">
+                          <label class="sr-only" for="email">Email address</label>
+                          <input type="email" class="form-control" id="email" placeholder="Email" ng-model="user.email">
+                        </div>
+                        <button type="submit" class="btn btn-default" ng-click="createUser(user, account, userForm)">Invite user</button>
+                      </form>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+

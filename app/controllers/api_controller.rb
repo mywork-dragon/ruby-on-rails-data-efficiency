@@ -63,9 +63,7 @@ class ApiController < ApplicationController
     results = filter_results[:results]
     results_count = filter_results[:results_count]
 
-    user = User.find(decoded_auth_token[:user_id])
-
-    render json: {results: results.as_json({user: user}), resultsCount: results_count, pageNum: page_num}
+    render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
 
   def filter_android_apps
@@ -97,17 +95,14 @@ class ApiController < ApplicationController
     results = filter_results[:results]
     results_count = filter_results[:results_count]
 
-    user = User.find(decoded_auth_token[:user_id])
-
-    render json: {results: results.as_json({user: user}), resultsCount: results_count, pageNum: page_num}
+    render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
 
   def newsfeed
-    user = User.find(decoded_auth_token[:user_id])
     page = [params[:page].to_i, 1].max
-    weeks = user.weekly_batches(page)
+    weeks = @current_user.weekly_batches(page)
     newsfeed_json = {
-      following: user.following.map{|follow| follow.as_json({user: user})},
+      following: @current_user.following.map{|follow| follow.as_json({user: @current_user})},
       weeks: weeks.map{|week,batches| {
         week: week.to_s,
         label: view_context.week_formatter(week),
@@ -118,7 +113,6 @@ class ApiController < ApplicationController
   end
 
   def newsfeed_details
-    user = User.find(decoded_auth_token[:user_id])
     batch = WeeklyBatch.find(params[:batchId])
     page_num = params[:pageNum].to_i
     per_page = params[:perPage].to_i
@@ -129,22 +123,20 @@ class ApiController < ApplicationController
       happened_at: activity.happened_at,
       other_owner: activity.other_owner(batch.owner)
     }}
-    render json: newsfeed.to_json({user: user})
+    render json: newsfeed.to_json({user: @current_user})
 
   end
 
   def newsfeed_follow
-    user = User.find(decoded_auth_token[:user_id])
-    
     followable_class = params['type'].constantize
     followable = followable_class.find(params['id'])
     
-    if user.following?(followable)
-      user.unfollow(followable)
+    if @current_user.following?(followable)
+      @current_user.unfollow(followable)
     else
-      user.follow(followable)
+      @current_user.follow(followable)
     end
-    render json: {:following => user.following?(followable)}
+    render json: {:following => @current_user.following?(followable)}
   end
 
   # Get details of iOS app.
@@ -152,16 +144,14 @@ class ApiController < ApplicationController
   def get_ios_app
     appId = params['id']
     ios_app = IosApp.find(appId)
-    user = User.find(decoded_auth_token[:user_id])
-    render json: ios_app.to_json({user: user, details: true})
+    render json: ios_app.to_json({user: @current_user, details: true})
   end
 
   def get_android_app
     appId = params['id']
     android_app = AndroidApp.find(appId)
-    user = User.find(decoded_auth_token[:user_id])
 
-    render json: android_app.to_json({user: user, details: true})
+    render json: android_app.to_json({user: @current_user, details: true})
   end
 
   def get_android_developer
@@ -179,8 +169,6 @@ class ApiController < ApplicationController
   end
 
   def get_ios_developer
-    user = User.find(decoded_auth_token[:user_id])
-
     developer = IosDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
@@ -188,7 +176,7 @@ class ApiController < ApplicationController
         id: developer.id,
         name: developer.name,
         websites: developer.get_website_urls,
-        apps: developer.ios_apps.as_json({user: user})
+        apps: developer.ios_apps.as_json({user: @current_user})
       }
     end
     render json: @developer_json
@@ -271,17 +259,14 @@ class ApiController < ApplicationController
   end
 
   def get_lists
-    render json: User.find(decoded_auth_token[:user_id]).lists
+    render json: @current_user.lists
   end
 
   # Get a list, given a user_id and list_id
   def get_list
-    user = User.find(decoded_auth_token[:user_id])
-    user_id = user.id
     list_id = params['listId']
 
-
-    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
     end
@@ -293,13 +278,11 @@ class ApiController < ApplicationController
 
     results = ios_apps.to_a + android_apps.to_a
 
-    render json: {:resultsCount => results.count, :currentList => list_id, :results => results.as_json({user: user})}
+    render json: {:resultsCount => results.count, :currentList => list_id, :results => results.as_json({user: @current_user})}
   end
 
   def export_list_to_csv
-
-    user = User.find(decoded_auth_token[:user_id])
-    can_view_support_desk = user.account_id.nil? ? false : Account.find(user.account_id).can_view_support_desk
+    can_view_support_desk = @current_user.account.try(:can_view_support_desk)
 
     list_id = params['listId']
     list = List.find(list_id)
@@ -323,7 +306,7 @@ class ApiController < ApplicationController
         app.mobile_priority,
         app.user_base,
         newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-        user.account.try(:can_view_ad_spend?) ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
+        @current_user.account.try(:can_view_ad_spend?) ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
         newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
         company.present? ? company.id : nil,
         company.present? ? company.name : nil,
@@ -400,24 +383,20 @@ class ApiController < ApplicationController
   end
 
   def create_new_list
-
-    authenticated_user = User.find(decoded_auth_token[:user_id])
-
     list_name = params['listName']
 
-    render json: authenticated_user.lists.create(name: list_name)
+    render json: @current_user.lists.create(name: list_name)
 
     # render json: List.find(authenticated_user.id).find(list_name)
 
   end
 
   def add_to_list
-    user_id = decoded_auth_token[:user_id]
     list_id = params['listId']
     apps = params['apps']
     app_platform = params['appPlatform']
 
-    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
     end
@@ -438,11 +417,10 @@ class ApiController < ApplicationController
   end
 
   def add_mixed_to_list
-    user_id = decoded_auth_token[:user_id]
     list_id = params['listId']
     apps = params['apps']
 
-    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
     end
@@ -457,11 +435,10 @@ class ApiController < ApplicationController
   end
 
   def delete_from_list
-    user_id = decoded_auth_token[:user_id]
     list_id = params['listId']
     apps = params['apps']
 
-    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
     end
@@ -471,10 +448,9 @@ class ApiController < ApplicationController
   end
 
   def delete_list
-    user_id = decoded_auth_token[:user_id]
     list_id = params['listId']
 
-    if ListsUser.where(user_id: user_id, list_id: list_id).empty?
+    if ListsUser.where(user_id: @current_user.id, list_id: list_id).empty?
       render json: {:error => "not user's list"}
       return
     end
@@ -489,7 +465,7 @@ class ApiController < ApplicationController
   end
 
   def user_tos_check
-    render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
+    render json: { :tos_accepted => @current_user.tos_accepted }
   end
 
   def user_tos_set
@@ -497,12 +473,11 @@ class ApiController < ApplicationController
     tos_status = params['tos_accepted']
 
     if tos_status
-      user = User.find(decoded_auth_token[:user_id])
-      user.tos_accepted = true
-      user.save
+      @current_user.tos_accepted = true
+      @current_user.save
     end
 
-    render json: { :tos_accepted => User.find(decoded_auth_token[:user_id]).tos_accepted }
+    render json: { :tos_accepted => @current_user.tos_accepted }
   end
 
   def get_company_contacts
@@ -761,9 +736,7 @@ class ApiController < ApplicationController
 
     ios_apps = result_ids.map{ |id| IosApp.find_by_id(id) }.compact
 
-    user = User.find(decoded_auth_token[:user_id])
-
-    render json: {appData: ios_apps.as_json({user: user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+    render json: {appData: ios_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
   def search_android_apps
@@ -794,9 +767,7 @@ class ApiController < ApplicationController
 
     android_apps = result_ids.map{ |id| AndroidApp.find_by_id(id) }.compact
     
-    user = User.find(decoded_auth_token[:user_id])
-    
-    render json: {appData: android_apps.as_json({user: user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+    render json: {appData: android_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
   def search_ios_sdk
@@ -852,10 +823,9 @@ class ApiController < ApplicationController
   def get_android_sdk
     sdk_id = params['id']
     sdk = AndroidSdk.find(sdk_id)
-    user = User.find(decoded_auth_token[:user_id])
 
-    @sdk_json = sdk.as_json({user: user})
-    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: user})
+    @sdk_json = sdk.as_json({user: @current_user})
+    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
     @sdk_json[:numOfApps] = sdk.get_current_apps.count
     render json: @sdk_json
   end
@@ -863,10 +833,9 @@ class ApiController < ApplicationController
   def get_ios_sdk
     sdk_id = params['id']
     sdk = IosSdk.find(sdk_id)
-    user = User.find(decoded_auth_token[:user_id])
 
-    @sdk_json = sdk.as_json({user: user})
-    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: user})
+    @sdk_json = sdk.as_json({user: @current_user})
+    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
     @sdk_json[:numOfApps] = sdk.get_current_apps.count
     render json: @sdk_json
   end
@@ -899,5 +868,4 @@ class ApiController < ApplicationController
 
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
   end
-
 end
