@@ -83,9 +83,9 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address:              'smtp.gmail.com',
     port:                 587,
-    domain:               'gmail.com',
-    user_name:            'mightysignalmailman',
-    password:             'iamthemailmanofmightysignalyo',
+    domain:               'mightysignal.com',
+    user_name:            'support@mightysignal.com',
+    password:             'Yb]fVjNRVAZdpE8pHM9,y9nYw',
     authentication:       'plain',
     enable_starttls_auto: true  }
 
