@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160418185317) do
+ActiveRecord::Schema.define(version: 20160421185227) do
 
   create_table "accounts", force: true do |t|
     t.string   "name"
@@ -1888,6 +1888,9 @@ ActiveRecord::Schema.define(version: 20160418185317) do
     t.string   "linkedin_uid"
     t.string   "linkedin_token"
     t.datetime "last_active"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "profile_url"
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
