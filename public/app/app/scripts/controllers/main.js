@@ -57,7 +57,7 @@ angular.module('appApp')
             $scope.canViewSdks = false;
             $scope.isAdmin = false;
             $scope.isAdminAccount = false;
-            $scope.connectedOauth = true;
+            $rootScope.connectedOauth = true;
           });
 
         /* Populates "Categories" dropdown with list of categories */
