@@ -8,7 +8,7 @@
   <div ng-if="initialPageLoadComplete">
     <div class="row adminPageRow">
       <h4>Admin</h4>
-      <form id="create-account" class="form-inline" name="accountForm" ng-if="isAdminAccount">
+      <form id="create-account" class="form-inline" name="accountForm" ng-if="$root.isAdminAccount">
         <div class="form-group">
           <label class="sr-only" for="name">Account name</label>
           <input type="text" class="form-control" id="name" placeholder="Account name" ng-model="account.name">
@@ -18,19 +18,19 @@
       <div data-ng-repeat="account in accounts" class="panel panel-default">
         <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
           {{account.name}}
-          <span ng-if="isAdminAccount" class="pull-right {{account.active_users > account.seats_count ? 'red' : ''}}">
+          <span ng-if="$root.isAdminAccount" class="pull-right {{account.active_users > account.seats_count ? 'red' : ''}}">
             {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}} / {{account.seats_count}} Seats
           </span>
-          <span ng-if="!isAdminAccount" class="pull-right">
+          <span ng-if="!$root.isAdminAccount" class="pull-right">
             {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}}
           </span>
         </div>
         <div class="panel-body" uib-collapse="isCollapsed">
           <div class="media">
             <div class="media-body">
-              <strong ng-if="isAdminAccount">Account Settings</strong>
+              <strong ng-if="$root.isAdminAccount">Account Settings</strong>
               <br>
-              <div class="checkbox" ng-if="isAdminAccount">
+              <div class="checkbox" ng-if="$root.isAdminAccount">
                 <label>
                   <input type="checkbox" ng-checked="account.can_view_support_desk" ng-click="settingChanged('can_view_support_desk', account)"> Support Desk
                 </label>
@@ -96,6 +96,9 @@
                     <td>
                       <span ng-if="user.google_uid">Google</span>{{user.google_uid && user.linkedin_uid ? ', ' : ''}}
                       <span ng-if="user.linkedin_uid">LinkedIn</span>
+                      <span ng-if="user.profile_url">
+                        - <a ng-href="{{user.profile_url}}">{{user.first_name}} {{user.last_name}}</a>
+                      </span>
                     </td>
                     <td>
                       <label>

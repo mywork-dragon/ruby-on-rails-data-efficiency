@@ -35,7 +35,7 @@ angular.module('appApp')
       $scope.logUserOut = authToken.deleteToken;
 
       if($rootScope.isAuthenticated) {
-
+        
         // Sets user permissions
         authService.permissions()
           .success(function(data) {
@@ -43,8 +43,8 @@ angular.module('appApp')
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
             $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
-            $scope.isAdmin = data.is_admin;
-            $scope.isAdminAccount = data.is_admin_account;
+            $rootScope.isAdmin = data.is_admin;
+            $rootScope.isAdminAccount = data.is_admin_account;
             $rootScope.connectedOauth = data.connected_oauth;
 
             if (!$rootScope.connectedOauth) {
@@ -55,8 +55,8 @@ angular.module('appApp')
             $scope.canViewSupportDesk = false;
             $scope.canViewAdSpend = true;
             $scope.canViewSdks = false;
-            $scope.isAdmin = false;
-            $scope.isAdminAccount = false;
+            $rootScope.isAdmin = false;
+            $rootScope.isAdminAccount = false;
             $rootScope.connectedOauth = true;
           });
 

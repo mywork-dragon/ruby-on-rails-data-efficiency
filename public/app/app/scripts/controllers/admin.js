@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
-  function($scope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
+  function($scope, $rootScope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
 
     $scope.initialPageLoadComplete = false;
-    $scope.isCollapsed = $scope.isAdminAccount;
+    $scope.isCollapsed = $rootScope.isAdminAccount;
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
     $scope.user = {};
     $scope.account = {};
