@@ -103,10 +103,13 @@ class ApiController < ApplicationController
     weeks = @current_user.weekly_batches(page)
     newsfeed_json = {
       following: @current_user.following.map{|follow| follow.as_json({user: @current_user})},
-      weeks: weeks.map{|week,batches| {
+      weeks: weeks.map{|week, platforms| {
         week: week.to_s,
         label: view_context.week_formatter(week),
-        batches: batches
+        platforms: platforms.map{|platform, batches| {
+          platform: platform,
+          batches: batches 
+        }}
       }}
     }
     render json: newsfeed_json
@@ -123,8 +126,8 @@ class ApiController < ApplicationController
       happened_at: activity.happened_at,
       other_owner: activity.other_owner(batch.owner)
     }}
-    render json: newsfeed.to_json({user: @current_user})
 
+    render json: newsfeed.to_json({user: @current_user})
   end
 
   def newsfeed_follow

@@ -70,12 +70,21 @@ class User < ActiveRecord::Base
 
     batches_by_week = {}
     batches.each do |batch|
-      if batches_by_week[batch.week] 
-        batches_by_week[batch.week] << batch
+      platform = if batch.owner_type == 'AndroidSdk' || batch.owner_type == 'AndroidApp'
+        'android'
+      elsif batch.owner_type == 'IosSdk' || batch.owner_type == 'IosApp' || batch.owner_type == 'AdPlatform'
+        'ios'
       else
-        batches_by_week[batch.week] = [batch]
+        'other'
+      end
+      batches_by_week[batch.week] ||= {}
+      if batches_by_week[batch.week][platform] 
+        batches_by_week[batch.week][platform] << batch
+      else
+        batches_by_week[batch.week][platform] = [batch]
       end
     end
+
     batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
   end
 

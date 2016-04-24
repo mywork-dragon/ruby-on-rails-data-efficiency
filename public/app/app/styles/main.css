@@ -7952,9 +7952,14 @@ button.dropdown-toggle .caret {
   text-transform: none;
 }
 
+.newsfeedPageRow .panel {
+  margin-left: 20px;
+}
+
 .newsfeedPageRow .week {
-  border: none;
-  margin: 30px 0 20px 0;
+  margin: 30px 0 0px 0;
+  color: #333;
+  border-bottom: 1px solid #ddd;
 }
 
 #followButton {
@@ -7970,6 +7975,10 @@ button.dropdown-toggle .caret {
 
 .newsfeedPageRow .btn-default {
   float: right;
+}
+
+.newsfeedPageRow .platform {
+  padding: 20px;
 }
 
 ul.following li {

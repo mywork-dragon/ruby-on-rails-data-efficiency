@@ -232,6 +232,14 @@ class IosApp < ActiveRecord::Base
       logger.info e
     end
   end
+
+  def link(stage: :production)
+    if stage == :production
+      "http://mightysignal.com/app/app#/app/ios/#{id}"
+    elsif stage == :staging
+      "http://ms-staging.com/app/app#/app/ios/#{id}"
+    end
+  end
   
   class << self
     

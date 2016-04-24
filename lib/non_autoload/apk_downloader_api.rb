@@ -4,8 +4,8 @@ ApkDownloader::Api.class_eval do
   LoginUri = URI('https://android.clients.google.com/auth')
   GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
-  def initialize(android_id, email, password, proxy_ip, proxy_port)
-    @android_id, @email, @password, @proxy_ip, @proxy_port = android_id, email, password, proxy_ip, proxy_port
+  def initialize(android_id, email, password, proxy_ip, proxy_port, user_agent)
+    @android_id, @email, @password, @proxy_ip, @proxy_port, @user_agent = android_id, email, password, proxy_ip, proxy_port, user_agent
     @details_messages = {}
   end
 
@@ -28,7 +28,8 @@ ApkDownloader::Api.class_eval do
       'device_country' => 'us',
       'operatorCountry' => 'us',
       'lang' => 'en',
-      'sdk_version' => '17'
+      # 'sdk_version' => '17'
+      'sdk_version' => '22'
     }
 
     response = res(type: :post, req: {host: LoginUri.host, path: LoginUri.path, protocol: "https", headers: headers}, params: params)
@@ -149,7 +150,7 @@ ApkDownloader::Api.class_eval do
         elsif status_code == 500
           fail ApkDownloader::Response500.new(message, status_code: status_code)
         else
-          fail ApkDownloader::ResponseOther
+          fail ApkDownloader::ResponseOther(resonse.body)
         end
       end
 
@@ -158,6 +159,9 @@ ApkDownloader::Api.class_eval do
   end
 
   def api_request type, path, data = {}
+    puts "@auth_token: #{@auth_token}"
+    puts "@android_id: #{@android_id}"
+    puts "@user_agent: #{@user_agent}"
 
     headers = {
       'Accept-Language' => 'en_US',
@@ -166,7 +170,8 @@ ApkDownloader::Api.class_eval do
       'X-DFE-Unsupported-Experiments' => 'nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes',
       'X-DFE-Device-Id' => @android_id,
       'X-DFE-Client-Id' => 'am-android-google',
-      'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
+      # 'User-Agent' => 'Android-Finsky/5.8.8 (api=3,versionCode=80380800,sdk=22,device=flounder,hardware=flounder,product=volantis,platformVersionRelease=5.1.1,model=Nexus%209,buildId=LMY48M,isWideScreen=1)',
+      'User-Agent' => @user_agent,
       'X-DFE-SmallestScreenWidthDp' => '320',
       'X-DFE-Filter-Level' => '3',
       'Accept-Encoding' => '',

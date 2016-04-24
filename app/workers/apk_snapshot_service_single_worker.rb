@@ -3,7 +3,7 @@ class ApkSnapshotServiceSingleWorker
   include Sidekiq::Worker
 
   sidekiq_options backtrace: true, retry: false, queue: :sdk_live_scan
-  # sidekiq_options backtrace: true, retry: 2, queue: :sdk   # use this to test on scrapers
+  # sidekiq_options backtrace: true, retry: false, queue: :sdk   # use this to test on scrapers
 
   RETRIES = 2
 
@@ -27,9 +27,13 @@ class ApkSnapshotServiceSingleWorker
       GoogleAccount.find(google_account_id)
     else
       if try == 2
-        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :live, device: :nexus_9_tablet).sample
+        device_names = [:nexus_9_tablet].map(&:to_s)
+        devices = GoogleAccount.devices.values_at(*device_names)
+        GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:live], device: devices).sample
       else
-        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :live, device: [:moto_g_phone_1, :moto_g_phone_2]).sample
+        device_names = [:moto_g_phone_1, :moto_g_phone_2].map(&:to_s)
+        devices = GoogleAccount.devices.values_at(*device_names)
+        GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:live], device: devices).sample
       end
     end
   end

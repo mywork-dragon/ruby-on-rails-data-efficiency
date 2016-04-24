@@ -28,7 +28,7 @@ class PackageSearchService
     private
 
     def jobs_apk_snapshots(apk_snapshot_job_ids)
-      ApkSnapshot.where(apk_snapshot_job_id: apk_snapshot_job_ids)
+      ApkSnapshot.where(apk_snapshot_job_id: apk_snapshot_job_ids, status: ApkSnapshot.statuses[:success])
     end
 
   end

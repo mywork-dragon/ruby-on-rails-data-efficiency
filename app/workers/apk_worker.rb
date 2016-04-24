@@ -1,10 +1,10 @@
 module ApkWorker
 
-  def perform(apk_snapshot_job_id, bid, app_id)
+  def perform(apk_snapshot_job_id, bid, app_id, google_account_id=nil, check_version=true)
     @apk_ss = nil
     @apk_ss_job = nil
     @android_app = nil
-    download_apk(apk_snapshot_job_id, bid, app_id)
+    download_apk(apk_snapshot_job_id, bid, app_id, google_account_id: google_account_id, check_version: check_version)
   end
   
   # The path of the apk_file on the box
@@ -19,10 +19,10 @@ module ApkWorker
 
   # Download the APK
   # @author Jason Lew
-  def download_apk(apk_snapshot_job_id, bid, android_app_id)
+  def download_apk(apk_snapshot_job_id, bid, android_app_id, google_account_id: nil, check_version: true)
     tries ||= retries + 1
 
-    @apk_ss_job = ApkSnapshotJob.find(apk_snapshot_job_id)
+    @apk_ss_job = ApkSnapshotJob.find_by_id(apk_snapshot_job_id)
     @android_app = AndroidApp.find(android_app_id)
 
     aa = AndroidApp.find_by_id(android_app_id)
@@ -42,13 +42,14 @@ module ApkWorker
 
     raise BlankSnapId if @apk_ss.id.blank?
 
-    unless new_version?(android_app_id)
+    if check_version && !new_version?(android_app_id)
       @apk_ss.status = :unchanged_version
       @apk_ss.save!
-      return
+      return "The version hasn't changed."
     end
 
-    google_account = a_google_account
+    google_account = google_account_id ? GoogleAccount.find(google_account_id) : a_google_account
+    
     mp = choose_proxy
 
     dl_start_time = Time.now
@@ -63,7 +64,7 @@ module ApkWorker
     file_name = apk_file_path + app_identifier + "_#{@apk_ss.id}_#{@try_count}" + ".apk"
 
     begin
-      dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888)
+      dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888, google_account.user_agent)
     rescue ApkDownloader::EmptyApp, ApkDownloader::EmptyRecursiveApkFetch => e
       @apk_ss.status = :failure
       @apk_ss.save!
@@ -262,31 +263,6 @@ module ApkWorker
     @apk_ss.save!
     mp
   end
-
-  # TODO - remove this old stuff
-  #####################################
-
-  def optimal_account(apk_snap_id:, interval: 0.5, wait: 60, max_flags: 10)
-      (wait/interval).to_i.times do
-        ga = GoogleAccount.where(scrape_type: scrape_type, device: new_device(apk_snap_id, max_flags), blocked: false).where('flags <= ? AND last_used <= ?', max_flags, 5.seconds.ago).sample
-        if ga.present?
-          ga.last_used = DateTime.now
-          ga.save
-          return ga
-        end
-        sleep interval
-      end
-  end
-
-  def new_device(apk_snap_id, max_flags)
-    ga = ApkSnapshot.find_by_id(apk_snap_id).google_account
-    last_device = ga.nil? ? -1 : GoogleAccount.devices[ga.device]
-    d = GoogleAccount.where('flags <= ? AND device != ?', max_flags, last_device).where(blocked: false).sample.device
-    d_name = d.blank? ? GoogleAccount.where('flags <= ?', max_flags).where(blocked: false).sample.device : d
-    GoogleAccount.devices[d_name]
-  end
-
-  #####################################
 
   # Given an APK, unzip it, remove multimedia files, and zip it up again
   # @param apk_file An instance of the ApkFile model

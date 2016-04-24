@@ -2,7 +2,7 @@ class ActivityWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :sdk
+  sidekiq_options retry: false, queue: :aviato
 
   def perform(method, *args)
     self.send(method.to_sym, *args)

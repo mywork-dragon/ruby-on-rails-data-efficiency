@@ -6,6 +6,8 @@ class ApkSnapshotServiceWorker
   
   RETRIES = 2 # use our own retries
 
+  MIN_AVAILABLE_ACCOUNTS = 16
+
   include ApkWorker
   
   MAX_FLAGS = 10
@@ -20,11 +22,25 @@ class ApkSnapshotServiceWorker
       GoogleAccount.find(google_account_id)
     else
       if try == 2
-        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :full, device: :nexus_9_tablet).where("flags <= ?", MAX_FLAGS).sample
+        raise NotEnoughGoogleAccountsAvailable if tablet_query.count < MIN_AVAILABLE_ACCOUNTS
+        tablet_query.sample
       else
-        GoogleAccount.where(in_use: false, blocked: false, scrape_type: :full, device: [:moto_g_phone_1, :moto_g_phone_2]).where("flags <= ?", MAX_FLAGS).sample
+        raise NotEnoughGoogleAccountsAvailable if phone_query.count < MIN_AVAILABLE_ACCOUNTS
+        phone_query.sample
       end
     end
+  end
+
+  def tablet_query
+    device_names = [:nexus_9_tablet].map(&:to_s)
+    devices = GoogleAccount.devices.values_at(*device_names)
+    GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:full], device: devices).where("flags <= ?", MAX_FLAGS)
+  end
+
+  def phone_query
+    device_names = [:moto_g_phone_1, :moto_g_phone_2, :galaxy_prime_1, :galaxy_prime_2].map(&:to_s)
+    devices = GoogleAccount.devices.values_at(*device_names)
+    GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:full], device: devices).where("flags <= ?", MAX_FLAGS)
   end
 
   def raise_early_stop(apk_snap)
@@ -41,6 +57,12 @@ class ApkSnapshotServiceWorker
 
   def retries
     RETRIES
+  end
+
+  class NotEnoughGoogleAccountsAvailable < StandardError
+    def initialize(message = "Not enough Google accounts are available.")
+      super
+    end
   end
 
 end

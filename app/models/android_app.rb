@@ -118,6 +118,14 @@ class AndroidApp < ActiveRecord::Base
     batch_json
   end
 
+  def link(stage: :production)
+    if stage == :production
+      "http://mightysignal.com/app/app#/app/android/#{id}"
+    elsif stage == :staging
+      "http://ms-staging.com/app/app#/app/android/#{id}"
+    end
+  end
+
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
   end

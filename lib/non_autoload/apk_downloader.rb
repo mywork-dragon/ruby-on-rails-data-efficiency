@@ -6,8 +6,8 @@ module ApkDownloader
 
   class << self
 
-    def download! package, destination, android_id, email, password, proxy_ip, proxy_port
-      @api ||= Api.new(android_id, email, password, proxy_ip, proxy_port)
+    def download! package, destination, android_id, email, password, proxy_ip, proxy_port, user_agent
+      @api ||= Api.new(android_id, email, password, proxy_ip, proxy_port, user_agent)
       
       data = nil
 

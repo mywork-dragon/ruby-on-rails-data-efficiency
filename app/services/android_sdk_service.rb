@@ -79,9 +79,9 @@ module AndroidSdkService
 
     class << self
 
-      def get_sdk_response(android_app_id)
+      def get_sdk_response(android_app_id, apk_snapshot_id: nil)
         aa = AndroidApp.find(android_app_id)
-        data = sdk_response_h(aa)
+        data = sdk_response_h(aa, apk_snapshot_id: apk_snapshot_id)
       end
 
       # Gets the error code
@@ -116,13 +116,13 @@ module AndroidSdkService
       end
 
       # Helper for get_sdk_response
-      def sdk_response_h(aa)
+      def sdk_response_h(aa, apk_snapshot_id: nil)
         h = {}
         ec = error_code(aa)
 
         return h unless ec.nil?
 
-        snap = aa.newest_successful_apk_snapshot
+        snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
         
         return h if snap.nil?
 
@@ -145,6 +145,8 @@ module AndroidSdkService
 
           memo
         end
+
+        puts "installed_display_sdk_to_snap: #{installed_display_sdk_to_snap}"  #debug
 
         uninstalled_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: uninstalled_sdks).reduce({}) do |memo, map_row|
 
@@ -179,7 +181,7 @@ module AndroidSdkService
           formatted['last_seen_date'] = apk_snap ? apk_snap.last_seen : nil
           formatted
         end.compact.uniq
-        h[:uninstalled] = {}  # show no uninstalls for now
+        # h[:uninstalled] = {}  # show no uninstalls for now  -- TEMP
         h[:updated] = snap.good_as_of_date
         h[:error_code] = ec || nil
         h
