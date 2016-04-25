@@ -174,11 +174,11 @@
           <li ng-repeat="follow in following">
             <a ng-if="follow.type == 'IosSdk' || follow.type == 'AndroidSdk'" href="#/sdk/{{follow.type == 'IosSdk' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
               <img ng-src="{{follow.icon}}" ng-show="follow.icon">
-              {{follow.name}} - SDK
+              {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} SDK
             </a>
             <a ng-if="follow.type == 'IosApp' || follow.type == 'AndroidApp'" href="#/app/{{follow.type == 'IosApp' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
               <img ng-src="{{follow.icon}}" ng-show="follow.icon">
-              {{follow.name}} - App
+              {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} App
             </a>
             <div id="followButton">
               <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="!follow.following">Follow</button>
