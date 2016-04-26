@@ -12,6 +12,12 @@ gems.each do |gem_name|
   end
 end
 
+unless File.exist?(File.join(ENV['HOME'], '.ssh', 'varys'))
+  puts "Ensure you have the varys key in your .ssh directory".red
+  abort
+end
+
+# Argument parsing
 arg0 = ARGV[0]
 ARGV.clear
 

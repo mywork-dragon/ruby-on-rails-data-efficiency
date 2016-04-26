@@ -15,6 +15,13 @@ set :branch, ENV["MS_BRANCH"] || "master" # set in get_swole.rb
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/home/webapps/varys'
 
+# By default, use the varys ssh key
+set :ssh_options, {
+  keys: File.join(ENV['HOME'], '.ssh', 'varys'),
+  forward_agent: false, # not sure of correct value
+  auth_methods: %w(publickey)
+}
+
 # Default value for :scm is :git
 # set :scm, :git
 
