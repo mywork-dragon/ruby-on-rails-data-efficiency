@@ -138,143 +138,155 @@
       <div class="page page-table" data-ng-controller="TableCtrl">
         <!-- Company Apps Table -->
         <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
+          <div class="panel-heading" id="listViewTableHeading">
+            <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisherData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying {{appsDisplayedCount()}} of {{numApps | number}}</span>
+            <span class="ui-select pull-right">
+              <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
+                <option value="">Add Selected to List</option>
+                <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+              </select>
+            </span>
+          </div>
 
-            <div class="panel-heading" id="listViewTableHeading">
-              <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisherData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying 1 - {{numApps | number}} of {{numApps | number}}</span>
-              <span class="ui-select pull-right">
-                <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
-                  <option value="">Add Selected to List</option>
-                  <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
-                </select>
-              </span>
-            </div>
+          <div id="results-table-wrapper">
 
+            <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+              <thead>
+                <tr>
+                  <th class="selectAllCheckboxHeader">
+                    <select-all-checkbox-two apps="apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
+                  </th>
+                  <th><div class="th normal-right-padding">
+                    App Name
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('appName', 'ASC') "
+                          data-ng-class="{active: row == 'appName'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('appName', 'DESC') "
+                          data-ng-class="{active: row == '-appName'}"></span>
+                  </div></th>
+                  <th><div class="th normal-right-padding appDetailsHeader">
+                    App Type
+                  </div></th>
+                  <th><div class="th normal-right-padding">
+                    Mobile Priority
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('mobilePriority', 'ASC') "
+                          data-ng-class="{active: row == 'mobilePriority'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('mobilePriority', 'DESC') "
+                          data-ng-class="{active: row == '-mobilePriority'}"></span>
+                  </div></th>
+                  <th><div class="th normal-right-padding">
+                    Ad Spend
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('adSpend', 'DESC') "
+                          data-ng-class="{active: row == 'adSpend'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('adSpend', 'ASC') "
+                          data-ng-class="{active: row == '-adSpend'}"></span>
+                  </div></th>
+                  <th><div class="th normal-right-padding">
+                    User Base Size
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('userBases', 'ASC') "
+                          data-ng-class="{active: row == 'userBases'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('userBases', 'DESC') "
+                          data-ng-class="{active: row == '-userBases'}"></span>
+                  </div></th>
+                  <th><div class="th normal-right-padding">
+                    Categories
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('categories', 'ASC') "
+                          data-ng-class="{active: row == 'categories'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('categories', 'DESC') "
+                          data-ng-class="{active: row == '-categories'}"></span>
+                  </div></th>
+                  <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+                    Support Desk
+                  </div></th>
+                  <th><div class="th normal-right-padding">
+                    Last Updated
+                    <span class="glyphicon glyphicon-chevron-up"
+                          data-ng-click="sortApps('lastUpdated', 'DESC') "
+                          data-ng-class="{active: row == 'lastUpdated'}"></span>
+                    <span class="glyphicon glyphicon-chevron-down"
+                          data-ng-click="sortApps('lastUpdated', 'ASC') "
+                          data-ng-class="{active: row == '-lastUpdated'}"></span>
+                  </div></th>
+                </tr>
+              </thead>
 
-
-            <div id="results-table-wrapper">
-
-              <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
-                <thead>
-                  <tr>
-                    <th class="selectAllCheckboxHeader">
-                      <select-all-checkbox-two apps="apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
-                    </th>
-                    <th><div class="th normal-right-padding">
-                      App Name
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('appName', 'ASC') "
-                            data-ng-class="{active: row == 'appName'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('appName', 'DESC') "
-                            data-ng-class="{active: row == '-appName'}"></span>
-                    </div></th>
-                    <th><div class="th normal-right-padding appDetailsHeader">
-                      App Type
-                    </div></th>
-                    <th><div class="th normal-right-padding">
-                      Mobile Priority
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('mobilePriority', 'ASC') "
-                            data-ng-class="{active: row == 'mobilePriority'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('mobilePriority', 'DESC') "
-                            data-ng-class="{active: row == '-mobilePriority'}"></span>
-                    </div></th>
-                    <th><div class="th normal-right-padding">
-                      Ad Spend
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('adSpend', 'DESC') "
-                            data-ng-class="{active: row == 'adSpend'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('adSpend', 'ASC') "
-                            data-ng-class="{active: row == '-adSpend'}"></span>
-                    </div></th>
-                    <th><div class="th normal-right-padding">
-                      User Base Size
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('userBases', 'ASC') "
-                            data-ng-class="{active: row == 'userBases'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('userBases', 'DESC') "
-                            data-ng-class="{active: row == '-userBases'}"></span>
-                    </div></th>
-                    <th><div class="th normal-right-padding">
-                      Categories
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('categories', 'ASC') "
-                            data-ng-class="{active: row == 'categories'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('categories', 'DESC') "
-                            data-ng-class="{active: row == '-categories'}"></span>
-                    </div></th>
-                    <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
-                      Support Desk
-                    </div></th>
-                    <th><div class="th normal-right-padding">
-                      Last Updated
-                      <span class="glyphicon glyphicon-chevron-up"
-                            data-ng-click="sortApps('lastUpdated', 'DESC') "
-                            data-ng-class="{active: row == 'lastUpdated'}"></span>
-                      <span class="glyphicon glyphicon-chevron-down"
-                            data-ng-click="sortApps('lastUpdated', 'ASC') "
-                            data-ng-class="{active: row == '-lastUpdated'}"></span>
-                    </div></th>
-                  </tr>
-                </thead>
-
-                <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
-                  <tr data-ng-repeat="app in apps">
-                    <td class="dashboardTableDataCheckbox">
-                      <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
-                    </td>
-                    <td class="resultsTableAppIcon">
-                      <span>
-                        <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
-                          <img ng-src="{{app.icon}}" />
-                          {{app.name}}
-                          <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
-                        </a>
-                      </span>
-                      <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
-                    </td>
-                    <td class="appTypeIndicator">
-                      <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
-                    </td>
-                    <td class="dashboardMobilePriorityView">
-                      <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
-                    </td>
-                    <td class="dashboardAdSpendView">
-                      <span ng-if="!isNaN(app.adSpend)">
-                        <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
-                      </span>
-                    </td>
-                    <td>{{app.userBase | capitalize}}</td>
-                    <td>{{app.categories.join(', ')}}</td>
-                    <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
-                    <td>
-                      <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
-                        <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
-                          <strong>{{app.lastUpdatedDays}}</strong>
-                        </span> days ago
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div id="dashboardTableStatusMessage" data-ng-show="publisherDetailsCtrl.queryInProgress || !(apps.length > 0)">
-                <h5 data-ng-hide="apps.length > 0 || publisherDetailsCtrl.queryInProgress">No Items</h5>
-                <div data-ng-show="publisherDetailsCtrl.queryInProgress" id="wrap_spinner">
-                  <div class="loading outer">
-                    <div class="loading inner"></div>
-                  </div>
+              <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
+                <tr data-ng-repeat="app in apps">
+                  <td class="dashboardTableDataCheckbox">
+                    <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
+                  </td>
+                  <td class="resultsTableAppIcon">
+                    <span>
+                      <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
+                        <img ng-src="{{app.icon}}" />
+                        {{app.name}}
+                        <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                      </a>
+                    </span>
+                    <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
+                  </td>
+                  <td class="appTypeIndicator">
+                    <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+                  </td>
+                  <td class="dashboardMobilePriorityView">
+                    <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
+                  </td>
+                  <td class="dashboardAdSpendView">
+                    <span ng-if="!isNaN(app.adSpend)">
+                      <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+                    </span>
+                  </td>
+                  <td>{{app.userBase | capitalize}}</td>
+                  <td>{{app.categories.join(', ')}}</td>
+                  <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
+                  <td>
+                    <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
+                      <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                        <strong>{{app.lastUpdatedDays}}</strong>
+                      </span> days ago
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="dashboardTableStatusMessage" data-ng-show="publisherDetailsCtrl.queryInProgress || !(apps.length > 0)">
+              <h5 data-ng-hide="apps.length > 0 || publisherDetailsCtrl.queryInProgress">No Items</h5>
+              <div data-ng-show="publisherDetailsCtrl.queryInProgress" id="wrap_spinner">
+                <div class="loading outer">
+                  <div class="loading inner"></div>
                 </div>
               </div>
-
             </div>
 
           </div>
+          <footer class="table-footer" ng-if="numApps > 100">
+            <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6 text-right pagination-container">
+                <uib-pagination class="pagination-sm"
+                            ng-model="currentPage"
+                            total-items="numApps"
+                            max-size="8"
+                            ng-change="submitPageChange(currentPage)"
+                            items-per-page="100"
+                            rotate="false"
+                            boundary-links="true"></uib-pagination>
 
+              </div>
+            </div>
+          </footer>
         </section>
+      </div>
 
       </div>
 

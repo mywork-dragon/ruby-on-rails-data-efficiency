@@ -6,22 +6,22 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
     var publisherDetailsCtrl = this;
     $scope.appPlatform = $routeParams.platform
     $scope.initialPageLoadComplete = false; // shows page load spinner
+    $scope.currentPage = 1;
 
-    $scope.load = function(category, order) {
-
+    $scope.loadPublisher = function(category, order) {
       publisherDetailsCtrl.queryInProgress = true;
 
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $scope.appPlatform + '_developer',
-        params: {id: $routeParams.id, sortBy: category, orderBy: order}
+        params: {id: $routeParams.id, sortBy: category, orderBy: order, pageNum: $scope.currentPage}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.publisherData = data;
         $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
         $scope.apps = data.apps;
-        $scope.numApps = data.apps.length;
-        $rootScope.numApps = data.apps.length;
+        $scope.numApps = data.numApps;
+        $rootScope.numApps = data.numApps;
         publisherDetailsCtrl.queryInProgress = false;
 
         $scope.initialPageLoadComplete = true; // hides page load spinner
@@ -41,7 +41,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         publisherDetailsCtrl.queryInProgress = false;
       });
     };
-    $scope.load();
+    $scope.loadPublisher();
 
     authService.permissions()
       .success(function(data) {
@@ -73,6 +73,22 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
       $window.open(linkedinLink);
     };
+
+    $scope.appsDisplayedCount = function() {
+      var lastPageMaxApps = 100 * $scope.currentPage;
+      var baseAppNum = 100 * ($scope.currentPage - 1) + 1;
+
+      if (lastPageMaxApps > $scope.numApps) {
+        return "" + baseAppNum.toLocaleString() + " - " + $scope.numApps.toLocaleString();
+      } else {
+        return "" + baseAppNum.toLocaleString() + " - " + lastPageMaxApps.toLocaleString();
+      }
+    };
+
+    $scope.submitPageChange = function(currentPage) {
+      $scope.currentPage = currentPage;
+      $scope.loadPublisher();
+    }
 
     $scope.onAppTableAppClick = function(app) {
       /* -------- Mixpanel Analytics Start -------- */
@@ -124,7 +140,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     // When orderby/sort arrows on dashboard table are clicked
     $scope.sortApps = function(category, order) {
-      $scope.load(category, order);
+      $scope.loadPublisher(category, order);
     };
 
     $scope.contactsLoading = false;

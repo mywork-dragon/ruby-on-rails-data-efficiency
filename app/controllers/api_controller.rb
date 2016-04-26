@@ -165,7 +165,8 @@ class ApiController < ApplicationController
         id: developer.id,
         name: developer.name,
         websites: developer.websites.to_a.map{|w| w.url},
-        apps: developer.sorted_android_apps(params[:sortBy], params[:orderBy]).as_json({user: @current_user})
+        numApps: developer.android_apps.count,
+        apps: developer.sorted_android_apps(params[:sortBy], params[:orderBy], params[:pageNum]).as_json({user: @current_user})
       }
     end
     render json: @developer_json
@@ -179,7 +180,8 @@ class ApiController < ApplicationController
         id: developer.id,
         name: developer.name,
         websites: developer.get_website_urls,
-        apps: developer.sorted_ios_apps(params[:sortBy], params[:orderBy]).as_json({user: @current_user})
+        numApps: developer.ios_apps.count,
+        apps: developer.sorted_ios_apps(params[:sortBy], params[:orderBy], params[:pageNum]).as_json({user: @current_user})
       }
     end
     render json: @developer_json
