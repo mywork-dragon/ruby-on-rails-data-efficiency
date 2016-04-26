@@ -201,31 +201,20 @@ angular.module('appApp')
         var firstPage = 1;
         $rootScope.dashboardSearchButtonDisabled = true;
         apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order, searchCtrl.appPlatform.platform)
-          .success(function(data) {
-            $scope.queryInProgress = false;
-            searchCtrl.apps = data.results;
-            searchCtrl.numApps = data.resultsCount;
-            $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = 1;
-            searchCtrl.currentPage = 1;
-            searchCtrl.resultsSortCategory = category;
-            searchCtrl.resultsOrderBy = order;
-          })
-          .error(function() {
-            $scope.queryInProgress = false;
-            $rootScope.dashboardSearchButtonDisabled = false;
-          });
-        };
-
-      searchCtrl.appsDisplayedCount = function() {
-        var lastPageMaxApps = $rootScope.numPerPage * searchCtrl.currentPage;
-        var baseAppNum = $rootScope.numPerPage * (searchCtrl.currentPage - 1) + 1;
-
-        if (lastPageMaxApps > searchCtrl.numApps) {
-          return "" + baseAppNum.toLocaleString() + " - " + searchCtrl.numApps.toLocaleString();
-        } else {
-          return "" + baseAppNum.toLocaleString() + " - " + lastPageMaxApps.toLocaleString();
-        }
+        .success(function(data) {
+          $scope.queryInProgress = false;
+          searchCtrl.apps = data.results;
+          searchCtrl.numApps = data.resultsCount;
+          $rootScope.dashboardSearchButtonDisabled = false;
+          $rootScope.currentPage = 1;
+          searchCtrl.currentPage = 1;
+          searchCtrl.resultsSortCategory = category;
+          searchCtrl.resultsOrderBy = order;
+        })
+        .error(function() {
+          $scope.queryInProgress = false;
+          $rootScope.dashboardSearchButtonDisabled = false;
+        });
       };
 
       // Computes class for last updated data in Last Updated column rows

@@ -139,7 +139,7 @@
         <!-- Company Apps Table -->
         <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
           <div class="panel-heading" id="listViewTableHeading">
-            <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisherData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying {{appsDisplayedCount()}} of {{numApps | number}}</span>
+            <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisherData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| {{numApps | number}} apps</span>
             <span class="ui-select pull-right">
               <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
                 <option value="">Add Selected to List</option>
