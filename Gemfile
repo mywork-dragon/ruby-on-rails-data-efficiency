@@ -151,7 +151,7 @@ gem 'chewy', '0.8.1'
 
 gem 'paperclip', '4.3.0'
 
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk', '2.2.36'
 #gem 'aws-sdk', '2.0.31' Use this version if you need to use the Ec2Manager class
 
 gem 'colorize', '0.7.7'
