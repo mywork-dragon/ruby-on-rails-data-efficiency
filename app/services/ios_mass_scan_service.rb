@@ -32,7 +32,7 @@ class IosMassScanService
 
       puts "Found all #{tried.count + checked.count} tried apps"
 
-      mb_high_by_ratings = IosApp.joins(:ios_app_snapshots).select(:id).distinct.where.not(id: tried).where.not(id: checked).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      mb_high_by_ratings = IosApp.joins(:newest_ios_app_snapshot).select(:id).distinct.where.not(id: tried).where.not(id: checked).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
 
       puts "Selected #{mb_high_by_ratings.length} apps in mobile priority high that haven't been tried"
 
