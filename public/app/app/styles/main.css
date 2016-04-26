@@ -8077,6 +8077,11 @@ h4.red {
   color: #a94442;
 }
 
+.fa.fa-usd, .fa-money {
+  color: green;
+  margin-left: 2px;
+}
+
 
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */

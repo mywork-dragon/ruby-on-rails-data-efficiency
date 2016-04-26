@@ -3,17 +3,18 @@
 angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter",
   function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter) {
 
+    var publisherDetailsCtrl = this;
     $scope.appPlatform = $routeParams.platform
     $scope.initialPageLoadComplete = false; // shows page load spinner
 
-    $scope.load = function() {
+    $scope.load = function(category, order) {
 
-      $scope.queryInProgress = true;
+      publisherDetailsCtrl.queryInProgress = true;
 
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $scope.appPlatform + '_developer',
-        params: {id: $routeParams.id}
+        params: {id: $routeParams.id, sortBy: category, orderBy: order}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.publisherData = data;
@@ -21,7 +22,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         $scope.apps = data.apps;
         $scope.numApps = data.apps.length;
         $rootScope.numApps = data.apps.length;
-        $scope.queryInProgress = false;
+        publisherDetailsCtrl.queryInProgress = false;
 
         $scope.initialPageLoadComplete = true; // hides page load spinner
 
@@ -37,7 +38,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         );
         /* -------- Mixpanel Analytics End -------- */
       }).error(function() {
-        $scope.queryInProgress = false;
+        publisherDetailsCtrl.queryInProgress = false;
       });
     };
     $scope.load();
@@ -119,6 +120,11 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
       return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
+    };
+
+    // When orderby/sort arrows on dashboard table are clicked
+    $scope.sortApps = function(category, order) {
+      $scope.load(category, order);
     };
 
     $scope.contactsLoading = false;

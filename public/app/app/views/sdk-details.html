@@ -133,6 +133,7 @@
                      <a href="#" ng-click="$event.preventDefault(); onAppTableAppClick(app)">
                        <img ng-src="{{app.icon}}" />
                        {{app.name}}
+                       <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
                      </a>
                    </span>
                    <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>

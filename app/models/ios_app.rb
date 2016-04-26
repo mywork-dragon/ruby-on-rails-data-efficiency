@@ -95,6 +95,7 @@ class IosApp < ActiveRecord::Base
       categories: self.categories,
       icon: self.icon_url,
       adSpend: self.old_ad_spend?,
+      price: newest_snapshot.try(:price),
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name),
@@ -112,7 +113,6 @@ class IosApp < ActiveRecord::Base
         inAppPurchases: newest_snapshot.try(:ios_in_app_purchases).try(:any?),
         appIdentifier: self.app_identifier,
         appStoreId: newest_snapshot.try(:developer_app_store_identifier),
-        price: newest_snapshot.try(:price),
         size: newest_snapshot.try(:size),
         requiredIosVersion: newest_snapshot.try(:required_ios_version),
         recommendedAge: newest_snapshot.try(:recommended_age),

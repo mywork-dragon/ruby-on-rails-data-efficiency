@@ -85,6 +85,7 @@ class AndroidApp < ActiveRecord::Base
       icon: newest_snapshot.try(:icon_url_300x300),
       downloadsMin: newest_snapshot.try(:downloads_min),
       downloadsMax: newest_snapshot.try(:downloads_max),
+      price: newest_snapshot.try(:price),
       company: company,
       publisher: {
         id: self.try(:android_developer).try(:id),
@@ -97,7 +98,6 @@ class AndroidApp < ActiveRecord::Base
       batch_json.merge!({
         downloads: self.downloads,
         playStoreId: newest_snapshot.try(:android_app_id),
-        price: newest_snapshot.try(:price),
         size: newest_snapshot.try(:size),
         requiredAndroidVersion: newest_snapshot.try(:required_android_version),
         contentRating: newest_snapshot.try(:content_rating),

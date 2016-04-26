@@ -24,6 +24,7 @@
               <a href="#/app/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
                 <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
                 {{batch.owner.name}}
+                <i ng-if="batch.owner.price" class="fa fa-2 fa-usd"></i>
               </a>
               <span ng-if="batch.activity_type == 'install'">
                 - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">{{batch.activities_count == 1 ? 'was' : 'were'}} seen</span>

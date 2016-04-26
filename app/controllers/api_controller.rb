@@ -165,7 +165,7 @@ class ApiController < ApplicationController
         id: developer.id,
         name: developer.name,
         websites: developer.websites.to_a.map{|w| w.url},
-        apps: developer.android_apps
+        apps: developer.sorted_android_apps(params[:sortBy], params[:orderBy]).as_json({user: @current_user})
       }
     end
     render json: @developer_json
@@ -179,7 +179,7 @@ class ApiController < ApplicationController
         id: developer.id,
         name: developer.name,
         websites: developer.get_website_urls,
-        apps: developer.ios_apps.as_json({user: @current_user})
+        apps: developer.sorted_ios_apps(params[:sortBy], params[:orderBy]).as_json({user: @current_user})
       }
     end
     render json: @developer_json
