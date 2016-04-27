@@ -49,6 +49,7 @@ Rails.application.configure do
 
   config.paperclip_defaults = {
     :storage => :s3,
+    :s3_region => 'us-east-1',
     :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
   }
 

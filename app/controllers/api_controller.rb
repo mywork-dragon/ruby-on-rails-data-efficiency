@@ -8,26 +8,6 @@ class ApiController < ApplicationController
   before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv]
   before_action :authenticate_ios_live_scan, only: [:ios_scan_status, :ios_start_scan] # Authorizing iOS Live Scan routes
 
-  def download_fortune_1000_csv
-    apps = IosApp.includes(:newest_ios_app_snapshot, websites: :company).joins(websites: :company).where('companies.fortune_1000_rank <= ?', 1000)
-    puts apps.count
-    f1000_csv = CSV.generate do |csv|
-      csv << ['App ID', 'App Name', 'Company Name', 'Company ID', 'Support URL', 'Seller URL', 'Website URLs', 'Website IDs']
-      apps.each do |app|
-        if app.newest_ios_app_snapshot.present? && app.get_company.present?
-          row = [app.id, app.newest_ios_app_snapshot.name, app.get_company.name, app.get_company.id, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.support_url, app.newest_ios_app_snapshot.seller_url, app.websites.map{|w| w.url}.join(', '), app.websites.map{|w| w.id}]
-          csv << row
-        end
-      end
-    end
-    # puts f1000_csv
-    # render send_data: f1000_csv
-    # return f1000_csv
-    respond_to do |format|
-      format.csv { send_data f1000_csv }
-    end
-  end
-
   def filter_ios_apps
 
     li 'filter_ios_apps'

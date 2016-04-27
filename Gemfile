@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.6'  # Rails > 4.2 may break Regex serialization: https://github.com/rails/rails/issues/18224
+gem 'rails', '4.2.6'  # Edit: YOLO. Rails > 4.2 may break Regex serialization: https://github.com/rails/rails/issues/18224
 # Use mysql as the database for Active Record
 gem 'mysql2', '0.3.17'
 # Use SCSS for stylesheets
@@ -149,9 +149,9 @@ gem 'elasticsearch-model', '0.1.7'
 
 gem 'chewy', '0.8.1'
 
-gem 'paperclip', '4.3.0'
+gem 'paperclip', '~>5.0.0.beta2'
 
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk', '~>2.2.37'
 #gem 'aws-sdk', '2.0.31' Use this version if you need to use the Ec2Manager class
 
 gem 'colorize', '0.7.7'
@@ -171,5 +171,3 @@ gem 'capybara'
 gem 'selenium-webdriver'
 
 # gem 'daemons', '1.2.3'
-
-gem 'yajl-ruby', '1.2.1', require: 'yajl'

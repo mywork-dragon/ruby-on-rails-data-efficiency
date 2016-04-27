@@ -23,7 +23,7 @@ Rails.application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  config.serve_static_assets = false
+  config.serve_static_files = false
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -92,9 +92,11 @@ Rails.application.configure do
 
   config.paperclip_defaults = {
     :storage => :s3,
+    :s3_region => 'us-east-1',
     :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
   }
 
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
+
 
 end

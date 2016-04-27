@@ -124,7 +124,7 @@ title = "#{user} deployed #{branch} to #{stage}.".chomp
 
 if run_tests
   # run tests and abort on failure
-  test_cmd = 'bundle exec rake test:all'
+  test_cmd = 'bundle exec rake test'
   last_line = nil
   IO.popen(test_cmd).each do |line|
     puts line
