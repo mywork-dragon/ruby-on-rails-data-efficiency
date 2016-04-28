@@ -298,7 +298,7 @@ class ApiController < ApplicationController
         developer.try(:name),
         developer.try(:identifier),
         company.present? ? company.fortune_1000_rank : nil,
-        developer.try(:get_website_urls).join(", "),
+        developer.try(:get_website_urls).try(:join, ', '),
         'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
         developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
         can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
@@ -325,7 +325,7 @@ class ApiController < ApplicationController
         developer.try(:name),
         developer.try(:identifier),
         company.present? ? company.fortune_1000_rank : nil,
-        developer.try(:get_website_urls).join(", "),
+        developer.try(:get_website_urls).try(:join, ', '),
         'http://www.mightysignal.com/app/app#/app/android/' + app.id.to_s,
         developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
       ]
