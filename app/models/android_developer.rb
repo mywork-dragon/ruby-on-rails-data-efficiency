@@ -13,7 +13,7 @@ class AndroidDeveloper < ActiveRecord::Base
   end
 
   def sorted_android_apps(category, order, page)
-    page = page.to_i
+    page = [page.to_i, 1].max
     category ||= 'lastUpdated'
     order ||= 'DESC'
     query = "includes(:android_developer, :android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where('android_app_snapshots.name IS NOT null')."

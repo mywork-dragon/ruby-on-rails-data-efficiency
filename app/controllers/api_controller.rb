@@ -276,12 +276,13 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Company ID', 'Company Name', 'Fortune Rank', 'Company Website(s)', 'MightySignal App Page', 'MightySignal Company Page']
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'Publisher ID', 'Publisher Name', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
     can_view_support_desk ? header.push('Support URL') : nil
 
     ios_apps.each do |app|
       # li "CREATING HASH FOR #{app.id}"
       company = app.get_company
+      developer = app.ios_developer
       newest_snapshot = app.newest_ios_app_snapshot
 
       app_hash = [
@@ -293,12 +294,12 @@ class ApiController < ApplicationController
         newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
         @current_user.account.try(:can_view_ad_spend?) ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
         newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
-        company.present? ? company.id : nil,
-        company.present? ? company.name : nil,
+        developer.try(:id),
+        developer.try(:name),
         company.present? ? company.fortune_1000_rank : nil,
         app.get_website_urls.join(", "),
         'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
-        company.present? ? 'http://www.mightysignal.com/app/app#/company/' + company.id.to_s : nil,
+        developer.present? ? 'http://www.mightysignal.com/app/app#/publishers/ios/' + developer.id.to_s : nil,
         can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
       ]
 
@@ -307,6 +308,7 @@ class ApiController < ApplicationController
 
     android_apps.each do |app|
       company = app.get_company
+      developer = app.android_developer
       newest_snapshot = app.newest_android_app_snapshot
 
       app_hash = [
@@ -318,12 +320,12 @@ class ApiController < ApplicationController
         newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
         app.android_fb_ad_appearances.present?,
         newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(", ") : nil,
-        company.present? ? company.id : nil,
-        company.present? ? company.name : nil,
+        developer.try(:id),
+        developer.try(:name),
         company.present? ? company.fortune_1000_rank : nil,
         app.get_website_urls.join(", "),
         'http://www.mightysignal.com/app/app#/app/android/' + app.id.to_s,
-        company.present? ? 'http://www.mightysignal.com/app/app#/company/' + company.id.to_s : nil
+        developer.present? ? 'http://www.mightysignal.com/app/app#/publishers/android/' + developer.id.to_s : nil
       ]
 
       apps << app_hash
