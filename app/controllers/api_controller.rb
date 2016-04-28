@@ -276,7 +276,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'Publisher ID', 'Publisher Name', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
     can_view_support_desk ? header.push('Support URL') : nil
 
     ios_apps.each do |app|
@@ -297,9 +297,9 @@ class ApiController < ApplicationController
         developer.try(:id),
         developer.try(:name),
         company.present? ? company.fortune_1000_rank : nil,
-        app.get_website_urls.join(", "),
+        developer.try(:get_website_urls).join(", "),
         'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
-        developer.present? ? 'http://www.mightysignal.com/app/app#/publishers/ios/' + developer.id.to_s : nil,
+        developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
         can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
       ]
 
@@ -323,9 +323,9 @@ class ApiController < ApplicationController
         developer.try(:id),
         developer.try(:name),
         company.present? ? company.fortune_1000_rank : nil,
-        app.get_website_urls.join(", "),
+        developer.try(:get_website_urls).join(", "),
         'http://www.mightysignal.com/app/app#/app/android/' + app.id.to_s,
-        developer.present? ? 'http://www.mightysignal.com/app/app#/publishers/android/' + developer.id.to_s : nil
+        developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
       ]
 
       apps << app_hash
