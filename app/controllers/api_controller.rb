@@ -276,7 +276,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
     can_view_support_desk ? header.push('Support URL') : nil
 
     ios_apps.each do |app|
@@ -296,6 +296,7 @@ class ApiController < ApplicationController
         newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
         developer.try(:id),
         developer.try(:name),
+        developer.try(:identifier),
         company.present? ? company.fortune_1000_rank : nil,
         developer.try(:get_website_urls).join(", "),
         'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
@@ -322,6 +323,7 @@ class ApiController < ApplicationController
         newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(", ") : nil,
         developer.try(:id),
         developer.try(:name),
+        developer.try(:identifier),
         company.present? ? company.fortune_1000_rank : nil,
         developer.try(:get_website_urls).join(", "),
         'http://www.mightysignal.com/app/app#/app/android/' + app.id.to_s,
