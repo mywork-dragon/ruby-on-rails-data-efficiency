@@ -114,7 +114,7 @@ namespace :deploy do
       execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
     end
 
-    on roles(:staging), in: :groups, limit: 3, wait: 10 do
+    on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
       within '/home/webapps/varys/current' do
         with rails_env: :production do
           rake 'aws:register_instance'
