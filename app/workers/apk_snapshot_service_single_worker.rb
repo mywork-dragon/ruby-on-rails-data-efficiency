@@ -40,7 +40,7 @@ class ApkSnapshotServiceSingleWorker
 
   # Stop the retries early if it looks unrecoverable
   def raise_early_stop(apk_snap)
-    raise ApkWorker::EarlyStop if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
+    # raise ApkWorker::EarlyStop if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
   end
 
   def classify_if_necessary(apk_ss_id)
