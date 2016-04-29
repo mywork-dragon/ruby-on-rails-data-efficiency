@@ -64,7 +64,7 @@ class ApkSnapshotService
 
     private
 
-    def weekly_recently_updated_ids(limit: 20e3)
+    def weekly_recently_updated_ids(limit: 50e3)
       recently_updated_ids = AndroidApp.joins(:newest_android_app_snapshot).where('android_app_snapshots.released > ?', 2.week.ago).order('android_app_snapshots.ratings_all_count DESC').limit(limit).pluck(:id)
     end
 
