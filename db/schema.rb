@@ -11,102 +11,102 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421185227) do
+ActiveRecord::Schema.define(version: 20160429175206) do
 
-  create_table "accounts", force: true do |t|
-    t.string   "name"
+  create_table "accounts", force: :cascade do |t|
+    t.string   "name",                    limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "can_view_support_desk",   default: false, null: false
-    t.boolean  "can_view_ad_spend",       default: true,  null: false
-    t.boolean  "can_view_sdks",           default: false, null: false
-    t.boolean  "can_view_storewide_sdks", default: false
-    t.boolean  "can_view_exports",        default: true
-    t.boolean  "is_admin_account",        default: false
+    t.boolean  "can_view_support_desk",               default: false, null: false
+    t.boolean  "can_view_ad_spend",                   default: true,  null: false
+    t.boolean  "can_view_sdks",                       default: false, null: false
+    t.boolean  "can_view_storewide_sdks",             default: false
+    t.boolean  "can_view_exports",                    default: true
+    t.boolean  "is_admin_account",                    default: false
     t.boolean  "can_view_ios_live_scan"
-    t.integer  "seats_count",             default: 5
+    t.integer  "seats_count",             limit: 4,   default: 5
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
 
-  create_table "activities", force: true do |t|
+  create_table "activities", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "happened_at"
   end
 
-  create_table "ad_platforms", force: true do |t|
-    t.string   "platform"
+  create_table "ad_platforms", force: :cascade do |t|
+    t.string   "platform",   limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "android_app_categories", force: true do |t|
-    t.string   "name"
+  create_table "android_app_categories", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "android_app_categories", ["name"], name: "index_android_app_categories_on_name", using: :btree
 
-  create_table "android_app_categories_snapshots", force: true do |t|
-    t.integer  "android_app_category_id"
-    t.integer  "android_app_snapshot_id"
+  create_table "android_app_categories_snapshots", force: :cascade do |t|
+    t.integer  "android_app_category_id", limit: 4
+    t.integer  "android_app_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "kind"
+    t.integer  "kind",                    limit: 4
   end
 
   add_index "android_app_categories_snapshots", ["android_app_category_id"], name: "index_android_app_category_id", using: :btree
   add_index "android_app_categories_snapshots", ["android_app_snapshot_id", "android_app_category_id"], name: "index_android_app_snapshot_id_category_id", using: :btree
 
-  create_table "android_app_snapshot_exceptions", force: true do |t|
-    t.integer  "android_app_snapshot_id"
-    t.text     "name"
-    t.text     "backtrace"
-    t.integer  "try"
+  create_table "android_app_snapshot_exceptions", force: :cascade do |t|
+    t.integer  "android_app_snapshot_id",     limit: 4
+    t.text     "name",                        limit: 65535
+    t.text     "backtrace",                   limit: 65535
+    t.integer  "try",                         limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "android_app_snapshot_job_id"
+    t.integer  "android_app_snapshot_job_id", limit: 4
   end
 
   add_index "android_app_snapshot_exceptions", ["android_app_snapshot_id"], name: "index_android_app_snapshot_exceptions_on_android_app_snapshot_id", using: :btree
   add_index "android_app_snapshot_exceptions", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_job_id", using: :btree
 
-  create_table "android_app_snapshot_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "android_app_snapshot_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "android_app_snapshots", force: true do |t|
+  create_table "android_app_snapshots", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
-    t.integer  "price"
+    t.string   "name",                             limit: 191
+    t.integer  "price",                            limit: 4
     t.integer  "size",                             limit: 8
     t.date     "updated"
-    t.string   "seller_url"
-    t.string   "version"
+    t.string   "seller_url",                       limit: 191
+    t.string   "version",                          limit: 191
     t.date     "released"
-    t.text     "description"
-    t.integer  "android_app_id"
-    t.integer  "google_plus_likes"
+    t.text     "description",                      limit: 65535
+    t.integer  "android_app_id",                   limit: 4
+    t.integer  "google_plus_likes",                limit: 4
     t.boolean  "top_dev"
     t.boolean  "in_app_purchases"
-    t.string   "required_android_version"
-    t.string   "content_rating"
-    t.string   "seller"
-    t.decimal  "ratings_all_stars",                          precision: 3, scale: 2
-    t.integer  "ratings_all_count"
-    t.integer  "status"
-    t.integer  "android_app_snapshot_job_id"
-    t.integer  "in_app_purchase_min"
-    t.integer  "in_app_purchase_max"
+    t.string   "required_android_version",         limit: 191
+    t.string   "content_rating",                   limit: 191
+    t.string   "seller",                           limit: 191
+    t.decimal  "ratings_all_stars",                              precision: 3, scale: 2
+    t.integer  "ratings_all_count",                limit: 4
+    t.integer  "status",                           limit: 4
+    t.integer  "android_app_snapshot_job_id",      limit: 4
+    t.integer  "in_app_purchase_min",              limit: 4
+    t.integer  "in_app_purchase_max",              limit: 4
     t.integer  "downloads_min",                    limit: 8
     t.integer  "downloads_max",                    limit: 8
-    t.string   "icon_url_300x300"
-    t.string   "developer_google_play_identifier"
+    t.string   "icon_url_300x300",                 limit: 191
+    t.string   "developer_google_play_identifier", limit: 191
     t.boolean  "apk_access_forbidden"
   end
 
@@ -121,27 +121,27 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_app_snapshots", ["name"], name: "index_name", using: :btree
   add_index "android_app_snapshots", ["released"], name: "index_released", using: :btree
 
-  create_table "android_app_snapshots_scr_shts", force: true do |t|
-    t.string   "url"
-    t.integer  "position"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "android_app_snapshot_id"
+  create_table "android_app_snapshots_scr_shts", force: :cascade do |t|
+    t.string   "url",                     limit: 191
+    t.integer  "position",                limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "android_app_snapshot_id", limit: 4
   end
 
   add_index "android_app_snapshots_scr_shts", ["android_app_snapshot_id"], name: "index_android_app_snapshots_scr_shts_on_android_app_snapshot_id", using: :btree
 
-  create_table "android_apps", force: true do |t|
+  create_table "android_apps", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "app_identifier"
-    t.integer  "app_id"
-    t.integer  "newest_android_app_snapshot_id"
-    t.integer  "user_base"
-    t.integer  "mobile_priority"
-    t.integer  "newest_apk_snapshot_id"
-    t.integer  "display_type",                   default: 0
-    t.integer  "android_developer_id"
+    t.string   "app_identifier",                 limit: 191
+    t.integer  "app_id",                         limit: 4
+    t.integer  "newest_android_app_snapshot_id", limit: 4
+    t.integer  "user_base",                      limit: 4
+    t.integer  "mobile_priority",                limit: 4
+    t.integer  "newest_apk_snapshot_id",         limit: 4
+    t.integer  "display_type",                   limit: 4,   default: 0
+    t.integer  "android_developer_id",           limit: 4
   end
 
   add_index "android_apps", ["android_developer_id"], name: "index_android_apps_on_android_developer_id", using: :btree
@@ -152,9 +152,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_apps", ["newest_apk_snapshot_id"], name: "index_android_apps_on_newest_apk_snapshot_id", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
 
-  create_table "android_apps_websites", force: true do |t|
-    t.integer  "android_app_id"
-    t.integer  "website_id"
+  create_table "android_apps_websites", force: :cascade do |t|
+    t.integer  "android_app_id", limit: 4
+    t.integer  "website_id",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -162,10 +162,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_apps_websites", ["android_app_id"], name: "index_android_apps_websites_on_android_app_id", using: :btree
   add_index "android_apps_websites", ["website_id", "android_app_id"], name: "index_android_apps_websites_on_website_id_and_android_app_id", using: :btree
 
-  create_table "android_developers", force: true do |t|
-    t.string   "name"
-    t.string   "identifier"
-    t.integer  "company_id"
+  create_table "android_developers", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.string   "identifier", limit: 191
+    t.integer  "company_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -174,9 +174,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_developers", ["identifier"], name: "index_android_developers_on_identifier", using: :btree
   add_index "android_developers", ["name"], name: "index_android_developers_on_name", using: :btree
 
-  create_table "android_developers_websites", force: true do |t|
-    t.integer  "android_developer_id"
-    t.integer  "website_id"
+  create_table "android_developers_websites", force: :cascade do |t|
+    t.integer  "android_developer_id", limit: 4
+    t.integer  "website_id",           limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -184,12 +184,12 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_developers_websites", ["android_developer_id", "website_id"], name: "android_dev_id_and_website_id", using: :btree
   add_index "android_developers_websites", ["website_id"], name: "index_android_developers_websites_on_website_id", using: :btree
 
-  create_table "android_fb_ad_appearances", force: true do |t|
-    t.string   "aws_assignment_identifier"
-    t.string   "hit_identifier"
-    t.integer  "m_turk_worker_id"
-    t.integer  "android_app_id"
-    t.string   "heroku_identifier"
+  create_table "android_fb_ad_appearances", force: :cascade do |t|
+    t.string   "aws_assignment_identifier", limit: 191
+    t.string   "hit_identifier",            limit: 191
+    t.integer  "m_turk_worker_id",          limit: 4
+    t.integer  "android_app_id",            limit: 4
+    t.string   "heroku_identifier",         limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -200,10 +200,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_fb_ad_appearances", ["hit_identifier"], name: "index_android_fb_ad_appearances_on_hit_identifier", using: :btree
   add_index "android_fb_ad_appearances", ["m_turk_worker_id"], name: "index_android_fb_ad_appearances_on_m_turk_worker_id", using: :btree
 
-  create_table "android_packages", force: true do |t|
-    t.string   "package_name"
-    t.integer  "apk_snapshot_id"
-    t.integer  "android_package_tag"
+  create_table "android_packages", force: :cascade do |t|
+    t.string   "package_name",        limit: 191
+    t.integer  "apk_snapshot_id",     limit: 4
+    t.integer  "android_package_tag", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "identified"
@@ -214,15 +214,15 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_packages", ["apk_snapshot_id"], name: "index_android_packages_on_apk_snapshot_id", using: :btree
   add_index "android_packages", ["package_name"], name: "index_android_packages_on_package_name", using: :btree
 
-  create_table "android_sdk_companies", force: true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.string   "favicon"
-    t.boolean  "flagged",           default: false
+  create_table "android_sdk_companies", force: :cascade do |t|
+    t.string   "name",              limit: 191
+    t.string   "website",           limit: 191
+    t.string   "favicon",           limit: 191
+    t.boolean  "flagged",                       default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "open_source",       default: false
-    t.integer  "parent_company_id"
+    t.boolean  "open_source",                   default: false
+    t.integer  "parent_company_id", limit: 4
     t.boolean  "is_parent"
   end
 
@@ -233,9 +233,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_companies", ["parent_company_id"], name: "android_sdk_companies_parent_company_index", using: :btree
   add_index "android_sdk_companies", ["website"], name: "index_android_sdk_companies_on_website", using: :btree
 
-  create_table "android_sdk_companies_android_apps", force: true do |t|
-    t.integer  "android_sdk_company_id"
-    t.integer  "android_app_id"
+  create_table "android_sdk_companies_android_apps", force: :cascade do |t|
+    t.integer  "android_sdk_company_id", limit: 4
+    t.integer  "android_app_id",         limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -243,9 +243,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_companies_android_apps", ["android_app_id", "android_sdk_company_id"], name: "index_android_app_id_android_sdk_company_id", using: :btree
   add_index "android_sdk_companies_android_apps", ["android_sdk_company_id"], name: "android_sdk_company_id", using: :btree
 
-  create_table "android_sdk_companies_apk_snapshots", force: true do |t|
-    t.integer  "android_sdk_company_id"
-    t.integer  "apk_snapshot_id"
+  create_table "android_sdk_companies_apk_snapshots", force: :cascade do |t|
+    t.integer  "android_sdk_company_id", limit: 4
+    t.integer  "apk_snapshot_id",        limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -254,9 +254,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id2", using: :btree
   add_index "android_sdk_companies_apk_snapshots", ["apk_snapshot_id", "android_sdk_company_id"], name: "index_apk_snapshot_id_android_sdk_company_id_unique", unique: true, using: :btree
 
-  create_table "android_sdk_links", force: true do |t|
-    t.integer  "source_sdk_id"
-    t.integer  "dest_sdk_id"
+  create_table "android_sdk_links", force: :cascade do |t|
+    t.integer  "source_sdk_id", limit: 4
+    t.integer  "dest_sdk_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -264,17 +264,17 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_links", ["dest_sdk_id"], name: "index_android_sdk_links_on_dest_sdk_id", using: :btree
   add_index "android_sdk_links", ["source_sdk_id"], name: "index_android_sdk_links_on_source_sdk_id", unique: true, using: :btree
 
-  create_table "android_sdk_package_prefixes", force: true do |t|
-    t.string  "prefix"
-    t.integer "android_sdk_company_id"
+  create_table "android_sdk_package_prefixes", force: :cascade do |t|
+    t.string  "prefix",                 limit: 191
+    t.integer "android_sdk_company_id", limit: 4
   end
 
   add_index "android_sdk_package_prefixes", ["android_sdk_company_id"], name: "index_android_sdk_package_prefixes_on_android_sdk_company_id", using: :btree
   add_index "android_sdk_package_prefixes", ["prefix"], name: "index_android_sdk_package_prefixes_on_prefix", using: :btree
 
-  create_table "android_sdk_packages", force: true do |t|
-    t.string   "package_name"
-    t.integer  "android_sdk_package_prefix_id"
+  create_table "android_sdk_packages", force: :cascade do |t|
+    t.string   "package_name",                  limit: 191
+    t.integer  "android_sdk_package_prefix_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -282,9 +282,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_packages", ["android_sdk_package_prefix_id"], name: "index_android_sdk_packages_on_android_sdk_package_prefix_id", using: :btree
   add_index "android_sdk_packages", ["package_name"], name: "index_android_sdk_packages_on_package_name", using: :btree
 
-  create_table "android_sdk_packages_apk_snapshots", force: true do |t|
-    t.integer  "android_sdk_package_id"
-    t.integer  "apk_snapshot_id"
+  create_table "android_sdk_packages_apk_snapshots", force: :cascade do |t|
+    t.integer  "android_sdk_package_id", limit: 4
+    t.integer  "apk_snapshot_id",        limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -292,17 +292,17 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdk_packages_apk_snapshots", ["android_sdk_package_id"], name: "android_sdk_package_id", using: :btree
   add_index "android_sdk_packages_apk_snapshots", ["apk_snapshot_id", "android_sdk_package_id"], name: "index_apk_snapshot_id_android_sdk_package_id", using: :btree
 
-  create_table "android_sdks", force: true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.string   "favicon"
-    t.boolean  "flagged",                default: false
+  create_table "android_sdks", force: :cascade do |t|
+    t.string   "name",                   limit: 191
+    t.string   "website",                limit: 191
+    t.string   "favicon",                limit: 191
+    t.boolean  "flagged",                            default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sdk_company_id"
-    t.integer  "github_repo_identifier"
-    t.integer  "kind"
+    t.integer  "sdk_company_id",         limit: 4
+    t.integer  "github_repo_identifier", limit: 4
+    t.integer  "kind",                   limit: 4
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
@@ -313,9 +313,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdks", ["sdk_company_id"], name: "index_android_sdks_on_sdk_company_id", using: :btree
   add_index "android_sdks", ["website"], name: "index_android_sdks_on_website", using: :btree
 
-  create_table "android_sdks_apk_snapshots", force: true do |t|
-    t.integer  "android_sdk_id"
-    t.integer  "apk_snapshot_id"
+  create_table "android_sdks_apk_snapshots", force: :cascade do |t|
+    t.integer  "android_sdk_id",  limit: 4
+    t.integer  "apk_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -323,39 +323,39 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
   add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", unique: true, using: :btree
 
-  create_table "api_keys", force: true do |t|
-    t.string   "key"
+  create_table "api_keys", force: :cascade do |t|
+    t.string   "key",        limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "account_id"
+    t.integer  "account_id", limit: 4
   end
 
   add_index "api_keys", ["account_id"], name: "index_api_keys_on_account_id", using: :btree
   add_index "api_keys", ["key"], name: "index_api_keys_on_key", using: :btree
 
-  create_table "apk_files", force: true do |t|
+  create_table "apk_files", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "apk_file_name"
-    t.string   "apk_content_type"
-    t.integer  "apk_file_size"
+    t.string   "apk_file_name",    limit: 191
+    t.string   "apk_content_type", limit: 191
+    t.integer  "apk_file_size",    limit: 4
     t.datetime "apk_updated_at"
-    t.string   "zip_file_name"
-    t.string   "zip_content_type"
-    t.integer  "zip_file_size"
+    t.string   "zip_file_name",    limit: 191
+    t.string   "zip_content_type", limit: 191
+    t.integer  "zip_file_size",    limit: 4
     t.datetime "zip_updated_at"
   end
 
-  create_table "apk_snapshot_exceptions", force: true do |t|
-    t.integer  "apk_snapshot_id"
-    t.text     "name"
-    t.text     "backtrace"
-    t.integer  "try"
-    t.integer  "apk_snapshot_job_id"
-    t.integer  "google_account_id"
+  create_table "apk_snapshot_exceptions", force: :cascade do |t|
+    t.integer  "apk_snapshot_id",     limit: 4
+    t.text     "name",                limit: 65535
+    t.text     "backtrace",           limit: 65535
+    t.integer  "try",                 limit: 4
+    t.integer  "apk_snapshot_job_id", limit: 4
+    t.integer  "google_account_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "status_code"
+    t.integer  "status_code",         limit: 4
   end
 
   add_index "apk_snapshot_exceptions", ["apk_snapshot_id"], name: "index_apk_snapshot_exceptions_on_apk_snapshot_id", using: :btree
@@ -363,21 +363,21 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apk_snapshot_exceptions", ["google_account_id"], name: "index_apk_snapshot_exceptions_on_google_account_id", using: :btree
   add_index "apk_snapshot_exceptions", ["status_code"], name: "index_apk_status_code", using: :btree
 
-  create_table "apk_snapshot_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "apk_snapshot_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.boolean  "is_fucked"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "job_type"
+    t.integer  "job_type",   limit: 4
   end
 
   add_index "apk_snapshot_jobs", ["job_type"], name: "index_apk_snapshot_jobs_on_job_type", using: :btree
 
-  create_table "apk_snapshot_scrape_exceptions", force: true do |t|
-    t.integer  "apk_snapshot_job_id"
-    t.text     "error"
-    t.text     "backtrace"
-    t.integer  "android_app_id"
+  create_table "apk_snapshot_scrape_exceptions", force: :cascade do |t|
+    t.integer  "apk_snapshot_job_id", limit: 4
+    t.text     "error",               limit: 65535
+    t.text     "backtrace",           limit: 65535
+    t.integer  "android_app_id",      limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -385,38 +385,38 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apk_snapshot_scrape_exceptions", ["android_app_id"], name: "index_apk_snapshot_scrape_exceptions_on_android_app_id", using: :btree
   add_index "apk_snapshot_scrape_exceptions", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_exceptions_on_apk_snapshot_job_id", using: :btree
 
-  create_table "apk_snapshot_scrape_failures", force: true do |t|
-    t.integer  "android_app_id"
-    t.integer  "reason"
-    t.text     "scrape_content"
+  create_table "apk_snapshot_scrape_failures", force: :cascade do |t|
+    t.integer  "android_app_id",      limit: 4
+    t.integer  "reason",              limit: 4
+    t.text     "scrape_content",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "version"
-    t.integer  "apk_snapshot_job_id"
+    t.string   "version",             limit: 191
+    t.integer  "apk_snapshot_job_id", limit: 4
   end
 
   add_index "apk_snapshot_scrape_failures", ["android_app_id"], name: "index_apk_snapshot_scrape_failures_on_android_app_id", using: :btree
   add_index "apk_snapshot_scrape_failures", ["apk_snapshot_job_id"], name: "index_apk_snapshot_scrape_failures_on_apk_snapshot_job_id", using: :btree
 
-  create_table "apk_snapshots", force: true do |t|
-    t.string   "version"
-    t.integer  "google_account_id"
-    t.integer  "android_app_id"
+  create_table "apk_snapshots", force: :cascade do |t|
+    t.string   "version",             limit: 191
+    t.integer  "google_account_id",   limit: 4
+    t.integer  "android_app_id",      limit: 4
     t.float    "download_time",       limit: 24
     t.float    "unpack_time",         limit: 24
-    t.integer  "status"
-    t.integer  "apk_snapshot_job_id"
+    t.integer  "status",              limit: 4
+    t.integer  "apk_snapshot_job_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "try"
-    t.text     "auth_token"
-    t.integer  "micro_proxy_id"
-    t.integer  "last_device"
-    t.integer  "apk_file_id"
-    t.integer  "scan_status"
+    t.integer  "try",                 limit: 4
+    t.text     "auth_token",          limit: 65535
+    t.integer  "micro_proxy_id",      limit: 4
+    t.integer  "last_device",         limit: 4
+    t.integer  "apk_file_id",         limit: 4
+    t.integer  "scan_status",         limit: 4
     t.datetime "last_updated"
-    t.integer  "scan_version"
-    t.integer  "version_code"
+    t.integer  "scan_version",        limit: 4
+    t.integer  "version_code",        limit: 4
     t.datetime "first_valid_date"
     t.datetime "good_as_of_date"
     t.datetime "last_scanned"
@@ -435,9 +435,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
   add_index "apk_snapshots", ["version_code"], name: "index_apk_snapshots_on_version_code", using: :btree
 
-  create_table "apk_snapshots_sdk_dlls", force: true do |t|
-    t.integer  "apk_snapshot_id"
-    t.integer  "sdk_dll_id"
+  create_table "apk_snapshots_sdk_dlls", force: :cascade do |t|
+    t.integer  "apk_snapshot_id", limit: 4
+    t.integer  "sdk_dll_id",      limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -445,9 +445,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apk_snapshots_sdk_dlls", ["apk_snapshot_id", "sdk_dll_id"], name: "index_apk_snapshot_id_sdk_dll_id", using: :btree
   add_index "apk_snapshots_sdk_dlls", ["sdk_dll_id"], name: "index_sdk_dll_id", using: :btree
 
-  create_table "apk_snapshots_sdk_js_tags", force: true do |t|
-    t.integer  "apk_snapshot_id"
-    t.integer  "sdk_js_tag_id"
+  create_table "apk_snapshots_sdk_js_tags", force: :cascade do |t|
+    t.integer  "apk_snapshot_id", limit: 4
+    t.integer  "sdk_js_tag_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -455,17 +455,17 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
   add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
 
-  create_table "app_stores", force: true do |t|
-    t.string   "country_code"
+  create_table "app_stores", force: :cascade do |t|
+    t.string   "country_code", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
 
-  create_table "app_stores_ios_apps", force: true do |t|
-    t.integer  "app_store_id"
-    t.integer  "ios_app_id"
+  create_table "app_stores_ios_apps", force: :cascade do |t|
+    t.integer  "app_store_id", limit: 4
+    t.integer  "ios_app_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -473,10 +473,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "app_stores_ios_apps", ["app_store_id"], name: "index_app_stores_ios_apps_on_app_store_id", using: :btree
   add_index "app_stores_ios_apps", ["ios_app_id", "app_store_id"], name: "index_app_stores_ios_apps_on_ios_app_id_and_app_store_id", using: :btree
 
-  create_table "apple_accounts", force: true do |t|
-    t.string   "email"
-    t.string   "password"
-    t.integer  "ios_device_id"
+  create_table "apple_accounts", force: :cascade do |t|
+    t.string   "email",         limit: 191
+    t.string   "password",      limit: 191
+    t.integer  "ios_device_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -484,29 +484,29 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "apple_accounts", ["email"], name: "index_apple_accounts_on_email", using: :btree
   add_index "apple_accounts", ["ios_device_id"], name: "index_apple_accounts_on_ios_device_id", using: :btree
 
-  create_table "apple_docs", force: true do |t|
-    t.string   "name"
+  create_table "apple_docs", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "apple_docs", ["name"], name: "index_apple_docs_on_name", using: :btree
 
-  create_table "apps", force: true do |t|
+  create_table "apps", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "company_id"
-    t.string   "name"
+    t.integer  "company_id", limit: 4
+    t.string   "name",       limit: 191
   end
 
-  create_table "class_dumps", force: true do |t|
+  create_table "class_dumps", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "class_dump_file_name"
-    t.string   "class_dump_content_type"
-    t.integer  "class_dump_file_size"
+    t.string   "class_dump_file_name",     limit: 191
+    t.string   "class_dump_content_type",  limit: 191
+    t.integer  "class_dump_file_size",     limit: 4
     t.datetime "class_dump_updated_at"
-    t.integer  "ipa_snapshot_id"
+    t.integer  "ipa_snapshot_id",          limit: 4
     t.boolean  "success"
     t.boolean  "install_success"
     t.boolean  "dump_success"
@@ -516,20 +516,20 @@ ActiveRecord::Schema.define(version: 20160421185227) do
     t.float    "install_time",             limit: 24
     t.float    "dump_time",                limit: 24
     t.float    "teardown_time",            limit: 24
-    t.text     "error"
-    t.text     "trace"
-    t.text     "error_root"
-    t.text     "error_teardown"
-    t.text     "error_teardown_trace"
-    t.string   "method"
+    t.text     "error",                    limit: 65535
+    t.text     "trace",                    limit: 65535
+    t.text     "error_root",               limit: 65535
+    t.text     "error_teardown",           limit: 65535
+    t.text     "error_teardown_trace",     limit: 65535
+    t.string   "method",                   limit: 191
     t.boolean  "complete"
-    t.integer  "error_code"
-    t.integer  "ios_device_id"
+    t.integer  "error_code",               limit: 4
+    t.integer  "ios_device_id",            limit: 4
     t.boolean  "has_fw_folder"
-    t.integer  "apple_account_id"
-    t.string   "app_content_file_name"
-    t.string   "app_content_content_type"
-    t.integer  "app_content_file_size"
+    t.integer  "apple_account_id",         limit: 4
+    t.string   "app_content_file_name",    limit: 191
+    t.string   "app_content_content_type", limit: 191
+    t.integer  "app_content_file_size",    limit: 4
     t.datetime "app_content_updated_at"
   end
 
@@ -550,15 +550,15 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "class_dumps", ["teardown_success"], name: "index_class_dumps_on_teardown_success", using: :btree
   add_index "class_dumps", ["teardown_time"], name: "index_class_dumps_on_teardown_time", using: :btree
 
-  create_table "clearbit_contacts", force: true do |t|
-    t.integer  "website_id"
-    t.string   "clearbit_id"
-    t.string   "given_name"
-    t.string   "family_name"
-    t.string   "full_name"
-    t.string   "title"
-    t.string   "email"
-    t.string   "linkedin"
+  create_table "clearbit_contacts", force: :cascade do |t|
+    t.integer  "website_id",  limit: 4
+    t.string   "clearbit_id", limit: 191
+    t.string   "given_name",  limit: 191
+    t.string   "family_name", limit: 191
+    t.string   "full_name",   limit: 191
+    t.string   "title",       limit: 191
+    t.string   "email",       limit: 191
+    t.string   "linkedin",    limit: 191
     t.date     "updated"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -567,10 +567,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "clearbit_contacts", ["clearbit_id"], name: "index_clearbit_contacts_on_clearbit_id", using: :btree
   add_index "clearbit_contacts", ["website_id"], name: "index_clearbit_contacts_on_website_id", using: :btree
 
-  create_table "cocoapod_authors", force: true do |t|
-    t.string   "name"
-    t.text     "email"
-    t.integer  "cocoapod_id"
+  create_table "cocoapod_authors", force: :cascade do |t|
+    t.string   "name",        limit: 191
+    t.text     "email",       limit: 65535
+    t.integer  "cocoapod_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -578,75 +578,75 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "cocoapod_authors", ["cocoapod_id"], name: "index_cocoapod_authors_on_cocoapod_id", using: :btree
   add_index "cocoapod_authors", ["name"], name: "index_cocoapod_authors_on_name", using: :btree
 
-  create_table "cocoapod_exceptions", force: true do |t|
+  create_table "cocoapod_exceptions", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cocoapod_id"
-    t.text     "error"
-    t.text     "backtrace"
+    t.integer  "cocoapod_id", limit: 4
+    t.text     "error",       limit: 65535
+    t.text     "backtrace",   limit: 65535
   end
 
   add_index "cocoapod_exceptions", ["cocoapod_id"], name: "index_cocoapod_exceptions_on_cocoapod_id", using: :btree
 
-  create_table "cocoapod_metric_exceptions", force: true do |t|
-    t.integer  "cocoapod_metric_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "cocoapod_metric_exceptions", force: :cascade do |t|
+    t.integer  "cocoapod_metric_id", limit: 4
+    t.text     "error",              limit: 65535
+    t.text     "backtrace",          limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "cocoapod_metric_exceptions", ["cocoapod_metric_id"], name: "index_cocoapod_metric_exceptions_on_cocoapod_metric_id", using: :btree
 
-  create_table "cocoapod_metrics", force: true do |t|
-    t.integer  "ios_sdk_id"
+  create_table "cocoapod_metrics", force: :cascade do |t|
+    t.integer  "ios_sdk_id",                        limit: 4
     t.boolean  "success"
-    t.integer  "stats_download_total"
-    t.integer  "stats_download_week"
-    t.integer  "stats_download_month"
-    t.integer  "stats_app_total"
-    t.integer  "stats_app_week"
-    t.integer  "stats_tests_total"
-    t.integer  "stats_tests_week"
+    t.integer  "stats_download_total",              limit: 4
+    t.integer  "stats_download_week",               limit: 4
+    t.integer  "stats_download_month",              limit: 4
+    t.integer  "stats_app_total",                   limit: 4
+    t.integer  "stats_app_week",                    limit: 4
+    t.integer  "stats_tests_total",                 limit: 4
+    t.integer  "stats_tests_week",                  limit: 4
     t.datetime "stats_created_at"
     t.datetime "stats_updated_at"
-    t.integer  "stats_extension_week"
-    t.integer  "stats_extension_total"
-    t.integer  "stats_watch_week"
-    t.integer  "stats_watch_total"
-    t.integer  "stats_pod_try_week"
-    t.integer  "stats_pod_try_total"
+    t.integer  "stats_extension_week",              limit: 4
+    t.integer  "stats_extension_total",             limit: 4
+    t.integer  "stats_watch_week",                  limit: 4
+    t.integer  "stats_watch_total",                 limit: 4
+    t.integer  "stats_pod_try_week",                limit: 4
+    t.integer  "stats_pod_try_total",               limit: 4
     t.boolean  "stats_is_active"
-    t.integer  "github_subscribers"
-    t.integer  "github_stargazers"
-    t.integer  "github_forks"
-    t.integer  "github_contributors"
-    t.integer  "github_open_issues"
-    t.integer  "github_open_pull_requests"
+    t.integer  "github_subscribers",                limit: 4
+    t.integer  "github_stargazers",                 limit: 4
+    t.integer  "github_forks",                      limit: 4
+    t.integer  "github_contributors",               limit: 4
+    t.integer  "github_open_issues",                limit: 4
+    t.integer  "github_open_pull_requests",         limit: 4
     t.datetime "github_created_at"
     t.datetime "github_updated_at"
-    t.string   "github_language"
-    t.integer  "github_closed_issues"
-    t.integer  "github_closed_pull_requests"
-    t.integer  "cocoadocs_install_size"
-    t.integer  "cocoadocs_total_files"
-    t.integer  "cocoadocs_total_comments"
-    t.integer  "cocoadocs_total_lines_of_code"
-    t.integer  "cocoadocs_doc_percent"
-    t.integer  "cocoadocs_readme_complexity"
+    t.string   "github_language",                   limit: 191
+    t.integer  "github_closed_issues",              limit: 4
+    t.integer  "github_closed_pull_requests",       limit: 4
+    t.integer  "cocoadocs_install_size",            limit: 4
+    t.integer  "cocoadocs_total_files",             limit: 4
+    t.integer  "cocoadocs_total_comments",          limit: 4
+    t.integer  "cocoadocs_total_lines_of_code",     limit: 4
+    t.integer  "cocoadocs_doc_percent",             limit: 4
+    t.integer  "cocoadocs_readme_complexity",       limit: 4
     t.datetime "cocoadocs_initial_commit_date"
-    t.string   "cocoadocs_rendered_readme_url"
+    t.string   "cocoadocs_rendered_readme_url",     limit: 191
     t.datetime "cocoadocs_created_at"
     t.datetime "cocoadocs_updated_at"
-    t.string   "cocoadocs_license_short_name"
-    t.string   "cocoadocs_license_canonical_url"
-    t.integer  "cocoadocs_total_test_expectations"
-    t.string   "cocoadocs_dominant_language"
-    t.integer  "cocoadocs_quality_estimate"
+    t.string   "cocoadocs_license_short_name",      limit: 191
+    t.string   "cocoadocs_license_canonical_url",   limit: 191
+    t.integer  "cocoadocs_total_test_expectations", limit: 4
+    t.string   "cocoadocs_dominant_language",       limit: 191
+    t.integer  "cocoadocs_quality_estimate",        limit: 4
     t.boolean  "cocoadocs_builds_independently"
     t.boolean  "cocoadocs_is_vendored_framework"
-    t.string   "cocoadocs_rendered_changelog_url"
-    t.text     "cocoadocs_rendered_summary"
+    t.string   "cocoadocs_rendered_changelog_url",  limit: 191
+    t.text     "cocoadocs_rendered_summary",        limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -656,21 +656,21 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "cocoapod_metrics", ["stats_download_total"], name: "index_cocoapod_metrics_on_stats_download_total", using: :btree
   add_index "cocoapod_metrics", ["success"], name: "index_cocoapod_metrics_on_success", using: :btree
 
-  create_table "cocoapod_source_data", force: true do |t|
-    t.string   "name"
-    t.integer  "cocoapod_id"
+  create_table "cocoapod_source_data", force: :cascade do |t|
+    t.string   "name",        limit: 191
+    t.integer  "cocoapod_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "flagged",     default: false
+    t.boolean  "flagged",                 default: false
   end
 
   add_index "cocoapod_source_data", ["cocoapod_id"], name: "index_cocoapod_source_data_on_cocoapod_id", using: :btree
   add_index "cocoapod_source_data", ["flagged"], name: "index_cocoapod_source_data_on_flagged", using: :btree
   add_index "cocoapod_source_data", ["name", "flagged"], name: "index_cocoapod_source_data_on_name_and_flagged", using: :btree
 
-  create_table "cocoapod_tags", force: true do |t|
-    t.string   "tag"
-    t.integer  "cocoapod_id"
+  create_table "cocoapod_tags", force: :cascade do |t|
+    t.string   "tag",         limit: 191
+    t.integer  "cocoapod_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -678,39 +678,39 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "cocoapod_tags", ["cocoapod_id"], name: "index_cocoapod_tags_on_cocoapod_id", using: :btree
   add_index "cocoapod_tags", ["tag"], name: "index_cocoapod_tags_on_tag", using: :btree
 
-  create_table "cocoapods", force: true do |t|
-    t.string   "version"
-    t.text     "git"
-    t.text     "http"
-    t.string   "tag"
+  create_table "cocoapods", force: :cascade do |t|
+    t.string   "version",      limit: 191
+    t.text     "git",          limit: 65535
+    t.text     "http",         limit: 65535
+    t.string   "tag",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_sdk_id"
-    t.text     "json_content"
+    t.integer  "ios_sdk_id",   limit: 4
+    t.text     "json_content", limit: 65535
   end
 
   add_index "cocoapods", ["ios_sdk_id", "version"], name: "index_cocoapods_on_ios_sdk_id_and_version", unique: true, using: :btree
 
-  create_table "companies", force: true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.integer  "status"
+  create_table "companies", force: :cascade do |t|
+    t.string   "name",                   limit: 191
+    t.string   "website",                limit: 191
+    t.integer  "status",                 limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "fortune_1000_rank"
-    t.string   "ceo_name"
-    t.string   "street_address"
-    t.string   "city"
-    t.string   "zip_code"
-    t.string   "state"
-    t.integer  "employee_count"
-    t.string   "industry"
-    t.string   "type"
-    t.integer  "funding"
-    t.integer  "inc_5000_rank"
-    t.string   "country"
-    t.integer  "app_store_identifier"
-    t.string   "google_play_identifier"
+    t.integer  "fortune_1000_rank",      limit: 4
+    t.string   "ceo_name",               limit: 191
+    t.string   "street_address",         limit: 191
+    t.string   "city",                   limit: 191
+    t.string   "zip_code",               limit: 191
+    t.string   "state",                  limit: 191
+    t.integer  "employee_count",         limit: 4
+    t.string   "industry",               limit: 191
+    t.string   "type",                   limit: 191
+    t.integer  "funding",                limit: 4
+    t.integer  "inc_5000_rank",          limit: 4
+    t.string   "country",                limit: 191
+    t.integer  "app_store_identifier",   limit: 4
+    t.string   "google_play_identifier", limit: 191
   end
 
   add_index "companies", ["app_store_identifier"], name: "index_app_store_identifier", using: :btree
@@ -719,47 +719,47 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
 
-  create_table "dll_regexes", force: true do |t|
-    t.string   "regex"
-    t.integer  "android_sdk_id"
-    t.integer  "ios_sdk_id"
+  create_table "dll_regexes", force: :cascade do |t|
+    t.string   "regex",          limit: 191
+    t.integer  "android_sdk_id", limit: 4
+    t.integer  "ios_sdk_id",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "dupes", force: true do |t|
-    t.string   "app_identifier"
+  create_table "dupes", force: :cascade do |t|
+    t.string   "app_identifier", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "count"
+    t.integer  "count",          limit: 4
   end
 
   add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
   add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
-  create_table "epf_full_feeds", force: true do |t|
-    t.string   "name"
+  create_table "epf_full_feeds", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
 
-  create_table "fb_accounts", force: true do |t|
-    t.string   "username"
-    t.string   "password"
+  create_table "fb_accounts", force: :cascade do |t|
+    t.string   "username",     limit: 191
+    t.string   "password",     limit: 191
     t.datetime "last_browsed"
     t.datetime "last_scraped"
-    t.boolean  "flagged",      default: false
+    t.boolean  "flagged",                  default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "browsable",    default: false
+    t.boolean  "browsable",                default: false
   end
 
-  create_table "fb_accounts_ios_devices", force: true do |t|
-    t.integer  "fb_account_id"
-    t.integer  "ios_device_id"
-    t.boolean  "flagged",       default: false
+  create_table "fb_accounts_ios_devices", force: :cascade do |t|
+    t.integer  "fb_account_id", limit: 4
+    t.integer  "ios_device_id", limit: 4
+    t.boolean  "flagged",                 default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -767,11 +767,11 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "fb_accounts_ios_devices", ["fb_account_id", "ios_device_id"], name: "index_fb_account_id_ios_device_id", using: :btree
   add_index "fb_accounts_ios_devices", ["ios_device_id"], name: "index_fb_accounts_ios_devices_on_ios_device_id", using: :btree
 
-  create_table "fb_activities", force: true do |t|
-    t.integer  "fb_activity_job_id"
-    t.integer  "fb_account_id"
-    t.integer  "likes"
-    t.text     "status"
+  create_table "fb_activities", force: :cascade do |t|
+    t.integer  "fb_activity_job_id", limit: 4
+    t.integer  "fb_account_id",      limit: 4
+    t.integer  "likes",              limit: 4
+    t.text     "status",             limit: 65535
     t.float    "duration",           limit: 24
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -780,34 +780,34 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "fb_activities", ["fb_account_id"], name: "index_fb_activities_on_fb_account_id", using: :btree
   add_index "fb_activities", ["fb_activity_job_id"], name: "index_fb_activities_on_fb_activity_job_id", using: :btree
 
-  create_table "fb_activity_exceptions", force: true do |t|
-    t.integer  "fb_account_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "fb_activity_exceptions", force: :cascade do |t|
+    t.integer  "fb_account_id",      limit: 4
+    t.text     "error",              limit: 65535
+    t.text     "backtrace",          limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "fb_activity_job_id"
+    t.integer  "fb_activity_job_id", limit: 4
   end
 
   add_index "fb_activity_exceptions", ["fb_account_id"], name: "index_fb_activity_exceptions_on_fb_account_id", using: :btree
   add_index "fb_activity_exceptions", ["fb_activity_job_id"], name: "index_fb_activity_exceptions_on_fb_activity_job_id", using: :btree
 
-  create_table "fb_activity_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "fb_activity_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "fb_statuses", force: true do |t|
-    t.text     "status"
+  create_table "fb_statuses", force: :cascade do |t|
+    t.text     "status",     limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "follow_relationships", force: true do |t|
-    t.integer  "user_id",         null: false
-    t.integer  "followable_id",   null: false
-    t.string   "followable_type", null: false
+  create_table "follow_relationships", force: :cascade do |t|
+    t.integer  "user_id",         limit: 4,   null: false
+    t.integer  "followable_id",   limit: 4,   null: false
+    t.string   "followable_type", limit: 191, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -815,15 +815,15 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", using: :btree
   add_index "follow_relationships", ["user_id"], name: "index_follow_relationships_on_user_id", using: :btree
 
-  create_table "github_accounts", force: true do |t|
-    t.string   "username"
-    t.string   "email"
-    t.string   "password"
-    t.string   "application_name"
-    t.string   "homepage_url"
-    t.string   "callback_url"
-    t.string   "client_id"
-    t.string   "client_secret"
+  create_table "github_accounts", force: :cascade do |t|
+    t.string   "username",         limit: 191
+    t.string   "email",            limit: 191
+    t.string   "password",         limit: 191
+    t.string   "application_name", limit: 191
+    t.string   "homepage_url",     limit: 191
+    t.string   "callback_url",     limit: 191
+    t.string   "client_id",        limit: 191
+    t.string   "client_secret",    limit: 191
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -831,19 +831,19 @@ ActiveRecord::Schema.define(version: 20160421185227) do
 
   add_index "github_accounts", ["last_used"], name: "index_github_accounts_on_last_used", using: :btree
 
-  create_table "google_accounts", force: true do |t|
-    t.string   "email"
-    t.string   "password"
-    t.string   "android_identifier"
-    t.integer  "proxy_id"
+  create_table "google_accounts", force: :cascade do |t|
+    t.string   "email",              limit: 191
+    t.string   "password",           limit: 191
+    t.string   "android_identifier", limit: 191
+    t.integer  "proxy_id",           limit: 4
     t.boolean  "blocked"
-    t.integer  "flags"
+    t.integer  "flags",              limit: 4
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
-    t.integer  "device"
-    t.integer  "scrape_type",        default: 0
+    t.integer  "device",             limit: 4
+    t.integer  "scrape_type",        limit: 4,   default: 0
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
@@ -853,23 +853,23 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "google_accounts", ["proxy_id"], name: "index_google_accounts_on_proxy_id", using: :btree
   add_index "google_accounts", ["scrape_type"], name: "index_google_accounts_on_scrape_type", using: :btree
 
-  create_table "header_regexes", force: true do |t|
-    t.text     "regex"
-    t.integer  "ios_sdk_id"
+  create_table "header_regexes", force: :cascade do |t|
+    t.text     "regex",      limit: 65535
+    t.integer  "ios_sdk_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "header_regexes", ["ios_sdk_id"], name: "index_header_regexes_on_ios_sdk_id", using: :btree
 
-  create_table "installations", force: true do |t|
-    t.integer  "company_id"
-    t.integer  "service_id"
-    t.integer  "scraped_result_id"
+  create_table "installations", force: :cascade do |t|
+    t.integer  "company_id",        limit: 4
+    t.integer  "service_id",        limit: 4
+    t.integer  "scraped_result_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "status"
-    t.integer  "scrape_job_id"
+    t.integer  "status",            limit: 4
+    t.integer  "scrape_job_id",     limit: 4
   end
 
   add_index "installations", ["company_id", "created_at"], name: "index_installations_on_company_id_and_created_at", using: :btree
@@ -878,18 +878,18 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "installations", ["service_id", "created_at"], name: "index_installations_on_service_id_and_created_at", using: :btree
   add_index "installations", ["status", "created_at"], name: "index_installations_on_status_and_created_at", using: :btree
 
-  create_table "ios_app_categories", force: true do |t|
-    t.string   "name"
+  create_table "ios_app_categories", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ios_app_categories", ["name"], name: "index_ios_app_categories_on_name", using: :btree
 
-  create_table "ios_app_categories_snapshots", force: true do |t|
-    t.integer  "ios_app_category_id"
-    t.integer  "ios_app_snapshot_id"
-    t.integer  "kind"
+  create_table "ios_app_categories_snapshots", force: :cascade do |t|
+    t.integer  "ios_app_category_id", limit: 4
+    t.integer  "ios_app_snapshot_id", limit: 4
+    t.integer  "kind",                limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -898,12 +898,12 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_app_categories_snapshots", ["ios_app_snapshot_id", "ios_app_category_id", "kind"], name: "index_ios_app_snapshot_id_category_id_kind", using: :btree
   add_index "ios_app_categories_snapshots", ["kind"], name: "index_ios_app_categories_snapshots_on_kind", using: :btree
 
-  create_table "ios_app_download_snapshot_exceptions", force: true do |t|
-    t.integer  "ios_app_download_snapshot_id"
-    t.text     "name"
-    t.text     "backtrace"
-    t.integer  "try"
-    t.integer  "ios_app_download_snapshot_job_id"
+  create_table "ios_app_download_snapshot_exceptions", force: :cascade do |t|
+    t.integer  "ios_app_download_snapshot_id",     limit: 4
+    t.text     "name",                             limit: 65535
+    t.text     "backtrace",                        limit: 65535
+    t.integer  "try",                              limit: 4
+    t.integer  "ios_app_download_snapshot_job_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -911,44 +911,44 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_app_download_snapshot_exceptions", ["ios_app_download_snapshot_id"], name: "index_on_ios_app_download_snapshot_id", using: :btree
   add_index "ios_app_download_snapshot_exceptions", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
 
-  create_table "ios_app_download_snapshot_jobs", force: true do |t|
-    t.string   "notes"
+  create_table "ios_app_download_snapshot_jobs", force: :cascade do |t|
+    t.string   "notes",      limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "ios_app_download_snapshots", force: true do |t|
+  create_table "ios_app_download_snapshots", force: :cascade do |t|
     t.integer  "downloads",                        limit: 8
-    t.integer  "ios_app_id"
+    t.integer  "ios_app_id",                       limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_app_download_snapshot_job_id"
-    t.integer  "status"
+    t.integer  "ios_app_download_snapshot_job_id", limit: 4
+    t.integer  "status",                           limit: 4
   end
 
   add_index "ios_app_download_snapshots", ["ios_app_download_snapshot_job_id"], name: "index_on_ios_app_download_snapshot_job_id", using: :btree
   add_index "ios_app_download_snapshots", ["ios_app_id"], name: "index_ios_app_download_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_download_snapshots", ["status"], name: "index_ios_app_download_snapshots_on_status", using: :btree
 
-  create_table "ios_app_epf_snapshots", force: true do |t|
+  create_table "ios_app_epf_snapshots", force: :cascade do |t|
     t.integer  "export_date",         limit: 8
-    t.integer  "application_id"
-    t.text     "title"
-    t.string   "recommended_age"
-    t.text     "artist_name"
-    t.string   "seller_name"
-    t.text     "company_url"
-    t.text     "support_url"
-    t.text     "view_url"
-    t.text     "artwork_url_large"
-    t.string   "artwork_url_small"
+    t.integer  "application_id",      limit: 4
+    t.text     "title",               limit: 65535
+    t.string   "recommended_age",     limit: 191
+    t.text     "artist_name",         limit: 65535
+    t.string   "seller_name",         limit: 191
+    t.text     "company_url",         limit: 65535
+    t.text     "support_url",         limit: 65535
+    t.text     "view_url",            limit: 65535
+    t.text     "artwork_url_large",   limit: 65535
+    t.string   "artwork_url_small",   limit: 191
     t.date     "itunes_release_date"
-    t.text     "copyright"
-    t.text     "description"
-    t.string   "version"
-    t.string   "itunes_version"
+    t.text     "copyright",           limit: 65535
+    t.text     "description",         limit: 65535
+    t.string   "version",             limit: 191
+    t.string   "itunes_version",      limit: 191
     t.integer  "download_size",       limit: 8
-    t.integer  "epf_full_feed_id"
+    t.integer  "epf_full_feed_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -965,67 +965,67 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_app_epf_snapshots", ["seller_name"], name: "index_ios_app_epf_snapshots_on_seller_name", using: :btree
   add_index "ios_app_epf_snapshots", ["version"], name: "index_ios_app_epf_snapshots_on_version", using: :btree
 
-  create_table "ios_app_languages", force: true do |t|
+  create_table "ios_app_languages", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
+    t.string   "name",       limit: 191
   end
 
   add_index "ios_app_languages", ["name"], name: "index_ios_app_languages_on_name", using: :btree
 
-  create_table "ios_app_snapshot_exceptions", force: true do |t|
-    t.integer  "ios_app_snapshot_id"
-    t.text     "name"
-    t.text     "backtrace"
-    t.integer  "try"
+  create_table "ios_app_snapshot_exceptions", force: :cascade do |t|
+    t.integer  "ios_app_snapshot_id",     limit: 4
+    t.text     "name",                    limit: 65535
+    t.text     "backtrace",               limit: 65535
+    t.integer  "try",                     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_app_snapshot_job_id"
+    t.integer  "ios_app_snapshot_job_id", limit: 4
   end
 
   add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_id"], name: "index_ios_app_snapshot_exceptions_on_ios_app_snapshot_id", using: :btree
   add_index "ios_app_snapshot_exceptions", ["ios_app_snapshot_job_id"], name: "index_ios_app_snapshot_job_id", using: :btree
 
-  create_table "ios_app_snapshot_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "ios_app_snapshot_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "ios_app_snapshots", force: true do |t|
+  create_table "ios_app_snapshots", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
-    t.integer  "price"
+    t.string   "name",                            limit: 191
+    t.integer  "price",                           limit: 4
     t.integer  "size",                            limit: 8
-    t.string   "seller_url"
-    t.string   "support_url"
-    t.string   "version"
+    t.string   "seller_url",                      limit: 191
+    t.string   "support_url",                     limit: 191
+    t.string   "version",                         limit: 191
     t.date     "released"
-    t.string   "recommended_age"
-    t.text     "description"
-    t.integer  "ios_app_id"
-    t.string   "required_ios_version"
-    t.integer  "ios_app_snapshot_job_id"
-    t.text     "release_notes"
-    t.string   "seller"
-    t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",                     precision: 3,  scale: 2
-    t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",                         precision: 3,  scale: 2
-    t.integer  "ratings_all_count"
+    t.string   "recommended_age",                 limit: 191
+    t.text     "description",                     limit: 65535
+    t.integer  "ios_app_id",                      limit: 4
+    t.string   "required_ios_version",            limit: 191
+    t.integer  "ios_app_snapshot_job_id",         limit: 4
+    t.text     "release_notes",                   limit: 65535
+    t.string   "seller",                          limit: 191
+    t.integer  "developer_app_store_identifier",  limit: 4
+    t.decimal  "ratings_current_stars",                         precision: 3,  scale: 2
+    t.integer  "ratings_current_count",           limit: 4
+    t.decimal  "ratings_all_stars",                             precision: 3,  scale: 2
+    t.integer  "ratings_all_count",               limit: 4
     t.boolean  "editors_choice"
-    t.integer  "status"
-    t.text     "exception_backtrace"
-    t.text     "exception"
-    t.string   "icon_url_350x350"
-    t.string   "icon_url_175x175"
-    t.decimal  "ratings_per_day_current_release",           precision: 10, scale: 2
+    t.integer  "status",                          limit: 4
+    t.text     "exception_backtrace",             limit: 65535
+    t.text     "exception",                       limit: 65535
+    t.string   "icon_url_350x350",                limit: 191
+    t.string   "icon_url_175x175",                limit: 191
+    t.decimal  "ratings_per_day_current_release",               precision: 10, scale: 2
     t.date     "first_released"
-    t.string   "by"
-    t.string   "copywright"
-    t.string   "seller_url_text"
-    t.string   "support_url_text"
+    t.string   "by",                              limit: 191
+    t.string   "copywright",                      limit: 191
+    t.string   "seller_url_text",                 limit: 191
+    t.string   "support_url_text",                limit: 191
   end
 
   add_index "ios_app_snapshots", ["developer_app_store_identifier"], name: "index_ios_app_snapshots_on_developer_app_store_identifier", using: :btree
@@ -1039,9 +1039,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_app_snapshots", ["released"], name: "index_ios_app_snapshots_on_released", using: :btree
   add_index "ios_app_snapshots", ["support_url"], name: "index_ios_app_snapshots_on_support_url", using: :btree
 
-  create_table "ios_app_snapshots_languages", force: true do |t|
-    t.integer  "ios_app_snapshot_id"
-    t.integer  "ios_app_language_id"
+  create_table "ios_app_snapshots_languages", force: :cascade do |t|
+    t.integer  "ios_app_snapshot_id", limit: 4
+    t.integer  "ios_app_language_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1049,28 +1049,28 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_app_snapshots_languages", ["ios_app_language_id"], name: "index_ios_app_snapshots_languages_on_ios_app_language_id", using: :btree
   add_index "ios_app_snapshots_languages", ["ios_app_snapshot_id", "ios_app_language_id"], name: "index_ios_app_snapshot_id_language_id", using: :btree
 
-  create_table "ios_app_snapshots_scr_shts", force: true do |t|
-    t.string   "url"
-    t.integer  "position"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.integer  "ios_app_snapshot_id"
+  create_table "ios_app_snapshots_scr_shts", force: :cascade do |t|
+    t.string   "url",                 limit: 191
+    t.integer  "position",            limit: 4
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "ios_app_snapshot_id", limit: 4
   end
 
   add_index "ios_app_snapshots_scr_shts", ["ios_app_snapshot_id"], name: "index_ios_app_snapshots_scr_shts_on_ios_app_snapshot_id", using: :btree
 
-  create_table "ios_apps", force: true do |t|
+  create_table "ios_apps", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "app_identifier"
-    t.integer  "app_id"
-    t.integer  "newest_ios_app_snapshot_id"
-    t.integer  "user_base"
-    t.integer  "mobile_priority"
+    t.integer  "app_identifier",             limit: 4
+    t.integer  "app_id",                     limit: 4
+    t.integer  "newest_ios_app_snapshot_id", limit: 4
+    t.integer  "user_base",                  limit: 4
+    t.integer  "mobile_priority",            limit: 4
     t.date     "released"
-    t.integer  "newest_ipa_snapshot_id"
-    t.integer  "display_type",               default: 0
-    t.integer  "ios_developer_id"
+    t.integer  "newest_ipa_snapshot_id",     limit: 4
+    t.integer  "display_type",               limit: 4, default: 0
+    t.integer  "ios_developer_id",           limit: 4
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
@@ -1082,9 +1082,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_apps", ["released"], name: "index_ios_apps_on_released", using: :btree
   add_index "ios_apps", ["user_base"], name: "index_ios_apps_on_user_base", using: :btree
 
-  create_table "ios_apps_websites", force: true do |t|
-    t.integer  "ios_app_id"
-    t.integer  "website_id"
+  create_table "ios_apps_websites", force: :cascade do |t|
+    t.integer  "ios_app_id", limit: 4
+    t.integer  "website_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1092,20 +1092,20 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_apps_websites", ["ios_app_id"], name: "index_ios_apps_websites_on_ios_app_id", using: :btree
   add_index "ios_apps_websites", ["website_id", "ios_app_id"], name: "index_website_id_and_ios_app_id", using: :btree
 
-  create_table "ios_classification_exceptions", force: true do |t|
-    t.integer  "ipa_snapshot_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ios_classification_exceptions", force: :cascade do |t|
+    t.integer  "ipa_snapshot_id", limit: 4
+    t.text     "error",           limit: 65535
+    t.text     "backtrace",       limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ios_classification_exceptions", ["ipa_snapshot_id"], name: "index_ios_classification_exceptions_on_ipa_snapshot_id", using: :btree
 
-  create_table "ios_developers", force: true do |t|
-    t.string   "name"
-    t.integer  "identifier"
-    t.integer  "company_id"
+  create_table "ios_developers", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.integer  "identifier", limit: 4
+    t.integer  "company_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1114,9 +1114,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
 
-  create_table "ios_developers_websites", force: true do |t|
-    t.integer  "ios_developer_id"
-    t.integer  "website_id"
+  create_table "ios_developers_websites", force: :cascade do |t|
+    t.integer  "ios_developer_id", limit: 4
+    t.integer  "website_id",       limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1124,50 +1124,50 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_developers_websites", ["ios_developer_id", "website_id"], name: "index_ios_developers_websites_on_ios_developer_id_and_website_id", using: :btree
   add_index "ios_developers_websites", ["website_id"], name: "index_ios_developers_websites_on_website_id", using: :btree
 
-  create_table "ios_device_arches", force: true do |t|
-    t.string   "name"
+  create_table "ios_device_arches", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deprecated", default: false
+    t.boolean  "deprecated",             default: false
   end
 
   add_index "ios_device_arches", ["name"], name: "index_ios_device_arches_on_name", using: :btree
 
-  create_table "ios_device_families", force: true do |t|
-    t.string   "name"
+  create_table "ios_device_families", force: :cascade do |t|
+    t.string   "name",               limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_device_arch_id"
-    t.string   "lookup_name"
+    t.integer  "ios_device_arch_id", limit: 4
+    t.string   "lookup_name",        limit: 191
   end
 
   add_index "ios_device_families", ["ios_device_arch_id"], name: "index_ios_device_families_on_ios_device_arch_id", using: :btree
   add_index "ios_device_families", ["lookup_name"], name: "index_ios_device_families_on_lookup_name", using: :btree
 
-  create_table "ios_device_models", force: true do |t|
-    t.integer  "ios_device_family_id"
+  create_table "ios_device_models", force: :cascade do |t|
+    t.integer  "ios_device_family_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
+    t.string   "name",                 limit: 191
   end
 
   add_index "ios_device_models", ["ios_device_family_id"], name: "index_ios_device_models_on_ios_device_family_id", using: :btree
   add_index "ios_device_models", ["name"], name: "index_ios_device_models_on_name", using: :btree
 
-  create_table "ios_devices", force: true do |t|
-    t.string   "serial_number"
-    t.string   "ip"
-    t.integer  "purpose"
+  create_table "ios_devices", force: :cascade do |t|
+    t.string   "serial_number",       limit: 191
+    t.string   "ip",                  limit: 191
+    t.integer  "purpose",             limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use"
     t.datetime "last_used"
-    t.string   "ios_version"
-    t.text     "description"
-    t.integer  "softlayer_proxy_id"
-    t.integer  "ios_device_model_id"
-    t.string   "ios_version_fmt"
-    t.boolean  "disabled",            default: false
+    t.string   "ios_version",         limit: 191
+    t.text     "description",         limit: 65535
+    t.integer  "softlayer_proxy_id",  limit: 4
+    t.integer  "ios_device_model_id", limit: 4
+    t.string   "ios_version_fmt",     limit: 191
+    t.boolean  "disabled",                          default: false
   end
 
   add_index "ios_devices", ["disabled"], name: "index_ios_devices_on_disabled", using: :btree
@@ -1178,22 +1178,22 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
   add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
 
-  create_table "ios_email_accounts", force: true do |t|
-    t.string   "email"
-    t.string   "password"
-    t.boolean  "flagged",    default: false
+  create_table "ios_email_accounts", force: :cascade do |t|
+    t.string   "email",      limit: 191
+    t.string   "password",   limit: 191
+    t.boolean  "flagged",                default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ios_email_accounts", ["email"], name: "index_ios_email_accounts_on_email", unique: true, using: :btree
 
-  create_table "ios_fb_ad_appearances", force: true do |t|
-    t.string   "aws_assignment_identifier"
-    t.string   "hit_identifier"
-    t.integer  "heroku_identifier"
-    t.integer  "m_turk_worker_id"
-    t.integer  "ios_app_id"
+  create_table "ios_fb_ad_appearances", force: :cascade do |t|
+    t.string   "aws_assignment_identifier", limit: 191
+    t.string   "hit_identifier",            limit: 191
+    t.integer  "heroku_identifier",         limit: 4
+    t.integer  "m_turk_worker_id",          limit: 4
+    t.integer  "ios_app_id",                limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1203,12 +1203,12 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_fb_ad_appearances", ["ios_app_id"], name: "index_ios_fb_ad_appearances_on_ios_app_id", using: :btree
   add_index "ios_fb_ad_appearances", ["m_turk_worker_id"], name: "index_ios_fb_ad_appearances_on_m_turk_worker_id", using: :btree
 
-  create_table "ios_fb_ad_exceptions", force: true do |t|
-    t.integer  "ios_fb_ad_job_id"
-    t.integer  "fb_account_id"
-    t.integer  "ios_device_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ios_fb_ad_exceptions", force: :cascade do |t|
+    t.integer  "ios_fb_ad_job_id", limit: 4
+    t.integer  "fb_account_id",    limit: 4
+    t.integer  "ios_device_id",    limit: 4
+    t.text     "error",            limit: 65535
+    t.text     "backtrace",        limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1217,49 +1217,49 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_fb_ad_exceptions", ["ios_device_id"], name: "index_ios_fb_ad_exceptions_on_ios_device_id", using: :btree
   add_index "ios_fb_ad_exceptions", ["ios_fb_ad_job_id"], name: "index_ios_fb_ad_exceptions_on_ios_fb_ad_job_id", using: :btree
 
-  create_table "ios_fb_ad_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "ios_fb_ad_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "job_type"
+    t.integer  "job_type",   limit: 4
   end
 
   add_index "ios_fb_ad_jobs", ["job_type"], name: "index_ios_fb_ad_jobs_on_job_type", using: :btree
 
-  create_table "ios_fb_ad_processing_exceptions", force: true do |t|
-    t.integer  "ios_fb_ad_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ios_fb_ad_processing_exceptions", force: :cascade do |t|
+    t.integer  "ios_fb_ad_id", limit: 4
+    t.text     "error",        limit: 65535
+    t.text     "backtrace",    limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ios_fb_ad_processing_exceptions", ["ios_fb_ad_id"], name: "index_ios_fb_ad_processing_exceptions_on_ios_fb_ad_id", using: :btree
 
-  create_table "ios_fb_ads", force: true do |t|
-    t.integer  "ios_fb_ad_job_id"
-    t.integer  "ios_app_id"
-    t.integer  "fb_account_id"
-    t.integer  "ios_device_id"
-    t.integer  "status"
-    t.boolean  "flagged",                    default: false
-    t.text     "link_contents"
-    t.text     "ad_info_html"
-    t.integer  "feed_index"
+  create_table "ios_fb_ads", force: :cascade do |t|
+    t.integer  "ios_fb_ad_job_id",           limit: 4
+    t.integer  "ios_app_id",                 limit: 4
+    t.integer  "fb_account_id",              limit: 4
+    t.integer  "ios_device_id",              limit: 4
+    t.integer  "status",                     limit: 4
+    t.boolean  "flagged",                                  default: false
+    t.text     "link_contents",              limit: 65535
+    t.text     "ad_info_html",               limit: 65535
+    t.integer  "feed_index",                 limit: 4
     t.boolean  "carousel"
     t.datetime "date_seen"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "ad_image_file_name"
-    t.string   "ad_image_content_type"
-    t.integer  "ad_image_file_size"
+    t.string   "ad_image_file_name",         limit: 191
+    t.string   "ad_image_content_type",      limit: 191
+    t.integer  "ad_image_file_size",         limit: 4
     t.datetime "ad_image_updated_at"
-    t.string   "ad_info_image_file_name"
-    t.string   "ad_info_image_content_type"
-    t.integer  "ad_info_image_file_size"
+    t.string   "ad_info_image_file_name",    limit: 191
+    t.string   "ad_info_image_content_type", limit: 191
+    t.integer  "ad_info_image_file_size",    limit: 4
     t.datetime "ad_info_image_updated_at"
-    t.integer  "ios_fb_ad_appearances_id"
-    t.integer  "softlayer_proxy_id"
+    t.integer  "ios_fb_ad_appearances_id",   limit: 4
+    t.integer  "softlayer_proxy_id",         limit: 4
   end
 
   add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
@@ -1270,17 +1270,19 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_fb_ads", ["softlayer_proxy_id"], name: "index_ios_fb_ads_on_softlayer_proxy_id", using: :btree
   add_index "ios_fb_ads", ["status", "flagged"], name: "index_ios_fb_ads_on_status_and_flagged", using: :btree
 
-  create_table "ios_in_app_purchases", force: true do |t|
+  create_table "ios_in_app_purchases", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
-    t.integer  "ios_app_snapshot_id"
-    t.integer  "price"
+    t.string   "name",                limit: 191
+    t.integer  "ios_app_snapshot_id", limit: 4
+    t.integer  "price",               limit: 4
   end
 
-  create_table "ios_sdk_links", force: true do |t|
-    t.integer  "source_sdk_id", null: false
-    t.integer  "dest_sdk_id",   null: false
+  add_index "ios_in_app_purchases", ["ios_app_snapshot_id"], name: "index_ios_in_app_purchases_on_ios_app_snapshot_id", using: :btree
+
+  create_table "ios_sdk_links", force: :cascade do |t|
+    t.integer  "source_sdk_id", limit: 4, null: false
+    t.integer  "dest_sdk_id",   limit: 4, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1288,21 +1290,21 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_sdk_links", ["dest_sdk_id"], name: "index_ios_sdk_links_on_dest_sdk_id", using: :btree
   add_index "ios_sdk_links", ["source_sdk_id"], name: "index_ios_sdk_links_on_source_sdk_id", unique: true, using: :btree
 
-  create_table "ios_sdk_source_data", force: true do |t|
-    t.string   "name"
-    t.integer  "ios_sdk_id"
+  create_table "ios_sdk_source_data", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.integer  "ios_sdk_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "flagged",    default: false
+    t.boolean  "flagged",                default: false
   end
 
   add_index "ios_sdk_source_data", ["flagged"], name: "index_ios_sdk_source_data_on_flagged", using: :btree
   add_index "ios_sdk_source_data", ["ios_sdk_id"], name: "index_ios_sdk_source_data_on_ios_sdk_id", using: :btree
   add_index "ios_sdk_source_data", ["name", "flagged"], name: "index_ios_sdk_source_data_on_name_and_flagged", using: :btree
 
-  create_table "ios_sdk_source_groups", force: true do |t|
-    t.string   "name"
-    t.integer  "ios_sdk_id"
+  create_table "ios_sdk_source_groups", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.integer  "ios_sdk_id", limit: 4
     t.boolean  "flagged"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1310,11 +1312,11 @@ ActiveRecord::Schema.define(version: 20160421185227) do
 
   add_index "ios_sdk_source_groups", ["ios_sdk_id"], name: "index_ios_sdk_source_groups_on_ios_sdk_id", using: :btree
 
-  create_table "ios_sdk_source_matches", force: true do |t|
-    t.integer  "source_sdk_id"
-    t.integer  "match_sdk_id"
-    t.integer  "collisions"
-    t.integer  "total"
+  create_table "ios_sdk_source_matches", force: :cascade do |t|
+    t.integer  "source_sdk_id", limit: 4
+    t.integer  "match_sdk_id",  limit: 4
+    t.integer  "collisions",    limit: 4
+    t.integer  "total",         limit: 4
     t.float    "ratio",         limit: 24
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1323,11 +1325,11 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_sdk_source_matches", ["ratio"], name: "index_ios_sdk_source_matches_on_ratio", using: :btree
   add_index "ios_sdk_source_matches", ["source_sdk_id"], name: "index_ios_sdk_source_matches_on_source_sdk_id", using: :btree
 
-  create_table "ios_sdk_update_exceptions", force: true do |t|
-    t.string   "sdk_name"
-    t.integer  "ios_sdk_update_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ios_sdk_update_exceptions", force: :cascade do |t|
+    t.string   "sdk_name",          limit: 191
+    t.integer  "ios_sdk_update_id", limit: 4
+    t.text     "error",             limit: 65535
+    t.text     "backtrace",         limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1335,29 +1337,29 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_sdk_update_exceptions", ["ios_sdk_update_id"], name: "index_ios_sdk_update_exceptions_on_ios_sdk_update_id", using: :btree
   add_index "ios_sdk_update_exceptions", ["sdk_name"], name: "index_ios_sdk_update_exceptions_on_sdk_name", using: :btree
 
-  create_table "ios_sdk_updates", force: true do |t|
-    t.string   "cocoapods_sha"
+  create_table "ios_sdk_updates", force: :cascade do |t|
+    t.string   "cocoapods_sha", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ios_sdk_updates", ["cocoapods_sha"], name: "index_ios_sdk_updates_on_cocoapods_sha", using: :btree
 
-  create_table "ios_sdks", force: true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.string   "favicon"
-    t.boolean  "flagged",                 default: false
+  create_table "ios_sdks", force: :cascade do |t|
+    t.string   "name",                    limit: 191
+    t.string   "website",                 limit: 191
+    t.string   "favicon",                 limit: 191
+    t.boolean  "flagged",                               default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "summary"
+    t.text     "summary",                 limit: 65535
     t.boolean  "deprecated"
-    t.integer  "github_repo_identifier"
-    t.integer  "sdk_company_id"
-    t.integer  "ios_sdk_source_group_id"
-    t.integer  "source"
-    t.integer  "kind"
+    t.integer  "github_repo_identifier",  limit: 4
+    t.integer  "sdk_company_id",          limit: 4
+    t.integer  "ios_sdk_source_group_id", limit: 4
+    t.integer  "source",                  limit: 4
+    t.integer  "kind",                    limit: 4
   end
 
   add_index "ios_sdks", ["deprecated"], name: "index_ios_sdks_on_deprecated", using: :btree
@@ -1371,20 +1373,20 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_sdks", ["source"], name: "index_ios_sdks_on_source", using: :btree
   add_index "ios_sdks", ["website"], name: "index_ios_sdks_on_website", using: :btree
 
-  create_table "ios_sdks_ipa_snapshots", force: true do |t|
-    t.integer  "ios_sdk_id"
-    t.integer  "ipa_snapshot_id"
+  create_table "ios_sdks_ipa_snapshots", force: :cascade do |t|
+    t.integer  "ios_sdk_id",      limit: 4
+    t.integer  "ipa_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "method"
+    t.integer  "method",          limit: 4
   end
 
   add_index "ios_sdks_ipa_snapshots", ["ios_sdk_id"], name: "ios_sdk_id", using: :btree
   add_index "ios_sdks_ipa_snapshots", ["ipa_snapshot_id", "ios_sdk_id", "method"], name: "index_ipa_snapshot_id_ios_sdk_id_method", unique: true, using: :btree
 
-  create_table "ios_sdks_ms_clearbit_leads", force: true do |t|
-    t.integer  "ios_sdk_id"
-    t.integer  "ms_clearbit_lead_id"
+  create_table "ios_sdks_ms_clearbit_leads", force: :cascade do |t|
+    t.integer  "ios_sdk_id",          limit: 4
+    t.integer  "ms_clearbit_lead_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1392,9 +1394,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_sdks_ms_clearbit_leads", ["ios_sdk_id"], name: "index_ios_sdk_id", using: :btree
   add_index "ios_sdks_ms_clearbit_leads", ["ms_clearbit_lead_id", "ios_sdk_id"], name: "index_clearbit_id_ios_sdk_id", using: :btree
 
-  create_table "ios_word_occurences", force: true do |t|
-    t.string   "word"
-    t.integer  "count"
+  create_table "ios_word_occurences", force: :cascade do |t|
+    t.string   "word",       limit: 191
+    t.integer  "count",      limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1402,42 +1404,42 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ios_word_occurences", ["count"], name: "index_ios_word_occurences_on_count", using: :btree
   add_index "ios_word_occurences", ["word"], name: "index_ios_word_occurences_on_word", using: :btree
 
-  create_table "ipa_snapshot_exceptions", force: true do |t|
-    t.integer  "ipa_snapshot_id"
-    t.integer  "ipa_snapshot_job_id"
-    t.integer  "error_code"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ipa_snapshot_exceptions", force: :cascade do |t|
+    t.integer  "ipa_snapshot_id",     limit: 4
+    t.integer  "ipa_snapshot_job_id", limit: 4
+    t.integer  "error_code",          limit: 4
+    t.text     "error",               limit: 65535
+    t.text     "backtrace",           limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "ipa_snapshot_exceptions", ["ipa_snapshot_id"], name: "index_ipa_snapshot_exceptions_on_ipa_snapshot_id", using: :btree
 
-  create_table "ipa_snapshot_job_exceptions", force: true do |t|
-    t.integer  "ipa_snapshot_job_id"
-    t.text     "error"
-    t.text     "backtrace"
+  create_table "ipa_snapshot_job_exceptions", force: :cascade do |t|
+    t.integer  "ipa_snapshot_job_id", limit: 4
+    t.text     "error",               limit: 65535
+    t.text     "backtrace",           limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ios_app_id"
+    t.integer  "ios_app_id",          limit: 4
   end
 
   add_index "ipa_snapshot_job_exceptions", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_job_exceptions_on_ipa_snapshot_job_id", using: :btree
 
-  create_table "ipa_snapshot_jobs", force: true do |t|
-    t.integer  "job_type"
-    t.text     "notes"
+  create_table "ipa_snapshot_jobs", force: :cascade do |t|
+    t.integer  "job_type",         limit: 4
+    t.text     "notes",            limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "live_scan_status"
+    t.integer  "live_scan_status", limit: 4
   end
 
-  create_table "ipa_snapshot_lookup_failures", force: true do |t|
-    t.integer  "ipa_snapshot_job_id"
-    t.integer  "ios_app_id"
-    t.integer  "reason"
-    t.text     "lookup_content"
+  create_table "ipa_snapshot_lookup_failures", force: :cascade do |t|
+    t.integer  "ipa_snapshot_job_id", limit: 4
+    t.integer  "ios_app_id",          limit: 4
+    t.integer  "reason",              limit: 4
+    t.text     "lookup_content",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1445,18 +1447,18 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ipa_snapshot_lookup_failures", ["ios_app_id"], name: "index_ipa_snapshot_lookup_failures_on_ios_app_id", using: :btree
   add_index "ipa_snapshot_lookup_failures", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_lookup_failures_on_ipa_snapshot_job_id", using: :btree
 
-  create_table "ipa_snapshots", force: true do |t|
-    t.integer  "ios_app_id"
+  create_table "ipa_snapshots", force: :cascade do |t|
+    t.integer  "ios_app_id",          limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "download_status"
+    t.integer  "download_status",     limit: 4
     t.boolean  "success"
-    t.integer  "ipa_snapshot_job_id"
-    t.integer  "scan_status"
-    t.string   "version"
+    t.integer  "ipa_snapshot_job_id", limit: 4
+    t.integer  "scan_status",         limit: 4
+    t.string   "version",             limit: 191
     t.datetime "good_as_of_date"
-    t.string   "bundle_version"
-    t.text     "lookup_content"
+    t.string   "bundle_version",      limit: 191
+    t.text     "lookup_content",      limit: 65535
     t.datetime "first_valid_date"
   end
 
@@ -1467,9 +1469,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ipa_snapshots", ["scan_status"], name: "index_ipa_snapshots_on_scan_status", using: :btree
   add_index "ipa_snapshots", ["success", "scan_status"], name: "index_ipa_snapshots_on_success_and_scan_status", using: :btree
 
-  create_table "ipa_snapshots_sdk_dlls", force: true do |t|
-    t.integer  "ipa_snapshot_id"
-    t.integer  "sdk_dll_id"
+  create_table "ipa_snapshots_sdk_dlls", force: :cascade do |t|
+    t.integer  "ipa_snapshot_id", limit: 4
+    t.integer  "sdk_dll_id",      limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1477,9 +1479,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ipa_snapshots_sdk_dlls", ["ipa_snapshot_id", "sdk_dll_id"], name: "index_ipa_snapshot_id_sdk_dll_id", unique: true, using: :btree
   add_index "ipa_snapshots_sdk_dlls", ["sdk_dll_id"], name: "index_ipa_snapshots_sdk_dlls_on_sdk_dll_id", using: :btree
 
-  create_table "ipa_snapshots_sdk_js_tags", force: true do |t|
-    t.integer  "ipa_snapshot_id"
-    t.integer  "sdk_js_tag_id"
+  create_table "ipa_snapshots_sdk_js_tags", force: :cascade do |t|
+    t.integer  "ipa_snapshot_id", limit: 4
+    t.integer  "sdk_js_tag_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1487,32 +1489,32 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "ipa_snapshots_sdk_js_tags", ["ipa_snapshot_id", "sdk_js_tag_id"], name: "index_ipa_snapshot_id_sdk_js_tag_id", unique: true, using: :btree
   add_index "ipa_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_ipa_snapshots_sdk_js_tags_on_sdk_js_tag_id", using: :btree
 
-  create_table "jp_ios_app_snapshots", force: true do |t|
-    t.string   "name"
-    t.integer  "price"
+  create_table "jp_ios_app_snapshots", force: :cascade do |t|
+    t.string   "name",                           limit: 191
+    t.integer  "price",                          limit: 4
     t.integer  "size",                           limit: 8
-    t.string   "seller_url"
-    t.string   "support_url"
-    t.string   "version"
-    t.string   "recommended_age"
-    t.text     "description"
-    t.integer  "ios_app_id"
-    t.string   "required_ios_version"
-    t.text     "release_notes"
-    t.string   "seller"
-    t.integer  "developer_app_store_identifier"
-    t.decimal  "ratings_current_stars",                    precision: 3, scale: 2
-    t.integer  "ratings_current_count"
-    t.decimal  "ratings_all_stars",                        precision: 3, scale: 2
-    t.integer  "ratings_all_count"
-    t.integer  "status"
-    t.integer  "job_identifier"
-    t.string   "category"
-    t.integer  "user_base"
+    t.string   "seller_url",                     limit: 191
+    t.string   "support_url",                    limit: 191
+    t.string   "version",                        limit: 191
+    t.string   "recommended_age",                limit: 191
+    t.text     "description",                    limit: 65535
+    t.integer  "ios_app_id",                     limit: 4
+    t.string   "required_ios_version",           limit: 191
+    t.text     "release_notes",                  limit: 65535
+    t.string   "seller",                         limit: 191
+    t.integer  "developer_app_store_identifier", limit: 4
+    t.decimal  "ratings_current_stars",                        precision: 3, scale: 2
+    t.integer  "ratings_current_count",          limit: 4
+    t.decimal  "ratings_all_stars",                            precision: 3, scale: 2
+    t.integer  "ratings_all_count",              limit: 4
+    t.integer  "status",                         limit: 4
+    t.integer  "job_identifier",                 limit: 4
+    t.string   "category",                       limit: 191
+    t.integer  "user_base",                      limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "business_country_code"
-    t.string   "business_country"
+    t.string   "business_country_code",          limit: 191
+    t.string   "business_country",               limit: 191
   end
 
   add_index "jp_ios_app_snapshots", ["business_country"], name: "index_jp_ios_app_snapshots_on_business_country", using: :btree
@@ -1523,10 +1525,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "jp_ios_app_snapshots", ["name"], name: "index_jp_ios_app_snapshots_on_name", using: :btree
   add_index "jp_ios_app_snapshots", ["user_base"], name: "index_jp_ios_app_snapshots_on_user_base", using: :btree
 
-  create_table "js_tag_regexes", force: true do |t|
-    t.text     "regex"
-    t.integer  "android_sdk_id"
-    t.integer  "ios_sdk_id"
+  create_table "js_tag_regexes", force: :cascade do |t|
+    t.text     "regex",          limit: 65535
+    t.integer  "android_sdk_id", limit: 4
+    t.integer  "ios_sdk_id",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1534,16 +1536,16 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "js_tag_regexes", ["android_sdk_id"], name: "index_js_tag_regexes_on_android_sdk_id", using: :btree
   add_index "js_tag_regexes", ["ios_sdk_id"], name: "index_js_tag_regexes_on_ios_sdk_id", using: :btree
 
-  create_table "known_ios_words", force: true do |t|
-    t.string "word"
+  create_table "known_ios_words", force: :cascade do |t|
+    t.string "word", limit: 191
   end
 
   add_index "known_ios_words", ["word"], name: "index_known_ios_words_on_word", using: :btree
 
-  create_table "listables_lists", force: true do |t|
-    t.integer  "listable_id"
-    t.integer  "list_id"
-    t.string   "listable_type"
+  create_table "listables_lists", force: :cascade do |t|
+    t.integer  "listable_id",   limit: 4
+    t.integer  "list_id",       limit: 4
+    t.string   "listable_type", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1552,56 +1554,56 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "listables_lists", ["listable_id", "list_id", "listable_type"], name: "index_listable_id_list_id_listable_type", using: :btree
   add_index "listables_lists", ["listable_type"], name: "index_listables_lists_on_listable_type", using: :btree
 
-  create_table "lists", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "lists", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  create_table "lists_users", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "list_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "lists_users", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "list_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "lists_users", ["list_id", "user_id"], name: "index_lists_users_on_list_id_and_user_id", using: :btree
   add_index "lists_users", ["user_id"], name: "index_lists_users_on_user_id", using: :btree
 
-  create_table "m_turk_workers", force: true do |t|
-    t.string   "aws_identifier"
-    t.integer  "age"
-    t.string   "gender"
-    t.string   "city"
-    t.string   "state"
-    t.string   "country"
-    t.string   "iphone"
-    t.string   "ios_version"
-    t.string   "heroku_identifier"
+  create_table "m_turk_workers", force: :cascade do |t|
+    t.string   "aws_identifier",    limit: 191
+    t.integer  "age",               limit: 4
+    t.string   "gender",            limit: 191
+    t.string   "city",              limit: 191
+    t.string   "state",             limit: 191
+    t.string   "country",           limit: 191
+    t.string   "iphone",            limit: 191
+    t.string   "ios_version",       limit: 191
+    t.string   "heroku_identifier", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "m_turk_workers", ["aws_identifier"], name: "index_m_turk_workers_on_aws_identifier", using: :btree
 
-  create_table "matchers", force: true do |t|
-    t.integer  "service_id"
-    t.integer  "match_type"
-    t.text     "match_string"
+  create_table "matchers", force: :cascade do |t|
+    t.integer  "service_id",   limit: 4
+    t.integer  "match_type",   limit: 4
+    t.text     "match_string", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "matchers", ["service_id"], name: "index_matchers_on_service_id", using: :btree
 
-  create_table "micro_proxies", force: true do |t|
+  create_table "micro_proxies", force: :cascade do |t|
     t.boolean  "active"
-    t.string   "public_ip"
-    t.string   "private_ip"
+    t.string   "public_ip",  limit: 191
+    t.string   "private_ip", limit: 191
     t.date     "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "purpose"
+    t.integer  "purpose",    limit: 4
   end
 
   add_index "micro_proxies", ["active"], name: "index_micro_proxies_on_active", using: :btree
@@ -1610,34 +1612,34 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
   add_index "micro_proxies", ["purpose", "active"], name: "index_micro_proxies_on_purpose_and_active", using: :btree
 
-  create_table "ms_clearbit_leads", force: true do |t|
-    t.text     "first_name"
-    t.text     "last_name"
-    t.text     "full_name"
-    t.text     "title"
-    t.text     "email"
-    t.text     "linkedin"
-    t.text     "json_content"
+  create_table "ms_clearbit_leads", force: :cascade do |t|
+    t.text     "first_name",   limit: 65535
+    t.text     "last_name",    limit: 65535
+    t.text     "full_name",    limit: 65535
+    t.text     "title",        limit: 65535
+    t.text     "email",        limit: 65535
+    t.text     "linkedin",     limit: 65535
+    t.text     "json_content", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "oauth_users", force: true do |t|
-    t.string   "provider"
-    t.string   "uid"
-    t.string   "name"
-    t.string   "oauth_token"
-    t.string   "refresh_token"
-    t.string   "instance_url"
+  create_table "oauth_users", force: :cascade do |t|
+    t.string   "provider",      limit: 191
+    t.string   "uid",           limit: 191
+    t.string   "name",          limit: 191
+    t.string   "oauth_token",   limit: 191
+    t.string   "refresh_token", limit: 191
+    t.string   "instance_url",  limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email"
+    t.string   "email",         limit: 191
   end
 
-  create_table "proxies", force: true do |t|
+  create_table "proxies", force: :cascade do |t|
     t.boolean  "active"
-    t.string   "public_ip"
-    t.string   "private_ip"
+    t.string   "public_ip",  limit: 191
+    t.string   "private_ip", limit: 191
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1647,50 +1649,50 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "proxies", ["last_used"], name: "index_proxies_on_last_used", using: :btree
   add_index "proxies", ["private_ip"], name: "index_proxies_on_private_ip", using: :btree
 
-  create_table "scrape_jobs", force: true do |t|
-    t.text     "notes"
+  create_table "scrape_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "scraped_results", force: true do |t|
-    t.integer  "company_id"
-    t.string   "url"
-    t.text     "raw_html"
-    t.integer  "status"
+  create_table "scraped_results", force: :cascade do |t|
+    t.integer  "company_id",    limit: 4
+    t.string   "url",           limit: 191
+    t.text     "raw_html",      limit: 65535
+    t.integer  "status",        limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "scrape_job_id"
+    t.integer  "scrape_job_id", limit: 4
   end
 
   add_index "scraped_results", ["company_id"], name: "index_scraped_results_on_company_id", using: :btree
   add_index "scraped_results", ["scrape_job_id"], name: "index_scraped_results_on_scrape_job_id", using: :btree
 
-  create_table "sdk_companies", force: true do |t|
-    t.string   "name"
-    t.string   "website"
+  create_table "sdk_companies", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.string   "website",    limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "favicon"
-    t.boolean  "flagged",    default: false
+    t.text     "favicon",    limit: 65535
+    t.boolean  "flagged",                  default: false
   end
 
   add_index "sdk_companies", ["flagged"], name: "index_sdk_companies_on_flagged", using: :btree
   add_index "sdk_companies", ["name"], name: "index_sdk_companies_on_name", unique: true, using: :btree
   add_index "sdk_companies", ["website"], name: "index_sdk_companies_on_website", unique: true, using: :btree
 
-  create_table "sdk_dlls", force: true do |t|
-    t.string   "name"
+  create_table "sdk_dlls", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "sdk_dlls", ["name"], name: "index_sdk_dlls_on_name", using: :btree
 
-  create_table "sdk_file_regexes", force: true do |t|
-    t.text     "regex"
-    t.integer  "android_sdk_id"
-    t.integer  "ios_sdk_id"
+  create_table "sdk_file_regexes", force: :cascade do |t|
+    t.text     "regex",          limit: 65535
+    t.integer  "android_sdk_id", limit: 4
+    t.integer  "ios_sdk_id",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1698,18 +1700,18 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_file_regexes", ["android_sdk_id"], name: "index_sdk_file_regexes_on_android_sdk_id", using: :btree
   add_index "sdk_file_regexes", ["ios_sdk_id"], name: "index_sdk_file_regexes_on_ios_sdk_id", using: :btree
 
-  create_table "sdk_js_tags", force: true do |t|
-    t.string   "name"
+  create_table "sdk_js_tags", force: :cascade do |t|
+    t.string   "name",       limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "sdk_js_tags", ["name"], name: "index_sdk_js_tags_on_name", unique: true, using: :btree
 
-  create_table "sdk_packages", force: true do |t|
-    t.string   "package"
-    t.integer  "ios_sdk_id"
-    t.integer  "android_sdk_id"
+  create_table "sdk_packages", force: :cascade do |t|
+    t.string   "package",        limit: 191
+    t.integer  "ios_sdk_id",     limit: 4
+    t.integer  "android_sdk_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1718,9 +1720,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_packages", ["ios_sdk_id"], name: "index_sdk_packages_on_ios_sdk_id", using: :btree
   add_index "sdk_packages", ["package"], name: "index_sdk_packages_on_package", unique: true, using: :btree
 
-  create_table "sdk_packages_apk_snapshots", force: true do |t|
-    t.integer  "sdk_package_id"
-    t.integer  "apk_snapshot_id"
+  create_table "sdk_packages_apk_snapshots", force: :cascade do |t|
+    t.integer  "sdk_package_id",  limit: 4
+    t.integer  "apk_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1729,9 +1731,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_packages_apk_snapshots", ["sdk_package_id", "apk_snapshot_id"], name: "index_sdk_package_id_apk_snapshot_id", unique: true, using: :btree
   add_index "sdk_packages_apk_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
-  create_table "sdk_packages_ipa_snapshots", force: true do |t|
-    t.integer  "sdk_package_id"
-    t.integer  "ipa_snapshot_id"
+  create_table "sdk_packages_ipa_snapshots", force: :cascade do |t|
+    t.integer  "sdk_package_id",  limit: 4
+    t.integer  "ipa_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1739,10 +1741,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_packages_ipa_snapshots", ["sdk_package_id", "ipa_snapshot_id"], name: "index_sdk_package_id_ipa_snapshot_id", unique: true, using: :btree
   add_index "sdk_packages_ipa_snapshots", ["sdk_package_id"], name: "sdk_package_id", using: :btree
 
-  create_table "sdk_regexes", force: true do |t|
-    t.string   "regex"
-    t.integer  "ios_sdk_id"
-    t.integer  "android_sdk_id"
+  create_table "sdk_regexes", force: :cascade do |t|
+    t.string   "regex",          limit: 191
+    t.integer  "ios_sdk_id",     limit: 4
+    t.integer  "android_sdk_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1751,10 +1753,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_regexes", ["ios_sdk_id"], name: "index_sdk_regexes_on_ios_sdk_id", using: :btree
   add_index "sdk_regexes", ["regex"], name: "index_sdk_regexes_on_regex", unique: true, using: :btree
 
-  create_table "sdk_scrapers", force: true do |t|
-    t.string   "name"
-    t.string   "private_ip"
-    t.integer  "concurrent_apk_downloads"
+  create_table "sdk_scrapers", force: :cascade do |t|
+    t.string   "name",                     limit: 191
+    t.string   "private_ip",               limit: 191
+    t.integer  "concurrent_apk_downloads", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1762,57 +1764,57 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "sdk_scrapers", ["concurrent_apk_downloads"], name: "index_sdk_scrapers_on_concurrent_apk_downloads", using: :btree
   add_index "sdk_scrapers", ["private_ip"], name: "index_sdk_scrapers_on_private_ip", using: :btree
 
-  create_table "sdk_string_regexes", force: true do |t|
-    t.text     "regex"
-    t.integer  "min_matches", default: 0
-    t.integer  "ios_sdk_id"
+  create_table "sdk_string_regexes", force: :cascade do |t|
+    t.text     "regex",       limit: 65535
+    t.integer  "min_matches", limit: 4,     default: 0
+    t.integer  "ios_sdk_id",  limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "sdk_string_regexes", ["ios_sdk_id"], name: "index_sdk_string_regexes_on_ios_sdk_id", using: :btree
 
-  create_table "service_statuses", force: true do |t|
-    t.integer  "service",                       null: false
-    t.boolean  "active",         default: true
-    t.text     "description"
-    t.text     "outage_message"
+  create_table "service_statuses", force: :cascade do |t|
+    t.integer  "service",        limit: 4,                    null: false
+    t.boolean  "active",                       default: true
+    t.text     "description",    limit: 65535
+    t.text     "outage_message", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "service_statuses", ["service"], name: "index_service_statuses_on_service", unique: true, using: :btree
 
-  create_table "services", force: true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.string   "category"
+  create_table "services", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.string   "website",    limit: 191
+    t.string   "category",   limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "sidekiq_testers", force: true do |t|
-    t.string   "test_string"
-    t.string   "ip"
+  create_table "sidekiq_testers", force: :cascade do |t|
+    t.string   "test_string", limit: 191
+    t.string   "ip",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "softlayer_proxies", force: true do |t|
-    t.string   "public_ip"
+  create_table "softlayer_proxies", force: :cascade do |t|
+    t.string   "public_ip",  limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "host"
+    t.integer  "host",       limit: 4
   end
 
   add_index "softlayer_proxies", ["host"], name: "index_softlayer_proxies_on_host", using: :btree
   add_index "softlayer_proxies", ["public_ip"], name: "index_softlayer_proxies_on_public_ip", using: :btree
 
-  create_table "super_proxies", force: true do |t|
+  create_table "super_proxies", force: :cascade do |t|
     t.boolean  "active"
-    t.string   "public_ip"
-    t.string   "private_ip"
-    t.integer  "port"
+    t.string   "public_ip",  limit: 191
+    t.string   "private_ip", limit: 191
+    t.integer  "port",       limit: 4
     t.datetime "last_used"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1825,32 +1827,32 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "super_proxies", ["private_ip"], name: "index_super_proxies_on_private_ip", using: :btree
   add_index "super_proxies", ["public_ip"], name: "index_super_proxies_on_public_ip", using: :btree
 
-  create_table "test_models", force: true do |t|
-    t.string   "string0"
-    t.string   "string1"
-    t.string   "string2"
-    t.string   "string3"
-    t.string   "string4"
-    t.string   "string5"
-    t.string   "string6"
-    t.string   "string7"
-    t.string   "string8"
-    t.string   "string9"
-    t.string   "string10"
-    t.string   "string11"
-    t.string   "string12"
-    t.string   "string13"
-    t.string   "string14"
-    t.string   "string15"
-    t.string   "string16"
-    t.string   "string17"
-    t.string   "string18"
-    t.string   "string19"
+  create_table "test_models", force: :cascade do |t|
+    t.string   "string0",    limit: 191
+    t.string   "string1",    limit: 191
+    t.string   "string2",    limit: 191
+    t.string   "string3",    limit: 191
+    t.string   "string4",    limit: 191
+    t.string   "string5",    limit: 191
+    t.string   "string6",    limit: 191
+    t.string   "string7",    limit: 191
+    t.string   "string8",    limit: 191
+    t.string   "string9",    limit: 191
+    t.string   "string10",   limit: 191
+    t.string   "string11",   limit: 191
+    t.string   "string12",   limit: 191
+    t.string   "string13",   limit: 191
+    t.string   "string14",   limit: 191
+    t.string   "string15",   limit: 191
+    t.string   "string16",   limit: 191
+    t.string   "string17",   limit: 191
+    t.string   "string18",   limit: 191
+    t.string   "string19",   limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "text0"
-    t.text     "text1"
-    t.text     "text2"
+    t.text     "text0",      limit: 65535
+    t.text     "text1",      limit: 65535
+    t.text     "text2",      limit: 65535
   end
 
   add_index "test_models", ["string0"], name: "index_test_models_on_string0", using: :btree
@@ -1874,36 +1876,36 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "test_models", ["string8"], name: "index_test_models_on_string8", using: :btree
   add_index "test_models", ["string9"], name: "index_test_models_on_string9", using: :btree
 
-  create_table "users", force: true do |t|
-    t.string   "email"
-    t.string   "password_digest"
+  create_table "users", force: :cascade do |t|
+    t.string   "email",           limit: 191
+    t.string   "password_digest", limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "account_id"
-    t.boolean  "tos_accepted",    default: false
-    t.boolean  "access_revoked",  default: false
-    t.boolean  "is_admin",        default: false
-    t.string   "google_uid"
-    t.string   "google_token"
-    t.string   "linkedin_uid"
-    t.string   "linkedin_token"
+    t.integer  "account_id",      limit: 4
+    t.boolean  "tos_accepted",                default: false
+    t.boolean  "access_revoked",              default: false
+    t.boolean  "is_admin",                    default: false
+    t.string   "google_uid",      limit: 191
+    t.string   "google_token",    limit: 191
+    t.string   "linkedin_uid",    limit: 191
+    t.string   "linkedin_token",  limit: 191
     t.datetime "last_active"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "profile_url"
+    t.string   "first_name",      limit: 191
+    t.string   "last_name",       limit: 191
+    t.string   "profile_url",     limit: 191
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
 
-  create_table "websites", force: true do |t|
-    t.string   "url"
+  create_table "websites", force: :cascade do |t|
+    t.string   "url",        limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "kind"
-    t.integer  "company_id"
-    t.integer  "ios_app_id"
+    t.integer  "kind",       limit: 4
+    t.integer  "company_id", limit: 4
+    t.integer  "ios_app_id", limit: 4
   end
 
   add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
@@ -1912,12 +1914,12 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
-  create_table "weekly_batches", force: true do |t|
-    t.integer  "owner_id"
-    t.string   "owner_type"
-    t.integer  "activity_type"
-    t.integer  "activities_count", default: 0, null: false
-    t.date     "week",                         null: false
+  create_table "weekly_batches", force: :cascade do |t|
+    t.integer  "owner_id",         limit: 4
+    t.string   "owner_type",       limit: 191
+    t.integer  "activity_type",    limit: 4
+    t.integer  "activities_count", limit: 4,   default: 0, null: false
+    t.date     "week",                                     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1926,9 +1928,9 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "weekly_batches", ["owner_id", "owner_type"], name: "index_weekly_batches_on_owner_id_and_owner_type", using: :btree
   add_index "weekly_batches", ["week"], name: "index_weekly_batches_on_week", using: :btree
 
-  create_table "weekly_batches_activities", force: true do |t|
-    t.integer  "weekly_batch_id", null: false
-    t.integer  "activity_id",     null: false
+  create_table "weekly_batches_activities", force: :cascade do |t|
+    t.integer  "weekly_batch_id", limit: 4, null: false
+    t.integer  "activity_id",     limit: 4, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1936,10 +1938,10 @@ ActiveRecord::Schema.define(version: 20160421185227) do
   add_index "weekly_batches_activities", ["activity_id"], name: "index_weekly_batches_activities_on_activity_id", using: :btree
   add_index "weekly_batches_activities", ["weekly_batch_id", "activity_id"], name: "weekly_batch_id_activity_id_index", using: :btree
 
-  create_table "word_occurences", force: true do |t|
-    t.string   "word"
-    t.integer  "good"
-    t.integer  "bad"
+  create_table "word_occurences", force: :cascade do |t|
+    t.string   "word",       limit: 191
+    t.integer  "good",       limit: 4
+    t.integer  "bad",        limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
