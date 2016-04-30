@@ -103,7 +103,7 @@ module AndroidSdkService
 
       # Maps the display type to the error code
       def display_type_to_error_code(display_type)
-        display_type = display_type.to_sym
+        display_type = display_type.try(:to_sym)
         mapping = {
           normal: nil,
           taken_down: 0, 
@@ -111,6 +111,7 @@ module AndroidSdkService
           device_incompatible: nil, 
           carrier_incompatible: 3,
           item_not_found: 4, 
+          nil => nil
         }
         mapping[display_type]
       end
