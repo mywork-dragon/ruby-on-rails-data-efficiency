@@ -123,7 +123,6 @@ ApkDownloader::Api.class_eval do
           display_type = :foreign
         elsif response.body.include? "Your device is not compatible with this item"
           status = :bad_device
-          display_type = :device_incompatible
         elsif response.body.include? "This item is not available on your carrier."
           status = :bad_carrier
           display_type = :carrier_incompatible
@@ -150,7 +149,7 @@ ApkDownloader::Api.class_eval do
         elsif status_code == 500
           fail ApkDownloader::Response500.new(message, status_code: status_code)
         else
-          fail ApkDownloader::ResponseOther(resonse.body)
+          fail ApkDownloader::ResponseOther(response.body)
         end
       end
 

@@ -108,7 +108,7 @@ module AndroidSdkService
           normal: nil,
           taken_down: 0, 
           foreign: 1, 
-          device_incompatible: 2, 
+          device_incompatible: nil, 
           carrier_incompatible: 3,
           item_not_found: 4, 
         }
@@ -124,6 +124,9 @@ module AndroidSdkService
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
         
+        puts "snap:"
+        ap snap
+
         return h if snap.nil?
 
         installed_sdks = snap.android_sdks
