@@ -70,9 +70,9 @@ module ApkWorker
       @apk_ss.save!
       raise
     rescue ApkDownloader::Response403, ApkDownloader::Response404 => e
-      @apk_ss.status = e.status
+      @apk_ss.status = e.status if e.status
       @apk_ss.save!
-      aa.display_type = e.display_type
+      aa.display_type = e.display_type if e.display_type
       aa.save!
       raise
     rescue ApkDownloader::Response500

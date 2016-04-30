@@ -26,12 +26,16 @@ class ApkSnapshotServiceSingleWorker
     if google_account_id
       GoogleAccount.find(google_account_id)
     else
-      if try == 2
+      if try == 3
         device_names = [:nexus_9_tablet].map(&:to_s)
         devices = GoogleAccount.devices.values_at(*device_names)
         GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:live], device: devices).sample
-      else
+      elsif try == 2
         device_names = [:moto_g_phone_1, :moto_g_phone_2].map(&:to_s)
+        devices = GoogleAccount.devices.values_at(*device_names)
+        GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:live], device: devices).sample
+      else
+        device_names = [:galaxy_prime_1, :galaxy_prime_2].map(&:to_s)
         devices = GoogleAccount.devices.values_at(*device_names)
         GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:live], device: devices).sample
       end
@@ -40,7 +44,7 @@ class ApkSnapshotServiceSingleWorker
 
   # Stop the retries early if it looks unrecoverable
   def raise_early_stop(apk_snap)
-    raise ApkWorker::EarlyStop if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
+    # raise ApkWorker::EarlyStop if apk_snap.try > 1 && apk_snap.status.present? && %w(bad_device out_of_country taken_down).any?{|x| apk_snap.status.include? x }
   end
 
   def classify_if_necessary(apk_ss_id)
