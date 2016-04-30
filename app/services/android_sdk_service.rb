@@ -123,9 +123,6 @@ module AndroidSdkService
         return h unless ec.nil?
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
-        
-        puts "snap:"
-        ap snap
 
         return h if snap.nil?
 
