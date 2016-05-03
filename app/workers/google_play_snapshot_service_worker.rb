@@ -32,13 +32,26 @@ class GooglePlaySnapshotServiceWorker
         end
       end
 
-      
-
       # tm.text0 = a.inspect
       # tm.save
 
-      raise 'GooglePlayService.attributes is nil' if a.nil?
-      raise 'GooglePlayService.attributes is empty' if a.empty?
+      last_try = (try == MAX_TRIES - 1)
+
+      if a.nil?
+        if last_try
+          return
+        else
+          fail 'GooglePlayService.attributes is nil'
+        end
+      end
+
+      if a.empty?
+        if last_try
+          return
+        else
+          fail 'GooglePlayService.attributes is empty' 
+        end
+      end
 
       single_column_attributes = %w(
       name
