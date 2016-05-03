@@ -131,15 +131,21 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           .success(function(data) {
             intervalCount++;
 
-            // Reset 'query in progress' if pulling times out
+            var statusCode = data.status;
+            var errorCode = data.error;
+
+            // Reset 'query in progress' if polling times out
             if(intervalCount == 120) {
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1); // Failed analytics response - MixPanel & Slacktivity
+              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1, "Timeout"); // Failed analytics response - MixPanel & Slacktivity
             }
 
-            if(!data.status && data.status !== 0) { data.status = 4 } // If status is null, treat as failed (status 4)
+            if(!statusCode && statusCode!== 0) { statusCode = 4 } // If status is null, treat as failed (status 4)
 
-            androidLiveScanCtrl.scanStatusMessage = statusCheckStatusCodeMessages[data.status]; // Sets scan status message
+            var statusMessage = statusCheckStatusCodeMessages[statusCode];
+            var errorMessage = statusCheckErrorCodeMessages[errorCode];
+
+            androidLiveScanCtrl.scanStatusMessage = statusMessage; // Sets scan status message
 
             switch(data.status) {
               case 0: // preparing
@@ -160,7 +166,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.noSdkData = true;
                 androidLiveScanCtrl.failedLiveScan = true;
                 if(data.error != 5) { // don't count no now version as fail
-                  sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, 4); // Failed analytics response - MixPanel & Slacktivity
+                  sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, statusCode, statusMessage, errorCode, errorMessage); // Failed analytics response - MixPanel & Slacktivity
                 }
                 break;
             }

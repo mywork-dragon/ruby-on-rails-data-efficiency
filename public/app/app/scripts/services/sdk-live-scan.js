@@ -92,16 +92,11 @@ angular.module("appApp")
         });
 
       },
-      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode) {
-
-        var errorMessage = "";
+      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode, statusMessage, errorCode = null, errorMessage = null) {
         var color = "#E82020";
 
-        if(statusCode == 4) {
-          errorMessage = "Error (status 4: Taken down or not in US Store)"
+        if(errorCode == 3) {
           color = "#FFD94D"; // yellow
-        } else if(statusCode == -1) {
-          errorMessage = "Timeout"
         }
 
         var appData = {}; // Load app data
@@ -118,8 +113,10 @@ angular.module("appApp")
               'companyName': (appData.publisher || {}).name,
               'appName': appData.name,
               'appId': appData.id,
-              'error': errorMessage,
-              'statusCode': statusCode
+              'statusCode': statusCode,
+              'statusMessage' : statusMessage,
+              'errorCode' : errorCode,
+              'errorMessage': errorMessage
 
             }
           );
@@ -132,8 +129,10 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
-            'error': errorMessage,
-            'statusCode': statusCode
+            'statusCode': statusCode,
+            'statusMessage' : statusMessage,
+            'errorCode' : errorCode,
+            'errorMessage': errorMessage
           };
 
           slacktivity.notifySlack(slacktivityData, true);
