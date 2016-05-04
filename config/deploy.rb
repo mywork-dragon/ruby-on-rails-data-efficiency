@@ -98,7 +98,8 @@ namespace :deploy do
     # run bower & node updates
     on roles(:web, :staging) do
       within '/home/webapps/varys/current/public/app' do
-        execute(:bower, 'install')
+        execute(:npm, 'install', '--production')
+        execute(:npm, 'run', 'bower-install')
       end
     end
 
@@ -111,7 +112,13 @@ namespace :deploy do
 
     # restart web server
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
-      execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill -s HUP"
+      if test("[ -s /home/webapps/varys/shared/unicorn.pid ]")
+        execute "cat /home/webapps/varys/shared/unicorn.pid | xargs kill"
+      end
+      within '/home/webapps/varys/current' do
+        execute(:bundle, 'exec', 'unicorn_rails', '-E', 'production', '-c',
+                'config/unicorn.rb', '-D')
+      end
     end
 
     on roles(:web, :staging), in: :groups, limit: 3, wait: 10 do
