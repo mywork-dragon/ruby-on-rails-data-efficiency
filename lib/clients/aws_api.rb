@@ -9,7 +9,7 @@ class AwsApi
 
   def deploy_ips_for_stage(stage)
 
-    instances = request_filtered_instances(filters: [stage_filter(stage)])
+    instances = request_filtered_instances(filters: [stage_filter(stage), {name: 'instance-state-name', values: ['running']}])
 
     ips = extract_ips(instances)
 
