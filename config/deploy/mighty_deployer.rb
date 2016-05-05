@@ -13,7 +13,7 @@ module MightyDeployer
   @targets = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan, :monitor, :aviato]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan, :monitor, :aviato, :migration]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
 
@@ -52,7 +52,7 @@ module MightyDeployer
         roles = [stage]
 
         # stage specific hacks
-        roles << :db if stage == :web # for migrations
+        roles << :db if stage == :migration # for migrations
         roles << :scraper_master if stage == :scraper && ip == '52.3.11.3'
         # TODO: move scraper_master to it's own stage
 

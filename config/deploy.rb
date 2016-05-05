@@ -49,7 +49,7 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentia
 set :sidekiq_monit_default_hooks, false
 
 # set :sidekiq_role, :scraper
-set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :kylo_ren, :ios_live_scan, :monitor, :aviato]
+set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scraper , :web, :darth_vader, :kylo_ren, :ios_live_scan, :monitor, :aviato, :migration]
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
@@ -63,6 +63,7 @@ set :kylo_ren_concurrency, 10
 set :ios_live_scan_concurrency, 25
 set :monitor_concurrency, 3
 set :aviato_concurrency, 50
+set :migration_concurrency, 3
 
 # set :sidekiq_queue, %w(critical default low)
 
@@ -76,6 +77,7 @@ set :kylo_ren_queue, %w(ios_fb_ads ios_epf_mass_scan ios_mass_scan kylo)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud ios_fb_ads_cloud ios_mass_scan_cloud)
 set :monitor_queue, %w(monitor)
 set :aviato_queue, %w(aviato)
+set :migration_queue, %w(noop)
 
 set :whenever_roles, [:scraper, :scraper_master, :sdk_scraper, :kylo_ren, :darth_vader, :sdk_scraper_live_scan, :ios_live_scan, :monitor, :aviato]
 

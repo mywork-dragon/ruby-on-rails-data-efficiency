@@ -57,10 +57,11 @@ puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Dev)."
 puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
 puts "monitor".light_cyan + ": Deploys to monitor servers"
 puts "aviato".light_cyan + ": Deploys to Aviato"
+puts "migration".light_cyan + ": Deploys to migration servers (to run migrations only)"
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor aviato)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor aviato migration)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
