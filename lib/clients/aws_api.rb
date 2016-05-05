@@ -30,14 +30,16 @@ class AwsApi
 
   end
 
-  def create_instances(count:, image_id:, instance_type:, security_groups:, key_name:)
+  def create_instances(count:, image_id:, instance_type:, security_groups:, key_name:,
+                      monitoring:)
     ec2_client.run_instances({
       min_count: count,
       max_count: count,
       key_name: key_name,
       image_id: image_id,
       instance_type: instance_type,
-      security_groups: security_groups
+      security_groups: security_groups,
+      monitoring: monitoring
     })
   end
 

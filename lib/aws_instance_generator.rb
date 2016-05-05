@@ -58,7 +58,10 @@ class AwsInstanceGenerator
     {
       image_id: 'ami-fce3c696', # Ubuntu 14.04
       key_name: 'varys-new',
-      instance_type: 't2.large'
+      instance_type: 't2.large',
+      monitoring: {
+        enabled: true
+      }
     }
   end
 
