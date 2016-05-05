@@ -30,6 +30,32 @@ class AwsApi
 
   end
 
+  def create_instances(count:, image_id:, instance_type:, security_groups:, key_name:)
+    ec2_client.run_instances({
+      min_count: count,
+      max_count: count,
+      key_name: key_name,
+      image_id: image_id,
+      instance_type: instance_type,
+      security_groups: security_groups
+    })
+  end
+
+  def tag_instance(instance_id:, tags:)
+    ec2_client.create_tags({
+      resources: [instance_id],
+      tags: tags
+    })
+  end
+
+  def request_filtered_instances(filters: [])
+
+    resp = ec2_client.describe_instances(filters: filters)
+
+    extract_instances_from_description(resp)
+
+  end
+
   private
 
   def ec2_client
@@ -97,14 +123,6 @@ class AwsApi
       name: 'tag:stage',
       values: [stage]
     }
-  end
-
-  def request_filtered_instances(filters: [])
-
-    resp = ec2_client.describe_instances(filters: filters)
-
-    extract_instances_from_description(resp)
-
   end
 
   def extract_instances_from_description(resp)
