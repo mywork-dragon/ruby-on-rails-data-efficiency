@@ -7690,7 +7690,7 @@ pre {
 }
 
 #mainSearchBoxWrapper {
-  margin-top: -55px;
+  margin: 20px;
 }
 
 #mainSearchBoxWrapper input, #mainSearchBoxWrapper button {
@@ -7708,6 +7708,10 @@ pre {
 
 #mainSearchBoxWrapper .ui-select > select {
   font-size: 12px;
+}
+
+#mainSearchBox .input-group {
+  width: 400px;
 }
 
 #mainSearchBox {
