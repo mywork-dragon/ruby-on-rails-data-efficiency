@@ -315,6 +315,7 @@ class ApiController < ApplicationController
 
       app_hash = [
         app.id,
+        app.app_identifier,
         newest_snapshot.present? ? newest_snapshot.name : nil,
         'AndroidApp',
         app.mobile_priority,
