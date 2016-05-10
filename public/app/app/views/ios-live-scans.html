@@ -9,7 +9,7 @@
             <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
           </div>
 
-          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.errorCode == null && !iosLiveScanCtrl.noSdkSnapshot">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="iosLiveScanCtrl.sdkData && !iosLiveScanCtrl.noSdkSnapshot">
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="!iosLiveScanCtrl.sdkData.sdkCompanies.length">
