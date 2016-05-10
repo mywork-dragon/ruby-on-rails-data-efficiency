@@ -121,8 +121,6 @@ module AndroidSdkService
         h = {}
         ec = error_code(aa)
 
-        return h unless ec.nil?
-
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
 
         return h if snap.nil?

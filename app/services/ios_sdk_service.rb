@@ -30,14 +30,12 @@ class IosSdkService
 
       if app.display_type != "normal"
         resp[:error_code] = error_map[app.display_type.to_sym]
-        return resp
       end
 
       price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
 
       if !price.zero?
         resp[:error_code] = error_map[:paid]
-        return resp
       end
 
       snap = app.get_last_ipa_snapshot(scan_success: true)
