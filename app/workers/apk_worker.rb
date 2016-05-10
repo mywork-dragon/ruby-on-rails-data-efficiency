@@ -98,8 +98,9 @@ module ApkWorker
 
     message_split = e.message.to_s.split("| status_code:")
     status_code = message_split[1].to_s.strip.to_i
-    message = message_split[0].to_s.strip.encode('utf-8')
-    backtrace = e.backtrace.map{ |x| x.encode('utf-8')}
+    replace_rules = {invalid: :replace, undef: :replace, replace: ''}
+    message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
+    backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
     apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
     google_account_id = google_account.present? ? google_account.id : nil
 
