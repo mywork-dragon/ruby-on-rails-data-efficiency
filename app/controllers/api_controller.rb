@@ -276,7 +276,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
+    header = ['MightySignal App ID', 'App Store/Google Play App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
     can_view_support_desk ? header.push('Support URL') : nil
 
     ios_apps.each do |app|
@@ -287,6 +287,7 @@ class ApiController < ApplicationController
 
       app_hash = [
         app.id,
+        app.app_identifier,
         newest_snapshot.present? ? newest_snapshot.name : nil,
         'IosApp',
         app.mobile_priority,
