@@ -50,7 +50,8 @@ class AwsInstanceGenerator
       web: web_options,
       staging: staging_options,
       scraper: scraper_options,
-      migration: migration_options
+      migration: migration_options,
+      api: api_options
     }
   end
 
@@ -89,6 +90,13 @@ class AwsInstanceGenerator
   def migration_options
     default_instance_options.merge({
       security_groups: ['worker'],
+      instance_type: 't2.medium'
+    })
+  end
+
+  def api_options
+    default_instance_options.merge({
+      security_groups: ['varys'],
       instance_type: 't2.medium'
     })
   end
