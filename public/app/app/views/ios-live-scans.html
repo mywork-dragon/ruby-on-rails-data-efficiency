@@ -6,7 +6,7 @@
         <ul class="list-unstyled list-info" ng-if="!iosLiveScanCtrl.sdkLiveScanPageLoading">
 
           <div id="sdkScanErrorCodeStatus" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
-            <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
+            <p><strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong></p>
           </div>
 
           <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="iosLiveScanCtrl.sdkData && !iosLiveScanCtrl.noSdkSnapshot">

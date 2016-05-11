@@ -56,7 +56,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
           if (data.error_code != null) {
             androidLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
-            androidLiveScanCtrl.hideLiveScanButton = true;
             sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
           }
 

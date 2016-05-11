@@ -6,10 +6,10 @@
         <ul class="list-unstyled list-info" ng-if="!androidLiveScanCtrl.sdkLiveScanPageLoading">
 
           <div id="sdkScanErrorCodeStatus" ng-if="androidLiveScanCtrl.sdkData.errorCode != null">
-            <strong>{{androidLiveScanCtrl.errorCodeMessage}}</strong>
+            <p><strong>{{androidLiveScanCtrl.errorCodeMessage}}</strong></p>
           </div>
 
-          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.errorCode == null && !androidLiveScanCtrl.noSdkSnapshot">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="androidLiveScanCtrl.sdkData && !androidLiveScanCtrl.noSdkSnapshot">
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="!androidLiveScanCtrl.sdkData.sdkCompanies.length">
