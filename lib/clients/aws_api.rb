@@ -101,10 +101,16 @@ class AwsApi
 
     lb_tags = elb.describe_tags(load_balancer_names: names).tag_descriptions
 
+    # test if lb is both for this app ('varys') and for this stage (ex. 'staging') 
     stage_lbs = lb_tags.select do |lb|
-      lb.tags.any? do |tag|
+      app_tag = lb.tags.any? do |tag|
+        tag.key == 'app' && tag.value == 'varys'
+      end
+      stage_tag = lb.tags.any? do |tag|
         tag.key == 'stage' && tag.value == stage
       end
+
+      app_tag && stage_tag
     end
 
     raise UnexpectedCount, "Could not find a load balancer with a stage tag of #{stage}" if stage_lbs.empty?
