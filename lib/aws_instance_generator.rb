@@ -27,8 +27,9 @@ class AwsInstanceGenerator
       key: "stage",
       value: stage.to_s
     }
+
     tags << {
-      key: "app"
+      key: "app",
       value: is_api_instance ? "varys-api" : "varys"
     }
 
