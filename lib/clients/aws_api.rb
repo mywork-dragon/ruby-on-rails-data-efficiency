@@ -133,6 +133,13 @@ class AwsApi
     }
   end
 
+  def app_filter
+    {
+      name: 'tag:app',
+      values: ['varys']
+    }
+  end
+
   def extract_instances_from_description(resp)
 
     resp.reservations.map { |reservation| reservation.instances || [] }.flatten

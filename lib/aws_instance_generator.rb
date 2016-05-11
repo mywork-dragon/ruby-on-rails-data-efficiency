@@ -12,7 +12,7 @@ class AwsInstanceGenerator
   # Create AWS instances for our varys project servers
   # stage: (:web, :staging, :scraper, etc.)
   # count: number of instances (default 1)
-  def create_instances(stage:, count: 1, tags: [])
+  def create_instances(stage:, count: 1, tags: [], is_api_instance: false)
 
     raise InvalidOption, "Valid stages are: #{options_map.keys}" unless options_map.keys.include?(stage)
     raise InvalidOption, 'Number of instances has to be greater than 0' unless count.to_i > 0
@@ -22,11 +22,15 @@ class AwsInstanceGenerator
       count: count
     }))
 
-    # assign tags. Automatically include the stage tag
+    # assign tags. Automatically include the stage and app tags
     tags << {
-        key: "stage",
-        value: stage.to_s
-      }
+      key: "stage",
+      value: stage.to_s
+    }
+    tags << {
+      key: "app"
+      value: is_api_instance ? "varys-api" : "varys"
+    }
 
     reservation_info.instances.each do |instance|
       @aws_api.tag_instance(instance_id: instance.instance_id, tags: tags)
