@@ -26,6 +26,9 @@ class User < ActiveRecord::Base
       if user.send("#{params[:provider]}_uid").blank?
         user.send("#{params[:provider]}_uid=", params[:uid])
         user.send("#{params[:provider]}_token=", params[:token])
+        user.first_name = params[:first_name]
+        user.last_name = params[:last_name]
+        user.profile_url = params["#{params[:provider]}_profile"]
         user.save
         user
       end
