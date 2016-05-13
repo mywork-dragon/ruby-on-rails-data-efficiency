@@ -4,6 +4,8 @@ class Account < ActiveRecord::Base
   
   has_many :api_keys
 
+  has_many :api_tokens
+
   def active_users
     self.users.where(access_revoked: false).size
   end

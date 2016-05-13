@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160429175206) do
+ActiveRecord::Schema.define(version: 20160512234302) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -332,6 +332,19 @@ ActiveRecord::Schema.define(version: 20160429175206) do
 
   add_index "api_keys", ["account_id"], name: "index_api_keys_on_account_id", using: :btree
   add_index "api_keys", ["key"], name: "index_api_keys_on_key", using: :btree
+
+  create_table "api_tokens", force: :cascade do |t|
+    t.integer  "account_id",  limit: 4
+    t.string   "token",       limit: 191,                null: false
+    t.integer  "rate_window", limit: 4,   default: 0
+    t.integer  "rate_limit",  limit: 4,   default: 2500
+    t.boolean  "active",                  default: true
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "api_tokens", ["account_id"], name: "index_api_tokens_on_account_id", using: :btree
+  add_index "api_tokens", ["token", "active"], name: "index_api_tokens_on_token_and_active", unique: true, using: :btree
 
   create_table "apk_files", force: :cascade do |t|
     t.datetime "created_at"
