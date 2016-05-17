@@ -63,13 +63,13 @@ namespace 'elasticsearch' do
   def notify_start(name)
     message = "#{name} Elasticsearch index started."
     puts message
-    Slackiq.message(message, webhook_name: :main)
+    Slackiq.message(message, webhook_name: :main) unless Rails.env.development?
   end
 
   def notify_end(name)
     message = "#{name} Elasticsearch index completed."
     puts message
-    Slackiq.message(message, webhook_name: :main)
+    Slackiq.message(message, webhook_name: :main) unless Rails.env.development?
   end
 
 end
