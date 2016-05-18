@@ -92,10 +92,10 @@ angular.module("appApp")
         });
 
       },
-      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode, statusMessage, errorCode = null, errorMessage = null) {
+      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode, statusMessage, errorCode, errorMessage) {
         var color = "#E82020";
 
-        if(errorCode == 3) {
+        if (errorCode == 3) {
           color = "#FFD94D"; // yellow
         }
 
