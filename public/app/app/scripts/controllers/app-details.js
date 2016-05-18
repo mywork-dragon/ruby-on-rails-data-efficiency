@@ -39,9 +39,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.appData = data;
         $scope.isFollowing = data.following
         $scope.initialPageLoadComplete = true; // hides page load spinner
-        for (var i = 0; i < data.facebookAds.length; i++) {
-          var ad = data.facebookAds[i]
-          ad.id = i
+        if (data.facebookAds) {
+          for (var i = 0; i < data.facebookAds.length; i++) {
+            var ad = data.facebookAds[i]
+            ad.id = i
+          }
         }
 
         // Updates displayStatus for use in android-live-scan ctrl
