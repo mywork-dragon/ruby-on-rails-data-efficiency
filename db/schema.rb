@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512234302) do
+ActiveRecord::Schema.define(version: 20160523192856) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -934,6 +934,12 @@ ActiveRecord::Schema.define(version: 20160512234302) do
   add_index "ios_app_category_names", ["app_store_id"], name: "index_ios_app_category_names_on_app_store_id", using: :btree
   add_index "ios_app_category_names", ["ios_app_category_id", "app_store_id"], name: "index_on_ios_app_category_id_and_app_store_id", using: :btree
   add_index "ios_app_category_names", ["name"], name: "index_ios_app_category_names_on_name", using: :btree
+
+  create_table "ios_app_current_snapshot_jobs", force: :cascade do |t|
+    t.text     "notes",      limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "ios_app_current_snapshots", force: :cascade do |t|
     t.boolean  "is_valid"
