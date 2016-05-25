@@ -30,7 +30,7 @@ class AwsInstanceGenerator
 
     tags << {
       key: "app",
-      value: is_api_instance ? "varys-api" : "varys"
+      value: is_api_instance ? "varys_api" : "varys"
     }
 
     reservation_info.instances.each do |instance|
