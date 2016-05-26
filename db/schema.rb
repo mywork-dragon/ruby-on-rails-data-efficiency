@@ -1963,6 +1963,24 @@ ActiveRecord::Schema.define(version: 20160526200638) do
   add_index "super_proxies", ["private_ip"], name: "index_super_proxies_on_private_ip", using: :btree
   add_index "super_proxies", ["public_ip"], name: "index_super_proxies_on_public_ip", using: :btree
 
+  create_table "tag_relationships", force: :cascade do |t|
+    t.integer  "tag_id",        limit: 4
+    t.integer  "taggable_id",   limit: 4
+    t.string   "taggable_type", limit: 191
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "tag_relationships", ["tag_id", "taggable_id", "taggable_type"], name: "index_on_tag_id_and_taggable_id_and_type", using: :btree
+  add_index "tag_relationships", ["tag_id"], name: "index_tag_relationships_on_tag_id", using: :btree
+  add_index "tag_relationships", ["taggable_type", "taggable_id"], name: "index_tag_relationships_on_taggable_type_and_taggable_id", using: :btree
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "test_models", force: :cascade do |t|
     t.string   "string0",    limit: 191
     t.string   "string1",    limit: 191
