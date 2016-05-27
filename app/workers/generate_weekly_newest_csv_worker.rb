@@ -13,7 +13,7 @@ class GenerateWeeklyNewestCsvWorker
       CSV.open(file_path, "w") do |csv|
         # column_names = IosAppEpfSnapshot.column_names
         column_names = IosAppEpfSnapshot.column_names - ['itunes_release_date'] #use release date from IosApp instead now (until Apple fixed their stuff)
-        csv << column_names + ['itunes_release_date', 'Category', 'User Base', 'Average Rating', 'Number of Ratings', 'MightySignal ID']
+        csv << column_names + ['itunes_release_date', 'Category', 'User Base', 'Average Rating', 'Number of Ratings', 'MightySignal ID', 'MightySignal Link']
         #IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).order('itunes_release_date DESC').each do |ios_app_epf_ss| 
         IosApp.where(released:  week_before_newest..newest_date).order('released DESC').each do |ios_app|
 
@@ -43,8 +43,10 @@ class GenerateWeeklyNewestCsvWorker
             number_of_ratings = ios_app_ss.ratings_current_count
 
             mighty_signal_id = ios_app.id
+
+            mighty_signal_link = "http://mightysignal.com/app/app#/app/ios/#{mighty_signal_id}"
           
-            row += [released, category, user_base, average_rating, number_of_ratings, mighty_signal_id]
+            row += [released, category, user_base, average_rating, number_of_ratings, mighty_signal_id, mighty_signal_link]
           end
 
           csv << row
