@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
   get 'apps/:app_identifier' => 'welcome#app_sdks'
-  get 'top-200' => 'welcome#top_200', as: 'top-200'
+  # get 'top-200' => 'welcome#top_200', as: 'top-200'
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   
