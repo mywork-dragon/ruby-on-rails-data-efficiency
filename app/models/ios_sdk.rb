@@ -31,6 +31,8 @@ class IosSdk < ActiveRecord::Base
   has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
   
   has_many :weekly_batches, as: :owner
+  has_many :tags, through: :tag_relationships
+  has_many :tag_relationships, as: :taggable
 
   enum source: [:cocoapods, :package_lookup, :manual]
 
@@ -64,6 +66,10 @@ class IosSdk < ActiveRecord::Base
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
     batch_json
+  end
+
+  def top_200_apps
+    self.get_current_apps.joins(:ios_app_rankings)
   end
 
   class << self

@@ -21,6 +21,19 @@ class WelcomeController < ApplicationController
       end
     end
   end
+
+  def top_200
+    @tags = Tag.all
+    @tag_label = "All"
+    if params[:tag]
+      @tag = Tag.find(params[:tag])
+      @tag_label = @tag.name
+      @sdks = @tag.ios_sdks
+    else
+      @sdks = Tag.includes(:ios_sdks).all.flat_map{|tag| tag.ios_sdks}
+    end
+    @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.count}.reverse).page(params[:page]).per(50)
+  end
   
   def contact_us
     first_name = params['first_name']

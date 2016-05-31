@@ -66,6 +66,16 @@ class IosMassScanService
       run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
     end
 
+    def scan_top_by_rankings(n: 100, kind: :free)
+      snapshot = IosAppRankingSnapshot.where(
+        kind: IosAppRankingSnapshot.kinds[kind],
+        is_valid: true
+      ).order(created_at: :desc)
+      app_ids = snapshot.ios_app_rankings.limit(n).pluck(:ios_app_id)
+
+      run_ids("Running the top #{n}-ranked #{kind} apps as of #{snapshot.scraped_at} : (#{snapshot.id})", app_ids)
+    end
+
     def scan_successful
       batch = Sidekiq::Batch.new
       batch.description = 'iOS Classification'
@@ -78,24 +88,6 @@ class IosMassScanService
       end
     end
 
-    def update_first_valid
-
-      batch = Sidekiq::Batch.new
-      batch.description = "update the first valid dates"
-      batch.on(:complete, 'IosMassScanService#on_update_complete')
-
-      # already ran it on everything else. Just need the ones afterwards
-      IpaSnapshot.select(:id).where('id > 259763').find_in_batches(batch_size: 1000).with_index do |query_batch, index|
-        puts "Batch #{index}" if index % 1000
-        batch.jobs do
-          query_batch.each do |ipa_snapshot|
-            FirstValidDateWorker.perform_async(ipa_snapshot.id)
-          end
-        end
-        
-      end
-    end
-    
   end
 
   def on_update_complete(status, options)

@@ -29,6 +29,8 @@ class IosApp < ActiveRecord::Base
   has_many :follow_relationships
   has_many :followers, as: :followable, through: :follow_relationships
   has_many :ios_fb_ads
+
+  has_many :ios_app_rankings
   
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]

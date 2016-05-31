@@ -1,0 +1,35 @@
+.row.header.top-200
+  .column.large-2
+    div class="addthis_native_toolbox"
+    h3 Categories
+    ul.nav.nav-pills.nav-stacked
+      li class="#{params[:tag].blank? ? 'active' : ''}"
+        = link_to 'All', top_200_path
+      - @tags.each do |tag|
+        li class="#{params[:tag].to_i == tag.id ? 'active' : ''}"
+          = link_to tag.name, top_200_path(tag: tag.id)
+
+
+  .column.large-10: .block
+    h1
+      = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
+      |#{@tag_label} SDKs used by App Store Top 200 Free Apps
+    br
+    p All data gathered by looking at iOS App binaries. List of Top 200 apps is updated daily from App Store Top Free rankings.
+    br
+    - @sdks.each do |sdk|
+      .row.sdk
+        .column.large-6
+          div class="media"
+            div class="pull-left media-middle"
+              a href=sdk.website
+                = image_tag sdk.favicon, size: '40', class: 'media-object'
+            div class="media-body"
+              h4 class="media-heading"
+                => link_to sdk.name, sdk.website, target: '_blank'
+                span #{sdk.top_200_apps.count} Apps
+              = sdk.summary
+        .column.large-6
+          - sdk.top_200_apps.first(8).each do |app|
+            = image_tag app.icon_url, size: '60', data: {toggle: "tooltip",placement: "top"}, title: app.name
+    = paginate @sdks

@@ -7047,7 +7047,7 @@ blockquote p {
 }
 
 /* line 54, /Library/Ruby/Gems/2.0.0/gems/foundation-rails-5.4.3.1/vendor/assets/stylesheets/foundation/components/_tooltips.scss */
-.tooltip {
+/*.tooltip {
     display: none;
     position: absolute;
     z-index: 999;
@@ -7060,7 +7060,7 @@ blockquote p {
     width: 100%;
     color: white;
     background: #333333;
-}
+}*/
 /* line 68, /Library/Ruby/Gems/2.0.0/gems/foundation-rails-5.4.3.1/vendor/assets/stylesheets/foundation/components/_tooltips.scss */
 .tooltip > .nub {
     display: block;

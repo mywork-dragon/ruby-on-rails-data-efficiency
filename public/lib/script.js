@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip()
     $('#app-select').ddslick({
         'width': '100%',
         onSelected: function(data){
