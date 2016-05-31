@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160526200638) do
+ActiveRecord::Schema.define(version: 20160531175344) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1092,17 +1092,21 @@ ActiveRecord::Schema.define(version: 20160526200638) do
   add_index "ios_app_languages", ["name"], name: "index_ios_app_languages_on_name", using: :btree
 
   create_table "ios_app_ranking_snapshots", force: :cascade do |t|
-    t.integer "kind",     limit: 4
-    t.boolean "is_valid",           default: false
+    t.integer  "kind",       limit: 4
+    t.boolean  "is_valid",             default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ios_app_ranking_snapshots", ["is_valid"], name: "index_ios_app_ranking_snapshots_on_is_valid", using: :btree
   add_index "ios_app_ranking_snapshots", ["kind", "is_valid"], name: "index_ios_app_ranking_snapshots_on_kind_and_is_valid", using: :btree
 
   create_table "ios_app_rankings", force: :cascade do |t|
-    t.integer "ios_app_id",                  limit: 4
-    t.integer "ios_app_ranking_snapshot_id", limit: 4
-    t.integer "rank",                        limit: 4
+    t.integer  "ios_app_id",                  limit: 4
+    t.integer  "ios_app_ranking_snapshot_id", limit: 4
+    t.integer  "rank",                        limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ios_app_rankings", ["ios_app_id", "rank"], name: "index_ios_app_rankings_on_ios_app_id_and_rank", using: :btree
