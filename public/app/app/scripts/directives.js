@@ -432,7 +432,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             // Removes all sdk & download filters upon platform switch to iOS
             if ($scope.appPlatform != 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
-                if ($rootScope.tags[index].parameter == 'sdkNames' || $rootScope.tags[index].parameter == 'sdkOperator') {
+                if ($rootScope.tags[index].parameter == 'sdkFiltersAnd' || $rootScope.tags[index].parameter == 'sdkFiltersOr' || $rootScope.tags[index].parameter == 'sdkOperator') {
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }
@@ -491,7 +491,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             // Removes all sdk filters upon platform switch to iOS
             if ($scope.appPlatform != 'android') {
               for (var index = 0; index < $rootScope.tags.length; index++) {
-                if ($rootScope.tags[index].parameter == 'sdkNames') {
+                if ($rootScope.tags[index].parameter == 'sdkFiltersOr' || $rootScope.tags[index].parameter == 'sdkFiltersAnd' || $rootScope.tags[index].parameter == 'sdkOperator') {
                   $rootScope.tags.splice(index, 1);
                   index -= 1;
                 }

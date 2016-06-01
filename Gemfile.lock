@@ -102,7 +102,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    chewy (0.8.1)
+    chewy (0.8.4)
       activesupport (>= 3.2)
       elasticsearch (>= 1.0.0)
     childprocess (0.5.9)
@@ -406,7 +406,7 @@ DEPENDENCIES
   capistrano-rvm (= 0.1.2)
   capistrano-sidekiq-mighty-servers!
   capybara
-  chewy (= 0.8.1)
+  chewy (= 0.8.4)
   clearbit (~> 0.1.6.pre)
   coffee-rails (~> 4.0.0)
   colorize (= 0.7.7)

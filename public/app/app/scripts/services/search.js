@@ -1,25 +1,20 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("searchService", ["$httpParamSerializer", "AppPlatform", function($httpParamSerializer, AppPlatform) {
+  .factory("searchService", ["$httpParamSerializer", "AppPlatform", "filterService", function($httpParamSerializer, AppPlatform, filterService) {
     return {
       queryStringParameters: function(tags, currentPage, numPerPage, category, order) {
-        var requestData = {app: {}, company: {}, custom: {}, platform: {}};
+        var requestData = {app: {}, company: {}, platform: {}};
         if (tags) {
           tags.forEach(function (tag) {
             switch (tag.parameter) {
-              case 'mobilePriority':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
-                break;
-              case 'oldAdSpend':
-              case 'adSpend':
-                requestData['app'][tag.parameter] = tag.value;
-                break;
+              case 'categories':
               case 'userBases':
+              case 'mobilePriority':
+              case 'supportDesk':
+              case 'sdkFiltersOr':
+              case 'sdkFiltersAnd':
+              case 'downloads':
                 if (requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
                 } else {
@@ -27,47 +22,20 @@ angular.module("appApp")
                 }
                 break;
               case 'updatedDaysAgo':
+              case 'oldAdSpend':
+              case 'adSpend':
+              case 'inAppPurchases':
+              case 'price':
                 requestData['app'][tag.parameter] = tag.value;
-                break;
-              case 'categories':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
                 break;
               case 'fortuneRank':
                 requestData['company'][tag.parameter] = tag.value;
-                break;
-              case 'supportDesk':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
                 break;
               case 'customKeywords':
                 if (requestData['custom'][tag.parameter]) {
                   requestData['custom'][tag.parameter].push(tag.value);
                 } else {
                   requestData['custom'][tag.parameter] = [tag.value];
-                }
-                break;
-              case 'sdkNames':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
-                break;
-              case 'sdkOperator':
-                requestData['app'][tag.parameter] = [tag.value];
-                break;
-              case 'downloads':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
             }
@@ -88,6 +56,20 @@ angular.module("appApp")
       },
       searchFilters: function(param, value) {
         switch (param) {
+          case 'price':
+            return {
+              parameter: param,
+              text: "Price" + ": " + value,
+              value: value
+            };
+            break;
+          case 'inAppPurchases':
+            return {
+              parameter: param,
+              text: "In App Purchases" + ": " + value,
+              value: value
+            };
+            break;
           case 'mobilePriority':
             return {
               parameter: param,
@@ -145,17 +127,13 @@ angular.module("appApp")
               value: value
             };
             break;
-          case 'sdkNames':
+          case 'sdkFiltersOr':
+          case 'sdkFiltersAnd':
+            var filterTypeShort = param == 'sdkFiltersAnd' ? 'And' : 'Or'
+            var displayName = filterService.sdkDisplayText(value, filterTypeShort)
             return {
               parameter: param,
-              text: "SDK" + ": " + value.name,
-              value: value
-            };
-            break;
-          case 'sdkOperator':
-            return {
-              parameter: param,
-              text: "SDK Operator" + ": " + value,
+              text: displayName + ": " + value.name,
               value: value
             };
             break;

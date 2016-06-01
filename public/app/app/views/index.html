@@ -58,9 +58,9 @@
         <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container" ></aside>
       </div>
 
-      <div class="view-container">
+      <div class="view-container" data-ng-controller="CustomSearchCtrl as customSearchCtrl" >
 
-        <div data-ng-controller="CustomSearchCtrl as customSearchCtrl" data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
+        <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
 

@@ -5,11 +5,17 @@ angular.module("appApp")
     return {
       /* Translates tag object values into a request object that matches format of back end api endpoints */
       searchRequestPost: function(tags, currentPage, numPerPage, category, order, platform) {
-        var requestData = {app: {}, company: {}, custom: {}};
+        var requestData = {app: {}, company: {}};
         if(tags) {
           tags.forEach(function (tag) {
             switch (tag.parameter) {
               case 'mobilePriority':
+              case 'userBases':
+              case 'categories':
+              case 'supportDesk':
+              case 'sdkFiltersOr':
+              case 'sdkFiltersAnd':
+              case 'downloads':
                 if(requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
                 } else {
@@ -18,57 +24,19 @@ angular.module("appApp")
                 break;
               case 'oldAdSpend':
               case 'adSpend':
-                requestData['app'][tag.parameter] = tag.value;
-                break;
-              case 'userBases':
-                if(requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
-                break;
               case 'updatedDaysAgo':
+              case 'inAppPurchases':
+              case 'price':
                 requestData['app'][tag.parameter] = tag.value;
-                break;
-              case 'categories':
-                if(requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
                 break;
               case 'fortuneRank':
                 requestData['company'][tag.parameter] = tag.value;
-                break;
-              case 'supportDesk':
-                if(requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
                 break;
               case 'customKeywords':
                 if(requestData['custom'][tag.parameter]) {
                   requestData['custom'][tag.parameter].push(tag.value);
                 } else {
                   requestData['custom'][tag.parameter] = [tag.value];
-                }
-                break;
-              case 'sdkNames':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
-                }
-                break;
-              case 'sdkOperator':
-                requestData['app'][tag.parameter] = [tag.value];
-                break;
-              case 'downloads':
-                if (requestData['app'][tag.parameter]) {
-                  requestData['app'][tag.parameter].push(tag.value);
-                } else {
-                  requestData['app'][tag.parameter] = [tag.value];
                 }
                 break;
             }
@@ -132,7 +100,7 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/chart/export_to_csv'
         });
       },
-      exportAllToCsv: function() {
+      exportAllToCsv: function(params) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Exported Search Results CSV"
@@ -140,7 +108,7 @@ angular.module("appApp")
         /* -------- Mixpanel Analytics End -------- */
         return $http({
           method: 'GET',
-          url: API_URI_BASE + 'api/search/export_results_to_csv'
+          url: API_URI_BASE + 'api/search/export_to_csv.csv' + params
         });
       },
       checkForSdks: function(appId) {

@@ -10,6 +10,7 @@ class IosSdkIndex < Chewy::Index
   }
 
   define_type IosSdk.display_sdks.where(flagged: false) do
+    field :id
     field :name
   end
 

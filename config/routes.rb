@@ -31,6 +31,8 @@ Rails.application.routes.draw do
   post 'api/search/android' => 'api#search_android_apps'
   post 'api/search/iosSdks' => 'api#search_ios_sdk'
   post 'api/search/androidSdks' => 'api#search_android_sdk'
+  get 'api/search/export_to_csv' => 'api#export_results_to_csv'
+
   get 'api/get_ios_app' => 'api#get_ios_app'
   get 'api/get_android_app' => 'api#get_android_app'
   get 'api/get_company' => 'api#get_company'

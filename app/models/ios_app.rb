@@ -35,6 +35,8 @@ class IosApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
+
+  update_index('apps#ios_app') { self } if Rails.env.production?
   
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
                       529479190, 547702041,591981144,618783545,317469184,401626263]
@@ -179,6 +181,18 @@ class IosApp < ActiveRecord::Base
   def sdk_response
     IosSdkService.get_sdk_response(self.id)
   end
+
+  def installed_sdks
+    self.sdk_response[:installed_sdks]
+  end
+
+  def uninstalled_sdks
+    self.sdk_response[:uninstalled_sdks]
+  end
+
+  def fortune_rank
+    self.get_company.try(:fortune_1000_rank)
+  end
   
   def name
     if newest_ios_app_snapshot.present?
@@ -190,6 +204,32 @@ class IosApp < ActiveRecord::Base
     if newest_ios_app_snapshot.present?
       (newest_ios_app_snapshot.price.to_i > 0) ? "$#{newest_ios_app_snapshot.price}" : 'Free' 
     end
+  end
+
+  def to_csv_row(can_view_support_desk=false)
+    # li "CREATING HASH FOR #{app.id}"
+    company = self.get_company
+    developer = self.ios_developer
+    newest_snapshot = self.newest_ios_app_snapshot
+
+    [
+      self.id,
+      newest_snapshot.try(:name),
+      'IosApp',
+      self.mobile_priority,
+      self.user_base,
+      self.last_updated,
+      self.ios_fb_ads.any?,
+      self.categories.try(:join, ", "),
+      developer.try(:id),
+      developer.try(:name),
+      developer.try(:identifier),
+      company.try(:fortune_1000_rank),
+      developer.try(:get_website_urls).try(:join, ', '),
+      'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
+      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
+      can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
+    ].to_csv
   end
   
   ###############################

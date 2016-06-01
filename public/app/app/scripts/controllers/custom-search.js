@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "slacktivity", "searchService", "$window",
-    function($rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window) {
+  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "slacktivity", "searchService", "$window",
+    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window) {
       var customSearchCtrl = this;
       customSearchCtrl.platform = APP_PLATFORM; // default
 
@@ -11,10 +11,8 @@ angular.module('appApp')
 
         customSearchCtrl.queryInProgress = true;
 
-        var urlParams = $location.url().split('/search/custom')[1]; // Get url params
         var routeParams = $location.search();
-
-        customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage)
+        customSearchService.customSearch(routeParams.platform, routeParams.query, routeParams.page, routeParams.numPerPage, routeParams.sortBy, routeParams.orderBy)
           .success(function(data) {
             customSearchCtrl.apps = data.appData;
             customSearchCtrl.appNum = data.appData.length;
@@ -23,9 +21,9 @@ angular.module('appApp')
             customSearchCtrl.changeAppPlatform(routeParams.platform);
             customSearchCtrl.searchInput = routeParams.query;
             customSearchCtrl.currentPage = data.page;
-            customSearchCtrl.queryInProgress = false;
             $rootScope.apps = customSearchCtrl.apps;
             $rootScope.numApps = customSearchCtrl.numApps;
+            customSearchCtrl.queryInProgress = false;
           })
           .error(function(data) {
             customSearchCtrl.appNum = 0;
@@ -35,25 +33,50 @@ angular.module('appApp')
       };
 
       customSearchCtrl.loadTableData();
+
+
+      // When orderby/sort arrows on dashboard table are clicked
+      customSearchCtrl.sortApps = function(category, order) {
+        /* -------- Mixpanel Analytics Start -------- */
+        mixpanel.track(
+          "Table Sorting Changed", {
+            "category": category,
+            "order": order,
+            "appPlatform": APP_PLATFORM
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+        var routeParams = $location.search();
+        routeParams.orderBy = order
+        routeParams.sortBy = category
+        var targetUrl = (customSearchCtrl.platform == 'iosSdks' || customSearchCtrl.platform == 'androidSdks') ? '/search/sdk/' + customSearchCtrl.platform + '?' : '/search/custom?';
+        $location.url(targetUrl + $httpParamSerializer(routeParams));
+        customSearchCtrl.loadTableData();
+      };
       
       customSearchCtrl.changeAppPlatform = function(platform) {
         customSearchCtrl.platform = platform;
       };
 
       customSearchCtrl.onPageChange = function(nextPage) {
-        customSearchCtrl.submitSearch(nextPage);
+        customSearchCtrl.submitSearch(nextPage, true);
       };
 
-      customSearchCtrl.submitSearch = function(newPageNum) {
+      customSearchCtrl.submitSearch = function(newPageNum, keepSort) {
+        var routeParams = $location.search();
         var payload = {
           query: customSearchCtrl.searchInput,
           platform: customSearchCtrl.platform,
           page: newPageNum || 1,
           numPerPage: 30
         };
+        if (routeParams.sortBy && keepSort) {
+          payload.sortBy = routeParams.sortBy
+          payload.orderBy = routeParams.orderBy
+        }
         var targetUrl = (customSearchCtrl.platform == 'iosSdks' || customSearchCtrl.platform == 'androidSdks') ? '/search/sdk/' + customSearchCtrl.platform + '?' : '/search/custom?';
 
-        if(customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
+        if (customSearchCtrl.platform == 'androidSdks' || customSearchCtrl.platform == 'iosSdks') {
 
           // Set URL & process/redirect to SDK Search Ctrl
           $window.location.href = '#' + targetUrl + $httpParamSerializer(payload);

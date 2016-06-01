@@ -39,6 +39,8 @@ class IosSdk < ActiveRecord::Base
   enum kind: [:native, :js]
   validates :kind, presence: true
 
+  update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.where(flagged: false).find_by_id(self.id) } if Rails.env.production?
+
   def get_current_apps(limit = nil, sort = nil, with_associated: true)
 
     apps = IosSdk.get_current_apps_with_sdks(ios_sdk_ids: [self.id], with_associated: with_associated)

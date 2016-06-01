@@ -60,6 +60,12 @@ angular.module('appApp')
             $rootScope.connectedOauth = true;
           });
 
+
+        var routeParams = $location.search();
+        if (routeParams.platform) {
+          APP_PLATFORM = JSON.parse(routeParams.platform).appPlatform
+        }
+
         /* Populates "Categories" dropdown with list of categories */
         apiService.getCategories().success(function(data) {
           $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
@@ -72,23 +78,6 @@ angular.module('appApp')
         $rootScope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
         $rootScope.scannedIosSdkNum = data.scannedIosSdkNum;
       });
-
-      // Display num of apps scanned notice on dashboard upon SDK filter added
-      $scope.$watchCollection('$root.tags', function () {
-        var sdkNameFilters = [];
-        if($rootScope.tags) {
-          $rootScope.tags.forEach(function(tag) {
-            if(tag.parameter == "sdkNames") {
-              sdkNameFilters.push(tag);
-            }
-          });
-          $rootScope.sdkNameFilters = sdkNameFilters;
-          if ($rootScope.sdkNameFilters.length == 0) {
-            filterService.removeFilter('sdkOperator')
-          }
-        }
-      });
-
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
     function($scope, apiService, $http, $rootScope, filterService) {

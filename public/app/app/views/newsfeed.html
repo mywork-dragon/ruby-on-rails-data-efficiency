@@ -164,32 +164,34 @@
   </div>
   
   <div class="modal fade" id="followingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="myModalLabel">Following</h3>
-      </div>
-      <div class="modal-body">
-        <ul class="following">
-          <li ng-repeat="follow in following">
-            <a ng-if="follow.type == 'IosSdk' || follow.type == 'AndroidSdk'" href="#/sdk/{{follow.type == 'IosSdk' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
-              <img ng-src="{{follow.icon}}" ng-show="follow.icon">
-              {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} SDK
-            </a>
-            <a ng-if="follow.type == 'IosApp' || follow.type == 'AndroidApp'" href="#/app/{{follow.type == 'IosApp' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
-              <img ng-src="{{follow.icon}}" ng-show="follow.icon">
-              {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} App
-            </a>
-            <div id="followButton">
-              <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="!follow.following">Follow</button>
-              <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="follow.following">Unfollow</button>
-            </div>
-          </li>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">Following</h3>
+        </div>
+        <div class="modal-body">
+          <ul class="following">
+            <li ng-repeat="follow in following">
+              <a ng-if="follow.type == 'IosSdk' || follow.type == 'AndroidSdk'" href="#/sdk/{{follow.type == 'IosSdk' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
+                <img ng-src="{{follow.icon}}" ng-show="follow.icon">
+                {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} SDK
+              </a>
+              <a ng-if="follow.type == 'IosApp' || follow.type == 'AndroidApp'" href="#/app/{{follow.type == 'IosApp' ? 'ios' : 'android'}}/{{follow.id}}" target="_blank">
+                <img ng-src="{{follow.icon}}" ng-show="follow.icon">
+                {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} App
+              </a>
+              <div id="followButton">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="!follow.following">Follow</button>
+                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="follow.following">Unfollow</button>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  
   <div ng-controller="ListCtrl">
     <!-- Modals -->
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>

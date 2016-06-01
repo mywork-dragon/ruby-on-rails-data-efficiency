@@ -147,7 +147,7 @@ gem 'curb-fu', '0.6.2'
 gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
 
-gem 'chewy', '0.8.1'
+gem 'chewy', '0.8.4'
 
 gem 'paperclip', '~>5.0.0.beta2'
 

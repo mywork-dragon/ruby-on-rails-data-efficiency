@@ -37,6 +37,8 @@ class AndroidApp < ActiveRecord::Base
   enum user_base: [:elite, :strong, :moderate, :weak]
 
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :carrier_incompatible, :item_not_found]
+
+  update_index('apps#android_app') { self } if Rails.env.production?
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
@@ -56,6 +58,10 @@ class AndroidApp < ActiveRecord::Base
     end
     return nil
   end
+
+  def fortune_rank
+    self.get_company.try(:fortune_1000_rank)
+  end
   
   def name
     if newest_android_app_snapshot.present?
@@ -63,6 +69,30 @@ class AndroidApp < ActiveRecord::Base
     else
       return nil
     end
+  end
+
+  def to_csv_row
+    company = self.get_company
+    developer = self.android_developer
+    newest_snapshot = self.newest_android_app_snapshot
+
+    [
+      self.id,
+      newest_snapshot.try(:name),
+      'AndroidApp',
+      self.mobile_priority,
+      self.user_base,
+      self.last_updated,
+      self.android_fb_ad_appearances.present?,
+      self.categories.try(:join, ", "),
+      developer.try(:id),
+      developer.try(:name),
+      developer.try(:identifier),
+      company.try(:fortune_1000_rank),
+      developer.try(:get_website_urls).try(:join, ', '),
+      'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
+      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
+    ].to_csv
   end
 
   def as_json(options={})
@@ -76,7 +106,7 @@ class AndroidApp < ActiveRecord::Base
       platform: 'android',
       mobilePriority: self.mobile_priority,
       adSpend: self.old_ad_spend?,
-      lastUpdated: newest_snapshot.try(:released),
+      lastUpdated: self.last_updated,
       lastUpdatedDays: self.last_updated_days,
       categories: self.categories,
       seller: newest_snapshot.try(:seller),
@@ -130,6 +160,10 @@ class AndroidApp < ActiveRecord::Base
     self.apk_snapshots.where(scan_status: 1).first
   end
 
+  def last_updated
+    self.newest_android_app_snapshot.try(:released).to_s
+  end
+
   def last_updated_days
     if released = self.newest_android_app_snapshot.try(:released)
       (Time.now.to_date - released.to_date).to_i
@@ -152,21 +186,35 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def sdk_response
+    AndroidSdkService::App.get_sdk_response(id)
+  end
+
+  # # delete old method
+  # def installed_sdks
+  #   newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
+  #   return nil if newest_snap.blank?
+  #   newest_sdks = newest_snap.android_sdks
+  #   sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
+  #   get_sdks(sdk_apk, :first_seen)
+  # end
+
+  # # delete old method
+  # def uninstalled_sdks
+  #   newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
+  #   return nil if newest_snap.blank?
+  #   newest_sdks = newest_snap.android_sdks
+  #   snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
+  #   sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
+  #   get_sdks(sdk_apk, :last_seen)
+  # end
+
   def installed_sdks
-    newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
-    return nil if newest_snap.blank?
-    newest_sdks = newest_snap.android_sdks
-    sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
-    get_sdks(sdk_apk, :first_seen)
+    self.sdk_response[:installed]
   end
 
   def uninstalled_sdks
-    newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
-    return nil if newest_snap.blank?
-    newest_sdks = newest_snap.android_sdks
-    snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
-    sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
-    get_sdks(sdk_apk, :last_seen)
+    self.sdk_response[:uninstalled]
   end
 
   def icon_url(size='300x300') # size should be string eg '350x350'
@@ -203,6 +251,7 @@ class AndroidApp < ActiveRecord::Base
 
   private
 
+  # delete old method
   def get_sdks(sdk_apk, first_last)
     r = Hash.new
     sdk_apk.each{|sdk, apk| r[sdk] = ApkSnapshot.find(apk).send(first_last) }

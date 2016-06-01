@@ -7154,6 +7154,10 @@ i.infoTooltipIcon {
   top: 2px;
 }
 
+.dashboard-tag-filter-selects button {
+  margin-left: 4px;
+}
+
 .dashboard-tag-filter-selects > .ui-select {
   top: 2px;
 }
@@ -7165,7 +7169,7 @@ i.infoTooltipIcon {
 }
 
 .sdk-autocomplete-filter {
-  width: 220px;
+  width: 200px;
   font-weight: normal;
   display: inline-block;
 }
@@ -7231,7 +7235,7 @@ i.infoTooltipIcon {
 }
 
 #dashboardPlatformSwitch {
-  margin-right: 10px;
+  margin: 0 10px;
 }
 
 .dashboard-tag-filter-selects #dashboardPlatformSwitch {
@@ -7776,7 +7780,7 @@ pre {
 /* -------------------------- AnguComplete-Alt Styles -------------------------- */
 
 .angucomplete-holder {
-  width: 220px;
+  width: 200px;
   display: inline-block;
   position: relative;
   top: 3px;
@@ -8021,12 +8025,16 @@ ul.following li #followButton {
   display: inline-block;
 }
 
-span.uninstall, span.red {
+span.uninstall, span.red, .status-1 {
   color: #ED5F5F;
 }
 
-span.install {
+span.install, .status-0 {
   color: #1EAD4F;
+}
+
+.status-2 {
+  color: #DAA520;
 }
 
 span.ad_seen {
@@ -8086,6 +8094,58 @@ h4.red {
   margin-left: 2px;
 }
 
+#sdkFilterModal .angucomplete-holder {
+  top: 0;
+}
+
+#sdkFilterModal h5 {
+  font-weight: bold;
+}
+
+#sdkFilterModal .fa {
+  margin-left: 5px;
+}
+
+#sdkFilterModal .ui-select {
+  padding-top: 4px;
+}
+
+.sdk-filter {
+  display: inline-block;
+  margin: 2px 2px 2px 6px;
+  padding: 7px 8px 6px 8px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  background-color: #0393dd;
+  color: #fff;
+}
+
+.sdk-filter .remove-button {
+  margin: 0 0 0 5px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  vertical-align: middle;
+  color: #eee;
+  text-decoration: none;
+}
+
+#sdkFilterModal p {
+  font-size: 16px;
+  margin: 15px 0 10px 0;
+}
+
+.disabled { cursor: default; opacity: .5; }
+
+.export-btn {
+  margin-left: 8px;
+  padding: 5px 12px 6px 12px;
+  text-transform: none;
+}
 
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */

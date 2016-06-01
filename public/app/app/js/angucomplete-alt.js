@@ -22,7 +22,7 @@
   }
 }(window, function (angular) {
 
-  angular.module('angucomplete-alt', []).directive('angucompleteAlt', ['$q', '$parse', '$http', '$sce', '$timeout', '$templateCache', '$interpolate', 'filterService', function ($q, $parse, $http, $sce, $timeout, $templateCache, $interpolate, filterService) {
+  angular.module('angucomplete-alt', []).directive('angucompleteAlt', ['$q', '$parse', '$http', '$sce', '$timeout', '$templateCache', '$interpolate', function ($q, $parse, $http, $sce, $timeout, $templateCache, $interpolate) {
     // keyboard events
     var KEY_DW  = 40;
     var KEY_RT  = 39;
@@ -685,9 +685,6 @@
       };
 
       scope.selectResult = function(result) {
-
-        // MightySignal code to add selected result as a tag filter
-        filterService.addFilter('sdkNames', {id: result.id, name: result.title}, 'SDK', false, result.title);
 
         // Restore original values
         if (scope.matchClass) {

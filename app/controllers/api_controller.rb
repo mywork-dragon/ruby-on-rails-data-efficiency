@@ -5,7 +5,7 @@ class ApiController < ApplicationController
 
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
-  before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv]
+  before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv, :export_results_to_csv]
   before_action :authenticate_ios_live_scan, only: [:ios_scan_status, :ios_start_scan] # Authorizing iOS Live Scan routes
 
   def filter_ios_apps
@@ -20,16 +20,13 @@ class ApiController < ApplicationController
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = JSON.parse(params[:custom])['customKeywords']
-    # custom_keywords = params[:custom][:customKeywords]
 
-    company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
-    app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
+    company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i if company_filters['fortuneRank']
+    app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i if app_filters['updatedDaysAgo']
 
     filter_args = {
       app_filters: app_filters,
       company_filters: company_filters,
-      custom_keywords: custom_keywords,
       page_size: (page_size.blank? ? nil : page_size.to_i),
       page_num: (page_num.blank? ? nil : page_num.to_i),
       sort_by: sort_by,
@@ -40,8 +37,9 @@ class ApiController < ApplicationController
 
     filter_results = FilterService.filter_ios_apps(filter_args)
 
-    results = filter_results[:results]
-    results_count = filter_results[:results_count]
+    ids = filter_results.map { |result| result.attributes["id"] }
+    results = ids.any? ? IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") : []
+    results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
 
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
@@ -53,7 +51,6 @@ class ApiController < ApplicationController
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
     order_by = params[:orderBy]
-    custom_keywords = JSON.parse(params[:custom])['customKeywords']
 
     company_filters.has_key?('fortuneRank') ? company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i : nil
     app_filters.has_key?('updatedDaysAgo') ? app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i : nil
@@ -61,7 +58,6 @@ class ApiController < ApplicationController
     filter_args = {
       app_filters: app_filters,
       company_filters: company_filters,
-      custom_keywords: custom_keywords,
       page_size: (page_size.blank? ? nil : page_size.to_i),
       page_num: (page_num.blank? ? nil : page_num.to_i),
       sort_by: sort_by,
@@ -72,8 +68,9 @@ class ApiController < ApplicationController
 
     filter_results = FilterService.filter_android_apps(filter_args)
 
-    results = filter_results[:results]
-    results_count = filter_results[:results_count]
+    ids = filter_results.map { |result| result.attributes["id"] }
+    results = ids.any? ? AndroidApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") : []
+    results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
 
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
@@ -266,6 +263,30 @@ class ApiController < ApplicationController
     render json: {:resultsCount => results.count, :currentList => list_id, :results => results.as_json({user: @current_user})}
   end
 
+  def export_results_to_csv
+    app_filters = JSON.parse(params[:app])
+    company_filters = JSON.parse(params[:company])
+    platform = JSON.parse(params[:platform])["appPlatform"]
+
+    sort_by = params[:sortBy]
+    order_by = params[:orderBy]
+
+    company_filters['fortuneRank'] = company_filters['fortuneRank'].to_i if company_filters['fortuneRank']
+    app_filters['updatedDaysAgo'] = app_filters['updatedDaysAgo'].to_i if app_filters['updatedDaysAgo']
+
+    filter_args = {
+      app_filters: app_filters,
+      company_filters: company_filters,
+      sort_by: sort_by,
+      order_by: order_by,
+      platform: platform
+    }
+
+    filter_args.delete_if{ |k, v| v.nil? }
+    
+    render_csv(filter_args)
+  end
+
   def export_list_to_csv
     can_view_support_desk = @current_user.account.try(:can_view_support_desk)
 
@@ -276,64 +297,14 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = ['MightySignal App ID', 'App Store/Google Play App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
-    can_view_support_desk ? header.push('Support URL') : nil
+    header = csv_header(can_view_support_desk)
 
     ios_apps.each do |app|
-      # li "CREATING HASH FOR #{app.id}"
-      company = app.get_company
-      developer = app.ios_developer
-      newest_snapshot = app.newest_ios_app_snapshot
-
-      app_hash = [
-        app.id,
-        app.app_identifier,
-        newest_snapshot.present? ? newest_snapshot.name : nil,
-        'IosApp',
-        app.mobile_priority,
-        app.user_base,
-        newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-        @current_user.account.try(:can_view_ad_spend?) ? app.ios_fb_ads.any? : app.ios_fb_ad_appearances.present?,
-        newest_snapshot.present? ? IosAppCategoriesSnapshot.where(ios_app_snapshot: newest_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}.join(", ") : nil,
-        developer.try(:id),
-        developer.try(:name),
-        developer.try(:identifier),
-        company.present? ? company.fortune_1000_rank : nil,
-        developer.try(:get_website_urls).try(:join, ', '),
-        'http://www.mightysignal.com/app/app#/app/ios/' + app.id.to_s,
-        developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
-        can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
-      ]
-
-      apps << app_hash
+      apps << app.to_csv_row
     end
 
     android_apps.each do |app|
-      company = app.get_company
-      developer = app.android_developer
-      newest_snapshot = app.newest_android_app_snapshot
-
-      app_hash = [
-        app.id,
-        app.app_identifier,
-        newest_snapshot.present? ? newest_snapshot.name : nil,
-        'AndroidApp',
-        app.mobile_priority,
-        app.user_base,
-        newest_snapshot.present? ? newest_snapshot.released.to_s : nil,
-        app.android_fb_ad_appearances.present?,
-        newest_snapshot.present? ? newest_snapshot.android_app_categories.map{|c| c.name}.join(", ") : nil,
-        developer.try(:id),
-        developer.try(:name),
-        developer.try(:identifier),
-        company.present? ? company.fortune_1000_rank : nil,
-        developer.try(:get_website_urls).try(:join, ', '),
-        'http://www.mightysignal.com/app/app#/app/android/' + app.id.to_s,
-        developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
-      ]
-
-      apps << app_hash
-
+      apps << app.to_csv_row
     end
 
     list_csv = CSV.generate do |csv|
@@ -434,7 +405,6 @@ class ApiController < ApplicationController
       return
     end
 
-    puts apps.each { |app| ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: app['type']).destroy }
     render json: {:status => 'success'}
   end
 
@@ -720,7 +690,9 @@ class ApiController < ApplicationController
     ).boost_factor(
         1,
         filter: { term: {user_base: 'moderate'} }
-    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    )
+    result_ids = FilterService.order_helper(result_ids, params[:sortBy], params[:orderBy]) if params[:sortBy] && params[:orderBy]
+    result_ids = result_ids.limit(num_per_page).offset((page - 1) * num_per_page)
 
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
@@ -752,7 +724,10 @@ class ApiController < ApplicationController
     ).boost_factor(
       1,
       filter: { term: {user_base: 'moderate'} }
-    ).limit(num_per_page).offset((page - 1) * num_per_page)
+    )
+    result_ids = FilterService.order_helper(result_ids, params[:sortBy], params[:orderBy]) if params[:sortBy] && params[:orderBy]
+    result_ids = result_ids.limit(num_per_page).offset((page - 1) * num_per_page)
+    
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
@@ -858,5 +833,68 @@ class ApiController < ApplicationController
     scanned_ios_sdk_num = IpaSnapshot.where(scan_status: 1).select(:ios_app_id).distinct.count
 
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
+  end
+
+  private
+
+  def render_csv(filter_args)
+    set_file_headers
+    set_streaming_headers
+
+    response.status = 200
+
+    self.response_body = csv_lines(filter_args)
+  end
+
+  def set_file_headers
+    file_name = "mightsignal_apps.csv"
+    headers["Content-Type"] = "text/csv"
+    headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
+  end
+
+
+  def set_streaming_headers
+    headers['X-Accel-Buffering'] = 'no'
+
+    headers["Cache-Control"] ||= "no-cache"
+    headers.delete("Content-Length")
+  end
+
+  def csv_header(can_view_support_desk=false)
+    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
+    header << 'Support URL' if can_view_support_desk
+    header.to_csv
+  end
+
+  def csv_lines(filter_args)
+    Enumerator.new do |y|
+      y << csv_header
+
+      filter_args[:page_size] = 10000
+      filter_args[:page_num] = 1
+      filter_results = nil
+      platform = filter_args.delete(:platform)
+
+      #while !filter_results || filter_results.count > 0
+        if platform == 'ios'
+          filter_results = FilterService.filter_ios_apps(filter_args)
+          filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
+          ids = filter_results.map { |result| result.attributes["id"] }
+          results = IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+        else
+          filter_results = FilterService.filter_android_apps(filter_args)
+          filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
+          ids = filter_results.map { |result| result.attributes["id"] }
+          results = AndroidApp.where(id: ids).includes(:android_developer, :newest_android_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+        end
+
+        if ids.any?
+          results.each do |app|
+            y << app.to_csv_row
+          end
+          filter_args[:page_num] += 1
+        end
+      #end
+    end
   end
 end

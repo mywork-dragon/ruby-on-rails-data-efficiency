@@ -10,6 +10,7 @@ class AndroidSdkIndex < Chewy::Index
   }
 
   define_type AndroidSdk.display_sdks.where(flagged: false) do
+    field :id
     field :name
   end
 

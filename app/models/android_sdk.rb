@@ -24,6 +24,8 @@ class AndroidSdk < ActiveRecord::Base
 
   validates :kind, presence: true
 
+  update_index('android_sdk#android_sdk') { self if IosSdk.display_sdks.where(flagged: false).find_by_id(self.id) } if Rails.env.production?
+
   attr_accessor :first_seen
   attr_accessor :last_seen
 

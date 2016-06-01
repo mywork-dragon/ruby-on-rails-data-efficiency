@@ -32,7 +32,7 @@ class IosSdkService
         resp[:error_code] = error_map[app.display_type.to_sym]
       end
 
-      price = Rails.env.production? ? app.newest_ios_app_snapshot.price.to_i : 0
+      price = Rails.env.production? ? app.newest_ios_app_snapshot.try(:price).to_i : 0
 
       if !price.zero?
         resp[:error_code] = error_map[:paid]

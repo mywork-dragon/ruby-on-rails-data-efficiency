@@ -13,7 +13,7 @@
 </header>
 
 <div class="page page-table" data-ng-controller="TableCtrl">
-  <div data-ng-controller="CustomSearchCtrl as customSearchCtrl">
+  <div>
     <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
       <div class="panel-heading" id="listViewTableHeading">
         <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="customSearchCtrl.numApps">| Displaying {{customSearchCtrl.appsDisplayedCount()}} of {{customSearchCtrl.numApps | number}}</span>
@@ -26,89 +26,148 @@
       </div>
 
       <div id="results-table-wrapper">
-
         <table class="table table-bordered table-striped table-responsive">
           <thead>
-          <tr>
-            <th class="selectAllCheckboxHeader">
-              <select-all-checkbox apps="customSearchCtrl.apps"></select-all-checkbox>
-            </th>
-            <th><div class="th normal-right-padding">
-              App Name
-            </div></th>
-            <th><div class="th normal-right-padding appDetailsHeader">
-              App Type
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Publisher
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Fortune Rank
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Mobile Priority
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Ad Spend
-            </div></th>
-            <th><div class="th normal-right-padding">
-              User Base Size
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Categories
-            </div></th>
-            <th ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'"><div class="th normal-right-padding">
-              Support Desk
-            </div></th>
-            <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
-              Downloads
-            </div></th>
-            <th><div class="th normal-right-padding">
-              Last Updated
-            </div></th>
-          </tr>
+            <tr>
+              <th class="selectAllCheckboxHeader">
+                <select-all-checkbox apps="customSearchCtrl.apps"></select-all-checkbox>
+              </th>
+              <th><div class="th normal-right-padding">
+                App Name
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('name', 'asc')"
+                      data-ng-class="{active: row == 'name'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('name', 'desc')"
+                      data-ng-class="{active: row == '-name'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding appDetailsHeader">
+                App Type
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Publisher
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('publisher_name', 'asc')"
+                      data-ng-class="{active: row == 'publisher_name'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('publisher_name', 'desc')"
+                      data-ng-class="{active: row == '-publisher_name'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Fortune Rank
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('fortune_rank', 'asc')"
+                      data-ng-class="{active: row == 'fortune_rank'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('fortune_rank', 'desc')"
+                      data-ng-class="{active: row == '-fortune_rank'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Mobile Priority
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('mobile_priority', 'asc')"
+                      data-ng-class="{active: row == 'mobile_priority'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('mobile_priority', 'desc')"
+                      data-ng-class="{active: row == '-mobile_priority'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Ad Spend
+                <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'desc')"
+                      data-ng-class="{active: row == 'old_facebook_ads'}"></span>
+                <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-down"
+                      data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'asc')"
+                      data-ng-class="{active: row == '-old_facebook_ads'}"></span>
+                <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('facebook_ads', 'desc')"
+                      data-ng-class="{active: row == 'facebook_ads'}"></span>
+                <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('facebook_ads', 'asc')"
+                      data-ng-class="{active: row == '-facebook_ads'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                User Base Size
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('user_base', 'asc')"
+                      data-ng-class="{active: row == 'user_base'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('user_base', 'desc')"
+                      data-ng-class="{active: row == '-user_base'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Categories
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('categories', 'asc')"
+                      data-ng-class="{active: row == 'categories'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click="customSearchCtrl.sortApps('categories', 'desc')"
+                      data-ng-class="{active: row == '-categories'}"></span>
+              </div></th>
+              <th ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'"><div class="th normal-right-padding">
+                Support Desk
+              </div></th>
+              <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
+                Downloads
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('downloads', 'desc')"
+                      data-ng-class="{active: row == 'downloads'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('downloads', 'asc')"
+                      data-ng-class="{active: row == '-downloads'}"></span>
+              </div></th>
+              <th><div class="th normal-right-padding">
+                Last Updated
+                <span class="glyphicon glyphicon-chevron-up"
+                      data-ng-click="customSearchCtrl.sortApps('last_updated', 'desc')"
+                      data-ng-class="{active: row == 'last_updated'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('last_updated', 'asc')"
+                      data-ng-class="{active: row == '-last_updated'}"></span>
+              </div></th>
+            </tr>
           </thead>
 
-          <tbody data-ng-hide="queryInProgress">
-          <tr data-ng-repeat="app in customSearchCtrl.apps">
-            <td class="dashboardTableDataCheckbox">
-              <checkable-checkbox app="app" apps="customSearchCtrl.apps"></checkable-checkbox>
-            </td>
-            <td class="resultsTableAppIcon">
-                <span>
-                  <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">
-                    <img ng-src="{{app.icon}}" />
-                    {{app.name}}
-                    <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
-                  </a>
+          <tbody data-ng-hide="customSearchCtrl.queryInProgress">
+            <tr data-ng-repeat="app in customSearchCtrl.apps">
+              <td class="dashboardTableDataCheckbox">
+                <checkable-checkbox app="app" apps="customSearchCtrl.apps"></checkable-checkbox>
+              </td>
+              <td class="resultsTableAppIcon">
+                  <span>
+                    <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">
+                      <img ng-src="{{app.icon}}" />
+                      {{app.name}}
+                      <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                    </a>
+                  </span>
+                  <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
+              </td>
+              <td class="appTypeIndicator">
+                <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+              </td>
+              <td><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td>{{app.company.fortuneRank}}</td>
+              <td class="dashboardMobilePriorityView">
+                <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
+              </td>
+              <td class="dashboardAdSpendView">
+                <span ng-if="!isNaN(app.adSpend)">
+                  <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
                 </span>
-                <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
-            </td>
-            <td class="appTypeIndicator">
-              <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
-            </td>
-            <td><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
-            <td>{{app.company.fortuneRank}}</td>
-            <td class="dashboardMobilePriorityView">
-              <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
-            </td>
-            <td class="dashboardAdSpendView">
-              <span ng-if="!isNaN(app.adSpend)">
-                <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
-              </span>
-            </td>
-            <td>{{app.userBase | capitalize}}</td>
-            <td>{{app.categories.join(', ')}}</td>
-            <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.supportDesk | supportDeskName}}</td>
-            <td ng-if="customSearchCtrl.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>
-            <td>
-                <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
-                  <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.lastUpdatedDays)">
-                    <strong>{{app.lastUpdatedDays}}</strong>
-                  </span> days ago
-                </span>
-            </td>
-          </tr>
+              </td>
+              <td>{{app.userBase | capitalize}}</td>
+              <td>{{app.categories.join(', ')}}</td>
+              <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.supportDesk | supportDeskName}}</td>
+              <td ng-if="customSearchCtrl.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>
+              <td>
+                  <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
+                    <span ng-class="customSearchCtrl.getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                      <strong>{{app.lastUpdatedDays}}</strong>
+                    </span> days ago
+                  </span>
+              </td>
+            </tr>
           </tbody>
         </table>
         <div id="dashboardTableStatusMessage" data-ng-show="customSearchCtrl.queryInProgress || !(customSearchCtrl.numApps > 0)">

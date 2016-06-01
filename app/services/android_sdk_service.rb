@@ -96,7 +96,7 @@ module AndroidSdkService
       def error_code(aa)
         ss = aa.newest_android_app_snapshot
 
-        return 5 unless ss.price.to_i.zero? # paid is code 5
+        return 5 unless ss.try(:price).to_i.zero? # paid is code 5
 
         display_type_to_error_code(aa.display_type)
       end

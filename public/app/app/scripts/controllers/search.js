@@ -1,11 +1,14 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$sce', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity',
-    function ($scope, $sce, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity) {
+  .controller('SearchCtrl', ["$scope", '$sce', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
+    function ($scope, $sce, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
+
+      $scope.sdkFilters = {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]}
+      searchCtrl.apps = []
 
       // Sets user permissions
       authService.permissions()
@@ -40,6 +43,107 @@ angular.module('appApp')
         buttonDefaultText: 'CATEGORIES',
       };
 
+      $scope.addCategoryFilter = function(category) {
+        var found = false
+        for (var i in $rootScope.categoryModel) {
+          if ($rootScope.categoryModel[i].id == category) found = true
+        }
+        if (!found) $rootScope.categoryModel.push({id: category, label: category})
+      }
+
+      $scope.addSdkFilter = function(filter_type, filter) {
+        if (filter) { 
+          var found = false // only allow unique filters
+          for (var i in $scope.sdkFilters[filter_type]) {
+            var existingFilter = $scope.sdkFilters[filter_type][i]
+            if (existingFilter.sdk && filter.sdk && $scope.filterIsEqualToFilter(existingFilter, filter)) found = true
+          }
+          if (!found) $scope.sdkFilters[filter_type].unshift(filter)
+        } else {
+          $scope.sdkFilters[filter_type].push({status: "0", date: "0"})
+        }
+      }
+
+      $scope.changedSdkFilter = function(filter, field, old_filter, filter_type) {
+        old_filter = JSON.parse(old_filter)
+        var filterTypeShort = filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1)
+        filterService.changeFilter('sdkFilters' + filterTypeShort, $scope.filterToTag(old_filter), {[field]: filter[field]}, filterService.sdkDisplayText(filter, filterTypeShort))
+      }
+
+      $scope.removeSdkFilter = function(filter_type, filter) {
+        var index = $scope.sdkFilters[filter_type].indexOf(filter);
+        if (index > -1) {
+          var filter = $scope.sdkFilters[filter_type][index]
+          if (filter.sdk) {
+            filterService.removeFilter('sdkFilters' + filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1), $scope.filterToTag(filter));
+          }
+          $scope.sdkFilters[filter_type].splice(index, 1);
+          if (!$scope.sdkFilters[filter_type].length) $scope.addSdkFilter(filter_type)
+        }
+      }
+
+      $scope.removeSdkNameFilter = function(filter_type, index) {
+        var filter = $scope.sdkFilters[filter_type][index]
+        filterService.removeFilter('sdkFilters' + filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1), $scope.filterToTag(filter));
+        $scope.sdkFilters[filter_type][index].sdk = null;
+      }
+
+      $scope.selectedAndSdk = function ($item) {  
+        $scope.selectedSdk($item, this.$parent.$index, 'and')
+      }
+
+      $scope.selectedOrSdk = function ($item) {
+        $scope.selectedSdk($item, this.$parent.$index, 'or')
+      }
+
+      $scope.filterToTag = function(filter) {
+        return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+      }
+
+      $scope.tagToFilter = function(tag) {
+        return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+      }
+
+      $scope.filterIsEqualToTag = function(filter, tag) {
+        return filter.status == tag.value.status && filter.sdk.id == tag.value.id && filter.date == tag.value.date
+      }
+
+      $scope.filterIsEqualToFilter = function(filter1, filter2) {
+        return filter1.status == filter2.status && filter1.sdk.id == filter2.sdk.id && filter1.date == filter2.date
+      }
+
+      $scope.$watchCollection('$root.tags', function () {
+        if ($rootScope.tags) {
+          Object.keys($scope.sdkFilters).forEach(function(filterKey) {
+            var filters = $scope.sdkFilters[filterKey];
+            for (var index = 0; index < filters.length; index++) { 
+              var found = false;
+              var filter = filters[index]
+              if (!filter.sdk) continue;
+              $rootScope.tags.forEach(function(tag) {
+                var targetParameter = filterKey == 'or' ? 'sdkFiltersOr' : 'sdkFiltersAnd';
+                if (targetParameter == tag.parameter && $scope.filterIsEqualToTag(filter, tag)) {
+                  found = true;
+                }
+              });
+              if (!found) {
+                filters.splice(index, 1);
+                index--;
+                if (!filters.length) filters.push({status: "0", date: "0"});
+              }
+            }
+          })
+        }
+      });
+
+      $scope.selectedSdk = function($item, index, filter_type) {
+        var sdk = $item.originalObject
+        var filter = $scope.sdkFilters[filter_type][index]
+        filter.sdk = sdk
+        var filterTypeShort = filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1)
+        filterService.addFilter('sdkFilters' + filterTypeShort, $scope.filterToTag(filter), filterService.sdkDisplayText(filter, filterTypeShort), false, sdk.name);
+      }
+
       $scope.removedTag = function(tag) {
         if (tag.parameter == 'categories') {
           for(var i = $rootScope.categoryModel.length - 1; i >= 0 ; i--){
@@ -60,10 +164,8 @@ angular.module('appApp')
         /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
-        if (routeParams.custom) var customParams = JSON.parse(routeParams.custom);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
         var allParams = appParams ? appParams : [];
-        if (routeParams.custom && customParams['customKeywords'] && customParams['customKeywords'][0]) allParams['customKeywords'] = customParams['customKeywords'];
         for (var attribute in companyParams) {
           allParams[attribute] = companyParams[attribute];
         }
@@ -80,6 +182,13 @@ angular.module('appApp')
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
               if (arrayItem) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
+              if (key == 'sdkFiltersAnd') {
+                $scope.addSdkFilter('and', $scope.tagToFilter(arrayItem))
+              } else if (key == 'sdkFiltersOr') {
+                $scope.addSdkFilter('or', $scope.tagToFilter(arrayItem))
+              } else if (key == 'categories') {
+                $scope.addCategoryFilter(arrayItem)
+              }
             });
           } else {
             $rootScope.tags.push(searchService.searchFilters(key, value));
@@ -100,8 +209,9 @@ angular.module('appApp')
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = data.pageNum;
             searchCtrl.currentPage = data.pageNum;
-            if(!isTablePageChange) {searchCtrl.resultsSortCategory = 'appName'}; // if table page change, set default sort
-            if(!isTablePageChange) {searchCtrl.resultsOrderBy = 'ASC'}; // if table page change, set default order
+            searchCtrl.updateCSVUrl();
+            if(!isTablePageChange) {searchCtrl.resultsSortCategory = 'name'}; // if table page change, set default sort
+            if(!isTablePageChange) {searchCtrl.resultsOrderBy = 'asc'}; // if table page change, set default order
 
             var submitSearchEndTime = new Date().getTime();
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
@@ -177,8 +287,6 @@ angular.module('appApp')
         );
         /* -------- Mixpanel Analytics End -------- */
 
-        console.log('PAGE CHANGE', currentPage, 'CATEGORY', searchCtrl.resultsSortCategory, 'ORDER', searchCtrl.resultsOrderBy);
-
         var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
         $location.url('/search?' + urlParams);
         searchCtrl.loadTableData(true);
@@ -200,6 +308,8 @@ angular.module('appApp')
         /* -------- Mixpanel Analytics End -------- */
         var firstPage = 1;
         $rootScope.dashboardSearchButtonDisabled = true;
+        var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, category, order);
+        $location.url('/search?' + urlParams);
         apiService.searchRequestPost($rootScope.tags, firstPage, $rootScope.numPerPage, category, order, searchCtrl.appPlatform.platform)
         .success(function(data) {
           $scope.queryInProgress = false;
@@ -210,6 +320,7 @@ angular.module('appApp')
           searchCtrl.currentPage = 1;
           searchCtrl.resultsSortCategory = category;
           searchCtrl.resultsOrderBy = order;
+          searchCtrl.updateCSVUrl();
         })
         .error(function() {
           $scope.queryInProgress = false;
@@ -222,16 +333,9 @@ angular.module('appApp')
         return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
       };
 
-      searchCtrl.exportAllToCsv = function() {
-        apiService.exportAllToCsv($location.url().split('/search')[1])
-          .success(function (content) {
-            var hiddenElement = document.createElement('a');
-            hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = 'all_results.csv';
-            hiddenElement.click();
-          });
-      };
-
+      searchCtrl.updateCSVUrl = function() {
+        console.log('upadet url')
+        searchCtrl.csvUrl = API_URI_BASE + 'api/search/export_to_csv.csv' + $location.url().split('/search')[1] + '&access_token=' + authToken.get()
+      }
     }
   ]);
