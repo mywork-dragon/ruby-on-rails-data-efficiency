@@ -334,7 +334,6 @@ angular.module('appApp')
       };
 
       searchCtrl.updateCSVUrl = function() {
-        console.log('upadet url')
         searchCtrl.csvUrl = API_URI_BASE + 'api/search/export_to_csv.csv' + $location.url().split('/search')[1] + '&access_token=' + authToken.get()
       }
     }
