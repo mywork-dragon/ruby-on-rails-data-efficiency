@@ -99,12 +99,15 @@
             <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated && !androidLiveScanCtrl.failedLiveScan">
               Last Scanned on {{androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
             </div>
-            <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.versionUnchanged">
+            <!-- <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.versionUnchanged">
               App data has not changed since last scan. Currently up-to-date.
+            </div> -->
+            <div id="showSdksButtonTitle">
+              Because of a change that Google made, Android Live Scan is currently unavailable. We are working to fix it.
             </div>
-            <div id="showSdksButton">
+<!--             <div id="showSdksButton">
               <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)">Live Scan</button>
-            </div>
+            </div> -->
           </li>
           <li ng-if="!canViewSdks && androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.errorCode == null">
             <div style="text-align:center">
