@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531175344) do
+ActiveRecord::Schema.define(version: 20160602220705) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20160531175344) do
     t.boolean  "is_admin_account",                    default: false
     t.boolean  "can_view_ios_live_scan"
     t.integer  "seats_count",             limit: 4,   default: 5
+    t.boolean  "can_view_ad_attribution",             default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
