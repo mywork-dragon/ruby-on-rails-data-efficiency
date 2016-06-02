@@ -7,13 +7,16 @@ module ApkDownloader
   class << self
 
     def download! package, destination, android_id, email, password, proxy_ip, proxy_port, user_agent
-      @api ||= Api.new(android_id, email, password, proxy_ip, proxy_port, user_agent)
-      
+      # @api ||= Api.new(android_id, email, password, proxy_ip, proxy_port, user_agent)
+      api = Api.new(android_id, email, password, proxy_ip, proxy_port, user_agent)
+      @api = api
+
+
       data = nil
 
       FETCH_DATA_ATTEMPTS.times do |attempt|
         puts "@api.fetch_apk_data package, attempt #{attempt}"
-        data = @api.fetch_apk_data package
+        data = api.fetch_apk_data package
         break unless data.blank?
         sleep FETCH_DATA_RETRY_SLEEP
       end

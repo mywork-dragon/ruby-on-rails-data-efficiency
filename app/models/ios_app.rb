@@ -50,9 +50,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def update_newest_ipa_snapshot
-
     ipa_snapshot = get_last_ipa_snapshot(scan_success: true)
-    
+
     self.update(newest_ipa_snapshot: ipa_snapshot)
   end
 

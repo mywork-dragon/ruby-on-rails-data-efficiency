@@ -240,7 +240,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def update_newest_apk_snapshot
-    update(newest_apk_snapshot: newest_successful_apk_snapshot)
+     update(newest_apk_snapshot: newest_successful_apk_snapshot)
   end
 
   # @author Jason Lew

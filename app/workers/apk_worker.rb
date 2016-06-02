@@ -42,7 +42,16 @@ module ApkWorker
 
     raise BlankSnapId if @apk_ss.id.blank?
 
-    if check_version && !new_version?(android_app_id)
+    # ApkDlService -- workaround for Live Scan
+    android_app = AndroidApp.find(android_app_id)
+    app_identifier = android_app.app_identifier
+    return "blank app_identifier" if app_identifier.blank?
+    apk_dl_service = ApkDlService.new(app_identifier)
+    apk_dl_service_attributes = apk_dl_service.attributes
+    scraped_version = apk_dl_service_attributes[:version]
+
+    # if check_version && !new_version?(android_app_id)
+    if check_version && !new_version_workaround?(android_app_id: android_app_id, scraped_version: scraped_version)
       @apk_ss.status = :unchanged_version
       @apk_ss.save!
       return "The version hasn't changed."
@@ -54,42 +63,47 @@ module ApkWorker
 
     dl_start_time = Time.now
 
-    # configure download
-    ApkDownloader.configure do |config|
-      config.email = google_account.email
-      config.password = google_account.password
-      config.android_id = google_account.android_identifier
-    end
-
+    # ApkDlService -- workaround for Live Scan
     file_name = apk_file_path + app_identifier + "_#{@apk_ss.id}_#{@try_count}" + ".apk"
 
-    begin
-      dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888, google_account.user_agent)
-    rescue ApkDownloader::EmptyApp, ApkDownloader::EmptyRecursiveApkFetch => e
-      @apk_ss.status = :failure
-      @apk_ss.save!
-      raise
-    rescue ApkDownloader::Response403, ApkDownloader::Response404 => e
-      @apk_ss.status = e.status if e.status
-      @apk_ss.save!
-      aa.display_type = e.display_type if e.display_type
-      aa.save!
-      raise
-    rescue ApkDownloader::Response500
-      google_account.flags += 1
-      google_account.save!
-      raise
-    rescue ApkDownloader::NoApkDataUrl, ApkDownloader::NoApkDataCookie => e
-      @apk_ss.status = :no_response
-      @apk_ss.save!
-      raise
-    else
-      google_account.flags = 0
-      google_account.save!
+    dl = apk_dl_service.download(file_name)
 
-      set_google_account_in_use_false(google_account)
-      dl
-    end
+    # configure download
+    # ApkDownloader.configure do |config|
+    #   config.email = google_account.email
+    #   config.password = google_account.password
+    #   config.android_id = google_account.android_identifier
+    # end
+
+    # file_name = apk_file_path + app_identifier + "_#{@apk_ss.id}_#{@try_count}" + ".apk"
+
+    # begin
+    #   dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888, google_account.user_agent)
+    # rescue ApkDownloader::EmptyApp, ApkDownloader::EmptyRecursiveApkFetch => e
+    #   @apk_ss.status = :failure
+    #   @apk_ss.save!
+    #   raise
+    # rescue ApkDownloader::Response403, ApkDownloader::Response404 => e
+    #   @apk_ss.status = e.status if e.status
+    #   @apk_ss.save!
+    #   aa.display_type = e.display_type if e.display_type
+    #   aa.save!
+    #   raise
+    # rescue ApkDownloader::Response500
+    #   google_account.flags += 1
+    #   google_account.save!
+    #   raise
+    # rescue ApkDownloader::NoApkDataUrl, ApkDownloader::NoApkDataCookie => e
+    #   @apk_ss.status = :no_response
+    #   @apk_ss.save!
+    #   raise
+    # else
+    #   google_account.flags = 0
+    #   google_account.save!
+
+    #   set_google_account_in_use_false(google_account)
+    #   dl
+    # end
       
   rescue => e
     set_google_account_in_use_false(google_account)
@@ -231,6 +245,31 @@ module ApkWorker
     true
   end
 
+  def new_version_workaround?(android_app_id: android_app_id, scraped_version: scraped_version)
+
+    if scraped_version
+      last_apk_ss = ApkSnapshot.where(android_app_id: android_app_id, status: ApkSnapshot.statuses[:success]).order("created_at DESC").first
+      return true if last_apk_ss.blank?
+      puts "android_app_id: #{android_app_id} | last_version: #{last_apk_ss.version} | scraped_version: #{scraped_version}"
+      if last_apk_ss.version == scraped_version
+        last_apk_ss.good_as_of_date = DateTime.now
+        last_apk_ss.save!
+
+       ApkSnapshotScrapeFailure.create!(
+        apk_snapshot_job: @apk_ss_job,
+        android_app: @android_app,
+        reason: :unchanged_version,
+        scrape_content: attributes.to_json,
+        version: scraped_version
+        )
+
+        return false
+      end
+    end
+
+    true
+  end
+
   def a_google_account
     ga = nil
 
@@ -262,6 +301,7 @@ module ApkWorker
     mp = MicroProxy.select(:private_ip).sample
     @apk_ss.micro_proxy_id = mp.id
     @apk_ss.save!
+    puts "mp.private_ip: #{mp.private_ip}"
     mp
   end
 

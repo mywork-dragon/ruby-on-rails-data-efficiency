@@ -6,6 +6,7 @@ ApkDownloader::Api.class_eval do
 
   def initialize(android_id, email, password, proxy_ip, proxy_port, user_agent)
     @android_id, @email, @password, @proxy_ip, @proxy_port, @user_agent = android_id, email, password, proxy_ip, proxy_port, user_agent
+    puts "#@proxy_ip: #{@proxy_ip}"
     @details_messages = {}
   end
 
