@@ -2,7 +2,7 @@ require 'open-uri'
 
 class ApkDlService
 
-  def initialize(app_identifier)
+  def initialize(app_identifier=nil)
     @app_identifier = app_identifier
   end
 
@@ -49,25 +49,37 @@ class ApkDlService
     dl_html = Nokogiri::HTML(page)
 
     begin
-      f_regex = /\?(\w+)=(.*)\z/
-      url = dl_html.css('p').find{ |x| x.text.include?("If the download doesn't start automatically in a few seconds, please") }.children.find{ |x| x.name == 'a' }['href'].strip.gsub(' ', '%20')
-      match = url.match(f_regex)
-      fail "Could not find 2 capture groups" if match.size != 3
-      key = match[1]
-      value = match[2]
-      value_escaped = CGI::escape(value)
-      url.gsub(f_regex, "?#{key}=#{value_escaped}")
+      url = dl_html.css('p').find{ |x| x.text.include?("If the download doesn't start automatically in a few seconds, please") }.children.find{ |x| x.name == 'a' }['href'].strip
+      ret = clean_url(url)
+      puts "dl_link: #{ret}"
+      ret
     # rescue
     #   nil
     end
   end
 
+  def clean_url(url)
+    f_regex = /\?(\w+)=(.*)\z/
+    match = url.match(f_regex)
+    fail "Could not find 2 capture groups" if match.size != 3
+    key = match[1]
+    value = match[2]
+    value_escaped = CGI::escape(value)
+    url.gsub(f_regex, "?#{key}=#{value_escaped}").gsub(/\A\/\//, 'http://')
+  end
+
   def download(output_file)
     url = dl_link
     puts "Downloading file to #{output_file}"
-    download = open(url)
-    IO.copy_stream(download, output_file)
+    # download = open(url)
+    # IO.copy_stream(download, output_file)
+    curl_to_file(url: url, output_file: output_file)
     puts "Done downloading file to #{output_file}"
+    true
+  end
+
+  def curl_to_file(url:, output_file:)
+    `curl -o #{output_file} -vL #{url}`
     true
   end
 

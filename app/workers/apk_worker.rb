@@ -110,30 +110,39 @@ module ApkWorker
 
     raise if @apk_ss.nil?
 
-    message_split = e.message.to_s.split("| status_code:")
-    status_code = message_split[1].to_s.strip.to_i
-    replace_rules = {invalid: :replace, undef: :replace, replace: ''}
-    message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
-    backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
-    apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
-    google_account_id = google_account.present? ? google_account.id : nil
+    # workaround
 
-    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id, status_code: status_code)
+    # message_split = e.message.to_s.split("| status_code:")
+    # status_code = message_split[1].to_s.strip.to_i
+    # replace_rules = {invalid: :replace, undef: :replace, replace: ''}
+    # message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
+    # backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
+    # apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
+    # google_account_id = google_account.present? ? google_account.id : nil
 
-    if message.include? "Couldn't connect to server"
-      @apk_ss.status = :could_not_connect
-    elsif message.include?("execution expired") || message.include?("Timeout was reached")
-      @apk_ss.status = :timeout
-    elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
-      @apk_ss.status = :deadlock
-    end
+    # ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id, status_code: status_code)
 
-    @apk_ss.last_device = google_account.device.to_sym unless google_account.blank?
+    # if message.include? "Couldn't connect to server"
+    #   @apk_ss.status = :could_not_connect
+    # elsif message.include?("execution expired") || message.include?("Timeout was reached")
+    #   @apk_ss.status = :timeout
+    # elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
+    #   @apk_ss.status = :deadlock
+    # end
+
+    # @apk_ss.last_device = google_account.device.to_sym unless google_account.blank?
     @apk_ss.save!
 
     File.delete(file_name) if file_name && File.exist?(file_name)
 
     retry unless (tries -= 1).zero?
+
+    # workaround
+    @apk_ss.status = :could_not_connect
+    apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
+    replace_rules = {invalid: :replace, undef: :replace, replace: ''}
+    backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
+    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: e.message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id)
 
     raise
   else
