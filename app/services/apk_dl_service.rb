@@ -49,13 +49,16 @@ class ApkDlService
     dl_html = Nokogiri::HTML(page)
 
     begin
-      f_regex = /f=(.*)\z/
+      f_regex = /\?(\w+)=(.*)\z/
       url = dl_html.css('p').find{ |x| x.text.include?("If the download doesn't start automatically in a few seconds, please") }.children.find{ |x| x.name == 'a' }['href'].strip.gsub(' ', '%20')
-      f = url.match(f_regex)[0]
-      f_escaped = CGI::escape(f)
-      url.gsub(f_regex, "f=#{f_escaped}")
-    rescue
-      nil
+      match = url.match(f_regex)
+      fail "Could not find 2 capture groups" if match.size != 3
+      key = match[1]
+      value = match[2]
+      value_escaped = CGI::escape(value)
+      url.gsub(f_regex, "?#{key}=#{value_escaped}")
+    # rescue
+    #   nil
     end
   end
 
