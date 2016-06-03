@@ -9,7 +9,7 @@ class WeeklyBatch < ActiveRecord::Base
   enum activity_type: [:install, :uninstall, :ad_seen]
 
   def as_json(options={})
-    {
+    batch_json = {
       id: self.id,
       page: options[:page] || 1,
       pageSize: self.page_size,
@@ -17,6 +17,8 @@ class WeeklyBatch < ActiveRecord::Base
       activities_count: self.activities.count,
       owner: self.owner
     }
+    batch_json[:apps_count] = self.joined_activities.pluck(:ios_app_id).uniq.count if self.owner_type == 'AdPlatform'
+    batch_json
   end
 
   def page_size
@@ -26,24 +28,32 @@ class WeeklyBatch < ActiveRecord::Base
     when 'AndroidApp', 'IosApp'
       20
     when 'AdPlatform'
-      4
+      10
     end
+  end
+
+  def opposite_type
+    if self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
+      self.owner_type.chomp('Sdk') + 'App'
+    elsif self.owner_type == 'IosApp' || self.owner_type == 'AndroidApp'
+      self.owner_type.chomp('App') + 'Sdk'
+    else
+      'IosFbAd'
+    end
+  end
+
+  def joined_activities
+    opposite_class = self.opposite_type.constantize
+    self.activities.joins('INNER JOIN weekly_batches_activities wb on wb.activity_id = activities.id').
+                                      joins('INNER JOIN weekly_batches on weekly_batches.id = wb.weekly_batch_id').
+                                      joins("INNER JOIN #{opposite_class.table_name} op on op.id = weekly_batches.owner_id and weekly_batches.owner_type = '#{opposite_type}'")
   end
 
   def sorted_activities(page_num, per_page)
     if self.owner_type == 'AdPlatform'
-      self.activities.order(happened_at: :desc).limit(per_page).offset((page_num - 1) * per_page)
+      self.joined_activities.group(:ios_app_id).select("count(ios_app_id) as impression_count, max(happened_at) as happened_at, activities.id").order("impression_count DESC").limit(per_page).offset((page_num - 1) * per_page)
     else
-      if self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
-        opposite_type = self.owner_type.chomp('Sdk') + 'App'
-      else
-        opposite_type = self.owner_type.chomp('App') + 'Sdk'
-      end
-      opposite_class = opposite_type.constantize
-
-      activities =  self.activities.joins('INNER JOIN weekly_batches_activities wb on wb.activity_id = activities.id').
-                                      joins('INNER JOIN weekly_batches on weekly_batches.id = wb.weekly_batch_id').
-                                      joins("INNER JOIN #{opposite_class.table_name} op on op.id = weekly_batches.owner_id and weekly_batches.owner_type = '#{opposite_type}'")
+      activities =  self.joined_activities
       if self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
         activities = activities.order("op.user_base ASC").limit(per_page).offset((page_num - 1) * per_page)
       else

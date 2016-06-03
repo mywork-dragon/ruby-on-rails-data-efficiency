@@ -8,7 +8,7 @@
   <div ng-if="initialPageLoadComplete">
     <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
       <h4 class="empty-message" ng-hide="newsfeedCtrl.weeks.length">
-        You are not following any apps or SDKs. Follow some to see your newsfeed!
+        You are not following any apps or SDKs. Follow some to see your Timeline!
       </h4>
       <button type="submit" class="btn btn-default" ng-show="newsfeedCtrl.weeks.length" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
       <div ng-repeat="week in newsfeedCtrl.weeks" >
@@ -24,7 +24,6 @@
               <a href="#/app/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
                 <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
                 {{batch.owner.name}}
-                <i ng-if="batch.owner.price" class="fa fa-2 fa-usd"></i>
               </a>
               <span ng-if="batch.activity_type == 'install'">
                 - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">{{batch.activities_count == 1 ? 'was' : 'were'}} seen</span>
@@ -49,23 +48,68 @@
               <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
               {{batch.owner.platform}} Ads
               <span>
-                - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> this week
+                - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
               </span>
             </strong>
           </div>
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
             <div class="media">
               <div class="media-body" ng-if="batch.owner.type == 'AdPlatform'">
-                <div class='ad' data-ng-repeat="activity in batch.activities">
-                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.app.type, activity.other_owner.app.id, batch.activity_type, activity.other_owner.app.name, activity.other_owner.app.platform)">
-                    <img class="creative" ng-src="{{activity.other_owner.ad_image}}">
-                  </a>
-                  <a href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.app.type, activity.other_owner.app.id, batch.activity_type, activity.other_owner.app.name, activity.other_owner.app.platform)">
-                    <img class="icon" ng-src="{{activity.other_owner.app.icon}}" ng-show="activity.other_owner.app.icon">
-                    {{activity.other_owner.app.name}}
-                  </a>
-                  - {{calculateDaysAgo(activity.happened_at)}}
-                </div>
+                <table class="table table-striped table-responsive">
+                  <thead>
+                    <tr>
+                      <th><div class="th normal-right-padding">
+                        App Name
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Publisher
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Category
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        User Base Size
+                      </div></th>
+                      <th ng-if="canViewAdAttribution"><div class="th normal-right-padding">
+                        Ad Attribution SDKs
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Details
+                      </div></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr data-ng-repeat="activity in batch.activities">
+                      <td class="resultsTableAppIcon">
+                        <span>
+                          <a ng-href="#/app/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
+                            <img ng-src="{{activity.other_owner.app.icon}}" ng-show="activity.other_owner.app.icon">
+                            {{activity.other_owner.app.name}}
+                          </a>
+                        </span>
+                        <span class="badge badge-primary" ng-if="0 <= activity.other_owner.app.releasedDays && activity.other_owner.app.releasedDays <= 15">New</span>
+                      </td>
+                      <td><a ng-if="activity.other_owner.app.publisher.name" href="#/publisher/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.app.publisher.name}}</a></td>
+                      <td>{{activity.other_owner.app.categories.join(', ')}}</td>
+                      <td>{{activity.other_owner.app.userBase | capitalize}}</td>
+                      <td ng-if="canViewAdAttribution && !activity.other_owner.ad_attribution_sdks.length">None</td>
+                      <td ng-if="canViewAdAttribution && activity.other_owner.ad_attribution_sdks.length">
+                        <a ng-repeat="sdk in activity.other_owner.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank" ng-click="clickedTimelineItem(batch, activity, 'IosSdk')">
+                          <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
+                        </a>
+                      </td>
+                      <td>
+                        <span>
+                          Spotted {{activity.impression_count}} ads 
+                          (Last: {{calculateDaysAgo(activity.happened_at, true)}})
+                          <br>
+                          <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a> - <a href="javascript:void(0)" ng-click="openAdInfoModal(batch, $index)">Targeting</a>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               <div class="media-body" ng-if="batch.owner.type == 'IosSdk' || batch.owner.type == 'AndroidSdk'">
                 <table class="table table-striped table-responsive">
@@ -93,14 +137,14 @@
                     <tr data-ng-repeat="activity in batch.activities">
                       <td class="resultsTableAppIcon">
                           <span>
-                            <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
+                            <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
                               <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                               {{activity.other_owner.name}}
                             </a>
                           </span>
                           <span class="badge badge-primary" ng-if="0 <= activity.other_owner.releasedDays && activity.other_owner.releasedDays <= 15">New</span>
                       </td>
-                      <td><a ng-if="activity.other_owner.publisher.name" href="#/publisher/{{activity.other_owner.platform}}/{{activity.other_owner.publisher.id}}" target="_blank">{{activity.other_owner.publisher.name}}</a></td>
+                      <td><a ng-if="activity.other_owner.publisher.name" href="#/publisher/{{activity.other_owner.platform}}/{{activity.other_owner.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.publisher.name}}</a></td>
                       <td class="dashboardMobilePriorityView">
                         <span ng-if="activity.other_owner.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + activity.other_owner.mobilePriority"></i>{{activity.other_owner.mobilePriority | capitalize}}</span>
                       </td>
@@ -119,7 +163,7 @@
                   <div class="col-md-6">
                     <ul ng-show="batch.activities">
                       <li ng-repeat="activity in batch.activities.slice(0, 10)">
-                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
+                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
                           <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                           {{activity.other_owner.name}}
                         </a>
@@ -130,7 +174,7 @@
                   <div class="col-md-6">
                     <ul ng-show="batch.activities">
                       <li ng-repeat="activity in batch.activities.slice(10,21)">
-                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(activity.other_owner.type, activity.other_owner.id, batch.activity_type, activity.other_owner.name, activity.other_owner.platform)">
+                        <a ng-href="{{(activity.other_owner.type == 'IosSdk' || activity.other_owner.type == 'AndroidSdk') ? '#/sdk/' + activity.other_owner.platform + '/' + activity.other_owner.id : '#/app/' + activity.other_owner.platform + '/' + activity.other_owner.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
                           <img ng-src="{{activity.other_owner.icon}}" ng-show="activity.other_owner.icon">
                           {{activity.other_owner.name}}
                         </a>
@@ -140,13 +184,18 @@
                   </div>
                 </div>
               </div>
+              <div data-ng-show="batch.isLoading && !batch.activities" id="wrap_spinner">
+                <div class="loading outer">
+                  <div class="loading inner"></div>
+                </div>
+              </div>
               <div class="row" ng-if="batch.activities_count > batch.pageSize">
                 <div class="col-md-6">
                 </div>
                 <div class="col-md-6 text-right pagination-container">
                   <uib-pagination class="pagination-sm"
                               ng-model="batch.currentPage"
-                              total-items="batch.activities_count"
+                              total-items="batch.apps_count || batch.activities_count"
                               max-size="8"
                               ng-change="loadBatch(batch.id, batch, batch.currentPage, batch.pageSize)"
                               items-per-page="batch.pageSize"

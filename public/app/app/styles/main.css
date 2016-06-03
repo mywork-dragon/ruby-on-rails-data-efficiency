@@ -7423,7 +7423,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
   padding-top: 15px;
 }
 
-.media-body > #wrap_spinner {
+.media #wrap_spinner {
   text-align: center;
 }
 
@@ -7857,9 +7857,9 @@ pre {
   width: 20px;
 }
 
-.tooltip-inner {
+.ui-select .tooltip-inner {
   max-width: 350px;
-  /* If max-width does not work, try using width instead */
+  /*If max-width does not work, try using width instead */
   width: 350px; 
 }
 
@@ -7934,7 +7934,7 @@ button.dropdown-toggle .caret {
   margin-right: 5px;
 }
 
-.newsfeedPageRow .feed-body table img {
+.newsfeedPageRow .feed-body table .resultsTableAppIcon img {
   max-width: 32px;
   height: 32px;
   margin-right: 5px;
@@ -8002,27 +8002,6 @@ ul.following li #followButton {
 #nav .label-danger {
   padding: 1px 5px;
   margin-left: 10px;
-}
-
-.ad_seen .ad {
-  max-width: 25%;
-  float: left;
-  padding: 10px;
-  text-align: center;
-}
-
-.ad_seen .ad img.creative {
-  width: 100%;
-  margin-bottom: -15px;
-}
-
-.ad_seen .ad img.icon {
-  width: 20px;
-}
-
-.ad_seen a {
-  padding-bottom: 15px;
-  display: inline-block;
 }
 
 span.uninstall, span.red, .status-1 {

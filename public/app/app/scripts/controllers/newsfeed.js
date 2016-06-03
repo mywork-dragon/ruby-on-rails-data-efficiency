@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', 'slacktivity',
-  function($scope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, slacktivity) {
+angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', 'slacktivity', 'Lightbox',
+  function($scope, authService, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, slacktivity, Lightbox) {
 
     var newsfeedCtrl = this;
     $scope.initialPageLoadComplete = false;
@@ -9,6 +9,13 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
     $scope.page = 1;
     newsfeedCtrl.weeks = []
+
+    // Sets user permissions
+    authService.permissions()
+      .success(function(data) {
+        $scope.canViewAdSpend = data.can_view_ad_spend;
+        $scope.canViewAdAttribution = data.can_view_ad_attribution;
+      });
 
     newsfeedCtrl.load = function() {
       return $http({
@@ -48,13 +55,14 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
         type: batch.owner.type
       };
       slacktivity.notifySlack(slacktivityData);
-
+      batch.isLoading = true
       $http({
         method: 'GET',
         url: API_URI_BASE + 'api/newsfeed_details',
         params: {batchId: id, pageNum: page, perPage: perPage}
       }).success(function(data) {
         batch.activities = data.activities;
+        batch.isLoading = false
         batch.currentPage = data.page
       });
     }
@@ -70,12 +78,22 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
       newsfeedCtrl.load();
     }
 
-    $scope.clickedTimelineItem = function(type, id, activity_type, name, platform) {
+    $scope.clickedTimelineItem = function(batch, activity, clickedType) {
+      var other_owner = activity.other_owner.type == 'AdPlatform' ? activity.other_owner : activity.other_owner.app
+      var type = other_owner.type
+      var id = other_owner.id
+      var activity_type = batch.activity_type
+      var name = other_owner.name
+      var platform = other_owner.platform
+      clickedType = typeof clickedType !== 'undefined' ? clickedType : other_owner.type;
+    //function(type, id, activity_type, name, platform, url) {
       mixpanel.track("Clicked Timeline Item", {
         activityType: activity_type,
-        clickedName: name,
-        clickedId: id,
-        clickedType: type
+        batchId: batch.id,
+        itemName: name,
+        itemId: id,
+        itemType: type,
+        clickedType: clickedType,
       });
 
       var platform = 'ios'
@@ -97,6 +115,22 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "$http", "pageTit
       };
       slacktivity.notifySlack(slacktivityData);
     }
+
+    $scope.openAdModal = function (batch, index) {
+      var images = []
+      for (var i in batch.activities) {
+        images.push({url: batch.activities[i].other_owner.ad_image})
+      }
+      Lightbox.openModal(images, index);
+    };
+
+    $scope.openAdInfoModal = function (batch, index) {
+      var images = []
+      for (var i in batch.activities) {
+        images.push({url: batch.activities[i].other_owner.ad_info_image})
+      }
+      Lightbox.openModal(images, index);
+    };
 
     mixpanel.track("Timeline Viewed");
 

@@ -25,7 +25,8 @@ angular
     'angucomplete-alt',
     'angularjs-dropdown-multiselect',
     'infinite-scroll',
-    'satellizer'
+    'satellizer',
+    'bootstrapLightbox'
   ])
   .run(function ($http, $rootScope) {
 

@@ -301,7 +301,7 @@ angular.module("appApp")
           /* -------- Mixpanel Analytics End -------- */
         });
       },
-      calculateDaysAgo: function(date) {
+      calculateDaysAgo: function(date, shortFormat) {
         /*
         var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
         var firstDate = new Date(date);
@@ -309,6 +309,25 @@ angular.module("appApp")
         var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate)/(oneDay)));
         return diffDays;
         */
+        if (shortFormat) {
+          moment.locale('en', {
+              relativeTime : {
+                  future: "in %s",
+                  past:   "%s ago",
+                  s:  "s",
+                  m:  "1m",
+                  mm: "%dm",
+                  h:  "1h",
+                  hh: "%dh",
+                  d:  "1d",
+                  dd: "%dd",
+                  M:  "1mo",
+                  MM: "%dmo",
+                  y:  "1y",
+                  yy: "%dy"
+              }
+          });
+        }
         return moment(date).fromNow(); // JS library for human readable dates
       }
     };

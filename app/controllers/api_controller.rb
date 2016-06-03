@@ -101,7 +101,8 @@ class ApiController < ApplicationController
     newsfeed[:activities] = batch.sorted_activities(page_num, per_page).map{|activity| {
       id: activity.id,
       happened_at: activity.happened_at,
-      other_owner: activity.other_owner(batch.owner)
+      other_owner: activity.other_owner(batch.owner),
+      impression_count: activity.try(:impression_count)
     }}
 
     render json: newsfeed.to_json({user: @current_user})

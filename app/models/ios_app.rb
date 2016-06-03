@@ -189,6 +189,11 @@ class IosApp < ActiveRecord::Base
     self.sdk_response[:uninstalled_sdks]
   end
 
+  def ad_attribution_sdks
+    attribution_sdk_ids = Tag.find(24).ios_sdks.pluck(:id)
+    self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
+  end
+
   def fortune_rank
     self.get_company.try(:fortune_1000_rank)
   end

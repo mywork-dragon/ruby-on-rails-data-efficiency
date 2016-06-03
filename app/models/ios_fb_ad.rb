@@ -49,8 +49,10 @@ class IosFbAd < ActiveRecord::Base
   def as_json(options={})
     {
       id: self.id,
-      ad_image: self.ad_image.url,
+      ad_image: self.ad_image,
+      ad_info_image: self.ad_info_image,
       app: self.ios_app,
+      ad_attribution_sdks: self.ios_app.ad_attribution_sdks,
       date_seen: self.date_seen
     }
   end

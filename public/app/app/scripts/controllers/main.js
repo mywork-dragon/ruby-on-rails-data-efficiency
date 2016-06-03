@@ -43,6 +43,7 @@ angular.module('appApp')
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
             $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            $scope.canViewAdAttribution = data.can_view_ad_attribution;
             $rootScope.isAdmin = data.is_admin;
             $rootScope.isAdminAccount = data.is_admin_account;
             $rootScope.connectedOauth = data.connected_oauth;
