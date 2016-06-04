@@ -53,7 +53,7 @@ module MightyDeployer
 
         # stage specific hacks
         roles << :db if stage == :migration # for migrations
-        roles << :scraper_master if stage == :scraper && ip == '52.3.11.3'
+        roles << :scraper_master if stage == :scraper && ip == '54.164.116.131'
         # TODO: move scraper_master to it's own stage
 
         add_server(ip: ip, roles: roles)
