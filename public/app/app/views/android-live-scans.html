@@ -88,7 +88,8 @@
           <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData || androidLiveScanCtrl.sdkQueryInProgress">
             <div id="sdkScanErrorMessage">
               <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 1-2 minutes.</em></h5>
-              <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
+              <!-- <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5> -->
+              <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Could not download app</strong></h5>
             </div>
             <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
               <uib-progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
