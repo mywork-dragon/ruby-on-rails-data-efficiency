@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160602220705) do
+ActiveRecord::Schema.define(version: 20160607212959) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -860,6 +860,7 @@ ActiveRecord::Schema.define(version: 20160602220705) do
     t.boolean  "in_use"
     t.integer  "device",             limit: 4
     t.integer  "scrape_type",        limit: 4,   default: 0
+    t.string   "auth_token",         limit: 191
   end
 
   add_index "google_accounts", ["blocked"], name: "index_google_accounts_on_blocked", using: :btree
