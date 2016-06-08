@@ -13,7 +13,7 @@ class ElasticSearchWorker
     batch.description = 'iOS Elasticsearch Index Updating'
     batch.on(:complete, 'ElasticSearchWorker#on_complete', 'queue_type' => 'iOS')
 
-    Slackiq.message('Starting iOS ElasticSearch index updating')
+    Slackiq.message('Starting iOS ElasticSearch index updating', webhook_name: :main)
 
     batch.jobs do
       IosApp.find_in_batches(batch_size: 1000).with_index do |the_batch, index|
@@ -29,7 +29,7 @@ class ElasticSearchWorker
     batch.description = 'Android Elasticsearch Index Updating'
     batch.on(:complete, 'ElasticSearchWorker#on_complete', 'queue_type' => 'Android')
 
-    Slackiq.message('Starting Android ElasticSearch index updating')
+    Slackiq.message('Starting Android ElasticSearch index updating', webhook_name: :main)
 
     batch.jobs do
       AndroidApp.find_in_batches(batch_size: 1000).with_index do |the_batch, index|
