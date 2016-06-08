@@ -38,7 +38,7 @@ class AndroidApp < ActiveRecord::Base
 
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :carrier_incompatible, :item_not_found]
 
-  update_index('apps#android_app') { self } if Rails.env.production?
+  # update_index('apps#android_app') { self } if Rails.env.production?
   
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|

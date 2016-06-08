@@ -36,7 +36,7 @@ class IosApp < ActiveRecord::Base
   enum user_base: [:elite, :strong, :moderate, :weak]
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
 
-  update_index('apps#ios_app') { self } if Rails.env.production?
+  # update_index('apps#ios_app') { self } if Rails.env.production?
   
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
                       529479190, 547702041,591981144,618783545,317469184,401626263]
