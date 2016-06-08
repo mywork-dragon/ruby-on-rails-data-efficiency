@@ -42,107 +42,85 @@ module ApkWorker
 
     raise BlankSnapId if @apk_ss.id.blank?
 
-    # ApkDlService -- workaround for Live Scan
-    android_app = AndroidApp.find(android_app_id)
-    app_identifier = android_app.app_identifier
-    return "blank app_identifier" if app_identifier.blank?
-    apk_dl_service = ApkDlService.new(app_identifier)
-    apk_dl_service_attributes = apk_dl_service.attributes
-    scraped_version = apk_dl_service_attributes[:version]
-
-    # if check_version && !new_version?(android_app_id)
-    if check_version && !new_version_workaround?(android_app_id: android_app_id, scraped_version: scraped_version)
+    if check_version && !new_version?(android_app_id)
       @apk_ss.status = :unchanged_version
       @apk_ss.save!
       return "The version hasn't changed."
     end
 
     google_account = google_account_id ? GoogleAccount.find(google_account_id) : a_google_account
+    puts "google_account_id: #{google_account.id}"
     
     mp = choose_proxy
 
     dl_start_time = Time.now
 
-    # ApkDlService -- workaround for Live Scan
+    # configure download
+    ApkDownloader.configure do |config|
+      config.email = google_account.email
+      config.password = google_account.password
+      config.android_id = google_account.android_identifier
+    end
+
     file_name = apk_file_path + app_identifier + "_#{@apk_ss.id}_#{@try_count}" + ".apk"
 
-    dl = apk_dl_service.download(file_name)
+    begin
+      dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888, google_account.user_agent, google_account.auth_token)
+    rescue ApkDownloader::EmptyApp, ApkDownloader::EmptyRecursiveApkFetch => e
+      @apk_ss.status = :failure
+      @apk_ss.save!
+      raise
+    rescue ApkDownloader::Response403, ApkDownloader::Response404 => e
+      @apk_ss.status = e.status if e.status
+      @apk_ss.save!
+      aa.display_type = e.display_type if e.display_type
+      aa.save!
+      raise
+    rescue ApkDownloader::Response500
+      google_account.flags += 1
+      google_account.save!
+      raise
+    rescue ApkDownloader::NoApkDataUrl, ApkDownloader::NoApkDataCookie => e
+      @apk_ss.status = :no_response
+      @apk_ss.save!
+      raise
+    else
+      google_account.flags = 0
+      google_account.save!
 
-    # configure download
-    # ApkDownloader.configure do |config|
-    #   config.email = google_account.email
-    #   config.password = google_account.password
-    #   config.android_id = google_account.android_identifier
-    # end
-
-    # file_name = apk_file_path + app_identifier + "_#{@apk_ss.id}_#{@try_count}" + ".apk"
-
-    # begin
-    #   dl = ApkDownloader.download!(app_identifier, file_name, google_account.android_identifier, google_account.email, google_account.password, mp.private_ip, 8888, google_account.user_agent)
-    # rescue ApkDownloader::EmptyApp, ApkDownloader::EmptyRecursiveApkFetch => e
-    #   @apk_ss.status = :failure
-    #   @apk_ss.save!
-    #   raise
-    # rescue ApkDownloader::Response403, ApkDownloader::Response404 => e
-    #   @apk_ss.status = e.status if e.status
-    #   @apk_ss.save!
-    #   aa.display_type = e.display_type if e.display_type
-    #   aa.save!
-    #   raise
-    # rescue ApkDownloader::Response500
-    #   google_account.flags += 1
-    #   google_account.save!
-    #   raise
-    # rescue ApkDownloader::NoApkDataUrl, ApkDownloader::NoApkDataCookie => e
-    #   @apk_ss.status = :no_response
-    #   @apk_ss.save!
-    #   raise
-    # else
-    #   google_account.flags = 0
-    #   google_account.save!
-
-    #   set_google_account_in_use_false(google_account)
-    #   dl
-    # end
+      set_google_account_in_use_false(google_account)
+      dl
+    end
       
   rescue => e
     set_google_account_in_use_false(google_account)
 
     raise if @apk_ss.nil?
 
-    # workaround
+    message_split = e.message.to_s.split("| status_code:")
+    status_code = message_split[1].to_s.strip.to_i
+    replace_rules = {invalid: :replace, undef: :replace, replace: ''}
+    message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
+    backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
+    apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
+    google_account_id = google_account.present? ? google_account.id : nil
 
-    # message_split = e.message.to_s.split("| status_code:")
-    # status_code = message_split[1].to_s.strip.to_i
-    # replace_rules = {invalid: :replace, undef: :replace, replace: ''}
-    # message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
-    # backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
-    # apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
-    # google_account_id = google_account.present? ? google_account.id : nil
+    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id, status_code: status_code)
 
-    # ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id, status_code: status_code)
+    if message.include? "Couldn't connect to server"
+      @apk_ss.status = :could_not_connect
+    elsif message.include?("execution expired") || message.include?("Timeout was reached")
+      @apk_ss.status = :timeout
+    elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
+      @apk_ss.status = :deadlock
+    end
 
-    # if message.include? "Couldn't connect to server"
-    #   @apk_ss.status = :could_not_connect
-    # elsif message.include?("execution expired") || message.include?("Timeout was reached")
-    #   @apk_ss.status = :timeout
-    # elsif message.include? "Mysql2::Error: Deadlock found when trying to get lock"
-    #   @apk_ss.status = :deadlock
-    # end
-
-    # @apk_ss.last_device = google_account.device.to_sym unless google_account.blank?
+    @apk_ss.last_device = google_account.device.to_sym unless google_account.blank?
     @apk_ss.save!
 
     File.delete(file_name) if file_name && File.exist?(file_name)
 
     retry unless (tries -= 1).zero?
-
-    # workaround
-    @apk_ss.status = :could_not_connect
-    apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
-    replace_rules = {invalid: :replace, undef: :replace, replace: ''}
-    backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
-    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: e.message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id)
 
     raise
   else

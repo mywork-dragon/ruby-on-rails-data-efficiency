@@ -4,8 +4,14 @@ ApkDownloader::Api.class_eval do
   LoginUri = URI('https://android.clients.google.com/auth')
   GoogleApiUri = URI('https://android.clients.google.com/fdfe')
 
-  def initialize(android_id, email, password, proxy_ip, proxy_port, user_agent)
-    @android_id, @email, @password, @proxy_ip, @proxy_port, @user_agent = android_id, email, password, proxy_ip, proxy_port, user_agent
+  # def initialize(android_id, email, password, proxy_ip, proxy_port, user_agent)
+  #   @android_id, @email, @password, @proxy_ip, @proxy_port, @user_agent = android_id, email, password, proxy_ip, proxy_port, user_agent
+  #   puts "#@proxy_ip: #{@proxy_ip}"
+  #   @details_messages = {}
+  # end
+
+  def initialize(android_id, proxy_ip, proxy_port, user_agent, auth_token)
+    @android_id, @proxy_ip, @proxy_port, @user_agent, @auth_token = android_id, proxy_ip, proxy_port, user_agent, auth_token
     puts "#@proxy_ip: #{@proxy_ip}"
     @details_messages = {}
   end
@@ -58,7 +64,9 @@ ApkDownloader::Api.class_eval do
   end
 
   def fetch_apk_data package
-    log_in!
+    # log_in!
+
+    puts "@auth_token: #{@auth_token}"
 
     doc = details(package).detailsResponse.docV2
     version_code = doc.details.appDetails.versionCode
