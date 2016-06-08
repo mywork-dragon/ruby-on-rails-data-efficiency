@@ -62,7 +62,7 @@ set :darth_vader_concurrency, 10
 set :kylo_ren_concurrency, 10
 set :ios_live_scan_concurrency, 25
 set :monitor_concurrency, 3
-set :aviato_concurrency, 50
+set :aviato_concurrency, 30
 set :migration_concurrency, 3
 
 # set :sidekiq_queue, %w(critical default low)
