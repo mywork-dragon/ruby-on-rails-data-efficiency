@@ -1,6 +1,6 @@
 class AddUniquenessToIosAppCurrentSnapshotTables < ActiveRecord::Migration
   def change
-    remove_index :ios_app_categories, :category_identifier
+    remove_index :ios_app_categories, :category_identifier if index_exists?(:ios_app_categories, :category_identifier)
     add_index :ios_app_categories, :category_identifier, unique: true
 
     remove_index :ios_app_category_names, name: 'index_on_ios_app_category_id_and_app_store_id'
