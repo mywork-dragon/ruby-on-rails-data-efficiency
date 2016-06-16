@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160615220458) do
+ActiveRecord::Schema.define(version: 20160616210846) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -494,9 +494,11 @@ ActiveRecord::Schema.define(version: 20160615220458) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",         limit: 191
+    t.boolean  "enabled",                  default: false
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
+  add_index "app_stores", ["enabled"], name: "index_app_stores_on_enabled", using: :btree
   add_index "app_stores", ["name"], name: "index_app_stores_on_name", using: :btree
 
   create_table "app_stores_ios_apps", force: :cascade do |t|
@@ -988,7 +990,7 @@ ActiveRecord::Schema.define(version: 20160615220458) do
   create_table "ios_app_current_snapshot_backups", force: :cascade do |t|
     t.string   "name",                            limit: 191
     t.integer  "price",                           limit: 4
-    t.integer  "size",                            limit: 4
+    t.integer  "size",                            limit: 8
     t.string   "seller_url",                      limit: 191
     t.string   "support_url",                     limit: 191
     t.string   "version",                         limit: 191
