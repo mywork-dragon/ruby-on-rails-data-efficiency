@@ -400,7 +400,7 @@ class AppStoreService
         required_ios_version: ->(x) { x.split('.').first.to_i > 2},
         first_released: -> (x) { x == Date.new(2010, 5, 21) },
         screenshot_urls: -> (x) { x.first.include?('Purple') },
-        support_url: -> (x) { x.include?('support.uber') },
+        support_url: -> (x) { x.include?('help.uber') },
         released: -> (x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2016 },
         languages: -> (x) { (['English', 'Japanese', 'Italian'] - x).empty? },
         icon_urls: -> (x) { x.values.first.include?('Purple') },
