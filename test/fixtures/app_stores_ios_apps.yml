@@ -5,5 +5,5 @@ one:
   ios_app_id: 1
 
 two:
-  app_store_id: 1
-  ios_app_id: 1
+  app_store_id: 2
+  ios_app_id: 2
