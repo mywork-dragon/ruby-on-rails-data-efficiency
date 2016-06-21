@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616210846) do
+ActiveRecord::Schema.define(version: 20160620224409) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -468,6 +468,16 @@ ActiveRecord::Schema.define(version: 20160616210846) do
 
   add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
   add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
+
+  create_table "app_store_ios_apps_backups", force: :cascade do |t|
+    t.integer  "ios_app_id",   limit: 4
+    t.integer  "app_store_id", limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "app_store_ios_apps_backups", ["app_store_id"], name: "index_app_store_ios_apps_backups_on_app_store_id", using: :btree
+  add_index "app_store_ios_apps_backups", ["ios_app_id", "app_store_id"], name: "index_app_store_ios_apps_backups_on_ios_app_id_and_app_store_id", unique: true, using: :btree
 
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
