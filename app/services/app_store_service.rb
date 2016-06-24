@@ -2,6 +2,8 @@ class AppStoreService
 
   include AppAttributeChecker
 
+  attr_accessor :json
+
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
@@ -18,24 +20,7 @@ class AppStoreService
     if @json
       check_ios # check to make sure it's an iOS app
 
-      methods += %w(
-        name_json
-        description_json
-        release_notes_json
-        version_json
-        price_json
-        seller_url_json
-        categories_json
-        size_json
-        seller_json
-        by_json
-        developer_app_store_identifier_json
-        ratings_json
-        recommended_age_json
-        required_ios_version_json
-        first_released_json
-        screenshot_urls_json
-      )
+      methods += json_methods
     end
     
     if @html
@@ -56,16 +41,16 @@ class AppStoreService
           recommended_age_html
           required_ios_version_html
           screenshot_urls_html
+          released_html
+          icon_urls_html
         )
       end
       
       methods += %w(
         support_url_html
-        released_html
         languages_html
         in_app_purchases_html
         editors_choice_html
-        icon_urls_html
         copywright_html
         seller_url_text_html
         support_url_text_html
@@ -91,6 +76,42 @@ class AppStoreService
     end
     
     ret
+  end
+
+  def json_methods
+    # new ones start at released -- jason
+
+    %w(
+      app_identifier_json
+      name_json
+      description_json
+      release_notes_json
+      version_json
+      price_json
+      seller_url_json
+      categories_json
+      size_json
+      seller_json
+      by_json
+      developer_app_store_identifier_json
+      ratings_json
+      recommended_age_json
+      required_ios_version_json
+      first_released_json
+      screenshot_urls_json
+      released_json
+      ratings_current_stars_json
+      ratings_current_count_json
+      ratings_all_stars_json
+      ratings_all_count_json
+      icon_url_512x512_json
+      icon_url_100x100_json
+      icon_url_60x60_json
+      game_center_enabled_json
+      bundle_identifier_json
+      currency_json
+      category_ids_json
+      )
   end
   
   # Gets the JSON through the iTunes Store API
@@ -139,6 +160,10 @@ class AppStoreService
   def check_ios
     raise NotIosApp if @json['wrapperType'] != 'software' || @json['kind'] != 'software'
     true
+  end
+
+  def app_identifier_json
+    @json['trackId']
   end
 
   def name_json
@@ -208,9 +233,9 @@ class AppStoreService
   end
 
   def categories_json
-    primary = @json['primaryGenreName']
     all_cats = @json['genres']
-    
+    primary = all_cats.first
+
     secondary = all_cats - [primary]
     
     {primary: primary, secondary: secondary}
@@ -221,13 +246,12 @@ class AppStoreService
     {primary: primary, secondary: []}
   end
 
-  # Only available in HTML
   def released_html
     date_text = @html.css(".release-date").children[1].text
     Date.parse(date_text)
   end
 
-  #In B
+  # In B
   def size_json
     @json['fileSizeBytes']
   end
@@ -277,12 +301,12 @@ class AppStoreService
 
   def ratings_json
     current_version_hash = {}
-    current_version_hash[:stars] = @json['averageUserRatingForCurrentVersion']
-    current_version_hash[:count] = @json['userRatingCountForCurrentVersion']
+    current_version_hash[:stars] = ratings_current_stars_json
+    current_version_hash[:count] = ratings_current_count_json
     
     all_versions_hash = {}
-    all_versions_hash[:stars] = @json['averageUserRating']
-    all_versions_hash[:count] = @json['userRatingCount']
+    all_versions_hash[:stars] = ratings_all_stars_json
+    all_versions_hash[:count] = ratings_all_count_json
     
     
     {current: current_version_hash, all: all_versions_hash}
@@ -343,6 +367,59 @@ class AppStoreService
   
   def first_released_json
     @json['releaseDate'].to_date
+  end
+
+  def released_json
+    @json['currentVersionReleaseDate'].to_date
+  end
+
+  def ratings_current_stars_json
+    @json['averageUserRatingForCurrentVersion'].to_f
+  end
+  
+  def ratings_current_count_json
+    @json['userRatingCountForCurrentVersion'].to_i
+  end
+
+  def ratings_all_stars_json
+    @json['averageUserRating'].to_f
+  end
+
+  def ratings_all_count_json
+    @json['userRatingCount'].to_i
+  end
+    
+  def icon_url_512x512_json
+    @json['artworkUrl512']
+  end
+  
+  def icon_url_100x100_json
+    @json['artworkUrl100']
+  end
+
+  def icon_url_60x60_json
+    @json['artworkUrl60']
+  end
+
+  def game_center_enabled_json
+    @json['isGameCenterEnabled']
+  end
+  
+  def bundle_identifier_json
+    @json['bundleId']
+  end
+  
+  def currency_json
+    @json['currency']
+  end
+
+  def category_ids_json
+    primary = @json['primaryGenreId']
+    all_cats = @json['genreIds'].map(&:to_i)
+    
+    secondary = all_cats - [primary]
+    
+    {primary: primary, secondary: secondary}
   end
   
   def required_ios_version_html
@@ -488,6 +565,94 @@ class AppStoreService
 
     def initialize(message = "This app does not exist. Perhaps it was taken down.")
       super
+    end
+
+  end
+
+  class BatchLookup
+
+    MAX_APPS = 200
+
+    def attributes(ids, country_code: 'us', skip_attributes: false)
+      fail TooManyIds if ids.count > MAX_APPS
+
+      load_json(ids: ids, country_code: country_code, unproxied: true)
+
+      ass = AppStoreService.new
+
+      ret = {}
+
+      attributes = {} unless skip_attributes
+      successes = []
+
+      @json_a.each do |app_hash|
+
+        next unless is_ios?(app_hash)
+
+        ass.json = app_hash
+
+        unless skip_attributes
+
+          single_app_hash = {}
+
+          ass.json_methods.each do |method|
+            key = method.gsub(/_json\z/, '').to_sym
+            
+            begin
+              attribute = ass.send(method.to_sym)
+              single_app_hash[key] = attribute
+            rescue
+              single_app_hash[key] = nil
+            end
+          end
+        end
+
+
+        id = ass.app_identifier_json
+        successes << id
+        attributes[id] = single_app_hash unless skip_attributes
+      end
+
+      ret[:attributes] = attributes unless skip_attributes
+      ret[:successes] = successes
+      ret[:failures] = ids - successes
+      
+      ret
+    end
+
+    def load_json(ids:, country_code:, unproxied: false)
+      if unproxied
+        json = ItunesApi.batch_lookup(ids, country_code)
+      else
+        country_param = (@country_code == 'us' ? '' : "country=#{country_code}")
+        ids_param = ids.join(',')
+        url = "https://itunes.apple.com/lookup?id=#{ids_param}&#{country_param}"
+        page = Tor.get(url)
+        json = JSON.load(page)
+      end
+      @json_a = json['results']
+    end    
+
+    def is_ios?(app_hash)
+    # wrapper type software
+    # kind == 'software' (as opposed to mac-software)
+      app_hash['wrapperType'] == 'software' && app_hash['kind'] == 'software'
+    end
+
+    class TooManyIds < StandardError
+
+      def initialize(message = "iTunes only allows a look up a max of #{MAX_APPS} apps")
+        super
+      end
+
+    end
+
+    class << self
+
+      def attributes(ids, country_code: 'us', skip_attributes: false)
+        self.new.attributes(ids, country_code: country_code, skip_attributes: skip_attributes)
+      end
+
     end
 
   end

@@ -7,6 +7,11 @@ namespace 'scraper' do
     AppStoreSnapshotService.run
   end
 
+  desc 'Scrape App Store International'
+  task scrape_app_store_international: [:environment] do |task|
+    AppStoreSnapshotService.run_international
+  end
+
   desc 'Scrape Google Play'
   task scrape_google_play: [:environment] do |task|
     GooglePlaySnapshotService.run

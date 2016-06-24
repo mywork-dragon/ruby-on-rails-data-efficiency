@@ -152,7 +152,6 @@ gem 'chewy', '0.8.4'
 gem 'paperclip', '~>5.0.0.beta2'
 
 gem 'aws-sdk', '~>2.2.37'
-#gem 'aws-sdk', '2.0.31' Use this version if you need to use the Ec2Manager class
 
 gem 'colorize', '0.7.7'
 
@@ -167,7 +166,7 @@ gem 'seed_dump'
 gem 'byebug', group: :development
 gem 'fuzzy_match', '2.1.0'
 
-gem 'capybara'
-gem 'selenium-webdriver'
+# for mass inserts
+gem 'activerecord-import', '0.13.0'
 
 # gem 'daemons', '1.2.3'

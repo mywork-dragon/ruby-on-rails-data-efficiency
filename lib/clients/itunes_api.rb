@@ -34,4 +34,9 @@ class ItunesApi
     end
   end
 
+  def self.batch_lookup(app_identifiers, country_code='us')
+    res = get('/lookup', query: {id: app_identifiers.join(','), country: country_code})
+    JSON.parse(res.body)
+  end
+
 end

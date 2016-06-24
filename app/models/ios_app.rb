@@ -18,10 +18,14 @@ class IosApp < ActiveRecord::Base
   has_many :lists, through: :listables_lists
   
   belongs_to :newest_ios_app_snapshot, class_name: 'IosAppSnapshot', foreign_key: 'newest_ios_app_snapshot_id'
+  has_many :ios_app_current_snapshots
+  has_many :ios_app_current_snapshot_backups
   belongs_to :newest_ipa_snapshot, class_name: 'IpaSnapshot', foreign_key: 'newest_ipa_snapshot_id'
   
   has_many :app_stores_ios_apps
   has_many :app_stores, -> { uniq }, through: :app_stores_ios_apps
+  has_many :app_store_ios_apps_backups
+  has_many :app_store_backups, source: :app_store, through: :app_store_ios_apps_backups
   
   belongs_to :ios_developer
 
