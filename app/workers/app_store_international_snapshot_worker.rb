@@ -340,7 +340,7 @@ class AppStoreInternationalSnapshotWorker
         IosAppCategoryNameBackup,
         IosAppCurrentSnapshotBackup,
         IosAppCategoriesCurrentSnapshotBackup,
-        AppStoreIosAppsBackup,
+        AppStoresIosAppBackup,
         AppStoreScalingFactorBackup
       ].each {|x| reset_table(x) }
     end
