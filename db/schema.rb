@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621203944) do
+ActiveRecord::Schema.define(version: 20160624232844) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -469,16 +469,6 @@ ActiveRecord::Schema.define(version: 20160621203944) do
   add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
   add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
 
-  create_table "app_store_ios_apps_backups", force: :cascade do |t|
-    t.integer  "ios_app_id",   limit: 4
-    t.integer  "app_store_id", limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "app_store_ios_apps_backups", ["app_store_id"], name: "index_app_store_ios_apps_backups_on_app_store_id", using: :btree
-  add_index "app_store_ios_apps_backups", ["ios_app_id", "app_store_id"], name: "index_app_store_ios_apps_backups_on_ios_app_id_and_app_store_id", unique: true, using: :btree
-
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
     t.float    "ratings_all_count",               limit: 24
@@ -510,6 +500,16 @@ ActiveRecord::Schema.define(version: 20160621203944) do
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
   add_index "app_stores", ["enabled"], name: "index_app_stores_on_enabled", using: :btree
   add_index "app_stores", ["name"], name: "index_app_stores_on_name", using: :btree
+
+  create_table "app_stores_ios_app_backups", force: :cascade do |t|
+    t.integer  "ios_app_id",   limit: 4
+    t.integer  "app_store_id", limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "app_stores_ios_app_backups", ["app_store_id"], name: "index_app_stores_ios_app_backups_on_app_store_id", using: :btree
+  add_index "app_stores_ios_app_backups", ["ios_app_id", "app_store_id"], name: "index_app_stores_ios_app_backups_on_ios_app_id_and_app_store_id", unique: true, using: :btree
 
   create_table "app_stores_ios_apps", force: :cascade do |t|
     t.integer  "app_store_id", limit: 4
