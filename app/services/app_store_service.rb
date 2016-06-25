@@ -42,7 +42,6 @@ class AppStoreService
           required_ios_version_html
           screenshot_urls_html
           released_html
-          icon_urls_html
         )
       end
       
@@ -54,6 +53,7 @@ class AppStoreService
         copywright_html
         seller_url_text_html
         support_url_text_html
+        icon_urls_html
       )
 
     end
