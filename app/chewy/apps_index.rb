@@ -43,6 +43,7 @@ class AppsIndex < Chewy::Index
     field :publisher_identifier, value: -> (ios_app){ios_app.ios_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, value: -> (ios_app){ios_app.ios_developer.try(:name)}
     field :last_updated, type: 'date', include_in_all: false
+    field :released, type: 'date', include_in_all: false
   end
 
   define_type AndroidApp.includes(:newest_android_app_snapshot, :android_developer) do
