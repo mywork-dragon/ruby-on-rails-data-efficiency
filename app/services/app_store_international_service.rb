@@ -66,6 +66,97 @@ class AppStoreInternationalService
         AppStoreInternationalAppLinkWorker.perform_async
       end
     end
+
+    # table pairings to be swapped. convention is production table --> backup table
+    def table_swap_map
+      {
+        IosAppCurrentSnapshot => IosAppCurrentSnapshotBackup,
+        IosAppCategoryName => IosAppCategoryNameBackup,
+        IosAppCategoriesCurrentSnapshot => IosAppCategoriesCurrentSnapshotBackup,
+        AppStoresIosApp => AppStoresIosAppBackup,
+        AppStoreScalingFactor => AppStoreScalingFactorBackup
+      }
+    end
+
+    def test_table_swap
+      ActiveRecord::Base.logger.level = 1
+      rev_map = table_swap_map.invert
+      correct = {}
+
+      ap "BEFORE"
+      table_swap_map.keys.each do |table|
+        puts "#{table.to_s}: #{table.count}"
+        correct[table] = table.count
+      end
+      rev_map.keys.each do |table|
+        puts "#{table.to_s}: #{table.count}"
+        correct[table] = table.count
+      end
+
+      swap_tables
+
+      ap "AFTER"
+      table_swap_map.keys.each do |table|
+        puts "#{table.to_s}: #{table.count}"
+      end
+      rev_map.keys.each do |table|
+        puts "#{table.to_s}: #{table.count}"
+      end
+
+      ap "VALIDATING"
+      correct.keys.each do |table|
+        expecting = if table_swap_map.key?(table)
+                      correct[table_swap_map[table]]
+                    else
+                      correct[rev_map[table]]
+                    end
+        raise "FAILED FOR TABLE #{table.to_s}. expected #{expecting}. Received #{table.count}" unless expecting == table.count
+      end
+
+      ap "SUCCESS"
+    end
+
+    def swap_tables
+      print 'About to swap tables. Are you sure you want to continue? [y/n]: '
+      return unless gets.chomp.include?('y')
+
+      query = table_swap_map.keys.map do |prod_table|
+        prod_table_name = prod_table.table_name
+        backup_table_name = table_swap_map[prod_table].table_name
+        tmp_table_name = "tmp_#{prod_table_name}"
+        [
+          source_dest_syntax(backup_table_name, tmp_table_name),
+          source_dest_syntax(prod_table_name, backup_table_name),
+          source_dest_syntax(tmp_table_name, prod_table_name)
+        ]
+      end.flatten.join(",\n")
+      puts
+      puts query = "RENAME TABLE #{query};"
+
+      print 'Does the following query look ok? [y/n] : '
+      return unless gets.chomp.include?('y')
+      ActiveRecord::Base.connection.execute(query)
+    end
+
+    def source_dest_syntax(source_table, dest_table)
+      "#{source_table} to #{dest_table}"
+    end
+
+    def clear_backup_tables
+      [
+        IosAppCategoryNameBackup,
+        IosAppCurrentSnapshotBackup,
+        IosAppCategoriesCurrentSnapshotBackup,
+        AppStoresIosAppBackup,
+        AppStoreScalingFactorBackup
+      ].each {|x| reset_table(x) }
+    end
+
+    def reset_table(model_name)
+      puts "Resetting #{model_name.to_s}: #{model_name.count} rows"
+      model_name.delete_all
+      ActiveRecord::Base.connection.execute("ALTER TABLE #{model_name.table_name} AUTO_INCREMENT = 1;")
+    end
   end
 
   def on_complete_snapshots(status, options)

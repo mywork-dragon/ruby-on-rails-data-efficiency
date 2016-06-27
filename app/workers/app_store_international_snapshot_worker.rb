@@ -334,22 +334,6 @@ class AppStoreInternationalSnapshotWorker
 
       AppStoreInternationalSnapshotWorker.new.perform(10, ios_app_ids, app_store_id)
     end
-
-    def clear_backup_tables
-      [
-        IosAppCategoryNameBackup,
-        IosAppCurrentSnapshotBackup,
-        IosAppCategoriesCurrentSnapshotBackup,
-        AppStoresIosAppBackup,
-        AppStoreScalingFactorBackup
-      ].each {|x| reset_table(x) }
-    end
-
-    def reset_table(model_name)
-      puts "Resetting #{model_name.to_s}: #{model_name.count} rows"
-      model_name.delete_all
-      ActiveRecord::Base.connection.execute("ALTER TABLE #{model_name.table_name} AUTO_INCREMENT = 1;")
-    end
   
   end
 
