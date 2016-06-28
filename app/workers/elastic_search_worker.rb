@@ -16,11 +16,21 @@ class ElasticSearchWorker
     notify('Starting iOS ElasticSearch index updating')
 
     batch.jobs do
-      IosApp.find_in_batches(batch_size: 1000).with_index do |the_batch, index|
+      IosApp.where.not(display_type: ignore_types(:ios)).find_in_batches(batch_size: 1000).with_index do |the_batch, index|
         li "App #{index*1000}"
         ids = the_batch.map{ |ios_app| ios_app.id }
         ElasticSearchWorker.perform_async(:index_ios_apps, ids)
       end
+    end
+  end
+
+  def ignore_types(platform)
+    if platform == :ios
+      IosApp.display_types.values_at(:not_ios)
+    elsif platform == :android
+      []
+    else
+      raise "Use a valid platform"
     end
   end
 
