@@ -3,7 +3,7 @@ require 'aws-sdk'
 require 'httparty'
 
 require_relative '../../lib/clients/aws_api'
-require_relative '../../lib/clients/wtf_is_my_ip'
+require_relative '../../app/lib/clients/wtf_is_my_ip'
 
 module MightyDeployer
 
