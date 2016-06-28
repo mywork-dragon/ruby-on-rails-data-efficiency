@@ -1,3 +1,5 @@
+require_relative '../clients/aws_api'
+
 namespace 'aws' do
 
   desc 'Register instance with load balancer'
