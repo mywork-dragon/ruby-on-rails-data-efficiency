@@ -137,7 +137,7 @@ class IosApp < ActiveRecord::Base
 
   def categories
     if self.newest_ios_app_snapshot
-      IosAppCategoriesSnapshot.where(ios_app_snapshot: self.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.name}
+      IosAppCategoriesSnapshot.where(ios_app_snapshot: self.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.try(:name)}.compact
     end
   end
 
@@ -222,6 +222,7 @@ class IosApp < ActiveRecord::Base
 
     [
       self.id,
+      self.app_identifier,
       newest_snapshot.try(:name),
       'IosApp',
       self.mobile_priority,
@@ -237,7 +238,7 @@ class IosApp < ActiveRecord::Base
       'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
       can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
-    ].to_csv
+    ]
   end
   
   ###############################

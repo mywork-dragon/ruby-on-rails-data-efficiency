@@ -289,8 +289,6 @@ class ApiController < ApplicationController
   end
 
   def export_list_to_csv
-    can_view_support_desk = @current_user.account.try(:can_view_support_desk)
-
     list_id = params['listId']
     list = List.find(list_id)
 
@@ -298,7 +296,7 @@ class ApiController < ApplicationController
     android_apps = list.android_apps
     apps = []
 
-    header = csv_header(can_view_support_desk)
+    header = csv_header
 
     ios_apps.each do |app|
       apps << app.to_csv_row
@@ -861,15 +859,13 @@ class ApiController < ApplicationController
     headers.delete("Content-Length")
   end
 
-  def csv_header(can_view_support_desk=false)
-    header = ['MightySignal App ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
-    header << 'Support URL' if can_view_support_desk
-    header.to_csv
+  def csv_header
+    ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page']
   end
 
   def csv_lines(filter_args)
     Enumerator.new do |y|
-      y << csv_header
+      y << csv_header.to_csv
 
       filter_args[:page_size] = 10000
       filter_args[:page_num] = 1
@@ -891,7 +887,7 @@ class ApiController < ApplicationController
 
         if ids.any?
           results.each do |app|
-            y << app.to_csv_row
+            y << app.to_csv_row.to_csv
           end
           filter_args[:page_num] += 1
         end

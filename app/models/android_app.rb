@@ -78,6 +78,7 @@ class AndroidApp < ActiveRecord::Base
 
     [
       self.id,
+      self.app_identifier,
       newest_snapshot.try(:name),
       'AndroidApp',
       self.mobile_priority,
@@ -92,7 +93,7 @@ class AndroidApp < ActiveRecord::Base
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
-    ].to_csv
+    ]
   end
 
   def as_json(options={})
