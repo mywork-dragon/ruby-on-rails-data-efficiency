@@ -77,6 +77,8 @@ source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '3.0.2'
 end
 
+gem 'sinatra', :require => false
+
 gem 'filesize', '0.0.4'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'

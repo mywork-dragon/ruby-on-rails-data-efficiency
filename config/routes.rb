@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
 
+  require 'sidekiq/web'
+  require 'sidekiq/pro/web'
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    username == 'admin' && password == 'gv6shgdsdqji65e90n'
+  end if Rails.env.production?
+  mount Sidekiq::Web, at: "/sidekiq"
+
   root 'welcome#index'
   get 'apps/:app_identifier' => 'welcome#app_sdks'
   # get 'top-200' => 'welcome#top_200', as: 'top-200'
