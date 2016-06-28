@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160624232844) do
+ActiveRecord::Schema.define(version: 20160628190651) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1308,9 +1308,11 @@ ActiveRecord::Schema.define(version: 20160624232844) do
     t.integer  "newest_ipa_snapshot_id",     limit: 4
     t.integer  "display_type",               limit: 4, default: 0
     t.integer  "ios_developer_id",           limit: 4
+    t.boolean  "app_store_available",                  default: true
   end
 
   add_index "ios_apps", ["app_identifier"], name: "index_ios_apps_on_app_identifier", using: :btree
+  add_index "ios_apps", ["app_store_available"], name: "index_ios_apps_on_app_store_available", using: :btree
   add_index "ios_apps", ["display_type"], name: "index_ios_apps_on_display_type", using: :btree
   add_index "ios_apps", ["ios_developer_id"], name: "index_ios_apps_on_ios_developer_id", using: :btree
   add_index "ios_apps", ["mobile_priority"], name: "index_ios_apps_on_mobile_priority", using: :btree
