@@ -1,0 +1,121 @@
+{
+  "objects": [
+    {
+      "failureAndRerunMode": "CASCADE",
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "s3://ms-ios-international-scrapes/logs/",
+      "scheduleType": "ONDEMAND",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "*password": "#{*myRDSPassword}",
+      "name": "rds_mysql",
+      "jdbcProperties": "allowMultiQueries=true",
+      "id": "rds_mysql",
+      "type": "RdsDatabase",
+      "rdsInstanceId": "#{myRDSInstanceId}",
+      "username": "#{myRDSUsername}"
+    },
+    {
+      "database": {
+        "ref": "rds_mysql"
+      },
+      "name": "rds_ios_app_current_snapshot_backups_by_country",
+      "id": "SqlInputLocation",
+      "type": "SqlDataNode",
+      "table": "ios_app_current_snapshot_backups",
+      "selectQuery": "select `id`, `name`, `price`, `size`, `seller_url`, `support_url`, `version`, `released`, `recommended_age`, `ios_app_id`, `required_ios_version`, `ios_app_current_snapshot_job_id`, `seller`, `developer_app_store_identifier`, `ratings_current_stars`, `ratings_current_count`, `ratings_all_stars`, `ratings_all_count`, `editors_choice`, `status`, `icon_url_60x60`, `icon_url_100x100`, `icon_url_512x512`, `ratings_per_day_current_release`, `first_released`, `by`, `copyright`, `seller_url_text`, `support_url_text`, `game_center_enabled`, `bundle_identifier`, `currency`, `app_store_id`, `app_identifier`, `mobile_priority`, `user_base`, `created_at`, `updated_at` from #{table} where app_store_id = #{myAppStoreId}"
+    },
+    {
+      "filePath": "#{myOutputS3Loc}#{format(@scheduledStartTime, 'YYYY-MM-dd')}/ios_app_current_snapshot_backups_#{myAppStoreCountryCode}.csv",
+      "name": "s3_ios_app_current_snapshot_backups_by_country",
+      "id": "S3OutputLocation",
+      "type": "S3DataNode"
+    },
+    {
+      "imageId": "ami-a4827dc9",
+      "instanceType": "#{myEC2InstanceType}",
+      "name": "Ec2Instance",
+      "actionOnTaskFailure": "terminate",
+      "securityGroups": "#{myEc2RdsSecurityGrps}",
+      "id": "Ec2Instance",
+      "type": "Ec2Resource",
+      "terminateAfter": "2 Hours"
+    },
+    {
+      "output": {
+        "ref": "S3OutputLocation"
+      },
+      "input": {
+        "ref": "SqlInputLocation"
+      },
+      "name": "copy_snapshots_by_country",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "id": "RDStoS3CopyActivity",
+      "type": "CopyActivity"
+    }
+  ],
+  "parameters": [
+    {
+      "description": "RDS MySQL password",
+      "id": "*myRDSPassword",
+      "type": "String"
+    },
+    {
+      "description": "Output S3 folder",
+      "id": "myOutputS3Loc",
+      "type": "AWS::S3::ObjectKey"
+    },
+    {
+      "description": "RDS MySQL username",
+      "id": "myRDSUsername",
+      "type": "String"
+    },
+    {
+      "watermark": "security group name",
+      "helpText": "The names of one or more EC2 security groups that have access to the RDS cluster.",
+      "description": "Ec2 Security group(s)",
+      "isArray": "true",
+      "optional": "true",
+      "id": "myEc2RdsSecurityGrps",
+      "type": "String"
+    },
+    {
+      "default": "t2.micro",
+      "helpText": "The type of the EC2 instance that will be launched on your behalf to do the copy",
+      "description": "EC2 instance type",
+      "id": "myEC2InstanceType",
+      "type": "String"
+    },
+    {
+      "watermark": "DB Instance",
+      "description": "RDS Instance ID",
+      "id": "myRDSInstanceId",
+      "type": "String"
+    },
+    {
+      "description": "App Store Id",
+      "id": "myAppStoreId",
+      "type": "String"
+    },
+    {
+      "description": "App Store Country Code",
+      "id": "myAppStoreCountryCode",
+      "type": "String"
+    }
+  ],
+  "values": {
+    "myRDSInstanceId": "varys-production0-restore0",
+    "myRDSUsername": "root",
+    "myEC2InstanceType": "t2.micro",
+    "myOutputS3Loc": "s3://ms-ios-international-scrapes/backups/",
+    "*myRDSPassword": "b4820927eea6323272d99d60ba84d4be",
+    "myEc2RdsSecurityGrps": "worker",
+    "myAppStoreId" : "1",
+    "myAppStoreCountryCode": "us"
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "objects": [
+    {
+      "*password": "#{*myRDSPassword}",
+      "name": "rds_mysql",
+      "jdbcProperties": "allowMultiQueries=true",
+      "id": "rds_mysql",
+      "type": "RdsDatabase",
+      "rdsInstanceId": "#{myRDSInstanceId}",
+      "username": "#{myRDSUsername}"
+    },
+    {
+      "database": {
+        "ref": "rds_mysql"
+      },
+      "name": "rds_ios_app_categories_current_snapshot_backups",
+      "id": "SqlDataNodeId_1KzU2",
+      "type": "SqlDataNode",
+      "table": "ios_app_categories_current_snapshot_backups",
+      "selectQuery": "select * from #{table}"
+    },
+    {
+      "output": {
+        "ref": "S3OutputLocation"
+      },
+      "input": {
+        "ref": "SourceRDSTable"
+      },
+      "name": "copy_app_store_scaling_factor_backups",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "id": "RDStoS3CopyActivity",
+      "type": "CopyActivity"
+    },
+    {
+      "filePath": "#{myOutputS3Loc}#{format(@scheduledStartTime, 'YYYY-MM-dd')}/ios_app_category_name_backups.csv",
+      "name": "s3_ios_app_category_name_backups",
+      "id": "S3DataNodeId_eZH6l",
+      "type": "S3DataNode"
+    },
+    {
+      "filePath": "#{myOutputS3Loc}#{format(@scheduledStartTime, 'YYYY-MM-dd')}/ios_app_categories_current_snapshot_backups.csv",
+      "name": "s3_ios_app_categories_current_snapshot_backups",
+      "id": "S3DataNodeId_yRuQY",
+      "type": "S3DataNode"
+    },
+    {
+      "filePath": "#{myOutputS3Loc}#{format(@scheduledStartTime, 'YYYY-MM-dd')}/app_stores_ios_app_backups.csv",
+      "name": "s3_app_stores_ios_app_backups",
+      "id": "S3DataNodeId_mqml7",
+      "type": "S3DataNode"
+    },
+    {
+      "database": {
+        "ref": "rds_mysql"
+      },
+      "name": "rds_ios_app_category_name_backups",
+      "id": "SqlDataNodeId_ogTr1",
+      "type": "SqlDataNode",
+      "table": "ios_app_category_name_backups",
+      "selectQuery": "select * from #{table}"
+    },
+    {
+      "output": {
+        "ref": "S3DataNodeId_yRuQY"
+      },
+      "input": {
+        "ref": "SqlDataNodeId_1KzU2"
+      },
+      "name": "copy_ios_app_categories_current_snapshot_backups",
+      "id": "CopyActivityId_YyOaN",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "type": "CopyActivity"
+    },
+    {
+      "imageId": "ami-a4827dc9",
+      "instanceType": "#{myEC2InstanceType}",
+      "name": "Ec2Instance",
+      "actionOnTaskFailure": "terminate",
+      "securityGroups": "#{myEc2RdsSecurityGrps}",
+      "id": "Ec2Instance",
+      "type": "Ec2Resource",
+      "terminateAfter": "2 Hours"
+    },
+    {
+      "failureAndRerunMode": "CASCADE",
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "s3://ms-ios-international-scrapes/logs/",
+      "scheduleType": "ONDEMAND",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "database": {
+        "ref": "rds_mysql"
+      },
+      "name": "rds_app_store_scaling_factor_backups",
+      "id": "SourceRDSTable",
+      "type": "SqlDataNode",
+      "table": "app_store_scaling_factor_backups",
+      "selectQuery": "select * from #{table}"
+    },
+    {
+      "output": {
+        "ref": "S3DataNodeId_mqml7"
+      },
+      "input": {
+        "ref": "SqlDataNodeId_Tung0"
+      },
+      "name": "copy_app_stores_ios_app_backups",
+      "id": "CopyActivityId_SbJgW",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "type": "CopyActivity"
+    },
+    {
+      "filePath": "#{myOutputS3Loc}#{format(@scheduledStartTime, 'YYYY-MM-dd')}/app_store_scaling_factor_backups.csv",
+      "name": "s3_app_store_scaling_factor_backups",
+      "id": "S3OutputLocation",
+      "type": "S3DataNode"
+    },
+    {
+      "database": {
+        "ref": "rds_mysql"
+      },
+      "name": "rds_app_stores_ios_app_backups",
+      "id": "SqlDataNodeId_Tung0",
+      "type": "SqlDataNode",
+      "table": "app_stores_ios_app_backups",
+      "selectQuery": "select * from #{table}"
+    },
+    {
+      "output": {
+        "ref": "S3DataNodeId_eZH6l"
+      },
+      "input": {
+        "ref": "SqlDataNodeId_ogTr1"
+      },
+      "name": "copy_ios_app_category_name_backups",
+      "id": "CopyActivityId_mwrlh",
+      "runsOn": {
+        "ref": "Ec2Instance"
+      },
+      "type": "CopyActivity"
+    }
+  ],
+  "parameters": [
+    {
+      "description": "RDS MySQL password",
+      "id": "*myRDSPassword",
+      "type": "String"
+    },
+    {
+      "description": "Output S3 folder",
+      "id": "myOutputS3Loc",
+      "type": "AWS::S3::ObjectKey"
+    },
+    {
+      "description": "RDS MySQL username",
+      "id": "myRDSUsername",
+      "type": "String"
+    },
+    {
+      "watermark": "security group name",
+      "helpText": "The names of one or more EC2 security groups that have access to the RDS cluster.",
+      "description": "Ec2 Security group(s)",
+      "isArray": "true",
+      "optional": "true",
+      "id": "myEc2RdsSecurityGrps",
+      "type": "String"
+    },
+    {
+      "default": "t2.micro",
+      "helpText": "The type of the EC2 instance that will be launched on your behalf to do the copy",
+      "description": "EC2 instance type",
+      "id": "myEC2InstanceType",
+      "type": "String"
+    },
+    {
+      "watermark": "DB Instance",
+      "description": "RDS Instance ID",
+      "id": "myRDSInstanceId",
+      "type": "String"
+    }
+  ],
+  "values": {
+    "myRDSInstanceId": "varys-production0-restore0",
+    "myRDSUsername": "root",
+    "myEC2InstanceType": "t2.micro",
+    "myOutputS3Loc": "s3://ms-ios-international-scrapes/backups/",
+    "*myRDSPassword": "b4820927eea6323272d99d60ba84d4be",
+    "myEc2RdsSecurityGrps": "worker"
+  }
+}
