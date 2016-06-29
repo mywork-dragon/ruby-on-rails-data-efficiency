@@ -16,4 +16,20 @@ class AppStore < ActiveRecord::Base
 
   has_one :app_store_scaling_factor
   has_one :app_store_scaling_factor_backup
+
+  def disable(automate: false)
+    ret = update(enabled: false)
+
+    return ret unless automate
+
+    puts 'Cleaning disabled app store to app links'
+    AppStoresIosApp.clean_disabled_stores
+
+    puts 'Kicking off job to reset app store availability on apps'
+    if Rails.env.production?
+      AppStoreInternationalAvailabilityWorker.perform_async
+    else
+      AppStoreInternationalAvailabilityWorker.new.perform
+    end
+  end
 end

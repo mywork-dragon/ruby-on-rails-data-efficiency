@@ -10,7 +10,7 @@ class AppStoreInternationalSnapshotQueueWorker
     j = IosAppCurrentSnapshotJob.create!(notes: notes)
 
     batch_size = 10e3.to_i
-    IosApp.where.not(display_type: ignored_types)
+    IosApp.where(app_store_available: true)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
         li "App #{index*batch_size}"
@@ -34,9 +34,5 @@ class AppStoreInternationalSnapshotQueueWorker
     end
 
     Slackiq.message("Done queueing App Store apps", webhook_name: :main)
-  end
-
-  def ignored_types
-    [:taken_down, :not_ios].map { |type| IosApp.display_types[type] }
   end
 end

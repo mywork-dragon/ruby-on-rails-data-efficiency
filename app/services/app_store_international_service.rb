@@ -67,6 +67,21 @@ class AppStoreInternationalService
       end
     end
 
+    def app_store_availability
+      batch = Sidekiq::Batch.new
+      batch.description = 'AppStoreInternationalService#app_store_availability'
+      batch.on(
+        :complete,
+        'AppStoreInternationalService#on_complete_app_store_availability'
+      )
+
+      Slackiq.message('Starting to update app store availability', webhook_name: :main)
+
+      batch.jobs do
+        AppStoreInternationalAvailabilityWorker.perform_async
+      end
+    end
+
     # table pairings to be swapped. convention is production table --> backup table
     def table_swap_map
       {
@@ -185,6 +200,10 @@ class AppStoreInternationalService
 
   def on_complete_app_store_linking(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Populated app links')
+  end
+
+  def on_complete_app_store_availability(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Updated iOS app store availabilities')
   end
 
 end
