@@ -9,7 +9,7 @@ module ItunesChartScraperService
 
     def get_html(proxy_type: nil)
       limit = 200
-      url = l
+      url = "https://itunes.apple.com/us/rss/topfreeapplications/limit=#{limit}/xml"
 
       if proxy_type == :tor
         page = Tor.get(url)
