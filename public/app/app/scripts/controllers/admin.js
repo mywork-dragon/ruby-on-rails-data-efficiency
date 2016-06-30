@@ -77,6 +77,19 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http
       })
     }
 
+    $scope.exportToCsv = function() {
+      $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/admin/export_to_csv'
+      }).success(function(data) {
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/csv,' + encodeURI(data);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'mightysignal_sdk_report.csv';
+        hiddenElement.click();
+      })
+    }
+
     mixpanel.track("Admin Viewed");
   }
 ]);

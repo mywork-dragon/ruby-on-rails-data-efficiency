@@ -144,35 +144,8 @@ class FilterService
 
       if app_filters['categories'].present?
         if platform == 'android'
-          gaming_categories = [
-           'Action',
-           'Adventure',
-           'Arcade',
-           'Board',
-           'Card',
-           'Casino',
-           'Casual',
-           'Educational',
-           'Music',
-           'Puzzle',
-           'Racing',
-           'Role Playing',
-           'Simulation',
-           'Sports',
-           'Strategy',
-           'Trivia',
-           'Word'
-          ]
-          family_categories = [
-           'Action & Adventure',
-           'Brain Games',
-           'Creativity',
-           'Education',
-           'Music & Video',
-           'Pretend Play'
-          ]
-          app_filters['categories'] += gaming_categories if app_filters['categories'].include?('Games')
-          app_filters['categories'] += family_categories if app_filters['categories'].include?('Family')
+          app_filters['categories'] += android_gaming_categories if app_filters['categories'].include?('Games')
+          app_filters['categories'] += android_family_categories if app_filters['categories'].include?('Family')
         end
         apps_index = apps_index.filter({"terms" => {"categories" => app_filters['categories'], "execution" => "or"}})
       end
@@ -203,6 +176,39 @@ class FilterService
       apps_index = order_helper(apps_index, sort_by, order_by)
 
       apps_index = apps_index.limit(page_size).offset((page_num - 1) * page_size)
+    end
+
+    def android_gaming_categories
+      [
+       'Action',
+       'Adventure',
+       'Arcade',
+       'Board',
+       'Card',
+       'Casino',
+       'Casual',
+       'Educational',
+       'Music',
+       'Puzzle',
+       'Racing',
+       'Role Playing',
+       'Simulation',
+       'Sports',
+       'Strategy',
+       'Trivia',
+       'Word'
+      ]
+    end
+
+    def android_family_categories
+      [
+       'Action & Adventure',
+       'Brain Games',
+       'Creativity',
+       'Education',
+       'Music & Video',
+       'Pretend Play'
+      ]
     end
 
     def ios_sort_order_query(sort_by, order_by)

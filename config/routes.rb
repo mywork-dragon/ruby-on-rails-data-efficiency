@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     post '/admin/update' => 'admin#update'
     post '/admin/create_account' => 'admin#create_account'
     post '/admin/create_user' => 'admin#create_user'
+    get '/admin/export_to_csv' => 'admin#export_to_csv'
   end
 
   # TODO: change from ewok to extension name

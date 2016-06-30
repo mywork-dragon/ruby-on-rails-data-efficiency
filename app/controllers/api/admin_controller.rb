@@ -49,6 +49,73 @@ class Api::AdminController < ApplicationController
     end
   end
 
+  def export_to_csv
+    ios_apps = AppsIndex::IosApp.filter({"terms" => {"user_base" => ['elite', 'moderate', 'strong'], "execution" => "or"}})
+    android_apps = AppsIndex::AndroidApp.filter({"terms" => {"user_base" => ['elite', 'moderate', 'strong'], "execution" => "or"}})
+
+    top_ios_sdks = ios_apps.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+    top_android_sdks = android_apps.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+    top_ios_sdks_last_month = ios_apps.filter({"range" => {"released" => {'format' => 'date_time', 'gte' => 'now-30d/d'}}}).aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+    
+    # top gaming sdks
+    ios_categories = ["Games"]
+    android_categories = ["Games"] + FilterService.android_gaming_categories + FilterService.android_family_categories
+    
+    ios_games = ios_apps.filter({"terms" => {"categories" => ios_categories, "execution" => "or"}})
+    android_games = android_apps.filter({"terms" => {"categories" => android_categories, "execution" => "or"}})
+    top_ios_game_sdks = ios_games.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+    top_android_game_sdks = android_games.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+    top_ios_game_sdks_last_month = ios_games.filter({"range" => {"released" => {'format' => 'date_time', 'gte' => 'now-30d/d'}}}).aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
+
+    header = ["iOS SDK", "# Apps", "Description", "Website", "MightySignal URL", nil, "Android SDK", "# Apps", "Website", "MightySignal URL"]
+
+    top_sdks_csv = CSV.generate do |csv|
+      csv << ['Top Overall SDKs']
+      csv << header
+      for i in 0..100
+        next unless top_ios_sdks[i] && top_android_sdks[i]
+        ios_sdk = IosSdk.find(top_ios_sdks[i]["key"])
+        android_sdk = AndroidSdk.find(top_android_sdks[i]["key"])
+        csv << [ios_sdk.name, top_ios_sdks[i]["doc_count"], ios_sdk.summary, ios_sdk.website, "http://mightysignal.com/app/app#/sdk/ios/#{ios_sdk.id}", "",
+                android_sdk.name, top_android_sdks[i]["doc_count"], android_sdk.website, "http://mightysignal.com/app/app#/sdk/android/#{android_sdk.id}"]
+      end
+
+      csv << []
+      csv << ['Top SDKs Last 30 days']
+      csv << ["iOS SDK", "# Apps", "Description", "Website", "MightySignal URL"]
+
+      for i in 0..100
+        next unless top_ios_sdks_last_month[i]
+        ios_sdk = IosSdk.find(top_ios_sdks_last_month[i]["key"])
+        csv << [ios_sdk.name, top_ios_sdks_last_month[i]["doc_count"], ios_sdk.summary, ios_sdk.website, "http://mightysignal.com/app/app#/sdk/ios/#{ios_sdk.id}"]
+      end
+
+      csv << []
+      csv << ['Top Gaming SDKs']
+      csv << header
+
+      for i in 0..100
+        next unless top_ios_game_sdks[i] && top_android_game_sdks[i]
+        ios_sdk = IosSdk.find(top_ios_game_sdks[i]["key"])
+        android_sdk = AndroidSdk.find(top_android_game_sdks[i]["key"])
+        csv << [ios_sdk.name, top_ios_game_sdks[i]["doc_count"], ios_sdk.summary, ios_sdk.website, "http://mightysignal.com/app/app#/sdk/ios/#{ios_sdk.id}", "",
+                android_sdk.name, top_android_game_sdks[i]["doc_count"], android_sdk.website, "http://mightysignal.com/app/app#/sdk/android/#{android_sdk.id}"]
+      end
+
+      csv << []
+      csv << ['Top Gaming SDKs Last 30 days']
+      csv << ["iOS SDK", "# Apps", "Description", "Website", "MightySignal URL"]
+
+      for i in 0..100
+        next unless top_ios_game_sdks_last_month[i]
+        ios_sdk = IosSdk.find(top_ios_game_sdks_last_month[i]["key"])
+        csv << [ios_sdk.name, top_ios_game_sdks_last_month[i]["doc_count"], ios_sdk.summary, ios_sdk.website, "http://mightysignal.com/app/app#/sdk/ios/#{ios_sdk.id}"]
+      end
+    end
+
+    send_data top_sdks_csv
+  end
+
   def create_account
     if params[:name]
       # only allow changes for admin account users and admins managing their own users
