@@ -14,10 +14,13 @@ angular.module("appApp")
       get: function() {
         return localStorage.getItem(JWT_TOKEN_NAME);
       },
-      deleteToken: function() {
+      deleteToken: function(message) {
         localStorage.removeItem(JWT_TOKEN_NAME);
-        console.log("remove token")
-        $window.location.href = "#/login";
+        var location = "#/login"
+        if (message) {
+          location += '?msg=' + message
+        }
+        $window.location.href = location;
       }
     }
   }])

@@ -29,7 +29,7 @@ angular.module('appApp')
       // Delete JWT Auth token if unauthorized (401) response
       $scope.$on('STRING_REPRESENTS_AUTHORIZATION_REVOKED', function(event) {
         $rootScope.isAuthenticated = false;
-        authToken.deleteToken();
+        authToken.deleteToken("Your MightySignal access has been revoked. Please contact us or your account admin for details.");
       });
 
       $scope.logUserOut = authToken.deleteToken;
