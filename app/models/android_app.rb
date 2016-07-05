@@ -113,7 +113,7 @@ class AndroidApp < ActiveRecord::Base
       seller: newest_snapshot.try(:seller),
       supportDesk: newest_snapshot.try(:seller_url),
       userBase: self.user_base,
-      icon: newest_snapshot.try(:icon_url_300x300),
+      icon: self.icon_url,
       downloadsMin: newest_snapshot.try(:downloads_min),
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
@@ -220,7 +220,7 @@ class AndroidApp < ActiveRecord::Base
 
   def icon_url(size='300x300') # size should be string eg '350x350'
     if newest_android_app_snapshot.present?
-      return newest_android_app_snapshot.send("icon_url_#{size}")
+      newest_android_app_snapshot.send("icon_url_#{size}").gsub(/-rw$/, '')
     end
   end
 

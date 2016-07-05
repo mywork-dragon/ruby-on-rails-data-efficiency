@@ -30,12 +30,11 @@ class AndroidSdk < ActiveRecord::Base
   attr_accessor :last_seen
 
   def get_favicon
-    if self.favicon.nil?
-      return nil if self.website.blank?
+    if self.website.present?
       host = URI(self.website).host
-      return "https://www.google.com/s2/favicons?domain=#{host}"
+      "https://www.google.com/s2/favicons?domain=#{host}"
     else
-      return self.favicon
+      self.favicon
     end
   end
 
