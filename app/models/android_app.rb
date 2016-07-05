@@ -220,7 +220,7 @@ class AndroidApp < ActiveRecord::Base
 
   def icon_url(size='300x300') # size should be string eg '350x350'
     if newest_android_app_snapshot.present?
-      newest_android_app_snapshot.send("icon_url_#{size}").gsub(/-rw$/, '')
+      newest_android_app_snapshot.send("icon_url_#{size}").try(:gsub, /-rw$/, '')
     end
   end
 
