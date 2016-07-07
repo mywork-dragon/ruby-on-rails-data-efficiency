@@ -1,8 +1,7 @@
 require 'json'
-require 'aws-sdk'
 require 'httparty'
+require 'mighty_aws'
 
-require_relative '../../lib/clients/aws_api'
 require_relative '../../app/lib/clients/wtf_is_my_ip'
 
 module MightyDeployer
@@ -45,7 +44,7 @@ module MightyDeployer
 
     stages.each do |stage|
 
-      ips = AwsApi.new.deploy_ips_for_stage(stage)
+      ips = MightyAws::Api.new.deploy_ips_for_stage(stage: stage, app: 'varys')
 
       ips.each do |ip|
 
