@@ -19,6 +19,8 @@
 
 # Learn more: http://github.com/javan/whenever
 
+env :PATH, ENV['PATH']
+
 set :output, "/home/deploy/cron.log"
 
 #this works! keep as a sample
@@ -60,7 +62,7 @@ every "0 1,3,5,7,9,11,13,15,17,19,21,23 * * *", roles: [:kylo_ren] do # every 2 
 end
 
 every :day, at: '6:30am', roles: [:sdk_scraper_live_scan] do
-  runner "ItunesChartService.run_itunes_top_free"
+  rake "itunes_chart:run_tunes_top_free"
 end
 
 # every 20.minutes, roles: [:monitor] do
