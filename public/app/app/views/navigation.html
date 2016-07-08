@@ -10,10 +10,10 @@
         data-ng-controller="MainCtrl"
         data-slim-scroll>
         <li ng-class="{active: $route.current.activeTab == 'newsfeed'}">
-            <a href="#/timeline"> <i class="fa fa-line-chart"></i> <span>Timeline</span><span class="label label-danger">Beta</span></a>
+            <a href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
         </li>
         <li ng-class="{active: $route.current.activeTab == 'search'}">
-            <a href="#/search"> <i class="fa fa-globe"></i> <span>Explore</span></a>
+            <a href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
         <!--
         <li ng-if="canViewStorewideSdks" ng-class="{active: $route.current.activeTab == 'sdks'}">
@@ -28,21 +28,24 @@
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a style="cursor: default;" href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
-              <li ng-repeat="list in $root.usersLists"><a href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []; recordListViewEvent(list.name, list.id)"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
+              <li ng-repeat="list in $root.usersLists"><a ng-click="clickedNavLink('List')" href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []; recordListViewEvent(list.name, list.id)"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
               <li id="listCreateNewButton"><a href="" data-toggle="modal" data-target="#createNewModal" ng-click="$root.focusInput=true"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>
         <li>
-            <a href="http://blog.mightysignal.com" target="_blank"><i class="fa fa-pencil-square-o"></i><span>Blog</span></a>
+            <a href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span><span class="label label-danger">NEW</span></a>
+        </li>
+        <li>
+            <a href="http://blog.mightysignal.com" target="_blank" ng-click="clickedNavLink('Blog')"><i class="fa fa-newspaper-o"></i><span>Blog</span></a>
         </li>
 		<li>
-			<a href="mailto:support@mightysignal.com" target="_blank"><span><i class="fa fa-support"></i>Support</span></a>
+			<a href="mailto:support@mightysignal.com" target="_blank" ng-click="clickedNavLink('Support')"><span><i class="fa fa-support"></i>Support</span></a>
 		</li>
         <li ng-class="{active: $route.current.activeTab == 'admin'}" ng-if="$root.isAdmin">
-            <a href="#/admin"><span><i class="fa fa-cog"></i>Admin</span></a>
+            <a href="#/admin" ng-click="clickedNavLink('Admin')"><span><i class="fa fa-cog"></i>Admin</span></a>
         </li>
         <li ng-click="logUserOut()">
-            <a href="#/logout" ng-click="event.preventDefault()"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
+            <a href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
         </li>
     </ul>
 

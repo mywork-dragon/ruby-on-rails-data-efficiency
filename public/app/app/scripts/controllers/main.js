@@ -32,6 +32,12 @@ angular.module('appApp')
         authToken.deleteToken("Your MightySignal access has been revoked. Please contact us or your account admin for details.");
       });
 
+      $scope.clickedNavLink = function(link) {
+        mixpanel.track("Clicked Navigation Link", {
+          link: link
+        });
+      }
+
       $scope.logUserOut = authToken.deleteToken;
 
       if($rootScope.isAuthenticated) {
