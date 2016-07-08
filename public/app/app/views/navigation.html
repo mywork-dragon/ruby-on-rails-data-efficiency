@@ -8,7 +8,7 @@
 <div id="nav-wrapper">
     <ul id="nav"
         data-ng-controller="MainCtrl"
-        data-slim-scroll>
+        data-slim-scroll data-collapse-nav>
         <li ng-class="{active: $route.current.activeTab == 'newsfeed'}">
             <a href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
         </li>
@@ -26,7 +26,7 @@
         </li>
         -->
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
-            <a style="cursor: default;" href="" ng-click="event.preventDefault()"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
+            <a href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in $root.usersLists"><a ng-click="clickedNavLink('List')" href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []; recordListViewEvent(list.name, list.id)"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
               <li id="listCreateNewButton"><a href="" data-toggle="modal" data-target="#createNewModal" ng-click="$root.focusInput=true"><i class="fa fa-plus"></i><span>Create New List</span></a></li>

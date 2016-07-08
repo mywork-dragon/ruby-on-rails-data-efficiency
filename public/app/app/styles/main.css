@@ -7281,10 +7281,6 @@ i.infoTooltipIcon {
   margin-left: 5px;
 }
 
-#lists-sidebar-navigation ul {
-  display: block;
-}
-
 #lists-sidebar-navigation > ul > li > a {
   text-transform: none;
 }
