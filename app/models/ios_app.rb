@@ -43,7 +43,7 @@ class IosApp < ActiveRecord::Base
   # update_index('apps#ios_app') { self } if Rails.env.production?
   
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
-                      529479190, 547702041,591981144,618783545,317469184,401626263]
+                      529479190, 547702041,591981144,618783545,317469184,401626263,1094591345]
 
   def invalidate_newest_ipa_snapshot
     ipa_snapshot = get_last_ipa_snapshot(scan_success: true)
