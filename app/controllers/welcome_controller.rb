@@ -8,7 +8,7 @@ class WelcomeController < ApplicationController
 
     # add Pokemon Go as first app because it's hot 
     pokemon_go_id = 2352590
-    @apps.delete_if{|ia| ia.id == pokemon_go_id}
+    @apps.delete_if{ |ia| ia.id == pokemon_go_id }
     pokemon_go = IosApp.find(pokemon_go_id)
     @apps = [pokemon_go] + @apps
   end
