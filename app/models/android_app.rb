@@ -92,7 +92,9 @@ class AndroidApp < ActiveRecord::Base
       company.try(:fortune_1000_rank),
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
-      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil
+      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil,
+      self.ratings_all_count,
+      self.downloads
     ]
   end
 
@@ -163,6 +165,10 @@ class AndroidApp < ActiveRecord::Base
 
   def last_updated
     self.newest_android_app_snapshot.try(:released).to_s
+  end
+
+  def ratings_all_count
+    self.newest_android_app_snapshot.try(:ratings_all_count)
   end
 
   def last_updated_days

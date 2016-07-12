@@ -171,6 +171,10 @@ class IosApp < ActiveRecord::Base
     end
   end
 
+  def ratings_all_count
+    self.newest_ios_app_snapshot.try(:ratings_all_count)
+  end
+
   def website
     self.get_website_urls.first
   end
@@ -237,7 +241,7 @@ class IosApp < ActiveRecord::Base
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
-      can_view_support_desk && newest_snapshot.present? ? newest_snapshot.support_url : nil
+      self.ratings_all_count
     ]
   end
   
