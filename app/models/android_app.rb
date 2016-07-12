@@ -94,7 +94,7 @@ class AndroidApp < ActiveRecord::Base
       'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil,
       self.ratings_all_count,
-      self.downloads
+      self.downloads_human
     ]
   end
 
@@ -190,6 +190,12 @@ class AndroidApp < ActiveRecord::Base
   def downloads
     if newest_snapshot = self.newest_android_app_snapshot
       "#{newest_snapshot.downloads_min}-#{newest_snapshot.downloads_max}"
+    end
+  end
+
+  def downloads_human
+    if newest_snapshot = self.newest_android_app_snapshot
+      "#{ActionController::Base.helpers.number_to_human(newest_snapshot.downloads_min)}-#{ActionController::Base.helpers.number_to_human(newest_snapshot.downloads_max)}"
     end
   end
 
