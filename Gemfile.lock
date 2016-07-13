@@ -406,8 +406,8 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 4.2.1)
-  activerecord-import (= 0.13.0)
   actionpack-action_caching
+  activerecord-import (= 0.13.0)
   apk_downloader (= 1.1.5)
   autoprefixer-rails
   awesome_print (= 1.6.1)
