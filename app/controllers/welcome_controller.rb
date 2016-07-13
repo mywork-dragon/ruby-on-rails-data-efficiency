@@ -1,7 +1,7 @@
 class WelcomeController < ApplicationController
   
   protect_from_forgery except: :contact_us
-  caches_action :top_200, cache_path: Proc.new {|c| c.request.url.chomp("?form=top-200") }, expires_in: 12.hours
+  caches_action [:top_ios_sdks, :top_ios_apps], cache_path: Proc.new {|c| c.request.url.chomp("?form=top-ios-sdks") }, expires_in: 12.hours
 
   layout "marketing" 
   
@@ -38,7 +38,7 @@ class WelcomeController < ApplicationController
     end
   end
 
-  def top_200
+  def top_ios_sdks
     @last_updated = IosAppRankingSnapshot.last.created_at
     @tags = Tag.all
     @tag_label = "All"
@@ -52,6 +52,12 @@ class WelcomeController < ApplicationController
     @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.size}.reverse).page(params[:page]).per(50)
   end
 
+  def top_ios_apps
+    newest_snapshot = IosAppRankingSnapshot.last
+    @last_updated = newest_snapshot.created_at
+    @apps = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
+  end
+
   def subscribe 
     if params[:email].present?
       ContactUsMailer.contact_us_email({email: params[:email]}).deliver
@@ -59,7 +65,7 @@ class WelcomeController < ApplicationController
     else
       flash[:error] = "Please enter your email"
     end
-    redirect_to top_200_path(form: 'top-200')
+    redirect_to top_ios_sdks_path(form: 'top-ios-sdks')
   end
   
   def contact_us

@@ -168,6 +168,10 @@ class IosApp < ActiveRecord::Base
     self.newest_ios_app_snapshot.try(:released).try(:to_s)
   end
 
+  def top_200_rank
+    self.ios_app_rankings.last.rank
+  end
+
   def ranking_change
     newest_rank_snapshot = IosAppRankingSnapshot.last
     if newest_rank = newest_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).first
@@ -192,6 +196,10 @@ class IosApp < ActiveRecord::Base
 
   def ratings_all_count
     self.newest_ios_app_snapshot.try(:ratings_all_count)
+  end
+
+  def released_days
+    (Date.today - self.released).to_i if self.released
   end
 
   def website

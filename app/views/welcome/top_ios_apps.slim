@@ -1,0 +1,53 @@
+- provide(:title, 'Top 200 Free iOS Apps')
+.row.header.top-200.top-apps
+  .column.large-12: .block
+    div class="addthis_native_toolbox pull-right"
+    h1
+      = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
+      |iTunes Top 200 Free iOS Apps
+    .info.alert.alert-warning
+      p.pull-left 
+        |Rankings last updated 
+        strong> #{time_ago_in_words(@last_updated)} ago.
+      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
+        .form-group
+          input#email.form-control name="email" placeholder="Email" type="email" /
+        .form-group.text-center
+          p
+            input.btn.btn-primary name="commit" type="submit" value="Alright!" /
+      p.email-form.pull-right 
+        | Subscribe to app SDK changes for this report
+    ul
+      - @apps.each do |app|
+        li class="grid"
+          span class="app-rank"
+            = app.rank
+          - if app.released_days && app.released_days <= 7
+            span class="badge badge-primary app-rank-change" New
+          - elsif app.ranking_change > 0
+            span class="app-rank-change"
+              i class="fa fa-arrow-up" aria-hidden="true"
+              = app.ranking_change
+          - elsif app.ranking_change < 0
+            span class="app-rank-change"
+              i class="fa fa-arrow-down" aria-hidden="true"
+              = app.ranking_change * -1
+          a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id="#{app.app_identifier}"
+            = image_tag app.icon_url, size: '100'
+          br
+          span class="app-name"
+            a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id="#{app.app_identifier}"
+              = app.name
+          br
+          span class="app-category" 
+            = app.ios_developer.try(:name)
+    div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
+      div class="modal-dialog modal-lg"
+        div class="modal-content"
+          div class="modal-header"
+            button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              span aria-hidden="true"
+                |&times;
+            h3 class="modal-title" id="myModalLabel"
+          div class="modal-body"
+              
