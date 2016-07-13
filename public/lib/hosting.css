@@ -381,8 +381,8 @@ p {
 .top-apps .app-rank, .top-apps .app-rank-change {
   font-size: 16px;
   position: absolute;
-  margin-left: -36px;
-  width: 31px;
+  margin-left: -44px;
+  width: 36px;
   text-align: right;
 }
 .top-apps li.grid {

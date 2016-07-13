@@ -1,7 +1,8 @@
-- provide(:title, 'Top 200 Free iOS Apps')
+- provide(:title, 'SDKs Used in Top 200 Free iOS Apps')
+- provide(:og_image, 'http://icons.iconarchive.com/icons/hamzasaleem/stock-style-3/512/App-store-icon.png')
 .row.header.top-200.top-apps
   .column.large-12: .block
-    div class="addthis_native_toolbox pull-right"
+    div class="addthis_native_toolbox pull-right" data-title="SDKs Used in Top 200 Free iOS Apps @MightySignal"
     h1
       = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
       |iTunes Top 200 Free iOS Apps
@@ -16,12 +17,12 @@
           p
             input.btn.btn-primary name="commit" type="submit" value="Alright!" /
       p.email-form.pull-right 
-        | Subscribe to app SDK changes for this report
+        | Subscribe to this report
     ul
       - @apps.each do |app|
         li class="grid"
           span class="app-rank"
-            = ".#{app.rank}"
+            = "#{app.rank}."
           - if app.released_days && app.released_days <= 7
             span class="badge badge-primary app-rank-change" New
           - elsif app.ranking_change > 0

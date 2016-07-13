@@ -1,7 +1,8 @@
-- provide(:title, 'Most used SDKs in Top 200 Free iOS Apps')
+- provide(:title, 'Most Used SDKs in Top 200 Free iOS Apps')
+- provide(:og_image, 'http://icons.iconarchive.com/icons/hamzasaleem/stock-style-3/512/App-store-icon.png')
 .row.header.top-200
   .column.large-2
-    div class="addthis_native_toolbox"
+    div class="addthis_native_toolbox" data-title="Most Used SDKs in Top 200 Free iOS Apps @MightySignal"
     h3 Categories
     ul.nav.nav-pills.nav-stacked
       li class="#{params[:tag].blank? ? 'active' : ''}"
@@ -26,7 +27,7 @@
           p
             input.btn.btn-primary name="commit" type="submit" value="Alright!" /
       p.email-form.pull-right 
-        | Subscribe to app SDK changes for this report
+        | Subscribe to this report
     - @sdks.each do |sdk|
       .row.sdk
         .column.large-6
