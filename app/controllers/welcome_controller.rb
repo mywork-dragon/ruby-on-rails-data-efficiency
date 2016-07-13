@@ -60,7 +60,7 @@ class WelcomeController < ApplicationController
 
   def subscribe 
     if params[:email].present?
-      ContactUsMailer.contact_us_email({email: params[:email]}).deliver
+      ContactUsMailer.contact_us_email({email: params[:email], message: 'Top SDKS page'}).deliver
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
