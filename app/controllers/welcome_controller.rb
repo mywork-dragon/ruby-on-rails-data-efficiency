@@ -1,7 +1,7 @@
 class WelcomeController < ApplicationController
   
   protect_from_forgery except: :contact_us
-  caches_action :top_200, cache_path: Proc.new {|c| c.request.url }, expires_in: 12.hours
+  caches_action :top_200, cache_path: Proc.new {|c| c.request.url.chomp("?form=top-200") }, expires_in: 12.hours
 
   layout "marketing" 
   
