@@ -4,7 +4,7 @@ html lang="en"
     meta charset="utf-8" /
     meta content="width=device-width, initial-scale=1.0" name="viewport" /
     title = full_title(yield(:title))
-    meta property="og:image" content="#{yield(:og_image) || 'http://www.mightysignal.com/app/app/images/mighty_signal_logo.png'}"
+    meta property="og:image" content="#{og_image_url(yield(:og_image))}"
     link href="/lib/favicon.ico" rel=("shortcut icon") type="image/vnd.microsoft.icon" /
     link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" /
     link data-turbolinks-track="true" href="/lib/codrops_demo.css?body=1" media="all" rel="stylesheet" /

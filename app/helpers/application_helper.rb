@@ -12,6 +12,14 @@ module ApplicationHelper
     full_title = "#{page_title} | #{full_title}" unless page_title.blank?
   end
 
+  def og_image_url(url)
+    if url.present?
+      url
+    else
+      'http://www.mightysignal.com/app/app/images/mighty_signal_logo.png'}
+    end
+  end
+
   def week_formatter(week)
     label = ""
     end_date = week + 6.days
