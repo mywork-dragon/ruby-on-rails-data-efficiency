@@ -16,7 +16,9 @@ class WelcomeController < ApplicationController
   end
 
   def app_sdks
-    if request.format.js?
+    newest_snapshot = IosAppRankingSnapshot.last
+    app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
+    if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
       @sdks = @app.tagged_sdk_response(true)
     elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)

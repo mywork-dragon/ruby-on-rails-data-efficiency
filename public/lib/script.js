@@ -11,6 +11,7 @@ $(document).ready(function() {
     })
 
     $('a.app-sdks').on('click', function() {
+        $('#sdkModal .modal-title, #sdkModal .modal-body').html('')
         var appId = $(this).data('id')
         $.ajax({
           url: '/apps/' + appId + '.js'
