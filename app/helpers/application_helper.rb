@@ -16,7 +16,7 @@ module ApplicationHelper
     if url.present?
       url
     else
-      'http://www.mightysignal.com/app/app/images/mighty_signal_logo.png'}
+      'http://www.mightysignal.com/app/app/images/mighty_signal_logo.png'
     end
   end
 
