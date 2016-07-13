@@ -1,0 +1,51 @@
+<div id="sdksPage" class="chartPage" data-ng-controller="ChartsCtrl">
+  <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
+    <div class="loading outer">
+      <div class="loading inner"></div>
+    </div>
+  </div>
+
+  <div ng-if="initialPageLoadComplete">
+    <div class="row sdksPageRow chartPageRow">
+      <h4>SDKs</h4>
+      <ul>
+        <li data-ng-repeat="sdk in sdks" ng-click="clickedSdkTag(sdk)" data-toggle="modal" data-target="#sdksModal" class="grid">
+          <span class="sdk-name">{{sdk.name}}</span>
+          <br>
+          <span class="app-name">{{sdk.ios_sdks.length}} SDKs</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sdksModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">{{tag.name}}</h3>
+        </div>
+        <div class="modal-body">
+          <ul class="sdks">
+            <li ng-repeat="sdk in tag.ios_sdks">
+              <div class="media">
+                <div class="pull-left media-middle">
+                  <a href=sdk.website>
+                    <img ng-src="{{sdk.favicon}}" width="16" height="16" class="media-object">
+                  </a>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading">
+                    <a ng-href="{{sdk.website}}" target="_blank">{{sdk.name}}</a>
+                  </h4>
+                  {{sdk.summary}}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

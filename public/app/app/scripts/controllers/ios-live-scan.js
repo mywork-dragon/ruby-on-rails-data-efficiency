@@ -40,8 +40,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
       sdkLiveScanService.checkForIosSdks(appId)
         .success(function (data) {
           iosLiveScanCtrl.sdkData = {
-            'sdkCompanies': data.installed_sdks,
-            'sdkOpenSource': data.uninstalled_sdks,
+            'installedSdks': data.installed_sdks,
+            'uninstalledSdks': data.uninstalled_sdks,
+            'installedSdksCount': data.installed_sdks_count,
+            'uninstalledSdksCount': data.uninstalled_sdks_count,
             'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'liveScanEnabled': data.live_scan_enabled

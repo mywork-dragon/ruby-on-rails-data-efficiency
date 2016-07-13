@@ -77,14 +77,7 @@ angular.module('appApp')
         apiService.getCategories().success(function(data) {
           $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
         });
-
       }
-
-      // For dashboard filter warning
-      apiService.getScannedSdkNum().success(function(data) {
-        $rootScope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
-        $rootScope.scannedIosSdkNum = data.scannedIosSdkNum;
-      });
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
     function($scope, apiService, $http, $rootScope, filterService) {

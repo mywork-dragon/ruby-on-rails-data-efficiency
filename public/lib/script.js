@@ -10,6 +10,13 @@ $(document).ready(function() {
         window.location = '/apps/' +  $('.dd-selected-value').val()
     })
 
+    $('a.app-sdks').on('click', function() {
+        var appId = $(this).data('id')
+        $.ajax({
+          url: '/apps/' + appId + '.js'
+        });
+    })
+
     $('a[data-featherlight]').hover(function() {
         var img = $(this).find('img')
         $('<i class="fa fa-search-plus fa-lg"></i>').css({

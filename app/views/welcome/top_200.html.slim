@@ -1,3 +1,4 @@
+- provide(:title, 'SDKs used in Top 200 Free iOS Apps')
 .row.header.top-200
   .column.large-2
     div class="addthis_native_toolbox"
@@ -14,22 +15,42 @@
     h1
       = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
       |#{@tag_label} SDKs used by App Store Top 200 Free Apps
-    br
-    p All data gathered by looking at iOS App binaries. List of Top 200 apps is updated daily from App Store Top Free rankings.
-    br
+    .info.alert.alert-warning
+      p.pull-left 
+        |Report last updated 
+        strong> #{time_ago_in_words(@last_updated)} ago.
+      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
+        .form-group
+          input#email.form-control name="email" placeholder="Email" type="email" /
+        .form-group.text-center
+          p
+            input.btn.btn-primary name="commit" type="submit" value="Alright!" /
+      p.email-form.pull-right 
+        | Subscribe to app SDK changes from this report
     - @sdks.each do |sdk|
       .row.sdk
         .column.large-6
           div class="media"
             div class="pull-left media-middle"
               a href=sdk.website
-                = image_tag sdk.favicon, size: '40', class: 'media-object'
+                = image_tag sdk.favicon, size: '16', class: 'media-object'
             div class="media-body"
               h4 class="media-heading"
                 => link_to sdk.name, sdk.website, target: '_blank'
-                span #{sdk.top_200_apps.count} Apps
+                span #{sdk.top_200_apps.size} Apps (#{number_to_percentage((sdk.top_200_apps.size/200.0) * 100, precision: 0)} of Top 200)
               = sdk.summary
         .column.large-6
           - sdk.top_200_apps.first(8).each do |app|
-            = image_tag app.icon_url, size: '60', data: {toggle: "tooltip",placement: "top"}, title: app.name
+            a href='#' data-toggle="modal" data-target="#sdkModal" class="app-sdks" data-id=app.app_identifier
+              = image_tag app.icon_url, size: '50', data: {toggle: "tooltip", placement: "top"}, title: app.name, class: 'app-icon'
     = paginate @sdks
+    div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
+      div class="modal-dialog modal-lg"
+        div class="modal-content"
+          div class="modal-header"
+            button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              span aria-hidden="true"
+                |&times;
+            h3 class="modal-title" id="myModalLabel"
+          div class="modal-body"
+              

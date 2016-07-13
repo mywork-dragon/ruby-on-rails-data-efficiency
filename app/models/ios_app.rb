@@ -103,6 +103,7 @@ class IosApp < ActiveRecord::Base
       icon: self.icon_url,
       adSpend: self.old_ad_spend?,
       price: newest_snapshot.try(:price),
+      rankingChange: self.ranking_change,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name),
@@ -127,6 +128,8 @@ class IosApp < ActiveRecord::Base
         facebookAds: self.ios_fb_ads.has_image
       })
     end
+
+    batch_json[:rank] = self.rank if self.respond_to?(:rank)
     
     if options[:user]
       batch_json[:following] = options[:user].following?(self) 
@@ -165,6 +168,22 @@ class IosApp < ActiveRecord::Base
     self.newest_ios_app_snapshot.try(:released).try(:to_s)
   end
 
+  def ranking_change
+    newest_rank_snapshot = IosAppRankingSnapshot.last
+    if newest_rank = newest_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).first
+      week_ago = newest_rank_snapshot.created_at - 7.days
+      last_weeks_rank_snapshot = IosAppRankingSnapshot.where('created_at <=  ?', week_ago.end_of_day).first
+      return unless last_weeks_rank_snapshot
+      last_weeks_rank = last_weeks_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).first
+
+      if last_weeks_rank.blank?
+        200 - newest_rank.rank + 1
+      else
+        last_weeks_rank.rank - newest_rank.rank
+      end
+    end
+  end
+
   def last_updated_days
     if released = self.newest_ios_app_snapshot.try(:released)
       (Time.now.to_date - released.to_date).to_i
@@ -187,6 +206,10 @@ class IosApp < ActiveRecord::Base
 
   def sdk_response
     IosSdkService.get_sdk_response(self.id)
+  end
+
+  def tagged_sdk_response(only_show_tagged=false)
+    IosSdkService.get_tagged_sdk_response(self.id, only_show_tagged)
   end
 
   def installed_sdks

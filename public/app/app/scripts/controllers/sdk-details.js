@@ -1,11 +1,14 @@
 'use strict';
 
-angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$routeParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService', 'slacktivity',
-  function($scope, $http, $routeParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity) {
+angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", "$routeParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService', 'slacktivity',
+  function($scope, $q, $http, $routeParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity) {
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
     var sdkPlatform = $routeParams.platform;
+
+    $scope.tags = []
+    $scope.editMode = false
 
     authService.permissions()
       .success(function(data) {
@@ -24,6 +27,9 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$rout
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
+        for (var i = 0; i < data.tags.length; i++) {
+          $scope.tags.push({text: data.tags[i].name})
+        }
         $scope.isFollowing = data.following
         sdkDetailsCtrl.apps = data.apps;
         $scope.apps = data.apps
@@ -103,6 +109,35 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', "$http", "$rout
       /* -------- Mixpanel Analytics End -------- */
       $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
     };
+
+    $scope.loadTags = function(query) {
+      console.log($scope.tags)
+      var deferred = $q.defer();
+      $http.get(API_URI_BASE + 'api/tags?query=' + query).success(function(data) {
+        for (var i = 0; i < data.length; i++) {
+          data[i].text = data[i].name;
+          delete data[i].name;
+        }
+        deferred.resolve(data)
+      })
+      return deferred.promise
+    };
+
+    $scope.saveTags = function() {
+      console.log($scope.tags)
+      return $http({
+        method: 'POST',
+        url: API_URI_BASE + 'api/sdk/' + $routeParams.platform + '/tags',
+        params: {tags: JSON.stringify($scope.tags), id: $routeParams.id}
+      }).success(function(data) {
+        sdkDetailsCtrl.sdkData.tags = data.tags
+        $scope.editMode = false
+      })
+    }
+
+    $scope.toggleEdit = function() {
+      $scope.editMode = true
+    }
 
     // Submits filtered search query via query string params
     sdkDetailsCtrl.submitSdkQuery = function(platform) {

@@ -9,7 +9,8 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
   get 'apps/:app_identifier' => 'welcome#app_sdks'
-  # get 'top-200' => 'welcome#top_200', as: 'top-200'
+  get 'top-200' => 'welcome#top_200', as: 'top-200'
+  post 'subscribe' => 'welcome#subscribe', as: :subscribe
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
 
   get 'api/sdk/android' => 'api#get_android_sdk'
   get 'api/sdk/ios' => 'api#get_ios_sdk'
+  post 'api/sdk/ios/tags' => 'api#update_ios_sdk_tags'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 
@@ -85,6 +87,11 @@ Rails.application.routes.draw do
 
   get 'api/chart/newest' => 'api#newest_apps_chart'
   get 'api/chart/export_to_csv' => 'api#export_newest_apps_chart_to_csv'
+
+  get 'api/charts/top-apps' => 'api#top_apps'
+  get 'api/charts/sdks' => 'api#sdks'
+
+  get 'api/tags' => 'api#tags'
 
   # get 'api/android_sdks' => 'api#android_sdks_for_app'
   # get 'api/android_sdks_exist' => 'api#android_sdks_for_app_exist'

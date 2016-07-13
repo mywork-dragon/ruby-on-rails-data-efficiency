@@ -1,6 +1,8 @@
 class WelcomeController < ApplicationController
   
   protect_from_forgery except: :contact_us
+  caches_action :top_200, cache_path: Proc.new {|c| c.request.url }, expires_in: 12.hours
+
   layout "marketing" 
   
   def index
@@ -14,7 +16,10 @@ class WelcomeController < ApplicationController
   end
 
   def app_sdks
-    if !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
+    if request.format.js?
+      @app = IosApp.find_by_app_identifier(params[:app_identifier])
+      @sdks = @app.tagged_sdk_response(true)
+    elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
       redirect_to action: :index
     else
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
@@ -26,9 +31,15 @@ class WelcomeController < ApplicationController
         @uninstalled_sdks.shift
       end
     end
+
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def top_200
+    @last_updated = IosAppRankingSnapshot.last.created_at
     @tags = Tag.all
     @tag_label = "All"
     if params[:tag]
@@ -38,7 +49,17 @@ class WelcomeController < ApplicationController
     else
       @sdks = Tag.includes(:ios_sdks).all.flat_map{|tag| tag.ios_sdks}
     end
-    @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.count}.reverse).page(params[:page]).per(50)
+    @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.size}.reverse).page(params[:page]).per(50)
+  end
+
+  def subscribe 
+    if params[:email].present?
+      ContactUsMailer.contact_us_email({email: params[:email]}).deliver
+      flash[:success] = "We will be in touch soon!"
+    else
+      flash[:error] = "Please enter your email"
+    end
+    redirect_to top_200_path(form: 'top-200')
   end
   
   def contact_us

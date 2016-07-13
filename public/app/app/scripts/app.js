@@ -49,23 +49,34 @@ angular
           activeTab: 'search',
           reloadOnSearch: false
         })
+        .when('/charts', {
+          templateUrl: '/app/app/views/charts.html',
+          activeTab: 'charts',
+        })
+        .when('/charts/top-apps', {
+          templateUrl: '/app/app/views/charts/top-apps.html',
+          activeTab: 'charts',
+          action: 'charts.top-apps'
+        })
+        .when('/charts/sdks', {
+          templateUrl: '/app/app/views/charts/sdks.html',
+          activeTab: 'charts',
+          action: 'charts.sdks'
+        })
         .when('/search/sdk/:platform', {
           templateUrl: '/app/app/views/sdk-search.html',
           activeTab: 'search'
         })
         .when('/timeline', {
           templateUrl: '/app/app/views/newsfeed.html',
-          controller: 'NewsfeedCtrl',
           activeTab: 'newsfeed'
         })
         .when('/admin', {
           templateUrl: '/app/app/views/admin.html',
-          controller: 'AdminCtrl',
           activeTab: 'admin'
         })
         .when('/publisher/:platform/:id', {
           templateUrl: '/app/app/views/publisher-details.html',
-          controller: 'PublisherDetailsCtrl',
           activeTab: 'search'
         })
         .when('/search/custom', {

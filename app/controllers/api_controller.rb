@@ -543,7 +543,7 @@ class ApiController < ApplicationController
   def ios_sdks_exist
     ios_app_id = params['appId']
 
-    render json: IosSdkService.get_sdk_response(ios_app_id).to_json
+    render json: IosSdkService.get_tagged_sdk_response(ios_app_id).to_json
   end
 
   def ios_scan_status
@@ -588,6 +588,21 @@ class ApiController < ApplicationController
     results_count = results.count
 
     render json: {results: results, resultsCount: results_count, pageNum: page_num}
+  end
+
+  def top_apps
+    newest_snapshot = IosAppRankingSnapshot.last
+    apps = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
+    render json: {apps: apps, last_updated: newest_snapshot.created_at}
+  end
+
+  def sdks
+    render json: {sdks: Tag.includes(:ios_sdks).as_json(include: :ios_sdks)}
+  end
+
+  def tags
+    tags = Tag.where("name LIKE '#{params[:query]}%'")
+    render json: tags
   end
 
   # METHOD USED FOR CREATING CUSTOM CSVs (usually hooked up to export button in UI)
@@ -791,7 +806,7 @@ class ApiController < ApplicationController
 
     @sdk_json = sdk.as_json({user: @current_user})
     @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).count
+    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).size
     render json: @sdk_json
   end
 
@@ -801,8 +816,27 @@ class ApiController < ApplicationController
 
     @sdk_json = sdk.as_json({user: @current_user})
     @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).count
+    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).size
     render json: @sdk_json
+  end
+
+  def update_ios_sdk_tags
+    sdk_id = params[:id]
+    sdk = IosSdk.find(sdk_id)
+    new_tags = []
+    if tags = params[:tags]
+      tags = JSON.parse(tags)
+      puts tags
+      tags.each do |tag|
+        if tag['id'].present?
+          new_tags << Tag.find(tag['id'])
+        else
+          new_tags << Tag.find_or_create_by(name: tag['text'])
+        end
+      end
+    end
+    sdk.tags = new_tags
+    render json: sdk
   end
 
   def get_sdk_autocomplete

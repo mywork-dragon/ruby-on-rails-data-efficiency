@@ -65,13 +65,15 @@ class IosSdk < ActiveRecord::Base
       openSource: self.open_source,
       website: self.website,
       summary: self.summary,
+      tags: self.tags
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
     batch_json
   end
 
   def top_200_apps
-    self.get_current_apps.joins(:ios_app_rankings)
+    newest_snapshot = IosAppRankingSnapshot.last
+    self.get_current_apps.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
   end
 
   class << self

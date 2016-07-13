@@ -36,6 +36,20 @@
                     <label>Website:</label>
                     <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
                   </li>
+                  <li class="sdk-tags">
+                    <span class="icon fa fa-globe"></span>
+                    <label>Tags:</label>
+                    <span ng-if="!editMode">
+                      <span ng-repeat="tag in sdkDetailsCtrl.sdkData.tags">{{tag.name}}{{$index+1 == sdkDetailsCtrl.sdkData.tags.length ? '' : ','}} </span>
+                      <a class="edit" href="javascript:void(0)" ng-click="toggleEdit()" ng-if="$root.isAdminAccount">Edit</a>
+                    </span>
+                    <div class="edit-mode" ng-if="editMode && $root.isAdminAccount">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="saveTags()">Save</button>
+                      <tags-input ng-model="tags" ng-if="editMode">
+                        <auto-complete source="loadTags($query)"></auto-complete>
+                      </tags-input>
+                    </div>
+                  </li>
                   <li>
                     <span class="icon fa fa-code-fork"></span>
                     <label>Open Source:</label>

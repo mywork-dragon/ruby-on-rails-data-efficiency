@@ -17,6 +17,7 @@ module Varys
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.encoding = "utf-8"
     config.time_zone = 'Pacific Time (US & Canada)'
+    config.cache_store = :redis_store, "redis://varys-production.bsqwsz.0001.use1.cache.amazonaws.com:6379"
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]

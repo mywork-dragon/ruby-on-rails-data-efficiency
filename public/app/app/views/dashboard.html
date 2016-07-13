@@ -1,4 +1,4 @@
-<div data-ng-controller="SearchCtrl as searchCtrl">
+<div id="dashboardPage" data-ng-controller="SearchCtrl as searchCtrl">
   <div class="page page-table" data-ng-controller="TableCtrl">
 
     <section class="panel panel-default table-dynamic" ng-controller="FilterCtrl">
@@ -26,11 +26,11 @@
                 </select>
                </span>
                <span class="ui-select">
-                    <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)" tooltip-placement="bottom-left" uib-tooltip-html="fortuneExplanation" tooltip-popup-delay="200">
-                      <option value="">Fortune Rank</option>
-                      <option value="500">Fortune 500</option>
-                      <option value="1000">Fortune 1000</option>
-                    </select>
+                  <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)" tooltip-placement="bottom-left" uib-tooltip-html="fortuneExplanation" tooltip-popup-delay="200">
+                    <option value="">Fortune Rank</option>
+                    <option value="500">Fortune 500</option>
+                    <option value="1000">Fortune 1000</option>
+                  </select>
                </span>
                <span class="ui-select" ng-show="!canViewAdSpend && appPlatform.platform == 'ios'">
                   <select ng-model="oldAdSpend" ng-change="onFilterChange('oldAdSpend', oldAdSpend, 'Reported Ad Spend', false)" tooltip-placement="bottom-left" uib-tooltip-html="adSpendExplanation" tooltip-popup-delay="200">
@@ -123,8 +123,8 @@
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
         <div><span class="ng-binding ng-scope">
 					SDK filter results from scanning the top 
-					<strong ng-if="appPlatform.platform == 'ios'">{{$root.scannedIosSdkNum | number}}</strong>
-					<strong ng-if="appPlatform.platform == 'android'">{{$root.scannedAndroidSdkNum | number}}</strong> 
+					<strong ng-if="appPlatform.platform == 'ios'">{{scannedIosSdkNum | number}}</strong>
+					<strong ng-if="appPlatform.platform == 'android'">{{scannedAndroidSdkNum | number}}</strong> 
 					{{appPlatform.platform == 'ios' ? 'iOS' : 'Android'}} apps.
 				</span></div>
 						
@@ -346,10 +346,11 @@
                                placeholder="SDK name"
                                pause="100"
                                selected-object="selectedAndSdk"
+                               remote-url="{{autocompleteUrl()}}"
                                remote-url-data-field="results"
                                search-fields="name"
                                title-field="name"
-                               id-feild="id"
+                               id-field="id"
                                clear-selected="true"
                                image-field="favicon"
                                minlength="1"
@@ -391,10 +392,11 @@
                                placeholder="SDK name"
                                pause="100"
                                selected-object="selectedOrSdk"
+                               remote-url="{{autocompleteUrl()}}"
                                remote-url-data-field="results"
                                search-fields="name"
                                title-field="name"
-                               id-feild="id"
+                               id-field="id"
                                clear-selected="true"
                                image-field="favicon"
                                minlength="1"

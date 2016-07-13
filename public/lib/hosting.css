@@ -311,12 +311,36 @@ p {
 }
 .addthis_native_toolbox {
 	margin-top: 40px;
+	height: 27px;
 }
 .header li {
 	margin: 5px 0;
 }
-.top-200 h3 {
+.top-200 .large-2 h3 {
 	margin-top: 20px;
+}
+.top-200 form {
+	margin: 0 0 0 15px;
+}
+.top-200 .modal-title {
+	color: #222222;
+}
+.top-200 .modal-body ul {
+	margin: 0 0 15px 15px;
+}
+.top-200 .modal-body h3 {
+	margin-top: 0;
+}
+.top-200 img.media-object {
+	margin: 8px 0 0 0;
+}
+.top-200 img.app-icon {
+	border-radius: 5px;
+  margin: 10px 5px;
+}
+.top-200 .btn-primary {
+	height: 37px;
+	margin-top: 3px;
 }
 .top-200 .sdk h4 span {
 	font-size: 16px;
@@ -338,12 +362,28 @@ p {
 .top-200 .block {
 	padding: 30px;
 }
+.top-200 .info {
+	margin: 20px 0;
+	padding-bottom: 0 !important;
+	overflow: auto;
+}
+.top-200 .info p {
+	margin-top: 10px;
+	color: #8a6d3b;
+}
+.top-200 .info .form-group p {
+	margin-top: 0px;
+}
 .header li img, .header li a {
 	margin-right: 5px;
 }
 .app-sdks h1 i {
 	font-size: 20px;
 	color: #ccc;
+}
+.app-sdks ul li img {
+	height: 16px;
+	width: 16px;
 }
 .app-sdks .first-seen {
 	font-size: 10px;

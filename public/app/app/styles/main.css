@@ -2249,8 +2249,41 @@ input.input-dark:focus {
   z-index: 999;
   opacity: .8; }
 
+#dashboardPage div.tags {
+  border: none !important;
+}
+
+#dashboardPage tags-input .tags .tag-item {
+  font-family: 'Open Sans', sans-serif;
+  height: auto;
+  line-height: normal;
+}
+
+tags-input .tags .input.invalid-tag {
+  color: #767676 !important;
+}
+
+tags-input .tags .tag-item {
+  color: #fff !important;
+  background: #0393dd !important;
+  border: none !important;
+}
+
+tags-input .tags .tag-item .remove-button {
+  color: #fff !important;
+}
+
+div.tags {
+  color: #767676;
+  background-color: #fff !important;
+  background-image: none;
+  border: 1px solid #cbd5dd !important;
+  box-shadow: none !important;
+}
+
 .ui-tags-input .host {
   position: relative;
+  margin: 0;
 }
 
 .ui-tags-input .host:active {
@@ -4664,6 +4697,22 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 .list-group-item {
   padding: 15px;
   border: 1px solid #f3f3f3; }
+
+li.sdk-tags button {
+  width: 60px;
+  margin-left: 10px;
+  float: right;
+  z-index: 10;
+  position: relative;
+}
+
+li.sdk-tags .edit-mode {
+  margin-top: 10px;
+}
+
+li.sdk-tags a.edit {
+  float: right;
+}
 
 .list-info li {
   padding: 10px;
@@ -7423,7 +7472,7 @@ span#dashboardResultsTableHeadingNumDisplayed {
   text-align: center;
 }
 
-#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner, #adminPage > #wrap_spinner {
+#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner, #adminPage > #wrap_spinner, .chartPage > #wrap_spinner {
   text-align: center;
   margin-top: 10%;
 }
@@ -7621,6 +7670,14 @@ pre {
   padding-top: 0 !important;
 }
 
+.sdksListView h4 {
+  border: none;
+  font-size: 14px;
+  color: #3F4245;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
 .liveScanSdksCountDisplay {
   font-size: 12px;
 }
@@ -7687,6 +7744,10 @@ pre {
 
 .sdksListView .sdkLiveScanDisplayList {
   clear: both;
+}
+
+.sdksListView .sdk-tag {
+  font-size: 12px;
 }
 
 #mainSearchBoxWrapper {
@@ -7915,7 +7976,90 @@ button.dropdown-toggle .caret {
   display: none;
 }
 
-.newsfeedPageRow, .adminPageRow {
+.chartPage li.grid {
+  list-style: none;
+  width: 150px;
+  float: left;
+  height: 150px;
+  background: #fff;
+  margin: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+#topAppsPage .app-rank, #topAppsPage .app-rank-change {
+  font-size: 12px;
+  position: absolute;
+  margin-left: -28px;
+  width: 21px;
+  text-align: right;
+}
+
+#topAppsPage .app-rank-change {
+  width: 40px;
+  margin-left: 56px;
+  text-align: left;
+}
+
+.app-rank-change .fa-arrow-down {
+  color: red;
+}
+
+.app-rank-change .fa {
+  width: 12px;
+  margin: 0;
+}
+
+.app-rank-change .fa-arrow-up {
+  color: green;
+}
+
+#topAppsPage .app-name {
+  font-size: 15px;
+  margin-top: 15px;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+#topAppsPage .app-category {
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.chartPage a.icon:hover {
+  text-decoration: none;
+}
+
+.chartPage .sdks li {
+  margin-bottom: 20px;
+}
+
+.chartPage ul.sdks {
+  padding: 10px;
+}
+
+.chartPage li .sdk-name {
+  color: #333;
+  border: none;
+  font-size: 16px;
+  margin: 20px 0;
+  display: inline-block;
+}
+
+#sdksPage li.grid {
+  cursor: pointer;
+}
+
+.newsfeedPageRow, .adminPageRow, .chartPageRow {
   padding: 20px;
   margin: 0;
 }

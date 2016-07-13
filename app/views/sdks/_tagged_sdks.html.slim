@@ -1,0 +1,25 @@
+.row.app-sdks
+  .column.large-6
+    h3 Installed SDKs (#{response[:installed_sdks_count]})
+    - response[:installed_sdks].each do |tag|
+      span= tag[:name]
+      ul
+        - tag[:sdks].each do |sdk|
+          li
+            = image_tag sdk['favicon'], size: '16'
+            = link_to sdk["name"], sdk["website"], target: '_blank'
+            span.first-seen= "First seen <strong>#{time_ago_in_words(sdk['first_seen_date'])}</strong> ago".html_safe
+  .column.large-6
+    h3 Uninstalled SDKs (#{response[:uninstalled_sdks_count]})
+    - if response[:uninstalled_sdks].blank?
+      span No SDKs have been uninstalled since we started tracking this app
+    - else
+      - response[:uninstalled_sdks].each do |tag|
+        span= tag[:name]
+        ul
+          - tag[:sdks].each do |sdk|
+            li
+              = image_tag sdk['favicon'], size: '16'
+              = link_to sdk["name"], sdk["website"], target: '_blank'
+              span.last-seen= "Last seen <strong>#{time_ago_in_words(sdk['last_seen_date'])}</strong> ago".html_safe
+          

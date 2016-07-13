@@ -43,6 +43,10 @@ angular.module('appApp')
         buttonDefaultText: 'CATEGORIES',
       };
 
+      $scope.autocompleteUrl = function() {
+        return API_URI_BASE + "api/sdk/autocomplete?platform=" + AppPlatform.platform + "&searchstr="
+      }
+
       $scope.addCategoryFilter = function(category) {
         var found = false
         for (var i in $rootScope.categoryModel) {
@@ -336,5 +340,10 @@ angular.module('appApp')
       searchCtrl.updateCSVUrl = function() {
         searchCtrl.csvUrl = API_URI_BASE + 'api/search/export_to_csv.csv' + $location.url().split('/search')[1] + '&access_token=' + authToken.get()
       }
+
+      apiService.getScannedSdkNum().success(function(data) {
+        $scope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
+        $scope.scannedIosSdkNum = data.scannedIosSdkNum;
+      });
     }
   ]);
