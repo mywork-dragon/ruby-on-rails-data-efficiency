@@ -21,7 +21,7 @@
       - @apps.each do |app|
         li class="grid"
           span class="app-rank"
-            = app.rank
+            = ".#{app.rank}"
           - if app.released_days && app.released_days <= 7
             span class="badge badge-primary app-rank-change" New
           - elsif app.ranking_change > 0
