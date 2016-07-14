@@ -1,7 +1,7 @@
 class WelcomeController < ApplicationController
   
   protect_from_forgery except: :contact_us
-  caches_action [:top_ios_sdks, :top_ios_apps], cache_path: Proc.new {|c| c.request.url.chomp("?form=top-ios-sdks") }, expires_in: 12.hours
+  #caches_action [:top_ios_sdks, :top_ios_apps], cache_path: Proc.new {|c| c.request.url.chomp("?form=top-ios-sdks") }, expires_in: 12.hours
 
   layout "marketing" 
   

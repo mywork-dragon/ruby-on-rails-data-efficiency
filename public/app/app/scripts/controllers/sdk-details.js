@@ -5,7 +5,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
-    var sdkPlatform = $routeParams.platform;
+    $scope.appPlatform = $routeParams.platform;
 
     $scope.tags = []
     $scope.editMode = false
@@ -27,8 +27,10 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
-        for (var i = 0; i < data.tags.length; i++) {
-          $scope.tags.push({text: data.tags[i].name})
+        if (data.tags) {
+          for (var i = 0; i < data.tags.length; i++) {
+            $scope.tags.push({text: data.tags[i].name})
+          }
         }
         $scope.isFollowing = data.following
         sdkDetailsCtrl.apps = data.apps;
@@ -40,7 +42,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
         mixpanel.track(
           "SDK Details Page Viewed", {
             "sdkName": sdkDetailsCtrl.name,
-            "platform": sdkPlatform
+            "platform": $scope.appPlatform
           }
         );
 

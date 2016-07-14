@@ -36,7 +36,7 @@
                     <label>Website:</label>
                     <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
                   </li>
-                  <li class="sdk-tags">
+                  <li class="sdk-tags" ng-if="appPlatform == 'ios'">
                     <span class="icon fa fa-globe"></span>
                     <label>Tags:</label>
                     <span ng-if="!editMode">
