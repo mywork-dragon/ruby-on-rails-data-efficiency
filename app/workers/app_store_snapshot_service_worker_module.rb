@@ -196,7 +196,7 @@ module AppStoreSnapshotServiceWorkerModule
     return s unless s.status == :success
 
     if TRIGGER_FOLLOW_UPS
-      CreateDeveloperWorker.perform_async(options[:ios_app_id], 'ios')
+      CreateDevelopersWorker.perform_async(:create_developers, options[:ios_app_id], 'ios')
     end
   end
   
