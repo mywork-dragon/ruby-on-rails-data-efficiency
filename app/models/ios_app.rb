@@ -199,7 +199,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def released_days
-    (Date.today - self.released).to_i if self.released
+    self.released ? (Date.today - self.released).to_i : 0
   end
 
   def website
