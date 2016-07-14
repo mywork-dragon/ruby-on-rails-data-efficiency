@@ -173,10 +173,10 @@ class IosApp < ActiveRecord::Base
   end
 
   def ranking_change
-    newest_rank_snapshot = IosAppRankingSnapshot.last
+    newest_rank_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     if newest_rank = newest_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).first
       week_ago = newest_rank_snapshot.created_at - 7.days
-      last_weeks_rank_snapshot = IosAppRankingSnapshot.where('created_at <=  ?', week_ago.end_of_day).first
+      last_weeks_rank_snapshot = IosAppRankingSnapshot.where(is_valid: true).where('created_at <=  ?', week_ago.end_of_day).first
       return unless last_weeks_rank_snapshot
       last_weeks_rank = last_weeks_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).first
 

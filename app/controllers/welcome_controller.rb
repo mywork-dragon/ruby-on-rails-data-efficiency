@@ -16,7 +16,7 @@ class WelcomeController < ApplicationController
   end
 
   def app_sdks
-    newest_snapshot = IosAppRankingSnapshot.last
+    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).pluck(:app_identifier)
     if request.format.js? && app_ids.include?(params[:app_identifier].to_i)
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
@@ -41,7 +41,7 @@ class WelcomeController < ApplicationController
   end
 
   def top_ios_sdks
-    @last_updated = IosAppRankingSnapshot.last.created_at
+    @last_updated = IosAppRankingSnapshot.last_valid_snapshot.created_at
     @tags = Tag.all
     @tag_label = "All"
     if params[:tag]
@@ -55,7 +55,7 @@ class WelcomeController < ApplicationController
   end
 
   def top_ios_apps
-    newest_snapshot = IosAppRankingSnapshot.last
+    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     @last_updated = newest_snapshot.created_at
     @apps = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
   end

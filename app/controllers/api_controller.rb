@@ -591,7 +591,7 @@ class ApiController < ApplicationController
   end
 
   def top_apps
-    newest_snapshot = IosAppRankingSnapshot.last
+    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
     apps = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
     render json: {apps: apps, last_updated: newest_snapshot.created_at}
   end

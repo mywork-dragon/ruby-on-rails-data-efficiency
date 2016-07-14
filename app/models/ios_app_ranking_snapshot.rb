@@ -5,4 +5,8 @@ class IosAppRankingSnapshot < ActiveRecord::Base
 
   enum kind: [:itunes_top_free]
 
+  def self.last_valid_snapshot
+    where(is_valid: true).last
+  end
+
 end
