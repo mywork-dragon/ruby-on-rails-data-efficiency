@@ -28,11 +28,12 @@
             input.btn.btn-primary name="commit" type="submit" value="Alright!" /
       p.email-form.pull-right 
         | Sign up to get more SDK data
-    - @sdks.each do |sdk|
+    - @sdks.each.with_index do |sdk, index|
       .row.sdk
         .column.large-6
           div class="media"
             div class="pull-left media-middle"
+              span.sdk-rank= "#{index + 1 + (([params[:page].to_i, 1].max - 1) * 20)}."
               a href=sdk.website
                 = image_tag sdk.favicon, size: '16', class: 'media-object'
             div class="media-body"

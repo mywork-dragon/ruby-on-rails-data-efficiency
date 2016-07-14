@@ -51,7 +51,7 @@ class WelcomeController < ApplicationController
     else
       @sdks = Tag.includes(:ios_sdks).all.flat_map{|tag| tag.ios_sdks}
     end
-    @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.size}.reverse).page(params[:page]).per(50)
+    @sdks = Kaminari.paginate_array(@sdks.uniq.sort_by {|a| a.top_200_apps.size}.reverse).page(params[:page]).per(20)
   end
 
   def top_ios_apps

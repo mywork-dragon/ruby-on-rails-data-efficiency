@@ -320,6 +320,10 @@ p {
 .header li {
 	margin: 5px 0;
 }
+.top-200 .sdk-rank {
+	position: absolute;
+  margin-top: 5px;
+}
 .top-200 .large-2 h3 {
 	margin-top: 20px;
 }
@@ -336,7 +340,7 @@ p {
 	margin-top: 0;
 }
 .top-200 img.media-object {
-	margin: 8px 0 0 0;
+	margin: 8px 0 0 45px;
 }
 .top-200 img.app-icon {
 	border-radius: 5px;
