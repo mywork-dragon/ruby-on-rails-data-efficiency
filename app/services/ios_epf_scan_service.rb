@@ -15,12 +15,22 @@ class IosEpfScanService
 
       puts "Found #{apps.count} newly released apps"
 
-      scan_epf_apps(apps.pluck(:id))
+      scan_apps(
+        apps.pluck(:id),
+        notes: "Running EPF scan on #{Time.now.strftime '%m/%d/%Y'}"
+      )
     end
 
-    def scan_epf_apps(ids)
+    def scan_new_itunes_apps(ios_app_ids)
+      scan_apps(
+        ios_app_ids,
+        notes: "Scanning #{ios_app_ids.count} missing ios apps from Top 200"
+      )
+    end
 
-      ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: "Running EPF scan on #{Time.now.strftime '%m/%d/%Y'}")
+    def scan_apps(ids, notes:)
+
+      ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
 
       if Rails.env.production?
 
@@ -28,7 +38,7 @@ class IosEpfScanService
         
         batch = Sidekiq::Batch.new
         batch.description = 'iOS EPF Apps'
-        batch.on(:complete, 'IosEpfScanService#on_epf_complete')
+        batch.on(:complete, 'IosEpfScanService#on_complete_scan')
 
         batch.jobs do
           IosApp.where(id: ids).pluck(:id).each do |id|
@@ -45,7 +55,7 @@ class IosEpfScanService
     end
   end
 
-  def on_epf_complete(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS Scans for EPF')
+  def on_complete_scan(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS Scans')
   end
 end

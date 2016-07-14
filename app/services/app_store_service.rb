@@ -117,36 +117,19 @@ class AppStoreService
   # Gets the JSON through the iTunes Store API
   # Returns nil if cannot get JSON
   def app_store_json(id)
-    begin
-      country_param = (@country_code == 'us' ? '' : "country=#{@country_code}&")
-      url = "https://itunes.apple.com/lookup?id=#{id}&#{country_param}limit=1"
-      page = Tor.get(url)
-      loaded_json = JSON.load(page)
-
-      raise AppDoesNotExist if loaded_json['resultCount'] == 0
-
-      loaded_json['results'].first
-    rescue AppDoesNotExist => e
-      raise
-    rescue
-      le "Could not get JSON for app #{id}"
-      nil
-    end
+    loaded_json = ItunesApi.lookup_app_info(id)
+    raise AppDoesNotExist if loaded_json['resultCount'] == 0
+    loaded_json['results'].first
   end
 
   def app_store_html(id)
     app_store_url = "https://itunes.apple.com/#{@country_code}/app/id#{id}"
-    
-    url_cache = "http://webcache.googleusercontent.com/search?q=cache:#{app_store_url}"
-    
-    url = app_store_url
 
-    #li "url: #{url}"
-    
-    page = Tor.get(url)
-    
-    html = Nokogiri::HTML(page)
-    
+    html = nil
+    open(app_store_url) do |f|
+      html = Nokogiri::HTML(f.read())
+    end
+
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
       le "Taken to Connecting page"
       return nil

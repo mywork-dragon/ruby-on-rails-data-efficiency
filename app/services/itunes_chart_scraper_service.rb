@@ -2,41 +2,37 @@ module ItunesChartScraperService
 
   class FreeApps
 
-    def scrape_apps(proxy_type: nil)
-      get_html(proxy_type: proxy_type)
-      get_apps
+    def initialize
+      @ranked_app_identifiers = nil
     end
 
-    def get_html(proxy_type: nil)
+    def ranked_app_identifiers
+      return @ranked_app_identifiers if @ranked_app_identifiers
+      store_html
+      ranked_apps
+    end
+
+    private 
+
+    def store_html
       limit = 200
       url = "https://itunes.apple.com/us/rss/topfreeapplications/limit=#{limit}/xml"
 
-      if proxy_type == :tor
-        page = Tor.get(url)
-      elsif proxy_type == nil
-        page = Proxy.get_body_from_url(url)
+      xml = nil
+      open(url) do |f|
+        xml = Nokogiri::XML(f.read())
       end
-
-      @xml = Nokogiri::XML(page)
+      @xml = xml
     end
 
-    def get_apps
+    def ranked_apps
       ids = @xml.xpath('//xmlns:id')
 
-      ids.map do |id|
+      @ranked_app_identifiers = ids.map do |id|
        val = id['im:id']
        next nil if val.blank?
        val.to_i
       end.compact
-    end
-
-    class << self
-
-      # proxy_type can be :tor or nil for no proxy
-      def scrape_apps(proxy_type: nil)
-        self.new.scrape_apps(proxy_type: proxy_type)
-      end
-
     end
 
   end

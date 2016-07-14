@@ -34,6 +34,7 @@ class ItunesApi
     end
   end
 
+  # can only handle ~150 app identifiers at a time. To do more, call consecutively
   def self.batch_lookup(app_identifiers, country_code='us')
     res = get('/lookup', query: {id: app_identifiers.join(','), country: country_code})
     JSON.parse(res.body)
