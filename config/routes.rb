@@ -53,7 +53,8 @@ Rails.application.routes.draw do
   get 'api/get_android_developer' => 'api#get_android_developer'
 
   get 'api/newsfeed' => 'api#newsfeed'
-  get 'api/newsfeed_details' => 'api#newsfeed_details'
+  get 'api/newsfeed/details' => 'api#newsfeed_details'
+  get 'api/newsfeed/export' => 'api#newsfeed_export'
   post 'api/newsfeed/follow' => 'api#newsfeed_follow'
 
   get 'api/list/get_lists' => 'api#get_lists'

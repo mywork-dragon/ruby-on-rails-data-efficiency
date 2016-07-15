@@ -46,6 +46,10 @@ class IosFbAd < ActiveRecord::Base
     end
   end
 
+  def to_csv_row
+    ios_app.to_csv_row
+  end
+
   def as_json(options={})
     {
       id: self.id,

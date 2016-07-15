@@ -43,7 +43,8 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         activityType: batch.activity_type,
         owner: batch.owner.name,
         platform: batch.owner.platform,
-        type: batch.owner.type
+        type: batch.owner.type,
+        batchId: id
       });
 
       var slacktivityData = {
@@ -58,13 +59,47 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       batch.isLoading = true
       $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/newsfeed_details',
+        url: API_URI_BASE + 'api/newsfeed/details',
         params: {batchId: id, pageNum: page, perPage: perPage}
       }).success(function(data) {
         batch.activities = data.activities;
         batch.isLoading = false
         batch.currentPage = data.page
       });
+    }
+
+    $scope.exportBatch = function(id, batch) {
+      var ownerName = batch.owner.name || 'facebook_ads'
+      var exportFileName = ownerName.toLowerCase() + '_' + batch.activity_type + '.csv'
+      mixpanel.track("Exported Timeline Item", {
+        activityType: batch.activity_type,
+        owner: batch.owner.name,
+        platform: batch.owner.platform,
+        type: batch.owner.type,
+        batchId: id
+      });
+
+      var slacktivityData = {
+        "title": "Exported Timeline Item",
+        "color": "#FFD94D",
+        activityType: batch.activity_type,
+        owner: batch.owner.name,
+        platform: batch.owner.platform,
+        type: batch.owner.type
+      };
+      slacktivity.notifySlack(slacktivityData);
+
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/newsfeed/export',
+        params: {batchId: id}
+      }).success(function(content) {
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = exportFileName;
+        hiddenElement.click();
+      })
     }
 
     $scope.newFollow = function(id, type, name, follow) {

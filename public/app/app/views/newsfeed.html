@@ -51,6 +51,9 @@
                 - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
               </span>
             </strong>
+            <div class="pull-right export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">
+              <a href="javascript:void(0)" class="btn btn-default btn-sm">Export to CSV</a>
+            </div>
           </div>
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
             <div class="media">

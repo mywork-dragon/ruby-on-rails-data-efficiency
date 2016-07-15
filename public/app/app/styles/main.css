@@ -8110,6 +8110,14 @@ button.dropdown-toggle .caret {
   border-bottom: 1px solid #ddd;
 }
 
+.newsfeedPageRow .export {
+  margin-top: -4px;
+}
+
+.newsfeedPageRow .export a {
+  padding: 3px 10px;
+}
+
 #followButton {
   width: 175px;
   display: inline-block;

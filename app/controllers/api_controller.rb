@@ -108,6 +108,22 @@ class ApiController < ApplicationController
     render json: newsfeed.to_json({user: @current_user})
   end
 
+  def newsfeed_export
+    batch = WeeklyBatch.find(params[:batchId])
+    apps = batch.sorted_activities.map{|activity| activity.other_owner(batch.owner)}
+
+    header = csv_header
+
+    apps_csv = CSV.generate do |csv|
+      csv << header
+      apps.each do |app|
+        csv << app.to_csv_row
+      end
+    end
+
+    send_data apps_csv
+  end
+
   def newsfeed_follow
     followable_class = params['type'].constantize
     followable = followable_class.find(params['id'])

@@ -49,18 +49,20 @@ class WeeklyBatch < ActiveRecord::Base
                                       joins("INNER JOIN #{opposite_class.table_name} op on op.id = weekly_batches.owner_id and weekly_batches.owner_type = '#{opposite_type}'")
   end
 
-  def sorted_activities(page_num, per_page)
+  def sorted_activities(page_num=nil, per_page=nil)
+    activities = self.joined_activities
     if self.owner_type == 'AdPlatform'
-      self.joined_activities.group(:ios_app_id).select("count(ios_app_id) as impression_count, max(happened_at) as happened_at, activities.id").order("impression_count DESC").limit(per_page).offset((page_num - 1) * per_page)
+      activities = activities.group(:ios_app_id).select("count(ios_app_id) as impression_count, max(happened_at) as happened_at, activities.id")
+          .order("impression_count DESC")
+      activities = activities.limit(per_page).offset((page_num - 1) * per_page) if page_num && per_page
+    elsif self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
+      activities = activities.order("op.user_base ASC")
+      activities = activities.limit(per_page).offset((page_num - 1) * per_page) if page_num && per_page
     else
-      activities =  self.joined_activities
-      if self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
-        activities = activities.order("op.user_base ASC").limit(per_page).offset((page_num - 1) * per_page)
-      else
-        activities = activities.select("activities.*, op.flagged, op.favicon, op.name")
-        activities = activities.order("op.name ASC")
-        activities = IosSdkService.partition_sdks(ios_sdks: activities)[((page_num - 1) * per_page), per_page]
-      end
+      activities = activities.select("activities.*, op.flagged, op.favicon, op.name").order("op.name ASC")
+      activities = IosSdkService.partition_sdks(ios_sdks: activities)
+      activities = activities[((page_num - 1) * per_page), per_page] if page_num && per_page
     end
+    activities
   end
 end

@@ -119,12 +119,12 @@ end
   10000.times do
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
-    Activity.log_activity(:uninstall, ios_app, ios_sdk)
+    Activity.log_activity(:uninstall, Time.now, ios_app, ios_sdk)
   end
   10000.times do
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
-    Activity.log_activity(:install, ios_app, ios_sdk)
+    Activity.log_activity(:install, Time.now, ios_app, ios_sdk)
   end
   
   #Create local IP for Tor
