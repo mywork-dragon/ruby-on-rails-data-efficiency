@@ -2,8 +2,6 @@
 # @author Jason Lew
 class ScrapeHelper
 
-  puts "ScrapeHelper"
-  
   class << self
     
     def node_to_text_replacing_brs(node)

@@ -278,7 +278,6 @@ class AppStoreInternationalSnapshotWorker
       game_center_enabled
       bundle_identifier
       currency
-      screenshot_urls
     )
   end
 

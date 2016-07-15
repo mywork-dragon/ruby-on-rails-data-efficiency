@@ -1,6 +1,7 @@
 class AppStoreInternationalService
 
   class << self
+
     def run_snapshots(notes: nil, automated: false)
       batch = Sidekiq::Batch.new
       batch.description = "AppStoreInternationalService.run_snapshots" 
