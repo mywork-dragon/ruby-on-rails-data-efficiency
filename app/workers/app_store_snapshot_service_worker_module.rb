@@ -1,4 +1,7 @@
 module AppStoreSnapshotServiceWorkerModule
+  
+  MAX_TRIES = 3
+  TRIGGER_FOLLOW_UPS = false
 
   def perform(ios_app_snapshot_job_id, ios_app_id)
     save_attributes(ios_app_id: ios_app_id, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
