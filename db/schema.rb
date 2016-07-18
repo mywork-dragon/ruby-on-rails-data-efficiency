@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712181207) do
+ActiveRecord::Schema.define(version: 20160718193942) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1770,6 +1770,23 @@ ActiveRecord::Schema.define(version: 20160712181207) do
   end
 
   add_index "known_ios_words", ["word"], name: "index_known_ios_words_on_word", using: :btree
+
+  create_table "leads", force: :cascade do |t|
+    t.string   "email",       limit: 191
+    t.string   "first_name",  limit: 191
+    t.string   "last_name",   limit: 191
+    t.string   "company",     limit: 191
+    t.string   "phone",       limit: 191
+    t.string   "crm",         limit: 191
+    t.string   "sdk",         limit: 191
+    t.string   "message",     limit: 191
+    t.string   "lead_source", limit: 191
+    t.text     "lead_data",   limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "leads", ["email"], name: "index_leads_on_email", using: :btree
 
   create_table "listables_lists", force: :cascade do |t|
     t.integer  "listable_id",   limit: 4
