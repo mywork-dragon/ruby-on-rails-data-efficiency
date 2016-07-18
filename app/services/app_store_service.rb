@@ -126,9 +126,9 @@ class AppStoreService
     app_store_url = "https://itunes.apple.com/#{@country_code}/app/id#{id}"
 
     html = nil
-    open(app_store_url) do |f|
-      html = Nokogiri::HTML(f.read())
-    end
+
+    resp = ProxyRequest.get(app_store_url, {random_user_agent: true})
+    html = Nokogiri::HTML(resp.body)
 
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
       le "Taken to Connecting page"
