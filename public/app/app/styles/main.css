@@ -5316,6 +5316,10 @@ img#appDetailsPageAppLogo {
 .space-lg {
   padding: 25px; }
 
+.faded {
+  opacity: 0.4;
+}
+
 /************************************
 10 - Animations
 *************************************/

@@ -64,14 +64,14 @@ class WelcomeController < ApplicationController
 
   def subscribe 
     if params[:email].present?
-      ContactUsMailer.contact_us_email({email: params[:email], message: 'Top SDKS page'}).deliver
+      Lead.create_lead({email: params[:email], message: 'Top SDKS page', lead_source: 'Web Top SDKs'})
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
     end
     redirect_to top_ios_sdks_path(form: 'top-ios-sdks')
   end
-  
+
   def contact_us
     first_name = params['first_name']
     last_name = params['last_name']
@@ -89,8 +89,7 @@ class WelcomeController < ApplicationController
       lead_options[:company] = email.match(email_regex).to_s[1..-1]   
     end
     
-    #EmailWorker.perform_async(:contact_us, lead_options)
-    ContactUsMailer.contact_us_email(lead_options).deliver
+    Lead.create_lead(lead_options)
     flash[:success] = "We will be in touch soon!"
     redirect_to root_path(form: 'lead')
   end

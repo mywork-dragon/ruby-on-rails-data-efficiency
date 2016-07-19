@@ -104,6 +104,7 @@ class IosApp < ActiveRecord::Base
       adSpend: self.old_ad_spend?,
       price: newest_snapshot.try(:price),
       rankingChange: self.ranking_change,
+      displayType: self.display_type,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name),

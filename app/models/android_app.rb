@@ -120,6 +120,7 @@ class AndroidApp < ActiveRecord::Base
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
       company: company,
+      displayType: self.display_type,
       publisher: {
         id: self.try(:android_developer).try(:id),
         name: self.try(:android_developer).try(:name),

@@ -84,7 +84,7 @@
         </thead>
 
         <tbody data-ng-hide="queryInProgress">
-          <tr data-ng-repeat="app in $root.apps">
+          <tr data-ng-repeat="app in $root.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
             <td class="dashboardTableDataCheckbox">
               <checkable-checkbox app="app" apps="$root.apps"></checkable-checkbox>
             </td>

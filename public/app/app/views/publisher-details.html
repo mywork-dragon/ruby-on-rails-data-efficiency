@@ -220,7 +220,7 @@
               </thead>
 
               <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
-                <tr data-ng-repeat="app in apps">
+                <tr data-ng-repeat="app in apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
                   <td class="dashboardTableDataCheckbox">
                     <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
                   </td>

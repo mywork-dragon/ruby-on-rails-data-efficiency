@@ -138,7 +138,7 @@
                </thead>
 
                <tbody data-ng-hide="queryInProgress">
-               <tr data-ng-repeat="app in sdkDetailsCtrl.apps">
+               <tr data-ng-repeat="app in sdkDetailsCtrl.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
                  <td class="dashboardTableDataCheckbox">
                    <checkable-checkbox-two app="app" apps="sdkDetailsCtrl.apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
                  </td>

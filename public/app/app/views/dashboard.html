@@ -247,7 +247,7 @@
           </thead>
 
           <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
-            <tr data-ng-repeat="app in searchCtrl.apps">
+            <tr data-ng-repeat="app in searchCtrl.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app" apps="searchCtrl.apps"></checkable-checkbox>
               </td>

@@ -133,7 +133,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.notify('add-selected-success');
         $rootScope.selectedAppsForList = [];
       }).error(function() {
-        $scope.notify('add-selected-error');
+        $scope.notify('add-selected-error'); 
       });
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };

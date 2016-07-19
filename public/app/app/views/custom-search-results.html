@@ -129,7 +129,7 @@
           </thead>
 
           <tbody data-ng-hide="customSearchCtrl.queryInProgress">
-            <tr data-ng-repeat="app in customSearchCtrl.apps">
+            <tr data-ng-repeat="app in customSearchCtrl.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app" apps="customSearchCtrl.apps"></checkable-checkbox>
               </td>
