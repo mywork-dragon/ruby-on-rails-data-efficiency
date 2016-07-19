@@ -21,13 +21,19 @@ class ApkSnapshotServiceWorker
     if google_account_id
       GoogleAccount.find(google_account_id)
     else
-      if try == 2
-        raise NotEnoughGoogleAccountsAvailable if tablet_query.count < MIN_AVAILABLE_ACCOUNTS
-        tablet_query.sample
-      else
-        raise NotEnoughGoogleAccountsAvailable if phone_query.count < MIN_AVAILABLE_ACCOUNTS
-        phone_query.sample
-      end
+      # if try == 2
+      #   raise NotEnoughGoogleAccountsAvailable if tablet_query.count < MIN_AVAILABLE_ACCOUNTS
+      #   tablet_query.sample
+      # else
+      #   raise NotEnoughGoogleAccountsAvailable if phone_query.count < MIN_AVAILABLE_ACCOUNTS
+      #   phone_query.sample
+      # end
+
+
+      # new logic -- jlew
+      raise NotEnoughGoogleAccountsAvailable if devices_with_token_query.count <= 2
+
+      devices_with_token_query.sample
     end
   end
 
@@ -39,6 +45,12 @@ class ApkSnapshotServiceWorker
 
   def phone_query
     device_names = [:moto_g_phone_1, :moto_g_phone_2, :galaxy_prime_1, :galaxy_prime_2].map(&:to_s)
+    devices = GoogleAccount.devices.values_at(*device_names)
+    GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:full], device: devices).where("flags <= ?", MAX_FLAGS)
+  end
+
+  def devices_with_token_query
+    device_names = [:galaxy_prime_2].map(&:to_s)
     devices = GoogleAccount.devices.values_at(*device_names)
     GoogleAccount.where(in_use: false, blocked: false, scrape_type: GoogleAccount.scrape_types[:full], device: devices).where("flags <= ?", MAX_FLAGS)
   end

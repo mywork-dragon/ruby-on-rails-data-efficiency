@@ -25,16 +25,16 @@ class ApkSnapshotService
       #puts Sidekiq::Queue.new('sdk').size
     end
 
-    def run_recently_updated
+    def run_recently_updated(limit: 50e3.to_i)
       batch = Sidekiq::Batch.new
-      size = weekly_recently_updated_ids.count
+      size = weekly_recently_updated_ids(limit: limit).count
       notes = "Weekly DL (Recently Updated) #{Time.now.strftime("%m/%d/%Y")}"
       set_google_accounts_in_use_false
       j = ApkSnapshotJob.create!(notes: notes, job_type: :mass)
       batch.description = "Weekly Android SDK DL (Recently Released): ~#{size} APKs"
       batch.on(:complete, "ApkSnapshotService#on_complete_run_recently_updated", 'apk_snapshot_job_id' => j.id, 'apps_queued' => size)
       batch_size = 10e3.to_i
-      weekly_recently_updated_ids.each_slice(batch_size).with_index do |the_batch, index|
+      weekly_recently_updated_ids(limit: limit).each_slice(batch_size).with_index do |the_batch, index|
         batch.jobs do
           li "App #{index*batch_size}"
           args = the_batch.map{ |android_app_id| [j.id, batch.bid, android_app_id] }
