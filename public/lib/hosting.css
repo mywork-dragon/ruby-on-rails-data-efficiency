@@ -320,6 +320,9 @@ p {
 .header li {
 	margin: 5px 0;
 }
+#sdkModal .modal-header .pull-right {
+	margin-top: 15px;
+}
 .top-200 .sdk-rank {
 	position: absolute;
   margin-top: 5px;
