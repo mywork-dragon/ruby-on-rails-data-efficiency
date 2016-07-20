@@ -96,4 +96,26 @@ class IosDebuggerService
 
     IpaSnapshotOverview.new(ipa_snapshot.id)
   end
+
+  # Show all the matches for agiven SDK in a given app
+  # Only matches headers (Cocopods and general) and packages right now
+  # @author Jason Lew
+  def self.sdk_matches_in_app(ios_sdk_id:, ios_app_id:) 
+    sdk = IosSdk.find(ios_sdk_id)
+
+    ret = {}
+
+    summary = self.new(ios_app_id: ios_app_id).last.summary
+
+    headers = summary[:headers]
+    sdk_cocoapod_source_datas = sdk.cocoapod_source_datas.pluck(:name)
+    sdk_ios_sdk_source_datas = sdk.ios_sdk_source_datas.pluck(:name)
+    ret[:cocoapod_source_datas] = headers & sdk_cocoapod_source_datas
+    ret[:ios_sdk_source_datas] = headers & sdk_ios_sdk_source_datas
+
+    packages = summary[:packages]
+    ret[:sdk_packages] = packages & sdk.sdk_packages.pluck(:package)
+
+    ret
+  end
 end

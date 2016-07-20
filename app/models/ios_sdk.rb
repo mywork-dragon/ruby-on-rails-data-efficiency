@@ -18,7 +18,7 @@ class IosSdk < ActiveRecord::Base
   has_many :js_tag_regexes
   has_many :sdk_file_regexes
   has_many :header_regexes
-  has_many :sdk_regexes
+  has_many :sdk_regexes   # packages
   has_many :sdk_string_regexes
 
   has_many :ios_sdk_source_matches, foreign_key: :source_sdk_id
