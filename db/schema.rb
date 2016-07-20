@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160718193942) do
+ActiveRecord::Schema.define(version: 20160720195302) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1779,7 +1779,7 @@ ActiveRecord::Schema.define(version: 20160718193942) do
     t.string   "phone",       limit: 191
     t.string   "crm",         limit: 191
     t.string   "sdk",         limit: 191
-    t.string   "message",     limit: 191
+    t.text     "message",     limit: 65535
     t.string   "lead_source", limit: 191
     t.text     "lead_data",   limit: 65535
     t.datetime "created_at",                null: false
