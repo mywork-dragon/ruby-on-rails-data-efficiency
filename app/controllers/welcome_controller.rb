@@ -64,7 +64,7 @@ class WelcomeController < ApplicationController
 
   def subscribe 
     if params[:email].present?
-      Lead.create_lead({email: params[:email], message: 'Top SDKS page', lead_source: 'Web Top SDKs'})
+      Lead.create_lead({email: params[:email], message: 'Top SDKS page', lead_source: 'Top SDKS page'})
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
