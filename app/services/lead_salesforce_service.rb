@@ -32,7 +32,7 @@ class LeadSalesforceService
     lead_data['Message__c'] = data[:message] if lead.blank? || lead.Message__c.blank?
     lead_data['Phone'] = data[:phone] if lead.blank? || lead.Phone.blank?
     lead_data['Email'] = data[:email] if lead.blank? || lead.Email.blank?
-    lead_data['MightySignalCreatedAt__c'] = data[:created_at].iso8601 || Time.now.iso8601 if lead.blank? || lead.MightySignalCreatedAt__c.blank?
+    lead_data['MightySignalCreatedAt__c'] = data[:created_at].try(:iso8601) || Time.now.iso8601 if lead.blank? || lead.MightySignalCreatedAt__c.blank?
     lead_data
   end
 
