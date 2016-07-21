@@ -170,8 +170,7 @@ class AppStoreInternationalService
 
     def reset_table(model_name)
       puts "Resetting #{model_name.to_s}: #{model_name.count} rows"
-      model_name.delete_all
-      ActiveRecord::Base.connection.execute("ALTER TABLE #{model_name.table_name} AUTO_INCREMENT = 1;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model_name.table_name}")
     end
   end
 

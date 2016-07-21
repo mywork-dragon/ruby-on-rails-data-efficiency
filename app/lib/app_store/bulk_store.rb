@@ -3,6 +3,8 @@ module AppStoreHelper
 
     attr_reader :snapshots, :categories, :snapshots_to_categories, :category_map
 
+    class InsertMismatch < RuntimeError; end
+
     def initialize(app_store_id:, ios_app_current_snapshot_job_id: nil)
       @app_store_id = app_store_id
       @ios_app_current_snapshot_job_id = ios_app_current_snapshot_job_id
@@ -12,9 +14,9 @@ module AppStoreHelper
       @category_map = nil
     end
 
-    def add_data(ios_app, lookup_json, scrape_html)
+    def add_data(ios_app, lookup_json, scrape_html = nil)
       json_attrs = AppStoreHelper::Extractor.new(lookup_json, type: :json)
-      html_attrs = AppStoreHelper::Extractor.new(scrape_html, type: :html)
+      html_attrs = AppStoreHelper::Extractor.new(scrape_html, type: :html) if scrape_html
 
       populate_snapshots(ios_app, json_attrs, html_attrs)
       populate_categories(json_attrs)
@@ -76,15 +78,14 @@ module AppStoreHelper
         category_identifier: category_ids
       ).pluck(:category_identifier)
       missing_categories = category_ids - existing_categories
-      missing_categories.each do |category_id|
-        begin
-          IosAppCategory.create!(
-            category_identifier: category_id,
-            name: @categories[category_id]
-          )
-        rescue ActiveRecord::RecordNotUnique
-        end
+      missing_category_rows = missing_categories.map do |category_id|
+        IosAppCategory.new(
+          category_identifier: category_id,
+          name: @categories[category_id]
+        )
       end
+      # do not care about collisions
+      IosAppCategory.import missing_category_rows
     end
 
     def create_missing_category_names
@@ -97,17 +98,16 @@ module AppStoreHelper
       ).pluck(:ios_app_category_id)
 
       missing_categories = categories.where.not(id: existing_names)
-      missing_categories.each do |ios_app_category|
+      missing_category_rows = missing_categories.map do |ios_app_category|
         category_identifier = ios_app_category.category_identifier
-        begin
-          IosAppCategoryNameBackup.create!(
-            ios_app_category_id: ios_app_category.id,
-            name: @categories[category_identifier],
-            app_store_id: @app_store_id
-          )
-        rescue ActiveRecord::RecordNotUnique
-        end
+        IosAppCategoryNameBackup.new(
+          ios_app_category_id: ios_app_category.id,
+          name: @categories[category_identifier],
+          app_store_id: @app_store_id
+        )
       end
+      # do not care about collisions
+      IosAppCategoryNameBackup.import missing_category_rows
     end
 
     def generate_lookup_map
@@ -127,14 +127,14 @@ module AppStoreHelper
       [:ios_app_id, :app_store_id]
     end
 
-    def populate_snapshots(ios_app, json_attrs, html_attrs)
+    def populate_snapshots(ios_app, json_attrs, html_attrs = nil)
       snapshot_row = IosAppCurrentSnapshotBackup.new(
         app_store_id: @app_store_id,
         ios_app_current_snapshot_job_id: @ios_app_current_snapshot_job_id,
         ios_app_id: ios_app.id
       )
       populate_snapshot_from_lookup(snapshot_row, json_attrs)
-      populate_snapshot_from_scrape(snapshot_row, html_attrs)
+      populate_snapshot_from_scrape(snapshot_row, html_attrs) if html_attrs
       populate_calculated_columns(snapshot_row)
 
       @snapshots[ios_app.id] = snapshot_row
@@ -255,11 +255,10 @@ module AppStoreHelper
     end
 
     def self.test
-      html_str = File.open(File.join(Rails.root, 'uber.ignore.html')) {|f| f.read}
       json_str = File.open(File.join(Rails.root, 'uber.ignore.json')) {|f| f.read}
       ios_app = IosApp.find_by_app_identifier!(368677368)
       x = new(app_store_id: 1, ios_app_current_snapshot_job_id: 1)
-      x.add_data(ios_app, json_str, html_str)
+      x.add_data(ios_app, json_str)
       x
     end
 

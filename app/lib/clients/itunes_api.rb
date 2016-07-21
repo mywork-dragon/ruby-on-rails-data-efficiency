@@ -8,8 +8,8 @@ class ItunesApi
   base_uri 'https://itunes.apple.com'
   format :json
 
-  class FailedRequest < RuntimeError
-  end
+  class FailedRequest < RuntimeError; end
+  class RateLimit < RuntimeError; end
 
   def self.lookup_app_info(app_identifier)
     proxy_request do
@@ -36,8 +36,11 @@ class ItunesApi
 
   # can only handle ~150 app identifiers at a time. To do more, call consecutively
   def self.batch_lookup(app_identifiers, country_code='us')
-    res = get('/lookup', query: {id: app_identifiers.join(','), country: country_code})
-    JSON.parse(res.body)
+    proxy_request(proxy_type: :android_classification) do
+      res = get('/lookup', query: {id: app_identifiers.join(','), country: country_code})
+      raise RateLimit if res.code == 403
+      JSON.parse(res.body)
+    end
   end
 
 end

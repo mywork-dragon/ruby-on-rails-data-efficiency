@@ -4,6 +4,7 @@ class AppStoreInternationalQueueWorker
   sidekiq_options queue: :scraper_master, retry: false
 
   def perform(method, *args)
+    raise 'not in service'
     send(method.to_sym, *args)
   end
 

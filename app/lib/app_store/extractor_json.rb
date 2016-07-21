@@ -5,13 +5,28 @@ module AppStoreHelper
 
     class NotIosApp < RuntimeError; end
 
-    def initialize(lookup_json_str)
-      @data = JSON.parse(lookup_json_str)['results'].first
-      verify_ios
+    attr_reader :data
+
+    def initialize(lookup_json)
+      @data = lookup_json
     end
 
-    def verify_ios
+    def verify_ios!
       raise NotIosApp if @data['wrapperType'] != 'software' || @data['kind'] != 'software'
+    end
+
+    # sometimes we get non ios things in our DB that dont have track ids...
+    #
+    def alternate_identifier
+      collection_identifier || artist_identifier
+    end
+
+    def artist_identifier
+      @data['artistId']
+    end
+
+    def collection_identifier
+      @data['collectionId']
     end
 
     def app_identifier
@@ -39,9 +54,7 @@ module AppStoreHelper
     end
 
     def seller_url
-      ret = @data['sellerUrl']
-      return nil if UrlHelper.url_with_base_only(ret).blank?
-      ret
+      @data['sellerUrl']
     end
 
     def category_names
