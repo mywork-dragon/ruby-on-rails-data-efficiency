@@ -150,7 +150,7 @@
                        <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
                      </a>
                    </span>
-                   <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
+                   <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
                  </td>
                  <td class="dashboardMobilePriorityView">
                    <span ng-if="app.mobilePriority"><i ng-if="app.mobilePriority" class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>

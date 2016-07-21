@@ -94,7 +94,7 @@ class IosApp < ActiveRecord::Base
       name: self.name,
       mobilePriority: self.mobile_priority,
       userBase: self.user_base,
-      releasedDays: self.released,
+      releasedDays: self.released_days,
       lastUpdated: self.last_updated,
       lastUpdatedDays: self.last_updated_days,
       seller: self.seller,

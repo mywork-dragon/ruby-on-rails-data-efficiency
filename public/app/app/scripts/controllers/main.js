@@ -77,6 +77,10 @@ angular.module('appApp')
         apiService.getCategories().success(function(data) {
           $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
         });
+
+        $rootScope.appIsNew = function(app) {
+          app.releasedDays && 0 <= app.releasedDays && app.releasedDays <= 15
+        }
       }
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",

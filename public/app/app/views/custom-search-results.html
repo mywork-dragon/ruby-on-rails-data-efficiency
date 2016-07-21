@@ -141,7 +141,7 @@
                       <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
                     </a>
                   </span>
-                  <span class="badge badge-primary" ng-if="0 <= app.releasedDays && app.releasedDays <= 15">New</span>
+                  <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
               <td class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
