@@ -9,7 +9,7 @@ class AppStoreInternationalSnapshotQueueWorker
     notes = notes || "Full scrape (international) #{Time.now.strftime("%m/%d/%Y")}"
     j = IosAppCurrentSnapshotJob.create!(notes: notes)
 
-    batch_size = 10e3.to_i
+    batch_size = 1_000
     IosApp.where(app_store_available: true)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|

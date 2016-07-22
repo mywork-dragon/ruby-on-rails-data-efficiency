@@ -68,6 +68,22 @@ class AppStoreInternationalService
       end
     end
 
+    def run_developers(automated: false)
+      batch = Sidekiq::Batch.new
+      batch.description = 'AppStoreInternationalService#run_developers'
+      batch.on(
+        :complete,
+        'AppStoreInternationalService#on_complete_run_developers',
+        'automated' => automated
+      )
+
+      Slackiq.message("Starting to create developers", webhook_name: :main)
+
+      batch.jobs do
+        AppStoreInternationalDevelopersQueueWorker.perform_async
+      end
+    end
+
     def app_store_availability
       batch = Sidekiq::Batch.new
       batch.description = 'AppStoreInternationalService#app_store_availability'
@@ -200,6 +216,14 @@ class AppStoreInternationalService
 
   def on_complete_app_store_linking(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Populated app links')
+
+    if options['automated']
+      self.class.run_developers(automated: true)
+    end
+  end
+
+  def on_complete_run_developers(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Created missing developers')
   end
 
   def on_complete_app_store_availability(status, options)
