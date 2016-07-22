@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720195302) do
+ActiveRecord::Schema.define(version: 20160722174739) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1038,10 +1038,9 @@ ActiveRecord::Schema.define(version: 20160720195302) do
   add_index "ios_app_current_snapshot_backups", ["app_identifier"], name: "index_ios_app_current_snapshot_backups_on_app_identifier", using: :btree
   add_index "ios_app_current_snapshot_backups", ["app_store_id", "ratings_all_count"], name: "index_backup_app_current_store_id_ratings_count", using: :btree
   add_index "ios_app_current_snapshot_backups", ["app_store_id", "ratings_per_day_current_release"], name: "index_backup_ios_app_current_store_id_rpd", using: :btree
-  add_index "ios_app_current_snapshot_backups", ["app_store_id"], name: "index_ios_app_current_snapshot_backups_on_app_store_id", using: :btree
+  add_index "ios_app_current_snapshot_backups", ["developer_app_store_identifier"], name: "index_current_snapshot_backups_developer_id", using: :btree
   add_index "ios_app_current_snapshot_backups", ["ios_app_current_snapshot_job_id"], name: "index_ios_app_backup_on_job_id", using: :btree
   add_index "ios_app_current_snapshot_backups", ["ios_app_id", "app_store_id"], name: "index_backup_ios_app_current_snap_app_id_store_id", unique: true, using: :btree
-  add_index "ios_app_current_snapshot_backups", ["ios_app_id"], name: "index_ios_app_current_snapshot_backups_on_ios_app_id", using: :btree
   add_index "ios_app_current_snapshot_backups", ["mobile_priority"], name: "index_ios_app_current_snapshot_backups_on_mobile_priority", using: :btree
   add_index "ios_app_current_snapshot_backups", ["ratings_all_count"], name: "index_backup_ios_app_current_ratings_count", using: :btree
   add_index "ios_app_current_snapshot_backups", ["ratings_per_day_current_release"], name: "index_backup_ios_app_current_rpd", using: :btree
@@ -1094,10 +1093,9 @@ ActiveRecord::Schema.define(version: 20160720195302) do
   add_index "ios_app_current_snapshots", ["app_identifier"], name: "index_ios_app_current_snapshots_on_app_identifier", using: :btree
   add_index "ios_app_current_snapshots", ["app_store_id", "ratings_all_count"], name: "index_app_current_store_id_ratings_count", using: :btree
   add_index "ios_app_current_snapshots", ["app_store_id", "ratings_per_day_current_release"], name: "index_ios_app_current_store_id_rpd", using: :btree
-  add_index "ios_app_current_snapshots", ["app_store_id"], name: "index_ios_app_current_snapshots_on_app_store_id", using: :btree
+  add_index "ios_app_current_snapshots", ["developer_app_store_identifier"], name: "index_current_snapshots_developer_id", using: :btree
   add_index "ios_app_current_snapshots", ["ios_app_current_snapshot_job_id"], name: "index_on_ios_app_current_snapshot_job_id", using: :btree
   add_index "ios_app_current_snapshots", ["ios_app_id", "app_store_id"], name: "index_ios_app_current_snap_app_id_store_id", unique: true, using: :btree
-  add_index "ios_app_current_snapshots", ["ios_app_id"], name: "index_ios_app_current_snapshots_on_ios_app_id", using: :btree
   add_index "ios_app_current_snapshots", ["mobile_priority"], name: "index_ios_app_current_snapshots_on_mobile_priority", using: :btree
   add_index "ios_app_current_snapshots", ["ratings_all_count"], name: "index_ios_app_current_ratings_count", using: :btree
   add_index "ios_app_current_snapshots", ["ratings_per_day_current_release"], name: "index_ios_app_current_rpd", using: :btree
