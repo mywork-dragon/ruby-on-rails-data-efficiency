@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726193901) do
+ActiveRecord::Schema.define(version: 20160726215635) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -798,7 +798,7 @@ ActiveRecord::Schema.define(version: 20160726193901) do
 
   create_table "epf_applications", force: :cascade do |t|
     t.integer  "export_date",         limit: 8
-    t.integer  "application_id",      limit: 4,     null: false
+    t.integer  "application_id",      limit: 4
     t.text     "title",               limit: 65535
     t.text     "recommended_age",     limit: 65535
     t.text     "artist_name",         limit: 65535
