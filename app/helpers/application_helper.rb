@@ -10,6 +10,7 @@ module ApplicationHelper
   def full_title(page_title)
     full_title = "MightySignal"
     full_title = "#{page_title} | #{full_title}" unless page_title.blank?
+    full_title
   end
 
   def og_image_url(url)
