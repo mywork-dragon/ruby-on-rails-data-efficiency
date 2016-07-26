@@ -8,6 +8,17 @@ class WelcomeController < ApplicationController
   def index
     @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
+    @logos = [
+      {image: 'ghostery.png', width: 150},
+      {image: 'fiksu.png', width: 135},
+      {image: 'radiumone.png', width: 190},
+      {image: 'swrve.png', width: 150},
+      {image: 'mparticle.png', width: 180},
+      {image: 'tune.png', width: 135},
+      {image: 'amplitude.png', width: 160},
+      {image: 'microsoft.png', width: 150}
+    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
+
     # add Pokemon Go as first app because it's hot 
     if Rails.env.production? 
       pokemon_go_id = 2352590

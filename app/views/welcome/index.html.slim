@@ -10,6 +10,10 @@
             option data-imagesrc=app.icon_url('350x350') value=app.app_identifier
               = app.name
         a href='#' class='btn btn-lg btn-primary livescan' Live Scan
+  #logos
+    p MightySignal is trusted by the best
+    - @logos.each do |logo|
+      img src=logo[:image] width=logo[:width]
 
 
 /! ==============Content Area=================
