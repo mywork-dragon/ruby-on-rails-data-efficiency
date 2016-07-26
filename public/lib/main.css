@@ -28,6 +28,7 @@ h1, h2, h3, h4, h5, h6, body {
 }
 #logos {
     margin-top: 80px;
+    background: #232a31;
 }
 #logos img {
     padding: 20px;
