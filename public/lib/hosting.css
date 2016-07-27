@@ -82,7 +82,6 @@ p {
 /*	text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);*/
 /*	background: url("header-bg.jpg") no-repeat #232a31; */ /* Old browsers */
 	background-color: #232a31;
-	height:630px;
 	background-size:cover;
 }
 .navbar {
@@ -223,10 +222,6 @@ p {
 	text-align:center;
 }
 /*==========3. MORE FEATURES==============*/
-
-.PageHead {
-	margin-top:50px;
-}
 
 .PageHead h1 {
 	font-weight: 200;
@@ -1057,11 +1052,10 @@ margin-bottom: -20px;
 }
 
 a.anchor{
-    display: block;
-    position: relative;
-    top: -75px;
-    visibility: hidden;
-    margin-top: 150px;
+  display: block;
+  position: relative;
+  top: -75px;
+  visibility: hidden;
 }
 
 .navbar-brand {
