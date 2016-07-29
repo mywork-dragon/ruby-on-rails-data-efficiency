@@ -14,6 +14,7 @@ angular.module('appApp')
       authService.permissions()
         .success(function(data) {
           searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
+          $scope.canViewExports = data.can_view_exports;
         });
 
       $scope.mobileExplanation = $sce.trustAsHtml('<p>How much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>' + 

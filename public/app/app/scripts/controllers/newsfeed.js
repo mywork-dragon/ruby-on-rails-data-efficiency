@@ -15,6 +15,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       .success(function(data) {
         $scope.canViewAdSpend = data.can_view_ad_spend;
         $scope.canViewAdAttribution = data.can_view_ad_attribution;
+        $scope.canViewExports = data.can_view_exports;
       });
 
     newsfeedCtrl.load = function() {
