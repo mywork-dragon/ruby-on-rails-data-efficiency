@@ -70,6 +70,11 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     }
 
     $scope.exportBatch = function(id, batch) {
+
+      if (!$scope.canViewExports) {
+        angular.element('#exportPermissions').modal('show');
+        return
+      }
       var ownerName = batch.owner.name || 'facebook_ads'
       var exportFileName = ownerName.toLowerCase() + '_' + batch.activity_type + '.csv'
       mixpanel.track("Exported Timeline Item", {

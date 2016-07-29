@@ -52,8 +52,7 @@
               </span>
             </strong>
             <div class="pull-right export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'">
-              <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);" ng-if="canViewExports">Export to CSV</a>
-              <a href="javascript:void(0)" class="btn btn-default btn-sm" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports" ng-click="$event.stopPropagation();">Export to CSV</a>
+              <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">Export to CSV</a>
             </div>
           </div>
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
