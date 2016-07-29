@@ -53,6 +53,7 @@
             </strong>
             <div class="pull-right export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">
               <a href="javascript:void(0)" class="btn btn-default btn-sm">Export to CSV</a>
+              <a href="javascript:void(0)" class="btn btn-default btn-sm" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export to CSV</button>
             </div>
           </div>
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
@@ -249,6 +250,7 @@
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
     <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
     <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
 
   </div>
 
