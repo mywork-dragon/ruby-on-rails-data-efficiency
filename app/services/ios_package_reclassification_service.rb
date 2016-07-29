@@ -20,19 +20,19 @@ class IosPackageReclassificationService
       batch.description = "Reclassifying packages #{sdk_package_ids.join(',')}"
       batch.on(:complete, 'IosPackageReclassificationService#on_complete')
 
-      IpaSnapshot.distinct.joins(:sdk_packages).where('sdk_packages.id in (?)', sdk_package_ids).find_in_batches(batch_size: 1000).with_index do |query_batch, index|
+      IpaSnapshot.select(:id).distinct.joins(:sdk_packages).where('sdk_packages.ios_sdk_id in (?)', sdk_package_ids).find_in_batches(batch_size: 1000).with_index do |query_batch, index|
 
-        puts "Batch #{index}" if index % 10 == 0
+        puts "Batch #{index}"
 
         if Rails.env.production?
 
-          batch.jobs do
+          # batch.jobs do
 
             query_batch.each do |ipa_snapshot|
               IosPackageReclassificationWorker.perform_async(ipa_snapshot.id, previous_sdk_id, new_sdk_id)
             end
 
-          end
+          # end
 
         else
             query_batch.each do |ipa_snapshot|
