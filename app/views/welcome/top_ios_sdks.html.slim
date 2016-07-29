@@ -15,7 +15,7 @@
   .column.large-10: .block
     h1
       = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
-      |#{@tag_label == 'All' ? 'Top' : @tag_label} SDKs used by App Store #{link_to 'Top 200 Free Apps', top_ios_apps_path, target: '_blank'}
+      |#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in #{link_to 'Top 200 Free iOS Apps', top_ios_apps_path, target: '_blank'}
     .info.alert.alert-warning
       p.pull-left 
         |Report last updated 
