@@ -1857,8 +1857,9 @@ ActiveRecord::Schema.define(version: 20160726215635) do
 
   create_table "lists", force: :cascade do |t|
     t.string   "name",       limit: 191
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.text     "filter",     limit: 65535
   end
 
   create_table "lists_users", force: :cascade do |t|
