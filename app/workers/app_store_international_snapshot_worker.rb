@@ -44,7 +44,10 @@ class AppStoreInternationalSnapshotWorker
     @bulk_store.add_data(ios_app, app_json)
   rescue AppStoreHelper::ExtractorJson::NotIosApp
     if ios_app
-      ios_app.update!(display_type: IosApp.display_types[:not_ios]) if ios_app
+      ios_app.update!(
+        display_type: IosApp.display_types[:not_ios],
+        app_store_available: false
+      )
     elsif extractor.alternate_identifier
       IosApp
         .find_by_app_identifier!(extractor.alternate_identifier)

@@ -149,6 +149,7 @@ module AppStoreHelper
 
     def ratings_per_day_current_release(snapshot)
       days_ago = (Date.tomorrow - snapshot.released).to_i
+      days_ago = 1 if days_ago < 1 # because of timezones...sometimes gets released next day
       snapshot.ratings_current_count / (days_ago.to_f)
     end
 

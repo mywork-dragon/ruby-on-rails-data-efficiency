@@ -27,6 +27,7 @@ module AppStoreSnapshotServiceWorkerModule
         a = AppStoreService.attributes(ios_app.app_identifier)
       rescue AppStoreService::NotIosApp => e
         ios_app.display_type = :not_ios
+        ios_app.app_store_available = false
         ios_app.save!
         s.delete
         return "Not an iOS app. IosApp marked accordingly."
