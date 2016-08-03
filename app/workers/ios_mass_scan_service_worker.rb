@@ -7,18 +7,25 @@ class IosMassScanServiceWorker
 
   include IosCloud
 
-  def no_data(ipa_snapshot_job_id, ios_app_id)
-    IosApp.find(ios_app_id).update(display_type: :taken_down) # not entirely correct...could be foreign
+  def no_data(ipa_snapshot_job_id, ios_app_id, international: false)
+    @ios_app.update!(display_type: :taken_down) if international
     "Not available"
   end
 
+  def allow_international?
+    false
+  end
+
   def not_ios(ipa_snapshot_job_id, ios_app_id)
-    IosApp.find(ios_app_id).update(display_type: :not_ios)
+    @ios_app.update!(
+      display_type: :not_ios,
+      app_store_available: false
+    )
     "Not iOS"
   end
 
   def paid_app(ipa_snapshot_job_id, ios_app_id)
-    IosApp.find(ios_app_id).update(display_type: :paid)
+    @ios_app.update!(display_type: :paid)
     "Cannot scan paid app"
   end
 
@@ -31,7 +38,7 @@ class IosMassScanServiceWorker
   end
 
   def not_device_compatible(ipa_snapshot_job_id, ios_app_id)
-    IosApp.find(ios_app_id).update(display_type: :device_incompatible)
+    @ios_app.update!(display_type: :device_incompatible)
     "No compatible devices available"
   end
 

@@ -118,7 +118,7 @@ class AppStoreService
   # Returns nil if cannot get JSON
   def app_store_json(id)
     loaded_json = ItunesApi.lookup_app_info(id)
-    raise AppDoesNotExist if loaded_json['resultCount'] == 0
+    raise AppDoesNotExist if loaded_json == ItunesApi::EmptyResult
     loaded_json['results'].first
   end
 

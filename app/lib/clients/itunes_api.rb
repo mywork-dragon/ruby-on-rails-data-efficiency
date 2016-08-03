@@ -11,27 +11,23 @@ class ItunesApi
   class FailedRequest < RuntimeError; end
   class RateLimit < RuntimeError; end
 
-  def self.lookup_app_info(app_identifier)
-    proxy_request do
+  class EmptyResult; end
 
-      data, attempts = nil, 0
-
-      while data.nil? && attempts < LOOKUP_ATTEMPTS
-        begin
-          data = JSON.parse(get('/lookup', query: {id: app_identifier, uslimit: 1}).body)
-        rescue => e
+  def self.lookup_app_info(app_identifier, country_code: 'us')
+    data, attempts = nil, 0
+    while data.nil? && attempts < LOOKUP_ATTEMPTS
+      begin
+        data = batch_lookup([app_identifier], country_code)
+      rescue => e
           puts "HTTParty Error"
           puts e.class
           puts e.backtrace
-          nil
-        end
       end
-
-      raise FailedRequest, "Could not contact iTunes API, looking for app identifier #{app_identifier}" if data.nil?
-      
-      data
-
     end
+
+    raise FailedRequest, "Could not contact iTunes API, looking for app identifier #{app_identifier}" unless data
+
+    data['results'].first ? data : EmptyResult
   end
 
   # can only handle ~150 app identifiers at a time. To do more, call consecutively
@@ -42,5 +38,4 @@ class ItunesApi
       JSON.parse(res.body)
     end
   end
-
 end
