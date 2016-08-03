@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803000723) do
+ActiveRecord::Schema.define(version: 20160803213414) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -527,8 +527,10 @@ ActiveRecord::Schema.define(version: 20160803000723) do
     t.integer  "ios_device_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "app_store_id",  limit: 4
   end
 
+  add_index "apple_accounts", ["app_store_id"], name: "index_apple_accounts_on_app_store_id", using: :btree
   add_index "apple_accounts", ["email"], name: "index_apple_accounts_on_email", using: :btree
   add_index "apple_accounts", ["ios_device_id"], name: "index_apple_accounts_on_ios_device_id", using: :btree
 
