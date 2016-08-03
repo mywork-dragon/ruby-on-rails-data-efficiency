@@ -4,7 +4,6 @@ class IosDevice < ActiveRecord::Base
   has_one :apple_account
   belongs_to :softlayer_proxy
   belongs_to :ios_device_model
-  has_one :ios_device_family, through: :ios_device_model
 
   has_many :ios_fb_ads
   has_many :ios_fb_ad_exceptions

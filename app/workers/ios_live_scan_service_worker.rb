@@ -53,18 +53,10 @@ class IosLiveScanServiceWorker
 
   def start_job(ipa_snapshot_job_id, ios_app_id, ipa_snapshot_id)
 
-    if Rails.env.production?
-      if @ipa_snapshot_job.job_type == 'one_off'
-        IosScanSingleServiceWorker.perform_async(ipa_snapshot_id, bid)
-      elsif @ipa_snapshot_job.job_type == 'test'
-        IosScanSingleTestWorker.perform_async(ipa_snapshot_id, bid)
-      end
-    else
-      if @ipa_snapshot_job.job_type == 'one_off'
-        IosScanSingleServiceWorker.new.perform(ipa_snapshot_id, bid)
-      elsif @ipa_snapshot_job.job_type == 'test'
-        IosScanSingleTestWorker.new.perform(ipa_snapshot_id, bid)
-      end
+    if @ipa_snapshot_job.job_type == 'one_off'
+      IosScanSingleServiceWorker.perform_async(ipa_snapshot_id, bid)
+    elsif @ipa_snapshot_job.job_type == 'test'
+      IosScanSingleTestWorker.perform_async(ipa_snapshot_id, bid)
     end
 
     @ipa_snapshot_job.update!(live_scan_status: :initiated)
