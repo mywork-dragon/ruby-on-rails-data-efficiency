@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726215635) do
+ActiveRecord::Schema.define(version: 20160803000723) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1712,11 +1712,12 @@ ActiveRecord::Schema.define(version: 20160726215635) do
   add_index "ipa_snapshot_job_exceptions", ["ipa_snapshot_job_id"], name: "index_ipa_snapshot_job_exceptions_on_ipa_snapshot_job_id", using: :btree
 
   create_table "ipa_snapshot_jobs", force: :cascade do |t|
-    t.integer  "job_type",         limit: 4
-    t.text     "notes",            limit: 65535
+    t.integer  "job_type",              limit: 4
+    t.text     "notes",                 limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "live_scan_status", limit: 4
+    t.integer  "live_scan_status",      limit: 4
+    t.boolean  "international_enabled",               default: false
   end
 
   create_table "ipa_snapshot_lookup_failures", force: :cascade do |t|
@@ -1744,8 +1745,10 @@ ActiveRecord::Schema.define(version: 20160726215635) do
     t.string   "bundle_version",      limit: 191
     t.text     "lookup_content",      limit: 65535
     t.datetime "first_valid_date"
+    t.integer  "app_store_id",        limit: 4
   end
 
+  add_index "ipa_snapshots", ["app_store_id"], name: "index_ipa_snapshots_on_app_store_id", using: :btree
   add_index "ipa_snapshots", ["good_as_of_date"], name: "index_ipa_snapshots_on_good_as_of_date", using: :btree
   add_index "ipa_snapshots", ["ios_app_id", "good_as_of_date"], name: "index_ipa_snapshots_on_ios_app_id_and_good_as_of_date", using: :btree
   add_index "ipa_snapshots", ["ios_app_id", "scan_status"], name: "index_ipa_snapshots_on_ios_app_id_and_scan_status", using: :btree
