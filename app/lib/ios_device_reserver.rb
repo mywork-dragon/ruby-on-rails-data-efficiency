@@ -137,15 +137,42 @@ class IosDeviceReserver
     # Exclude disabled devices
     query_parts << "disabled = false" unless requirements[:include_disabled]
 
-    # custom hooks
+    ### below here are constraints that do not require fresh lookups (device types, fb_account)
+    ### pre build query now and join by ids to minimize time in transaction loop
+
+    combined_id_constraints = []
+
     if requirements['minimumOsVersion']
-      query_parts << "ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'"
+      valid_device_ids = IosDevice.where("ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'").pluck(:id)
+      raise InvalidRequirement, "No devices that meet iOS version requirement #{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}" if valid_device_ids.blank?
+      combined_id_constraints.push(valid_device_ids)
     end
 
     if requirements[:fb_account_id]
       valid_device_ids = FbAccount.find(requirements[:fb_account_id]).ios_devices.pluck(:id)
       raise InvalidRequirement, "FbAccount #{requirements[:fb_account_id]} has no attributed devices" if valid_device_ids.blank?
-      query_parts << "id in (#{valid_device_ids.join(', ')})"
+      combined_id_constraints.push(valid_device_ids)
+    end
+
+    if @owner.class == IpaSnapshot
+      valid_device_ids = IosDevice.joins(:apple_account).where('apple_accounts.app_store_id = ?', @owner.app_store_id).pluck(:id)
+      raise InvalidRequirement, "App Store #{@owner.app_store_id} has no registered ios devices" if valid_device_ids.blank?
+      combined_id_constraints.push(valid_device_ids)
+    end
+
+    if requirements['supportedDeviceTypes']
+      valid_device_ids = IosDevice.joins(:ios_device_family)
+        .where('ios_device_families.lookup_name in (?)', requirements['supportedDeviceTypes'])
+        .pluck(:id)
+      raise InvalidRequirement, "No available devices that meet required supportedDeviceType constraint" if valid_device_ids.blank?
+      combined_id_constraints.push(valid_device_ids)
+    end
+
+    unless combined_id_constraints.count == 0
+      intersection = combined_id_constraints.pop
+      combined_id_constraints.each { |ids| intersection = intersection & ids }
+      raise InvalidRequirement, "No possible devices meet all constraints" if intersection.count == 0
+      query_parts << "id in (#{intersection.join(', ')})"
     end
 
     query_parts.join(' and ')
@@ -171,6 +198,16 @@ class IosDeviceReserver
     query = build_query(purpose, requirements, available_only: false)
     any = IosDevice.where(query).take
     raise NoSuchDevice unless any
+  end
+
+  class << self
+
+    def test
+      snapshot = IpaSnapshot.last
+      device_reserver = IosDeviceReserver.new(snapshot)
+      device_reserver.reserve(:one_off, JSON.parse(snapshot.lookup_content))
+      return device_reserver.device
+    end
   end
 
 end
