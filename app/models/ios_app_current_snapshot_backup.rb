@@ -4,4 +4,5 @@ class IosAppCurrentSnapshotBackup < ActiveRecord::Base
 
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
+
 end

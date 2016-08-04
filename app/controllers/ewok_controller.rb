@@ -18,6 +18,7 @@ class EwokController < ApplicationController
       redirect_to app_url + "?from=ewok" if app_url
     rescue EwokService::AppNotInDb => e
       EwokService.scrape_async(app_identifier: e.app_identifier, store: e.store)
+      EwokService.scrape_international_async(app_identifier: e.app_identifier, store: e.store) if e.store == :ios
     end
   end
 

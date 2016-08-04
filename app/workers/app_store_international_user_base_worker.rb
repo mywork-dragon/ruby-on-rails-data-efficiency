@@ -62,34 +62,27 @@ class AppStoreInternationalUserBaseWorker
     true if e.class == ActiveRecord::StatementInvalid && e.message.match(msg_regex)
   end
 
+  # this logic is redundant with user base service but has caching...
   def minimum_metrics(user_base_type)
-    @scale_factors = @scale_factors || AppStoreScalingFactorBackup.find_by!(@app_store_id)
+    @scale_factors = @scale_factors || AppStoreScalingFactorBackup.find_by_app_store_id!(@app_store_id)
     raise MalformedData unless @scale_factors.ratings_all_count && @scale_factors.ratings_per_day_current_release
+    lower_bounds = UserBaseService::Ios.lower_bounds
     {
       count: lower_bounds[user_base_type][:count] * @scale_factors.ratings_all_count,
       rpd: lower_bounds[user_base_type][:rpd] * @scale_factors.ratings_per_day_current_release
     }
   end
 
-  # defines lower bounds for metrics for US numbers
-  def lower_bounds
-    {
-      weak: {
-        count: 0,
-        rpd: 0
-      },
-      moderate: {
-        count: 100,
-        rpd: 0.1
-      },
-      strong: {
-        count: 10e3,
-        rpd: 1
-      },
-      elite: {
-        count: 50e3,
-        rpd: 7
-      }
-    }
+  class << self
+
+    def test
+      AppStore.where(enabled: true).each do |app_store|
+        if AppStoreScalingFactorBackup.find_by_app_store_id(app_store.id)
+          new.perform(app_store.id)
+        else
+          puts "skipping #{app_store.id}"
+        end
+      end
+    end
   end
 end

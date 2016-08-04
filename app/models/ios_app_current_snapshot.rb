@@ -5,9 +5,6 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
 
   belongs_to :app_store  
 
-  has_many :ios_app_current_snapshots_languages
-  has_many :ios_app_languages, through: :ios_app_current_snapshots_languages
-  
   belongs_to :ios_app
   belongs_to :ios_app_current_snapshot_job
   has_many :ios_app_categories_current_snapshots
@@ -22,7 +19,7 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
   # Sets columns to nil
   # @param columns An Array of Strings
   def set_columns_nil(columns)
-    columns.each{ |column_name| self.send("#{column_name}=", nil) } 
+    columns.each { |column_name| self.send("#{column_name}=", nil) }
   end
 
 end

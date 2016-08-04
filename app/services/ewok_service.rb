@@ -62,13 +62,30 @@ class EwokService
       end
     end
 
+    def scrape_international_async(app_identifier:, store:)
+      method = :scrape_ios_international
+
+      batch = Sidekiq::Batch.new
+      batch.description = "New app Ewok international scrape (#{store}): #{app_identifier}" 
+      batch.on(:complete, 'EwokService#on_complete_scrape_international_async')
+
+      batch.jobs do 
+        EwokScrapeWorker.perform_async(method, app_identifier)
+      end
+    end
+
   end
 
   def on_complete_scrape_async(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
+  end
+
+  def on_complete_scrape_international_async(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok completed international scraping')
+
     if status.failures.zero?
-      Slackiq.notify(webhook_name: :main, status: status, title: 'Ewok added a new app.')
-    else 
-      raise "Ewok coudln't add a new app."
+      # create developers. not essential, so will run on scraper queue. If fail, will get picked up during next scrape
+      AppStoreInternationalService.run_developers
     end
   end
   

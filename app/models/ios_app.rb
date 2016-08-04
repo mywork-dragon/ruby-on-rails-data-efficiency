@@ -37,7 +37,7 @@ class IosApp < ActiveRecord::Base
   has_many :ios_app_rankings
   
   enum mobile_priority: [:high, :medium, :low]
-  enum user_base: [:elite, :strong, :moderate, :weak]
+  enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
 
   # update_index('apps#ios_app') { self } if Rails.env.production?
