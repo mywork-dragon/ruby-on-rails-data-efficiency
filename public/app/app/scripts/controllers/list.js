@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService",
-  function($scope, $http, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService",
+  function($scope, $http, authToken, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService) {
 
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
