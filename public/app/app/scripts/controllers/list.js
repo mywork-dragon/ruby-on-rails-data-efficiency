@@ -6,11 +6,19 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
 
+    authService.userInfo().success(function(data) { 
+      mixpanel.identify(data.email);
+      mixpanel.people.set({
+        "$email": data.email,
+        "jwtToken": authToken.get()
+      });
+    });
+
     // Sets user permissions
     authService.permissions()
-      .success(function(data) {
+    .success(function(data) {
         $scope.canViewExports = data.can_view_exports;
-      });
+    });
 
     $scope.load = function() {
       $scope.queryInProgress = true;
@@ -23,6 +31,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "$routeParam
         $scope.queryInProgress = false;
       });
     };
+
     listApiService.getLists().success(function(data) {
       $rootScope.usersLists = data;
     });

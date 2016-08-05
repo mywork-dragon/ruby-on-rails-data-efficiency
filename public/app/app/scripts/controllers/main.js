@@ -41,6 +41,14 @@ angular.module('appApp')
       $scope.logUserOut = authToken.deleteToken;
 
       if($rootScope.isAuthenticated) {
+
+        authService.userInfo().success(function(data) { 
+          mixpanel.identify(data.email);
+          mixpanel.people.set({
+            "$email": data.email,
+            "jwtToken": authToken.get()
+          });
+        });
         
         // Sets user permissions
         authService.permissions()
