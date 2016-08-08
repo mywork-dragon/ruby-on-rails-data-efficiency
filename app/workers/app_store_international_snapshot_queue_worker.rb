@@ -3,16 +3,23 @@ class AppStoreInternationalSnapshotQueueWorker
   
   sidekiq_options queue: :scraper_master, retry: false
 
-  def perform(notes = nil)
+  def perform(scrape_all = false)
     Slackiq.message('Starting to queue iOS international apps', webhook_name: :main)
 
-    notes = notes || "Full scrape (international) #{Time.now.strftime("%m/%d/%Y")}"
+    notes = "Full scrape (international) #{Time.now.strftime("%m/%d/%Y")}"
     j = IosAppCurrentSnapshotJob.create!(notes: notes)
 
     batch_size = 1_000
-    IosApp.where(app_store_available: true)
+
+    query = if scrape_all
+              "display_type != #{IosApp.display_types[:not_ios]}"
+            else
+              { app_store_available: true }
+            end
+    IosApp.where(query)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
+
         li "App #{index*batch_size}"
 
         args = []

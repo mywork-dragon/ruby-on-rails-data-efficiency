@@ -2,7 +2,7 @@ class AppStoreInternationalService
 
   class << self
 
-    def run_snapshots(notes: nil, automated: false)
+    def run_snapshots(automated: false, scrape_all: false)
       batch = Sidekiq::Batch.new
       batch.description = "AppStoreInternationalService.run_snapshots" 
       batch.on(
@@ -12,7 +12,7 @@ class AppStoreInternationalService
       )
 
       batch.jobs do
-        AppStoreInternationalSnapshotQueueWorker.perform_async
+        AppStoreInternationalSnapshotQueueWorker.perform_async(scrape_all)
       end
     end
 
@@ -84,7 +84,7 @@ class AppStoreInternationalService
       end
     end
 
-    def app_store_availability
+    def app_store_availability(new_store_updates: false)
       batch = Sidekiq::Batch.new
       batch.description = 'AppStoreInternationalService#app_store_availability'
       batch.on(
@@ -95,7 +95,7 @@ class AppStoreInternationalService
       Slackiq.message('Starting to update app store availability', webhook_name: :main)
 
       batch.jobs do
-        AppStoreInternationalAvailabilityWorker.perform_async
+        AppStoreInternationalAvailabilityWorker.perform_async(new_store_updates)
       end
     end
 
