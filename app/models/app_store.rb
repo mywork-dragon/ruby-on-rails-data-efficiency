@@ -32,4 +32,14 @@ class AppStore < ActiveRecord::Base
       AppStoreInternationalAvailabilityWorker.new.perform
     end
   end
+
+  def move_to_id(dest)
+    curr_id = id
+    last_id = AppStore.order(id: :desc).first.id
+    temp_id = last_id + 1
+    move = AppStore.find(dest)
+    move.update!(id: temp_id)
+    update!(id: dest)
+    move.update(id: curr_id)
+  end
 end
