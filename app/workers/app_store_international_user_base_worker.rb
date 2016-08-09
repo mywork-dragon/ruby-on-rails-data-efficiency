@@ -12,8 +12,9 @@ class AppStoreInternationalUserBaseWorker
   end
 
   def update_user_bases
-    # go from weak to elite so we can use minimum metrics
-    IosApp.user_bases.keys.reverse.each do |user_base|
+    user_bases_descending = IosApp.user_bases.keys.reverse
+    user_bases_descending.shift # get rid of :weak. This value is inserted by default
+    user_bases_descending.each do |user_base|
       metrics = minimum_metrics(user_base.to_sym)
       update_snapshots(user_base.to_sym, metrics[:count], metrics[:rpd])
     end

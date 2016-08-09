@@ -169,7 +169,11 @@ module AppStoreHelper
       rpd = ratings_per_day_current_release(snapshot_row)
       snapshot_row.ratings_per_day_current_release = rpd
       snapshot_row.mobile_priority = mobile_priority(snapshot_row)
-      snapshot_row.user_base = user_base(snapshot_row) if @current_tables # current tables have scaling factors calculated
+      snapshot_row.user_base = if @current_tables # current tables have scaling factors calculated
+                                 user_base(snapshot_row)
+                               else
+                                 :weak # default set to weak. Will get updated later if viable
+                               end
     end
 
     def user_base(snapshot_row)
