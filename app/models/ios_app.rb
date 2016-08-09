@@ -265,6 +265,7 @@ class IosApp < ActiveRecord::Base
       self.user_base,
       self.last_updated,
       self.ios_fb_ads.any?,
+      self.newest_snapshot.try(:ios_in_app_purchases).try(:any?),
       self.categories.try(:join, ", "),
       developer.try(:id),
       developer.try(:name),

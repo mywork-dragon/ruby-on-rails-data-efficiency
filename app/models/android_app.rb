@@ -85,6 +85,7 @@ class AndroidApp < ActiveRecord::Base
       self.user_base,
       self.last_updated,
       self.android_fb_ad_appearances.present?,
+      self.newest_snapshot.try(:in_app_purchase_max).present?,
       self.categories.try(:join, ", "),
       developer.try(:id),
       developer.try(:name),

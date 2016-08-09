@@ -913,7 +913,7 @@ class ApiController < ApplicationController
   end
 
   def csv_header
-    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads']
+    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads']
   end
 
   def csv_lines(filter_args)
