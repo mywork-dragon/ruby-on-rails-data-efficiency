@@ -461,6 +461,7 @@ class ApiController < ApplicationController
     company_websites = params['companyWebsites']
     filter = params['filter']
     contacts = []
+    domains = {}
 
     if company_websites.blank?
       render json: {:contacts => contacts}
@@ -472,6 +473,10 @@ class ApiController < ApplicationController
 
         # finds matching record in website table
         website = Website.find_by(url: url)
+        domain = UrlHelper.url_with_domain_only(url)
+
+        next if domains[domain]
+        domains[domain] = 1
 
         # finds contact object for
         clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
@@ -480,8 +485,6 @@ class ApiController < ApplicationController
         data_expired = clearbit_contacts_for_website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
 
         if !filter.blank? || clearbit_contacts_for_website.empty? || data_expired
-
-          domain = UrlHelper.url_with_domain_only(url)
 
           clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
 
