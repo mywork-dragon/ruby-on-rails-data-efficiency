@@ -489,7 +489,7 @@ class ApiController < ApplicationController
           new_clearbit_contacts = JSON.load(get.response.body)
 
           # delete old records (prevents duplicates)
-          ClearbitContact.where(website_id: website.id).destroy_all if data_expired
+          ClearbitContact.where(website_id: website.id).destroy_all if data_expired && website
 
           if new_clearbit_contacts.kind_of?(Array)
 

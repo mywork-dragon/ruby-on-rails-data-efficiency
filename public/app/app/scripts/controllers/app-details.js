@@ -38,6 +38,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
+        if ($scope.appData.publisher && $scope.appData.supportDesk) {
+          $scope.appData.publisher.websites.push($scope.appData.supportDesk)
+        }
         $scope.isFollowing = data.following
         $scope.initialPageLoadComplete = true; // hides page load spinner
         if (data.facebookAds) {

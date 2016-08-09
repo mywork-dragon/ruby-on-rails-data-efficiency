@@ -18,9 +18,12 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.publisherData = data;
-        $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
         $scope.apps = data.apps;
         $scope.numApps = data.numApps;
+        if ($scope.numApps > 0 && $scope.apps[0].supportDesk) {
+          $scope.publisherData.websites.push($scope.apps[0].supportDesk)
+        }
+        $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
         $rootScope.numApps = data.numApps;
         publisherDetailsCtrl.queryInProgress = false;
 
