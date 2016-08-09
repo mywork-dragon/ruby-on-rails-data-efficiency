@@ -20,7 +20,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         $scope.publisherData = data;
         $scope.apps = data.apps;
         $scope.numApps = data.numApps;
-        if ($scope.numApps > 0 && $scope.apps[0].supportDesk) {
+        if ($scope.numApps > 0 && $scope.publisherData.websites && $scope.apps[0].supportDesk) {
           $scope.publisherData.websites.push($scope.apps[0].supportDesk)
         }
         $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
