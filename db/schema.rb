@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803213414) do
+ActiveRecord::Schema.define(version: 20160809013958) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -776,6 +776,62 @@ ActiveRecord::Schema.define(version: 20160803213414) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "domain_data", force: :cascade do |t|
+    t.string   "clearbit_id",       limit: 191
+    t.string   "name",              limit: 191
+    t.string   "legal_name",        limit: 191
+    t.string   "domain",            limit: 191
+    t.text     "description",       limit: 65535
+    t.string   "company_type",      limit: 191
+    t.text     "tags",              limit: 65535
+    t.string   "sector",            limit: 191
+    t.string   "industry_group",    limit: 191
+    t.string   "industry",          limit: 191
+    t.string   "sub_industry",      limit: 191
+    t.text     "tech_used",         limit: 65535
+    t.integer  "founded_year",      limit: 4
+    t.string   "time_zone",         limit: 191
+    t.integer  "utc_offset",        limit: 4
+    t.string   "street_number",     limit: 191
+    t.string   "street_name",       limit: 191
+    t.string   "sub_premise",       limit: 191
+    t.string   "city",              limit: 191
+    t.string   "postal_code",       limit: 191
+    t.string   "state",             limit: 191
+    t.string   "state_code",        limit: 191
+    t.string   "country",           limit: 191
+    t.string   "country_code",      limit: 191
+    t.decimal  "lat",                             precision: 10
+    t.decimal  "lng",                             precision: 10
+    t.string   "logo_url",          limit: 191
+    t.string   "facebook_handle",   limit: 191
+    t.string   "linkedin_handle",   limit: 191
+    t.string   "twitter_handle",    limit: 191
+    t.string   "twitter_id",        limit: 191
+    t.string   "crunchbase_handle", limit: 191
+    t.boolean  "email_provider"
+    t.string   "ticker",            limit: 191
+    t.string   "phone",             limit: 191
+    t.integer  "alexa_us_rank",     limit: 4
+    t.integer  "alexa_global_rank", limit: 4
+    t.integer  "google_rank",       limit: 4
+    t.integer  "employees",         limit: 4
+    t.string   "employees_range",   limit: 191
+    t.integer  "market_cap",        limit: 8
+    t.integer  "raised",            limit: 8
+    t.integer  "annual_revenue",    limit: 8
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+  end
+
+  add_index "domain_data", ["annual_revenue"], name: "index_domain_data_on_annual_revenue", using: :btree
+  add_index "domain_data", ["country_code"], name: "index_domain_data_on_country_code", using: :btree
+  add_index "domain_data", ["domain"], name: "index_domain_data_on_domain", using: :btree
+  add_index "domain_data", ["employees"], name: "index_domain_data_on_employees", using: :btree
+  add_index "domain_data", ["market_cap"], name: "index_domain_data_on_market_cap", using: :btree
+  add_index "domain_data", ["raised"], name: "index_domain_data_on_raised", using: :btree
+  add_index "domain_data", ["state_code", "country_code"], name: "index_domain_data_on_state_code_and_country_code", using: :btree
 
   create_table "dupes", force: :cascade do |t|
     t.string   "app_identifier", limit: 191
@@ -2238,6 +2294,16 @@ ActiveRecord::Schema.define(version: 20160803213414) do
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
+
+  create_table "websites_domain_data", force: :cascade do |t|
+    t.integer  "website_id",      limit: 4
+    t.integer  "domain_datum_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "websites_domain_data", ["domain_datum_id"], name: "index_websites_domain_data_on_domain_datum_id", using: :btree
+  add_index "websites_domain_data", ["website_id", "domain_datum_id"], name: "index_websites_domain_data_on_website_id_and_domain_datum_id", using: :btree
 
   create_table "weekly_batches", force: :cascade do |t|
     t.integer  "owner_id",         limit: 4
