@@ -11,9 +11,7 @@ class EpfV2Service
 
   class MissingLink < RuntimeError; end
   class UnexpectedCondition < RuntimeError; end
-
-  def initialize
-  end
+  class MalformedFilename < RuntimeError; end
 
   ### START: Entry Point for Loading + Reading EPF Files
   def load_application_device_types
@@ -42,7 +40,8 @@ class EpfV2Service
       batch.on(
         :complete,
         'EpfV2Service#on_complete_split_reading',
-        'dump_directory' => file_info[:dump_dir]
+        'dump_directory' => file_info[:dump_dir],
+        'load_new_apps' => read_method_sym == :read_applications
       )
 
       batch.jobs do
@@ -249,6 +248,13 @@ class EpfV2Service
     Slackiq.notify(webhook_name: :main, status: status, title: 'Finished EPF file import') if status
     dump_dir = options['dump_directory']
     FileUtils.rm_r(dump_dir) if Dir.exist?(dump_dir)
+
+    if options['load_new_apps']
+      puts 'Starting to load new iOS apps'
+      self.class.import_ios_apps(automated: true)
+      puts 'Kicking off new apps scrape'
+      AppStoreSnapshotService.run_new_apps("Run new apps #{Time.now.strftime("%m/%d/%Y")}")
+    end
   end
 
   def split_files(filepath)
@@ -291,13 +297,15 @@ class EpfV2Service
       EpfV2Worker.perform_async(:load_applications)
     end
 
-    def import_ios_apps
+    def import_ios_apps(automated: false)
       apps_count = EpfApplication.joins('LEFT JOIN ios_apps on epf_applications.application_id = ios_apps.app_identifier').where('ios_apps.id is NULL').count
 
-      puts "Apps to be imported: #{apps_count}"
-      print 'Continue? [y/n] : '
-      return unless gets.include?('y')
 
+      unless automated
+        puts "Apps to be imported: #{apps_count}"
+        print 'Continue? [y/n] : '
+        return unless gets.include?('y')
+      end
 
       batch_size = 1_000
       EpfApplication.select(:id, :application_id, :itunes_release_date)
@@ -315,7 +323,28 @@ class EpfV2Service
 
         IosApp.import app_rows
       end
+
+      Slackiq.message("Imported #{apps_count} iOS apps from EPF", webhook_name: :main)
     end
 
+    def run_epf_if_feed_available
+      if new_feed_available?
+        Slackiq.message("A new EPF feed is available!", webhook_name: :main)
+        start_epf_files
+      else
+        Slackiq.message("There is no new EPF Feed available. Guess we'll try again tomorrow.", webhook_name: :main)
+      end
+    end
+
+    def new_feed_available?
+      urls = new.epf_snapshot_urls
+      itunes_file_name = urls[:itunes].split('/').last
+      date_match = /itunes(\d+)/.match(itunes_file_name)
+      raise MalformedFilename unless date_match
+      current_feed_date = Date.parse(date_match[1])
+      last_feed_date = Date.parse(EpfFullFeed.last.name)
+
+      current_feed_date > last_feed_date
+    end
   end
 end
