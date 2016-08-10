@@ -295,7 +295,7 @@ module IosClassification
 
   # Get classes from classdump
   def classes_from_classdump(contents)
-    contents.scan(/@interface (.*?) :/m).map{ |k,v| k }.uniq
+    contents.scan(/@interface\s+(\S+)\s+:/).flatten.uniq
   end
 
   # Get bundles from strings
