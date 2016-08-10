@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160809013958) do
+ActiveRecord::Schema.define(version: 20160810211101) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -802,8 +802,8 @@ ActiveRecord::Schema.define(version: 20160809013958) do
     t.string   "state_code",        limit: 191
     t.string   "country",           limit: 191
     t.string   "country_code",      limit: 191
-    t.decimal  "lat",                             precision: 10
-    t.decimal  "lng",                             precision: 10
+    t.decimal  "lat",                             precision: 10, scale: 6
+    t.decimal  "lng",                             precision: 10, scale: 6
     t.string   "logo_url",          limit: 191
     t.string   "facebook_handle",   limit: 191
     t.string   "linkedin_handle",   limit: 191
@@ -821,13 +821,13 @@ ActiveRecord::Schema.define(version: 20160809013958) do
     t.integer  "market_cap",        limit: 8
     t.integer  "raised",            limit: 8
     t.integer  "annual_revenue",    limit: 8
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
   end
 
   add_index "domain_data", ["annual_revenue"], name: "index_domain_data_on_annual_revenue", using: :btree
   add_index "domain_data", ["country_code"], name: "index_domain_data_on_country_code", using: :btree
-  add_index "domain_data", ["domain"], name: "index_domain_data_on_domain", using: :btree
+  add_index "domain_data", ["domain"], name: "index_domain_data_on_domain", unique: true, using: :btree
   add_index "domain_data", ["employees"], name: "index_domain_data_on_employees", using: :btree
   add_index "domain_data", ["market_cap"], name: "index_domain_data_on_market_cap", using: :btree
   add_index "domain_data", ["raised"], name: "index_domain_data_on_raised", using: :btree
