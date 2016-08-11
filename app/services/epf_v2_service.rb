@@ -330,21 +330,24 @@ class EpfV2Service
     def run_epf_if_feed_available
       if new_feed_available?
         Slackiq.message("A new EPF feed is available!", webhook_name: :main)
+        EpfFullFeed.create_by!(name: current_feed_name)
         start_epf_files
       else
         Slackiq.message("There is no new EPF Feed available. Guess we'll try again tomorrow.", webhook_name: :main)
       end
     end
 
-    def new_feed_available?
+    def current_feed_name
       urls = new.epf_snapshot_urls
       itunes_file_name = urls[:itunes].split('/').last
       date_match = /itunes(\d+)/.match(itunes_file_name)
       raise MalformedFilename unless date_match
-      current_feed_date = Date.parse(date_match[1])
-      last_feed_date = Date.parse(EpfFullFeed.last.name)
+      date_match[1]
+    end
 
-      current_feed_date > last_feed_date
+    def new_feed_available?
+      last_feed_date = Date.parse(EpfFullFeed.last.name)
+      Date.parse(current_feed_name) > last_feed_date
     end
   end
 end
