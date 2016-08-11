@@ -159,7 +159,7 @@ class IosDevice < ActiveRecord::Base
       end
 
       map.each do |ios_device_id, email_prefix|
-        email = IosEmailAccount.create!(email: "#{email_prefix}@openmailbox.org", password: "thisisapassword")
+        email = IosEmailAccount.create!(email: "#{email_prefix}@vfemail.net", password: "thisisapassword")
 
         new_apple_account = AppleAccount.create!(email: email.email, password: 'Somename1', app_store_id: 1)
         old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
