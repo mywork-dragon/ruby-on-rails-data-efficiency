@@ -24,6 +24,16 @@ class BusinessEntityService
         end
     end
 
+    def ios_new_apps
+      batch = Sidekiq::Batch.new
+      batch.description = "ios_new_apps" 
+      batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
+
+      batch.jobs do
+        previous_epf_feed = EpfFullFeed.last(2).first
+      end
+    end
+
     # For new apps every week
     # @author Jason Lew
     def ios_new_apps
@@ -31,29 +41,14 @@ class BusinessEntityService
       batch.description = "ios_new_apps" 
       batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
   
+      previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
+
       batch.jobs do
-        epf_full_feed_last = EpfFullFeed.last
-    
-        newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
-        week_before_newest = newest_date - 6.days
-
-
-        IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date: week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
-          
-          app_identifer = epf_ss.application_id
-          
-          ios_app = IosApp.find_by_app_identifier(app_identifer)
-          
-          if ios_app
-            ss = ios_app.newest_ios_app_snapshot
-
-            BusinessEntityIosServiceWorker.perform_async([ss.id], 'clean_ios') if ss
-          end
-        
+        IosApp.select('ios_apps.id, ios_app_snapshots.id as ssid')
+          .joins(:newest_ios_app_snapshot).where('ios_apps.released >= ?', previous_week_epf_date).each do |ios_app|
+          BusinessEntityIosServiceWorker.perform_async([ios_app.ssid], 'clean_ios')
         end
-    
       end
-      
     end
 
     # For Android linking
@@ -396,13 +391,13 @@ class BusinessEntityService
     Slackiq.notify(webhook_name: :main, status: status, title: 'New iOS apps linked to companies.')
 
     # Step 5
-    batch = Sidekiq::Batch.new
-      batch.description = "Generate weekly newest CSV" 
-      batch.on(:complete, 'BusinessEntityService#on_complete_generate_weekly_newest_csv')
+    # batch = Sidekiq::Batch.new
+    # batch.description = "Generate weekly newest CSV" 
+    # batch.on(:complete, 'BusinessEntityService#on_complete_generate_weekly_newest_csv')
 
-      batch.jobs do
-        GenerateWeeklyNewestCsvWorker.perform_async
-    end
+    # batch.jobs do
+    #   GenerateWeeklyNewestCsvWorker.perform_async
+    # end
   end
 
   def on_complete_generate_weekly_newest_csv(status, options)

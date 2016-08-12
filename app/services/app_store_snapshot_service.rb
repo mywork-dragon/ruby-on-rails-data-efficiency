@@ -151,35 +151,15 @@ class AppStoreSnapshotService
       batch.description = "run_new_apps: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run_new_apps')
   
+      previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
+
       batch.jobs do
-        epf_full_feed_last = EpfFullFeed.last
-
-        newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
-        week_before_newest = newest_date - 6.days
-
-        IosApp.where(released: week_before_newest..newest_date).each do |ios_app|
+        IosApp.select(:id).where('released >= ?', previous_week_epf_date).each do |ios_app|
           AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
         end
-
-        # epf_full_feed_last = EpfFullFeed.last
-    
-        # newest_date = IosAppEpfSnapshot.order('itunes_release_date DESC').limit(1).first.itunes_release_date
-        # week_before_newest = newest_date - 6.days
-
-
-        # IosAppEpfSnapshot.where(epf_full_feed: epf_full_feed_last, itunes_release_date:  week_before_newest..newest_date).find_each.with_index do |epf_ss, index| 
-          
-        #   app_identifer = epf_ss.application_id
-          
-        #   ios_app = IosApp.find_by_app_identifier(app_identifer)
-          
-        #   if ios_app
-        #     AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-        #   end
-        
-        # end
-    
       end
+
+      puts "Done queueing"
     end
   
   end
