@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160811180232) do
+ActiveRecord::Schema.define(version: 20160812213138) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1647,6 +1647,16 @@ ActiveRecord::Schema.define(version: 20160811180232) do
   end
 
   add_index "ios_in_app_purchases", ["ios_app_snapshot_id"], name: "index_ios_in_app_purchases_on_ios_app_snapshot_id", using: :btree
+
+  create_table "ios_reclassification_methods", force: :cascade do |t|
+    t.integer  "method",     limit: 4
+    t.boolean  "active"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "ios_reclassification_methods", ["active"], name: "index_ios_reclassification_methods_on_active", using: :btree
+  add_index "ios_reclassification_methods", ["method"], name: "index_ios_reclassification_methods_on_method", unique: true, using: :btree
 
   create_table "ios_sdk_links", force: :cascade do |t|
     t.integer  "source_sdk_id", limit: 4, null: false
