@@ -16,15 +16,32 @@ class IosReclassificationServiceWorker < IosMassClassificationServiceWorker
   end
 
   def attribute_sdks_to_snap(snap_id:, sdks:, method:)
-    sdks.each do |sdk|
+    
+    ios_sdk_ids = sdks.map(&:id)
 
-      IosSdksIpaSnapshot.where(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: nil).delete_all 
-      begin
-        IosSdksIpaSnapshot.find_or_create_by(ipa_snapshot_id: snap_id, ios_sdk_id: sdk.id, method: IosSdksIpaSnapshot.methods[method])
-      rescue ActiveRecord::RecordNotUnique
-        nil
-      end
+    IosSdksIpaSnapshot.where(
+      ipa_snapshot_id: snap_id,
+      ios_sdk_id: ios_sdk_ids,
+      method: nil
+    ).delete_all
+
+    existing = IosSdksIpaSnapshot.where(
+      ipa_snapshot_id: snap_id,
+      ios_sdk_id: ios_sdk_ids,
+      method: IosSdksIpaSnapshot.methods[method]
+    )
+
+    remaining = ios_sdk_ids - existing.map(&:ios_sdk_id)
+
+    rows = remaining.map do |ios_sdk_id|
+      IosSdksIpaSnapshot.new(
+        ipa_snapshot_id: snap_id,
+        ios_sdk_id: ios_sdk_id,
+        method: IosSdksIpaSnapshot.methods[method]
+      )
     end
+
+    IosSdksIpaSnapshot.import rows
   end
 
   def invalidate_bad_scans(snapshot)
