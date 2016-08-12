@@ -330,7 +330,7 @@ class EpfV2Service
     def run_epf_if_feed_available
       if new_feed_available?
         Slackiq.message("A new EPF feed is available!", webhook_name: :main)
-        EpfFullFeed.create_by!(name: current_feed_name)
+        EpfFullFeed.create!(name: current_feed_name)
         start_epf_files
       else
         Slackiq.message("There is no new EPF Feed available. Guess we'll try again tomorrow.", webhook_name: :main)
