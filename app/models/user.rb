@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   def follow(followable)
-    self.follow_relationships.create(followable: followable)
+    self.follow_relationships.create(followable: followable) unless following?(followable)
   end
 
   def unfollow(followable)
