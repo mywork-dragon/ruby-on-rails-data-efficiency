@@ -209,7 +209,7 @@ class IosApp < ActiveRecord::Base
 
   def icon_url(size='350x350') # size should be string eg '350x350'
     if newest_ios_app_snapshot.present?
-      return newest_ios_app_snapshot.send("icon_url_#{size}")
+      newest_ios_app_snapshot.send("icon_url_#{size}") || ios_app_current_snapshots.find_by(app_store_id: 1).try(:icon_url_100x100)
     end
   end
 
