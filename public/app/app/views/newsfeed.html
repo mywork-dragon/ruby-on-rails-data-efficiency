@@ -107,7 +107,7 @@
                           Spotted {{activity.impression_count}} ads 
                           (Last: {{calculateDaysAgo(activity.happened_at, true)}})
                           <br>
-                          <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a> - <a href="javascript:void(0)" ng-click="openAdInfoModal(batch, $index)">Targeting</a>
+                          <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a><span ng-if="batch.activities[$index].other_owner.ad_info_image"> - <a href="javascript:void(0)" ng-click="openAdInfoModal(batch, $index)">Targeting</a></span>
                         </span>
                       </td>
                     </tr>
