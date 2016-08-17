@@ -1,40 +1,29 @@
 class IosReclassificationService
   class << self
-    def reclassify_current_newest
-      apps = IosApp.joins(:ipa_snapshots).select(:id).distinct.where('ipa_snapshots.success = true').where("ipa_snapshots.scan_status = #{IpaSnapshot.scan_statuses[:scanned]}")
-
+    def reclassify_all
       batch = Sidekiq::Batch.new
       batch.description = "reclassifying snapshots" 
       batch.on(:complete, 'IosReclassificationService#on_complete')
 
-      apps.find_in_batches(batch_size: 1000).with_index do |query_batch, index|
-        puts "Batch #{index}" if index % 10 == 0
-        batch.jobs do
-          query_batch.each do |ios_app|
-            ipa_snapshot = ios_app.get_last_ipa_snapshot(scan_success: true)
-            IosReclassificationServiceWorker.perform_async(ipa_snapshot.id) unless ipa_snapshot.blank?
-          end
-        end
+      batch.jobs do
+        IosReclassificationQueueWorker.perform_async
       end
-
     end
 
-    def reclassify_all
-      snapshots = IpaSnapshot.select(:id).distinct.where(success: true, scan_status: IpaSnapshot.scan_statuses[:scanned])
-
+    def reclassify_ios_apps(ios_app_ids)
       batch = Sidekiq::Batch.new
       batch.description = "reclassifying snapshots" 
       batch.on(:complete, 'IosReclassificationService#on_complete')
 
-      snapshots.find_in_batches(batch_size: 1000).with_index do |query_batch, index|
-        puts "Batch #{index}" if index % 10 == 0
-        batch.jobs do
-          query_batch.each do |ipa_snapshot|
-            IosReclassificationServiceWorker.perform_async(ipa_snapshot.id)
-          end
+      batch.jobs do
+        IpaSnapshot.select(:id).where(
+          ios_app_id: ios_app_ids,
+          success: true,
+          scan_status: IpaSnapshot.scan_statuses[:scanned]
+        ).each do |ipa_snapshot|
+          IosReclassificationServiceWorker.perform_async(ipa_snapshot.id)
         end
       end
-      
     end
   end
 

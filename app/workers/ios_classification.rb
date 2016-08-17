@@ -172,7 +172,6 @@ module IosClassification
   end
 
   def classify_classdump(contents)
-
     sdks = sdks_from_classdump(contents: contents)
     puts "Finished classdump"
     sdks
@@ -187,7 +186,6 @@ module IosClassification
   end
 
   def sdks_from_files(files)
-
     sdks = []
 
     combined = files.join("\n")
@@ -204,7 +202,6 @@ module IosClassification
   end
 
   def sdks_from_dlls(ipa_snapshot_id, files)
-
     sdks = []
 
     dlls = files.map do |path|
@@ -236,7 +233,6 @@ module IosClassification
   end
 
   def sdks_from_js_tags(ipa_snapshot_id, files)
-
     sdks = []
 
     tags = files.map do |path|
@@ -308,7 +304,7 @@ module IosClassification
   # do this for now...eventually delete the old stuff
   def sdks_from_frameworks(frameworks)
     sdks = find_from_fw_folders(fw_folders: frameworks)
-    puts "Finished js tags"
+    puts "Finished frameworks"
     sdks
   end
 

@@ -2,7 +2,7 @@ class CocoapodDownloadWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options :retry => 2, queue: :default
+  sidekiq_options :retry => 2, queue: :scraper_master # change queue to default when doing full scrape
 
   DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
   BACKTRACE_SIZE = 10
