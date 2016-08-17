@@ -232,7 +232,7 @@ module ApkWorker
     true
   end
 
-  def new_version_workaround?(android_app_id: android_app_id, scraped_version: scraped_version)
+  def new_version_workaround?(android_app_id:, scraped_version:)
 
     if scraped_version
       last_apk_ss = ApkSnapshot.where(android_app_id: android_app_id, status: ApkSnapshot.statuses[:success]).order("created_at DESC").first

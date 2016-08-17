@@ -22,7 +22,7 @@ class IosLiveScanService
       job.id
     end
 
-    def check_status(job_id: job_id)
+    def check_status(job_id:)
 
       result_map = {
         validating: 0,

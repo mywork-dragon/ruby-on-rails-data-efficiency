@@ -409,7 +409,9 @@ class IosFbAdDeviceService
   end
 
   def swipe_left
-    scroll_screen({x: 200, y: 200, x: 400, y: 400, duration: 0.2})
+    start = {x: 200, y: 200}
+    finish = {x: 400, y: 400}
+    scroll_screen(start: start, finish: finish, duration: 0.2)
   end
 
 

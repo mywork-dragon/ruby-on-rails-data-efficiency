@@ -24,7 +24,7 @@ module AndroidSdkService
       # 4: Failed
       # 5: Unchanged version
       # @return :status and :error in a Hash
-      def check_status(job_id: job_id)
+      def check_status(job_id:)
         ss = ApkSnapshot.where(apk_snapshot_job_id: job_id).last
         if ss.present?
           if ss.status.present?

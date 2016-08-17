@@ -81,7 +81,7 @@ class IosClassService
       contents.scan(/^Folder:(.+)\n/).flatten.uniq
     end
 
-    def sdks_from_classdump(contents: contents, search_classes: true, search_fw_folders: true)
+    def sdks_from_classdump(contents:, search_classes: true, search_fw_folders: true)
       puts "Classifying classdump".blue
 
       sdks = []
@@ -140,7 +140,7 @@ class IosClassService
       sdks.group_by {|x| x}.select {|k, v| v.length > min_matches}.keys
     end
 
-    def find_from_fw_folders(fw_folders: fw_folders)
+    def find_from_fw_folders(fw_folders:)
       sdks = []
       fw_folders.each do |fw_folder|
         regex = convert_folder_to_regex(fw_folder)

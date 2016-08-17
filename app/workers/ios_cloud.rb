@@ -56,7 +56,7 @@ module IosCloud
 
   # Are all devices compatible?
   # @author Jason Lew
-  def device_compatible?(devices: devices)
+  def device_compatible?(devices:)
     available_devices = IosDeviceFamily.uniq.pluck(:lookup_name).compact
     (available_devices - devices).empty? # whether all available devices support the app
   end

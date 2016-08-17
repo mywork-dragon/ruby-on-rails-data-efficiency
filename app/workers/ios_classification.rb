@@ -313,7 +313,7 @@ module IosClassification
     contents.scan(/^Folder:(.+)\n/).flatten.uniq
   end
 
-  def sdks_from_classdump(contents: contents, search_classes: true, search_fw_folders: false)
+  def sdks_from_classdump(contents:, search_classes: true, search_fw_folders: false)
 
     sdks = []
 

@@ -149,7 +149,7 @@ class CocoapodSdkServiceWorker
 		pod['homepage'] || pod["http"] || ""
 	end
 
-	def get_favicon_from_pod(pod: pod)
+	def get_favicon_from_pod(pod:)
 
 		website = get_website(pod)
 
