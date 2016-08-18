@@ -110,7 +110,7 @@ GEM
       activesupport (>= 3.2)
       elasticsearch (>= 1.0.0)
     chronic (0.10.2)
-    clearbit (0.1.7.pre)
+    clearbit (0.2.5)
       nestful (~> 1.1.0)
     climate_control (0.0.3)
       activesupport (>= 3.0)
@@ -420,7 +420,7 @@ DEPENDENCIES
   capistrano-rvm (= 0.1.2)
   capistrano-sidekiq-mighty-servers!
   chewy (= 0.8.4)
-  clearbit (~> 0.1.6.pre)
+  clearbit
   coffee-rails (~> 4.0.0)
   colorize (= 0.7.7)
   curb-fu (= 0.6.2)

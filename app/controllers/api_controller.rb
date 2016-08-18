@@ -465,7 +465,6 @@ class ApiController < ApplicationController
 
     if company_websites.blank?
       render json: {:contacts => contacts}
-      return
     else
 
       # takes up to five websites associated with company & creates array of clearbit_contacts objects
@@ -478,83 +477,21 @@ class ApiController < ApplicationController
         next if domains[domain]
         domains[domain] = 1
 
-        # finds contact object for
-        clearbit_contacts_for_website = website.blank? ? [] : ClearbitContact.where(website_id: website.id)
-
-        # true if record is older than 60 days
-        data_expired = clearbit_contacts_for_website.blank? ? false : clearbit_contacts_for_website.first.updated_at < 60.days.ago
-
-        if !filter.blank? || clearbit_contacts_for_website.empty? || data_expired
-
-          clearbit_query = filter.blank? ? {'domain' => domain} : {'domain' => domain, 'title' => filter}
-
-          get = HTTParty.get('https://prospector.clearbit.com/v1/people/search', headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'}, query: clearbit_query)
-          new_clearbit_contacts = JSON.load(get.response.body)
-
-          # delete old records (prevents duplicates)
-          ClearbitContact.where(website_id: website.id).destroy_all if data_expired && website
-
-          if new_clearbit_contacts.kind_of?(Array)
-
-            new_clearbit_contacts.each do |contact|
-              # add to results hash (to return to front end)
-
-              contact_id = contact['id']
-              contact_name = contact['name']
-              if contact_name
-                contact_given_name = contact_name['givenName']
-                contact_family_name = contact_name['familyName']
-                contact_full_name = contact_name['fullName']
-              end
-              contact_title = contact['title']
-              contact_email = contact['email']
-              contact_linkedin = contact['linkedin']
-
-              contacts << {
-                website_id: (website.present? ? website.id : nil),
-                clearBitId: contact_id,
-                givenName: contact_given_name,
-                familyName: contact_family_name,
-                fullName: contact_full_name,
-                title: contact_title,
-                email: contact_email,
-                linkedin: contact_linkedin
-              }
-
-              # save as new records to DB
-              if website
-                clearbit_contact = ClearbitContact.create(website_id: website.id)
-                previous_record = ClearbitContact.where(clearbit_id: contact_id)
-                if previous_record.exists?
-                  previous_record.destroy_all
-                end
-                if contact_id != nil
-                  clearbit_contact.update(website_id: website.id, clearbit_id: contact_id, given_name: contact_given_name, family_name: contact_family_name, full_name: contact_full_name, title: contact_title, email: contact_email, linkedin: contact_linkedin)
-                end
-                clearbit_contact.save
-              end
-            end
-
-          end
-
-          # if record exists and is no more than 60 days old
+        if filter.present?
+          contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => filter, 'limit' => 20}, website)
         else
+          current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).as_json : []
 
-          clearbit_contacts_for_website.each do |clearbit_contact|
-            # add to results hash (to return to front end)
-            contacts << {
-              website_id: website.id,
-              clearBitId: clearbit_contact.id,
-              givenName: clearbit_contact.given_name,
-              familyName: clearbit_contact.family_name,
-              fullName: clearbit_contact.full_name,
-              title: clearbit_contact.title,
-              email: clearbit_contact.email,
-              linkedin: clearbit_contact.linkedin
-            }
+          if current_contacts.count < 60
+            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)
+            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'limit' => 20}, website)
+            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'marketing', 'limit' => 20}, website)
           end
+
+          contacts += current_contacts
         end
       end
+      contacts.uniq! {|e| e[:clearBitId] }
       render json: {:contacts => contacts}
     end
   end

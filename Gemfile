@@ -133,7 +133,7 @@ gem 'apk_downloader', '1.1.5'
 
 gem 'parallel', '1.6.0'
 
-gem 'clearbit', '~> 0.1.6.pre', require: 'clearbit'
+gem 'clearbit'
 
 gem 'slackiq', '1.1.4'
 # gem 'slackiq', git: 'https://github.com/okhwaja/slackiq.git', branch: 'master'
