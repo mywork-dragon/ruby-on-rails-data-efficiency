@@ -25,14 +25,14 @@
                           <a href="#/sdk/android/{{sdkValue['id']}}" nxg-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date']" title="first seen in app on {{sdkValue['first_seen_date'] | date : shortDate}}">
-                            first seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                            first seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen_date'])}}</strong> ago
                           </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanInstallDate" ng-if="sdkValue['first_seen_date']" title="first seen in app on {{sdkValue['first_seen_date'] | date : shortDate}}">
-                            first seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                            first seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['first_seen_date'])}}</strong> ago
                           </span>
                         </span>
                       </div>
@@ -53,14 +53,14 @@
                           <a href="#/sdk/android/{{sdkValue['id']}}" ng-show="{{sdkValue['id']}}">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['id']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
-                            last seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                            last seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen_date'])}}</strong> ago
                           </span>
                         </span>
                         <span ng-if="!canViewStorewideSdks">
                           <a href="{{sdkValue['website']}}" ng-show="{{sdkValue['website']}}" target="_blank">{{sdkValue['name']}}</a>
                           <strong ng-hide="sdkValue['website']">{{sdkValue['name']}}</strong>
                           <span class="sdkLiveScanUninstallDate" ng-if="sdkValue['last_seen_date']" title="last seen in app on {{sdkValue['last_seen_date'] | date : shortDate}}">
-                            last seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue)}}</strong> ago
+                            last seen <strong>{{androidLiveScanCtrl.calculateDaysAgo(sdkValue['last_seen_date'])}}</strong> ago
                           </span>
                         </span>
                       </div>

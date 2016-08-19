@@ -127,8 +127,8 @@ module AndroidSdkService
 
         installed_sdks = snap.android_sdks
 
-        first_snaps_with_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('min(first_valid_date) as first_seen', :version, :android_app_id, 'android_sdk_id').where(id: aa.apk_snapshots.scan_success, 'android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
-        last_snaps_without_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'version', 'android_sdk_id').where(id: aa.apk_snapshots.scan_success).where.not('android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
+        first_snaps_with_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'min(first_valid_date) as first_seen', :version, :android_app_id, 'android_sdk_id').where(id: aa.apk_snapshots.scan_success, 'android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
+        last_snaps_without_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'min(first_valid_date) as first_seen', 'version', 'android_sdk_id').where(id: aa.apk_snapshots.scan_success).where.not('android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
 
         uninstalled_sdks = AndroidSdk.where(id: last_snaps_without_current_sdks.pluck(:android_sdk_id))
 
@@ -138,8 +138,16 @@ module AndroidSdkService
 
           current_snapshot = first_snaps_with_current_sdks.find { |snapshot| snapshot.android_sdk_id == map_row['k'] }
 
-          if memo[key].nil? || current_snapshot.first_seen < memo[key].first_seen
-            memo[key] = current_snapshot
+          if memo[key].nil?
+            memo[key] = {
+              first_seen: current_snapshot.first_seen,
+              last_seen: current_snapshot.last_seen
+            }
+          else
+            memo[key] = {
+              first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
+              last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max
+            }
           end
 
           memo
@@ -152,8 +160,16 @@ module AndroidSdkService
           key = map_row['v']
           current_snapshot = last_snaps_without_current_sdks.find {|snapshot| snapshot.android_sdk_id == map_row['k']}
 
-          if memo[key].nil? || current_snapshot.last_seen > memo[key].last_seen
-            memo[key] = current_snapshot
+          if memo[key].nil?
+            memo[key] = {
+              first_seen: current_snapshot.first_seen,
+              last_seen: current_snapshot.last_seen
+            }
+          else
+            memo[key] = {
+              first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
+              last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max
+            }
           end
 
           memo
@@ -168,16 +184,18 @@ module AndroidSdkService
         # format the responses
         h[:installed] = partioned_installed_sdks.map do |sdk|
           formatted = format_sdk(sdk)
-          apk_snap = installed_display_sdk_to_snap[sdk.id]
-          formatted['first_seen_date'] = apk_snap ? apk_snap.first_seen : nil
+          apk_snap_metrics = installed_display_sdk_to_snap[sdk.id]
+          formatted['last_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:last_seen] : nil
+          formatted['first_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:first_seen] : nil
           formatted
         end.uniq
 
         h[:uninstalled] = partioned_uninstalled_sdks.map do |sdk|
           next unless installed_display_sdk_to_snap[sdk.id].nil?
           formatted = format_sdk(sdk)
-          apk_snap = uninstalled_display_sdk_to_snap[sdk.id]
-          formatted['last_seen_date'] = apk_snap ? apk_snap.last_seen : nil
+          apk_snap_metrics = uninstalled_display_sdk_to_snap[sdk.id]
+          formatted['last_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:last_seen] : nil
+          formatted['first_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:first_seen] : nil
           formatted
         end.compact.uniq
         # h[:uninstalled] = {}  # show no uninstalls for now  -- TEMP

@@ -31,12 +31,14 @@ class AppsIndex < Chewy::Index
       field :website
       field :favicon
       field :first_seen_date, type: 'date', include_in_all: false
+      field :last_seen_date, type: 'date', include_in_all: false
     end
     field :uninstalled_sdks, type: 'nested', include_in_parent: true do
       field :id
       field :name
       field :website
       field :favicon
+      field :first_seen_date, type: 'date', include_in_all: false
       field :last_seen_date, type: 'date', include_in_all: false
     end
     field :publisher_id, value: -> (ios_app){ios_app.ios_developer.try(:id)}
@@ -68,12 +70,14 @@ class AppsIndex < Chewy::Index
       field :website
       field :favicon
       field :first_seen_date, type: 'date', include_in_all: false
+      field :last_seen_date, type: 'date', include_in_all: false
     end
     field :uninstalled_sdks, type: 'nested', include_in_parent: true do
       field :id
       field :name
       field :website
       field :favicon
+      field :first_seen_date, type: 'date', include_in_all: false
       field :last_seen_date, type: 'date', include_in_all: false
     end
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
