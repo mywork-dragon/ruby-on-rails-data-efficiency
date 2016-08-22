@@ -19,7 +19,8 @@ class WelcomeController < ApplicationController
       {image: 'microsoft.png', width: 150},
       {image: 'ironsrc.png', width: 170},
       {image: 'vungle.png', width: 130},
-      {image: 'realm.png', width: 140}
+      {image: 'realm.png', width: 140},
+      {image: 'neumob.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
 
     # add Pokemon Go as first app because it's hot 
