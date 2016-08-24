@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160818213331) do
+ActiveRecord::Schema.define(version: 20160823231426) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -495,11 +495,14 @@ ActiveRecord::Schema.define(version: 20160818213331) do
     t.datetime "updated_at"
     t.string   "name",         limit: 191
     t.boolean  "enabled",                  default: false
+    t.integer  "priority",     limit: 4
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
   add_index "app_stores", ["enabled"], name: "index_app_stores_on_enabled", using: :btree
   add_index "app_stores", ["name"], name: "index_app_stores_on_name", using: :btree
+  add_index "app_stores", ["priority", "enabled"], name: "index_app_stores_on_priority_and_enabled", using: :btree
+  add_index "app_stores", ["priority"], name: "index_app_stores_on_priority", unique: true, using: :btree
 
   create_table "app_stores_ios_app_backups", force: :cascade do |t|
     t.integer  "ios_app_id",   limit: 4
