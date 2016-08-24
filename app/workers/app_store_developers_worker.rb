@@ -16,7 +16,10 @@ class AppStoreDevelopersWorker
   def get_rows
     @rows = IosAppCurrentSnapshotBackup
       .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
-      .where(developer_app_store_identifier: @developer_identifier)
+      .where(developer_app_store_identifier: @developer_identifier) +
+    IosAppCurrentSnapshot
+          .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
+          .where(developer_app_store_identifier: @developer_identifier)
   end
 
   def get_seller_name
@@ -31,10 +34,14 @@ class AppStoreDevelopersWorker
 
   def store_developer(seller_name, websites)
     website_rows = store_websites(websites)
-    developer = IosDeveloper.create!(
-      identifier: @developer_identifier,
-      name: seller_name
-    )
+    developer = begin
+                  IosDeveloper.create!(
+                    identifier: @developer_identifier,
+                    name: seller_name
+                  )
+                rescue ActiveRecord::RecordInvalid
+                  IosDeveloper.find_by_identifier!(@developer_identifier)
+                end
 
     join_rows = website_rows.map do |row|
       IosDevelopersWebsite.new(
