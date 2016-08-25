@@ -180,7 +180,7 @@ class EpfV2Service
     html = HTTParty.get(EPF_CURRENT_URL, basic_auth: {username: EPF_USERNAME, password: EPF_PASSWORD}).response.body
     page = Nokogiri::HTML(html)
     links = page.css('a').map { |x| x['href'] }.compact
-    %i(itunes match popularity pricing incremental).reduce({}) do |memo, key|
+    %i(itunes match popularity pricing).reduce({}) do |memo, key|
       link = links.find { |x| /#{key}/.match(x) }
       raise MissingLink unless link
       memo[key] = File.join(EPF_CURRENT_URL, link)
