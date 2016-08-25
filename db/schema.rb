@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823231426) do
+ActiveRecord::Schema.define(version: 20160825042345) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1546,12 +1546,14 @@ ActiveRecord::Schema.define(version: 20160823231426) do
     t.integer  "ios_device_model_id", limit: 4
     t.string   "ios_version_fmt",     limit: 191
     t.boolean  "disabled",                          default: false
+    t.integer  "open_proxy_id",       limit: 4
   end
 
   add_index "ios_devices", ["disabled"], name: "index_ios_devices_on_disabled", using: :btree
   add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
   add_index "ios_devices", ["last_used"], name: "index_ios_devices_on_last_used", using: :btree
+  add_index "ios_devices", ["open_proxy_id"], name: "index_ios_devices_on_open_proxy_id", using: :btree
   add_index "ios_devices", ["purpose", "disabled"], name: "index_ios_devices_on_purpose_and_disabled", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
   add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
@@ -1638,6 +1640,7 @@ ActiveRecord::Schema.define(version: 20160823231426) do
     t.datetime "ad_info_image_updated_at"
     t.integer  "ios_fb_ad_appearances_id",   limit: 4
     t.integer  "softlayer_proxy_id",         limit: 4
+    t.integer  "open_proxy_id",              limit: 4
   end
 
   add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
@@ -1645,6 +1648,7 @@ ActiveRecord::Schema.define(version: 20160823231426) do
   add_index "ios_fb_ads", ["ios_device_id"], name: "index_ios_fb_ads_on_ios_device_id", using: :btree
   add_index "ios_fb_ads", ["ios_fb_ad_appearances_id"], name: "index_ios_fb_ads_on_ios_fb_ad_appearances_id", using: :btree
   add_index "ios_fb_ads", ["ios_fb_ad_job_id"], name: "index_ios_fb_ads_on_ios_fb_ad_job_id", using: :btree
+  add_index "ios_fb_ads", ["open_proxy_id"], name: "index_ios_fb_ads_on_open_proxy_id", using: :btree
   add_index "ios_fb_ads", ["softlayer_proxy_id"], name: "index_ios_fb_ads_on_softlayer_proxy_id", using: :btree
   add_index "ios_fb_ads", ["status", "flagged"], name: "index_ios_fb_ads_on_status_and_flagged", using: :btree
 
@@ -2044,6 +2048,19 @@ ActiveRecord::Schema.define(version: 20160823231426) do
     t.datetime "updated_at"
     t.string   "email",         limit: 191
   end
+
+  create_table "open_proxies", force: :cascade do |t|
+    t.string   "public_ip",  limit: 191
+    t.string   "username",   limit: 191
+    t.string   "password",   limit: 191
+    t.integer  "port",       limit: 4
+    t.integer  "kind",       limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "open_proxies", ["kind"], name: "index_open_proxies_on_kind", using: :btree
+  add_index "open_proxies", ["public_ip"], name: "index_open_proxies_on_public_ip", using: :btree
 
   create_table "owner_twitter_handles", force: :cascade do |t|
     t.integer  "twitter_handle_id", limit: 4
