@@ -180,7 +180,7 @@ class IosFbAdDeviceService
     row[:ios_fb_ad_job_id] = @ios_fb_ad_job_id
     row[:fb_account_id] = @fb_account.id
     row[:ios_device_id] = @device.id
-    row[:softlayer_proxy_id] = @device.softlayer_proxy_id
+    row[:open_proxy_id] = @device.open_proxy_id
 
     row[:status] = :preprocessed
 

@@ -84,18 +84,18 @@ class IosDevice < ActiveRecord::Base
 
         free_proxy = nil
 
-        SoftlayerProxy.all.each do |softlayer_proxy|
-          if softlayer_proxy.ios_devices.blank?
-            free_proxy = softlayer_proxy
+        OpenProxy.where(kind: OpenProxy.kinds[:digital_ocean_squid]).each do |open_proxy|
+          if open_proxy.ios_devices.blank?
+            free_proxy = open_proxy
             break
           end
         end
 
-        raise 'Cannot find a free Softlayer proxy' if free_proxy.nil?
+        raise 'Cannot find a free open_proxy proxy' if free_proxy.nil?
 
         ios_device = new(params.merge(ios_device_model: ios_device_model, ios_version_fmt: ios_version_fmt))
 
-        ios_device.softlayer_proxy = free_proxy
+        ios_device.open_proxy = free_proxy
 
         ios_device.save!
 
@@ -114,7 +114,11 @@ class IosDevice < ActiveRecord::Base
         ap "Email: #{account.email}"
         ap "Password: #{account.password}"
 
-        puts "Proxy IP: #{ios_device.softlayer_proxy.public_ip}"
+        open_proxy = ios_device.open_proxy
+        puts "Proxy IP: #{open_proxy.public_ip}"
+        puts "Proxy Port: #{open_proxy.port}"
+        puts "Proxy Username: #{open_proxy.username}"
+        puts "Proxy Password: #{open_proxy.password}"
 
         ios_device
       end
