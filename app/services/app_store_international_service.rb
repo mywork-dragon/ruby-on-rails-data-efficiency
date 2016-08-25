@@ -2,7 +2,7 @@ class AppStoreInternationalService
 
   class << self
 
-    def run_snapshots(automated: false, scrape_all: false)
+    def run_snapshots(automated: false, scrape_type: :regular)
       batch = Sidekiq::Batch.new
       batch.description = "AppStoreInternationalService.run_snapshots" 
       batch.on(
@@ -12,7 +12,7 @@ class AppStoreInternationalService
       )
 
       batch.jobs do
-        AppStoreInternationalSnapshotQueueWorker.perform_async(scrape_all)
+        AppStoreInternationalSnapshotQueueWorker.perform_async(scrape_type)
       end
     end
 

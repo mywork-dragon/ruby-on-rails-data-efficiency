@@ -254,6 +254,7 @@ class EpfV2Service
       self.class.import_ios_apps(automated: true)
       puts 'Kicking off new apps scrape'
       AppStoreSnapshotService.run_new_apps("Run new apps #{Time.now.strftime("%m/%d/%Y")}")
+      AppStoreInternationalService.run_snapshots(scrape_type: :new)
     end
   end
 
