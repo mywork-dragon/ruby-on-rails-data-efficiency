@@ -24,16 +24,6 @@ class BusinessEntityService
         end
     end
 
-    def ios_new_apps
-      batch = Sidekiq::Batch.new
-      batch.description = "ios_new_apps" 
-      batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
-
-      batch.jobs do
-        previous_epf_feed = EpfFullFeed.last(2).first
-      end
-    end
-
     # For new apps every week
     # @author Jason Lew
     def ios_new_apps
