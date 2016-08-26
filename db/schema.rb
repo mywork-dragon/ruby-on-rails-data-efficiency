@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160826220712) do
+ActiveRecord::Schema.define(version: 20160826221348) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -477,6 +477,20 @@ ActiveRecord::Schema.define(version: 20160826220712) do
   end
 
   add_index "app_developers", ["name"], name: "index_app_developers_on_name", using: :btree
+
+  create_table "app_developers_developers", force: :cascade do |t|
+    t.integer  "app_developer_id", limit: 4
+    t.integer  "developer_id",     limit: 4
+    t.string   "developer_type",   limit: 191
+    t.integer  "method",           limit: 4
+    t.boolean  "flagged"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "app_developers_developers", ["app_developer_id"], name: "index_app_developers_developers_on_app_developer_id", using: :btree
+  add_index "app_developers_developers", ["developer_id"], name: "index_app_developers_developers_on_developer_id", using: :btree
+  add_index "app_developers_developers", ["developer_type", "developer_id"], name: "index_app_developers_on_developer_poly", using: :btree
 
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
