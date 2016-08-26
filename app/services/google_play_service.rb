@@ -67,7 +67,7 @@ class GooglePlayService
   end
 
   def google_play_html(app_identifier)
-    url = "https://play.google.com/store/apps/details?id=#{app_identifier}"
+    url = "https://play.google.com/store/apps/details?id=#{app_identifier}&hl=en"
 
     #puts "url: #{url}"
 

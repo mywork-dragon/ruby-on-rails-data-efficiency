@@ -76,12 +76,10 @@ class GooglePlaySnapshotServiceWorker
         value = a[sca.to_sym]
 
         if value.present? && AndroidAppSnapshot.columns_hash[sca].type == :string  # if it's a string and is too big
-          next if sca.to_sym == :developer_google_play_identifier # skip long google play identifiers
-
           value = DbSanitizer.truncate_string(value)
         end
 
-        s.send("#{sca}=", value) if value
+        s.send("#{sca}=", value)
       end
 
       # non single column
