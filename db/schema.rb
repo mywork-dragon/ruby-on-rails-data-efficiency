@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160825042345) do
+ActiveRecord::Schema.define(version: 20160826220712) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -468,6 +468,15 @@ ActiveRecord::Schema.define(version: 20160825042345) do
 
   add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
   add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
+
+  create_table "app_developers", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.boolean  "flagged",                default: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "app_developers", ["name"], name: "index_app_developers_on_name", using: :btree
 
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
