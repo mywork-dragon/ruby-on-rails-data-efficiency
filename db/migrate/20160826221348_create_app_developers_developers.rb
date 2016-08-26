@@ -4,7 +4,7 @@ class CreateAppDevelopersDevelopers < ActiveRecord::Migration
       t.integer :app_developer_id
       t.references :developer, polymorphic: true, index: { name: 'index_app_developers_on_developer_poly', unique: true }
       t.integer :method
-      t.boolean :flagged
+      t.boolean :flagged, default: false
       t.timestamps null: false
     end
 

@@ -8,6 +8,8 @@ class IosDeveloper < ActiveRecord::Base
   has_many :ios_developers_websites
   has_many :websites, through: :ios_developers_websites  
 
+  has_one :app_developers_developer, as: :developer
+
 
   def get_website_urls
     self.websites.map{|w| w.url}

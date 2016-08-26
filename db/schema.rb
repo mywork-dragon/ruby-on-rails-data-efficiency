@@ -483,9 +483,9 @@ ActiveRecord::Schema.define(version: 20160826221348) do
     t.integer  "developer_id",     limit: 4
     t.string   "developer_type",   limit: 191
     t.integer  "method",           limit: 4
-    t.boolean  "flagged"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.boolean  "flagged",                      default: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
   end
 
   add_index "app_developers_developers", ["app_developer_id"], name: "index_app_developers_developers_on_app_developer_id", using: :btree
