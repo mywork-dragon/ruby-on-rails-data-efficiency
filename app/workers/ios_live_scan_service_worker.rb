@@ -3,8 +3,7 @@ class IosLiveScanServiceWorker
   include Sidekiq::Worker
 
   # retrying the json lookup ourselves, so disable
-  # sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud
-  sidekiq_options backtrace: true, retry: false, queue: :aviato ## jlew -- must change back
+  sidekiq_options backtrace: true, retry: false, queue: :ios_live_scan_cloud
 
   include IosCloud
 

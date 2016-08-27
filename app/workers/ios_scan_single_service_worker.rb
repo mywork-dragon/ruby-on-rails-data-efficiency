@@ -2,8 +2,8 @@ class IosScanSingleServiceWorker
 
   include Sidekiq::Worker
 
-  # sidekiq_options backtrace: true, queue: :ios_live_scan
-  sidekiq_options backtrace: true, queue: :maul  # jlew -- change back
+  sidekiq_options backtrace: true, queue: :ios_live_scan
+  # sidekiq_options backtrace: true, queue: :maul  # jlew -- change back
 
   include IosWorker
 
