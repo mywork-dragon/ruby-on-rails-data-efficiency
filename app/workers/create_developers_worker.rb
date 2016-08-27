@@ -1,4 +1,4 @@
-class  CreateDevelopersWorker
+class CreateDevelopersWorker
 
   include Sidekiq::Worker
 
