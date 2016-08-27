@@ -137,7 +137,7 @@ module ApkWorker
     @apk_ss.download_time = dl_time
     @apk_ss.status = :success
 
-    # new way -- jlew
+    # new way
     af = ApkFile.new
     zip_and_save_result = zip_and_save(apk_file: af, apk_file_path: file_name, android_app_identifier: aa.app_identifier)
 

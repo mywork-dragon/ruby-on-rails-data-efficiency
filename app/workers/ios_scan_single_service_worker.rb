@@ -1,17 +1,18 @@
 class IosScanSingleServiceWorker
 
-	include Sidekiq::Worker
+  include Sidekiq::Worker
 
-	sidekiq_options backtrace: true, queue: :ios_live_scan
+  # sidekiq_options backtrace: true, queue: :ios_live_scan
+  sidekiq_options backtrace: true, queue: :maul  # jlew -- change back
 
-	include IosWorker
+  include IosWorker
 
   MAX_RETRIES = 0
 
   def initialize
+    @purpose = :one_off
     @retry = 0
     @start_classify = Rails.env.production?
-    @purpose = :one_off
   end
   
   # on complete method for the run scan job. result parameter is either the resulting classdump row or an error object thrown from some exception in the method

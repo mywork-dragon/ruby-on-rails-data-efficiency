@@ -6,12 +6,14 @@ class IosDeviceReserver
     one_off: :immediate_reserve,
     test: :immediate_reserve,
     mass: :patient_reserve,
-    fb_ad_scrape: :patient_reserve # switch to patient reserve later
+    fb_ad_scrape: :patient_reserve, # switch to patient reserve later
+    one_off_intl: :immediate_reserve,
+    mass_intl: :patient_reserve
   }
 
   attr_reader :device, :owner, :max_wait
 
-  def initialize(owner, max_wait = nil)
+  def initialize(owner=nil, max_wait: nil)
     @device = nil
     @owner = owner
     @max_wait = max_wait || DEFAULT_WAIT_TIME
@@ -154,12 +156,6 @@ class IosDeviceReserver
       combined_id_constraints.push(valid_device_ids)
     end
 
-    if @owner.class == IpaSnapshot
-      valid_device_ids = IosDevice.joins(:apple_account).where('apple_accounts.app_store_id = ?', @owner.app_store_id).pluck(:id)
-      raise InvalidRequirement, "App Store #{@owner.app_store_id} has no registered ios devices" if valid_device_ids.blank?
-      combined_id_constraints.push(valid_device_ids)
-    end
-
     if requirements['supportedDeviceTypes']
       valid_device_ids = IosDevice.joins(:ios_device_family)
         .where('ios_device_families.lookup_name in (?)', requirements['supportedDeviceTypes'])
@@ -196,6 +192,7 @@ class IosDeviceReserver
 
   def any_exist?(purpose, requirements)
     query = build_query(purpose, requirements, available_only: false)
+    puts "query: #{query}"
     any = IosDevice.where(query).take
     raise NoSuchDevice unless any
   end
@@ -204,7 +201,7 @@ class IosDeviceReserver
 
     def test
       snapshot = IpaSnapshot.last
-      device_reserver = IosDeviceReserver.new(snapshot)
+      device_reserver = IosDeviceReserver.new
       device_reserver.reserve(:one_off, JSON.parse(snapshot.lookup_content))
       return device_reserver.device
     end

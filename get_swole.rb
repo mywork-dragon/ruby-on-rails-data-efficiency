@@ -53,7 +53,8 @@ puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live sca
 puts "staging:".light_cyan + " Deploys to the staging server."
 puts "web".light_cyan + ": Deploys to the Web server."
 puts "darth_vader".light_cyan + ": Deploys to Vader (iOS Live Scan)."
-puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Dev)."
+puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Ad Spend)."
+puts "darth_maul".light_cyan + ": Deploys to Darth Maul (Dev)."
 puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
 puts "monitor".light_cyan + ": Deploys to monitor servers"
 puts "aviato".light_cyan + ": Deploys to Aviato"
@@ -61,7 +62,7 @@ puts "migration".light_cyan + ": Deploys to migration servers (to run migrations
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren ios_live_scan monitor aviato migration)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren darth_maul ios_live_scan monitor aviato migration)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort
@@ -77,7 +78,7 @@ abort if !res.casecmp("yes").zero?
 
 ENV["MS_BRANCH"] = branch
 
-if stage == 'darth_vader' || stage == 'kylo_ren'
+if %w(darth_vader kylo_ren darth_maul).include?(stage)
 
   puts %q(
 
@@ -139,8 +140,7 @@ if run_tests
     abort
   end
 
-# elsif %w(web sdk_scraper_live_scan darth_vader ios_live_scan).include?(stage)
-elsif %w(web darth_vader ios_live_scan).include?(stage)
+elsif %w(web darth_vader kylo_ren ios_live_scan).include?(stage)
   puts "Stage #{stage} is a live production stage. You're not allowed to bypass tests for this stage.".red
   abort
 end

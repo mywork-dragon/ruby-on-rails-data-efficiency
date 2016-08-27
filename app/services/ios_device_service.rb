@@ -1,10 +1,15 @@
 require 'net/scp'
 require 'shellwords'
 
+include IosDeviceUtilities
+
 class IosDeviceService
 
   DEVICE_USERNAME = 'root'
   DEVICE_PASSWORD = 'padmemyboo'
+
+  ACCOUNT_SCRIPTS_DIR = './server/itunes_account_scripts'
+  ACCOUNT_SCRIPTS_PREFIX = 'itunes_account_scripts'
 
   OPEN_APP_SCRIPT_PATH = './server/open_app.cy'
   DOWNLOAD_APP_SCRIPT_PATH = './server/download_app.cy'
@@ -72,11 +77,14 @@ class IosDeviceService
     }
   }
 
-  def initialize(device)
+  # If init with an account, will choose it first. account keys: :apple_id, :password
+  def initialize(device, apple_account: nil, account_changed_lambda: nil)
     @device = device
     @bundle_info = nil
     @decrypted_file = nil
     @decrypted_path = nil
+    @apple_account = apple_account
+    @account_changed_lambda = account_changed_lambda
   end
 
   def run_command(ssh, command, description, expected_output = nil)
@@ -94,6 +102,10 @@ class IosDeviceService
     rescue => error
       raise "Error during #{description} with command: #{command}. Message: #{error.message}"
     end
+  end
+
+  def command_success?(resp)
+    resp.match(/Success/)
   end
 
   # Returns the current time
@@ -150,14 +162,16 @@ class IosDeviceService
       backtrace  # just return the trace
     end
 
-    result = {
+    result = {success: false}
+    result.merge!({account_success: false}) if @apple_account
+    result.merge!({
       success: false,
       install_success: false,
       dump_success: false,
       teardown_success: false,
       teardown_retry: false,
       timestamp: Time.now,
-    }
+    })
 
     app_info = nil
 
@@ -166,6 +180,10 @@ class IosDeviceService
         begin
           install_debug_script(ssh)
           install_display_statuses(ssh)
+
+          change_account(ssh) if @apple_account
+          @account_changed_lambda.call # fire the callback
+
           app_info = install(ssh, app_identifier, country_code)
           result[:install_time] = Time.now
           result[:install_success] = true
@@ -263,6 +281,94 @@ class IosDeviceService
     run_command(ssh, 'open com.apple.AppStore', 'opening app in store script')
     sleep(2)
     run_command(ssh, "cycript -p AppStore #{debug_script_name}", 'add debug method to AppStore runtime')
+  end
+
+  def load_common_utilities(ssh, app)
+    run_command(ssh, "rm -f common_utilities.cy", "Deleting old common_utilities.cy")
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{IosDeviceUtilities::COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
+    run_command(ssh, "cycript -p #{app} common_utilities.cy", 'Run common_utilities.cy')
+  end
+
+  def test_change_account
+    ap @device
+    Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD) do |ssh|
+      change_account(ssh)
+    end
+  end
+
+  def change_account(ssh)
+    puts "change_account".green
+    apple_id = @apple_account.email
+    password = @apple_account.password
+
+    run_command(ssh, 'killall Preferences', 'Kill Preferences')
+    sleep(2)
+    run_command(ssh, "rm -rf itunes_account_scripts", "Deleting old itunes_account_scripts")
+
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp -r #{ACCOUNT_SCRIPTS_DIR} #{DEVICE_USERNAME}@#{@device.ip}:~`
+
+    # template the scripts
+    run_command(ssh, "cd #{ACCOUNT_SCRIPTS_PREFIX} && ./template_account_scripts.sh #{apple_id} #{password}", 'Template the account scripts')
+
+    run_command(ssh, "open com.apple.Preferences", 'Open Preferences')
+
+    load_common_utilities(ssh, 'Preferences')
+
+    puts "select_app_and_itunes_stores_script"
+    select_app_and_itunes_stores_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "select_app_and_itunes_stores.cy")
+    run_command(ssh, "cycript -p Preferences #{select_app_and_itunes_stores_script}", 'Run select_app_and_itunes_stores_script.cy')
+    sleep(2)
+
+    puts "sign_out_script"
+    sign_out_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "sign_out.cy")
+    run_command(ssh, "cycript -p Preferences #{sign_out_script}", 'Run sign_out.cy')
+    sleep(5)
+
+    puts "sign_in_script"
+    sign_in_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "sign_in.cy")
+    run_command(ssh, "cycript -p Preferences #{sign_in_script}", 'Run sign_in.cy')
+
+    puts "check_sign_in_script"
+    check_sign_in_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "check_sign_in.cy")
+    check_sign_in_script_success = false
+    4.times do 
+      sleep(4)
+      resp = run_command(ssh, "cycript -p Preferences #{check_sign_in_script}", 'Run check_sign_in.cy')
+      if command_success?(resp)
+        check_sign_in_script_success = true
+        break
+      end
+    end
+    fail SignInFailed unless check_sign_in_script_success
+    
+
+    puts "select_password_settings"
+    select_password_settings_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "select_password_settings.cy")
+    run_command(ssh, "cycript -p Preferences #{select_password_settings_script}", 'Run select_password_settings.cy')
+    sleep(3)
+
+    puts "always_require_in_app_purchases"
+    always_require_in_app_purchases_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "always_require_in_app_purchases.cy")
+    run_command(ssh, "cycript -p Preferences #{always_require_in_app_purchases_script}", 'Run always_require_in_app_purchases.cy')
+    sleep(2)
+
+    puts "dont_require_password_script"
+    dont_require_password_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "dont_require_password.cy")
+    run_command(ssh, "cycript -p Preferences #{dont_require_password_script}", 'Run dont_require_password.cy')
+    sleep(2)
+
+    run_command(ssh, 'killall Preferences', 'Kill Preferences')
+
+    true
+  end
+
+
+  def install_account_scripts(scripts)
+    script = File.open(ACCOUNT_SCRIPTS_PATH, 'rb') { |f| f.read }
+    run_command(ssh, "echo '#{script}' > #{open_app_script_name}", 'writing open script to file')
+
+    script = File.open(VERIFY_INSTALL_SCRIPT_PATH, 'rb') { |f| f.read } % [bundle_id]
+    run_command(ssh, "echo '#{script}' > #{verify_install_script_name}", 'writing verify script to file')
   end
 
   def install(ssh, app_identifier, country_code = "us")
@@ -894,6 +1000,48 @@ class IosDeviceService
     accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.split
     arch_flag = accepted_arches.include?(arch) ? "--arch #{arch}" : "" # let class-dump decide if not
     `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' >> \'#{dest}\' 2>/dev/null`
+  end
+
+  # Errors
+
+  class SignInFailed < StandardError
+    def initialize(msg="Sign in failed. The username on the UI did not match.")
+      super(msg)
+    end
+  end
+
+  class << self
+
+    # Just for testing
+    def test_change_account
+      device = IosDevice.find_or_create_by(ip: '192.168.2.116', serial_number: 'whatever')
+
+      # account = AppleAccount.find_or_create_by(email: "hotandsoursoup@openmailbox.org", password: 'Somename1') #CN
+      # account = AppleAccount.find_or_create_by(email: "simon.hailey2@openmailbox.org", password: 'Somename1')  #AU
+      # account = AppleAccount.find_or_create_by(email: "julia.fuchs3@openmailbox.org", password: 'Somename1')   #RU
+
+      account = AppleAccount.find_or_create_by(email: "shika2@openmailbox.org", password: 'Somename1')   #JP
+      s = IosDeviceService.new(device, apple_account: account)
+      s.test_change_account
+    end
+
+    def live_scan_ru
+      app_identifier = 1137403308
+
+      device = IosDevice.find_or_create_by(ip: '192.168.2.116', serial_number: 'whatever')
+
+      account =  AppleAccount.find_or_create_by(email: "julia.fuchs3@openmailbox.org", password: 'Somename1')     #RU
+
+      s = IosDeviceService.new(device, apple_account: account)
+    end
+
+    def test_run
+      device = IosDevice.find_or_create_by(ip: '192.168.2.116', serial_number: 'whatever')
+      lookup_content = {'bundleId' => 'com.ubercab.UberClient'}
+
+      IosDeviceService.new(device).run(368677368, lookup_content, :one_off, 1234, country_code: 'au')
+    end
+
   end
 
 end

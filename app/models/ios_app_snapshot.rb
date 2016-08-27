@@ -11,6 +11,8 @@ class IosAppSnapshot < ActiveRecord::Base
 
   has_many :ios_app_snapshot_exceptions
   has_many :ios_in_app_purchases
+
+  belongs_to :app_store
   
   enum status: [:failure, :success]
 
