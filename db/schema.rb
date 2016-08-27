@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160825042345) do
+ActiveRecord::Schema.define(version: 20160827041635) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -590,8 +590,10 @@ ActiveRecord::Schema.define(version: 20160825042345) do
     t.string   "app_content_content_type", limit: 191
     t.integer  "app_content_file_size",    limit: 4
     t.datetime "app_content_updated_at"
+    t.integer  "account_success",          limit: 4
   end
 
+  add_index "class_dumps", ["account_success"], name: "index_class_dumps_on_account_success", using: :btree
   add_index "class_dumps", ["apple_account_id"], name: "index_class_dumps_on_apple_account_id", using: :btree
   add_index "class_dumps", ["complete"], name: "index_class_dumps_on_complete", using: :btree
   add_index "class_dumps", ["dump_success"], name: "index_class_dumps_on_dump_success", using: :btree
