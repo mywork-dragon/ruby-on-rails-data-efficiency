@@ -490,7 +490,7 @@ ActiveRecord::Schema.define(version: 20160826221348) do
 
   add_index "app_developers_developers", ["app_developer_id"], name: "index_app_developers_developers_on_app_developer_id", using: :btree
   add_index "app_developers_developers", ["developer_id"], name: "index_app_developers_developers_on_developer_id", using: :btree
-  add_index "app_developers_developers", ["developer_type", "developer_id"], name: "index_app_developers_on_developer_poly", using: :btree
+  add_index "app_developers_developers", ["developer_type", "developer_id"], name: "index_app_developers_on_developer_poly", unique: true, using: :btree
 
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
