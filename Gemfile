@@ -174,4 +174,6 @@ gem 'fuzzy_match', '2.1.0'
 # for mass inserts
 gem 'activerecord-import', '0.13.0'
 
+# for mighty bot
+gem 'twitter', '5.16.0'
 # gem 'daemons', '1.2.3'

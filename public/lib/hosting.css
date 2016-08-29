@@ -360,6 +360,27 @@ p {
 .top-200 .row.sdk {
 	margin-bottom: 30px;
 }
+.timeline .panel a {
+	color: #333;
+}
+.timeline .panel-heading img {
+	margin-right: 8px;
+}
+.timeline li {
+	list-style: none;
+}
+.timeline .week {
+	margin: 20px 0;
+}
+.timeline {
+	padding: 20px;
+}
+.timeline span.subtext {
+	color: #1EAD4F
+}
+.timeline .panel-default>.panel-heading {
+	background-color: #fff;
+}
 .header .block {
 	background-color: white;
 	padding: 20px;

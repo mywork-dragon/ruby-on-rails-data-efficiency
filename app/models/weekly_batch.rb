@@ -6,7 +6,7 @@ class WeeklyBatch < ActiveRecord::Base
 
   belongs_to :owner, polymorphic: true
 
-  enum activity_type: [:install, :uninstall, :ad_seen]
+  enum activity_type: [:install, :uninstall, :ad_seen, :entered_top_apps]
 
   def as_json(options={})
     batch_json = {
@@ -32,6 +32,10 @@ class WeeklyBatch < ActiveRecord::Base
     end
   end
 
+  def other_owner
+    self.activities.first.other_owner(self.owner)
+  end
+
   def opposite_type
     if self.owner_type == 'IosSdk' || self.owner_type == 'AndroidSdk'
       self.owner_type.chomp('Sdk') + 'App'
@@ -44,9 +48,12 @@ class WeeklyBatch < ActiveRecord::Base
 
   def joined_activities
     opposite_class = self.opposite_type.constantize
-    self.activities.joins('INNER JOIN weekly_batches_activities wb on wb.activity_id = activities.id').
+    activities = self.activities.joins('INNER JOIN weekly_batches_activities wb on wb.activity_id = activities.id').
                                       joins('INNER JOIN weekly_batches on weekly_batches.id = wb.weekly_batch_id').
                                       joins("INNER JOIN #{opposite_class.table_name} op on op.id = weekly_batches.owner_id and weekly_batches.owner_type = '#{opposite_type}'")
+    activities = activities.joins("LEFT JOIN ios_sdk_links on ios_sdk_links.source_sdk_id = op.id").where("ios_sdk_links.id is null") if opposite_type == 'IosSdk' 
+    activities = activities.joins("LEFT JOIN android_sdk_links on android_sdk_links.source_sdk_id = op.id").where("android_sdk_links.id is null") if opposite_type == 'AndroidSdk'
+    activities
   end
 
   def sorted_activities(page_num=nil, per_page=nil)

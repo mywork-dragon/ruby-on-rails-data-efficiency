@@ -1,5 +1,8 @@
 class IosSdk < ActiveRecord::Base
 
+  has_many :owner_twitter_handles, as: :owner
+  has_many :twitter_handles, through: :owner_twitter_handles
+
 	belongs_to :sdk_company
   belongs_to :ios_sdk_source_group
 
@@ -33,6 +36,9 @@ class IosSdk < ActiveRecord::Base
   has_many :weekly_batches, as: :owner
   has_many :tags, through: :tag_relationships
   has_many :tag_relationships, as: :taggable
+
+  has_many :owner_twitter_handles, as: :owner
+  has_many :twitter_handles, through: :owner_twitter_handles
 
   enum source: [:cocoapods, :package_lookup, :manual]
 

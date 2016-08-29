@@ -27,6 +27,8 @@ class Activity < ActiveRecord::Base
       current_weekly_batch = owner.weekly_batches.find_or_create_by(week: current_week, activity_type: WeeklyBatch.activity_types[activity_type])
       current_weekly_batch.activities << activity
     end
+
+    activity.notify
   end
 
   def self.remove_activity(activity_type, time, *owners)
@@ -57,11 +59,30 @@ class Activity < ActiveRecord::Base
     end
   end
 
+  def notify
+    should_notify = false
+    self.weekly_batches.each do |batch|
+      if batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type)
+        should_notify = true 
+        break
+      end
+    end
+    TwitterPostService.run(self) if should_notify
+  end
+
+  def activity_type
+    self.weekly_batches.first.try(:activity_type)
+  end
+
+  def owners
+    self.weekly_batches.map{|batch| batch.owner}
+  end
+
   def other_owner(owner)
     if @other_owner.blank?
-      owners = self.weekly_batches.map{|batch| batch.owner}
-      owners.delete(owner)
-      @other_owner = owners.first
+      all_owners = owners
+      all_owners.delete(owner)
+      @other_owner = all_owners.first
     else
       @other_owner
     end

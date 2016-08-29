@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'apps/:app_identifier' => 'welcome#app_sdks'
   get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
   get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
+  get 'timeline' => 'welcome#timeline', as: 'timeline'
   post 'subscribe' => 'welcome#subscribe', as: :subscribe
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
