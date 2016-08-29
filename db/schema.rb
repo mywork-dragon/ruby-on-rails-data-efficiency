@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160829182849) do
+ActiveRecord::Schema.define(version: 20160829193234) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -2401,18 +2401,20 @@ ActiveRecord::Schema.define(version: 20160829182849) do
   add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
 
   create_table "websites", force: :cascade do |t|
-    t.string   "url",        limit: 191
+    t.string   "url",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "kind",       limit: 4
-    t.integer  "company_id", limit: 4
-    t.integer  "ios_app_id", limit: 4
+    t.integer  "kind",         limit: 4
+    t.integer  "company_id",   limit: 4
+    t.integer  "ios_app_id",   limit: 4
+    t.string   "match_string", limit: 191
   end
 
   add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
   add_index "websites", ["id", "company_id"], name: "index_websites_on_id_and_company_id", using: :btree
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
+  add_index "websites", ["match_string"], name: "index_websites_on_match_string", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
   create_table "websites_domain_data", force: :cascade do |t|
