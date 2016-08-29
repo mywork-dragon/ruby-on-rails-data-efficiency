@@ -1,7 +1,7 @@
 class SidekiqBatchQueueWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :sdk, retry: false
 
   def perform(class_name, args, bid)
     batch = Sidekiq::Batch.new(bid)

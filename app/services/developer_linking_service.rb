@@ -10,7 +10,7 @@ class DeveloperLinkingService
     def fill_website_match_strings
       batch = Sidekiq::Batch.new
       batch.description = 'Populating website comparisons'
-      batch.on(:complete, 'DeveloperLinkingService#fill_website_match_strings')
+      batch.on(:complete, 'DeveloperLinkingService#on_complete_match_strings')
 
       batch.jobs do
         DeveloperLinkingWorker.perform_async(:queue_websites)
