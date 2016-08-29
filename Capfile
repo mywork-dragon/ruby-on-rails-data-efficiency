@@ -28,6 +28,7 @@ end
 
 task :darth_vader => [:use_rvm]
 task :kylo_ren => [:use_rvm]
+task :darth_maul => [:use_rvm]
 
 require 'capistrano/sidekiq'
 require 'capistrano/sidekiq/monit' #to require monit tasks # Only for capistrano3

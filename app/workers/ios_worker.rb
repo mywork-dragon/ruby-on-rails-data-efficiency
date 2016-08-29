@@ -18,6 +18,7 @@ module IosWorker
 		data_keys = [
 			:success,
 			:duration,
+      :account_success,
 			:install_time,
 			:install_success,
 			:dump_time,
@@ -47,12 +48,13 @@ module IosWorker
 	def run_scan(ipa_snapshot_id:, purpose:, start_classify: false, bid:)
 
 		# create database rows
-    result, device_reserver = nil, nil
+    result, reserver = nil, nil
     snapshot = IpaSnapshot.find(ipa_snapshot_id)
 
     return nil if snapshot.download_status == :complete # make sure no duplicates in the job
 
-    app_identifier = IosApp.find(snapshot.ios_app_id).app_identifier
+    ios_app = IosApp.find(snapshot.ios_app_id)
+    app_identifier = ios_app.app_identifier
     lookup_content = JSON.parse(snapshot.lookup_content)
     raise "No app identifer for ios app #{snapshot.ios_app_id}" if app_identifier.nil?
     raise "No lookup content available for #{snapshot.ios_app_id}" if lookup_content.empty?
@@ -66,11 +68,16 @@ module IosWorker
     classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
     # get a device
-    puts "#{snapshot.ipa_snapshot_job_id}: Reserving device #{Time.now}"
-    device_reserver = IosDeviceReserver.new(snapshot)
-    device_reserver.reserve(purpose, lookup_content)
-    device = device_reserver.device
-    puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'} #{Time.now}"
+    puts "#{snapshot.ipa_snapshot_job_id}: Reserving device and account #{Time.now}"
+    reserver = IosReserver.new(ios_app: ios_app, app_store: snapshot.app_store)
+    reserver.reserve(purpose, lookup_content)
+    device = reserver.device
+    apple_account = reserver.apple_account
+    a_device_already_configured = reserver.a_device_already_configured?
+    puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'}"
+    puts "#{snapshot.ipa_snapshot_job_id}: #{apple_account ? ('Reserved apple_account ' + apple_account.id.to_s) : 'Failed to reserve'}"
+    puts "#{snapshot.ipa_snapshot_job_id}: a_device_already_configured: #{a_device_already_configured}"
+    puts Time.now
 
     # no devices available...fail out and save
     if device.nil?
@@ -81,16 +88,24 @@ module IosWorker
       return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
     end
 
+    # attach ios_device and apple_account to classdump
     classdump.ios_device_id = device.id
-    apple_account = AppleAccount.find_by_ios_device_id(device.id)
-    raise "Device #{device.id} is not tied to an Apple Account. Device will be left in reserved state" if apple_account.blank?
+    fail "Could not reserve an Apple Account. Device will be left in reserved state" if apple_account.blank?
     classdump.apple_account_id = apple_account.id
     classdump.save
+
+    if a_device_already_configured
+      apple_account_to_switch_to = nil
+      account_changed_lambda = -> { } # no =-op
+    else
+      apple_account_to_switch_to = apple_account
+      account_changed_lambda = -> { reserver.account_changed }
+    end
 
     # do the actual classdump
     # after install and dump, will run the procedure block which updates the classdump table. 
     # Will be useful for polling or could add some logic to send status updates
-    final_result = IosDeviceService.new(device).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
+    final_result = IosDeviceService.new(device, apple_account: apple_account_to_switch_to, account_changed_lambda: account_changed_lambda).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
       row = result_to_cd_row(incomplete_result)
       row[:complete] = false
       classdump.update row
@@ -122,7 +137,7 @@ module IosWorker
       end
     end
 
-    device_reserver.release if device_reserver.has_device?
+    reserver.release
 
     # upload the finished results
     row = result_to_cd_row(final_result)
@@ -145,7 +160,7 @@ module IosWorker
   rescue => e
     result = e
   ensure
-    device_reserver.release if device_reserver && device_reserver.has_device?
+    reserver.release if defined?(reserver) && !reserver.released?
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end
 

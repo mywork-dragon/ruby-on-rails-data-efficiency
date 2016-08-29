@@ -19,6 +19,8 @@ class IpaSnapshot < ActiveRecord::Base
   has_many :ipa_snapshots_sdk_js_tags
   has_many :sdk_js_tags, through: :ipa_snapshots_sdk_js_tags
 
+  belongs_to :app_store
+
   enum download_status: [:starting, :retrying, :cleaning, :complete]
   enum scan_status: [:scanning, :scanned, :failed, :arch_issue, :invalidated]
 

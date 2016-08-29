@@ -29,8 +29,6 @@ class ApkSnapshotServiceWorker
       #   phone_query.sample
       # end
 
-
-      # new logic -- jlew
       raise NotEnoughGoogleAccountsAvailable if devices_with_token_query.count <= 2
 
       devices_with_token_query.sample

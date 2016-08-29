@@ -89,7 +89,7 @@ class GooglePlayService
   end
 
   # Returns string corresponding with supplied regex or nil if data not available
-  # Probably depricated 12/13/2015 -- jlew
+  # Probably deprecated 12/13/2015 
   def app_info_helper(regex)
     app_info_div = @html.css('div.details-section-contents > div.meta-info')
     in_app_cost_div = app_info_div.select{|div| div.children.children.text.match(regex)}

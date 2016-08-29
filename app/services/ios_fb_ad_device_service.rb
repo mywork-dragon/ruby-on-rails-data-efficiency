@@ -1,5 +1,7 @@
 class IosFbAdDeviceService
 
+  include IosDeviceUtilities
+
   DEVICE_USERNAME = 'root'
   DEVICE_PASSWORD = 'padmemyboo'
   MAX_SCROLL_ITEMS = 50
@@ -282,6 +284,10 @@ class IosFbAdDeviceService
 
   def setup
     # install cycript scripts
+    log_debug "Installing common_utilities"
+    install_common_utilities
+    log_debug "Done installing common_utilities"
+
     log_debug "Installing fb scripts"
     `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp -r #{SCRIPTS_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
     log_debug "Done installing"
@@ -290,6 +296,8 @@ class IosFbAdDeviceService
   def open_fb
     log_debug "Opening FB"
     run_command('open com.facebook.Facebook', 'Open the facebook app')
+    sleep 1.5
+    run_common_utilities('Facebook')
     sleep 1.5
     run_file('Facebook', 'fb_utilities.cy')
     sleep 1.5
@@ -955,6 +963,15 @@ class IosFbAdDeviceService
 
   def run_file(app, filename)
     run_command("cycript -p #{app} #{File.join(SCRIPTS_PREFIX, filename)}", "Run file #{filename} on #{app}")
+  end
+
+  def install_common_utilities
+    run_command("rm -f common_utilities.cy", "Deleting old common_utilities.cy")
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{IosDeviceUtilities::COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
+  end
+
+  def run_common_utilities(app)
+    run_command("cycript -p #{app} common_utilities.cy", 'Run common_utilities.cy')
   end
 
 end

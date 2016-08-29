@@ -48,7 +48,7 @@ ApkDownloader::Api.class_eval do
     elsif response.body.include? "Auth="
       @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
     else
-      fail ApkDownloader::NoAuthToken # may not need auth token... see when this is actually raised -- jlew
+      fail ApkDownloader::NoAuthToken # may not need auth token... see when this is actually raised
     end
 
   end

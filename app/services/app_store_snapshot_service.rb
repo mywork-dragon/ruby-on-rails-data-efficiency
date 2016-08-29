@@ -1,7 +1,7 @@
 class AppStoreSnapshotService
 
   class << self
-  
+
     def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
       
       if AppStoreService.dom_valid?
@@ -173,10 +173,5 @@ class AppStoreSnapshotService
 
     BusinessEntityService.ios_new_apps # Step 4
   end
-
-  def on_complete_run_international(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) Completed')
-  end
-  
   
 end

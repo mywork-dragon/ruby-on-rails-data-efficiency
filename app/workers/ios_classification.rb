@@ -510,7 +510,7 @@ module IosClassification
     [c] if c.present?
   end
 
-  # debug -- jlew
+  # debug
   def find_from_fw_folders(fw_folders:)
     sdks = []
     fw_folders.each do |fw_folder|

@@ -33,90 +33,6 @@ function getFeed() {
   return null;
 };
 
-function select(source, match_fn) {
-  var current = null,
-    subviews = [],
-    found = [],
-    queue = [],
-    v;
-
-  queue.push(source);
-
-  while (queue.length > 0) {
-    current = queue.shift()
-    if (current && current.subviews) {
-      subviews = current.subviews
-
-      for (var i = 0; i < subviews.length; i++) {
-        v = subviews[i];
-        if (match_fn(v)) {
-          found.push(v)
-        } else if (v) {
-          queue.push(v)
-        }
-      }
-    }
-  }
-
-  return found;
-}
-
-function classMatcher(className) {
-  return function(el) {
-    return el && el.class && el.class.toString() == className;
-  }
-}
-
-function classAndTextMatcher(className, regex) {
-  return function(el) {
-    if (classMatcher(className)(el) && el.text && el.text.toString().match(regex)) {
-      return true;
-    }
-    return false;
-  }
-}
-
-function first(source, match_fn) {
-  var current = null,
-    subviews = [],
-    queue = [],
-    v;
-
-  queue.push(source);
-
-  while (queue.length > 0) {
-    current = queue.shift()
-    if (current && current.subviews) {
-      subviews = current.subviews
-
-      for (var i = 0; i < subviews.length; i++) {
-        v = subviews[i];
-        if (match_fn(v)) {
-          return v;
-        } else if (v) {
-          queue.push(v)
-        }
-      }
-    }
-  }
-
-  return null;
-}
-
-function parent(source, match_fn) {
-  var current = source;
-
-  while (current != null) {
-    current = current.superview;
-
-    if (match_fn(current)) {
-      return current;
-    }
-  }
-
-  return null;
-}
-
 // get the button if it exists. Returns null otherwise
 function getInstallButton_old(container) {
   var button_regex = /Install|Download|(Shop Now)|(Play Game)/i
@@ -210,23 +126,6 @@ function getCollectionSection() {
   return path.section;
 }
 
-function getScreenCoordinates(el) {
-  var superview = el.superview;
-
-  var coordinates = [superview convertPoint:el.frame.origin toView:nil];
-
-  return coordinates;
-};
-
-function throwScreenCoordinates(el) {
-  var coordinates = getScreenCoordinates(el);
-
-  throw JSON.stringify({
-    'x': coordinates.x,
-    'y': coordinates.y
-  });
-}
-
 function throwError(text) {
   throw "Error: " + text;
 }
@@ -286,15 +185,4 @@ function selectAlbumType(regex, typeName) {
   [delegate tableView:table didSelectRowAtIndexPath:indexPath];
 
   throwSuccess("Pressed " + typeName);
-}
-
-function isWithinScreenCoordinates(el) {
-  var app = [UIApp keyWindow],
-    coordinates = getScreenCoordinates(el);
-
-    if (coordinates && coordinates.x >= 0 && coordinates.x < app.frame.size.width && coordinates.y >= 0 && coordinates.y < app.frame.size.height) {
-      return true;
-    }
-
-    return false;
 }

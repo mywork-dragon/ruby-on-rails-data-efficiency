@@ -7,12 +7,12 @@ require_relative '../../app/lib/clients/wtf_is_my_ip'
 module MightyDeployer
 
   MIGHTY_SIGNAL_PUBLIC_IP = '173.247.196.70'
-  LOCAL_STAGES = [:darth_vader, :kylo_ren]
+  LOCAL_STAGES = [:darth_vader, :kylo_ren, :darth_maul]
 
   @targets = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :staging, :ios_live_scan, :monitor, :aviato, :migration]
+    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :darth_maul, :staging, :ios_live_scan, :monitor, :aviato, :migration]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
 
@@ -77,6 +77,12 @@ module MightyDeployer
         remote_ips: [MIGHTY_SIGNAL_PUBLIC_IP],
         user: 'darth-vader',
         port: 50000
+      },
+      darth_maul: {
+        local_ips: ["192.168.2.152"],
+        remote_ips: [MIGHTY_SIGNAL_PUBLIC_IP],
+        user: 'darth-maul',
+        port: 50002
       }
     }
 
