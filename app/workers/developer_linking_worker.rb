@@ -1,7 +1,9 @@
 class DeveloperLinkingWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :sdk_scraper, retry: false
+
+  class BadFormat; end
 
   def perform(method, *args)
     send(method.to_sym, *args)
@@ -24,6 +26,45 @@ class DeveloperLinkingWorker
     DeveloperLinkOption.import rows
   end
 
-  def link_by_ios_developer_websites(ios_developer_id)
+  # def link_by_ios_developer_websites(ios_developer_id)
+  #   ios_developer = IosDeveloper.find(ios_developer_id)
+  #   ios_developer_websites = ios_developer.websites
+  # end
+
+  def queue_websites
+    Website.select(:id)
+      .where(match_string: nil)
+      .find_in_batches(batch_size: 1000)
+      .with_index do |the_batch, index|
+      
+      li "Website #{index * batch_size}"
+
+      args = the_batch.map do |website|
+        [:fill_match_string, website.id]
+      end
+
+      SidekiqBatchQueueWorker.perform_async(
+        DeveloperLinkingWorker.to_s,
+        args,
+        bid
+      )
+    end
+  end
+
+  def fill_match_string(website_id)
+    website = Website.find(website_id)
+
+    match_string = website_comparison_format(website.url)
+    value = match_string == BadFormat ? nil : match_string
+
+    website.update!(match_string: value)
+  end
+
+  def website_comparison_format(url)
+    regex = %r{(?:https?://)?(?:www\.)?([^\s\?]+)}
+    match = regex.match(url)
+    return BadFormat unless match
+    url_format = match[1]
+    DbSanitizer.truncate_string(url_format)
   end
 end
