@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160827041635) do
+ActiveRecord::Schema.define(version: 20160829182849) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -803,6 +803,17 @@ ActiveRecord::Schema.define(version: 20160827041635) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "developer_link_options", force: :cascade do |t|
+    t.integer  "ios_developer_id",     limit: 4
+    t.integer  "android_developer_id", limit: 4
+    t.integer  "method",               limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "developer_link_options", ["android_developer_id"], name: "index_developer_link_options_on_android_developer_id", using: :btree
+  add_index "developer_link_options", ["ios_developer_id"], name: "index_developer_link_options_on_ios_developer_id", using: :btree
 
   create_table "dll_regexes", force: :cascade do |t|
     t.string   "regex",          limit: 191
