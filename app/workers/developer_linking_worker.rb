@@ -1,7 +1,7 @@
 class DeveloperLinkingWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :sdk_scraper, retry: false
+  sidekiq_options queue: :sdk, retry: false
 
   class BadFormat; end
 
