@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160827041635) do
+ActiveRecord::Schema.define(version: 20160829193234) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -469,6 +469,29 @@ ActiveRecord::Schema.define(version: 20160827041635) do
   add_index "apk_snapshots_sdk_js_tags", ["apk_snapshot_id", "sdk_js_tag_id"], name: "index_apk_snapshot_id_sdk_js_tag_id", using: :btree
   add_index "apk_snapshots_sdk_js_tags", ["sdk_js_tag_id"], name: "index_sdk_js_tag_id", using: :btree
 
+  create_table "app_developers", force: :cascade do |t|
+    t.string   "name",       limit: 191
+    t.boolean  "flagged",                default: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "app_developers", ["name"], name: "index_app_developers_on_name", using: :btree
+
+  create_table "app_developers_developers", force: :cascade do |t|
+    t.integer  "app_developer_id", limit: 4
+    t.integer  "developer_id",     limit: 4
+    t.string   "developer_type",   limit: 191
+    t.integer  "method",           limit: 4
+    t.boolean  "flagged",                      default: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+  end
+
+  add_index "app_developers_developers", ["app_developer_id"], name: "index_app_developers_developers_on_app_developer_id", using: :btree
+  add_index "app_developers_developers", ["developer_id"], name: "index_app_developers_developers_on_developer_id", using: :btree
+  add_index "app_developers_developers", ["developer_type", "developer_id"], name: "index_app_developers_on_developer_poly", unique: true, using: :btree
+
   create_table "app_store_scaling_factor_backups", force: :cascade do |t|
     t.integer  "app_store_id",                    limit: 4
     t.float    "ratings_all_count",               limit: 24
@@ -780,6 +803,17 @@ ActiveRecord::Schema.define(version: 20160827041635) do
   add_index "companies", ["google_play_identifier"], name: "index_google_play_identifier", using: :btree
   add_index "companies", ["status"], name: "index_companies_on_status", using: :btree
   add_index "companies", ["website"], name: "index_companies_on_website", unique: true, using: :btree
+
+  create_table "developer_link_options", force: :cascade do |t|
+    t.integer  "ios_developer_id",     limit: 4
+    t.integer  "android_developer_id", limit: 4
+    t.integer  "method",               limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "developer_link_options", ["android_developer_id"], name: "index_developer_link_options_on_android_developer_id", using: :btree
+  add_index "developer_link_options", ["ios_developer_id"], name: "index_developer_link_options_on_ios_developer_id", using: :btree
 
   create_table "dll_regexes", force: :cascade do |t|
     t.string   "regex",          limit: 191
@@ -2367,18 +2401,20 @@ ActiveRecord::Schema.define(version: 20160827041635) do
   add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
 
   create_table "websites", force: :cascade do |t|
-    t.string   "url",        limit: 191
+    t.string   "url",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "kind",       limit: 4
-    t.integer  "company_id", limit: 4
-    t.integer  "ios_app_id", limit: 4
+    t.integer  "kind",         limit: 4
+    t.integer  "company_id",   limit: 4
+    t.integer  "ios_app_id",   limit: 4
+    t.string   "match_string", limit: 191
   end
 
   add_index "websites", ["company_id"], name: "index_websites_on_company_id", using: :btree
   add_index "websites", ["id", "company_id"], name: "index_websites_on_id_and_company_id", using: :btree
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
+  add_index "websites", ["match_string"], name: "index_websites_on_match_string", using: :btree
   add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
 
   create_table "websites_domain_data", force: :cascade do |t|
