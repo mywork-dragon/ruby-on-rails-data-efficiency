@@ -58,7 +58,9 @@ class DeveloperLinkingWorker
     match_string = website_comparison_format(website.url)
     value = match_string == BadFormat ? nil : match_string
 
-    website.update!(match_string: value)
+    website.match_string = value
+
+    website.save!(validation: false)
   end
 
   def website_comparison_format(url)
