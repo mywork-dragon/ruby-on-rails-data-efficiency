@@ -53,7 +53,7 @@ set :sidekiq_role, [:sdk_scraper, :sdk_scraper_live_scan, :scraper_master, :scra
 set :sidekiq_log, '/home/deploy/sidekiq.log'
 set :sidekiq_pid, '/home/deploy/sidekiq.pid'
 
-set :sdk_scraper_concurrency, 25 # 5 for DL, 13 for classification
+set :sdk_scraper_concurrency, 10 # 5 for DL, 13 for classification
 set :sdk_scraper_live_scan_concurrency, 30
 set :scraper_concurrency, 25
 set :scraper_master_concurrency, 50
