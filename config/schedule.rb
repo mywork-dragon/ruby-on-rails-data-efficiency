@@ -53,14 +53,6 @@ every :day, :at => '11:56pm', roles: [:scraper_master] do
   runner 'EpfV2Service.run_epf_if_feed_available'
 end
 
-every :day, :at => '7:30am', roles: [:sdk_scraper] do
-  runner 'NewBusinessEntityService.create_android_developers'
-end
-
-every :day, :at => '9:00am', roles: [:sdk_scraper] do
-  runner 'DeveloperLinkingService.fill_website_match_strings'
-end
-
 every 2.hours, roles: [:kylo_ren] do # every 2 hours
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
 end
