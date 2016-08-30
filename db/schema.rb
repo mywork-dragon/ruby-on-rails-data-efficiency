@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160829193234) do
+ActiveRecord::Schema.define(version: 20160830232823) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -2415,7 +2415,7 @@ ActiveRecord::Schema.define(version: 20160829193234) do
   add_index "websites", ["ios_app_id"], name: "index_websites_on_ios_app_id", using: :btree
   add_index "websites", ["kind"], name: "index_websites_on_kind", using: :btree
   add_index "websites", ["match_string"], name: "index_websites_on_match_string", using: :btree
-  add_index "websites", ["url"], name: "index_websites_on_url", using: :btree
+  add_index "websites", ["url"], name: "index_websites_on_url", unique: true, using: :btree
 
   create_table "websites_domain_data", force: :cascade do |t|
     t.integer  "website_id",      limit: 4
