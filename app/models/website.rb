@@ -17,6 +17,6 @@ class Website < ActiveRecord::Base
 
   enum kind: [:primary, :secondary]
   
-  validates :url, uniqueness: true
+  validates :url, presence: true
 
 end
