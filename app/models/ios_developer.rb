@@ -11,6 +11,8 @@ class IosDeveloper < ActiveRecord::Base
   has_one :app_developers_developer, -> { where 'app_developers_developers.flagged' => false }, as: :developer
   has_one :app_developer, through: :app_developers_developer
 
+  has_many :developer_link_options
+
   def get_website_urls
     self.websites.map{|w| w.url}
   end

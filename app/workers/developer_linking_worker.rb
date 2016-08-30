@@ -41,6 +41,26 @@ class DeveloperLinkingWorker
     DeveloperLinkOption.import rows
   end
 
+  def queue_ios_developers(function_name)
+    batch_size = 1000
+    IosDeveloper.select(:id)
+      .find_in_batches(batch_size: batch_size)
+      .with_index do |the_batch, index|
+
+      li "Developer #{index * batch_size}"
+
+      args = the_batch.map do |ios_developer|
+        [function_name.to_sym, ios_developer.id]
+      end
+
+      SidekiqBatchQueueWorker.perform_async(
+        DeveloperLinkingWorker.to_s,
+        args,
+        bid
+      )
+    end
+  end
+
   def queue_websites
     batch_size = 1000
     Website.select(:id)
