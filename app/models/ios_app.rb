@@ -36,6 +36,9 @@ class IosApp < ActiveRecord::Base
 
   has_many :ios_app_rankings
   
+  has_many :owner_twitter_handles, as: :owner
+  has_many :twitter_handles, through: :owner_twitter_handles
+
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
@@ -165,12 +168,21 @@ class IosApp < ActiveRecord::Base
     self.newest_ios_app_snapshot.try(:seller)
   end
 
+  def app_store_link
+    "https://itunes.apple.com/us/app/id#{self.app_identifier}"
+  end
+
   def last_updated
     self.newest_ios_app_snapshot.try(:released).try(:to_s)
   end
 
   def top_200_rank
     self.ios_app_rankings.last.rank
+  end
+
+  def is_in_top_200?
+    newest_rank_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    newest_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).any?
   end
 
   def ranking_change

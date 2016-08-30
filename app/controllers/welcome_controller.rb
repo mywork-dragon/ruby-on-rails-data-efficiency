@@ -57,6 +57,23 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def timeline
+    top_200_ids = IosAppRankingSnapshot.top_200_app_ids
+    batches = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]], 
+                                 owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
+    batches_by_week = {}
+    batches.each do |batch|
+      if batches_by_week[batch.week]
+        batches_by_week[batch.week] << batch
+      else
+        batches_by_week[batch.week] = [batch]
+      end
+    end
+
+    batches_by_week.sort_by{|k,v| -(k.to_time.to_i)}
+    @batches_by_week = batches_by_week
+  end
+
   def top_ios_sdks
     @last_updated = IosAppRankingSnapshot.last_valid_snapshot.created_at
     @tags = Tag.all

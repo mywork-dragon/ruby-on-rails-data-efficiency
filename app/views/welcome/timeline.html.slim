@@ -1,0 +1,57 @@
+- provide(:title, 'Most Used SDKs in Top 200 Free iOS Apps')
+- provide(:og_image, 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon_2x.png')
+.row.header.top-200.timeline
+  .column.large-12
+    h1 
+      = image_tag 'https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/trends-128.png', class: 'app-store-icon'
+      |MightySignal Timeline
+
+    .info.alert.alert-warning
+      p.pull-left What's happening in the Top 200 Apps?
+      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
+        .form-group
+          input#email.form-control name="email" placeholder="Email" type="email" /
+        .form-group.text-center
+          p
+            input.btn.btn-primary name="commit" type="submit" value="Alright!" /
+      p.email-form.pull-right 
+        | Sign up to get more SDK data
+
+    - @batches_by_week.each do |week, batches|
+      h4.week= week_formatter(week)
+      - batches.each do |batch|
+        - app = batch.owner
+        - if batch.activity_type == 'install'
+          .panel.panel-default class="batch-#{batch.id}"
+            .panel-heading
+              = image_tag app.icon_url, size: '30x30'
+              //= link_to "#{app.name} installed #{pluralize(batch.sorted_activities.count, 'new SDK', 'new SDks')}", "#collapse-#{batch.id}", data: {toggle: 'collapse'}
+              = "#{app.name} installed "
+              span.subtext= "#{pluralize(batch.sorted_activities.count, 'new SDK', 'new SDks')}"
+            //div id="collapse-#{batch.id}" class="panel-collapse collapse"
+            .panel-body
+              - batch.sorted_activities.each do |activity|
+                li class="activity-#{activity.id}"
+                  = image_tag activity.other_owner(app).favicon, size: '16x16'
+                  = link_to activity.other_owner(app).name, activity.other_owner(app).website, target: '_blank'
+            
+        - elsif batch.activity_type == 'entered_top_apps'
+          .panel.panel-default class="batch-#{batch.id}"
+            .panel-heading
+              = image_tag app.icon_url, size: '30x30'
+              = "#{app.name} entered the Top 200 at "
+              span.subtext= "Rank #{batch.other_owner.rank}"
+    
+    div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
+      div class="modal-dialog modal-lg"
+        div class="modal-content"
+          div class="modal-header"
+            button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              span aria-hidden="true"
+                |&times;
+            .pull-right
+              a href="#" target="_blank"
+                |App Store Link
+            h3 class="modal-title" id="myModalLabel"
+          div class="modal-body"
+              
