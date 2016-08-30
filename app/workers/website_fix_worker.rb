@@ -23,10 +23,29 @@ class WebsiteFixWorker
   end
 
   def fix_website(website_id)
-    puts website_id
+    website = Website.find(website_id)
+    duplicates = Website.where(url: website.url)
+    fail 'No duplicates found' unless duplicates.count > 1
+
+    primary_website = choose_primary_website(duplicates)
+    to_remove = duplicates.select { |x| x.id != primary_website.id }.map(&:id)
+
+    IosAppsWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
+    AndroidAppsWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
+    IosDevelopersWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
+    AndroidDevelopersWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
+    WebsiteDomainDatum.where(website_id: to_remove).delete_all
+    Website.where(id: to_remove).delete_all
   end
 
-  def on_complete_fix_websites
+  def choose_primary_website(options)
+    primary = options.find { |x| x.company_id }
+    return primary if primary
+
+    options.sort.first
+  end
+
+  def on_complete_fix_websites(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Fixed websites')
   end
 end
