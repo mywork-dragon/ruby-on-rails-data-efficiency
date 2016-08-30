@@ -35,7 +35,7 @@ class WebsiteFixWorker
     fix_join(AndroidAppsWebsite, to_remove, primary_website)
     fix_join(IosDevelopersWebsite, to_remove, primary_website)
     fix_join(AndroidDevelopersWebsite, to_remove, primary_website)
-    fix_join(WebsiteDomainDatum, to_remove, primary_website)
+    fix_join(WebsitesDomainDatum, to_remove, primary_website)
 
     Website.where(id: to_remove).delete_all
   end
