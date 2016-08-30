@@ -30,12 +30,23 @@ class WebsiteFixWorker
     primary_website = choose_primary_website(duplicates)
     to_remove = duplicates.select { |x| x.id != primary_website.id }.map(&:id)
 
-    IosAppsWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
-    AndroidAppsWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
-    IosDevelopersWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
-    AndroidDevelopersWebsite.where(website_id: to_remove).update_all(website_id: primary_website.id)
-    WebsiteDomainDatum.where(website_id: to_remove).delete_all
+    # should not just update...should delete the old one and ensure the new one is created
+    fix_join(IosAppsWebsite, to_remove, primary_website)
+    fix_join(AndroidAppsWebsite, to_remove, primary_website)
+    fix_join(IosDevelopersWebsite, to_remove, primary_website)
+    fix_join(AndroidDevelopersWebsite, to_remove, primary_website)
+    fix_join(WebsiteDomainDatum, to_remove, primary_website)
+
     Website.where(id: to_remove).delete_all
+  end
+
+  def fix_join(model, to_remove, primary)
+    model.where(website_id: to_remove).update_all(website_id: primary.id)
+    # remove duplicates
+    duplicates = model.where(website_id: primary.id)
+    return unless duplicates.length > 1
+    chosen_id = duplicates.first.id
+    model.where(website_id: primary.id).where.not(id: chosen_id).delete_all
   end
 
   def choose_primary_website(options)
