@@ -52,7 +52,7 @@ class IosFbAdDeviceService
 
   def start_scrape
 
-    raise UnspecifiedFbAccount, "FB Account unspecified" unless @fb_account
+    # raise UnspecifiedFbAccount, "FB Account unspecified" unless @fb_account
     
     connect
 
@@ -540,6 +540,8 @@ class IosFbAdDeviceService
     log_debug "Finished pressing button"
 
     # Bind the utilities to the app store
+    run_common_utilities('AppStore')
+    sleep 1.5
     run_command("cycript -p AppStore #{File.join(SCRIPTS_PREFIX, 'fb_utilities.cy')}", 'Bind utilities to the AppStore')
 
     true
@@ -893,6 +895,9 @@ class IosFbAdDeviceService
     sleep 1
     run_command("open #{info[:bundle_id]}", "Open the #{info[:name]} app")
     sleep 1
+
+    run_common_utilities(info[:name])
+    sleep 1.5
     run_command("cycript -p #{info[:name]} #{File.join(SCRIPTS_PREFIX, 'fb_utilities.cy')}", "Bind the utilities to #{info[:name]}")
   end
 
@@ -972,6 +977,16 @@ class IosFbAdDeviceService
 
   def run_common_utilities(app)
     run_command("cycript -p #{app} common_utilities.cy", 'Run common_utilities.cy')
+  end
+
+  class << self
+
+    def debug
+      device = IosDevice.find_or_create_by(ip: '192.168.2.127')
+      s = self.new(nil, device, nil, bid: nil)
+      s.start_scrape
+    end
+
   end
 
 end
