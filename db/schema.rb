@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160830232823) do
+ActiveRecord::Schema.define(version: 20160830233001) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -513,15 +513,17 @@ ActiveRecord::Schema.define(version: 20160830232823) do
   add_index "app_store_scaling_factors", ["app_store_id"], name: "index_app_store_scaling_factors_on_app_store_id", unique: true, using: :btree
 
   create_table "app_stores", force: :cascade do |t|
-    t.string   "country_code", limit: 191
+    t.string   "country_code",     limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",         limit: 191
-    t.boolean  "enabled",                  default: false
-    t.integer  "priority",     limit: 4
+    t.string   "name",             limit: 191
+    t.boolean  "enabled",                      default: false
+    t.integer  "priority",         limit: 4
+    t.integer  "display_priority", limit: 4
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
+  add_index "app_stores", ["display_priority"], name: "index_app_stores_on_display_priority", using: :btree
   add_index "app_stores", ["enabled"], name: "index_app_stores_on_enabled", using: :btree
   add_index "app_stores", ["name"], name: "index_app_stores_on_name", using: :btree
   add_index "app_stores", ["priority", "enabled"], name: "index_app_stores_on_priority_and_enabled", using: :btree
