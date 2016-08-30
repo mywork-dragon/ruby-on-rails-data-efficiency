@@ -13,23 +13,33 @@ class DeveloperLinkingWorker
     ios_developer = IosDeveloper.find(ios_developer_id)
     potential_matches = AndroidDeveloper.where(name: ios_developer.name)
 
-    return if potential_matches.empty?
-
     rows = potential_matches.map do |android_developer|
       DeveloperLinkOption.new(
         ios_developer_id: ios_developer.id,
         android_developer_id: android_developer.id,
-        method: :name
+        method: :name_match
       )
     end
 
     DeveloperLinkOption.import rows
   end
 
-  # def link_by_ios_developer_websites(ios_developer_id)
-  #   ios_developer = IosDeveloper.find(ios_developer_id)
-  #   ios_developer_websites = ios_developer.websites
-  # end
+  def link_by_ios_developer_websites(ios_developer_id)
+    ios_developer = IosDeveloper.find(ios_developer_id)
+    match_strings = ios_developer.websites.pluck(:match_string).compact.uniq
+    return if match_strings.empty?
+    matching_android_developers = AndroidDeveloper.joins(:websites).where('websites.match_string in (?)', match_strings)
+
+    rows = matching_android_developers.map do |android_developer|
+      DeveloperLinkOption.new(
+        ios_developer_id: ios_developer.id,
+        android_developer_id: android_developer.id,
+        method: :website_match
+      )
+    end
+
+    DeveloperLinkOption.import rows
+  end
 
   def queue_websites
     batch_size = 1000
