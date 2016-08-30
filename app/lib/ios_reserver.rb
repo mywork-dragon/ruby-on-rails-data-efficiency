@@ -51,7 +51,9 @@ class IosReserver
     @device_reserver.reserve(:one_off, requirements)
     @device = @device_reserver.device
 
-    @apple_account = @device.apple_account
+    apple_account = @device.apple_account
+    fail NoStaticAccount if apple_account.blank?
+    @apple_account = apple_account
 
     true
   end
@@ -153,6 +155,12 @@ class IosReserver
 
   class AlreadyReleased < StandardError
     def initialize(msg = "#{self.class} instance has already been released.")
+      super(msg)
+    end
+  end
+
+  class NoStaticAccount < StandardError
+    def initialize(msg = "Device should have static account, be there's no account in the DB.")
       super(msg)
     end
   end

@@ -18,6 +18,7 @@ class AppStore < ActiveRecord::Base
   has_one :app_store_scaling_factor_backup
 
   validates_uniqueness_of :priority, allow_blank: true
+  validates_uniqueness_of :display_priority, allow_blank: true
 
   def disable(automate: false)
     ret = update(enabled: false)
