@@ -40,6 +40,12 @@ class DeveloperLinkingService
         DeveloperLinkingWorker.perform_async(:queue_websites)
       end
     end
+
+    def empty_app_developer_tables
+      [AppDeveloper, AppDevelopersDeveloper].each do |model|
+        ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model.table_name}")
+      end
+    end
   end
 
   def on_complete_app_developers(status, options)
