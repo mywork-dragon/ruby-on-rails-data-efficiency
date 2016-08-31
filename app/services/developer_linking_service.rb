@@ -1,6 +1,16 @@
 class DeveloperLinkingService
   class << self
 
+    def build_app_developers
+      batch = Sidekiq::Batch.new
+      batch.description = 'Populating app developers'
+      batch.on(:complete, 'DeveloperLinkingService#on_complete_app_developers')
+
+      batch.jobs do
+        DeveloperLinkingWorker.perform_async(:queue_link_options)
+      end
+    end
+
     def match_names
       batch = Sidekiq::Batch.new
       batch.description = 'Populating developer options'
@@ -30,6 +40,10 @@ class DeveloperLinkingService
         DeveloperLinkingWorker.perform_async(:queue_websites)
       end
     end
+  end
+
+  def on_complete_app_developers(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Finished building app developers')
   end
 
   def on_complete_match_websites(status, options)

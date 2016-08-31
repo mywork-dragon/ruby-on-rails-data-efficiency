@@ -44,6 +44,56 @@ class DeveloperLinkingWorker
     DeveloperLinkOption.import rows
   end
 
+  def fill_clusters(developer_link_option_id)
+    developer_link_option = DeveloperLinkOption.find(developer_link_option_id)
+    ios_list = [developer_link_option.ios_developer_id]
+    android_list = [developer_link_option.android_developer_id]
+
+    return puts 'Already exists' if app_developer_exists?(ios_list, android_list)
+
+    previous_length = 0
+
+    while previous_length == ios_list.count + android_list.count
+      previous_length = ios_list.count + android_list.count
+      puts "Current cluster size: #{previous_length}"
+      links = DeveloperLinkOption
+        .select(:ios_developer_id, :android_developer_id)
+        .where('ios_developer_id in (?) or android_developer_id in (?)', ios_list, android_list)
+      ios_list = links.map(&:ios_developer_id).compact.uniq
+      android_list = links.map(&:android_developer_id).compact.uniq
+    end
+
+    save_cluster(ios_list, android_list)
+  end
+
+  def save_cluster(ios_developer_ids, android_developer_ids)
+    # need to find the name
+    name_link = DeveloperLinkOption
+      .where('ios_developer_id in (?) or android_developer_id in (?)', ios_developer_ids, android_developer_ids)
+      .where(method: DeveloperLinkOption.methods[:name_match]).limit(1).take
+
+
+  end
+
+  def cluster_name(ios_developer_ids, android_developer_ids)
+    # if theres a name match, use that name
+    name_link = DeveloperLinkOption
+      .where('ios_developer_id in (?) or android_developer_id in (?)', ios_developer_ids, android_developer_ids)
+      .where(method: DeveloperLinkOption.methods[:name_match]).limit(1).take
+
+    IosDeveloper.find(name_link.ios_developer_id).name if name_link
+
+    # if not, use the developer with the most apps
+    IosDeveloper.joins(:ios_apps).where(ios_developer_id: ios_developer_ids)
+  end
+
+  def app_developer_exists?(ios_developer_ids, android_developer_ids)
+    return true if AppDevelopersDeveloper.find_by(developer_type: 'IosDeveloper', developer_id: ios_developer_ids)
+    return true if AppDevelopersDeveloper.find_by(developer_type: 'AndroidDeveloper', developer_id: android_developer_ids)
+    false
+  end
+
+
   def queue_ios_developers(function_name)
     batch_size = 1000
     IosDeveloper.select(:id)
@@ -75,6 +125,23 @@ class DeveloperLinkingWorker
 
       args = the_batch.map do |website|
         [:fill_match_string, website.id]
+      end
+
+      SidekiqBatchQueueWorker.perform_async(
+        DeveloperLinkingWorker.to_s,
+        args,
+        bid
+      )
+    end
+  end
+
+  def queue_link_options
+    DeveloperLinkOption.select(:id, :ios_developer_id)
+      .group(:ios_developer_id)
+      .find_in_batch(batch_size: 1000) do |the_batch|
+
+      args = the_batch.map do |developer_link_option|
+        [:fill_clusters, developer_link_option.id]
       end
 
       SidekiqBatchQueueWorker.perform_async(
