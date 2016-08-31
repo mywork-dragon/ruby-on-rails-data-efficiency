@@ -12,7 +12,11 @@ class DeveloperLinkingWorker
 
   def link_by_ios_developer_name(ios_developer_id)
     ios_developer = IosDeveloper.find(ios_developer_id)
-    potential_matches = AndroidDeveloper.where(name: ios_developer.name)
+    name = ios_developer.name.chomp
+    return puts 'empty name' unless name
+
+    regex = name_regex(name)
+    potential_matches = AndroidDeveloper.where('name REGEXP ?', regex)
 
     rows = potential_matches.map do |android_developer|
       DeveloperLinkOption.new(
@@ -23,6 +27,16 @@ class DeveloperLinkingWorker
     end
 
     DeveloperLinkOption.import rows
+  end
+
+  def name_regex(ios_developer_name)
+    regex = ios_developer_name.split('').map do |char|
+      if /[^\p{Alnum}]/.match(char)
+        '[^a-zA-Z0-9]?'
+      else
+        char
+      end
+    end.join('')
   end
 
   def link_by_ios_developer_websites(ios_developer_id)
