@@ -30,7 +30,7 @@ class DeveloperLinkingWorker
   end
 
   def like_term(ios_developer_name)
-    term = ios_developer_name.split(',').map do |char|
+    term = ios_developer_name.split('').map do |char|
       if /[^\p{Alnum}]/.match(char)
         '%'
       else
