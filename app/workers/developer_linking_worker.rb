@@ -71,7 +71,6 @@ class DeveloperLinkingWorker
     # need to find the name
     name = cluster_name(ios_developer_ids, android_developer_ids)
     app_developer = AppDeveloper.create!(name: name)
-    join_rows = []
     joins_rows += ios_developer_ids.map do |ios_developer_id|
       AppDevelopersDeveloper.new(
         app_developer_id: app_developer.id,
@@ -87,7 +86,7 @@ class DeveloperLinkingWorker
       )
     end
 
-    AppDevelopersDeveloper.import join_rows
+    AppDevelopersDeveloper.import joins_rows
   end
 
   def cluster_name(ios_developer_ids, android_developer_ids)
@@ -99,7 +98,7 @@ class DeveloperLinkingWorker
     IosDeveloper.find(name_link.ios_developer_id).name if name_link
 
     # if not, use the developer with the most apps
-    IosDeveloper.select(:id).select('count(*)')
+    IosDeveloper.select(:id, :name).select('count(*)')
       .joins(:ios_apps).where(id: ios_developer_ids)
       .group(:id).order('count(*) DESC').first.name
   end
