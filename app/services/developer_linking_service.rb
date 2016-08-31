@@ -3,7 +3,7 @@ class DeveloperLinkingService
 
     def match_names
       batch = Sidekiq::Batch.new
-      batch.description = 'Populating website comparisons'
+      batch.description = 'Populating developer options'
       batch.on(:complete, 'DeveloperLinkingService#on_complete_match_names')
 
       batch.jobs do
@@ -13,7 +13,7 @@ class DeveloperLinkingService
 
     def match_websites
       batch = Sidekiq::Batch.new
-      batch.description = 'Populating website comparisons'
+      batch.description = 'Populating developer options'
       batch.on(:complete, 'DeveloperLinkingService#on_complete_match_websites')
 
       batch.jobs do
