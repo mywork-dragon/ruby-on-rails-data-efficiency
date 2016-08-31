@@ -221,16 +221,21 @@ class DeveloperLinkingWorker
     true
   end
 
-  def check_matching(ios_sdk_id, limit: 100)
-    apps = IosSdk.find(ios_sdk_id).get_current_apps(limit).select { |ios_app| ios_app.ios_developer_id }
+  def check_matching(apps, limit: 100)
     apps.each do |ios_app|
-      puts "App #{ios_app.name}"
+      puts ''
+      puts '-------------------'
+      puts "App: #{ios_app.name}"
       ios_developer = IosDeveloper.find(ios_app.ios_developer_id)
-      next unless app_developer = ios_developer.app_developer
-      puts "Android developers"
-      puts app_developer.android_developers.pluck(:name).join(', ')
-      puts "Ios developers"
-      puts app_developer.ios_developers.pluck(:name).join(', ')
+
+      unless app_developer = ios_developer.app_developer
+        puts 'Not linked'
+        next
+      end
+
+      puts "App Developer: #{app_developer.name}"
+      puts "Android developers: " + app_developer.android_developers.pluck(:name).join(', ')
+      puts "iOS developers: " + app_developer.ios_developers.pluck(:name).join(', ')
     end
   end
 end
