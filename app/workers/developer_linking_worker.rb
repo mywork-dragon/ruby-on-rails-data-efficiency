@@ -4,6 +4,7 @@ class DeveloperLinkingWorker
   sidekiq_options queue: :sdk, retry: false
 
   class BadFormat; end
+  class DoNotLink; end
 
   def perform(method, *args)
     send(method.to_sym, *args)
@@ -70,6 +71,8 @@ class DeveloperLinkingWorker
   def save_cluster(ios_developer_ids, android_developer_ids)
     # need to find the name
     name = cluster_name(ios_developer_ids, android_developer_ids)
+    return puts 'Will not link' if name == DoNotLink
+
     app_developer = AppDeveloper.create!(name: name)
     joins_rows = ios_developer_ids.map do |ios_developer_id|
       AppDevelopersDeveloper.new(
@@ -98,9 +101,20 @@ class DeveloperLinkingWorker
     IosDeveloper.find(name_link.ios_developer_id).name if name_link
 
     # if not, use the developer with the most apps
-    IosDeveloper.select(:id, :name).select('count(*)')
+    ios_developer = IosDeveloper.select(:id, :name).select('count(*)')
       .joins(:ios_apps).where(id: ios_developer_ids)
-      .group(:id).order('count(*) DESC').first.name
+      .group(:id).order('count(*) DESC').first
+
+    return ios_developer.name if ios_developer
+
+    android_developer = AndroidDeveloper.select(:id, :name).select('count(*)')
+      .joins(:android_apps).where(id: android_developer_ids)
+      .group(:id).order('count(*) DESC').first
+
+    return android_developer.name if android_developer
+
+    # if there aren't name links and they do not have apps, probably not worth linking
+    DoNotLink
   end
 
   def app_developer_exists?(ios_developer_ids, android_developer_ids)
