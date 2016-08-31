@@ -71,7 +71,7 @@ class DeveloperLinkingWorker
     # need to find the name
     name = cluster_name(ios_developer_ids, android_developer_ids)
     app_developer = AppDeveloper.create!(name: name)
-    joins_rows += ios_developer_ids.map do |ios_developer_id|
+    joins_rows = ios_developer_ids.map do |ios_developer_id|
       AppDevelopersDeveloper.new(
         app_developer_id: app_developer.id,
         developer_id: ios_developer_id,
