@@ -7,6 +7,6 @@ class DeveloperLinkOption < ActiveRecord::Base
   def investigate
     ap IosDeveloper.find(ios_developer_id)
     ap AndroidDeveloper.find(android_developer_id)
-    puts "Linking Method --> #{methods.invert[method]}"
+    puts "Linking Method --> #{method}"
   end
 end
