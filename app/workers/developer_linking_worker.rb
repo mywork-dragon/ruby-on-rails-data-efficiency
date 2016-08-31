@@ -63,16 +63,31 @@ class DeveloperLinkingWorker
       android_list = links.map(&:android_developer_id).compact.uniq
     end
 
+    return puts 'Already exists after querying' if app_developer_exists?(ios_list, android_list)
     save_cluster(ios_list, android_list)
   end
 
   def save_cluster(ios_developer_ids, android_developer_ids)
     # need to find the name
-    name_link = DeveloperLinkOption
-      .where('ios_developer_id in (?) or android_developer_id in (?)', ios_developer_ids, android_developer_ids)
-      .where(method: DeveloperLinkOption.methods[:name_match]).limit(1).take
+    name = cluster_name(ios_developer_ids, android_developer_ids)
+    app_developer = AppDeveloper.create!(name: name)
+    join_rows = []
+    joins_rows += ios_developer_ids.map do |ios_developer_id|
+      AppDevelopersDeveloper.new(
+        app_developer_id: app_developer.id,
+        developer_id: ios_developer_id,
+        developer_type: 'IosDeveloper'
+      )
+    end
+    joins_rows += android_developer_ids.map do |android_developer_id|
+      AppDevelopersDeveloper.new(
+        app_developer_id: app_developer.id,
+        developer_id: android_developer_id,
+        developer_type: 'AndroidDeveloper'
+      )
+    end
 
-
+    AppDevelopersDeveloper.import join_rows
   end
 
   def cluster_name(ios_developer_ids, android_developer_ids)
@@ -84,7 +99,9 @@ class DeveloperLinkingWorker
     IosDeveloper.find(name_link.ios_developer_id).name if name_link
 
     # if not, use the developer with the most apps
-    IosDeveloper.joins(:ios_apps).where(ios_developer_id: ios_developer_ids)
+    IosDeveloper.select(:id).select('count(*)')
+      .joins(:ios_apps).where(id: ios_developer_ids)
+      .group(:id).order('count(*) DESC').first.name
   end
 
   def app_developer_exists?(ios_developer_ids, android_developer_ids)
