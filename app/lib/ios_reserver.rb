@@ -90,7 +90,7 @@ class IosReserver
     blank_device = nil
 
     IosDevice.transaction do
-      ios_device = IosDevice.lock.joins(:apple_account).where(purpose: IosDevice.purposes[:one_off_intl], in_use: false).where("apple_accounts.app_store_id = ?", @app_store.id).limit(1).first
+      ios_device = IosDevice.lock.joins(:apple_account).where(purpose: IosDevice.purposes[:one_off_intl], in_use: false, disabled: false).where("apple_accounts.app_store_id = ?", @app_store.id).limit(1).first
 
       blank_device = ios_device.blank?
       
