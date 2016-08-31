@@ -54,7 +54,7 @@ class DeveloperLinkingWorker
 
     previous_length = 0
 
-    while previous_length <= ios_list.count + android_list.count
+    while previous_length < ios_list.count + android_list.count
       previous_length = ios_list.count + android_list.count
       puts "Current cluster size: #{previous_length}"
       links = DeveloperLinkOption
