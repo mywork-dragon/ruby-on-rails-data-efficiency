@@ -15,8 +15,8 @@ class DeveloperLinkingWorker
     name = ios_developer.name.chomp
     return puts 'empty name' unless name
 
-    regex = name_regex(name)
-    potential_matches = AndroidDeveloper.where('name REGEXP ?', regex)
+    regex = like_term(name)
+    potential_matches = AndroidDeveloper.where('name like ?', regex)
 
     rows = potential_matches.map do |android_developer|
       DeveloperLinkOption.new(
@@ -27,6 +27,16 @@ class DeveloperLinkingWorker
     end
 
     DeveloperLinkOption.import rows
+  end
+
+  def like_term(ios_developer_name)
+    term = ios_developer_name.split(',').map do |char|
+      if /[^\p{Alnum}]/.match(char)
+        '%'
+      else
+        char
+      end
+    end.join('')
   end
 
   def name_regex(ios_developer_name)
