@@ -28,6 +28,9 @@ class DeveloperLinkingWorker
     ios_developer = IosDeveloper.find(ios_developer_id)
     match_strings = ios_developer.websites.pluck(:match_string).compact.uniq
     return if match_strings.empty?
+
+    match_strings.select! { |match_string| valid_match_string?(match_string) }
+
     matching_android_developers = AndroidDeveloper.joins(:websites).where('websites.match_string in (?)', match_strings)
 
     rows = matching_android_developers.map do |android_developer|
@@ -99,5 +102,13 @@ class DeveloperLinkingWorker
     return BadFormat unless match
     url_format = match[1]
     DbSanitizer.truncate_string(url_format)
+  end
+
+  def valid_match_string?(match_string)
+
+    # ignore certain match strings
+    return false if [%r{youtube\.com/watch}].find { |regex| regex.match(match_string) }
+
+    true
   end
 end
