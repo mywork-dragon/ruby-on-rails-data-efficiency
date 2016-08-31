@@ -26,10 +26,10 @@ class DeveloperLinkingWorker
 
   def link_by_ios_developer_websites(ios_developer_id)
     ios_developer = IosDeveloper.find(ios_developer_id)
-    match_strings = ios_developer.websites.pluck(:match_string).compact.uniq
-    return if match_strings.empty?
 
+    match_strings = ios_developer.websites.pluck(:match_string).compact.uniq
     match_strings.select! { |match_string| valid_match_string?(match_string) }
+    return if match_strings.empty?
 
     matching_android_developers = AndroidDeveloper.joins(:websites).where('websites.match_string in (?)', match_strings)
 
@@ -107,7 +107,19 @@ class DeveloperLinkingWorker
   def valid_match_string?(match_string)
 
     # ignore certain match strings
-    return false if [%r{youtube\.com/watch}].find { |regex| regex.match(match_string) }
+    ignore_regexes = [
+      %r{youtube\.com/watch},
+      %r{facebook\.com/profile\.php},
+      %r{market\.android\.com/details},
+      %r{linkedin\.com/profile/view},
+      %r{^facebook\.com/\Z},
+      %r{play\.google\.com},
+      %r{youtube\.com/playlist},
+      %r{itunes\.apple\.com},
+      %r{facebook\.com/home\.php}
+    ]
+
+    return false if ignore_regexes.find { |regex| regex.match(match_string) }
 
     true
   end
