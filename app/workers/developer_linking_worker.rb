@@ -221,21 +221,23 @@ class DeveloperLinkingWorker
     true
   end
 
-  def check_matching(apps, limit: 100)
-    apps.each do |ios_app|
-      puts ''
-      puts '-------------------'
-      puts "App: #{ios_app.name}"
-      ios_developer = IosDeveloper.find(ios_app.ios_developer_id)
+  def check_matching(apps)
+    File.open('output.txt', 'w') do |f|
+      apps.select(&:ios_developer_id).each do |ios_app|
+        f.write ''
+        f.write '-------------------'
+        f.write "App: #{ios_app.name}"
+        ios_developer = IosDeveloper.find(ios_app.ios_developer_id)
 
-      unless app_developer = ios_developer.app_developer
-        puts 'Not linked'
-        next
+        unless app_developer = ios_developer.app_developer
+          f.write 'Not linked'
+          next
+        end
+
+        f.write "App Developer: #{app_developer.name}"
+        f.write "Android developers: " + app_developer.android_developers.pluck(:name).join(', ')
+        f.write "iOS developers: " + app_developer.ios_developers.pluck(:name).join(', ')
       end
-
-      puts "App Developer: #{app_developer.name}"
-      puts "Android developers: " + app_developer.android_developers.pluck(:name).join(', ')
-      puts "iOS developers: " + app_developer.ios_developers.pluck(:name).join(', ')
     end
   end
 end
