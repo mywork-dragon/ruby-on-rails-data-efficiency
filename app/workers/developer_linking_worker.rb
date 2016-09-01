@@ -170,7 +170,7 @@ class DeveloperLinkingWorker
   def queue_websites
     batch_size = 1000
     Website.select(:id)
-      .where(match_string: nil)
+      .where("match_string like '%/'")
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
       
