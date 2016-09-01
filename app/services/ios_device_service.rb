@@ -352,10 +352,23 @@ class IosDeviceService
     run_command(ssh, "cycript -p Preferences #{always_require_in_app_purchases_script}", 'Run always_require_in_app_purchases.cy')
     sleep(2)
 
-    puts "dont_require_password_script"
+    puts "dont_require_password"
     dont_require_password_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "dont_require_password.cy")
     run_command(ssh, "cycript -p Preferences #{dont_require_password_script}", 'Run dont_require_password.cy')
-    sleep(2)
+
+    puts "check_dont_require_password"
+    check_dont_require_password_success = false
+    5.times do
+      sleep(2)
+      check_dont_require_password_script = File.join(ACCOUNT_SCRIPTS_PREFIX, "check_dont_require_password.cy")
+      resp = run_command(ssh, "cycript -p Preferences #{check_dont_require_password_script}", 'Run check_dont_require_password.cy')
+      if command_success?(resp)
+        check_dont_require_password_success = true
+        break
+      end
+    end
+
+    fail DontRequirePasswordFailed unless check_dont_require_password_success
 
     run_command(ssh, 'killall Preferences', 'Kill Preferences')
 
@@ -1010,17 +1023,23 @@ class IosDeviceService
     end
   end
 
+  class DontRequirePasswordFailed < StandardError
+    def initialize(msg="Don't require password failed. The switch never went off.")
+      super(msg)
+    end
+  end
+
   class << self
 
     # Just for testing
     def test_change_account
-      device = IosDevice.find_or_create_by(ip: '192.168.2.116', serial_number: 'whatever')
+      device = IosDevice.find_or_create_by(ip: '192.168.2.136', serial_number: 'whatever')
 
       # account = AppleAccount.find_or_create_by(email: "hotandsoursoup@openmailbox.org", password: 'Somename1') #CN
       # account = AppleAccount.find_or_create_by(email: "simon.hailey2@openmailbox.org", password: 'Somename1')  #AU
-      # account = AppleAccount.find_or_create_by(email: "julia.fuchs3@openmailbox.org", password: 'Somename1')   #RU
+      account = AppleAccount.find_or_create_by(email: "julia.fuchs3@openmailbox.org", password: 'Somename1')   #RU
 
-      account = AppleAccount.find_or_create_by(email: "shika2@openmailbox.org", password: 'Somename1')   #JP
+      # account = AppleAccount.find_or_create_by(email: "shika2@openmailbox.org", password: 'Somename1')   #JP
       s = IosDeviceService.new(device, apple_account: account)
       s.test_change_account
     end

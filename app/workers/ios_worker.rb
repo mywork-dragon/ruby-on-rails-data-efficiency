@@ -156,7 +156,7 @@ module IosWorker
     result = classdump
 
     # send notification if we've reached a threshold
-    check_account_limits(device) if Rails.env.production?
+    check_account_limits(device: device, apple_account: apple_account) if Rails.env.production?
   rescue => e
     result = e
   ensure
@@ -164,15 +164,13 @@ module IosWorker
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end
 
-	def check_account_limits(device)
+	def check_account_limits(device:, apple_account:)
 		ios_major_version = device.ios_version.split(".").first
 
 		warning_level = WARNING_LEVEL_MAP[ios_major_version]
 		error_level = warning_level * 2
 
 		return if warning_level.nil?
-
-		apple_account = AppleAccount.find_by_ios_device_id(device.id)
 
 		downloads_count = apple_account.class_dumps.count
 
