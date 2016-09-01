@@ -30,26 +30,6 @@ class DeveloperLinkingWorker
     DeveloperLinkOption.import rows
   end
 
-  def like_term(ios_developer_name)
-    term = ios_developer_name.split('').map do |char|
-      if /[^\p{Alnum}]/.match(char)
-        '%'
-      else
-        char
-      end
-    end.join('')
-  end
-
-  def name_regex(ios_developer_name)
-    regex = ios_developer_name.split('').map do |char|
-      if /[^\p{Alnum}]/.match(char)
-        '[^a-zA-Z0-9]?'
-      else
-        char
-      end
-    end.join('')
-  end
-
   def link_by_ios_developer_websites(ios_developer_id)
     ios_developer = IosDeveloper.find(ios_developer_id)
 
