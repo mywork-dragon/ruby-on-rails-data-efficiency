@@ -72,6 +72,9 @@ class IosDevice < ActiveRecord::Base
 
     # Helper method to create new device with proxy
     def create_with_proxy!(params)
+      skip_account = params[:skip_account]
+      params.delete(:skip_account)
+
       transaction do
 
         model_name = params[:model_name]
@@ -84,7 +87,7 @@ class IosDevice < ActiveRecord::Base
 
         free_proxy = nil
 
-        OpenProxy.where(kind: OpenProxy.kinds[:digital_ocean_squid]).each do |open_proxy|
+        OpenProxy.where(kind: OpenProxy.kinds[:digital_ocean_tinyproxy]).each do |open_proxy|
           if open_proxy.ios_devices.blank?
             free_proxy = open_proxy
             break
@@ -99,26 +102,26 @@ class IosDevice < ActiveRecord::Base
 
         ios_device.save!
 
-        account = pick_email_account
+        unless skip_account
+          account = pick_email_account
 
-        raise 'Cannot find a free email address' if account.nil?
+          raise 'Cannot find a free email address' if account.nil?
 
-        apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device: ios_device)
+          apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device: ios_device)
 
-        ap apple_account
+          ap apple_account
 
-        puts "Apple Account".purple
-        ap "Email: #{apple_account.email}"
-        ap "password: Somename1"
-        puts "Email Credentials".purple
-        ap "Email: #{account.email}"
-        ap "Password: #{account.password}"
+          puts "Apple Account".purple
+          ap "Email: #{apple_account.email}"
+          ap "password: Somename1"
+          puts "Email Credentials".purple
+          ap "Email: #{account.email}"
+          ap "Password: #{account.password}"
+        end
 
         open_proxy = ios_device.open_proxy
         puts "Proxy IP: #{open_proxy.public_ip}"
         puts "Proxy Port: #{open_proxy.port}"
-        puts "Proxy Username: #{open_proxy.username}"
-        puts "Proxy Password: #{open_proxy.password}"
 
         ios_device
       end
