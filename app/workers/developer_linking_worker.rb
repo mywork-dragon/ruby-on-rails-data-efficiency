@@ -6,6 +6,8 @@ class DeveloperLinkingWorker
   class BadFormat; end
   class DoNotLink; end
 
+  MAX_CLUSTER_SIZE = 5
+
   def perform(method, *args)
     send(method.to_sym, *args)
   end
@@ -77,7 +79,7 @@ class DeveloperLinkingWorker
 
     previous_length = 0
 
-    while previous_length < ios_list.count + android_list.count
+    while (previous_length < ios_list.count + android_list.count) && !cluster_too_large?(ios_list, android_list)
       previous_length = ios_list.count + android_list.count
       puts "Current cluster size: #{previous_length}"
       links = DeveloperLinkOption
@@ -87,8 +89,14 @@ class DeveloperLinkingWorker
       android_list = links.map(&:android_developer_id).compact.uniq
     end
 
+    return puts 'Cluster too large' if cluster_too_large?(ios_list, android_list)
     return puts 'Already exists after querying' if app_developer_exists?(ios_list, android_list)
+
     save_cluster(ios_list, android_list)
+  end
+
+  def cluster_too_large?(ios_list, android_list)
+    ios_list.count + android_list.count > MAX_CLUSTER_SIZE
   end
 
   def save_cluster(ios_developer_ids, android_developer_ids)
