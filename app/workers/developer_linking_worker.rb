@@ -15,8 +15,7 @@ class DeveloperLinkingWorker
     name = ios_developer.name.chomp
     return puts 'empty name' unless name
 
-    regex = like_term(name)
-    potential_matches = AndroidDeveloper.where('name like ?', regex)
+    potential_matches = AndroidDeveloper.where(name: name)
 
     rows = potential_matches.map do |android_developer|
       DeveloperLinkOption.new(
