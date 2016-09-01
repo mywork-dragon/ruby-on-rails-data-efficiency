@@ -50,13 +50,17 @@ class DeveloperLinkingService
     def compare_results
       success = 0
       failures = 0
+      success_developers = []
+      failure_developers = []
       answers = load_answers
       answers.keys.each do |ios_developer_id|
         android_developer_id = answers[ios_developer_id]
-        app_developer = IosDeveloper.find(ios_developer_id).app_developer
+        ios_developer = IosDeveloper.find(ios_developer_id)
+        app_developer = ios_developer.app_developer
 
         if android_developer_id == -1
           if app_developer
+            failure_developers += ios_developer
             failures += 1
           else
             success += 1
@@ -66,11 +70,13 @@ class DeveloperLinkingService
 
           if linked
             if app_developers.android_developers.count + app_developers.ios_developers.count > 10
+              failure_developers += ios_developer
               failures += 1
             else
               success += 1
             end
           else
+            failure_developers += ios_developer
             failures += 1
           end
         end
@@ -79,6 +85,7 @@ class DeveloperLinkingService
       puts "Successes: #{success}"
       puts "Failures: #{failures}"
       puts "%: #{100.0 * success / (success + failures)}"
+      failure_developers
     end
 
     def load_answers
