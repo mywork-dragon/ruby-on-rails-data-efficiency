@@ -92,7 +92,7 @@ class DeveloperLinkingWorker
       links = DeveloperLinkOption
         .select(:ios_developer_id, :android_developer_id)
         .where('ios_developer_id in (?) or android_developer_id in (?)', ios_list, android_list)
-        .where(DeveloperLinkOption.methods[:name_match])
+        .where(method: DeveloperLinkOption.methods[:name_match])
       ios_list = links.map(&:ios_developer_id).compact.uniq
       android_list = links.map(&:android_developer_id).compact.uniq
     else
