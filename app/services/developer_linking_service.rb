@@ -150,6 +150,7 @@ class DeveloperLinkingService
 
   def on_complete_manual_developers(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed loading manual developers')
+    self.class.empty_app_developer_tables
     self.class.build_app_developers
   end
 end
