@@ -41,8 +41,24 @@ class DeveloperLinkingService
       end
     end
 
+    def load_manual_app_developers
+      batch = Sidekiq::Batch.new
+      batch.description = 'Loading manual app developers'
+      batch.on(:complete, 'DeveloperLinkingService#on_complete_manual_developers')
+
+      batch.jobs do
+        DeveloperLinkingWorker.perform_async(:load_manual_app_developers)
+      end
+    end
+
     def empty_app_developer_tables
       [AppDeveloper, AppDevelopersDeveloper].each do |model|
+        ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model.table_name}")
+      end
+    end
+
+    def empty_link_options
+      [DeveloperLinkOption].each do |model|
         ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model.table_name}")
       end
     end
@@ -118,5 +134,9 @@ class DeveloperLinkingService
 
   def on_complete_match_strings(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed populating match strings')
+  end
+
+  def on_complete_manual_developers(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed loading manual developers')
   end
 end

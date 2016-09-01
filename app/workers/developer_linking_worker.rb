@@ -70,6 +70,16 @@ class DeveloperLinkingWorker
     DeveloperLinkOption.import rows
   end
 
+  def load_manual_app_developers
+    ManualAppDeveloper.find_each do |manual_app_developer|
+      save_cluster(
+        manual_app_developer.ios_developer_ids,
+        manual_app_developer.android_developer_ids,
+        name: manual_app_developer.name
+      )
+    end
+  end
+
   def fill_clusters(developer_link_option_id)
     developer_link_option = DeveloperLinkOption.find(developer_link_option_id)
     ios_list = [developer_link_option.ios_developer_id]
@@ -99,9 +109,9 @@ class DeveloperLinkingWorker
     ios_list.count + android_list.count > MAX_CLUSTER_SIZE
   end
 
-  def save_cluster(ios_developer_ids, android_developer_ids)
+  def save_cluster(ios_developer_ids, android_developer_ids, name: nil)
     # need to find the name
-    name = cluster_name(ios_developer_ids, android_developer_ids)
+    name = name || cluster_name(ios_developer_ids, android_developer_ids)
     return puts 'Will not link' if name == DoNotLink
 
     app_developer = AppDeveloper.create!(name: name)
