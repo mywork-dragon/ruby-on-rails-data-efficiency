@@ -87,19 +87,30 @@ class DeveloperLinkingWorker
 
     return puts 'Already exists' if app_developer_exists?(ios_list, android_list)
 
-    previous_length = 0
-
-    while (previous_length < ios_list.count + android_list.count) && !cluster_too_large?(ios_list, android_list)
-      previous_length = ios_list.count + android_list.count
-      puts "Current cluster size: #{previous_length}"
+    if developer_link_option.method.to_sym == :name_match
+      # just create for name match
       links = DeveloperLinkOption
         .select(:ios_developer_id, :android_developer_id)
         .where('ios_developer_id in (?) or android_developer_id in (?)', ios_list, android_list)
+        .where(DeveloperLinkOption.methods[:name_match])
       ios_list = links.map(&:ios_developer_id).compact.uniq
       android_list = links.map(&:android_developer_id).compact.uniq
+    else
+      # go through clustering for website matches
+      previous_length = 0
+      while (previous_length < ios_list.count + android_list.count) && !cluster_too_large?(ios_list, android_list)
+        previous_length = ios_list.count + android_list.count
+        puts "Current cluster size: #{previous_length}"
+        links = DeveloperLinkOption
+          .select(:ios_developer_id, :android_developer_id)
+          .where('ios_developer_id in (?) or android_developer_id in (?)', ios_list, android_list)
+        ios_list = links.map(&:ios_developer_id).compact.uniq
+        android_list = links.map(&:android_developer_id).compact.uniq
+      end
+
+      return puts 'Cluster too large' if cluster_too_large?(ios_list, android_list)
     end
 
-    return puts 'Cluster too large' if cluster_too_large?(ios_list, android_list)
     return puts 'Already exists after querying' if app_developer_exists?(ios_list, android_list)
 
     save_cluster(ios_list, android_list)
