@@ -207,19 +207,23 @@ class DeveloperLinkingWorker
   end
 
   def queue_link_options
-    DeveloperLinkOption.select(:id, :ios_developer_id)
-      .group(:ios_developer_id)
-      .find_in_batches(batch_size: 1000) do |the_batch|
+    # queue name first, website second
+    DeveloperLinkOption.methods.values.each do |method|
+      DeveloperLinkOption.select(:id, :ios_developer_id)
+        .where(method: method)
+        .group(:ios_developer_id)
+        .find_in_batches(batch_size: 1000) do |the_batch|
 
-      args = the_batch.map do |developer_link_option|
-        [:fill_clusters, developer_link_option.id]
+        args = the_batch.map do |developer_link_option|
+          [:fill_clusters, developer_link_option.id]
+        end
+
+        SidekiqBatchQueueWorker.perform_async(
+          DeveloperLinkingWorker.to_s,
+          args,
+          bid
+        )
       end
-
-      SidekiqBatchQueueWorker.perform_async(
-        DeveloperLinkingWorker.to_s,
-        args,
-        bid
-      )
     end
   end
 
