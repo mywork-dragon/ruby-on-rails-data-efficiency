@@ -179,6 +179,25 @@ class IosDevice < ActiveRecord::Base
 
     end
 
+    def country_map(purpose)
+      devices = self.where(purpose: self.purposes[purpose])
+
+      ret = {}
+
+      devices.each do |device|
+        apple_account = device.apple_account
+        
+        if apple_account.blank?
+          ret[device.id] = nil
+          next
+        end
+
+        ret[device.id] = apple_account.app_store.country_code
+      end
+
+      ret
+    end
+
   end
 
 end
