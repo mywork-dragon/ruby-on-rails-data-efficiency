@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160830233001) do
+ActiveRecord::Schema.define(version: 20160901174623) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -2036,6 +2036,17 @@ ActiveRecord::Schema.define(version: 20160830233001) do
   end
 
   add_index "m_turk_workers", ["aws_identifier"], name: "index_m_turk_workers_on_aws_identifier", using: :btree
+
+  create_table "manual_app_developers", force: :cascade do |t|
+    t.string   "name",                  limit: 191
+    t.text     "ios_developer_ids",     limit: 65535
+    t.text     "android_developer_ids", limit: 65535
+    t.boolean  "flagged",                             default: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
+  end
+
+  add_index "manual_app_developers", ["name"], name: "index_manual_app_developers_on_name", using: :btree
 
   create_table "matchers", force: :cascade do |t|
     t.integer  "service_id",   limit: 4
