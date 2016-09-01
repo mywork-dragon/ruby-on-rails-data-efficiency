@@ -221,7 +221,8 @@ class DeveloperLinkingWorker
     match = regex.match(url)
     return BadFormat unless match
     url_format = match[1]
-    DbSanitizer.truncate_string(url_format)
+    result = DbSanitizer.truncate_string(url_format)
+    result.gsub(%r{/\z}, '') # remove trailing slash if no path
   end
 
   def valid_match_string?(match_string)
