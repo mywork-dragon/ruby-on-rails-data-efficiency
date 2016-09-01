@@ -78,7 +78,7 @@ class DeveloperLinkingService
 
       puts "Successes: #{success}"
       puts "Failures: #{failures}"
-      puts "Ratio: #{1.0 * success / (success + failures)}"
+      puts "%: #{100.0 * success / (success + failures)}"
     end
 
     def load_answers
