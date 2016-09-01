@@ -1,6 +1,14 @@
 class DeveloperLinkingService
   class << self
 
+    def begin
+      print 'Are you sure you want to do this? It will clear all app developers and linking tables?: [y/n]'
+      ans = gets.chomp
+      return puts 'Done' unless ans.include?('y')
+
+      fill_website_match_strings
+    end
+
     def build_app_developers
       batch = Sidekiq::Batch.new
       batch.description = 'Populating app developers'
@@ -126,17 +134,22 @@ class DeveloperLinkingService
 
   def on_complete_match_websites(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed website matching')
+    self.class.load_manual_app_developers
   end
 
   def on_complete_match_names(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed name matching')
+    self.class.match_websites
   end
 
   def on_complete_match_strings(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed populating match strings')
+    self.class.empty_link_options
+    self.class.match_names
   end
 
   def on_complete_manual_developers(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed loading manual developers')
+    self.class.build_app_developers
   end
 end
