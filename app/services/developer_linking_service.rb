@@ -117,8 +117,8 @@ class DeveloperLinkingService
       failure_developers
     end
 
-    def load_answers
-      links = File.open('app/lib/publisher_links.txt') {|f| f.read}
+    def load_answers(filepath = 'app/lib/publisher_links.txt')
+      links = File.open(filepath) {|f| f.read}
       ios_developer_ids = android_developer_ids = []
       links.split(/\n/).reduce({}) do |memo, line|
         parts = line.split.map(&:to_i)
