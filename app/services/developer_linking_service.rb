@@ -66,14 +66,19 @@ class DeveloperLinkingService
             success += 1
           end
         else
-          linked = app_developer.android_developers.find_by(id: android_developer_id)
+          if app_developer
+            linked = app_developer.android_developers.find_by(id: android_developer_id)
 
-          if linked
-            if app_developers.android_developers.count + app_developers.ios_developers.count > 10
+            if linked
+              if app_developers.android_developers.count + app_developers.ios_developers.count > 10
+                failure_developers += ios_developer
+                failures += 1
+              else
+                success += 1
+              end
+            else
               failure_developers += ios_developer
               failures += 1
-            else
-              success += 1
             end
           else
             failure_developers += ios_developer
