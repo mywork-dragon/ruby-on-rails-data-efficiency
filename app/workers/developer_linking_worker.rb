@@ -12,7 +12,7 @@ class DeveloperLinkingWorker
 
   def link_by_ios_developer_name(ios_developer_id)
     ios_developer = IosDeveloper.find(ios_developer_id)
-    name = ios_developer.name.chomp
+    name = ios_developer.name
     return puts 'empty name' unless name
 
     potential_matches = AndroidDeveloper.where(name: name)
