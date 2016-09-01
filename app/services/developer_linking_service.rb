@@ -60,7 +60,7 @@ class DeveloperLinkingService
 
         if android_developer_id == -1
           if app_developer
-            failure_developers += ios_developer
+            failure_developers << ios_developer
             failures += 1
           else
             success += 1
@@ -71,17 +71,17 @@ class DeveloperLinkingService
 
             if linked
               if app_developers.android_developers.count + app_developers.ios_developers.count > 10
-                failure_developers += ios_developer
+                failure_developers << ios_developer
                 failures += 1
               else
                 success += 1
               end
             else
-              failure_developers += ios_developer
+              failure_developers << ios_developer
               failures += 1
             end
           else
-            failure_developers += ios_developer
+            failure_developers << ios_developer
             failures += 1
           end
         end
