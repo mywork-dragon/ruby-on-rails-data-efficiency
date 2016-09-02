@@ -42,7 +42,11 @@ class BusinessEntityIosServiceWorker
 
         ss_dasi = ss.developer_app_store_identifier
         
-        website = Website.find_or_create_by(url: url)
+        website = begin
+                    Website.find_or_create_by(url: url)
+                  rescue ActiveRecord::RecordNotUnique
+                    Website.find_by!(url: url)
+                  end
 
         if known_dev_id.present?
           if ss_dasi != known_dev_id
