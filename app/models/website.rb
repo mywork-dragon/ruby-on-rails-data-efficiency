@@ -1,4 +1,7 @@
 class Website < ActiveRecord::Base
+
+  class BadFormat; end
+
   belongs_to :company
   
   has_many :ios_apps_websites
@@ -18,5 +21,25 @@ class Website < ActiveRecord::Base
   enum kind: [:primary, :secondary]
   
   validates :url, presence: true
+
+  before_create :set_match_string
+
+  def set_match_string
+    result = self.class.website_comparison_format(url)
+    self.match_string = result unless result == BadFormat
+  end
+
+  class << self
+
+    def website_comparison_format(url)
+      regex = %r{(?:https?://)?(?:www\.)?([^\s\?]+)}
+      match = regex.match(url)
+      return BadFormat unless match
+      url_format = match[1]
+      result = DbSanitizer.truncate_string(url_format)
+      result.gsub(%r{/+\z}, '') # remove trailing slash if no path
+    end
+
+  end
 
 end
