@@ -32,8 +32,11 @@ module Varys
     end
     
     #turn of auto-generation of stylesheet and Javascripts
-    config.generators.stylesheets = false
-    config.generators.javascripts = false
+    config.generators do |g|
+      g.stylesheets     false
+      g.javascripts     false
+      g.test_framework  false
+    end
     
     #cors
     # config.middleware.insert_before 0, "Rack::Cors" do
