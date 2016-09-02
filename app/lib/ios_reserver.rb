@@ -34,21 +34,21 @@ class IosReserver
 
     if purpose == :one_off
       if us_app?
-        reserve_device_flex_account_static(requirements)
+        reserve_device_flex_account_static(purpose, requirements)
       else
         reserve_device_flex_account_flex(requirements)
       end
     elsif [:test, :mass, :fb_ad_scrape].include?(purpose)
-      reserve_device_flex_account_static(requirements)
+      reserve_device_flex_account_static(purpose, requirements)
     end
   end
 
-  def reserve_device_flex_account_static(requirements)
+  def reserve_device_flex_account_static(purpose, requirements)
     puts "reserve_device_flex_account_static"
     @a_device_already_configured = true
 
     @device_reserver = IosDeviceReserver.new
-    @device_reserver.reserve(:one_off, requirements)
+    @device_reserver.reserve(purpose, requirements)
     @device = @device_reserver.device
 
     apple_account = @device.apple_account
