@@ -3,7 +3,6 @@ class DeveloperLinkingWorker
 
   sidekiq_options queue: :scraper_master, retry: false
 
-  class BadFormat; end
   class DoNotLink; end
 
   MAX_CLUSTER_SIZE = 5
@@ -221,21 +220,12 @@ class DeveloperLinkingWorker
   def fill_match_string(website_id)
     website = Website.find(website_id)
 
-    match_string = website_comparison_format(website.url)
-    value = match_string == BadFormat ? nil : match_string
+    match_string = Website.website_comparison_format(website.url)
+    value = match_string == Website::BadFormat ? nil : match_string
 
     website.match_string = value
 
     website.save!(validation: false)
-  end
-
-  def website_comparison_format(url)
-    regex = %r{(?:https?://)?(?:www\.)?([^\s\?]+)}
-    match = regex.match(url)
-    return BadFormat unless match
-    url_format = match[1]
-    result = DbSanitizer.truncate_string(url_format)
-    result.gsub(%r{/+\z}, '') # remove trailing slash if no path
   end
 
   def valid_match_string?(match_string)
