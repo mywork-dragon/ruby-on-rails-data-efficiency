@@ -39,7 +39,7 @@ class IosReserver
         reserve_device_flex_account_flex(requirements)
       end
     elsif [:test, :mass, :fb_ad_scrape].include?(purpose)
-      reserve_device_flex_account_static
+      reserve_device_flex_account_static(requirements)
     end
   end
 
