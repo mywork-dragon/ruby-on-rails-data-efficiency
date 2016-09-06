@@ -36,7 +36,8 @@ class ItunesTosWorker
   end
 
   def trigger_alert(app_store_id, updated_date)
-    puts 'RIP'
+    message = "*WARNING* :skull_and_crossbones:: App Store #{app_store_id}'s TOS just updated. Please log into all apple accounts in that app store and accept the new TOS. This app store will remain disabled from any app scanning"
+    Slackiq.message(message, webhook_name: :automated_alerts)
   end
 
   def on_complete_check_app_stores(status, options)
