@@ -255,22 +255,21 @@ class CocoapodDownloadWorker
 
     file = File.open(filename).read.scrub
 
-    if ext == '.h'
-      names = file.scan(/(@interface|@protocol)\s(.*?)[^a-zA-Z]/i).uniq  
+    names = if ext == '.h'
+      file.scan(/(?:@interface|@protocol)\s(\w+)[^a-zA-Z]/i).flatten.uniq
     elsif ext == '.swift'
-      names = file.scan(/^public\s+(class|protocol|struct)\s+(.*?)[^a-zA-Z]/i).uniq
+      file.scan(/^(?:@objc\(([\w]+)\)\s+)?public\s+(?:class|protocol|struct)\s+(\w+)[^a-zA-Z]/i).flatten.uniq
     else
-      names = []
-    end
+      []
+    end.compact
 
     names.each do |name|
-      next if name[1] == ''
 
-      next if Rails.env.production? && (name[1].blank? || in_apple_docs?(name[1]))
+      next if Rails.env.production? && in_apple_docs?(name)
 
       begin
 
-        CocoapodSourceData.find_or_create_by(name: name[1], cocoapod_id: cocoapod_id)
+        CocoapodSourceData.find_or_create_by(name: name, cocoapod_id: cocoapod_id)
 
       rescue
 
