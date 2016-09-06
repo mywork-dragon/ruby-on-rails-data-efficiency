@@ -1,7 +1,7 @@
 class ItunesTosWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :sdk_scraper_live_scan, retry: false
+  sidekiq_options queue: :monitor, retry: false
 
   def perform(method, *args)
     send(method, *args)
