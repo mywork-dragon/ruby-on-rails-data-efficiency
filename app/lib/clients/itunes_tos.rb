@@ -7,10 +7,14 @@ class ItunesTos
   format :html
 
   class InvalidHTML < RuntimeError; end
+  class InvalidInput < RuntimeError; end
 
   def self.itunes_updated_date(app_store_id:)
+    app_store = AppStore.find(app_store_id)
+    raise InvalidInput unless app_store.tos_url_path.present? && app_store.tos_url_path.first == '/'
+
     proxy_request(proxy_type: :general) do
-      res = get('/us/terms.html')
+      res = get(app_store.tos_url_path)
       html = Nokogiri::HTML(res.body)
       last_updated_text = html.css('#main > p:last-child').text.strip
       validate_date_text(last_updated_text)

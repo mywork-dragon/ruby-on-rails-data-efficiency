@@ -8,10 +8,10 @@ class ItunesTosWorker
   end
 
   def check_app_store(app_store_id)
-    updated_date = ItunesTos.itunes_updated_date(app_store_id)
+    updated_date = ItunesTos.itunes_updated_date(app_store_id: app_store_id)
     newest_tos_snapshot = AppStore.find(app_store_id).newest_tos_snapshot
 
-    if newest_tos_snapshot.blank? || newest_tos_snapshot.last_updated_date < updated_date
+    if newest_tos_snapshot.blank?
       save_snapshot(app_store_id, updated_date)
     elsif newest_tos_snapshot.last_updated_date < updated_date
       save_snapshot(app_store_id, updated_date)
