@@ -103,7 +103,10 @@ module IosCloud
   def international_lookup(ios_app_id)
     app_identifier = IosApp.find(ios_app_id).app_identifier
 
-    stores = AppStore.joins(:ios_apps).where('ios_apps.id = ?', ios_app_id).where(enabled: true).where.not(priority: nil).order(:priority)
+    stores = AppStore.joins(:ios_apps)
+      .where('ios_apps.id = ?', ios_app_id)
+      .where(enabled: true, tos_valid: true).where.not(priority: nil)
+      .order(:priority)
 
     res = nil
     available_store = stores.find do |store| # need to do limiting later when get more stores
