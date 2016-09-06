@@ -8,7 +8,7 @@ class ItunesTos
 
   class InvalidHTML < RuntimeError; end
 
-  def self.itunes_updated_date(app_store_id)
+  def self.itunes_updated_date(app_store_id:)
     proxy_request(proxy_type: :general) do
       res = get('/us/terms.html')
       html = Nokogiri::HTML(res.body)
