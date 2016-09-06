@@ -65,6 +65,10 @@ every :day, at: '6:30am', roles: [:sdk_scraper_live_scan] do
   rake "itunes_chart:run_tunes_top_free"
 end
 
+every :day, at: '7:00am', roles: [:monitor] do
+  runner "ItunesTosWorker.check_app_stores"
+end
+
 # every 20.minutes, roles: [:monitor] do
 #   runner "ProxyMonitor.check_proxies"
 # end
