@@ -11,7 +11,7 @@ class PackageSearchServiceWorker
   end
 
   def proxy_type
-    :tor
+    :android_classification
   end
 
   include PackageSearchWorker
