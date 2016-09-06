@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160901190653) do
+ActiveRecord::Schema.define(version: 20160906192047) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -512,14 +512,28 @@ ActiveRecord::Schema.define(version: 20160901190653) do
 
   add_index "app_store_scaling_factors", ["app_store_id"], name: "index_app_store_scaling_factors_on_app_store_id", unique: true, using: :btree
 
+  create_table "app_store_tos_snapshots", force: :cascade do |t|
+    t.integer  "app_store_id",      limit: 4
+    t.date     "last_updated_date"
+    t.datetime "good_as_of_date"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "app_store_tos_snapshots", ["app_store_id", "last_updated_date"], name: "index_app_store_tos_store_id_updated_date", using: :btree
+  add_index "app_store_tos_snapshots", ["good_as_of_date"], name: "index_app_store_tos_snapshots_on_good_as_of_date", using: :btree
+  add_index "app_store_tos_snapshots", ["last_updated_date"], name: "index_app_store_tos_snapshots_on_last_updated_date", using: :btree
+
   create_table "app_stores", force: :cascade do |t|
     t.string   "country_code",     limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",             limit: 191
-    t.boolean  "enabled",                      default: false
+    t.boolean  "enabled",                        default: false
     t.integer  "priority",         limit: 4
     t.integer  "display_priority", limit: 4
+    t.boolean  "tos_valid",                      default: true
+    t.text     "tos_url_path",     limit: 65535
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
@@ -528,6 +542,7 @@ ActiveRecord::Schema.define(version: 20160901190653) do
   add_index "app_stores", ["name"], name: "index_app_stores_on_name", using: :btree
   add_index "app_stores", ["priority", "enabled"], name: "index_app_stores_on_priority_and_enabled", using: :btree
   add_index "app_stores", ["priority"], name: "index_app_stores_on_priority", unique: true, using: :btree
+  add_index "app_stores", ["tos_valid"], name: "index_app_stores_on_tos_valid", using: :btree
 
   create_table "app_stores_ios_app_backups", force: :cascade do |t|
     t.integer  "ios_app_id",   limit: 4
