@@ -14,6 +14,8 @@ class AppStore < ActiveRecord::Base
   has_many :ios_app_current_snapshots
   has_many :ios_app_current_snapshot_backups
 
+  has_many :app_store_tos_snapshots
+
   has_one :app_store_scaling_factor
   has_one :app_store_scaling_factor_backup
 
@@ -34,6 +36,10 @@ class AppStore < ActiveRecord::Base
     else
       AppStoreInternationalAvailabilityWorker.new.perform
     end
+  end
+
+  def newest_tos_snapshot
+    app_store_tos_snapshots.order(last_updated_date: :DESC).limit(1).take
   end
 
   def move_to_id(dest)
