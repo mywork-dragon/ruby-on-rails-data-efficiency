@@ -51,7 +51,7 @@ class ItunesTosWorker
 
       batch.jobs do
         AppStore.where(enabled: true).each do |app_store|
-          ItunesTosWorker.perform_async(app_store.id)
+          ItunesTosWorker.perform_async(:check_app_store, app_store.id)
         end
       end
     end
