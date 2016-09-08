@@ -156,7 +156,7 @@ gem 'chewy', '0.8.4'
 
 gem 'paperclip', '~>5.0.0.beta2'
 
-gem 'mighty_aws', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git', tag: '0.8.1'
+gem 'mighty_aws', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git', tag: '0.8.2'
 
 gem 'colorize', '0.7.7'
 
