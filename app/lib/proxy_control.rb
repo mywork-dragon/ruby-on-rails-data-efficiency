@@ -1,7 +1,4 @@
 class ProxyControl
-
-  class NoOp; end
-
   def start_proxies
     activate_proxies(activate: true)
   end
@@ -24,11 +21,11 @@ class ProxyControl
 
     return signal unless changed
     activate ? activation_routine(signal) : deactivation_routine(signal)
+    signal
   end
 
   def deactivation_routine(signal)
     MightyAws::InstanceControl.stop_temporary_proxies
-    signal
   end
 
   def activation_routine(signal)
@@ -36,7 +33,6 @@ class ProxyControl
     sleep 10 # let proxies spin up and start running
     MightyAws::Api.new.register_temp_proxies_with_proxy_lbs
     sleep 35 # register unregistered proxies. Health check is every 30 seconds
-    signal
   end
 
 end
