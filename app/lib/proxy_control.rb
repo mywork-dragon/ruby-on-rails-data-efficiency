@@ -33,9 +33,9 @@ class ProxyControl
 
   def activation_routine(signal)
     MightyAws::InstanceControl.start_temporary_proxies
-    sleep 10 # let proxies spin up
+    sleep 10 # let proxies spin up and start running
     MightyAws::Api.new.register_temp_proxies_with_proxy_lbs
-    sleep 35 # register the proxies. Health check is every 30 seconds
+    sleep 35 # register unregistered proxies. Health check is every 30 seconds
     signal
   end
 
