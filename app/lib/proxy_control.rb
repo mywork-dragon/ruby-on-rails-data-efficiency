@@ -1,6 +1,6 @@
 class ProxyControl
   def start_proxies
-    toggle(activate: true)
+    toggle_proxies(activate: true)
   end
 
   def stop_proxies
