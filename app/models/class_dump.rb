@@ -12,7 +12,7 @@ class ClassDump < ActiveRecord::Base
 
   validates_attachment_file_name :app_content, :matches => [/tgz\Z/]
 
-  enum error_code: [:devices_busy, :ssh_failure]
+  enum error_code: [:devices_busy, :ssh_failure, :no_apple_accounts]
 
   def get_s3_bucket
     Rails.env.production? ? "varys-apk-files" : "varys-apk-files-development"

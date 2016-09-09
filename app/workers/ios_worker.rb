@@ -88,9 +88,16 @@ module IosWorker
       return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
     end
 
+    if apple_account.blank?
+      classdump.complete = true
+      classdump.error_code = :no_apple_accounts
+      classdump.save
+
+      return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
+    end
+
     # attach ios_device and apple_account to classdump
     classdump.ios_device_id = device.id
-    fail "Could not reserve an Apple Account. Device will be left in reserved state" if apple_account.blank?
     classdump.apple_account_id = apple_account.id
     classdump.save
 
