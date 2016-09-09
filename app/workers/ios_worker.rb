@@ -63,16 +63,11 @@ module IosWorker
     classdump = ClassDump.create!(ipa_snapshot_id: snapshot.id)
 
     # get a device
-    puts "#{snapshot.ipa_snapshot_job_id}: Reserving device and account #{Time.now}"
-    reserver = IosReserver.new(ios_app: ios_app, app_store: snapshot.app_store)
+    puts "#{snapshot.id}: Reserving device and account #{Time.now}"
+    reserer = IosScanReserver.new(snapshot)
     reserver.reserve(purpose, requirements)
     device = reserver.device
     apple_account = reserver.apple_account
-    a_device_already_configured = reserver.a_device_already_configured?
-    puts "#{snapshot.ipa_snapshot_job_id}: #{device ? ('Reserved device ' + device.id.to_s) : 'Failed to reserve'}"
-    puts "#{snapshot.ipa_snapshot_job_id}: #{apple_account ? ('Reserved apple_account ' + apple_account.id.to_s) : 'Failed to reserve'}"
-    puts "#{snapshot.ipa_snapshot_job_id}: a_device_already_configured: #{a_device_already_configured}"
-    puts Time.now
 
     # no devices available...fail out and save
     if device.nil?
@@ -96,18 +91,12 @@ module IosWorker
     classdump.apple_account_id = apple_account.id
     classdump.save
 
-    if a_device_already_configured
-      apple_account_to_switch_to = nil
-      account_changed_lambda = -> { } # no =-op
-    else
-      apple_account_to_switch_to = apple_account
-      account_changed_lambda = -> { reserver.account_changed }
-    end
+    account_changed_lambda = -> { reserver.account_changed } if reserver.is_swap_required?
 
     # do the actual classdump
     # after install and dump, will run the procedure block which updates the classdump table. 
     # Will be useful for polling or could add some logic to send status updates
-    final_result = IosDeviceService.new(device, apple_account: apple_account_to_switch_to, account_changed_lambda: account_changed_lambda).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
+    final_result = IosDeviceService.new(device, apple_account: apple_account, account_changed_lambda: account_changed_lambda).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
       row = result_to_cd_row(incomplete_result)
       row[:complete] = false
       classdump.update row
