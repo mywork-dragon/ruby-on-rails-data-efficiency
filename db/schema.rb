@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906192047) do
+ActiveRecord::Schema.define(version: 20160909174100) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1601,8 +1601,10 @@ ActiveRecord::Schema.define(version: 20160906192047) do
     t.string   "ios_version_fmt",     limit: 191
     t.boolean  "disabled",                          default: false
     t.integer  "open_proxy_id",       limit: 4
+    t.integer  "apple_account_id",    limit: 4
   end
 
+  add_index "ios_devices", ["apple_account_id"], name: "index_ios_devices_on_apple_account_id", using: :btree
   add_index "ios_devices", ["disabled"], name: "index_ios_devices_on_disabled", using: :btree
   add_index "ios_devices", ["ios_device_model_id"], name: "index_ios_devices_on_ios_device_model_id", using: :btree
   add_index "ios_devices", ["ip"], name: "index_ios_devices_on_ip", using: :btree
