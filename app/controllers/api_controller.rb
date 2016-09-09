@@ -839,7 +839,7 @@ class ApiController < ApplicationController
   end
 
   def set_file_headers
-    file_name = "mightsignal_apps.csv"
+    file_name = "mightysignal_apps.csv"
     headers["Content-Type"] = "text/csv"
     headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
   end
