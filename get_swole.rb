@@ -140,7 +140,7 @@ if run_tests
     abort
   end
 
-elsif %w(web darth_vader kylo_ren ios_live_scan).include?(stage) && false
+elsif %w(web darth_vader kylo_ren ios_live_scan).include?(stage)
   puts "Stage #{stage} is a live production stage. You're not allowed to bypass tests for this stage.".red
   abort
 end
