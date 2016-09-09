@@ -7,8 +7,7 @@ class IosDeviceReserver
     test: :immediate_reserve,
     mass: :patient_reserve,
     fb_ad_scrape: :patient_reserve, # switch to patient reserve later
-    one_off_intl: :immediate_reserve,
-    mass_intl: :patient_reserve
+    one_off_intl: :immediate_reserve
   }
 
   attr_reader :device, :owner, :max_wait
@@ -84,7 +83,9 @@ class IosDeviceReserver
   def immediate_reserve(purpose, requirements)
     any_exist?(purpose, requirements)
 
-    device = try_reserve(purpose, requirements)
+    consider_app_store = purpose == :one_off_intl
+
+    device = try_reserve(purpose, requirements, consider_app_store: consider_app_store)
 
     raise UnavailableDevice if device.nil?
 
@@ -121,7 +122,7 @@ class IosDeviceReserver
     nil
   end
 
-  def build_query(purpose, requirements, available_only: true)
+  def build_query(purpose, requirements, available_only: true, app_store_configured: false)
     query_parts = []
 
     query_parts << "id = #{requirements[:ios_device_id]}" if requirements[:ios_device_id]
@@ -139,6 +140,12 @@ class IosDeviceReserver
     ### pre build query now and join by ids to minimize time in transaction loop
 
     combined_id_constraints = []
+
+    if app_store_configured
+      valid_device_ids = IosDevice.joins(:apple_account).where('apple_accounts.app_store_id = ?', requirements[:app_store_id])
+      raise InvalidRequirement, "No devices registered to accounts in app store #{requirements[:app_store_id]}" if valid_device_ids.blank?
+      combined_id_constraints.push(valid_device_ids)
+    end
 
     if requirements['minimumOsVersion']
       valid_device_ids = IosDevice.where("ios_version_fmt >= '#{IosDevice.ios_version_to_fmt_version(requirements['minimumOsVersion'])}'").pluck(:id)
@@ -170,8 +177,17 @@ class IosDeviceReserver
     query_parts.join(' and ')
   end
 
-  def try_reserve(purpose, requirements)
-    query = build_query(purpose, requirements, available_only: true)
+  def try_reserve(purpose, requirements, consider_app_store: false)
+    query = if consider_app_store
+              begin # try to see if devices available already
+                build_query(purpose, requirements, available_only: true, app_store_configured: true)
+              rescue InvalidRequirement
+                build_query(purpose, requirements, available_only: true) # fall back to a new device
+              end
+            else
+              build_query(purpose, requirements, available_only: true)
+            end
+
     IosDevice.transaction do
 
       d = IosDevice.lock.where(query).order(:last_used).first
