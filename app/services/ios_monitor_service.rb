@@ -34,7 +34,7 @@ class IosMonitorService
       accts += AppleAccount.where(kind: AppleAccount.kinds[:flex])
 
       accts.inject({}) do |mem, acct|
-        mem[acct.acct.id] = acct.class_dumps.count
+        mem[acct.id] = acct.class_dumps.count
         mem
       end
     end
