@@ -63,7 +63,7 @@ class IosScanReserver
 
   def release
     raise MultipleReleases if @released
-    @device_reserver.release
+    @device_reserver.release if device
     @released = true
   end
 
