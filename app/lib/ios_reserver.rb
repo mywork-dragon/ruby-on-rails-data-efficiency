@@ -115,21 +115,6 @@ class IosReserver
 
   def release
     fail AlreadyReleased if @released
-
-    if @apple_account
-      @apple_account.ios_device = nil
-      @apple_account.save
-
-      # nil out all accounts devices since only one account per phone at a time
-      if @device
-        AppleAccount.where(ios_device: @device).each do |apple_account|
-          apple_account.ios_device = nil
-          apple_account.save
-        end
-      end
-
-    end
-
     @device_reserver.release if @device_reserver && @device
     @apple_account_reserver.release if @apple_account_reserver && @apple_account
     @released = true

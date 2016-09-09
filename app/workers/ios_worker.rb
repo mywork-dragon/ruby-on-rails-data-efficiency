@@ -83,9 +83,16 @@ module IosWorker
       return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
     end
 
+    if apple_account.blank?
+      classdump.complete = true
+      classdump.error_code = :no_apple_accounts
+      classdump.save
+
+      return on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: classdump)
+    end
+
     # attach ios_device and apple_account to classdump
     classdump.ios_device_id = device.id
-    fail "Could not reserve an Apple Account. Device will be left in reserved state" if apple_account.blank?
     classdump.apple_account_id = apple_account.id
     classdump.save
 
@@ -169,7 +176,7 @@ module IosWorker
 
 		downloads_count = apple_account.class_dumps.count
 
-		alert_frequency = device.purpose == 'one_off' ? 3 : 15
+		alert_frequency = ['one_off', 'one_off_intl'].include?(device.purpose) ? 3 : 15
 
 		message = if downloads_count == warning_level
 			"*CAUTION*:exclamation:: AppleAccount #{apple_account.id} has crossed the #{warning_level} downloads threshold. *Check device #{device.id} for slowness*"

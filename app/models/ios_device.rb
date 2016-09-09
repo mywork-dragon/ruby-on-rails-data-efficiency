@@ -1,7 +1,7 @@
 class IosDevice < ActiveRecord::Base
 
 	has_many :class_dump
-  has_one :apple_account
+  belongs_to :apple_account
   belongs_to :softlayer_proxy
   belongs_to :open_proxy
   belongs_to :ios_device_model
@@ -47,7 +47,7 @@ class IosDevice < ActiveRecord::Base
     def switch_account(ios_device_id:)
       transaction do
         # keep track of the old account
-        old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
+        old_apple_account = IosDevice.find(ios_device_id).apple_account
 
         # select an email address to use it with
         account = pick_email_account
@@ -57,9 +57,7 @@ class IosDevice < ActiveRecord::Base
         # create parameters for a new apple account
         new_apple_account = AppleAccount.create!(email: account.email, password: 'Somename1')
 
-        old_apple_account.update!(ios_device_id: nil) if old_apple_account.present?
-
-        new_apple_account.update!(ios_device_id: ios_device_id)
+        IosDevice.find(ios_device_id).update(apple_account: new_apple_account)
 
         puts "Apple Account".purple
         ap "Email: #{new_apple_account.email}"
@@ -107,7 +105,9 @@ class IosDevice < ActiveRecord::Base
 
           raise 'Cannot find a free email address' if account.nil?
 
-          apple_account = AppleAccount.create!(email: account.email, password: 'Somename1', ios_device: ios_device)
+          apple_account = AppleAccount.create!(email: account.email, password: 'Somename1')
+          ios_device.apple_account = apple_account
+          ios_device.save!
 
           ap apple_account
 
@@ -168,13 +168,8 @@ class IosDevice < ActiveRecord::Base
 
       map.each do |ios_device_id, email_prefix|
         email = IosEmailAccount.create!(email: "#{email_prefix}@vfemail.net", password: "thisisapassword")
-
         new_apple_account = AppleAccount.create!(email: email.email, password: 'Somename1', app_store_id: 1)
-        old_apple_account = AppleAccount.find_by_ios_device_id(ios_device_id)
-
-        old_apple_account.update!(ios_device_id: nil) if old_apple_account.present?
-
-        new_apple_account.update!(ios_device_id: ios_device_id)
+        IosDevice.find(ios_device_id).update(apple_account: new_apple_account)
       end
 
     end
