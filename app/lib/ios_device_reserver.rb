@@ -7,7 +7,7 @@ class IosDeviceReserver
     test: :immediate_reserve,
     mass: :patient_reserve,
     fb_ad_scrape: :patient_reserve,
-    one_off_intl: :immediate_reserve
+    one_off_intl: :immediate_reserve_flex
   }
 
   attr_reader :device, :owner, :max_wait
@@ -80,17 +80,30 @@ class IosDeviceReserver
 
   private
 
+  # same as immediate reserve but try to consider app store first
+  def immediate_reserve_flex(purpose, requirements)
+    any_exist?(purpose, requirements)
+
+    device = begin
+               try_reserve(purpose, requirements, consider_app_store: true)
+             rescue InvalidRequirement
+               nil
+             end
+
+    if device
+      @device = device
+      return
+    end
+
+    immediate_reserve(purpose, requirements)
+  end
+
   def immediate_reserve(purpose, requirements)
     any_exist?(purpose, requirements)
 
-    consider_app_store = purpose == :one_off_intl
-
-    device = try_reserve(purpose, requirements, consider_app_store: consider_app_store)
+    device = try_reserve(purpose, requirements)
 
     raise UnavailableDevice if device.nil?
-
-    device.in_use = true
-    device.save
 
     @device = device
 
@@ -179,11 +192,7 @@ class IosDeviceReserver
 
   def try_reserve(purpose, requirements, consider_app_store: false)
     query = if consider_app_store
-              begin # try to see if devices available already
-                build_query(purpose, requirements, available_only: true, app_store_configured: true)
-              rescue InvalidRequirement
-                build_query(purpose, requirements, available_only: true) # fall back to a new device
-              end
+              build_query(purpose, requirements, available_only: true, app_store_configured: true)
             else
               build_query(purpose, requirements, available_only: true)
             end

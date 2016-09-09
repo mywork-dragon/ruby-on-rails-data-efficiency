@@ -64,7 +64,7 @@ module IosWorker
 
     # get a device
     puts "#{snapshot.id}: Reserving device and account #{Time.now}"
-    reserer = IosScanReserver.new(snapshot)
+    reserver = IosScanReserver.new(snapshot)
     reserver.reserve(purpose, requirements)
     device = reserver.device
     apple_account = reserver.apple_account
@@ -151,6 +151,7 @@ module IosWorker
   rescue => e
     result = e
   ensure
+    byebug
     reserver.release if defined?(reserver) && !reserver.released?
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end
@@ -177,7 +178,7 @@ module IosWorker
 	end
 
   def build_reservation_requirements(snapshot)
-    requirements = JSON.parse(snapshot.lookup_contents)
+    requirements = JSON.parse(snapshot.lookup_content)
     requirements[:app_store_id] = snapshot.app_store_id
     requirements
   end

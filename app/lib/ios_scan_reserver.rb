@@ -9,6 +9,7 @@ class IosScanReserver
   def initialize(ipa_snapshot)
     @ipa_snapshot = ipa_snapshot
     @device_reserver = IosDeviceReserver.new(self)
+    @released = false
   end
 
   def reserve(scan_purpose, requirements)
@@ -56,8 +57,14 @@ class IosScanReserver
     @apple_account
   end
 
+  def released?
+    @released
+  end
+
   def release
-    @device_reserver.release if device
+    raise MultipleReleases if @released
+    @device_reserver.release
+    @released = true
   end
 
   def us_app?
@@ -79,6 +86,7 @@ class IosScanReserver
   end
 
   def account_changed
+    byebug
     device.update!(apple_account: apple_account)
   end
 
