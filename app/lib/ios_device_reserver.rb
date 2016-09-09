@@ -142,7 +142,7 @@ class IosDeviceReserver
     combined_id_constraints = []
 
     if app_store_configured
-      valid_device_ids = IosDevice.joins(:apple_account).where('apple_accounts.app_store_id = ?', requirements[:app_store_id])
+      valid_device_ids = IosDevice.joins(:apple_account).where('apple_accounts.app_store_id = ?', requirements[:app_store_id]).pluck(:id)
       raise InvalidRequirement, "No devices registered to accounts in app store #{requirements[:app_store_id]}" if valid_device_ids.blank?
       combined_id_constraints.push(valid_device_ids)
     end
