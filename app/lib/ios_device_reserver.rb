@@ -82,8 +82,6 @@ class IosDeviceReserver
   private
 
   def immediate_reserve(purpose, requirements)
-    query = build_query(purpose, requirements)
-
     any_exist?(purpose, requirements)
 
     device = try_reserve(purpose, requirements)
@@ -99,8 +97,6 @@ class IosDeviceReserver
   end
 
   def patient_reserve(purpose, requirements)
-    query = build_query(purpose, requirements)
-
     device = nil
 
     start_time = Time.now
