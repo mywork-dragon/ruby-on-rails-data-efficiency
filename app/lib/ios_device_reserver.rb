@@ -6,7 +6,7 @@ class IosDeviceReserver
     one_off: :immediate_reserve,
     test: :immediate_reserve,
     mass: :patient_reserve,
-    fb_ad_scrape: :patient_reserve, # switch to patient reserve later
+    fb_ad_scrape: :patient_reserve,
     one_off_intl: :immediate_reserve
   }
 
