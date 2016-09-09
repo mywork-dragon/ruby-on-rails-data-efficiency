@@ -30,10 +30,11 @@ class IosMonitorService
     end
 
     def check_apple_accounts
-      accts = AppleAccount.where.not(ios_device_id: nil)
+      accts = AppleAccount.where(kind: AppleAccount.kinds[:static]).where.not(ios_device_id: nil)
+      accts += AppleAccount.where(kind: AppleAccount.kinds[:flex])
 
       accts.inject({}) do |mem, acct|
-        mem[acct.ios_device_id] = acct.class_dumps.count
+        mem[acct.id] = acct.class_dumps.count
         mem
       end
     end
