@@ -151,7 +151,6 @@ module IosWorker
   rescue => e
     result = e
   ensure
-    byebug
     reserver.release if defined?(reserver) && !reserver.released?
 		on_complete(ipa_snapshot_id: ipa_snapshot_id, bid: bid, result: result)
 	end

@@ -86,7 +86,6 @@ class IosScanReserver
   end
 
   def account_changed
-    byebug
     device.update!(apple_account: apple_account)
   end
 
