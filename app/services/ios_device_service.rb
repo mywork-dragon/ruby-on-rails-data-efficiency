@@ -78,7 +78,7 @@ class IosDeviceService
   }
 
   # If init with an account, will choose it first. account keys: :apple_id, :password
-  def initialize(device, apple_account: nil, account_changed_lambda: nil)
+  def initialize(device, apple_account:, account_changed_lambda: nil)
     @device = device
     @bundle_info = nil
     @decrypted_file = nil
@@ -163,7 +163,7 @@ class IosDeviceService
     end
 
     result = {success: false}
-    result.merge!({account_success: false}) if @apple_account
+    result.merge!({account_success: false}) if @account_changed_lambda
     result.merge!({
       success: false,
       install_success: false,
@@ -181,8 +181,10 @@ class IosDeviceService
           install_debug_script(ssh)
           install_display_statuses(ssh)
 
-          change_account(ssh) if @apple_account
-          @account_changed_lambda.call # fire the callback
+          if @account_changed_lambda
+            change_account(ssh)
+            @account_changed_lambda.call # fire the callback
+          end
 
           app_info = install(ssh, app_identifier, country_code)
           result[:install_time] = Time.now
