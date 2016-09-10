@@ -37,10 +37,6 @@ class IosScanReserver
     @device_reserver.device if @device_reserver
   end
 
-  def correct_app_store?(apple_account, app_store_id)
-    apple_account && apple_account.app_store_id == app_store_id
-  end
-
   # Can have one account on multiple devices. no "reserving"
   def pick_flex_apple_account(app_store_id)
     account = AppleAccount.transaction do
