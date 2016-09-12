@@ -10,13 +10,13 @@ class AppStoreDevelopersWorker
 
   def create_by_developer_identifier(developer_identifier)
     @developer_identifier = developer_identifier
-    get_rows_by_developer_identifier
+    rows_by_developer_identifier
     create_using_rows
   end
 
   def create_by_ios_app_id(ios_app_id)
     @ios_app_id = ios_app_id
-    get_rows_by_ios_app_id
+    rows_by_ios_app_id
     create_using_rows
   end
 
@@ -27,7 +27,7 @@ class AppStoreDevelopersWorker
     update_ios_apps(developer)
   end
 
-  def get_rows_by_developer_identifier
+  def rows_by_developer_identifier
     @rows = IosAppCurrentSnapshotBackup
       .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
       .where(developer_app_store_identifier: @developer_identifier) +
@@ -36,7 +36,7 @@ class AppStoreDevelopersWorker
           .where(developer_app_store_identifier: @developer_identifier)
   end
 
-  def get_rows_by_ios_app_id
+  def rows_by_ios_app_id
     @rows = IosAppCurrentSnapshotBackup
       .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
       .where(ios_app_id: @ios_app_id) +
