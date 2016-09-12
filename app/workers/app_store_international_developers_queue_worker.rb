@@ -43,7 +43,7 @@ class AppStoreInternationalDevelopersQueueWorker
       li "App #{index*batch_size}"
 
       the_batch.each_slice(100) do |slice|
-        args = slice.compact.map { |x| [:create_by_ios_app_id, x] }
+        args = slice.compact.map { |x| [:create_by_ios_app_id, x.id] }
         SidekiqBatchQueueWorker.perform_async(
           AppStoreDevelopersWorker.to_s,
           args,
