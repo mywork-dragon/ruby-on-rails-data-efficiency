@@ -1,25 +1,46 @@
 class AppStoreDevelopersWorker
+  class NoDeveloperIdentifier < RuntimeError; end
 
   include Sidekiq::Worker
 
   sidekiq_options backtrace: true, retry: false, queue: :default
 
-  def perform(developer_identifier)
+  def perform(method, *args)
+    send(method, *args)
+  end
+
+  def create_by_developer_identifier(developer_identifier)
     @developer_identifier = developer_identifier
-    get_rows
+    rows_by_developer_identifier
     seller_name = get_seller_name
     websites = get_websites
     developer = store_developer(seller_name, websites)
     update_ios_apps(developer)
   end
 
-  def get_rows
+  def create_by_ios_app_id(ios_app_id)
+    @ios_app_id = ios_app_id
+    developer_identifier = find_developer_app_store_identifier
+    create_by_developer_identifier(developer_identifier)
+  end
+
+  def rows_by_developer_identifier
     @rows = IosAppCurrentSnapshotBackup
       .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
       .where(developer_app_store_identifier: @developer_identifier) +
     IosAppCurrentSnapshot
           .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
           .where(developer_app_store_identifier: @developer_identifier)
+  end
+
+  def find_developer_app_store_identifier
+    current_snapshot = IosAppCurrentSnapshot.where(ios_app_id: @ios_app_id).limit(1).take
+    return current_snapshot.developer_app_store_identifier if current_snapshot
+
+    backup_snapshot = IosAppCurrentSnapshotBackup.where(ios_app_id: @ios_app_id).limit(1).take
+    return backup_snapshot.developer_app_store_identifier if backup_snapshot
+
+    raise NoDeveloperIdentifier
   end
 
   def get_seller_name
@@ -35,7 +56,7 @@ class AppStoreDevelopersWorker
   def store_developer(seller_name, websites)
     website_rows = store_websites(websites)
     developer = begin
-                  IosDeveloper.create!(
+                  IosDeveloper.find_or_create_by!(
                     identifier: @developer_identifier,
                     name: seller_name
                   )

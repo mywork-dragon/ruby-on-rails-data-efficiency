@@ -80,7 +80,7 @@ class AppStoreInternationalService
       Slackiq.message("Starting to create developers", webhook_name: :main)
 
       batch.jobs do
-        AppStoreInternationalDevelopersQueueWorker.perform_async
+        AppStoreInternationalDevelopersQueueWorker.perform_async(:queue_apps_without_developers)
       end
     end
 

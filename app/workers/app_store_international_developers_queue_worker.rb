@@ -3,7 +3,11 @@ class AppStoreInternationalDevelopersQueueWorker
   
   sidekiq_options queue: :scraper_master, retry: false
 
-  def perform
+  def perform(method, *args)
+    send(method, *args)
+  end
+
+  def queue_missing_developer_identifiers
 
     batch_size = 10e3.to_i
 
@@ -16,7 +20,7 @@ class AppStoreInternationalDevelopersQueueWorker
       developer_ids = query.pluck(:developer_app_store_identifier)
 
       developer_ids.each_slice(100) do |slice|
-        args = slice.compact.map { |x| [x] }
+        args = slice.compact.map { |x| [:create_by_developer_identifier, x] }
         SidekiqBatchQueueWorker.perform_async(
           AppStoreDevelopersWorker.to_s,
           args,
@@ -24,5 +28,34 @@ class AppStoreInternationalDevelopersQueueWorker
         )
       end
     end
+  end
+  
+  def queue_apps_without_developers
+
+    batch_size = 10e3.to_i
+
+    IosApp.select(:id).distinct
+      .joins(:ios_app_current_snapshot_backups)
+      .where(ios_developer_id: nil)
+      .find_in_batches(batch_size: batch_size)
+      .with_index do |the_batch, index|
+
+      li "App #{index*batch_size}"
+
+      the_batch.each_slice(100) do |slice|
+        args = slice.compact.map { |x| [:create_by_ios_app_id, x.id] }
+        SidekiqBatchQueueWorker.perform_async(
+          AppStoreDevelopersWorker.to_s,
+          args,
+          bid
+        )
+      end
+
+    end
+  end
+
+  def run_by_app_identifier(app_identifier)
+    ios_app = IosApp.find_by_app_identifier!(app_identifier)
+    AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, ios_app.id)
   end
 end

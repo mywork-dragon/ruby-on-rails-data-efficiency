@@ -67,7 +67,11 @@ class EwokService
 
       batch = Sidekiq::Batch.new
       batch.description = "New app Ewok international scrape (#{store}): #{app_identifier}" 
-      batch.on(:complete, 'EwokService#on_complete_scrape_international_async')
+      batch.on(
+        :complete,
+        'EwokService#on_complete_scrape_international_async',
+        'app_identifier' => app_identifier
+      )
 
       batch.jobs do 
         EwokScrapeWorker.perform_async(method, app_identifier)
@@ -85,7 +89,7 @@ class EwokService
 
     if status.failures.zero?
       # create developers. not essential, so will run on scraper queue. If fail, will get picked up during next scrape
-      AppStoreInternationalService.run_developers
+      AppStoreInternationalDevelopersQueueWorker.perform_async(:run_by_app_identifier, options['app_identifier'].to_i)
     end
   end
   
