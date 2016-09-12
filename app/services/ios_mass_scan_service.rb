@@ -60,7 +60,7 @@ class IosMassScanService
         true if ratings && ratings > ratings_min
       end
 
-      puts "Filtered to relevant #{relevant.count}: Continue? [y/n]"
+      print "Filtered to relevant #{relevant.count}. Continue? [y/n] : "
       return unless gets.chomp.include?('y')
 
       run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
