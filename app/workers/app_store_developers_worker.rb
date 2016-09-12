@@ -34,12 +34,6 @@ class AppStoreDevelopersWorker
   end
 
   def find_developer_app_store_identifier
-    us_app_snapshot = IosApp.find(@ios_app_id).newest_ios_app_snapshot
-
-    if us_app_snapshot && us_app_snapshot.developer_app_store_identifier
-      return us_app_snapshot.developer_app_store_identifier
-    end
-
     current_snapshot = IosAppCurrentSnapshot.where(ios_app_id: @ios_app_id).limit(1).take
     return current_snapshot.developer_app_store_identifier if current_snapshot
 
