@@ -180,6 +180,7 @@ ActiveRecord::Schema.define(version: 20160909174100) do
     t.integer  "website_id",           limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_valid",                       default: true
   end
 
   add_index "android_developers_websites", ["android_developer_id", "website_id"], name: "android_dev_id_and_website_id", using: :btree
@@ -1551,6 +1552,7 @@ ActiveRecord::Schema.define(version: 20160909174100) do
     t.integer  "website_id",       limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_valid",                   default: true
   end
 
   add_index "ios_developers_websites", ["ios_developer_id", "website_id"], name: "index_ios_developers_websites_on_ios_developer_id_and_website_id", using: :btree
