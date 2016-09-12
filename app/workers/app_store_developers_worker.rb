@@ -62,7 +62,7 @@ class AppStoreDevelopersWorker
   def store_developer(seller_name, websites)
     website_rows = store_websites(websites)
     developer = begin
-                  IosDeveloper.create!(
+                  IosDeveloper.find_or_create_by!(
                     identifier: @developer_identifier,
                     name: seller_name
                   )
