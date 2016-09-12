@@ -1,4 +1,5 @@
 class AppStoreDevelopersWorker
+  class NoDeveloperIdentifier < RuntimeError; end
 
   include Sidekiq::Worker
 
@@ -11,20 +12,16 @@ class AppStoreDevelopersWorker
   def create_by_developer_identifier(developer_identifier)
     @developer_identifier = developer_identifier
     rows_by_developer_identifier
-    create_using_rows
-  end
-
-  def create_by_ios_app_id(ios_app_id)
-    @ios_app_id = ios_app_id
-    rows_by_ios_app_id
-    create_using_rows
-  end
-
-  def create_using_rows
     seller_name = get_seller_name
     websites = get_websites
     developer = store_developer(seller_name, websites)
     update_ios_apps(developer)
+  end
+
+  def create_by_ios_app_id(ios_app_id)
+    @ios_app_id = ios_app_id
+    developer_identifier = find_developer_app_store_identifier
+    create_by_developer_identifier(developer_identifier)
   end
 
   def rows_by_developer_identifier
@@ -36,13 +33,20 @@ class AppStoreDevelopersWorker
           .where(developer_app_store_identifier: @developer_identifier)
   end
 
-  def rows_by_ios_app_id
-    @rows = IosAppCurrentSnapshotBackup
-      .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
-      .where(ios_app_id: @ios_app_id) +
-    IosAppCurrentSnapshot
-          .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
-          .where(ios_app_id: @ios_app_id)
+  def find_developer_app_store_identifier
+    us_app_snapshot = IosApp.find(@ios_app_id).newest_ios_app_snapshot
+
+    if us_app_snapshot && us_app_snapshot.developer_app_store_identifier
+      return us_app_snapshot.developer_app_store_identifier
+    end
+
+    current_snapshot = IosAppCurrentSnapshot.where(ios_app_id: @ios_app_id).limit(1).take
+    return current_snapshot.developer_app_store_identifier if current_snapshot
+
+    backup_snapshot = IosAppCurrentSnapshotBackup.where(ios_app_id: @ios_app_id).limit(1).take
+    return backup_snapshot.developer_app_store_identifier if backup_snapshot
+
+    raise NoDeveloperIdentifier
   end
 
   def get_seller_name
