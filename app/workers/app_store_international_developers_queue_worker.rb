@@ -20,7 +20,7 @@ class AppStoreInternationalDevelopersQueueWorker
       developer_ids = query.pluck(:developer_app_store_identifier)
 
       developer_ids.each_slice(100) do |slice|
-        args = slice.compact.map { |x| [:rows_by_developer_identifier, x] }
+        args = slice.compact.map { |x| [:create_by_developer_identifier, x] }
         SidekiqBatchQueueWorker.perform_async(
           AppStoreDevelopersWorker.to_s,
           args,
@@ -56,6 +56,6 @@ class AppStoreInternationalDevelopersQueueWorker
 
   def run_by_app_identifier(app_identifier)
     ios_app = IosApp.find_by_app_identifier!(app_identifier)
-    AppStoreDevelopersWorker.perform_async(:rows_by_ios_app_id, ios_app.id)
+    AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, ios_app.id)
   end
 end
