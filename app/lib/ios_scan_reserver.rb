@@ -24,13 +24,13 @@ class IosScanReserver
     @apple_account = if existing_account && existing_account.app_store_id == app_store_id
                        puts 'correctly configured'
                        @swap_required = false
+                       existing_account.update!(last_used: DateTime.now)
                        existing_account
                      else
                        raise UnknownCondition unless is_flex_type?(reserve_type)
                        @swap_required = true
                        pick_flex_apple_account(app_store_id)
                      end
-    @apple_account.update!(last_used: Time.now)
   end
 
   def device
@@ -44,6 +44,11 @@ class IosScanReserver
         app_store_id: app_store_id,
         kind: AppleAccount.kinds[:flex]
       ).limit(1).order(last_used: :DESC).take
+      if a
+        a.last_used = DateTime.now
+        a.save
+      end
+      a
     end
     raise NoAccountAvailable unless account
     account
