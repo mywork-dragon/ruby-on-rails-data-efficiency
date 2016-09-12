@@ -4,22 +4,45 @@ class AppStoreDevelopersWorker
 
   sidekiq_options backtrace: true, retry: false, queue: :default
 
-  def perform(developer_identifier)
+  def perform(method, *args)
+    send(method, *args)
+  end
+
+  def create_by_developer_identifier(developer_identifier)
     @developer_identifier = developer_identifier
-    get_rows
+    get_rows_by_developer_identifier
+    create_using_rows
+  end
+
+  def create_by_ios_app_id(ios_app_id)
+    @ios_app_id = ios_app_id
+    get_rows_by_ios_app_id
+    create_using_rows
+  end
+
+  def create_using_rows
     seller_name = get_seller_name
     websites = get_websites
     developer = store_developer(seller_name, websites)
     update_ios_apps(developer)
   end
 
-  def get_rows
+  def get_rows_by_developer_identifier
     @rows = IosAppCurrentSnapshotBackup
       .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
       .where(developer_app_store_identifier: @developer_identifier) +
     IosAppCurrentSnapshot
           .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
           .where(developer_app_store_identifier: @developer_identifier)
+  end
+
+  def get_rows_by_ios_app_id
+    @rows = IosAppCurrentSnapshotBackup
+      .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
+      .where(ios_app_id: @ios_app_id) +
+    IosAppCurrentSnapshot
+          .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
+          .where(ios_app_id: @ios_app_id)
   end
 
   def get_seller_name
