@@ -34,13 +34,23 @@ class AppStoreInternationalDevelopersQueueWorker
 
     batch_size = 10e3.to_i
 
-    query = IosApp.select(:id).distinct
+    IosApp.select(:id).distinct
       .joins(:ios_app_current_snapshot_backups)
       .where(ios_developer_id: nil)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
 
       li "App #{index*batch_size}"
+
+      the_batch.each_slice(100) do |slice|
+        args = slice.compact.map { |x| [:rows_by_ios_app_id, x] }
+        SidekiqBatchQueueWorker.perform_async(
+          AppStoreDevelopersWorker.to_s,
+          args,
+          bid
+        )
+      end
+
     end
   end
 end
