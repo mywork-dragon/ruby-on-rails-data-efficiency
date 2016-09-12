@@ -53,4 +53,9 @@ class AppStoreInternationalDevelopersQueueWorker
 
     end
   end
+
+  def run_by_app_identifier(app_identifier)
+    ios_app = IosApp.find_by_app_identifier!(app_identifier)
+    AppStoreDevelopersWorker.perform_async(:rows_by_ios_app_id, ios_app.id)
+  end
 end
