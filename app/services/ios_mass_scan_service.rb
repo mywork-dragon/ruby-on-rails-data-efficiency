@@ -49,14 +49,18 @@ class IosMassScanService
     end
 
     def run_recently_updated(n: 5000, ratings_min: 0)
-      recent = IosApp.joins(:newest_ios_app_snapshot).where('ios_app_snapshots.released > ?', 2.week.ago).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      recent = IosApp.joins(:newest_ios_app_snapshot)
+        .where('ios_app_snapshots.released > ?', 2.week.ago)
+        .where('ios_app_snapshots.ratings_all_count > ?', ratings_min)
+        .order('ios_app_snapshots.ratings_all_count DESC')
+        .limit(n).pluck(:id)
 
       puts "Got #{recent.count} entries"
       # filter out to only those
 
       # TODO: make this faster
       relevant = recent.select do |ios_app_id|
-        ratings = IosAppSnapshot.where(ios_app_id: ios_app_id).last.ratings_all_count
+        ratings = IosApp.find(ios_app_id).newest_ios_app_snapshot.ratings_all_count
         true if ratings && ratings > ratings_min
       end
 
