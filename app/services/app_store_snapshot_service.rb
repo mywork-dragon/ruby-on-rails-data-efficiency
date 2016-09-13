@@ -19,7 +19,8 @@ class AppStoreSnapshotService
   
       Slackiq.message('Starting to queue App Store apps...', webhook_name: :main)
 
-      ios_app_count = IosApp.count
+      batch.jobs do
+      end
 
       # batch.jobs do
         
