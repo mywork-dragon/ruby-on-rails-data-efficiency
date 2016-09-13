@@ -16,9 +16,9 @@ class AppStoreSnapshotService
       batch.description = "run: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
 
-      batch.jobs do
-        AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
-      end
+      # batch.jobs do
+      #   AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
+      # end
     end
     
     def run_app_ids(notes, ios_app_ids)
@@ -29,9 +29,9 @@ class AppStoreSnapshotService
       
       j = IosAppSnapshotJob.create!(notes: notes)
       
-      batch.jobs do
-        AppStoreSnapshotQueueWorker.perform_async(:queue_by_ios_app_ids, j.id, ios_app_ids)
-      end
+      # batch.jobs do
+      #   AppStoreSnapshotQueueWorker.perform_async(:queue_by_ios_app_ids, j.id, ios_app_ids)
+      # end
     end
     
     # Last week
@@ -44,9 +44,9 @@ class AppStoreSnapshotService
       batch.description = "run_new_apps: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run_new_apps')
   
-      batch.jobs do
-        AppStoreSnapshotQueueWorker.perform_async(:queue_new, j.id)
-      end
+      # batch.jobs do
+      #   AppStoreSnapshotQueueWorker.perform_async(:queue_new, j.id)
+      # end
     end
   
   end
