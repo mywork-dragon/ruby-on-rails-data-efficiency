@@ -14,8 +14,18 @@ class GooglePlaySnapshotLiveWorker
   end
 
   class << self
-    def test
+    def test_successful
       a = AndroidApp.find_or_create_by!(app_identifier: 'com.ubercab')
+      new.perform(-1, a.id)
+    end
+
+    def test_missing
+      a = AndroidApp.find_or_create_by!(app_identifier: 'com.kittyplay.ex')
+      new.perform(-1, a.id)
+    end
+
+    def test_foreign
+      a = AndroidApp.find_or_create_by!(app_identifier: 'com.opera.mini.android')
       new.perform(-1, a.id)
     end
   end

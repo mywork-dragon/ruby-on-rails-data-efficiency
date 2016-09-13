@@ -3,6 +3,7 @@
 # worker must define "proxy_type" and "scrape_similar_apps" methods
 module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
+  class FailedLookup; end
 
   def perform(android_app_snapshot_job_id, android_app_id)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
@@ -13,9 +14,11 @@ module GooglePlaySnapshotModule
   end
 
   def generate_snapshot
-    generate_attributes
-    save_attributes
-    update_android_app_columns
+    result = generate_attributes
+    unless result == FailedLookup
+      save_attributes
+      update_android_app_columns
+    end
   end
 
   def generate_attributes
@@ -26,8 +29,10 @@ module GooglePlaySnapshotModule
     )
   rescue GooglePlay::NotFound
     @android_app.update!(display_type: :taken_down)
+    FailedLookup
   rescue GooglePlay::Unavailable
     @android_app.update!(display_type: :foreign)
+    FailedLookup
   end
 
   def save_attributes

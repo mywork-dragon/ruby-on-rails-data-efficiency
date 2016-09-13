@@ -1,5 +1,4 @@
 class GooglePlayService
-
   include AppAttributeChecker
 
   def attributes(app_identifier, proxy_type: :general)
