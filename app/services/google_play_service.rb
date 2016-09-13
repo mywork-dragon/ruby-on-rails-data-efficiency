@@ -4,9 +4,6 @@ class GooglePlayService
 
   def attributes(app_identifier, proxy_type: :general)
     @proxy_type = proxy_type
-
-    ret = {}
-
     @html = google_play_html(app_identifier)
 
     ret = {}
