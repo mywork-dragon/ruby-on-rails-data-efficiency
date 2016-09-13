@@ -1,25 +1,28 @@
+# Module for Google Play Store Scraping
+# Sidekiq Workers can require it
+# worker must define "proxy_type" and "scrape_similar_apps" methods
 module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
 
   def perform(android_app_snapshot_job_id, android_app_id)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
-    save_snapshot
+    generate_snapshot
     save_similar_apps if Rails.env.production?
     scrape_similar_apps
   end
 
-  def save_snapshot
+  def generate_snapshot
     generate_attributes
     save_attributes
     update_android_app_columns
   end
 
   def generate_attributes
-    raise UnregisteredProxyType unless @proxy_type.present?
+    raise UnregisteredProxyType unless proxy_type.present?
     @attributes = GooglePlayService.attributes(
       @android_app.app_identifier,
-      proxy_type: @proxy_type
+      proxy_type: proxy_type
     )
   rescue GooglePlay::NotFound
     @android_app.update!(display_type: :taken_down)
@@ -47,7 +50,7 @@ module GooglePlaySnapshotModule
 
   def load_attributes_into_snapshot
     single_column_attributes.each do |sca|
-      value = @attributes[scan.to_sym]
+      value = @attributes[sca.to_sym]
 
       if value.present? && AndroidAppSnapshot.columns_hash[sca].type == :string  # if it's a string and is too big
         value = DbSanitizer.truncate_string(value)
@@ -97,9 +100,7 @@ module GooglePlaySnapshotModule
   end
 
   def update_android_app_columns
-    changed = false
     if downloads = @attributes[:downloads]
-      changed = true
       user_base = if downloads.max >= 5e6
         :elite
       elsif downloads.max >= 500e3
@@ -113,7 +114,6 @@ module GooglePlaySnapshotModule
     end
 
     if released = @attributes[:released]
-      changed = true
       mobile_priority = if released > 2.months.ago
                           :high
                         elsif released > 4.months.ago
@@ -124,7 +124,9 @@ module GooglePlaySnapshotModule
       @android_app.mobile_priority = mobile_priority
     end
 
-    @android_app.save! if changed
+    @android_app.newest_android_app_snapshot = @snapshot
+
+    @android_app.save!
   end
 
   def save_similar_apps
@@ -157,10 +159,5 @@ module GooglePlaySnapshotModule
       icon_url_300x300
       developer_google_play_identifier
     )
-  end
-
-  # no-op by default
-  def scrape_similar_apps
-    nil
   end
 end
