@@ -2,7 +2,7 @@ class GooglePlayService
 
   include AppAttributeChecker
 
-  def attributes(app_identifier, proxy_type: :tor)
+  def attributes(app_identifier, proxy_type: :general)
     @proxy_type = proxy_type
 
     ret = {}
@@ -57,48 +57,10 @@ class GooglePlayService
     ret
   end
 
-  def get(url)
-    case @proxy_type
-    when :tor
-      Tor.get(url)
-    when :proxy
-      Proxy.get_body_from_url(url, proxy_type: :android_classification)
-    end    
-  end
-
   def google_play_html(app_identifier)
-    url = "https://play.google.com/store/apps/details?id=#{app_identifier}&hl=en"
-
-    #puts "url: #{url}"
-
-
-    page = get(url)
-
+    page = GooglePlay.lookup(app_identifier, proxy_type: @proxy_type)
     Nokogiri::HTML(page)
-
-    # Rescues error if issue opening URL
-    rescue => e
-      case e
-        when OpenURI::HTTPError
-          return nil
-        when URI::InvalidURIError
-          return nil
-        else
-          raise e
-    end
   end
-
-  # Returns string corresponding with supplied regex or nil if data not available
-  # Probably deprecated 12/13/2015 
-  def app_info_helper(regex)
-    app_info_div = @html.css('div.details-section-contents > div.meta-info')
-    in_app_cost_div = app_info_div.select{|div| div.children.children.text.match(regex)}
-    if in_app_cost_div.length < 1
-      return nil
-    end
-    in_app_cost_div.first.children.children[1].text.strip
-  end
-
 
   def name
     @html.at_css('.document-title').text.strip
