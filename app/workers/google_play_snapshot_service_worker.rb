@@ -7,9 +7,7 @@ class GooglePlaySnapshotServiceWorker
   MAX_TRIES = 0
 
   def perform(android_app_snapshot_job_id, android_app_id)
-
     save_attributes(android_app_id: android_app_id, android_app_snapshot_job_id: android_app_snapshot_job_id)
-
   end
 
   def save_attributes(options={})

@@ -1,0 +1,166 @@
+module GooglePlaySnapshotModule
+  class UnregisteredProxyType < RuntimeError; end
+
+  def perform(android_app_snapshot_job_id, android_app_id)
+    @android_app_snapshot_job_id = android_app_snapshot_job_id
+    @android_app = AndroidApp.find(android_app_id)
+    save_snapshot
+    save_similar_apps if Rails.env.production?
+    scrape_similar_apps
+  end
+
+  def save_snapshot
+    generate_attributes
+    save_attributes
+    update_android_app_columns
+  end
+
+  def generate_attributes
+    raise UnregisteredProxyType unless @proxy_type.present?
+    @attributes = GooglePlayService.attributes(
+      @android_app.app_identifier,
+      proxy_type: @proxy_type
+    )
+  rescue GooglePlay::NotFound
+    @android_app.update!(display_type: :taken_down)
+  rescue GooglePlay::Unavailable
+    @android_app.update!(display_type: :foreign)
+  end
+
+  def save_attributes
+    create_snapshot
+    load_attributes_into_snapshot
+    save_snapshot
+    create_join_columns_for_snapshot
+  end
+
+  def create_snapshot
+    @snapshot = AndroidAppSnapshot.new(
+      android_app: @android_app,
+      android_app_snapshot_job_id: @android_app_snapshot_job_id
+    )
+  end
+
+  def save_snapshot
+    @snapshot.save!
+  end
+
+  def load_attributes_into_snapshot
+    single_column_attributes.each do |sca|
+      value = @attributes[scan.to_sym]
+
+      if value.present? && AndroidAppSnapshot.columns_hash[sca].type == :string  # if it's a string and is too big
+        value = DbSanitizer.truncate_string(value)
+      end
+
+      @snapshot.send("#{sca}=", value)
+    end
+
+    if iapr = @attributes[:in_app_purchases_range]
+      @snapshot.in_app_purchase_min = iapr.min
+      @snapshot.in_app_purchase_max = iapr.max
+    end
+
+    if downloads = @attributes[:downloads]
+      @snapshot.downloads_min = downloads.min
+      @snapshot.downloads_max = downloads.max
+    end
+  end
+
+  def create_join_columns_for_snapshot
+    create_category_joins
+    create_screenshot_joins
+  end
+
+  def create_category_joins
+    if category = @attributes[:category]
+      categories_snapshot_primary = AndroidAppCategoriesSnapshot.new
+      categories_snapshot_primary.android_app_snapshot = @snapshot
+      categories_snapshot_primary.android_app_category = AndroidAppCategory.find_or_create_by(name: category)
+      categories_snapshot_primary.kind = :primary
+      categories_snapshot_primary.save!
+    end
+  end
+
+  def create_screenshot_joins
+    if screenshot_urls = @attributes[:screenshot_urls]
+      rows = screenshot_urls.map.with_index do |url, index|
+        AndroidAppSnapshotsScrSht.new(
+          url: url,
+          position: index,
+          android_app_snapshot_id: @snapshot.id
+        )
+      end
+
+      AndroidAppSnapshotsScrSht.import rows
+    end
+  end
+
+  def update_android_app_columns
+    changed = false
+    if downloads = @attributes[:downloads]
+      changed = true
+      user_base = if downloads.max >= 5e6
+        :elite
+      elsif downloads.max >= 500e3
+        :strong
+      elsif downloads.max >= 50e3
+        :moderate
+      else
+        :weak
+      end
+      @android_app.user_base = user_base
+    end
+
+    if released = @attributes[:released]
+      changed = true
+      mobile_priority = if released > 2.months.ago
+                          :high
+                        elsif released > 4.months.ago
+                          :medium
+                        else
+                          :low
+                        end
+      @android_app.mobile_priority = mobile_priority
+    end
+
+    @android_app.save! if changed
+  end
+
+  def save_similar_apps
+    @similar_apps = if similar_apps = @attributes[:similar_apps]
+                      similar_apps.map do |app_identifier|
+                        next unless AndroidApp.find_by_app_identifier(app_identifier).nil?
+                        AndroidApp.create!(app_identifier: app_identifier)
+                      end.compact
+                    else
+                      []
+                    end
+  end
+
+  def single_column_attributes
+    %w(
+      name
+      description
+      price
+      seller
+      seller_url
+      released
+      size
+      top_dev
+      required_android_version
+      version
+      content_rating
+      ratings_all_stars
+      ratings_all_count
+      in_app_purchases
+      icon_url_300x300
+      developer_google_play_identifier
+    )
+  end
+
+  # no-op by default
+  def scrape_similar_apps
+    nil
+  end
+end
