@@ -12,8 +12,10 @@ class AppStoreSnapshotQueueWorker
       .where(@query)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
+      
+      li "App #{index * 1_000}"
 
-      args = the_batch.map { |ios_app| [@ios_app_snapshot_job_id, ios_app.id] }
+      # args = the_batch.map { |ios_app| [@ios_app_snapshot_job_id, ios_app.id] }
 
       # SidekiqBatchQueueWorker.perform_async(
       #   AppStoreSnapshotServiceWorker.to_s,
@@ -25,12 +27,20 @@ class AppStoreSnapshotQueueWorker
 
   def queue_valid(ios_app_snapshot_job_id)
     @ios_app_snapshot_job_id = ios_app_snapshot_job_id
-    queue_worker(display_type: IosApp.display_types.values_at(:paid, :normal, :device_incompatible))
+    @query = { display_type: IosApp.display_types.values_at(:paid, :normal, :device_incompatible) }
+    queue_worker
   end
 
   def queue_new(ios_app_snapshot_job_id)
     @ios_app_snapshot_job_id = ios_app_snapshot_job_id
     previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
-    queue_
+    @query = ['released >= ?', previous_week_epf_date]
+    queue_worker
+  end
+
+  def queue_by_ios_app_ids(ios_app_snapshot_job_id, ios_app_ids)
+    @ios_app_snapshot_job_id = ios_app_snapshot_job_id
+    @query = ['id in (?)', ios_app_ids]
+    queue_worker
   end
 end
