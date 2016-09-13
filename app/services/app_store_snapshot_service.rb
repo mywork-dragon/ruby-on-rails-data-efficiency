@@ -44,8 +44,6 @@ class AppStoreSnapshotService
       batch.description = "run_new_apps: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run_new_apps')
   
-      previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
-
       batch.jobs do
         AppStoreSnapshotQueueWorker.perform_async(:queue_new, j.id)
       end
