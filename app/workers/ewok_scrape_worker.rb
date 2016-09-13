@@ -18,7 +18,7 @@ class EwokScrapeWorker
     ios_app = IosApp.find_or_create_by!(app_identifier: app_identifier)
     ios_app_id = ios_app.id
     AppStoreSnapshotServiceWorker.new.perform(nil, ios_app_id)
-    CreateDevelopersWorker.new.create_developers(ios_app_id, 'ios')
+    # CreateDevelopersWorker.new.create_developers(ios_app_id, 'ios')
   rescue => e
     retry unless (tries -= 1).zero?
     raise e
