@@ -1,150 +1,42 @@
 class AppStoreSnapshotService
+  class InvalidDom < RuntimeError; end
 
   class << self
 
+    def dom_check
+      raise InvalidDom unless AppStoreService.dom_valid?
+    end
+
     def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
-      
-      if AppStoreService.dom_valid?
-        puts "\nPassed DOM check!\n".green
-      else
-        puts "\nThe DOM seems invalid. Check the AppStoreService scraping logic. Perhaps the DOM changed?".red
-        return
-      end
+      dom_check
 
       j = IosAppSnapshotJob.create!(notes: notes)
 
       batch = Sidekiq::Batch.new
       batch.description = "run: #{notes}" 
       batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
-  
-      Slackiq.message('Starting to queue App Store apps...', webhook_name: :main)
 
       batch.jobs do
+        AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
       end
-
-      # batch.jobs do
-        
-        # IosApp.find_each.with_index do |ios_app, index|
-        #   li "App ##{index}" if index%10000 == 0
-        #   AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-        # end    
-
-        IosApp.where(display_type: [IosApp.display_types[:normal], IosApp.display_types[:paid], IosApp.display_types[:device_incompatible]]).find_in_batches(batch_size: 1000).with_index do |batch, index|
-          li "App #{index*1000}"
-
-          debug = false
-
-          debug = true if index*1000 > 1600000
-
-          puts '#0' if debug
-
-          args = batch.map{ |ios_app| [j.id, ios_app.id] }
-
-          puts '#1' if debug
-
-          Sidekiq::Client.push_bulk('class' => AppStoreSnapshotServiceWorker, 'args' => args)
-
-          puts '#2' if debug
-        end
-      
-      # end
-
-      Slackiq.message("Done queueing App Store apps", webhook_name: :main)
-       
     end
     
     def run_app_ids(notes, ios_app_ids)
-      
-      j = IosAppSnapshotJob.create!(notes: notes)
-      
-      ios_app_ids.each do |ios_app_id|
-        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app_id)
-      end
-      
-    end
-    
-    def run_random(notes, n=1000)
-      
-      j = IosAppSnapshotJob.create!(notes: notes)
-      
-      n.times do
-        offset = rand(IosApp.count)
-        ios_app = IosApp.offset(offset).first
-        
-        next if ios_app.nil?
-        
-        AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-      end
+      dom_check
 
+      batch = Sidekiq::Batch.new
+      batch.description = 'run by ios app ids'
       
-    end
-    
-    def apps_per_minute(ios_app_snapshot_job_id, sample_seconds=10)
-      a = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count
-      sleep sample_seconds
-      b = IosAppSnapshot.where(ios_app_snapshot_job_id: ios_app_snapshot_job_id).count 
-      60.0/sample_seconds*(b-a)
-    end
-    
-    def apps_per_hour(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
-      apps_per_minute(ios_app_snapshot_job_id, sample_seconds)*60.0
-    end
-    
-    def apps_per_day(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
-      apps_per_hour(ios_app_snapshot_job_id, sample_seconds)*24.0
-    end
-    
-    def hours_per_job(ios_app_snapshot_job_id=IosAppSnapshotJob.last.id, sample_seconds=10)
-      IosApp.count * (1.0 / apps_per_hour(ios_app_snapshot_job_id, sample_seconds))
-    end
-    
-    def test
-      100.times{ AppStoreSnapshotServiceWorker.perform_async }
-    end
-    
-    def run_japan(job_identifier)
-      app_store = AppStore.find_by_country_code('jp')
+      j = IosAppSnapshotJob.create!(notes: notes)
       
-      AppStoresIosApp.where(app_store: app_store).find_each.with_index do |app_stores_ios_app, index|
-        li "App ##{index}" if index%10000 == 0
-        
-        ios_app = app_stores_ios_app.ios_app
-        
-        JapanAppStoreSnapshotServiceWorker.perform_async(job_identifier, ios_app.id)
+      batch.jobs do
+        AppStoreSnapshotQueueWorker.perform_async(:queue_by_ios_app_ids, j.id, ios_app_ids)
       end
-    end
-    
-    def japan_csv(file_path)
-      
-      CSV.open(file_path, "w+") do |csv|
-        csv << ['Name', 'Description', 'Release Notes', 'Category', 'Size (B)', 'Seller URL', 'Support URL', 'Version', 'Current Rating Average', 'Number of Current Ratings', 'All Time Ratings Stars', 'All Time Ratings Count', 'User Base']
-        
-        JpIosAppSnapshot.where.not(name: nil).order('user_base ASC').find_each do |ss|
-          
-          line = []
-          
-          line << ss.name
-          line << ss.description
-          line << ss.release_notes
-          line << ss.category
-          line << ss.size
-          line << ss.seller_url
-          line << ss.support_url
-          line << ss.version
-          line << ss.ratings_current_stars
-          line << ss.ratings_current_count
-          line << ss.ratings_all_stars
-          line << ss.ratings_all_count
-          line << ss.user_base.capitalize
-          
-          csv << line
-        end
-      end
-      
     end
     
     # Last week
     def run_new_apps(notes)
+      dom_check
 
       j = IosAppSnapshotJob.create!(notes: notes)
       
@@ -155,12 +47,8 @@ class AppStoreSnapshotService
       previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
 
       batch.jobs do
-        IosApp.select(:id).where('released >= ?', previous_week_epf_date).each do |ios_app|
-          AppStoreSnapshotServiceWorker.perform_async(j.id, ios_app.id)
-        end
+        AppStoreSnapshotQueueWorker.perform_async(:queue_new, j.id)
       end
-
-      puts "Done queueing"
     end
   
   end
@@ -174,5 +62,4 @@ class AppStoreSnapshotService
 
     BusinessEntityService.ios_new_apps # Step 4
   end
-  
 end
