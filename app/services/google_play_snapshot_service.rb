@@ -26,9 +26,6 @@ class GooglePlaySnapshotService
         GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
     end
-
-    def run_ids(notes: nil, android_app_ids)
-    end
   end
 
   def on_complete(status, options)
