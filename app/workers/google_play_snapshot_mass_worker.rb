@@ -1,6 +1,6 @@
 # This is only meant to be used by the weekly scrape service (using the temporary proxies)
 # For single/live scrapes, use the GooglePlaySnapshotLiveWorker
-class GooglePlaySnapshotServiceWorker
+class GooglePlaySnapshotMassWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
 
@@ -13,7 +13,7 @@ class GooglePlaySnapshotServiceWorker
   def scrape_new_similar_apps(similar_apps)
     batch.jobs do
       similar_apps.each do |android_app|
-        GooglePlaySnapshotServiceWorker.perform_async(
+        GooglePlaySnapshotMassWorker.perform_async(
           @android_app_snapshot_job_id,
           android_app.id
         )
