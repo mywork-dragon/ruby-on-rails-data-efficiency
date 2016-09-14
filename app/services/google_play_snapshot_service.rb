@@ -1,16 +1,17 @@
 class GooglePlaySnapshotService
-  
+  class InvalidDom < RuntimeError; end
+
   class << self
+    def check_dom
+      raise InvalidDom unless GooglePlayService.dom_valid?
+    end
 
-    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
+    def initiate_proxy_spinup
+      Slackiq.message('Starting temporary proxies', webhook_name: :main)
+      ProxyControl.start_proxies
+    end
 
-      if GooglePlayService.dom_valid?
-        puts "\nPassed DOM check!\n".green
-      else
-        puts "\nThe DOM seems invalid. Check the GooglePlayService scraping logic. Perhaps the DOM changed?".red
-        return
-      end
-
+    def run(notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}")
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
       Slackiq.message('Starting to queue Google Play apps...', webhook_name: :main)
@@ -24,25 +25,10 @@ class GooglePlaySnapshotService
 
     end
 
-    def apps_per_minute(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
-      a = AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count
-      sleep sample_seconds
-      b = AndroidAppSnapshot.where(android_app_snapshot_job_id: android_app_snapshot_job_id).count
-      60.0/sample_seconds*(b-a)
+    def run_ids(notes: nil, android_app_ids)
     end
-
-    def apps_per_hour(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
-      apps_per_minute(android_app_snapshot_job_id, sample_seconds)*60.0
-    end
-
-    def apps_per_day(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
-      apps_per_hour(android_app_snapshot_job_id, sample_seconds)*24.0
-    end
-
-    def hours_per_job(android_app_snapshot_job_id=AndroidAppSnapshotJob.last.id, sample_seconds=10)
-      AndroidApp.count * (1.0 / apps_per_hour(android_app_snapshot_job_id, sample_seconds))
-    end
-
   end
-  
+
+  def on_complete(status, options)
+  end
 end
