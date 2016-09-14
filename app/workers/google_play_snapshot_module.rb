@@ -15,8 +15,10 @@ module GooglePlaySnapshotModule
     save_attributes
     update_android_app_columns
 
-    save_new_similar_apps
-    scrape_new_similar_apps(@similar_apps)
+    if Rails.env.production?
+      save_new_similar_apps
+      scrape_new_similar_apps(@similar_apps)
+    end
   end
 
   def generate_attributes
