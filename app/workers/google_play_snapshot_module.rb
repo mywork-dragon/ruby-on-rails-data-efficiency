@@ -9,12 +9,18 @@ module GooglePlaySnapshotModule
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
 
+    b = Time.now
     result = generate_attributes
+    puts "HTTP time: #{Time.now - b}"
     return if result == FailedLookup
 
+    b = Time.now
     save_attributes
-    update_android_app_columns
+    puts "Save time: #{Time.now - b}"
 
+    b = Time.now
+    update_android_app_columns
+    puts "update app time: #{Time.now - b}"
     if Rails.env.production?
       save_new_similar_apps
       scrape_new_similar_apps(@similar_apps)
