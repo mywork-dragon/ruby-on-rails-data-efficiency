@@ -7,8 +7,8 @@ class GooglePlaySnapshotService
     end
 
     def initiate_proxy_spinup
-      Slackiq.message('Starting temporary proxies', webhook_name: :main)
-      ProxyControl.start_proxies
+      # Slackiq.message('Starting temporary proxies', webhook_name: :main)
+      # ProxyControl.start_proxies
     end
 
     def run(notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}")
