@@ -28,7 +28,7 @@ module ProxyBase
   end
 
   def all_static_proxies
-    MicroProxy.where(active: true).pluck(:private_ip)
+    MicroProxy.where.not(purpose: MicroProxy.purposes[:temporary]).where(active: true).pluck(:private_ip)
   end
 
   def android_proxies
@@ -38,10 +38,11 @@ module ProxyBase
   # load balancers that will forward address to temporary proxies
   # TODO: hard-coded for now...move to DB
   def temporary_proxy_load_balancers
-    [
-      'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
-      'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
-    ]
+    MicroProxy.where(purpose: MicroProxy.purposes[:temporary]).where(active: true).pluck(:private_ip)
+    # [
+    #   'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
+    #   'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
+    # ]
   end
 
 end
