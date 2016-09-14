@@ -13,16 +13,18 @@ class GooglePlaySnapshotService
 
     def run(notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}")
       j = AndroidAppSnapshotJob.create!(notes: notes)
-
-      Slackiq.message('Starting to queue Google Play apps...', webhook_name: :main)
-
       AndroidApp.find_each.with_index do |android_app, index|
         li "App ##{index}" if index%10000 == 0
         GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
       end
+    end
 
-      Slackiq.message("Done queueing Google Play apps", webhook_name: :main)
-
+    def run_all(notes: "All app scrape")
+      j = AndroidAppSnapshotJob.create!(notes: notes)
+      AndroidApp.find_each.with_index do |android_app, index|
+        li "App ##{index}" if index%10000 == 0
+        GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
+      end
     end
 
     def run_ids(notes: nil, android_app_ids)
@@ -30,5 +32,6 @@ class GooglePlaySnapshotService
   end
 
   def on_complete(status, options)
+    ProxyControl.stop_proxies
   end
 end

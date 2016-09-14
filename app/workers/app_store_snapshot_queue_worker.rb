@@ -3,10 +3,11 @@ class AppStoreSnapshotQueueWorker
 
   sidekiq_options queue: :scraper_master, retry: false
 
-  # TODO: on each method, store the proper query in an instance variable
-  # then in the queue_worker method below, use it
-  def queue_worker
+  def perform(method, *args)
+    send(method, *args)
+  end
 
+  def queue_worker
     batch_size = 1_000
     IosApp.select(:id)
       .where(@query)
@@ -44,7 +45,7 @@ class AppStoreSnapshotQueueWorker
 
   def queue_by_ios_app_ids(ios_app_snapshot_job_id, ios_app_ids)
     @ios_app_snapshot_job_id = ios_app_snapshot_job_id
-    @query = ['id in (?)', ios_app_ids]
+    @query = { id: ios_app_ids }
     queue_worker
   end
 end
