@@ -3,14 +3,11 @@ class EwokScrapeWorker
 
   sidekiq_options retry: false, queue: :sdk_live_scan
 
-  RETRIES = 2
-
   def perform(method, *args)
     self.send(method.to_sym, *args)
   end
 
   def scrape_ios(app_identifier)
-    tries ||= RETRIES + 1
 
     a = AppStoreService.attributes(app_identifier)
     raise AttributesBlank if a.blank?
@@ -18,24 +15,13 @@ class EwokScrapeWorker
     ios_app = IosApp.find_or_create_by!(app_identifier: app_identifier)
     ios_app_id = ios_app.id
     AppStoreSnapshotServiceWorker.new.perform(nil, ios_app_id)
-  rescue => e
-    retry unless (tries -= 1).zero?
-    raise e
   end
 
   def scrape_android(app_identifier)
-    tries ||= RETRIES + 1
-
-    a = GooglePlayService.attributes(app_identifier)
-    raise AttributesBlank if a.blank?
-
     android_app = AndroidApp.create!(app_identifier: app_identifier)
     android_app_id = android_app.id
     GooglePlaySnapshotLiveWorker.new.perform(nil, android_app_id)
     CreateDevelopersWorker.new.create_developers(android_app_id, 'android')
-  rescue => e
-    retry unless (tries -= 1).zero?
-    raise e
   end
 
   def scrape_ios_international(app_identifier)
