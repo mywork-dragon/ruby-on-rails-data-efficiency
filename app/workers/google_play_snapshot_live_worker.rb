@@ -9,7 +9,7 @@ class GooglePlaySnapshotLiveWorker
   end
 
   # no-op
-  def scrape_similar_apps
+  def scrape_new_similar_apps(similar_apps)
     nil
   end
 

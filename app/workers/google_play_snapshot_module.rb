@@ -1,6 +1,6 @@
 # Module for Google Play Store Scraping
 # Sidekiq Workers can require it
-# worker must define "proxy_type" and "scrape_similar_apps" methods
+# worker must define "proxy_type" and "scrape_new_similar_apps" methods
 module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
   class FailedLookup; end
@@ -8,17 +8,15 @@ module GooglePlaySnapshotModule
   def perform(android_app_snapshot_job_id, android_app_id)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
-    generate_snapshot
-    save_similar_apps if Rails.env.production?
-    scrape_similar_apps
-  end
 
-  def generate_snapshot
     result = generate_attributes
-    unless result == FailedLookup
-      save_attributes
-      update_android_app_columns
-    end
+    return if result == FailedLookup
+
+    save_attributes
+    update_android_app_columns
+
+    save_new_similar_apps
+    scrape_new_similar_apps(@similar_apps)
   end
 
   def generate_attributes
@@ -134,12 +132,16 @@ module GooglePlaySnapshotModule
     @android_app.save!
   end
 
-  def save_similar_apps
+  def save_new_similar_apps
     @similar_apps = if similar_apps = @attributes[:similar_apps]
-                      similar_apps.map do |app_identifier|
-                        next unless AndroidApp.find_by_app_identifier(app_identifier).nil?
-                        AndroidApp.create!(app_identifier: app_identifier)
-                      end.compact
+                      missing = similar_apps - AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
+                      rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
+                      AndroidApp.import(
+                        rows,
+                        synchronize: rows,
+                        synchronize_keys: [:app_identifier]
+                      )
+                      rows
                     else
                       []
                     end
