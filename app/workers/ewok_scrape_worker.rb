@@ -18,7 +18,6 @@ class EwokScrapeWorker
     ios_app = IosApp.find_or_create_by!(app_identifier: app_identifier)
     ios_app_id = ios_app.id
     AppStoreSnapshotServiceWorker.new.perform(nil, ios_app_id)
-    # CreateDevelopersWorker.new.create_developers(ios_app_id, 'ios')
   rescue => e
     retry unless (tries -= 1).zero?
     raise e
@@ -32,7 +31,7 @@ class EwokScrapeWorker
 
     android_app = AndroidApp.create!(app_identifier: app_identifier)
     android_app_id = android_app.id
-    GooglePlaySnapshotServiceWorker.new.perform(nil, android_app_id)
+    GooglePlaySnapshotLiveWorker.new.perform(nil, android_app_id)
     CreateDevelopersWorker.new.create_developers(android_app_id, 'android')
   rescue => e
     retry unless (tries -= 1).zero?
