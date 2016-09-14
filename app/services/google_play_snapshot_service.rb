@@ -12,23 +12,47 @@ class GooglePlaySnapshotService
     end
 
     def run(notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}")
+      check_dom
+      initiate_proxy_spinup
       j = AndroidAppSnapshotJob.create!(notes: notes)
-      AndroidApp.find_each.with_index do |android_app, index|
-        li "App ##{index}" if index%10000 == 0
-        GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
+      batch = Sidekiq::Batch.new
+      batch.description = 'Run current Android apps'
+      batch.on(:complete, 'GooglePlaySnapshotService#on_complete')
+
+      batch.jobs do
+        GooglePlaySnapshotQueueWorker.perform_async(:queue_all, j.id)
       end
     end
 
     def run_all(notes: "All app scrape")
+      check_dom
+      initiate_proxy_spinup
       j = AndroidAppSnapshotJob.create!(notes: notes)
-      AndroidApp.find_each.with_index do |android_app, index|
-        li "App ##{index}" if index%10000 == 0
-        GooglePlaySnapshotServiceWorker.perform_async(j.id, android_app.id)
+      batch = Sidekiq::Batch.new
+      batch.description = 'Run all Android apps'
+      batch.on(:complete, 'GooglePlaySnapshotService#on_complete')
+
+      batch.jobs do
+        GooglePlaySnapshotQueueWorker.perform_async(:queue_all, j.id)
+      end
+    end
+
+    def run_ids(notes: 'Running by ids', android_app_ids: [])
+      check_dom
+      initiate_proxy_spinup
+      j = AndroidAppSnapshotJob.create!(notes: notes)
+      batch = Sidekiq::Batch.new
+      batch.description = 'Run android apps by ids'
+      batch.on(:complete, 'GooglePlaySnapshotService#on_complete')
+
+      batch.jobs do
+        GooglePlaySnapshotQueueWorker.perform_async(:queue_all, j.id)
       end
     end
   end
 
   def on_complete(status, options)
     ProxyControl.stop_proxies
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Google Play scrape completed')
   end
 end
