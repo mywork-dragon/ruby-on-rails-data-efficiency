@@ -28,7 +28,7 @@ class GooglePlaySnapshotQueueWorker
 
   def queue_valid(android_app_snapshot_job_id)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
-    @query = { display_type: AndroidApp.display_types.values_at(:normal, :foreign, :device_incompatible, :carrier_incompatible) }
+    @query = { display_type: AndroidApp.display_types.values_at(:normal, :device_incompatible, :carrier_incompatible) }
     queue_worker
   end
 
