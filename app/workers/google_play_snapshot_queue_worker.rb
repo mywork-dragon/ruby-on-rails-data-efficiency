@@ -16,13 +16,13 @@ class GooglePlaySnapshotQueueWorker
       
       li "App #{index * 1_000}"
 
-      # args = the_batch.map { |android_app| [@android_app_snapshot_job_id, android_app.id] }
+      args = the_batch.map { |android_app| [@android_app_snapshot_job_id, android_app.id] }
 
-      # SidekiqBatchQueueWorker.perform_async(
-      #   GooglePlaySnapshotMassWorker.to_s,
-      #   args,
-      #   bid
-      # )
+      SidekiqBatchQueueWorker.perform_async(
+        GooglePlaySnapshotMassWorker.to_s,
+        args,
+        bid
+      )
     end
   end
 
