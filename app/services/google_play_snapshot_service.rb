@@ -52,7 +52,7 @@ class GooglePlaySnapshotService
   end
 
   def on_complete(status, options)
-    ProxyControl.stop_proxies
+    # ProxyControl.stop_proxies
     Slackiq.notify(webhook_name: :main, status: status, title: 'Google Play scrape completed')
   end
 end
