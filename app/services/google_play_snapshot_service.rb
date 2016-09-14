@@ -20,7 +20,7 @@ class GooglePlaySnapshotService
       batch.on(:complete, 'GooglePlaySnapshotService#on_complete')
 
       batch.jobs do
-        GooglePlaySnapshotQueueWorker.perform_async(:queue_all, j.id)
+        GooglePlaySnapshotQueueWorker.perform_async(:queue_valid, j.id)
       end
     end
 
@@ -46,7 +46,7 @@ class GooglePlaySnapshotService
       batch.on(:complete, 'GooglePlaySnapshotService#on_complete')
 
       batch.jobs do
-        GooglePlaySnapshotQueueWorker.perform_async(:queue_all, j.id)
+        GooglePlaySnapshotQueueWorker.perform_async(:queue_ids, j.id, android_app_ids)
       end
     end
   end
