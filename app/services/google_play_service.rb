@@ -267,7 +267,7 @@ class GooglePlayService
 
   class << self
 
-    def attributes(app_identifier, proxy_type: :tor)
+    def attributes(app_identifier, proxy_type: :general)
       self.new.attributes(app_identifier, proxy_type: proxy_type)
     end
 
