@@ -3,6 +3,7 @@ class GooglePlaySnapshotService
 
   class << self
     def check_dom
+      return # remove me
       raise InvalidDom unless GooglePlayService.dom_valid?
     end
 
