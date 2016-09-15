@@ -5,8 +5,6 @@ class GooglePlayService
     @proxy_type = proxy_type
     @html = google_play_html(app_identifier)
 
-    return {}
-
     ret = {}
     
     methods = %w(

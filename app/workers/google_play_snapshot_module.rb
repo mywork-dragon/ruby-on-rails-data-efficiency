@@ -12,7 +12,6 @@ module GooglePlaySnapshotModule
     b = Time.now
     result = generate_attributes
     puts "HTTP time: #{Time.now - b}"
-    return # remove me later
     return if result == FailedLookup
 
     b = Time.now
