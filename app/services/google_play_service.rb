@@ -104,7 +104,7 @@ class GooglePlayService
 
 
   def name
-    @html.at_css('.document-title').text.strip
+    @html.at_css('h1.document-title').text.strip
   end
 
   def description
