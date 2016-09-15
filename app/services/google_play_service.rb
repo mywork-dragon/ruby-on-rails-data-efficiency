@@ -7,7 +7,8 @@ class GooglePlayService
 
     ret = {}
 
-    @html = google_play_html(app_identifier)
+    # @html = google_play_html(app_identifier)
+    @html = Nokogiri::HTML(File.open('body.html') { |f| f.read })
 
     ret = {}
 
@@ -42,6 +43,7 @@ class GooglePlayService
 
     
     methods.each do |method|
+      b = Time.now
       key = method.to_sym
     
       begin
@@ -51,7 +53,8 @@ class GooglePlayService
       rescue
         ret[key] = nil
       end
-    
+
+      puts "#{key}: #{Time.now - b}"
     end
 
     ret
