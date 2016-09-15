@@ -35,13 +35,13 @@ class GooglePlayService
     methods.each do |method|
       key = method.to_sym
     
-      begin
-        attribute = send(method.to_sym)
+      # begin
+      #   attribute = send(method.to_sym)
       
-        ret[key] = attribute
-      rescue
-        ret[key] = nil
-      end
+      #   ret[key] = attribute
+      # rescue
+      #   ret[key] = nil
+      # end
     
     end
 
