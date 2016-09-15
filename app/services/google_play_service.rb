@@ -54,8 +54,8 @@ class GooglePlayService
     b = Time.now
     page = GooglePlay.lookup(app_identifier, proxy_type: @proxy_type)
     puts "lookup time: #{Time.now - b}"
-    Oga.parse_html(page)
-    # Nokogiri::HTML(page)
+    # Oga.parse_html(page)
+    Nokogiri::HTML(page.body)
   end
 
   def name
