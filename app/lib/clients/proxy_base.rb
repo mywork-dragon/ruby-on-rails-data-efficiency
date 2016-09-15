@@ -1,6 +1,7 @@
 module ProxyBase
   
   def select_proxy(proxy_type: nil)
+    b = Time.now
     proxies = if proxy_type == :ios_classification
       ios_proxies
     elsif proxy_type == :android_classification
@@ -12,6 +13,7 @@ module ProxyBase
     else
       general_proxies
     end
+    puts "chose proxy: #{Time.now - b}"
 
     {
         ip: proxies.sample,
