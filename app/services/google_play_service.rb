@@ -108,30 +108,27 @@ class GooglePlayService
   end
 
   def description
-    #@html.at_css('div.details-section-contents').css('div')
-    @html.css('div').find{ |x| x['jsname'] == 'C4s9Ed'}.text
+    @html.at_css('div[itemprop="description"]').text.strip
   end
 
   # Returns price in dollars as float, 0.0 if product is free
   # NOTE: User must not be logged into Google Play account while using this - "Installed" app will register as free
   def price
     # Regular Expression strips string of all characters besides digits and decimal points
-    price_dollars = @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+    price_dollars = @html.at_css('meta[itemprop="price"]')['content'].gsub(/[^0-9.]/, '').to_f
     (price_dollars*100.0).to_i
   end
 
   def seller
-    @html.at_css('a.document-subtitle > span').text
+    @html.at_css('div[itemprop="author"] span[itemprop="name"]').text.strip
   end
 
   def seller_url
-    begin
-      url = @html.css(".dev-link").first['href']
-      url = UrlHelper.url_from_google_play(url)
-      UrlHelper.url_with_http_only(url)
-    rescue
-      nil
-    end
+    url = @html.css('a.dev-link').first['href']
+    url = UrlHelper.url_from_google_play(url)
+    UrlHelper.url_with_http_only(url)
+  rescue
+    nil
   end
 
   def category
