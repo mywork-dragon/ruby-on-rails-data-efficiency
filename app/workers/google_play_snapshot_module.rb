@@ -137,6 +137,7 @@ module GooglePlaySnapshotModule
   def save_new_similar_apps
     @similar_apps = if similar_apps = @attributes[:similar_apps]
                       # bundle ids are case-sensitive but our table is case-insensitive...
+                      # will miss apps until fixed
                       # https://github.com/MightySignal/varys/issues/745
                       existing = AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
                       missing = similar_apps.select do |similar_ai|
