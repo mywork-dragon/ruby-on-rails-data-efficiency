@@ -11,6 +11,9 @@ class GooglePlaySnapshotMassWorker
   end
 
   def scrape_new_similar_apps(similar_apps)
+    missing_ids = similar_apps.select { |x| x.id.nil? }
+    raise "About to queue #{missing_ids.count} apps without ids: #{missing_ids.map(&:app_identifier).join(', ')}" if missing_ids.count > 0
+
     batch.jobs do
       similar_apps.each do |android_app|
         GooglePlaySnapshotMassWorker.perform_async(
