@@ -4,12 +4,10 @@ class GooglePlayService
 
   def attributes(app_identifier, proxy_type: :tor)
     @proxy_type = proxy_type
-
     ret = {}
 
     @html = google_play_html(app_identifier)
 
-    ret = {}
 
     # Checks if DOM is intact, exits method returning nil if not
     if @html.nil? || @html.at_css('.document-title').nil?
@@ -39,10 +37,12 @@ class GooglePlayService
       icon_url_300x300
       developer_google_play_identifier
     )
-
+    # note: for speedup, in_app_purchases_range must come after in_app_purchases
     
     methods.each do |method|
       key = method.to_sym
+
+      next if key == :in_app_purchases_range && !ret[:in_app_purchases]
     
       begin
         attribute = send(method.to_sym)
@@ -51,7 +51,6 @@ class GooglePlayService
       rescue
         ret[key] = nil
       end
-    
     end
 
     ret
@@ -68,14 +67,8 @@ class GooglePlayService
 
   def google_play_html(app_identifier)
     url = "https://play.google.com/store/apps/details?id=#{app_identifier}&hl=en"
-
-    #puts "url: #{url}"
-
-
     page = get(url)
-
     Nokogiri::HTML(page)
-
     # Rescues error if issue opening URL
     rescue => e
       case e
@@ -101,42 +94,39 @@ class GooglePlayService
 
 
   def name
-    @html.at_css('.document-title').text.strip
+    @html.at_css('h1.document-title').text.strip
   end
 
   def description
-    #@html.at_css('div.details-section-contents').css('div')
-    @html.css('div').find{ |x| x['jsname'] == 'C4s9Ed'}.text
+    unique_itemprop('div', 'description').text.strip
   end
 
   # Returns price in dollars as float, 0.0 if product is free
   # NOTE: User must not be logged into Google Play account while using this - "Installed" app will register as free
   def price
     # Regular Expression strips string of all characters besides digits and decimal points
-    price_dollars = @html.css("button.price > span:nth-child(3)").text.gsub(/[^0-9.]/,'').to_f
+    price_dollars = unique_itemprop('meta', 'price')['content'].gsub(/[^0-9.]/, '').to_f
     (price_dollars*100.0).to_i
   end
 
   def seller
-    @html.at_css('a.document-subtitle > span').text
+    unique_itemprop('span', 'name', base: unique_itemprop('div', 'author')).text.strip
   end
 
   def seller_url
-    begin
-      url = @html.css(".dev-link").first['href']
-      url = UrlHelper.url_from_google_play(url)
-      UrlHelper.url_with_http_only(url)
-    rescue
-      nil
-    end
+    url = @html.css('a.dev-link').first['href']
+    url = UrlHelper.url_from_google_play(url)
+    UrlHelper.url_with_http_only(url)
+  rescue
+    nil
   end
 
   def category
-    @html.at_css(".category").text.strip
+    unique_itemprop('span', 'genre').text.strip
   end
 
   def released
-    date_text =  meta_infos_with_itemprop('datePublished')
+    date_text = unique_itemprop('div', 'datePublished').text.strip
     date = Date.parse(date_text)
     
     raise 'Release date is in the future' if date.future?
@@ -146,7 +136,7 @@ class GooglePlayService
 
   # Outputs file size as an integer in B, unless size stated as "Varies with device" in which nil is returned
   def size
-    size_text = meta_infos_with_itemprop('fileSize')
+    size_text = unique_itemprop('div', 'fileSize').text.strip
 
     if size_text == "Varies with device"
       size = nil
@@ -159,6 +149,7 @@ class GooglePlayService
 
   # Returns number GPlus "likes" as a integer, returns -1 if GPlus info span empty
   def google_plus_likes
+    raise 'Not in use'
 
     # Finds link to Google Plus iframe on main Google Play Store page
     gplus_iframe_urls = @html.css("div.plusone-container > div > iframe")
@@ -180,24 +171,20 @@ class GooglePlayService
 
   # Returns true if author is a "Top Developer", false if not
   def top_dev
-    badge_title = @html.css('.badge-title')
-
-    if badge_title.nil?
-      return false
-    end
-
-    badge_title.text == "Top Developer"
+    badge = unique_itemprop('meta', 'topDeveloperBadgeUrl')
+    !!badge
   end
 
   # Returns true if app offers in-app purchases, false if not
   def in_app_purchases
-    @html.css('.inapp-msg').text == "Offers in-app purchases"
+    !!@html.at_css('div.info-box-top').at_css('div.inapp-msg')
   end
 
   # Returns string of price range if in app purchases available, nil not (in cents)
   def in_app_purchases_range
-
     iap_s = meta_infos_with_title('In-app Products')
+
+    return unless iap_s.present?
 
     iap_a = iap_s.gsub('per item', '').split(' - ').map{ |x| (x.gsub('$', '').strip.to_f*100).to_i }
 
@@ -206,17 +193,17 @@ class GooglePlayService
 
   # Returns string of Android version required or "Varies with device"
   def required_android_version
-    meta_infos_with_itemprop('operatingSystems')
+    unique_itemprop('div', 'operatingSystems').text.strip
   end
 
   # Returns string of current (app) version required or "Varies with device"
   def version
-    meta_infos_with_itemprop('softwareVersion')
+    unique_itemprop('div', 'softwareVersion').text.strip
   end
 
   # Returns string of range detailing how many installs the app has, returns nil if data not available
   def downloads
-    downloads_s = meta_infos_with_itemprop('numDownloads')
+    downloads_s = unique_itemprop('div', 'numDownloads').text.strip
     downloads_a = downloads_s.split(' - ').map{ |x| x.strip.gsub(',', '').to_i }
     
     (downloads_a[0]..downloads_a[1])
@@ -224,56 +211,55 @@ class GooglePlayService
 
   # Returns a string containing the content rating, or nil if data not available
   def content_rating
-    meta_infos_with_itemprop('contentRating')
+    unique_itemprop('div', 'contentRating').text.strip
   end
 
   # Returns float of app review rating (out of 5)
   def ratings_all_stars
-    @html.css('div.rating-box > div.score-container > div.score').text.to_f
+    unique_itemprop('meta', 'ratingValue')['content'].to_f
   end
   
   # Returns integer of total number of app reviews
   def ratings_all_count
-    @html.css('.reviews-stats > .reviews-num').text.gsub(/[^0-9]/,'').to_i
+    unique_itemprop('meta', 'ratingCount')['content'].to_i
   end
 
   # Finds all listed "similar" apps on Play store
   def similar_apps
-    cards = Array.new
-
-    @html.css('.card.no-rationale').each do |card|
-      cards.push(card.css('a.card-click-target').first['href'].split('id=').last)
-    end
-
-    cards
+    @html.css('div.card-content[data-docid]')
+      .map { |x| x.attributes['data-docid'].value }.uniq.compact
   end
 
   def screenshot_urls
-    begin
-      @html.css(".screenshot").map{ |pic| pic['src'] }
-    rescue => e
-      nil
-    end
+    @html.css('img[itemprop="screenshot"]').map { |x| x['src'] }
   end
   
   def icon_url_300x300
     #@html.css('.cover-image').first['src']
-    @html.css('div.details-info .cover-image').first['src']
+    unique_itemprop('img', 'image')['src']
   end
   
   def developer_google_play_identifier
-    link = @html.css('a.document-subtitle.primary').first['href']
-    
-    ret = link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
+    dev_url = unique_itemprop('meta', 'url', base: unique_itemprop('div', 'author')).attributes['content'].value
+    /id=(.+)\z/.match(dev_url)[1]
+  end
+
+  def unique_itemprop(tag, itemprop, base: @html)
+    base.at_css("#{tag}[itemprop=\"#{itemprop}\"]")
   end
 
   # gets all meta-info
   def meta_infos_with_itemprop(itemprop_value)
-    @html.css('.meta-info').map(&:children).flatten.find{ |x| x['itemprop'] == itemprop_value}.text.strip
+    @html.css('div.meta-info').map(&:children).flatten.find{ |x| x['itemprop'] == itemprop_value}.text.strip
   end
 
   def meta_infos_with_title(title)
-     @html.css('.meta-info').map(&:children).find{ |c| c.find{ |cc| cc['class'] == 'title' && cc.text.strip == title} }.find{ |c| c['class'] == 'content' }.text.strip
+    details = @html.css('div.details-section-contents div.meta-info').find do |node|
+      /#{title}/.match(node.text)
+    end
+
+    details.at_css('div.content').text.strip if details
+     # @html.css('div.meta-info').map(&:children).find{ |c| c.find{ |cc| cc['class'] == 'title' && cc.text.strip == title} }.find{ |c| c['class'] == 'content' }.text.strip
   end
 
   # Makes sure the scraping logic is still valid
