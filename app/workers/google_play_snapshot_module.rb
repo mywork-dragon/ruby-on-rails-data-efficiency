@@ -146,6 +146,8 @@ module GooglePlaySnapshotModule
                       rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
                       AndroidApp.import rows
                       AndroidApp.where(app_identifier: similar_apps)
+                      # bundle ids are case-sensitive but our table is case-insensitive...
+                      # https://github.com/MightySignal/varys/issues/745
                     else
                       []
                     end
