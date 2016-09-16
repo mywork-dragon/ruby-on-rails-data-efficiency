@@ -28,7 +28,7 @@ module ProxyBase
   end
 
   def all_static_proxies
-    MicroProxy.where.not(purpose: MicroProxy.purposes[:temporary]).where(active: true).pluck(:private_ip)
+    MicroProxy.where(active: true).pluck(:private_ip)
   end
 
   def android_proxies
