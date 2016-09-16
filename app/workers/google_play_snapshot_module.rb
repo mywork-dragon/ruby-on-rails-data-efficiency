@@ -144,12 +144,8 @@ module GooglePlaySnapshotModule
     @similar_apps = if similar_apps = @attributes[:similar_apps]
                       missing = similar_apps - AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
                       rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
-                      AndroidApp.import(
-                        rows,
-                        synchronize: rows,
-                        synchronize_keys: [:app_identifier]
-                      )
-                      rows
+                      AndroidApp.import rows
+                      AndroidApp.where(app_identifier: similar_apps)
                     else
                       []
                     end
