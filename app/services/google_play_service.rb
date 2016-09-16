@@ -3,15 +3,11 @@ class GooglePlayService
   include AppAttributeChecker
 
   def attributes(app_identifier, proxy_type: :tor)
-    @proxy_type = :proxy
-
+    @proxy_type = proxy_type
     ret = {}
 
     @html = google_play_html(app_identifier)
-    # @html = Nokogiri::HTML(File.open('body.html') { |f| f.read })
-    # @html = Nokogiri::HTML(File.open('cc.html') { |f| f.read })
 
-    ret = {}
 
     # Checks if DOM is intact, exits method returning nil if not
     if @html.nil? || @html.at_css('.document-title').nil?
