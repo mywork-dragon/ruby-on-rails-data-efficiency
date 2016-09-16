@@ -3,13 +3,12 @@ class GooglePlaySnapshotService
 
   class << self
     def check_dom
-      return # remove me
       raise InvalidDom unless GooglePlayService.dom_valid?
     end
 
     def initiate_proxy_spinup
-      # Slackiq.message('Starting temporary proxies', webhook_name: :main)
-      # ProxyControl.start_proxies
+      Slackiq.message('Starting temporary proxies', webhook_name: :main)
+      ProxyControl.start_proxies
     end
 
     def run(notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}")
@@ -53,7 +52,7 @@ class GooglePlaySnapshotService
   end
 
   def on_complete(status, options)
-    # ProxyControl.stop_proxies
+    ProxyControl.stop_proxies
     Slackiq.notify(webhook_name: :main, status: status, title: 'Google Play scrape completed')
   end
 end
