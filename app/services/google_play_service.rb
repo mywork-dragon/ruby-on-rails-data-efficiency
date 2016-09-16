@@ -49,7 +49,7 @@ class GooglePlayService
   end
 
   def google_play_html(app_identifier)
-    page = GooglePlay.lookup(app_identifier, proxy_type: @proxy_type)
+    page = GooglePlayStore.lookup(app_identifier, proxy_type: @proxy_type)
     Nokogiri::HTML(page.body)
   end
 

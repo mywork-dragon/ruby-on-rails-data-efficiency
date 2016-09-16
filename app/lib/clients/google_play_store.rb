@@ -1,4 +1,4 @@
-class GooglePlay
+class GooglePlayStore
   class Unavailable < RuntimeError; end
   class NotFound < RuntimeError; end
   class UnknownCondition < RuntimeError; end
