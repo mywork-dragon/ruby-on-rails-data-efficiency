@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160909174100) do
+ActiveRecord::Schema.define(version: 20160916182247) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -183,6 +183,7 @@ ActiveRecord::Schema.define(version: 20160909174100) do
     t.boolean  "is_valid",                       default: true
   end
 
+  add_index "android_developers_websites", ["android_developer_id", "is_valid"], name: "android_developers_websites_is_valid", using: :btree
   add_index "android_developers_websites", ["android_developer_id", "website_id"], name: "android_dev_id_and_website_id", using: :btree
   add_index "android_developers_websites", ["website_id"], name: "index_android_developers_websites_on_website_id", using: :btree
 
@@ -1555,6 +1556,7 @@ ActiveRecord::Schema.define(version: 20160909174100) do
     t.boolean  "is_valid",                   default: true
   end
 
+  add_index "ios_developers_websites", ["ios_developer_id", "is_valid"], name: "ios_developers_websites_is_valid", using: :btree
   add_index "ios_developers_websites", ["ios_developer_id", "website_id"], name: "index_ios_developers_websites_on_ios_developer_id_and_website_id", using: :btree
   add_index "ios_developers_websites", ["website_id"], name: "index_ios_developers_websites_on_website_id", using: :btree
 
