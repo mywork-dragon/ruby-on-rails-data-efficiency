@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git
-  revision: 6cb8bca1fabdc58ed6ec485c3a77f9027a46e88b
-  tag: 01.proxy_utils
+  revision: 49d5cb0fb35238b12150a49b556f9591eaf97561
+  tag: 0.8.2
   specs:
     mighty_aws (0.8.2)
       aws-sdk (~> 2.3, >= 2.3.7)
@@ -81,12 +81,12 @@ GEM
       execjs
       json
     awesome_print (1.6.1)
-    aws-sdk (2.6.0)
-      aws-sdk-resources (= 2.6.0)
-    aws-sdk-core (2.6.0)
+    aws-sdk (2.6.1)
+      aws-sdk-resources (= 2.6.1)
+    aws-sdk-core (2.6.1)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.0)
-      aws-sdk-core (= 2.6.0)
+    aws-sdk-resources (2.6.1)
+      aws-sdk-core (= 2.6.1)
     bcrypt (3.1.10)
     bootstrap-sass (3.2.0.0)
       sass (~> 3.2)
