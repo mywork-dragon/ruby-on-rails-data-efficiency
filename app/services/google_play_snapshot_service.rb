@@ -39,7 +39,7 @@ class GooglePlaySnapshotService
 
     def run_ids(notes: 'Running by ids', android_app_ids: [])
       check_dom
-      initiate_proxy_spinup
+      # initiate_proxy_spinup
       j = AndroidAppSnapshotJob.create!(notes: notes)
       batch = Sidekiq::Batch.new
       batch.description = 'Run android apps by ids'
@@ -52,7 +52,7 @@ class GooglePlaySnapshotService
   end
 
   def on_complete(status, options)
-    ProxyControl.stop_proxies
+    # ProxyControl.stop_proxies
     Slackiq.notify(webhook_name: :main, status: status, title: 'Google Play scrape completed')
   end
 end
