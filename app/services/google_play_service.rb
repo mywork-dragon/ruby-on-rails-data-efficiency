@@ -228,38 +228,38 @@ class GooglePlayService
   # Makes sure the scraping logic is still valid
   # (Checks to see if Google has changed their DOM)
   # @author Jason Lew
-  # def dom_valid?
+  def dom_valid?
 
-  #   attributes = self.attributes('com.ubercab')
+    attributes = self.attributes('com.ubercab')
 
-  #   ap attributes
+    ap attributes
 
-  #   attributes_expected = 
-  #     {
-  #       name: ->(x) { x == 'Uber' },
-  #       description: ->(x) { x.include? 'Get a reliable ride in minutes' },
-  #       price: ->(x) { x == 0 },
-  #       seller: ->(x) { x == 'Uber Technologies, Inc.' },
-  #       seller_url: ->(x) { x == 'http://uber.com' },
-  #       category: ->(x) { x == 'Transportation' },
-  #       released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015 },
-  #       # size: ->(x) { x.to_i > 1e7 },
-  #       top_dev: ->(x) { x == true },
-  #       in_app_purchases: ->(x) { x == false },
-  #       required_android_version: ->(x) { x == 'Varies with device' || x.to_i >= 4 },
-  #       version: ->(x) { x == 'Varies with device' || x.to_i >= 3 },
-  #       downloads: ->(x) { x.min >= 10e6},
-  #       content_rating: ->(x) { x == 'Everyone'},
-  #       ratings_all_stars: ->(x) { (1..5).include?(x) },
-  #       ratings_all_count: ->(x) { x > 300000 },
-  #       similar_apps: ->(x) { x.count > 0},
-  #       screenshot_urls: ->(x) { x.count > 0},
-  #       icon_url_300x300: ->(x) { x.present? },
-  #       developer_google_play_identifier: ->(x) { x.present? },
-  #     }
+    attributes_expected = 
+      {
+        name: ->(x) { x == 'Uber' },
+        description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+        price: ->(x) { x == 0 },
+        seller: ->(x) { x == 'Uber Technologies, Inc.' },
+        seller_url: ->(x) { x == 'http://uber.com' },
+        category: ->(x) { x == 'Transportation' },
+        released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015 },
+        # size: ->(x) { x.to_i > 1e7 },
+        top_dev: ->(x) { x == true },
+        in_app_purchases: ->(x) { x == false },
+        required_android_version: ->(x) { x == 'Varies with device' || x.to_i >= 4 },
+        version: ->(x) { x == 'Varies with device' || x.to_i >= 3 },
+        downloads: ->(x) { x.min >= 10e6},
+        content_rating: ->(x) { x == 'Everyone'},
+        ratings_all_stars: ->(x) { (1..5).include?(x) },
+        ratings_all_count: ->(x) { x > 300000 },
+        similar_apps: ->(x) { x.count > 0},
+        screenshot_urls: ->(x) { x.count > 0},
+        icon_url_300x300: ->(x) { x.present? },
+        developer_google_play_identifier: ->(x) { x.present? },
+      }
 
-  #     all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
-  # end
+      all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
+  end
 
   class << self
 
