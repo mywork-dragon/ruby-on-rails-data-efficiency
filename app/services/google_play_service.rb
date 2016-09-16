@@ -3,12 +3,12 @@ class GooglePlayService
   include AppAttributeChecker
 
   def attributes(app_identifier, proxy_type: :tor)
-    @proxy_type = proxy_type
+    @proxy_type = :android_classification
 
     ret = {}
 
-    # @html = google_play_html(app_identifier)
-    @html = Nokogiri::HTML(File.open('body.html') { |f| f.read })
+    @html = google_play_html(app_identifier)
+    # @html = Nokogiri::HTML(File.open('body.html') { |f| f.read })
     # @html = Nokogiri::HTML(File.open('cc.html') { |f| f.read })
 
     ret = {}
@@ -41,22 +41,20 @@ class GooglePlayService
       icon_url_300x300
       developer_google_play_identifier
     )
-
+    # note: for speedup, in_app_purchases_range must come after in_app_purchases
     
     methods.each do |method|
-      b = Time.now
       key = method.to_sym
+
+      next if key == :in_app_purchases_range && !ret[:in_app_purchases]
     
       begin
         attribute = send(method.to_sym)
       
         ret[key] = attribute
-      rescue => e
-        raise e
+      rescue
         ret[key] = nil
       end
-
-      puts "#{key}: #{Time.now - b}"
     end
 
     ret
@@ -189,7 +187,7 @@ class GooglePlayService
 
   # Returns true if app offers in-app purchases, false if not
   def in_app_purchases
-    !!@html.at_css('div.inapp-msg')
+    !!@html.at_css('div.info-box-top').at_css('div.inapp-msg')
   end
 
   # Returns string of price range if in app purchases available, nil not (in cents)
@@ -238,26 +236,22 @@ class GooglePlayService
 
   # Finds all listed "similar" apps on Play store
   def similar_apps
-    @html.css('div.card-content[data-docid]').map { |x| x.attributes['data-docid'].value }.uniq.compact
+    @html.css('div.card-content[data-docid]')
+      .map { |x| x.attributes['data-docid'].value }.uniq.compact
   end
 
   def screenshot_urls
-    begin
-      @html.css(".screenshot").map{ |pic| pic['src'] }
-    rescue => e
-      nil
-    end
+    @html.css('img[itemprop="screenshot"]').map { |x| x['src'] }
   end
   
   def icon_url_300x300
     #@html.css('.cover-image').first['src']
-    @html.css('div.details-info .cover-image').first['src']
+    unique_itemprop('img', 'image')['src']
   end
   
   def developer_google_play_identifier
-    link = @html.css('a.document-subtitle.primary').first['href']
-    
-    ret = link.gsub('/store/apps/dev?id=', '').gsub('/store/apps/developer?id=', '').strip
+    dev_url = unique_itemprop('meta', 'url', base: unique_itemprop('div', 'author')).attributes['content'].value
+    /id=(.+)\z/.match(dev_url)[1]
   end
 
   def unique_itemprop(tag, itemprop, base: @html)
@@ -270,7 +264,6 @@ class GooglePlayService
   end
 
   def meta_infos_with_title(title)
-    byebug
     details = @html.css('div.details-section-contents div.meta-info').find do |node|
       /#{title}/.match(node.text)
     end
