@@ -38,7 +38,10 @@ module ProxyBase
   # load balancers that will forward address to temporary proxies
   # TODO: hard-coded for now...move to DB
   def temporary_proxy_load_balancers
-    ['internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com']
+    [
+      'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
+      'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
+    ]
   end
 
 end

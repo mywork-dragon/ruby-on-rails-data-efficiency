@@ -1,18 +1,11 @@
 class GooglePlayService
-
   include AppAttributeChecker
 
-  def attributes(app_identifier, proxy_type: :tor)
+  def attributes(app_identifier, proxy_type: :general)
     @proxy_type = proxy_type
-    ret = {}
-
     @html = google_play_html(app_identifier)
 
-
-    # Checks if DOM is intact, exits method returning nil if not
-    if @html.nil? || @html.at_css('.document-title').nil?
-      return {}
-    end
+    ret = {}
     
     methods = %w(
       name
@@ -46,7 +39,6 @@ class GooglePlayService
     
       begin
         attribute = send(method.to_sym)
-      
         ret[key] = attribute
       rescue
         ret[key] = nil
@@ -56,42 +48,10 @@ class GooglePlayService
     ret
   end
 
-  def get(url)
-    case @proxy_type
-    when :tor
-      Tor.get(url)
-    when :proxy
-      Proxy.get_body_from_url(url, proxy_type: :android_classification)
-    end    
-  end
-
   def google_play_html(app_identifier)
-    url = "https://play.google.com/store/apps/details?id=#{app_identifier}&hl=en"
-    page = get(url)
-    Nokogiri::HTML(page)
-    # Rescues error if issue opening URL
-    rescue => e
-      case e
-        when OpenURI::HTTPError
-          return nil
-        when URI::InvalidURIError
-          return nil
-        else
-          raise e
-    end
+    page = GooglePlayStore.lookup(app_identifier, proxy_type: @proxy_type)
+    Nokogiri::HTML(page.body)
   end
-
-  # Returns string corresponding with supplied regex or nil if data not available
-  # Probably deprecated 12/13/2015 
-  def app_info_helper(regex)
-    app_info_div = @html.css('div.details-section-contents > div.meta-info')
-    in_app_cost_div = app_info_div.select{|div| div.children.children.text.match(regex)}
-    if in_app_cost_div.length < 1
-      return nil
-    end
-    in_app_cost_div.first.children.children[1].text.strip
-  end
-
 
   def name
     @html.at_css('h1.document-title').text.strip
@@ -235,7 +195,6 @@ class GooglePlayService
   end
   
   def icon_url_300x300
-    #@html.css('.cover-image').first['src']
     unique_itemprop('img', 'image')['src']
   end
   
@@ -248,18 +207,12 @@ class GooglePlayService
     base.at_css("#{tag}[itemprop=\"#{itemprop}\"]")
   end
 
-  # gets all meta-info
-  def meta_infos_with_itemprop(itemprop_value)
-    @html.css('div.meta-info').map(&:children).flatten.find{ |x| x['itemprop'] == itemprop_value}.text.strip
-  end
-
   def meta_infos_with_title(title)
     details = @html.css('div.details-section-contents div.meta-info').find do |node|
       /#{title}/.match(node.text)
     end
 
     details.at_css('div.content').text.strip if details
-     # @html.css('div.meta-info').map(&:children).find{ |c| c.find{ |cc| cc['class'] == 'title' && cc.text.strip == title} }.find{ |c| c['class'] == 'content' }.text.strip
   end
 
   # Makes sure the scraping logic is still valid
@@ -300,7 +253,7 @@ class GooglePlayService
 
   class << self
 
-    def attributes(app_identifier, proxy_type: :tor)
+    def attributes(app_identifier, proxy_type: :general)
       self.new.attributes(app_identifier, proxy_type: proxy_type)
     end
 
