@@ -37,12 +37,12 @@ class GooglePlayService
 
       next if key == :in_app_purchases_range && !ret[:in_app_purchases]
     
-      # begin
-      #   attribute = send(method.to_sym)
-      #   ret[key] = attribute
-      # rescue
-      #   ret[key] = nil
-      # end
+      begin
+        attribute = send(method.to_sym)
+        ret[key] = attribute
+      rescue
+        ret[key] = nil
+      end
     end
 
     ret
@@ -198,7 +198,6 @@ class GooglePlayService
   end
   
   def icon_url_300x300
-    #@html.css('.cover-image').first['src']
     unique_itemprop('img', 'image')['src']
   end
   
@@ -211,18 +210,12 @@ class GooglePlayService
     base.at_css("#{tag}[itemprop=\"#{itemprop}\"]")
   end
 
-  # gets all meta-info
-  def meta_infos_with_itemprop(itemprop_value)
-    @html.css('div.meta-info').map(&:children).flatten.find{ |x| x['itemprop'] == itemprop_value}.text.strip
-  end
-
   def meta_infos_with_title(title)
     details = @html.css('div.details-section-contents div.meta-info').find do |node|
       /#{title}/.match(node.text)
     end
 
     details.at_css('div.content').text.strip if details
-     # @html.css('div.meta-info').map(&:children).find{ |c| c.find{ |cc| cc['class'] == 'title' && cc.text.strip == title} }.find{ |c| c['class'] == 'content' }.text.strip
   end
 
   # Makes sure the scraping logic is still valid
