@@ -142,12 +142,16 @@ module GooglePlaySnapshotModule
 
   def save_new_similar_apps
     @similar_apps = if similar_apps = @attributes[:similar_apps]
-                      missing = similar_apps - AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
-                      rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
-                      AndroidApp.import rows
-                      AndroidApp.where(app_identifier: similar_apps)
                       # bundle ids are case-sensitive but our table is case-insensitive...
                       # https://github.com/MightySignal/varys/issues/745
+                      existing = AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
+                      missing = similar_apps.select do |similar_ai|
+                        index = existing.index { |existing_ai| existing_ai.casecmp(similar_ai) == 0 }
+                        index.nil?
+                      end.uniq(&:downcase)
+                      rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
+                      AndroidApp.import rows
+                      AndroidApp.where(app_identifier: missing)
                     else
                       []
                     end
