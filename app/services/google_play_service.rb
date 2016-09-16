@@ -3,7 +3,7 @@ class GooglePlayService
   include AppAttributeChecker
 
   def attributes(app_identifier, proxy_type: :tor)
-    @proxy_type = :android_classification
+    @proxy_type = :proxy
 
     ret = {}
 
@@ -71,14 +71,8 @@ class GooglePlayService
 
   def google_play_html(app_identifier)
     url = "https://play.google.com/store/apps/details?id=#{app_identifier}&hl=en"
-
-    #puts "url: #{url}"
-
-
     page = get(url)
-
     Nokogiri::HTML(page)
-
     # Rescues error if issue opening URL
     rescue => e
       case e
