@@ -1,7 +1,6 @@
 module ProxyBase
   
   def select_proxy(proxy_type: nil)
-    b = Time.now
     proxies = if proxy_type == :ios_classification
       ios_proxies
     elsif proxy_type == :android_classification
@@ -13,7 +12,6 @@ module ProxyBase
     else
       general_proxies
     end
-    puts "chose proxy: #{Time.now - b}"
 
     {
         ip: proxies.sample,
@@ -40,11 +38,10 @@ module ProxyBase
   # load balancers that will forward address to temporary proxies
   # TODO: hard-coded for now...move to DB
   def temporary_proxy_load_balancers
-    MicroProxy.where(purpose: MicroProxy.purposes[:temporary]).where(active: true).pluck(:private_ip)
-    # [
-    #   'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
-    #   'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
-    # ]
+    [
+      'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
+      'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
+    ]
   end
 
 end
