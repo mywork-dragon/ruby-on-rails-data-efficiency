@@ -24,7 +24,7 @@ class IosMonitorService
     def kill_ssh_sessions(ids:)
 
       devices = IosDevice.where(id: ids).find_each do |device|
-        result = IosDeviceService.new(device).kill_ssh_session
+        result = IosDeviceService.new(device, apple_account: device.apple_account).kill_ssh_session
         ap "Device #{device.id}: #{result}"
       end
     end
