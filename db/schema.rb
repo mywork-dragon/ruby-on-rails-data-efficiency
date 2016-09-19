@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160909174100) do
+ActiveRecord::Schema.define(version: 20160919204720) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -60,6 +60,43 @@ ActiveRecord::Schema.define(version: 20160909174100) do
 
   add_index "android_app_categories_snapshots", ["android_app_category_id"], name: "index_android_app_category_id", using: :btree
   add_index "android_app_categories_snapshots", ["android_app_snapshot_id", "android_app_category_id"], name: "index_android_app_snapshot_id_category_id", using: :btree
+
+  create_table "android_app_snapshot_backups", force: :cascade do |t|
+    t.string  "name",                             limit: 191
+    t.integer "price",                            limit: 4
+    t.integer "size",                             limit: 8
+    t.date    "updated"
+    t.string  "seller_url",                       limit: 191
+    t.string  "version",                          limit: 191
+    t.date    "released"
+    t.text    "description",                      limit: 65535
+    t.integer "android_app_id",                   limit: 4
+    t.integer "google_plus_likes",                limit: 4
+    t.boolean "top_dev"
+    t.boolean "in_app_purchases"
+    t.string  "required_android_version",         limit: 191
+    t.string  "content_rating",                   limit: 191
+    t.string  "seller",                           limit: 191
+    t.decimal "ratings_all_stars",                              precision: 3, scale: 2
+    t.integer "ratings_all_count",                limit: 4
+    t.integer "status",                           limit: 4
+    t.integer "android_app_snapshot_job_id",      limit: 4
+    t.integer "in_app_purchase_min",              limit: 4
+    t.integer "in_app_purchase_max",              limit: 4
+    t.integer "downloads_min",                    limit: 8
+    t.integer "downloads_max",                    limit: 8
+    t.string  "icon_url_300x300",                 limit: 191
+    t.string  "developer_google_play_identifier", limit: 191
+    t.boolean "apk_access_forbidden"
+  end
+
+  add_index "android_app_snapshot_backups", ["android_app_id", "name"], name: "index_android_app_snapshot_backups_on_android_app_id_and_name", using: :btree
+  add_index "android_app_snapshot_backups", ["android_app_id", "released"], name: "index_android_app_snapshot_bck_app_released", using: :btree
+  add_index "android_app_snapshot_backups", ["android_app_snapshot_job_id"], name: "index_android_app_snapshot_bck_job_id", using: :btree
+  add_index "android_app_snapshot_backups", ["developer_google_play_identifier"], name: "index_android_app_snapshot_bck_dev_id", using: :btree
+  add_index "android_app_snapshot_backups", ["downloads_min"], name: "index_android_app_snapshot_bck_dwnld_min", using: :btree
+  add_index "android_app_snapshot_backups", ["name"], name: "index_android_app_snapshot_backups_on_name", using: :btree
+  add_index "android_app_snapshot_backups", ["released"], name: "index_android_app_snapshot_backups_on_released", using: :btree
 
   create_table "android_app_snapshot_exceptions", force: :cascade do |t|
     t.integer  "android_app_snapshot_id",     limit: 4
