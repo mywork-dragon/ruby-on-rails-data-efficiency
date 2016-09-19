@@ -4718,6 +4718,11 @@ li.sdk-tags a.edit {
   padding: 10px;
   border-bottom: 1px solid #eee; }
 
+ul.pagination li {
+  padding: 0;
+  border: none;
+}
+
 .list-info li:last-child {
   border-bottom: none; }
 
@@ -7569,11 +7574,16 @@ span#dashboardResultsTableHeadingNumDisplayed {
   position: relative;
   display: table;
   width: 100%;
+  margin-bottom: 10px;
 }
 
 #showCompanyEmailsButton {
   width: 158px;
   display: table-cell;
+}
+
+#showCompanyEmailsButton button {
+  margin: -4px 0 0 0;
 }
 
 #showSdksButtonLi {

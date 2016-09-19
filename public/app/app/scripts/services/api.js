@@ -62,13 +62,24 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
       },
-      getCompanyContacts: function(websites, filter) {
+      getCompanyContacts: function(websites, filter, page, contactsPerPage) {
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/company/contacts',
           data: {
             companyWebsites: websites,
-            filter: filter
+            filter: filter,
+            page: page,
+            perPage: contactsPerPage
+          }
+        });
+      },
+      getContactEmail: function(clearbitId) {
+        return $http({
+          method: 'POST',
+          url: API_URI_BASE + 'api/company/contact',
+          data: {
+            contactId: clearbitId,
           }
         });
       },

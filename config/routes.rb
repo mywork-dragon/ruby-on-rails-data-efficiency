@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   put 'api/user/tos' => 'api#user_tos_set'
 
   post 'api/company/contacts' => 'api#get_company_contacts'
+  post 'api/company/contact' => 'api#get_contact_email'
 
   get 'api/custom_search' => 'api#custom_search'
 

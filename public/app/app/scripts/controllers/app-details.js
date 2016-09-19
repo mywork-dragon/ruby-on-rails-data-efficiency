@@ -7,6 +7,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     $scope.initialPageLoadComplete = false; // shows page load spinner
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo
+    $scope.currentContactsPage = 1;
+    $scope.contactsPerPage = 10;
 
     var userInfo = {}; // User info set
     authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
@@ -168,11 +170,27 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     /* Company Contacts Logic */
     $scope.contactsLoading = false;
     $scope.contactsLoaded = false;
-    $scope.getCompanyContacts = function(websites, filter) {
+    
+    $scope.getContactEmail = function(clearbitId) {
+      apiService.getContactEmail(clearbitId)
+        .success(function(data) {
+          for(var i = 0; i < $scope.companyContacts.length; i++) {
+            if ($scope.companyContacts[i].clearbitId == clearbitId) {
+              $scope.companyContacts[i].email = data.email
+            }
+          }
+        })
+    }
+
+    $scope.getCompanyContacts = function(websites, filter, page) {
+      if (!page) {
+        page = 1
+      }
       $scope.contactsLoading = true;
-      apiService.getCompanyContacts(websites, filter)
+      apiService.getCompanyContacts(websites, filter, page, $scope.contactsPerPage)
         .success(function(data) {
           $scope.companyContacts = data.contacts;
+          $scope.contactsCount = data.contactsCount;
           $scope.contactsLoading = false;
           $scope.contactsLoaded = true;
           /* -------- Mixpanel Analytics Start -------- */

@@ -342,7 +342,7 @@ class ApiController < ApplicationController
       csv << header
       contacts.each do |contact|
         contacts_hash = [
-          contact['clearBitId'],
+          contact['clearbitId'],
           companyName,
           contact['title'],
           contact['fullName'],
@@ -456,10 +456,17 @@ class ApiController < ApplicationController
     render json: { :tos_accepted => @current_user.tos_accepted }
   end
 
+  def get_contact_email
+    contact_id = params['contactId']
+    email = ClearbitContact.get_contact_email(contact_id)
+    render json: {email: email}
+  end
+
   def get_company_contacts
 
     company_websites = params['companyWebsites']
     filter = params['filter']
+    page = params['page'] || 1
     contacts = []
     domains = {}
 
@@ -480,7 +487,7 @@ class ApiController < ApplicationController
         if filter.present?
           contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => filter, 'limit' => 20}, website)
         else
-          current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).as_json : []
+          current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).limit(60).as_json : []
 
           if current_contacts.count < 60
             current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)
@@ -491,8 +498,9 @@ class ApiController < ApplicationController
           contacts += current_contacts
         end
       end
-      contacts.uniq! {|e| e[:clearBitId] }
-      render json: {:contacts => contacts}
+      offset = params['perPage'] || 10
+      contacts.uniq! {|e| e[:clearbitId] }
+      render json: {:contacts => contacts[((page-1)*offset)..((page*offset)-1)], contactsCount: contacts.count}
     end
   end
 
