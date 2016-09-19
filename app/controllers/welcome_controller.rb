@@ -22,14 +22,6 @@ class WelcomeController < ApplicationController
       {image: 'realm.png', width: 135},
       {image: 'neumob.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
-
-    # add Pokemon Go as first app because it's hot 
-    if Rails.env.production? 
-      pokemon_go_id = 2352590
-      @apps.delete_if{ |ia| ia.id == pokemon_go_id }
-      pokemon_go = IosApp.find(pokemon_go_id)
-      @apps = [pokemon_go] + @apps
-    end
   end
 
   def app_sdks
