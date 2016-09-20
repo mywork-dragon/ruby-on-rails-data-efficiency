@@ -112,16 +112,33 @@ class NewBusinessEntityService
     end
 
     def dedupe_ios_developers
-      IosDeveloper.pluck(:identifier).group_by{ |e| e }.select { |k, v| v.size > 1 }.map(&:first).each do |identifier|
-        CreateDevelopersWorker.perform_async(:dedupe_developers, identifier, 'ios')
+      batch = Sidekiq::Batch.new
+      batch = Sidekiq::Batch.new
+      batch.description = 'Dedupe ios developers'
+      batch.on(:complete, 'NewBusinessEntityService#on_complete_dedupe')
+
+      batch.jobs do
+        IosDeveloper.select('identifier, count(*)').group(:identifier).having('count(*) > 1').each do |ios_developer|
+          CreateDevelopersWorker.perform_async(:dedupe_developers, ios_developer.identifier, 'ios')
+        end
       end
     end
 
     def dedupe_android_developers
-      AndroidDeveloper.pluck(:identifier).group_by{ |e| e }.select { |k, v| v.size > 1 }.map(&:first).each do |identifier|
-        CreateDevelopersWorker.perform_async(:dedupe_developers, identifier, 'android')
+      batch = Sidekiq::Batch.new
+      batch.description = 'Dedupe android developers'
+      batch.on(:complete, 'NewBusinessEntityService#on_complete_dedupe')
+
+      batch.jobs do
+        AndroidDeveloper.select('identifier, count(*)').group(:identifier).having('count(*) > 1').each do |android_developer|
+          CreateDevelopersWorker.perform_async(:dedupe_developers, android_developer.identifier, 'android')
+        end
       end
     end
+  end
+
+  def on_complete_dedupe(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Created developer objects')
   end
 
   def on_complete(status, options)

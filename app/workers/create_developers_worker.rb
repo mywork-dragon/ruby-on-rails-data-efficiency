@@ -50,7 +50,7 @@ class CreateDevelopersWorker
     end
 
     developers = developer_class.where(identifier: dev_id).to_a
-    developer_to_keep = developers.shift
+    developer_to_keep = developers.pop
     developers.each do |dupe_developer|
       if platform == 'ios'
         dupe_developer.ios_apps.update_all(ios_developer_id: developer_to_keep.id)
