@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920175216) do
+ActiveRecord::Schema.define(version: 20160920220801) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 20160920175216) do
   end
 
   add_index "android_developers", ["company_id"], name: "index_android_developers_on_company_id", using: :btree
-  add_index "android_developers", ["identifier"], name: "index_android_developers_on_identifier", using: :btree
+  add_index "android_developers", ["identifier"], name: "index_android_developers_on_identifier", unique: true, using: :btree
   add_index "android_developers", ["name"], name: "index_android_developers_on_name", using: :btree
 
   create_table "android_developers_websites", force: :cascade do |t|
@@ -1584,7 +1584,7 @@ ActiveRecord::Schema.define(version: 20160920175216) do
   end
 
   add_index "ios_developers", ["company_id"], name: "index_ios_developers_on_company_id", using: :btree
-  add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", using: :btree
+  add_index "ios_developers", ["identifier"], name: "index_ios_developers_on_identifier", unique: true, using: :btree
   add_index "ios_developers", ["name"], name: "index_ios_developers_on_name", using: :btree
 
   create_table "ios_developers_websites", force: :cascade do |t|
