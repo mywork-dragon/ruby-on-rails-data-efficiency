@@ -17,21 +17,6 @@ unless File.exist?(File.join(ENV['HOME'], '.ssh', 'varys'))
   abort
 end
 
-# Argument parsing
-arg0 = ARGV[0]
-ARGV.clear
-
-run_tests = true
-
-if arg0
-  if arg0 == '--skip-tests'
-    run_tests = false
-  else
-    puts "Illegal argument.".red
-    abort
-  end
-end
-
 swole_string = %q(
 
  ___  _                 _                     _                     _       _ 
@@ -124,24 +109,26 @@ author = `git --no-pager show -s --format='%an' #{commit_hash}`.chomp
 commit_message = `git show -s --format=%B #{commit_hash}`.chomp
 title = "#{user} deployed #{branch} to #{stage}.".chomp
 
-if run_tests
-  # run tests and abort on failure
-  test_cmd = 'bundle exec rake test'
-  last_line = nil
-  IO.popen(test_cmd).each do |line|
-    puts line
-    last_line = line
-  end.close # Without close, you won't be able to access $?
-   
-  #puts "The command's exit code was: #{$?.exitstatus}"
+puts ''
+puts 'Checking syntax with rubocop'.light_yellow
+res = system('rubocop', out: $stdout, err: :out)
+if res != true
+  puts 'Rubocop check failed. Fix the errors before deploying'.red
+  abort
+end
 
-  last_line.split(", ")
-  if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
-    abort
-  end
-
-elsif %w(web darth_vader kylo_ren ios_live_scan).include?(stage)
-  puts "Stage #{stage} is a live production stage. You're not allowed to bypass tests for this stage.".red
+# run tests and abort on failure
+puts ''
+puts 'Running rake tests'.light_yellow
+test_cmd = 'bundle exec rake test'
+last_line = nil
+IO.popen(test_cmd).each do |line|
+  puts line
+  last_line = line
+end.close # Without close, you won't be able to access $?
+ 
+last_line.split(", ")
+if !(last_line.include?('0 failures') && last_line.include?('0 errors'))
   abort
 end
 

@@ -177,3 +177,6 @@ gem 'activerecord-import', '0.13.0'
 # for mighty bot
 gem 'twitter', '5.16.0'
 # gem 'daemons', '1.2.3'
+
+# for syntax checks
+gem 'rubocop', group: :development
