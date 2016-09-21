@@ -175,7 +175,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, 11); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, data.status); // Failed analytics response - MixPanel & Slacktivity
                 break;
             }
 
@@ -190,9 +190,12 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               iosLiveScanCtrl.errorCodeMessage = statusCodeMessages[data.status];
               iosLiveScanCtrl.sdkData = { 'errorCode': -1 };
 
-              if(data.status != 6) {
+              if(data.status < 4 ) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
                 sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, iosAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
+              } else if (data.status == 4) {
+                iosLiveScanCtrl.hideLiveScanButton = true;
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, data.status); // Failed anal
               }
 
             } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10

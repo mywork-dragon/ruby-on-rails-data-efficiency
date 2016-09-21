@@ -135,7 +135,7 @@ angular.module("appApp")
             'errorMessage': errorMessage
           };
 
-          slacktivity.notifySlack(slacktivityData, true);
+          slacktivity.notifySlack(slacktivityData, true, '#automated-alerts');
           /* -------- Slacktivity Alerts End -------- */
         });
 
@@ -233,11 +233,12 @@ angular.module("appApp")
 
       },
       iosLiveScanFailRequestAnalytics: function(platform, appId, statusCode) {
-
         var errorMessage = "";
 
         if(statusCode == 11) {
           errorMessage = "Error (status 11)"
+        } else if (statusCode == 4) {
+          errorMessage = "Incompatible Device"
         } else if(statusCode == -1) {
           errorMessage = "Timeout"
         }
@@ -272,7 +273,7 @@ angular.module("appApp")
             'error': errorMessage,
             'statusCode': statusCode
           };
-          slacktivity.notifySlack(slacktivityData, true);
+          slacktivity.notifySlack(slacktivityData, true, '#automated-alerts');
           /* -------- Slacktivity Alerts End -------- */
         });
 
