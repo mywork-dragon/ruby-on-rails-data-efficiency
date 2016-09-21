@@ -21,7 +21,7 @@ class EwokScrapeWorker
     android_app = AndroidApp.create!(app_identifier: app_identifier)
     android_app_id = android_app.id
     GooglePlaySnapshotLiveWorker.new.perform(nil, android_app_id)
-    CreateDevelopersWorker.new.create_developers(android_app_id, 'android')
+    GooglePlayDevelopersWorker.new.create_by_android_app_id(android_app_id)
   end
 
   def scrape_ios_international(app_identifier)
