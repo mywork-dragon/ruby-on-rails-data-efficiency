@@ -158,7 +158,7 @@ ApkDownloader::Api.class_eval do
         elsif status_code == 500
           fail ApkDownloader::Response500.new(message, status_code: status_code)
         else
-          fail ApkDownloader::ResponseOther(response.body)
+          fail ApkDownloader::ResponseOther.new(response.body)
         end
       end
 

@@ -103,9 +103,8 @@ module ApkWorker
     message = message_split[0].to_s.strip.encode('utf-8', replace_rules)
     backtrace = e.backtrace.map{ |x| x.encode('utf-8', replace_rules) }
     apk_ss_id = @apk_ss.blank? ? nil : @apk_ss.id
-    google_account_id = google_account.present? ? google_account.id : nil
 
-    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account_id, status_code: status_code)
+    ApkSnapshotException.create!(apk_snapshot_id: apk_ss_id, name: message, backtrace: backtrace, try: @try_count, apk_snapshot_job_id: apk_snapshot_job_id, google_account_id: google_account.id, status_code: status_code)
 
     if message.include? "Couldn't connect to server"
       @apk_ss.status = :could_not_connect
