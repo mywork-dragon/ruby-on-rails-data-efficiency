@@ -209,7 +209,8 @@ module ApkWorker
     attributes = version_and_attributes[:attributes]
 
     if scraped_version
-      last_apk_ss = ApkSnapshot.where(android_app_id: android_app_id, status: ApkSnapshot.statuses[:success]).order("created_at DESC").first
+      last_apk_ss = @android_app.newest_apk_snapshot
+
       return true if last_apk_ss.blank?
       puts "android_app_id: #{android_app_id} | last_version: #{last_apk_ss.version} | scraped_version: #{scraped_version}"
       if last_apk_ss.version == scraped_version
