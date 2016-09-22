@@ -43,6 +43,8 @@ class IosApp < ActiveRecord::Base
   enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
 
+  scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}  
+
   # update_index('apps#ios_app') { self } if Rails.env.production?
   
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
@@ -93,10 +95,11 @@ class IosApp < ActiveRecord::Base
       id: self.id,
       type: self.class.name,
       platform: 'ios',
-      releaseDate: newest_snapshot.try(:released),
+      releaseDate: self.release_date,
       name: self.name,
-      mobilePriority: self.mobile_priority,
-      userBase: self.user_base,
+      mobilePriority: first_international_snapshot.try(:mobile_priority) || mobile_priority,
+      userBase: self.international_userbase(user_bases: options[:user_bases]),
+      userBases: self.user_bases,
       releasedDays: self.released_days,
       lastUpdated: self.last_updated,
       lastUpdatedDays: self.last_updated_days,
@@ -105,12 +108,15 @@ class IosApp < ActiveRecord::Base
       categories: self.categories,
       icon: self.icon_url,
       adSpend: self.old_ad_spend?,
-      price: newest_snapshot.try(:price),
+      price: first_international_snapshot.try(:price) || newest_snapshot.try(:price),
+      currency: self.currency,
       rankingChange: self.ranking_change,
-      displayType: self.display_type,
+      appAvailable: self.app_store_available,
+      appStoreLink: self.app_store_link,
+      appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
       publisher: {
         id: self.try(:ios_developer).try(:id),
-        name: self.try(:ios_developer).try(:name),
+        name: self.try(:ios_developer).try(:name) || first_international_snapshot.try(:seller_name),
         websites: self.try(:ios_developer).try(:get_website_urls)
       },
       company: company
@@ -118,18 +124,21 @@ class IosApp < ActiveRecord::Base
 
     if options[:details]
       batch_json.merge!({
-        currentVersion: newest_snapshot.try(:version),
-        currentVersionDescription: newest_snapshot.try(:release_notes),
-        rating: newest_snapshot.try(:ratings_all_stars),
-        ratingsCount: newest_snapshot.try(:ratings_all_count),
+        currentVersion: self.version,
+        currentVersionDescription: self.release_notes,
+        rating: self.rating,
+        ratingsCount: self.ratings_count,
+        ratings: self.ratings,
+        ratingsCounts: self.ratings_counts,
         inAppPurchases: newest_snapshot.try(:ios_in_app_purchases).try(:any?),
         appIdentifier: self.app_identifier,
-        appStoreId: newest_snapshot.try(:developer_app_store_identifier),
-        size: newest_snapshot.try(:size),
-        requiredIosVersion: newest_snapshot.try(:required_ios_version),
-        recommendedAge: newest_snapshot.try(:recommended_age),
-        description: newest_snapshot.try(:description),
-        facebookAds: self.ios_fb_ads.has_image
+        appStoreId: self.developer_app_store_id,
+        size: self.size,
+        requiredIosVersion: self.required_ios_version,
+        recommendedAge: self.recommended_age,
+        description: self.description,
+        facebookAds: self.ios_fb_ads.has_image,
+        headquarters: self.headquarters
       })
     end
 
@@ -142,10 +151,86 @@ class IosApp < ActiveRecord::Base
     batch_json
   end
 
+  def size
+    first_international_snapshot.try(:size) || newest_ios_app_snapshot.try(:size)
+  end
+
+  def required_ios_version
+    first_international_snapshot.try(:required_ios_version) || newest_ios_app_snapshot.try(:required_ios_version)
+  end
+
+  def recommended_age
+    first_international_snapshot.try(:recommended_age) || newest_ios_app_snapshot.try(:recommended_age)
+  end
+
+  def description
+    first_international_snapshot.try(:description) || newest_ios_app_snapshot.try(:description)
+  end
+
+  def developer_app_store_id
+    first_international_snapshot.try(:developer_app_store_identifier) || newest_ios_app_snapshot.try(:developer_app_store_identifier)
+  end
+
   def categories
-    if self.newest_ios_app_snapshot
-      IosAppCategoriesSnapshot.where(ios_app_snapshot: self.newest_ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds[:primary]).map{|iacs| iacs.ios_app_category.try(:name)}.compact
+    ios_app_current_snapshots.joins(:ios_app_categories).pluck("ios_app_categories.name").uniq
+  end
+
+  def user_bases
+    if ios_app_current_snapshots.any?
+      ios_app_current_snapshots.joins(:app_store).select('app_stores.country_code, app_stores.name, user_base').map{|app| {country_code: app.country_code, user_base: app.user_base, country: app.name}}
+    else
+      [{country_code: 'US', user_base: user_base, country: 'United States'}]
     end
+  end
+
+  def rating
+    if first_international_snapshot
+      {rating: first_international_snapshot.try(:ratings_all_stars), country_code: first_international_snapshot.try(:app_store).try(:country_code)}
+    else
+      {country_code: 'US', rating: newest_ios_app_snapshot.try(:ratings_all_stars)}
+    end
+  end
+
+  def ratings
+    if ios_app_current_snapshots.any?
+      ios_app_current_snapshots.joins(:app_store).select('app_stores.country_code, app_stores.name, ratings_all_stars').map{|app| {country_code: app.country_code, rating: app.ratings_all_stars, country: app.name}}
+    else
+      [{country_code: 'US', rating: newest_ios_app_snapshot.try(:ratings_all_stars), country: 'United States'}]
+    end
+  end
+
+  def ratings_count
+    if first_international_snapshot
+      {ratings_count: first_international_snapshot.try(:ratings_all_count), country_code: first_international_snapshot.try(:app_store).try(:country_code)}
+    else
+      {country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count)}
+    end
+  end
+
+  def ratings_counts
+    if ios_app_current_snapshots.any?
+      ios_app_current_snapshots.joins(:app_store).select('app_stores.country_code, app_stores.name, ratings_all_count').map{|app| {country_code: app.country_code, ratings_count: app.ratings_all_count, country: app.name}}
+    else
+      [{country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count), country: 'United States'}]
+    end
+  end
+
+  def international_userbase(user_bases: nil)
+    intl_snapshot = first_international_snapshot(user_bases: user_bases)
+    intl_snapshot ? {user_base: intl_snapshot.try(:user_base), country_code: intl_snapshot.try(:app_store).try(:country_code)} : {user_base: self.user_base, country_code: 'US'}
+  end
+
+  def first_international_snapshot(country_code: nil, user_bases: nil)
+    order_string = "display_priority IS NULL, display_priority ASC"
+
+    snapshot = ios_app_current_snapshots.joins(:app_store)
+    if user_bases.present?
+      mapped_user_bases = user_bases.map{|user_base| IosApp.user_bases[user_base]}
+      order_string = "user_base ASC, #{order_string}"
+      snapshot = snapshot.where(user_base: mapped_user_bases)
+    end
+    snapshot = snapshot.where('app_stores.country_code = ?', country_code) if country_code
+    snapshot.order(order_string).first
   end
 
   def old_ad_spend?
@@ -156,16 +241,20 @@ class IosApp < ActiveRecord::Base
     self.ios_fb_ads.any?
   end
 
+  def seller_url
+    first_international_snapshot.try(:seller_url) || self.newest_ios_app_snapshot.try(:seller_url)
+  end
+
   def support_url
     self.newest_ios_app_snapshot.try(:support_url)
   end
   
   def get_website_urls
-    self.websites.to_a.map{|w| w.url}
+    self.websites.pluck(:url).uniq
   end
 
   def seller
-    self.newest_ios_app_snapshot.try(:seller)
+    first_international_snapshot.try(:seller) || newest_ios_app_snapshot.try(:seller) 
   end
 
   def app_store_link
@@ -173,7 +262,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def last_updated
-    self.newest_ios_app_snapshot.try(:released).try(:to_s)
+    first_international_snapshot.try(:released).try(:to_s) || newest_ios_app_snapshot.try(:released).try(:to_s)
   end
 
   def top_200_rank
@@ -202,17 +291,23 @@ class IosApp < ActiveRecord::Base
   end
 
   def last_updated_days
-    if released = self.newest_ios_app_snapshot.try(:released)
+    released = first_international_snapshot.try(:released) || newest_ios_app_snapshot.try(:released)
+    if released
       (Time.now.to_date - released.to_date).to_i
     end
   end
 
+  def app_store_link
+    "https://itunes.apple.com/#{first_international_snapshot.try(:app_store).try(:country_code).try(:downcase) || 'us'}/app/id#{self.app_identifier}"
+  end
+
   def ratings_all_count
-    self.newest_ios_app_snapshot.try(:ratings_all_count)
+    first_international_snapshot.try(:ratings_all_count) || newest_ios_app_snapshot.try(:ratings_all_count)
   end
 
   def released_days
-    self.released ? (Date.today - self.released).to_i : 0
+    released =  first_international_snapshot.try(:first_released) || newest_ios_app_snapshot.try(:first_released)
+    released ? (Date.today - released).to_i : 0
   end
 
   def website
@@ -220,9 +315,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def icon_url(size='350x350') # size should be string eg '350x350'
-    if newest_ios_app_snapshot.present?
-      newest_ios_app_snapshot.send("icon_url_#{size}") || ios_app_current_snapshots.find_by(app_store_id: 1).try(:icon_url_100x100)
-    end
+    first_international_snapshot.try(:icon_url_100x100) || newest_ios_app_snapshot.try(:send, "icon_url_#{size}")
   end
 
   def sdk_response
@@ -249,17 +342,36 @@ class IosApp < ActiveRecord::Base
   def fortune_rank
     self.get_company.try(:fortune_1000_rank)
   end
+
+  def headquarters
+    ios_developer.try(:headquarters) || []
+  end
+
+  def release_date
+    first_international_snapshot.try(:first_released) || newest_ios_app_snapshot.try(:first_released)
+  end
   
   def name
-    if newest_ios_app_snapshot.present?
-      return newest_ios_app_snapshot.name
-    end
+    first_international_snapshot.try(:name) || newest_ios_app_snapshot.try(:name)
   end
 
   def price
-    if newest_ios_app_snapshot.present?
-      (newest_ios_app_snapshot.price.to_i > 0) ? "$#{newest_ios_app_snapshot.price}" : 'Free' 
+    snapshot = first_international_snapshot || newest_ios_app_snapshot
+    if snapshot
+      (snapshot.price.to_i > 0) ? "$#{snapshot.price} #{snapshot.try(:currency)}" : 'Free' 
     end
+  end
+
+  def currency
+    first_international_snapshot.try(:currency) || 'USD'
+  end
+
+  def version
+    first_international_snapshot.try(:version) || newest_ios_app_snapshot.try(:version)
+  end
+
+  def release_notes
+    first_international_snapshot.try(:release_notes) || newest_ios_app_snapshot.try(:release_notes)
   end
 
   def to_csv_row(can_view_support_desk=false)
@@ -268,13 +380,12 @@ class IosApp < ActiveRecord::Base
     developer = self.ios_developer
     newest_snapshot = self.newest_ios_app_snapshot
 
-    [
+    row = [
       self.id,
       self.app_identifier,
       newest_snapshot.try(:name),
       'IosApp',
       self.mobile_priority,
-      self.user_base,
       self.last_updated,
       self.ios_fb_ads.any?,
       newest_snapshot.try(:ios_in_app_purchases).try(:any?),
@@ -286,8 +397,13 @@ class IosApp < ActiveRecord::Base
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
-      self.ratings_all_count
+      self.ratings_all_count,
+      nil #downloads for android
     ]
+    AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
+      row << first_international_snapshot(country_code: store.country_code).try(:user_base)
+    end
+    row
   end
   
   ###############################

@@ -26,7 +26,8 @@ angular
     'angularjs-dropdown-multiselect',
     'infinite-scroll',
     'satellizer',
-    'bootstrapLightbox'
+    'bootstrapLightbox',
+    'isoCurrency'
   ])
   .run(function ($http, $rootScope) {
 

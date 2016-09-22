@@ -153,7 +153,7 @@ module AndroidSdkService
           memo
         end
 
-        puts "installed_display_sdk_to_snap: #{installed_display_sdk_to_snap}"  #debug
+        #puts "installed_display_sdk_to_snap: #{installed_display_sdk_to_snap}"  #debug
 
         uninstalled_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: uninstalled_sdks).reduce({}) do |memo, map_row|
 

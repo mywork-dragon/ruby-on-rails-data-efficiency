@@ -74,15 +74,15 @@ class FilterService
       end
     end
 
-    def filter_ios_apps(app_filters: nil, company_filters: nil, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc')
+    def filter_ios_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc')
       filter_apps(app_filters: app_filters, company_filters: company_filters, page_size: page_size, page_num: page_num, sort_by: sort_by, order_by: order_by, platform: 'ios')
     end
 
-    def filter_android_apps(app_filters: nil, company_filters: nil, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc')
+    def filter_android_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc')
       filter_apps(app_filters: app_filters, company_filters: company_filters, page_size: page_size, page_num: page_num, sort_by: sort_by, order_by: order_by, platform: 'android')
     end
 
-    def filter_apps(app_filters: nil, company_filters: nil, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc', platform: 'ios')
+    def filter_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc', platform: 'ios')
       apps_index = platform == 'ios' ? AppsIndex::IosApp : AppsIndex::AndroidApp
 
       ['sdkFiltersOr', 'sdkFiltersAnd'].each do |filter_type|
@@ -113,6 +113,30 @@ class FilterService
         end
         apps_index = apps_index.filter(sdk_query) unless sdk_query[short_filter_type].blank?
       end
+
+      ['locationFiltersOr', 'locationFiltersAnd'].each do |filter_type|
+        next unless app_filters[filter_type].present?
+
+        short_filter_type = filter_type == 'locationFiltersOr' ? 'or' : 'and'
+        location_query = {short_filter_type => []}
+        app_filters[filter_type].each do |filter|
+          case filter["status"].to_i
+          when 0
+            if filter["state"].present? && filter['state'] != "0"
+              location_query[short_filter_type] << {"nested" => {"path" => "headquarters", "filter" => {"and" => [{"terms" => {"headquarters.country_code" => [filter["id"]]}}, {"terms" => {"headquarters.state_code" => [filter["state"]]}}]}}}
+            else
+              location_query[short_filter_type] << {"term" => {"headquarters.country_code" => filter["id"]}}
+            end
+          when 1
+            location_query[short_filter_type] << {"and" => [{"term" => {"app_stores.country_code" => filter["id"]}}, {"term" => {"app_stores_count" => 1}}]}
+          when 2
+            location_query[short_filter_type] << {"term" => {"app_stores.country_code" => filter["id"]}}
+          when 3
+            location_query[short_filter_type] << {"not" => {"term" => {"app_stores.country_code" => filter["id"]}}}
+          end
+        end
+        apps_index = apps_index.filter(location_query) unless location_query[short_filter_type].blank?
+      end
       
       if company_filters['fortuneRank'].present?
         apps_index = apps_index.filter({"terms" => {"fortune_rank" => eval("[*'1'..'#{company_filters['fortuneRank'].to_i}']")}})
@@ -134,12 +158,20 @@ class FilterService
         apps_index = apps_index.filter({"terms" => {"old_facebook_ads" => [true]}})
       end
 
+      if app_filters['publisherId'].present?
+        apps_index = apps_index.filter({"term" => {"publisher_id" => app_filters['publisherId']}})
+      end
+
       if app_filters['mobilePriority'].present?
         apps_index = apps_index.filter({"terms" => {"mobile_priority" => app_filters['mobilePriority'], "execution" => "or"}})
       end
 
       if app_filters['userBases'].present?
-        apps_index = apps_index.filter({"terms" => {"user_base" => app_filters['userBases'], "execution" => "or"}})
+        if platform == 'ios'
+          apps_index = apps_index.filter({"terms" => {"user_bases.user_base" => app_filters['userBases'], "execution" => "or"}})
+        else
+          apps_index = apps_index.filter({"terms" => {"user_base" => app_filters['userBases'], "execution" => "or"}})
+        end
       end
 
       if app_filters['categories'].present?
@@ -209,56 +241,6 @@ class FilterService
        'Music & Video',
        'Pretend Play'
       ]
-    end
-
-    def ios_sort_order_query(sort_by, order_by)
-      case sort_by
-      when 'appName'
-        return "where(\'ios_app_snapshots.name is not null\').order(\'ios_app_snapshots.name #{order_by}\')"
-      when 'fortuneRank'
-        return "where(\'companies.fortune_1000_rank is not null\').order(\'companies.fortune_1000_rank #{order_by}\')"
-      when 'lastUpdated'
-        return "where(\'ios_app_snapshots.released is not null\').order(\'ios_app_snapshots.released #{order_by}\')"
-      when 'companyName'
-        return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
-      when 'developerName'
-        return "where(\'ios_developers.name is not null\').order(\'ios_developers.name #{order_by}\')"
-      when 'mobilePriority'
-        return "where(\'ios_apps.mobile_priority is not null\').order(\'ios_apps.mobile_priority #{order_by}\')"
-      when 'oldAdSpend'
-        return "order(\'ios_fb_ad_appearances.ios_app_id #{order_by}\')"
-      when 'adSpend'
-        return "order(\'ios_fb_ads.ios_app_id #{order_by}\')"
-      when 'userBases'
-        return "where(\'ios_apps.user_base is not null\').order(\'ios_apps.user_base #{order_by}\')"
-      when 'categories'
-        return "where(\'ios_app_categories.name is not null\').order(\'ios_app_categories.name #{order_by}\')"
-      end
-    end
-
-    def android_sort_order_query(sort_by, order_by)
-      case sort_by
-      when 'appName'
-        return "where(\'android_app_snapshots.name is not null\').order(\'android_app_snapshots.name #{order_by}\')"
-      when 'fortuneRank'
-        return "where(\'companies.fortune_1000_rank is not null\').order(\'companies.fortune_1000_rank #{order_by}\')"
-      when 'lastUpdated'
-        return "where(\'android_app_snapshots.released is not null\').order(\'android_app_snapshots.released #{order_by}\')"
-      when 'companyName'
-        return "where(\'companies.name is not null\').order(\'companies.name #{order_by}\')"
-      when 'developerName'
-        return "where(\'android_developers.name is not null\').order(\'android_developers.name #{order_by}\')"
-      when 'mobilePriority'
-        return "where(\'android_apps.mobile_priority is not null\').order(\'android_apps.mobile_priority #{order_by}\')"
-      when 'adSpend'
-        return "order(\'android_fb_ad_appearances.android_app_id #{order_by}\')"
-      when 'userBases'
-        return "where(\'android_apps.user_base is not null\').order(\'android_apps.user_base #{order_by}\')"
-      when 'downloads'
-        return "where(\'android_app_snapshots.downloads_min is not null\').order(\'android_app_snapshots.downloads_min #{order_by}\')"
-      when 'categories'
-        return "where(\'android_app_categories.name is not null\').order(\'android_app_categories.name #{order_by}\')"
-      end
     end
 
     def ios_apps_with_keywords(keywords)

@@ -16,6 +16,9 @@ class Website < ActiveRecord::Base
   has_many :android_developers_websites
   has_many :android_developers, through: :android_developers_websites
 
+  has_one :domain_datum, through: :websites_domain_datum
+  has_one :websites_domain_datum
+
   has_many :clearbit_contacts
 
   enum kind: [:primary, :secondary]

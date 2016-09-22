@@ -8,7 +8,7 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
   belongs_to :ios_app
   belongs_to :ios_app_current_snapshot_job
   has_many :ios_app_categories_current_snapshots
-  has_many :ios_app_categories, through: :ios_app_categories_current_snapshots
+  has_many :ios_app_categories, -> { where 'ios_app_categories_current_snapshots.kind' => 0 }, through: :ios_app_categories_current_snapshots
 
   has_many :ios_app_snapshot_exceptions
   has_many :ios_in_app_purchases

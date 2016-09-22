@@ -1,0 +1,35 @@
+<script type="text/ng-template" id="userBaseTemplate.html">
+  <ul class="international-data">
+    <li ng-repeat="row in appData.userBases">
+      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+      <span class="country">{{row.country}}:</span>
+      <span>{{row.user_base | capitalize}}</span>
+    </li>
+  </ul>
+</script>
+<script type="text/ng-template" id="ratingTemplate.html">
+  <ul class="international-data">
+    <li ng-repeat="row in appData.ratings">
+      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+      <span class="country">{{row.country}}:</span>
+      <span>{{row.rating}} of 5</span>
+    </li>
+  </ul>
+</script>
+<script type="text/ng-template" id="ratingsCountTemplate.html">
+  <ul class="international-data">
+    <li ng-repeat="row in appData.ratingsCounts">
+      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+      <span class="country">{{row.country}}:</span>
+      <span>{{row.ratings_count | number}}</span>
+    </li>
+  </ul>
+</script>
+<script type="text/ng-template" id="appStoresTemplate.html">
+  <ul class="international-data">
+    <li ng-repeat="row in appData.appStores.availableIn">
+      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+      <span class="country">{{row.name}}</span>
+    </li>
+  </ul>
+</script>

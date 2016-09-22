@@ -72,6 +72,7 @@ gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.7'
 gem 'httpclient'
+gem 'countries'
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '3.0.2'

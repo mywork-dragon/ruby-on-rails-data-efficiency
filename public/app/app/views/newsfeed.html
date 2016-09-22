@@ -93,9 +93,30 @@
                         </span>
                         <span class="badge badge-primary" ng-if="0 <= activity.other_owner.app.releasedDays && activity.other_owner.app.releasedDays <= 15">New</span>
                       </td>
-                      <td><a ng-if="activity.other_owner.app.publisher.name" href="#/publisher/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.app.publisher.name}}</a></td>
+                      <td><a ng-if="activity.other_owner.app.publisher.name && activity.other_owner.app.publisher.id" href="#/publisher/{{activity.other_owner.app.platform}}/{{activity.other_owner.app.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.app.publisher.name}}</a>
+                      <span ng-if="activity.other_owner.app.publisher.name && !activity.other_owner.app.publisher.id">{{activity.other_owner.app.publisher.name}}</span>
+                      </td>
                       <td>{{activity.other_owner.app.categories.join(', ')}}</td>
-                      <td>{{activity.other_owner.app.userBase | capitalize}}</td>
+                      <td>
+                        <span ng-if="activity.other_owner.app.platform != 'ios'">{{activity.other_owner.app.userBase | capitalize}}</span>
+                        <span ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length == 1">
+                          <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
+                          {{activity.other_owner.app.userBase.user_base | capitalize}}
+                        </span>
+                        <a ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                          <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
+                          {{activity.other_owner.app.userBase.user_base | capitalize}}
+                        </a>
+                        <script ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                          <ul class="international-data">
+                            <li ng-repeat="row in activity.other_owner.app.userBases">
+                              <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                              <span class="country">{{row.country}}:</span>
+                              <span>{{row.user_base | capitalize}}</span>
+                            </li>
+                          </ul>
+                        </script>
+                      </td>
                       <td ng-if="canViewAdAttribution && !activity.other_owner.ad_attribution_sdks.length">None</td>
                       <td ng-if="canViewAdAttribution && activity.other_owner.ad_attribution_sdks.length">
                         <a ng-repeat="sdk in activity.other_owner.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank" ng-click="clickedTimelineItem(batch, activity, 'IosSdk')">
@@ -147,7 +168,10 @@
                           </span>
                           <span class="badge badge-primary" ng-if="0 <= activity.other_owner.releasedDays && activity.other_owner.releasedDays <= 15">New</span>
                       </td>
-                      <td><a ng-if="activity.other_owner.publisher.name" href="#/publisher/{{activity.other_owner.platform}}/{{activity.other_owner.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.publisher.name}}</a></td>
+                      <td>
+                        <a ng-if="activity.other_owner.publisher.name && activity.other_owner.publisher.id" href="#/publisher/{{activity.other_owner.platform}}/{{activity.other_owner.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{activity.other_owner.publisher.name}}</a>
+                        <span ng-if="activity.other_owner.publisher.name && !activity.other_owner.publisher.id">{{activity.other_owner.publisher.name}}</span>
+                      </td>
                       <td class="dashboardMobilePriorityView">
                         <span ng-if="activity.other_owner.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + activity.other_owner.mobilePriority"></i>{{activity.other_owner.mobilePriority | capitalize}}</span>
                       </td>
@@ -156,7 +180,26 @@
                           <i class="fa fa-circle" ng-class="'status-' + activity.other_owner.adSpend"></i>{{activity.other_owner.adSpend ? 'Yes' : 'No'}}
                         </span>
                       </td>
-                      <td>{{activity.other_owner.userBase | capitalize}}</td>
+                      <td>
+                        <span ng-if="activity.other_owner.platform != 'ios'">{{activity.other_owner.userBase | capitalize}}</span>
+                        <span ng-if="activity.other_owner.platform == 'ios' && activity.other_owner.userBases.length == 1">
+                          <img ng-src="/lib/images/flags/{{activity.other_owner.userBase.country_code.toLowerCase()}}.png" />
+                          {{activity.other_owner.userBase.user_base | capitalize}}
+                        </span>
+                        <a ng-if="activity.other_owner.platform == 'ios' && activity.other_owner.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                          <img ng-src="/lib/images/flags/{{activity.other_owner.userBase.country_code.toLowerCase()}}.png" />
+                          {{activity.other_owner.userBase.user_base | capitalize}}
+                        </a>
+                        <script ng-if="activity.other_owner.platform == 'ios' && activity.other_owner.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                          <ul class="international-data">
+                            <li ng-repeat="row in activity.other_owner.userBases">
+                              <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                              <span class="country">{{row.country}}:</span>
+                              <span>{{row.user_base | capitalize}}</span>
+                            </li>
+                          </ul>
+                        </script>
+                      </td>
                     </tr>
                   </tbody>
                 </table>

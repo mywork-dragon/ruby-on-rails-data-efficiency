@@ -17,6 +17,7 @@
 
             <span class="dashboard-tag-filter-selects">
               <button ng-if="searchCtrl.canViewStorewideSdks" data-toggle="modal" class="btn btn-primary" data-target="#sdkFilterModal">SDK Filters</button>
+              <button data-toggle="modal" class="btn btn-primary" data-target="#locationFilterModal">Location Filters</button>
               <span class="ui-select">
                 <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)" tooltip-placement="bottom-left" uib-tooltip-html="mobileExplanation" tooltip-popup-delay="200">
                   <option value="">Mobile Priority</option>
@@ -154,7 +155,7 @@
             <th class="selectAllCheckboxHeader">
               <select-all-checkbox apps="searchCtrl.apps" num-apps="searchCtrl.numApps"></select-all-checkbox>
             </th>
-            <th><div class="th">
+            <th class="resultsTableAppIcon"><div class="th">
               App Name
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('name', 'asc') "
@@ -163,7 +164,7 @@
                                     data-ng-click=" searchCtrl.sortApps('name', 'desc') "
                                     data-ng-class="{active: row == '-name'}"></span>
             </div></th>
-            <th><div class="th">
+            <th class="resultsTableAppPublisher"><div class="th">
               Publisher
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('publisher_name', 'asc') "
@@ -205,14 +206,14 @@
                                     data-ng-click=" searchCtrl.sortApps('facebook_ads', 'asc') "
                                     data-ng-class="{active: row == '-facebook_ads'}"></span>
             </div></th>
-            <th><div class="th normal-right-padding">
+            <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
               User Base Size
-                              <span class="glyphicon glyphicon-chevron-up"
+                             <!--  <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('user_base', 'asc') "
                                     data-ng-class="{active: row == 'user_base'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('user_base', 'desc') "
-                                    data-ng-class="{active: row == '-user_base'}"></span>
+                                    data-ng-class="{active: row == '-user_base'}"></span> -->
             </div></th>
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads
@@ -248,7 +249,7 @@
           </thead>
 
           <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
-            <tr data-ng-repeat="app in searchCtrl.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
+            <tr data-ng-repeat="app in searchCtrl.apps" class="{{app.appAvailable ? '' : 'faded'}}">
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app" apps="searchCtrl.apps"></checkable-checkbox>
               </td>
@@ -262,7 +263,7 @@
                 </span>
                 <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
-              <td><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
@@ -272,7 +273,26 @@
                   <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
                 </span>
               </td>
-              <td>{{app.userBase | capitalize}}</td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="appPlatform.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </span>
+                <a ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </a>
+                <script ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.userBases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
               <td ng-show="appPlatform.platform == 'android'">{{app.downloadsMin | humanizeNum}} - {{app.downloadsMax | humanizeNum}}</td>
               <td>{{app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
@@ -295,11 +315,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Modals -->
-        <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-        <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
-
       </div>
 
       <footer class="table-footer">
@@ -322,112 +337,10 @@
     </section>
   </div>
 
-  <div class="modal fade" id="sdkFilterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h3 class="modal-title" id="myModalLabel">SDK Filters</h3>
-        </div>
-        <div class="modal-body">
-          <div class="filter-and">
-            <p>
-              Matches <strong>all</strong> of the following (AND filter)
-              <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addSdkFilter('and')"></i>
-            </p>
-            <div ng-repeat="filter in sdkFilters.and track by $index">
-              <span class="ui-select">
-                <select ng-model="filter.status" ng-change="changedSdkFilter(filter, 'status', '{{filter}}', 'and')" class="status-{{filter.status}}">
-                  <option value="0">First Seen</option>
-                  <option value="1">Last Seen</option>
-                  <option value="2">Never Seen</option>
-                 <!--  <option value="3">Uninstalled or Never Installed</option> -->
-                </select>
-              </span>
-              <angucomplete-alt id="sdk-autocomplete-filter"
-                               placeholder="SDK name"
-                               pause="100"
-                               selected-object="selectedAndSdk"
-                               remote-url="{{autocompleteUrl()}}"
-                               remote-url-data-field="results"
-                               search-fields="name"
-                               title-field="name"
-                               id-field="id"
-                               clear-selected="true"
-                               image-field="favicon"
-                               minlength="1"
-                               input-class="form-control form-control-small sdk-autocomplete-filter"  ng-hide="filter.sdk">
-              </angucomplete-alt>
-              <span class='sdk-filter' ng-if="filter.sdk">
-                {{filter.sdk.name}}
-                <a class="remove-button" ng-click="removeSdkNameFilter('and', $index)">×</a>
-              </span>
-              <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
-                <select ng-model="filter.date" ng-change="changedSdkFilter(filter, 'date', '{{filter}}', 'and')">
-                  <option value="0">Anytime</option>
-                  <option value="1">< 1 Week Ago</option>
-                  <option value="2">Between 1 Week and 1 Month Ago</option>
-                  <option value="3">Between 1 Month and 3 Months Ago</option>
-                  <option value="4">Between 3 Months and 6 Months Ago</option>
-                  <option value="5">Between 6 Months and 9 Months Ago</option>
-                <!--   <option value="6">Between 9 Months and 1 Year Ago</option>
-                  <option value="7">> 1 Year Ago</option> -->
-                </select>
-              </span>
-              <i class="fa fa-minus-circle" aria-hidden="true" ng-if="sdkFilters.and.length > 1 || sdkFilters.and[$index].sdk" ng-click="removeSdkFilter('and', filter)"></i>
-            </div>
-          </div>
-          <div class="filter-or">
-            <p>
-              Matches <strong>any</strong> of the following (OR filter) 
-              <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addSdkFilter('or')"></i>
-            </p>
-            <div ng-repeat="filter in sdkFilters.or track by $index">
-              <span class="ui-select">
-                <select ng-model="filter.status" ng-change="changedSdkFilter(filter, 'status', '{{filter}}', 'or')" class="status-{{filter.status}}">
-                  <option value="0">First Seen</option>
-                  <option value="1">Last Seen</option>
-                  <option value="2">Never Seen</option>
-                </select>
-              </span>
-              <angucomplete-alt id="sdk-autocomplete-filter"
-                               placeholder="SDK name"
-                               pause="100"
-                               selected-object="selectedOrSdk"
-                               remote-url="{{autocompleteUrl()}}"
-                               remote-url-data-field="results"
-                               search-fields="name"
-                               title-field="name"
-                               id-field="id"
-                               clear-selected="true"
-                               image-field="favicon"
-                               minlength="1"
-                               input-class="form-control form-control-small sdk-autocomplete-filter" ng-hide="filter.sdk">
-              </angucomplete-alt>
-              <span class='sdk-filter' ng-if="filter.sdk">
-                {{filter.sdk.name}}
-                <a class="remove-button" ng-click="removeSdkNameFilter('or', $index)">×</a>
-              </span>
-              <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
-                <select ng-model="filter.date" ng-change="changedSdkFilter(filter, 'date', '{{filter}}', 'or')">
-                  <option value="0">Anytime</option>
-                  <option value="1">< 1 Week Ago</option>
-                  <option value="2">Between 1 Week and 1 Month Ago</option>
-                  <option value="3">Between 1 Month and 3 Months Ago</option>
-                  <option value="4">Between 3 Months and 6 Months Ago</option>
-                  <option value="5">Between 6 Months and 9 Months Ago</option>
-                 <!--  <option value="6">Between 9 Months and 1 Year Ago</option>
-                  <option value="7">> 1 Year Ago</option> -->
-                </select>
-              </span>
-              <i class="fa fa-minus-circle" aria-hidden="true" ng-if="sdkFilters.or.length > 1 || sdkFilters.or[$index].sdk" ng-click="removeSdkFilter('or', filter)"></i>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" type="button" data-dismiss="modal">Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Modals -->
+  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/sdk-filters.html'"></aside>
+  <aside ng-include="'/app/app/views/modals/location-filters.html'"></aside>
+
 </div>

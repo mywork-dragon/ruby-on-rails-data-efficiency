@@ -601,6 +601,23 @@ pre {
 .table-dynamic .table-filters {
   padding: 8px; }
 
+ul.websites {
+  margin-left: 70px;
+  list-style: none;
+  margin-top: -29px;
+}
+
+ul.websites li, ul.headquarters li {
+  padding: 5px;
+  border: none;
+}
+
+a.popover-link {
+  padding: 5px 8px;
+  border-radius: 5px;
+  background-color: #ddd;
+}
+
 #dashboard-tag-display {
   clear: both;
   min-height: 65px;
@@ -4714,7 +4731,7 @@ li.sdk-tags a.edit {
   float: right;
 }
 
-.list-info li {
+.list-info li, .international-data li {
   padding: 10px;
   border-bottom: 1px solid #eee; }
 
@@ -4723,7 +4740,7 @@ ul.pagination li {
   border: none;
 }
 
-.list-info li:last-child {
+.list-info li:last-child, .international-data li:last-child {
   border-bottom: none; }
 
 .list-info li .icon {
@@ -4732,6 +4749,21 @@ ul.pagination li {
 
 .list-info li label {
   width: 130px; }
+
+ul.headquarters li {
+  padding: 10px 0;
+}
+
+ul.headquarters {
+  list-style: none;
+  padding: 5px 0 0 25px;
+}
+
+.list-info ul.headquarters li label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: -4px;
+}
 
 .progress {
   -webkit-box-shadow: none;
@@ -7226,7 +7258,7 @@ i.infoTooltipIcon {
   top: 234px;
 }
 
-.sdk-autocomplete-filter {
+.autocomplete-filter {
   width: 200px;
   font-weight: normal;
   display: inline-block;
@@ -7386,6 +7418,15 @@ select option:empty {
 .resultsTableAppIcon {
   padding-top: 2px !important;
   padding-bottom: 2px !important;
+  max-width: 500px;
+}
+
+.resultsTableAppPublisher {
+  max-width: 300px;
+}
+
+.resultsTableAppUserbase {
+  width: 110px;
 }
 
 .resultsTableAppIcon img {
@@ -7913,9 +7954,7 @@ pre {
 }
 
 .angucomplete-image {
-  height: 20px;
-  width: 20px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .angucomplete-image-default {
@@ -8235,19 +8274,19 @@ h4.red {
   margin-left: 2px;
 }
 
-#sdkFilterModal .angucomplete-holder {
+.filter-modal .angucomplete-holder {
   top: 0;
 }
 
-#sdkFilterModal h5 {
+.filter-modal h5 {
   font-weight: bold;
 }
 
-#sdkFilterModal .fa {
+.filter-modal .fa {
   margin-left: 5px;
 }
 
-#sdkFilterModal .ui-select {
+.filter-modal .ui-select {
   padding-top: 4px;
 }
 
@@ -8275,7 +8314,7 @@ h4.red {
   text-decoration: none;
 }
 
-#sdkFilterModal p {
+.filter-modal p {
   font-size: 16px;
   margin: 15px 0 10px 0;
 }
@@ -8287,6 +8326,21 @@ h4.red {
   padding: 5px 12px 6px 12px;
   text-transform: none;
 }
+
+.international-data {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.international-data .flag {
+  margin: 3px 0;
+}
+
+.international-data .country {
+  padding: 0 5px;
+}
+
 
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */

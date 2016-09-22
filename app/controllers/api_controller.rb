@@ -14,8 +14,7 @@ class ApiController < ApplicationController
 
     app_filters = JSON.parse(params[:app])
     company_filters = JSON.parse(params[:company])
-    # app_filters = params[:app]
-    # company_filters = params[:company]
+
     page_size = params[:pageSize]
     page_num = params[:pageNum]
     sort_by = params[:sortBy]
@@ -38,10 +37,11 @@ class ApiController < ApplicationController
     filter_results = FilterService.filter_ios_apps(filter_args)
 
     ids = filter_results.map { |result| result.attributes["id"] }
-    results = ids.any? ? IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") : []
+    results = ids.any? ? IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})").is_ios : []
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
-
-    render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
+    apps_json = results.as_json({user: @current_user, user_bases: app_filters['userBases']})
+    
+    render json: {results: apps_json, resultsCount: results_count, pageNum: page_num}
   end
 
   def filter_android_apps
@@ -155,12 +155,14 @@ class ApiController < ApplicationController
     developer = AndroidDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
+      apps, num_apps = developer.sorted_android_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,
         websites: developer.websites.to_a.map{|w| w.url},
-        numApps: developer.android_apps.count,
-        apps: developer.sorted_android_apps(params[:sortBy], params[:orderBy], params[:pageNum]).as_json({user: @current_user})
+        headquarters: developer.headquarters,
+        numApps: num_apps,
+        apps: apps.as_json({user: @current_user})
       }
     end
     render json: @developer_json
@@ -170,12 +172,14 @@ class ApiController < ApplicationController
     developer = IosDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
+      apps, num_apps = developer.sorted_ios_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,
         websites: developer.get_website_urls,
-        numApps: developer.ios_apps.count,
-        apps: developer.sorted_ios_apps(params[:sortBy], params[:orderBy], params[:pageNum]).as_json({user: @current_user})
+        headquarters: developer.headquarters,
+        numApps: num_apps,
+        apps: apps.as_json({user: @current_user})
       }
     end
     render json: @developer_json
@@ -678,7 +682,7 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    ios_apps = result_ids.map{ |id| IosApp.find_by_id(id) }.compact
+    ios_apps = result_ids.any? ? IosApp.where(id: result_ids).order("FIELD(id, #{result_ids.join(',')})").is_ios : []
 
     render json: {appData: ios_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
@@ -807,25 +811,25 @@ class ApiController < ApplicationController
   end
 
   def get_sdk_autocomplete
-    search_str = params['searchstr']
+    query = params['query']
     platform = params['platform']
 
     sdk_companies = []
     results = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdk.display_sdks.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies = AndroidSdk.display_sdks.where("name LIKE '#{query}%'").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
       end
     elsif platform == 'ios'
-      sdk_companies = IosSdk.display_sdks.where("name LIKE '#{params['searchstr']}%'").where(flagged: false)
+      sdk_companies = IosSdk.display_sdks.where("name LIKE '#{query}%'").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
       end
     end
 
-    render json: {searchParam: search_str, results: results}
+    render json: {searchParam: query, results: results}
   end
 
   def get_sdk_scanned_count
@@ -833,6 +837,17 @@ class ApiController < ApplicationController
     scanned_ios_sdk_num = IpaSnapshot.where(scan_status: 1).select(:ios_app_id).distinct.count
 
     render json: {scannedAndroidSdkNum: scanned_android_sdk_num, scannedIosSdkNum: scanned_ios_sdk_num}
+  end
+
+  def get_location_autocomplete
+    query = params['query']
+    status = params['status']
+    if status.to_i == 0
+      countries = ISO3166::Country.all.select{|country| country.name.downcase.include?(query.downcase)}.map{|country| {id: country.alpha2, name: country.name, states: country.states.map{|k,v| {state_code: k, state: v["name"]}}, icon: "/lib/images/flags/#{country.alpha2.downcase}.png"}}
+    else 
+      countries = AppStore.enabled.where("name LIKE '#{query}%'").map{|store| {id: store.country_code, name: store.name, icon: "/lib/images/flags/#{store.country_code.downcase}.png"}}
+    end
+    render json: {searchParam: query, results: countries}
   end
 
   private
@@ -861,7 +876,11 @@ class ApiController < ApplicationController
   end
 
   def csv_header
-    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'User Base', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads']
+    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads']
+    AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
+      headers << "User Base - #{store.country_code}"
+    end
+    headers
   end
 
   def csv_lines(filter_args)

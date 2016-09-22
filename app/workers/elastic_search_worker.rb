@@ -8,7 +8,7 @@ class ElasticSearchWorker
     self.send(method.to_sym, *args)
   end
 
-  def queue_ios_apps
+  def queue_ios_apps(options={})
     batch = Sidekiq::Batch.new
     batch.description = 'iOS Elasticsearch Index Updating'
     batch.on(:complete, 'ElasticSearchWorker#on_complete', 'queue_type' => 'iOS')
@@ -19,7 +19,7 @@ class ElasticSearchWorker
       IosApp.where.not(display_type: ignore_types(:ios)).find_in_batches(batch_size: 1000).with_index do |the_batch, index|
         li "App #{index*1000}"
         ids = the_batch.map{ |ios_app| ios_app.id }
-        ElasticSearchWorker.perform_async(:index_ios_apps, ids)
+        ElasticSearchWorker.perform_async(:index_ios_apps, ids, options.symbolize_keys)
       end
     end
   end
@@ -34,7 +34,7 @@ class ElasticSearchWorker
     end
   end
 
-  def queue_android_apps
+  def queue_android_apps(options={})
     batch = Sidekiq::Batch.new
     batch.description = 'Android Elasticsearch Index Updating'
     batch.on(:complete, 'ElasticSearchWorker#on_complete', 'queue_type' => 'Android')
@@ -45,20 +45,20 @@ class ElasticSearchWorker
       AndroidApp.find_in_batches(batch_size: 1000).with_index do |the_batch, index|
         li "App #{index*1000}"
         ids = the_batch.map{ |android_app| android_app.id }
-        ElasticSearchWorker.perform_async(:index_android_apps, ids)
+        ElasticSearchWorker.perform_async(:index_android_apps, ids, options.symbolize_keys)
       end
     end
   end
 
-  def index_ios_apps(app_ids)
+  def index_ios_apps(app_ids, options={})
     app_ids.each_slice(100) do |ids|
-      AppsIndex::IosApp.import(ids)
+      AppsIndex::IosApp.import(ids, options.symbolize_keys)
     end
   end
 
-  def index_android_apps(app_ids)
+  def index_android_apps(app_ids, options={})
     app_ids.each_slice(100) do |ids|
-      AppsIndex::AndroidApp.import(ids)
+      AppsIndex::AndroidApp.import(ids, options.symbolize_keys)
     end
   end
 

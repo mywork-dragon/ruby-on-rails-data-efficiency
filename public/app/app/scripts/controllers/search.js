@@ -1,13 +1,18 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$sce', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
-    function ($scope, $sce, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
+  .controller('SearchCtrl', ["$scope", '$route', '$sce', 'listApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
+    function ($scope, $route, $sce, listApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
 
-      $scope.sdkFilters = {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]}
+      $scope.complexFilters = {
+        sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+        location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]}
+      }
+
+      $scope.listButtonDisabled = true
       searchCtrl.apps = []
 
       // Sets user permissions
@@ -15,7 +20,7 @@ angular.module('appApp')
         .success(function(data) {
           searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
           $scope.canViewExports = data.can_view_exports;
-        });
+      });
 
       $scope.mobileExplanation = $sce.trustAsHtml('<p>How much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>' + 
                                                   '<p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>' + 
@@ -40,12 +45,31 @@ angular.module('appApp')
         externalIdProp: '',
         dynamicTitle: false
       }
+
       searchCtrl.categoryCustomText = {
         buttonDefaultText: 'CATEGORIES',
       };
 
-      $scope.autocompleteUrl = function() {
-        return API_URI_BASE + "api/sdk/autocomplete?platform=" + AppPlatform.platform + "&searchstr="
+      $scope.status = {
+         isopen: false
+       };
+
+       $scope.toggled = function(open) {
+         $log.log('Dropdown is now: ', open);
+       };
+
+       $scope.toggleDropdown = function($event) {
+         $event.preventDefault();
+         $event.stopPropagation();
+         $scope.status.isopen = !$scope.status.isopen;
+       };
+
+      $scope.sdkAutocompleteUrl = function() {
+        return API_URI_BASE + "api/sdk/autocomplete?platform=" + AppPlatform.platform + "&query="
+      }
+
+      $scope.locationAutocompleteUrl = function(status) {
+        return API_URI_BASE + "api/location/autocomplete?status=" + status + "&query="
       }
 
       $scope.addCategoryFilter = function(category) {
@@ -56,98 +80,146 @@ angular.module('appApp')
         if (!found) $rootScope.categoryModel.push({id: category, label: category})
       }
 
-      $scope.addSdkFilter = function(filter_type, filter) {
+      $scope.addComplexFilter = function(filter_type, filter_operation, filter) {
         if (filter) { 
           var found = false // only allow unique filters
-          for (var i in $scope.sdkFilters[filter_type]) {
-            var existingFilter = $scope.sdkFilters[filter_type][i]
-            if (existingFilter.sdk && filter.sdk && $scope.filterIsEqualToFilter(existingFilter, filter)) found = true
+          for (var i in $scope.complexFilters[filter_type][filter_operation]) {
+            var existingFilter = $scope.complexFilters[filter_type][filter_operation][i]
+            if (existingFilter[filter_type] && filter[filter_type] && $scope.filterIsEqualToFilter(existingFilter, filter, filter_type)) found = true
           }
-          if (!found) $scope.sdkFilters[filter_type].unshift(filter)
+          if (!found) $scope.complexFilters[filter_type][filter_operation].unshift(filter)
         } else {
-          $scope.sdkFilters[filter_type].push({status: "0", date: "0"})
+          $scope.addBlankComplexFilter(filter_type, filter_operation)
         }
       }
 
-      $scope.changedSdkFilter = function(filter, field, old_filter, filter_type) {
+      $scope.addBlankComplexFilter = function(filter_type, filter_operation) {
+        if (filter_type == 'location') {  
+          $scope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
+        } else {
+          $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+        }
+      }
+
+      $scope.complexFilterKey = function(filter_type, filter_operation) {
+        var filterOperationShort = filter_operation.substr(0, 1).toUpperCase() + filter_operation.substr(1)
+        return filter_type + 'Filters' + filterOperationShort
+      }
+
+      $scope.complexFilterDisplayText = function(filter_type, filter_operation, filter) {
+        var filterOperationShort = filter_operation.substr(0, 1).toUpperCase() + filter_operation.substr(1)
+        if (filter_type == 'sdk') {
+          return filterService.sdkDisplayText(filter, filterOperationShort)
+        } else {
+          return filterService.locationDisplayText(filter, filterOperationShort)
+        }
+      }
+
+      $scope.changedComplexFilter = function(filter, field, old_filter, filter_type, filter_operation) {
         old_filter = JSON.parse(old_filter)
-        var filterTypeShort = filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1)
-        filterService.changeFilter('sdkFilters' + filterTypeShort, $scope.filterToTag(old_filter), {[field]: filter[field]}, filterService.sdkDisplayText(filter, filterTypeShort))
+        if (!old_filter[filter_type]) return
+        filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
       }
 
-      $scope.removeSdkFilter = function(filter_type, filter) {
-        var index = $scope.sdkFilters[filter_type].indexOf(filter);
+      $scope.removeComplexFilter = function(filter_type, filter_operation, filter) {
+        var index = $scope.complexFilters[filter_type][filter_operation].indexOf(filter);
         if (index > -1) {
-          var filter = $scope.sdkFilters[filter_type][index]
-          if (filter.sdk) {
-            filterService.removeFilter('sdkFilters' + filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1), $scope.filterToTag(filter));
+          var filter = $scope.complexFilters[filter_type][filter_operation][index]
+          if (filter[filter_type]) {
+            filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type));
           }
-          $scope.sdkFilters[filter_type].splice(index, 1);
-          if (!$scope.sdkFilters[filter_type].length) $scope.addSdkFilter(filter_type)
+          $scope.complexFilters[filter_type][filter_operation].splice(index, 1);
+          if (!$scope.complexFilters[filter_type][filter_operation].length) $scope.addComplexFilter(filter_type, filter_operation)
         }
       }
 
-      $scope.removeSdkNameFilter = function(filter_type, index) {
-        var filter = $scope.sdkFilters[filter_type][index]
-        filterService.removeFilter('sdkFilters' + filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1), $scope.filterToTag(filter));
-        $scope.sdkFilters[filter_type][index].sdk = null;
+      $scope.removeComplexNameFilter = function(filter_type, filter_operation, index) {
+        var filter = $scope.complexFilters[filter_type][filter_operation][index]
+        filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type));
+        $scope.complexFilters[filter_type][filter_operation][index][filter_type] = null;
       }
 
       $scope.selectedAndSdk = function ($item) {  
-        $scope.selectedSdk($item, this.$parent.$index, 'and')
+        $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'and')
       }
 
       $scope.selectedOrSdk = function ($item) {
-        $scope.selectedSdk($item, this.$parent.$index, 'or')
+        $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'or')
       }
 
-      $scope.filterToTag = function(filter) {
-        return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+      $scope.selectedAndLocation = function ($item) {  
+        $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'location', 'and')
       }
 
-      $scope.tagToFilter = function(tag) {
-        return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+      $scope.selectedOrLocation = function ($item) {
+        $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'location', 'or')
       }
 
-      $scope.filterIsEqualToTag = function(filter, tag) {
-        return filter.status == tag.value.status && filter.sdk.id == tag.value.id && filter.date == tag.value.date
+      $scope.selectedComplexName = function(object, index, filter_type, filter_operation) {
+        if (typeof object === 'string' || object instanceof String) {
+          object = $scope.findAppStore(object)
+        }
+        var filter = $scope.complexFilters[filter_type][filter_operation][index]
+        filter[filter_type] = object
+        var customName = object.name
+        filterService.addFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type), $scope.complexFilterDisplayText(filter_type, filter_operation, filter), false, object.name);
       }
 
-      $scope.filterIsEqualToFilter = function(filter1, filter2) {
-        return filter1.status == filter2.status && filter1.sdk.id == filter2.sdk.id && filter1.date == filter2.date
+      $scope.filterToTag = function(filter, filter_type) {
+        if (filter_type == 'sdk') {
+          return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+        } else {
+          return {id: filter.location.id, status: filter.status, name: filter.location.name, state: filter.state}
+        }
+      }
+
+      $scope.tagToFilter = function(tag, filter_type) {
+        if (filter_type == 'sdk') {
+          return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+        } else {
+          return {status: tag.status, location: {id: tag.id, name: tag.name}, state: tag.state}
+        }
+      }
+
+      $scope.filterIsEqualToTag = function(filter, tag, filter_type) {
+        return filter.status == tag.value.status && filter[filter_type].id == tag.value.id && filter.date == tag.value.date && filter.state == tag.value.state
+      }
+
+      $scope.filterIsEqualToFilter = function(filter1, filter2, filter_type) {
+        return filter1.status == filter2.status && filter1[filter_type].id == filter2[filter_type].id && filter1.date == filter2.date && filter1.state == filter2.state
       }
 
       $scope.$watchCollection('$root.tags', function () {
         if ($rootScope.tags) {
-          Object.keys($scope.sdkFilters).forEach(function(filterKey) {
-            var filters = $scope.sdkFilters[filterKey];
-            for (var index = 0; index < filters.length; index++) { 
-              var found = false;
-              var filter = filters[index]
-              if (!filter.sdk) continue;
-              $rootScope.tags.forEach(function(tag) {
-                var targetParameter = filterKey == 'or' ? 'sdkFiltersOr' : 'sdkFiltersAnd';
-                if (targetParameter == tag.parameter && $scope.filterIsEqualToTag(filter, tag)) {
-                  found = true;
+          Object.keys($scope.complexFilters).forEach(function(filterType) {
+            var filters = $scope.complexFilters[filterType];
+            Object.keys(filters).forEach(function(filterOperation) {
+              var opFilters = $scope.complexFilters[filterType][filterOperation];
+              for (var index = 0; index < opFilters.length; index++) { 
+                var found = false;
+                var filter = opFilters[index]
+                if (filter[filterType]) {
+                  $rootScope.tags.forEach(function(tag) {
+                    var targetParameter = $scope.complexFilterKey(filterType, filterOperation)
+                    if (targetParameter == tag.parameter && $scope.filterIsEqualToTag(filter, tag, filterType)) {
+                      found = true;
+                    }
+                  });
+                } else {
+                  continue;
                 }
-              });
-              if (!found) {
-                filters.splice(index, 1);
-                index--;
-                if (!filters.length) filters.push({status: "0", date: "0"});
+               
+                if (!found) {
+                  opFilters.splice(index, 1);
+                  index--;
+                }
               }
-            }
+              if (!opFilters.length) $scope.addBlankComplexFilter(filterType, filterOperation)
+            })
           })
         }
-      });
-
-      $scope.selectedSdk = function($item, index, filter_type) {
-        var sdk = $item.originalObject
-        var filter = $scope.sdkFilters[filter_type][index]
-        filter.sdk = sdk
-        var filterTypeShort = filter_type.substr(0, 1).toUpperCase() + filter_type.substr(1)
-        filterService.addFilter('sdkFilters' + filterTypeShort, $scope.filterToTag(filter), filterService.sdkDisplayText(filter, filterTypeShort), false, sdk.name);
-      }
+        $scope.listButtonDisabled = true
+      })
 
       $scope.removedTag = function(tag) {
         if (tag.parameter == 'categories') {
@@ -160,16 +232,32 @@ angular.module('appApp')
         }
       }
 
+      $scope.rebuildFromURLParam = function(key, arrayItem) {
+        if (key == 'sdkFiltersAnd') {
+          $scope.addComplexFilter('sdk', 'and', $scope.tagToFilter(arrayItem, 'sdk'))
+        } else if (key == 'sdkFiltersOr') {
+          $scope.addComplexFilter('sdk', 'or', $scope.tagToFilter(arrayItem, 'sdk'))
+        } else if (key == 'locationFiltersOr') {
+          $scope.addComplexFilter('location', 'or', $scope.tagToFilter(arrayItem, 'location'))
+        } else if (key == 'locationFiltersAnd') {
+          $scope.addComplexFilter('location', 'and', $scope.tagToFilter(arrayItem, 'location'))
+        } else if (key == 'categories') { 
+          $scope.addCategoryFilter(arrayItem)
+        }
+      }
+
       /* For query load when /search/:query path hit */
       searchCtrl.loadTableData = function(isTablePageChange) {
-
-        var urlParams = $location.url().split('/search')[1]; // If url params not provided
         var routeParams = $location.search();
+        var urlParams = $location.url().split('/search')[1]; // If url params not provided
 
         /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
+        
+        $scope.filters = {company: companyParams, platform: platform, app: appParams}
+
         var allParams = appParams ? appParams : [];
         for (var attribute in companyParams) {
           allParams[attribute] = companyParams[attribute];
@@ -187,13 +275,7 @@ angular.module('appApp')
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
               if (arrayItem) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
-              if (key == 'sdkFiltersAnd') {
-                $scope.addSdkFilter('and', $scope.tagToFilter(arrayItem))
-              } else if (key == 'sdkFiltersOr') {
-                $scope.addSdkFilter('or', $scope.tagToFilter(arrayItem))
-              } else if (key == 'categories') {
-                $scope.addCategoryFilter(arrayItem)
-              }
+              $scope.rebuildFromURLParam(key, arrayItem)
             });
           } else {
             $rootScope.tags.push(searchService.searchFilters(key, value));
@@ -209,6 +291,7 @@ angular.module('appApp')
           url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + urlParams
         })
           .success(function(data) {
+            $scope.listButtonDisabled = false
             searchCtrl.apps = data.results;
             searchCtrl.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -269,14 +352,9 @@ angular.module('appApp')
           });
       };
 
-      /* Only hit api if query string params are present */
-      if($location.url().split('/search')[1]) {
-        searchCtrl.loadTableData();
-      }
-
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
-        var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
         $location.url('/search?' + urlParams);
         searchCtrl.loadTableData();
       };
@@ -292,7 +370,7 @@ angular.module('appApp')
         );
         /* -------- Mixpanel Analytics End -------- */
 
-        var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy);
+        var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
         $location.url('/search?' + urlParams);
         searchCtrl.loadTableData(true);
         $rootScope.currentPage = currentPage;
@@ -346,5 +424,65 @@ angular.module('appApp')
         $scope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
         $scope.scannedIosSdkNum = data.scannedIosSdkNum;
       });
+
+      $scope.getList = function() {
+        var routeParams = $location.search();
+        if (!routeParams.listId) return
+        listApiService.getList(routeParams.listId).success(function(data) {
+          $scope.list = data
+        })
+      }
+
+      $scope.updateList = function() {
+        var routeParams = $location.search();
+        listApiService.updateList(routeParams.listId, $scope.filters)
+        .success(function(data) {
+          $scope.notify('saved-list-success'); 
+        }).error(function() {
+          $scope.notify('saved-list-error'); 
+        })
+      }
+
+      $scope.notify = function(type) {
+        listApiService.listNotify(type);
+      };
+
+      /* Only hit api if query string params are present */
+      if($location.url().split('/search')[1]) {
+        searchCtrl.loadTableData();
+      }
+
+      $scope.setTab = function() {
+        var routeParams = $location.search();
+
+        if (routeParams.listId) {
+          $route.current.activeTab = 'lists'
+        } else {
+          $route.current.activeTab = 'search'
+        }
+      }
+
+      $scope.getAppStores = function() {
+        $http({
+          method: 'get',
+          url: $scope.locationAutocompleteUrl(1)
+        })
+        .success(function(data) {
+          $scope.availableAppStores = data.results
+        })
+      }
+
+      $scope.findAppStore = function(countryCode) {
+        for (var i = 0; i < $scope.availableAppStores.length; i++) {
+          if ($scope.availableAppStores[i].id == countryCode) {
+            return $scope.availableAppStores[i]
+          }
+        }
+        return null
+      }
+
+      $scope.getList()
+      $scope.setTab()
+      $scope.getAppStores()
     }
   ]);

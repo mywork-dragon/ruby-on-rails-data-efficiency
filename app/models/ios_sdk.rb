@@ -51,7 +51,7 @@ class IosSdk < ActiveRecord::Base
 
     apps = IosSdk.get_current_apps_with_sdks(ios_sdk_ids: [self.id], with_associated: with_associated)
 
-    apps = apps.order("#{sort} ASC") if sort
+    apps = apps.order("#{sort} IS NULL, #{sort} ASC") if sort
     apps = apps.limit(limit) if limit
     apps
 

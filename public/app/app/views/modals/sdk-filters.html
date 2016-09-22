@@ -1,0 +1,107 @@
+<div class="modal fade filter-modal" id="sdkFilterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">SDK Filters</h3>
+      </div>
+      <div class="modal-body">
+        <div class="filter-and">
+          <p>
+            Matches <strong>all</strong> of the following (AND filter)
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('sdk', 'and')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.sdk.and track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdk', 'and')" class="status-{{filter.status}}">
+                <option value="0">First Seen</option>
+                <option value="1">Last Seen</option>
+                <option value="2">Never Seen</option>
+              </select>
+            </span>
+            <angucomplete-alt id="sdk-autocomplete-filter"
+                             placeholder="SDK name"
+                             pause="100"
+                             selected-object="selectedAndSdk"
+                             remote-url="{{sdkAutocompleteUrl()}}"
+                             remote-url-data-field="results"
+                             search-fields="name"
+                             title-field="name"
+                             id-field="id"
+                             clear-selected="true"
+                             image-field="favicon"
+                             minlength="1"
+                             input-class="form-control form-control-small autocomplete-filter"  ng-hide="filter.sdk">
+            </angucomplete-alt>
+            <span class='sdk-filter' ng-if="filter.sdk">
+              {{filter.sdk.name}}
+              <a class="remove-button" ng-click="removeComplexNameFilter('sdk', 'and', $index)">×</a>
+            </span>
+            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+              <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'and')">
+                <option value="0">Anytime</option>
+                <option value="1">< 1 Week Ago</option>
+                <option value="2">Between 1 Week and 1 Month Ago</option>
+                <option value="3">Between 1 Month and 3 Months Ago</option>
+                <option value="4">Between 3 Months and 6 Months Ago</option>
+                <option value="5">Between 6 Months and 9 Months Ago</option>
+              <!--   <option value="6">Between 9 Months and 1 Year Ago</option>
+                <option value="7">> 1 Year Ago</option> -->
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdk.and.length > 1 || complexFilters.sdk.and[$index].sdk" ng-click="removeComplexFilter('sdk', 'and', filter)"></i>
+          </div>
+        </div>
+        <div class="filter-or">
+          <p>
+            Matches <strong>any</strong> of the following (OR filter) 
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('sdk', 'or')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.sdk.or track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdk', 'or')" class="status-{{filter.status}}">
+                <option value="0">First Seen</option>
+                <option value="1">Last Seen</option>
+                <option value="2">Never Seen</option>
+              </select>
+            </span>
+            <angucomplete-alt id="sdk-autocomplete-filter"
+                             placeholder="SDK name"
+                             pause="100"
+                             selected-object="selectedOrSdk"
+                             remote-url="{{sdkAutocompleteUrl()}}"
+                             remote-url-data-field="results"
+                             search-fields="name"
+                             title-field="name"
+                             id-field="id"
+                             clear-selected="true"
+                             image-field="favicon"
+                             minlength="1"
+                             input-class="form-control form-control-small autocomplete-filter" ng-hide="filter.sdk">
+            </angucomplete-alt>
+            <span class='sdk-filter' ng-if="filter.sdk">
+              {{filter.sdk.name}}
+              <a class="remove-button" ng-click="removeComplexNameFilter('sdk', 'or', $index)">×</a>
+            </span>
+            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+              <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'or')">
+                <option value="0">Anytime</option>
+                <option value="1">< 1 Week Ago</option>
+                <option value="2">Between 1 Week and 1 Month Ago</option>
+                <option value="3">Between 1 Month and 3 Months Ago</option>
+                <option value="4">Between 3 Months and 6 Months Ago</option>
+                <option value="5">Between 6 Months and 9 Months Ago</option>
+               <!--  <option value="6">Between 9 Months and 1 Year Ago</option>
+                <option value="7">> 1 Year Ago</option> -->
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdk.or.length > 1 || complexFilters.sdk.or[$index].sdk" ng-click="removeComplexFilter('sdk', 'or', filter)"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>

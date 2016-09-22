@@ -73,6 +73,8 @@ Rails.application.routes.draw do
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 
+  get 'api/location/autocomplete' => 'api#get_location_autocomplete'
+
   get 'api/export_newest_apps_chart_to_csv' => 'api#export_newest_apps_chart_to_csv'
 
   get 'api/test_timeout' => 'api#test_timeout'

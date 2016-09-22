@@ -17,7 +17,8 @@
             {{appData.name}} - App Page
           </h4>
           <p>
-            <a href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">{{appData.publisher.name}}</a>
+            <a ng-if="appData.publisher.id" href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">{{appData.publisher.name}}</a>
+            <span ng-if="!appData.publisher.id">{{appData.publisher.name}}</span>
           </p>
         </div>
         <div class="" id="appTypeHeaderLogo">
@@ -54,12 +55,20 @@
                   <li ng-if="appData.mobilePriority">
                     <span class="icon glyphicon glyphicon-home"></span>
                     <label>Mobile Priority:</label>
-                    {{appData.mobilePriority | capitalize}}
+                    <span>{{appData.mobilePriority | capitalize}}</span>
                   </li>
                   <li ng-if="appData.userBase">
                     <span class="icon fa fa-user"></span>
                     <label>User Base Size:</label>
-                    {{appData.userBase | capitalize}}
+                    <span ng-if="appData.platform == 'android'">{{appData.userBase | capitalize}}</span>
+                    <span ng-if="appData.platform == 'ios' && appData.userBases.length == 1">
+                      <img ng-src="/lib/images/flags/{{appData.userBase.country_code.toLowerCase()}}.png" />
+                      {{appData.userBase.user_base | capitalize}}
+                    </span>
+                    <button ng-if="appData.platform == 'ios' && appData.userBases.length > 1" uib-popover-template="'userBaseTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                      <img ng-src="/lib/images/flags/{{appData.userBase.country_code.toLowerCase()}}.png" />
+                      {{appData.userBase.user_base | capitalize}}
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -67,22 +76,37 @@
           </div>
         </div>
 
-        <div class="panel panel-default" ng-if="appData.rating || appData.ratingsCount != null">
+        <div class="panel panel-default" ng-if="appData.rating || appData.ratings.length">
           <div class="panel-heading"><strong>Reviews</strong></div>
           <div class="panel-body">
-            <div class="media" ng-if="appData.rating || appData.ratingsCount != null">
+            <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info">
-                  <li ng-if="appData.rating != 0">
+                  <li>
                     <span class="icon fa fa-star"></span>
                     <label>Aggregate Rating:</label>
-                    <span>{{appData.rating}} of 5.0</span>
+                    <span ng-if="appPlatform == 'android'">{{appData.rating}} of 5</span>
+                    <span ng-if="appPlatform == 'ios' && appData.ratings.length == 1">
+                      <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
+                      {{appData.rating.rating}} of 5
+                    </span>
+                    <button ng-if="appPlatform == 'ios' && appData.ratings.length > 1" uib-popover-template="'ratingTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                      <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
+                      {{appData.rating.rating}} of 5
+                    </button>
                   </li>
-                  <li ng-if="appData.ratingsCount">
+                  <li ng-if="appData.ratingsCount || appData.ratingsCounts.length">
                     <span class="icon fa fa-star"></span>
                     <label>Ratings Count:</label>
-                    <span ng-if="appData.ratingsCount == 0">No Ratings</span>
-                    {{appData.ratingsCount}}
+                    <span ng-if="appPlatform == 'android'">{{appData.ratingsCount}}</span>
+                    <span ng-if="appPlatform == 'ios' && appData.ratingsCounts.length == 1">
+                      <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
+                      {{appData.ratingsCount.ratings_count}}
+                    </span>
+                    <button ng-if="appPlatform == 'ios' && appData.ratingsCounts.length > 1" uib-popover-template="'ratingsCountTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                      <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
+                      {{appData.ratingsCount.ratings_count | number}}
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -144,7 +168,7 @@
                   <li>
                     <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                     <label>App Store Page:</label>
-                    <a ng-if="appPlatform == 'ios'" href="https://itunes.apple.com/us/app/id{{appData.appIdentifier}}" target="_blank">https://itunes.apple.com/us/app/id{{appData.appIdentifier}}</a>
+                    <a ng-if="appPlatform == 'ios'" ng-href="{{appData.appStoreLink}}" target="_blank">{{appData.appStoreLink}}</a>
                     <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
                   </li>
                   <li id="linkedinLinksList">
@@ -272,6 +296,11 @@
                     <label>Platform:</label>
                     iOS
                   </li>
+                  <li ng-if="appData.appStores && appData.appStores.availableIn.length && appPlatform == 'ios'">
+                    <span class="icon fa fa-globe"></span>
+                    <label>Available in:</label>
+                     <button uib-popover-template="'appStoresTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
+                  </li>
                   <li ng-if="appData.appIdentifier">
                     <span class="icon fa fa-user"></span>
                     <label>App Store ID:</label>
@@ -281,7 +310,7 @@
                     <span class="icon fa fa-usd"></span>
                     <label>Price:</label>
                     <span ng-if="!appData.price">Free</span>
-                    <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>
+                    <span ng-if="appData.price">{{(appData.price / 100.0) | isoCurrency:appData.currency}}</span>
                   </li>
                   <li>
                     <span class="icon fa fa-shopping-cart"></span>
@@ -393,6 +422,21 @@
                     <label>Name:</label>
                     {{appData.publisher.name}}
                   </li>
+                  <li ng-if="appData.company.fortuneRank">
+                    <span class="icon fa fa-bar-chart"></span>
+                    <label>Fortune Rank:</label>
+                    {{appData.company.fortuneRank}}
+                  </li>
+                  <li ng-if="appData.headquarters.length">
+                    <span class="icon fa fa-home"></span>
+                    <label>Headquarters</label>
+                    <ul class="headquarters">
+                      <li ng-repeat="location in appData.headquarters">
+                        <label title="{{location.domain}}">{{location.domain}}</label>
+                        {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}
+                      </li>
+                    </ul>
+                  </li>
                   <li ng-if="appData.publisher.id">
                     <a href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">More Publisher Details</a>
                   </li>
@@ -436,6 +480,6 @@
     <!-- Modals -->
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
     <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
-
+    <aside ng-include="'/app/app/views/modals/app-details.html'"></aside>
   </div>
 </div>

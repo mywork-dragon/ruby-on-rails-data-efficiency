@@ -28,7 +28,7 @@ class IosSdkService
       # return error if it violates some conditions
       app = IosApp.find(ios_app_id)
 
-      if app.display_type != "normal"
+      if app.display_type != "normal" && (app.display_type != 'taken_down' || !app.app_store_available)
         resp[:error_code] = error_map[app.display_type.to_sym]
       end
 

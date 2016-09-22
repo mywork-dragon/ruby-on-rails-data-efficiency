@@ -54,7 +54,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available for Paid Apps",
-            "Sorry, SDKs Not Available - App is Not in U.S. App Store",
+            "Sorry, SDKs Not Available - App is Not Available in Any App Store We're Scanning",
             "Sorry, SDKs Temporarily Not Available for This App",
             "Sorry, SDKs Temporarily Not Available for This App",
             "Sorry, SDKs Not Available for This App"
@@ -113,14 +113,14 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     // Helper method for getSdks() method
     var pullScanStatus = function() {
       var msDelay = 3000;
-      var numRepeat = 120;
+      var numRepeat = 180;
       var intervalCount = 0;
 
       // Messages that correspond to (status == index number)
       var statusCodeMessages = [
         "Validating...",                                            // Non-terminating
         "Unchanged",                                                // Unchanged
-        "Sorry, SDKs Not Available - App is Not in U.S. App Store", // Not Available
+        "Sorry, SDKs Not Available - App is Not Available in Any App Store We're Scanning", // Not Available
         "Sorry, SDKs Not Available for Paid Apps",                  // Paid App
         "Sorry, SDKs Temporarily Not Available for This App",       // Device incompatible
         "Preparing...",                                             // Non-terminating
@@ -138,7 +138,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             intervalCount++;
 
             // Reset 'query in progress' if pulling times out
-            if(intervalCount == 120) {
+            if(intervalCount == numRepeat) {
               iosLiveScanCtrl.sdkQueryInProgress = false;
               sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }

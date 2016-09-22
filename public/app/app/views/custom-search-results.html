@@ -32,7 +32,7 @@
               <th class="selectAllCheckboxHeader">
                 <select-all-checkbox apps="customSearchCtrl.apps"></select-all-checkbox>
               </th>
-              <th><div class="th normal-right-padding">
+              <th class="resultsTableAppIcon"><div class="th normal-right-padding">
                 App Name
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('name', 'asc')"
@@ -44,7 +44,7 @@
               <th><div class="th normal-right-padding appDetailsHeader">
                 App Type
               </div></th>
-              <th><div class="th normal-right-padding">
+              <th class="resultsTableAppPublisher"><div class="th normal-right-padding">
                 Publisher
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('publisher_name', 'asc')"
@@ -73,10 +73,10 @@
               </div></th>
               <th><div class="th normal-right-padding">
                 Ad Spend
-                <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-up"
+                <span ng-show="!canViewAdSpend || customSearchCtrl.platform == 'android'" class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'desc')"
                       data-ng-class="{active: row == 'old_facebook_ads'}"></span>
-                <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-down"
+                <span ng-show="!canViewAdSpend || customSearchCtrl.platform == 'android'" class="glyphicon glyphicon-chevron-down"
                       data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'asc')"
                       data-ng-class="{active: row == '-old_facebook_ads'}"></span>
                 <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
@@ -86,14 +86,14 @@
                       data-ng-click=" customSearchCtrl.sortApps('facebook_ads', 'asc')"
                       data-ng-class="{active: row == '-facebook_ads'}"></span>
               </div></th>
-              <th><div class="th normal-right-padding">
+              <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
                 User Base Size
-                <span class="glyphicon glyphicon-chevron-up"
+               <!--  <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('user_base', 'asc')"
                       data-ng-class="{active: row == 'user_base'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('user_base', 'desc')"
-                      data-ng-class="{active: row == '-user_base'}"></span>
+                      data-ng-class="{active: row == '-user_base'}"></span> -->
               </div></th>
               <th><div class="th normal-right-padding">
                 Categories
@@ -129,7 +129,7 @@
           </thead>
 
           <tbody data-ng-hide="customSearchCtrl.queryInProgress">
-            <tr data-ng-repeat="app in customSearchCtrl.apps" class="{{app.displayType == 'taken_down' ? 'faded' : ''}}">
+            <tr data-ng-repeat="app in customSearchCtrl.apps" class="{{!app.appAvailable ? 'faded' : ''}}">
               <td class="dashboardTableDataCheckbox">
                 <checkable-checkbox app="app" apps="customSearchCtrl.apps"></checkable-checkbox>
               </td>
@@ -146,7 +146,7 @@
               <td class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
-              <td><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td>{{app.company.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
@@ -156,7 +156,26 @@
                   <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
                 </span>
               </td>
-              <td>{{app.userBase | capitalize}}</td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="customSearchCtrl.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </span>
+                <a ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </a>
+                <script ng-if="customSearchCtrl.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.userBases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
               <td>{{app.categories.join(', ')}}</td>
               <td ng-if="canViewSupportDesk && customSearchCtrl.platform == 'ios'">{{app.supportDesk | supportDeskName}}</td>
               <td ng-if="customSearchCtrl.platform == 'android'">{{app.downloadsMin | humanizeNum}}<span ng-show="app.downloadsMax"> - </span>{{app.downloadsMax | humanizeNum}}</td>

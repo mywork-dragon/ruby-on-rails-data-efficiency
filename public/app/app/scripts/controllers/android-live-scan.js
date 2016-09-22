@@ -97,7 +97,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     // Helper method for getSdks() method - 4min timeout (2s * 120)
     var pullScanStatus = function() {
       var msDelay = 2000;
-      var numRepeat = 60;
+      var numRepeat = 120;
       var intervalCount = 0;
 
       // Messages that correspond to (status == index number)
@@ -127,7 +127,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             var errorCode = data.error;
 
             // Reset 'query in progress' if polling times out
-            if(intervalCount == 120) {
+            if(intervalCount == numRepeat) {
               androidLiveScanCtrl.sdkQueryInProgress = false;
               sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1, "Timeout"); // Failed analytics response - MixPanel & Slacktivity
             }

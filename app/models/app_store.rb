@@ -21,6 +21,8 @@ class AppStore < ActiveRecord::Base
 
   validates_uniqueness_of :priority, allow_blank: true
   validates_uniqueness_of :display_priority, allow_blank: true
+  
+  scope :enabled, -> {where(enabled: true)}
 
   def disable(automate: false)
     ret = update(enabled: false)

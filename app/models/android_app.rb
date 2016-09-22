@@ -76,13 +76,12 @@ class AndroidApp < ActiveRecord::Base
     developer = self.android_developer
     newest_snapshot = self.newest_android_app_snapshot
 
-    [
+    row = [
       self.id,
       self.app_identifier,
       newest_snapshot.try(:name),
       'AndroidApp',
       self.mobile_priority,
-      self.user_base,
       self.last_updated,
       self.android_fb_ad_appearances.present?,
       newest_snapshot.try(:in_app_purchase_min).present?,
@@ -97,6 +96,10 @@ class AndroidApp < ActiveRecord::Base
       self.ratings_all_count,
       self.downloads_human
     ]
+    AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
+      row << (store.country_code == 'US' ? self.user_base : nil)
+    end
+    row
   end
 
   def as_json(options={})
@@ -121,7 +124,7 @@ class AndroidApp < ActiveRecord::Base
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
       company: company,
-      displayType: self.display_type,
+      appAvailable: self.display_type == 'normal',
       publisher: {
         id: self.try(:android_developer).try(:id),
         name: self.try(:android_developer).try(:name),
@@ -144,6 +147,7 @@ class AndroidApp < ActiveRecord::Base
         ratingsCount: newest_snapshot.try(:ratings_all_count),
         appIdentifier: self.app_identifier,
         displayStatus: self.display_type,
+        headquarters: self.headquarters
       })
     end
 
@@ -185,8 +189,16 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def seller_url
+    self.newest_android_app_snapshot.try(:seller_url)
+  end
+
   def old_ad_spend?
     self.android_fb_ad_appearances.present?
+  end
+
+  def headquarters
+    android_developer.try(:headquarters) || []
   end
 
   def downloads

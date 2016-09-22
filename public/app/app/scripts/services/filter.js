@@ -39,6 +39,21 @@ angular.module("appApp")
          
           return filterType + ' ' + displayName;
         },
+        locationDisplayText: function(filter, filterType) {
+          var displayName = ''
+
+          if (filter.status == "0") {
+            displayName = 'Headquartered in' + displayName
+          } else if (filter.status == '1') {
+            displayName = 'Only available in' + displayName
+          } else if (filter.status == '2') {
+            displayName = 'Available in' + displayName
+          } else if (filter.status == '3') {
+            displayName = 'Not Available in' + displayName
+          }
+                   
+          return filterType + ' ' + displayName;
+        },
         hasFilter: function(parameter) {
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
               if($rootScope.tags[i].parameter == parameter){
@@ -51,13 +66,17 @@ angular.module("appApp")
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
             if ($rootScope.tags[i].parameter == parameter && this.tagsAreEqual($rootScope.tags[i], oldValue)) {
-              if (value.status) {
-                $rootScope.tags[i].value.status = value.status
+              var possible = ["status", "date", "state"]
+              for (var y = 0; y < possible.length; y++) {
+                if (value[possible[y]]) {
+                  $rootScope.tags[i].value[possible[y]] = value[possible[y]]
+                }
               }
-              if (value.date) {
-                $rootScope.tags[i].value.date = value.date
+              if (value.state && value.state != "0") {
+                $rootScope.tags[i].text = newDisplayText + ': ' + value.state + ', ' + $rootScope.tags[i].value.name
+              } else {
+                $rootScope.tags[i].text = newDisplayText + ': ' + $rootScope.tags[i].value.name
               }
-              $rootScope.tags[i].text = newDisplayText + ': ' + $rootScope.tags[i].value.name;
               break
             }
           }
@@ -66,13 +85,12 @@ angular.module("appApp")
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
             if ($rootScope.tags[i].parameter == parameter && (!value || this.tagsAreEqual($rootScope.tags[i], value))) {
-              console.log("Remove tag", $rootScope.tags[i])
               $rootScope.tags.splice(i, 1);
             }
           }
         },
         tagsAreEqual: function(tag1, tag2) {
-          return (tag1.value == tag2) || (tag1.value.id && tag2.id && tag1.value.id == tag2.id && tag1.value.status == tag2.status && tag1.value.date == tag2.date)
+          return (tag1.value == tag2) || (tag1.value.id && tag2.id && tag1.value.id == tag2.id && tag1.value.status == tag2.status && tag1.value.date == tag2.date && tag1.value.state == tag2.state)
         },
         addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
           /* -------- Mixpanel Analytics Start -------- */
@@ -117,8 +135,8 @@ angular.module("appApp")
               text: displayName + ': ' + (customName ? customName : value)
             });
           }
-
-          if(!limitToOneFilter && (!duplicateTag || ['sdkFiltersOr', 'sdkFiltersAnd'].indexOf(parameter) > -1) || $rootScope.tags.length < 1) {
+          var complexFilters = ['sdkFiltersOr', 'sdkFiltersAnd', 'locationFiltersAnd', 'locationFiltersOr']
+          if(!limitToOneFilter && (!duplicateTag || complexFilters.indexOf(parameter) > -1) || $rootScope.tags.length < 1) {
             $rootScope.tags.push({
               parameter: parameter,
               value: value,
