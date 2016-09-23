@@ -17,7 +17,6 @@ class IosLiveScanServiceWorker
   end
 
   def allow_international?
-    return true # REMOVE ME
     ServiceStatus.is_active?(:ios_international_live_scan) &&
       @ipa_snapshot_job.international_enabled?
   end
