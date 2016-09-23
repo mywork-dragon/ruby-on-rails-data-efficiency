@@ -526,7 +526,7 @@ class ApiController < ApplicationController
 
     job_id = IosLiveScanService.scan_ios_app(
       ios_app_id: ios_app_id,
-      international_enabled: Rails.application.config.env['stage'] == 'staging'
+      international_enabled: ServiceStatus.is_active?(:ios_international_live_scan)
     )
 
     render json: {job_id: job_id}
