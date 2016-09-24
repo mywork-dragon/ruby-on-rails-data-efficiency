@@ -60,7 +60,7 @@ class AppStoreDevelopersWorker
                     identifier: @developer_identifier,
                     name: seller_name
                   )
-                rescue ActiveRecord::RecordInvalid
+                rescue ActiveRecord::RecordNotUnique
                   IosDeveloper.find_by_identifier!(@developer_identifier)
                 end
 
