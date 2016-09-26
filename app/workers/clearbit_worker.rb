@@ -149,7 +149,11 @@ class ClearbitWorker
     
     if developer.blank?
       puts "Could not find app developer #{app.id}"
-      developer = CreateDevelopersWorker.new.perform(:create_developers, app_id, platform) 
+      if platform == 'ios'
+        AppStoreDevelopersWorker.new.perform(:create_by_ios_app_id, app_id)
+      else
+        GooglePlayDevelopersWorker.new.perform(:create_by_android_app_id, app_id)
+      end
     end
 
     return unless developer
