@@ -559,7 +559,7 @@ class AppStoreService
     def attributes(ids, country_code: 'us', skip_attributes: false)
       fail TooManyIds if ids.count > MAX_APPS
 
-      load_json(ids: ids, country_code: country_code, unproxied: true)
+      load_json(ids: ids, country_code: country_code)
 
       ass = AppStoreService.new
 
@@ -603,16 +603,8 @@ class AppStoreService
       ret
     end
 
-    def load_json(ids:, country_code:, unproxied: false)
-      if unproxied
-        json = ItunesApi.batch_lookup(ids, country_code)
-      else
-        country_param = (@country_code == 'us' ? '' : "country=#{country_code}")
-        ids_param = ids.join(',')
-        url = "https://itunes.apple.com/lookup?id=#{ids_param}&#{country_param}"
-        page = Tor.get(url)
-        json = JSON.load(page)
-      end
+    def load_json(ids:, country_code:)
+      json = ItunesApi.batch_lookup(ids, country_code)
       @json_a = json['results']
     end    
 

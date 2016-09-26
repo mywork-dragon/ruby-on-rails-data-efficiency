@@ -13,7 +13,7 @@ class AndroidSdkClassificationService
 
   end
 
-  def initialize(jid: nil, proxy_type: :tor)
+  def initialize(jid: nil, proxy_type: :android_classification)
     @jid = jid
     @proxy_type = proxy_type
   end
@@ -259,10 +259,6 @@ class AndroidSdkClassificationService
         try = 0
 
         begin
-          # sleep(rand(0.5..1.5)) # be easy on google
-          # searcher = GoogleSearcher::Searcher.new(jid: @jid)
-          # search = searcher.search(q, proxy_type: :android_classification)
-
           searcher = BingSearcher::Searcher.new(jid: @jid)
           search = searcher.search(q, proxy_type: @proxy_type)
         rescue => e

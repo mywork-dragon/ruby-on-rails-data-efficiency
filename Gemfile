@@ -103,8 +103,6 @@ gem 'bcrypt', '3.1.10'
 
 gem 'minitest-fail-fast', '0.0.1'
 
-gem 'whois', '3.5.9'
-
 gem 'text', '1.3.1'
 
 gem 'iso_country_codes', '0.7.1'
