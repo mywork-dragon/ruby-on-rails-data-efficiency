@@ -68,6 +68,11 @@ angular.module('appApp')
         return API_URI_BASE + "api/sdk/autocomplete?platform=" + AppPlatform.platform + "&query="
       }
 
+      $scope.toggledPlatform = function() {
+        searchCtrl.apps = [];
+        searchCtrl.numApps = 0;
+      }
+
       $scope.locationAutocompleteUrl = function(status) {
         return API_URI_BASE + "api/location/autocomplete?status=" + status + "&query="
       }
