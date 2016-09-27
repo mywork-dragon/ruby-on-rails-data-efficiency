@@ -126,6 +126,12 @@ angular.module('appApp')
         }
       };
 
+      customSearchCtrl.toggledPlatform = function() {
+        customSearchCtrl.appNum = 0;
+        customSearchCtrl.numApps = 0;
+        customSearchCtrl.queryInProgress = false;
+      }
+
       customSearchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {
         return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
       };
