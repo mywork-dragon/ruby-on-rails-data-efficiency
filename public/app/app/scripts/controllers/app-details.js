@@ -155,8 +155,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       });
     }
 
-    $scope.exportContactsToCsv = function() {
-      apiService.exportContactsToCsv($scope.companyContacts, $scope.appData.publisher.name)
+    $scope.exportContactsToCsv = function(websites, filter) {
+      apiService.exportContactsToCsv(websites, filter, $scope.appData.publisher.name)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
 

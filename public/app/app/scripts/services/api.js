@@ -85,11 +85,11 @@ angular.module("appApp")
           }
         });
       },
-      exportContactsToCsv: function(contacts, companyName) {
+      exportContactsToCsv: function(websites, filter, companyName) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Exported Contacts CSV", {
-            "contacts": contacts
+            "companyName": companyName
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -97,7 +97,8 @@ angular.module("appApp")
           method: 'POST',
           url: API_URI_BASE + 'api/contacts/export_to_csv',
           data: {
-            contacts: contacts,
+            websites: websites,
+            filter: filter,
             companyName: companyName
           }
         });

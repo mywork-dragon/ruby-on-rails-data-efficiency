@@ -338,13 +338,18 @@ class ApiController < ApplicationController
   end
 
   def export_contacts_to_csv
-    contacts = params['contacts']
+    websites = params['websites']
+    filter = params['filter']
+
+    contacts = ClearbitContact.get_contacts_for_websites(websites, filter)
+
     companyName = params['companyName']
     header = ['MightySignal ID', 'Company Name', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
 
     list_csv = CSV.generate do |csv|
       csv << header
       contacts.each do |contact|
+        contact = contact.with_indifferent_access
         contacts_hash = [
           contact['clearbitId'],
           companyName,
@@ -471,39 +476,12 @@ class ApiController < ApplicationController
     company_websites = params['companyWebsites']
     filter = params['filter']
     page = params['page'] || 1
-    contacts = []
-    domains = {}
 
     if company_websites.blank?
-      render json: {:contacts => contacts}
+      render json: {:contacts => []}
     else
-
-      # takes up to five websites associated with company & creates array of clearbit_contacts objects
-      company_websites.first(5).each do |url|
-
-        # finds matching record in website table
-        website = Website.find_by(url: url)
-        domain = UrlHelper.url_with_domain_only(url)
-
-        next if domains[domain]
-        domains[domain] = 1
-
-        if filter.present?
-          contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => filter, 'limit' => 20}, website)
-        else
-          current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).limit(60).as_json : []
-
-          if current_contacts.count < 60
-            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)
-            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'limit' => 20}, website)
-            current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'marketing', 'limit' => 20}, website)
-          end
-
-          contacts += current_contacts
-        end
-      end
+      contacts = ClearbitContact.get_contacts_for_websites(company_websites, filter)
       offset = params['perPage'] || 10
-      contacts.uniq! {|e| e[:clearbitId] }
       render json: {:contacts => contacts[((page-1)*offset)..((page*offset)-1)], contactsCount: contacts.count}
     end
   end

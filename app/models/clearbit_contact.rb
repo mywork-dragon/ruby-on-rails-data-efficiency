@@ -31,6 +31,37 @@ class ClearbitContact < ActiveRecord::Base
     contacts
   end
 
+  def self.get_contacts_for_websites(websites, filter)
+    contacts = []
+    domains = {}
+    # takes up to five websites associated with company & creates array of clearbit_contacts objects
+    websites.first(5).each do |url|
+
+      # finds matching record in website table
+      website = Website.find_by(url: url)
+      domain = UrlHelper.url_with_domain_only(url)
+
+      next if domains[domain]
+      domains[domain] = 1
+
+      if filter.present?
+        contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => filter, 'limit' => 20}, website)
+      else
+        current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).limit(60).as_json : []
+
+        if current_contacts.count < 60
+          current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)
+          current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'limit' => 20}, website)
+          current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'marketing', 'limit' => 20}, website)
+        end
+
+        contacts += current_contacts
+      end
+    end
+    contacts.uniq! {|e| e[:clearbitId] }
+    contacts
+  end
+
   def self.get_contact_email(person_id)
     get = HTTParty.get("https://prospector.clearbit.com/v1/people/#{person_id}/email", headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'})
     email = JSON.load(get.response.body).try(:[], "email") || "No Email"

@@ -30,7 +30,7 @@ class ClearbitWorker
       rescue
       end
     end
-  end
+  end 
 
   def flag_ios_websites
     ios_developer_ids = {

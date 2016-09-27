@@ -128,8 +128,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       }
     };
 
-    $scope.exportContactsToCsv = function() {
-      apiService.exportContactsToCsv($scope.companyContacts, $scope.publisherData.name)
+    $scope.exportContactsToCsv = function(websites, filter) {
+      apiService.exportContactsToCsv(websites, filter, $scope.publisherData.name)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
