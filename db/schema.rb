@@ -938,6 +938,14 @@ ActiveRecord::Schema.define(version: 20160920220801) do
   add_index "domain_data", ["raised"], name: "index_domain_data_on_raised", using: :btree
   add_index "domain_data", ["state_code", "country_code"], name: "index_domain_data_on_state_code_and_country_code", using: :btree
 
+  create_table "dummy_models", force: :cascade do |t|
+    t.string   "dummy",             limit: 191
+    t.text     "dummy_text",        limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "is_it_medium_text", limit: 65535
+  end
+
   create_table "dupes", force: :cascade do |t|
     t.string   "app_identifier", limit: 191
     t.datetime "created_at"
@@ -2338,13 +2346,6 @@ ActiveRecord::Schema.define(version: 20160920220801) do
     t.string   "name",       limit: 191
     t.string   "website",    limit: 191
     t.string   "category",   limit: 191
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sidekiq_testers", force: :cascade do |t|
-    t.string   "test_string", limit: 191
-    t.string   "ip",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
   end
