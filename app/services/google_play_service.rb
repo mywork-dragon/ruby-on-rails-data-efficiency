@@ -231,7 +231,7 @@ class GooglePlayService
         price: ->(x) { x == 0 },
         seller: ->(x) { x == 'Uber Technologies, Inc.' },
         seller_url: ->(x) { x == 'http://uber.com' },
-        category: ->(x) { x == 'Transportation' },
+        category: ->(x) { x == 'Maps & Navigation' },
         released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015 },
         # size: ->(x) { x.to_i > 1e7 },
         top_dev: ->(x) { x == true },
