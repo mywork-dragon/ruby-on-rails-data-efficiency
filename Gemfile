@@ -77,6 +77,7 @@ gem 'countries'
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
   gem 'sidekiq-pro', '3.0.2'
 end
+gem 'sidekiq-throttler', '0.5.1'
 
 gem 'sinatra', :require => false
 
@@ -175,6 +176,7 @@ gem 'activerecord-import', '0.13.0'
 
 # for mighty bot
 gem 'twitter', '5.16.0'
+gem 'googl', '0.7.1'
 # gem 'daemons', '1.2.3'
 
 # for syntax checks

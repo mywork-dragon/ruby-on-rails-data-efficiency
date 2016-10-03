@@ -3,6 +3,7 @@ class TwitterPostService
 
   TWITTER_CHARACTER_LIMIT = 140
   POST_GIF_TRIES = 3
+  GOOGLE_KEY = 'AIzaSyAtGLt_HFtLpj0yeKT59kaP9YZpsXycYAw'
 
   INSTALL_SEARCH_TERMS = %w(
     hooray
@@ -60,6 +61,8 @@ class TwitterPostService
     
     ios_sdk_twitter_handle = ios_sdk.twitter_handles.first.try(:handle)
 
+    return {} if ios_sdk_twitter_handle.blank? || ios_app_name.blank?
+
     ios_sdk_name = ios_sdk.name
 
     statuses = [
@@ -71,6 +74,7 @@ class TwitterPostService
     handles = [ios_sdk_twitter_handle, ios_app_twitter_handle].compact.map{ |h| "@#{h}" }.join(' ')
     status = statuses.sample 
     status += " #{handles}" if handles.present?
+    status += " #{Googl.shorten(ios_app.app_store_link, nil, GOOGLE_KEY).short_url}" if status.length <= 110
 
     {status: status, gif_search_term: INSTALL_SEARCH_TERMS.sample}
   end
@@ -97,6 +101,8 @@ class TwitterPostService
 
     ios_app_name = ios_app_name_truncated(ios_app)
 
+    return {} if ios_app_name.blank?
+
     rank = ios_app_ranking.rank
 
     statuses = [
@@ -107,12 +113,13 @@ class TwitterPostService
     handles = [ios_app_twitter_handle].compact.map{ |h| "@#{h}" }.join(' ')
     status = statuses.sample
     status += " #{handles}" if handles.present?
+    status += " #{Googl.shorten(ios_app.app_store_link, nil, GOOGLE_KEY).short_url}" if status.length <= 110
 
     {status: status, gif_search_term: INSTALL_SEARCH_TERMS.sample}
   end
 
   def ios_app_name_truncated(ios_app)
-    ios_app.newest_ios_app_snapshot.name.split(' ').first(5).join(' ')
+    ios_app.name.split(' ').first(5).join(' ') if ios_app.name
   end
 
   def post(status:, gif_search_term:)

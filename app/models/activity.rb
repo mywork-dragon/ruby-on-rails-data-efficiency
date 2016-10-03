@@ -67,7 +67,7 @@ class Activity < ActiveRecord::Base
         break
       end
     end
-    TwitterPostService.run(self) if should_notify
+    TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify
   end
 
   def activity_type
