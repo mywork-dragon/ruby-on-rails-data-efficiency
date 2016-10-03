@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920220801) do
+ActiveRecord::Schema.define(version: 20160923233414) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -419,11 +419,13 @@ ActiveRecord::Schema.define(version: 20160920220801) do
   add_index "apk_snapshot_exceptions", ["status_code"], name: "index_apk_status_code", using: :btree
 
   create_table "apk_snapshot_jobs", force: :cascade do |t|
-    t.text     "notes",      limit: 65535
+    t.text     "notes",            limit: 65535
     t.boolean  "is_fucked"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "job_type",   limit: 4
+    t.integer  "job_type",         limit: 4
+    t.integer  "ls_lookup_code",   limit: 4
+    t.integer  "ls_download_code", limit: 4
   end
 
   add_index "apk_snapshot_jobs", ["job_type"], name: "index_apk_snapshot_jobs_on_job_type", using: :btree
