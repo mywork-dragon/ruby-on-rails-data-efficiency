@@ -149,7 +149,9 @@ Rails.application.routes.draw do
   get 'service_result/:service_id' => 'results#service_result', as: :service_result
   get 'url_search' => 'results#url_search'
   post 'url_search' => 'results#url_search_result', as: :url_search_result
-  
+
+  get 'fb-recruiting-privacy-policy' => 'privacy_policy#fb_recruiting'
+
   # require 'sidekiq/web'
   # mount Sidekiq::Web => '/sidekiq'
   
