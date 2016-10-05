@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160923233414) do
+ActiveRecord::Schema.define(version: 20161005224005) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1780,6 +1780,18 @@ ActiveRecord::Schema.define(version: 20160923233414) do
 
   add_index "ios_reclassification_methods", ["active"], name: "index_ios_reclassification_methods_on_active", using: :btree
   add_index "ios_reclassification_methods", ["method"], name: "index_ios_reclassification_methods_on_method", unique: true, using: :btree
+
+  create_table "ios_sdk_badges", force: :cascade do |t|
+    t.integer  "ios_sdk_id", limit: 4
+    t.string   "username",   limit: 191
+    t.string   "repo_name",  limit: 191
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "ios_sdk_badges", ["ios_sdk_id"], name: "index_ios_sdk_badges_on_ios_sdk_id", using: :btree
+  add_index "ios_sdk_badges", ["repo_name"], name: "index_ios_sdk_badges_on_repo_name", using: :btree
+  add_index "ios_sdk_badges", ["username", "repo_name"], name: "index_ios_sdk_badges_on_username_and_repo_name", unique: true, using: :btree
 
   create_table "ios_sdk_links", force: :cascade do |t|
     t.integer  "source_sdk_id", limit: 4, null: false
