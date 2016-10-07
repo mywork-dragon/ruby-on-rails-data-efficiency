@@ -73,9 +73,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
-    apk_downloader (1.1.5)
-      ruby-protocol-buffers
-      varint
     arel (6.0.3)
     ast (2.3.0)
     autoprefixer-rails (6.3.1)
@@ -449,7 +446,6 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    varint (0.1.1)
     whenever (0.9.4)
       chronic (>= 0.6.3)
     www-favicon (0.0.6)
@@ -462,7 +458,6 @@ DEPENDENCIES
   PageRankr (= 4.2.1)
   actionpack-action_caching
   activerecord-import (= 0.13.0)
-  apk_downloader (= 1.1.5)
   autoprefixer-rails
   awesome_print (= 1.6.1)
   bcrypt (= 3.1.10)
@@ -518,6 +513,7 @@ DEPENDENCIES
   redis-rails
   restforce (= 2.3.0)
   rubocop
+  ruby-protocol-buffers (~> 1.6.1)
   ruby_apk!
   rubyzip (= 1.1.7)
   sanitize (= 4.0.0)

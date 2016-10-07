@@ -25,7 +25,8 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             'sdkCompanies': data.installed,
             'sdkOpenSource': data.uninstalled,
             'lastUpdated': data.updated,
-            'errorCode': data.error_code
+            'errorCode': data.error_code,
+            'liveScanEnabled': data.live_scan_enabled
           };
 
           androidLiveScanCtrl.noSdkData = false;
@@ -106,16 +107,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         "Downloading...",
         "Scanning...",
         "Complete",
-        "Failed"
-      ];
-
-      var statusCheckErrorCodeMessages = [
-        "Sorry, SDKs Temporarily Not Available for This App",           // 0 == error connecting with Google
-        "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 1 == taken down
-        "Sorry, SDKs Temporarily Not Available for This App",           // 2 == device problems
-        "Sorry, SDKs Not Available - App is Not in U.S. App Store",     // 3 == country problem
-        "Sorry, SDKs Temporarily Not Available for This App",            // 4 == carrier problem
-        "App data has not changed since last scan. Currently up-to-date." // 5 == unchanged version (message not actually used)
+        "Failed",
+        "Sorry, SDKs Temporarily Not Available for This App", 
+        "Sorry, SDKs Not Available for Paid Apps",
+        "App data has not changed since last scan. Currently up-to-date."
       ];
 
       var interval = $interval(function() {
@@ -124,7 +119,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             intervalCount++;
 
             var statusCode = data.status;
-            var errorCode = data.error;
 
             // Reset 'query in progress' if polling times out
             if(intervalCount == numRepeat) {
@@ -132,10 +126,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
               sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1, "Timeout"); // Failed analytics response - MixPanel & Slacktivity
             }
 
-            if(!statusCode && statusCode!== 0) { statusCode = 4 } // If status is null, treat as failed (status 4)
+            if(!statusCode && statusCode !== 0) { statusCode = 4 } // If status is null, treat as failed (status 4)
 
             var statusMessage = statusCheckStatusCodeMessages[statusCode];
-            var errorMessage = statusCheckErrorCodeMessages[errorCode];
 
             androidLiveScanCtrl.scanStatusMessage = statusMessage; // Sets scan status message
 
@@ -153,43 +146,39 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.scanStatusPercentage = 100;
                 androidLiveScanCtrl.noSdkData = false;
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true); // Loads new sdks on page
+
+                $interval.cancel(interval); // Exits interval loop
+
+                // Run for any qualifying status
+                androidLiveScanCtrl.sdkQueryInProgress = false;
                 break;
               case 4: // failed
+              case 5: // unavailable
+              case 6: // paid
                 androidLiveScanCtrl.noSdkData = true;
+
+                $interval.cancel(interval); // Exits interval loop
+
+                androidLiveScanCtrl.sdkQueryInProgress = false;
+                androidLiveScanCtrl.errorCodeMessage = statusMessage;
+
                 androidLiveScanCtrl.failedLiveScan = true;
-                if(data.error != 5) { // don't count no now version as fail
-                  sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, statusCode, statusMessage, errorCode, errorMessage); // Failed analytics response - MixPanel & Slacktivity
-                }
+                androidLiveScanCtrl.sdkData = { 'errorCode': data.status };
+                androidLiveScanCtrl.hideLiveScanButton = true;
+                sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, statusCode, statusMessage); // Failed analytics response - MixPanel & Slacktivity
                 break;
-            }
+              case 7: //unchanged
+                androidLiveScanCtrl.noSdkData = false;
+                $interval.cancel(interval); // Exits interval loop
 
-            if(data.error || data.error === 0 || !data.status && data.status !== 0) { // if data.error is present, or both data.error and data.status not present
+                androidLiveScanCtrl.sdkQueryInProgress = false;
+                androidLiveScanCtrl.errorCodeMessage = statusMessage;
 
-              $interval.cancel(interval); // Exits interval loop
-
-              androidLiveScanCtrl.sdkQueryInProgress = false;
-              androidLiveScanCtrl.noSdkData = false;
-              androidLiveScanCtrl.errorCodeMessage = statusCheckErrorCodeMessages[data.error || 0];
-              // androidLiveScanCtrl.hideLiveScanButton = true;
-
-              if(data.error == 5) {
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId);
                 androidLiveScanCtrl.versionUnchanged = true;
                 androidLiveScanCtrl.hideLiveScanButton = false;
                 sdkLiveScanService.androidLiveScanUnchangedVersionSuccess($routeParams.platform, androidAppId);
-              }
-              else {
-                androidLiveScanCtrl.sdkData = { 'errorCode': data.error };
-                androidLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error, statusCheckErrorCodeMessages[data.error]);
-              }
-
-            } else if(data.status == 3 || data.status == 4) { // if status 'success' or 'failed'
-
-              $interval.cancel(interval); // Exits interval loop
-
-              // Run for any qualifying status
-              androidLiveScanCtrl.sdkQueryInProgress = false;
+                break;
             }
 
           })

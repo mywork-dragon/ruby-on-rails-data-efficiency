@@ -213,7 +213,6 @@ class IosDeviceReserver
 
   def any_exist?(purpose, requirements)
     query = build_query(purpose, requirements, available_only: false)
-    puts "query: #{query}"
     any = IosDevice.where(query).take
     raise NoSuchDevice unless any
   end

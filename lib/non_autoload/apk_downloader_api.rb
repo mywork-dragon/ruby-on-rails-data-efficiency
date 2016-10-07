@@ -114,7 +114,7 @@ ApkDownloader::Api.class_eval do
     proxy = "#{@proxy_ip}:#{@proxy_port}"
 
     response = CurbFu.send(type, req, params) do |curb|
-      curb.proxy_url = proxy
+      curb.proxy_url = proxy if Rails.env.production?
       curb.ssl_verify_peer = false
       curb.max_redirects = 3
       curb.timeout = 90
@@ -191,6 +191,7 @@ ApkDownloader::Api.class_eval do
     uri = URI([GoogleApiUri,path.sub(/^\//,'')].join('/'))
 
     response = res(type: type, req: {:host => uri.host, :path => uri.path, :protocol => "https", :headers => headers}, params: data)
+    byebug
 
     return ApkDownloader::ProtocolBuffers::ResponseWrapper.new.parse(response.body), response.status
 

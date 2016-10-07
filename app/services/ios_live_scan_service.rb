@@ -77,39 +77,5 @@ class IosLiveScanService
 
       status
     end
-
-    def test_flex(seed: true)
-      fail "bruh" if Rails.env.production?
-
-      uber = IosApp.find_or_create_by(app_identifier: 368677368)
-
-      if seed
-        IosDeviceSeeder.seed
-
-        us = AppStore.find_or_create_by(country_code: 'US', enabled: true)
-        cn = AppStore.find_or_create_by(country_code: 'CN', enabled: true)
-        au = AppStore.find_or_create_by(country_code: 'AU', enabled: true)
-        ru = AppStore.find_or_create_by(country_code: 'RU', enabled: true)
-
-        AppleAccount.find_or_create_by(email: "hotandsoursoup@openmailbox.org", password: 'Somename1', app_store: cn, kind: :flex, in_use: false) #CN
-        AppleAccount.find_or_create_by(email: "frank.wong2@openmailbox.org", password: 'Somename1', app_store: cn, kind: :flex, in_use: false) #CN
-        AppleAccount.find_or_create_by(email: "simon.hailey2@openmailbox.org", password: 'Somename1', app_store: au, kind: :flex, in_use: false)  #AU
-        AppleAccount.find_or_create_by(email: "julia.fuchs3@openmailbox.org", password: 'Somename1', app_store: ru, kind: :flex, in_use: false)   #RU
-
-        ios_device = IosDevice.find_by_ip('192.168.2.116')
-        ios_device.destroy if ios_device
-
-        ios_device = IosDevice.create!(ip: '192.168.2.116', serial_number: 'wlaksfnlasnf', purpose: :one_off_intl, in_use: false, ios_device_model_id: 18, ios_version: '9.0.2', ios_version_fmt: '009.000.002', softlayer_proxy_id: 369)
-
-        cn = AppStore.find_by_country_code('CN')
-        au = AppStore.find_by_country_code('AU')
-
-        uber.app_stores += [cn, au]
-        uber.save
-      end
-
-      IosLiveScanService.scan_ios_app(ios_app_id: uber.id, international_enabled: true)
-
-    end
   end
 end

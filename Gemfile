@@ -129,8 +129,6 @@ gem 'domainator', '2.0.0'
 
 gem 'public_suffix', '1.4.6'
 
-gem 'apk_downloader', '1.1.5'
-
 gem 'parallel', '1.6.0'
 
 gem 'clearbit'
@@ -181,3 +179,6 @@ gem 'googl', '0.7.1'
 
 # for syntax checks
 gem 'rubocop', group: :development
+
+# for mightyapk's protocol buffer
+gem 'ruby-protocol-buffers', '~>1.6.1'

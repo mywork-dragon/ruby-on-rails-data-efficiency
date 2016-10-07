@@ -89,7 +89,6 @@
             <div id="sdkScanErrorMessage">
               <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 1-2 minutes.</em></h5>
               <!-- <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5> -->
-              <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Could not download app</strong></h5>
             </div>
             <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
               <uib-progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
@@ -104,7 +103,8 @@
               App data has not changed since last scan. Currently up-to-date.
             </div>
             <div id="showSdksButton">
-              <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)">Live Scan</button>
+              <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan</button>
+              <button type="submit" class="btn btn-block disabled" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-hide="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
             </div>
           </li>
           <li ng-if="!canViewSdks && androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.errorCode == null">

@@ -31,14 +31,10 @@ module ProxyParty
 
     # For modifying the default options on the client
     def proxy_request(proxy_type: nil)
-
       set_proxy(proxy_type: proxy_type) if Rails.env.production?
-
-      res = yield
-
+      yield
+    ensure
       release_proxy if Rails.env.production?
-
-      res
     end
 
     def set_proxy(proxy_type: :general)

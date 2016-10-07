@@ -92,10 +92,10 @@ angular.module("appApp")
         });
 
       },
-      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode, statusMessage, errorCode, errorMessage) {
+      androidLiveScanFailRequestAnalytics: function(platform, appId, statusCode, statusMessage) {
         var color = "#E82020";
 
-        if (errorCode == 3) {
+        if (statusCode == 3) {
           color = "#FFD94D"; // yellow
         }
 
@@ -115,9 +115,6 @@ angular.module("appApp")
               'appId': appData.id,
               'statusCode': statusCode,
               'statusMessage' : statusMessage,
-              'errorCode' : errorCode,
-              'errorMessage': errorMessage
-
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -131,8 +128,6 @@ angular.module("appApp")
             'appId': appData.id,
             'statusCode': statusCode,
             'statusMessage' : statusMessage,
-            'errorCode' : errorCode,
-            'errorMessage': errorMessage
           };
 
           slacktivity.notifySlack(slacktivityData, true, '#automated-alerts');

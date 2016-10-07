@@ -17,6 +17,7 @@ module PackageSearchWorker
         android_app = apk_snap.android_app
         app_identifier = android_app.app_identifier
         apk_file = apk_snap.apk_file
+        apk_snap.update!(scan_status: :scanning)
 
         puts "apk_snap: #{apk_snap}"
         puts "apk_file: #{apk_file}"

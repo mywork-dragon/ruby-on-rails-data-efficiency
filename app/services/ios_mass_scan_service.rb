@@ -115,5 +115,4 @@ class IosMassScanService
       'Successes' => ipa_snapshot_job.ipa_snapshots.where(success: true).count
     )
   end
-
 end

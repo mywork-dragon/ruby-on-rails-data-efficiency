@@ -518,14 +518,14 @@ class ApiController < ApplicationController
 
   def android_start_scan
     id = params['appId']
-    job_id = AndroidSdkService::LiveScan.start_scan(id)
+    job_id = AndroidLiveScanService.start_scan(id)
     render json: {job_id: job_id}.to_json
   end
 
   def android_scan_status
     job_id = params['jobId']
-    status_h = AndroidSdkService::LiveScan.check_status(job_id: job_id)
-    render json: status_h
+    status_h = AndroidLiveScanService.check_status(job_id: job_id)
+    render json: {status: status_h}
   end
 
   def newest_apps_chart

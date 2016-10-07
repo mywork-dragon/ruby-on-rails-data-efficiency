@@ -123,6 +123,8 @@ module AndroidSdkService
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
 
+        h[:live_scan_enabled] = ServiceStatus.is_active?(:android_live_scan) || Rails.application.config.env['stage'] != 'web'
+
         return h if snap.nil?
 
         installed_sdks = snap.android_sdks
