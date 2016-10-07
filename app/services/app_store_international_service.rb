@@ -99,6 +99,17 @@ class AppStoreInternationalService
       end
     end
 
+    def live_scrape_ios_apps(ios_app_ids, notes: 'international scrape')
+      ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create!(notes: notes)
+      AppStore.where(enabled: true).each do |app_store|
+          AppStoreInternationalLiveSnapshotWorker.perform_async(
+            ios_app_current_snapshot_job.id,
+            ios_app_ids,
+            app_store.id
+          )
+      end
+    end
+
     # table pairings to be swapped. convention is production table --> backup table
     def table_swap_map
       {

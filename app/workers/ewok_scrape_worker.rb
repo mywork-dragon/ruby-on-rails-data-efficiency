@@ -7,14 +7,20 @@ class EwokScrapeWorker
     self.send(method.to_sym, *args)
   end
 
+  def get_ios_app(app_identifier)
+    app = IosApp.find_by_app_identifier(app_identifier)
+    app || IosApp.create!(app_identifier: app_identifier, source: :ewok)
+  rescue ActiveRecord::RecordNotUnique
+    IosApp.find_by_app_identifier!(app_identifier)
+  end
+
   def scrape_ios(app_identifier)
 
     a = AppStoreService.attributes(app_identifier)
     raise AttributesBlank if a.blank?
 
-    ios_app = IosApp.find_or_create_by!(app_identifier: app_identifier)
-    ios_app_id = ios_app.id
-    AppStoreSnapshotServiceWorker.new.perform(nil, ios_app_id)
+    ios_app = get_ios_app(app_identifier)
+    AppStoreSnapshotServiceWorker.new.perform(nil, ios_app.id)
   end
 
   def scrape_android(app_identifier)
@@ -25,30 +31,13 @@ class EwokScrapeWorker
   end
 
   def scrape_ios_international(app_identifier)
-    ios_app = IosApp.find_or_create_by!(app_identifier: app_identifier)
+    ios_app = get_ios_app(app_identifier)
 
-    ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create!(notes: "Ewok scrape ios app #{ios_app.id}: #{app_identifier}")
-
-    if Rails.env.production?
-
-      batch.jobs do
-        AppStore.where(enabled: true).each do |app_store|
-          AppStoreInternationalLiveSnapshotWorker.perform_async(
-            ios_app_current_snapshot_job.id,
-            [ios_app.id],
-            app_store.id
-          )
-        end
-      end
-    else
-
-      AppStore.where(enabled: true).each do |app_store|
-        AppStoreInternationalLiveSnapshotWorker.new.perform(
-          ios_app_current_snapshot_job.id,
-          [ios_app.id],
-          app_store.id
-        )
-      end
+    batch.jobs do
+      AppStoreInternationalService.live_scrape_ios_apps(
+        [ios_app.id],
+        notes: "Ewok scrape ios app #{ios_app.id}: #{app_identifier}"
+      )
     end
 
   end

@@ -42,6 +42,7 @@ class IosApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
+  enum source: [:epf_weekly, :ewok, :itunes_top_200]
 
   scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}  
 

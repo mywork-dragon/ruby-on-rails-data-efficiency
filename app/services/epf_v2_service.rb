@@ -318,7 +318,8 @@ class EpfV2Service
         app_rows = batch.map do |epf_application|
           IosApp.new(
             app_identifier: epf_application.application_id,
-            released: epf_application.itunes_release_date
+            released: epf_application.itunes_release_date,
+            source: :epf_weekly
           )
         end
 

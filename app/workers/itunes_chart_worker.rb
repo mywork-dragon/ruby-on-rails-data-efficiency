@@ -13,6 +13,8 @@ class ItunesChartWorker
 
     existing_ios_apps = IosApp.where(app_identifier: ranked_app_identifiers)
     missing_app_identifiers = ranked_app_identifiers - existing_ios_apps.pluck(:app_identifier)
+    return unless missing_app_identifiers.present?
+
     new_ios_apps = create_ios_apps(missing_app_identifiers)
     store_free_app_ranks(ranked_app_identifiers)
     scrape_new_ios_apps(new_ios_apps)
@@ -31,7 +33,8 @@ class ItunesChartWorker
     rows = app_jsons.map do |app_json|
       IosApp.new(
         app_identifier: app_json['trackId'],
-        released: app_json['releaseDate']
+        released: app_json['releaseDate'],
+        source: :itunes_top_200
       )
     end
 
@@ -63,15 +66,26 @@ class ItunesChartWorker
 
   def scrape_new_ios_apps(ios_apps)
     ios_apps.each do |ios_app|
-      web_scrape_ios_app(ios_app)
+      us_scrape_ios_app(ios_app)
     end
 
-    if Rails.env.production?
-      IosEpfScanService.scan_new_itunes_apps(ios_apps.map(&:id))
+    ios_app_ids = ios_apps.map(&:id)
+    IosEpfScanService.scan_new_itunes_apps(ios_app_ids)
+
+
+    batch = Sidekiq::Batch.new
+    batch.description = 'iTunes top 200 free intl scrape'
+    batch.on(
+      :complete,
+      'ItunesChartWorker#on_complete_intl_scrape',
+      'ios_app_ids' => ios_app_ids
+    )
+    batch.jobs do
+      AppStoreInternationalService.live_scrape_ios_apps(ios_app_ids)
     end
   end
 
-  def web_scrape_ios_app(ios_app)
+  def us_scrape_ios_app(ios_app)
     ios_app_id = ios_app.id
     
     if Rails.env.production?
@@ -81,8 +95,10 @@ class ItunesChartWorker
     end
   end
 
-  def self.test
-    new.perform(:scrape_itunes_top_free)
+  def on_complete_intl_scrape(status, options)
+    ios_app_ids = options['ios_app_ids'].map(&:to_i)
+    ios_app_ids.each do |ios_app_id|
+      AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, ios_app_id)
+    end
   end
-
 end
