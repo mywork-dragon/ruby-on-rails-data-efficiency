@@ -68,7 +68,7 @@ class AndroidLiveScanService
       return :preparing if download_code.nil? # download hasn't been started
 
       case download_code.to_sym
-      when :failed
+      when :failure
         :failed
       when :downloading, :retrying
         :downloading
