@@ -103,11 +103,12 @@
                           <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.app.userBase.user_base | capitalize}}
                         </span>
-                        <a ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                        <a ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplateAds.html'" href="javascript:void(0)" class="popover-link">
                           <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.app.userBase.user_base | capitalize}}
                         </a>
-                        <script ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+
+                        <script ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" type="text/ng-template" id="userBaseTemplateAds.html">
                           <ul class="international-data">
                             <li ng-repeat="row in activity.other_owner.app.userBases">
                               <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
@@ -128,7 +129,8 @@
                           Spotted {{activity.impression_count}} ads 
                           (Last: {{calculateDaysAgo(activity.happened_at, true)}})
                           <br>
-                          <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a><span ng-if="batch.activities[$index].other_owner.ad_info_image"> - <a href="javascript:void(0)" ng-click="openAdInfoModal(batch, $index)">Targeting</a></span>
+                          <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a><span ng-if="batch.activities[$index].other_owner.ad_info_image">
+                     <!--      - <a href="javascript:void(0)" ng-click="openAdInfoModal(batch, $index)">Targeting</a></span> -->
                         </span>
                       </td>
                     </tr>
