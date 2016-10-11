@@ -16,6 +16,7 @@ class ClearbitWorker
 
   def queue_android_apps(user_base)
     AndroidApp.where(user_base: user_base).each do |app|
+      next if app.headquarters.any?
       ClearbitWorker.perform_async(:enrich_app, app.id, 'android')
     end
   end
