@@ -763,7 +763,7 @@ class ApiController < ApplicationController
 
     @sdk_json = sdk.as_json({user: @current_user})
     @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).size
+    @sdk_json[:numOfApps] = sdk.get_current_apps.size
     render json: @sdk_json
   end
 
@@ -773,7 +773,7 @@ class ApiController < ApplicationController
 
     @sdk_json = sdk.as_json({user: @current_user})
     @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.where.not(display_type: 1).size
+    @sdk_json[:numOfApps] = sdk.get_current_apps.size
     render json: @sdk_json
   end
 
