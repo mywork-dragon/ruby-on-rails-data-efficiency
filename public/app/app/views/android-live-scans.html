@@ -9,7 +9,7 @@
             <p><strong>{{androidLiveScanCtrl.errorCodeMessage}}</strong></p>
           </div>
 
-          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="androidLiveScanCtrl.sdkData && !androidLiveScanCtrl.noSdkSnapshot">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="androidLiveScanCtrl.sdkData && !androidLiveScanCtrl.noSdkSnapshot && (androidLiveScanCtrl.sdkData.sdkCompanies.length || androidLiveScanCtrl.sdkData.sdkOpenSource.length)">
             <div class="sdksListView">
               <div class="row">
                 <div class="col-md-6" ng-hide="!androidLiveScanCtrl.sdkData.sdkCompanies.length">

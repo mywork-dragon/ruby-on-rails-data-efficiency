@@ -107,7 +107,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         "Downloading...",
         "Scanning...",
         "Complete",
-        "Failed",
+        "Sorry, Live Scan Failed. Please Try Again Later",
         "Sorry, SDKs Temporarily Not Available for This App", 
         "Sorry, SDKs Not Available for Paid Apps",
         "App data has not changed since last scan. Currently up-to-date."
