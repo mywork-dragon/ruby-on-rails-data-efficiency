@@ -155,8 +155,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
       });
     }
 
-    $scope.exportContactsToCsv = function(websites, filter) {
-      apiService.exportContactsToCsv(websites, filter, $scope.appData.publisher.name)
+    $scope.exportContactsToCsv = function(filter) {
+      apiService.exportContactsToCsv($scope.appData.platform, $scope.appData.publisher.id, filter, $scope.appData.publisher.name)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
 
@@ -182,12 +182,12 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         })
     }
 
-    $scope.getCompanyContacts = function(websites, filter, page) {
+    $scope.getCompanyContacts = function(filter, page) {
       if (!page) {
         page = 1
       }
       $scope.contactsLoading = true;
-      apiService.getCompanyContacts(websites, filter, page, $scope.contactsPerPage)
+      apiService.getCompanyContacts($scope.appData.platform, $scope.appData.publisher.id, filter, page, $scope.contactsPerPage)
         .success(function(data) {
           $scope.companyContacts = data.contacts;
           $scope.contactsCount = data.contactsCount;
@@ -196,7 +196,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Company Contacts Requested", {
-              'websites': websites,
               'companyName': $scope.appData.publisher.name,
               'requestResults': data.contacts,
               'requestResultsCount': data.contacts.length,
@@ -208,7 +207,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Company Contacts Requested", {
-              'websites': websites,
               'companyName': $scope.appData.publisher.name,
               'requestError': err,
               'titleFilter': filter || ''

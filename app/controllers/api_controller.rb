@@ -346,10 +346,18 @@ class ApiController < ApplicationController
   end
 
   def export_contacts_to_csv
-    websites = params['websites']
+    platform = params['platform']
+    publisher_id = params['publisherId']
+
+    developer = if platform == 'ios'
+      IosDeveloper.find(publisher_id)
+    else
+      AndroidDeveloper.find(publisher_id)
+    end
+    
     filter = params['filter']
 
-    contacts = ClearbitContact.get_contacts_for_websites(websites, filter)
+    contacts = ClearbitContact.get_contacts_for_developer(developer, filter)
 
     companyName = params['companyName']
     header = ['MightySignal ID', 'Company Name', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
@@ -480,18 +488,21 @@ class ApiController < ApplicationController
   end
 
   def get_company_contacts
+    platform = params['platform']
+    publisher_id = params['publisherId']
 
-    company_websites = params['companyWebsites']
     filter = params['filter']
     page = params['page'] || 1
+    offset = params['perPage'] || 10
 
-    if company_websites.blank?
-      render json: {:contacts => []}
+    developer = if platform == 'ios'
+      IosDeveloper.find(publisher_id)
     else
-      contacts = ClearbitContact.get_contacts_for_websites(company_websites, filter)
-      offset = params['perPage'] || 10
-      render json: {:contacts => contacts[((page-1)*offset)..((page*offset)-1)], contactsCount: contacts.count}
+      AndroidDeveloper.find(publisher_id)
     end
+
+    contacts = ClearbitContact.get_contacts_for_developer(developer, filter)
+    render json: {:contacts => contacts[((page-1)*offset)..((page*offset)-1)], contactsCount: contacts.count}
   end
 
   def ios_sdks_exist

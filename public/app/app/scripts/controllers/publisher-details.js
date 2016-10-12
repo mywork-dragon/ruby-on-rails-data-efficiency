@@ -128,8 +128,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       }
     };
 
-    $scope.exportContactsToCsv = function(websites, filter) {
-      apiService.exportContactsToCsv(websites, filter, $scope.publisherData.name)
+    $scope.exportContactsToCsv = function(filter) {
+      apiService.exportContactsToCsv($scope.appPlatform, $scope.publisherData.id, filter, $scope.publisherData.name)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
@@ -167,12 +167,12 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       return offset + ' - ' + (offset + $scope.contactsPerPage - 1)
     }
 
-    $scope.getCompanyContacts = function(websites, filter, page) {
+    $scope.getCompanyContacts = function(filter, page) {
       if (!page) {
         page = 1
       }
       $scope.contactsLoading = true;
-      apiService.getCompanyContacts(websites, filter, page, $scope.contactsPerPage).success(function(data) {
+      apiService.getCompanyContacts($scope.appPlatform, $scope.publisherData.id, filter, page, $scope.contactsPerPage).success(function(data) {
         $scope.companyContacts = data.contacts;
         $scope.contactsCount = data.contactsCount;
         $scope.contactsLoading = false;
@@ -180,7 +180,6 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Company Contacts Requested", {
-            'websites': websites,
             'companyName': $scope.publisherData.name,
             'requestResults': data.contacts,
             'requestResultsCount': data.contacts.length,
@@ -194,7 +193,6 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Company Contacts Requested", {
-            'websites': websites,
             'companyName': $scope.publisherData.name,
             'requestResultsCount': 0,
             'titleFilter': filter || ''

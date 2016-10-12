@@ -31,9 +31,14 @@ class ClearbitContact < ActiveRecord::Base
     contacts
   end
 
-  def self.get_contacts_for_websites(websites, filter)
+  def self.get_contacts_for_developer(developer, filter)
     contacts = []
     domains = {}
+
+    websites = developer.valid_websites.map{|website| website.url}
+    websites << developer.try(:ios_apps).try(:first).try(:support_url) if developer.try(:ios_apps).try(:first).try(:support_url)
+    websites << developer.try(:android_apps).try(:first).try(:support_url) if developer.try(:android_apps).try(:first).try(:support_url)
+
     # takes up to five websites associated with company & creates array of clearbit_contacts objects
     websites.first(5).each do |url|
 
@@ -41,13 +46,19 @@ class ClearbitContact < ActiveRecord::Base
       website = Website.find_by(url: url)
       domain = UrlHelper.url_with_domain_only(url)
 
-      next if domains[domain]
+      valid_developer_ids = if developer.is_a?(IosDeveloper)
+        ClearbitWorker::IOS_DEVELOPER_IDS[domain]
+      else 
+        ClearbitWorker::ANDROID_DEVELOPER_IDS[domain]
+      end
+
+      next if domain.blank? || domains[domain] || (valid_developer_ids && !valid_developer_ids.include?(developer.id))
       domains[domain] = 1
 
       if filter.present?
         contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => filter, 'limit' => 20}, website)
       else
-        current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).limit(60).as_json : []
+        current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).as_json : []
 
         if current_contacts.count < 60
           current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)

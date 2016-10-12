@@ -87,7 +87,7 @@
                         <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO">
                       </div>
                       <div id="showCompanyEmailsButton">
-                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(publisherData.websites, companyContactFilter)">Find Contacts</button>
+                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyContactFilter)">Find Contacts</button>
                       </div>
                     </div>
                     <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
@@ -100,7 +100,7 @@
                       <!-- Company Apps Table -->
                       <div class="panel-heading" id="companyContactsTableHeading">
                         <strong><span id="dashboardResultsTableHeadingNumDisplayed" ng-if="companyContacts.length">{{contactsCount}} Contacts</span></strong>
-                        <button type="submit" class="btn btn-default btn-sm pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv(publisherData.websites, companyContactFilter)">Export Contacts to CSV</button>
+                        <button type="submit" class="btn btn-default btn-sm pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv(companyContactFilter)">Export Contacts to CSV</button>
                         <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
                       </div>
 
@@ -147,7 +147,7 @@
                                         ng-model="currentContactsPage"
                                         total-items="contactsCount"
                                         max-size="8"
-                                        ng-change="getCompanyContacts(publisherData.websites, companyContactFilter, currentContactsPage)"
+                                        ng-change="getCompanyContacts(companyContactFilter, currentContactsPage)"
                                         items-per-page="contactsPerPage"
                                         rotate="false"
                                         boundary-links="true"></uib-pagination>

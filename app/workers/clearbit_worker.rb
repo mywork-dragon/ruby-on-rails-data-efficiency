@@ -4,6 +4,92 @@ class ClearbitWorker
 
   sidekiq_options retry: false, queue: :aviato
 
+  IOS_DEVELOPER_IDS = {
+    'google.com' => [6864],
+    'goo.gl' => [6864],
+    'youtube.com' => [6864],
+    'youtu.be' => [6864],
+    'yahoo.com'  => [73828],
+    'facebook.com' => [37304],
+    'fb.com'  => [37304],
+    'facebook.co' => [37304],
+    'instagram.com' => [98351],
+    'twitter.com' => [268130],
+    'zendesk.com' => [74232],
+    'helpshift.com' => [],
+    'wix.com' => [73203],
+    'uservoice.com' => [249774],
+    'weebly.com' => [99862],
+    'wordpress.com' => [58683],
+    'wordpress.org' => [58683],
+    'amazon.com' => [8574],
+    'desk.com' => [33041],
+    'bit.ly' => [1557358],
+    'blogspot.com' => [],
+    'pinterest.com' => [262604],
+    'tumblr.com' => [265243],
+    'webs.com' => [312507],
+    'sina.com.cn' => [12712],
+    'sina.com' => [12712],
+    'weibo.com' => [12712],
+    'naver.com' => [99423],
+    'appspot.com' => [],
+    'apple.com' => [47346],
+    'itunes.com' => [47346],
+    'freshdesk.com' => [39580],
+    'qq.com' => [84000, 91496, 60230],
+    'aol.com' => [36017],
+    'aim.com' => [36017],
+    'cocos2d-x.org' => [],
+    'github.com' => [],
+    'strikingly.com' => [280303],
+    'about.me' => [45453],
+    'yolasite.com' => []
+  }
+
+  ANDROID_DEVELOPER_IDS = {
+    'google.com' => [26],
+    'goo.gl' => [26],
+    'youtube.com' => [26],
+    'youtu.be' => [26],
+    'yahoo.com'  => [37],
+    'facebook.com' => [55],
+    'fb.com'  => [55],
+    'facebook.co'  => [55],
+    'instagram.com' => [101],
+    'twitter.com' => [125],
+    'zendesk.com' => [83735],
+    'helpshift.com' => [],
+    'wix.com' => [382764],
+    'uservoice.com' => [190377],
+    'weebly.com' => [47842],
+    'wordpress.com' => [15621],
+    'wordpress.org' => [15621],
+    'amazon.com' => [8],
+    'desk.com' => [91892],
+    'bit.ly' => [649390],
+    'blogspot.com' => [],
+    'pinterest.com' => [547],
+    'tumblr.com' => [331],
+    'webs.com' => [658726],
+    'sina.com.cn' => [71943],
+    'sina.com' => [71943],
+    'weibo.com' => [71943],
+    'naver.com' => [108],
+    'appspot.com' => [],
+    'apple.com' => [426619],
+    'itunes.com' => [426619],
+    'freshdesk.com' => [29398],
+    'qq.com' => [22669, 498, 23991],
+    'aol.com' => [16551],
+    'aim.com' => [16551],
+    'cocos2d-x.org' => [],
+    'github.com' => [],
+    'strikingly.com' => [],
+    'about.me' => [343529],
+    'yolasite.com' => []
+  }
+
   def perform(method, *args)
     self.send(method.to_sym, *args)
   end
@@ -34,50 +120,7 @@ class ClearbitWorker
   end 
 
   def flag_ios_websites
-    ios_developer_ids = {
-      'google.com' => [6864],
-      'goo.gl' => [6864],
-      'youtube.com' => [6864],
-      'youtu.be' => [6864],
-      'yahoo.com'  => [73828],
-      'facebook.com' => [37304],
-      'fb.com'  => [37304],
-      'facebook.co' => [37304],
-      'instagram.com' => [98351],
-      'twitter.com' => [268130],
-      'zendesk.com' => [74232],
-      'helpshift.com' => [],
-      'wix.com' => [73203],
-      'uservoice.com' => [249774],
-      'weebly.com' => [99862],
-      'wordpress.com' => [58683],
-      'wordpress.org' => [58683],
-      'amazon.com' => [8574],
-      'desk.com' => [33041],
-      'bit.ly' => [1557358],
-      'blogspot.com' => [],
-      'pinterest.com' => [262604],
-      'tumblr.com' => [265243],
-      'webs.com' => [312507],
-      'sina.com.cn' => [12712],
-      'sina.com' => [12712],
-      'weibo.com' => [12712],
-      'naver.com' => [99423],
-      'appspot.com' => [],
-      'apple.com' => [47346],
-      'itunes.com' => [47346],
-      'freshdesk.com' => [39580],
-      'qq.com' => [84000, 91496, 60230],
-      'aol.com' => [36017],
-      'aim.com' => [36017],
-      'cocos2d-x.org' => [],
-      'github.com' => [],
-      'strikingly.com' => [280303],
-      'about.me' => [45453],
-      'yolasite.com' => []
-    }
-
-    ios_developer_ids.each do |domain, ids|
+    IOS_DEVELOPER_IDS.each do |domain, ids|
       developer_website_ids = Website.where("url LIKE '%#{domain}%'").joins(:ios_developers_websites => :ios_developer).
       where.not('ios_developers.id' => ids).pluck('ios_developers_websites.id')
       IosDevelopersWebsite.where(id: developer_website_ids).update_all(is_valid: false)
@@ -85,50 +128,7 @@ class ClearbitWorker
   end
 
   def flag_android_websites
-    android_developer_ids = {
-      'google.com' => [26],
-      'goo.gl' => [26],
-      'youtube.com' => [26],
-      'youtu.be' => [26],
-      'yahoo.com'  => [37],
-      'facebook.com' => [55],
-      'fb.com'  => [55],
-      'facebook.co'  => [55],
-      'instagram.com' => [101],
-      'twitter.com' => [125],
-      'zendesk.com' => [83735],
-      'helpshift.com' => [],
-      'wix.com' => [382764],
-      'uservoice.com' => [190377],
-      'weebly.com' => [47842],
-      'wordpress.com' => [15621],
-      'wordpress.org' => [15621],
-      'amazon.com' => [8],
-      'desk.com' => [91892],
-      'bit.ly' => [649390],
-      'blogspot.com' => [],
-      'pinterest.com' => [547],
-      'tumblr.com' => [331],
-      'webs.com' => [658726],
-      'sina.com.cn' => [71943],
-      'sina.com' => [71943],
-      'weibo.com' => [71943],
-      'naver.com' => [108],
-      'appspot.com' => [],
-      'apple.com' => [426619],
-      'itunes.com' => [426619],
-      'freshdesk.com' => [29398],
-      'qq.com' => [22669, 498, 23991],
-      'aol.com' => [16551],
-      'aim.com' => [16551],
-      'cocos2d-x.org' => [],
-      'github.com' => [],
-      'strikingly.com' => [],
-      'about.me' => [343529],
-      'yolasite.com' => []
-    }
-
-    android_developer_ids.each do |domain, ids|
+    ANDROID_DEVELOPER_IDS.each do |domain, ids|
       developer_website_ids = Website.where("url LIKE '%#{domain}%'").joins(:android_developers_websites => :android_developer).
       where.not('android_developers.id' => ids).pluck('android_developers_websites.id')
       AndroidDevelopersWebsite.where(id: developer_website_ids).update_all(is_valid: false)

@@ -64,12 +64,13 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
       },
-      getCompanyContacts: function(websites, filter, page, contactsPerPage) {
+      getCompanyContacts: function(platform, publisherId, filter, page, contactsPerPage) {
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/company/contacts',
           data: {
-            companyWebsites: websites,
+            platform: platform,
+            publisherId: publisherId,
             filter: filter,
             page: page,
             perPage: contactsPerPage
@@ -85,7 +86,7 @@ angular.module("appApp")
           }
         });
       },
-      exportContactsToCsv: function(websites, filter, companyName) {
+      exportContactsToCsv: function(platform, publisherId, filter, companyName) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Exported Contacts CSV", {
@@ -97,7 +98,8 @@ angular.module("appApp")
           method: 'POST',
           url: API_URI_BASE + 'api/contacts/export_to_csv',
           data: {
-            websites: websites,
+            platform: platform,
+            publisherId: publisherId,
             filter: filter,
             companyName: companyName
           }
