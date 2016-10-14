@@ -457,6 +457,16 @@ class IosApp < ActiveRecord::Base
       "http://ms-staging.com/app/app#/app/ios/#{id}"
     end
   end
+
+  def reset_app_data
+    update!(display_type: :normal)
+    AppStoreInternationalService.live_scrape_ios_apps([id])
+    AppStoreSnapshotServiceWorker.new.perform(nil, id)
+    puts 'sleeping to allow intl scrapes'
+    sleep 3
+    update!(app_store_available: true) if app_stores.any?
+    AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
+  end
   
   class << self
     
