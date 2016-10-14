@@ -1,5 +1,6 @@
 class AndroidLiveScanService
   class UnregisteredCode < RuntimeError; end
+  class UnregisteredCondition < RuntimeError; end
 
   class << self
     def start_scan(android_app_id)
