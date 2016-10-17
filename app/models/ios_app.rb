@@ -228,12 +228,13 @@ class IosApp < ActiveRecord::Base
     if user_bases.present?
       mapped_user_bases = user_bases.map{|user_base| IosApp.user_bases[user_base]}
       order_string = "user_base ASC, #{order_string}"
-      snapshot = snapshot.where(user_base: mapped_user_bases)
+      userbase_snapshot = snapshot.where(user_base: mapped_user_bases)
+      snapshot = userbase_snapshot if userbase_snapshot.any?
     end
     snapshot = snapshot.where('app_stores.country_code = ?', country_code) if country_code
     snapshot.order(order_string).first
   end
-
+  
   def old_ad_spend?
     self.ios_fb_ad_appearances.any?
   end
