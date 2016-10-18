@@ -58,7 +58,7 @@ class FilterService
     def date_filter(filter)
       case filter["date"].to_i
       when 1
-        {'gt' => 'now-7d/d'}
+        {'gte' => 'now-7d/d'}
       when 2
         {'gte' => 'now-30d/d', 'lt' => 'now-7d/d'}
       when 3
