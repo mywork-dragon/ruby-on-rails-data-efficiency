@@ -49,6 +49,7 @@ class AppsIndex < Chewy::Index
 
     crutch :scanned_date do |collection|
       data = IpaSnapshot.where(ios_app_id: collection.map(&:id)).where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
+
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
       data.each.with_object({}) { |(app), result| 
         id = app['ios_app_id']
@@ -104,11 +105,11 @@ class AppsIndex < Chewy::Index
     
     field :old_facebook_ads, value: ->(app, crutches) { crutches.old_ad_spend[app.id].present? }
     field :facebook_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].present? }
-    field :first_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'first_seen_ads')  }, type: 'date', include_in_all: false
-    field :last_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'last_seen_ads')  }, type: 'date', include_in_all: false
+    field :first_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'first_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
+    field :last_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'last_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
 
-    field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', include_in_all: false
-    field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', include_in_all: false
+    field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
+    field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
     
     field :paid, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'price').to_f > 0 }
     field :in_app_purchases, value: ->(ios_app) {ios_app.newest_ios_app_snapshot.try(:ios_in_app_purchases).try(:any?)}
@@ -121,16 +122,16 @@ class AppsIndex < Chewy::Index
       field :name
       field :website
       field :favicon
-      field :first_seen_date, type: 'date', include_in_all: false
-      field :last_seen_date, type: 'date', include_in_all: false
+      field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
     end
     field :uninstalled_sdks, type: 'nested', include_in_parent: true do
       field :id
       field :name
       field :website
       field :favicon
-      field :first_seen_date, type: 'date', include_in_all: false
-      field :last_seen_date, type: 'date', include_in_all: false
+      field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
     end
 
     field :app_stores, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'app_stores') }, type: 'nested', include_in_parent: true do
@@ -154,8 +155,8 @@ class AppsIndex < Chewy::Index
       field :lat, type: 'float'
       field :lng, type: 'float'
     end
-    field :last_updated, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'last_updated') }, type: 'date', include_in_all: false
-    field :released, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'first_released') }, type: 'date', include_in_all: false  
+    field :last_updated, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'last_updated') }, type: 'date', format: 'date', include_in_all: false
+    field :released, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'first_released') }, type: 'date', format: 'date', include_in_all: false  
   end
 
 
@@ -175,6 +176,17 @@ class AppsIndex < Chewy::Index
       data = AndroidAppCategory.joins(:android_app_snapshots).where('android_app_snapshots.android_app_id' => collection.map(&:id), 'android_app_categories_snapshots.kind' => 0).
                                 order('android_app_snapshots.created_at DESC').pluck('android_app_snapshots.android_app_id', 'android_app_categories.name')
       data.each.with_object({}) { |(id, name), result| result[id] ||= name }
+    end
+
+    crutch :scanned_date do |collection|
+      data = ApkSnapshot.where(android_app_id: collection.map(&:id)).where("scan_status = ? OR status = ?", ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success]).
+      group(:android_app_id).select('android_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
+      data.each.with_object({}) { |(app), result| 
+        id = app['android_app_id']
+        result[id] ||= {}
+        result[id]['first_scanned'] = app['first_scanned']
+        result[id]['last_scanned'] = app['last_scanned']
+      }
     end
 
     crutch :headquarters do |collection|
@@ -213,21 +225,25 @@ class AppsIndex < Chewy::Index
     field :fortune_rank, value: ->(app, crutches) { crutches.fortune_rank[app.id] }, type: 'integer'
     field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed'
     field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
+
+    field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
+    field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
+
     field :installed_sdks, type: 'nested', include_in_parent: true do
       field :id
       field :name
       field :website
       field :favicon
-      field :first_seen_date, type: 'date', include_in_all: false
-      field :last_seen_date, type: 'date', include_in_all: false
+      field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
     end
     field :uninstalled_sdks, type: 'nested', include_in_parent: true do
       field :id
       field :name
       field :website
       field :favicon
-      field :first_seen_date, type: 'date', include_in_all: false
-      field :last_seen_date, type: 'date', include_in_all: false
+      field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
     end
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
     field :publisher_identifier, value: -> (android_app){android_app.android_developer.try(:identifier)}, index: 'not_analyzed'
@@ -245,6 +261,6 @@ class AppsIndex < Chewy::Index
       field :lat, type: 'float'
       field :lng, type: 'float'
     end
-    field :last_updated, type: 'date', include_in_all: false
+    field :last_updated, type: 'date', format: 'date', include_in_all: false
   end
 end
