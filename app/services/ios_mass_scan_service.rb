@@ -50,24 +50,17 @@ class IosMassScanService
 
     def run_recently_updated(n: 5000, ratings_min: 0)
       recent = IosApp.joins(:newest_ios_app_snapshot)
-        .where('ios_app_snapshots.released > ?', 2.week.ago)
+        .where.not(user_base: IosApp.user_bases[:weak])
+        .where(display_type: IosApp.display_types[:normal])
+        .where('ios_app_snapshots.released > ?', 2.weeks.ago)
         .where('ios_app_snapshots.ratings_all_count > ?', ratings_min)
         .order('ios_app_snapshots.ratings_all_count DESC')
         .limit(n).pluck(:id)
 
-      puts "Got #{recent.count} entries"
-      # filter out to only those
-
-      # TODO: make this faster
-      relevant = recent.select do |ios_app_id|
-        ratings = IosApp.find(ios_app_id).newest_ios_app_snapshot.ratings_all_count
-        true if ratings && ratings > ratings_min
-      end
-
-      print "Filtered to relevant #{relevant.count}. Continue? [y/n] : "
+      print "Filtered to recent #{recent.count}. Continue? [y/n] : "
       return unless gets.chomp.include?('y')
 
-      run_ids("Running #{relevant.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", relevant)
+      run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
     end
 
     def scan_top_by_rankings(n: 100, kind: :free)

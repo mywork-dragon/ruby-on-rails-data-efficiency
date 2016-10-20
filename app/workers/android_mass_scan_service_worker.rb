@@ -10,7 +10,13 @@ class AndroidMassScanServiceWorker
 
   def start_job
     if Rails.env.production?
-      ApkSnapshotServiceWorker.perform_async(@apk_snapshot_job.id, nil, @android_app.id)
+      unless batch.nil?
+        batch.jobs do
+          ApkSnapshotServiceWorker.perform_async(@apk_snapshot_job.id, bid, @android_app.id)
+        end
+      else
+        ApkSnapshotServiceWorker.perform_async(@apk_snapshot_job.id, nil, @android_app.id)
+      end
     else
       ApkSnapshotServiceWorker.new.perform(@apk_snapshot_job.id, nil, @android_app.id)
     end

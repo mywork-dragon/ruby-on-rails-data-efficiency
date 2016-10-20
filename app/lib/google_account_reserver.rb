@@ -1,9 +1,10 @@
 # modeled after IosDeviceReserver
 class GoogleAccountReserver
   DEFAULT_WAIT_TIME = 60 * 60 * 24 * 365 # 1 year
+  DEFAULT_SLEEP_RANGE = (1...4)
   SCRAPE_TYPES = {
     live: :immediate_reserve,
-    mass: :immediate_reserve
+    full: :patient_reserve
   }
 
   attr_reader :owner, :account
@@ -27,6 +28,21 @@ class GoogleAccountReserver
 
     raise UnavailableAccount if account.nil?
 
+    @account = account
+  end
+
+  def patient_reserve(scrape_type, requirements)
+    account = nil
+    start_time = Time.now
+
+    while account.nil? && Time.now - start_time < @max_wait
+      any_exist?(scrape_type, requirements)
+      puts "sleeping"
+      sleep(Random.new.rand(DEFAULT_SLEEP_RANGE))
+      account = try_reserve(scrape_type, requirements)
+    end
+
+    raise UnavailableAccount if account.nil?
     @account = account
   end
 
@@ -89,5 +105,6 @@ class GoogleAccountReserver
   class MultipleReservation < RuntimeError; end
   class UnregisteredReserveType < RuntimeError; end
   class NoAccountReserved < RuntimeError; end
+  class UnavailableAccount < RuntimeError; end
   class NoSuchAccount < RuntimeError; end
 end

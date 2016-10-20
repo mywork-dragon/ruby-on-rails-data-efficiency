@@ -55,8 +55,7 @@ module AndroidCloud
   end
 
   def allow_update_check?
-    # Rails.env.production? # TODO: uncomment me
-    true # TODO: remove me
+    Rails.env.production?
   end
 
   def should_update?

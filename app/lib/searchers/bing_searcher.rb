@@ -20,9 +20,7 @@ module BingSearcher
     def search(query, proxy_type: :android_classification)
       @query = query
       query_url_safe = CGI::escape(query)
-      @search_url = "http://www.bing.com/search?q=#{query_url_safe}"
-      p = Proxy.new(jid: @jid)
-      html_s = p.get_body(req: {:host => "www.bing.com/search", :protocol => "http"}, params: {'q' => query_url_safe}, proxy_type: proxy_type)
+      html_s = BingSearch.query(query_url_safe, proxy_type: proxy_type)
       
       Parser.parse(html_s, query: @query, search_url: @search_url)
     end
