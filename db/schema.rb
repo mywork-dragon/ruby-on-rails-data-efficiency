@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161006225310) do
+ActiveRecord::Schema.define(version: 20161020031537) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -489,6 +489,7 @@ ActiveRecord::Schema.define(version: 20161006225310) do
   add_index "apk_snapshots", ["micro_proxy_id"], name: "index_apk_snapshots_on_micro_proxy_id", using: :btree
   add_index "apk_snapshots", ["scan_status"], name: "index_apk_snapshots_on_scan_status", using: :btree
   add_index "apk_snapshots", ["scan_version"], name: "index_apk_snapshots_on_scan_version", using: :btree
+  add_index "apk_snapshots", ["status", "scan_status"], name: "index_apk_snapshots_on_status_and_scan_status", using: :btree
   add_index "apk_snapshots", ["try"], name: "index_apk_snapshots_on_try", using: :btree
   add_index "apk_snapshots", ["version_code"], name: "index_apk_snapshots_on_version_code", using: :btree
 
