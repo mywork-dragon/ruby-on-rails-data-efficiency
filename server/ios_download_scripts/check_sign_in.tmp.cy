@@ -2,7 +2,7 @@ var appleId = @"$0"
 
 var accountCell = findOrThrow(null, true, classMatcher('StoreSettingsAccountCell'));
 
-var appleIdText = accountCell.text;
+var appleIdText = accountCell.text();
 
 if(appleIdText.includes(appleId))
 {

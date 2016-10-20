@@ -2,6 +2,8 @@ var sw = findOrThrow(null, true, classMatcher('UISwitch'), 'Could not find UISwi
 
 if (sw.on == YES){
   [sw setOn:NO animated:YES];
-  var cell = sw.superview;
+  var cell = sw.superview();
   [cell controlChanged:sw]; 
 }
+
+throwSuccess('Success')

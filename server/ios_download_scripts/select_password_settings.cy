@@ -6,3 +6,5 @@ var indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
 var delegate = tableView.delegate;
 
 [delegate tableView:tableView didSelectRowAtIndexPath:indexPath];
+
+throwSuccess('Selected')

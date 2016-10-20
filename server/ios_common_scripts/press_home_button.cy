@@ -1,0 +1,1 @@
+[[SBUIController sharedInstance] clickedMenuButton];

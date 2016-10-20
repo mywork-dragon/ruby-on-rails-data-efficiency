@@ -25,7 +25,7 @@ while(Date.now() - startTime < 10000 && !found)
 {
   for each (var anOfferView in offerViews)
   {
-    if (anOfferView.superview != null)
+    if (anOfferView.superview() != null)
     {
       offerView = anOfferView;
       found = true;
@@ -39,9 +39,9 @@ if (!found)
   throw "Could not find button";
 }
 
-var offerViewSubviews = offerView.subviews;
+var offerViewSubviews = offerView.subviews();
 var buttons = offerViewSubviews.filter(function(sv) {
-  return sv.class.toString().match(/OfferButton/i)
+  return sv.class().toString().match(/OfferButton/i)
 })
 
 if (buttons.length == 0) {
@@ -74,6 +74,3 @@ if (title === "GET" || title === "INSTALL" || title === null)  //GET: have not d
 }
 
 throw "Undetermined"
-
-
-

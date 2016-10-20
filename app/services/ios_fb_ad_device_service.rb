@@ -1,7 +1,5 @@
 class IosFbAdDeviceService
 
-  include IosDeviceUtilities
-
   DEVICE_USERNAME = 'root'
   DEVICE_PASSWORD = 'padmemyboo'
   MAX_SCROLL_ITEMS = 50
@@ -9,6 +7,7 @@ class IosFbAdDeviceService
   IMAGE_FOLDER_PATH = File.join('/var', 'mobile', 'Media', 'DCIM')
   SCRIPTS_PATH = File.join(Rails.root, 'server', 'ios_fb_scripts')
   SCRIPTS_PREFIX = SCRIPTS_PATH.split('/').last
+  COMMON_UTILITIES_PATH = './server/common_utilities.cy'
 
   APPS_INFO_KEY = {
       facebook: {
@@ -972,7 +971,7 @@ class IosFbAdDeviceService
 
   def install_common_utilities
     run_command("rm -f common_utilities.cy", "Deleting old common_utilities.cy")
-    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{IosDeviceUtilities::COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
   end
 
   def run_common_utilities(app)

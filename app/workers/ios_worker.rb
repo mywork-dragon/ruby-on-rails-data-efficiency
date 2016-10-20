@@ -96,36 +96,38 @@ module IosWorker
     # do the actual classdump
     # after install and dump, will run the procedure block which updates the classdump table. 
     # Will be useful for polling or could add some logic to send status updates
-    final_result = IosDeviceService.new(device, apple_account: apple_account, account_changed_lambda: account_changed_lambda).run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
-      row = result_to_cd_row(incomplete_result)
-      row[:complete] = false
-      classdump.update row
+    final_result = IosDownloadDeviceService
+      .new(device, apple_account: apple_account, account_changed_lambda: account_changed_lambda)
+      .run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
+        row = result_to_cd_row(incomplete_result)
+        row[:complete] = false
+        classdump.update row
 
-      if row[:dump_success]
-        snapshot.download_status = :cleaning
-        snapshot.bundle_version = incomplete_result[:bundle_version]
-        snapshot.save
-        # don't start classifying while cleaning during development
-        if start_classify
-          classifier_class = if purpose == :one_off
-            IosClassificationServiceWorker
-          else
-            IosMassClassificationServiceWorker
-          end
+        if row[:dump_success]
+          snapshot.download_status = :cleaning
+          snapshot.bundle_version = incomplete_result[:bundle_version]
+          snapshot.save
+          # don't start classifying while cleaning during development
+          if start_classify
+            classifier_class = if purpose == :one_off
+              IosClassificationServiceWorker
+            else
+              IosMassClassificationServiceWorker
+            end
 
-          if Rails.env.production?
-            unless batch.nil?
-              batch.jobs do
+            if Rails.env.production?
+              unless batch.nil?
+                batch.jobs do
+                  classifier_class.perform_async(snapshot.id)
+                end
+              else
                 classifier_class.perform_async(snapshot.id)
               end
             else
-              classifier_class.perform_async(snapshot.id)
+              classifier_class.new.perform(snapshot.id)
             end
-          else
-            classifier_class.new.perform(snapshot.id)
           end
         end
-      end
     end
 
     reserver.release

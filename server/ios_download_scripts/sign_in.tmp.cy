@@ -5,7 +5,7 @@ var ssc = findOrThrowViewController(null, true, classMatcher('StoreSettingsContr
 [ssc _setAppleID:appleId];
 [ssc _setPassword:password];
 
-var alertView = [UIAlertView new];
+var alertView = [[UIAlertView alloc] init];
 alertView.title = @"title";
 alertView.message = @"message";
 alertView.delegate = nil;
@@ -21,3 +21,5 @@ passwordTextField.text = password;
 
 [ssc alertView:alertView didDismissWithButtonIndex:1];
 [ssc _signIn];
+
+throwSuccess('Signed in')

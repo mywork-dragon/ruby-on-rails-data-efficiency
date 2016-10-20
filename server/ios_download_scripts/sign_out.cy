@@ -4,3 +4,5 @@
 var ssc = findOrThrowViewController(null, true, classMatcher('StoreSettingsController'), 'Could not find StoreSettingsController');
 
 [ssc _signOut];
+
+throwSuccess('Signed out')

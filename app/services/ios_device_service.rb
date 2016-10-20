@@ -1,10 +1,9 @@
 require 'net/scp'
 require 'shellwords'
 
-include IosDeviceUtilities
-
 class IosDeviceService
 
+  COMMON_UTILITIES_PATH = './server/common_utilities.cy'
   DEVICE_USERNAME = 'root'
   DEVICE_PASSWORD = 'padmemyboo'
 
@@ -79,6 +78,7 @@ class IosDeviceService
 
   # If init with an account, will choose it first. account keys: :apple_id, :password
   def initialize(device, apple_account:, account_changed_lambda: nil)
+    raise 'Deprecated'
     @device = device
     @bundle_info = nil
     @decrypted_file = nil
@@ -287,7 +287,7 @@ class IosDeviceService
 
   def load_common_utilities(ssh, app)
     run_command(ssh, "rm -f common_utilities.cy", "Deleting old common_utilities.cy")
-    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{IosDeviceUtilities::COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
+    `/usr/local/bin/sshpass -p #{DEVICE_PASSWORD} scp #{COMMON_UTILITIES_PATH} #{DEVICE_USERNAME}@#{@device.ip}:~`
     run_command(ssh, "cycript -p #{app} common_utilities.cy", 'Run common_utilities.cy')
   end
 
