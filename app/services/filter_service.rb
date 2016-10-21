@@ -1,39 +1,6 @@
 class FilterService
   class << self
   
-    # @author Shane Wey
-    def filter_companies(company_filters)
-      company_results  = Company
-      company_results = company_results.where("fortune_1000_rank <= ?", company_filters['fortuneRank'].to_i) if company_filters['fortuneRank']
-      # company_results = company_results.where("funding >= ?", company_filters[:funding]) if company_filters[:funding]
-      # company_results = company_results.where(country: company_filters[:country]) if company_filters[:country]
-      company_results
-    end
-    
-    # @author Shane Wey
-    def company_ios_apps_query(company_filters)
-      query = []
-      
-      if fortune_rank_s = company_filters['fortuneRank']
-        fortune_rank = fortune_rank_s.to_i  #convert to i for safety
-        query << "joins(ios_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
-      end
-      
-      query
-    end
-    
-    # @author Jason Lew
-    def company_android_apps_query(company_filters)
-      query = []
-      
-      if fortune_rank_s = company_filters['fortuneRank']
-        fortune_rank = fortune_rank_s.to_i  #convert to i for safety
-        query << "joins(android_apps_websites: {website: :company}).where('companies.fortune_1000_rank <= ?', #{fortune_rank})"
-      end
-      
-      query
-    end
-
     def order_helper(apps_index, sort_by, order_by)
       if ['user_base', 'mobile_priority'].include?(sort_by)
         mapping = sort_by == 'user_base' ? IosApp.user_bases : IosApp.mobile_priorities
@@ -241,50 +208,6 @@ class FilterService
        'Music & Video',
        'Pretend Play'
       ]
-    end
-
-    def ios_apps_with_keywords(keywords)
-      name_query_array = keywords.map{|k| "ios_app_snapshots.name LIKE \'%#{k}%\'"}
-      name_query_string = name_query_array.join(' OR ')
-      IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(:newest_ios_app_snapshot).where(name_query_string)
-    end
-    
-    def android_apps_with_keywords(keywords)
-      name_query_array = keywords.map{|k| "android_app_snapshots.name LIKE \'%#{k}%\'"}
-      name_query_string = name_query_array.join(' OR ')
-      IosApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(:newest_android_app_snapshot).where(name_query_string)
-    end
-    
-    def companies_with_keywords(keywords)
-      name_query_array = keywords.map{|k| "name LIKE \'%#{k}%\'"}
-      name_query_string = name_query_array.join(' OR ')
-      Company.where(name_query_string)
-    end
-    
-    def ios_apps_of_companies(companies)
-      if companies.present?
-        return IosApp.includes(:ios_fb_ad_appearances, newest_ios_app_snapshot: :ios_app_categories, websites: :company).joins(ios_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
-      else
-        return IosApp.where(id: nil).where('id IS NOT ?', nil)
-      end
-    end
-    
-    def android_apps_of_companies(companies)
-      if companies.present?
-        return AndroidApp.includes(:android_fb_ad_appearances, newest_android_app_snapshot: :android_app_categories, websites: :company).joins(android_apps_websites: {website: :company}).where("companies.id IN (#{companies.pluck(:id).join(',')})")
-      else
-        return AndroidApp.where(id: nil).where('id IS NOT ?', nil)
-      end
-    end
-    
-    def ios_apps_of_snapshots(snapshots)
-      app_ids = snapshots.pluck(:ios_app_id)
-      IosApp.where(id: app_ids)
-    end
-    
-    def ios_app_union(relation1, relation2)
-      app_ids = relation1.pluck(:id) + relation2.pluck(:id)
-      IosApp.where(id: app_ids.uniq)
     end
   end
 end
