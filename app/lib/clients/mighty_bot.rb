@@ -47,19 +47,19 @@ class MightyBot
   end
 
   def api_key
-    '1O4v8ZKuMQGUX5kpjxppZO9Fr'
+    'ZNB6FwUTZo0evgv2GgYhiInyQ'
   end
 
   def api_secret
-    'ay660gnLIyjpGdnNkVT01WvYyba50pVBL6wT56dzIKfxlKoYFb'
+    '1RreoRcjxJSuk1WhujHZSKGF2kXYlfyPuwm3s72cFpKpIXlmMy'
   end
 
   def access_token
-    '766340357546242048-3mtDsCWl2YOHeZ3GUWvhKnYyZ5y6Co7'
+    '766340357546242048-6HhEPqdN1dl1S2MPMyLxLmy7iKevQYm'
   end
 
   def access_token_secret
-    'TGW5MjMyu6TZBNEdFfDnnqR9Gu4av6ooIVcag6NIkgtph'
+    '6nW7MRZ9Jv7q6UdofZpuxjMjlgvDpycBYyWWUJMl2Qyis'
   end
   # def self.search_sdk_handles
   #   regex = %r{https://www.twitter.com/([^/]+)}
