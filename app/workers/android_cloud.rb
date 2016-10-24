@@ -46,7 +46,7 @@ module AndroidCloud
     handle_not_found
     false
   rescue GooglePlayStore::Unavailable
-    handle_not_available
+    handle_unavailable
     false
   end
 
