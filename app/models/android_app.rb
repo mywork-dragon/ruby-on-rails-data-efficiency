@@ -36,7 +36,7 @@ class AndroidApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
 
-  enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :carrier_incompatible, :item_not_found]
+  enum display_type: [:normal, :taken_down, :foreign]
 
   # update_index('apps#android_app') { self } if Rails.env.production?
   

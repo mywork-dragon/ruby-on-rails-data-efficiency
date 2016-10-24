@@ -33,9 +33,6 @@ module AndroidSdkService
           normal: nil,
           taken_down: 0, 
           foreign: 1, 
-          device_incompatible: nil, 
-          carrier_incompatible: 3,
-          item_not_found: 4, 
           nil => nil
         }
         mapping[display_type]

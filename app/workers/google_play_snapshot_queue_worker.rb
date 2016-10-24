@@ -29,7 +29,7 @@ class GooglePlaySnapshotQueueWorker
   def queue_valid(android_app_snapshot_job_id)
     Slackiq.message('Queueing Google Play apps', webhook_name: :main)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
-    @query = { display_type: AndroidApp.display_types.values_at(:normal, :device_incompatible, :carrier_incompatible) }
+    @query = { display_type: AndroidApp.display_types.values_at(:normal) }
     queue_worker
     Slackiq.message('Finished queueing Google Play apps', webhook_name: :main)
   end
