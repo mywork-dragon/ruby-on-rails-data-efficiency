@@ -29,7 +29,9 @@ module ApkWorker
         puts "Attempt #{tries}"
         snapshot = download_and_save(apk_snapshot_job_id, android_app)
         success = true
-      rescue => e # handle exception writing at lower level
+      rescue MightyApk::MarketApi::NotFound, MightyApk::MarketApi::UnsupportedCountry
+        break # do not retry in these cases (no-op)
+      rescue
         tries += 1
         apk_snapshot_job.update!(ls_download_code: :retrying) if update_live_scan_status_code?
       end
@@ -45,9 +47,11 @@ module ApkWorker
       android_app.app_identifier,
       filepath
     )
-    # TODO: investigate forbidden. Sometimes because outside of country. Other times for device configuration setup
   rescue MightyApk::MarketApi::NotFound => e
     android_app.update!(display_type: :taken_down)
+    raise e
+  rescue MightyApk::MarketApi::UnsupportedCountry => e
+    android_app.update!(display_type: :foreign)
     raise e
   rescue MightyApk::MarketApi::Unauthorized => e
     google_account.update!(blocked: true)

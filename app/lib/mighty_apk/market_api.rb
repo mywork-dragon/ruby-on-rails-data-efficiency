@@ -5,6 +5,7 @@ module MightyApk
     class Forbidden < RuntimeError; end
     class InternalError < RuntimeError; end
     class UnknownCondition < RuntimeError; end
+    class UnsupportedCountry < RuntimeError; end
 
     include HTTParty
     include ProxyParty
@@ -18,7 +19,7 @@ module MightyApk
     def validate(httparty_res)
       raise NotFound if httparty_res.code == 404
       raise Unauthorized if httparty_res.code == 401
-      raise Forbidden if httparty_res.code == 403
+      handle_forbidden(httparty_res) if httparty_res.code == 403
       raise InternalError if httparty_res.code == 500
       unless httparty_res.code / 200 == 1 # non-200 level code
         raise UnknownCondition, "#{httparty_res.code}: #{httparty_res.body}"
@@ -100,19 +101,10 @@ module MightyApk
       }
     end
 
-    def self.test_details(app_identifier: 'com.ubercab')
-      google_account = GoogleAccount.find(113)
-      new(google_account).details(app_identifier)
-    end
-
-    def self.test_old_details
-      google_account = GoogleAccount.find(113)
-      ApkDownloader.configure do |config|
-        config.email = google_account.email
-        config.password = google_account.password
-        config.android_id = google_account.android_identifier
-      end
-      dl = ApkDownloader.download!('com.ubercab', '/tmp/uber.apk', google_account.android_identifier, google_account.email, google_account.password, nil, 8888, google_account.user_agent, google_account.auth_token)
+    def handle_forbidden(res)
+      body = res.body
+      raise UnsupportedCountry if body.match(/not.*supported.*country/i)
+      raise Forbidden
     end
   end
 end

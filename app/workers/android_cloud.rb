@@ -81,6 +81,7 @@ module AndroidCloud
 
   def handle_paid
     log_result(reason: :paid)
+    @android_app.update!(display_type: :paid)
     @apk_snapshot_job.update!(ls_lookup_code: :paid) if update_live_scan_job_codes?
   end
 

@@ -9,43 +9,26 @@ module AndroidSdkService
         data = sdk_response_h(aa, apk_snapshot_id: apk_snapshot_id)
       end
 
-      # Gets the error code
-      #
-      # ERROR CODES AND STATUSES FOR ANDROID_CHECK_STATUS
-      # statuses
-      #   0 => queueing
-      #   1 => downloading
-      #   2 => scanning
-      #   3 => successful scan
-      #   4 => failed
-      def error_code(aa)
-        ss = aa.newest_android_app_snapshot
-
-        return 5 unless ss.try(:price).to_i.zero? # paid is code 5
-
-        display_type_to_error_code(aa.display_type)
-      end
-
       # Maps the display type to the error code
       def display_type_to_error_code(display_type)
         display_type = display_type.try(:to_sym)
         mapping = {
-          normal: nil,
           taken_down: 0, 
-          foreign: 1, 
-          nil => nil
+          foreign: 1,
+          paid: 2
         }
-        mapping[display_type]
+        mapping[display_type] if display_type
       end
 
       # Helper for get_sdk_response
       def sdk_response_h(aa, apk_snapshot_id: nil)
         h = {}
-        ec = error_code(aa)
+        ec = display_type_to_error_code(aa.display_type)
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
 
         h[:live_scan_enabled] = ServiceStatus.is_active?(:android_live_scan) || Rails.application.config.env['stage'] != 'web'
+        h[:error_code] = ec
 
         return h if snap.nil?
 
