@@ -8,6 +8,7 @@
   <div ng-if="initialPageLoadComplete">
     <div class="row adminPageRow">
       <h4>Admin</h4>
+      <strong>Setup new accounts</strong>
       <form id="create-account" class="form-inline" name="accountForm" ng-if="$root.isAdminAccount">
         <div class="form-group">
           <label class="sr-only" for="name">Account name</label>
@@ -15,6 +16,40 @@
         </div>
         <button type="submit" class="btn btn-default" ng-click="createAccount(account, accountForm)">Create account</button>
       </form>
+      <strong>Add SDKs to Timelines</strong>
+      <div>
+        <angucomplete-alt id="sdk-autocomplete-filter"
+                         placeholder="SDK name"
+                         pause="100"
+                         selected-object="selectedSdk"
+                         remote-url="{{sdkAutocompleteUrl()}}"
+                         remote-url-data-field="results"
+                         search-fields="name"
+                         title-field="name"
+                         id-field="id"
+                         clear-selected="true"
+                         image-field="favicon"
+                         minlength="1"
+                         input-class="form-control form-control-small autocomplete-filter"  ng-hide="filter.sdk">
+        </angucomplete-alt>
+        <div class="ui-tags-input" ng-if="sdks.length">
+          <ul class="tags">
+            <li ng-repeat="sdk in sdks" class="tag-item"> 
+              {{sdk.name}}
+              <a class="remove-button" ng-click="removeSdk($index)">×</a>
+            </li>
+          </ul>
+        </div>
+        <p ng-if="sdks.length > 0 && !sdkUsers.length">
+          <br>
+          Select some users by using the checkbox next to their name
+        </p>
+        <p ng-if="sdks.length > 0 && sdkUsers.length">
+          <br>
+          <button type="submit" class="btn btn-primary" ng-click="followSDKs()">Add {{sdks.length}} {{sdks.length == 1 ? 'SDK' : 'SDKs'}} to {{sdkUsers.length}} {{sdkUsers.length == 1 ? "user's Timeline" : "users' Timeline"}}</button>
+        </p>
+      </div>
+      <br>
       <div data-ng-repeat="account in accounts" class="panel panel-default">
         <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
           {{account.name}}
@@ -67,6 +102,7 @@
                 <thead>
                   <tr>
                     <th><div class="th normal-right-padding">
+
                       Email
                     </div></th>
                     <th><div class="th normal-right-padding">
@@ -77,6 +113,9 @@
                     </div></th>
                     <th><div class="th normal-right-padding">
                       Linked Accounts
+                    </div></th>
+                    <th><div class="th normal-right-padding">
+                      Following
                     </div></th>
                     <th><div class="th normal-right-padding">
                       Deactivated?
@@ -90,6 +129,9 @@
                 <tbody>
                   <tr data-ng-repeat="user in account.users">
                     <td>
+                      <label ng-if="sdks.length > 0">
+                        <input type="checkbox" ng-click="checkedSdkUser(user)">
+                      </label>
                       {{user.email}}
                     </td>
                     <td>
@@ -104,6 +146,9 @@
                       <span ng-if="user.profile_url">
                         - <a ng-href="{{user.profile_url}}">{{user.first_name}} {{user.last_name}}</a>
                       </span>
+                    </td>
+                    <td>
+                      {{user.following_count}}
                     </td>
                     <td>
                       <label>

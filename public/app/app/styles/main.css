@@ -8114,6 +8114,25 @@ button.dropdown-toggle .caret {
   cursor: pointer;
 }
 
+.adminPageRow .tags {
+  padding: 0;
+  background: none;
+}
+
+.adminPageRow .ui-tags-input {
+  overflow: auto;
+  float: right;
+}
+
+.adminPageRow .angucomplete-holder {
+  top: 0;
+  margin-left: 0;
+}
+
+.adminPageRow .ui-tags-input .tags .tag-item {
+  margin: 0 10px 0 0;
+}
+
 .newsfeedPageRow, .adminPageRow, .chartPageRow {
   padding: 20px;
   margin: 0;

@@ -31,6 +31,19 @@ class Api::AdminController < ApplicationController
     end
   end
 
+  def follow_sdks
+    user_ids = params[:user_ids]
+    sdk_ids = params[:sdk_ids]
+    sdks = IosSdk.where(id: sdk_ids)
+    users = User.where(id: user_ids)
+    users.each do |user|
+      sdks.each do |sdk|
+        user.follow(sdk)
+      end
+    end
+    render json: {users: users}
+  end
+
   def create_user
     if params[:email] && params[:account_id]
       account = Account.find(params[:account_id])

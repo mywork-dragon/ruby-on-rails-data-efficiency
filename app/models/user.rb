@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   def as_json(options={})
-    super(except: :password_digest).merge(type: self.class.name)
+    super(except: :password_digest).merge(type: self.class.name, following_count: follow_relationships.size)
   end
 
   def self.from_auth(params, token)

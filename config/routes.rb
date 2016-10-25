@@ -116,6 +116,7 @@ Rails.application.routes.draw do
     post '/admin/update' => 'admin#update'
     post '/admin/create_account' => 'admin#create_account'
     post '/admin/create_user' => 'admin#create_user'
+    post '/admin/follow_sdks' => 'admin#follow_sdks'
     get '/admin/export_to_csv' => 'admin#export_to_csv'
   end
 
