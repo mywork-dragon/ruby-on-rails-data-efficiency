@@ -8,8 +8,9 @@ class PackageSearchServiceWorker
     false
   end
 
+  # expects to use Bing which has less strict ip blocking
   def proxy_type
-    :android_classification
+    :all_static
   end
 
   include PackageSearchWorker
