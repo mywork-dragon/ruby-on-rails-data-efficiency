@@ -73,6 +73,7 @@ class IosMonitorService
     end
 
     def delete_ios_remnants(ios_device_ids: nil)
+      raise 'Cannot use after 9.3.3 . Rewrite needed'
       ios_device_ids = IosDevice.where(purpose: IosDevice.purposes[:mass]).pluck(:id) if ios_device_ids.nil?
 
       devices = IosDevice.where(id: ios_device_ids)
