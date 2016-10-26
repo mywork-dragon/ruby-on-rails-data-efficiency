@@ -65,10 +65,12 @@ class AppStoreDevelopersWorker
                 end
 
     join_rows = website_rows.map do |row|
-      IosDevelopersWebsite.new(
+      dev_website = IosDevelopersWebsite.new(
         ios_developer_id: developer.id,
         website_id: row.id
       )
+      dev_website.set_is_valid
+      dev_website
     end
 
     IosDevelopersWebsite.import join_rows

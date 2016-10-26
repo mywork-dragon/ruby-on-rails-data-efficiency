@@ -32,6 +32,10 @@ class Website < ActiveRecord::Base
     self.match_string = result unless result == BadFormat
   end
 
+  def domain
+    UrlHelper.url_with_domain_only(url)
+  end
+
   class << self
 
     def website_comparison_format(url)
