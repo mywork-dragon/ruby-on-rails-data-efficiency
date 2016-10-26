@@ -78,7 +78,11 @@ angular.module('appApp')
 
         var routeParams = $location.search();
         if (routeParams.platform) {
-          APP_PLATFORM = JSON.parse(routeParams.platform).appPlatform
+          try {
+            APP_PLATFORM = JSON.parse(routeParams.platform).appPlatform
+          } catch(e) {
+            APP_PLATFORM = routeParams.platform
+          }
         }
 
         /* Populates "Categories" dropdown with list of categories */
