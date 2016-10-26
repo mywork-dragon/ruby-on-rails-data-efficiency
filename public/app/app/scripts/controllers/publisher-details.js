@@ -106,7 +106,6 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         }
       );
       /* -------- Mixpanel Analytics End -------- */
-      $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
     };
 
     $scope.addMixedSelectedTo = function(list, selectedApps) {

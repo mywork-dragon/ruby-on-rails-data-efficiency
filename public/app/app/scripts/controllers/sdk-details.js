@@ -109,7 +109,6 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
         }
       );
       /* -------- Mixpanel Analytics End -------- */
-      $window.location.href = "#/app/" + (app.type == 'IosApp' ? 'ios' : 'android') + "/" + app.id;
     };
 
     $scope.loadTags = function(query) {
