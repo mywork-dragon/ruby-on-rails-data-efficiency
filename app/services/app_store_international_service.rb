@@ -121,8 +121,8 @@ class AppStoreInternationalService
       }
     end
 
-    def test_table_swap
-      ActiveRecord::Base.logger.level = 1
+    def execute_table_swaps(automated: false)
+      Slackiq.message('Starting table swap', webhook_name: :main)
       rev_map = table_swap_map.invert
       correct = {}
 
@@ -136,7 +136,7 @@ class AppStoreInternationalService
         correct[table] = table.count
       end
 
-      swap_tables
+      swap_tables(automated: automated)
 
       ap "AFTER"
       table_swap_map.keys.each do |table|
@@ -157,11 +157,15 @@ class AppStoreInternationalService
       end
 
       ap "SUCCESS"
+      Slackiq.message('Successfully completed table swap', webhook_name: :main)
     end
 
-    def swap_tables
-      print 'About to swap tables. Are you sure you want to continue? [y/n]: '
-      return unless gets.chomp.include?('y')
+    def swap_tables(automated: false)
+
+      unless automated
+        print 'About to swap tables. Are you sure you want to continue? [y/n]: '
+        return unless gets.chomp.include?('y')
+      end
 
       query = table_swap_map.keys.map do |prod_table|
         prod_table_name = prod_table.table_name
@@ -176,8 +180,11 @@ class AppStoreInternationalService
       puts
       puts query = "RENAME TABLE #{query};"
 
-      print 'Does the following query look ok? [y/n] : '
-      return unless gets.chomp.include?('y')
+      unless automated
+        print 'Does the following query look ok? [y/n] : '
+        return unless gets.chomp.include?('y')
+      end
+
       ActiveRecord::Base.connection.execute(query)
     end
 
@@ -205,6 +212,7 @@ class AppStoreInternationalService
     Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed')
 
     if options['automated']
+      AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
       self.class.run_scaling_factors(automated: true)
     end
   end
@@ -235,6 +243,11 @@ class AppStoreInternationalService
 
   def on_complete_run_developers(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Created missing developers')
+
+    if options['automated']
+      self.class.execute_table_swaps(automated: true)
+      self.class.app_store_availability(new_store_updates: true)
+    end
   end
 
   def on_complete_app_store_availability(status, options)

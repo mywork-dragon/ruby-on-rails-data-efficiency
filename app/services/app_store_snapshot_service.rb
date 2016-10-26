@@ -7,14 +7,18 @@ class AppStoreSnapshotService
       raise InvalidDom unless AppStoreService.dom_valid?
     end
 
-    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", options={})
+    def run(notes="Full scrape #{Time.now.strftime("%m/%d/%Y")}", automated: false)
       dom_check
 
       j = IosAppSnapshotJob.create!(notes: notes)
 
       batch = Sidekiq::Batch.new
       batch.description = "run: #{notes}" 
-      batch.on(:complete, 'AppStoreSnapshotService#on_complete_run')
+      batch.on(
+        :complete,
+        'AppStoreSnapshotService#on_complete_run',
+        'automated' => automated
+      )
 
       batch.jobs do
         AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
@@ -53,6 +57,11 @@ class AppStoreSnapshotService
 
   def on_complete_run(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape Completed')
+
+    if options['automated'] && ServiceStatus.is_active?(:auto_ios_mass_scan)
+      IosMassScanService.run_recently_released(automated: true)
+      IosMassScanService.run_recently_updated(automated: true)
+    end
   end
   
   def on_complete_run_new_apps(status, options)

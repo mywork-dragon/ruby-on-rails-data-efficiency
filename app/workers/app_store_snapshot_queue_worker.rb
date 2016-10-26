@@ -37,7 +37,7 @@ class AppStoreSnapshotQueueWorker
   def queue_new(ios_app_snapshot_job_id)
     Slackiq.message('Queueing new App Store apps', webhook_name: :main)
     @ios_app_snapshot_job_id = ios_app_snapshot_job_id
-    previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
+    previous_week_epf_date = EpfFullFeed.last(2).first.date
     @query = ['released >= ?', previous_week_epf_date]
     queue_worker
     Slackiq.message('Finished queueing new App Store apps', webhook_name: :main)

@@ -39,16 +39,20 @@ class IosMassScanService
       run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
     end
 
-    def run_recently_released(lookback_time: 1.week.ago, ratings_min: 0)
-      recent = IosApp.joins(:newest_ios_app_snapshot).where('ios_apps.released > ?', lookback_time).where('ios_app_snapshots.ratings_all_count > ?', ratings_min).pluck(:id)
+    def run_recently_released(lookback_time: nil, ratings_min: 0, automated: false)
 
-      puts "Got #{recent.count} apps: Continue? [y/n]"
-      return unless gets.chomp.include?('y')
+      lookback_time = lookback_time || EpfFullFeed.last(2).first.date
+      recent = IosApp.joins(:newest_ios_app_snapshot).where('ios_apps.released >= ?', lookback_time).where('ios_app_snapshots.ratings_all_count > ?', ratings_min).pluck(:id)
+
+      unless automated
+        puts "Got #{recent.count} apps: Continue? [y/n]"
+        return unless gets.chomp.include?('y')
+      end
 
       run_ids("Running #{recent.count} apps released after #{lookback_time}", recent)
     end
 
-    def run_recently_updated(n: 5000, ratings_min: 0)
+    def run_recently_updated(n: 5000, ratings_min: 0, automated: false)
       recent = IosApp.joins(:newest_ios_app_snapshot)
         .where.not(user_base: IosApp.user_bases[:weak])
         .where(display_type: IosApp.display_types[:normal])
@@ -57,8 +61,10 @@ class IosMassScanService
         .order('ios_app_snapshots.ratings_all_count DESC')
         .limit(n).pluck(:id)
 
-      print "Filtered to recent #{recent.count}. Continue? [y/n] : "
-      return unless gets.chomp.include?('y')
+      unless automated
+        print "Filtered to recent #{recent.count}. Continue? [y/n] : "
+        return unless gets.chomp.include?('y')
+      end
 
       run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
     end
@@ -87,10 +93,6 @@ class IosMassScanService
 
   end
 
-  def on_update_complete(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Finished setting correct first valid dates')
-  end
-
   def on_classification_complete(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS classification for mass scan')
   end
@@ -98,6 +100,8 @@ class IosMassScanService
   def on_download_complete(status, options)
 
     ipa_snapshot_job = IpaSnapshotJob.find(options['job_id'])
+
+    IosMassScanService.scan_successful
 
     Slackiq.notify(webhook_name: :main,
       status: status,

@@ -65,13 +65,7 @@ class ItunesChartWorker
   end
 
   def scrape_new_ios_apps(ios_apps)
-    ios_apps.each do |ios_app|
-      us_scrape_ios_app(ios_app)
-    end
-
     ios_app_ids = ios_apps.map(&:id)
-    IosEpfScanService.scan_new_itunes_apps(ios_app_ids)
-
 
     batch = Sidekiq::Batch.new
     batch.description = 'iTunes top 200 free intl scrape'
@@ -83,6 +77,12 @@ class ItunesChartWorker
     batch.jobs do
       AppStoreInternationalService.live_scrape_ios_apps(ios_app_ids)
     end
+
+    # TODO: make this better. Make sure intl scrapes complete before epf scan service runs
+    ios_apps.each do |ios_app|
+      us_scrape_ios_app(ios_app)
+    end
+    IosEpfScanService.scan_new_itunes_apps(ios_app_ids)
   end
 
   def us_scrape_ios_app(ios_app)

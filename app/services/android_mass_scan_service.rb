@@ -80,8 +80,8 @@ class AndroidMassScanService
 
   def on_complete(status, options)
     apk_snapshot_job = ApkSnapshotJob.find(options['job_id'])
-    attempted = apk_snapshot_job
-      .apk_snapshots
+    attempted = apk_snapshot_job.apk_snapshot_scrape_failures.count +
+      apk_snapshot_job.apk_snapshots
       .select(:android_app_id).distinct
       .count
 

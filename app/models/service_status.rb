@@ -1,5 +1,5 @@
 class ServiceStatus < ActiveRecord::Base
-  enum service: [:ios_live_scan, :ios_fb_ads, :ios_fb_cleaning, :ios_international_live_scan, :android_live_scan]
+  enum service: [:ios_live_scan, :ios_fb_ads, :ios_fb_cleaning, :ios_international_live_scan, :android_live_scan, :auto_ios_mass_scan, :auto_ios_us_scrape, :auto_ios_intl_scrape]
 
   class << self
     def is_active?(service)

@@ -11,7 +11,7 @@ class BusinessEntityService
       batch.description = "ios_new_apps" 
       batch.on(:complete, 'BusinessEntityService#on_complete_ios_new_apps')
   
-      previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
+      previous_week_epf_date = EpfFullFeed.last(2).first.date
 
       batch.jobs do
         IosApp.select('ios_apps.id, ios_app_snapshots.id as ssid')
