@@ -24,7 +24,7 @@ class AndroidMassScanQueueWorker
     end
   end
 
-  def queue_updated_by_job_id(current_job_id, previous_job_id: nil, start_job: true)
+  def queue_updated_by_job_id(current_job_id, previous_job_id = nil, start_job = true)
     date = if previous_job_id
              ApkSnapshotJob.find(previous_job_id).created_at
            else
@@ -33,7 +33,7 @@ class AndroidMassScanQueueWorker
     @query = AndroidApp
       .select(:id)
       .joins(:newest_android_app_snapshot)
-      .where('released >= ?', date) # will pick up paid ones...may need to revisit if too many
+      .where('released >= ?', date)
       .where(display_type: AndroidApp.display_types[:normal])
 
     if start_job

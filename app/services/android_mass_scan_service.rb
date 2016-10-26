@@ -9,10 +9,8 @@ class AndroidMassScanService
       unless automated
         count = AndroidMassScanQueueWorker.new.queue_updated_by_job_id(
           nil,
-          {
-            previous_job_id: previous_job_id,
-            start_job: false
-          }
+          previous_job_id,
+          false
         ).count
 
         print "Going to scan #{count} apps. Is that ok? [y/n]: "
@@ -37,7 +35,8 @@ class AndroidMassScanService
         AndroidMassScanQueueWorker.perform_async(
           :queue_updated_by_job_id,
           current_job.id,
-          previous_job_id: previous_job_id
+          previous_job_id,
+          true
         )
       end
     end
