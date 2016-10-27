@@ -52,6 +52,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           }
         }
 
+        $scope.getCompanyContacts($scope.companyContactFilter, $scope.currentContactsPage);
+
         // Updates displayStatus for use in android-live-scan ctrl
         appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};
         $scope.$broadcast('APP_DATA_FOR_APP_DATA_SERVICE_SET');

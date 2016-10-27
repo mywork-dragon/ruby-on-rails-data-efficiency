@@ -60,7 +60,7 @@ class ClearbitContact < ActiveRecord::Base
       else
         current_contacts = website ? website.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).as_json : []
 
-        if current_contacts.count < 60
+        if current_contacts.count < 20
           current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'product', 'limit' => 20}, website)
           current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'limit' => 20}, website)
           current_contacts += ClearbitContact.get_contacts({'domain' => domain, 'title' => 'marketing', 'limit' => 20}, website)

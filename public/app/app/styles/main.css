@@ -7364,7 +7364,7 @@ i.infoTooltipIcon {
 }
 
 #listViewTableHeading, #companyContactsTableHeading {
-  padding-right: 8px;
+  padding: 10px 0 0 0;
 }
 
 #listViewTableHeading span, #listViewTableHeading button, #companyContactsTableHeading span, #companyContactsTableHeading button {
@@ -7558,6 +7558,12 @@ span#dashboardResultsTableHeadingNumDisplayed {
   clear: both;
 }
 
+#companyContactsTableHeading strong {
+  font-size: 14px;
+  color: #3F4245;
+  text-transform: none;
+}
+
 .companyPageRow {
   margin-left: 0px;
   margin-right: 0px;
@@ -7647,7 +7653,6 @@ span#dashboardResultsTableHeadingNumDisplayed {
 }
 
 #showCompanyEmailsTextField {
-  padding-left: 6px;
   display: table-cell;
 }
 

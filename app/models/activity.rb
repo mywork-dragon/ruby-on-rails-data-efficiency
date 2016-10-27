@@ -67,7 +67,6 @@ class Activity < ActiveRecord::Base
         break
       end
     end
-    Bugsnag.notify("Called notify Activity:#{self.id} Weekly Batches:#{self.weekly_batches.pluck(:id).join(',')}")
     TwitterPostWorker.perform_async(:post_activity, self.id) if should_notify
   end
 
