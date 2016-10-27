@@ -9,5 +9,6 @@ class IosDevelopersWebsite < ActiveRecord::Base
       valid_dev_ids = ClearbitWorker::IOS_DEVELOPER_IDS[website.domain]
       self.is_valid = !valid_dev_ids || valid_dev_ids.include?(ios_developer.id) 
     end
+    true
   end
 end
