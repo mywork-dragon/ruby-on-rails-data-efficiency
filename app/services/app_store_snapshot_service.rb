@@ -57,11 +57,6 @@ class AppStoreSnapshotService
 
   def on_complete_run(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape Completed')
-
-    if options['automated'] && ServiceStatus.is_active?(:auto_ios_mass_scan)
-      IosMassScanService.run_recently_released(automated: true)
-      IosMassScanService.run_recently_updated(automated: true)
-    end
   end
   
   def on_complete_run_new_apps(status, options)

@@ -247,6 +247,13 @@ class AppStoreInternationalService
     if options['automated']
       self.class.execute_table_swaps(automated: true)
       self.class.app_store_availability(new_store_updates: true)
+
+      # TODO: this technically should happen after table swaps AND new US store scrapes are done
+      # Because of how jobs on scrapers are used. this currently works
+      if ServiceStatus.is_active?(:auto_ios_mass_scan)
+        IosMassScanService.run_recently_released(automated: true)
+        IosMassScanService.run_recently_updated(automated: true)
+      end
     end
   end
 
