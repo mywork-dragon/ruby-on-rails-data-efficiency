@@ -1,5 +1,5 @@
 module IosCloud
-
+  class NoRegisteredStores; end
   LOOKUP_ATTEMPTS = 2
 
   def perform(ipa_snapshot_job_id, ios_app_id)
@@ -9,7 +9,10 @@ module IosCloud
     puts "#{ipa_snapshot_job_id}: Starting validation #{Time.now}"
     lookup_result = get_json(ios_app_id)
 
-    if lookup_result == ItunesApi::EmptyResult
+    if lookup_result == NoRegisteredStores
+      log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :no_stores, data: nil)
+      return no_stores
+    elsif lookup_result == ItunesApi::EmptyResult
       log_result(ipa_snapshot_job_id:ipa_snapshot_job_id, ios_app_id:ios_app_id, reason: :no_data, data: nil)
       return no_data(ipa_snapshot_job_id, ios_app_id, international: allow_international?)
     end
@@ -45,12 +48,12 @@ module IosCloud
     start_job(ipa_snapshot_job_id, ios_app_id, snapshot.id)
 
   rescue => e
-    IpaSnapshotJobException.create!({
+    IpaSnapshotJobException.create!(
       ipa_snapshot_job_id: ipa_snapshot_job_id,
       ios_app_id: ios_app_id,
       error: e.message,
       backtrace: e.backtrace
-      })
+    )
     handle_error(error: e, ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id)
   end
 
@@ -88,6 +91,10 @@ module IosCloud
     })
   end
 
+  def no_stores
+    @ipa_snapshot_job.update!(live_scan_status: :not_available)
+  end
+
   def get_json(ios_app_id)
     allow_international? ? international_lookup(ios_app_id) : us_only_lookup(ios_app_id)
   end
@@ -107,6 +114,9 @@ module IosCloud
       .where('ios_apps.id = ?', ios_app_id)
       .where(enabled: true, tos_valid: true).where.not(priority: nil)
       .order(:priority)
+
+    # Could be timing issue where trying to scrape ios app that hasn't been checked internationally
+    return NoRegisteredStores unless stores.present?
 
     res = nil
     available_store = stores.find do |store| # need to do limiting later when get more stores
