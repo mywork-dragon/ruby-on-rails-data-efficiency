@@ -3,7 +3,7 @@ class GoogleAccount < ActiveRecord::Base
 	has_many :apk_snapshots
 	has_many :apk_snapshot_exceptions
 
-	enum device: [:moto_g_phone_1, :moto_g_phone_2, :nexus_9_tablet, :galaxy_prime_1, :galaxy_prime_2, :moto_x_1]
+	enum device: [:moto_g_phone_1, :moto_g_phone_2, :nexus_9_tablet, :galaxy_prime_1, :galaxy_prime_2, :moto_x_1, :motog4_1]
 	enum scrape_type: [:full, :live, :test]
 
   def user_agent
@@ -16,6 +16,8 @@ class GoogleAccount < ActiveRecord::Base
       'Android-Finsky/5.10.30 (versionCode=80631600,sdk=22,device=grandprimeve3g,hardware=sc8830,product=grandprimeve3g,build=LMY48B:user'
     elsif [:moto_x_1].include?(dev)
       'Android-Finsky/7.0.17.H-all%20%5B0%5D (api=3,versionCode=80701700,sdk=22,device=ghost,hardware=qcom,product=ghost_retbr,platformVersionRelease=5.1,model=XT1058,buildId=LPA23.12-15,isWideScreen=0)'
+    elsif [:motog4_1].include?(dev)
+      'Android-Finsky/7.0.17.H-all%20%5B0%5D (api=3,versionCode=80701700,sdk=23,device=athene,hardware=qcom,product=athene_amz,platformVersionRelease=6.0.1,model=Moto%20G%20%284%29,buildId=MPJ24.139-64,isWideScreen=0)'
     else
       fail 'No User-Agent'
     end
