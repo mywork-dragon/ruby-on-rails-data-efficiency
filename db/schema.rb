@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027221825) do
+ActiveRecord::Schema.define(version: 20161028233719) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -360,10 +360,11 @@ ActiveRecord::Schema.define(version: 20161027221825) do
     t.integer  "apk_snapshot_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "method",          limit: 4
   end
 
   add_index "android_sdks_apk_snapshots", ["android_sdk_id"], name: "android_sdk_id", using: :btree
-  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id"], name: "index_apk_snapshot_id_android_sdk_id", unique: true, using: :btree
+  add_index "android_sdks_apk_snapshots", ["apk_snapshot_id", "android_sdk_id", "method"], name: "index_apk_snapshot_id_sdk_id_method", unique: true, using: :btree
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "key",        limit: 191
@@ -696,14 +697,14 @@ ActiveRecord::Schema.define(version: 20161027221825) do
   add_index "class_dumps", ["teardown_time"], name: "index_class_dumps_on_teardown_time", using: :btree
 
   create_table "clearbit_contacts", force: :cascade do |t|
-    t.integer  "website_id",  limit: 4
-    t.string   "clearbit_id", limit: 191
-    t.string   "given_name",  limit: 191
-    t.string   "family_name", limit: 191
-    t.string   "full_name",   limit: 191
-    t.string   "title",       limit: 191
-    t.string   "email",       limit: 191
-    t.string   "linkedin",    limit: 191
+    t.integer  "website_id",      limit: 4
+    t.string   "clearbit_id",     limit: 191
+    t.string   "given_name",      limit: 191
+    t.string   "family_name",     limit: 191
+    t.string   "full_name",       limit: 191
+    t.string   "title",           limit: 191
+    t.string   "email",           limit: 191
+    t.string   "linkedin",        limit: 191
     t.date     "updated"
     t.datetime "created_at"
     t.datetime "updated_at"
