@@ -337,7 +337,7 @@ module IosClassification
 
     if search_bundles
       bundles = bundles_from_strings(contents)
-      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id, read_only: false) # TODO: remove read only flag after regexes are linked and such
+      sdks += SdkService.find_from_packages(packages: bundles, platform: :ios, snapshot_id: ipa_snapshot_id)
     end
 
     if search_classes
@@ -534,27 +534,6 @@ module IosClassification
 
     # require entire match
     "^#{regex}$"
-  end
-
-  # Entry point forC
-  def sdks_from_strings_file(filename)
-    contents = File.open(filename) { |f| f.read }.chomp
-    sdks_from_strings_googled(contents: contents, search_classes: false, search_bundles: true, search_fw_folders: true)
-  end
-
-  # For testing, entry point to classify string
-  # @author Jason Lew
-  def search_bundles_from_file(filename)
-    contents = File.open(filename) { |f| f.read }.chomp
-
-    bundles = contents.scan(/^(?:#{bundle_prefixes.join('|')})\.(.*)/).flatten.uniq
-
-    search_bundles(bundles, nil)
-  end
-
-  # Create entry in join table for every one that it finds
-  def search_bundles(bundles, snap_id)
-    SdkService.find_from_packages(packages: bundles, platform: :ios)
   end
 
   def get_downloads_for_sdk(sdk)

@@ -15,9 +15,8 @@ class ApkSnapshotServiceSingleWorker
 
   def classify_if_necessary(apk_ss_id)
     if Rails.env.production?
-      PackageSearchServiceSingleWorker.perform_async(apk_ss_id)
+      AndroidLiveClassificationServiceWorker.perform_async(apk_ss_id)
     else
-      # PackageSearchServiceSingleWorker.new.perform(apk_ss_id)
       puts "Not classifying right now. Done with APK download and upload though."
     end
   end

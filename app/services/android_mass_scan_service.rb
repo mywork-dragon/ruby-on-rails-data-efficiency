@@ -72,7 +72,7 @@ class AndroidMassScanService
           status: ApkSnapshot.statuses[:success],
           scan_status: nil
         ).pluck(:id).each do |id|
-          PackageSearchServiceWorker.perform_async(id)
+          AndroidMassClassificationServiceWorker.perform_async(id)
         end
       end
     end

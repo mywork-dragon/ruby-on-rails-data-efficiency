@@ -17,7 +17,6 @@ class SdkService
 					package_join_table: SdkPackagesIpaSnapshot
 				}
 			else
-				raise "Not implemented"
 				{
 					app_table: AndroidApp,
 					app_column: :android_app_id,
@@ -32,9 +31,6 @@ class SdkService
 		
 		# Given a list of packages (com.facebook.sdk, ...), return the sdks that exist and use google to find other ones. If create is turned on, will go ahead and create the sdks (should )
 		def find_from_packages(packages:, platform:, snapshot_id:, read_only: false)
-
-			raise "Android not implemented" if platform != :ios
-
 			# get references to tables
 			map = platform_map(platform: platform)
 			package_join_table = map[:package_join_table]
@@ -45,14 +41,22 @@ class SdkService
 
 			# add all packages to the join table
 			if !read_only
-				packages.each do |package|
-					package_row = SdkPackage.find_or_create_by(package: package) # MYSQL errors if it's >= 180
-					begin
-						package_join_table.create!(sdk_package_id: package_row.id, snapshot_column => snapshot_id)
-					rescue ActiveRecord::RecordNotUnique
-						nil
-					end
-				end
+        existing = SdkPackage.where(package: packages)
+        existing_packages = existing.pluck(:package).map(&:downcase)
+        missing = packages.select { |p| !existing_packages.include?(p.downcase) }
+        rows = missing.map { |p| SdkPackage.new(package: p) }
+        SdkPackage.import(
+          rows,
+          synchronize: rows,
+          synchronize_keys: [:package]
+        )
+        join_rows = (existing + rows).map do |sdk_package|
+          package_join_table.new(
+            sdk_package_id: sdk_package.id,
+            snapshot_column => snapshot_id
+          )
+        end
+        package_join_table.import join_rows
 			end
 
 			matches = existing_sdks_from_packages(packages: packages, platform: platform)
@@ -98,11 +102,14 @@ class SdkService
 				}
 			end
 
+      # load collective package requests
+      package_rows = SdkPackage.where(package: packages)
+
 			packages.reduce({}) do |memo, package|
 				match = regexes.find {|entry| entry[:regex].match(package)}
 
 				if match.nil?
-					row = SdkPackage.find_by_package(package)
+          row = package_rows.find { |r| r.package.downcase == package.downcase } # case-insensitive
 					match = row if row && row[col]
 				end
 
@@ -113,7 +120,6 @@ class SdkService
 		end
 
 		# Extract company name from a package (ex. "com.facebook.activity" => "facebook")
-		# @author Jason Lew
 		def query_from_package(package_name)
 	    package = strip_prefix(package_name)
 	    return nil if package.blank?
@@ -136,13 +142,9 @@ class SdkService
 			# get mapping from query to array of packages
 			query_hash = packages.reduce({}) do |memo, package|
 				query = query_from_package(package)
-
-				if !query.nil?
-					if memo[query].nil?
-						memo[query] = [package]
-					else
-						memo[query] << package
-					end
+        unless query.nil?
+          existing = memo[query]
+          memo[query] = existing.present? ? existing << package : [package]
 				end
 				memo
 			end
@@ -151,7 +153,7 @@ class SdkService
 			packages_to_sdk = query_hash.keys.reduce({}) do |memo, query|
 				sdk = google_sdk(query: query, platform: platform, snapshot_id: snapshot_id) || google_github(query: query, platform: platform, snapshot_id: snapshot_id)
 
-				if !sdk.nil?
+				unless sdk.nil?
 					existing = find_sdk_from_proposed(proposed: sdk, platform: platform)
 
 					if existing || read_only
@@ -188,18 +190,15 @@ class SdkService
 		# @param platform - :ios or :android
 		# @returns ActiveRecord sdk object
 		def create_sdk_from_proposed(proposed:, platform:)
+      favicon = begin
+        proposed[:favicon] || FaviconService.get_favicon_from_url(url: proposed[:website])
+      rescue
+        FaviconService.get_default_favicon
+      end
 
-			# this function will use split paths rather than platform map because columns on the different sdk tables are different
-			if platform == :ios
-
+			sdk = if platform == :ios
 				begin
-					favicon = proposed[:favicon] || FaviconService.get_favicon_from_url(url: proposed[:website])
-				rescue
-					favicon = FaviconService.get_default_favicon
-				end
-
-				begin
-					sdk = IosSdk.create!({
+					IosSdk.create!({
 						name: proposed[:name],
 						website: proposed[:website],
 						favicon: favicon,
@@ -208,22 +207,33 @@ class SdkService
 						source: IosSdk.sources[:package_lookup],
 						kind: :native
 					})
-				rescue ActiveRecord::RecordNotUnique => e
-					sdk = IosSdk.find_by_name(proposed[:name])
+				rescue ActiveRecord::RecordNotUnique
+					IosSdk.find_by_name(proposed[:name])
 				end
 			else
-				raise "Android not implemented"
+        begin
+          AndroidSdk.create!(
+            name: proposed[:name],
+            website: proposed[:website],
+            favicon: favicon,
+            open_source: proposed[:open_source],
+            github_repo_identifier: proposed[:github_repo_identifier],
+            kind: :native
+          )
+        rescue ActiveRecord::RecordNotUnique
+          AndroidSdk.find_by_name(proposed[:name])
+        end
 			end
 
 			sdk
 		end
 
-		# For a hard coded list of known parents, builds a query of more relavent information
+		# For a hard coded list of known parents, builds a query of more relevant information
 		# @param package - "google.admob" (Notice no prefix)
 		# @returns a query term like "Google admob"
 		def known_parent_query(package)
 
-			known_companies = %w(google)
+			known_companies = %w(google facebook)
 
 			known_companies.each do |co|
 				if package.match(/#{co}/i)
@@ -236,7 +246,7 @@ class SdkService
 
 		# Get the url of an sdk if it is valid
 		def google_sdk(query:, platform:, snapshot_id:)
-			google_search(q: "#{query} #{platform} sdk", limit: 4).each do |url|
+			google_search(q: "#{query} #{platform} sdk", limit: 4, platform: platform).each do |url|
 		    company = query.capitalize
 		    return {website: url, name: company, open_source: false} if sdk_company_valid?(query: query, platform: platform, url: url, company: company, snapshot_id: snapshot_id)
 			end
@@ -251,6 +261,7 @@ class SdkService
 				Github
 				Bitbucket
 				Sourceforge
+        Android
 			)
 
 			return false if known_companies.include?(company)
@@ -291,7 +302,7 @@ class SdkService
 			return nil unless github_query_valid?(query)
 
 			q = "#{query} #{platform}"
-			google_search(q: q, site: 'github.com').each do |url|
+			google_search(q: q, site: 'github.com', platform: platform).each do |url|
 				begin
 					url_re = Regexp.new(/https:\/\/github.com\/[^\/]*\/[^\/]*#{query}[^\/]*\z/i)
 				rescue RegexpError
@@ -343,6 +354,7 @@ class SdkService
 			invalid_queries = %w(
 				apple
 				queue
+        android
 			)
 			return false if invalid_queries.include?(query)
 
@@ -351,16 +363,16 @@ class SdkService
 
 		# q - string for the query (ex. 'parse ios')
 		# site - string to of a domain to restrict search results (ex. 'github.com')
-		def google_search(q:, site: nil, limit: 10)
-		  # result = Proxy.get_nokogiri(req: {:host => "www.google.com/search", :protocol => "https"}, params: {'q' => q}, proxy_type: :ios_classification)
-		  # raise "Detected that proxy is hosed" if result.text.include?('detected unusual traffic')
-		  # result.search('cite').map{ |c| UrlHelper.http_with_url(c.inner_text) if valid_domain?(c.inner_text) }.compact.take(limit)
-
+		def google_search(q:, site: nil, limit: 10, platform:)
 		  q = q.gsub(/[^\w\s]/, ' ')
 		  q = "site:#{site} " + q if site.present?
 
-		  # search = BingSearcher::Searcher.new.search(q, proxy_type: :ios_classification)
-		  search = GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+      # TODO: better platform decisions. should be able to split live scan from mass across platforms
+      search = if platform == :ios
+                 GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+               else
+                 BingSearcher::Searcher.new.search(q, proxy_type: :all_static)
+               end
 		  search.results.map(&:url).take(limit)
 		end
 

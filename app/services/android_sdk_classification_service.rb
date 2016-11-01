@@ -7,6 +7,8 @@ class AndroidSdkClassificationService
 
   class << self
 
+    # DEPRECATED: new logic is now in SdkService
+    # If file is still around in January 2017, delete it
     def classify(snap_id:, packages:)
       self.new.classify(snap_id: snap_id, packages: packages)
     end
