@@ -183,7 +183,7 @@ class IosDownloadDeviceService
   def pangu_ipa_path
     return @pangu_ipa_path if @pangu_ipa_path
     resp = run_command(
-      "find #{apps_install_path} -maxdepth 2 -name 'NvwaStone.app'",
+      "find #{apps_install_path} -maxdepth 2 -name 'NvwaStone.app' -or -name 'PPJailbreakCarrier.app'",
       'find pangu app'
     )
     @pangu_ipa_path = resp.present? ? resp.chomp : NoPanguApp
@@ -737,7 +737,7 @@ class IosDownloadDeviceService
     bundle_ids = bundle_ids.chomp.split(/\n/)
 
     log_debug "Bundle Ids before: #{bundle_ids.count}"
-    bundle_ids.select! { |id| !/com\.wanmei\.mini\.condorpp/.match(id) }
+    bundle_ids.select! { |id| !(/com\.wanmei\.mini\.condorpp/.match(id) || /com\.e4bf058461/.match(id)) }
     log_debug "Bundle Ids after: #{bundle_ids.count}"
 
     # template the file
