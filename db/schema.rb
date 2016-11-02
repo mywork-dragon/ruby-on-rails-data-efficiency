@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161028233719) do
+ActiveRecord::Schema.define(version: 20161102204608) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1630,8 +1630,10 @@ ActiveRecord::Schema.define(version: 20161028233719) do
     t.datetime "updated_at"
     t.integer  "ios_device_arch_id", limit: 4
     t.string   "lookup_name",        limit: 191
+    t.boolean  "active",                         default: true
   end
 
+  add_index "ios_device_families", ["active"], name: "index_ios_device_families_on_active", using: :btree
   add_index "ios_device_families", ["ios_device_arch_id"], name: "index_ios_device_families_on_ios_device_arch_id", using: :btree
   add_index "ios_device_families", ["lookup_name"], name: "index_ios_device_families_on_lookup_name", using: :btree
 
