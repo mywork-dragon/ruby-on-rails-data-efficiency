@@ -171,7 +171,7 @@ class IosDownloadDeviceService
     @result[:teardown_success] = true
   rescue => teardown_error
     @result[:error_teardown] = teardown_error.message
-    @result[:error_teardown_trace] = error.backtrace
+    @result[:error_teardown_trace] = teardown_error.backtrace
   end
 
   def open_app_in_app_store
