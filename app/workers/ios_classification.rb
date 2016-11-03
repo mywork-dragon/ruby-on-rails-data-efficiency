@@ -409,7 +409,7 @@ module IosClassification
     
     match_sdks = search_terms.each_slice(15_000).map do |subset|
       IosSdk.where(name: subset)
-    end.reduce(:+).uniq
+    end.reduce([], :+)
 
     match_classes = classes.select do |name|
       terms = direct_search_terms_for_name(name)
