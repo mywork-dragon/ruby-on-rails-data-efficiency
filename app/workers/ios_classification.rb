@@ -407,7 +407,9 @@ module IosClassification
   def direct_lookups(classes)
     search_terms = classes.map { |name| direct_search_terms_for_name(name) }.flatten.uniq
     
-    match_sdks = IosSdk.where(name: search_terms)
+    match_sdks = search_terms.each_slice(15_000).map do |subset|
+      IosSdk.where(name: subset)
+    end.reduce(:+).uniq
 
     match_classes = classes.select do |name|
       terms = direct_search_terms_for_name(name)
