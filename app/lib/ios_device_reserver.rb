@@ -172,12 +172,15 @@ class IosDeviceReserver
       combined_id_constraints.push(valid_device_ids)
     end
 
-    if requirements['supportedDeviceTypes']
-      valid_device_ids = IosDevice.joins(:ios_device_family)
-        .where('ios_device_families.lookup_name in (?)', requirements['supportedDeviceTypes'])
-        .pluck(:id)
-      raise InvalidRequirement, "No available devices that meet required supportedDeviceType constraint" if valid_device_ids.blank?
-      combined_id_constraints.push(valid_device_ids)
+    if supportedDevices = requirements['supportedDevices']
+      unsupported_devices = (IosDeviceFamily.where(active: true).pluck(:lookup_name) - supportedDevices).compact
+      if unsupported_devices.present?
+        valid_device_ids = IosDevice.joins(:ios_device_family)
+          .where('ios_device_families.lookup_name in (?)', supportedDevices)
+          .pluck(:id)
+        raise InvalidRequirement, "No available devices that meet required supportedDeviceType constraint" if valid_device_ids.blank?
+        combined_id_constraints.push(valid_device_ids)
+      end
     end
 
     unless combined_id_constraints.count == 0

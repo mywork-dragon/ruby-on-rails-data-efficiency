@@ -57,11 +57,9 @@ module IosCloud
     handle_error(error: e, ipa_snapshot_job_id: ipa_snapshot_job_id, ios_app_id: ios_app_id)
   end
 
-  # Are all devices compatible?
-  # @author Jason Lew
   def device_compatible?(devices:)
-    available_devices = IosDeviceFamily.uniq.pluck(:lookup_name).compact
-    (available_devices - devices).empty? # whether all available devices support the app
+    available_devices = IosDeviceFamily.where(active: true).pluck(:lookup_name).compact
+    (devices & available_devices).any?
   end
 
   def should_update(ios_app_id:, version:)
@@ -75,11 +73,8 @@ module IosCloud
   end
 
   def is_ios?(data)
-    # wrapper type software
-    # kind == 'software' (as opposed to mac-software)
-    return false if data['wrapperType'] != 'software'
-    return false if data['kind'] != 'software'
-    true
+    # mac apps are 'mac-software'
+    data['wrapperType'] == 'software' && data['kind'] == 'software'
   end
 
   def log_result(ipa_snapshot_job_id:, ios_app_id:, reason:, data: nil)
