@@ -8,3 +8,5 @@ if(appleIdText.includes(appleId))
 {
   throwSuccess("Account logged in.")
 }
+
+throwError("Not Logged in.")
