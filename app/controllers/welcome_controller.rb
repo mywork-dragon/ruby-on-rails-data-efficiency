@@ -20,7 +20,8 @@ class WelcomeController < ApplicationController
       {image: 'ironsrc.png', width: 170},
       {image: 'vungle.png', width: 130},
       {image: 'realm.png', width: 135},
-      {image: 'neumob.png', width: 170}
+      {image: 'neumob.png', width: 170},
+      {image: 'yahoo.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
   end
 
