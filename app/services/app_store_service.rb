@@ -446,7 +446,7 @@ class AppStoreService
     attributes_expected = 
       {
         name: ->(x) { x == 'Uber' },
-        description: ->(x) { x.include? 'Get a reliable ride in minutes' },
+        description: ->(x) { x.include? 'See if Uber' },
         version: ->(x) { x.to_i >= 2 },
         price: ->(x) { x == 0 },
         seller_url: ->(x) { x == 'https://uber.com' },
