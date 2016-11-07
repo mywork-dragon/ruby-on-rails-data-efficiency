@@ -227,7 +227,7 @@ class GooglePlayService
     attributes_expected = 
       {
         name: ->(x) { x == 'Uber' },
-        description: ->(x) { x.include? 'Uber is available' },
+        description: ->(x) { x.class == String && x.include?('Uber') && x.length > 20 },
         price: ->(x) { x == 0 },
         seller: ->(x) { x == 'Uber Technologies, Inc.' },
         seller_url: ->(x) { x == 'http://uber.com' },

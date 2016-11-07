@@ -262,6 +262,8 @@ class EpfV2Service
         AppStoreInternationalService.run_snapshots(automated: true, scrape_type: :all)
       end
     end
+  rescue AppStoreSnapshotService::InvalidDom
+    Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING NEW APPS SCRAPE', webhook_name: :main)
   end
 
   def split_files(filepath)

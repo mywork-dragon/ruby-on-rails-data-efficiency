@@ -212,9 +212,11 @@ class AppStoreInternationalService
     Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed')
 
     if options['automated']
-      AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
       self.class.run_scaling_factors(automated: true)
+      AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
     end
+  rescue AppStoreSnapshotService::InvalidDom
+    Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING APP STORE SCRAPE', webhook_name: :main)
   end
 
   def on_complete_scaling_factors(status, options)
