@@ -6,6 +6,7 @@ module MightyApk
     class InternalError < RuntimeError; end
     class UnknownCondition < RuntimeError; end
     class UnsupportedCountry < RuntimeError; end
+    class IncompatibleDevice < RuntimeError; end
 
     include HTTParty
     include ProxyParty
@@ -104,6 +105,7 @@ module MightyApk
     def handle_forbidden(res)
       body = res.body
       raise UnsupportedCountry if body.match(/not.*supported.*country/i)
+      raise IncompatibleDevice if body.match(/Your device is not compatible with this item/i)
       raise Forbidden
     end
   end
