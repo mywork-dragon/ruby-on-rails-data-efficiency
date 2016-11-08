@@ -7,7 +7,10 @@
       |MightySignal Timeline
 
     .info.alert.alert-warning
-      p.pull-left What's happening in the Top 200 Apps?
+      p.pull-left 
+        |What's happening in the Top 200 Apps? Follow our Twitter bot 
+        <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
       = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
         .form-group
           input#email.form-control name="email" placeholder="Email" type="email" /

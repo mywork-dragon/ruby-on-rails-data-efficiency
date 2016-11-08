@@ -363,6 +363,9 @@ p {
 .timeline .panel a {
 	color: #333;
 }
+.timeline #twitter-widget-0 {
+	margin-bottom: -4px;
+}
 .timeline .panel-heading img {
 	margin-right: 8px;
 }
