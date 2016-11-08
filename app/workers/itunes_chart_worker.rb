@@ -60,6 +60,8 @@ class ItunesChartWorker
 
     IosAppRanking.import rows
 
+    rows.map(&:log_activity)
+
     ios_app_ranking_snapshot.is_valid = true
     ios_app_ranking_snapshot.save!
   end
