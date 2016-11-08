@@ -2,6 +2,7 @@ module ApkWorker
 
   def perform(apk_snapshot_job_id, bid, android_app_id, google_account_id=nil)
     @attempted_google_account_ids = []
+    @failed_devices = []
     download_apk_v2(apk_snapshot_job_id, android_app_id, google_account_id: nil)
   end
   
@@ -57,6 +58,9 @@ module ApkWorker
     google_account.update!(blocked: true)
     notify_blocked_account(google_account)
     raise e
+  rescue MightyApk::MarketApi::IncompatibleDevice => e
+    @failed_devices << google_account.device
+    raise e
   end
 
   def notify_blocked_account(google_account)
@@ -73,7 +77,8 @@ module ApkWorker
     google_account_reserver = GoogleAccountReserver.new(snapshot)
     google_account_reserver.reserve(
       scrape_type,
-      forbidden_google_account_ids: @attempted_google_account_ids
+      forbidden_google_account_ids: @attempted_google_account_ids,
+      excluded_devices: @failed_devices
     )
     google_account = google_account_reserver.account
     snapshot.update!(google_account_id: google_account.id)

@@ -62,7 +62,7 @@ class GoogleAccountReserver
   # private UNCOMMENT ME
   def any_exist?(scrape_type, requirements)
     query = build_query(scrape_type, requirements, available_only: false)
-    raise NoSuchAccount unless GoogleAccount.where(query).take.present?
+    raise NoSuchAccount unless query.take.present?
   end
 
   def build_query(scrape_type, requirements, available_only: true)
@@ -81,7 +81,15 @@ class GoogleAccountReserver
 
     query_parts << "blocked = false"
 
-    query_parts.join(' and ')
+    where_clause = query_parts.join(' and ')
+
+    query = GoogleAccount.where(where_clause)
+
+    if requirements[:excluded_devices].present?
+      query = query.where.not(device: requirements[:excluded_devices])
+    end
+
+    query
   end
 
   def try_reserve(scrape_type, requirements)
@@ -89,7 +97,7 @@ class GoogleAccountReserver
 
     GoogleAccount.transaction do
 
-      g = GoogleAccount.lock.where(query).order(:last_used).limit(1).take
+      g = query.lock.order(:last_used).limit(1).take
 
       if g
         g.in_use = true
