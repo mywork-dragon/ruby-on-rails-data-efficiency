@@ -1,6 +1,7 @@
 class DomainDatum < ActiveRecord::Base
   has_many :websites, through: :websites_domain_data
   has_many :websites_domain_data
+  has_many :clearbit_contacts
 
   serialize :tech_used, Array
   serialize :tags, Array

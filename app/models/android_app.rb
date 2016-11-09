@@ -117,7 +117,7 @@ class AndroidApp < ActiveRecord::Base
       lastUpdatedDays: self.last_updated_days,
       categories: self.categories,
       seller: newest_snapshot.try(:seller),
-      supportDesk: newest_snapshot.try(:seller_url),
+      supportDesk: self.support_url,
       userBase: self.user_base,
       icon: self.icon_url,
       downloadsMin: newest_snapshot.try(:downloads_min),
@@ -167,6 +167,10 @@ class AndroidApp < ActiveRecord::Base
 
   def get_newest_apk_snapshot
     self.apk_snapshots.where(scan_status: 1).first
+  end
+
+  def support_url
+    self.newest_android_app_snapshot.try(:seller_url)
   end
 
   def last_updated

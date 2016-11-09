@@ -136,6 +136,15 @@ class ClearbitWorker
     end 
   end
 
+  def populate_domain_datum 
+    ClearbitContact.where(domain_datum_id: nil).each do |contact|
+      puts "Doing contact #{contact.id}"
+      next unless contact.website && contact.website.domain
+      domain_datum = DomainDatum.find_or_create_by(domain: contact.website.domain)
+      domain_datum.clearbit_contacts << contact unless domain_datum.clearbit_contacts.include?(contact)
+    end
+  end
+
   def enrich_app(app_id, platform)
     puts "Processing app #{app_id}"
     if platform == 'ios'
