@@ -58,7 +58,7 @@ class ClearbitContact < ActiveRecord::Base
       domains[domain] = 1
 
       if filter.present?
-        contacts += ClearbitContact.get_contacts(domaim: domain, title: filter, limit: 20)
+        contacts += ClearbitContact.get_contacts(domain: domain, title: filter, limit: 20)
       else
         domain_datum = DomainDatum.where(domain: domain).first
         current_contacts =  domain_datum ? domain_datum.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).as_json : []
