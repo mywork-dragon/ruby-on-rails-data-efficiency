@@ -6,6 +6,7 @@ module MightyApk
     class InternalError < RuntimeError; end
     class UnknownCondition < RuntimeError; end
     class UnsupportedCountry < RuntimeError; end
+    class RateLimited < RuntimeError; end
     class IncompatibleDevice < RuntimeError; end
 
     include HTTParty
@@ -18,9 +19,10 @@ module MightyApk
     end
 
     def validate(httparty_res)
-      raise NotFound if httparty_res.code == 404
       raise Unauthorized if httparty_res.code == 401
       handle_forbidden(httparty_res) if httparty_res.code == 403
+      raise NotFound if httparty_res.code == 404
+      raise RateLimited if httparty_res.code == 429
       raise InternalError if httparty_res.code == 500
       unless httparty_res.code / 200 == 1 # non-200 level code
         raise UnknownCondition, "#{httparty_res.code}: #{httparty_res.body}"
