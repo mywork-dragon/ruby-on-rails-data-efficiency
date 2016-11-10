@@ -7363,7 +7363,7 @@ i.infoTooltipIcon {
   width: 170px;
 }
 
-#listViewTableHeading, #companyContactsTableHeading {
+#companyContactsTableHeading {
   padding: 10px 0 0 0;
 }
 

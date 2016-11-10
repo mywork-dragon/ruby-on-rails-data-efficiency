@@ -153,6 +153,12 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
     $scope.getContactEmail = function(clearbitId) {
       apiService.getContactEmail(clearbitId)
         .success(function(data) {
+          mixpanel.track(
+            "Contact Email Requested", {
+              'email': data.email,
+              'clearbitId': clearbitId
+            }
+          );
           for(var i = 0; i < $scope.companyContacts.length; i++) {
             if ($scope.companyContacts[i].clearbitId == clearbitId) {
               $scope.companyContacts[i].email = data.email

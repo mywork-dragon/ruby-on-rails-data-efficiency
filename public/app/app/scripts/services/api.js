@@ -90,7 +90,10 @@ angular.module("appApp")
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Exported Contacts CSV", {
-            "companyName": companyName
+            'filter': filter,
+            'companyName': companyName,
+            'publisherId': publisherId,
+            'platform': platform
           }
         );
         /* -------- Mixpanel Analytics End -------- */
