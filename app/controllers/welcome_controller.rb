@@ -18,10 +18,11 @@ class WelcomeController < ApplicationController
       {image: 'amplitude.png', width: 160},
       {image: 'microsoft.png', width: 150},
       {image: 'ironsrc.png', width: 170},
-      {image: 'vungle.png', width: 130},
+      {image: 'vungle.png', width: 125},
       {image: 'realm.png', width: 135},
       {image: 'neumob.png', width: 170},
-      {image: 'yahoo.png', width: 170}
+      {image: 'yahoo.png', width: 165},
+      {image: 'appsflyer.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
   end
 
