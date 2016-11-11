@@ -42,7 +42,7 @@
             .panel-heading
               = image_tag app.icon_url, size: '30x30'
               = "#{link_to(app.name, app.app_store_link, target: '_blank')} entered the Top 200 at ".html_safe
-              span.subtext= "Rank #{batch.other_owner.rank}"
+              span.subtext= "Rank #{batch.other_owner.try(:rank)}"
     
     div class="modal fade" id="sdkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true"
       div class="modal-dialog modal-lg"
