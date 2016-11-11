@@ -34,22 +34,21 @@ class AndroidDeveloper < ActiveRecord::Base
 
   def headquarters
     headquarters = []
-    valid_websites.each do |website|
-      data = website.domain_datum
-      next unless data && data.country_code
+    valid_websites.joins(:domain_datum).select('domain_data.*, websites.url').each do |website|
+      next unless website.country_code
       headquarters << {
-        domain: data.domain,
-        street_number: data.street_number,
-        street_name: data.street_name,
-        sub_premise: data.sub_premise,
-        city: data.city,
-        postal_code: data.postal_code,
-        state: data.state,
-        state_code: data.state_code,
-        country: data.country,
-        country_code: data.country_code,
-        lat: data.lat,
-        lng: data.lng
+        domain: website.domain,
+        street_number: website.street_number,
+        street_name: website.street_name,
+        sub_premise: website.sub_premise,
+        city: website.city,
+        postal_code: website.postal_code,
+        state: website.state,
+        state_code: website.state_code,
+        country: website.country,
+        country_code: website.country_code,
+        lat: website.lat,
+        lng: website.lng
       }
     end
     headquarters.uniq

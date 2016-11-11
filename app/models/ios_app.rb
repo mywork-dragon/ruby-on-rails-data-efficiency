@@ -381,6 +381,7 @@ class IosApp < ActiveRecord::Base
     company = self.get_company
     developer = self.ios_developer
     newest_snapshot = self.newest_ios_app_snapshot
+    hqs = self.headquarters
 
     row = [
       self.id,
@@ -400,7 +401,13 @@ class IosApp < ActiveRecord::Base
       'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
       self.ratings_all_count,
-      nil #downloads for android
+      nil, #downloads for android
+      hqs.map{|hq| hq[:street_number]}.join('|'),
+      hqs.map{|hq| hq[:street_name]}.join('|'),      
+      hqs.map{|hq| hq[:city]}.join('|'),
+      hqs.map{|hq| hq[:state]}.join('|'),
+      hqs.map{|hq| hq[:country]}.join('|'),            
+      hqs.map{|hq| hq[:postal_code]}.join('|'), 
     ]
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
       row << first_international_snapshot(country_code: store.country_code).try(:user_base)

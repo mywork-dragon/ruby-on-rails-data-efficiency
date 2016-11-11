@@ -75,6 +75,7 @@ class AndroidApp < ActiveRecord::Base
     company = self.get_company
     developer = self.android_developer
     newest_snapshot = self.newest_android_app_snapshot
+    hqs = self.headquarters
 
     row = [
       self.id,
@@ -94,7 +95,13 @@ class AndroidApp < ActiveRecord::Base
       'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil,
       self.ratings_all_count,
-      self.downloads_human
+      self.downloads_human,
+      hqs.map{|hq| hq[:street_number]}.join('|'),
+      hqs.map{|hq| hq[:street_name]}.join('|'),      
+      hqs.map{|hq| hq[:city]}.join('|'),
+      hqs.map{|hq| hq[:state]}.join('|'),
+      hqs.map{|hq| hq[:country]}.join('|'),            
+      hqs.map{|hq| hq[:postal_code]}.join('|'), 
     ]
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
       row << (store.country_code == 'US' ? self.user_base : nil)
