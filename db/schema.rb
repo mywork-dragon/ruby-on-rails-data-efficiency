@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161102204608) do
+ActiveRecord::Schema.define(version: 20161111005151) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1760,6 +1760,7 @@ ActiveRecord::Schema.define(version: 20161102204608) do
     t.integer  "open_proxy_id",              limit: 4
   end
 
+  add_index "ios_fb_ads", ["date_seen"], name: "index_ios_fb_ads_on_date_seen", using: :btree
   add_index "ios_fb_ads", ["fb_account_id"], name: "index_ios_fb_ads_on_fb_account_id", using: :btree
   add_index "ios_fb_ads", ["ios_app_id", "status", "flagged"], name: "index_ios_fb_ads_on_ios_app_id_and_status_and_flagged", using: :btree
   add_index "ios_fb_ads", ["ios_device_id"], name: "index_ios_fb_ads_on_ios_device_id", using: :btree
