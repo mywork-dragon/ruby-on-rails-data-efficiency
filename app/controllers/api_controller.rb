@@ -334,7 +334,7 @@ class ApiController < ApplicationController
 
     filter_args.delete_if{ |k, v| v.nil? }
     
-    render_csv(filter_args)
+    render_csv(filter_args: filter_args)
   end
 
   def export_list_to_csv
