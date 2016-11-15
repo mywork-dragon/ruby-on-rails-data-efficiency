@@ -89,13 +89,20 @@ class WelcomeController < ApplicationController
   end
 
   def subscribe 
+    message = params[:message]
+    if message == 'Timeline'
+      destination = timeline_path(form: 'timeline')
+    else
+      destination = top_ios_sdks_path(form: 'top-ios-sdks')
+    end
+
     if params[:email].present?
-      Lead.create_lead({email: params[:email], message: 'Top SDKS page', lead_source: 'Top SDKS page'})
+      Lead.create_lead({email: params[:email], message: message, lead_source: message})
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
     end
-    redirect_to top_ios_sdks_path(form: 'top-ios-sdks')
+    redirect_to destination
   end
 
   def contact_us

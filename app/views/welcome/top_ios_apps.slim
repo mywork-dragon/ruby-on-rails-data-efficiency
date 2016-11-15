@@ -12,6 +12,7 @@
         strong> #{time_ago_in_words(@last_updated)} ago.
       = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
         .form-group
+          input type="hidden" name="message" value="Top Apps page"
           input#email.form-control name="email" placeholder="Email" type="email" /
         .form-group.text-center
           p
