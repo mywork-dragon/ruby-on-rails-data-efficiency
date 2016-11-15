@@ -57,6 +57,8 @@ Rails.application.routes.draw do
   get 'api/newsfeed/export' => 'api#newsfeed_export'
   post 'api/newsfeed/follow' => 'api#newsfeed_follow'
 
+  get 'api/ad_intelligence' => 'api#ad_intelligence'
+
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'
   get 'api/list/export_to_csv' => 'api#export_list_to_csv'

@@ -7,6 +7,7 @@ class ApiController < ApplicationController
   before_action :authenticate_storewide_sdk_request, only: [:search_sdk, :get_sdk, :get_sdk_autocomplete]
   before_action :authenticate_export_request, only: [:export_newest_apps_chart_to_csv, :export_list_to_csv, :export_contacts_to_csv, :export_results_to_csv]
   before_action :authenticate_ios_live_scan, only: [:ios_scan_status, :ios_start_scan] # Authorizing iOS Live Scan routes
+  before_action :authenticate_ad_intelligence, only: :ad_intelligence
 
   def filter_ios_apps
 
@@ -73,6 +74,26 @@ class ApiController < ApplicationController
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
 
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
+  end
+
+  def ad_intelligence
+    page_size = params[:pageSize] ? params[:pageSize].to_i : 20
+    page_num = params[:pageNum] ? params[:pageNum].to_i : 1
+    params[:sortBy] ||= 'first_seen_ads'
+    sort_by = if params[:sortBy] == 'first_seen_ads'
+      'min(date_seen)'
+    elsif params[:sortBy] == 'last_seen_ads'
+      'max(date_seen)'
+    end
+    order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
+
+    results = IosApp.joins(:ios_fb_ads).
+                                       order("#{sort_by} #{order_by}").group('ios_apps.id')
+    results = results.page(page_num).per(page_size) if request.format.json? 
+    respond_to do |format|
+      format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }
+      format.csv { render_csv(apps: results) }
+    end
   end
 
   def newsfeed
@@ -849,13 +870,13 @@ class ApiController < ApplicationController
 
   private
 
-  def render_csv(filter_args)
+  def render_csv(filter_args: nil, apps: nil)
     set_file_headers
     set_streaming_headers
 
     response.status = 200
 
-    self.response_body = csv_lines(filter_args)
+    self.response_body = csv_lines(filter_args: filter_args, apps: apps)
   end
 
   def set_file_headers
@@ -883,33 +904,37 @@ class ApiController < ApplicationController
     headers
   end
 
-  def csv_lines(filter_args)
+  def csv_lines(filter_args: nil, apps: nil)
     Enumerator.new do |y|
       y << csv_header.to_csv
 
-      filter_args[:page_size] = 10000
-      filter_args[:page_num] = 1
-      filter_results = nil
-      platform = filter_args.delete(:platform)
+      if filter_args
+        filter_args[:page_size] = 10000
+        filter_args[:page_num] = 1
+        filter_results = nil
+        platform = filter_args.delete(:platform)
 
-      #while !filter_results || filter_results.count > 0
-        if platform == 'ios'
-          filter_results = FilterService.filter_ios_apps(filter_args)
-          filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
-          ids = filter_results.map { |result| result.attributes["id"] }
-          results = IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+        #while !filter_results || filter_results.count > 0
+          if platform == 'ios'
+            filter_results = FilterService.filter_ios_apps(filter_args)
+            filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
+            ids = filter_results.map { |result| result.attributes["id"] }
+            results = IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+          else
+            filter_results = FilterService.filter_android_apps(filter_args)
+            filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
+            ids = filter_results.map { |result| result.attributes["id"] }
+            results = AndroidApp.where(id: ids).includes(:android_developer, :newest_android_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+          end
         else
-          filter_results = FilterService.filter_android_apps(filter_args)
-          filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
-          ids = filter_results.map { |result| result.attributes["id"] }
-          results = AndroidApp.where(id: ids).includes(:android_developer, :newest_android_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+          results = apps
         end
 
-        if ids.any?
+        if results.any?
           results.each do |app|
             y << app.to_csv_row.to_csv
           end
-          filter_args[:page_num] += 1
+          filter_args[:page_num] += 1 if filter_args
         end
       #end
     end

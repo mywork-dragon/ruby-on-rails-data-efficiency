@@ -10,6 +10,9 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     $scope.page = 1;
     newsfeedCtrl.weeks = []
 
+    // Sets html title attribute
+    pageTitleService.setTitle('MightySignal - Timeline');
+
     // Sets user permissions
     authService.permissions()
       .success(function(data) {
@@ -27,10 +30,6 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
         $scope.following = data.following
         $scope.initialPageLoadComplete = true;
-
-        // Sets html title attribute
-        pageTitleService.setTitle('MightySignal - Timeline');
-
       });
 
     };

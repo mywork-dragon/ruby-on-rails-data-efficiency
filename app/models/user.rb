@@ -65,7 +65,6 @@ class User < ActiveRecord::Base
     time = Time.now - page_num.months
     following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
                self.followed_ios_apps.to_a
-    following << AdPlatform.facebook if self.account.can_view_ad_spend
     
     batches = following.map{|object| 
       object.weekly_batches.where('week >= ? and week < ? and activity_type != ?', time, time + 1.month, WeeklyBatch.activity_types[:entered_top_apps]).order(week: :desc).to_a

@@ -15,6 +15,9 @@
         <li ng-class="{active: $route.current.activeTab == 'search'}">
             <a href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
+        <li ng-if="canViewAdSpend" ng-class="{active: $route.current.activeTab == 'ad-intelligence'}">
+            <a href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span></a>
+        </li>
         <!--
         <li ng-if="canViewStorewideSdks" ng-class="{active: $route.current.activeTab == 'sdks'}">
           <a style="cursor: default;" href="" ng-click="event.preventDefault()"> <i class="fa fa-cubes"></i> <span>SDKs</span></a>

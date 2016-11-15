@@ -134,7 +134,7 @@
 
     <section class="panel panel-default table-dynamic">
       <div class="panel-heading" id="dashboardResultsTableHeading">
-       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{searchCtrl.appsDisplayedCount()}} of {{searchCtrl.numApps | number}}</span>
+       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{appsDisplayedCount()}} of {{searchCtrl.numApps | number}}</span>
         
         <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: searchCtrl.apps.length < 1 || !searchCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-href="{{searchCtrl.csvUrl}}">Export All to CSV</a>
         <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>

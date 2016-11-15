@@ -123,6 +123,17 @@ class IosApp < ActiveRecord::Base
       company: company
     }
 
+    if options[:ads]
+      batch_json.merge!({
+        first_seen_ads_date: self.first_seen_ads_date,
+        first_seen_ads_days: self.first_seen_ads_days,
+        last_seen_ads_date: self.last_seen_ads_date,
+        last_seen_ads_days: self.last_seen_ads_days,
+        latest_facebook_ad: self.latest_facebook_ad.as_json({no_app: true}),
+        ad_attribution_sdks: self.ad_attribution_sdks
+      })
+    end
+
     if options[:details]
       batch_json.merge!({
         currentVersion: self.version,
@@ -214,6 +225,30 @@ class IosApp < ActiveRecord::Base
     else
       [{country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count), country: 'United States'}]
     end
+  end
+
+  def first_seen_ads_date 
+    ios_fb_ads.order(date_seen: :desc).last.try(:date_seen)
+  end
+
+  def first_seen_ads_days
+    if first_seen_ads_date
+      (Time.now.to_date - first_seen_ads_date.to_date).to_i
+    end
+  end
+
+  def last_seen_ads_date
+    latest_facebook_ad.try(:date_seen)
+  end
+
+  def last_seen_ads_days
+    if last_seen_ads_date
+      (Time.now.to_date - last_seen_ads_date.to_date).to_i
+    end
+  end
+
+  def latest_facebook_ad
+    ios_fb_ads.order(date_seen: :desc).first
   end
 
   def international_userbase(user_bases: nil)

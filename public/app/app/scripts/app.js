@@ -72,6 +72,10 @@ angular
           templateUrl: '/app/app/views/newsfeed.html',
           activeTab: 'newsfeed'
         })
+        .when('/ad-intelligence', {
+          templateUrl: '/app/app/views/ad-intelligence.html',
+          activeTab: 'ad-intelligence'
+        })
         .when('/admin', {
           templateUrl: '/app/app/views/admin.html',
           activeTab: 'admin'
