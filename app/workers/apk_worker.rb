@@ -98,7 +98,9 @@ module ApkWorker
     raise e
   ensure
     FileUtils.rm_rf(apk_filename) if apk_filename && File.exist?(apk_filename)
-    google_account_reserver.release if google_account_reserver.has_account?
+    if defined?(google_account_reserver) and not(google_account_reserver.nil?) and google_account_reserver.has_account?
+      google_account_reserver.release
+    end
   end
 
   # generate apk file from downloaded apk
