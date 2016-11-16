@@ -52,20 +52,20 @@
             <th><div class="th">
               First Seen Ads
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="adIntelligenceCtrl.sortApps('first_seen_ads', 'desc') "
-                                    data-ng-class="{active: row == 'first_seen_ads'}"></span>
+                                    data-ng-click="adIntelligenceCtrl.sortApps('first_seen_ads', 'asc') "
+                                    ng-class="{active: rowSort == 'first_seen_ads'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" adIntelligenceCtrl.sortApps('first_seen_ads', 'asc') "
-                                    data-ng-class="{active: row == '-first_seen_ads'}"></span>
+                                    data-ng-click=" adIntelligenceCtrl.sortApps('first_seen_ads', 'desc') "
+                                    ng-class="{active: rowSort == '-first_seen_ads'}"></span>
             </div></th>
             <th><div class="th">
               Last Seen Ads
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="adIntelligenceCtrl.sortApps('last_seen_ads', 'desc') "
-                                    data-ng-class="{active: row == 'last_seen_ads'}"></span>
+                                    data-ng-click="adIntelligenceCtrl.sortApps('last_seen_ads', 'asc') "
+                                    ng-class="{active: rowSort == 'last_seen_ads'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" adIntelligenceCtrl.sortApps('last_seen_ads', 'asc') "
-                                    data-ng-class="{active: row == '-last_seen_ads'}"></span>
+                                    data-ng-click=" adIntelligenceCtrl.sortApps('last_seen_ads', 'desc') "
+                                    ng-class="{active: rowSort == '-last_seen_ads'}"></span>
             </div></th>
           <!--   <th><div class="th">
               Impressions

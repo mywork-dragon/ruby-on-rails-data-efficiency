@@ -7,6 +7,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
     $scope.currentPage = 1;
     $scope.order = 'desc';
     $scope.category = 'first_seen_ads'
+    $scope.rowSort = '-first_seen_ads'
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Ad Intelligence');
@@ -72,6 +73,9 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
     // When orderby/sort arrows on dashboard table are clicked
     adIntelligenceCtrl.sortApps = function(category, order) {
+      var sign = order == 'desc' ? '-' : ''
+      $scope.rowSort = sign + category
+
       mixpanel.track(
         "Table Sorting Changed", {
           "category": category,

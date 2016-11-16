@@ -159,79 +159,79 @@
               App Name
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('name', 'asc') "
-                                    data-ng-class="{active: row == 'name'}"></span>
+                                    data-ng-class="{active: rowSort == 'name'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('name', 'desc') "
-                                    data-ng-class="{active: row == '-name'}"></span>
+                                    data-ng-class="{active: rowSort == '-name'}"></span>
             </div></th>
             <th class="resultsTableAppPublisher"><div class="th">
               Publisher
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('publisher_name', 'asc') "
-                                    data-ng-class="{active: row == 'publisher_name'}"></span>
+                                    data-ng-class="{active: rowSort == 'publisher_name'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('publisher_name', 'desc') "
-                                    data-ng-class="{active: row == '-publisher_name'}"></span>
+                                    data-ng-class="{active: rowSort == '-publisher_name'}"></span>
             </div></th>
             <th><div class="th">
               Fortune Rank
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('fortune_rank', 'asc') "
-                                    data-ng-class="{active: row == 'fortune_rank'}"></span>
+                                    data-ng-class="{active: rowSort == 'fortune_rank'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('fortune_rank', 'desc') "
-                                    data-ng-class="{active: row == '-fortune_rank'}"></span>
+                                    data-ng-class="{active: rowSort == '-fortune_rank'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Mobile Priority
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('mobile_priority', 'asc') "
-                                    data-ng-class="{active: row == 'mobile_priority'}"></span>
+                                    data-ng-class="{active: rowSort == 'mobile_priority'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('mobile_priority', 'desc') "
-                                    data-ng-class="{active: row == '-mobile_priority'}"></span>
+                                    data-ng-class="{active: rowSort == '-mobile_priority'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Ad Spend
                               <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('old_facebook_ads', 'desc') "
-                                    data-ng-class="{active: row == 'old_facebook_ads'}"></span>
-                              <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-down"
                                     data-ng-click="searchCtrl.sortApps('old_facebook_ads', 'asc') "
-                                    data-ng-class="{active: row == '-old_facebook_ads'}"></span>
+                                    data-ng-class="{active: rowSort == 'old_facebook_ads'}"></span>
+                              <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click="searchCtrl.sortApps('old_facebook_ads', 'desc') "
+                                    data-ng-class="{active: rowSort == '-old_facebook_ads'}"></span>
                               <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('facebook_ads', 'desc') "
-                                    data-ng-class="{active: row == 'facebook_ads'}"></span>
+                                    data-ng-click="searchCtrl.sortApps('facebook_ads', 'asc') "
+                                    data-ng-class="{active: rowSort == 'facebook_ads'}"></span>
                               <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('facebook_ads', 'asc') "
-                                    data-ng-class="{active: row == '-facebook_ads'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('facebook_ads', 'desc') "
+                                    data-ng-class="{active: rowSort == '-facebook_ads'}"></span>
             </div></th>
             <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
               User Base Size
                              <!--  <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('user_base', 'asc') "
-                                    data-ng-class="{active: row == 'user_base'}"></span>
+                                    data-ng-class="{active: rowSort == 'user_base'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('user_base', 'desc') "
-                                    data-ng-class="{active: row == '-user_base'}"></span> -->
+                                    data-ng-class="{active: rowSort == '-user_base'}"></span> -->
             </div></th>
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('downloads_min', 'desc') "
-                                    data-ng-class="{active: row == 'downloads'}"></span>
+                                    data-ng-click="searchCtrl.sortApps('downloads_min', 'asc') "
+                                    data-ng-class="{active: rowSort == 'downloads'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('downloads_min', 'asc') "
-                                    data-ng-class="{active: row == '-downloads'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('downloads_min', 'desc') "
+                                    data-ng-class="{active: rowSort == '-downloads'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Category
                               <span class="glyphicon glyphicon-chevron-up"
                                     data-ng-click="searchCtrl.sortApps('categories', 'asc') "
-                                    data-ng-class="{active: row == 'categories'}"></span>
+                                    data-ng-class="{active: rowSort == 'categories'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
                                     data-ng-click=" searchCtrl.sortApps('categories', 'desc') "
-                                    data-ng-class="{active: row == '-categories'}"></span>
+                                    data-ng-class="{active: rowSort == '-categories'}"></span>
             </div></th>
             <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
               Support Desk
@@ -239,11 +239,11 @@
             <th><div class="th">
               Last Updated
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('last_updated', 'desc') "
-                                    data-ng-class="{active: row == 'last_updated'}"></span>
+                                    data-ng-click="searchCtrl.sortApps('last_updated', 'asc') "
+                                    data-ng-class="{active: rowSort == 'last_updated'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('last_updated', 'asc') "
-                                    data-ng-class="{active: row == '-last_updated'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('last_updated', 'desc') "
+                                    data-ng-class="{active: rowSort == '-last_updated'}"></span>
             </div></th>
           </tr>
           </thead>

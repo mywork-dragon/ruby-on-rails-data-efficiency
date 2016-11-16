@@ -385,6 +385,9 @@ angular.module('appApp')
 
       // When orderby/sort arrows on dashboard table are clicked
       searchCtrl.sortApps = function(category, order) {
+        var sign = order == 'desc' ? '-' : ''
+        $scope.rowSort = sign + category
+        
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Table Sorting Changed", {

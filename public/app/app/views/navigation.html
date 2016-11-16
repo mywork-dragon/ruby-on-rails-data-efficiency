@@ -16,7 +16,8 @@
             <a href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
         <li ng-if="canViewAdSpend" ng-class="{active: $route.current.activeTab == 'ad-intelligence'}">
-            <a href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span></a>
+            <a href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span>
+            <span class="label label-danger">NEW</span></a>
         </li>
         <!--
         <li ng-if="canViewStorewideSdks" ng-class="{active: $route.current.activeTab == 'sdks'}">
@@ -36,10 +37,10 @@
             </ul>
         </li>
         <li>
-            <a href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span><span class="label label-danger">NEW</span></a>
+            <a href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
         </li>
         <li>
-            <a href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" target="_blank">
+            <a href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="clickedNavLink('Chrome App')" target="_blank">
                 <i class="fa fa-chrome"></i><span>Chrome App</span>
             </a>
         <li>
