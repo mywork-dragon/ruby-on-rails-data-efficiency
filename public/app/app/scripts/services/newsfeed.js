@@ -27,15 +27,6 @@ angular.module("appApp")
               name: name
             }
           );
-          var slacktivityData = {
-            "title": action,
-            "fallback": action,
-            "color": "#45825A",
-            'type': type,
-            'name': name,
-            'url': "http://mightysignal.com/app/app#/" + class_name + '/' + platform + '/' + id,
-          };
-          slacktivity.notifySlack(slacktivityData);
         });
       }
     }

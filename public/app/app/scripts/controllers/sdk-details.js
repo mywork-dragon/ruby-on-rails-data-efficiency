@@ -45,14 +45,6 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
             "platform": $scope.appPlatform
           }
         );
-
-        var slacktivityData = {
-          "title": "SDK Details Page Viewed",
-          "fallback": "SDK Details Page Viewed",
-          "color": "#FFD94D", // yellow
-        };
-        slacktivity.notifySlack(slacktivityData);
-
       }).error(function() {
         sdkDetailsCtrl.queryInProgress = false;
       });

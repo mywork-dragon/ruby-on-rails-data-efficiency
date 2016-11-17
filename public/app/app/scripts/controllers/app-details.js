@@ -70,14 +70,16 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         /* -------- Mixpanel Analytics End -------- */
 
         if ($routeParams.from == 'ewok') {
-          var slacktivityData = {
-            "title": "A wild Ewok appeared",
-            "color": "#FFD94D",
-            'appName': $scope.appData.name,
-            "appPlatform": $routeParams.platform,
-            'appId': $routeParams.id
-          };
-          slacktivity.notifySlack(slacktivityData);
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Ewok App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.publisher.name,
+              "appPlatform": $routeParams.platform
+            }
+          );
+          /* -------- Mixpanel Analytics End -------- */
         }
 
         /* Sets html title attribute */

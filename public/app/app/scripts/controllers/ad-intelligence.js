@@ -43,6 +43,15 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
     };
 
     $scope.onAdIntelligenceAppClick = function(app) {
+      var slacktivityData = {
+        "title": "Ad Intelligence App Clicked",
+        "fallback": "Ad Intelligence Viewed",
+        "color": "#FFD94D", // yellow
+        "appName": app.name,
+        "appId": app.id,
+        "appPlatform": app.type
+      };
+      slacktivity.notifySlack(slacktivityData);
       mixpanel.track(
         "App on Ad Intelligence Clicked", {
           "publisherName": app.publisher.name,
@@ -87,6 +96,13 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
     };
 
     mixpanel.track("Ad Intelligence Viewed");
+    var slacktivityData = {
+      "title": "Ad Intelligence Viewed",
+      "fallback": "Ad Intelligence Viewed",
+      "color": "#FFD94D", // yellow
+    };
+    slacktivity.notifySlack(slacktivityData);
+
     adIntelligenceCtrl.load();
   }
 ]);

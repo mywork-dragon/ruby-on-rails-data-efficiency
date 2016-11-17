@@ -47,15 +47,6 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         batchId: id
       });
 
-      var slacktivityData = {
-        "title": "Expanded Timeline Item",
-        "color": "#FFD94D",
-        activityType: batch.activity_type,
-        owner: batch.owner.name,
-        platform: batch.owner.platform,
-        type: batch.owner.type
-      };
-      slacktivity.notifySlack(slacktivityData);
       batch.isLoading = true
       $http({
         method: 'GET',
@@ -83,16 +74,6 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         type: batch.owner.type,
         batchId: id
       });
-
-      var slacktivityData = {
-        "title": "Exported Timeline Item",
-        "color": "#FFD94D",
-        activityType: batch.activity_type,
-        owner: batch.owner.name,
-        platform: batch.owner.platform,
-        type: batch.owner.type
-      };
-      slacktivity.notifySlack(slacktivityData);
 
       return $http({
         method: 'GET',
@@ -145,15 +126,6 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       if (type == 'AndroidSdk' || type == 'IosSdk') {
         class_name = 'sdk'
       }
-
-      var slacktivityData = {
-        "title": "Clicked Timeline Item",
-        "color": "#FFD94D",
-        'type': type,
-        'name': name,
-        'url': "http://mightysignal.com/app/app#/" + class_name + '/' + platform + '/' + id,
-      };
-      slacktivity.notifySlack(slacktivityData);
     }
 
     $scope.openAdModal = function (batch, index) {

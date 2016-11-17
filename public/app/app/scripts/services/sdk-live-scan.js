@@ -74,21 +74,6 @@ angular.module("appApp")
             }
           );
           /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          var slacktivityData = {
-            "title": "Android Live Scan Success",
-            "fallback": "Android Live Scan Success",
-            "color": "#45825A",
-            'appName': appData.name,
-            'companyName': (appData.publisher || {}).name,
-            'appId': appData.id,
-            'sdkInstalls': sdkInstalls,
-            'sdkUninstalls': sdkUninstalls,
-            'lastUpdated': sdkData.lastUpdated
-          };
-          slacktivity.notifySlack(slacktivityData, true);
-          /* -------- Slacktivity Alerts End -------- */
-
         });
 
       },
@@ -168,19 +153,7 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + platform + '_app',
           params: {id: appId}
         }).success(function(data) {
-
-        appData = data;
-
-          /* -------- Slacktivity Alerts -------- */
-          var slacktivityData = {
-            "title": "Android Live Scan Success (Unchanged Version)",
-            "fallback": "Android Live Scan Success (Unchanged Version)",
-            "color": "#45825A",
-            'appName': appData.name,
-            'companyName': (appData.publisher || {}).name,
-            'appId': appData.id,
-          };
-          slacktivity.notifySlack(slacktivityData, true);
+          appData = data;
         })
       },
       iosLiveScanSuccessRequestAnalytics: function(platform, appId, sdkData) {
@@ -211,19 +184,6 @@ angular.module("appApp")
             }
           );
           /* -------- Mixpanel Analytics End -------- */
-          /* -------- Slacktivity Alerts -------- */
-          var slacktivityData = {
-            "title": "iOS Live Scan Success",
-            "fallback": "iOS Live Scan Success",
-            "color": "#45825A",
-            'appName': appData.name,
-            'companyName': (appData.publisher || {}).name,
-            'appId': appData.id,
-            'sdkInstalls': sdkInstalls,
-            'sdkUninstalls': sdkUninstalls,
-            'lastUpdated': sdkData.lastUpdated
-          };
-          slacktivity.notifySlack(slacktivityData, true);
         });
 
       },

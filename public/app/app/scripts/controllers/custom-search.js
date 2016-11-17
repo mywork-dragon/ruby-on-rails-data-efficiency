@@ -88,15 +88,6 @@ angular.module('appApp')
             }
           );
 
-          var slacktivityData = {
-            "title": "SDK Custom Search",
-            "fallback": "SDK Custom Search",
-            "color": "#FFD94D", // yellow
-            "platform": customSearchCtrl.platform,
-            "query": customSearchCtrl.searchInput
-          };
-          slacktivity.notifySlack(slacktivityData);
-
         } else {
 
           // Set URL & process request using Custom Search Ctrl

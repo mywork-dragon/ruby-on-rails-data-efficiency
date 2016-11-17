@@ -329,13 +329,13 @@ angular.module('appApp')
               searchQueryPairs
             );
 
-            if($rootScope.sdkFilterPresent) {
+            if(searchQueryPairs['locationFiltersAnd'] || searchQueryPairs['locationFiltersOr']) {
               var slacktivityData = {
-                "title": "SDK Filter Query",
-                "fallback": "SDK Filter Query",
+                "title": "Location Filter Query",
+                "fallback": "Location Filter Query",
                 "color": "#FFD94D", // yellow
-                "sdkNames": sdkNames.join(', '),
-                "tags": searchQueryFields.join(', '),
+                "locationFiltersAnd": JSON.stringify(searchQueryPairs['locationFiltersAnd']),
+                "locationFiltersOr": JSON.stringify(searchQueryPairs['locationFiltersOr']),
                 "numOfApps": data.resultsCount
               };
               slacktivity.notifySlack(slacktivityData);
