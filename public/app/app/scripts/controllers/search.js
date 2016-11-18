@@ -299,6 +299,7 @@ angular.module('appApp')
             $scope.listButtonDisabled = false
             searchCtrl.apps = data.results;
             searchCtrl.numApps = data.resultsCount;
+            $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
             $rootScope.currentPage = data.pageNum;
             searchCtrl.currentPage = data.pageNum;
