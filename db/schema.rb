@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161111005151) do
+ActiveRecord::Schema.define(version: 20161122022218) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -2497,6 +2497,16 @@ ActiveRecord::Schema.define(version: 20161111005151) do
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["tos_accepted"], name: "index_users_on_tos_accepted", using: :btree
+
+  create_table "users_countries", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4
+    t.string   "country_code", limit: 191
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "users_countries", ["country_code"], name: "index_users_countries_on_country_code", using: :btree
+  add_index "users_countries", ["user_id", "country_code"], name: "index_users_countries_on_user_id_and_country_code", unique: true, using: :btree
 
   create_table "websites", force: :cascade do |t|
     t.string   "url",          limit: 191
