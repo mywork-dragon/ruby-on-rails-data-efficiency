@@ -254,7 +254,7 @@ class AppStoreInternationalService
       # Because of how jobs on scrapers are used. this currently works
       if ServiceStatus.is_active?(:auto_ios_mass_scan)
         IosMassScanService.run_recently_released(automated: true)
-        IosMassScanService.run_recently_updated(automated: true)
+        IosMassScanService.run_recently_updated(automated: true, n: 2000)
       end
     end
   end
