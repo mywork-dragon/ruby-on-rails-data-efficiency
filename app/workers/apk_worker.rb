@@ -146,14 +146,11 @@ module ApkWorker
 
       FileRemover.remove_multimedia_files(unzipped_path)
 
-      # only s3 upload in production
       Zipper.zip(unzipped_path) do |zipped_path|
-        if Rails.env.production?
-          apk_file.zip = File.open(zipped_path)
-          apk_file.zip_file_name = "#{apk_file_path}.zip"
-          apk_file.save!
-          apk_file.upload_class_summary(classes_from_zipped(zipped_path))
-        end
+        apk_file.zip = File.open(zipped_path)
+        apk_file.zip_file_name = "#{apk_file_path}.zip"
+        apk_file.save!
+        apk_file.upload_class_summary(classes_from_zipped(zipped_path))
       end
     end
     ret
