@@ -30,14 +30,14 @@ module Varys
     Dir.glob(Rails.root.join('app/lib/**/')).each do |folder|
       config.autoload_paths << folder
     end
-    
+
     #turn of auto-generation of stylesheet and Javascripts
     config.generators do |g|
       g.stylesheets     false
       g.javascripts     false
       g.test_framework  false
     end
-    
+
     #cors
     # config.middleware.insert_before 0, "Rack::Cors" do
     #   allow do
@@ -45,10 +45,15 @@ module Varys
     #     resource '*', :headers => :any, :methods => [:get, :post, :options]
     #   end
     # end
-    
+
     # opt into Rails 5 behavior to avoid deprecation warnings
     config.active_record.raise_in_transactional_callbacks = true
 
+    # The bucket to store apk pkg summary files.
+    config.app_pkg_summary_bucket = {
+        "development" => "varys-apk-file-summaries-dev",
+        "production" => "varys-apk-file-summaries"}
+    config.app_pkg_summary_bucket_region = "us-east-1"
   end
 end
 
