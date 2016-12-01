@@ -89,16 +89,12 @@ Rails.application.configure do
     authentication:       'plain',
     enable_starttls_auto: true  }
 
-  s3_credentials = YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
 
   config.paperclip_defaults = {
     :storage => :s3,
     :s3_region => 'us-east-1',
-    :s3_credentials => s3_credentials
+    :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
   }
-
-  ENV['AWS_ACCESS_KEY_ID'] = s3_credentials["access_key_id"]
-  ENV['AWS_SECRET_ACCESS_KEY'] = s3_credentials["secret_access_key"]
 
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
 
