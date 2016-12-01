@@ -32,7 +32,7 @@ class ApkFile < ActiveRecord::Base
       data_str: classes.join("\n"))
   end
 
-  def classes()
+  def classes
     s3_client.get_object(
       bucket: Rails.application.config.app_pkg_summary_bucket[Rails.env],
       key_path: s3_classes_key).read.split("\n")
