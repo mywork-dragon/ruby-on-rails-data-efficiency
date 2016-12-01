@@ -5,7 +5,7 @@ module ApkWorker
     @failed_devices = []
     download_apk_v2(apk_snapshot_job_id, android_app_id, google_account_id: nil)
   end
-  
+
   # The path of the apk_file on the box
   def apk_file_path
     if Rails.env.production?
@@ -67,7 +67,7 @@ module ApkWorker
     message = ":skull_and_crossbones:: Google Account #{google_account.id} has been disabled for authentication issues"
     Slackiq.message(message, webhook_name: :automated_alerts)
   end
-  
+
   def download_and_save(apk_snapshot_job_id, android_app)
     snapshot = ApkSnapshot.create!(
       apk_snapshot_job_id: apk_snapshot_job_id,
@@ -124,6 +124,17 @@ module ApkWorker
     apk_file
   end
 
+  def classes_from_zipped(zipped_path)
+    dex = Android::Apk.new(zipped_path).dex
+    classes = dex.present? ? dex.classes.map(&:name) : []
+    classes.map do |c|
+      next if c.blank?
+      c.sub!(/\AL/, '') # remove leading L
+      package = c.split('/')  # split by /
+      package.join('.').chomp ';'
+    end.compact.uniq
+  end
+
   # unzips, removes multimedia, zips, and saves the apk file to s3
   # returns the apk version information from the manifest
   def zip_and_save_with_blocks(apk_file:, apk_file_path:)
@@ -135,13 +146,11 @@ module ApkWorker
 
       FileRemover.remove_multimedia_files(unzipped_path)
 
-      # only s3 upload in production
       Zipper.zip(unzipped_path) do |zipped_path|
-        if Rails.env.production?
-          apk_file.zip = File.open(zipped_path)
-          apk_file.zip_file_name = "#{apk_file_path}.zip"
-          apk_file.save!
-        end
+        apk_file.zip = File.open(zipped_path)
+        apk_file.zip_file_name = "#{apk_file_path}.zip"
+        apk_file.save!
+        apk_file.upload_class_summary(classes_from_zipped(zipped_path))
       end
     end
     ret

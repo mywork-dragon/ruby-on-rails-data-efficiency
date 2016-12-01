@@ -78,7 +78,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  
+
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp.gmail.com',
@@ -98,5 +98,8 @@ Rails.application.configure do
 
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
 
+  # The bucket to store apk pkg summary files.
+  config.app_pkg_summary_bucket = "varys-apk-file-summaries"
+  config.app_pkg_summary_bucket_region = "us-east-1"
 
 end
