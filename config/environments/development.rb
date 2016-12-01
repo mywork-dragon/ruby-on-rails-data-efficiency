@@ -55,4 +55,8 @@ Rails.application.configure do
 
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
 
+  # The bucket to store apk pkg summary files.
+  config.app_pkg_summary_bucket = "varys-apk-file-summaries-dev"
+  config.app_pkg_summary_bucket_region = "us-east-1"
+
 end

@@ -27,14 +27,14 @@ class ApkFile < ActiveRecord::Base
   def upload_class_summary(classes)
     # Uploads an sdk summary to s3.
     s3_client.store(
-      bucket: Rails.application.config.app_pkg_summary_bucket[Rails.env],
+      bucket: Rails.application.config.app_pkg_summary_bucket,
       key_path: s3_classes_key,
       data_str: classes.join("\n"))
   end
 
   def classes
     s3_client.get_object(
-      bucket: Rails.application.config.app_pkg_summary_bucket[Rails.env],
+      bucket: Rails.application.config.app_pkg_summary_bucket,
       key_path: s3_classes_key).read.split("\n")
   end
 

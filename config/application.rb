@@ -49,11 +49,6 @@ module Varys
     # opt into Rails 5 behavior to avoid deprecation warnings
     config.active_record.raise_in_transactional_callbacks = true
 
-    # The bucket to store apk pkg summary files.
-    config.app_pkg_summary_bucket = {
-        "development" => "varys-apk-file-summaries-dev",
-        "production" => "varys-apk-file-summaries"}
-    config.app_pkg_summary_bucket_region = "us-east-1"
   end
 end
 
