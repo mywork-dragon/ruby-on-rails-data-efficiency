@@ -14,7 +14,7 @@ class ApkFileTest < ActiveSupport::TestCase
       end
       def retrieve(bucket:, key_path:)
         @key_returned_from = key_path
-        StringIO.new @data
+        @data
       end
     end
 
