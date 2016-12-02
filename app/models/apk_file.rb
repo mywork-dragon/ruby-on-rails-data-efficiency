@@ -33,9 +33,9 @@ class ApkFile < ActiveRecord::Base
   end
 
   def classes
-    s3_client.get_object(
+    s3_client.retrieve(
       bucket: Rails.application.config.app_pkg_summary_bucket,
-      key_path: s3_classes_key).read.split("\n")
+      key_path: s3_classes_key).split("\n")
   end
 
   def get_s3_bucket

@@ -12,7 +12,7 @@ class ApkFileTest < ActiveSupport::TestCase
         @data = data_str
         @key_stored_to = key_path
       end
-      def get_object(bucket:, key_path:)
+      def retrieve(bucket:, key_path:)
         @key_returned_from = key_path
         StringIO.new @data
       end
