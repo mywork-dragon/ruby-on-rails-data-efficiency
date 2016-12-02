@@ -380,8 +380,8 @@ class IosApp < ActiveRecord::Base
     self.get_company.try(:fortune_1000_rank)
   end
 
-  def headquarters
-    ios_developer.try(:headquarters) || []
+  def headquarters(limit=100)
+    ios_developer.try(:headquarters, limit) || []
   end
 
   def release_date
@@ -416,7 +416,7 @@ class IosApp < ActiveRecord::Base
     company = self.get_company
     developer = self.ios_developer
     newest_snapshot = self.newest_ios_app_snapshot
-    hqs = self.headquarters
+    hqs = self.headquarters(1)
 
     row = [
       self.id,
@@ -444,8 +444,9 @@ class IosApp < ActiveRecord::Base
       hqs.map{|hq| hq[:country]}.join('|'),            
       hqs.map{|hq| hq[:postal_code]}.join('|'), 
     ]
-    AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
-      row << first_international_snapshot(country_code: store.country_code).try(:user_base)
+    AppStore.enabled.order("display_priority IS NULL, display_priority ASC").
+                     joins(:ios_app_current_snapshots).where('ios_app_current_snapshots.ios_app_id' => self.id).pluck('user_base').each do |user_base|
+      row << IosAppCurrentSnapshot.user_bases.key(user_base)
     end
     row
   end

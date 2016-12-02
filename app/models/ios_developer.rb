@@ -34,23 +34,25 @@ class IosDeveloper < ActiveRecord::Base
     return results, filter_results.total_count
   end
 
-  def headquarters
+  def headquarters(limit=100)
     headquarters = []
-    valid_websites.joins(:domain_datum).select('domain_data.*, websites.url').each do |website|
-      next unless website.country_code
+    valid_websites.joins(:domain_datum).limit(limit).
+      pluck('domain','street_number','street_name','sub_premise','city','postal_code','state',
+            'state_code','country','country_code','lat','lng').each do |data|
+      next unless data[9]
       headquarters << {
-        domain: website.domain,
-        street_number: website.street_number,
-        street_name: website.street_name,
-        sub_premise: website.sub_premise,
-        city: website.city,
-        postal_code: website.postal_code,
-        state: website.state,
-        state_code: website.state_code,
-        country: website.country,
-        country_code: website.country_code,
-        lat: website.lat,
-        lng: website.lng
+        domain: data[0],
+        street_number: data[1],
+        street_name: data[2],
+        sub_premise: data[3],
+        city: data[4],
+        postal_code: data[5],
+        state: data[6],
+        state_code: data[7],
+        country: data[8],
+        country_code: data[9],
+        lat: data[10],
+        lng: data[11]
       }
     end
     headquarters.uniq

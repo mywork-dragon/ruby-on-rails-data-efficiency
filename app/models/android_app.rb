@@ -75,7 +75,7 @@ class AndroidApp < ActiveRecord::Base
     company = self.get_company
     developer = self.android_developer
     newest_snapshot = self.newest_android_app_snapshot
-    hqs = self.headquarters
+    hqs = self.headquarters(1)
 
     row = [
       self.id,
@@ -208,8 +208,8 @@ class AndroidApp < ActiveRecord::Base
     self.android_fb_ad_appearances.present?
   end
 
-  def headquarters
-    android_developer.try(:headquarters) || []
+  def headquarters(limit=100)
+    android_developer.try(:headquarters, limit) || []
   end
 
   def downloads
