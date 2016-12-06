@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   has_many :lists_users
   has_many :lists, through: :lists_users
 
+  has_many :users_countries
+
   has_many :follow_relationships
   has_many :followed_ios_sdks, through: :follow_relationships, source: :followable, source_type: 'IosSdk'
   has_many :followed_android_apps, through: :follow_relationships, source: :followable, source_type: 'AndroidApp'
@@ -45,6 +47,17 @@ class User < ActiveRecord::Base
     AuthToken.encode(payload)
   end
 
+  def territories
+    self.users_countries.map{ |user_country|
+      country = ISO3166::Country.new(user_country.country_code)
+      {
+        id: country.alpha2, 
+        name: country.name, 
+        icon: "/lib/images/flags/#{country.alpha2.downcase}.png"
+      }
+    }
+  end
+
   def follow(followable)
     self.follow_relationships.create(followable: followable) unless following?(followable)
   end
@@ -61,10 +74,10 @@ class User < ActiveRecord::Base
     followed_ios_sdks.to_a + followed_android_apps.to_a + followed_ios_apps.to_a + followed_android_sdks.to_a
   end
 
-  def weekly_batches(page_num)
+  def weekly_batches(page_num, country_codes=nil)
     time = Time.now - page_num.months
     following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
-               self.followed_ios_apps.to_a
+                self.followed_ios_apps.to_a
     
     batches = following.map{|object| 
       object.weekly_batches.where('week >= ? and week < ? and activity_type != ?', time, time + 1.month, WeeklyBatch.activity_types[:entered_top_apps]).order(week: :desc).to_a
@@ -72,18 +85,13 @@ class User < ActiveRecord::Base
 
     batches_by_week = {}
     batches.each do |batch|
-      platform = if batch.owner_type == 'AndroidSdk' || batch.owner_type == 'AndroidApp'
-        'android'
-      elsif batch.owner_type == 'IosSdk' || batch.owner_type == 'IosApp' || batch.owner_type == 'AdPlatform'
-        'ios'
-      else
-        'other'
-      end
+      next if country_codes && batch.sorted_activities(country_codes: country_codes).empty?
+
       batches_by_week[batch.week] ||= {}
-      if batches_by_week[batch.week][platform] 
-        batches_by_week[batch.week][platform] << batch
+      if batches_by_week[batch.week][batch.platform] 
+        batches_by_week[batch.week][batch.platform] << batch
       else
-        batches_by_week[batch.week][platform] = [batch]
+        batches_by_week[batch.week][batch.platform] = [batch]
       end
     end
 

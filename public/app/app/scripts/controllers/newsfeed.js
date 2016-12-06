@@ -8,10 +8,18 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     $scope.isCollapsed = true;
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
     $scope.page = 1;
-    newsfeedCtrl.weeks = []
+    $scope.locations = [];
+    newsfeedCtrl.weeks = [];
+
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Timeline');
+
+    newsfeedCtrl.countryCodes = function() {
+      return $scope.locations.map(function(location) {
+        return location.id;
+      })
+    }
 
     // Sets user permissions
     authService.permissions()
@@ -19,22 +27,32 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         $scope.canViewAdSpend = data.can_view_ad_spend;
         $scope.canViewAdAttribution = data.can_view_ad_attribution;
         $scope.canViewExports = data.can_view_exports;
+        $scope.locations = data.territories;
+
+        newsfeedCtrl.load();
       });
 
-    newsfeedCtrl.load = function() {
+    newsfeedCtrl.load = function(shouldReset) {
+      if (shouldReset) {
+        newsfeedCtrl.weeks = [];
+        $scope.initialPageLoadComplete = false;
+        $scope.page = 1;
+      }
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/newsfeed',
-        params: {page: $scope.page}
+        params: {page: $scope.page, 'country_codes[]': newsfeedCtrl.countryCodes()}
       }).success(function(data) {
-        newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
+        if (shouldReset) {
+          newsfeedCtrl.weeks = _.sortBy(data.weeks, 'week').reverse();
+        } else { 
+          newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
+        }
+
         $scope.following = data.following
         $scope.initialPageLoadComplete = true;
       });
-
     };
-
-    newsfeedCtrl.load();
 
     $scope.loadBatch = function(id, batch, page, perPage) {
       page = page || 1
@@ -51,7 +69,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       $http({
         method: 'GET',
         url: API_URI_BASE + 'api/newsfeed/details',
-        params: {batchId: id, pageNum: page, perPage: perPage}
+        params: {batchId: id, pageNum: page, perPage: perPage, 'country_codes[]': newsfeedCtrl.countryCodes()}
       }).success(function(data) {
         batch.activities = data.activities;
         batch.isLoading = false
@@ -78,7 +96,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/newsfeed/export',
-        params: {batchId: id}
+        params: {batchId: id, 'country_codes[]': newsfeedCtrl.countryCodes()}
       }).success(function(content) {
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
@@ -95,8 +113,59 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     }
 
     $scope.loadMoreBatches = function() {
-      $scope.page++;
-      newsfeedCtrl.load();
+      if ($scope.initialPageLoadComplete) {
+        $scope.initialPageLoadComplete = false;
+        $scope.page++;
+        newsfeedCtrl.load();
+      }
+    }
+
+    $scope.locationAutocompleteUrl = function(status) {
+      return API_URI_BASE + "api/location/autocomplete?status=" + status + "&query="
+    }
+
+    $scope.removeLocation = function(index) {
+      var countryCode = $scope.locations[index].id
+      $scope.locations.splice(index, 1)
+
+      $http({
+        method: 'POST',
+        url: API_URI_BASE + 'api/newsfeed/remove_country',
+        params: {country_code: countryCode}
+      }).success(function(content) {
+        mixpanel.track("Removed Country from Timeline", {
+          countryCode: countryCode,
+        });
+        $scope.loadWithDelay()
+      })       
+    }
+
+    $scope.loadWithDelay = function() {
+      // to prevent timeline from reloading too frequently
+      if ($scope.timer) {
+        clearTimeout($scope.timer)
+      }
+      $scope.timer = setTimeout(function() {
+        newsfeedCtrl.load(true);
+      }, 1500)
+    }
+
+    $scope.selectedCountry = function ($item) {  
+      var index = $scope.locations.indexOf($item.originalObject)
+      var countryCode = $item.originalObject.id
+      if (index < 0) {
+        $scope.locations.push($item.originalObject)
+      }
+      $http({
+        method: 'POST',
+        url: API_URI_BASE + 'api/newsfeed/add_country',
+        params: {country_code: countryCode}
+      }).success(function(content) {
+        mixpanel.track("Added Country to Timeline", {
+          countryCode: countryCode,
+        });
+        $scope.loadWithDelay()
+      })                   
     }
 
     $scope.clickedTimelineItem = function(batch, activity, clickedType) {

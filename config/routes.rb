@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   get 'api/newsfeed/details' => 'api#newsfeed_details'
   get 'api/newsfeed/export' => 'api#newsfeed_export'
   post 'api/newsfeed/follow' => 'api#newsfeed_follow'
+  post 'api/newsfeed/add_country' => 'api#newsfeed_add_country'
+  post 'api/newsfeed/remove_country' => 'api#newsfeed_remove_country'
 
   get 'api/ad_intelligence' => 'api#ad_intelligence'
 

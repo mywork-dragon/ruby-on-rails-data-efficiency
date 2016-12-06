@@ -7527,6 +7527,23 @@ span#dashboardResultsTableHeadingNumDisplayed {
   margin-top: 10%;
 }
 
+.newsfeedPageRow > #wrap_spinner {
+  text-align: center;
+  margin: 60px 0;
+}
+
+.newsfeedPageRow h5 {
+  font-size: 15px;
+}
+
+#newsfeedPage > #wrap_spinner {
+  margin-top: 20% !important;
+}
+
+#newsfeedPage .location-filter {
+  margin-top: 20px;
+}
+
 .sdkScanGeneralInfo {
   margin-top: 15px;
 }
@@ -7961,7 +7978,6 @@ pre {
 .angucomplete-image {
   margin-top: 8px;
   width: 16px;
-  height: 16px;
 }
 
 .angucomplete-image-default {
@@ -8119,23 +8135,23 @@ button.dropdown-toggle .caret {
   cursor: pointer;
 }
 
-.adminPageRow .tags {
+.adminPageRow .tags, .newsfeedPageRow .tags {
   padding: 0;
   background: none;
 }
 
-.adminPageRow .ui-tags-input {
+.adminPageRow .ui-tags-input, .newsfeedPageRow .ui-tags-input {
   overflow: auto;
-  float: right;
+  float: left;
 }
 
-.adminPageRow .angucomplete-holder {
+.adminPageRow .angucomplete-holder, .newsfeedPageRow .angucomplete-holder {
   top: 0;
   margin-left: 0;
 }
 
-.adminPageRow .ui-tags-input .tags .tag-item {
-  margin: 0 10px 0 0;
+.adminPageRow .ui-tags-input .tags .tag-item, .newsfeedPageRow .ui-tags-input .tags .tag-item {
+  margin: 0 10px 10px 0;
 }
 
 .newsfeedPageRow, .adminPageRow, .chartPageRow {

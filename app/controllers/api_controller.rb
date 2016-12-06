@@ -98,7 +98,8 @@ class ApiController < ApplicationController
 
   def newsfeed
     page = [params[:page].to_i, 1].max
-    weeks = @current_user.weekly_batches(page)
+    country_codes = params[:country_codes]
+    weeks = @current_user.weekly_batches(page, country_codes)
     newsfeed_json = {
       following: @current_user.following.map{|follow| follow.as_json({user: @current_user})},
       weeks: weeks.map{|week, platforms| {
@@ -106,7 +107,7 @@ class ApiController < ApplicationController
         label: view_context.week_formatter(week),
         platforms: platforms.map{|platform, batches| {
           platform: platform,
-          batches: batches 
+          batches: batches.as_json(country_codes: country_codes) 
         }}
       }}
     }
@@ -115,11 +116,12 @@ class ApiController < ApplicationController
 
   def newsfeed_details
     batch = WeeklyBatch.find(params[:batchId])
+    country_codes = params[:country_codes]
     page_num = params[:pageNum].to_i
     per_page = params[:perPage].to_i
 
     newsfeed = batch.as_json({page: page_num})
-    newsfeed[:activities] = batch.sorted_activities(page_num, per_page).map{|activity| {
+    newsfeed[:activities] = batch.sorted_activities(page_num: page_num, per_page: per_page, country_codes: country_codes).map{|activity| {
       id: activity.id,
       happened_at: activity.happened_at,
       other_owner: activity.other_owner(batch.owner),
@@ -131,7 +133,8 @@ class ApiController < ApplicationController
 
   def newsfeed_export
     batch = WeeklyBatch.find(params[:batchId])
-    apps = batch.sorted_activities.map{|activity| activity.other_owner(batch.owner)}
+    country_codes = params[:country_codes]
+    apps = batch.sorted_activities(country_codes: country_codes).map{|activity| activity.other_owner(batch.owner)}
 
     header = csv_header
 
@@ -155,6 +158,18 @@ class ApiController < ApplicationController
       @current_user.follow(followable)
     end
     render json: {:following => @current_user.following?(followable)}
+  end
+
+  def newsfeed_add_country
+    country_code = params[:country_code]
+    @current_user.users_countries.find_or_create_by(country_code: country_code)
+    render json: {success: true}
+  end
+
+  def newsfeed_remove_country
+    country_code = params[:country_code]
+    @current_user.users_countries.where(country_code: country_code).delete_all
+    render json: {success: true}
   end
 
   # Get details of iOS app.

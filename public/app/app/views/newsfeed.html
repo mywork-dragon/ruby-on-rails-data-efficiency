@@ -1,17 +1,37 @@
 <div id="newsfeedPage" data-ng-controller="NewsfeedCtrl as newsfeedCtrl">
-  <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
-    <div class="loading outer">
-      <div class="loading inner"></div>
-    </div>
-  </div>
-
-  <div ng-if="initialPageLoadComplete">
+  <div>
     <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
-      <h4 class="empty-message" ng-hide="newsfeedCtrl.weeks.length">
-        You are not following any apps or SDKs. Follow some to see your Timeline!
+      <button type="submit" class="btn btn-primary pull-right" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
+      <h5>Filter by App Headquarter Location</h5>
+      <div class="location-filter">
+        <angucomplete-alt id="sdk-autocomplete-filter"
+                         placeholder="Country"
+                         pause="100"
+                         selected-object="selectedCountry"
+                         remote-url="{{locationAutocompleteUrl()}}"
+                         remote-url-data-field="results"
+                         search-fields="name"
+                         title-field="name"
+                         id-field="id"
+                         clear-selected="true"
+                         image-field="icon"
+                         minlength="1"
+                         input-class="form-control form-control-small autocomplete-filter">
+        </angucomplete-alt>
+        <div class="ui-tags-input" ng-if="locations.length">
+          <ul class="tags">
+            <li ng-repeat="location in locations" class="tag-item">
+              <img ng-src="{{location.icon}}" />
+              {{location.name}}
+              <a class="remove-button" ng-click="removeLocation($index)">×</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <h4 class="empty-message" ng-hide="newsfeedCtrl.weeks.length || !initialPageLoadComplete">
+        You are not following any apps/SDKs or your headquarter filters are too specific. Follow some more apps/SDKs to see your Timeline!
       </h4>
-      <button type="submit" class="btn btn-default" ng-show="newsfeedCtrl.weeks.length" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
-      <div ng-repeat="week in newsfeedCtrl.weeks" >
+      <div ng-if="initialPageLoadComplete || newsfeedCtrl.weeks.length" ng-repeat="week in newsfeedCtrl.weeks" >
         <h4 class="week">{{week.label}}</h4>
         <div data-ng-repeat="platform in week.platforms">
           <div class="platform">
@@ -255,6 +275,11 @@
             </div>
           </div>
          </div> 
+        </div>
+      </div>
+      <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
+        <div class="loading outer">
+          <div class="loading inner"></div>
         </div>
       </div>
     </div>
