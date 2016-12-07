@@ -169,7 +169,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     }
 
     $scope.clickedTimelineItem = function(batch, activity, clickedType) {
-      var other_owner = activity.other_owner.type == 'AdPlatform' ? activity.other_owner : activity.other_owner.app
+      var other_owner = activity.other_owner
       var type = other_owner.type
       var id = other_owner.id
       var activity_type = batch.activity_type
