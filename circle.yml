@@ -1,0 +1,19 @@
+machine:
+  ruby:
+    version: 2.1.2
+  services:
+    - docker
+dependencies:
+  pre:
+    - $(aws ecr get-login --region us-east-1)
+    - gem update bundler
+    - bundle config path ~/bundle/
+    - bundle install --without development
+  cache_directories:
+    - "~/bundle"
+
+test:
+  override:
+    - bundle exec rubocop
+    - bundle exec rake test
+
