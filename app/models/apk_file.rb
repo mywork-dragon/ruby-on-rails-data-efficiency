@@ -20,7 +20,12 @@ class ApkFile < ActiveRecord::Base
 
   def s3_classes_key
     # Key is the sha1 of the url path
-    prefix = Digest::SHA1.hexdigest(URI.parse(zip.url).path)
+    if zip.present?
+      url = zip.url
+    else
+      url = apk.url
+    end
+    prefix = Digest::SHA1.hexdigest(URI.parse(url).path)
     "classes/#{prefix}.classes.gz"
   end
 
