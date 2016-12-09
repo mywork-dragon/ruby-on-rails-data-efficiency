@@ -124,15 +124,28 @@ module ApkWorker
     apk_file
   end
 
-  def classes_from_zipped(zipped_path)
-    dex = Android::Apk.new(zipped_path).dex
-    classes = dex.present? ? dex.classes.map(&:name) : []
-    classes.map do |c|
-      next if c.blank?
-      c.sub!(/\AL/, '') # remove leading L
-      package = c.split('/')  # split by /
-      package.join('.').chomp ';'
-    end.compact.uniq
+  def classes_from_unzipped_path(unzipped_path)
+    dex_files = Dir[File.join(unzipped_path, "*")].map do |file|
+      next if not file.ends_with? '.dex'
+      file
+    end.compact
+    classes = []
+    dex_files.map do |d|
+      begin
+        dex_file = File.open(d, "r")
+        dex = Android::Dex.new dex_file.read
+        dex.classes.map(&:name).each do |c|
+          next if c.blank?
+          c.sub!(/\AL/, '') # remove leading L
+          c = c.split('/')  # split by /
+          c = c.join('.').chomp ';'
+          classes << c
+        end
+      ensure
+        dex_file.close
+      end
+    end
+    classes
   end
 
   # unzips, removes multimedia, zips, and saves the apk file to s3
@@ -150,7 +163,7 @@ module ApkWorker
         apk_file.zip = File.open(zipped_path)
         apk_file.zip_file_name = "#{apk_file_path}.zip"
         apk_file.save!
-        apk_file.upload_class_summary(classes_from_zipped(zipped_path))
+        apk_file.upload_class_summary(classes_from_unzipped_path(unzipped_path))
       end
     end
     ret
