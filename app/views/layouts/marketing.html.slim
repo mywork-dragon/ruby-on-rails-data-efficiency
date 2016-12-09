@@ -30,7 +30,8 @@ html lang="en"
     script src="/lib/script.js" 
     meta content="authenticity_token" name="csrf-param" /
     meta content="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" name="csrf-token" /
-  body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse"
+    = render 'shared/amplitude'
+  body#home data-offset="100" data-spy="scroll" data-target=".navbar-collapse" data-page="#{controller_name}/#{action_name}"
     - flash.each do |name, msg|
       div class="alert alert-#{bootstrap_class_for(name)}"
         button.close[type="button" data-dismiss="alert" aria-hidden="true"]
@@ -79,13 +80,32 @@ html lang="en"
     /! =============ONE PAGE SCROLLING SCRIPTS ENDS============
     /! =============BACK TO TOP STARTS============
     javascript:
-      $(document).ready(function(){
+      $(document).ready(function() {
+        amplitude.getInstance().logEvent('Viewed page', 
+                                         {
+                                          page: $('body').data('page'), 
+                                          url: window.location.href
+                                         });
         if (window.location.hash) {
            $('html, body').stop().animate({
             scrollTop: $(window.location.hash).offset().top - 80
           }, 1500,'easeInOutExpo');
         }
-        $('.nav li a').bind('click',function(event){
+        $('.lead-form-btn').bind('click', function(event) {
+          var form = $(this).closest('form')
+          var serializedForm = form.serializeArray()
+          
+          formData = {}
+          for (var i = 0; i < serializedForm.length; i++) {
+            var field = serializedForm[i];
+            formData[field.name] = field.value;
+          }
+          amplitude.getInstance().logEvent('Submitted lead form', {
+            form: form.data('form'), 
+            formdata: formData
+          });
+        })
+        $('.nav li a').bind('click',function(event) {
           var $anchor2 = $(this).parent();
           var $anchor = $(this);
           if (window.location.pathname != '/' || $anchor.attr('href').indexOf('#') < 0) {

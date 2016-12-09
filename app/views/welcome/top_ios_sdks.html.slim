@@ -20,13 +20,13 @@
       p.pull-left 
         |Report last updated 
         strong> #{time_ago_in_words(@last_updated)} ago.
-      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right' do |f|
+      = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right', data: {form: 'top-ios-sdks'} do |f|
         .form-group
           input type="hidden" name="message" value="Top SDKS page"
           input#email.form-control name="email" placeholder="Email" type="email" /
         .form-group.text-center
           p
-            input.btn.btn-primary name="commit" type="submit" value="Alright!" /
+            input.btn.btn-primary.lead-form-btn name="commit" type="submit" value="Alright!" /
       p.email-form.pull-right 
         | Sign up to get more SDK data
     - @sdks.each.with_index do |sdk, index|
