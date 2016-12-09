@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161122022218) do
+ActiveRecord::Schema.define(version: 20161208213834) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -2507,6 +2507,14 @@ ActiveRecord::Schema.define(version: 20161122022218) do
 
   add_index "users_countries", ["country_code"], name: "index_users_countries_on_country_code", using: :btree
   add_index "users_countries", ["user_id", "country_code"], name: "index_users_countries_on_user_id_and_country_code", unique: true, using: :btree
+
+  create_table "website_features", force: :cascade do |t|
+    t.integer  "user_id",   limit: 4
+    t.integer  "name",      limit: 4
+    t.datetime "last_used"
+  end
+
+  add_index "website_features", ["user_id"], name: "index_website_features_on_user_id", using: :btree
 
   create_table "websites", force: :cascade do |t|
     t.string   "url",          limit: 191
