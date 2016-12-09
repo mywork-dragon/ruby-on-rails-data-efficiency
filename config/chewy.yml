@@ -1,12 +1,13 @@
 # config/chewy.yml
 # separate environment configs
-test:
-  host: 'localhost:9250'
-  prefix: 'test'
+default: &default
+  host: "<%= ENV['ELASTICSEARCH_URL'] %>:<%= ENV['ELASTICSEARCH_PORT'] %>"
 development:
-  host: 'localhost:9200'
+  <<: *default
+test:
+  <<: *default
+  prefix: 'test'
 production:
-  host: 'http://57ee73786e08205571d6e29709308c9c.us-east-1.aws.found.io:9200' # production
-  #host: 'http://61c4f9158b228c06f4614390856c43c2.us-east-1.aws.found.io:9200' # staging
-  user: 'admin'
-  password: 'gv6shgdsdqji65e90n'
+  <<: *default
+  user: <%= ENV['ELASTICSEARCH_USER'] %>
+  password: <%= ENV['ELASTICSEARCH_PASSWORD'] %>

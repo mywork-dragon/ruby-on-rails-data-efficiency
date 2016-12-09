@@ -35,8 +35,6 @@ puts "-------"
 puts "scraper".light_cyan + ": Deploys to the main scraper servers."
 puts "sdk_scraper".light_cyan + ": Deploys to the SDK scraper servers."
 puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live scan (Android)."
-puts "staging:".light_cyan + " Deploys to the staging server."
-puts "web".light_cyan + ": Deploys to the Web server."
 puts "darth_vader".light_cyan + ": Deploys to Vader (iOS Live Scan)."
 puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Ad Spend)."
 puts "darth_maul".light_cyan + ": Deploys to Darth Maul (Dev)."
@@ -47,7 +45,7 @@ puts "migration".light_cyan + ": Deploys to migration servers (to run migrations
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan staging web darth_vader kylo_ren darth_maul ios_live_scan monitor aviato migration)
+valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan darth_vader kylo_ren darth_maul ios_live_scan monitor aviato migration)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort

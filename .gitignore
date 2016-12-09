@@ -4,8 +4,6 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-/config/database.yml
-/config/secrets.yml
 /config/s3_credentials.yml
 /config/.github_token
 
@@ -40,4 +38,5 @@ db.patch
 /db/.DS_Store
 /db/migrate/.DS_Store
 
+.env
 /public/system

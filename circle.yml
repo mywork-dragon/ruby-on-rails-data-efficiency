@@ -16,4 +16,12 @@ test:
   override:
     - bundle exec rubocop
     - bundle exec rake test
-
+deployment:
+  release:
+    tag: /.*/
+    commands:
+      - git reset --hard
+      - docker build -t varys --build-arg exclude_gems='development test' .
+      - docker tag varys:latest 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
+      - docker push 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
+      - bundle exec bin/notify_build.rb

@@ -352,7 +352,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def icon_url(size='350x350') # size should be string eg '350x350'
-    first_international_snapshot.try(:icon_url_100x100) || newest_ios_app_snapshot.try(:send, "icon_url_#{size}")
+    url = first_international_snapshot.try(:icon_url_100x100) || newest_ios_app_snapshot.try(:send, "icon_url_#{size}")
+    url = url.gsub(/http:\/\/is([0-9]+).mzstatic/, 'https://is\1-ssl.mzstatic') if url.present?
   end
 
   def sdk_response

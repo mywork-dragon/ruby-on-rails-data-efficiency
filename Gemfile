@@ -40,17 +40,17 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring', '1.3.6',       group: :development
 
-# gem 'rspec'
-# gem 'rspec-rails'
-
 gem 'whenever', '0.9.4', require: false
 
 gem 'nokogiri', '1.6.4.1'
 
 # for deployment
-gem 'capistrano', '3.2.1'
-gem 'capistrano-rails', '1.1.2'
-gem 'capistrano-rvm', '0.1.2'
+group :development do
+  gem 'capistrano', '3.2.1'
+  gem 'capistrano-rails', '1.1.2'
+  gem 'capistrano-rvm', '0.1.2'
+  gem 'capistrano-sidekiq-mighty-servers', github: 'MightySignal/capistrano-sidekiq-mighty-servers', branch: 'select_queues_per_server'
+end
 
 # allow http to https redirections
 gem 'open_uri_redirections', require: "open_uri_redirections"
@@ -87,10 +87,6 @@ gem 'socksify', '1.6.0', require: 'socksify/http'
 
 gem 'net-ssh', '2.9.1'
 
-# gem 'capistrano-sidekiq', '0.5.3'
-
-gem 'capistrano-sidekiq-mighty-servers', github: 'MightySignal/capistrano-sidekiq-mighty-servers', branch: 'select_queues_per_server'
-
 gem 'kaminari', '0.16.3'
 
 gem 'faker', '1.4.3'
@@ -110,16 +106,9 @@ gem 'iso_country_codes', '0.7.1'
 
 gem "bugsnag", '3.0.0'
 
-# Use debugger
-# gem 'debugger', group: [:development, :test]
-
 gem 'ruby_apk', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/ruby_apk.git', branch: 'use_rubyzip_v_1_1_7'
 
-# gem 'ruby-protocol-buffers', '1.6.1'
-
 gem 'sanitize', '4.0.0'
-
-gem 'rb-libsvm', '1.3.1', require: 'libsvm'
 
 gem 'net', require: 'net/http'
 
@@ -134,15 +123,8 @@ gem 'parallel', '1.6.0'
 gem 'clearbit'
 
 gem 'slackiq', '1.1.4'
-# gem 'slackiq', git: 'https://github.com/okhwaja/slackiq.git', branch: 'master'
-
-gem 'slack-notifier', '1.2.1'
-
-gem 'similar_text', '0.0.4'
 
 gem 'www-favicon', '0.0.6'
-
-gem 'curb-fu', '0.6.2'
 
 gem 'elasticsearch-rails', '0.1.7'
 gem 'elasticsearch-model', '0.1.7'
@@ -178,7 +160,13 @@ gem 'googl', '0.7.1'
 # gem 'daemons', '1.2.3'
 
 # for syntax checks
-gem 'rubocop', group: :development
+gem 'rubocop', group: [:development, :test]
 
 # for mightyapk's protocol buffer
 gem 'ruby-protocol-buffers', '~>1.6.1'
+
+# for non-Docker local development
+gem 'dotenv-rails', '~>2.1.1', group: [:development, :test]
+
+# for JSON logs
+gem 'lograge', '~> 0.4.1'

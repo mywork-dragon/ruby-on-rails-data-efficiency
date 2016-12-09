@@ -1,4 +1,7 @@
 :queues:
-  - critical
-  - default
-  - low
+<% (ENV['SIDEKIQ_QUEUES'] || 'noop').split(',').each do |queue| %>
+  - <%= queue %>
+<% end %>
+:concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] || 1 %>
+:logfile: /tmp/sidekiq.log
+:pidfile: /tmp/sidekiq.pid

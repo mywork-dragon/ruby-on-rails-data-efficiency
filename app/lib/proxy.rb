@@ -1,5 +1,7 @@
 class Proxy
 
+  class Deprecated < RuntimeError; end
+
   class << self
 
     def get(req:, params: {}, type: :get, proxy: nil, proxy_type: nil, randomize_user_agent: true) 
@@ -45,6 +47,8 @@ class Proxy
   # @return The response (CurbFu::Response::Base)
   # @note Will run from local IP if not in production mode
   def get(req:, params: {}, type: :get, proxy: nil, proxy_type: nil, randomize_user_agent: true) 
+
+    raise Deprecated
 
     # randomize User-Agent
     if randomize_user_agent

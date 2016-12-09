@@ -1,0 +1,79 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.6
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+  varys:
+    build: .
+    command: bundle exec unicorn_rails -c config/unicorn.rb
+    volumes:
+      - ~/.aws:/root/.aws
+      - ~/.aws:/.aws
+      - ./deploy_keys:/root/.ssh
+      - ./:/varys
+    ports:
+      - "3000:3000"
+    environment:
+      - RAILS_ENVIRONMENT=development
+      - VARYS_DATABASE_PASSWORD=root
+      - VARYS_DATABASE_USER=root
+      - VARYS_DATABASE_HOST=db
+      - USER=${USER}
+      - VARYS_STAGE=local
+      - VARYS_REDIS_URL=redis
+      - VARYS_REDIS_PORT=6379
+      - UNICORN_CWD=/varys
+      - SECRET_KEY_BASE=ba97723a703ca6aeeb1eef8ec869102134ca81f0d7e50271c8672161551ceb82931e68e71cad7bfdc8a62d37e4414aea04dc529df8fc9711ee5d2302d3ed2e43
+      - PAPERCLIP_HASH_SECRET=3cfc4f8be8a7bcf26c4e38932664891c349eebfa1fc341e061fdfabdd11fc035325d5f7b4ec51cee6776cb867859d0913452beb1d653190891fe3765d76adb99
+      - ELASTICSEARCH_URL=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+  redis:
+    image: redis:2.8
+    expose:
+      - "6379"
+  nginx:
+    build: .
+    ports:
+      - "8888:80"
+    command: nginx -g "daemon off;"
+    volumes:
+      - ./container_assets/sites-available:/etc/nginx/sites-available/default
+    depends_on:
+      - varys
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - ~/.aws:/root/.aws
+      - ~/.aws:/.aws
+      - ./:/varys
+    environment:
+      - RAILS_ENVIRONMENT=development
+      - VARYS_DATABASE_PASSWORD=root
+      - VARYS_DATABASE_USER=root
+      - VARYS_DATABASE_HOST=db
+      - USER=${USER}
+      - VARYS_STAGE=local
+      - VARYS_REDIS_URL=redis
+      - VARYS_REDIS_PORT=6379
+      - SECRET_KEY_BASE=ba97723a703ca6aeeb1eef8ec869102134ca81f0d7e50271c8672161551ceb82931e68e71cad7bfdc8a62d37e4414aea04dc529df8fc9711ee5d2302d3ed2e43
+      - PAPERCLIP_HASH_SECRET=3cfc4f8be8a7bcf26c4e38932664891c349eebfa1fc341e061fdfabdd11fc035325d5f7b4ec51cee6776cb867859d0913452beb1d653190891fe3765d76adb99
+      - SIDEKIQ_QUEUES=noop
+      - SIDEKIQ_CONCURRENCY=1
+      - ELASTICSEARCH_URL=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+  elasticsearch:
+    image: elasticsearch:2.3
+    ports:
+      - "9200:9200"

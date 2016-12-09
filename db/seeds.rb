@@ -71,7 +71,7 @@ end
   puts "creating websites, and linking them to companies, ios apps"
 
   (n = 500).times do |i|
-    website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
     ios_app = IosApp.all.sample
     ios_app = IosApp.includes(websites: :company).where(id: ios_app.id).first
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
