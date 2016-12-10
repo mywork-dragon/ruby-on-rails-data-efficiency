@@ -38,9 +38,9 @@ class EwokService
       domain = STAGING ? '52.7.134.183' : 'mightysignal.com'
 
       if store == :ios
-        ret = "http://#{domain}/app/app#/app/ios/#{id}"
+        ret = "https://#{domain}/app/app#/app/ios/#{id}"
       elsif store == :android
-        ret = "http://#{domain}/app/app#/app/android/#{id}" 
+        ret = "https://#{domain}/app/app#/app/android/#{id}" 
       end
 
       ret
