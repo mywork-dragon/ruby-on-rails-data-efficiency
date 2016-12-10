@@ -35,7 +35,7 @@ class EwokService
       id = ais[:id]
       store = ais[:store]
 
-      domain = STAGING ? '52.7.134.183' : 'mightysignal.com'
+      domain = STAGING ? 'staging.mightysignal.com' : 'mightysignal.com'
 
       if store == :ios
         ret = "https://#{domain}/app/app#/app/ios/#{id}"
