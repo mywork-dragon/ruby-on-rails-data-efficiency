@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
     params = params.with_indifferent_access
     # if the user is coming from an invite
     if token && decoded_token = AuthToken.decode(token)
-      return if User.where("#{params[:provider]}_uid = ?", params[:uid]).first
+      return if User.where("#{params[:provider]}_uid" => params[:uid]).first
       user = User.find(decoded_token["user_id"])
       if user.send("#{params[:provider]}_uid").blank?
         user.send("#{params[:provider]}_uid=", params[:uid])
@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
         user
       end
     # we are logging in a user that has already previously connected linkedin or google
-    elsif user = User.where("#{params[:provider]}_uid = ?", params[:uid]).first
+    elsif user = User.where("#{params[:provider]}_uid" => params[:uid]).first
       user.send("#{params[:provider]}_token=", params[:token])
       user.save
       user
