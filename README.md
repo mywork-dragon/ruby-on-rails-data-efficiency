@@ -33,7 +33,7 @@ For Docker-based flows:
   ```bash
   $ docker-compose run varys bash
   $ cd /varys
-  $ rake db:migrate db:schema:load
+  $ rake db:create db:schema:load
   ```
 
 * Check the docker-compose.yml file for the setup, particularly the port mappings. For example, here's a snippet
