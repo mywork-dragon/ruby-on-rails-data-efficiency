@@ -50,7 +50,7 @@ every 30.minutes, roles: [:kylo_ren] do
 end
 
 every :day, :at => '11:56pm', roles: [:scraper_master] do
-  runner 'EpfV2Service.run_epf_if_feed_available'
+  runner 'EpfV2Worker.new.run_epf_if_feed_available'
 end
 
 every 2.hours, roles: [:kylo_ren] do # every 2 hours

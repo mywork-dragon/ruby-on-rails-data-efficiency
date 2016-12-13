@@ -40,4 +40,5 @@ db.patch
 
 .env
 /public/system
+
 .irb_history
