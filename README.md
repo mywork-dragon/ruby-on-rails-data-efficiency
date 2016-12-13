@@ -10,6 +10,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 ### Installation
 
 * Install RVM: https://rvm.io/
+* Install the aws cli http://docs.aws.amazon.com/cli/latest/userguide/installing.html 
 * Clone the repository
 * Download Docker version >= 1.12.3. Check after installing:
 
