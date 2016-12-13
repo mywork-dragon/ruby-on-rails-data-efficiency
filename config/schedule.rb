@@ -70,7 +70,7 @@ every :day, at: '7:00am', roles: [:monitor] do
 end
 
 every :day, at: '7:00am', roles: [:sdk_scraper_live_scan] do
-  runner "CustomerHappinessService.pull_mixpanel_data(7.days.ago.to_date)"
+  runner 'CustomerHappinessService.pull_mixpanel_data'
 end
 # every 20.minutes, roles: [:monitor] do
 #   runner "ProxyMonitor.check_proxies"

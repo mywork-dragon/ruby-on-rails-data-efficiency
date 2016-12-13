@@ -82,7 +82,7 @@ class CustomerHappinessService
       self.new.users_last_used_events(how_long_ago)
     end
 
-    def pull_mixpanel_data(from_date)
+    def pull_mixpanel_data(from_date = 7.days.ago.to_date)
       batch = Sidekiq::Batch.new
       batch.description = 'Customer Success Mixpanel Data Pull'
       batch.on(:complete, 'CustomerHappinessService#on_complete')
