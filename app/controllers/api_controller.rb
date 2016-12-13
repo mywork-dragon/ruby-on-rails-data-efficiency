@@ -605,7 +605,7 @@ class ApiController < ApplicationController
   end
 
   def tags
-    tags = Tag.where("name LIKE '#{params[:query]}%'")
+    tags = Tag.where("name LIKE ?", "#{params[:query]}%")
     render json: tags
   end
 
@@ -851,12 +851,12 @@ class ApiController < ApplicationController
     results = []
 
     if platform == 'android'
-      sdk_companies = AndroidSdk.display_sdks.where("name LIKE '#{query}%'").where(flagged: false)
+      sdk_companies = AndroidSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
       end
     elsif platform == 'ios'
-      sdk_companies = IosSdk.display_sdks.where("name LIKE '#{query}%'").where(flagged: false)
+      sdk_companies = IosSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
         results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
       end
@@ -874,11 +874,12 @@ class ApiController < ApplicationController
 
   def get_location_autocomplete
     query = params['query']
+
     status = params['status']
     if status.to_i == 0
       countries = ISO3166::Country.all.select{|country| country.name.downcase.include?(query.downcase)}.map{|country| {id: country.alpha2, name: country.name, states: country.states.map{|k,v| {state_code: k, state: v["name"]}}, icon: "/lib/images/flags/#{country.alpha2.downcase}.png"}}
     else 
-      countries = AppStore.enabled.where("name LIKE '#{query}%'").map{|store| {id: store.country_code, name: store.name, icon: "/lib/images/flags/#{store.country_code.downcase}.png"}}
+      countries = AppStore.enabled.where("name LIKE ?", "#{query}%").map{|store| {id: store.country_code, name: store.name, icon: "/lib/images/flags/#{store.country_code.downcase}.png"}}
     end
     render json: {searchParam: query, results: countries}
   end
