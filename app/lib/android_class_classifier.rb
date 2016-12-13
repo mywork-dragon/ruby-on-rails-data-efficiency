@@ -26,7 +26,7 @@ class AndroidClassClassifier
     classes.each do |klass|
       if @class_to_sdks.include? klass
         sdk = @class_to_sdks[klass]
-        web = @sdk_to_website.include? sdk ? @sdk_to_website[sdk] : ""
+        web = @sdk_to_website.include?(sdk) ? @sdk_to_website[sdk] : ""
         sdks.add([sdk, web])
         path_to_sdk[klass] = sdk
       end
