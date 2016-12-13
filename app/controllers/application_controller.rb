@@ -55,6 +55,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_admin_account
+    user = User.find(decoded_auth_token[:user_id])
+    account = Account.find(user.account_id)
+
+    if !account.is_admin_account?
+      fail NotAuthenticatedError
+    end
+  end
+
   def authenticate_export_request
     user = User.find(decoded_auth_token[:user_id])
     account = Account.find(user.account_id)

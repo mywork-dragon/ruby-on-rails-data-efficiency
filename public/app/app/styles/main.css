@@ -8140,6 +8140,37 @@ button.dropdown-toggle .caret {
   background: none;
 }
 
+.adminPageRow ul.activity, .adminPageRow ul.activity li {
+  padding: 0;
+}
+
+.adminPageRow ul.activity .status {
+  width: 10px;
+  height: 10px;
+  margin-top: 4px;
+  display: block;
+  line-height: 0; 
+  font-size: 0;
+  color: transparent; 
+  cursor: pointer;
+}
+
+.adminPageRow ul.activity .status.red {
+  background: #ED6A5A;
+}
+
+.adminPageRow ul.activity .status.yellow {
+  background: #ffff00;
+}
+
+.adminPageRow ul.activity .status.orange {
+  background: #ff9933;
+}
+
+.adminPageRow ul.activity .status.green { 
+  background: #48c651;
+}
+
 .adminPageRow .ui-tags-input, .newsfeedPageRow .ui-tags-input {
   overflow: auto;
   float: left;

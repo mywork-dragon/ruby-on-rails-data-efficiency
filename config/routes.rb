@@ -123,6 +123,7 @@ Rails.application.routes.draw do
     post '/admin/create_user' => 'admin#create_user'
     post '/admin/follow_sdks' => 'admin#follow_sdks'
     get '/admin/export_to_csv' => 'admin#export_to_csv'
+    get '/admin/account_users' => 'admin#account_users'
   end
 
   # TODO: change from ewok to extension name

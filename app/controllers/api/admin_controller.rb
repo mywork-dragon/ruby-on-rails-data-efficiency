@@ -3,6 +3,7 @@ class Api::AdminController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_admin
+  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account]
 
   def index
     accounts = if @current_user.account.is_admin_account?
@@ -11,6 +12,15 @@ class Api::AdminController < ApplicationController
       [@current_user.account]
     end
     render json: {accounts: accounts}
+  end
+
+  def account_users
+    account = Account.find(params[:account_id])
+    if @current_user.account.is_admin_account? || account == @current_user.account
+      render json: {users: account.users}
+    else
+      render json: {users: []}
+    end
   end
 
   def update

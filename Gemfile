@@ -170,3 +170,8 @@ gem 'dotenv-rails', '~>2.1.1', group: [:development, :test]
 
 # for JSON logs
 gem 'lograge', '~> 0.4.1'
+# for mixpanel analytics
+gem 'mixpanel_client', '4.1.5'
+
+# for customer success url generation
+gem 'addressable', '~>2.4'

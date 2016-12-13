@@ -12,11 +12,50 @@ class User < ActiveRecord::Base
   has_many :followed_android_apps, through: :follow_relationships, source: :followable, source_type: 'AndroidApp'
   has_many :followed_ios_apps, through: :follow_relationships, source: :followable, source_type: 'IosApp'
   has_many :followed_android_sdks, through: :follow_relationships, source: :followable, source_type: 'AndroidSdk'
+  has_many :website_features
   has_secure_password
   validates_uniqueness_of :email
 
+  def record_feature_use(feature_name, last_used)
+    # Record website feature use.
+    feature = website_features.select { |x| x.name.to_s == feature_name.to_s }
+    if feature.length > 0
+      feature[0].last_used = [last_used, feature[0].last_used].max
+      feature[0].save!
+    else
+      self.website_features << WebsiteFeature.create(
+        name: feature_name.to_sym,
+        last_used: last_used
+      )
+    end
+  end
+
+  def engagement
+    feature_to_last_used = Hash[website_features.map {|x| [x.name.to_sym, x.last_used]}]
+    features = Hash[WebsiteFeature.names.map{|x, y| [x.to_sym, Date.new(1970, 1, 1)]}]
+    feature_to_last_used.each do |feature_name, last_used|
+      features[feature_name] = last_used
+    end
+
+    features = features.map do |feature_name, last_used|
+      mp_link = MpLinkGenerator.new(email).feature_segmentation(
+        feature_name,
+        30.days.ago.to_date,
+        Date.today
+      )
+
+      {"name" => feature_name, "last_used" => last_used, "link" => mp_link}
+    end
+    features.unshift({'name' => :any, 'last_used' => last_active})
+    features
+  end
+
   def as_json(options={})
-    super(except: :password_digest).merge(type: self.class.name, following_count: follow_relationships.size)
+    super(except: :password_digest).merge(
+      type: self.class.name,
+      following_count: follow_relationships.size,
+      engagement: engagement
+      )
   end
 
   def self.from_auth(params, token)

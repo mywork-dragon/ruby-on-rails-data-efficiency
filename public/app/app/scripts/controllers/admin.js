@@ -1,10 +1,9 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
-  function($scope, $rootScope, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
+  function($scope, $rootScope, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
 
     $scope.initialPageLoadComplete = false;
-    $scope.isCollapsed = $rootScope.isAdminAccount;
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
     $scope.user = {};
     $scope.account = {};
@@ -25,7 +24,10 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http
         url: API_URI_BASE + 'api/admin',
         params: {page: $scope.page}
       }).success(function(data) {
-        $scope.accounts = data.accounts
+        $scope.accounts = data.accounts;
+        for (var i = 0; i < $scope.accounts.length; i++) {
+          $scope.accounts[i].isCollapsed = true;
+        }
         $scope.initialPageLoadComplete = true;
         // Sets html title attribute
         pageTitleService.setTitle('MightySignal - Admin');
@@ -33,6 +35,18 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http
     };
     
     $scope.load();
+
+    $scope.loadUsers = function(account) {
+      account.isLoading = true;
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/admin/account_users',
+        params: {account_id: account.id}
+      }).success(function(data) {
+        account.users = data.users
+        account.isLoading = false;
+      });
+    }
 
     $scope.sdkAutocompleteUrl = function() {
       return API_URI_BASE + "api/sdk/autocomplete?platform=ios&query="
@@ -104,6 +118,22 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http
         form.$setPristine()
         $scope.user = {};
         alert("We have sent " + user.email + " an email with instructions for getting set up")
+        
+        mixpanel.track("New User Invited", {
+          account: account.name,
+          email: user.email,
+          numUsers: account.users.length
+        });
+        var slacktivityData = {
+          "title": "New User Invited",
+          "fallback": "New User Invited",
+          "color": "#FFD94D", // yellow
+          "email": user.email,
+          "account": account.name,
+          "numUsers": account.users.length,
+          "channel": '#new-users'
+        };
+        slacktivity.notifySlack(slacktivityData);
       }).error(function(data) {
         alert(data.errors)
       })
@@ -121,6 +151,19 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", "$http
       }).error(function(data) {
         alert(data.errors)
       })
+    }
+
+    $scope.lastUsedClass =  function(last_used) {
+      var days = moment(moment()).diff(last_used, 'days')
+      if(days <= 7) {
+        return 'green';
+      } else if(7 < days && days <= 14) {
+        return 'yellow'
+      } else if(14 < days && days <= 30) {
+        return 'orange';
+      } else {
+        return 'red';
+      }
     }
 
     $scope.exportToCsv = function() {
