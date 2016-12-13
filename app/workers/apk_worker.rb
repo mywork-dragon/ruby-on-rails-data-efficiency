@@ -12,6 +12,8 @@ module ApkWorker
       file_path = '/mnt/apk_files/'
     elsif Rails.env.development?
       file_path = '/tmp'
+    else
+      file_path = '/tmp'
     end
     file_path
   end

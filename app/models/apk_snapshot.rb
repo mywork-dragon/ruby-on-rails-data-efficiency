@@ -50,4 +50,37 @@ class ApkSnapshot < ActiveRecord::Base
     AndroidApp.find(self.android_app_id).update_newest_apk_snapshot if self.android_app_id
   end
 
+  def s3_client
+    @s3_client ||= MightyAws::S3.new(Rails.application.config.app_pkg_summary_bucket_region)
+    @s3_client
+  end
+
+  def classification_summary_s3_key
+    ident = Digest::SHA1.hexdigest(id.to_s)
+    "classification_summaries/#{ident}.gz"
+  end
+
+  def store_classification_summary(classes_to_sdks)
+    # Uploads an sdk summary to s3.
+    summary = {
+      apk_snapshot_id: id,
+      app_id: android_app.id,
+      app_identifier: android_app.app_identifier,
+      apk_snapshot_created: created_at,
+      sdks: android_sdks.pluck(:name),
+      classes_to_sdks: classes_to_sdks,
+    }
+
+    s3_client.store(
+      bucket: Rails.application.config.app_pkg_summary_bucket,
+      key_path: classification_summary_s3_key,
+      data_str: summary.to_json)
+  end
+
+  def classification_summary
+    JSON.parse s3_client.retrieve(
+      bucket: Rails.application.config.app_pkg_summary_bucket,
+      key_path: classification_summary_s3_key)
+  end
+
 end

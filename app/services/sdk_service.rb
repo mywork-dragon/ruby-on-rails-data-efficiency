@@ -28,7 +28,27 @@ class SdkService
 				}
 			end
 		end
-		
+
+		def find_or_create_android_sdks_from_classes(classes:, read_only: true)
+		       acc = AndroidClassClassifier.new()
+		       sdks, paths = acc.classify(classes)
+		       sdks = sdks.map do |sdk_info|
+		               sdk_name = sdk_info[0]
+		               sdk_website = sdk_info[1]
+		               sdk = AndroidSdk.find_by_name(sdk_name)
+		               if sdk.nil? and not read_only
+		                       sdk = create_sdk_from_proposed(
+		                       proposed: {name: sdk_name, website: sdk_website, open_source: false, github_repo_identifier: nil},
+		                       platform: :android)
+		               elsif sdk.nil?
+		                       next
+		               end
+		               sdk
+		       end.compact
+		       [sdks, paths]
+		end
+
+
 		# Given a list of packages (com.facebook.sdk, ...), return the sdks that exist and use google to find other ones. If create is turned on, will go ahead and create the sdks (should )
 		def find_from_packages(packages:, platform:, snapshot_id:, read_only: false)
 			# get references to tables
