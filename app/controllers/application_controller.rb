@@ -55,11 +55,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_admin_account
+  def logged_into_admin_account?
     user = User.find(decoded_auth_token[:user_id])
     account = Account.find(user.account_id)
+    account.is_admin_account?
+  end
 
-    if !account.is_admin_account?
+  def authenticate_admin_account
+    if !logged_into_admin_account?
       fail NotAuthenticatedError
     end
   end

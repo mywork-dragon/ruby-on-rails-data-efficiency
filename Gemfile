@@ -175,3 +175,7 @@ gem 'mixpanel_client', '4.1.5'
 
 # for customer success url generation
 gem 'addressable', '~>2.4'
+
+gem 'rspec', '~> 3.5', group: [:development, :test]
+gem 'rspec-mocks', '~> 3.5', group: [:development, :test]
+gem 'mocha', '~> 1.2', group: [:development, :test]

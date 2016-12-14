@@ -5,7 +5,7 @@ class IosSdkService
   class << self
 
     # for front end - getting sdks data into display type
-    def get_sdk_response(ios_app_id)
+    def get_sdk_response(ios_app_id, force_live_scan_enabled=false)
       resp = {
         installed_sdks: [],
         uninstalled_sdks: [],
@@ -23,7 +23,7 @@ class IosSdkService
       }
 
       # pass flag through
-      resp[:live_scan_enabled] = ServiceStatus.is_active?(:ios_live_scan) || Rails.application.config.env['stage'] != 'web'
+      resp[:live_scan_enabled] = force_live_scan_enabled || ServiceStatus.is_active?(:ios_live_scan)
 
       # return error if it violates some conditions
       app = IosApp.find(ios_app_id)
@@ -124,7 +124,7 @@ class IosSdkService
       resp
     end
 
-    def get_tagged_sdk_response(ios_app_id, only_show_tagged=false)
+    def get_tagged_sdk_response(ios_app_id, only_show_tagged=false, force_live_scan_enabled=false)
       new_sdk_response = {installed_sdks: {}, uninstalled_sdks: {}, installed_sdks_count: 0, uninstalled_sdks_count: 0}
       untagged_name = 'Others'
       

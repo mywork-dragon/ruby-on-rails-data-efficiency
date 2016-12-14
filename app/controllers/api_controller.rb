@@ -543,8 +543,7 @@ class ApiController < ApplicationController
 
   def ios_sdks_exist
     ios_app_id = params['appId']
-
-    render json: IosSdkService.get_tagged_sdk_response(ios_app_id).to_json
+    render json: IosSdkService.get_tagged_sdk_response(ios_app_id, force_live_scan_enabled=logged_into_admin_account?).to_json
   end
 
   def ios_scan_status
@@ -567,7 +566,7 @@ class ApiController < ApplicationController
 
   def android_sdks_exist
     id = params['appId']
-    json = AndroidSdkService::App.get_sdk_response(id).to_json
+    json = AndroidSdkService::App.get_sdk_response(id, force_live_scan_enabled=logged_into_admin_account?).to_json
     render json: json
   end
 

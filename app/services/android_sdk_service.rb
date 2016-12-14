@@ -4,9 +4,9 @@ module AndroidSdkService
 
     class << self
 
-      def get_sdk_response(android_app_id, apk_snapshot_id: nil)
+      def get_sdk_response(android_app_id, force_live_scan_enabled=false, apk_snapshot_id: nil)
         aa = AndroidApp.find(android_app_id)
-        data = sdk_response_h(aa, apk_snapshot_id: apk_snapshot_id)
+        data = sdk_response_h(aa, force_live_scan_enabled, apk_snapshot_id: apk_snapshot_id)
       end
 
       # Maps the display type to the error code
@@ -21,13 +21,13 @@ module AndroidSdkService
       end
 
       # Helper for get_sdk_response
-      def sdk_response_h(aa, apk_snapshot_id: nil)
+      def sdk_response_h(aa, force_live_scan_enabled=false, apk_snapshot_id: nil)
         h = {}
         ec = display_type_to_error_code(aa.display_type)
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
 
-        h[:live_scan_enabled] = ServiceStatus.is_active?(:android_live_scan) || Rails.application.config.env['stage'] != 'web'
+        h[:live_scan_enabled] = force_live_scan_enabled || ServiceStatus.is_active?(:android_live_scan)
         h[:error_code] = ec
 
         return h if snap.nil?
