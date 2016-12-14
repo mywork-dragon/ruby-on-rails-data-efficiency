@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161208213834) do
+ActiveRecord::Schema.define(version: 20161213235229) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1092,9 +1092,12 @@ ActiveRecord::Schema.define(version: 20161208213834) do
     t.string   "followable_type", limit: 191, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "follower_id",     limit: 4
+    t.string   "follower_type",   limit: 191
   end
 
   add_index "follow_relationships", ["followable_type", "followable_id"], name: "index_follow_relationships_on_followable_type_and_followable_id", using: :btree
+  add_index "follow_relationships", ["follower_type", "follower_id"], name: "index_follow_relationships_on_follower_type_and_follower_id", using: :btree
   add_index "follow_relationships", ["user_id"], name: "index_follow_relationships_on_user_id", using: :btree
 
   create_table "github_accounts", force: :cascade do |t|
