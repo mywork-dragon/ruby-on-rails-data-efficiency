@@ -3,7 +3,7 @@ module AndroidClassification
 
   def perform(apk_snapshot_id)
     @apk_snapshot = ApkSnapshot.find(apk_snapshot_id)
-    log 'Starting'
+    log "Starting classification for snapshot #{@apk_snapshot.id}"
 
     # Don't fiddle with the status of
     # scans which have already completed once.
@@ -12,14 +12,15 @@ module AndroidClassification
     classify
     update_scan_status(:scan_success)
     log_activities if Rails.env.production?
-    log 'Complete'
+    log "Completed classification for snapshot #{@apk_snapshot.id}"
+
   rescue => e
     ApkSnapshotException.create!(
       name: e.message,
       backtrace: e.backtrace,
       apk_snapshot_id: apk_snapshot_id
     )
-    log 'Failed'
+    log "Failed classification for snapshot #{@apk_snapshot.id}"
 
     # Don't fiddle with the status of
     # scans which have already completed once.

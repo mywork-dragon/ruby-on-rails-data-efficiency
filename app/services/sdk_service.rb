@@ -2,6 +2,7 @@ class SdkService
 
 	QUERY_MINIMUM_LENGTH = 4
 	DICE_SIMILARITY_THRESHOLD = 0.9
+	ANDROID_CLASS_CLASSIFIER = AndroidClassClassifier.new()
 
 	class << self
 
@@ -30,8 +31,7 @@ class SdkService
 		end
 
 		def find_or_create_android_sdks_from_classes(classes:, read_only: true)
-		       acc = AndroidClassClassifier.new()
-		       sdks, paths = acc.classify(classes)
+		       sdks, paths = ANDROID_CLASS_CLASSIFIER.classify(classes)
 		       sdks = sdks.map do |sdk_info|
 		               sdk_name = sdk_info[0]
 		               sdk_website = sdk_info[1]
