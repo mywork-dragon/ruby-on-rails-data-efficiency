@@ -49,6 +49,8 @@ every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
+# TODO make this run on the scheduler container, or kick off a job from
+# the scheduler container.
 every :day, :at => '11:56pm', roles: [:scraper_master] do
   runner 'EpfV2Worker.new.run_epf_if_feed_available'
 end
@@ -61,16 +63,19 @@ every "0 1,3,5,7,9,11,13,15,17,19,21,23 * * *", roles: [:kylo_ren] do # every 2 
   runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
 end
 
-every :day, at: '6:30am', roles: [:sdk_scraper_live_scan] do
-  rake "itunes_chart:run_tunes_top_free"
+# scheduler container runs in UTC
+every :day, at: '2:30am', roles: [:varys_scheduler] do
+  rake "itunes_chart:run_tunes_top_free", :output => '/var/log/cron.log'
 end
 
-every :day, at: '7:00am', roles: [:monitor] do
-  runner "ItunesTosWorker.check_app_stores"
+# scheduler container runs in UTC
+every :day, at: '3:00pm', roles: [:varys_scheduler] do
+  runner "ItunesTosWorker.check_app_stores", :output => '/var/log/cron.log'
 end
 
-every :day, at: '7:00am', roles: [:sdk_scraper_live_scan] do
-  runner 'CustomerHappinessService.pull_mixpanel_data'
+# scheduler container runs in UTC
+every :day, at: '3:00pm', roles: [:varys_scheduler] do
+  runner 'CustomerHappinessService.pull_mixpanel_data', :output => '/var/log/cron.log'
 end
 # every 20.minutes, roles: [:monitor] do
 #   runner "ProxyMonitor.check_proxies"
