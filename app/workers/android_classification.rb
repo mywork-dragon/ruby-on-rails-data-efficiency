@@ -63,11 +63,9 @@ module AndroidClassification
     end
     # Atomically delete existing sdk classification relations
     # and insert the new ones.
-    AndroidSdksApkSnapshot.transaction do
-      AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id).delete_all
-      AndroidSdksApkSnapshot.import rows
-      @apk_snapshot.store_classification_summary(paths)
-     end
+    AndroidSdksApkSnapshot.where(apk_snapshot_id: @apk_snapshot.id).delete_all
+    AndroidSdksApkSnapshot.import rows
+    @apk_snapshot.store_classification_summary(paths)
   end
   
   def log_activities
