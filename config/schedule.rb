@@ -51,7 +51,7 @@ end
 
 # TODO make this run on the scheduler container, or kick off a job from
 # the scheduler container.
-every :day, :at => '11:56pm', roles: [:scraper_master] do
+every :day, :at => '11:56pm', roles: [:varys_scheduler] do
   runner 'EpfV2Worker.new.run_epf_if_feed_available'
 end
 
