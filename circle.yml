@@ -1,17 +1,16 @@
 machine:
+  pre:
+    - rm varys/.ruby-version
   ruby:
-    version: 2.1.2
+    version: 2.1.9
   services:
     - docker
 dependencies:
   pre:
-    - $(aws ecr get-login --region us-east-1)
-    - gem update bundler
+    - gem install bundle
     - bundle config path ~/bundle/
-    - bundle install --without development
   cache_directories:
     - "~/bundle"
-
 test:
   override:
     - bundle exec rubocop
@@ -20,6 +19,7 @@ deployment:
   release:
     tag: /.*/
     commands:
+      - $(aws ecr get-login --region us-east-1)
       - git reset --hard
       - docker build -t varys --build-arg exclude_gems='development test' .
       - docker tag varys:latest 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
