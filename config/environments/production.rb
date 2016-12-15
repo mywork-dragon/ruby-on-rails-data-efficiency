@@ -92,7 +92,7 @@ Rails.application.configure do
     port:                 587,
     domain:               'mightysignal.com',
     user_name:            'support@mightysignal.com',
-    password:             'Yb]fVjNRVAZdpE8pHM9,y9nYw',
+    password:             ENV['GMAIL_SMTP_PASSWORD'].to_s,
     authentication:       'plain',
     enable_starttls_auto: true  }
 

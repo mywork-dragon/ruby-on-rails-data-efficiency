@@ -1,7 +1,7 @@
 class GithubApi
 
-  DEV_CLIENT_ID = '47966b7ae432cb33ee4b'
-  DEV_CLIENT_SECRET = 'bf4f68f86c48641196e9b9e9326ba821cf6355d6'
+  DEV_CLIENT_ID = ENV['GITHUB_DEV_CLIENT_ID'].to_s
+  DEV_CLIENT_SECRET = ENV['GITHUB_DEV_CLIENT_SECRET'].to_s
 
   include HTTParty
   include ProxyParty

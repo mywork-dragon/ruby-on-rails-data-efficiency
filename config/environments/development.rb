@@ -50,10 +50,10 @@ Rails.application.configure do
   config.paperclip_defaults = {
     :storage => :s3,
     :s3_region => 'us-east-1',
-    :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
+    :s3_credentials => YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 's3_credentials.yml'))).result)
   }
 
-  config.env = YAML.load_file("#{Rails.root}/config/env.yml")
+  config.env = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'env.yml'))).result)
 
   # The bucket to store apk pkg summary files.
   config.app_pkg_summary_bucket = "varys-apk-file-summaries-dev"

@@ -5,3 +5,4 @@
 :concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] || 1 %>
 :logfile: /tmp/sidekiq.log
 :pidfile: /tmp/sidekiq.pid
+:timeout: 20

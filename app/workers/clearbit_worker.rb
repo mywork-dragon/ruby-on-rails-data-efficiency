@@ -2,7 +2,7 @@ class ClearbitWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :aviato
+  sidekiq_options retry: false, queue: :clearbit
 
   IOS_DEVELOPER_IDS = {
     'google.com' => [6864],

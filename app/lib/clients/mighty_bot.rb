@@ -51,7 +51,7 @@ class MightyBot
   end
 
   def api_secret
-    '1RreoRcjxJSuk1WhujHZSKGF2kXYlfyPuwm3s72cFpKpIXlmMy'
+    ENV['TWITTER_BOT_API_SECRET'].to_s
   end
 
   def access_token
@@ -59,7 +59,7 @@ class MightyBot
   end
 
   def access_token_secret
-    '6nW7MRZ9Jv7q6UdofZpuxjMjlgvDpycBYyWWUJMl2Qyis'
+    ENV['TWITTER_BOT_ACCESS_TOKEN_SECRET'].to_s
   end
   # def self.search_sdk_handles
   #   regex = %r{https://www.twitter.com/([^/]+)}

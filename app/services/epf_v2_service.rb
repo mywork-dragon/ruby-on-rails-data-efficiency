@@ -1,7 +1,7 @@
 class EpfV2Service
 
-  EPF_USERNAME = 'epfuser99894'
-  EPF_PASSWORD = '42413e32cb2759c0e96c9b3cb154c8e2'
+  EPF_USERNAME = ENV['EPF_USERNAME'].to_s
+  EPF_PASSWORD = ENV['EPF_PASSWORD'].to_s
 
   FS = 1.chr
   RS = 2.chr

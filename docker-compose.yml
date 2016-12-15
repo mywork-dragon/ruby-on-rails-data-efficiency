@@ -31,6 +31,8 @@ services:
       - PAPERCLIP_HASH_SECRET=3cfc4f8be8a7bcf26c4e38932664891c349eebfa1fc341e061fdfabdd11fc035325d5f7b4ec51cee6776cb867859d0913452beb1d653190891fe3765d76adb99
       - ELASTICSEARCH_URL=elasticsearch
       - ELASTICSEARCH_PORT=9200
+      - S3_ACCESS_KEY_ID=dummy
+      - S3_SECRET_ACCESS_KEY=dummy
     depends_on:
       - db
       - redis
@@ -70,6 +72,8 @@ services:
       - SIDEKIQ_CONCURRENCY=1
       - ELASTICSEARCH_URL=elasticsearch
       - ELASTICSEARCH_PORT=9200
+      - S3_ACCESS_KEY_ID=dummy
+      - S3_SECRET_ACCESS_KEY=dummy
     depends_on:
       - db
       - redis

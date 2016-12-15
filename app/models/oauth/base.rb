@@ -38,9 +38,9 @@ module Oauth
 
     def client_secret
       if @provider == 'linkedin'
-        'eidrZL6asyWvONuh'
+        ENV['LINKEDIN_AUTH_CLIENT_SECRET'].to_s
       else
-        'alyqEz-2j7Edf1_fUQpC3K1j'
+        ENV['GOOGLE_AUTH_CLIENT_SECRET'].to_s
       end
     end
 

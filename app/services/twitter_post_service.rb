@@ -3,7 +3,7 @@ class TwitterPostService
 
   TWITTER_CHARACTER_LIMIT = 140
   POST_GIF_TRIES = 3
-  GOOGLE_KEY = 'AIzaSyAtGLt_HFtLpj0yeKT59kaP9YZpsXycYAw'
+  GOOGLE_KEY = ENV['GOOGLE_URL_SHORTENER_KEY'].to_s
 
   INSTALL_SEARCH_TERMS = %w(
     hooray

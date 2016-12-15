@@ -2,11 +2,11 @@ class LeadSalesforceService
 
   def initialize
     @client = Restforce.new(
-      username: 'jasonlew@mightysignal.com',
-      password: 'Welcome@2',
-      security_token: 'tZ2A3mEmKhxjWdP98HcoaUGB',
-      client_id: '3MVG9fMtCkV6eLhcIlf3UM3DhI0qHjleFYx1eiGwILdwEf8djU26Vnqjd3mu1Kxs0Z258R99eC0sfRJHG548g',
-      client_secret: '6384884061761347258'
+      username: ENV['RESTFORCE_USERNAME'].to_s,
+      password: ENV['RESTFORCE_PASSWORD'].to_s,
+      security_token: ENV['RESTFORCE_SECURITY_TOKEN'].to_s,
+      client_id: ENV['RESTFORCE_CLIENT_ID'].to_s,
+      client_secret: ENV['RESTFORCE_CLIENT_SECRET'].to_s
     )
   end
 

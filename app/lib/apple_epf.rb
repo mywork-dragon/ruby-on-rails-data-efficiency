@@ -2,9 +2,8 @@ class AppleEpf
 
   EPF_URL = 'https://feeds.itunes.apple.com/feeds/epf/v4'
 
-  # use these for now...will remove soon
-  EPF_USERNAME = 'epfuser99894'
-  EPF_PASSWORD = '42413e32cb2759c0e96c9b3cb154c8e2'
+  EPF_USERNAME = ENV['EPF_USERNAME'].to_s
+  EPF_PASSWORD = ENV['EPF_PASSWORD'].to_s
 
   include HTTParty
 

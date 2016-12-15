@@ -68,7 +68,6 @@ gem 'PageRankr', '4.2.1'
 gem 'newrelic_rpm'
 
 gem 'restforce', '2.3.0'
-gem 'omniauth-salesforce', '1.0.5'
 
 gem 'httparty', '0.13.7'
 gem 'httpclient'

@@ -2,7 +2,7 @@ class ElasticSearchWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: 5, queue: :aviato
+  sidekiq_options retry: 5, queue: :elasticsearch
 
   def perform(method, *args)
     self.send(method.to_sym, *args)

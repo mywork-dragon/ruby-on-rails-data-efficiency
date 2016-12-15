@@ -33,8 +33,8 @@ module AnalyticsService
 
     def mixpanel_client
       Mixpanel::Client.new(
-        api_key:    '6a96c6c2b8cb2ad6de06ad54957b2f2a',
-        api_secret: 'f7d1ee068ddf3d2366d0ed89fe0618dc'
+        api_key: ENV['MIXPANEL_API_KEY'].to_s,
+        api_secret: ENV['MIXPANEL_API_SECRET'].to_s
       )
     end
 
