@@ -110,7 +110,7 @@
                     <th><div class="th normal-right-padding">
                       Created
                     </div></th>
-                    <th ng-if="$root.isAdminAccount"><div class="th normal-right-padding">
+                    <th><div class="th normal-right-padding">
                       Activity
                     </div></th>
                     <th><div class="th normal-right-padding">
@@ -139,9 +139,9 @@
                     <td>
                       {{calculateDaysAgo(user.created_at)}}
                     </td>
-                    <td ng-if="$root.isAdminAccount">
+                    <td>
                       <ul class="activity">
-                        <li ng-repeat="activity in user.engagement">
+                        <li ng-repeat="activity in user.engagement" ng-if="$root.isAdminAccount || activity.name == 'any'">
                           {{activity.name}}
                           <a class="pull-right status {{lastUsedClass(activity.last_used)}}" target="_blank" href="{{activity.link}}" data-toggle="tooltip" data-placement="top" uib-tooltip="Last used {{calculateDaysAgo(activity.last_used)}}">test</a>
                         </li>

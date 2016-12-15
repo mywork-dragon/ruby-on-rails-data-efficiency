@@ -364,6 +364,7 @@ p {
 	margin-right: 15px;
 	width: 50px;
 	height: 50px;
+	float: left;
 }
 .top-200 .row.sdk {
 	margin-bottom: 30px;
@@ -501,6 +502,10 @@ p {
 }
 .marketing-row li img, .marketing-row li a {
 	margin-right: 5px;
+}
+.marketing-row img.icon {
+	float: left;
+	margin: 6px;
 }
 .app-sdks h1 i {
 	font-size: 20px;

@@ -22,9 +22,8 @@
           = link_to tag.name, top_ios_sdks_path(tag: tag.id)
 
   .column.large-10: .block
-    h1
-      = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
-      |#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free iOS Apps
+    = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
+    h1="#{@tag_label == 'All' ? 'Most Used' : @tag_label} SDKs in Top 200 Free iOS Apps"
     .info.alert.alert-warning
       p.pull-left 
         |Report last updated 

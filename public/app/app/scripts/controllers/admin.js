@@ -124,11 +124,12 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
           email: user.email,
           numUsers: account.users.length
         });
+        
         var slacktivityData = {
           "title": "New User Invited",
           "fallback": "New User Invited",
           "color": "#FFD94D", // yellow
-          "email": user.email,
+          "newUserEmail": user.email,
           "account": account.name,
           "numUsers": account.users.length,
           "channel": '#new-users'
