@@ -22,6 +22,9 @@ trap shutdown_scheduler SIGHUP SIGINT SIGTERM
 # Write crontab from schedule.rb for the varys_scheduler role.
 bundle exec whenever --roles varys_scheduler --update-crontab
 
+# Write env to /etc/env (allows cron jobs to access env).
+env >> /etc/environment
+
 # Start cron in the background.
 cron
 
