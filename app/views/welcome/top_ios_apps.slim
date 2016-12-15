@@ -1,8 +1,19 @@
 - provide(:title, 'SDKs Used in Top 200 Free iOS Apps')
 - provide(:og_image, 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon_2x.png')
-.row.header.top-200.top-apps
-  .column.large-12
-    div class="addthis_sharing_toolbox pull-right" data-title="SDKs Used in Top 200 Free iOS Apps @MightySignal"
+.row.header
+  .column.large-2
+  .column.large-10
+    ul class="nav nav-tabs"
+      li role="presentation" 
+        a href="/top-ios-sdks" Top 200 SDKs
+      li role="presentation" class="active" 
+        a href="/top-ios-apps" Top 200 Apps
+      li role="presentation"
+        a href="/timeline" Timeline
+.row.top-200.top-apps.marketing-row
+  .column.large-2
+    div class="addthis_sharing_toolbox" data-title="SDKs Used in Top 200 Free iOS Apps @MightySignal"
+  .column.large-10: .block
     h1
       = image_tag 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon.png', class: 'app-store-icon' 
       |SDKs Used in Top 200 Free iOS Apps

@@ -1,15 +1,29 @@
 - provide(:title, 'Timeline')
 - provide(:og_image, 'https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/app-store-icon_2x.png')
-.row.header.top-200.timeline
-  .column.large-12
+.row.header
+  .column.large-2
+  .column.large-10
+    ul class="nav nav-tabs"
+      li role="presentation" 
+        a href="/top-ios-sdks" Top 200 SDKs
+      li role="presentation"
+        a href="/top-ios-apps" Top 200 Apps
+      li role="presentation" class="active" 
+        a href="/timeline" Timeline
+.row.top-200.timeline.marketing-row
+  .column.large-2
+    div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS Apps? @MightyTimeline"
+    br
+    span Follow our Twitter bot
+            <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-size="large" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+  .column.large-10: .block
     h1 
       = image_tag '/lib/images/elephant.png', width: 50
       |Timeline
 
     .info.alert.alert-warning
       p.pull-left 
-        |What's happening in the Top 200 Apps? Follow our Twitter bot 
-        <a href="https://twitter.com/mightytimeline" class="twitter-follow-button" data-show-count="false">Follow @mightytimeline</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        |What's happening in the Top 200 Apps? 
 
       = form_tag subscribe_path, method: 'post', class: 'form-inline pull-right', data: {form: 'timeline'} do |f|
         .form-group
