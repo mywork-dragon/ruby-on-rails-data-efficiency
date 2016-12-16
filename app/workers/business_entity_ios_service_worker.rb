@@ -1,60 +1,11 @@
 class BusinessEntityIosServiceWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false
+  sidekiq_options retry: false, queue: :ios_web_scrape
 
   def perform(ids, method_name)
     m = method_name.to_sym
     send(m, ids)
-  end
-
-  def associate_newest_snapshot(ios_app_ids)
-    ios_app_ids.each do |ios_app_id|
-      ia = IosApp.find(ios_app_id)
-      return if ia.nil?
-      newest_snapshot = ia.ios_app_snapshots.select{|ss| ss.name.present?}.max_by{|ss| ss.ios_app_snapshot_job_id}
-      if newest_snapshot.present?
-        ia.newest_ios_app_snapshot = newest_snapshot
-        ia.save
-      end
-    end
-  end
-
-
-  def fix_popular_website(ios_app_snapshot_ids)
-
-    ios_app_snapshot_ids.each do |ios_app_snapshot_id|
-    
-      ss = IosAppSnapshot.includes(ios_app: :websites).find(ios_app_snapshot_id)
-      return if ss.nil?
-      
-      ios_app = ss.ios_app
-    
-      urls = ss.ios_app.websites.map{ |site| site.url }
-      
-      urls = urls.map{|url| UrlHelper.url_with_http_and_domain(url)}
-      
-      urls.each do |url|
-
-        next if url.nil?
-
-        known_dev_id = UrlHelper.known_website(url) 
-
-        ss_dasi = ss.developer_app_store_identifier
-        
-        website = begin
-                    Website.find_or_create_by(url: url)
-                  rescue ActiveRecord::RecordNotUnique
-                    Website.find_by!(url: url)
-                  end
-
-        if known_dev_id.present?
-          if ss_dasi != known_dev_id
-            unlink_ios_and_web(ios_app: ios_app, website: website)
-          end
-        end
-      end
-    end
   end
 
   def clean_ios(ios_app_snapshot_ids)
@@ -167,74 +118,4 @@ class BusinessEntityIosServiceWorker
     website.company = company
     website.save
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # def jasons_thing(ios_app_snapshot_ids)
-
-  #   ios_app_snapshot_ids.each do |ios_app_snapshot_id|
-    
-  #     ss = IosAppSnapshot.find(ios_app_snapshot_id)
-  #     ios_app = ss.ios_app
-      
-  #     return if ss.nil?
-    
-  #     if dasi = ss.developer_app_store_identifier
-  #       c = Company.find_by_app_store_identifier(dasi)
-
-  #       if c && !c.websites.empty?
-  #         primary_website = c.websites.first
-        
-  #         if !ios_app.websites.include?(primary_website)
-  #           ios_app.websites << primary_website 
-  #           ios_app.save
-  #         end
-        
-  #         next  #go to the next app
-  #       end
-  #     end
-    
-  #     urls = [ss.seller_url, ss.support_url].select{|url| url}
-      
-  #     urls.each do |url|
-  #       if UrlHelper.secondary_site?(url)
-  #         kind = :secondary
-  #       else
-  #         url = UrlHelper.url_with_http_and_domain(url)
-  #         kind = :primary
-  #       end
-        
-  #       w = Website.find_by_url(url)
-        
-  #       if w.nil?
-  #         c = Company.find_by_app_store_identifier(ss.developer_app_store_identifier)
-  #         c = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier) if c.nil?
-  #         w = Website.create(url: url, company: c, kind: kind)
-  #       elsif w.company.nil?
-  #         w.company = Company.create(name: ss.seller, app_store_identifier: ss.developer_app_store_identifier)
-  #         w.save
-  #       elsif !w.company.app_store_identifier.blank?  
-  #         next
-  #       end
-        
-  #       ios_app.websites << w if !ios_app.websites.include?(w)
-  #       ios_app.save
-        
-  #     end
-      
-  #   end
-
-  # end
-  
 end
