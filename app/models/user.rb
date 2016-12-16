@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
-
+  include Follower
+  
   belongs_to :account
 
   has_many :lists_users
@@ -7,11 +8,6 @@ class User < ActiveRecord::Base
 
   has_many :users_countries
 
-  has_many :follow_relationships
-  has_many :followed_ios_sdks, through: :follow_relationships, source: :followable, source_type: 'IosSdk'
-  has_many :followed_android_apps, through: :follow_relationships, source: :followable, source_type: 'AndroidApp'
-  has_many :followed_ios_apps, through: :follow_relationships, source: :followable, source_type: 'IosApp'
-  has_many :followed_android_sdks, through: :follow_relationships, source: :followable, source_type: 'AndroidSdk'
   has_many :website_features
   has_secure_password
   validates_uniqueness_of :email

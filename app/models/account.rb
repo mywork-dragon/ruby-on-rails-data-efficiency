@@ -1,4 +1,5 @@
 class Account < ActiveRecord::Base
+  include Follower
   
   has_many :users
   
