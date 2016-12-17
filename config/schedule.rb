@@ -48,7 +48,7 @@ end
 # TODO make this run on the scheduler container, or kick off a job from
 # the scheduler container.
 every :day, :at => '11:56pm', roles: [:varys_scheduler] do
-  runner 'EpfV2Worker.new.run_epf_if_feed_available'
+  runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
 end
 
 every 2.hours, roles: [:kylo_ren] do # every 2 hours
