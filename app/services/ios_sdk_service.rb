@@ -124,7 +124,7 @@ class IosSdkService
       resp
     end
 
-    def get_tagged_sdk_response(ios_app_id, only_show_tagged=false, force_live_scan_enabled=false)
+    def get_tagged_sdk_response(ios_app_id, only_show_tagged=false, force_live_scan_enabled: false)
       new_sdk_response = {installed_sdks: {}, uninstalled_sdks: {}, installed_sdks_count: 0, uninstalled_sdks_count: 0}
       untagged_name = 'Others'
       
