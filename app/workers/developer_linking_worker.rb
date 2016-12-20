@@ -1,7 +1,7 @@
 class DeveloperLinkingWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :scraper_master, retry: false
+  sidekiq_options queue: :developer_linking, retry: false
 
   class DoNotLink; end
 
