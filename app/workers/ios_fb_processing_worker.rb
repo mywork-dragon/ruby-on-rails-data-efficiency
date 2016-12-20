@@ -2,7 +2,7 @@ class IosFbProcessingWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options :retry => false, queue: :ios_fb_ads_cloud
+  sidekiq_options :retry => false, queue: :ios_fb_ad_processing
 
   def perform(ios_fb_ad_id)
 
