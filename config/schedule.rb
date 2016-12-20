@@ -45,9 +45,7 @@ every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
-# TODO make this run on the scheduler container, or kick off a job from
-# the scheduler container.
-every :day, :at => '11:56pm', roles: [:varys_scheduler] do
+every :day, :at => '7:56am', roles: [:varys_scheduler] do
   runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
 end
 

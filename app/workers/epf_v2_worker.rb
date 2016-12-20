@@ -1,6 +1,6 @@
 class EpfV2Worker
   include Sidekiq::Worker
-  sidekiq_options queue: :scraper_master, retry: false
+  sidekiq_options queue: :epf, retry: false
 
   class MalformedFilename < RuntimeError; end
 
