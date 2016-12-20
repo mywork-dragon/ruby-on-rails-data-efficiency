@@ -79,9 +79,16 @@ class AppStoreInternationalService
 
       Slackiq.message("Starting to create developers", webhook_name: :main)
 
-      batch.jobs do
-        AppStoreInternationalDevelopersQueueWorker.perform_async(:queue_apps_without_developers)
-      end
+      IosApp.distinct.joins(:ios_app_current_snapshot_backups)
+        .where(ios_developer_id: nil)
+        .find_in_batches(batch_size: 1_000) do |the_batch|
+          args = the_batch.map { |ios_app| [:create_by_ios_app_id, ios_app.id] }
+          SidekiqBatchQueueWorker.perform_async(
+            AppStoreDevelopersWorker.to_s,
+            args,
+            batch.bid
+          )
+        end
     end
 
     def app_store_availability(new_store_updates: false)

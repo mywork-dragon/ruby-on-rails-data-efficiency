@@ -3,7 +3,7 @@ class AppStoreDevelopersWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, retry: false, queue: :default
+  sidekiq_options backtrace: true, retry: false, queue: :developer_creation
 
   def perform(method, *args)
     send(method, *args)
