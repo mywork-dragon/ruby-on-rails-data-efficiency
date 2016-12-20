@@ -36,7 +36,7 @@
                     <label>Website:</label>
                     <a href="{{sdkDetailsCtrl.sdkData.website}}" target="_blank">{{sdkDetailsCtrl.sdkData.website}}</a>
                   </li>
-                  <li class="sdk-tags" ng-if="appPlatform == 'ios'">
+                  <li class="sdk-tags">
                     <span class="icon fa fa-globe"></span>
                     <label>Tags:</label>
                     <span ng-if="!editMode">
@@ -45,8 +45,8 @@
                     </span>
                     <div class="edit-mode" ng-if="editMode && $root.isAdminAccount">
                       <button type="submit" class="btn btn-primary btn-block" ng-click="saveTags()">Save</button>
-                      <tags-input ng-model="tags" ng-if="editMode">
-                        <auto-complete source="loadTags($query)"></auto-complete>
+                      <tags-input ng-model="tags" min-length="2" ng-if="editMode">
+                        <auto-complete min-length="2" source="loadTags($query)"></auto-complete>
                       </tags-input>
                     </div>
                   </li>

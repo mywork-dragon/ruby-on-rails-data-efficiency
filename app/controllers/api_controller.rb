@@ -823,13 +823,13 @@ class ApiController < ApplicationController
     render json: @sdk_json
   end
 
-  def update_ios_sdk_tags
+  def update_sdk_tags
     sdk_id = params[:id]
-    sdk = IosSdk.find(sdk_id)
+    model = params[:platform] == 'ios' ? IosSdk : AndroidSdk
+    sdk = model.find(sdk_id)
     new_tags = []
     if tags = params[:tags]
       tags = JSON.parse(tags)
-      puts tags
       tags.each do |tag|
         if tag['id'].present?
           new_tags << Tag.find(tag['id'])

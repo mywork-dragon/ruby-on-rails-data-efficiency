@@ -104,7 +104,6 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
     };
 
     $scope.loadTags = function(query) {
-      console.log($scope.tags)
       var deferred = $q.defer();
       $http.get(API_URI_BASE + 'api/tags?query=' + query).success(function(data) {
         for (var i = 0; i < data.length; i++) {
@@ -117,7 +116,6 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
     };
 
     $scope.saveTags = function() {
-      console.log($scope.tags)
       return $http({
         method: 'POST',
         url: API_URI_BASE + 'api/sdk/' + $routeParams.platform + '/tags',

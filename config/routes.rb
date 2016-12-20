@@ -72,7 +72,7 @@ Rails.application.routes.draw do
 
   get 'api/sdk/android' => 'api#get_android_sdk'
   get 'api/sdk/ios' => 'api#get_ios_sdk'
-  post 'api/sdk/ios/tags' => 'api#update_ios_sdk_tags'
+  post 'api/sdk/:platform/tags' => 'api#update_sdk_tags'
   get 'api/sdk/autocomplete' => 'api#get_sdk_autocomplete'
   get 'api/sdk/scanned_count' => 'api#get_sdk_scanned_count'
 

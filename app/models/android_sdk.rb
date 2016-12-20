@@ -6,6 +6,9 @@ class AndroidSdk < ActiveRecord::Base
   has_many :android_sdks_apk_snapshots
   has_many :apk_snapshots, through: :android_sdks_apk_snapshots
 
+  has_many :tags, through: :tag_relationships
+  has_many :tag_relationships, as: :taggable
+
   has_many :weekly_batches, as: :owner
 
   has_one :outbound_sdk_link, class_name: 'AndroidSdkLink', foreign_key: :source_sdk_id
@@ -66,7 +69,8 @@ class AndroidSdk < ActiveRecord::Base
       name: self.name,
       icon: self.get_favicon,
       website: self.website,
-      openSource: self.open_source
+      openSource: self.open_source,
+      tags: self.tags
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
     batch_json
