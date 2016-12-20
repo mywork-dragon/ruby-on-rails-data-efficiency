@@ -167,6 +167,10 @@ angular.module("appApp")
 
           appData = data;
 
+          var countryCodes = appData.appStores.availableIn.map(function(x) {
+            return x.country_code
+          })
+          var isInternational = countryCodes.indexOf('US') < 0
           var sdkInstalls = sdkData.sdkCompanies;
           var sdkUninstalls = sdkData.sdkOpenSource;
           sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
@@ -175,6 +179,8 @@ angular.module("appApp")
           mixpanel.track(
             "iOS Live Scan Success", {
               'platform': platform,
+              'availableIn': countryCodes,
+              'isInternational': isInternational,
               'appName': appData.name,
               'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
