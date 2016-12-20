@@ -4,7 +4,7 @@ class GooglePlaySnapshotMassWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
 
-  sidekiq_options queue: :sdk, retry: false
+  sidekiq_options queue: :google_play_snapshot_mass_worker, retry: false
 
   def proxy_type
     :temporary_proxies
