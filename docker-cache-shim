@@ -1,0 +1,145 @@
+#!/bin/bash
+
+set -e
+
+if [ "$VERBOSE" = "true" ]; then
+  echo "enabling debug mode...."
+  set -x
+fi
+
+function log_info() {
+    echo -e "\e[35m[Info: docker-cache-shim]\e[39m $@"
+}
+
+function cache-tag() {
+    local tag=$1
+    local override_prefix=$2
+    local default_prefix=circleci-cache
+    local prefix=${override_prefix:-$default_prefix}
+
+    echo -n "$prefix"-"$tag"
+}
+
+function docker-push-with-retry() {
+    for i in 1 2 3; do
+	docker push $1
+
+	if [ $? -eq 0 ]; then
+	    exit 0
+	fi
+
+	echo "Retrying...."
+   done
+
+   exit 1
+}
+
+function pull() {
+    local image=$1
+    local tag=$2
+    local fallback_tag=$3
+
+    if ! docker pull $image:$tag; then
+	log_info "Cache tag $tag doesn't exist. Pulling cache from $fallback_tag tag"
+
+	if ! docker pull $image:$fallback_tag; then
+	    log_info "Cache tag $fallback_tag doesn't exit. No cache will be used."
+	fi
+    fi
+}
+
+function push() {
+    local _image=$1
+    local image=$(echo $_image | awk -F: '{print $1}')
+
+    local _tag=$(echo $_image | awk -F: '{print $2}')
+    local tag=$2
+
+    log_info "Tagging image for caching: $_image -> $image:$tag"
+    docker tag -f $_image $image:$tag
+
+    log_info "Pushing to $image:$tag"
+    docker-push-with-retry $image:$tag
+}
+
+function usage_exit() {
+cat << "EOS"
+docker-cache-shim: Shell script to workaround missing docker cache feature on CircleCI
+
+  Usage:
+    docker-cache-shim pull <user>/<image>
+
+       This will try to pull <user>/<image>:circleci-cache-$CIRCLE_BRANCH.
+       When the branch is built the first time and therefore no matching cache tag
+       then it will fallback to circleci-cache-master tag.
+
+    docker-cache-shim push <user>/<image>:<tag>
+
+       This will tag <user>/<image>:<tag> to <user>/<image>:circleci-cache-$CIRCLE_BRANCH and push to repository
+       so that the cache will be picked up by docker-cache-shim pull in the next build of the branch.
+       Make sure to specify <tag> so that we can automatically run "docker tag <your-image> <cache-image>".
+
+  Options:
+
+    -f Specify custom fallback tag instead of using circleci-cache-master.
+       Only meaningful for pull and noop for push because push doesn't need fallback.
+
+    -k Specify cache tag key. Default is $CIRCLE_BRANCH
+
+EOS
+
+    exit 0
+}
+
+function main() {
+    case $1 in
+    	"pull" ) local operation="pull" ;;
+    	"push" ) local operation="push" ;;
+    	* ) usage_exit ;;
+    esac
+
+    local image=$2
+
+    # No image specified
+    if [ -z $image ]; then
+       usage_exit
+    fi
+
+    shift 2
+
+    while getopts f:k:h OPT
+    do
+    	case $OPT in
+	    # Specify custom fallback tag instead of using circleci-cache-master
+	    # Only meaningful for pull and noop for push because push doesn't need fallback.
+            f)  local override_fallback_tag=$OPTARG
+    	    ;;
+	    # Specify suffix for cache tag. Default is $CIRCLE_BRANCH
+	    k)  local cache_key=$OPTARG
+    	    ;;
+            \?) usage_exit
+    	    ;;
+    	esac
+    done
+
+    local tag=$(cache-tag ${cache_key:-$CIRCLE_BRANCH})
+    local default_fallback_tag="master"
+
+    if [ -n "${override_fallback_tag+1}" ]; then
+	local fallback_tag=$override_fallback_tag
+    else
+	local fallback_tag=$(cache-tag $default_fallback_tag)
+    fi
+
+    log_info "Using $tag as a cache tag"
+
+    eval $operation $image $tag $fallback_tag
+
+    if [ $operation = "pull" ]; then
+	pull $image $tag $fallback_tag
+    elif [ $operation = "push" ]; then
+	push $image $tag
+    fi
+}
+
+main $@

@@ -3,3 +3,6 @@ node_modules
 public/app/node_modules
 tmp/*
 .git
+vendor/bundle/ruby
+.ruby-version
+.ruby-gemset

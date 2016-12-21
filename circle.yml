@@ -7,8 +7,8 @@ machine:
     - docker
 dependencies:
   pre:
-    - gem install bundle
-    - bundle config path ~/bundle/
+    - $(aws ecr get-login --region us-east-1)
+    - gem install bundle && bundle config path ~/bundle/
   cache_directories:
     - "~/bundle"
 test:
@@ -19,9 +19,10 @@ deployment:
   release:
     tag: /.*/
     commands:
-      - $(aws ecr get-login --region us-east-1)
-      - git reset --hard
+      - git reset --hard && git clean -d -x -f && rm .ruby-version
+      - export CIRCLE_BRANCH=`echo $CIRCLE_TAG | awk -F '.' '{print $1}'` && ./docker-cache-shim pull 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys
       - docker build -t varys --build-arg exclude_gems='development test' .
       - docker tag varys:latest 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
       - docker push 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
-      - bundle exec bin/notify_build.rb
+      - export CIRCLE_BRANCH=`echo $CIRCLE_TAG | awk -F '.' '{print $1}'` && ./docker-cache-shim push 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
+      - bin/notify_build.rb
