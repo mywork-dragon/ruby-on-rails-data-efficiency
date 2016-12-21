@@ -1,6 +1,6 @@
 class AndroidMassScanServiceWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :sdk, retry: false
+  sidekiq_options queue: :apk_snapshot_service, retry: false
 
   include AndroidCloud
 
