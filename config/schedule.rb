@@ -59,7 +59,7 @@ end
 
 # scheduler container runs in UTC
 every :day, at: '2:30am', roles: [:varys_scheduler] do
-  rake "itunes_chart:run_tunes_top_free", :output => '/var/log/cron.log'
+  runner 'ItunesChartService.run_itunes_top_free', :output => '/var/log/cron.log'
 end
 
 # scheduler container runs in UTC
