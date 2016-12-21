@@ -4,6 +4,6 @@ class IosMassClassificationServiceWorker
 
   include IosClassification
 
-  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_scan_cloud
+  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_classification
 
 end

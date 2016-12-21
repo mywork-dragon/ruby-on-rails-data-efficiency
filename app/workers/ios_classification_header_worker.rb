@@ -1,7 +1,7 @@
 class IosClassificationHeaderWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :ios_reclassification, retry: false
 
   def perform(method, *args)
     send(method.to_sym, *args)

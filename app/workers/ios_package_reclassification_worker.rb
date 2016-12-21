@@ -2,7 +2,7 @@ class IosPackageReclassificationWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options :retry => false, queue: :ios_mass_scan_cloud
+  sidekiq_options :retry => false, queue: :ios_reclassification
   
   # assumes that package has been updated
   def perform(ipa_snapshot_id, previous_sdk_id = nil, new_sdk_id = nil)

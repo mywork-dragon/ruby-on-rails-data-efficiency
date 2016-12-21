@@ -1,6 +1,6 @@
 class IosReclassificationQueueWorker
   include Sidekiq::Worker
-  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_scan_cloud
+  sidekiq_options backtrace: true, retry: false, queue: :ios_reclassification
 
   def perform
     batch_size = 500
