@@ -2,7 +2,7 @@ class ApkSnapshotServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, retry: false, queue: :apk_snapshot_service
+  sidekiq_options backtrace: true, retry: false, queue: :android_mass_scan
   
   RETRIES = 2 # use our own retries
 
