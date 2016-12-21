@@ -1,17 +1,40 @@
 class AndroidMassScanService
   class << self
+
+    def apps_updated_since_job(previous_job_id)
+      date = if previous_job_id
+             ApkSnapshotJob.find(previous_job_id).created_at
+           else
+             1.week.ago
+           end
+      query = AndroidApp
+        .select(:id)
+        .joins(:newest_android_app_snapshot)
+        .where('released >= ?', date)
+        .where(display_type: AndroidApp.display_types[:normal])
+
+      query
+    end
+
+    def queue_apps_for_scan(apk_snapshot_job, batch, apps)
+      apps.pluck(:id).each_slice(1000) do |app_ids|
+        args = app_ids.map { |app_id| [apk_snapshot_job.id, app_id] }
+        SidekiqBatchQueueWorker.perform_async(
+          AndroidMassScanServiceWorker.to_s,
+          args,
+          batch.bid
+        )
+      end
+    end
+
     def run_recently_updated(automated: false)
       previous_job = ApkSnapshotJob.where(
         job_type: ApkSnapshotJob.job_types[:weekly_mass]
       ).last
       previous_job_id = previous_job.id if previous_job
-
+      apps_to_scan = apps_updated_since_job(previous_job_id)
       unless automated
-        count = AndroidMassScanQueueWorker.new.queue_updated_by_job_id(
-          nil,
-          previous_job_id,
-          false
-        ).count
+        count = apps_to_scan.count
 
         print "Going to scan #{count} apps. Is that ok? [y/n]: "
         ans = gets.chomp
@@ -30,14 +53,8 @@ class AndroidMassScanService
         'AndroidMassScanService#on_complete',
         'job_id' => current_job.id
       )
-
       batch.jobs do
-        AndroidMassScanQueueWorker.perform_async(
-          :queue_updated_by_job_id,
-          current_job.id,
-          previous_job_id,
-          true
-        )
+        queue_apps_for_scan(current_job, batch, apps_to_scan)
       end
     end
 
