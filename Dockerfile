@@ -21,9 +21,7 @@ RUN cp /varys/container_assets/sites-available /etc/nginx/sites-available/defaul
 
 # Configure log files to go to stdout
 RUN ln -sf /dev/stdout /var/log/nginx/access.log &&\
-  ln -sf /dev/stderr /var/log/nginx/error.log && \
-  ln -sf /dev/stdout /tmp/sidekiq.log &&\
-  ln -sf /dev/stdout /tmp/unicorn.out.log &&\
-  ln -sf /dev/stderr /tmp/unicorn.err.log
+  ln -sf /dev/stderr /var/log/nginx/error.log
+
 
 CMD ["bundle", "exec", "unicorn_rails", "-c", "config/unicorn.rb"]
