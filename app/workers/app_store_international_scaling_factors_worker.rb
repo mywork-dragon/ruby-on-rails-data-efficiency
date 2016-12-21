@@ -1,7 +1,7 @@
 class AppStoreInternationalScalingFactorsWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :ios_international_scrape, retry: false
 
   FACTOR_SAMPLE_SIZE = 100
 

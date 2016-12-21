@@ -1,5 +1,7 @@
 class AppStoreInternationalService
 
+  class UnrecognizedType < RuntimeError; end
+
   class << self
 
     def run_snapshots(automated: false, scrape_type: :regular)
@@ -11,8 +13,52 @@ class AppStoreInternationalService
         'automated' => automated
       )
 
+      Slackiq.message('Starting to queue iOS international apps', webhook_name: :main)
+      notes = "Full scrape (international) #{Time.now.strftime("%m/%d/%Y")}"
+      j = IosAppCurrentSnapshotJob.create!(notes: notes)
+
+      query = snapshot_query_by_scrape_type(scrape_type)
+      snapshot_worker = snapshot_worker_by_scrape_type(scrape_type)
+
+      enabled_app_store_ids = AppStore.where(enabled: true).pluck(:id)
+
+      ids = IosApp.where(query).pluck(:id)
       batch.jobs do
-        AppStoreInternationalSnapshotQueueWorker.perform_async(scrape_type)
+        # limit at 150 so http requests to iTunes API do not fail
+        ids.each_slice(150) do |slice|
+          args = enabled_app_store_ids.map do |app_store_id|
+            [j.id, slice, app_store_id]
+          end
+
+          SidekiqBatchQueueWorker.perform_async(
+            snapshot_worker.to_s,
+            args,
+            batch.bid
+          )
+        end
+      end
+
+      Slackiq.message("Done queueing App Store apps", webhook_name: :main)
+    end
+
+    def snapshot_query_by_scrape_type(scrape_type)
+      if scrape_type == :all
+        "display_type != #{IosApp.display_types[:not_ios]}"
+      elsif scrape_type == :regular
+        { app_store_available: true }
+      elsif scrape_type == :new
+        previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
+        ['released >= ?', previous_week_epf_date]
+      else
+        raise UnrecognizedType
+      end
+    end
+
+    def snapshot_worker_by_scrape_type(scrape_type)
+      if scrape_type == :new
+        AppStoreInternationalLiveSnapshotWorker
+      else
+        AppStoreInternationalSnapshotWorker
       end
     end
 
@@ -79,16 +125,20 @@ class AppStoreInternationalService
 
       Slackiq.message("Starting to create developers", webhook_name: :main)
 
-      IosApp.distinct.joins(:ios_app_current_snapshot_backups)
+      ids = IosApp.distinct.joins(:ios_app_current_snapshot_backups)
         .where(ios_developer_id: nil)
-        .find_in_batches(batch_size: 1_000) do |the_batch|
-          args = the_batch.map { |ios_app| [:create_by_ios_app_id, ios_app.id] }
+        .pluck(:id)
+
+      batch.jobs do
+        ids.each_slice(1_000) do |slice|
+          args = slice.map { |id| [:create_by_ios_app_id, id] }
           SidekiqBatchQueueWorker.perform_async(
             AppStoreDevelopersWorker.to_s,
             args,
             batch.bid
           )
         end
+      end
     end
 
     def app_store_availability(new_store_updates: false)

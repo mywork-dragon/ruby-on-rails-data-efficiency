@@ -1,7 +1,7 @@
 class AppStoreInternationalUserBaseWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :ios_international_scrape, retry: false
 
   class MalformedData < RuntimeError; end
   class BackoffFailure < RuntimeError; end

@@ -1,7 +1,7 @@
 class AppStoreInternationalAppLinkWorker
   include Sidekiq::Worker
   
-  sidekiq_options retry: false, queue: :scraper_master
+  sidekiq_options retry: false, queue: :ios_international_scrape
 
   def perform
     num = IosAppCurrentSnapshotBackup.count

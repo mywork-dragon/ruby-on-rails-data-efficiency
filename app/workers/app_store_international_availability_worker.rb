@@ -1,7 +1,7 @@
 class AppStoreInternationalAvailabilityWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :scraper_master
+  sidekiq_options retry: false, queue: :ios_international_scrape
 
   def perform(new_store_updates = false)
 
