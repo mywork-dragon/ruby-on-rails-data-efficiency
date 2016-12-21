@@ -13,8 +13,8 @@ ADD . /varys
 # build web assets
 RUN cd /varys/public/app && npm install --production &&\
   cd /varys/public/app && npm run bower-install &&\
-  cd /varys/ npm install &&\
-  cd /varys/ npm run gulp-build
+  (cd /varys/ && npm install)&&\
+  (cd /varys/ && npm run gulp-build)
 
 # configure nginx
 RUN cp /varys/container_assets/sites-available /etc/nginx/sites-available/default
