@@ -171,8 +171,8 @@ angular.module("appApp")
             return x.country_code
           })
           var isInternational = countryCodes.indexOf('US') < 0
-          var sdkInstalls = sdkData.sdkCompanies;
-          var sdkUninstalls = sdkData.sdkOpenSource;
+          var sdkInstalls = sdkData.installed_sdks;
+          var sdkUninstalls = sdkData.uninstalled_sdks;
           sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
           sdkUninstalls = sdkUninstalls && (sdkUninstalls.length > 0) ? sdkUninstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
           /* -------- Mixpanel Analytics Start -------- */
@@ -190,6 +190,21 @@ angular.module("appApp")
             }
           );
           /* -------- Mixpanel Analytics End -------- */
+          if (isInternational) {
+            var slacktivityData = {
+              "title": "International iOS Live Scan Success",
+              "fallback": "International iOS Live Scan Success",
+              "color": "#45825A",
+              'appName': appData.name,
+              'companyName': (appData.publisher || {}).name,
+              'appId': appData.id,
+              'availableIn': countryCodes.join(', '),
+              'sdkInstalls': sdkInstalls,
+              'sdkUninstalls': sdkUninstalls,
+              'lastUpdated': sdkData.lastUpdated
+            };
+            slacktivity.notifySlack(slacktivityData, true);
+          }
         });
 
       },
