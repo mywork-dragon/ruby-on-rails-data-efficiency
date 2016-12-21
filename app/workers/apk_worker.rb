@@ -1,4 +1,5 @@
 module ApkWorker
+  class ApkDownloadFailure < RuntimeError; end
 
   def perform(apk_snapshot_job_id, bid, android_app_id, google_account_id=nil)
     @attempted_google_account_ids = []
@@ -43,6 +44,8 @@ module ApkWorker
     snapshot.update!(status: :success) if success
     ls_download_code = success ? :success : :failure
     apk_snapshot_job.update!(ls_download_code: ls_download_code) if update_live_scan_status_code?
+
+    raise ApkDownloadFailure unless success
   end
 
   def download_from_play_store(filepath, android_app, google_account)
