@@ -1,7 +1,7 @@
 class ItunesChartWorker
   include Sidekiq::Worker
   
-  sidekiq_options queue: :sdk_live_scan
+  sidekiq_options queue: :itunes_charts, retry: false
 
   def perform(method, *args)
     self.send(method.to_sym, *args)
