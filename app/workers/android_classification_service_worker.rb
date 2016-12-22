@@ -1,4 +1,4 @@
-class AndroidMassClassificationServiceWorker
+class AndroidClassificationServiceWorker
   include Sidekiq::Worker
   include AndroidClassification
 

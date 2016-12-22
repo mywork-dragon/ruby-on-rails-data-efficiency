@@ -9,7 +9,7 @@ class ApkSnapshotServiceWorker
   include ApkWorker
   
   def classify_if_necessary(apk_ss_id)
-    AndroidMassClassificationServiceWorker.perform_async(apk_ss_id)
+    AndroidClassificationServiceWorker.new.perform(apk_ss_id)
   end
 
   def scrape_type
