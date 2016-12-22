@@ -49,6 +49,12 @@ module Varys
     # opt into Rails 5 behavior to avoid deprecation warnings
     config.active_record.raise_in_transactional_callbacks = true
 
+    config.paperclip_defaults = {
+        :storage => :s3,
+        :s3_region => 'us-east-1',
+        :s3_protocol => :https,
+        :s3_credentials => YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 's3_credentials.yml'))).result)
+    }
   end
 end
 

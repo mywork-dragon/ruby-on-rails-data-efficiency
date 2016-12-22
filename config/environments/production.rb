@@ -96,14 +96,6 @@ Rails.application.configure do
     authentication:       'plain',
     enable_starttls_auto: true  }
 
-
-  config.paperclip_defaults = {
-    :storage => :s3,
-    :s3_region => 'us-east-1',
-    :s3_protocol => :https,
-    :s3_credentials => YAML.load_file("#{Rails.root}/config/s3_credentials.yml")
-  }
-
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
 
   # The bucket to store apk pkg summary files.

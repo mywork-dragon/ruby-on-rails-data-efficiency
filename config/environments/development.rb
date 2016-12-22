@@ -47,12 +47,6 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000}
 
-  config.paperclip_defaults = {
-    :storage => :s3,
-    :s3_region => 'us-east-1',
-    :s3_credentials => YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 's3_credentials.yml'))).result)
-  }
-
   config.env = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'env.yml'))).result)
 
   # The bucket to store apk pkg summary files.
