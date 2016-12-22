@@ -1,22 +1,19 @@
 class AppStoreSnapshotQueueWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :scraper_master, retry: false
+  sidekiq_options queue: :ios_web_scrape, retry: false
 
   def perform(method, *args)
     send(method, *args)
   end
 
   def queue_worker
-    batch_size = 1_000
-    IosApp.select(:id)
+    ids = IosApp.select(:id)
       .where(@query)
-      .find_in_batches(batch_size: batch_size)
-      .with_index do |the_batch, index|
-      
-      li "App #{index * 1_000}"
+      .pluck(:id)
 
-      args = the_batch.map { |ios_app| [@ios_app_snapshot_job_id, ios_app.id] }
+    ids.each_slice(1_000) do |slice|
+      args = slice.map { |ios_app_id| [@ios_app_snapshot_job_id, ios_app_id] }
 
       SidekiqBatchQueueWorker.perform_async(
         AppStoreSnapshotServiceWorker.to_s,
