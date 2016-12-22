@@ -2,7 +2,7 @@ class ActivityWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :sdk_live_scan
+  sidekiq_options retry: false, queue: :timeline_activity
 
   def perform(method, *args)
     self.send(method.to_sym, *args)

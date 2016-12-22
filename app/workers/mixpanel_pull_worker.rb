@@ -2,7 +2,7 @@ class MixpanelPullWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :sdk_live_scan
+  sidekiq_options retry: false, queue: :mixpanel_analytics
 
   def default_data_getter
     CustomerHappinessService.new

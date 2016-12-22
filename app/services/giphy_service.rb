@@ -8,8 +8,7 @@ class GiphyService
   end
 
   def get_search_html
-    search_term_cleaned = CGI::escape(@search_term)
-    search_html_raw = Proxy.get_body_from_url("http://giphy.com/search/#{search_term_cleaned}")
+    search_html_raw = GiphyApi.search_html(@search_term)
     @search_html = Nokogiri::HTML(search_html_raw)
   end
 
