@@ -45,4 +45,5 @@ Rails.application.configure do
   config.app_pkg_summary_bucket = "varys-apk-file-summaries-dev"
   config.app_pkg_summary_bucket_region = "us-east-1"
 
+  config.paperclip_defaults = {}
 end
