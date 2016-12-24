@@ -23,7 +23,7 @@ class AppleEpf
     links = page.css('a').map { |x| x['href'] }.compact
     %i(itunes match popularity pricing incremental).reduce({}) do |memo, key|
       link = links.find { |x| /#{key}/.match(x) }
-      raise MissingLink unless link
+      raise MissingLink if link.nil? and key != :incremental
       memo[key] = File.join(EPF_URL, subpath, link)
       memo
     end
