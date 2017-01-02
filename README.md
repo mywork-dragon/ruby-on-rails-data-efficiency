@@ -11,6 +11,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 
 * Install RVM: https://rvm.io/
 * Install the aws cli http://docs.aws.amazon.com/cli/latest/userguide/installing.html 
+* Add this to your bash profile eg ~/.bashrc `$(aws ecr get-login --region us-east-1)`.
 * Clone the repository
 * Download Docker version >= 1.12.3. Check after installing:
 
