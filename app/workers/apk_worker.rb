@@ -1,6 +1,4 @@
 module ApkWorker
-  class ApkDownloadFailure < RuntimeError; end
-
   def perform(apk_snapshot_job_id, bid, android_app_id, google_account_id=nil)
     @attempted_google_account_ids = []
     @failed_devices = []
@@ -27,15 +25,18 @@ module ApkWorker
     tries = 0
     success = false
     snapshot = nil
+    exception = nil
 
     while !success && tries <= retries
       begin
         puts "Attempt #{tries}"
         snapshot = download_and_save(apk_snapshot_job_id, android_app)
         success = true
-      rescue MightyApk::MarketApi::NotFound, MightyApk::MarketApi::UnsupportedCountry
+      rescue MightyApk::MarketApi::NotFound, MightyApk::MarketApi::UnsupportedCountry => e
+        exception = e
         break # do not retry in these cases (no-op)
-      rescue
+      rescue => e
+        exception = e
         tries += 1
         apk_snapshot_job.update!(ls_download_code: :retrying) if update_live_scan_status_code?
       end
@@ -45,7 +46,7 @@ module ApkWorker
     ls_download_code = success ? :success : :failure
     apk_snapshot_job.update!(ls_download_code: ls_download_code) if update_live_scan_status_code?
 
-    raise ApkDownloadFailure unless success
+    raise exception unless success
   end
 
   def download_from_play_store(filepath, android_app, google_account)
