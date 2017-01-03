@@ -80,7 +80,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
 
     $scope.followSdk = function(id) {
       var sdkType = $routeParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk'
-      newsfeedService.follow(id, sdkType, sdkDetailsCtrl.sdkData.name).success(function(data) {
+      newsfeedService.follow(id, sdkType, sdkDetailsCtrl.sdkData.name, 'sdkDetails').success(function(data) {
         $scope.isFollowing = data.following
         if (data.following) {
           $scope.notify('followed');

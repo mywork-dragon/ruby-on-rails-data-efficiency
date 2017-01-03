@@ -1,16 +1,18 @@
 class User < ActiveRecord::Base
   include Follower
-  
+
   belongs_to :account
 
   has_many :lists_users
   has_many :lists, through: :lists_users
 
   has_many :users_countries
-
   has_many :website_features
+
   has_secure_password
   validates_uniqueness_of :email
+
+  after_create :seed_timeline
 
   def record_feature_use(feature_name, last_used)
     # Record website feature use.
@@ -23,6 +25,12 @@ class User < ActiveRecord::Base
         name: feature_name.to_sym,
         last_used: last_used
       )
+    end
+  end
+
+  def seed_timeline
+    account.following.each do |followable|
+      self.follow(followable)
     end
   end
 
@@ -91,22 +99,6 @@ class User < ActiveRecord::Base
         icon: "/lib/images/flags/#{country.alpha2.downcase}.png"
       }
     }
-  end
-
-  def follow(followable)
-    self.follow_relationships.create(followable: followable) unless following?(followable)
-  end
-
-  def unfollow(followable)
-    self.follow_relationships.where(followable: followable).destroy_all
-  end
-
-  def following?(followable)
-    self.follow_relationships.where(followable: followable).any?
-  end
-
-  def following
-    followed_ios_sdks.to_a + followed_android_apps.to_a + followed_ios_apps.to_a + followed_android_sdks.to_a
   end
 
   def weekly_batches(page_num, country_codes=nil)

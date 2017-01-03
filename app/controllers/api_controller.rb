@@ -101,7 +101,7 @@ class ApiController < ApplicationController
     country_codes = params[:country_codes]
     weeks = @current_user.weekly_batches(page, country_codes)
     newsfeed_json = {
-      following: @current_user.following.map{|follow| follow.as_json({user: @current_user})},
+      following: @current_user.following.as_json({user: @current_user}),
       weeks: weeks.map{|week, platforms| {
         week: week.to_s,
         label: view_context.week_formatter(week),
@@ -157,7 +157,10 @@ class ApiController < ApplicationController
     else
       @current_user.follow(followable)
     end
-    render json: {:following => @current_user.following?(followable)}
+    render json: {
+                  is_following: @current_user.following?(followable), 
+                  following: @current_user.following.as_json({user: @current_user})
+                }
   end
 
   def newsfeed_add_country
@@ -776,7 +779,7 @@ class ApiController < ApplicationController
 
     # sdks = IosSdk.where(id: result_ids)
 
-    render json: {sdkData: sdks, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+    render json: {sdkData: sdks.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
   def search_android_sdk
@@ -800,7 +803,7 @@ class ApiController < ApplicationController
 
     sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
 
-    render json: {sdkData: sdks, totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+    render json: {sdkData: sdks.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
   def get_android_sdk
@@ -816,7 +819,6 @@ class ApiController < ApplicationController
   def get_ios_sdk
     sdk_id = params['id']
     sdk = IosSdk.find(sdk_id)
-
     @sdk_json = sdk.as_json({user: @current_user})
     @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
     @sdk_json[:numOfApps] = sdk.get_current_apps.size

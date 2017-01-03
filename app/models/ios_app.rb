@@ -160,6 +160,11 @@ class IosApp < ActiveRecord::Base
       batch_json[:following] = options[:user].following?(self) 
       batch_json[:adSpend] = options[:user].account.can_view_ad_spend? ? self.ad_spend? : self.old_ad_spend?
     end
+
+    if options[:account]
+      batch_json[:following] = options[:account].following?(self) 
+    end
+
     batch_json
   end
 
@@ -308,6 +313,7 @@ class IosApp < ActiveRecord::Base
 
   def is_in_top_200?
     newest_rank_snapshot = IosAppRankingSnapshot.last_valid_snapshot
+    return false unless newest_rank_snapshot
     newest_rank_snapshot.ios_app_rankings.where(ios_app_id: self.id).any?
   end
 

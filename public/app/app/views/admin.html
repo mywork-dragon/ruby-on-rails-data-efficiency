@@ -41,19 +41,22 @@
               </li>
             </ul>
           </div>
-          <p ng-if="sdks.length > 0 && !sdkUsers.length">
+          <p ng-if="sdks.length > 0 && !sdkFollowers.length">
             <br>
             Select some users by using the checkbox next to their name
           </p>
-          <p ng-if="sdks.length > 0 && sdkUsers.length">
+          <p ng-if="sdks.length > 0 && sdkFollowers.length">
             <br>
-            <button type="submit" class="btn btn-primary" ng-click="followSDKs()">Add {{sdks.length}} {{sdks.length == 1 ? 'SDK' : 'SDKs'}} to {{sdkUsers.length}} {{sdkUsers.length == 1 ? "user's Timeline" : "users' Timeline"}}</button>
+            <button type="submit" class="btn btn-primary" ng-click="followSDKs()">Add {{sdks.length}} {{sdks.length == 1 ? 'SDK' : 'SDKs'}} to the Timeline of {{sdkFollowers.length}} {{sdkFollowers.length == 1 ? "user/account" : "users/accounts"}}</button>
           </p>
         </div>
       </div>
       <br>
       <div data-ng-repeat="account in accounts" class="panel panel-default">
         <div class="panel-heading" ng-click="loadUsers(account); account.isCollapsed = !account.isCollapsed;">
+          <label ng-if="sdks.length > 0">
+            <input type="checkbox" ng-click="checkedSdkFollower(account); $event.stopPropagation();">
+          </label>
           {{account.name}}
           <span ng-if="$root.isAdminAccount" class="pull-right {{account.active_users > account.seats_count ? 'red' : ''}}">
             {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}} / {{account.seats_count}} Seats
@@ -65,8 +68,8 @@
         <div class="panel-body" uib-collapse="account.isCollapsed">
           <div class="media">
             <div class="media-body" ng-hide="account.isLoading">
+              <button type="submit" class="btn btn-primary pull-right" ng-if="account.id == 1" ng-click="exportToCsv()">Download Microsoft CSV</button>
               <strong ng-if="$root.isAdminAccount">Account Settings</strong>
-              <br>
               <div class="checkbox" ng-if="$root.isAdminAccount">
                 <label>
                   <input type="checkbox" ng-checked="account.can_view_support_desk" ng-click="settingChanged('can_view_support_desk', account)"> Support Desk
@@ -95,7 +98,15 @@
                   Seats
                 </label>
               </div>
-              <button type="submit" class="btn btn-primary pull-right" ng-if="account.id == 1" ng-click="exportToCsv()">Download Microsoft CSV</button>
+              <br>
+              <strong ng-if="account.following.length">Following</strong>
+              <div class="ui-tags-input" ng-if="account.following.length">
+                <ul class="tags">
+                  <li ng-repeat="follow in account.following" class="tag-item">
+                    {{follow.name}}
+                  </li>
+                </ul>
+              </div>
               <br>
               <strong>Users</strong>
               <br>
@@ -132,7 +143,7 @@
                   <tr ng-repeat="user in account.users">
                     <td>
                       <label ng-if="sdks.length > 0">
-                        <input type="checkbox" ng-click="checkedSdkUser(user)">
+                        <input type="checkbox" ng-click="checkedSdkFollower(user)">
                       </label>
                       {{user.email}}
                     </td>

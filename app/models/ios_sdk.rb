@@ -74,6 +74,9 @@ class IosSdk < ActiveRecord::Base
       tags: self.tags
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
+    if options[:account]
+      batch_json[:following] = options[:account].following?(self) 
+    end
     batch_json
   end
 

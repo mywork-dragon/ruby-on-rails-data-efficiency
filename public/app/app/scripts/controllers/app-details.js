@@ -149,7 +149,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
 
     $scope.followApp = function(id) {
       var appType = $routeParams.platform == 'ios' ? 'IosApp' : 'AndroidApp'
-      newsfeedService.follow(id, appType, $scope.appData.name).success(function(data) {
+      newsfeedService.follow(id, appType, $scope.appData.name, 'appDetails').success(function(data) {
         $scope.isFollowing = data.following
         if (data.following) {
           $scope.notify('followed');

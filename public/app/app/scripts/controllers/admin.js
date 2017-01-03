@@ -8,7 +8,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
     $scope.user = {};
     $scope.account = {};
     $scope.sdks = [];
-    $scope.sdkUsers = [];
+    $scope.sdkFollowers = [];
 
     $scope.range = function(n) {
       var arr = []
@@ -44,6 +44,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
         params: {account_id: account.id}
       }).success(function(data) {
         account.users = data.users
+        account.following = data.following
         account.isLoading = false;
       });
     }
@@ -52,12 +53,12 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
       return API_URI_BASE + "api/sdk/autocomplete?platform=ios&query="
     }
 
-    $scope.checkedSdkUser = function(user) {
-      var index = $scope.sdkUsers.indexOf(user)
+    $scope.checkedSdkFollower = function(follower) {
+      var index = $scope.sdkFollowers.indexOf(follower)
       if (index > -1) {
-        $scope.sdkUsers.splice(index, 1)
+        $scope.sdkFollowers.splice(index, 1)
       } else {
-        $scope.sdkUsers.push(user)
+        $scope.sdkFollowers.push(follower)
       }
     }
 
@@ -69,19 +70,29 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
     }
 
     $scope.followSDKs = function() {
-      var user_ids = $scope.sdkUsers.map(function (user) {
-        return user.id
-      })
-      var sdk_ids = $scope.sdks.map(function (sdk) {
+      var userIds = [];
+      var accountIds = [];
+
+      for (var i = 0; i < $scope.sdkFollowers.length; i++) {
+        var follower = $scope.sdkFollowers[i];
+        if (follower.type == 'User') {
+          userIds.push(follower.id)
+        } else if (follower.type == 'Account') {
+          accountIds.push(follower.id)
+        }
+      }
+      
+      var sdkIds = $scope.sdks.map(function (sdk) {
         return sdk.id
       })
+
       return $http({
         method: 'POST',
         url: API_URI_BASE + 'api/admin/follow_sdks',
-        data: {user_ids: user_ids, sdk_ids: sdk_ids}
+        data: {user_ids: userIds, sdk_ids: sdkIds, account_ids: accountIds}
       }).success(function(data) { 
         $scope.sdks = []
-        $scope.sdkUsers = []
+        $scope.sdkFollowers = []
         alert("Done!")
       }).error(function(data) {
         alert(data.errors)

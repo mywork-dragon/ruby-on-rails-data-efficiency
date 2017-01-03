@@ -1,4 +1,4 @@
 class FollowRelationship < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :follower, polymorphic: true
   belongs_to :followable, polymorphic: true
 end

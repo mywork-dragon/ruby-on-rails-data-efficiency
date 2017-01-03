@@ -7517,8 +7517,10 @@ span#dashboardResultsTableHeadingNumDisplayed {
 #appPageSdkScanStatus #wrap_spinner p {
   padding-top: 15px;
 }
-
-.media #wrap_spinner {
+#followMoreModal #wrap_spinner {
+  margin: 80px 0 30px 0;
+}
+#wrap_spinner {
   text-align: center;
 }
 
@@ -7540,8 +7542,18 @@ span#dashboardResultsTableHeadingNumDisplayed {
   margin-top: 20% !important;
 }
 
-#newsfeedPage .location-filter {
+#newsfeedPage .location-filter { 
   margin-top: 20px;
+}
+
+#followMoreModal .modal-body { 
+  overflow: auto;
+}
+
+#followMoreModal .ui-select {
+  margin: 0;
+  padding: 3.5px;
+  border-right: none;
 }
 
 .sdkScanGeneralInfo {
@@ -7848,6 +7860,10 @@ pre {
   font-size: 12px;
 }
 
+#followMoreModal #mainSearchBox .input-group {
+  width: 426px;
+}
+
 #mainSearchBox .input-group {
   width: 400px;
 }
@@ -8140,6 +8156,9 @@ button.dropdown-toggle .caret {
   background: none;
 }
 
+.adminPageRow strong {
+}
+
 .adminPageRow ul.activity, .adminPageRow ul.activity li {
   padding: 0;
 }
@@ -8174,6 +8193,11 @@ button.dropdown-toggle .caret {
 .adminPageRow .ui-tags-input, .newsfeedPageRow .ui-tags-input {
   overflow: auto;
   float: left;
+}
+
+.adminPageRow .panel-body .ui-tags-input {
+  width: 100%;
+  margin-top: 10px;
 }
 
 .adminPageRow .angucomplete-holder, .newsfeedPageRow .angucomplete-holder {
@@ -8242,11 +8266,20 @@ button.dropdown-toggle .caret {
 
 .newsfeedPageRow .export a {
   padding: 3px 10px;
+  box-shadow: none;
 }
 
 #followButton {
   width: 175px;
   display: inline-block;
+}
+
+ul.following {
+  padding-left: 0;
+}
+
+#followMoreModal ul.following {
+  margin-top: 60px;
 }
 
 .newsfeedPageRow .empty-message {
@@ -8255,8 +8288,9 @@ button.dropdown-toggle .caret {
   margin-top: 10%;
 }
 
-.newsfeedPageRow .btn-default {
+.newsfeedPageRow .follow-btn {
   float: right;
+  margin-left: 10px;
 }
 
 .newsfeedPageRow .platform {
@@ -8266,7 +8300,15 @@ button.dropdown-toggle .caret {
 ul.following li {
   list-style: none;
   padding: 12px 0;
-  overflow: auto;
+  margin: 10px 0;
+}
+
+ul.following li a {
+    text-overflow: ellipsis;
+    max-width: 350px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 ul.following li #followButton {

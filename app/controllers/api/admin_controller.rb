@@ -17,7 +17,7 @@ class Api::AdminController < ApplicationController
   def account_users
     account = Account.find(params[:account_id])
     if @current_user.account.is_admin_account? || account == @current_user.account
-      render json: {users: account.users}
+      render json: {users: account.users, following: account.following}
     else
       render json: {users: []}
     end
@@ -43,15 +43,21 @@ class Api::AdminController < ApplicationController
 
   def follow_sdks
     user_ids = params[:user_ids]
+    account_ids = params[:account_ids]
     sdk_ids = params[:sdk_ids]
     sdks = IosSdk.where(id: sdk_ids)
-    users = User.where(id: user_ids)
-    users.each do |user|
-      sdks.each do |sdk|
+
+    sdks.each do |sdk|
+      User.where(id: user_ids).each do |user|
         user.follow(sdk)
       end
+
+      Account.where(id: account_ids).each do |account|
+        account.follow(sdk)
+      end
     end
-    render json: {users: users}
+
+    render json: {success: true}
   end
 
   def create_user

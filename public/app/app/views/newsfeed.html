@@ -1,7 +1,14 @@
 <div id="newsfeedPage" data-ng-controller="NewsfeedCtrl as newsfeedCtrl">
   <div>
     <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
-      <button type="submit" class="btn btn-primary pull-right" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
+      <div class="btn-group pull-right" role="group" aria-label="followButtons">
+        <button type="submit" ng-if="following.length" class="btn btn-bordered-info follow-btn" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
+        <button type="submit" class="btn btn-info follow-btn" data-toggle="modal" data-target="#followMoreModal">
+          Follow new Apps & SDKs
+          &nbsp;
+          <i class="fa fa-plus-circle"></i>
+        </button>
+      </div>
       <h5>Filter by App Headquarter Location</h5>
       <div class="location-filter">
         <angucomplete-alt id="sdk-autocomplete-filter"
@@ -285,7 +292,7 @@
     </div>
   </div>
   
-  <div class="modal fade" id="followingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" class="follow" id="followingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -304,10 +311,53 @@
                 {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} App
               </a>
               <div id="followButton">
-                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="!follow.following">Follow</button>
-                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow)" ng-if="follow.following">Unfollow</button>
+                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow, 'following')" ng-if="!follow.following">Follow</button>
+                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(follow.id, follow.type, follow.name, follow, 'following')" ng-if="follow.following">Unfollow</button>
               </div>
             </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="followMoreModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-ng-controller="ModalSearchCtrl as modalSearchCtrl">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">Follow new Apps & SDKs</h3>
+        </div>
+        <div class="modal-body">
+          <div id="mainSearchBox" class="pull-right">
+            <div class="input-group">
+              <input type="text" class="form-control" ng-model="modalSearchCtrl.searchInput" ng-change="modalSearchCtrl.changeSearchInput()" placeholder="{{modalSearchCtrl.searchPlaceholderText()}}" autofocus>
+            </div>
+          </div>
+          <div class="pull-left">
+            <custom-platform-select custom-search-platform="modalSearchCtrl.platform"></custom-platform-select>
+          </div>
+          <div data-ng-show="modalSearchCtrl.queryInProgress" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+          <ul class="following" ng-hide="modalSearchCtrl.queryInProgress">
+            <li data-ng-repeat="result in modalSearchCtrl.results">
+              <a ng-if="result.type == 'IosSdk' || result.type == 'AndroidSdk'" href="#/sdk/{{result.type == 'IosSdk' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+                <img ng-src="{{result.icon}}" ng-show="result.icon">
+                {{result.name}}
+              </a>
+              <a ng-if="result.type == 'IosApp' || result.type == 'AndroidApp'" href="#/app/{{result.type == 'IosApp' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+                <img ng-src="{{result.icon}}" ng-show="result.icon">
+                {{result.name}}
+              </a>
+              <div id="followButton">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(result.id, result.type, result.name, result, 'followMore')" ng-if="!result.following">Follow</button>
+                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(result.id, result.type, result.name, result, 'followMore')" ng-if="result.following">Unfollow</button>
+              </div>
+            </li>
+            <li ng-show="modalSearchCtrl.results && !modalSearchCtrl.results.length">Oh no. There were no results.</li>
           </ul>
         </div>
       </div>

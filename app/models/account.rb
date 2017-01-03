@@ -52,7 +52,10 @@ class Account < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super().merge(type: self.class.name, active_users: self.active_users)
+    super().merge(
+                  type: self.class.name, 
+                  active_users: self.active_users,
+                  )
   end
   
 end

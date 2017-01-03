@@ -161,6 +161,11 @@ class AndroidApp < ActiveRecord::Base
     if options[:user]
       batch_json[:following] = options[:user].following?(self) 
     end
+
+    if options[:account]
+      batch_json[:following] = options[:account].following?(self) 
+    end
+    
     batch_json
   end
 
