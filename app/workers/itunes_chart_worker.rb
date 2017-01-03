@@ -57,7 +57,11 @@ class ItunesChartWorker
       )
     end
 
-    IosAppRanking.import rows
+    IosAppRanking.import(
+      rows,
+      synchronize: rows,
+      synchronize_keys: [:ios_app_ranking_snapshot_id, :ios_app_id]
+    )
 
     rows.map(&:log_activity)
 
