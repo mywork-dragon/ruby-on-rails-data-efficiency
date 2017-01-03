@@ -15,11 +15,21 @@ class ItunesTos
 
     proxy_request(proxy_type: :general) do
       res = get(app_store.tos_url_path)
-      html = Nokogiri::HTML(res.body)
-      last_updated_text = html.css('#main > p:last-child').text.strip
-      validate_date_text(last_updated_text)
-      Date.parse(last_updated_text.split(':').last)
+      date_text = last_updated_text(res.body)
+      validate_date_text(date_text)
+      extract_date(date_text)
     end
+  end
+
+  def self.extract_date(date_text)
+    date = date_text.split(':').last
+    english = GoogleTranslateApi.translate(date)
+    Date.parse(english)
+  end
+
+  def self.last_updated_text(html)
+    noko = Nokogiri::HTML(html)
+    noko.css('#main > p:last-child').text.strip
   end
 
   def self.validate_date_text(text)

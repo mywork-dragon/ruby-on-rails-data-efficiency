@@ -97,8 +97,6 @@ gem 'rack-cors', require: 'rack/cors'
 
 gem 'bcrypt', '3.1.10'
 
-gem 'minitest-fail-fast', '0.0.1'
-
 gem 'text', '1.3.1'
 
 gem 'iso_country_codes', '0.7.1'
@@ -175,6 +173,5 @@ gem 'mixpanel_client', '4.1.5'
 # for customer success url generation
 gem 'addressable', '~>2.4'
 
-gem 'rspec', '~> 3.5', group: [:development, :test]
 gem 'rspec-mocks', '~> 3.5', group: [:development, :test]
-gem 'mocha', '~> 1.2', group: [:development, :test]
+gem 'minitest', '~> 5.1', group: [:development, :test]
