@@ -45,9 +45,6 @@ every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
 
-every :day, :at => '7:56am', roles: [:varys_scheduler] do
-  runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
-end
 
 every 2.hours, roles: [:kylo_ren] do # every 2 hours
   runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
@@ -57,17 +54,26 @@ every "0 1,3,5,7,9,11,13,15,17,19,21,23 * * *", roles: [:kylo_ren] do # every 2 
   runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
 end
 
+############################################
 # scheduler container runs in UTC
+############################################
+#
+every :day, :at => '7:56am', roles: [:varys_scheduler] do
+  runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
+end
+
 every :day, at: '2:30am', roles: [:varys_scheduler] do
   runner 'ItunesChartService.run_itunes_top_free', :output => '/var/log/cron.log'
 end
 
-# scheduler container runs in UTC
 every :day, at: '3:00pm', roles: [:varys_scheduler] do
   runner "ItunesTosWorker.check_app_stores", :output => '/var/log/cron.log'
 end
 
-# scheduler container runs in UTC
 every :day, at: '3:00pm', roles: [:varys_scheduler] do
   runner 'CustomerHappinessService.pull_mixpanel_data', :output => '/var/log/cron.log'
+end
+
+every :wednesday, :at => '8:00am', roles: [:varys_scheduler] do
+  runner 'ElasticSearchWorker.perform_async(:update_ios)', :output => '/var/log/cron.log'
 end

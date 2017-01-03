@@ -15,11 +15,11 @@ class ElasticSearchWorker
 
     notify('Starting iOS ElasticSearch index updating')
 
+    ids = IosApp.where.not(display_type: ignore_types(:ios)).pluck(:id)
+
     batch.jobs do
-      IosApp.where.not(display_type: ignore_types(:ios)).find_in_batches(batch_size: 1000).with_index do |the_batch, index|
-        li "App #{index*1000}"
-        ids = the_batch.map{ |ios_app| ios_app.id }
-        ElasticSearchWorker.perform_async(:index_ios_apps, ids, options.symbolize_keys)
+      ids.each_slice(1_000) do |ios_app_ids|
+        ElasticSearchWorker.perform_async(:index_ios_apps, ios_app_ids, options.symbolize_keys)
       end
     end
   end
@@ -41,11 +41,11 @@ class ElasticSearchWorker
 
     notify('Starting Android ElasticSearch index updating')
 
+    ids = AndroidApp.pluck(:id)
+
     batch.jobs do
-      AndroidApp.find_in_batches(batch_size: 1000).with_index do |the_batch, index|
-        li "App #{index*1000}"
-        ids = the_batch.map{ |android_app| android_app.id }
-        ElasticSearchWorker.perform_async(:index_android_apps, ids, options.symbolize_keys)
+      ids.each_slice(1_000) do |android_app_ids|
+        ElasticSearchWorker.perform_async(:index_android_apps, android_app_ids, options.symbolize_keys)
       end
     end
   end
@@ -78,12 +78,15 @@ class ElasticSearchWorker
     Slackiq.message(msg, webhook_name: :main)
   end
 
-  # helper function for updating all the indices
-  def update_everything
+  # helper functions for updating all the indices
+  def update_ios
     ElasticSearchWorker.perform_async(:index_ios_sdks)
+    ElasticSearchWorker.perform_async(:queue_ios_apps)
+  end
+
+  def update_android
     ElasticSearchWorker.perform_async(:index_android_sdks)
     ElasticSearchWorker.perform_async(:queue_android_apps)
-    ElasticSearchWorker.perform_async(:queue_ios_apps)
   end
 
   def on_complete(status, options)
