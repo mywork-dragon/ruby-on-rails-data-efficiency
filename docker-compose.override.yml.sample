@@ -1,0 +1,8 @@
+version: '2'
+services:
+  varys:
+    environment:
+      - S3_ACCESS_KEY_ID=dummy
+      - S3_SECRET_ACCESS_KEY=dummy/2ymnwJwgiQcPwb
+      - REGIONAL_PROXY_USER=dummy
+      - REGIONAL_PROXY_PASSWORD=dummy
