@@ -569,7 +569,7 @@ class ApiController < ApplicationController
 
   def android_sdks_exist
     id = params['appId']
-    json = AndroidSdkService::App.get_sdk_response(id, force_live_scan_enabled=logged_into_admin_account?).to_json
+    json = AndroidSdkService::App.get_tagged_sdk_response(id, force_live_scan_enabled: logged_into_admin_account?).to_json
     render json: json
   end
 

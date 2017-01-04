@@ -9,6 +9,40 @@ module AndroidSdkService
         data = sdk_response_h(aa, force_live_scan_enabled, apk_snapshot_id: apk_snapshot_id)
       end
 
+      def get_tagged_sdk_response(android_app_id, only_show_tagged=false, force_live_scan_enabled: false)
+        new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]}, 
+                             installed_sdks_count: 0, uninstalled_sdks_count: 0 }
+        untagged_name = 'Others'
+        
+        [:installed_sdks, :uninstalled_sdks].each do |type|
+          sdks = get_sdk_response(android_app_id)[type]
+          sdks.each do |sdk|
+            android_sdk = AndroidSdk.find(sdk["id"])
+            tag_name = android_sdk.tags.first.try(:name) || untagged_name
+            next if tag_name == untagged_name && only_show_tagged
+            new_sdk_response[type][tag_name] += [sdk]
+          end
+        end
+
+        installed_sdks, uninstalled_sdks = [], []
+        ((new_sdk_response[:installed_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
+          value = new_sdk_response[:installed_sdks][key]
+          installed_sdks << {name: key, sdks: value}
+          new_sdk_response[:installed_sdks_count] += value.count
+        end
+
+        ((new_sdk_response[:uninstalled_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
+          value = new_sdk_response[:uninstalled_sdks][key]
+          uninstalled_sdks << {name: key, sdks: value}
+          new_sdk_response[:uninstalled_sdks_count] += value.count
+        end
+
+        new_sdk_response[:installed_sdks] = installed_sdks
+        new_sdk_response[:uninstalled_sdks] = uninstalled_sdks
+
+        get_sdk_response(android_app_id).merge(new_sdk_response)
+      end
+
       # Maps the display type to the error code
       def display_type_to_error_code(display_type)
         display_type = display_type.try(:to_sym)
@@ -22,7 +56,7 @@ module AndroidSdkService
 
       # Helper for get_sdk_response
       def sdk_response_h(aa, force_live_scan_enabled=false, apk_snapshot_id: nil)
-        h = {}
+        h = {installed_sdks: [], uninstalled_sdks: []}
         ec = display_type_to_error_code(aa.display_type)
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
@@ -89,7 +123,7 @@ module AndroidSdkService
         partioned_uninstalled_sdks = partition_sdks(android_sdks: uninstalled_display_sdks)
 
         # format the responses
-        h[:installed] = partioned_installed_sdks.map do |sdk|
+        h[:installed_sdks] = partioned_installed_sdks.map do |sdk|
           formatted = format_sdk(sdk)
           apk_snap_metrics = installed_display_sdk_to_snap[sdk.id]
           formatted['last_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:last_seen] : nil
@@ -97,7 +131,7 @@ module AndroidSdkService
           formatted
         end.uniq
 
-        h[:uninstalled] = partioned_uninstalled_sdks.map do |sdk|
+        h[:uninstalled_sdks] = partioned_uninstalled_sdks.map do |sdk|
           next unless installed_display_sdk_to_snap[sdk.id].nil?
           formatted = format_sdk(sdk)
           apk_snap_metrics = uninstalled_display_sdk_to_snap[sdk.id]

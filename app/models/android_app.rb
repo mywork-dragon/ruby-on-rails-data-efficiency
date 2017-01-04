@@ -233,6 +233,10 @@ class AndroidApp < ActiveRecord::Base
     AndroidSdkService::App.get_sdk_response(id)
   end
 
+  def tagged_sdk_response(only_show_tagged=false)
+    AndroidSdkService::App.get_tagged_sdk_response(self.id, only_show_tagged)
+  end
+
   # # delete old method
   # def installed_sdks
   #   newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
@@ -253,11 +257,11 @@ class AndroidApp < ActiveRecord::Base
   # end
 
   def installed_sdks
-    self.sdk_response[:installed]
+    self.sdk_response[:installed_sdks]
   end
 
   def uninstalled_sdks
-    self.sdk_response[:uninstalled]
+    self.sdk_response[:uninstalled_sdks]
   end
 
   def icon_url(size='300x300') # size should be string eg '350x350'

@@ -22,8 +22,10 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       sdkLiveScanService.checkForAndroidSdks(appId)
         .success(function (data) {
           androidLiveScanCtrl.sdkData = {
-            'sdkCompanies': data.installed,
-            'sdkOpenSource': data.uninstalled,
+            'installedSdks': data.installed_sdks,
+            'uninstalledSdks': data.uninstalled_sdks,
+            'installedSdksCount': data.installed_sdks_count,
+            'uninstalledSdksCount': data.uninstalled_sdks_count,
             'lastUpdated': data.updated,
             'errorCode': data.error_code,
             'liveScanEnabled': data.live_scan_enabled
@@ -37,7 +39,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             androidLiveScanCtrl.sdkData = {'errorCodeMessage': "Error - Please Try Again Later"};
           }
 
-          androidLiveScanCtrl.noSdkSnapshot = (!data.installed || !data.installed.length) && (!data.installed || !data.uninstalled.length);
+          androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length && !data.uninstalled_sdks.length;
 
           var errorCodeMessages = [
             "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // taken down

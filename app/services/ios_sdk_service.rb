@@ -125,37 +125,31 @@ class IosSdkService
     end
 
     def get_tagged_sdk_response(ios_app_id, only_show_tagged=false, force_live_scan_enabled: false)
-      new_sdk_response = {installed_sdks: {}, uninstalled_sdks: {}, installed_sdks_count: 0, uninstalled_sdks_count: 0}
+      new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]}, 
+                           installed_sdks_count: 0, uninstalled_sdks_count: 0 }
       untagged_name = 'Others'
       
       [:installed_sdks, :uninstalled_sdks].each do |type|
         sdks = get_sdk_response(ios_app_id)[type]
         sdks.each do |sdk|
           ios_sdk = IosSdk.find(sdk["id"])
-          if tag_name = (ios_sdk.tags.first.try(:name) || untagged_name)
-            next if tag_name == untagged_name && only_show_tagged
-            if new_sdk_response[type][tag_name]
-              new_sdk_response[type][tag_name] << sdk
-            else
-              new_sdk_response[type][tag_name] = [sdk]
-            end
-          end
+          tag_name = ios_sdk.tags.first.try(:name) || untagged_name
+          next if tag_name == untagged_name && only_show_tagged
+          new_sdk_response[type][tag_name] += [sdk]
         end
       end
 
       installed_sdks, uninstalled_sdks = [], []
       ((new_sdk_response[:installed_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
-        if value = new_sdk_response[:installed_sdks][key]
-          installed_sdks << {name: key, sdks: value}
-          new_sdk_response[:installed_sdks_count] += value.count
-        end
+        value = new_sdk_response[:installed_sdks][key]
+        installed_sdks << {name: key, sdks: value}
+        new_sdk_response[:installed_sdks_count] += value.count
       end
 
       ((new_sdk_response[:uninstalled_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
-        if value = new_sdk_response[:uninstalled_sdks][key]
-          uninstalled_sdks << {name: key, sdks: value}
-          new_sdk_response[:uninstalled_sdks_count] += value.count
-        end
+        value = new_sdk_response[:uninstalled_sdks][key]
+        uninstalled_sdks << {name: key, sdks: value}
+        new_sdk_response[:uninstalled_sdks_count] += value.count
       end
 
       new_sdk_response[:installed_sdks] = installed_sdks
