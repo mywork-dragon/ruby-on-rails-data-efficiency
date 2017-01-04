@@ -7552,8 +7552,9 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #followMoreModal .ui-select {
   margin: 0;
-  padding: 3.5px;
   border-right: none;
+  height: 34px;
+  width: 136px;
 }
 
 .sdkScanGeneralInfo {
@@ -7861,7 +7862,7 @@ pre {
 }
 
 #followMoreModal #mainSearchBox .input-group {
-  width: 426px;
+  width: 422px;
 }
 
 #mainSearchBox .input-group {
