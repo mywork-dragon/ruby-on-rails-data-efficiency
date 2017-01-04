@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214223347) do
+ActiveRecord::Schema.define(version: 20161222010830) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -222,7 +222,7 @@ ActiveRecord::Schema.define(version: 20161214223347) do
     t.boolean  "is_valid",                       default: true
   end
 
-  add_index "android_developers_websites", ["android_developer_id", "is_valid"], name: "android_developers_websites_is_valid", using: :btree  
+  add_index "android_developers_websites", ["android_developer_id", "is_valid"], name: "android_developers_websites_is_valid", using: :btree
   add_index "android_developers_websites", ["android_developer_id", "website_id"], name: "android_dev_id_and_website_id", using: :btree
   add_index "android_developers_websites", ["website_id"], name: "index_android_developers_websites_on_website_id", using: :btree
 
@@ -2493,6 +2493,7 @@ ActiveRecord::Schema.define(version: 20161214223347) do
     t.string   "first_name",      limit: 191
     t.string   "last_name",       limit: 191
     t.string   "profile_url",     limit: 191
+    t.string   "refresh_token",   limit: 191
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
