@@ -4,6 +4,13 @@ upstream app {
 
 server {
     listen 80;
+    server_name ~^www\.(?<domain>.+)$;
+
+    return 301 $scheme://$domain$uri;
+}
+
+server {
+    listen 80 default_server;
     server_name localhost;
 
     root /varys/public;
