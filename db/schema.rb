@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170102124200) do
+ActiveRecord::Schema.define(version: 20170105010013) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -1037,7 +1037,11 @@ ActiveRecord::Schema.define(version: 20170102124200) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "browsable",                default: false
+    t.integer  "purpose",      limit: 4
+    t.boolean  "in_use",                   default: false
   end
+
+  add_index "fb_accounts", ["purpose", "in_use"], name: "index_fb_accounts_on_purpose_and_in_use", using: :btree
 
   create_table "fb_accounts_ios_devices", force: :cascade do |t|
     t.integer  "fb_account_id", limit: 4
