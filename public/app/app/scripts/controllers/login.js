@@ -12,7 +12,7 @@ angular.module('appApp')
         $scope.message = "Please link either your Google or LinkedIn account now. You will use that account to login in the future."
         $scope.redMessage = true
       } else if ($routeParams.msg) {
-        $scope.message = $routeParams.msg
+        $scope.message = $routeParams.msg.replace(/<[^>]+>/gm, '')
         $scope.redMessage = true
       } else {
         $scope.message = "Log in using Google or LinkedIn"

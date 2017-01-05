@@ -4,11 +4,18 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  class NotAuthenticatedError < StandardError; end
+  class AuthenticationTimeoutError < StandardError; end
+  class AuthenticationRevokedError < StandardError; end
+
   rescue_from NotAuthenticatedError do
     render json: { error: 'Not Authorized' }, status: :unauthorized
   end
   rescue_from AuthenticationTimeoutError do
     render json: { error: 'Auth token is expired' }, status: 419 # unofficial timeout status code
+  end
+  rescue_from AuthenticationRevokedError do
+    render json: {'error' => 'Authorization revoked'}, status: 418 # unofficial authorization revoked status code
   end
 
   def ping
@@ -22,18 +29,17 @@ class ApplicationController < ActionController::Base
     if decoded_auth_token
       @current_user ||= User.find(decoded_auth_token[:user_id])
       @current_user.touch(:last_active)
-      if @current_user.access_revoked?
-        render json: {'error' => 'authorization revoked'}, status: 418 # unofficial authorization revoked status code
-      end
     end
   end
 
   # Check to make sure the current user was set and the token is not expired
   def authenticate_request
-    if auth_token_expired?
+    if auth_token_revoked?
       fail AuthenticationTimeoutError
     elsif !@current_user
       fail NotAuthenticatedError
+    elsif @current_user.access_revoked?
+      fail AuthenticationRevokedError
     end
   end
 
@@ -99,8 +105,8 @@ class ApplicationController < ActionController::Base
     @decoded_auth_token ||= AuthToken.decode(params[:access_token])
   end
 
-  def auth_token_expired?
-    decoded_auth_token && decoded_auth_token.expired?
+  def auth_token_revoked?
+    decoded_auth_token && decoded_auth_token.revoked?
   end
 
   # JWT's are stored in the Authorization header using this format:

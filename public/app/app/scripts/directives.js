@@ -435,7 +435,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         controllerAs: 'appPlatformCtrl'
       }
     }])
-    .directive('customPlatformSelect', ["apiService", "$rootScope", "AppPlatform", "authService", function (apiService, $rootScope, AppPlatform, authService) {
+    .directive('customPlatformSelect', ["apiService", 'authToken', "$rootScope", "AppPlatform", "authService", function (apiService, authToken, $rootScope, AppPlatform, authService) {
       return {
         replace: true,
         restrict: 'E',
@@ -447,11 +447,13 @@ angular.module("app.directives", []).directive("imgHolder", [
 
           $scope.appPlatform = AppPlatform;
 
-          authService.permissions()
-            .success(function(data) {
-              $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+          if (authToken.isAuthenticated()) {
+            authService.permissions()
+              .success(function(data) {
+                $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
 
-            });
+              });
+          }
 
           $scope.changeAppPlatform = function (platform) {
             $scope.customSearchPlatform = platform;

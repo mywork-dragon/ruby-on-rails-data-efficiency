@@ -32,7 +32,9 @@ angular.module('appApp')
           });
       };
 
-      customSearchCtrl.loadTableData();
+      if ($location.search().platform) {
+        customSearchCtrl.loadTableData();
+      }
 
 
       // When orderby/sort arrows on dashboard table are clicked

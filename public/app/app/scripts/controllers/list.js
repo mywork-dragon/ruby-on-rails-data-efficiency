@@ -2,23 +2,11 @@
 
 angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService",
   function($scope, $http, authToken, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService) {
+    $scope.AllSelectedItems = false;
+    $scope.NoSelectedItems = false;
 
     /* Sets html title attribute */
     pageTitleService.setTitle("MightySignal");
-
-    authService.userInfo().success(function(data) { 
-      mixpanel.identify(data.email);
-      mixpanel.people.set({
-        "$email": data.email,
-        "jwtToken": authToken.get()
-      });
-    });
-
-    // Sets user permissions
-    authService.permissions()
-    .success(function(data) {
-        $scope.canViewExports = data.can_view_exports;
-    });
 
     $scope.load = function() {
       $scope.queryInProgress = true;
@@ -32,10 +20,6 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
       });
     };
 
-    listApiService.getLists().success(function(data) {
-      $rootScope.usersLists = data;
-    });
-
     $scope.createList = function(listName) {
       listApiService.createNewList(listName).success(function() {
         listApiService.getLists().success(function(data) {
@@ -45,12 +29,14 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
         });
       });
     };
+    
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];
         $scope.load();
       });
     };
+    
     $scope.deleteList = function() {
       listApiService.deleteList($routeParams.id).success(function() {
         listApiService.getLists().success(function(data) {
@@ -60,6 +46,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
         });
       });
     };
+    
     $scope.exportListToCsv = function() {
       listApiService.exportToCsv($routeParams.id)
         .success(function (content) {
@@ -70,6 +57,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
           hiddenElement.click();
         });
     };
+    
     $scope.updateCheckboxStatus = function(appId, appType) {
       $rootScope.selectedAppsForList.forEach(function(app) {
         if(app.id == appId && app.type == appType) {
@@ -78,9 +66,11 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
       });
       return false;
     };
+    
     $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
       return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
     };
+    
     $scope.recordListViewEvent = function(listName, listId) {
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -92,9 +82,27 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
       );
       /* -------- Mixpanel Analytics End -------- */
     };
-    $scope.AllSelectedItems = false;
-    $scope.NoSelectedItems = false;
 
-    $scope.load();
+    if ($rootScope.isAuthenticated) {
+      authService.userInfo().success(function(data) { 
+        mixpanel.identify(data.email);
+        mixpanel.people.set({
+          "$email": data.email,
+          "jwtToken": authToken.get()
+        });
+      });
 
+      // Sets user permissions
+      authService.permissions()
+      .success(function(data) {
+          $scope.canViewExports = data.can_view_exports;
+      });
+
+      listApiService.getLists().success(function(data) {
+        $rootScope.usersLists = data;
+      });
+
+      $scope.load();
+    }
+  
 }]);
