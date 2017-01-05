@@ -33,10 +33,13 @@ services:
       - ELASTICSEARCH_PORT=9200
       - S3_ACCESS_KEY_ID=dummy
       - S3_SECRET_ACCESS_KEY=dummy
+      - REGIONAL_PROXY_USER=dummy
+      - REGIONAL_PROXY_PASSWORD=dummy
     depends_on:
       - db
       - redis
       - elasticsearch
+      - proxy
   redis:
     image: redis:2.8
     expose:
@@ -74,11 +77,16 @@ services:
       - ELASTICSEARCH_PORT=9200
       - S3_ACCESS_KEY_ID=dummy
       - S3_SECRET_ACCESS_KEY=dummy
+      - REGIONAL_PROXY_USER=dummy
+      - REGIONAL_PROXY_PASSWORD=dummy
     depends_on:
       - db
       - redis
       - elasticsearch
+      - proxy
   elasticsearch:
     image: elasticsearch:2.3
     ports:
       - "9200:9200"
+  proxy:
+    image: 250424072945.dkr.ecr.us-east-1.amazonaws.com/squid:latest

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161222010830) do
+ActiveRecord::Schema.define(version: 20170102124200) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -478,6 +478,7 @@ ActiveRecord::Schema.define(version: 20161222010830) do
     t.datetime "first_valid_date"
     t.datetime "good_as_of_date"
     t.datetime "last_scanned"
+    t.integer  "region",              limit: 4
   end
 
   add_index "apk_snapshots", ["android_app_id", "scan_status", "good_as_of_date"], name: "index_android_app_id_scan_status_good_as_of_date", using: :btree
@@ -2159,6 +2160,7 @@ ActiveRecord::Schema.define(version: 20161222010830) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "purpose",    limit: 4
+    t.integer  "region",     limit: 4
   end
 
   add_index "micro_proxies", ["active"], name: "index_micro_proxies_on_active", using: :btree
@@ -2166,6 +2168,7 @@ ActiveRecord::Schema.define(version: 20161222010830) do
   add_index "micro_proxies", ["private_ip"], name: "index_micro_proxies_on_private_ip", using: :btree
   add_index "micro_proxies", ["public_ip"], name: "index_micro_proxies_on_public_ip", using: :btree
   add_index "micro_proxies", ["purpose", "active"], name: "index_micro_proxies_on_purpose_and_active", using: :btree
+  add_index "micro_proxies", ["purpose", "region", "active"], name: "index_micro_proxies_on_purpose_and_region_and_active", using: :btree
 
   create_table "ms_clearbit_leads", force: :cascade do |t|
     t.text     "first_name",   limit: 65535

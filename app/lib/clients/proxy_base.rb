@@ -1,10 +1,10 @@
 module ProxyBase
-  
-  def select_proxy(proxy_type: nil)
-    proxies = if proxy_type == :ios_classification
+
+  def select_proxy(proxy_type: nil, region: nil)
+    if proxy_type == :ios_classification
       ios_proxies
     elsif proxy_type == :android_classification
-      android_proxies
+      android_proxies(region)
     elsif proxy_type == :all_static
       all_static_proxies
     elsif proxy_type == :temporary_proxies
@@ -12,27 +12,33 @@ module ProxyBase
     else
       general_proxies
     end
-
-    {
-        ip: proxies.sample,
-        port: 8888
-    }
   end
 
   def general_proxies
-    MicroProxy.where(purpose: MicroProxy.purposes[:general], active:true).pluck(:private_ip)
+    proxies = MicroProxy.where(purpose: MicroProxy.purposes[:general], active:true).pluck(:private_ip)
+    { ip: proxies.sample, port: 8888 }
   end
 
   def ios_proxies
-    MicroProxy.where(purpose: MicroProxy.purposes[:ios], active:true).pluck(:private_ip)
+    proxies = MicroProxy.where(purpose: MicroProxy.purposes[:ios], active:true).pluck(:private_ip)
+    { ip: proxies.sample, port: 8888 }
   end
 
   def all_static_proxies
-    MicroProxy.where(active: true).pluck(:private_ip)
+    proxies = MicroProxy.where(active: true).pluck(:private_ip)
+    { ip: proxies.sample, port: 8888 }
   end
 
-  def android_proxies
-    ios_proxies
+  def android_proxies(region)
+    if region == nil
+      return ios_proxies
+    end
+    # Try a random regional proxy.
+    proxy = MicroProxy.where(
+      region: MicroProxy.regions[region],
+      purpose: MicroProxy.purposes[:region],
+      active:true).sample
+    { ip: proxy.private_ip, port: 8888, user: ENV['REGIONAL_PROXY_USER'], password: ENV['REGIONAL_PROXY_PASSWORD'] }
   end
 
   # load balancers that will forward address to temporary proxies

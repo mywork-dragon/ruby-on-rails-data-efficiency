@@ -46,4 +46,7 @@ Rails.application.configure do
   config.app_pkg_summary_bucket_region = "us-east-1"
 
   config.paperclip_defaults = {}
+
+  config.logger = Logger.new(STDOUT)
+  config.log_level = :INFO
 end

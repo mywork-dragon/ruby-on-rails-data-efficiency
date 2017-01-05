@@ -34,6 +34,8 @@ class ApkSnapshot < ActiveRecord::Base
   enum scan_status: [:scan_failure, :scan_success, :invalidated, :scanning]
   enum scan_version: [:first_attempt, :new_years_version] # the version of the scan algorithm
 
+  include ProxyRegions
+
   def set_dates
     x = Time.now
     self.good_as_of_date = x

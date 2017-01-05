@@ -15,6 +15,10 @@ if Rails.env.development?
     AndroidAppCategory.find_or_create_by(name: cat)
   end
 
+# Create the proxy container proxy.
+MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', :purpose => :ios)
+MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', :purpose => :general)
+
 puts 'creating App Stores...'
 ['us', 'jp'].each do |country_code|
   AppStore.create!(country_code: country_code)

@@ -42,42 +42,55 @@ module MightyApk
     end
 
     def purchase(app_identifier, offer_type, version_code)
-      req_headers = api_request_headers.merge(
-        'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
-      )
-      res = self.class.proxy_request(proxy_type: :android_classification) do
-        self.class.post(
-          '/purchase',
-          headers: req_headers,
-          query: {
-            ot: offer_type,
-            vc: version_code,
-            doc: app_identifier
-          }
-        )
+      begin
+        self.class.try_all_regions do |region|
+          req_headers = api_request_headers.merge(
+            'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
+          )
+          res = self.class.proxy_request(proxy_type: :android_classification, region: region) do
+            self.class.post(
+              '/purchase',
+              headers: req_headers,
+              query: {
+                ot: offer_type,
+                vc: version_code,
+                doc: app_identifier
+              }
+            )
+          end
+          validate(res)
+          [res, region]
+        end
+      rescue ProxyParty::AllRegionsFailed
+        raise UnsupportedCountry
       end
-      validate(res)
-      res
     end
 
     # uses open-uri instead of HTTParty because result was not readable by ruby_apk gem
-    def download(download_url, cookie, destination)
+    def download(download_url, cookie, destination, region)
       headers = fetch_headers(cookie.name, cookie.value).merge(
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
       )
-      if Rails.env.production?
-        proxy_info = self.class.select_proxy(proxy_type: :android_classification)
-        headers.merge({ proxy: "http://#{proxy_info[:ip]}:#{proxy_info[:port]}" })
-      end
+      begin
+        proxy_info = self.class.select_proxy(proxy_type: :android_classification, region: region)
+        proxy_uri = "http://#{proxy_info[:ip]}:#{proxy_info[:port]}"
+        if proxy_info[:user].present?
+          headers.merge({ :proxy_http_basic_authentication => [proxy_uri, proxy_info[:user], proxy_info[:password]]})
+        else
+          headers.merge({ proxy: proxy_uri })
+        end
 
-      File.open(destination, 'wb') do |dest_fd|
-        open(
-          download_url,
-          headers
-        ) do |src_fd|
-          IO.copy_stream(src_fd, dest_fd)
+        File.open(destination, 'wb') do |dest_fd|
+          open(
+            download_url,
+            headers
+          ) do |src_fd|
+            IO.copy_stream(src_fd, dest_fd)
+          end
         end
       end
+    rescue ProxyParty::UnsupportedRegion
+      raise UnsupportedCountry
     end
 
     def api_request_headers
@@ -106,7 +119,7 @@ module MightyApk
 
     def handle_forbidden(res)
       body = res.body
-      raise UnsupportedCountry if body.match(/not.*supported.*country/i)
+      raise ProxyParty::UnsupportedRegion if body.match(/not.*supported.*country/i)
       raise IncompatibleDevice if body.match(/Your device is not compatible with this item/i)
       raise Forbidden
     end
