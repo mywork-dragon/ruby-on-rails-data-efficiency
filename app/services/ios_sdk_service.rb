@@ -141,15 +141,21 @@ class IosSdkService
 
       installed_sdks, uninstalled_sdks = [], []
       ((new_sdk_response[:installed_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
+        # don't add data for untagged_name unless we have sdks for it
         value = new_sdk_response[:installed_sdks][key]
-        installed_sdks << {name: key, sdks: value}
-        new_sdk_response[:installed_sdks_count] += value.count
+        if value.present?
+          installed_sdks << {name: key, sdks: value}
+          new_sdk_response[:installed_sdks_count] += value.count
+        end
       end
 
       ((new_sdk_response[:uninstalled_sdks].keys - [untagged_name]).sort + [untagged_name]).each do |key|
+        # don't add data for untagged_name unless we have sdks for it
         value = new_sdk_response[:uninstalled_sdks][key]
-        uninstalled_sdks << {name: key, sdks: value}
-        new_sdk_response[:uninstalled_sdks_count] += value.count
+        if value.present?
+          uninstalled_sdks << {name: key, sdks: value}
+          new_sdk_response[:uninstalled_sdks_count] += value.count
+        end
       end
 
       new_sdk_response[:installed_sdks] = installed_sdks
