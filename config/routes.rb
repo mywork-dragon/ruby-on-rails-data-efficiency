@@ -157,7 +157,7 @@ Rails.application.routes.draw do
 
   get 'fb-recruiting-privacy-policy' => 'privacy_policy#fb_recruiting'
 
-  # require 'sidekiq/web'
-  # mount Sidekiq::Web => '/sidekiq'
-  
+  # internal api for FB account reservations
+  put 'fb_account/reserve' => 'fb_account#reserve'
+  put 'fb_account/release' => 'fb_account#release'
 end
