@@ -36,6 +36,12 @@ class ApkSnapshot < ActiveRecord::Base
 
   include ProxyRegions
 
+  def set_region(region)
+    self.android_app.add_region(region)
+    self.android_app.save!
+    self.region = region
+  end
+
   def set_dates
     x = Time.now
     self.good_as_of_date = x

@@ -182,6 +182,7 @@ ActiveRecord::Schema.define(version: 20170105010013) do
     t.integer  "newest_apk_snapshot_id",         limit: 4
     t.integer  "display_type",                   limit: 4,   default: 0
     t.integer  "android_developer_id",           limit: 4
+    t.string   "regions",                        limit: 191, default: "[]"
   end
 
   add_index "android_apps", ["android_developer_id"], name: "index_android_apps_on_android_developer_id", using: :btree

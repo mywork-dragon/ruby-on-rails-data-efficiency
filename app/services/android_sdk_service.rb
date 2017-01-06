@@ -62,7 +62,12 @@ module AndroidSdkService
 
       # Helper for get_sdk_response
       def sdk_response_h(aa, force_live_scan_enabled=false, apk_snapshot_id: nil)
-        h = {installed_sdks: [], uninstalled_sdks: []}
+        h = {
+          installed_sdks: [],
+          uninstalled_sdks: [],
+          international_app: aa.international?,
+          regions: aa.region_codes
+        }
         ec = display_type_to_error_code(aa.display_type)
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)

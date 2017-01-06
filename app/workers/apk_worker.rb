@@ -90,7 +90,7 @@ module ApkWorker
     snapshot.update!(google_account_id: google_account.id)
     @attempted_google_account_ids << google_account.id
     region = download_from_play_store(apk_filename, android_app, google_account)
-    snapshot.region = region
+    snapshot.set_region(region)
     generate_apk_file(apk_filename, apk_snapshot: snapshot)
     classify_if_necessary(snapshot.id)
     snapshot

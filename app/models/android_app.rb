@@ -1,6 +1,7 @@
 class AndroidApp < ActiveRecord::Base
 
   validates :app_identifier, uniqueness: true
+  validate :validate_regions
   belongs_to :app
 
   has_many :listables_lists, as: :listable
@@ -38,8 +39,32 @@ class AndroidApp < ActiveRecord::Base
 
   enum display_type: [:normal, :taken_down, :foreign, :paid]
 
+  serialize :regions, JSON
+
   # update_index('apps#android_app') { self } if Rails.env.production?
   
+  def validate_regions
+    available_regions = [nil] + MicroProxy.regions.values
+    if (regions.select {|x| not available_regions.include? x}).size > 0
+      errors.add(:regions, :invalid)
+    end
+  end
+
+  def international?
+     (regions - [nil, MicroProxy.regions["US"]]).count > 0
+  end
+
+  def add_region(region)
+    region = MicroProxy.regions[region]
+    if not regions.include? region
+      self.regions += [region]
+    end
+  end
+
+  def region_codes
+    regions.map {|x| MicroProxy.regions.key(x)}
+  end
+
   def get_newest_app_snapshot
     self.android_app_snapshots.max_by do |snapshot|
       snapshot.created_at
