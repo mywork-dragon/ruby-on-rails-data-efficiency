@@ -11,7 +11,7 @@ module AndroidClassification
 
     classify
     update_scan_status(:scan_success)
-    log_activities if Rails.env.production?
+    log_activities if Rails.env.production? and not rescan
     log "Completed classification for snapshot #{@apk_snapshot.id}"
 
   rescue => e
