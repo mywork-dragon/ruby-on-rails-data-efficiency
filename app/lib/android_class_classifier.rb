@@ -10,10 +10,10 @@ class AndroidClassClassifier
       @info = info
     end
   end
-  def initialize(model_file = "db/android_class_model/model.json.gz")
+  def initialize(model_file = "db/android_class_model/model.json")
     model_file = File.join(Rails.root, model_file)
     # model_file is a gzipped json file.
-    m = JSON.parse(Zlib::GzipReader.open(model_file).read())
+    m = JSON.parse(File::open(model_file).read())
     @class_to_sdks = m['class_to_sdks']
     @sdk_to_website = m['sdk_to_website']
   end
