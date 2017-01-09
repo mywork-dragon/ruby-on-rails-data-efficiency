@@ -275,6 +275,7 @@ GEM
     parallel (1.6.0)
     parser (2.3.1.0)
       ast (~> 2.2)
+    plist (3.2.0)
     powerpack (0.1.1)
     public_suffix (1.4.6)
     rack (1.6.4)
@@ -506,6 +507,7 @@ DEPENDENCIES
   open_uri_redirections
   paperclip (~> 5.0.0.beta2)
   parallel (= 1.6.0)
+  plist (~> 3.2)
   public_suffix (= 1.4.6)
   rack-cors
   rails (= 4.2.6)

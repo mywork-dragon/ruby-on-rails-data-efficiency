@@ -1,22 +1,8 @@
 require 'test_helper'
+require 'mocks/mighty_aws_s3_mock'
 
 class ApkFileTest < ActiveSupport::TestCase
   test "store and get class lists" do
-
-    class MightyAwsS3Mock
-      attr_accessor :data
-      attr_accessor :key_stored_to
-      attr_accessor :key_returned_from
-
-      def store(bucket:, key_path:, data_str:)
-        @data = data_str
-        @key_stored_to = key_path
-      end
-      def retrieve(bucket:, key_path:)
-        @key_returned_from = key_path
-        @data
-      end
-    end
 
     # Mock a zip/apk file
     stringio = Zip::OutputStream.write_buffer do |zio|

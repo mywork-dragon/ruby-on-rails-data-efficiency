@@ -178,3 +178,6 @@ group :development, :test do
   gem 'rspec-mocks', '~> 3.5'
   gem 'minitest', '~> 5.1'
 end
+
+# for manipulate IPA plists
+gem 'plist', '~> 3.2'

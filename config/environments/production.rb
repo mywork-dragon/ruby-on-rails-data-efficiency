@@ -101,4 +101,8 @@ Rails.application.configure do
   # The bucket to store apk pkg summary files.
   config.app_pkg_summary_bucket = "varys-apk-file-summaries"
   config.app_pkg_summary_bucket_region = "us-east-1"
+
+  # iOS summaries
+  config.ios_pkg_summary_bucket = 'varys-ipa-file-summaries'
+  config.ios_pkg_summary_bucket_region = 'us-east-1'
 end

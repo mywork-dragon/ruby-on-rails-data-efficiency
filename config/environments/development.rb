@@ -53,4 +53,7 @@ Rails.application.configure do
   config.app_pkg_summary_bucket = "varys-apk-file-summaries-dev"
   config.app_pkg_summary_bucket_region = "us-east-1"
 
+  # iOS summaries
+  config.ios_pkg_summary_bucket = 'varys-ipa-file-summaries-dev'
+  config.ios_pkg_summary_bucket_region = 'us-east-1'
 end

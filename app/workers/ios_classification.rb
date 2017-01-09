@@ -49,11 +49,7 @@ module IosClassification
   end
 
   def is_new_classdump?(snap_id, classdump)
-    if Rails.env.production?
-      classdump.app_content.present? 
-    else
-      `find /$HOME/decrypted_ios_apps/ -maxdepth 1 -name '#{snap_id}.json.txt'`.chomp.present?
-    end
+    classdump.app_content.present? 
   end
 
   def convert_to_summary(ipa_snapshot_id:,classdump:)
@@ -69,24 +65,10 @@ module IosClassification
 
     summary = {}
 
-    if Rails.env.production?
+    raise "Empty classdump" unless classdump.class_dump.present?
 
-      raise "Empty classdump" unless classdump.class_dump.present?
-
-      url = classdump.class_dump.url
-      contents = open(url) { |f| f.read }.scrub
-
-    else
-      filename = `echo $HOME`.chomp + "/decrypted_ios_apps/#{ipa_snapshot_id}"
-      ext = if is_new_classdump?(ipa_snapshot_id, classdump)
-        '.json.txt'
-      else
-        classdump.method == 'classdump' ? ".classdump.txt" : ".txt"
-      end
-      filename = filename + ext
-
-      contents = File.open(filename) {|f| f.read}.chomp.scrub
-    end
+    url = classdump.class_dump.url
+    contents = open(url) { |f| f.read }.scrub
 
     if is_new_classdump?(ipa_snapshot_id, classdump)
 
