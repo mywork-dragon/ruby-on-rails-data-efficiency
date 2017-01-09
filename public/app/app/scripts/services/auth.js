@@ -30,6 +30,7 @@ angular.module("appApp")
       loginFailed: "STRING_REPRESENTS_EVENT_FAILED_LOGIN",
       notAuthenticated: "STRING_REPRESENTS_EVENT_FAILED_AUTH",
       notAuthorized: "STRING_REPRESENTS_EVENT_FAILURE_NOT_AUTHORIZED",
+      sharedAuthentication: "STRING_REPRESENTS_AUTHENTICATION_SHARED",
       sessionTimeout: "STRING_REPRESENTS_EVENT_FAILURE_TIMEOUT",
       authRevoked: "STRING_REPRESENTS_AUTHORIZATION_REVOKED"
     }
@@ -128,6 +129,7 @@ angular.module("appApp")
           $injector.get('$rootScope').$broadcast({
             401: authEvents.notAuthenticated,
             403: authEvents.notAuthorized,
+            409: authEvents.sharedAuthentication,
             418: authEvents.authRevoked,
             419: authEvents.sessionTimeout
           }[response.status], response);

@@ -5,14 +5,18 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   class NotAuthenticatedError < StandardError; end
-  class AuthenticationTimeoutError < StandardError; end
+  class AuthenticationExpiredError < StandardError; end
+  class AuthenticationSharedError < StandardError; end
   class AuthenticationRevokedError < StandardError; end
 
   rescue_from NotAuthenticatedError do
     render json: { error: 'Not Authorized' }, status: :unauthorized
   end
-  rescue_from AuthenticationTimeoutError do
+  rescue_from AuthenticationExpiredError do
     render json: { error: 'Auth token is expired' }, status: 419 # unofficial timeout status code
+  end
+  rescue_from AuthenticationSharedError do
+    render json: { error: 'Another session was created for this user' }, status: 409 # unofficial account sharing status code
   end
   rescue_from AuthenticationRevokedError do
     render json: {'error' => 'Authorization revoked'}, status: 418 # unofficial authorization revoked status code
@@ -34,8 +38,10 @@ class ApplicationController < ActionController::Base
 
   # Check to make sure the current user was set and the token is not expired
   def authenticate_request
-    if auth_token_revoked?
-      fail AuthenticationTimeoutError
+    if auth_token_expired?
+      fail AuthenticationExpiredError
+    elsif auth_token_shared?
+      fail AuthenticationSharedError
     elsif !@current_user
       fail NotAuthenticatedError
     elsif @current_user.access_revoked?
@@ -105,8 +111,12 @@ class ApplicationController < ActionController::Base
     @decoded_auth_token ||= AuthToken.decode(params[:access_token])
   end
 
-  def auth_token_revoked?
-    decoded_auth_token && decoded_auth_token.revoked?
+  def auth_token_expired?
+    decoded_auth_token && decoded_auth_token.expired?
+  end
+
+  def auth_token_shared?
+    decoded_auth_token && decoded_auth_token.is_second_session?
   end
 
   # JWT's are stored in the Authorization header using this format:

@@ -37,6 +37,11 @@ angular.module('appApp')
         authToken.deleteToken("Your MightySignal login session has expired. Please login again.");
       });
 
+      $scope.$on('STRING_REPRESENTS_AUTHENTICATION_SHARED', function(event) {
+        $rootScope.isAuthenticated = false;
+        authToken.deleteToken("Your MightySignal account was logged in from somewhere else. Please login again.");
+      });
+
       $scope.clickedNavLink = function(link) {
         mixpanel.track("Clicked Navigation Link", {
           link: link
