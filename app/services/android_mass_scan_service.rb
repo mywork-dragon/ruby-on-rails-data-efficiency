@@ -73,7 +73,7 @@ class AndroidMassScanService
       )
 
       batch.jobs do
-        AndroidApp.where(id: android_app_ids).pluck(:id).each do |id|
+        android_app_ids.each do |id|
           AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
         end
       end
