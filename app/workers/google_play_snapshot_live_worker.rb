@@ -5,7 +5,7 @@ class GooglePlaySnapshotLiveWorker
   sidekiq_options queue: :sdk_live_scan, retry: false
 
   def proxy_type
-    :all_static
+    :general
   end
 
   # no-op
