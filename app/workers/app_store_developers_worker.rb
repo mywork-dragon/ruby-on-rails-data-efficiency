@@ -9,6 +9,13 @@ class AppStoreDevelopersWorker
     send(method, *args)
   end
 
+  def create_by_ios_app_id(ios_app_id, ensure_required: true)
+    @ios_app_id = ios_app_id
+    return if ensure_required && already_populated?
+    developer_identifier = find_developer_app_store_identifier
+    create_by_developer_identifier(developer_identifier)
+  end
+
   def create_by_developer_identifier(developer_identifier)
     @developer_identifier = developer_identifier
     rows_by_developer_identifier
@@ -18,10 +25,8 @@ class AppStoreDevelopersWorker
     update_ios_apps(developer)
   end
 
-  def create_by_ios_app_id(ios_app_id)
-    @ios_app_id = ios_app_id
-    developer_identifier = find_developer_app_store_identifier
-    create_by_developer_identifier(developer_identifier)
+  def already_populated?
+    !!IosApp.find(@ios_app_id).ios_developer_id
   end
 
   def rows_by_developer_identifier
@@ -57,12 +62,13 @@ class AppStoreDevelopersWorker
     website_rows = store_websites(websites)
     developer = begin
                   IosDeveloper.find_or_create_by!(
-                    identifier: @developer_identifier,
-                    name: seller_name
+                    identifier: @developer_identifier
                   )
                 rescue ActiveRecord::RecordNotUnique
                   IosDeveloper.find_by_identifier!(@developer_identifier)
                 end
+
+    developer.update!(name: seller_name) if seller_name != developer.name
 
     join_rows = website_rows.map do |row|
       dev_website = IosDevelopersWebsite.new(
@@ -90,8 +96,9 @@ class AppStoreDevelopersWorker
   end
 
   def update_ios_apps(developer)
+    existing_ios_app_ids = developer.ios_apps.pluck(:id).uniq
     ios_app_ids = @rows.map(&:ios_app_id).uniq.compact
-    IosApp.where(id: ios_app_ids).update_all(ios_developer_id: developer.id)
+    IosApp.where(id: ios_app_ids - existing_ios_app_ids).update_all(ios_developer_id: developer.id)
   end
 
   class << self
