@@ -98,4 +98,25 @@ class ClassdumpProcessingWorker
   def store_marker(classdump)
     classdump.store_processed
   end
+
+  def on_complete(status, options)
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Processed all classdumps')
+  end
+
+  class << self
+
+    def process_all
+      ids = ClassDump.where(dump_success: true).pluck(:id)
+      batch = Sidekiq::Batch.new
+      batch.description = 'Re-processing ALL classdumps'
+      batch.on(:complete, 'ClassdumpProcessingWorker#on_complete')
+
+      batch.jobs do
+        ids.each do |id|
+          ClassdumpProcessingWorker.perform_async(id)
+        end
+      end
+    end
+
+  end
 end
