@@ -1,4 +1,6 @@
 module IosClassification
+
+  class UnavailableClassdump < RuntimeError; end
   
   def perform(snap_id)
     snapshot = IpaSnapshot.find(snap_id)
@@ -65,7 +67,7 @@ module IosClassification
 
     summary = {}
 
-    raise "Empty classdump" unless classdump.class_dump.present?
+    raise UnavailableClassdump unless classdump.class_dump.present?
 
     url = classdump.class_dump.url
     contents = open(url) { |f| f.read }.scrub

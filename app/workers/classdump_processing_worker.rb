@@ -8,6 +8,8 @@ class ClassdumpProcessingWorker
 
   class NoClassdumpAvailable < RuntimeError; end
 
+  MAX_WAIT_ATTEMPTS = 20
+
   def perform(class_dump_id)
     classdump = ClassDump.find(class_dump_id)
     raise NoClassdumpAvailable unless classdump
@@ -16,8 +18,28 @@ class ClassdumpProcessingWorker
     store_marker(classdump)
   end
 
+  def get_summary_with_wait(classdump)
+    summary = nil
+    attempts = 0
+
+    while summary.nil? && attempts < MAX_WAIT_ATTEMPTS
+      begin
+        summary = convert_to_summary(ipa_snapshot_id: classdump.ipa_snapshot_id, classdump: classdump)
+      rescue IosClassification::UnavailableClassdump
+        puts "#{classdump.id}: Failed attempt #{attempts}"
+        attempts += 1
+        sleep 1
+        classdump.reload # fetch the latest for remote updates
+      end
+    end
+
+    raise NoClassdumpAvailable unless summary
+
+    summary
+  end
+
   def store_summary_data(classdump)
-    summary = convert_to_summary(ipa_snapshot_id: classdump.ipa_snapshot_id, classdump: classdump)
+    summary = get_summary_with_wait(classdump)
 
     classdump.store_classdump_txt(summary['binary']['classdump'])
 
@@ -42,7 +64,8 @@ class ClassdumpProcessingWorker
 
   def save_plist(classdump, tgz)
     tgz_regex_seek(tgz, %r{\.app/Info\.plist$}) do |entry|
-      info_json = Plist::parse_xml(entry.read)
+      contents = entry.read.encode('utf-8', {invalid: :replace, undef: :replace})
+      info_json = Plist::parse_xml(contents)
       info_json['id'] = classdump.id
       classdump.store_plist(info_json)
     end

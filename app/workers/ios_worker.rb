@@ -103,12 +103,14 @@ module IosWorker
         row[:complete] = false
         classdump.update row
 
-        ClassdumpProcessingWorker.perform_async(classdump.id) if Rails.env.production?
 
         if row[:dump_success]
           snapshot.download_status = :cleaning
           snapshot.bundle_version = incomplete_result[:bundle_version]
           snapshot.save
+
+          ClassdumpProcessingWorker.perform_async(classdump.id) if Rails.env.production?
+
           # don't start classifying while cleaning during development
           if start_classify
             classifier_class = if purpose == :one_off
