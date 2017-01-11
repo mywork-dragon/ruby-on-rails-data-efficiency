@@ -164,6 +164,11 @@ class AppStoreInternationalService
             ios_app_ids,
             app_store.id
           )
+          AppStoreInternationalSnapshotWorker.perform_async(
+            ios_app_current_snapshot_job.id,
+            ios_app_ids,
+            app_store.id
+          )
       end
     end
 
