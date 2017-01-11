@@ -144,7 +144,7 @@ module GooglePlaySnapshotModule
                         index = existing.index { |existing_ai| existing_ai.casecmp(similar_ai) == 0 }
                         index.nil?
                       end.uniq(&:downcase)
-                      rows = missing.map { |ai| AndroidApp.new(app_identifier: ai) }
+                      rows = missing.map { |ai| AndroidApp.new(app_identifier: ai, regions: []) }
                       AndroidApp.import rows
                       AndroidApp.where(app_identifier: missing)
                     else
