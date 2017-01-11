@@ -113,9 +113,12 @@ class ClassdumpProcessingWorker
 
       batch.jobs do
         ids.each do |id|
+          print '.'
           ClassdumpProcessingWorker.perform_async(id)
         end
       end
+
+      puts 'Queued'
     end
 
   end
