@@ -1,7 +1,10 @@
 class AuthController < ApplicationController
   
   skip_before_filter :verify_authenticity_token
-  
+
+  before_action :set_current_user, except: [:authenticate, :authenticate_provider]
+  before_action :authenticate_request, except: [:authenticate, :authenticate_provider]
+
   def authenticate
     li 'AuthController.authenticate'
     
