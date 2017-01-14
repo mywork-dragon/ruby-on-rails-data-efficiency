@@ -105,4 +105,6 @@ Rails.application.configure do
   # iOS summaries
   config.ios_pkg_summary_bucket = 'varys-ipa-file-summaries'
   config.ios_pkg_summary_bucket_region = 'us-east-1'
+
+  config.fb_mau_scrape_bucket = 'ms-fb-mau-scrapes'
 end

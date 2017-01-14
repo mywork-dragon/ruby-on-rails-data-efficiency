@@ -49,6 +49,8 @@ Rails.application.configure do
   config.ios_pkg_summary_bucket = 'varys-ipa-file-summaries-dev'
   config.ios_pkg_summary_bucket_region = 'us-east-1'
 
+  config.fb_mau_scrape_bucket = 'ms-fb-mau-scrapes-dev'
+
   config.paperclip_defaults = {}
 
   config.logger = Logger.new(STDOUT)

@@ -10,6 +10,8 @@ class IosApp < ActiveRecord::Base
   has_many :ios_app_download_snapshots
   has_many :ipa_snapshots
   has_many :ipa_snapshot_lookup_failures
+
+  has_many :class_dumps, through: :ipa_snapshots
   
   has_many :ios_apps_websites  
   has_many :websites, through: :ios_apps_websites
@@ -86,6 +88,13 @@ class IosApp < ActiveRecord::Base
       end
     end
     return nil
+  end
+
+  # allow stubbing of getter for test
+  def fb_app_data(getter: nil)
+    return nil unless fb_app_id.present?
+    getter ||= FbAppData.new(fb_app_id)
+    getter.latest
   end
 
   def as_json(options={})
