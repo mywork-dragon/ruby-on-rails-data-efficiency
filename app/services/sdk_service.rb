@@ -89,19 +89,26 @@ class SdkService
 			end
 
 			found_sdks = matches.values.uniq
-			remaining = packages - matches.keys
 
-			new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only, snapshot_id: snapshot_id)
+      # disabled going forward
+      # if still exists and is false as of 4/2017, feel free to remove it
+      if ServiceStatus.is_active?(:ios_auto_sdk_creation)
+        remaining = packages - matches.keys
 
-			if !read_only
-				new_matches.each do |package_arr, sdk|
-					package_arr.each do |package|
-						SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
-					end
-				end
-			end
+        new_matches = create_sdks_from_packages(packages: remaining, platform: platform, read_only: read_only, snapshot_id: snapshot_id)
 
-			new_sdks = new_matches.values.uniq
+        if !read_only
+          new_matches.each do |package_arr, sdk|
+            package_arr.each do |package|
+              SdkPackage.find_by_package(package).update(sdk_column => sdk.id)
+            end
+          end
+        end
+
+        new_sdks = new_matches.values.uniq
+      else
+        new_sdks = []
+      end
 
 			(found_sdks + new_sdks).uniq
 		end
