@@ -396,7 +396,7 @@ class SdkService
 
       # TODO: better platform decisions. should be able to split live scan from mass across platforms
       search = if platform == :ios
-                 GoogleSearcher::Searcher.search(q, proxy_type: :ios_classification)
+                 GoogleSearcher::Searcher.search(q, proxy_type: :general)
                else
                  BingSearcher::Searcher.new.search(q, proxy_type: :all_static)
                end
