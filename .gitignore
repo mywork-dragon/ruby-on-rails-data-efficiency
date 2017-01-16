@@ -42,3 +42,6 @@ db.patch
 /public/system
 
 .irb_history
+
+# allow secrets to be added to override
+docker-compose.override.yml

@@ -12,7 +12,6 @@ class AppleEpf
   format :html
 
   class FailedRequest < RuntimeError; end
-  class MissingLink < RuntimeError; end
 
   def self.current_urls
     subpath = '/current/current'
@@ -23,8 +22,9 @@ class AppleEpf
     links = page.css('a').map { |x| x['href'] }.compact
     %i(itunes match popularity pricing incremental).reduce({}) do |memo, key|
       link = links.find { |x| /#{key}/.match(x) }
-      raise MissingLink if link.nil? and key != :incremental
-      memo[key] = File.join(EPF_URL, subpath, link)
+      if link.present?
+        memo[key] = File.join(EPF_URL, subpath, link)
+      end
       memo
     end
   end
