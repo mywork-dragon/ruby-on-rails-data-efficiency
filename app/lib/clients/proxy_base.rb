@@ -1,7 +1,9 @@
 module ProxyBase
 
   def select_proxy(proxy_type: nil, region: nil)
-    if proxy_type == :android_classification
+    if proxy_type == :ios_classification
+      ios_proxies
+    elsif proxy_type == :android_classification
       android_proxies(region)
     elsif proxy_type == :all_static
       all_static_proxies
@@ -17,6 +19,11 @@ module ProxyBase
     { ip: proxies.sample, port: 8888 }
   end
 
+  def ios_proxies
+    proxies = MicroProxy.where(purpose: MicroProxy.purposes[:ios], active:true).pluck(:private_ip)
+    { ip: proxies.sample, port: 8888 }
+  end
+
   def all_static_proxies
     proxies = MicroProxy.where(active: true).pluck(:private_ip)
     { ip: proxies.sample, port: 8888 }
@@ -24,7 +31,7 @@ module ProxyBase
 
   def android_proxies(region)
     if region == nil
-      return general_proxies
+      return ios_proxies
     end
     # Try a random regional proxy.
     proxy = MicroProxy.where(
