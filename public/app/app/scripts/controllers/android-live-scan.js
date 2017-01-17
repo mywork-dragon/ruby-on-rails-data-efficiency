@@ -42,8 +42,8 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length && !data.uninstalled_sdks.length;
 
           var errorCodeMessages = [
-            "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // taken down
-            "Sorry, SDKs Not Available - App is Not in U.S. App Store",   // foreign
+            "Sorry, SDKs Not Available - App is Not Available in Any Google Play Store We're Scanning",   // taken down
+            "Sorry, SDKs Not Available - App is Not Available in Any Google Play Store We're Scanning",   // foreign
             "Sorry, SDKs Not Available for Paid Apps"                     // paid app
           ];
 

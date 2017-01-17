@@ -68,12 +68,29 @@ angular.module("appApp")
               'appName': appData.name,
               'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
+              'availableIn': appData.regions,
+              'isInternational': appData.isInternational,
               'sdkInstalls': sdkInstalls,
               'sdkUninstalls': sdkUninstalls,
               'lastUpdated': sdkData.lastUpdated
             }
           );
           /* -------- Mixpanel Analytics End -------- */
+          if (appData.isInternational) {
+            var slacktivityData = {
+              "title": "International Android Live Scan Success",
+              "fallback": "International Android Live Scan Success",
+              "color": "#45825A",
+              'appName': appData.name,
+              'companyName': (appData.publisher || {}).name,
+              'appId': appData.id,
+              'availableIn': appData.regions.join(', '),
+              'sdkInstalls': sdkInstalls,
+              'sdkUninstalls': sdkUninstalls,
+              'lastUpdated': sdkData.lastUpdated
+            };
+            slacktivity.notifySlack(slacktivityData, true);
+          }
         });
 
       },
@@ -98,6 +115,8 @@ angular.module("appApp")
               'companyName': (appData.publisher || {}).name,
               'appName': appData.name,
               'appId': appData.id,
+              'availableIn': appData.regions,
+              'isInternational': appData.isInternational,
               'statusCode': statusCode,
               'statusMessage' : statusMessage,
             }
@@ -111,6 +130,8 @@ angular.module("appApp")
             'appName': appData.name,
             'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
+            'availableIn': appData.regions.join(', '),
+            'isInternational': appData.isInternational,
             'statusCode': statusCode,
             'statusMessage' : statusMessage,
           };
@@ -170,7 +191,6 @@ angular.module("appApp")
           var countryCodes = appData.appStores.availableIn.map(function(x) {
             return x.country_code
           })
-          var isInternational = countryCodes.indexOf('US') < 0
           var sdkInstalls = sdkData.installed_sdks;
           var sdkUninstalls = sdkData.uninstalled_sdks;
           sdkInstalls = sdkInstalls && (sdkInstalls.length > 0) ? sdkInstalls.map(function(sdk) { return sdk.name; }).join(', ') : '';
@@ -180,7 +200,7 @@ angular.module("appApp")
             "iOS Live Scan Success", {
               'platform': platform,
               'availableIn': countryCodes,
-              'isInternational': isInternational,
+              'isInternational': appData.isInternational,
               'appName': appData.name,
               'companyName': (appData.publisher || {}).name,
               'appId': appData.id,
@@ -226,10 +246,15 @@ angular.module("appApp")
           params: {id: appId}
         }).success(function(data) {
           appData = data;
+          var countryCodes = appData.appStores.availableIn.map(function(x) {
+            return x.country_code
+          })
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "iOS Live Scan Failed", {
               'companyName': (appData.publisher || {}).name,
+              'availableIn': countryCodes,
+              'isInternational': appData.isInternational,
               'appName': appData.name,
               'appId': appData.id,
               'error': errorMessage,
@@ -244,6 +269,8 @@ angular.module("appApp")
             "fallback": "iOS Live Scan Failed",
             "color": "#E82020",
             'appName': appData.name,
+            'availableIn': countryCodes.join(', '),
+            'isInternational': appData.isInternational,
             'companyName': (appData.publisher || {}).name,
             'appId': appData.id,
             'error': errorMessage,

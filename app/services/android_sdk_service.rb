@@ -54,7 +54,7 @@ module AndroidSdkService
         display_type = display_type.try(:to_sym)
         mapping = {
           taken_down: 0, 
-          foreign: 1,
+          #foreign: 1,
           paid: 2
         }
         mapping[display_type] if display_type
@@ -64,16 +64,13 @@ module AndroidSdkService
       def sdk_response_h(aa, force_live_scan_enabled=false, apk_snapshot_id: nil)
         h = {
           installed_sdks: [],
-          uninstalled_sdks: [],
-          international_app: aa.international?,
-          regions: aa.region_codes
+          uninstalled_sdks: []
         }
-        ec = display_type_to_error_code(aa.display_type)
 
         snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
 
         h[:live_scan_enabled] = force_live_scan_enabled || ServiceStatus.is_active?(:android_live_scan)
-        h[:error_code] = ec
+        h[:error_code] = display_type_to_error_code(aa.display_type)
 
         return h if snap.nil?
 
@@ -152,7 +149,6 @@ module AndroidSdkService
         end.compact.uniq
         # h[:uninstalled] = {}  # show no uninstalls for now  -- TEMP
         h[:updated] = snap.good_as_of_date
-        h[:error_code] = ec || nil
         h
       end
 

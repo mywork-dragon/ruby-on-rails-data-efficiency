@@ -124,6 +124,7 @@ class IosApp < ActiveRecord::Base
       appAvailable: self.app_store_available,
       appStoreLink: self.app_store_link,
       appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
+      isInternational: self.international?,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name) || first_international_snapshot.try(:seller_name),
@@ -263,6 +264,10 @@ class IosApp < ActiveRecord::Base
 
   def latest_facebook_ad
     ios_fb_ads.order(date_seen: :desc).first
+  end
+
+  def international?
+    !app_stores.pluck(:country_code).include?('US')
   end
 
   def international_userbase(user_bases: nil)

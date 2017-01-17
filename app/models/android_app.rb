@@ -156,7 +156,9 @@ class AndroidApp < ActiveRecord::Base
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
       company: company,
-      appAvailable: self.display_type == 'normal',
+      appAvailable: self.app_available?,
+      isInternational: self.international?,
+      regions: self.region_codes,
       publisher: {
         id: self.try(:android_developer).try(:id),
         name: self.try(:android_developer).try(:name),
@@ -200,6 +202,10 @@ class AndroidApp < ActiveRecord::Base
     elsif stage == :staging
       "http://ms-staging.com/app/app#/app/android/#{id}"
     end
+  end
+
+  def app_available?
+    display_type != 'taken_down'
   end
 
   def get_newest_apk_snapshot
