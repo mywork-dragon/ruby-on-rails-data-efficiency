@@ -93,7 +93,7 @@ class GoogleAccountReserver
   end
 
   def try_reserve(scrape_type, requirements)
-    query = build_query(scrape_type, requirements)
+    query = build_query(scrape_type, requirements, available_only: false)
 
     GoogleAccount.transaction do
 
