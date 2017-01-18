@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170113204710) do
+ActiveRecord::Schema.define(version: 20170118233645) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -60,6 +60,27 @@ ActiveRecord::Schema.define(version: 20170113204710) do
 
   add_index "android_app_categories_snapshots", ["android_app_category_id"], name: "index_android_app_category_id", using: :btree
   add_index "android_app_categories_snapshots", ["android_app_snapshot_id", "android_app_category_id"], name: "index_android_app_snapshot_id_category_id", using: :btree
+
+  create_table "android_app_ranking_snapshots", force: :cascade do |t|
+    t.integer  "kind",       limit: 4
+    t.boolean  "is_valid",             default: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+  end
+
+  add_index "android_app_ranking_snapshots", ["is_valid"], name: "index_android_app_ranking_snapshots_on_is_valid", using: :btree
+  add_index "android_app_ranking_snapshots", ["kind", "is_valid"], name: "index_android_app_ranking_snapshots_on_kind_and_is_valid", using: :btree
+
+  create_table "android_app_rankings", force: :cascade do |t|
+    t.integer  "android_app_id",                  limit: 4
+    t.integer  "android_app_ranking_snapshot_id", limit: 4
+    t.integer  "rank",                            limit: 4
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+  end
+
+  add_index "android_app_rankings", ["android_app_id", "rank"], name: "index_android_app_rankings_on_android_app_id_and_rank", using: :btree
+  add_index "android_app_rankings", ["android_app_ranking_snapshot_id", "android_app_id", "rank"], name: "index_android_ranking_snap_app_rank", using: :btree
 
   create_table "android_app_snapshot_backups", force: :cascade do |t|
     t.string   "name",                             limit: 191
