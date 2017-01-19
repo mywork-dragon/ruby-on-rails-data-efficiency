@@ -62,6 +62,10 @@ every :day, :at => '7:56am', roles: [:varys_scheduler] do
   runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
 end
 
+every :day, at: '2:00am', roles: [:varys_scheduler] do
+  runner 'GooglePlayChartScraperService.scrape_google_play_top_free', :output => '/var/log/cron.log'
+end
+
 every :day, at: '2:30am', roles: [:varys_scheduler] do
   runner 'ItunesChartService.run_itunes_top_free', :output => '/var/log/cron.log'
 end
@@ -76,4 +80,8 @@ end
 
 every :wednesday, :at => '8:00am', roles: [:varys_scheduler] do
   runner 'ElasticSearchWorker.perform_async(:update_ios)', :output => '/var/log/cron.log'
+end
+
+every :day, at: '3:00am', roles: [:varys_scheduler] do
+  runner 'GooglePlayChartService.run_gplay_top_free', :output => '/var/log/cron.log'
 end

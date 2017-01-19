@@ -107,4 +107,5 @@ Rails.application.configure do
   config.ios_pkg_summary_bucket_region = 'us-east-1'
 
   config.fb_mau_scrape_bucket = 'ms-fb-mau-scrapes'
+  config.google_play_scrape_data = 'ms-google-play-scrape-data'
 end

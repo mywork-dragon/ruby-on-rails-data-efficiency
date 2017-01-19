@@ -55,4 +55,6 @@ Rails.application.configure do
 
   config.logger = Logger.new(STDOUT)
   config.log_level = :INFO
+
+  config.google_play_scrape_data = 'ms-google-play-scrape-data-dev'
 end

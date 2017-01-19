@@ -2,7 +2,7 @@ class GooglePlaySnapshotLiveWorker
   include Sidekiq::Worker
   include GooglePlaySnapshotModule
 
-  sidekiq_options queue: :sdk_live_scan, retry: false
+  sidekiq_options queue: :google_play_live_scrape, retry: false
 
   def proxy_type
     :general
@@ -14,19 +14,12 @@ class GooglePlaySnapshotLiveWorker
   end
 
   class << self
-    def test_successful
-      a = AndroidApp.find_or_create_by!(app_identifier: 'com.ubercab')
-      new.perform(-1, a.id)
+
+    def live_scrape_apps(android_app_ids)
+      android_app_ids.each do |id|
+        GooglePlaySnapshotLiveWorker.perform_async(nil, id)
+      end
     end
 
-    def test_missing
-      a = AndroidApp.find_or_create_by!(app_identifier: 'com.kittyplay.ex')
-      new.perform(-1, a.id)
-    end
-
-    def test_foreign
-      a = AndroidApp.find_or_create_by!(app_identifier: 'com.opera.mini.android')
-      new.perform(-1, a.id)
-    end
   end
 end
