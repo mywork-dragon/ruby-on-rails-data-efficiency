@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118233645) do
+ActiveRecord::Schema.define(version: 20170119004321) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -360,13 +360,14 @@ ActiveRecord::Schema.define(version: 20170118233645) do
     t.string   "name",                   limit: 191
     t.string   "website",                limit: 191
     t.string   "favicon",                limit: 191
-    t.boolean  "flagged",                            default: false
+    t.boolean  "flagged",                              default: false
     t.boolean  "open_source"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sdk_company_id",         limit: 4
     t.integer  "github_repo_identifier", limit: 4
     t.integer  "kind",                   limit: 4
+    t.text     "summary",                limit: 65535
   end
 
   add_index "android_sdks", ["flagged"], name: "index_android_sdks_on_flagged", using: :btree
