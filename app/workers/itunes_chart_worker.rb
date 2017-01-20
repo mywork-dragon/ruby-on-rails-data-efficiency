@@ -12,11 +12,13 @@ class ItunesChartWorker
 
     existing_ios_apps = IosApp.where(app_identifier: ranked_app_identifiers)
     missing_app_identifiers = ranked_app_identifiers - existing_ios_apps.pluck(:app_identifier)
-    return unless missing_app_identifiers.present?
 
-    new_ios_apps = create_ios_apps(missing_app_identifiers)
+    if missing_app_identifiers.present?
+      new_ios_apps = create_ios_apps(missing_app_identifiers)
+      scrape_new_ios_apps(new_ios_apps)
+    end
+
     store_free_app_ranks(ranked_app_identifiers)
-    scrape_new_ios_apps(new_ios_apps)
     
     true
   end
