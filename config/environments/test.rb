@@ -57,4 +57,7 @@ Rails.application.configure do
   config.log_level = :INFO
 
   config.google_play_scrape_data = 'ms-google-play-scrape-data-dev'
+
+  config.ipa_bucket = 'varys-ipa-files-dev'
+  config.ipa_bucket_region = 'us-east-1'
 end

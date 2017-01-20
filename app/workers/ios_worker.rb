@@ -98,7 +98,7 @@ module IosWorker
     # Will be useful for polling or could add some logic to send status updates
     final_result = IosDownloadDeviceService
       .new(device, apple_account: apple_account, account_changed_lambda: account_changed_lambda)
-      .run(app_identifier,lookup_content, purpose, snapshot.id) do |incomplete_result|
+      .run(app_identifier,lookup_content, purpose, classdump.id) do |incomplete_result|
         row = result_to_cd_row(incomplete_result)
         row[:complete] = false
         classdump.update row

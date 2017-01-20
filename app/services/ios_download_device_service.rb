@@ -82,10 +82,10 @@ class IosDownloadDeviceService
     end
   end
 
-  def run(app_identifier, lookup_content, purpose, unique_id)
+  def run(app_identifier, lookup_content, purpose, classdump_id)
     @app_identifier = app_identifier
     @lookup_content = lookup_content
-    @unique_id = unique_id
+    @classdump_id = classdump_id
     @purpose = purpose
     @app_info = nil
     initialize_result
@@ -144,7 +144,9 @@ class IosDownloadDeviceService
     @result[:dump_success] = true
 
     print_display_status(:s3_upload)
+    upload_decrypted_execs
     yield(@result) if block_given?
+
 
     teardown
     @result[:teardown_success] = true
@@ -777,7 +779,7 @@ class IosDownloadDeviceService
   end
 
   def unique_debug_id
-    @unique_id
+    @classdump_id
   end
 
   def class_dump(src, dest)
@@ -787,14 +789,26 @@ class IosDownloadDeviceService
     `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' >> \'#{dest}\' 2>/dev/null`
   end
 
+  def upload_decrypted_execs
+    decrypted_dir = get_decrypted_execs
+    Dir.glob(File.join(decrypted_dir, '*.decrypted')).each do |file|
+      MightyAws::S3.new(Rails.application.config.ipa_bucket_region).upload_file(
+        bucket: Rails.application.config.ipa_bucket,
+        key_path: File.join('decrypted_binaries', @classdump_id.to_s, file.split('/').last),
+        file_path: file
+      )
+    end
+  end
+
   class << self
     def test(ios_device_id: 1, change_account: false)
       device = IosDevice.find(ios_device_id)
       ipa_snapshot = IpaSnapshot.last
       lookup_content = JSON.parse(ipa_snapshot.lookup_content)
       acct_lambda = change_account ? -> { puts 'changed account lambda' } : nil
+      id = rand(1_000_000)
       new(device, apple_account: device.apple_account, account_changed_lambda: acct_lambda)
-        .run(lookup_content['trackId'], lookup_content, :one_off, rand(1_000_000)) do |incomplete_result|
+        .run(lookup_content['trackId'], lookup_content, :one_off, id) do |incomplete_result|
         puts 'hey'
       end
     end
