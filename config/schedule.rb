@@ -85,3 +85,7 @@ end
 every :day, at: '3:00am', roles: [:varys_scheduler] do
   runner 'GooglePlayChartService.run_gplay_top_free', :output => '/var/log/cron.log'
 end
+
+every :day, at: '4:00am', roles: [:varys_scheduler] do
+  runner 'FbMauScrapeWorker.scrape_all', :output => '/var/log/cron.log'
+end
