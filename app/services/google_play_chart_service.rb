@@ -1,11 +1,11 @@
 class GooglePlayChartService
 
-    class << self
+  class << self
 
     def run_gplay_top_free
       batch = Sidekiq::Batch.new
       batch.description = "run_gplay_top_free #{Time.now.strftime("%m/%d/%Y")}"
-      batch.on(:complete, "GooglePlayChartService#run_gplay_top_free")
+      batch.on(:complete, "GooglePlayChartService#on_complete_run_gplay_top_free")
       batch.jobs do
         GooglePlayChartWorker.perform_async(:load_top_free)
       end
