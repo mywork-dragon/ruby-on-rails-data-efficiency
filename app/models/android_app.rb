@@ -24,6 +24,7 @@ class AndroidApp < ActiveRecord::Base
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
   
   belongs_to :android_developer
+  has_many :android_app_rankings
 
   has_many :sdk_js_tags
 
@@ -93,6 +94,33 @@ class AndroidApp < ActiveRecord::Base
       return newest_android_app_snapshot.name
     else
       return nil
+    end
+  end
+
+  def top_200_rank
+    self.android_app_rankings.last.rank
+  end
+
+  def is_in_top_200?
+    newest_rank_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    return false unless newest_rank_snapshot
+    newest_rank_snapshot.android_app_rankings.where(android_app_id: self.id).any?
+  end
+
+  def ranking_change
+    newest_rank_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    newest_rank = newest_rank_snapshot.android_app_rankings.where(android_app_id: self.id).first if newest_rank_snapshot
+    if newest_rank
+      week_ago = newest_rank_snapshot.created_at - 7.days
+      last_weeks_rank_snapshot = AndroidAppRankingSnapshot.where(is_valid: true).where('created_at <=  ?', week_ago.end_of_day).first
+      return 0 unless last_weeks_rank_snapshot
+      last_weeks_rank = last_weeks_rank_snapshot.android_app_rankings.where(android_app_id: self.id).first
+
+      if last_weeks_rank.blank?
+        200 - newest_rank.rank + 1
+      else
+        last_weeks_rank.rank - newest_rank.rank
+      end
     end
   end
 
@@ -230,6 +258,10 @@ class AndroidApp < ActiveRecord::Base
     end
   end
 
+  def released_days
+    (Date.today - created_at.to_date).to_i
+  end
+
   def categories
     if newest_snapshot = self.newest_android_app_snapshot
       newest_snapshot.android_app_categories.map{|c| c.name}
@@ -268,24 +300,9 @@ class AndroidApp < ActiveRecord::Base
     AndroidSdkService::App.get_tagged_sdk_response(self.id, only_show_tagged)
   end
 
-  # # delete old method
-  # def installed_sdks
-  #   newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
-  #   return nil if newest_snap.blank?
-  #   newest_sdks = newest_snap.android_sdks
-  #   sdk_apk = newest_sdks.map{|x| [x.id, newest_snap.id] }
-  #   get_sdks(sdk_apk, :first_seen)
-  # end
-
-  # # delete old method
-  # def uninstalled_sdks
-  #   newest_snap = self.apk_snapshots.where(status: 1, scan_status: 1).last
-  #   return nil if newest_snap.blank?
-  #   newest_sdks = newest_snap.android_sdks
-  #   snaps = self.apk_snapshots.where.not(id: newest_snap.id).map(&:id)
-  #   sdk_apk = AndroidSdksApkSnapshot.where(apk_snapshot_id: snaps).where.not(android_sdk_id: newest_sdks).map{|x| [x.android_sdk_id, x.apk_snapshot_id] }
-  #   get_sdks(sdk_apk, :last_seen)
-  # end
+  def google_play_link
+    "https://play.google.com/store/apps/details?id=#{app_identifier}"
+  end
 
   def installed_sdks
     self.sdk_response[:installed_sdks]

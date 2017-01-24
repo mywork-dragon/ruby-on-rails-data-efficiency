@@ -8,10 +8,15 @@ Rails.application.routes.draw do
   mount Sidekiq::Web, at: "/sidekiq"
 
   root 'welcome#index'
-  get 'apps/:app_identifier' => 'welcome#app_sdks'
+  get 'apps/ios/:app_identifier' => 'welcome#ios_app_sdks'
+  get 'apps/android/:app_identifier' => 'welcome#android_app_sdks'
   get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
   get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
   get 'timeline' => 'welcome#timeline', as: 'timeline'
+
+  get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
+  get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
+
   post 'subscribe' => 'welcome#subscribe', as: :subscribe
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out

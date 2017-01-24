@@ -7,14 +7,15 @@ $(document).ready(function() {
         }   
     });
     $('.livescan').on('click', function() {
-        window.location = '/apps/' +  $('.dd-selected-value').val()
+        window.location = '/apps/ios/' +  $('.dd-selected-value').val()
     })
 
     $('a.app-sdks').on('click', function() {
         $('#sdkModal .modal-title, #sdkModal .modal-body').html('')
         var appId = $(this).data('id')
+        var platform = $(this).data('platform')
         $.ajax({
-          url: '/apps/' + appId + '.js'
+          url: '/apps/' + platform + '/' + appId + '.js'
         });
     })
 

@@ -316,7 +316,12 @@ p {
 	margin-top: 40px;
 	height: 27px;
 }
-
+.nav.nav-tabs li img {
+	margin-top: -5px;
+}
+.nav.nav-tabs li:nth-child(3), .nav.nav-tabs li:nth-child(5) {
+	margin-left: 30px;
+}
 .top-apps .addthis_native_toolbox {
 	margin-top: 10px;
 }

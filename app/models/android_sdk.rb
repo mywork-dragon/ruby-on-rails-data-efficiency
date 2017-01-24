@@ -50,6 +50,18 @@ class AndroidSdk < ActiveRecord::Base
     apps
   end
 
+  def self.top_200_tags #tags that have android sdks in the top 200
+    sdks = AndroidSdk.joins(:tags).uniq.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
+    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id}, 
+                                        'tag_relationships.taggable_type' => 'AndroidSdk').uniq
+  end
+
+  def top_200_apps
+    newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    self.get_current_apps.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
+                          where('rank < 201').select(:rank, 'android_apps.*').order('rank ASC')
+  end
+
   def test
     snaps = self.apk_snapshots.select(:id).map(&:id)
     AndroidApp.where(newest_apk_snapshot_id: snaps).count

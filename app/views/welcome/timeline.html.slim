@@ -3,13 +3,7 @@
 .row.header
   .column.large-2
   .column.large-10
-    ul class="nav nav-tabs"
-      li role="presentation" 
-        a href="/top-ios-sdks" Top 200 SDKs
-      li role="presentation"
-        a href="/top-ios-apps" Top 200 Apps
-      li role="presentation" class="active" 
-        a href="/timeline" Timeline
+    = render 'shared/top_list_nav'
 .row.top-200.timeline.marketing-row
   .column.large-2
     div class="addthis_sharing_toolbox" data-title="What's happening in the Top 200 iOS Apps? @MightyTimeline"

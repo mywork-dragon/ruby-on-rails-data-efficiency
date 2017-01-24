@@ -7,6 +7,15 @@ module ApplicationHelper
     { success: "success", error: "danger", alert: "warning", notice: "info" }[flash_type.to_sym] || flash_type.to_s
   end
 
+  # Highlight link if current page is the link destination
+  def nav_link(link_text, link_path, html_options = {})
+    class_name = current_page?(link_path) ? 'active' : nil
+
+    content_tag(:li, :class => [class_name, 'nav-item']) do
+      link_to link_text, link_path, class: html_options[:class] || 'nav-link'
+    end
+  end
+
   def full_title(page_title)
     full_title = "MightySignal - Mobile App & SDK Intelligence for iOS / Android"
     full_title = "#{page_title} | #{full_title}" unless page_title.blank?
