@@ -126,9 +126,6 @@ class AndroidSdk < ActiveRecord::Base
     AndroidApp.distinct.joins(:newest_apk_snapshot).joins('inner join android_sdks_apk_snapshots on apk_snapshots.id = android_sdks_apk_snapshots.apk_snapshot_id').where('android_sdks_apk_snapshots.android_sdk_id in (?)', cluster_ids)
   end
 
-
-  end
-
   def store_current_sdks_in_s3
     model_file = "db/android_class_model/model.json"
     m = JSON.parse(File::open(model_file).read())
@@ -149,6 +146,8 @@ class AndroidSdk < ActiveRecord::Base
       key_path: 'current_android_sdks_dump.csv.gz',
       data_str: csv_string
     )
+  end
+
   end
 
 end
