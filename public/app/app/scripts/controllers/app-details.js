@@ -189,6 +189,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
               $scope.companyContacts[i].email = data.email
             }
           }
+        }).error(function(data) {
+          alert(data.error)
         })
     }
 

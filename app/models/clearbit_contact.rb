@@ -63,15 +63,18 @@ class ClearbitContact < ActiveRecord::Base
         domain_datum = DomainDatum.where(domain: domain).first
         current_contacts =  if domain_datum 
                               domain_datum.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).
-                              where.not(linkedin: nil, email: 'No Email').as_json
+                              where("email IS NULL OR email != 'No Email'").as_json
                             else
                               []
                             end
 
         if current_contacts.count < 20
-          current_contacts += ClearbitContact.get_contacts(domain: domain, title: 'product', limit: 20)
-          current_contacts += ClearbitContact.get_contacts(domain: domain, limit: 20)
-          current_contacts += ClearbitContact.get_contacts(domain: domain, title: 'marketing', limit: 20)
+          begin
+            current_contacts += ClearbitContact.get_contacts(domain: domain, title: 'product', limit: 20)
+            current_contacts += ClearbitContact.get_contacts(domain: domain, limit: 20)
+            current_contacts += ClearbitContact.get_contacts(domain: domain, title: 'marketing', limit: 20)
+          rescue
+          end
         end
 
         contacts += current_contacts

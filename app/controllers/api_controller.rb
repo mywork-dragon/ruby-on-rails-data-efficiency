@@ -522,7 +522,12 @@ class ApiController < ApplicationController
 
   def get_contact_email
     contact_id = params['contactId']
-    email = ClearbitContact.get_contact_email(contact_id)
+    begin
+      email = ClearbitContact.get_contact_email(contact_id)
+    rescue
+      render json: {error: "Emails are temporarily unavailable. Please try again later", status: 500}
+      return
+    end
     render json: {email: email}
   end
 

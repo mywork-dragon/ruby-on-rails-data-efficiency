@@ -164,6 +164,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
               $scope.companyContacts[i].email = data.email
             }
           } 
+        }).error(function(data) {
+          alert(data.error)
         })
     }
 
