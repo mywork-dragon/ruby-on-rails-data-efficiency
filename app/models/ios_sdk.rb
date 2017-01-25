@@ -132,6 +132,36 @@ class IosSdk < ActiveRecord::Base
         kind: kind
         })
     end
+
+    def csv_dump
+      display_ids = IosSdk.display_sdks.pluck(:id)
+      rows = IosSdk.select(:id, :name, :website, 'tags.name')
+        .joins('left join tag_relationships on tag_relationships.taggable_id = ios_sdks.id AND tag_relationships.taggable_type = "IosSdk" left join tags on tags.id = tag_relationships.tag_id')
+        .where(id: display_ids)
+        .pluck(:id, :name, :website, 'tags.name')
+
+      csv_string = CSV.generate do |csv|
+        csv << ['id', 'name', 'website', 'tag_name', 'apps_count']
+        rows.each do |row|
+          id = row.first
+          apps_count = 0
+          begin
+            res = MightyApi.ios_sdk_info(id)
+            apps_count = res['apps_count'] || 0
+          rescue MightyApi::FailedRequest => e
+            puts e.message
+            puts e.backtrace
+          end
+          csv << (row + [apps_count])
+        end
+      end
+
+      MightyAws::S3.new.store(
+        bucket: 'ms-misc',
+        key_path: 'ios_sdk_dump.csv.gz',
+        data_str: csv_string
+      )
+    end
   end
 
 end
