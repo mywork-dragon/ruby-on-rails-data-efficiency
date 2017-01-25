@@ -23,6 +23,9 @@ class AndroidSdk < ActiveRecord::Base
   has_many :inbound_sdk_links, class_name: 'AndroidSdkLink', foreign_key: :dest_sdk_id
   has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
 
+  has_many :owner_twitter_handles, as: :owner
+  has_many :twitter_handles, through: :owner_twitter_handles
+
   enum kind: [:native, :js]
 
   validates :kind, presence: true
