@@ -126,4 +126,26 @@ class AndroidSdk < ActiveRecord::Base
 
   end
 
+  def store_current_sdks_in_s3
+    model_file = "db/android_class_model/model.json"
+    m = JSON.parse(File::open(model_file).read())
+    sdk_names = m['sdk_to_website'].keys().map {|x| x.downcase}
+    csv_string = CSV.generate do |csv|
+      csv << ['id', 'name', 'website', 'tag_name', 'apps_count']
+      AndroidSdk.pluck(:id).map do |sdk_id|
+        sdk = AndroidSdk.find(sdk_id)
+        count = sdk.get_current_apps.count
+        if sdk_names.include? sdk.name.downcase
+          csv << [sdk.id, sdk.name, sdk.website, sdk.tags.first.try(:name), count]
+        end
+      end
+    end
+
+    MightyAws::S3.new.store(
+      bucket: 'ms-misc',
+      key_path: 'current_android_sdks_dump.csv.gz',
+      data_str: csv_string
+    )
+  end
+
 end
