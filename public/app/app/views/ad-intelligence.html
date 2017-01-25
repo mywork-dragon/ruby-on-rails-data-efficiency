@@ -161,7 +161,12 @@
     </section>
   </div>
 
-  <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
-  <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+  <div ng-controller="ListCtrl">
+    <!-- Modals -->
+    <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+  </div>
 </div>
 
