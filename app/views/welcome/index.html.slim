@@ -78,7 +78,9 @@
         .form-group
           input#sdk.form-control name="sdk" placeholder=("Does your company have SDKs for iOS and/or Android?") type="text" /
         .form-group
-          textarea#message.form-control name="message" placeholder=("Your Message") 
+          textarea#message.form-control name="message" placeholder=("Your Message")
+        = recaptcha_tags
+        br
         .form-group.text-center
           p
             input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /

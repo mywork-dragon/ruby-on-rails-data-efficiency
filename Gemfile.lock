@@ -313,6 +313,8 @@ GEM
     rake (11.1.2)
     rdoc (4.2.1)
       json (~> 1.4)
+    recaptcha (4.0.1)
+      json
     redis (3.2.2)
     redis-actionpack (5.0.0)
       actionpack (>= 4.0.0, < 6)
@@ -511,6 +513,7 @@ DEPENDENCIES
   public_suffix (= 1.4.6)
   rack-cors
   rails (= 4.2.6)
+  recaptcha (= 4.0.1)
   redis-rails
   restforce (= 2.3.0)
   rspec-mocks (~> 3.5)
@@ -541,4 +544,4 @@ DEPENDENCIES
   www-favicon (= 0.0.6)
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
