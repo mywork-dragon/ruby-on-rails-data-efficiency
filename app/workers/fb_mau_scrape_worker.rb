@@ -1,7 +1,7 @@
 class FbMauScrapeWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: 2, queue: :fb_mau_scrape
+  sidekiq_options retry: false, queue: :fb_mau_scrape
 
   def perform(fb_app_id)
     data = FbGraphApi.lookup(fb_app_id)
