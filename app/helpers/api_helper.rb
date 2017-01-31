@@ -62,7 +62,7 @@ module ApiHelper
       'http://www.mightysignal.com/app/app#/app/android/' + es_app['id'].to_s,
       es_app['publisher_id'].present? ? "http://www.mightysignal.com/app/app#/publisher/android/#{es_app['publisher_id']}" : nil,
       es_app['ratings_all'],
-      "#{ActionController::Base.helpers.number_to_human(es_app['downloads_min'])}-#{ActionController::Base.helpers.number_to_human(es_app['downloads_max'])}"
+      "#{ActionController::Base.helpers.number_to_human(es_app['downloads_min'])}-#{ActionController::Base.helpers.number_to_human(es_app['downloads_max'])}",
       headquarters.try(:[], 'street_number'),
       headquarters.try(:[], 'street_name'),
       headquarters.try(:[], 'city'),
