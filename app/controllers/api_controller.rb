@@ -1,5 +1,6 @@
 # This is our internal API that talks to the frontend
 class ApiController < ApplicationController
+  include ApiHelper
 
   skip_before_filter  :verify_authenticity_token
 
@@ -933,20 +934,19 @@ class ApiController < ApplicationController
       if filter_args
         filter_args[:page_size] = 10000
         filter_args[:page_num] = 1
+        filter_args[:order_by] ||= 'asc'
+        filter_args[:sort_by] ||= 'name'
         filter_results = nil
         platform = filter_args.delete(:platform)
+        results = []
 
         #while !filter_results || filter_results.count > 0
           if platform == 'ios'
             filter_results = FilterService.filter_ios_apps(filter_args)
-            filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
-            ids = filter_results.map { |result| result.attributes["id"] }
-            results = IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+            results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
           else
             filter_results = FilterService.filter_android_apps(filter_args)
-            filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by]) if filter_args[:sort_by] && filter_args[:order_by]
-            ids = filter_results.map { |result| result.attributes["id"] }
-            results = AndroidApp.where(id: ids).includes(:android_developer, :newest_android_app_snapshot).order("FIELD(id, #{ids.join(',')})") if ids.any?
+            results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
           end
         else
           results = apps
@@ -954,7 +954,8 @@ class ApiController < ApplicationController
 
         if results.any?
           results.each do |app|
-            y << app.to_csv_row.to_csv
+            app_csv = (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
+            y << app_csv.to_csv
           end
           filter_args[:page_num] += 1 if filter_args
         end
