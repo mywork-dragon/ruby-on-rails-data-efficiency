@@ -954,7 +954,11 @@ class ApiController < ApplicationController
 
         if results.any?
           results.each do |app|
-            app_csv = (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
+            app_csv = if apps
+              app.to_csv_row
+            else
+              (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
+            end
             y << app_csv.to_csv
           end
           filter_args[:page_num] += 1 if filter_args
