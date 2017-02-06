@@ -36,7 +36,7 @@ class IosDeveloper < ActiveRecord::Base
 
   def headquarters(limit=100)
     headquarters = []
-    valid_websites.joins(:domain_datum).limit(limit).
+    valid_websites.joins(:domain_datum).uniq.limit(limit).
       pluck('domain','street_number','street_name','sub_premise','city','postal_code','state',
             'state_code','country','country_code','lat','lng').each do |data|
       next unless data[9]
