@@ -4,10 +4,16 @@ class AppStoreService
 
   attr_accessor :json
 
+  class NoSave; end
+
+  class NotIosApp < RuntimeError; end
+  class AppDoesNotExist < RuntimeError; end
+
   # Attributes hash
   # @author Jason Lew
   # @param id The App Store identifier
   def attributes(id, country_code: 'us', lookup: true, scrape: true)
+    @app_identifier = id
     @country_code = country_code
     
     @json = app_store_json(id) if lookup
@@ -123,18 +129,15 @@ class AppStoreService
   end
 
   def app_store_html(id)
-    app_store_url = "https://itunes.apple.com/#{@country_code}/app/id#{id}"
-
-    html = nil
-
-    resp = ProxyRequest.get(app_store_url, {random_user_agent: true})
-    html = Nokogiri::HTML(resp.body)
+    resp = ItunesApi.web_scrape(id, country_code: @country_code)
+    html = Nokogiri::HTML(resp)
 
     if html.css('#loadingbox-wrapper > div > p.title').text.match("Connecting to the iTunes Store")
       le "Taken to Connecting page"
       return nil
     end
-    
+
+    @html_body = resp
     html
   end
 
@@ -472,21 +475,29 @@ class AppStoreService
     all_attributes_pass?(attributes: attributes, attributes_expected: attributes_expected)
   end
   
-  private
-  
-    # 3 and a half stars --> 3.5
-    # @author Jason Lew
-    def count_stars(s)
-      s.gsub("stars", "").strip.gsub(" and a half", ".5").to_f
-    end
+  # 3 and a half stars --> 3.5
+  # @author Jason Lew
+  def count_stars(s)
+    s.gsub("stars", "").strip.gsub(" and a half", ".5").to_f
+  end
 
-    def count_ratings(s)
-      s.gsub("Ratings", "").strip.to_i
-    end
+  def count_ratings(s)
+    s.gsub("Ratings", "").strip.to_i
+  end
 
-    def compatibility_text(html)
-      html.css('#left-stack > div.lockup.product.application > p > span.app-requirements').first.parent.children[1].text
-    end
+  def compatibility_text(html)
+    html.css('#left-stack > div.lockup.product.application > p > span.app-requirements').first.parent.children[1].text
+  end
+
+  def save_html
+    return NoSave unless @html_body # Nokogiri modifies the result
+    ItunesS3Store.new(@app_identifier, @country_code, data_type: :html, data_str: @html_body).store!
+  end
+
+  def save_json
+    return NoSave unless @json
+    ItunesS3Store.new(@app_identifier, @country_code, data_type: :json, data_str: @json.to_json).store!
+  end
 
   class << self
     
@@ -536,99 +547,4 @@ class AppStoreService
 
   end
 
-  class NotIosApp < StandardError
-
-    def initialize(message = "This is not an iOS app")
-      super
-    end
-
-  end
-
-  class AppDoesNotExist < StandardError
-
-    def initialize(message = "This app does not exist. Perhaps it was taken down.")
-      super
-    end
-
-  end
-
-  class BatchLookup
-
-    MAX_APPS = 200
-
-    def attributes(ids, country_code: 'us', skip_attributes: false)
-      fail TooManyIds if ids.count > MAX_APPS
-
-      load_json(ids: ids, country_code: country_code)
-
-      ass = AppStoreService.new
-
-      ret = {}
-
-      attributes = {} unless skip_attributes
-      successes = []
-
-      @json_a.each do |app_hash|
-
-        next unless is_ios?(app_hash)
-
-        ass.json = app_hash
-
-        unless skip_attributes
-
-          single_app_hash = {}
-
-          ass.json_methods.each do |method|
-            key = method.gsub(/_json\z/, '').to_sym
-            
-            begin
-              attribute = ass.send(method.to_sym)
-              single_app_hash[key] = attribute
-            rescue
-              single_app_hash[key] = nil
-            end
-          end
-        end
-
-
-        id = ass.app_identifier_json
-        successes << id
-        attributes[id] = single_app_hash unless skip_attributes
-      end
-
-      ret[:attributes] = attributes unless skip_attributes
-      ret[:successes] = successes
-      ret[:failures] = ids - successes
-      
-      ret
-    end
-
-    def load_json(ids:, country_code:)
-      json = ItunesApi.batch_lookup(ids, country_code)
-      @json_a = json['results']
-    end    
-
-    def is_ios?(app_hash)
-    # wrapper type software
-    # kind == 'software' (as opposed to mac-software)
-      app_hash['wrapperType'] == 'software' && app_hash['kind'] == 'software'
-    end
-
-    class TooManyIds < StandardError
-
-      def initialize(message = "iTunes only allows a look up a max of #{MAX_APPS} apps")
-        super
-      end
-
-    end
-
-    class << self
-
-      def attributes(ids, country_code: 'us', skip_attributes: false)
-        self.new.attributes(ids, country_code: country_code, skip_attributes: skip_attributes)
-      end
-
-    end
-
-  end
 end

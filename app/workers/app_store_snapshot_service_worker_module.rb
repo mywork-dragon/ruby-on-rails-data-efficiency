@@ -14,11 +14,13 @@ module AppStoreSnapshotServiceWorkerModule
     s = IosAppSnapshot.create(ios_app: ios_app, ios_app_snapshot_job_id: ios_app_snapshot_job_id)
 
     try = 0
-    
+
+    store_service = AppStoreService.new
+
     begin
       
       begin
-        a = AppStoreService.attributes(ios_app.app_identifier)
+        a = store_service.attributes(ios_app.app_identifier)
       rescue AppStoreService::NotIosApp => e
         ios_app.display_type = :not_ios
         ios_app.app_store_available = false
@@ -33,6 +35,9 @@ module AppStoreSnapshotServiceWorkerModule
       end
       
       raise 'AppStoreService.attributes is empty' if a.empty?
+
+      store_service.save_html
+      store_service.save_json
 
       single_column_attributes = %w(
         name

@@ -6,12 +6,17 @@ class ItunesApi
   include ProxyParty
 
   base_uri 'https://itunes.apple.com'
-  format :json
 
   class FailedRequest < RuntimeError; end
   class RateLimit < RuntimeError; end
 
   class EmptyResult; end
+
+  def self.web_scrape(app_identifier, country_code: 'us')
+    proxy_request(proxy_type: :general) do
+      get(File.join('/', country_code, 'app', "id#{app_identifier}")).body
+    end
+  end
 
   def self.lookup_app_info(app_identifier, country_code: 'us')
     data, attempts = nil, 0

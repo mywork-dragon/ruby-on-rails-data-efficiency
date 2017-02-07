@@ -60,4 +60,6 @@ Rails.application.configure do
 
   config.ipa_bucket = 'varys-ipa-files-dev'
   config.ipa_bucket_region = 'us-east-1'
+
+  config.itunes_scrape_bucket = 'ms-ios-scrapes-dev'
 end
