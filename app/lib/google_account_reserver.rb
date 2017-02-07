@@ -94,19 +94,13 @@ class GoogleAccountReserver
 
   def try_reserve(scrape_type, requirements)
     query = build_query(scrape_type, requirements, available_only: false)
+    g = query.order(:last_used).limit(1).take
 
-    GoogleAccount.transaction do
-
-      g = query.lock.order(:last_used).limit(1).take
-
-      if g
-        g.in_use = true
-        g.last_used = DateTime.now
-        g.save
-      end
-
-      g
+    if g
+      g.last_used = DateTime.now
+      g.save
     end
+    g
   end
 
   # Errors
