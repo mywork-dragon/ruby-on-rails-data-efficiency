@@ -97,6 +97,26 @@ class IosApp < ActiveRecord::Base
     getter.latest
   end
 
+  def monthly_active_users
+    fb_app_data.try(:[], 'monthly_active_users').try(:to_i)
+  end
+
+  def monthly_active_users_rank
+    fb_app_data.try(:[], 'monthly_active_users_rank')
+  end
+
+  def daily_active_users
+    fb_app_data.try(:[], 'daily_active_users').try(:to_i)
+  end
+
+  def daily_active_users_rank
+    fb_app_data.try(:[], 'daily_active_users_rank')
+  end
+
+  def weekly_active_users
+    fb_app_data.try(:[], 'weekly_active_users').try(:to_i)
+  end
+
   def as_json(options={})
     company = self.get_company
     newest_snapshot = self.newest_ios_app_snapshot
@@ -125,6 +145,11 @@ class IosApp < ActiveRecord::Base
       appStoreLink: self.app_store_link,
       appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
       isInternational: self.international?,
+      wau: self.weekly_active_users,
+      dau: self.daily_active_users,
+      dau_rank: self.daily_active_users_rank,
+      mau: self.monthly_active_users,
+      mau_rank: self.monthly_active_users_rank,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name) || first_international_snapshot.try(:seller_name),

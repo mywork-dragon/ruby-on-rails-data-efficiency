@@ -12,13 +12,14 @@ class AppsIndex < Chewy::Index
   define_type IosApp.includes(:ios_developer, :newest_ios_app_snapshot) do
 
     crutch :current_snapshot do |collection|
-      fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'app_stores.country_code', 'app_stores.name', 'seller_name', 
+      fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'ratings_all_count', 'app_stores.country_code', 'app_stores.name', 'seller_name', 
                 'seller_url', 'user_base', 'price', 'first_released', 'mobile_priority', 'released']
       data = IosAppCurrentSnapshot.joins(:app_store).where(ios_app_id: collection.map(&:id)).order("ios_app_id, display_priority IS NULL, display_priority ASC").
                                    pluck(*fields)
-      data.each.with_object({}) { |(id, name, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result| 
+      data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result| 
         result[id] ||= {}
         result[id]['ios_app_id'] ||= id
+        result[id]['ratings_all'] ||= ratings_all
         result[id]['name'] ||= name
         result[id]['price'] ||= price
         result[id]['seller_name'] ||= seller_name
@@ -116,6 +117,13 @@ class AppsIndex < Chewy::Index
     field :mobile_priority, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'mobile_priority') }, index: 'not_analyzed'
     field :fortune_rank, value: ->(app, crutches) { crutches.fortune_rank[app.id] }, type: 'integer'
     field :categories, value: ->(app, crutches) { crutches.categories[app.id] }, index: 'not_analyzed'
+    field :ratings_all, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'ratings_all').to_i }, type: 'integer'
+
+    field :daily_active_users_num, value: -> (ios_app){ios_app.daily_active_users}, type: 'long'
+    field :daily_active_users_rank, type: 'integer'
+    field :monthly_active_users_num, value: -> (ios_app){ios_app.monthly_active_users}, type: 'long'
+    field :monthly_active_users_rank, type: 'integer'
+    field :weekly_active_users_num, value: -> (ios_app){ios_app.weekly_active_users}, type: 'long'
 
     field :installed_sdks, type: 'nested', include_in_parent: true do
       field :id
@@ -142,6 +150,8 @@ class AppsIndex < Chewy::Index
     field :publisher_id, value: -> (ios_app){ios_app.ios_developer.try(:id)}
     field :publisher_identifier, value: -> (ios_app){ios_app.ios_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, value: -> (ios_app){ios_app.ios_developer.try(:name)}
+    field :publisher_websites, value: -> (ios_app){ios_app.ios_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
+
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do
       field :street_number, index: 'not_analyzed'
       field :street_name, index: 'not_analyzed'
@@ -225,6 +235,7 @@ class AppsIndex < Chewy::Index
     field :fortune_rank, value: ->(app, crutches) { crutches.fortune_rank[app.id] }, type: 'integer'
     field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed'
     field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
+    field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max)}
 
     field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
     field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
@@ -248,6 +259,8 @@ class AppsIndex < Chewy::Index
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
     field :publisher_identifier, value: -> (android_app){android_app.android_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, value: -> (android_app){android_app.android_developer.try(:name)}
+    field :publisher_websites, value: -> (android_app){android_app.android_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
+
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do
       field :street_number, index: 'not_analyzed'
       field :street_name, index: 'not_analyzed'

@@ -15,7 +15,11 @@ class IosDeveloper < ActiveRecord::Base
   has_many :developer_link_options
 
   def get_website_urls
-    self.websites.pluck(:url).uniq
+    websites.pluck(:url).uniq
+  end
+
+  def get_valid_website_urls
+    valid_websites.pluck(:url).uniq
   end
 
   def sorted_ios_apps(category, order, page)

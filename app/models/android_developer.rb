@@ -13,7 +13,11 @@ class AndroidDeveloper < ActiveRecord::Base
   has_many :valid_websites, through: :valid_android_developer_websites, source: :website
 
   def get_website_urls
-    self.websites.map{|w| w.url}
+    websites.pluck(:url).uniq
+  end
+
+  def get_valid_website_urls
+    valid_websites.pluck(:url).uniq
   end
 
   def sorted_android_apps(category, order, page)

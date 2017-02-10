@@ -73,9 +73,9 @@ class AndroidApp < ActiveRecord::Base
   end
   
   def get_website_urls
-    self.websites.map{|w| w.url}
+    websites.map{|w| w.url}
   end
-  
+
   def get_company
     self.websites.each do |w|
       if w.company.present?
@@ -183,6 +183,7 @@ class AndroidApp < ActiveRecord::Base
       downloadsMin: newest_snapshot.try(:downloads_min),
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
+      rankingChange: self.ranking_change,
       company: company,
       appAvailable: self.app_available?,
       isInternational: self.international?,
