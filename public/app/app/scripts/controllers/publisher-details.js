@@ -150,7 +150,9 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
     $scope.contactsLoading = false;
     $scope.contactsLoaded = false;
 
-    $scope.getContactEmail = function(clearbitId) {
+    $scope.getContactEmail = function(contact) {
+      contact.isLoading = true
+      var clearbitId = contact.clearbitId
       apiService.getContactEmail(clearbitId)
         .success(function(data) {
           mixpanel.track(
@@ -159,13 +161,11 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
               'clearbitId': clearbitId
             }
           );
-          for(var i = 0; i < $scope.companyContacts.length; i++) {
-            if ($scope.companyContacts[i].clearbitId == clearbitId) {
-              $scope.companyContacts[i].email = data.email
-            }
-          } 
+          contact.email = data.email
+          contact.isLoading = false
         }).error(function(data) {
           alert(data.error)
+          contact.isLoading = false
         })
     }
 

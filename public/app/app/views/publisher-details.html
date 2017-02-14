@@ -127,7 +127,8 @@
                               <td>
                                 <div ng-if="contact.email"><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
                                 <div ng-if="!contact.email">
-                                  <button type="submit" class="btn btn-default btn-sm" ng-click="getContactEmail(contact.clearbitId)">Get Email</button>
+                                  <div class="loader" ng-if="contact.isLoading"></div>
+                                  <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="getContactEmail(contact)">Get Email</button>
                                 </div>
                               </td>
                             </tr>

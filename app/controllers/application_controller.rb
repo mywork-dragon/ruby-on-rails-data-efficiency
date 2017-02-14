@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   def authenticate_request
     if auth_token_expired?
       fail AuthenticationExpiredError
-    elsif auth_token_shared?
+    elsif auth_token_shared? && @current_user.try(:account_id).to_i > 1
       fail AuthenticationSharedError
     elsif !@current_user
       fail NotAuthenticatedError
