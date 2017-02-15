@@ -21,23 +21,23 @@ Rails.application.routes.draw do
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get '/privacy', to: redirect('/legal/privacy.pdf')
-  
+
   match 'auth/:provider/callback', to: 'salesforce_sessions#create', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout', to: 'salesforce_sessions#destroy', as: 'signout', via: [:get, :post]
-  
+
   post 'test_sf_post' => 'salesforce#test_sf_post'
   post 'test_get_token' => 'salesforce#test_get_token'
   post 'bizible_hydrate_lead' => 'bizible_salesforce#hydrate_lead'
   post 'bizible_hydrate_opp' => 'bizible_salesforce#hydrate_opp'
   get 'customer_salesforce_credentials' => 'customer_salesforce#salesforce_credentials'
-  
+
   post 'triggermail_demo_hydrate_lead' => 'triggermail_demo_salesforce#hydrate_lead'
   post 'triggermail_hydrate_lead' => 'triggermail_salesforce#hydrate_lead'
   post 'lead_hydration_demo_hydrate_lead' => 'lead_hydration_demo_salesforce#hydrate_lead'
-  
+
   get 'mturk' => 'mturk#gochime'
-  
+
   # API Endpoints (for Front-End)
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
@@ -165,4 +165,6 @@ Rails.application.routes.draw do
   # internal api for FB account reservations
   put 'fb_account/reserve' => 'fb_account#reserve'
   put 'fb_account/release' => 'fb_account#release'
+
+  post 'android_ad' => 'android_ad#create'
 end

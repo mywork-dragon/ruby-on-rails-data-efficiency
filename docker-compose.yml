@@ -35,6 +35,8 @@ services:
       - S3_SECRET_ACCESS_KEY=dummy
       - REGIONAL_PROXY_USER=dummy
       - REGIONAL_PROXY_PASSWORD=dummy
+      - RECAPTCHA_SITE_KEY=dummy
+      - RECAPTCHA_SECRET_KEY=dummy
     depends_on:
       - db
       - redis
@@ -79,6 +81,8 @@ services:
       - S3_SECRET_ACCESS_KEY=dummy
       - REGIONAL_PROXY_USER=dummy
       - REGIONAL_PROXY_PASSWORD=dummy
+      - RECAPTCHA_SITE_KEY=dummy
+      - RECAPTCHA_SECRET_KEY=dummy
     depends_on:
       - db
       - redis
