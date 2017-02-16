@@ -166,5 +166,5 @@ Rails.application.routes.draw do
   put 'fb_account/reserve' => 'fb_account#reserve'
   put 'fb_account/release' => 'fb_account#release'
 
-  post 'android_ad' => 'android_ad#create'
+  put 'android_ad' => 'android_ad#create'
 end

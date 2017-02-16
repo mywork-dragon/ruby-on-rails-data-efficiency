@@ -3,7 +3,7 @@ class AndroidAdController < ApplicationController
   before_action :authenticate_admin
 
   def create
-    ad = AndroidAd.new()
+    ad = AndroidAd.find_or_initialize_by(ad_id: params['ad_id'])
 
     ad.ad_type = params['ad_type'].to_sym
     ad.android_device_sn = params['android_device_sn']

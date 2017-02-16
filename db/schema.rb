@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170213215839) do
+ActiveRecord::Schema.define(version: 20170215205334) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20170213215839) do
     t.boolean "target_proximity_to_business"
   end
 
+  add_index "android_ads", ["ad_id"], name: "index_android_ads_on_ad_id", length: {"ad_id"=>23}, using: :btree
   add_index "android_ads", ["ad_type", "advertised_app_id"], name: "index_android_ads_on_ad_type_and_advertised_app_id", using: :btree
   add_index "android_ads", ["advertised_app_id"], name: "index_android_ads_on_advertised_app_id", using: :btree
 
