@@ -57,10 +57,15 @@ class ClearbitContact < ActiveRecord::Base
       next if domain.blank? || domains[domain] || (valid_developer_ids && !valid_developer_ids.include?(developer.id))
       domains[domain] = 1
 
+      domain_datum = DomainDatum.where(domain: domain).first
+
       if filter.present?
-        contacts += ClearbitContact.get_contacts(domain: domain, title: filter, limit: 20)
+        contacts += domain_datum.clearbit_contacts.where("title LIKE ?", "%#{filter}%").as_json if domain_datum
+        begin
+          contacts += ClearbitContact.get_contacts(domain: domain, title: filter, limit: 20)
+        rescue
+        end
       else
-        domain_datum = DomainDatum.where(domain: domain).first
         current_contacts =  if domain_datum
                               domain_datum.clearbit_contacts.where(updated_at: Time.now-60.days..Time.now).
                               where("email IS NULL OR email != 'No Email'").as_json
@@ -117,7 +122,7 @@ class ClearbitContact < ActiveRecord::Base
     "No Email"
   end
 
-  def as_json
+  def as_json(options={})
     {
       clearbitId: clearbit_id,
       givenName: given_name,
