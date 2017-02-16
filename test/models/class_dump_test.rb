@@ -46,6 +46,20 @@ class ClassDumpTest < ActiveSupport::TestCase
     generic_store_and_retrieve_test({hey: 'sup', yo: 123123}.as_json, :plist)
   end
 
+  test 'store and retrieve jtool classes' do
+    generic_store_and_retrieve_test(['cool_class', '_TtC5Venmo5Class'], :jtool_classes)
+  end
+
+  test 'store and retrieve shared libraries' do
+    generic_store_and_retrieve_test(['@rpath/Frameworks/Alamofire', '/System/Frameworks/Something'], :shared_libraries)
+  end
+
+  test 'list decrypted binaries' do
+    res = @classdump.list_decrypted_binaries
+    assert res.contents.class == Array
+    assert_equal "decrypted_binaries/#{@classdump.id}", @s3.key_returned_from
+  end
+
   test 'check processed' do
     assert_equal false, @classdump.processed?
 
@@ -63,7 +77,9 @@ class ClassDumpTest < ActiveSupport::TestCase
       packages: { in: :store_packages, out: :packages },
       files: { in: :store_files, out: :files },
       frameworks: { in: :store_frameworks, out: :frameworks },
-      plist: { in: :store_plist, out: :plist }
+      plist: { in: :store_plist, out: :plist },
+      jtool_classes: { in: :store_jtool_classes, out: :jtool_classes },
+      shared_libraries: { in: :store_shared_libraries, out: :shared_libraries }
     }
 
     methods = map[input_type]

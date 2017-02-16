@@ -31,7 +31,7 @@ class ClassDump < ActiveRecord::Base
   end
 
   def valid_content_types
-    %i(classes classdump_txt packages strings files frameworks plist marker)
+    %i(classes classdump_txt packages strings files frameworks plist jtool_classes shared_libraries marker)
   end
 
   def s3_key(content_type)
@@ -60,6 +60,22 @@ class ClassDump < ActiveRecord::Base
 
   def store_classes(classes)
     store_list(:classes, classes)
+  end
+
+  def jtool_classes
+    retrieve_list(:jtool_classes)
+  end
+
+  def store_jtool_classes(classes)
+    store_list(:jtool_classes, classes)
+  end
+
+  def shared_libraries
+    retrieve_list(:shared_libraries)
+  end
+
+  def store_shared_libraries(libraries)
+    store_list(:shared_libraries, libraries)
   end
 
   def classdump_txt
@@ -122,6 +138,21 @@ class ClassDump < ActiveRecord::Base
     true
   rescue MightyAws::S3::NoSuchKey
     false
+  end
+
+  def list_decrypted_binaries
+    s3_client.list(
+      bucket: Rails.application.config.ipa_bucket,
+      prefix: "decrypted_binaries/#{id}"
+    )
+  end
+
+  def download_binary(key, file_path)
+    s3_client.download_file(
+      bucket: Rails.application.config.ipa_bucket,
+      key_path: key,
+      file_path: file_path
+    )
   end
 
   private

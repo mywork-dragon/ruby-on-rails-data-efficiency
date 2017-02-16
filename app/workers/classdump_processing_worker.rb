@@ -10,11 +10,18 @@ class ClassdumpProcessingWorker
 
   MAX_WAIT_ATTEMPTS = 20
 
+  attr_writer :jtool
+
+  def jtool
+    @jtool || Jtool.new
+  end
+
   def perform(class_dump_id)
     classdump = ClassDump.find(class_dump_id)
     raise NoClassdumpAvailable unless classdump
     store_summary_data(classdump)
     store_app_content_data(classdump)
+    store_binary_data(classdump)
     store_marker(classdump)
   end
 
@@ -93,6 +100,38 @@ class ClassdumpProcessingWorker
     yield Gem::Package::TarReader.new(Zlib::GzipReader.new(contents))
   ensure
     contents.close
+  end
+
+  def store_binary_data(classdump)
+    combined = combined_binary_data(classdump)
+    classdump.store_jtool_classes(combined[:classes])
+    classdump.store_shared_libraries(combined[:libraries])
+  end
+
+  def combined_binary_data(classdump)
+    binaries = classdump.list_decrypted_binaries.contents
+    summaries = binaries.map do |binary|
+      binary_data(classdump, binary.key)
+    end
+
+    classes = summaries.map { |s| s[:classes] }.flatten.uniq
+    libraries = summaries.map { |s| s[:libraries] }.flatten.uniq
+
+    {
+      classes: classes,
+      libraries: libraries
+    }
+  end
+
+  def binary_data(classdump, binary_key)
+    file_path = File.join('/tmp', Digest::SHA1.hexdigest(binary_key))
+    classdump.download_binary(binary_key, file_path)
+    {
+      classes: jtool.objc_classes(file_path),
+      libraries: jtool.shared_libraries(file_path)
+    }
+  ensure
+    File.delete(file_path) if file_path && File.exist?(file_path)
   end
 
   def store_marker(classdump)
