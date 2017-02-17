@@ -15,12 +15,12 @@ module AndroidClassification
     log "Completed classification for snapshot #{@apk_snapshot.id}"
 
   rescue => e
+    log "Failed classification for snapshot #{@apk_snapshot.id}"
     ApkSnapshotException.create!(
       name: e.message,
       backtrace: e.backtrace,
       apk_snapshot_id: apk_snapshot_id
     )
-    log "Failed classification for snapshot #{@apk_snapshot.id}"
 
     # Don't fiddle with the status of
     # scans which have already completed once.
@@ -29,7 +29,7 @@ module AndroidClassification
     raise e
   ensure
     @apk_snapshot.android_app.update_newest_apk_snapshot
-  end 
+  end
 
   def rescan
     @apk_snapshot.status != nil
@@ -67,7 +67,7 @@ module AndroidClassification
     AndroidSdksApkSnapshot.import rows
     @apk_snapshot.store_classification_summary(paths)
   end
-  
+
   def log_activities
     ActivityWorker.perform_async(:log_android_sdks, @apk_snapshot.android_app_id)
   end
