@@ -7,12 +7,12 @@
 
   <div ng-if="initialPageLoadComplete">
     <div class="row sdksPageRow chartPageRow">
-      <h4>SDKs</h4>
+      <h4>Android SDKs</h4>
       <ul>
         <li data-ng-repeat="sdk in sdks" ng-click="clickedSdkTag(sdk)" data-toggle="modal" data-target="#sdksModal" class="grid">
           <span class="sdk-name">{{sdk.name}}</span>
           <br>
-          <span class="app-name">{{sdk.ios_sdks.length}} SDKs</span>
+          <span class="app-name">{{sdk.android_sdks.length}} SDKs</span>
         </li>
       </ul>
     </div>
@@ -27,7 +27,7 @@
         </div>
         <div class="modal-body">
           <ul class="sdks">
-            <li ng-repeat="sdk in tag.ios_sdks">
+            <li ng-repeat="sdk in tag.android_sdks">
               <div class="media">
                 <div class="pull-left media-middle">
                   <a href=sdk.website>

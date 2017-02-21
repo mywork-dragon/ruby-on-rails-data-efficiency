@@ -4,6 +4,24 @@ angular.module("appApp")
   .factory("filterService", ["$rootScope",
     function($rootScope) {
       return {
+        userbaseDisplayText: function(filter, filterType) {
+          var displayName;
+          switch(filter.status) {
+            case "0":
+              displayName = 'User Base'
+              break
+            case "1":
+              displayName = 'Daily Active Users'
+              break
+            case "2":
+              displayName = 'Weekly Active Users'
+              break
+            case "3":
+              displayName = 'Monthly Active Users'
+              break
+          }
+          return filterType + ' ' + displayName
+        },
         sdkDisplayText: function(filter, filterType) {
           var displayName = 'SDK'
 
@@ -66,7 +84,7 @@ angular.module("appApp")
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
             if ($rootScope.tags[i].parameter == parameter && this.tagsAreEqual($rootScope.tags[i], oldValue)) {
-              var possible = ["status", "date", "state"]
+              var possible = ["status", "date", "state", "id", "name"]
               for (var y = 0; y < possible.length; y++) {
                 if (value[possible[y]]) {
                   $rootScope.tags[i].value[possible[y]] = value[possible[y]]
@@ -135,7 +153,7 @@ angular.module("appApp")
               text: displayName + ': ' + (customName ? customName : value)
             });
           }
-          var complexFilters = ['sdkFiltersOr', 'sdkFiltersAnd', 'locationFiltersAnd', 'locationFiltersOr']
+          var complexFilters = ['sdkFiltersOr', 'sdkFiltersAnd', 'locationFiltersAnd', 'locationFiltersOr', 'userbaseFiltersOr', 'userbaseFiltersAnd']
           if(!limitToOneFilter && (!duplicateTag || complexFilters.indexOf(parameter) > -1) || $rootScope.tags.length < 1) {
             $rootScope.tags.push({
               parameter: parameter,

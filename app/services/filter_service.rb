@@ -18,7 +18,7 @@ class FilterService
                         )
 
       else
-        apps_index.order(sort_by => order_by)
+        apps_index.order(sort_by => {'order' => order_by, "missing" => "_last"})
       end
     end
 
@@ -41,6 +41,34 @@ class FilterService
       end
     end
 
+    def engagement_filter(filter)
+      range = filter["id"].split('-').last(2)
+      range.map!{|num|
+        case num.to_i
+        when 0
+          0
+        when 1
+          10_000
+        when 2 
+          50_000
+        when 3
+          100_000
+        when 4
+          500_000
+        when 5
+          1_000_000
+        when 6
+          5_000_000
+        when 7
+          10_000_000
+        when 8
+          200_000_000
+        end
+      }
+      
+      {'gte' => range[0], 'lte' => range[1]}
+    end
+
     def filter_ios_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc')
       filter_apps(app_filters: app_filters, company_filters: company_filters, page_size: page_size, page_num: page_num, sort_by: sort_by, order_by: order_by, platform: 'ios')
     end
@@ -51,6 +79,9 @@ class FilterService
 
     def filter_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc', platform: 'ios')
       apps_index = platform == 'ios' ? AppsIndex::IosApp : AppsIndex::AndroidApp
+      if ['daily_active_users_rank', 'monthly_active_users_rank', 'weekly_active_users_rank', 'weekly_active_users_num'].include?(sort_by)
+        apps_index = apps_index.filter({"range" => {sort_by => {'gt' => 0}}})
+      end
 
       ['sdkFiltersOr', 'sdkFiltersAnd'].each do |filter_type|
         next unless app_filters[filter_type].present?
@@ -103,6 +134,27 @@ class FilterService
           end
         end
         apps_index = apps_index.filter(location_query) unless location_query[short_filter_type].blank?
+      end
+
+      ['userbaseFiltersOr', 'userbaseFiltersAnd'].each do |filter_type|
+        next unless app_filters[filter_type].present?
+
+        short_filter_type = filter_type == 'userbaseFiltersOr' ? 'or' : 'and'
+        userbase_query = {short_filter_type => []}
+        app_filters[filter_type].each do |filter|
+          engagement_filter = engagement_filter(filter) if filter["status"].to_i != 0
+          case filter["status"].to_i
+          when 0
+            userbase_query[short_filter_type] << {"term" => {"user_bases.user_base" => IosApp.user_bases.keys[filter['id'].to_f - 1]}}
+          when 1
+            userbase_query[short_filter_type] << {"range" => {"daily_active_users_num" => engagement_filter}}
+          when 2
+            userbase_query[short_filter_type] << {"range" => {"weekly_active_users_num" => engagement_filter}}
+          when 3
+            userbase_query[short_filter_type] << {"range" => {"monthly_active_users_num" => engagement_filter}}
+          end
+        end
+        apps_index = apps_index.filter(userbase_query) unless userbase_query[short_filter_type].blank?
       end
       
       if company_filters['fortuneRank'].present?

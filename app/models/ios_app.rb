@@ -145,11 +145,6 @@ class IosApp < ActiveRecord::Base
       appStoreLink: self.app_store_link,
       appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
       isInternational: self.international?,
-      wau: self.weekly_active_users,
-      dau: self.daily_active_users,
-      dau_rank: self.daily_active_users_rank,
-      mau: self.monthly_active_users,
-      mau_rank: self.monthly_active_users_rank,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name) || first_international_snapshot.try(:seller_name),
@@ -169,6 +164,16 @@ class IosApp < ActiveRecord::Base
       })
     end
 
+    if options[:engagement]
+      batch_json.merge!({
+        wau: ActionController::Base.helpers.number_to_human(self.weekly_active_users),
+        dau: ActionController::Base.helpers.number_to_human(self.daily_active_users),
+        dau_rank: ActionController::Base.helpers.number_to_human(self.daily_active_users_rank),
+        mau: ActionController::Base.helpers.number_to_human(self.monthly_active_users),
+        mau_rank: ActionController::Base.helpers.number_to_human(self.monthly_active_users_rank),
+      })
+    end
+
     if options[:details]
       batch_json.merge!({
         currentVersion: self.version,
@@ -185,7 +190,7 @@ class IosApp < ActiveRecord::Base
         recommendedAge: self.recommended_age,
         description: self.description,
         facebookAds: self.ios_fb_ads.has_image,
-        headquarters: self.headquarters
+        headquarters: self.headquarters,
       })
     end
 

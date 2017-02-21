@@ -607,7 +607,7 @@ ul.websites {
   margin-top: -29px;
 }
 
-ul.websites li, ul.headquarters li {
+ul.websites li, ul.nested li {
   padding: 5px;
   border: none;
 }
@@ -4733,7 +4733,12 @@ li.sdk-tags a.edit {
 
 .list-info li, .international-data li {
   padding: 10px;
-  border-bottom: 1px solid #eee; }
+  border-bottom: 1px solid #eee; 
+}
+
+.ms-insights.list-info li label {
+  width: 160px;
+}
 
 ul.pagination li {
   padding: 0;
@@ -4750,16 +4755,16 @@ ul.pagination li {
 .list-info li label {
   width: 130px; }
 
-ul.headquarters li {
+ul.nested li {
   padding: 10px 0;
 }
 
-ul.headquarters {
+ul.nested {
   list-style: none;
   padding: 5px 0 0 25px;
 }
 
-.list-info ul.headquarters li label {
+.list-info ul.nested li label {
   text-overflow: ellipsis;
   overflow: hidden;
   margin-bottom: -4px;
@@ -7487,6 +7492,14 @@ select option:empty {
   width: 110px;
 }
 
+.resultsTableAppUserbase p:last-child {
+  margin: 0;
+}
+
+.fa.fa-trophy {
+  color: gold;
+}
+
 .resultsTableAppIcon img {
   max-width: 32px;
   height: 32px;
@@ -8464,6 +8477,10 @@ h4.red {
   padding-top: 4px;
 }
 
+.filter-modal .modal-header p {
+  font-size: 14px;
+}
+
 .sdk-filter {
   display: inline-block;
   margin: 2px 2px 2px 6px;
@@ -8518,6 +8535,37 @@ h4.red {
 #adIntelligencePage .fa-facebook-official {
   color: #3B5998;
   margin-left: 8px;
+}
+
+.modal-content .rzslider {
+  width: 340px;
+  margin: 30px 10px 15px 10px;
+}
+
+.modal-content .rzslider .rz-pointer {
+  top: -6px;
+  width: 16px;
+  height: 16px;
+}
+
+.modal-content .rzslider .rz-pointer:after {
+  top: 6px;
+  left: 6px;
+  width: 4px;
+  height: 4px;
+}
+
+.modal-content .rzslider .rz-tick {
+  margin-left: 3px;
+}
+
+.modal-content .rzslider .rz-pointer.rz-active:after {
+  background-color: #fff;
+}
+
+.modal-content .rzslider .rz-tick-value {
+  top: -25px;
+  font-size: 12px;
 }
 
 

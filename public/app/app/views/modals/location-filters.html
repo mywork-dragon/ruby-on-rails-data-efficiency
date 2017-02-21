@@ -4,7 +4,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title" id="myModalLabel">Location Filters</h3>
-        <span>Note: Headquarter data is not available for every app</span>
+        <p>Note: Headquarter data is not available for every app</p>
       </div>
       <div class="modal-body">
         <div class="filter-and">
@@ -83,7 +83,7 @@
                              input-class="form-control form-control-small autocomplete-filter" ng-hide="filter.location || filter.status != 0">
             </angucomplete-alt>
             <span class="ui-select" ng-if="['0'].indexOf(filter.status) < 0 && availableAppStores && !filter.location">
-              <select ng-model="filter.location" ng-options="country.id as country.name for country in availableAppStores" ng-change="selectedComplexName(filter.location, $index, 'location', 'or')">
+              <select ng-model="filter.location" ng-options="{id: country.id, name: country.name} as country.name for country in availableAppStores" ng-change="selectedComplexName(filter.location, $index, 'location', 'or')">
                 <option value="">Choose Country</option>
               </select>
             </span>

@@ -16,6 +16,8 @@ angular.module("appApp")
               case 'sdkFiltersAnd':
               case 'locationFiltersOr':
               case 'locationFiltersAnd':
+              case 'userbaseFiltersAnd':
+              case 'userbaseFiltersOr':
               case 'downloads':
                 if (requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
@@ -147,6 +149,17 @@ angular.module("appApp")
             if (value.state && value.state != "0") {
               customName = value.state + ', ' + customName
             }
+            return {
+              parameter: param,
+              text: displayName + ": " + customName,
+              value: value
+            };
+            break;
+          case 'userbaseFiltersOr':
+          case 'userbaseFiltersAnd':
+            var filterTypeShort = param == 'userbaseFiltersAnd' ? 'And' : 'Or'
+            var displayName = filterService.userbaseDisplayText(value, filterTypeShort)
+            var customName = value.name
             return {
               parameter: param,
               text: displayName + ": " + customName,

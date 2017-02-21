@@ -27,7 +27,8 @@ angular
     'infinite-scroll',
     'satellizer',
     'bootstrapLightbox',
-    'isoCurrency'
+    'isoCurrency',
+    'rzModule'
   ])
   .run(function ($http, $rootScope) {
 
@@ -54,15 +55,30 @@ angular
           templateUrl: '/app/app/views/charts.html',
           activeTab: 'charts',
         })
-        .when('/charts/top-apps', {
-          templateUrl: '/app/app/views/charts/top-apps.html',
+        .when('/charts/top-ios-apps', {
+          templateUrl: '/app/app/views/charts/top-ios-apps.html',
           activeTab: 'charts',
-          action: 'charts.top-apps'
+          action: 'charts.top-ios-apps'
         })
-        .when('/charts/sdks', {
-          templateUrl: '/app/app/views/charts/sdks.html',
+        .when('/charts/top-android-apps', {
+          templateUrl: '/app/app/views/charts/top-android-apps.html',
           activeTab: 'charts',
-          action: 'charts.sdks'
+          action: 'charts.top-android-apps'
+        })
+        .when('/charts/ios-sdks', {
+          templateUrl: '/app/app/views/charts/ios-sdks.html',
+          activeTab: 'charts',
+          action: 'charts.ios-sdks'
+        })
+        .when('/charts/android-sdks', {
+          templateUrl: '/app/app/views/charts/android-sdks.html',
+          activeTab: 'charts',
+          action: 'charts.android-sdks'
+        })
+        .when('/charts/ios-engagement', {
+          templateUrl: '/app/app/views/charts/ios-engagement.html',
+          activeTab: 'charts',
+          action: 'charts.ios-engagement'
         })
         .when('/search/sdk/:platform', {
           templateUrl: '/app/app/views/sdk-search.html',

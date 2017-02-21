@@ -38,8 +38,8 @@ If you having trouble in editing css. please send a mail to support@surjithctly.
 
 body {
 	font-family:"Montserrat", Arial, Helvetica, sans-serif;
-	background:#f3f3f3;
-	position:relative;
+	background: #f3f3f3;
+	position:relative; 
 }
 /*a {
   color:#2cc76a;
@@ -149,6 +149,7 @@ p {
 	background-color: #209ab8!important;
 	color:#FFF!important;
 }
+
 .btn-danger {
 	background-color: #f45c57;
 	background-image:none;

@@ -85,6 +85,7 @@ class ClearbitContact < ActiveRecord::Base
         contacts += current_contacts
       end
     end
+    
     contacts.uniq! {|e| e[:clearbitId] }
     contacts
   end

@@ -41,7 +41,7 @@
           <div class="panel-body">
             <div class="media">
               <div class="media-body">
-                <ul class="list-unstyled list-info">
+                <ul class="list-unstyled list-info ms-insights">
                   <li ng-if="appData.appIdentifier">
                     <span class="icon fa fa-user"></span>
                     <label>MightySignal ID:</label>
@@ -58,7 +58,7 @@
                     <span>{{appData.mobilePriority | capitalize}}</span>
                   </li>
                   <li ng-if="appData.userBase">
-                    <span class="icon fa fa-user"></span>
+                    <span class="icon fa fa-users"></span>
                     <label>User Base Size:</label>
                     <span ng-if="appData.platform == 'android'">{{appData.userBase | capitalize}}</span>
                     <span ng-if="appData.platform == 'ios' && appData.userBases.length == 1">
@@ -69,6 +69,24 @@
                       <img ng-src="/lib/images/flags/{{appData.userBase.country_code.toLowerCase()}}.png" />
                       {{appData.userBase.user_base | capitalize}}
                     </button>
+                  </li>
+                  <li ng-if="appData.platform == 'ios' && (appData.dau !== null || appData.mau !== null || appData.wau !== null)">
+                    <span class="icon fa fa-users"></span>
+                    <label>Active Users</label>
+                    <ul class="nested">
+                      <li ng-if="appData.dau !== null">
+                        <label>Daily Active Users:</label>
+                        <span>{{appData.dau}}</span>
+                      </li>
+                      <li ng-if="appData.wau !== null">
+                        <label>Weekly Active Users:</label>
+                        <span>{{appData.wau}}</span>
+                      </li>
+                      <li ng-if="appData.mau !== null">
+                        <label>Monthly Active Users:</label>
+                        <span>{{appData.mau}}</span>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </div>
@@ -438,7 +456,7 @@
                   <li ng-if="appData.headquarters.length">
                     <span class="icon fa fa-home"></span>
                     <label>Headquarters</label>
-                    <ul class="headquarters">
+                    <ul class="nested">
                       <li ng-repeat="location in appData.headquarters">
                         <label title="{{location.domain}}">{{location.domain}}</label>
                         {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}

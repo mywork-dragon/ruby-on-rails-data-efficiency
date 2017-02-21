@@ -37,11 +37,15 @@ class ApiController < ApplicationController
     filter_args.delete_if{ |k, v| v.nil? }
 
     filter_results = FilterService.filter_ios_apps(filter_args)
+    userbase_filter = (app_filters['userbaseFiltersOr'] || []).select{|filter| 
+      filter["status"].to_i == 0
+    }.map{|filter| 
+      filter["name"].try(:downcase)
+    }
 
-    ids = filter_results.map { |result| result.attributes["id"] }
-    results = ids.any? ? IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})").is_ios : []
+    apps_json = ios_app_enagement_json(filter_results, {user: @current_user, user_bases: userbase_filter})
+   
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
-    apps_json = results.as_json({user: @current_user, user_bases: app_filters['userBases']})
     
     render json: {results: apps_json, resultsCount: results_count, pageNum: page_num}
   end
@@ -181,7 +185,7 @@ class ApiController < ApplicationController
   def get_ios_app
     appId = params['id']
     ios_app = IosApp.find(appId)
-    render json: ios_app.to_json({user: @current_user, details: true})
+    render json: ios_app.to_json({user: @current_user, details: true, engagement: true})
   end
 
   def get_android_app
@@ -602,14 +606,62 @@ class ApiController < ApplicationController
     render json: {results: results, resultsCount: results_count, pageNum: page_num}
   end
 
-  def top_apps
+  def top_ios_apps
     newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    apps = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
-    render json: {apps: apps, last_updated: newest_snapshot.created_at}
+    last_updated = newest_snapshot.try(:created_at) || Time.now
+    apps = if newest_snapshot
+              IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).select(:rank, 'ios_apps.*').order('rank ASC')
+            else
+              []
+            end
+    render json: {apps: apps, last_updated: last_updated}
   end
 
-  def sdks
+  def top_android_apps
+    newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
+    last_updated = newest_snapshot.try(:created_at) || Time.now
+    apps = if newest_snapshot
+              AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
+                        select(:rank, 'android_apps.*').order('rank ASC').limit(200)
+            else
+              []
+            end
+    render json: {apps: apps, last_updated: last_updated}
+  end
+
+  def ios_engagement
+    filter_args = {
+      app_filters: {},
+      company_filters: {},
+      page_size: 100,
+      page_num: 1,
+      order_by: params[:orderBy],
+      sort_by: params[:sortBy],
+    }
+
+    filter_results = FilterService.filter_ios_apps(filter_args)
+    filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
+
+    respond_to do |format|
+      format.json { 
+        apps_json = ios_app_enagement_json(filter_results)
+        render json: {apps: apps_json} 
+      }
+      format.csv { 
+        apps = []
+        ids = filter_results.map { |result| result.attributes["id"] }
+        apps = IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") if ids.any?
+        render_csv(apps: apps)
+      }
+    end
+  end
+
+  def ios_sdks
     render json: {sdks: Tag.includes(:ios_sdks).as_json(include: :ios_sdks)}
+  end
+
+  def android_sdks
+    render json: {sdks: Tag.includes(:android_sdks).as_json(include: :android_sdks)}
   end
 
   def tags
@@ -892,6 +944,29 @@ class ApiController < ApplicationController
   end
 
   private
+
+  def ios_app_enagement_json(filter_results, json_options = {})
+    engagement_map = {}
+    ids = filter_results.map {|result|
+      app_id = result.attributes["id"].to_i
+      engagement_map[app_id] = {
+        wau: result.attributes['weekly_active_users_num'],
+        mau: result.attributes['monthly_active_users_num'],
+        dau: result.attributes['daily_active_users_num']
+      }
+      app_id
+    }
+
+    results = ids.any? ? IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") : []
+    results_json = results.map{|app|
+      app_json = app.as_json(json_options)
+      app_json[:wau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:wau])
+      app_json[:dau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:dau])
+      app_json[:mau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:mau])
+      app_json
+    }
+    results_json
+  end
 
   def render_csv(filter_args: nil, apps: nil)
     set_file_headers

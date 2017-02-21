@@ -1,46 +1,128 @@
 'use strict';
 
-angular.module('appApp').controller("ChartsCtrl", ["$scope", '$route', "authService", "$http", "pageTitleService", "listApiService", "apiService",
-  function($scope, $route, authService, $http, pageTitleService, listApiService, apiService) {
+angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slacktivity', '$route', "authService", "$http", "pageTitleService", "listApiService", "apiService",
+  function($scope, authToken, slacktivity, $route, authService, $http, pageTitleService, listApiService, apiService) {
 
     var chartsCtrl = this;
+    $scope.order = 'desc';
+    $scope.category = 'monthly_active_users_rank'
+    $scope.rowSort = 'monthly_active_users_rank'
 
-    chartsCtrl.loadTopApps = function() {
+    // Sets user permissions
+    authService.permissions()
+      .success(function(data) {
+        $scope.canViewExports = data.can_view_exports;
+      });
+
+    chartsCtrl.loadTopApps = function(platform) {
+      var path = platform == 'ios' ? 'api/charts/top-ios-apps' : 'api/charts/top-android-apps'  
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/charts/top-apps'
+        url: API_URI_BASE + path
       }).success(function(data) {
         $scope.apps = data.apps
         $scope.initialPageLoadComplete = true;
       });
     };
 
-    chartsCtrl.loadSdks = function() {
+    chartsCtrl.loadSdks = function(platform) {
+      var path = platform == 'ios' ? 'api/charts/ios-sdks' : 'api/charts/android-sdks'  
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/charts/sdks'
+        url: API_URI_BASE + path
       }).success(function(data) {
         $scope.sdks = data.sdks
         $scope.initialPageLoadComplete = true;
       });
     };
 
+    chartsCtrl.loadIosEngagement = function(category, order) {
+      $scope.category = category || 'monthly_active_users_rank'
+      $scope.order = order || 'asc'
+      $scope.isLoading = true
+
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/charts/ios-engagement.json',
+        params: {orderBy: $scope.order, sortBy: $scope.category}
+      }).success(function(data) {
+        $scope.apps = data.apps
+        $scope.numApps = data.apps.length
+        $scope.isLoading = false;
+      });
+    };
+
+    chartsCtrl.CSVUrl = function() {
+      return API_URI_BASE + 'api/charts/ios-engagement.csv?orderBy=asc&sortBy=monthly_active_users_rank&access_token=' + authToken.get()
+    }
+
+    $scope.sortApps = function(category, order) {
+      var sign = order == 'desc' ? '-' : ''
+      $scope.rowSort = sign + category
+
+      mixpanel.track(
+        "Table Sorting Changed", {
+          "category": category,
+          "order": order,
+          "appPlatform": 'ios'
+        }
+      );
+      chartsCtrl.loadIosEngagement(category, order);
+    };
+
     $scope.clickedSdkTag = function(tag) {
       $scope.tag = tag
     }
 
+    $scope.onIosEngagementAppClick = function(app) {
+      var slacktivityData = {
+        "title": "Ios Engagement App Clicked",
+        "color": "#FFD94D", // yellow
+        "appName": app.name,
+        "appId": app.id,
+        "appPlatform": app.type
+      };
+      slacktivity.notifySlack(slacktivityData);
+      mixpanel.track(
+        "App on Ios Engagement Clicked", {
+          "publisherName": app.publisher.name,
+          "appName": app.name,
+          "appId": app.id,
+          "appPlatform": app.type
+        }
+      );
+    }
+
     switch ($route.current.action) {
-      case "charts.top-apps":
+      case "charts.top-ios-apps":
         $scope.initialPageLoadComplete = false;
-        chartsCtrl.loadTopApps()
+        chartsCtrl.loadTopApps('ios')
         pageTitleService.setTitle('MightySignal - iTunes Top 200 Apps');
-        mixpanel.track("Top Apps Viewed");
+        mixpanel.track("Top iOS Apps Viewed");
         break;
-      case "charts.sdks":
+      case "charts.top-android-apps":
         $scope.initialPageLoadComplete = false;
-        chartsCtrl.loadSdks()
-        pageTitleService.setTitle('MightySignal - SDKs');
-        mixpanel.track("SDKs Viewed");
+        chartsCtrl.loadTopApps('android')
+        pageTitleService.setTitle('MightySignal - Google Play Top 200 Apps');
+        mixpanel.track("Top Android Apps Viewed");
+        break;
+      case "charts.ios-sdks":
+        $scope.initialPageLoadComplete = false;
+        chartsCtrl.loadSdks('ios')
+        pageTitleService.setTitle('MightySignal - iOS SDKs');
+        mixpanel.track("iOS SDKs Viewed");
+        break;
+      case "charts.android-sdks":
+        $scope.initialPageLoadComplete = false;
+        chartsCtrl.loadSdks('android')
+        pageTitleService.setTitle('MightySignal - Android SDKs');
+        mixpanel.track("Android SDKs Viewed");
+        break;
+      case "charts.ios-engagement":
+        $scope.initialPageLoadComplete = false;
+        chartsCtrl.loadIosEngagement();
+        pageTitleService.setTitle('MightySignal - iOS Apps by Active Users');
+        mixpanel.track("iOS Apps by Active Users Viewed");
         break;
     }
 

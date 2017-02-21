@@ -17,6 +17,10 @@
         </li>
         <li ng-if="canViewAdSpend" ng-class="{active: $route.current.activeTab == 'ad-intelligence'}">
             <a href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span>
+            </a>
+        </li>
+        <li ng-class="{active: $route.current.activeTab == 'charts'}">
+            <a href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span>
             <span class="label label-danger">NEW</span></a>
         </li>
         <!--

@@ -102,8 +102,11 @@ Rails.application.routes.draw do
   get 'api/chart/newest' => 'api#newest_apps_chart'
   get 'api/chart/export_to_csv' => 'api#export_newest_apps_chart_to_csv'
 
-  get 'api/charts/top-apps' => 'api#top_apps'
-  get 'api/charts/sdks' => 'api#sdks'
+  get 'api/charts/top-android-apps' => 'api#top_android_apps'
+  get 'api/charts/top-ios-apps' => 'api#top_ios_apps'
+  get 'api/charts/ios-sdks' => 'api#ios_sdks'
+  get 'api/charts/android-sdks' => 'api#android_sdks'
+  get 'api/charts/ios-engagement' => 'api#ios_engagement'
 
   get 'api/tags' => 'api#tags'
 

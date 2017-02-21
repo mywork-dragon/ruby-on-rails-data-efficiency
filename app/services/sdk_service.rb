@@ -31,21 +31,21 @@ class SdkService
 		end
 
 		def find_or_create_android_sdks_from_classes(classes:, read_only: true)
-		       sdks, paths = ANDROID_CLASS_CLASSIFIER.classify(classes)
-		       sdks = sdks.map do |sdk_info|
-		               sdk_name = sdk_info[0]
-		               sdk_website = sdk_info[1]
-		               sdk = AndroidSdk.find_by_name(sdk_name)
-		               if sdk.nil? and not read_only
-		                       sdk = create_sdk_from_proposed(
-		                       proposed: {name: sdk_name, website: sdk_website, open_source: false, github_repo_identifier: nil},
-		                       platform: :android)
-		               elsif sdk.nil?
-		                       next
-		               end
-		               sdk
-		       end.compact
-		       [sdks, paths]
+      sdks, paths = ANDROID_CLASS_CLASSIFIER.classify(classes)
+      sdks = sdks.map do |sdk_info|
+        sdk_name = sdk_info[0]
+        sdk_website = sdk_info[1]
+        sdk = AndroidSdk.find_by_name(sdk_name)
+       	if sdk.nil? and not read_only
+          sdk = create_sdk_from_proposed(
+            proposed: {name: sdk_name, website: sdk_website, open_source: false, github_repo_identifier: nil},
+            platform: :android)
+       	elsif sdk.nil?
+          next
+       	end
+       	sdk
+      end.compact
+      [sdks, paths]
 		end
 
 
@@ -433,5 +433,4 @@ class SdkService
 		end
 
 	end
-
 end

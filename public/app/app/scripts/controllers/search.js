@@ -1,16 +1,85 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$route', '$sce', 'listApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
-    function ($scope, $route, $sce, listApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
+  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
+    function ($scope, $timeout, $route, $sce, listApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
 
+      $scope.refreshSlider = function () {
+        $timeout(function () {
+          $scope.$broadcast('rzSliderForceRender');
+        }, 200);
+      };
+
+      $scope.engagementOptions = function(id) {
+        var range = id.split('-')
+        return {
+          id: id,
+          name: $scope.intToUserbase(range[1]) + '-' + $scope.intToUserbase(range[2]),
+          minValue: range[1],
+          maxValue: range[2],
+          options: {
+            id: id,
+            floor: 0,
+            ceil: 8,
+            showTicksValues: true,
+            onEnd: function(sliderId, modelValue, highValue, pointerType) {
+              for(var i = 0; i < $scope.complexFilters.userbase.or.length; i++){
+                var filter = $scope.complexFilters.userbase.or[i]
+                if (filter.userbase && filter.userbase.options && filter.userbase.options.id == sliderId) {
+                  var newId = filter.status + '-' + modelValue + '-' + highValue
+                  var newName = $scope.intToUserbase(modelValue) + '-' + $scope.intToUserbase(highValue)
+                  filterService.changeFilter('userbaseFiltersOr', $scope.filterToTag(filter, 'userbase'), {id: newId, name: newName}, $scope.complexFilterDisplayText('userbase', 'or', filter));
+                  $scope.complexFilters.userbase.or[i].userbase.id = newId
+                  $scope.complexFilters.userbase.or[i].userbase.options.id = newId
+                  break;
+                }
+              }
+            },
+            translate: function(value, sliderId, label) {
+              return $scope.intToUserbase(value)
+            }
+          }
+        };
+      }
+
+      $scope.intToUserbase = function(value) {
+        switch (Number(value)) {
+          case 0:
+            return value;
+          case 1:
+            return '10k'
+          case 2:
+            return '50k'
+          case 3:
+            return '100k'
+          case 4:
+            return '500k'
+          case 5:
+            return '1M'
+          case 6:
+            return '5M'
+          case 7:
+            return '10M'
+          case 8:
+            return '50M+'
+        }
+      }
+
       $scope.complexFilters = {
         sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
-        location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]}
+        location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]},
+        userbase: {or: [{status: "0"}], and: [{status: "0"}]}
       }
+
+      $scope.userbaseOptions = [
+        {id: 1, name: 'Elite'},
+        {id: 2, name: 'Strong'},
+        {id: 3, name: 'Moderate'},
+        {id: 4, name: 'Weak'},
+      ]
 
       $scope.listButtonDisabled = true
       searchCtrl.apps = []
@@ -99,10 +168,13 @@ angular.module('appApp')
       }
 
       $scope.addBlankComplexFilter = function(filter_type, filter_operation) {
-        if (filter_type == 'location') {  
-          $scope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
-        } else {
-          $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+        switch(filter_type) {
+          case 'sdk':
+            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+          case 'location':
+            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
+          default:
+            return $scope.complexFilters[filter_type][filter_operation].push({status: "0"})
         }
       }
 
@@ -113,17 +185,32 @@ angular.module('appApp')
 
       $scope.complexFilterDisplayText = function(filter_type, filter_operation, filter) {
         var filterOperationShort = filter_operation.substr(0, 1).toUpperCase() + filter_operation.substr(1)
-        if (filter_type == 'sdk') {
-          return filterService.sdkDisplayText(filter, filterOperationShort)
-        } else {
-          return filterService.locationDisplayText(filter, filterOperationShort)
+        switch(filter_type) {
+          case 'sdk':
+            return filterService.sdkDisplayText(filter, filterOperationShort)
+          case 'location':
+            return filterService.locationDisplayText(filter, filterOperationShort)
+          case 'userbase':
+            return filterService.userbaseDisplayText(filter, filterOperationShort)
         }
       }
 
       $scope.changedComplexFilter = function(filter, field, old_filter, filter_type, filter_operation) {
         old_filter = JSON.parse(old_filter)
-        if (!old_filter[filter_type]) return
-        filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
+        if ((filter_type == 'userbase' && filter[field] != 0) || filter_type != 'sdk')  {
+          if (filter_type == 'userbase' && filter[field] != 0) {
+            filter[filter_type] = $scope.engagementOptions(filter.status + '-0-8')
+            var customName = $scope.intToUserbase(filter[filter_type].minValue) + '-' + $scope.intToUserbase(filter[filter_type].maxValue)
+            filterService.addFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type), $scope.complexFilterDisplayText(filter_type, filter_operation, filter), false, customName);
+          } else { // is location filter
+            filter[filter_type] = null
+          }          
+          if (old_filter[filter_type]) {
+            filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type));
+          }
+        } else if (!old_filter[filter_type]) { // is sdk filter
+          filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
+        }
       }
 
       $scope.removeComplexFilter = function(filter_type, filter_operation, filter) {
@@ -164,25 +251,39 @@ angular.module('appApp')
         if (typeof object === 'string' || object instanceof String) {
           object = $scope.findAppStore(object)
         }
-        var filter = $scope.complexFilters[filter_type][filter_operation][index]
-        filter[filter_type] = object
+        $scope.complexFilters[filter_type][filter_operation][index][filter_type] = object
         var customName = object.name
+        var filter = $scope.complexFilters[filter_type][filter_operation][index]
         filterService.addFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type), $scope.complexFilterDisplayText(filter_type, filter_operation, filter), false, object.name);
       }
 
       $scope.filterToTag = function(filter, filter_type) {
-        if (filter_type == 'sdk') {
-          return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
-        } else {
-          return {id: filter.location.id, status: filter.status, name: filter.location.name, state: filter.state}
+        switch(filter_type) {
+          case 'sdk':
+            return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+          case 'location':
+            return {id: filter.location.id, status: filter.status, name: filter.location.name, state: filter.state}
+          case 'userbase':
+            if (filter.status == 0) {
+              return {id: filter.userbase.id, status: filter.status, name: filter.userbase.name}
+            } else {
+              return {id: filter.userbase.options.id, status: filter.status, name: filter.userbase.name}
+            }
         }
       }
 
       $scope.tagToFilter = function(tag, filter_type) {
-        if (filter_type == 'sdk') {
-          return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
-        } else {
-          return {status: tag.status, location: {id: tag.id, name: tag.name}, state: tag.state}
+        switch(filter_type) {
+          case 'sdk':
+            return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+          case 'location':
+            return {status: tag.status, location: {id: tag.id, name: tag.name}, state: tag.state}
+          case 'userbase':
+            if (tag.status == 0) {
+              return {status: tag.status, userbase: {id: tag.id, name: tag.name}}
+            } else {
+              return {status: tag.status, userbase: $scope.engagementOptions(tag.id)}
+            }
         }
       }
 
@@ -238,16 +339,25 @@ angular.module('appApp')
       }
 
       $scope.rebuildFromURLParam = function(key, arrayItem) {
-        if (key == 'sdkFiltersAnd') {
-          $scope.addComplexFilter('sdk', 'and', $scope.tagToFilter(arrayItem, 'sdk'))
-        } else if (key == 'sdkFiltersOr') {
-          $scope.addComplexFilter('sdk', 'or', $scope.tagToFilter(arrayItem, 'sdk'))
-        } else if (key == 'locationFiltersOr') {
-          $scope.addComplexFilter('location', 'or', $scope.tagToFilter(arrayItem, 'location'))
-        } else if (key == 'locationFiltersAnd') {
-          $scope.addComplexFilter('location', 'and', $scope.tagToFilter(arrayItem, 'location'))
-        } else if (key == 'categories') { 
-          $scope.addCategoryFilter(arrayItem)
+        switch(key) {
+          case 'sdkFiltersAnd':
+            $scope.addComplexFilter('sdk', 'and', $scope.tagToFilter(arrayItem, 'sdk'))
+            break
+          case 'sdkFiltersOr':
+            $scope.addComplexFilter('sdk', 'or', $scope.tagToFilter(arrayItem, 'sdk'))
+            break
+          case 'locationFiltersOr':
+            $scope.addComplexFilter('location', 'or', $scope.tagToFilter(arrayItem, 'location'))
+            break
+          case 'locationFiltersAnd':
+            $scope.addComplexFilter('location', 'and', $scope.tagToFilter(arrayItem, 'location'))
+            break
+          case 'userbaseFiltersOr':
+            $scope.addComplexFilter('userbase', 'or', $scope.tagToFilter(arrayItem, 'userbase'))
+            break
+          case 'categories':
+            $scope.addCategoryFilter(arrayItem)
+            break
         }
       }
 

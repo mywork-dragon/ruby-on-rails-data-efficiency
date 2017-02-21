@@ -51,7 +51,7 @@
                   <li ng-if="publisherData.headquarters.length">
                     <span class="icon fa fa-home"></span>
                     <label>Headquarters</label>
-                    <ul class="headquarters">
+                    <ul class="nested">
                       <li ng-repeat="location in publisherData.headquarters">
                         <label title="{{location.domain}}">{{location.domain}}</label>
                         {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}

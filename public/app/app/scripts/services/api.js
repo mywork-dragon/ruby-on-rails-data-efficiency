@@ -17,6 +17,8 @@ angular.module("appApp")
               case 'sdkFiltersAnd':
               case 'locationFiltersAnd':
               case 'locationFiltersOr':
+              case 'userbaseFiltersAnd':
+              case 'userbaseFiltersOr':
               case 'downloads':
                 if(requestData['app'][tag.parameter]) {
                   requestData['app'][tag.parameter].push(tag.value);
