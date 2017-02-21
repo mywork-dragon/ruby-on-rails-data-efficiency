@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215205334) do
+ActiveRecord::Schema.define(version: 20170221011752) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -43,27 +43,30 @@ ActiveRecord::Schema.define(version: 20170215205334) do
   end
 
   create_table "android_ads", force: :cascade do |t|
-    t.integer "ad_type",                          limit: 4
-    t.text    "android_device_sn",                limit: 65535
-    t.text    "ad_id",                            limit: 65535
-    t.integer "source_app_id",                    limit: 4
-    t.text    "advertised_app_identifier",        limit: 65535
-    t.integer "advertised_app_id",                limit: 4
-    t.text    "facebook_account",                 limit: 65535
-    t.text    "google_account",                   limit: 65535
-    t.text    "ad_text",                          limit: 65535
-    t.text    "target_location",                  limit: 65535
-    t.integer "target_max_age",                   limit: 4
-    t.integer "target_min_age",                   limit: 4
-    t.boolean "target_similar_to_existing_users"
-    t.text    "target_gender",                    limit: 65535
-    t.text    "target_education",                 limit: 65535
-    t.boolean "target_existing_users"
-    t.text    "target_facebook_audience",         limit: 65535
-    t.text    "target_language",                  limit: 65535
-    t.text    "target_relationship_status",       limit: 65535
-    t.text    "target_interests",                 limit: 65535
-    t.boolean "target_proximity_to_business"
+    t.integer  "ad_type",                          limit: 4
+    t.text     "android_device_sn",                limit: 65535
+    t.text     "ad_id",                            limit: 65535
+    t.integer  "source_app_id",                    limit: 4
+    t.text     "advertised_app_identifier",        limit: 65535
+    t.integer  "advertised_app_id",                limit: 4
+    t.text     "facebook_account",                 limit: 65535
+    t.text     "google_account",                   limit: 65535
+    t.text     "ad_text",                          limit: 65535
+    t.text     "target_location",                  limit: 65535
+    t.integer  "target_max_age",                   limit: 4
+    t.integer  "target_min_age",                   limit: 4
+    t.boolean  "target_similar_to_existing_users"
+    t.text     "target_gender",                    limit: 65535
+    t.text     "target_education",                 limit: 65535
+    t.boolean  "target_existing_users"
+    t.text     "target_facebook_audience",         limit: 65535
+    t.text     "target_language",                  limit: 65535
+    t.text     "target_relationship_status",       limit: 65535
+    t.text     "target_interests",                 limit: 65535
+    t.boolean  "target_proximity_to_business"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "date_seen"
   end
 
   add_index "android_ads", ["ad_id"], name: "index_android_ads_on_ad_id", length: {"ad_id"=>23}, using: :btree

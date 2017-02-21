@@ -5,4 +5,8 @@ class AndroidAd < ActiveRecord::Base
   belongs_to :advertised_app, class_name:'AndroidApp', foreign_key: 'advertised_app_id'
   serialize :target_interests
 
+  def screenshot_url
+    "https://s3.amazonaws.com/ms-android-automation-outputs/#{self.ad_id}/screenshot.png"
+  end
+
 end

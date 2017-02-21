@@ -1,4 +1,5 @@
 class AndroidApp < ActiveRecord::Base
+  include AppAds
 
   validates :app_identifier, uniqueness: true
   validate :validate_regions
@@ -6,9 +7,9 @@ class AndroidApp < ActiveRecord::Base
 
   has_many :listables_lists, as: :listable
   has_many :lists, through: :listables_lists
-  
+
   has_many :android_fb_ad_appearances
-  
+
   has_many :android_app_snapshots
   # has_many :websites, through: :android_apps_snapshots
   has_many :android_apps_websites
@@ -16,13 +17,13 @@ class AndroidApp < ActiveRecord::Base
 
   has_many :android_sdk_companies_android_apps
   has_many :android_sdk_companies, through: :android_sdk_companies_android_apps
-  
+
   has_many :apk_snapshots
 
   belongs_to :newest_android_app_snapshot, class_name: 'AndroidAppSnapshot', foreign_key: 'newest_android_app_snapshot_id'
   belongs_to :newest_apk_snapshot, class_name: 'ApkSnapshot', foreign_key: 'newest_apk_snapshot_id'
   # after_update :set_user_base, if: :newest_android_app_snapshot_id_changed?
-  
+
   belongs_to :android_developer
   has_many :android_app_rankings
 
@@ -42,8 +43,11 @@ class AndroidApp < ActiveRecord::Base
 
   serialize :regions, JSON
 
+  has_many :android_ads, :foreign_key => :advertised_app_id
+
+  ad_table :android_ads
   # update_index('apps#android_app') { self } if Rails.env.production?
-  
+
   def validate_regions
     available_regions = [nil] + MicroProxy.regions.values
     if (regions.select {|x| not available_regions.include? x}).size > 0
@@ -71,7 +75,7 @@ class AndroidApp < ActiveRecord::Base
       snapshot.created_at
     end
   end
-  
+
   def get_website_urls
     websites.map{|w| w.url}
   end
@@ -88,7 +92,7 @@ class AndroidApp < ActiveRecord::Base
   def fortune_rank
     self.get_company.try(:fortune_1000_rank)
   end
-  
+
   def name
     if newest_android_app_snapshot.present?
       return newest_android_app_snapshot.name
@@ -150,11 +154,11 @@ class AndroidApp < ActiveRecord::Base
       self.ratings_all_count,
       self.downloads_human,
       hqs.map{|hq| hq[:street_number]}.join('|'),
-      hqs.map{|hq| hq[:street_name]}.join('|'),      
+      hqs.map{|hq| hq[:street_name]}.join('|'),
       hqs.map{|hq| hq[:city]}.join('|'),
       hqs.map{|hq| hq[:state]}.join('|'),
-      hqs.map{|hq| hq[:country]}.join('|'),            
-      hqs.map{|hq| hq[:postal_code]}.join('|'), 
+      hqs.map{|hq| hq[:country]}.join('|'),
+      hqs.map{|hq| hq[:postal_code]}.join('|'),
     ]
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
       row << (store.country_code == 'US' ? self.user_base : nil)
@@ -215,13 +219,13 @@ class AndroidApp < ActiveRecord::Base
     end
 
     if options[:user]
-      batch_json[:following] = options[:user].following?(self) 
+      batch_json[:following] = options[:user].following?(self)
     end
 
     if options[:account]
-      batch_json[:following] = options[:account].following?(self) 
+      batch_json[:following] = options[:account].following?(self)
     end
-    
+
     batch_json
   end
 
@@ -357,7 +361,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   class << self
-    
+
     def dedupe
       # find all models and group them on keys which should be common
       grouped = all.group_by{|model| [model.app_identifier] }
@@ -366,12 +370,12 @@ class AndroidApp < ActiveRecord::Base
         first_one = duplicates.shift # or pop for last one
         # if there are any more left, they are duplicates
         # so delete all of them
-        duplicates.each do |double| 
+        duplicates.each do |double|
           puts "double: #{double.app_identifier}"
           double.destroy # duplicates can now be destroyed
         end
       end
     end
-    
+
   end
 end

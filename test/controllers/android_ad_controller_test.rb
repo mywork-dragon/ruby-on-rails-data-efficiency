@@ -15,7 +15,7 @@ class AndroidAdControllerTest < ActionController::TestCase
     verbatum_params = {
       ad_type: 'mobile_app',
       android_device_sn: '123device',
-      ad_id: 's3://somekey',
+      ad_id: 'ads/2017-02-21/00:54:15-6971ed1f-f167-4c38-ab6f-97a79d256637',
       google_account: 'm@gmail.com',
       facebook_account: 'fb_acc',
       ad_text: 'Def install this app',
@@ -45,6 +45,7 @@ class AndroidAdControllerTest < ActionController::TestCase
 
     assert_equal 'reading|violin|coffee'.split('|'), ad.target_interests
     assert_equal @source_app, ad.source_app
+    assert_equal DateTime.new(2017, 02, 21, 00, 54, 15), ad.date_seen
     assert_equal @advertised_app, ad.advertised_app
 
   end
@@ -53,6 +54,7 @@ class AndroidAdControllerTest < ActionController::TestCase
     @request.headers['Authorization'] = @token
     verbatum_params = {
       ad_type: 'mobile_app',
+      ad_id: 'ads/2017-02-21/00:54:15-6971ed1f-f167-4c38-ab6f-97a79d256637'
     }
     post(:create, {
       source_app_identifier: 'com.facebook.katana',

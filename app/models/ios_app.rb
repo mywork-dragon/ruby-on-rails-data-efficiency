@@ -1,4 +1,5 @@
 class IosApp < ActiveRecord::Base
+  include AppAds
 
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
@@ -46,8 +47,9 @@ class IosApp < ActiveRecord::Base
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
   enum source: [:epf_weekly, :ewok, :itunes_top_200]
 
-  scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}  
+  scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}
 
+  ad_table :ios_fb_ads
   # update_index('apps#ios_app') { self } if Rails.env.production?
   
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
@@ -272,28 +274,8 @@ class IosApp < ActiveRecord::Base
     end
   end
 
-  def first_seen_ads_date 
-    ios_fb_ads.order(date_seen: :desc).last.try(:date_seen)
-  end
-
-  def first_seen_ads_days
-    if first_seen_ads_date
-      (Time.now.to_date - first_seen_ads_date.to_date).to_i
-    end
-  end
-
-  def last_seen_ads_date
-    latest_facebook_ad.try(:date_seen)
-  end
-
-  def last_seen_ads_days
-    if last_seen_ads_date
-      (Time.now.to_date - last_seen_ads_date.to_date).to_i
-    end
-  end
-
   def latest_facebook_ad
-    ios_fb_ads.order(date_seen: :desc).first
+    latest_ad
   end
 
   def international?
