@@ -208,7 +208,7 @@ angular.module('appApp')
           if (old_filter[filter_type]) {
             filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type));
           }
-        } else if (!old_filter[filter_type]) { // is sdk filter
+        } else if (old_filter[filter_type]) { // is sdk filter and has sdk selected
           filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
         }
       }
