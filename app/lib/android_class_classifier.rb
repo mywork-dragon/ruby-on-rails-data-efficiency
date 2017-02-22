@@ -11,9 +11,22 @@ class AndroidClassClassifier
     end
   end
   def initialize(model_file = "db/android_class_model/model.json")
-    model_file = File.join(Rails.root, model_file)
-    # model_file is a gzipped json file.
-    m = JSON.parse(File::open(model_file).read())
+
+    if model_file.start_with?('s3')
+      bucket = model_file.split("//")[1].split('/')[0]
+      key = model_file.split('//')[1].split('/')[1..-1].join('')
+      client = MightyAws::S3.new
+      content = client.retrieve(
+        bucket: bucket,
+        key_path: key
+      )
+    else
+      model_file = File.join(Rails.root, model_file)
+      content = File::open(model_file).read()
+    end
+
+    # model_file is a json file.
+    m = JSON.parse(content)
     @class_to_sdks = m['class_to_sdks']
     @sdk_to_website = m['sdk_to_website']
   end
