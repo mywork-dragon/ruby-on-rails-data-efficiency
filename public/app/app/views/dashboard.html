@@ -218,11 +218,11 @@
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('downloads_min', 'asc') "
-                                    data-ng-class="{active: rowSort == 'downloads'}"></span>
+                                    data-ng-click="searchCtrl.sortApps('downloads_max', 'asc') "
+                                    data-ng-class="{active: rowSort == 'downloads_max'}"></span>
                               <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('downloads_min', 'desc') "
-                                    data-ng-class="{active: rowSort == '-downloads'}"></span>
+                                    data-ng-click=" searchCtrl.sortApps('downloads_max', 'desc') "
+                                    data-ng-class="{active: rowSort == '-downloads_max'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Category
