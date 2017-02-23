@@ -8,20 +8,20 @@ class FbAccountControllerTest < ActionController::TestCase
   end
 
   def test_bad_request_for_invalid_purposes
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       assert_equal 400, put(:reserve).status
       assert_equal 400, put(:reserve, { purpose: :hello }).status
     end
   end
 
   def test_unavailable
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       assert_equal 404, put(:reserve, { purpose: :mau_scrape }).status
     end
   end
 
   def test_available
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       res = put(:reserve, { purpose: :ios_ad_spend })
       assert_equal 200, res.status
 
@@ -33,21 +33,21 @@ class FbAccountControllerTest < ActionController::TestCase
   end
 
   def test_release_invalid_request
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       assert_equal 400, put(:release).status
       assert_equal 400, put(:release, { id: 'not a real number' }).status
     end
   end
 
   def test_invalid_id
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       assert_equal 404, put(:release, { id: -123123 }).status
       assert_equal 404, put(:release, { id: 567 }).status
     end
   end
 
   def test_release_success
-    @controller.stub :authenticate_admin, nil do
+    @controller.stub :authenticate_admin_account, nil do
       assert_equal 200, put(:release, { id: 2 }).status
 
       res = put(:reserve, { purpose: :mau_scrape })
