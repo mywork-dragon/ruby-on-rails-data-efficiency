@@ -451,6 +451,18 @@ angular.module('appApp')
               };
               slacktivity.notifySlack(slacktivityData);
             }
+
+            if(searchQueryPairs['userbaseFiltersAnd'] || searchQueryPairs['userbaseFiltersOr']) {
+              var slacktivityData = {
+                "title": "MAU/Userbase Filter Query",
+                "fallback": "MAU/Userbase Filter Query",
+                "color": "#FFD94D", // yellow
+                "userbaseFiltersAnd": JSON.stringify(searchQueryPairs['userbaseFiltersAnd']),
+                "userbaseFiltersOr": JSON.stringify(searchQueryPairs['userbaseFiltersOr']),
+                "numOfApps": data.resultsCount
+              };
+              slacktivity.notifySlack(slacktivityData);
+            }
             /* -------- Slacktivity Alerts End -------- */
           })
           .error(function(data, status) {

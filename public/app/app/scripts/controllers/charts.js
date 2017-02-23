@@ -94,36 +94,46 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
     }
 
     switch ($route.current.action) {
+      var title;
       case "charts.top-ios-apps":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadTopApps('ios')
         pageTitleService.setTitle('MightySignal - iTunes Top 200 Apps');
-        mixpanel.track("Top iOS Apps Viewed");
+        title = "Top iOS Apps Viewed"
         break;
       case "charts.top-android-apps":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadTopApps('android')
         pageTitleService.setTitle('MightySignal - Google Play Top 200 Apps');
-        mixpanel.track("Top Android Apps Viewed");
+        title = "Top Android Apps Viewed"
         break;
       case "charts.ios-sdks":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadSdks('ios')
         pageTitleService.setTitle('MightySignal - iOS SDKs');
-        mixpanel.track("iOS SDKs Viewed");
+        title = "iOS SDKs Viewed"
         break;
       case "charts.android-sdks":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadSdks('android')
         pageTitleService.setTitle('MightySignal - Android SDKs');
-        mixpanel.track("Android SDKs Viewed");
+        title = "Android SDKs Viewed"
         break;
       case "charts.ios-engagement":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadIosEngagement();
         pageTitleService.setTitle('MightySignal - iOS Apps by Active Users');
-        mixpanel.track("iOS Apps by Active Users Viewed");
+        title = "iOS Apps by Active Users Viewed"
         break;
+
+      var slacktivityData = {
+        "title": title,
+        "fallback": title,
+        "color": "#FFD94D"
+      };
+      slacktivity.notifySlack(slacktivityData);
+
+      mixpanel.track(title)
     }
 
   }
