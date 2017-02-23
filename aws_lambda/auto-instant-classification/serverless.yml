@@ -28,4 +28,4 @@ provider:
 
 functions:
   redeploy:
-    handler: handler.hello
+    handler: handler.redeploy

@@ -2,7 +2,7 @@ class SdkService
 
 	QUERY_MINIMUM_LENGTH = 4
 	DICE_SIMILARITY_THRESHOLD = 0.9
-	ANDROID_CLASS_CLASSIFIER = AndroidClassClassifier.new()
+	ANDROID_CLASS_CLASSIFIER = AndroidClassClassifier.new('s3://ms-classification-models/latest.json.gz')
 
 	class << self
 
