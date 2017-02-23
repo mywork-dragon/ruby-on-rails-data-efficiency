@@ -92,9 +92,9 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
         }
       );
     }
-
+    var title;
+    
     switch ($route.current.action) {
-      var title;
       case "charts.top-ios-apps":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadTopApps('ios')
@@ -125,16 +125,16 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
         pageTitleService.setTitle('MightySignal - iOS Apps by Active Users');
         title = "iOS Apps by Active Users Viewed"
         break;
-
-      var slacktivityData = {
-        "title": title,
-        "fallback": title,
-        "color": "#FFD94D"
-      };
-      slacktivity.notifySlack(slacktivityData);
-
-      mixpanel.track(title)
     }
+
+    var slacktivityData = {
+      "title": title,
+      "fallback": title,
+      "color": "#FFD94D"
+    };
+    slacktivity.notifySlack(slacktivityData);
+
+    mixpanel.track(title)
 
   }
 ]);
