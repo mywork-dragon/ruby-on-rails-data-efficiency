@@ -45,3 +45,5 @@ db.patch
 
 # allow secrets to be added to override
 docker-compose.override.yml
+
+*.serverless

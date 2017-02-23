@@ -14,6 +14,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 * Add this to your bash profile eg ~/.bashrc `$(aws ecr get-login --region us-east-1)`.
 * Clone the repository
 * Download Docker version >= 1.12.3. Check after installing:
+* Install serverless if you plan to work on the lambda tasks. https://serverless.com/framework/docs/providers/aws/guide/installation/
 
   ```bash
   $ docker -v
@@ -66,9 +67,9 @@ There are two deployment methods, ECS or Capistrano.
 Current ECS deployment types:
 * web - Customer-facing UI
 * staging - development UI environment
-
+* all backend services which do not run on the Mac Minis (run `mightydeploy -h` for a list)
 Current Capistrano deployments
-* everything else
+* Only those services which run on the Mac Minis.
 
 ### ECS deployment
 

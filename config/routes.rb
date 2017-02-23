@@ -172,4 +172,5 @@ Rails.application.routes.draw do
   put 'fb_account/release' => 'fb_account#release'
 
   put 'android_ad' => 'android_ad#create'
+  post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
 end
