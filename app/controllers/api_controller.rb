@@ -912,12 +912,12 @@ class ApiController < ApplicationController
     if platform == 'android'
       sdk_companies = AndroidSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
-        results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon}
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.get_favicon, platform: 'Android'}
       end
     elsif platform == 'ios'
       sdk_companies = IosSdk.display_sdks.where("name LIKE ?", "#{query}%").where(flagged: false)
       sdk_companies.each do |sdk|
-        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon}
+        results << {id: sdk.id, name: sdk.name, favicon: sdk.favicon, platform: 'iOS'}
       end
     end
 

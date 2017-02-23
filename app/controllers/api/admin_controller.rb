@@ -3,7 +3,7 @@ class Api::AdminController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_admin
-  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account]
+  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts]
 
   def index
     accounts = if @current_user.account.is_admin_account?
@@ -41,11 +41,43 @@ class Api::AdminController < ApplicationController
     end
   end
 
+  def resend_invite
+    if params[:user_id]
+      EmailWorker.perform_async(:invite_user, params[:user_id])
+      render json: {success: true}
+    else
+      render json: { errors: "Could not resend invite" }, status: 400
+    end
+  end
+
+  def unlink_accounts
+    if params[:user_id]
+      user = User.find(params[:user_id])
+      user.update_attributes(
+        google_uid: nil,
+        google_token: nil,
+        linkedin_token: nil,
+        linkedin_uid: nil,
+        profile_url: nil
+      )
+      render json: {user: user}
+    else
+      render json: { errors: "Could not unlink accounts" }, status: 400
+    end
+  end
+
   def follow_sdks
     user_ids = params[:user_ids]
     account_ids = params[:account_ids]
-    sdk_ids = params[:sdk_ids]
-    sdks = IosSdk.where(id: sdk_ids)
+    sdks = params[:sdks]
+    sdks.map! {|sdk|
+      case sdk["platform"]
+      when 'iOS'
+        IosSdk.find(sdk["id"])
+      when 'Android'
+        AndroidSdk.find(sdk["id"])
+      end
+    }
 
     sdks.each do |sdk|
       User.where(id: user_ids).each do |user|

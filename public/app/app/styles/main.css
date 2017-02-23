@@ -1309,7 +1309,7 @@ input.input-dark:focus {
 .ui-select {
   position: relative;
   display: inline-block;
-  padding: 3px 3px 3px 0;
+  padding: 4px 3px 3px 0;
   margin: 5px 0 10px 5px;
   width: auto;
   height: auto;
@@ -8228,7 +8228,12 @@ button.dropdown-toggle .caret {
   background: none;
 }
 
-.adminPageRow strong {
+.adminPageRow .ui-select {
+  margin: 0;
+}
+
+.adminPageRow .resend-btn {
+  margin-top: 10px;
 }
 
 .adminPageRow ul.activity, .adminPageRow ul.activity li {

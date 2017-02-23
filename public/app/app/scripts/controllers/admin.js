@@ -3,12 +3,14 @@
 angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
   function($scope, $rootScope, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
 
+    var adminCtrl = this
     $scope.initialPageLoadComplete = false;
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
     $scope.user = {};
     $scope.account = {};
     $scope.sdks = [];
     $scope.sdkFollowers = [];
+    adminCtrl.sdkPlatform = 'ios'
 
     $scope.range = function(n) {
       var arr = []
@@ -17,6 +19,32 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
       }
       return arr;
     };
+
+    $scope.resendInvite = function(user) {
+      return $http({
+        method: 'POST',
+        url: API_URI_BASE + 'api/admin/resend_invite',
+        data: {user_id: user.id}
+      }).success(function(data) { 
+        alert("Done!")
+      }).error(function(data) {
+        alert(data.errors)
+      })
+    }
+
+    $scope.unlinkAccounts = function($accountIndex, $userIndex) {
+      var user = $scope.accounts[$accountIndex].users[$userIndex]
+      return $http({
+        method: 'POST',
+        url: API_URI_BASE + 'api/admin/unlink_accounts',
+        data: {user_id: user.id}
+      }).success(function(data) { 
+        alert("Done!")
+        $scope.accounts[$accountIndex].users[$userIndex] = data.user
+      }).error(function(data) {
+        alert(data.errors)
+      })
+    }
 
     $scope.load = function() {
       return $http({
@@ -36,7 +64,8 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
     
     $scope.load();
 
-    $scope.loadUsers = function(account) {
+    $scope.loadUsers = function($index) {
+      var account = $scope.accounts[$index]
       account.isLoading = true;
       return $http({
         method: 'GET',
@@ -50,7 +79,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
     }
 
     $scope.sdkAutocompleteUrl = function() {
-      return API_URI_BASE + "api/sdk/autocomplete?platform=ios&query="
+      return API_URI_BASE + 'api/sdk/autocomplete?platform=' + adminCtrl.sdkPlatform + '&query='
     }
 
     $scope.checkedSdkFollower = function(follower) {
@@ -62,7 +91,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
       }
     }
 
-    $scope.selectedSdk = function ($item) {  
+    $scope.selectedSdk = function ($item) { 
       var index = $scope.sdks.indexOf($item.originalObject)
       if (index < 0) {
         $scope.sdks.push($item.originalObject)
@@ -89,7 +118,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
       return $http({
         method: 'POST',
         url: API_URI_BASE + 'api/admin/follow_sdks',
-        data: {user_ids: userIds, sdk_ids: sdkIds, account_ids: accountIds}
+        data: {user_ids: userIds, sdks: $scope.sdks, account_ids: accountIds}
       }).success(function(data) { 
         $scope.sdks = []
         $scope.sdkFollowers = []
