@@ -38,11 +38,13 @@ def slack_msg(text, channel, username):
     f.read()
 
 def send_reclassify_msg_to_varys():
-  end_point = 'https://mightysignal.com/jobs/android/reclassify'
-  token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4NzIsInJlZnJlc2hfdG9rZW4iOiIiLCJleHAiOiIyMDI3LTAyLTE1VDE4OjI0OjM5LjU3NS0wODowMCJ9.2hWgR3rKckiM6iHJBIB0Lll2IbaV2Z_LIj8zCgdDBM0'
-  headers = {'Authorization': token}
-  r = requests.post(end_point, data=ad, headers=headers)
-  return r.status_code
+    end_point = 'https://mightysignal.com/jobs/android/reclassify'
+    token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4NzIsInJlZnJlc2hfdG9rZW4iOiIiLCJleHAiOiIyMDI3LTAyLTE1VDE4OjI0OjM5LjU3NS0wODowMCJ9.2hWgR3rKckiM6iHJBIB0Lll2IbaV2Z_LIj8zCgdDBM0'
+
+    q = Request(end_point, '', {'Authorization': token})
+    f = urllib2.urlopen(q)
+
+    return f.read()
 
 def redeploy(event, context):
     channel = '#jobs'
