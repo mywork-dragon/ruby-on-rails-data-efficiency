@@ -46,11 +46,28 @@ def convert_fb_number(num_str):
     return number
   return number
 
+def find_number_of_likes_and_shares(ad_info, ad_text):
+  likes = None
+  shares = None
+  # Find num of likes & shares
+  last = None
+  for word in ad_text:
+    if word.lower() in ["like", 'likes']:
+      likes = convert_fb_number(last)
+    if word.lower() in ["shares"]:
+      likes = convert_fb_number(last)
+    last = word
+
+  if likes is not None:
+    ad_info['number_of_likes'] = likes
+  if shares is not None:
+    ad_info['number_of_shares'] = shares
+
 def extract_fb_ad_text(ad_xml):
   tree = ET.fromstring(ad_xml)
   ad_text = []
-  likes = None
-  shares = None
+  ad_info = {}
+
   def visit_node(e):
       if e.attrib.get('text', False):
           ad_text.append(e.attrib['text'].encode('utf8').replace('\xc2\xa0', ' ').strip())
@@ -60,6 +77,8 @@ def extract_fb_ad_text(ad_xml):
 
   removable_suffixes = ['Like', 'Comment', 'Share']
   # Remove trailing numbers
+
+  find_number_of_likes_and_shares(ad_info, ad_text)
 
   for removable in remove_preceeding:
     if removable in ad_text:
@@ -76,21 +95,7 @@ def extract_fb_ad_text(ad_xml):
   if end_index is not None:
     ad_text = ad_text[:end_index]
 
-  # Find num of likes & shares
-  last = None
-  for word in ad_text:
-    if word.lower() in ["like", 'likes']:
-      likes = convert_fb_number(last)
-    if word.lower() in ["shares"]:
-      likes = convert_fb_number(last)
-    last = word
-
-  ad_info = {'ad_text': " ".join(ad_text)}
-
-  if likes is not None:
-    ad_info['number_of_likes'] = likes
-  if shares is not None:
-    ad_info['number_of_shares'] = shares
+  ad_info['ad_text'] = " ".join(ad_text)
 
   return ad_info
 
