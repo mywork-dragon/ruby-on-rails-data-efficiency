@@ -50,6 +50,7 @@ def extract_fb_ad_text(ad_xml):
   tree = ET.fromstring(ad_xml)
   ad_text = []
   likes = None
+  shares = None
   def visit_node(e):
       if e.attrib.get('text', False):
           ad_text.append(e.attrib['text'].encode('utf8').replace('\xc2\xa0', ' ').strip())
@@ -75,10 +76,12 @@ def extract_fb_ad_text(ad_xml):
   if end_index is not None:
     ad_text = ad_text[:end_index]
 
-  # Find num of likes
+  # Find num of likes & shares
   last = None
   for word in ad_text:
-    if word == "Like":
+    if word.lower() in ["like", 'likes']:
+      likes = convert_fb_number(last)
+    if word.lower() in ["shares"]:
       likes = convert_fb_number(last)
     last = word
 
@@ -86,6 +89,9 @@ def extract_fb_ad_text(ad_xml):
 
   if likes is not None:
     ad_info['number_of_likes'] = likes
+  if shares is not None:
+    ad_info['number_of_shares'] = shares
+
   return ad_info
 
 def extract_fb_targeting_info(targeting_xml):
@@ -255,7 +261,12 @@ def process_fb_add(ad_id, loc='local', store=True):
 
   if store:
     send_fb_ad_to_varys(ad)
+    send_fb_ad_to_s3(ad)
   return ad
+
+def send_fb_ad_to_s3(ad):
+  bucket = boto3.resource('s3').Bucket(s3_source_bucket)
+  bucket.Object('{}/{}'.format(ad['ad_id'], 'processed_ad.json')).put(Body=json.dumps(ad))
 
 def send_fb_ad_to_varys(ad):
   print "Sending ad {} to varys".format(ad['ad_id'])
