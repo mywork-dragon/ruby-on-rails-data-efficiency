@@ -46,22 +46,23 @@ def convert_fb_number(num_str):
     return number
   return number
 
-def find_number_of_likes_and_shares(ad_info, ad_text):
-  likes = None
-  shares = None
-  # Find num of likes & shares
-  last = None
-  for word in ad_text:
-    if word.lower() in ["like", 'likes']:
-      likes = convert_fb_number(last)
-    if word.lower() in ["shares"]:
-      likes = convert_fb_number(last)
-    last = word
+def extract_social_info(ad_text):
+  out = {}
+  text = " ".join(ad_text).lower()
+  #Over 177 million people use this
+  match = re.search(' ([0-9,k]*( million)?) people use this', text)
+  if match:
+    out['number_of_people_that_use'] = convert_fb_number(match.group(1))
 
-  if likes is not None:
-    ad_info['number_of_likes'] = likes
-  if shares is not None:
-    ad_info['number_of_shares'] = shares
+  match = re.search(' ([0-9,k]*) likes?', text)
+  if match:
+    out['number_of_likes'] = convert_fb_number(match.group(1))
+
+  match = re.search(' ([0-9,k]*) shares?', text)
+  if match:
+    out['number_of_shares'] = convert_fb_number(match.group(1))
+
+  return out
 
 def extract_fb_ad_text(ad_xml):
   tree = ET.fromstring(ad_xml)
@@ -77,8 +78,7 @@ def extract_fb_ad_text(ad_xml):
 
   removable_suffixes = ['Like', 'Comment', 'Share']
   # Remove trailing numbers
-
-  find_number_of_likes_and_shares(ad_info, ad_text)
+  ad_info.update(extract_social_info(ad_text))
 
   for removable in remove_preceeding:
     if removable in ad_text:
@@ -119,21 +119,6 @@ def extract_fb_targeting_info(targeting_xml):
     if match:
       info[name] = match.group(1).strip()
   return info
-
-def transform_ad_text_extract(info):
-  out = {}
-  for line in info['ad_text']:
-    #Over 177 million people use this
-    match = re.search('([0-9,k]*( million)?) people use this', line)
-    if match:
-      out['number_of_people_that_use'] = convert_fb_number(match.group(1))
-
-    match = re.search('([0-9,k]*) likes', line)
-    if match:
-      out['number_of_likes'] = convert_fb_number(match.group(1))
-
-
-  return out
 
 def transform_targeting_info(info):
   def age_min(x):
@@ -258,7 +243,6 @@ def process_fb_add(ad_id, loc='local', store=True):
   ad_text_extract = extract_fb_ad_text(ad_file)
 
   ad.update(ad_text_extract)
-  ad.update(transform_ad_text_extract(ad_text_extract))
 
   targeting_extract = extract_fb_targeting_info(get_ad_file(ad_id, 'targeting.xml', loc))
   for target, value in transform_targeting_info(targeting_extract).iteritems():
