@@ -16,14 +16,12 @@ def list_running_task_arns(cluster, service):
     return response['taskArns']
 
 def kill_tasks(cluster, service, reason, delay):
-    print "kill called with delay", delay
     for task in list_running_task_arns(cluster, service):
         response = client.stop_task(
             cluster=cluster,
             task=task,
             reason=reason
         )
-        print "sleep", delay
         time.sleep(delay)
 
 def slack_msg(text, channel, username):
