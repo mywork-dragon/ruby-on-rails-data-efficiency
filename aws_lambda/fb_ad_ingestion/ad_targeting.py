@@ -236,7 +236,7 @@ def process_fb_add(ad_id, loc='local', store=True):
 
   pkg = get_ad_file(ad_id, 'package', loc)
   if not pkg or pkg == 'com.facebook.orca':
-    print "Skipping as it's not a mobile app ad."
+    print "Skipping ad {} as it's not a mobile app ad.".format(ad_id)
     return
 
   pull_in_text_field(ad, ad_id, loc, 'fb_account', 'facebook_account')
@@ -258,22 +258,23 @@ def process_fb_add(ad_id, loc='local', store=True):
   return ad
 
 def send_fb_ad_to_varys(ad):
-  print "Sending ad to varys"
+  print "Sending ad {} to varys".format(ad['ad_id'])
   end_point = 'https://mightysignal.com/android_ad'
   token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo4NzIsInJlZnJlc2hfdG9rZW4iOiIiLCJleHAiOiIyMDI3LTAyLTE1VDE4OjI0OjM5LjU3NS0wODowMCJ9.2hWgR3rKckiM6iHJBIB0Lll2IbaV2Z_LIj8zCgdDBM0'
   headers = {'Authorization': token}
   r = requests.put(end_point, data=ad, headers=headers)
-  print "reponse code", r.status_code
+  if r.status_code == 200:
+    print "Varys processed ad {}.".format(ad['ad_id'])
+  else:
+    print "Varys failed to process ad {}.".format(ad['ad_id'])
 
 def handle_s3_event(event, context):
     key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key']).encode('utf8')
-    print "got s3 event for key {}".format(key)
-
     key_parts = key.split('/')
 
     if key_parts[-1] in ['package', 'ad.xml', 'targeting.xml']:
       ad_id = '/'.join(key_parts[:-1])
-      print "processing ad {}".format(ad_id)
+      print "Processing ad {}".format(ad_id)
       process_fb_add(ad_id, loc='s3')
 
 
