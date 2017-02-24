@@ -209,11 +209,11 @@
             <th class="resultsTableAppUserbase" ng-if="appPlatform.platform == 'ios'"><div class="th normal-right-padding">
               MAU / WAU / DAU
               <span class="glyphicon glyphicon-chevron-up"
-                    data-ng-click="searchCtrl.sortApps('monthly_active_users_rank', 'desc') "
-                    data-ng-class="{active: rowSort == '-monthly_active_users_rank'}"></span>
+                    data-ng-click="searchCtrl.sortApps('monthly_active_users_num', 'asc') "
+                    data-ng-class="{active: rowSort == 'monthly_active_users_num'}"></span>
               <span class="glyphicon glyphicon-chevron-down"
-                    data-ng-click=" searchCtrl.sortApps('monthly_active_users_rank', 'asc') "
-                    data-ng-class="{active: rowSort == 'monthly_active_users_rank'}"></span>
+                    data-ng-click=" searchCtrl.sortApps('monthly_active_users_num', 'desc') "
+                    data-ng-class="{active: rowSort == '-monthly_active_users_num'}"></span>
             </div></th>
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads

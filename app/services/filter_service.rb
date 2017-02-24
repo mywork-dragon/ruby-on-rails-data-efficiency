@@ -79,9 +79,6 @@ class FilterService
 
     def filter_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc', platform: 'ios')
       apps_index = platform == 'ios' ? AppsIndex::IosApp : AppsIndex::AndroidApp
-      if ['daily_active_users_rank', 'monthly_active_users_rank', 'weekly_active_users_rank', 'weekly_active_users_num'].include?(sort_by)
-        apps_index = apps_index.filter({"range" => {sort_by => {'gt' => 0}}})
-      end
 
       ['sdkFiltersOr', 'sdkFiltersAnd'].each do |filter_type|
         next unless app_filters[filter_type].present?
