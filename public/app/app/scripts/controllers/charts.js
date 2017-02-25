@@ -5,8 +5,8 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
 
     var chartsCtrl = this;
     $scope.order = 'desc';
-    $scope.category = 'monthly_active_users_rank'
-    $scope.rowSort = 'monthly_active_users_rank'
+    $scope.category = 'monthly_active_users_num'
+    $scope.rowSort = '-monthly_active_users_num'
 
     // Sets user permissions
     authService.permissions()
@@ -37,8 +37,8 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
     };
 
     chartsCtrl.loadIosEngagement = function(category, order) {
-      $scope.category = category || 'monthly_active_users_rank'
-      $scope.order = order || 'asc'
+      $scope.category = category || 'monthly_active_users_num'
+      $scope.order = order || 'desc'
       $scope.isLoading = true
 
       return $http({
