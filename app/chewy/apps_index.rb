@@ -94,7 +94,9 @@ class AppsIndex < Chewy::Index
     
     field :id
     field :app_identifier, index: 'not_analyzed'
-    field :name, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'name') }
+    field :name, type: 'string', value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'name') } do
+      field :raw, index: 'not_analyzed'
+    end
     field :seller_url, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_url') }
     field :seller, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_name') }
     field :user_base, index: 'not_analyzed'
@@ -149,7 +151,9 @@ class AppsIndex < Chewy::Index
     field :app_stores_count, type: 'integer', value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'app_stores').try(:size) }
     field :publisher_id, value: -> (ios_app){ios_app.ios_developer.try(:id)}
     field :publisher_identifier, value: -> (ios_app){ios_app.ios_developer.try(:identifier)}, index: 'not_analyzed'
-    field :publisher_name, value: -> (ios_app){ios_app.ios_developer.try(:name)}
+    field :publisher_name, type: 'string', value: -> (ios_app){ios_app.ios_developer.try(:name)} do
+      field :raw, index: 'not_analyzed'
+    end
     field :publisher_websites, value: -> (ios_app){ios_app.ios_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do
@@ -223,7 +227,9 @@ class AppsIndex < Chewy::Index
 
     field :id
     field :app_identifier, index: 'not_analyzed'
-    field :name, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:name) || ''}
+    field :name, type: 'string', value: ->(android_app) {android_app.newest_android_app_snapshot.try(:name) || ''} do
+      field :raw, index: 'not_analyzed'
+    end
     field :seller_url, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller_url) || ''}
     field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
     field :user_base, index: 'not_analyzed'
@@ -258,7 +264,9 @@ class AppsIndex < Chewy::Index
     end
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
     field :publisher_identifier, value: -> (android_app){android_app.android_developer.try(:identifier)}, index: 'not_analyzed'
-    field :publisher_name, value: -> (android_app){android_app.android_developer.try(:name)}
+    field :publisher_name, type: 'string', value: -> (android_app){android_app.android_developer.try(:name)} do
+      field :raw, index: 'not_analyzed'
+    end
     field :publisher_websites, value: -> (android_app){android_app.android_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do
