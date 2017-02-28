@@ -91,36 +91,34 @@ class ClearbitContact < ActiveRecord::Base
   end
 
   def self.get_contact_email(person_id)
-    # Clearbit is overlimit. Using our own service for the moment.
-    # get = HTTParty.get("https://prospector.clearbit.com/v1/people/#{person_id}/email", headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'})
-    # email = JSON.load(get.response.body).try(:[], "email") || "No Email"
-    # if ClearbitContact.where(clearbit_id: person_id).any?
-    #   contacts = ClearbitContact.where(clearbit_id: person_id)
-    #   contacts.update_all(email: email) if email
-    # end
-    # email
 
-    # email = JSON.load(get.response.body).try(:[], "email") || "No Email"
-    # if ClearbitContact.where(clearbit_id: person_id).any?
-    #   contacts = ClearbitContact.where(clearbit_id: person_id)
-    #   contacts.update_all(email: email) if email
-    # end
-
-    contact = ClearbitContact.where(clearbit_id: person_id).first
-    if contact.domain_datum.present?
-      domain = contact.domain_datum.domain
+    if ServiceStatus.is_active?(:clearbit_contact_service)
+      get = HTTParty.get("https://prospector.clearbit.com/v1/people/#{person_id}/email", headers: {'Authorization' => 'Bearer 229daf10e05c493613aa2159649d03b4'})
+      email = JSON.load(get.response.body).try(:[], "email") || "No Email"
+      if ClearbitContact.where(clearbit_id: person_id).any?
+        contacts = ClearbitContact.where(clearbit_id: person_id)
+        contacts.update_all(email: email) if email
+      end
+      email
     else
-      domain = URI.parse(contact.website.url).host.downcase
+      # Use MightyBit - our own clearbit alternative.
+      contact = ClearbitContact.where(clearbit_id: person_id).first
+      if contact.domain_datum.present?
+        domain = contact.domain_datum.domain
+      else
+        domain = URI.parse(contact.website.url).host.downcase
+      end
+      token = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
+      full_name = URI.encode(contact.full_name)
+      resp = JSON.load(HTTParty.get("http://mightybitweb-384573877.us-east-1.elb.amazonaws.com/v1/email?name=#{full_name}&domain=#{domain}&token=#{token}"))
+      if resp['status'] == 'success'
+        return resp['email']
+      end
+      resp['domain'] = domain
+      Rails.logger.info(resp)
+      "No Email"
     end
-    token = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
-    full_name = URI.encode(contact.full_name)
-    resp = JSON.load(HTTParty.get("http://mightybitweb-384573877.us-east-1.elb.amazonaws.com/v1/email?name=#{full_name}&domain=#{domain}&token=#{token}"))
-    if resp['status'] == 'success'
-      return resp['email']
-    end
-    resp['domain'] = domain
-    Rails.logger.info(resp)
-    "No Email"
+
   end
 
   def as_json(options={})

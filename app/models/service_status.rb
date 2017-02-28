@@ -8,13 +8,14 @@ class ServiceStatus < ActiveRecord::Base
     :auto_ios_mass_scan,
     :auto_ios_us_scrape,
     :auto_ios_intl_scrape,
-    :ios_auto_sdk_creation
+    :ios_auto_sdk_creation,
+    :clearbit_contact_service
   ]
 
   class << self
     def is_active?(service)
       row = self.find_by_service(get_info(service))
-      row.active
+      row ? row.active : false
     end
 
     def disable(service)
@@ -24,6 +25,9 @@ class ServiceStatus < ActiveRecord::Base
 
     def enable(service)
       row = self.find_by_service(get_info(service))
+      if row.nil?
+        row = ServiceStatus.create(:service => service)
+      end
       row.update!(active: true)
     end
 
@@ -33,8 +37,6 @@ class ServiceStatus < ActiveRecord::Base
       raise "#{service} is not a registered service" if service_id.nil?
 
       result = self.find_by_service(service_id)
-
-      raise "#{service} does not have an entry in the table" if result.nil?
 
       service_id
     end
