@@ -5,6 +5,10 @@ class AppsIndex < Chewy::Index
       title: {
         tokenizer: 'standard',
         filter: ['lowercase', 'asciifolding']
+      }, 
+      lowercase: {
+        tokenizer: 'keyword',
+        filter: ['lowercase']
       }
     }
   }
@@ -95,7 +99,7 @@ class AppsIndex < Chewy::Index
     field :id
     field :app_identifier, index: 'not_analyzed'
     field :name, type: 'string', value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'name') } do
-      field :raw, index: 'not_analyzed'
+      field :lowercase, analyzer: 'lowercase'
     end
     field :seller_url, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_url') }
     field :seller, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_name') }
@@ -152,7 +156,7 @@ class AppsIndex < Chewy::Index
     field :publisher_id, value: -> (ios_app){ios_app.ios_developer.try(:id)}
     field :publisher_identifier, value: -> (ios_app){ios_app.ios_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, type: 'string', value: -> (ios_app){ios_app.ios_developer.try(:name)} do
-      field :raw, index: 'not_analyzed'
+      field :lowercase, analyzer: 'lowercase'
     end
     field :publisher_websites, value: -> (ios_app){ios_app.ios_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
@@ -228,7 +232,7 @@ class AppsIndex < Chewy::Index
     field :id
     field :app_identifier, index: 'not_analyzed'
     field :name, type: 'string', value: ->(android_app) {android_app.newest_android_app_snapshot.try(:name) || ''} do
-      field :raw, index: 'not_analyzed'
+      field :lowercase, analyzer: 'lowercase'
     end
     field :seller_url, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller_url) || ''}
     field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
@@ -265,7 +269,7 @@ class AppsIndex < Chewy::Index
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
     field :publisher_identifier, value: -> (android_app){android_app.android_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, type: 'string', value: -> (android_app){android_app.android_developer.try(:name)} do
-      field :raw, index: 'not_analyzed'
+      field :lowercase, analyzer: 'lowercase'
     end
     field :publisher_websites, value: -> (android_app){android_app.android_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
