@@ -226,6 +226,8 @@ class AndroidApp < ActiveRecord::Base
       batch_json[:following] = options[:account].following?(self)
     end
 
+    batch_json[:rank] = self.rank if self.respond_to?(:rank)
+
     batch_json
   end
 
