@@ -23,4 +23,9 @@ class JtoolTest < ActiveSupport::TestCase
     libraries = @jtool.shared_libraries(@test_binary_path)
     assert libraries.include?('/System/Library/Frameworks/GameKit.framework/GameKit')
   end
+
+  test 'dumps classes for binary with unicode' do
+    classes = @jtool.objc_classes(File.join('test', 'data', 'invalid_byte.decrypted'))
+    assert classes.include?("****\f")
+  end
 end
