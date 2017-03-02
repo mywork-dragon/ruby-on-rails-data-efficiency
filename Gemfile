@@ -75,7 +75,7 @@ gem 'httpclient'
 gem 'countries'
 
 source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
-  gem 'sidekiq-pro', '3.0.2'
+  gem 'sidekiq-pro', '~> 3.4.1'
 end
 gem 'sidekiq-throttler', '0.5.1'
 

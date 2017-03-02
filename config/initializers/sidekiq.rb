@@ -3,6 +3,7 @@ if Rails.env.production?
   if `uname`.chomp == 'Darwin'  # Is a Mac (is Darth Vader)
 
     Sidekiq.configure_server do |config|
+      config.super_fetch!
       config.redis = { url: 'redis://localhost:6379' }
     end
 
@@ -13,6 +14,7 @@ if Rails.env.production?
   else  # Is a cloud server
 
     Sidekiq.configure_server do |config|
+      config.super_fetch!
       config.redis = { url: "redis://#{ENV['VARYS_REDIS_URL']}:#{ENV['VARYS_REDIS_PORT']}" }
       config.server_middleware do |chain|
         chain.add Sidekiq::Throttler, storage: :redis
@@ -29,6 +31,7 @@ if Rails.env.production?
 
 elsif Rails.env.development?
   Sidekiq.configure_server do |config|
+    config.super_fetch!
     config.redis = { url: "redis://#{ENV['VARYS_REDIS_URL']}:#{ENV['VARYS_REDIS_PORT']}" }
   end
 
