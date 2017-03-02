@@ -26,14 +26,14 @@
                           <span ng-if="canViewStorewideSdks">
                             <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" title="first seen in app on {{sdk['first_seen_date'] | date : shortDate}}">
+                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" uib-tooltip="{{sdk['first_seen_date'] | date : shortDate}}" title="first seen in app on {{sdk['first_seen_date'] | date : shortDate}}">
                               first seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk['first_seen_date'])}}</strong> ago
                             </span>
                           </span>
                           <span ng-if="!canViewStorewideSdks">
                             <a href="{{sdk['website']}}" ng-show="{{sdk['website']}}" target="_blank">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['website']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" title="first seen in app on {{sdk['first_seen_date'] | date : shortDate}}">
+                            <span class="sdkLiveScanInstallDate" ng-if="sdk['first_seen_date']" uib-tooltip="{{sdk['first_seen_date'] | date : shortDate}}" title="first seen in app on {{sdk['first_seen_date'] | date : shortDate}}">
                               first seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk['first_seen_date'])}}</strong> ago
                             </span>
                           </span>
@@ -57,14 +57,14 @@
                           <span ng-if="canViewStorewideSdks">
                             <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['last_seen_date']" title="last seen in app on {{sdk['last_seen_date'] | date : shortDate}}">
+                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['last_seen_date']" title="last seen in app on {{sdk['last_seen_date'] | date : shortDate}}" uib-tooltip="{{sdk['last_seen_date'] | date : shortDate}}">
                               last seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk['last_seen_date'])}}</strong> ago
                             </span>
                           </span>
                           <span ng-if="!canViewStorewideSdks">
                             <a href="{{sdk['website']}}" ng-show="{{sdk['website']}}" target="_blank">{{sdk['name']}}</a>
                             <strong ng-hide="sdk['website']">{{sdk['name']}}</strong>
-                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['last_seen_date']" title="last seen in app on {{sdk['last_seen_date'] | date : shortDate}}">
+                            <span class="sdkLiveScanUninstallDate" ng-if="sdk['last_seen_date']" title="last seen in app on {{sdk['last_seen_date'] | date : shortDate}}" uib-tooltip="{{sdk['last_seen_date'] | date : shortDate}}">
                               last seen <strong>{{iosLiveScanCtrl.calculateDaysAgo(sdk['last_seen_date'])}}</strong> ago
                             </span>
                           </span>
