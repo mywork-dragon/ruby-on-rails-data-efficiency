@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'byebug'
 
 class JtoolTest < ActiveSupport::TestCase
 
@@ -27,5 +28,11 @@ class JtoolTest < ActiveSupport::TestCase
   test 'dumps classes for binary with unicode' do
     classes = @jtool.objc_classes(File.join('test', 'data', 'invalid_byte.decrypted'))
     assert classes.include?("****\f")
+  end
+
+  test 'errors out when trying to dump something with invalid arch' do
+    assert_raises(Jtool::InvalidArch) do
+      @jtool.objc_classes(File.join('test', 'data', 'invalid_arch.decrypted'))
+    end
   end
 end

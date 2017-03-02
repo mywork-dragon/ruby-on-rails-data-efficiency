@@ -1,3 +1,4 @@
+require 'open3'
 # wrapper class around using the jtool command line utility
 # http://newosxbook.com/tools/jtool.html
 # Assumes running in a Linux environment for utilities
@@ -17,13 +18,13 @@ class Jtool
 
   def run_command(*args)
     # all binaries are using arm64 and above
-    res = `#{timeout_exec} 30s #{jtool_exec} -arch arm64 #{args.join(' ')}`
-    validate_arch!(res)
-    res
+    stdout, stderr, status = Open3.capture3("#{timeout_exec} 30s #{jtool_exec} -arch arm64 #{args.join(' ')}")
+    validate_arch!(stderr)
+    stdout
   end
 
-  def validate_arch!(res)
-    raise InvalidArch if res.include?('Requested architecture not found in file')
+  def validate_arch!(stderr)
+    raise InvalidArch if stderr.include?('Requested architecture not found in file')
   end
 
   def objc_classes(filepath)
