@@ -1,10 +1,14 @@
+# WARNING: this needs a major overhaul before running at scale again. Fine for one-off use though
+# Things to fix:
+# Account for containerization
+# Swift SDKs have changed dramatically and need a better regex
 class CocoapodDownloadWorker
 
   include Sidekiq::Worker
 
   sidekiq_options :retry => 2, queue: :scraper_master # change queue to default when doing full scrape
 
-  DUMP_PATH = Rails.env.production? ? File.join(`echo $HOME`.chomp, 'sdk_dump') : '/tmp/sdk_dump/'
+  DUMP_PATH = '/tmp'
   BACKTRACE_SIZE = 10
 
   def perform(cocoapod_id)
@@ -101,6 +105,8 @@ class CocoapodDownloadWorker
 
     puts "starting request"
 
+    filename = File.join(dump, cocoapod_id.to_s + ext)
+
     if source_code_url.include?('api.github.com')
       # do this manually because need special procedure block
       acct = GithubApi.get_credentials
@@ -108,29 +114,36 @@ class CocoapodDownloadWorker
         'client_id' => acct[:client_id],
         'client_secret' => acct[:client_secret]
       }
-      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}, params: params) do |curb|
-        curb.follow_location = true
-        curb.max_redirects = 50
-      end
     else
-      data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol => uri.scheme, :headers => headers}) do |curb|
-        curb.follow_location = true
-        curb.max_redirects = 50
+      params = {}
+    end
+
+    data = nil
+
+    File.open(filename, 'wb') do |dest_fd|
+      data = HTTParty.get(
+        uri,
+        headers: headers,
+        params: params
+      # data = open(
+      #   uri,
+      #   headers,
+      #   params: params
+      ) do |fragment|
+        dest_fd.write(fragment)
+        # IO.copy_stream(src_fd, dest_fd)
       end
     end
 
     puts "done with request"
 
     # if response failed, exit
-    if data.status < 200 || data.status >= 300
+    if data.code < 200 || data.code >= 300
       # Cocoapod.delete(cocoapod.id) if data.status == 404 && !url.blank?
-      raise "No source code found at #{source_code_url} with status code: #{data.status}"
+      raise "No source code found at #{source_code_url} with status code: #{data.code}"
     end
 
     unzipped_file = nil
-    filename = File.join(dump, cocoapod_id.to_s + ext)
-
-    File.open(filename, 'wb') { |f| f.write data.body }
 
     # different encodings
     if ext == ".tgz" || ext == ".gz" || ext == ".bz2"
@@ -147,7 +160,7 @@ class CocoapodDownloadWorker
         unzipped_file = File.join(unzipped_file, opened.first)
       end
     else
-      Zip::ZipFile.open(filename) do |zip_file|
+      Zip::File.open(filename) do |zip_file|
 
         # get root directory it extracts to. If doesn't have one, create one related to cocoapod id
         nested_sort = zip_file.entries.sort do |a, b|
@@ -258,7 +271,7 @@ class CocoapodDownloadWorker
     names = if ext == '.h'
       file.scan(/(?:@interface|@protocol)\s(\w+)[^a-zA-Z]/i).flatten.uniq
     elsif ext == '.swift'
-      file.scan(/^(?:@objc\(([\w]+)\)\s+)?public\s+(?:class|protocol|struct)\s+(\w+)[^a-zA-Z]/i).flatten.uniq
+      file.scan(/^(?:@objc(?:\(([\w]+)\))?\s+)?(?:(?:public|open)\s+)?(?:class|protocol|struct)\s+(\w+)[^a-zA-Z]/i).flatten.uniq
     else
       []
     end.compact

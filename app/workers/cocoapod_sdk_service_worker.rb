@@ -32,18 +32,19 @@ class CocoapodSdkServiceWorker
 		
 		if in_database
 			# know it's valid, just check deprecated and update stuff
-			i = IosSdk.find_by_name(sdk_name)
+			i = IosSdk.find_by_name!(sdk_name)
 
-			if check_deprecated(pod)
-				i.deprecated = true
-				i.save
-				return "SDK has been deprecated"
-			end
+      # NOTE: turn off overwrite protection
+			# if check_deprecated(pod)
+			# 	i.deprecated = true
+			# 	i.save
+			# 	return "SDK has been deprecated"
+			# end
 
 			# update info
 			row = pod_to_ios_sdk_row(pod)
 			row.keys.each { |key| i[key] = row[key] }
-			i.save
+      i.save!
 		else
 			result = validate_sdk(pod)
 			return result if result != true
@@ -61,11 +62,13 @@ class CocoapodSdkServiceWorker
 			row[:ios_sdk_id] = i.id
 
 			c = Cocoapod.create!(row)
-			if Rails.env.production?
-				CocoapodDownloadWorker.perform_async(c.id)
-			else
-				CocoapodDownloadWorker.new.perform(c.id)
-			end
+      # NOTE: temporarily doing it synchronously to allow one off requests
+      CocoapodDownloadWorker.new.perform(c.id)
+			# if Rails.env.production?
+			# 	CocoapodDownloadWorker.perform_async(c.id)
+			# else
+			# 	CocoapodDownloadWorker.new.perform(c.id)
+			# end
 		else
 			return "Latest cocoapod already exists"
 		end
@@ -91,41 +94,25 @@ class CocoapodSdkServiceWorker
 		uri = pod["http"] || pod["git"]
 		return "Does not have an available url" if uri.nil?
 
-		# TODO: go from git@... to https://www.(github|bitbucket).com/...
-		# only ~30 sdks do it and they aren't important ones
-		begin
-			uri = URI(uri)
-		rescue
-			return "URL is not valid"
-		end
-
 		# bitbucket returns a 200 even for not available repos so use their API instead (60000 per hour rate limit)
-		if uri.host.include?("bitbucket")
+		if uri.include?("bitbucket")
 			data = Proxy.get_from_url(File.join("https://api.bitbucket.org/2.0/repositories/", uri.path.gsub(/.git$/, '')))
 		else
-			data = Proxy.get(req: {:host => uri.host, :path => uri.path, :protocol=> uri.scheme}) do |curb|
-				curb.follow_location = true
-				curb.set :nobody, true
-				curb.max_redirects = 50
-			end
+      data = HTTParty.head(
+        uri,
+        follow_redirects: true
+      )
 		end
 
-		return "URL is not available" if data.status != 200
+		return "URL is not available" if data.code != 200
 
 		# only count it if it meets a minimum number of downloads
 		# Note: bitbucket downloads for whatever reason all have very diminished metrics
 		if !(pod["git"] && pod["git"].include?("bitbucket"))
-
-			uri = URI("http://metrics.cocoapods.org/api/v1/pods/#{pod['name']}.json")
-
-			data = Proxy.get_from_url("http://metrics.cocoapods.org/api/v1/pods/#{pod['name']}.json")
-
-			return "Could not get metrics on the pod" if data.status != 200
-
-			json = JSON.parse(data.body)
-
+      json = CocoapodMetricsApi.metrics(pod['name'])
 			# throws out new ones...but low bar means if they're good, they'll get picked up eventually
-			return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || below_minimum_threshold?(pod,json["stats"]["download_total"])
+      # DISABLE FOR NOW
+			# return "Does not have stats or does not have required number of downloads" if json["stats"].nil? || below_minimum_threshold?(pod,json["stats"]["download_total"])
 		end
 
 		true
@@ -210,31 +197,14 @@ class CocoapodSdkServiceWorker
 			deprecated: deprecated,
 			github_repo_identifier: github_repo_identifier,
 			source: IosSdk.sources[:cocoapods],
-			kind: :native
+      kind: IosSdk.kinds[:native]
 		}
 	end
 
 
 	def get_pod_contents(sdk_name, version = nil)
 
-		if version.nil?
-			# Get the latest version
-      versions = GithubApi.contents("Cocoapods/Specs", "Specs/#{sdk_name}")
-
-			raise "Error getting pod #{sdk_name} with response: #{JSON.generate(versions)}" if versions.class != Array # expecting directory
-
-			version = versions.sort_by { |x| x["name"] }.last["name"]
-		end
-		filename = "#{sdk_name}.podspec.json"
-    res = GithubApi.contents("Cocoapods/Specs", "Specs/#{sdk_name}/#{version}/#{filename}")
-
-		raise "Error getting pod #{sdk_name} of version #{version || "Nil"} with response: #{JSON.generate(res)}" if res.class != String
-
-		begin
-			pod = JSON.parse(res)
-		rescue => e
-			raise "Unexpected malformed pod json: #{res}"
-		end
+    pod = CocoapodSpecs.new.pod(sdk_name, version: version)
 
 		# custom properties moved to the top level
 		pod['git'] = pod['source']['git']
