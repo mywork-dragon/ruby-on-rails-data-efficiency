@@ -28,7 +28,7 @@ module GooglePlaySnapshotModule
       proxy_type: proxy_type
     )
   rescue GooglePlayStore::NotFound
-    @android_app.update!(display_type: :taken_down)
+    @android_app.update!(display_type: :taken_down, mobile_priority: :low)
     FailedLookup
   rescue GooglePlayStore::Unavailable
     @android_app.update!(display_type: :foreign)
