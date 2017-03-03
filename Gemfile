@@ -47,7 +47,7 @@ gem "recaptcha", '4.0.1', require: "recaptcha/rails"
 
 # for deployment
 group :development do
-  gem 'capistrano', '3.2.1'
+  gem 'capistrano', '3.4.0'
   gem 'capistrano-rails', '1.1.2'
   gem 'capistrano-rvm', '0.1.2'
   gem 'capistrano-sidekiq-mighty-servers', github: 'MightySignal/capistrano-sidekiq-mighty-servers', branch: 'select_queues_per_server'

@@ -1,7 +1,7 @@
 require 'sshkit/dsl'
 
 # config valid only for Capistrano 3.1
-lock '3.2.1'
+lock '3.4.0'
 
 # set :stages, %w(production scraper sdk_scraper web_api)
 set :stages, %w(scraper sdk_scraper web staging darth_vader kylo_ren darth_maul ios_live_scan monitor sdk_scraper_live_scan aviato)
