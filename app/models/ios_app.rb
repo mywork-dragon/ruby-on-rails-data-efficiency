@@ -458,6 +458,7 @@ class IosApp < ActiveRecord::Base
       newest_snapshot.try(:name),
       'IosApp',
       self.mobile_priority,
+      self.release_date,
       self.last_updated,
       self.ios_fb_ads.any?,
       newest_snapshot.try(:ios_in_app_purchases).try(:any?),

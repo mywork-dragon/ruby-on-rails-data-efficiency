@@ -140,6 +140,7 @@ class AndroidApp < ActiveRecord::Base
       newest_snapshot.try(:name),
       'AndroidApp',
       self.mobile_priority,
+      nil,
       self.last_updated,
       self.android_fb_ad_appearances.present?,
       newest_snapshot.try(:in_app_purchase_min).present?,
