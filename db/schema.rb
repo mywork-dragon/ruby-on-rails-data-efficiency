@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170221011752) do
+ActiveRecord::Schema.define(version: 20170313220055) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                    limit: 191
@@ -989,12 +989,14 @@ ActiveRecord::Schema.define(version: 20170221011752) do
     t.integer  "annual_revenue",    limit: 8
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
+    t.integer  "fortune_1000_rank", limit: 4
   end
 
   add_index "domain_data", ["annual_revenue"], name: "index_domain_data_on_annual_revenue", using: :btree
   add_index "domain_data", ["country_code"], name: "index_domain_data_on_country_code", using: :btree
   add_index "domain_data", ["domain"], name: "index_domain_data_on_domain", unique: true, using: :btree
   add_index "domain_data", ["employees"], name: "index_domain_data_on_employees", using: :btree
+  add_index "domain_data", ["fortune_1000_rank"], name: "index_domain_data_on_fortune_1000_rank", using: :btree
   add_index "domain_data", ["market_cap"], name: "index_domain_data_on_market_cap", using: :btree
   add_index "domain_data", ["raised"], name: "index_domain_data_on_raised", using: :btree
   add_index "domain_data", ["state_code", "country_code"], name: "index_domain_data_on_state_code_and_country_code", using: :btree
@@ -2540,23 +2542,23 @@ ActiveRecord::Schema.define(version: 20170221011752) do
   add_index "twitter_handles", ["handle"], name: "index_twitter_handles_on_handle", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",           limit: 191
-    t.string   "password_digest", limit: 191
+    t.string   "email",                    limit: 191
+    t.string   "password_digest",          limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "account_id",      limit: 4
-    t.boolean  "tos_accepted",                default: false
-    t.boolean  "access_revoked",              default: false
-    t.boolean  "is_admin",                    default: false
-    t.string   "google_uid",      limit: 191
-    t.string   "google_token",    limit: 191
-    t.string   "linkedin_uid",    limit: 191
-    t.string   "linkedin_token",  limit: 191
+    t.integer  "account_id",               limit: 4
+    t.boolean  "tos_accepted",                         default: false
+    t.boolean  "access_revoked",                       default: false
+    t.boolean  "is_admin",                             default: false
+    t.string   "google_uid",               limit: 191
+    t.string   "google_token",             limit: 191
+    t.string   "linkedin_uid",             limit: 191
+    t.string   "linkedin_token",           limit: 191
     t.datetime "last_active"
-    t.string   "first_name",      limit: 191
-    t.string   "last_name",       limit: 191
-    t.string   "profile_url",     limit: 191
-    t.string   "refresh_token",   limit: 191
+    t.string   "first_name",               limit: 191
+    t.string   "last_name",                limit: 191
+    t.string   "profile_url",              limit: 191
+    t.string   "refresh_token",            limit: 191
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree

@@ -1,0 +1,1001 @@
+Name,Rank,Website
+Walmart,1,http://www.walmart.com
+Exxon Mobil,2,http://www.exxonmobil.com
+Apple,3,http://www.apple.com
+Berkshire Hathaway,4,http://www.berkshirehathaway.com
+McKesson,5,http://www.mckesson.com
+UnitedHealth Group,6,http://www.unitedhealthgroup.com
+CVS Health,7,http://www.cvshealth.com
+General Motors,8,http://www.gm.com
+Ford Motor,9,http://www.ford.com
+AT&T,10,http://www.att.com
+General Electric,11,http://www.ge.com
+AmerisourceBergen,12,http://www.amerisourcebergen.com
+Verizon,13,http://www.verizon.com
+Chevron,14,http://www.chevron.com
+Costco,15,http://www.costco.com
+Fannie Mae,16,http://www.fanniemae.com
+Kroger,17,http://www.thekrogerco.com
+Amazon.com,18,http://www.amazon.com
+Walgreens Boots Alliance,19,http://www.walgreensbootsalliance.com
+HP,20,http://www.hp.com
+Cardinal Health,21,http://www.cardinalhealth.com
+Express Scripts Holding,22,http://www.express-scripts.com
+J.P. Morgan Chase,23,http://www.jpmorganchase.com
+Boeing,24,http://www.boeing.com
+Microsoft,25,http://www.microsoft.com
+Bank of America Corp.,26,http://www.bankofamerica.com
+Wells Fargo,27,http://www.wellsfargo.com
+Home Depot,28,http://www.homedepot.com
+Citigroup,29,http://www.citigroup.com
+Phillips 66,30,http://www.phillips66.com
+IBM,31,http://www.ibm.com
+Valero Energy,32,http://www.valero.com
+Anthem,33,http://www.antheminc.com
+Procter & Gamble,34,http://www.pg.com
+State Farm Insurance Cos.,35,http://www.statefarm.com
+Alphabet,36,http://www.abc.xyz
+Comcast,37,http://www.comcastcorporation.com
+Target,38,http://www.target.com
+Johnson & Johnson,39,http://www.jnj.com
+MetLife,40,http://www.metlife.com
+Archer Daniels Midland,41,http://www.adm.com
+Marathon Petroleum,42,http://www.marathonpetroleum.com
+Freddie Mac,43,http://www.freddiemac.com
+PepsiCo,44,http://www.pepsico.com
+United Technologies,45,http://www.utc.com
+Aetna,46,http://www.aetna.com
+Lowe’s,47,http://www.lowes.com
+UPS,48,http://www.ups.com
+AIG,49,http://www.aig.com
+Prudential Financial,50,http://www.prudential.com
+Intel,51,http://www.intel.com
+Humana,52,http://www.humana.com
+Disney,53,http://www.disney.com
+Cisco Systems,54,http://www.cisco.com
+Pfizer,55,http://www.pfizer.com
+Dow Chemical,56,http://www.dow.com
+Sysco,57,http://www.sysco.com
+FedEx,58,http://www.fedex.com
+Caterpillar,59,http://www.caterpillar.com
+Lockheed Martin,60,http://www.lockheedmartin.com
+New York Life Insurance,61,http://www.newyorklife.com
+Coca-Cola,62,http://www.coca-colacompany.com
+HCA Holdings,63,http://www.hcahealthcare.com
+Ingram Micro,64,http://www.ingrammicro.com
+Energy Transfer Equity,65,http://www.energytransfer.com
+Tyson Foods,66,http://www.tysonfoods.com
+American Airlines Group,67,http://www.aa.com
+Delta Air Lines,68,http://www.delta.com
+Nationwide,69,http://www.nationwide.com
+Johnson Controls,70,http://www.johnsoncontrols.com
+Best Buy,71,http://www.bestbuy.com
+Merck,72,http://www.merck.com
+Liberty Mutual Insurance Group,73,http://www.libertymutual.com
+Goldman Sachs Group,74,http://www.gs.com
+Honeywell International,75,http://www.honeywell.com
+Massachusetts Mutual Life Insurance,76,http://www.massmutual.com
+Oracle,77,http://www.oracle.com
+Morgan Stanley,78,http://www.morganstanley.com
+Cigna,79,http://www.cigna.com
+United Continental Holdings,80,http://www.unitedcontinentalholdings.com
+Allstate,81,http://www.allstate.com
+TIAA,82,http://www.tiaa.org
+INTL FCStone,83,http://www.intlfcstone.com
+CHS,84,http://www.chsinc.com
+American Express,85,http://www.americanexpress.com
+Gilead Sciences,86,http://www.gilead.com
+Publix Super Markets,87,http://www.publix.com
+General Dynamics,88,http://www.generaldynamics.com
+TJX,89,http://www.tjx.com
+ConocoPhillips,90,http://www.conocophillips.com
+Nike,91,http://www.nike.com
+World Fuel Services,92,http://www.wfscorp.com
+3M,93,http://www.3m.com
+Mondelez International,94,http://www.mondelezinternational.com
+Exelon,95,http://www.exeloncorp.com
+Twenty-First Century Fox,96,http://www.21cf.com
+Deere,97,http://www.johndeere.com
+Tesoro,98,http://www.tsocorp.com
+Time Warner,99,http://www.timewarner.com
+Northwestern Mutual,100,http://www.northwesternmutual.com
+DuPont,101,http://www.dupont.com
+Avnet,102,http://www.avnet.com
+Macy’s,103,http://www.macysinc.com
+Enterprise Products Partners,104,http://www.enterpriseproducts.com
+Travelers Cos.,105,http://www.travelers.com
+Philip Morris International,106,http://www.pmi.com
+Rite Aid,107,http://www.riteaid.com
+Tech Data,108,http://www.techdata.com
+McDonald’s,109,http://www.aboutmcdonalds.com
+Qualcomm,110,http://www.qualcomm.com
+Sears Holdings,111,http://www.searsholdings.com
+Capital One Financial,112,http://www.capitalone.com
+EMC,113,http://www.emc.com
+USAA,114,http://www.usaa.com
+Duke Energy,115,http://www.duke-energy.com
+Time Warner Cable,116,http://www.twc.com
+Halliburton,117,http://www.halliburton.com
+Northrop Grumman,118,http://www.northropgrumman.com
+Arrow Electronics,119,http://www.arrow.com
+Raytheon,120,http://www.raytheon.com
+Plains GP Holdings,121,http://www.plainsallamerican.com
+US Foods Holding,122,http://www.usfoods.com
+AbbVie,123,http://www.abbvie.com
+Centene,124,http://www.centene.com
+Community Health Systems,125,http://www.chs.net
+Arconic,126,https://www.arconic.com
+International Paper,127,http://www.internationalpaper.com
+Emerson Electric,128,http://www.emerson.com
+Union Pacific,129,http://www.up.com
+Amgen,130,http://www.amgen.com
+U.S. Bancorp,131,http://www.usbank.com
+Staples,132,http://www.staples.com
+Danaher,133,http://www.danaher.com
+Whirlpool,134,http://www.whirlpoolcorp.com
+Aflac,135,http://www.aflac.com
+AutoNation,136,http://www.autonation.com
+Progressive,137,http://www.progressive.com
+Abbott Laboratories,138,http://www.abbott.com
+Dollar General,139,http://www.dollargeneral.com
+Tenet Healthcare,140,http://www.tenethealth.com
+Eli Lilly,141,http://www.lilly.com
+Southwest Airlines,142,http://www.southwest.com
+Penske Automotive Group,143,http://www.penskeautomotive.com
+ManpowerGroup,144,http://www.manpowergroup.com
+Kohl’s,145,http://www.kohls.com
+Starbucks,146,http://www.starbucks.com
+Paccar,147,http://www.paccar.com
+Cummins,148,http://www.cummins.com
+Altria Group,149,http://www.altria.com
+Xerox,150,http://www.xerox.com
+Kimberly-Clark,151,http://www.kimberly-clark.com
+Hartford Financial Services Group,152,http://www.thehartford.com
+Kraft Heinz,153,http://www.kraftheinzcompany.com
+Lear,154,http://www.lear.com
+Fluor,155,http://www.fluor.com
+AECOM,156,http://www.aecom.com
+Facebook,157,http://www.facebook.com
+Jabil Circuit,158,http://www.jabil.com
+CenturyLink,159,http://www.centurylink.com
+Supervalu,160,http://www.supervalu.com
+General Mills,161,http://www.generalmills.com
+Southern,162,http://www.southerncompany.com
+NextEra Energy,163,http://www.nexteraenergy.com
+Thermo Fisher Scientific,164,http://www.thermofisher.com
+American Electric Power,165,http://www.aep.com
+PG&E Corp.,166,http://www.pgecorp.com
+NGL Energy Partners,167,http://www.nglenergypartners.com
+Bristol-Myers Squibb,168,http://www.bms.com
+Goodyear Tire & Rubber,169,http://www.goodyear.com
+Nucor,170,http://www.nucor.com
+PNC Financial Services Group,171,http://www.pnc.com
+Health Net,172,http://www.healthnet.com
+Micron Technology,173,http://www.micron.com
+Colgate-Palmolive,174,http://www.colgatepalmolive.com
+Freeport-McMoRan,175,http://www.fcx.com
+ConAgra Foods,176,http://www.conagrafoods.com
+Gap,177,http://www.gapinc.com
+Baker Hughes,178,http://www.bakerhughes.com
+Bank of New York Mellon Corp.,179,http://www.bnymellon.com
+Dollar Tree,180,http://www.dollartree.com
+Whole Foods Market,181,http://www.wholefoodsmarket.com
+PPG Industries,182,http://www.ppg.com
+Genuine Parts,183,http://www.genpt.com
+Icahn Enterprises,184,http://www.ielp.com
+Performance Food Group,185,http://www.pfgc.com
+Omnicom Group,186,http://www.omnicomgroup.com
+DISH Network,187,http://www.dish.com
+FirstEnergy,188,http://www.firstenergycorp.com
+Monsanto,189,http://www.monsanto.com
+AES,190,http://www.aes.com
+CarMax,191,http://www.carmax.com
+National Oilwell Varco,192,http://www.nov.com
+NRG Energy,193,http://www.nrg.com
+Western Digital,194,http://www.westerndigital.com
+Marriott International,195,http://www.marriott.com
+Office Depot,196,http://www.officedepot.com
+Nordstrom,197,http://www.nordstrom.com
+Kinder Morgan,198,http://www.kindermorgan.com
+Aramark,199,http://www.aramark.com
+DaVita,200,http://www.davita.com
+Molina Healthcare,201,http://www.molinahealthcare.com
+WellCare Health Plans,202,http://www.wellcare.com
+CBS,203,http://www.cbscorporation.com
+Visa,204,http://www.visa.com
+Lincoln National,205,http://www.lfg.com
+Ecolab,206,http://www.ecolab.com
+Kellogg,207,http://www.kelloggcompany.com
+C.H. Robinson Worldwide,208,http://www.chrobinson.com
+Textron,209,http://www.textron.com
+Loews,210,http://www.loews.com
+Illinois Tool Works,211,http://www.itw.com
+Synnex,212,http://www.synnex.com
+Viacom,213,http://www.viacom.com
+HollyFrontier,214,http://www.hollyfrontier.com
+Land O’Lakes,215,http://www.landolakesinc.com
+Devon Energy,216,http://www.devonenergy.com
+PBF Energy,217,http://www.pbfenergy.com
+Yum Brands,218,http://www.yum.com
+Texas Instruments,219,http://www.ti.com
+CDW,220,http://www.cdw.com
+Waste Management,221,http://www.wm.com
+Marsh & McLennan,222,http://www.mmc.com
+Chesapeake Energy,223,http://www.chk.com
+Parker-Hannifin,224,http://www.parker.com
+Occidental Petroleum,225,http://www.oxy.com
+Guardian Life Ins. Co. of America,226,http://www.guardianlife.com
+Farmers Insurance Exchange,227,http://www.farmers.com
+J.C. Penney,228,http://www.jcpenney.com
+Consolidated Edison,229,http://www.conedison.com
+Cognizant Technology Solutions,230,http://www.cognizant.com
+VF,231,http://www.vfc.com
+Ameriprise Financial,232,http://www.ameriprise.com
+Computer Sciences,233,http://www.csc.com
+L Brands,234,http://www.lb.com
+Jacobs Engineering Group,235,http://www.jacobs.com
+Principal Financial Group,236,http://www.principal.com
+Ross Stores,237,http://www.rossstores.com
+Bed Bath & Beyond,238,http://www.bedbathandbeyond.com
+CSX,239,http://www.csx.com
+Toys “R” Us,240,http://www.toysrusinc.com
+Las Vegas Sands,241,http://www.sands.com
+Leucadia National,242,http://www.leucadia.com
+Dominion Resources,243,http://www.dom.com
+United States Steel,244,http://www.ussteel.com
+L-3 Communications,245,http://www.l-3com.com
+Edison International,246,http://www.edisoninvestor.com
+Entergy,247,http://www.entergy.com
+ADP,248,http://www.adp.com
+First Data,249,http://www.firstdata.com
+BlackRock,250,http://www.blackrock.com
+WestRock,251,http://www.westrock.com
+Voya Financial,252,http://www.voya.com
+Sherwin-Williams,253,http://www.sherwin.com
+Hilton Worldwide Holdings,254,http://www.hiltonworldwide.com
+R.R. Donnelley & Sons,255,http://www.rrdonnelley.com
+Stanley Black & Decker,256,http://www.stanleyblackanddecker.com
+Xcel Energy,257,http://www.xcelenergy.com
+Murphy USA,258,http://corporate.murphyusa.com
+CBRE Group,259,http://www.cbre.com
+D.R. Horton,260,http://www.drhorton.com
+Estee Lauder,261,http://www.elcompanies.com
+Praxair,262,http://www.praxair.com
+Biogen,263,http://www.biogen.com
+State Street Corp.,264,http://www.statestreet.com
+Unum Group,265,http://www.unum.com
+Reynolds American,266,http://www.reynoldsamerican.com
+Group 1 Automotive,267,http://www.group1auto.com
+Henry Schein,268,http://www.henryschein.com
+Hertz Global Holdings,269,http://www.hertz.com
+Norfolk Southern,270,http://www.nscorp.com
+Reinsurance Group of America,271,http://www.rgare.com
+Public Service Enterprise Group,272,http://www.pseg.com
+BB&T Corp.,273,http://www.bbt.com
+DTE Energy,274,http://www.dteenergy.com
+Assurant,275,http://www.assurant.com
+Global Partners,276,http://www.globalp.com
+Huntsman,277,http://www.huntsman.com
+Becton Dickinson,278,http://www.bd.com
+Sempra Energy,279,http://www.sempra.com
+AutoZone,280,http://www.autozone.com
+Navistar International,281,http://www.navistar.com
+Precision Castparts,282,http://www.precast.com
+Discover Financial Services,283,http://www.discover.com
+Liberty Interactive,284,http://www.libertyinteractive.com
+W.W. Grainger,285,http://www.grainger.com
+Baxter International,286,http://www.baxter.com
+Stryker,287,http://www.stryker.com
+Air Products & Chemicals,288,http://www.airproducts.com
+Western Refining,289,http://www.wnr.com
+Universal Health Services,290,http://www.uhsinc.com
+Owens & Minor,291,http://www.owens-minor.com
+Charter Communications,292,http://www.charter.com
+Advance Auto Parts,293,http://www.advanceautoparts.com
+MasterCard,294,http://www.mastercard.com
+Applied Materials,295,http://www.appliedmaterials.com
+Eastman Chemical,296,http://www.eastman.com
+Sonic Automotive,297,http://www.sonicautomotive.com
+Ally Financial,298,http://www.ally.com
+CST Brands,299,http://www.cstbrands.com
+eBay,300,http://www.ebay.com
+Lennar,301,http://www.lennar.com
+GameStop,302,http://www.gamestopcorp.com
+Reliance Steel & Aluminum,303,http://www.rsac.com
+Hormel Foods,304,http://www.hormelfoods.com
+Celgene,305,http://www.celgene.com
+Genworth Financial,306,http://www.genworth.com
+PayPal Holdings,307,http://www.paypal.com
+Priceline Group,308,http://www.pricelinegroup.com
+MGM Resorts International,309,http://www.mgmresorts.com
+Autoliv,310,http://www.autoliv.com
+Fidelity National Financial,311,http://www.fnf.com
+Republic Services,312,http://www.republicservices.com
+Corning,313,http://www.corning.com
+Peter Kiewit Sons’,314,http://www.kiewit.com
+Univar,315,http://www.univar.com
+Mosaic,316,http://www.mosaicco.com
+Core-Mark Holding,317,http://www.core-mark.com
+Thrivent Financial for Lutherans,318,http://www.thrivent.com
+Cameron International,319,http://www.c-a-m.com
+HD Supply Holdings,320,http://www.hdsupply.com
+Crown Holdings,321,http://www.crowncork.com
+EOG Resources,322,http://www.eogresources.com
+Veritiv,323,http://www.veritivcorp.com
+Anadarko Petroleum,324,http://www.anadarko.com
+Laboratory Corp. of America,325,http://www.labcorp.com
+Pacific Life,326,http://www.pacificlife.com
+News Corp.,327,http://www.newscorp.com
+Jarden,328,http://www.newellbrands.com
+SunTrust Banks,329,http://www.suntrust.com
+Avis Budget Group,330,http://www.avisbudgetgroup.com
+Broadcom,331,http://www.broadcom.com
+American Family Insurance Group,332,http://www.amfam.com
+Level 3 Communications,333,http://www.level3.com
+Tenneco,334,http://www.tenneco.com
+United Natural Foods,335,http://www.unfi.com
+Dean Foods,336,http://www.deanfoods.com
+Campbell Soup,337,http://www.campbellsoupcompany.com
+Mohawk Industries,338,http://www.mohawkind.com
+BorgWarner,339,http://www.borgwarner.com
+PVH,340,http://www.pvh.com
+Ball,341,http://www.ball.com
+O’Reilly Automotive,342,http://www.oreillyauto.com
+Eversource Energy,343,http://www.eversource.com
+Franklin Resources,344,http://www.franklinresources.com
+Masco,345,http://www.masco.com
+Lithia Motors,346,http://www.lithiamotors.com
+KKR,347,http://www.kkr.com
+Oneok,348,http://www.oneok.com
+Newmont Mining,349,http://www.newmont.com
+PPL,350,http://www.pplweb.com
+SpartanNash,351,http://www.spartannash.com
+Quanta Services,352,http://www.quantaservices.com
+XPO Logistics,353,http://www.xpo.com
+Ralph Lauren,354,http://www.ralphlauren.com
+Interpublic Group,355,http://www.interpublic.com
+Steel Dynamics,356,http://www.steeldynamics.com
+WESCO International,357,http://www.wesco.com
+Quest Diagnostics,358,http://www.questdiagnostics.com
+Boston Scientific,359,http://www.bostonscientific.com
+AGCO,360,http://www.agcocorp.com
+Foot Locker,361,http://www.footlocker-inc.com
+Hershey,362,http://www.thehersheycompany.com
+CenterPoint Energy,363,http://www.centerpointenergy.com
+Williams,364,http://www.williams.com
+Dick’s Sporting Goods,365,http://www.dicks.com
+Live Nation Entertainment,366,http://www.livenation.com
+Mutual of Omaha Insurance,367,http://www.mutualofomaha.com
+W.R. Berkley,368,http://www.wrberkley.com
+LKQ,369,http://www.lkqcorp.com
+Avon Products,370,http://www.avoncompany.com
+Darden Restaurants,371,http://www.darden.com
+Kindred Healthcare,372,http://www.kindredhealthcare.com
+Weyerhaeuser,373,http://www.weyerhaeuser.com
+Casey’s General Stores,374,http://www.caseys.com
+Sealed Air,375,http://www.sealedair.com
+Fifth Third Bancorp,376,http://www.53.com
+Dover,377,http://www.dovercorporation.com
+Huntington Ingalls Industries,378,http://www.huntingtoningalls.com%20
+Netflix,379,http://www.netflix.com
+Dillard’s,380,http://www.dillards.com
+EMCOR Group,381,http://www.emcorgroup.com
+Jones Financial,382,http://www.edwardjones.com
+AK Steel Holding,383,http://www.aksteel.com
+UGI,384,http://www.ugicorp.com
+Expedia,385,http://www.expediainc.com
+salesforce.com,386,http://www.salesforce.com
+Targa Resources,387,http://www.targaresources.com
+Apache,388,http://www.apachecorp.com
+Spirit AeroSystems Holdings,389,http://www.spiritaero.com
+Expeditors International of Washington,390,http://www.expeditors.com
+Anixter International,391,http://www.anixter.com
+Fidelity National Information Services,392,http://www.fisglobal.com
+Asbury Automotive Group,393,http://www.asburyauto.com
+Hess,394,http://www.hess.com
+Ryder System,395,http://www.ryder.com
+Terex,396,http://www.terex.com
+Coca-Cola European Partners,397,http://www.cokecce.com
+Auto-Owners Insurance,398,http://www.auto-owners.com
+Cablevision Systems,399,http://www.cablevision.com
+Symantec,400,http://www.symantec.com
+Charles Schwab,401,http://www.aboutschwab.com
+Calpine,402,http://www.calpine.com
+CMS Energy,403,http://www.cmsenergy.com
+Alliance Data Systems,404,http://www.alliancedata.com
+JetBlue Airways,405,http://www.jetblue.com
+Discovery Communications,406,http://www.discoverycommunications.com
+Trinity Industries,407,http://www.trin.net
+Sanmina,408,http://www.sanmina.com
+NCR,409,http://www.ncr.com
+FMC Technologies,410,http://www.fmctechnologies.com
+Erie Insurance Group,411,http://www.erieinsurance.com
+Rockwell Automation,412,http://www.rockwellautomation.com
+Dr Pepper Snapple Group,413,http://www.drpeppersnapplegroup.com
+iHeartMedia,414,http://www.iheartmedia.com
+Tractor Supply,415,http://www.tractorsupply.com
+J.B. Hunt Transport Services,416,http://www.jbhunt.com
+Commercial Metals,417,http://www.cmc.com
+Owens-Illinois,418,http://www.o-i.com
+Harman International Industries,419,http://www.harman.com
+Baxalta,420,http://www.baxalta.com
+American Financial Group,421,http://www.afginc.com
+NetApp,422,http://www.netapp.com
+Graybar Electric,423,http://www.graybar.com
+Oshkosh,424,http://www.oshkoshcorporation.com
+Ameren,425,http://www.ameren.com
+A-Mark Precious Metals,426,http://www.amark.com
+Barnes & Noble,427,http://www.barnesandnobleinc.com
+Dana Holding,428,http://www.dana.com
+Constellation Brands,429,http://www.cbrands.com
+LifePoint Health,430,http://www.lifepointhealth.net
+Zimmer Biomet Holdings,431,http://www.zimmerbiomet.com
+Harley-Davidson,432,http://www.harley-davidson.com
+PulteGroup,433,http://www.pultegroupinc.com
+Newell Brands,434,http://www.newellbrands.com
+Avery Dennison,435,http://www.averydennison.com
+Jones Lang LaSalle,436,http://www.jll.com
+WEC Energy Group,437,http://www.wecenergygroup.com
+Marathon Oil,438,http://www.marathonoil.com
+TravelCenters of America,439,http://www.ta-petrol.com
+United Rentals,440,http://www.unitedrentals.com
+HRG Group,441,http://www.hrggroup.com
+Old Republic International,442,http://www.oldrepublic.com
+Windstream Holdings,443,http://www.windstream.com
+Starwood Hotels & Resorts,444,http://www.starwoodhotels.com
+Delek US Holdings,445,http://www.delekus.com
+Packaging Corp. of America,446,http://www.packagingcorp.com
+Quintiles IMS Holdings,447,http://www.quintilesims.com
+Hanesbrands,448,http://www.hanes.com
+Realogy Holdings,449,http://www.realogy.com
+Mattel,450,http://www.corporate.mattel.com
+Motorola Solutions,451,http://www.motorolasolutions.com
+J.M. Smucker,452,http://www.jmsmucker.com
+Regions Financial,453,http://www.regions.com
+Celanese,453,http://www.celanese.com
+Clorox,455,http://www.thecloroxcompany.com
+Ingredion,456,http://www.ingredion.com
+Genesis Healthcare,457,http://www.genesishcc.com
+Peabody Energy,458,http://www.peabodyenergy.com
+Alaska Air Group,459,http://www.alaskaair.com
+Seaboard,460,http://www.seaboardcorp.com
+Frontier Communications,461,http://www.frontier.com
+Amphenol,462,http://www.amphenol.com
+Lansing Trade Group,463,http://www.lansingtradegroup.com
+SanDisk,464,http://www.sandisk.com
+St. Jude Medical,465,http://www.sjm.com
+Wyndham Worldwide,466,http://www.wyndhamworldwide.com
+Kelly Services,467,http://www.kellyservices.com
+Western Union,468,http://www.westernunion.com
+Envision Healthcare Holdings,469,http://www.evhc.net
+Visteon,470,http://www.visteon.com
+Arthur J. Gallagher,471,http://www.ajg.com
+Host Hotels & Resorts,472,http://www.hosthotels.com
+Ashland,472,http://www.ashland.com
+Insight Enterprises,474,http://www.insight.com
+Energy Future Holdings,475,http://www.energyfutureholdings.com
+Markel,476,http://www.markelcorp.com
+Essendant,477,http://www.essendant.com
+CH2M Hill,478,http://www.ch2m.com
+Western & Southern Financial Group,479,http://www.westernsouthern.com
+Owens Corning,480,http://www.owenscorning.com
+S&P Global,481,http://www.spglobal.com
+Raymond James Financial,482,http://www.raymondjames.com
+NiSource,483,http://www.nisource.com
+Airgas,484,http://www.airgas.com
+ABM Industries,485,http://www.abm.com
+Citizens Financial Group,486,http://www.citizensbank.com
+Booz Allen Hamilton Holding,487,http://www.boozallen.com
+Simon Property Group,488,http://www.simon.com
+Domtar,489,http://www.domtar.com
+Rockwell Collins,490,http://www.rockwellcollins.com
+Lam Research,491,http://www.lamresearch.com
+Fiserv,492,http://www.fiserv.com
+Spectra Energy,493,http://www.spectraenergy.com
+Navient,494,http://www.navient.com
+Big Lots,495,http://www.biglots.com
+Telephone & Data Systems,496,http://www.tdsinc.com
+First American Financial,497,http://www.firstam.com
+NVR,498,http://www.nvrinc.com
+Cincinnati Financial,499,http://www.cinfin.com
+Burlington Stores,500,http://www.burlingtonstores.com
+KBR,501,http://www.kbr.com
+Neiman Marcus Group,502,http://www.neimanmarcusgroup.com
+Robert Half International,503,http://www.roberthalf.com
+Leidos Holdings,504,http://www.leidos.com
+Harris,505,http://www.harris.com
+Hanover Insurance Group,506,http://www.hanover.com
+Pepco Holdings,507,http://www.pepcoholdings.com
+Nvidia,508,http://www.nvidia.com
+Alleghany,509,http://www.alleghany.com
+M&T Bank Corp.,510,http://www.mtb.com
+Rush Enterprises,511,http://www.rushenterprises.com
+Williams-Sonoma,512,http://www.williams-sonomainc.com
+Yahoo,513,http://www.yahoo.com
+Sonoco Products,514,http://www.sonoco.com
+Brookdale Senior Living,515,http://www.brookdale.com
+Tutor Perini,516,http://www.tutorperini.com
+Michaels Cos.,517,http://www.michaels.com
+Berry Plastics Group,518,http://www.berryplastics.com
+Juniper Networks,519,http://www.juniper.net
+Northern Trust,520,http://www.northerntrust.com
+YRC Worldwide,521,http://www.yrcw.com
+Pioneer Natural Resources,522,http://www.pxd.com
+Ascena Retail Group,523,http://www.ascenaretail.com
+Adobe Systems,524,http://www.adobe.com
+Liberty Media,525,http://www.libertymedia.com
+American Tower,526,http://www.americantower.com
+Zoetis,527,http://www.zoetis.com
+Polaris Industries,528,http://www.polaris.com
+Intercontinental Exchange,529,http://www.theice.com
+Quad/Graphics,530,http://www.qg.com
+AmTrust Financial Services,531,http://www.amtrustgroup.com
+Activision Blizzard,532,http://www.activisionblizzard.com
+Fortune Brands Home & Security,533,http://www.fbhs.com
+Caesars Entertainment,534,http://www.caesars.com
+Post Holdings,535,http://www.postholdings.com
+Blackstone Group,536,http://www.blackstone.com
+Magellan Health,537,http://www.magellanhealth.com
+RPM International,538,http://www.rpminc.com
+Flowserve,539,http://www.flowserve.com
+KeyCorp,540,http://www.key.com
+MRC Global,541,http://www.mrcglobal.com
+Keurig Green Mountain,542,http://www.keuriggreenmountain.com
+Electronic Arts,543,http://www.ea.com
+General Cable,544,http://www.generalcable.com
+Cintas,545,http://www.cintas.com
+Chipotle Mexican Grill,546,http://www.chipotle.com
+Levi Strauss,547,http://www.levistrauss.com
+Talen Energy,548,http://www.talenenergy.com
+Westlake Chemical,549,http://www.westlake.com
+Hasbro,550,http://www.hasbro.com
+Securian Financial Group,551,http://www.securian.com
+Intuit,552,http://www.intuit.com
+Cerner,553,http://www.cerner.com
+Coty,554,http://www.coty.com
+Valspar,555,http://www.valspar.com
+SCANA,556,http://www.scana.com
+Bloomin’ Brands,557,http://www.bloominbrands.com
+MDU Resources Group,558,http://www.mdu.com
+Patterson,559,http://www.pattersoncompanies.com
+Orbital ATK,560,http://www.orbitalatk.com
+FM Global,561,http://www.fmglobal.com
+Hyatt Hotels,562,http://www.hyatt.com
+CA,563,http://www.ca.com
+VWR,564,http://www.vwr.com
+Science Applications International,565,http://www.saic.com
+CF Industries Holdings,566,http://www.cfindustries.com
+McCormick,567,http://www.mccormickcorporation.com
+LPL Financial Holdings,568,http://www.lpl.com
+Alon USA Energy,569,http://www.alonusa.com
+Swift Transportation,570,http://www.swifttrans.com
+Calumet Specialty Products Partners,571,http://www.calumetspecialty.com
+MasTec,572,http://www.mastec.com
+T. Rowe Price,573,http://www.troweprice.com
+Andersons,574,http://www.andersonsinc.com
+Coach,575,http://www.coach.com
+Toll Brothers,576,http://www.tollbrothers.com
+Graphic Packaging Holding,577,http://www.graphicpkg.com
+Brunswick,578,http://www.brunswick.com
+Atmos Energy,579,http://www.atmosenergy.com
+Hexion,580,http://www.hexion.com
+Watsco,581,http://www.watsco.com
+Tiffany,582,http://www.tiffany.com
+Regeneron Pharmaceuticals,583,http://www.regeneron.com
+Avaya,584,http://www.avaya.com
+Wynn Resorts,585,http://www.wynnresorts.com
+Bemis,586,http://www.bemis.com
+Mead Johnson Nutrition,587,http://www.meadjohnson.com
+Tesla Motors,588,http://www.teslamotors.com
+Agilent Technologies,589,http://www.agilent.com
+Torchmark,590,http://www.torchmarkcorp.com
+Thor Industries,591,http://www.thorindustries.com
+Cabela’s,592,http://www.cabelas.com
+Advanced Micro Devices,593,http://www.amd.com
+Ametek,594,http://www.ametek.com
+Smart & Final Stores,595,http://www.smartandfinal.com
+Colfax,596,http://www.colfaxcorp.com
+Under Armour,597,http://www.uabiz.com
+Antero Resources,598,http://www.anteroresources.com
+Nexeo Solutions Holdings,599,http://www.nexeosolutions.com
+AGL Resources,600,http://www.aglresources.com
+Leggett & Platt,601,http://www.leggett.com
+Ulta Salon Cosmetics & Fragrance,602,http://www.ulta.com
+CIT Group,603,http://www.cit.com
+American Axle & Manufacturing,604,http://www.aam.com
+Triumph Group,605,http://www.triumphgroup.com
+Dynegy,606,http://www.dynegy.com
+Fastenal,607,http://www.fastenal.com
+WhiteWave Foods,608,http://www.whitewave.com
+Welltower,609,http://www.welltower.com
+Sally Beauty Holdings,610,http://www.sallybeautyholdings.com
+CNO Financial Group,611,http://www.cnoinc.com
+CommScope Holding,612,http://www.commscope.com
+Axiall,613,http://www.axiall.com
+Ingles Markets,614,http://www.ingles-markets.com
+Flowers Foods,615,http://www.flowersfoods.com
+USG,616,http://www.usg.com
+Silgan Holdings,617,http://www.silganholdings.com
+Select Medical Holdings,618,http://www.selectmedicalholdings.com
+Crown Castle International,619,http://www.crowncastle.com
+Allegheny Technologies,620,http://www.atimetals.com
+HSN,621,http://www.hsni.com
+Xylem,622,http://www.xyleminc.com
+Zebra Technologies,623,http://www.zebra.com
+Albemarle,624,http://www.albemarle.com
+Resolute Forest Products,625,http://www.resolutefp.com
+Towers Watson,626,http://www.willistowerswatson.com
+Boise Cascade,627,http://www.bc.com
+Greif,628,http://www.greif.com
+Team Health Holdings,629,http://www.teamhealth.com
+Snap-on,630,http://www.snapon.com
+Sprouts Farmers Market,631,http://www.sprouts.com
+Roper Technologies,632,http://www.ropertech.com
+First Solar,633,http://www.firstsolar.com
+Pitney Bowes,634,http://www.pb.com
+ADT,635,http://www.adt.com
+Molson Coors Brewing,636,http://www.molsoncoors.com
+Builders FirstSource,637,http://www.bldr.com
+Lexmark International,638,http://www.lexmark.com
+Carlisle,639,http://www.carlisle.com
+CalAtlantic Group,640,http://www.calatlantichomes.com
+Martin Marietta Materials,641,http://www.martinmarietta.com
+Hub Group,642,http://www.hubgroup.com
+American Eagle Outfitters,643,http://www.ae.com
+Abercrombie & Fitch,644,http://www.abercrombie.com
+Regal Beloit,645,http://www.regalbeloit.com
+Country Financial,646,http://www.countryfinancial.com
+Meritor,647,http://www.meritor.com
+Tailored Brands,648,http://www.tailoredbrands.com
+ON Semiconductor,649,http://www.onsemi.com
+Pinnacle West Capital,650,http://www.pinnaclewest.com
+Ventas,651,http://www.ventasreit.com
+Moody’s,652,http://www.moodys.com
+Sprague Resources,653,http://www.spragueenergy.com
+FMC,654,http://www.fmc.com
+Lennox International,655,http://www.lennoxinternational.com
+Buckeye Partners,656,http://www.buckeye.com
+Urban Outfitters,657,http://www.urbanoutfittersinc.com
+Manitowoc,658,http://www.manitowoc.com
+Analog Devices,659,http://www.analog.com
+Vulcan Materials,660,http://www.vulcanmaterials.com
+C.R. Bard,661,http://www.crbard.com
+Murphy Oil,662,http://www.murphyoilcorp.com
+Nasdaq,663,http://www.business.nasdaq.com
+Darling Ingredients,664,http://www.darlingii.com
+Church & Dwight,665,http://www.churchdwight.com
+Hubbell,666,http://www.hubbell.com
+Worthington Industries,667,http://www.worthingtonindustries.com
+PolyOne,668,http://www.polyone.com
+Diplomat Pharmacy,669,http://www.diplomat.is
+Cooper-Standard Holdings,670,http://www.cooperstandard.com
+CME Group,671,http://www.cmegroup.com
+Landstar System,672,http://www.landstar.com
+CACI International,673,http://www.caci.com
+Westinghouse Air Brake Technologies,674,http://www.wabtec.com
+Rent-A-Center,675,http://www.rentacenter.com
+Citrix Systems,676,http://www.citrix.com
+Clean Harbors,677,http://www.cleanharbors.com
+Skyworks Solutions,678,http://www.skyworksinc.com
+Alliant Energy,679,http://www.alliantenergy.com
+TD Ameritrade Holding,680,http://www.amtd.com
+TEGNA,681,http://www.tegna.com
+IAC/InterActiveCorp,682,http://www.iac.com
+Fossil Group,683,http://www.fossilgroup.com
+NBTY,684,http://www.nbty.com
+ScanSource,685,http://www.scansource.com
+TreeHouse Foods,686,http://www.treehousefoods.com
+Aleris,687,http://www.aleris.com
+Groupon,688,http://www.groupon.com
+Aaron’s,689,http://www.aarons.com
+Joy Global,690,http://www.joyglobal.com
+Ryerson Holding,691,http://www.ryerson.com
+Helmerich & Payne,692,http://www.hpinc.com
+HealthSouth,693,http://www.healthsouth.com
+Vantiv,694,http://www.vantiv.com
+Skechers U.S.A.,695,http://www.skx.com
+American Water Works,696,http://www.amwater.com
+Iasis Healthcare,697,http://www.iasishealthcare.com
+Huntington Bancshares,698,http://www.huntington.com
+Tempur Sealy International,699,http://www.tempursealy.com
+EchoStar,700,http://www.echostar.com
+CUNA Mutual Group,701,http://www.cunamutual.com
+Brown-Forman,702,http://www.brown-forman.com
+Noble Energy,703,http://www.nobleenergyinc.com
+Southwestern Energy,703,http://www.swn.com
+Regal Entertainment Group,705,http://www.regmovies.com
+Consol Energy,706,http://www.consolenergy.com
+Time,707,http://www.timeinc.com
+Varian Medical Systems,708,http://www.varian.com
+SkyWest,709,http://www.skywest.com
+BGC Partners,710,http://www.bgcpartners.com
+Puget Energy,711,http://www.pugetenergy.com
+H&R Block,712,http://www.hrblock.com
+Amerco,713,http://www.amerco.com
+Brink’s,714,http://www.brinks.com
+Oceaneering International,715,http://www.oceaneering.com
+Steelcase,716,http://www.steelcase.com
+W.R. Grace,717,http://www.grace.com
+Metaldyne Performance Group,718,http://www.mpgdriven.com
+KB Home,719,http://www.kbhome.com
+International Flavors & Fragrances,720,http://www.iff.com
+Genesco,721,http://www.genesco.com
+Scripps Networks Interactive,722,http://www.scrippsnetworksinteractive.com
+American National Insurance,723,http://www.americannational.com
+Scotts Miracle-Gro,724,http://www.scotts.com
+Unisys,725,http://www.unisys.com
+Carter’s,726,http://www.carters.com
+NOW,727,http://www.distributionnow.com
+Mercury General,728,http://www.mercuryinsurance.com
+Iron Mountain,729,http://www.ironmountain.com
+Carlyle Group,730,http://www.carlyle.com
+Brinker International,731,http://www.brinker.com
+Northern Tier Energy,732,http://www.ntenergy.com
+LinkedIn,733,http://www.linkedin.com
+Service Corp. International,734,http://www.sci-corp.com
+Stericycle,735,http://www.stericycle.com
+Sabre,736,http://www.sabre.com
+Graham Holdings,737,http://www.ghco.com
+Taylor Morrison Home,738,http://www.taylormorrison.com
+Cooper Tire & Rubber,739,http://www.coopertire.com
+Old Dominion Freight Line,740,http://www.odfl.com
+Warner Music Group,741,http://www.wmg.com
+Green Plains,742,http://www.gpreinc.com
+Alpha Natural Resources,743,http://www.alphanr.com
+Convergys,744,http://www.convergys.com
+TECO Energy,745,http://www.tecoenergy.com
+IMS Health Holdings,746,http://www.imshealth.com
+MSC Industrial Direct,747,http://www.mscdirect.com
+Systemax,748,http://www.systemax.com
+Triple-S Management,749,http://www.triplesmanagement.com
+StanCorp Financial Group,750,http://www.stancorpfinancial.com
+Universal Forest Products,751,http://www.ufpi.com
+Gannett,752,http://www.gannett.com
+Amkor Technology,753,http://www.amkor.com
+Linn Energy,754,http://www.linnenergy.com
+Sentry Insurance Group,755,http://www.sentry.com
+Weis Markets,756,http://www.weismarkets.com
+Timken,757,http://www.timken.com
+Cabot,758,http://www.cabotcorp.com
+Univision Communications,759,http://corporate.univision.com
+Keysight Technologies,760,http://www.keysight.com
+Olin,761,http://www.olin.com
+Cinemark Holdings,762,http://www.cinemark.com
+Cracker Barrel Old Country Store,763,http://www.crackerbarrel.com
+Penn National Gaming,764,http://www.pngaming.com
+Comerica,765,http://www.comerica.com
+Envision Healthcare,766,http://www.evhc.net
+DST Systems,767,http://www.dstsystems.com
+Legg Mason,768,http://www.leggmason.com
+KLA-Tencor,769,http://www.kla-tencor.com
+Sanderson Farms,770,http://www.sandersonfarms.com
+PriceSmart,771,http://www.pricesmart.com
+Superior Energy Services,772,http://www.superiorenergy.com
+Bon-Ton Stores,773,http://www.bonton.com
+KapStone Paper & Packaging,774,http://www.kapstonepaper.com
+Mednax,775,http://www.mednax.com
+Total System Services,776,http://www.tsys.com
+Global Payments,777,http://www.globalpaymentsinc.com
+Diebold Nixdorf,778,http://www.dieboldnixdorf.com
+Scientific Games,779,http://www.scientificgames.com
+Applied Industrial Technologies,780,http://www.applied.com
+Equity Residential,781,http://www.equityresidential.com
+Crane,782,http://www.craneco.com
+Paychex,783,http://www.paychex.com
+New Jersey Resources,784,http://www.njresources.com
+B/E Aerospace,785,http://www.beaerospace.com
+Equinix,786,http://www.equinix.com
+Monster Beverage,787,http://www.monsterbevcorp.com
+TransDigm Group,788,http://www.transdigm.com
+Acuity Brands,789,http://www.acuitybrands.com
+Hologic,790,http://www.hologic.com
+TrueBlue,791,http://www.trueblue.com
+Broadridge Financial Solutions,792,http://www.broadridge.com
+Verso,793,http://www.versoco.com
+Wolverine World Wide,794,http://www.wolverineworldwide.com
+Hain Celestial Group,795,http://www.hain.com
+Heartland Payment Systems,796,http://www.heartlandpaymentsystems.com
+Panera Bread,797,http://www.panerabread.com
+Continental Resources,798,http://www.clr.com
+Dentsply Sirona,799,http://www.dentsplysirona.com
+ArcBest,800,http://www.arcb.com
+Equifax,801,http://www.equifax.com
+WGL Holdings,802,http://www.wglholdings.com
+TriNet Group,803,http://www.trinet.com
+Pinnacle Foods,804,http://www.pinnaclefoods.com
+Plexus,805,http://www.plexus.com
+Kennametal,806,http://www.kennametal.com
+Chico’s FAS,807,http://www.chicosfas.com
+Kar Auction Services,808,http://www.karauctionservices.com
+GNC Holdings,809,http://www.gnc.com
+Crestwood Equity Partners,810,http://www.crestwoodlp.com
+WABCO Holdings,811,http://www.wabco-auto.com
+DSW,812,http://www.dswinc.com
+Valmont Industries,813,http://www.valmont.com
+Greenbrier Cos.,814,http://www.gbrx.com
+Alexion Pharmaceuticals,815,http://www.alexion.com
+Insperity,816,http://www.insperity.com
+Hawaiian Electric Industries,817,http://www.hei.com
+Alere,818,http://www.alere.com
+ServiceMaster Global Holdings,819,http://www.servicemaster.com
+Apollo Education Group,820,http://www.apollogrp.edu
+AMC Networks,821,http://www.amcnetworks.com
+Meritage Homes,822,http://www.meritagehomes.com
+Hyster-Yale Materials Handling,823,http://www.hyster-yale.com
+Caleres,824,http://www.caleres.com
+PC Connection,825,http://www.pcconnection.com
+Arch Coal,826,http://www.archcoal.com
+Mattress Firm Holding,827,http://www.mattressfirm.com
+HCP,828,http://www.hcpi.com
+Platform Specialty Products,829,http://www.platformspecialtyproducts.com
+Benchmark Electronics,830,http://www.bench.com
+A.O. Smith,831,http://www.aosmith.com
+Lincoln Electric Holdings,832,http://www.lincolnelectric.com
+Vornado Realty Trust,833,http://www.vno.com
+Teradata,834,http://www.teradata.com
+Nortek,835,http://www.nortekinc.com
+Moog,836,http://www.moog.com
+Beacon Roofing Supply,837,http://www.becn.com
+National General Holdings,838,http://www.nationalgeneral.com
+Aretec Group,839,http://www.rcscapital.com
+J.Crew Group,840,http://www.jcrew.com
+EnerSys,841,http://www.enersys.com
+Autodesk,842,http://www.autodesk.com
+Great Plains Energy,843,http://www.greatplainsenergy.com
+Mutual of America Life Insurance,844,http://www.mutualofamerica.com
+Edwards Lifesciences,845,http://www.edwards.com
+Boston Properties,846,http://www.bostonproperties.com
+ITT,847,http://www.itt.com
+Affiliated Managers Group,848,http://www.amg.com
+Tops Holding,849,http://www.topsmarkets.com
+United Refining,850,http://www.urc.com
+Southwest Gas,851,http://www.swgas.com
+Medical Mutual of Ohio,852,http://www.medmutual.com
+Westar Energy,853,http://www.westarenergy.com
+Ciena,854,http://www.ciena.com
+Vectren,855,http://www.vectren.com
+Edgewell Personal Care,856,http://www.edgewell.com
+Armstrong World Industries,857,http://www.armstrong.com
+Kansas City Southern,858,http://www.kcsouthern.com
+Enable Midstream Partners,859,http://www.enablemidstream.com
+Cliffs Natural Resources,860,http://www.cliffsnaturalresources.com
+General Growth Properties,861,http://www.ggp.com
+California Resources,862,http://www.crc.com
+TRI Pointe Group,863,http://www.tripointegroup.com
+Mettler-Toledo International,864,http://www.mt.com
+A. Schulman,865,http://www.aschulman.com
+Toro,866,http://www.thetorocompany.com
+SPX FLOW,867,http://www.spxflow.com
+Intuitive Surgical,868,http://www.intuitivesurgical.com
+West,869,http://www.west.com
+Public Storage,870,http://www.publicstorage.com
+Xilinx,871,http://www.xilinx.com
+Stifel Financial,872,http://www.stifel.com
+Donaldson,873,http://www.donaldson.com
+Granite Construction,874,http://www.graniteconstruction.com
+Pool,875,http://www.poolcorp.com
+Express,876,http://www.express.com
+G-III Apparel Group,877,http://www.g-iii.com
+Kemper,878,http://www.kemper.com
+EQT,879,http://www.eqt.com
+Nationstar Mortgage Holdings,880,http://www.nationstarmtg.com
+Parexel International,881,http://www.parexel.com
+Columbia Sportswear,882,http://www.columbia.com
+inVentiv Health,883,http://www.inventivhealth.com
+Hawaiian Holdings,884,http://www.hawaiianairlines.com
+AptarGroup,885,http://www.aptar.com
+IHS Markit,886,http://www.ihs.com
+Belden,887,http://www.belden.com
+Maxim Integrated Products,888,http://www.maximintegrated.com
+Coca-Cola Bottling,889,http://www.cokeconsolidated.com
+HNI,890,http://www.hnicorp.com
+Vishay Intertechnology,891,http://www.vishay.com
+Tetra Tech,892,http://www.tetratech.com
+Teledyne Technologies,893,http://www.teledyne.com
+Party City Holdco,894,http://www.partycity.com
+Pinnacle Entertainment,895,http://www.pnkinc.com
+Trimble,896,http://www.trimble.com
+Penn Mutual Life Insurance,897,http://www.pennmutual.com
+MPM Holdings,898,http://www.momentive.com
+Sears Hometown & Outlet Stores,899,http://www.shos.com
+Tupperware Brands,900,http://www.tupperwarebrands.com
+Alliance Holdings,901,http://www.ahgp.com
+Universal,902,http://www.universalcorp.com
+Curtiss-Wright,903,http://www.curtisswright.com
+Brocade Communications Systems,904,http://www.brocade.com
+PerkinElmer,905,http://www.perkinelmer.com
+Wayfair,906,http://www.wayfair.com
+Nu Skin Enterprises,907,http://www.nuskinenterprises.com
+Genesis Energy,908,http://www.genesisenergy.com
+Synopsys,909,http://www.synopsys.com
+Amica Mutual Insurance,910,http://www.amica.com
+Carpenter Technology,911,http://www.cartech.com
+Illumina,912,http://www.illumina.com
+Sinclair Broadcast Group,913,http://www.sbgi.net
+Twitter,914,http://www.twitter.com
+Domino’s Pizza,915,http://www.dominos.com
+Zions Bancorp.,916,http://www.zionsbancorporation.com
+Guess,917,http://www.guess.com
+Boyd Gaming,918,http://www.boydgaming.com
+Akamai Technologies,919,http://www.akamai.com
+Prologis,920,http://www.prologis.com
+OGE Energy,921,http://www.oge.com
+Outerwall,922,http://www.outerwall.com
+OneMain Holdings,923,http://www.springleaf.com
+Magellan Midstream Partners,924,http://www.magellanlp.com
+Knights of Columbus,925,http://www.kofc.org
+Symetra Financial,926,http://www.symetra.com
+Gartner,927,http://www.gartner.com
+Fred’s,928,http://www.fredsinc.com
+Hovnanian Enterprises,929,http://www.khov.com
+Kirby,930,http://www.kirbycorp.com
+Microchip Technology,931,http://www.microchip.com
+Herman Miller,932,http://www.hermanmiller.com
+Spirit Airlines,933,http://www.spirit.com
+NewMarket,934,http://www.newmarket.com
+VCA,935,http://www.vca.com
+Selective Insurance Group,936,http://www.selective.com
+hhgregg,937,http://www.hhgregg.com
+Popular,938,http://www.popular.com
+Waste Connections,939,http://www.wasteconnections.com
+Restoration Hardware,940,http://www.restorationhardware.com
+Cheesecake Factory,941,http://www.thecheesecakefactory.com
+Mueller Industries,942,http://www.muellerindustries.com
+Maximus,943,http://www.maximus.com
+TTM Technologies,944,http://www.ttmtech.com
+Werner Enterprises,945,http://www.werner.com
+Engility Holdings,946,http://www.engilitycorp.com
+Rexnord,947,http://www.rexnord.com
+NuStar Energy,948,http://www.nustarenergy.com
+H.B. Fuller,949,http://www.hbfuller.com
+Vista Outdoor,950,http://www.vistaoutdoor.com
+On Assignment,951,http://www.onassignment.com
+Verisk Analytics,952,http://www.verisk.com
+Par Pacific Holdings,953,http://www.parpacific.com
+Alliance One International,954,http://www.aointl.com
+Whiting Petroleum,955,http://www.whiting.com
+Waters,956,http://www.waters.com
+Tower International,957,http://www.towerinternational.com
+Woodward,958,http://www.woodward.com
+Stewart Information Services,959,http://www.stewart.com
+PharMerica,960,http://www.pharmerica.com
+Wabash National,961,http://www.wabashnational.com
+Ferrellgas Partners,962,http://www.ferrellgas.com
+Dycom Industries,963,http://www.dycomind.com
+IDEX,964,http://www.idexcorp.com
+Bio-Rad Laboratories,965,http://www.bio-rad.com
+QEP Resources,966,http://www.qepres.com
+Griffon,967,http://www.griffoncorp.com
+American Greetings,968,http://www.americangreetings.com
+Tribune Media,969,http://www.tribunemedia.com
+Rackspace Hosting,970,http://www.rackspace.com
+VeriFone Systems,971,http://www.verifone.com
+Genesee & Wyoming,972,http://www.gwrr.com
+99 Cents Only Stores,973,http://www.99only.com
+Roadrunner Transportation Systems,974,http://www.rrts.com
+Super Micro Computer,975,http://www.supermicro.com
+First Republic Bank,976,http://www.firstrepublic.com
+Hill-Rom Holdings,977,http://www.hill-rom.com
+Providence Service,978,http://www.prscholdings.com
+Allison Transmission Holdings,979,http://www.allisontransmission.com
+Spire,980,http://www.spireenergy.com
+WPX Energy,981,http://www.wpxenergy.com
+Century Aluminum,982,http://www.centuryaluminum.com
+Adams Resources & Energy,983,http://www.adamsresources.com
+Nuance Communications,984,http://www.nuance.com
+Primoris Services,985,http://www.prim.com
+Schnitzer Steel Industries,986,http://www.schnitzersteel.com
+Delta Tucker Holdings,987,http://www.dyn-intl.com
+Hospitality Properties Trust,988,http://www.hptreit.com
+Cenveo,989,http://www.cenveo.com
+F5 Networks,990,http://www.f5.com
+BlueLinx Holdings,991,http://www.bluelinxco.com
+Revlon,992,http://www.revloninc.com
+DeVry Education Group,993,http://www.devryeducationgroup.com
+MDC Holdings,994,http://www.richmondamerican.com
+EP Energy,995,http://www.epenergy.com
+New York Community Bancorp,996,http://www.mynycb.com
+Portland General Electric,997,http://www.portlandgeneral.com
+DCP Midstream Partners,997,http://www.dcppartners.com
+Wendy’s,999,http://www.aboutwendys.com%20
+Briggs & Stratton,1000,http://www.basco.com
