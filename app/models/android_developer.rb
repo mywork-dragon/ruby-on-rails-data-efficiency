@@ -20,6 +20,10 @@ class AndroidDeveloper < ActiveRecord::Base
     valid_websites.pluck(:url).uniq
   end
 
+  def fortune_1000_rank
+    valid_websites.joins(:domain_datum).pluck(:fortune_1000_rank).compact.min
+  end
+
   def sorted_android_apps(category, order, page)
     filter_args = {
       app_filters: {'publisherId' => self.id},

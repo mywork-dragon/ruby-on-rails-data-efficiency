@@ -64,10 +64,10 @@ class AppsIndex < Chewy::Index
       }
     end
 
-    crutch :fortune_rank do |collection|
-      data = IosAppsWebsite.joins(:website => :company).where(ios_app_id: collection.map(&:id)).pluck(:ios_app_id, :fortune_1000_rank)
-      data.each.with_object({}) { |(id, rank), result| result[id] ||= rank }
-    end
+    # crutch :fortune_rank do |collection|
+    #   data = IosAppsWebsite.joins(:website => :company).where(ios_app_id: collection.map(&:id)).pluck(:ios_app_id, :fortune_1000_rank)
+    #   data.each.with_object({}) { |(id, rank), result| result[id] ||= rank }
+    # end
 
     crutch :categories do |collection|
       data = IosAppCategory.joins(:ios_app_current_snapshots).where('ios_app_current_snapshots.ios_app_id' => collection.map(&:id), 'ios_app_categories_current_snapshots.kind' => 0).pluck('ios_app_current_snapshots.ios_app_id', 'ios_app_categories.name')
@@ -121,7 +121,6 @@ class AppsIndex < Chewy::Index
     field :paid, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'price').to_f > 0 }
     field :in_app_purchases, value: ->(ios_app) {ios_app.newest_ios_app_snapshot.try(:ios_in_app_purchases).try(:any?)}
     field :mobile_priority, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'mobile_priority') }, index: 'not_analyzed'
-    field :fortune_rank, value: ->(app, crutches) { crutches.fortune_rank[app.id] }, type: 'integer'
     field :categories, value: ->(app, crutches) { crutches.categories[app.id] }, index: 'not_analyzed'
     field :ratings_all, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'ratings_all').to_i }, type: 'integer'
 
@@ -158,6 +157,7 @@ class AppsIndex < Chewy::Index
     field :publisher_name, type: 'string', value: -> (ios_app){ios_app.ios_developer.try(:name)} do
       field :lowercase, analyzer: 'lowercase'
     end
+    field :fortune_rank, value: -> (ios_app){ios_app.ios_developer.try(:fortune_1000_rank)}, type: 'integer'
     field :publisher_websites, value: -> (ios_app){ios_app.ios_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do
@@ -185,10 +185,10 @@ class AppsIndex < Chewy::Index
       data.each.with_object({}) { |(id), result| result[id] = true }
     end
 
-    crutch :fortune_rank do |collection|
-      data = AndroidAppsWebsite.joins(:website => :company).where(android_app_id: collection.map(&:id)).pluck(:android_app_id, :fortune_1000_rank)
-      data.each.with_object({}) { |(id, rank), result| result[id] ||= rank }
-    end
+    # crutch :fortune_rank do |collection|
+    #   data = AndroidAppsWebsite.joins(:website => :company).where(android_app_id: collection.map(&:id)).pluck(:android_app_id, :fortune_1000_rank)
+    #   data.each.with_object({}) { |(id, rank), result| result[id] ||= rank }
+    # end
 
     crutch :categories do |collection|
       data = AndroidAppCategory.joins(:android_app_snapshots).where('android_app_snapshots.android_app_id' => collection.map(&:id), 'android_app_categories_snapshots.kind' => 0).
@@ -242,7 +242,6 @@ class AppsIndex < Chewy::Index
     field :paid, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:price).to_f > 0 }
     field :in_app_purchases, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:in_app_purchase_min).present?}
     field :mobile_priority, index: 'not_analyzed'
-    field :fortune_rank, value: ->(app, crutches) { crutches.fortune_rank[app.id] }, type: 'integer'
     field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed'
     field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
     field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max)}
@@ -271,6 +270,7 @@ class AppsIndex < Chewy::Index
     field :publisher_name, type: 'string', value: -> (android_app){android_app.android_developer.try(:name)} do
       field :lowercase, analyzer: 'lowercase'
     end
+    field :fortune_rank, value: -> (android_app){android_app.android_developer.try(:fortune_1000_rank)}, type: 'integer'
     field :publisher_websites, value: -> (android_app){android_app.android_developer.try(:get_valid_website_urls)}, index: 'not_analyzed'
 
     field :headquarters, value: ->(app, crutches) { crutches.headquarters[app.id] || []}, type: 'nested', include_in_parent: true do

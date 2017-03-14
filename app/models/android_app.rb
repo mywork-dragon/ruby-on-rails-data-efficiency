@@ -90,7 +90,7 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def fortune_rank
-    self.get_company.try(:fortune_1000_rank)
+    self.android_developer.try(:fortune_1000_rank)
   end
 
   def name
@@ -129,7 +129,6 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def to_csv_row
-    company = self.get_company
     developer = self.android_developer
     newest_snapshot = self.newest_android_app_snapshot
     hqs = self.headquarters(1)
@@ -148,7 +147,7 @@ class AndroidApp < ActiveRecord::Base
       developer.try(:id),
       developer.try(:name),
       developer.try(:identifier),
-      company.try(:fortune_1000_rank),
+      self.fortune_rank,
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil,
@@ -168,7 +167,6 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def as_json(options={})
-    company = self.get_company
     newest_snapshot = self.newest_android_app_snapshot
 
     batch_json = {
@@ -189,7 +187,7 @@ class AndroidApp < ActiveRecord::Base
       downloadsMax: newest_snapshot.try(:downloads_max),
       price: newest_snapshot.try(:price),
       rankingChange: self.ranking_change,
-      company: company,
+      fortuneRank: self.fortune_rank,
       appAvailable: self.app_available?,
       isInternational: self.international?,
       regions: self.region_codes,

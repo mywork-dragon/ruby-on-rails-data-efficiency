@@ -120,7 +120,6 @@ class IosApp < ActiveRecord::Base
   end
 
   def as_json(options={})
-    company = self.get_company
     newest_snapshot = self.newest_ios_app_snapshot
     
     batch_json = {
@@ -147,12 +146,12 @@ class IosApp < ActiveRecord::Base
       appStoreLink: self.app_store_link,
       appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
       isInternational: self.international?,
+      fortuneRank: self.fortune_rank,
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name) || first_international_snapshot.try(:seller_name),
         websites: self.try(:ios_developer).try(:get_website_urls)
       },
-      company: company
     }
 
     if options[:ads]
@@ -411,7 +410,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def fortune_rank
-    self.get_company.try(:fortune_1000_rank)
+    self.ios_developer.try(:fortune_1000_rank)
   end
 
   def headquarters(limit=100)
@@ -447,7 +446,6 @@ class IosApp < ActiveRecord::Base
 
   def to_csv_row(can_view_support_desk=false)
     # li "CREATING HASH FOR #{app.id}"
-    company = self.get_company
     developer = self.ios_developer
     newest_snapshot = self.newest_ios_app_snapshot
     hqs = self.headquarters(1)
@@ -466,7 +464,7 @@ class IosApp < ActiveRecord::Base
       developer.try(:id),
       developer.try(:name),
       developer.try(:identifier),
-      company.try(:fortune_1000_rank),
+      self.fortune_rank,
       developer.try(:get_website_urls).try(:join, ', '),
       'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
       developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,

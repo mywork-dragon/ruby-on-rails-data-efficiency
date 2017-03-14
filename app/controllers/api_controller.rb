@@ -205,6 +205,7 @@ class ApiController < ApplicationController
         name: developer.name,
         websites: developer.websites.to_a.map{|w| w.url},
         headquarters: developer.headquarters,
+        fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
         apps: apps.as_json({user: @current_user})
       }
@@ -222,6 +223,7 @@ class ApiController < ApplicationController
         name: developer.name,
         websites: developer.get_website_urls,
         headquarters: developer.headquarters,
+        fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
         apps: apps.as_json({user: @current_user})
       }

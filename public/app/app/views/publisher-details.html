@@ -37,6 +37,11 @@
                     <label>Platform:</label>
                     {{appPlatform == 'ios' ? 'iOS' : 'Android'}}
                   </li>
+                  <li ng-if="publisherData.fortuneRank">
+                    <span class="icon fa fa-bar-chart"></span>
+                    <label>Fortune Rank:</label>
+                    {{publisherData.fortuneRank}}
+                  </li>
                   <li ng-if="publisherData.websites">
                     <span class="icon fa fa-globe"></span>
                     <label>Website<span ng-if="publisherData.websites.length > 1">s</span>:</label>

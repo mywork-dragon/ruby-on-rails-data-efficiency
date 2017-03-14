@@ -103,7 +103,7 @@
             </td>
             <td ng-if="app.publisher.name" class="resultsTableAppPublisher"><a href="#/publisher/{{app.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
             <td ng-if="!app.publisher.name">{{app.seller}}</td>
-            <td>{{app.company.fortuneRank}}</td>
+            <td>{{app.fortuneRank}}</td>
             <td class="dashboardMobilePriorityView">
               <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
             </td>
