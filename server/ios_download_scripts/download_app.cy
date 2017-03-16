@@ -11,9 +11,8 @@ function isDownloading(b) {
   downloading = false;
   // will poll for 2 seconds
   while (Date.now() - start < 2000 && !downloading) {
-    var contents = b.layer.contents.toString();
-    // More than 1 buffers indicates activity 
-    if (contents.match(/buffer/g).length > 1) {
+    var progressType = [b progressType];
+    if (progressType == 1 || progressType == 2) {
       downloading = true;
     }
   }

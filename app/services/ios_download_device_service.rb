@@ -62,8 +62,9 @@ class IosDownloadDeviceService
 
   class SignInFailed < RuntimeError; end
   class DontRequirePasswordFailed < RuntimeError; end
+  class IMessageOnlyApp < RuntimeError; end
   
-  class NoPanguApp; end
+  class NoJbApp; end
 
   def initialize(device, apple_account:, account_changed_lambda: nil)
     @device = device
@@ -182,13 +183,13 @@ class IosDownloadDeviceService
     load_common_utilities(:app_store)
   end
 
-  def pangu_ipa_path
-    return @pangu_ipa_path if @pangu_ipa_path
+  def jb_ipa_path
+    return @jb_ipa_path if @jb_ipa_path
     resp = run_command(
-      "find #{apps_install_path} -maxdepth 2 -name 'NvwaStone.app' -or -name 'PPJailbreakCarrier.app'",
-      'find pangu app'
+      "find #{apps_install_path} -maxdepth 2 -name 'NvwaStone.app' -or -name 'PPJailbreakCarrier.app' -or -name 'yalu102.app'",
+      'find jb app'
     )
-    @pangu_ipa_path = resp.present? ? resp.chomp : NoPanguApp
+    @jb_ipa_path = resp.present? ? resp.chomp : NoJbApp
   end
 
   def current_installed_apps
@@ -196,9 +197,9 @@ class IosDownloadDeviceService
     if apps == nil
       []
     else
-      pangu = pangu_ipa_path
-      pangu_bundle = pangu == NoPanguApp ? [] : [pangu.split('/').last(2).first]
-      apps.chomp.split - pangu_bundle
+      jb = jb_ipa_path
+      jb_bundle = jb == NoJbApp ? [] : [jb.split('/').last(2).first]
+      apps.chomp.split - jb_bundle
     end
   end
 
@@ -216,6 +217,7 @@ class IosDownloadDeviceService
       log_debug 'Waiting 3s...'
       sleep(3)
       log_debug "Try #{n}"
+      ensure_not_imessage_only_app!
       ret = run_file(:app_store, 'download_app.cy')
       if ret.nil?
         log_debug 'Did not start downloading'
@@ -296,6 +298,12 @@ class IosDownloadDeviceService
                        apps_after.select { |id| !prior_apps.include?(id) }.first
                      end
     @app_info = get_app_name_and_path(new_app_folder)
+  end
+
+  def ensure_not_imessage_only_app!
+    return if @device.ios_version_fmt < IosDevice.ios_version_to_fmt_version('10.0') # only available on iOS 10+
+    res = run_file(:app_store, 'check_imessage_only.cy')
+    raise IMessageOnlyApp if command_success?(res)
   end
 
   def get_app_name_and_path(new_app_folder = nil)
@@ -524,7 +532,7 @@ class IosDownloadDeviceService
       'see how many executable files are in app'
     ).chomp
 
-    template_type = num_execs == '1' ? :find : :bundle_info
+    template_type = num_execs.to_i == 1 ? :find : :bundle_info
     script_path = template_decrypt_script(template_type)
     log_debug 'Running decryption'
     decryption_command = "pushd #{settings[:output_dir]} && sudo -u #{settings[:user]} #{script_path}"
@@ -726,21 +734,31 @@ class IosDownloadDeviceService
     raise 'Teardown unsuccessful: app is still installed' if apps.include?(@app_info[:path].split('/').last)
   end
 
+  def installed_bundle_ids
+    bundle_ids = run_command("find #{apps_install_path} -maxdepth 2 -name '.com.apple.mobile_container_manager*' -exec plutil -key MCMMetadataIdentifier '{}' \\\;", 'Get installed bundle ids') || ''
+    bundle_ids = bundle_ids.chomp.split(/\n/)
+
+    bundle_ids.reject do |id|
+      /com\.wanmei\.mini\.condorpp/.match(id) ||
+        /com\.e4bf058461/.match(id) ||
+        /com\.datachowder\.yalu102/.match(id) # :tada:
+    end
+  end
+
   def delete_applications_v2
-    files = %w(1_delete_app_ios9.cy 2_ensure_uninstalled_ios9.cy 3_unlock_device_ios9.cy)
+    files = %w(
+    1_delete_app_ios9.cy
+    2_ensure_uninstalled_ios9.cy
+    3_unlock_device_ios9.cy
+    3_unlock_device_ios10.cy
+    )
 
     apps = current_installed_apps
 
     return "Nothing to do" if apps.empty?
 
     # get the bundle ids of all the apps
-
-    bundle_ids = run_command("find #{apps_install_path} -maxdepth 2 -name '.com.apple.mobile_container_manager*' -exec plutil -key MCMMetadataIdentifier '{}' \\\;", 'Get installed bundle ids') || ''
-    bundle_ids = bundle_ids.chomp.split(/\n/)
-
-    log_debug "Bundle Ids before: #{bundle_ids.count}"
-    bundle_ids.select! { |id| !(/com\.wanmei\.mini\.condorpp/.match(id) || /com\.e4bf058461/.match(id)) }
-    log_debug "Bundle Ids after: #{bundle_ids.count}"
+    bundle_ids = installed_bundle_ids
 
     # template the file
     files.each do |fname|
@@ -757,9 +775,17 @@ class IosDownloadDeviceService
     kill_app(:springboard)
     sleep(13)
     log_debug 'unlocking'
-    run_file(:springboard, '3_unlock_device_ios9.cy')
+    unlock_device
     sleep(2)
     log_debug 'Done'
+  end
+
+  def unlock_device
+    if @device.ios_version_fmt >= IosDevice.ios_version_to_fmt_version('10.0')
+      run_file(:springboard, '3_unlock_device_ios10.cy')
+    else
+      run_file(:springboard, '3_unlock_device_ios9.cy')
+    end
   end
 
   def monitor_uninstall

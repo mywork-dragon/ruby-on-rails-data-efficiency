@@ -2,7 +2,8 @@ module IosWorker
 
 	WARNING_LEVEL_MAP = {
 		'8' => 3000,
-		'9' => 2000
+		'9' => 2000,
+		'10' => 2000,
 	}
 
 	def perform(ipa_snapshot_id, bid = nil)

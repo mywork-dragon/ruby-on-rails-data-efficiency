@@ -49,6 +49,15 @@ function classAndTextMatcher(className, regex) {
   }
 }
 
+function classAndDescriptionMatcher(className, regex) {
+  return function(el) {
+    if (classMatcher(className)(el) && el.debugDescription && el.debugDescription.toString().match(regex)) {
+      return true;
+    }
+    return false;
+  }
+}
+
 function first(source, match_fn) {
   var current = null,
     subviews = [],

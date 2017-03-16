@@ -61,7 +61,7 @@ class IosLiveScanServiceWorker
       end
     else
       if @ipa_snapshot_job.job_type == 'one_off'
-        IosScanSingleServiceWorker.new.perform(ipa_snapshot_id, bid)
+        # IosScanSingleServiceWorker.new.perform(ipa_snapshot_id, bid)
       elsif @ipa_snapshot_job.job_type == 'test'
         IosScanSingleTestWorker.new.perform(ipa_snapshot_id, bid)
       end
@@ -77,26 +77,29 @@ class IosLiveScanServiceWorker
 
   class << self
 
-    def test_japan_only
-      # international service
-      ServiceStatus.find_or_create_by!(service: 3, active: true)
-      job = IpaSnapshotJob.create!(job_type: :one_off, live_scan_status: :validating, notes: 'testing international live scan', international_enabled: true)
-
-      ios_app = IosApp.find_or_create_by(app_identifier: 987942897) # japan only app
-
+    def test_ios10_app
+      app = IosApp.find_or_create_by!(app_identifier: 387771637)
       store = AppStore.find_or_create_by!(
-        name: 'Japan',
-        country_code: 'jp',
-        enabled: true
+        country_code: 'US',
+        name: 'United States',
+        enabled: 1,
+        priority: 1,
+        display_priority: 1,
+        tos_valid: true,
+        tos_url_path: '/us/terms.html'
       )
-
       AppStoresIosApp.find_or_create_by!(
-        ios_app_id: ios_app.id,
+        ios_app_id: app.id,
         app_store_id: store.id
       )
 
-      new.perform(job.id, ios_app.id)
+      job = IpaSnapshotJob.create!(
+        job_type: 1,
+        notes: 'testing',
+        international_enabled: false
+      )
 
+      new.perform(job.id, app.id)
     end
   end
 
