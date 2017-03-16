@@ -108,9 +108,9 @@ class ClearbitContact < ActiveRecord::Base
       else
         domain = URI.parse(contact.website.url).host.downcase
       end
-      token = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
+      auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE0ODk2ODc5MDksInZlcnNpb24iOiIyMDE3LTAzLTAzIiwianRpIjoiMzE0ZmE4NTExNTI1NDRiMzg3ODQ1ZjA3YmMwOTA2YjUiLCJhY2NvdW50X2lkIjoidmFyeXMiLCJzdGF0ZW1lbnRzIjpbeyJhY3Rpb24iOlsiaHR0cDpnZXQiLCJodHRwOnB1dCJdLCJyZXNvdXJjZSI6Im1yaTptd3M6ZGlzY292ZXJ5L3YxL2VtYWlsIiwiZWZmZWN0IjoiYWxsb3cifV19.zqXksxuYWK2vGSgd8NEQnwbqsm-wO8X8HyEwYTKyljU'
       full_name = URI.encode(contact.full_name)
-      resp = JSON.load(HTTParty.get("http://mightybitweb-384573877.us-east-1.elb.amazonaws.com/v1/email?name=#{full_name}&domain=#{domain}&token=#{token}"))
+      resp = JSON.load(HTTParty.get("http://mightybitweb-384573877.us-east-1.elb.amazonaws.com/v1/email?name=#{full_name}&domain=#{domain}", headers: { 'Authorization' => auth_token }))
       if resp['status'] == 'success'
         return resp['email']
       end
