@@ -89,7 +89,7 @@ class AuthController < ApplicationController
                is_admin: account.is_admin_account? || user.is_admin?,
                is_admin_account: account.is_admin_account?,
                can_view_ios_live_scan: account.can_view_ios_live_scan,
-               connected_oauth: user.linkedin_uid.present? || user.google_uid.present? || user.id == 498,
+               connected_oauth: user.connected_oauth?,
                territories: user.territories
            }
   end
