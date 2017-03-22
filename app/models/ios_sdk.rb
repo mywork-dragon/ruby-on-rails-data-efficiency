@@ -133,6 +133,16 @@ class IosSdk < ActiveRecord::Base
         })
     end
 
+    def create_from_json(filepath)
+      data = JSON.parse(open(filepath).read())
+      sdk = create_manual(name: data.fetch('name'), website: data.fetch('website'), summary: data['summary'], kind: :native)
+      if data['classes']
+        classes = data['classes'].class == String ? data['classes'].split.uniq : data['classes'].uniq
+        classes.map { |name| IosSdkSourceData.create!(name: name, ios_sdk_id: sdk.id) }
+      end
+      sdk
+    end
+
     def csv_dump
       display_ids = IosSdk.display_sdks.pluck(:id)
       rows = IosSdk.select(:id, :name, :website, 'tags.name')
