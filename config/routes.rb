@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   get 'top-ios-sdks' => 'welcome#top_ios_sdks', as: 'top-ios-sdks'
   get 'top-ios-apps' => 'welcome#top_ios_apps', as: 'top-ios-apps'
   get 'timeline' => 'welcome#timeline', as: 'timeline'
+  get 'challenge' => 'challenge#index'
+  get 'challenge/backend' => 'challenge#backend'
 
   get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
   get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
