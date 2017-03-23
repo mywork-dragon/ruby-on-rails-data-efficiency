@@ -4467,9 +4467,6 @@ fieldset[disabled] .btn-danger.active {
 .label-danger[href]:hover, .label-danger[href]:focus {
   background-color: #e24f25; }
 
-.label {
-  padding: .5em .8em; }
-
 .label-info-alt {
   background: #8170ca; }
 
