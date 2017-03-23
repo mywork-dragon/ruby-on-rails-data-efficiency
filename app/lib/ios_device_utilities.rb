@@ -239,7 +239,7 @@ module IosDeviceUtilities
   def is_app_running?(app)
     info = get_app_info(app)
     ret = run_command(
-      "ps aux | grep #{info[:name]} | grep -v grep | wc -l",
+      "ps aux | grep '#{info[:name]}$' | grep -v grep | wc -l",
       "check if #{app} is running"
     )
     ret && ret.include?('0') ? false : true

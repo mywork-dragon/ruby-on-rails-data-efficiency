@@ -827,9 +827,9 @@ class IosDownloadDeviceService
   end
 
   class << self
-    def test(ios_device_id: 1, change_account: false)
+    def test(ios_device_id: 1, change_account: false, ipa_snapshot_id: nil)
       device = IosDevice.find(ios_device_id)
-      ipa_snapshot = IpaSnapshot.last
+      ipa_snapshot = ipa_snapshot_id.nil? ? IpaSnapshot.last : IpaSnapshot.find(ipa_snapshot_id)
       lookup_content = JSON.parse(ipa_snapshot.lookup_content)
       acct_lambda = change_account ? -> { puts 'changed account lambda' } : nil
       id = rand(1_000_000)
