@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   get 'timeline' => 'welcome#timeline', as: 'timeline'
   get 'challenge' => 'challenge#index'
   get 'challenge/backend' => 'challenge#backend'
+  get 'challenge/frontend' => 'challenge#frontend'
+  get 'challenge/payment_seed' => 'challenge#payment_seed'
 
   get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
   get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
