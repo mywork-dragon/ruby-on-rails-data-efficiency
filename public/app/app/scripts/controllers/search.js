@@ -197,7 +197,8 @@ angular.module('appApp')
 
       $scope.changedComplexFilter = function(filter, field, old_filter, filter_type, filter_operation) {
         old_filter = JSON.parse(old_filter)
-        if ((filter_type == 'userbase' && filter[field] != 0) || filter_type != 'sdk')  {
+        // if is userbase filter or location filter with different status we should remove the old filter after adding the new one
+        if ((filter_type == 'userbase' && filter[field] != 0) || (filter_type != 'sdk' && old_filter.status != filter.status))  {
           if (filter_type == 'userbase' && filter[field] != 0) {
             filter[filter_type] = $scope.engagementOptions(filter.status + '-0-8')
             var customName = $scope.intToUserbase(filter[filter_type].minValue) + '-' + $scope.intToUserbase(filter[filter_type].maxValue)
