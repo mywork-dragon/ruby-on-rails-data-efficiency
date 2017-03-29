@@ -85,7 +85,7 @@ class IosDevice < ActiveRecord::Base
 
         free_proxy = nil
 
-        OpenProxy.where(kind: OpenProxy.kinds[:digital_ocean_tinyproxy]).each do |open_proxy|
+        OpenProxy.where(kind: OpenProxy.kinds.values_at(:aws_tinyproxy, :digital_ocean_tinyproxy)).each do |open_proxy|
           if open_proxy.ios_devices.blank?
             free_proxy = open_proxy
             break
