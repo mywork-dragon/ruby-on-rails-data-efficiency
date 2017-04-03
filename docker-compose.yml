@@ -37,6 +37,8 @@ services:
       - REGIONAL_PROXY_PASSWORD=dummy
       - RECAPTCHA_SITE_KEY=dummy
       - RECAPTCHA_SECRET_KEY=dummy
+      - CLEARBIT_KEY=dummy
+      - MIGHTYBIT_API_TOKEN=dummy
     depends_on:
       - db
       - redis

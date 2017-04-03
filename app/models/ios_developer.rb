@@ -14,6 +14,8 @@ class IosDeveloper < ActiveRecord::Base
 
   has_many :developer_link_options
 
+  include DeveloperContactWebsites
+
   def get_website_urls
     websites.pluck(:url).uniq
   end

@@ -1,3 +1,6 @@
+# DEPRECATED model/class methods
+# we now rely on the mightybit (lense) service.
+
 class ClearbitContact < ActiveRecord::Base
   belongs_to :website
   belongs_to :domain_datum

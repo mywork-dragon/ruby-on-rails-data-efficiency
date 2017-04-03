@@ -6,3 +6,5 @@ services:
       - S3_SECRET_ACCESS_KEY=dummy/2ymnwJwgiQcPwb
       - REGIONAL_PROXY_USER=dummy
       - REGIONAL_PROXY_PASSWORD=dummy
+      - CLEARBIT_KEY=dummy
+      - MIGHTYBIT_API_TOKEN=dummy

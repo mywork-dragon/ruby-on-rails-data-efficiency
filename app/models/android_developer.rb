@@ -12,6 +12,8 @@ class AndroidDeveloper < ActiveRecord::Base
   has_many :valid_android_developer_websites, -> { where(is_valid: true)}, class_name: 'AndroidDevelopersWebsite'
   has_many :valid_websites, through: :valid_android_developer_websites, source: :website
 
+  include DeveloperContactWebsites
+
   def get_website_urls
     websites.pluck(:url).uniq
   end

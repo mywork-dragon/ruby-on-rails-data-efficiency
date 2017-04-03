@@ -10,6 +10,10 @@ class ApiController < ApplicationController
   before_action :authenticate_ios_live_scan, only: [:ios_scan_status, :ios_start_scan] # Authorizing iOS Live Scan routes
   before_action :authenticate_ad_intelligence, only: :ad_intelligence
 
+  def initialize
+    @contact_service = ContactDiscoveryService.new
+  end
+
   def filter_ios_apps
 
     li 'filter_ios_apps'
@@ -403,7 +407,7 @@ class ApiController < ApplicationController
     
     filter = params['filter']
 
-    contacts = ClearbitContact.get_contacts_for_developer(developer, filter)
+    contacts = @contact_service.get_contacts_for_developer(developer, filter)
 
     companyName = params['companyName']
     header = ['MightySignal ID', 'Company Name', 'Title', 'Full Name', 'First Name', 'Last Name', 'Email', 'LinkedIn']
@@ -530,7 +534,7 @@ class ApiController < ApplicationController
   def get_contact_email
     contact_id = params['contactId']
     begin
-      email = ClearbitContact.get_contact_email(contact_id)
+      email = @contact_service.get_contact_email(contact_id)
     rescue
       render json: {error: "Emails are temporarily unavailable. Please try again later", status: 500}
       return
@@ -551,8 +555,7 @@ class ApiController < ApplicationController
     else
       AndroidDeveloper.find(publisher_id)
     end
-
-    contacts = ClearbitContact.get_contacts_for_developer(developer, filter)
+    contacts = @contact_service.get_contacts_for_developer(developer, filter)
     render json: {:contacts => contacts[((page-1)*offset)..((page*offset)-1)], contactsCount: contacts.count}
   end
 
