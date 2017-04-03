@@ -1012,15 +1012,16 @@ class ApiController < ApplicationController
       y << csv_header.to_csv
 
       if filter_args
-        filter_args[:page_size] = 10000
+        filter_args[:page_size] = 1000
         filter_args[:page_num] = 1
         filter_args[:order_by] ||= 'asc'
         filter_args[:sort_by] ||= 'name'
-        filter_results = nil
         platform = filter_args.delete(:platform)
+
+        filter_results = nil
         results = []
 
-        #while !filter_results || filter_results.count > 0
+        while filter_results.nil? || (filter_args[:page_num] <= 20 && filter_results.count > 0)
           if platform == 'ios'
             filter_results = FilterService.filter_ios_apps(filter_args)
             results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
@@ -1028,22 +1029,26 @@ class ApiController < ApplicationController
             filter_results = FilterService.filter_android_apps(filter_args)
             results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
           end
-        else
-          results = apps
-        end
 
-        if results.any?
-          results.each do |app|
-            app_csv = if apps
-              app.to_csv_row
-            else
-              (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
-            end
-            y << app_csv.to_csv
+          if results.any?
+            add_apps_to_enum(results: results, enum: y, platform: platform)
+            filter_args[:page_num] += 1
           end
-          filter_args[:page_num] += 1 if filter_args
         end
-      #end
+      else
+        add_apps_to_enum(results: apps, enum: y)
+      end
+    end
+  end
+
+  def add_apps_to_enum(results: results, enum: enum, platform: platform)
+    results.each do |app|
+      app_csv = if ['IosApp', 'AndroidApp'].include?(app.class.name)
+        app.to_csv_row
+      else
+        (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
+      end
+      enum << app_csv.to_csv
     end
   end
 end
