@@ -280,7 +280,7 @@ GEM
       ast (~> 2.2)
     plist (3.2.0)
     powerpack (0.1.1)
-    public_suffix (1.4.6)
+    public_suffix (2.0.5)
     rack (1.6.5)
     rack-cors (0.4.1)
     rack-protection (1.5.3)
@@ -515,7 +515,6 @@ DEPENDENCIES
   paperclip (~> 5.0.0.beta2)
   parallel (= 1.6.0)
   plist (~> 3.2)
-  public_suffix (= 1.4.6)
   rack-cors
   rails (= 4.2.6)
   recaptcha (= 4.0.1)

@@ -87,6 +87,7 @@ class AppStoreDevelopersWorker
     existing = Website.where(url: websites)
     missing = websites - existing.pluck(:url)
     rows = missing.map { |url| Website.new(url: url) }
+    rows.each { |row| row.run_callbacks(:create) { false } } # hook in before_create callbacks
     Website.import(
       rows,
       synchronize: rows,

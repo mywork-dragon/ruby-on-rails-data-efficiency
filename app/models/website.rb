@@ -25,15 +25,25 @@ class Website < ActiveRecord::Base
   
   validates :url, presence: true
 
-  before_create :set_match_string
+  before_create :populate_helper_fields
+
+  def populate_helper_fields
+    set_match_string
+    set_domain
+  end
 
   def set_match_string
     result = self.class.website_comparison_format(url)
     self.match_string = result unless result == BadFormat
   end
 
-  def domain
-    UrlHelper.url_with_domain_only(url)
+  def set_domain
+    uri = URI.parse(url)
+    if uri.class == URI::Generic
+      uri = URI.parse('http://' + url) # give it a scheme for proper parsing
+    end
+
+    self.domain = uri.host.gsub(/^www\./, '')
   end
 
   class << self
