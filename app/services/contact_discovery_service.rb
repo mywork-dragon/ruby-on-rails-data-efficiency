@@ -30,6 +30,7 @@ class ContactDiscoveryService
         familyName: person['name']['familyName'],
         fullName: person['name']['fullName'],
         title: person['title'],
+        email: person['email'],
         linkedin: person['linkedin']
       }
     end
