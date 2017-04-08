@@ -458,7 +458,7 @@ class AppStoreService
         seller: ->(x) { x == 'Uber Technologies, Inc.' },
         by: ->(x) { x == 'Uber Technologies, Inc.' },
         developer_app_store_identifier: ->(x) { x == 368677371 },
-        ratings: ->(x) { x[:all][:stars] > 3.0 && x[:all][:count] > 25e3 },
+        ratings: ->(x) { x[:all][:stars] >= 1.0 && x[:all][:count] > 25e3 },
         recommended_age: ->(x) { x == '4+' },
         required_ios_version: ->(x) { x.split('.').first.to_i > 2},
         first_released: -> (x) { x == Date.new(2010, 5, 21) },
