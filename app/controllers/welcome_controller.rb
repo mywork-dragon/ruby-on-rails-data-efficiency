@@ -9,20 +9,22 @@ class WelcomeController < ApplicationController
     @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
     @logos = [
-      {image: 'ghostery.png', width: 150},
-      {image: 'fiksu.png', width: 135},
-      {image: 'radiumone.png', width: 190},
-      {image: 'swrve.png', width: 150},
-      {image: 'mparticle.png', width: 180},
+      #{image: 'ghostery.png', width: 150},
+      #{image: 'fiksu.png', width: 135},
+      #{image: 'radiumone.png', width: 190},
+      #{image: 'swrve.png', width: 150},
+      #{image: 'mparticle.png', width: 180},
       {image: 'tune.png', width: 135},
-      {image: 'amplitude.png', width: 160},
-      {image: 'microsoft.png', width: 150},
-      {image: 'ironsrc.png', width: 170},
-      {image: 'vungle.png', width: 125},
-      {image: 'realm.png', width: 135},
-      {image: 'neumob.png', width: 170},
+      {image: 'amplitude.png', width: 170},
+      {image: 'microsoft.png', width: 160},
+      #{image: 'ironsrc.png', width: 170},
+      #{image: 'vungle.png', width: 125},
+      #{image: 'realm.png', width: 135},
+      #{image: 'neumob.png', width: 170},
       {image: 'yahoo.png', width: 165},
-      {image: 'appsflyer.png', width: 170}
+      {image: 'appsflyer.png', width: 180},
+      {image: 'mixpanel.png', width: 160},
+      {image: 'zendesk.png', width: 170}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
   end
 
