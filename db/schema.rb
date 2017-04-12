@@ -14,18 +14,23 @@
 ActiveRecord::Schema.define(version: 20170330171319) do
 
   create_table "accounts", force: :cascade do |t|
-    t.string   "name",                    limit: 191
+    t.string   "name",                     limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "can_view_support_desk",               default: false, null: false
-    t.boolean  "can_view_ad_spend",                   default: true,  null: false
-    t.boolean  "can_view_sdks",                       default: false, null: false
-    t.boolean  "can_view_storewide_sdks",             default: false
-    t.boolean  "can_view_exports",                    default: true
-    t.boolean  "is_admin_account",                    default: false
+    t.boolean  "can_view_support_desk",                  default: false, null: false
+    t.boolean  "can_view_ad_spend",                      default: true,  null: false
+    t.boolean  "can_view_sdks",                          default: false, null: false
+    t.boolean  "can_view_storewide_sdks",                default: false
+    t.boolean  "can_view_exports",                       default: true
+    t.boolean  "is_admin_account",                       default: false
     t.boolean  "can_view_ios_live_scan"
-    t.integer  "seats_count",             limit: 4,   default: 5
-    t.boolean  "can_view_ad_attribution",             default: false
+    t.integer  "seats_count",              limit: 4,     default: 5
+    t.boolean  "can_view_ad_attribution",                default: false
+    t.string   "salesforce_uid",           limit: 191
+    t.string   "salesforce_token",         limit: 191
+    t.string   "salesforce_refresh_token", limit: 191
+    t.string   "salesforce_instance_url",  limit: 191
+    t.text     "salesforce_settings",      limit: 65535
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
