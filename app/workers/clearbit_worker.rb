@@ -108,6 +108,35 @@ class ClearbitWorker
     end
   end
 
+  def queue_n_apps_for_enrichment(n)
+    ios_apps = get_n_non_enriched_apps(n / 2, IosApp.count) {|offset, limit| IosApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
+    android_apps = get_n_non_enriched_apps(n / 2, AndroidApp.count) {|offset, limit| AndroidApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
+    ios_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'ios')}
+    android_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'android')}
+    puts "Queued #{ios_apps.count} iOS Apps for enrichment."
+    puts "Queued #{android_apps.count} Android Apps for enrichment."
+    {'ios_apps' => ios_apps, 'android_apps' => android_apps}
+  end
+
+  def get_n_non_enriched_apps(n, limit)
+    # Expects a block which accepts and offset and limit parameter
+    # and returns apps.
+    apps = []
+    i = 0
+    increment = n * 2
+    while apps.count < n and i < limit
+      yield(i, increment).each do |app|
+        next if app.headquarters.any?
+        apps.append(app)
+        if apps.count >= n
+          break
+        end
+      end
+      i += increment
+    end
+    apps
+  end
+
   def populate_domains
     DomainDatum.where(clearbit_id: nil).each do |datum|
       puts "Populating #{datum.domain}"
