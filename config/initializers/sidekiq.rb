@@ -29,7 +29,7 @@ if Rails.env.production?
 
 
 
-elsif Rails.env.development?
+else Rails.env.development?
   Sidekiq.configure_server do |config|
     config.super_fetch!
     config.redis = { url: "redis://#{ENV['VARYS_REDIS_URL']}:#{ENV['VARYS_REDIS_PORT']}" }

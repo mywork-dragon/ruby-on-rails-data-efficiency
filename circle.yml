@@ -4,7 +4,11 @@ machine:
   ruby:
     version: 2.1.9
   services:
+    - redis
     - docker
+  environment:
+    VARYS_REDIS_URL: localhost
+    VARYS_REDIS_PORT: 6379
 dependencies:
   pre:
     - $(aws ecr get-login --region us-east-1)

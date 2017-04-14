@@ -109,8 +109,8 @@ class ClearbitWorker
   end
 
   def queue_n_apps_for_enrichment(n)
-    ios_apps = get_n_non_enriched_apps(n / 2, IosApp.count) {|offset, limit| IosApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
-    android_apps = get_n_non_enriched_apps(n / 2, AndroidApp.count) {|offset, limit| AndroidApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
+    ios_apps = get_n_non_enriched_apps(n / 2, IosApp.count, 'ios') {|offset, limit| IosApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
+    android_apps = get_n_non_enriched_apps(n / 2, AndroidApp.count, 'android') {|offset, limit| AndroidApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
     ios_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'ios')}
     android_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'android')}
     puts "Queued #{ios_apps.count} iOS Apps for enrichment."
@@ -118,23 +118,27 @@ class ClearbitWorker
     {'ios_apps' => ios_apps, 'android_apps' => android_apps}
   end
 
-  def get_n_non_enriched_apps(n, limit)
+  def get_n_non_enriched_apps(n, limit, namespace)
     # Expects a block which accepts and offset and limit parameter
     # and returns apps.
-    apps = []
-    i = 0
-    increment = n * 2
-    while apps.count < n and i < limit
-      yield(i, increment).each do |app|
-        next if app.headquarters.any?
-        apps.append(app)
-        if apps.count >= n
-          break
+    Sidekiq.redis do |connection|
+      apps = []
+      i = 0
+      increment = n * 2
+      while apps.count < n and i < limit
+        yield(i, increment).each do |app|
+          processed_key = "cb_enrich_app_marker:#{namespace}:#{app.id}"
+          next if app.headquarters.any? or connection.exists(processed_key)
+          connection.setex(processed_key, 60.days.to_i, 1)
+          apps.append(app)
+          if apps.count >= n
+            break
+          end
         end
+        i += increment
       end
-      i += increment
+      apps
     end
-    apps
   end
 
   def populate_domains
