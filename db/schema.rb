@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170330171319) do
+ActiveRecord::Schema.define(version: 20170414201846) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20170330171319) do
     t.string   "salesforce_refresh_token", limit: 191
     t.string   "salesforce_instance_url",  limit: 191
     t.text     "salesforce_settings",      limit: 65535
+    t.string   "mightysignal_id",          limit: 191
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
