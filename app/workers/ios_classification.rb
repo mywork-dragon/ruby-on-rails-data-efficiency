@@ -2,36 +2,6 @@ module IosClassification
 
   class UnavailableClassdump < RuntimeError; end
   
-  def perform(snap_id)
-    snapshot = IpaSnapshot.find(snap_id)
-
-    snapshot.update(scan_status: :scanning)
-
-    sdks = classify(snap_id)
-
-    snapshot.update(scan_status: :scanned)
-
-    invalidate_bad_scans(snapshot)
-    log_activities(snapshot)
-
-    # sdks
-    puts "finished classify"
-  rescue => e
-    IosClassificationException.create!({
-      ipa_snapshot_id: snap_id,
-      error: e.message,
-      backtrace: e.backtrace
-    })
-
-    snapshot = IpaSnapshot.find(snap_id)
-    snapshot.scan_status = :failed
-    snapshot.save
-
-    raise e
-  ensure
-    IosApp.find(snapshot.ios_app_id).update_newest_ipa_snapshot
-  end
-
   def log_activities(snapshot)
     ActivityWorker.new.perform(:log_ios_sdks, snapshot.ios_app_id)
   rescue => e

@@ -51,8 +51,8 @@ class IosClassificationHeaderWorker
       return
     end
 
-    classification_worker = IosClassificationServiceWorker.new
-    sdks = classification_worker.source_search(name)
+    classification_tools = IosClassificationTools.new
+    sdks = classification_tools.source_search(name)
 
     if sdks.nil? || sdks.empty?
       # should not happen...
@@ -65,7 +65,7 @@ class IosClassificationHeaderWorker
       )
      IosClassificationHeadersBackup.import [row] # don't care about collision
     else
-      resolved_sdk = classification_worker.resolve_collision(sdks: sdks)
+      resolved_sdk = classification_tools.resolve_collision(sdks: sdks)
       unless resolved_sdk
         puts "Could not resolve collision for #{name}"
       else
@@ -77,11 +77,6 @@ class IosClassificationHeaderWorker
         )
         IosClassificationHeadersBackup.import [row] # don't care about collision
       end
-    end
-  end
-
-  class << self
-    def test
     end
   end
 end
