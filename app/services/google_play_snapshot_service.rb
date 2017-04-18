@@ -11,6 +11,24 @@ class GooglePlaySnapshotService
       ProxyControl.start_proxies
     end
 
+    def start_scrape(
+      notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}",
+      description: 'Run current Android apps',
+      query: { display_type: AndroidApp.display_types.values_at(:normal, :foreign) }
+      )
+      # Scrape the GooglePlay store for android app info, by
+      # default this function scrapes valid android apps. It
+      # can also be called with an active record query which
+      # determines which android apps to scan.
+
+      check_dom
+      j = AndroidAppSnapshotJob.create!(notes: notes)
+
+      AndroidApp.where(query).pluck(:id).each do |app_id|
+        GooglePlaySnapshotMassWorker.perform_async([j.id, app_id])
+      end
+    end
+
     def run(
       notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}",
       description: 'Run current Android apps',
