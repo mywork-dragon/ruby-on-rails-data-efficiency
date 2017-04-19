@@ -25,7 +25,7 @@ class GooglePlaySnapshotService
       j = AndroidAppSnapshotJob.create!(notes: notes)
 
       AndroidApp.where(query).pluck(:id).each do |app_id|
-        GooglePlaySnapshotMassWorker.perform_async([j.id, app_id])
+        GooglePlaySnapshotMassWorker.perform_async(j.id, app_id)
       end
     end
 
