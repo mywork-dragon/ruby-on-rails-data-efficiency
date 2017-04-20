@@ -11,13 +11,11 @@ class GooglePlaySnapshotMassWorker
   end
 
   def scrape_new_similar_apps(similar_apps)
-    batch.jobs do
       similar_apps.each do |android_app|
         GooglePlaySnapshotMassWorker.perform_async(
           @android_app_snapshot_job_id,
           android_app.id
         )
       end
-    end
   end
 end
