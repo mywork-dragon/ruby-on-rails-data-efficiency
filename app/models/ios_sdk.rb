@@ -172,6 +172,20 @@ class IosSdk < ActiveRecord::Base
         data_str: csv_string
       )
     end
+
+    # to plug into athena for reclassification
+    def gen_athena_query(ios_sdk_ids)
+      classes = ios_sdk_ids.map do |id|
+        sdk = IosSdk.find(id)
+        classes = sdk.cocoapod_source_datas.where(flagged: false).pluck(:name)
+        classes += sdk.ios_sdk_source_datas.where(flagged: false).pluck(:name)
+        classes
+      end.flatten.uniq
+      join_str = "(#{classes.map {|x| "'#{x}'"}.join(', ')})"
+      "select distinct(id) from classes where class in #{join_str}
+      union
+      select distinct(id) from jtool_classes where class in #{join_str}"
+    end
   end
 
 end
