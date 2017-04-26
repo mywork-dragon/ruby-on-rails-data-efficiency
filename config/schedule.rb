@@ -86,22 +86,6 @@ every :wednesday, :at => '8:00am', roles: [:varys_scheduler] do
   runner 'ElasticSearchWorker.perform_async(:update_ios)', :output => '/var/log/cron.log'
 end
 
-every :monday, :at => '5:00pm', roles: [:varys_scheduler] do
-  runner 'GooglePlaySnapshotService.run', :output => '/var/log/cron.log'
-end
-
-every :tuesday, :at => '1:00pm', roles: [:varys_scheduler] do
-  runner 'GooglePlayDevelopersWorker.queue_apps', :output => '/var/log/cron.log'
-end
-
-every :tuesday, :at => '5:00pm', roles: [:varys_scheduler] do
-  runner 'AndroidMassScanService.run_recently_updated(automated: true)', :output => '/var/log/cron.log'
-end
-
-every :wednesday, :at => '5:00pm', roles: [:varys_scheduler] do
-  runner 'ElasticSearchWorker.perform_async(:update_android)', :output => '/var/log/cron.log'
-end
-
 every :day, at: '3:00am', roles: [:varys_scheduler] do
   runner 'GooglePlayChartService.run_gplay_top_free', :output => '/var/log/cron.log'
 end
