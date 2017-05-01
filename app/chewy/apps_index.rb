@@ -237,7 +237,7 @@ class AppsIndex < Chewy::Index
     field :seller_url, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller_url) || ''}
     field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
     field :user_base, index: 'not_analyzed'
-    field :ratings_all, value: ->(android_app) { android_app.newest_android_app_snapshot.try(:ratings_all_count).to_i }
+    field :ratings_all, value: ->(android_app) { android_app.newest_android_app_snapshot.try(:ratings_all_count).to_i }, type: 'integer'
     field :facebook_ads, value: ->(app, crutches) { crutches.old_ad_spend[app.id].present? }
     field :paid, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:price).to_f > 0 }
     field :in_app_purchases, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:in_app_purchase_min).present?}
