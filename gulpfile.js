@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var rev = require('gulp-rev');
 var revReplace = require('gulp-rev-replace');
 var jeditor = require("gulp-json-editor");
+var browserSync = require('browser-sync').create();
 
 gulp.task('rev-rename', function() {
     return gulp
@@ -37,3 +38,18 @@ gulp.task('build', ['rev-edit'], function() {
         .pipe(revReplace({manifest: manifest}))
         .pipe(gulp.dest('./public/app/app/'));
 });
+
+gulp.task('reload', ['build'], function() {
+  return browserSync.reload();
+})
+
+gulp.task('init', function() {
+  browserSync.init({
+      proxy: 'localhost:3000',
+      port: 8000,
+  });
+})
+
+gulp.task('watch', ['build', 'init'], function() {
+  gulp.watch('./public/app/app/**/*', ['reload'])
+})
