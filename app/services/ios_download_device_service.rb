@@ -808,11 +808,13 @@ class IosDownloadDeviceService
     @classdump_id
   end
 
+  # removed class-dump in favor of jtool during processing
   def class_dump(src, dest)
-    arch = @device.class_dump_arch || "arm64"
-    accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.split
-    arch_flag = accepted_arches.include?(arch) ? "--arch #{arch}" : "" # let class-dump decide if not
-    `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' >> \'#{dest}\' 2>/dev/null`
+    `echo > #{dest}`
+    # arch = @device.class_dump_arch || "arm64"
+    # accepted_arches = `/usr/local/bin/class-dump --list-arches \'#{src}\'`.split
+    # arch_flag = accepted_arches.include?(arch) ? "--arch #{arch}" : "" # let class-dump decide if not
+    # `/usr/local/bin/gtimeout 1m /usr/local/bin/class-dump #{arch_flag} \'#{src}\' >> \'#{dest}\' 2>/dev/null`
   end
 
   def upload_decrypted_execs
