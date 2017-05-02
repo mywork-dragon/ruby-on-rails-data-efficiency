@@ -8,7 +8,7 @@
           <div class="col-md-6">
             <h4>
               I want to explore
-              <app-platform-toggle custom-search-platform="customSearchCtrl.platform" ng-click="toggledPlatform()"></app-platform-toggle>apps
+              <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>apps
             </h4>
           </div>
         </div>
@@ -123,22 +123,22 @@
     <div class="row companyPageRow" ng-if="searchCtrl.canViewStorewideSdks">
       <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
         <div><span class="ng-binding ng-scope">
-					SDK filter results from scanning the top 
+					SDK filter results from scanning the top
 					<strong ng-if="appPlatform.platform == 'ios'">{{scannedIosSdkNum | number}}</strong>
-					<strong ng-if="appPlatform.platform == 'android'">{{scannedAndroidSdkNum | number}}</strong> 
+					<strong ng-if="appPlatform.platform == 'android'">{{scannedAndroidSdkNum | number}}</strong>
 					{{appPlatform.platform == 'ios' ? 'iOS' : 'Android'}} apps.
 				</span></div>
-						
+
       </div>
     </div>
 
     <section class="panel panel-default table-dynamic">
       <div class="panel-heading" id="dashboardResultsTableHeading">
        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{appsDisplayedCount()}} of {{searchCtrl.numApps | number}}</span>
-        
+
         <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: searchCtrl.apps.length < 1 || !searchCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-href="{{searchCtrl.csvUrl}}">Export All to CSV</a>
         <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
-        
+
         <span class="ui-select pull-right">
           <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
             <option value="">Add Selected to List</option>
@@ -325,7 +325,7 @@
 
       <footer class="table-footer">
         <div class="row">
-          <div class="col-md-6 page-num-info">    
+          <div class="col-md-6 page-num-info">
           </div>
           <div class="col-md-6 text-right pagination-container">
             <uib-pagination class="pagination-sm"
