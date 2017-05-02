@@ -27,39 +27,38 @@ class IosMassScanService
 
     # helper method for running scans
     def run_new(n)
-      tried = IosApp.joins(:ipa_snapshots).distinct
-      checked = IosApp.joins(:ipa_snapshot_lookup_failures).distinct
+      tried = (IpaSnapshot.select(:ios_app_id).distinct.pluck(:ios_app_id) +
+               IpaSnapshotLookupFailure.select(:ios_app_id).distinct.pluck(:ios_app_id)).uniq
 
-      puts "Found all #{tried.count + checked.count} tried apps"
+      puts "Found all #{tried.count} tried apps"
 
-      mb_high_by_ratings = IosApp.joins(:newest_ios_app_snapshot).select(:id).distinct.where.not(id: tried).where.not(id: checked).where(mobile_priority: IosApp.mobile_priorities[:high]).order('ios_app_snapshots.ratings_all_count DESC').limit(n).pluck(:id)
+      mb_high = IosAppCurrentSnapshot
+        .where(app_store_id: 1, mobile_priority: IosApp.mobile_priorities[:high])
+        .order(ratings_all_count: :desc)
+        .pluck(:ios_app_id)
 
-      puts "Selected #{mb_high_by_ratings.length} apps in mobile priority high that haven't been tried"
+      ids = []
 
-      run_ids("Running #{n} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", mb_high_by_ratings)
-    end
-
-    def run_recently_released(lookback_time: nil, ratings_min: 0, automated: false)
-
-      lookback_time = lookback_time || EpfFullFeed.last(2).first.date
-      recent = IosApp.joins(:newest_ios_app_snapshot).where('ios_apps.released >= ?', lookback_time).where('ios_app_snapshots.ratings_all_count > ?', ratings_min).pluck(:id)
-
-      unless automated
-        puts "Got #{recent.count} apps: Continue? [y/n]"
-        return unless gets.chomp.include?('y')
+      while ids.count < n && mb_high.count > 0 do
+        id = mb_high.shift
+        ids << id unless tried.include?(id)
       end
 
-      run_ids("Running #{recent.count} apps released after #{lookback_time}", recent)
+      return if ids.count == 0
+
+      puts "Selected #{ids.count} apps in mobile priority high that haven't been tried"
+
+      run_ids("Running #{ids.count} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", ids)
     end
 
     def run_recently_updated(n: 5000, ratings_min: 0, automated: false)
-      recent = IosApp.joins(:newest_ios_app_snapshot)
+      recent = IosAppCurrentSnapshot
         .where.not(user_base: IosApp.user_bases[:weak])
-        .where(display_type: IosApp.display_types[:normal])
-        .where('ios_app_snapshots.released > ?', 2.weeks.ago)
-        .where('ios_app_snapshots.ratings_all_count > ?', ratings_min)
-        .order('ios_app_snapshots.ratings_all_count DESC')
-        .limit(n).pluck(:id)
+        .where(app_store_id: 1)
+        .where('released > ?', 2.weeks.ago)
+        .where('ratings_all_count > ?', ratings_min)
+        .order(ratings_all_count: :desc)
+        .limit(n).pluck(:ios_app_id)
 
       unless automated
         print "Filtered to recent #{recent.count}. Continue? [y/n] : "
