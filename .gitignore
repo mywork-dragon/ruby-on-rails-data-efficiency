@@ -27,6 +27,7 @@ db.patch
 # Ignore byebug history
 .byebug_history
 
+/node_modules
 /public/app/bower_components
 /public/app/node_modules
 !/public/app/bower_components/slacktivity
