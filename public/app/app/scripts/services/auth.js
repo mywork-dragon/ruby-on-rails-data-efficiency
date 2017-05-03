@@ -36,6 +36,7 @@ angular.module("appApp")
     }
   }])
   .factory("authService", ["$http", "$q", "$rootScope", "authToken", "authEvents", function($http, $q, $rootScope, authToken, authEvents) {
+    var ref = "";
     return {
       login: function(email, password) {
         var d = $q.defer();
@@ -106,6 +107,10 @@ angular.module("appApp")
       },
       userInfo: function() {
         return $http.get('/auth/user/info');
+      },
+      referrer: function(path) {
+        if (path) { ref = path; }
+        return ref;
       }
     };
   }])

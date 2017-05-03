@@ -23,6 +23,7 @@ angular.module('appApp')
 
       // If user not authenticated (and user not already on login page) redirect to login
       if(!$rootScope.isAuthenticated && !_.contains(["/login"], $location.path())) {
+        authService.referrer($location.path());
         $window.location.href = "#/login";
       }
 
@@ -52,14 +53,14 @@ angular.module('appApp')
 
       if($rootScope.isAuthenticated) {
 
-        authService.userInfo().success(function(data) { 
+        authService.userInfo().success(function(data) {
           mixpanel.identify(data.email);
           mixpanel.people.set({
             "$email": data.email,
             "jwtToken": authToken.get()
           });
         });
-        
+
         // Sets user permissions
         authService.permissions()
           .success(function(data) {
