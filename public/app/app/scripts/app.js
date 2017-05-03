@@ -32,7 +32,7 @@ angular
   ])
   .run(function ($http, $rootScope) {
 
-      $(document).ready(function(){ 
+      $(document).ready(function(){
         /* Disables loading spinner */
         setTimeout(function(){
           $('.page-loading-overlay').addClass("loaded");
@@ -135,12 +135,15 @@ angular
     $tooltipProvider.setTriggers({
       'mouseenter': 'mouseleave click'
     });
+    $tooltipProvider.options({
+      'placement': 'auto left'
+    });
   }])
   .config(function($authProvider) {
     $authProvider.linkedin({
       clientId: '755ulzsox4aboj'
     });
-    
+
     $authProvider.google({
       clientId: '341121226980-egcfb2qebu8skkjq63i1cdfpvahrcuak.apps.googleusercontent.com'
     })
@@ -155,10 +158,9 @@ angular
       var newArr = []
       for (var i in arr) {
         if (newArr.indexOf(arr[i]) == -1) {
-          newArr.push(arr[i]) 
+          newArr.push(arr[i])
         }
       }
       return newArr
     }
   });
-
