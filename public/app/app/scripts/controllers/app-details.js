@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
+  function($scope, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -27,6 +27,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.canViewIosLiveScan = data.can_view_ios_live_scan;
         $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
         $scope.canViewAdAttribution = data.can_view_ad_attribution;
+        $scope.isAdminAccount = data.is_admin_account;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;
@@ -130,6 +131,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           return loggitService.logSuccess("You will now see updates for this app on your Timeline");
         case "unfollowed":
           return loggitService.logSuccess("You will stop seeing updates for this app on your Timeline");
+        case "reset":
+          return loggitService.logSuccess("Resetting app data. The page will refresh shortly.")
       }
     };
 
@@ -142,7 +145,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.notify('add-selected-success');
         $rootScope.selectedAppsForList = [];
       }).error(function() {
-        $scope.notify('add-selected-error'); 
+        $scope.notify('add-selected-error');
       });
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };
@@ -156,6 +159,15 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         } else {
           $scope.notify('unfollowed');
         }
+      });
+    }
+
+    $scope.resetAppData = function(id) {
+      $scope.notify('reset');
+      apiService.iosResetAppData(id).success(function() {
+        $timeout(function() {
+          $route.reload();
+        }, 5000)
       });
     }
 
@@ -174,7 +186,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     /* Company Contacts Logic */
     $scope.contactsLoading = false;
     $scope.contactsLoaded = false;
-    
+
     $scope.getContactEmail = function(contact) {
       contact.isLoading = true
       var clearbitId = contact.clearbitId

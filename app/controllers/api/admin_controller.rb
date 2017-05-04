@@ -2,7 +2,7 @@ class Api::AdminController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
-  before_action :authenticate_admin
+  before_action :authenticate_admin, except: [:ios_reset_app_data]
   before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts]
 
   def index
@@ -28,7 +28,7 @@ class Api::AdminController < ApplicationController
       model = params[:type].constantize
       object = model.find(params[:id])
       # only allow changes for admin account users and admins managing their own users
-      if @current_user.account.is_admin_account? || (params[:type] == "User" && object.account == @current_user.account)  
+      if @current_user.account.is_admin_account? || (params[:type] == "User" && object.account == @current_user.account)
         if params[:value]
           object.update(params[:field] => params[:value])
         else
@@ -118,11 +118,11 @@ class Api::AdminController < ApplicationController
     top_android_sdks = android_apps.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
     ios_apps_last_month = ios_apps.filter({"range" => {"released" => {'format' => 'date_time', 'gte' => 'now-30d/d'}}})
     top_ios_sdks_last_month = ios_apps_last_month.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
-    
+
     # top gaming sdks
     ios_categories = ["Games"]
     android_categories = ["Games"] + FilterService.android_gaming_categories + FilterService.android_family_categories
-    
+
     ios_games = ios_apps.filter({"terms" => {"categories" => ios_categories, "execution" => "or"}})
     android_games = android_apps.filter({"terms" => {"categories" => android_categories, "execution" => "or"}})
     top_ios_game_sdks = ios_games.aggs({ top_sdks: {terms: { field: 'installed_sdks.id', size: 100 } }}).aggs["top_sdks"]["buckets"]
@@ -200,5 +200,12 @@ class Api::AdminController < ApplicationController
     else
       render json: { account: account }
     end
+  end
+
+  def ios_reset_app_data
+    app_id = params['appId']
+    ios_app = IosApp.find(app_id)
+    ios_app.reset_app_data
+    render json: {app_id: app_id}
   end
 end

@@ -41,16 +41,16 @@ class ApiController < ApplicationController
     filter_args.delete_if{ |k, v| v.nil? }
 
     filter_results = FilterService.filter_ios_apps(filter_args)
-    userbase_filter = (app_filters['userbaseFiltersOr'] || []).select{|filter| 
+    userbase_filter = (app_filters['userbaseFiltersOr'] || []).select{|filter|
       filter["status"].to_i == 0
-    }.map{|filter| 
+    }.map{|filter|
       filter["name"].try(:downcase)
     }
 
     apps_json = ios_app_enagement_json(filter_results, {user: @current_user, user_bases: userbase_filter})
-   
+
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
-    
+
     render json: {results: apps_json, resultsCount: results_count, pageNum: page_num}
   end
 
@@ -98,7 +98,7 @@ class ApiController < ApplicationController
 
     results = IosApp.joins(:ios_fb_ads).
                                        order("#{sort_by} #{order_by}").group('ios_apps.id')
-    results = results.page(page_num).per(page_size) if request.format.json? 
+    results = results.page(page_num).per(page_size) if request.format.json?
     respond_to do |format|
       format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }
       format.csv { render_csv(apps: results) }
@@ -116,7 +116,7 @@ class ApiController < ApplicationController
         label: view_context.week_formatter(week),
         platforms: platforms.map{|platform, batches| {
           platform: platform,
-          batches: batches.as_json(country_codes: country_codes) 
+          batches: batches.as_json(country_codes: country_codes)
         }}
       }}
     }
@@ -160,14 +160,14 @@ class ApiController < ApplicationController
   def newsfeed_follow
     followable_class = params['type'].constantize
     followable = followable_class.find(params['id'])
-    
+
     if @current_user.following?(followable)
       @current_user.unfollow(followable)
     else
       @current_user.follow(followable)
     end
     render json: {
-                  is_following: @current_user.following?(followable), 
+                  is_following: @current_user.following?(followable),
                   following: @current_user.following.as_json({user: @current_user})
                 }
   end
@@ -362,7 +362,7 @@ class ApiController < ApplicationController
     }
 
     filter_args.delete_if{ |k, v| v.nil? }
-    
+
     render_csv(filter_args: filter_args)
   end
 
@@ -404,7 +404,7 @@ class ApiController < ApplicationController
     else
       AndroidDeveloper.find(publisher_id)
     end
-    
+
     filter = params['filter']
 
     contacts = @contact_service.get_contacts_for_developer(developer, filter)
@@ -648,11 +648,11 @@ class ApiController < ApplicationController
     filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
 
     respond_to do |format|
-      format.json { 
+      format.json {
         apps_json = ios_app_enagement_json(filter_results)
-        render json: {apps: apps_json} 
+        render json: {apps: apps_json}
       }
-      format.csv { 
+      format.csv {
         apps = []
         ids = filter_results.map { |result| result.attributes["id"] }
         apps = IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") if ids.any?
@@ -810,12 +810,12 @@ class ApiController < ApplicationController
     )
     result_ids = FilterService.order_helper(result_ids, params[:sortBy], params[:orderBy]) if params[:sortBy] && params[:orderBy]
     result_ids = result_ids.limit(num_per_page).offset((page - 1) * num_per_page)
-    
+
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
     android_apps = result_ids.map{ |id| AndroidApp.find_by_id(id) }.compact
-    
+
     render json: {appData: android_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
   end
 
@@ -942,7 +942,7 @@ class ApiController < ApplicationController
     status = params['status']
     if status.to_i == 0
       countries = ISO3166::Country.all.select{|country| country.name.downcase.include?(query.downcase)}.map{|country| {id: country.alpha2, name: country.name, states: country.states.map{|k,v| {state_code: k, state: v["name"]}}, icon: "/lib/images/flags/#{country.alpha2.downcase}.png"}}
-    else 
+    else
       countries = AppStore.enabled.where("name LIKE ?", "#{query}%").map{|store| {id: store.country_code, name: store.name, icon: "/lib/images/flags/#{store.country_code.downcase}.png"}}
     end
     render json: {searchParam: query, results: countries}
@@ -997,8 +997,8 @@ class ApiController < ApplicationController
   end
 
   def csv_header
-    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories', 
-               'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID', 
+    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories',
+               'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID',
                'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads', 'Street Numbers', 'Street Names',
                'Cities', 'States', 'Countries', 'Postal Codes']
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|

@@ -123,6 +123,7 @@ Rails.application.routes.draw do
   get 'api/ios_sdks_exist' => 'api#ios_sdks_exist'
   post 'api/ios_start_scan' => 'api#ios_start_scan'
   get 'api/ios_scan_status' => 'api#ios_scan_status'
+  post 'api/ios_reset_app_data' => 'api#ios_reset_app_data'
 
   get 'api/android_sdks_exist' => 'api#android_sdks_exist'
   post 'api/android_start_scan' => 'api#android_start_scan'
@@ -138,6 +139,7 @@ Rails.application.routes.draw do
     post '/admin/follow_sdks' => 'admin#follow_sdks'
     get '/admin/export_to_csv' => 'admin#export_to_csv'
     get '/admin/account_users' => 'admin#account_users'
+    post 'admin/ios_reset_app_data' => 'admin#ios_reset_app_data'
   end
 
   # TODO: change from ewok to extension name

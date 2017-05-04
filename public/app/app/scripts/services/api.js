@@ -151,6 +151,13 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/sdk/scanned_count'
         })
+      },
+      iosResetAppData: function(appId) {
+        return $http({
+          method: 'POST',
+          url: API_URI_BASE + 'api/admin/ios_reset_app_data',
+          params: {appId}
+        })
       }
     };
   }]);

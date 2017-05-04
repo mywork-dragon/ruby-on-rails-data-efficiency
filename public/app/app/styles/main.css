@@ -4730,7 +4730,7 @@ li.sdk-tags a.edit {
 
 .list-info li, .international-data li {
   padding: 10px;
-  border-bottom: 1px solid #eee; 
+  border-bottom: 1px solid #eee;
 }
 
 .ms-insights.list-info li label {
@@ -7610,11 +7610,11 @@ span#dashboardResultsTableHeadingNumDisplayed {
   margin-top: 20% !important;
 }
 
-#newsfeedPage .location-filter { 
+#newsfeedPage .location-filter {
   margin-top: 20px;
 }
 
-#followMoreModal .modal-body { 
+#followMoreModal .modal-body {
   overflow: auto;
 }
 
@@ -8082,7 +8082,7 @@ pre {
 .ui-select .tooltip-inner {
   max-width: 350px;
   /*If max-width does not work, try using width instead */
-  width: 350px; 
+  width: 350px;
 }
 
 .multiselect-parent.btn-group.dropdown-multiselect {
@@ -8108,7 +8108,7 @@ button.dropdown-toggle .caret {
 }
 
 .dropdown-menu.dropdown-menu-form > li > a {
-  cursor: pointer;  
+  cursor: pointer;
 }
 
 .dropdown-menu.dropdown-menu-form > li > a:hover {
@@ -8246,9 +8246,9 @@ button.dropdown-toggle .caret {
   height: 10px;
   margin-top: 4px;
   display: block;
-  line-height: 0; 
+  line-height: 0;
   font-size: 0;
-  color: transparent; 
+  color: transparent;
   cursor: pointer;
 }
 
@@ -8264,7 +8264,7 @@ button.dropdown-toggle .caret {
   background: #ff9933;
 }
 
-.adminPageRow ul.activity .status.green { 
+.adminPageRow ul.activity .status.green {
   background: #48c651;
 }
 
@@ -8348,6 +8348,11 @@ button.dropdown-toggle .caret {
 }
 
 #followButton {
+  width: 175px;
+  display: inline-block;
+}
+
+#refreshDataButton {
   width: 175px;
   display: inline-block;
 }

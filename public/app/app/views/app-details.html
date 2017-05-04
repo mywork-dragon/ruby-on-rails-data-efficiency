@@ -196,6 +196,13 @@
                     <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
+                  <li ng-if="appPlatform == 'ios' && isAdminAccount">
+                    <span class="icon fa fa-refresh"></span>
+                    <label>Reset App Data:</label>
+                    <div id="refreshDataButton">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="resetAppData(appData.id)">Reset</button>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
