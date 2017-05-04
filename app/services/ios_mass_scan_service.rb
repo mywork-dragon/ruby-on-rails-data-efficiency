@@ -25,6 +25,18 @@ class IosMassScanService
       end
     end
 
+    def scan_latest_fb_ads(lookback_time: 1.day.ago)
+      ids = IosFbAd.select(:ios_app_id).distinct
+        .where('date_seen >= ?', lookback_time)
+        .pluck(:ios_app_id).compact
+
+      puts "Found #{ids.count} ios apps to scan"
+
+      return if ids.count == 0
+
+      run_ids("Running #{ids.count} apps that have advertised on FB since #{lookback_time}", ids)
+    end
+
     # helper method for running scans
     def run_new(n)
       tried = (IpaSnapshot.select(:ios_app_id).distinct.pluck(:ios_app_id) +
