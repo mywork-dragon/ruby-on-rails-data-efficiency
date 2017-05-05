@@ -43,7 +43,7 @@ class Website < ActiveRecord::Base
       uri = URI.parse('http://' + url) # give it a scheme for proper parsing
     end
 
-    self.domain = uri.host.gsub(/^www\./, '')
+    self.domain = uri.host.gsub(/^www\./, '').downcase
   end
 
   class << self
