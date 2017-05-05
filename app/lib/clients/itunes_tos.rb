@@ -29,7 +29,7 @@ class ItunesTos
 
   def self.last_updated_text(html)
     noko = Nokogiri::HTML(html)
-    noko.css('#main > p:last-child').text.strip
+    noko.css('main.main div.section-content > div.row > p:last-child').text.strip
   end
 
   def self.validate_date_text(text)
