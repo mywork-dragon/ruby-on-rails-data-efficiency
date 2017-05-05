@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427192345) do
+ActiveRecord::Schema.define(version: 20170505005650) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1313,9 +1313,9 @@ ActiveRecord::Schema.define(version: 20170427192345) do
     t.integer  "ios_app_current_snapshot_job_id", limit: 4
     t.text     "release_notes",                   limit: 65535
     t.integer  "developer_app_store_identifier",  limit: 4
-    t.decimal  "ratings_current_stars",                         precision: 10
+    t.decimal  "ratings_current_stars",                         precision: 3,  scale: 2
     t.integer  "ratings_current_count",           limit: 4
-    t.decimal  "ratings_all_stars",                             precision: 10
+    t.decimal  "ratings_all_stars",                             precision: 3,  scale: 2
     t.integer  "ratings_all_count",               limit: 4
     t.text     "icon_url_60x60",                  limit: 65535
     t.text     "icon_url_100x100",                limit: 65535
@@ -1330,8 +1330,8 @@ ActiveRecord::Schema.define(version: 20170427192345) do
     t.integer  "app_identifier",                  limit: 4
     t.integer  "mobile_priority",                 limit: 4
     t.integer  "user_base",                       limit: 4
-    t.datetime "created_at",                                                   null: false
-    t.datetime "updated_at",                                                   null: false
+    t.datetime "created_at",                                                             null: false
+    t.datetime "updated_at",                                                             null: false
     t.text     "app_link_urls",                   limit: 65535
     t.boolean  "has_in_app_purchases"
     t.text     "seller_name",                     limit: 65535
