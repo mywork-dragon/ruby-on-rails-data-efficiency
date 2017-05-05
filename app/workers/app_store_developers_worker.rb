@@ -67,25 +67,33 @@ class AppStoreDevelopersWorker
                 rescue ActiveRecord::RecordNotUnique
                   IosDeveloper.find_by_identifier!(@developer_identifier)
                 end
-
     developer.update!(name: seller_name) if seller_name != developer.name
+    store_ios_developer_websites(website_rows, developer)
+    developer
+  end
 
-    join_rows = website_rows.map do |row|
+  def store_ios_developer_websites(website_rows, developer)
+    existingJoinRows = IosDevelopersWebsite
+      .where(ios_developer_id: developer.id)
+      .where(website_id: website_rows.map(&:id))
+
+    join_rows = website_rows.reject do |website_row|
+      existingJoinRows.find {|joinRow| joinRow.ios_developer_id == developer.id && joinRow.website_id == website_row.id }
+    end.map do |new_website_row|
       dev_website = IosDevelopersWebsite.new(
         ios_developer_id: developer.id,
-        website_id: row.id
+        website_id: new_website_row.id
       )
       dev_website.set_is_valid
       dev_website
     end
 
     IosDevelopersWebsite.import join_rows
-    developer
   end
 
   def store_websites(websites)
-    existing = Website.where(url: websites)
-    missing = websites - existing.pluck(:url)
+    existing = Website.where(url: websites).to_a # convert 'existing' to array execute query now or else we'll return duplicates
+    missing = websites - existing.map(&:url)
     rows = missing.map { |url| Website.new(url: url) }
     rows.each { |row| row.run_callbacks(:create) { false } } # hook in before_create callbacks
     Website.import(
