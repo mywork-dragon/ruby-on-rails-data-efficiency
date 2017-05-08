@@ -1,13 +1,14 @@
 'use strict';
 
-angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authService", "$http", "pageTitleService", "listApiService", "apiService", 'slacktivity', 'searchService', 'sdkLiveScanService', 'authToken', '$location', '$rootScope',
-  function($scope, authService, $http, pageTitleService, listApiService, apiService, slacktivity, searchService, sdkLiveScanService, authToken, $location, $rootScope) {
+angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authService", "$http", "pageTitleService", "listApiService", "apiService", 'slacktivity', 'searchService', 'sdkLiveScanService', 'authToken', '$location', '$rootScope', 'AppPlatform',
+  function($scope, authService, $http, pageTitleService, listApiService, apiService, slacktivity, searchService, sdkLiveScanService, authToken, $location, $rootScope, AppPlatform) {
 
     var adIntelligenceCtrl = this;
     $scope.currentPage = 1;
     $scope.order = 'desc';
     $scope.category = 'first_seen_ads'
     $scope.rowSort = '-first_seen_ads'
+    $scope.appPlatform = AppPlatform;
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Ad Intelligence');
@@ -29,7 +30,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/ad_intelligence.json',
+        url: API_URI_BASE + 'api/' + $scope.appPlatform.platform + '_ad_intelligence.json',
         params: {pageNum: $scope.currentPage, orderBy: $scope.order, sortBy: $scope.category}
       }).success(function(data) {
         $scope.apps = data.results;
@@ -60,6 +61,12 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
           "appPlatform": app.type
         }
       );
+    }
+
+    $scope.toggledPlatform = function() {
+      $scope.apps = [];
+      $scope.numApps = 0;
+      adIntelligenceCtrl.load();
     }
 
     adIntelligenceCtrl.updateCSVUrl = function() {

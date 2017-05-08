@@ -85,7 +85,7 @@ class ApiController < ApplicationController
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
 
-  def ad_intelligence
+  def ios_ad_intelligence
     page_size = params[:pageSize] ? params[:pageSize].to_i : 20
     page_num = params[:pageNum] ? params[:pageNum].to_i : 1
     params[:sortBy] ||= 'first_seen_ads'
@@ -98,6 +98,26 @@ class ApiController < ApplicationController
 
     results = IosApp.joins(:ios_fb_ads).
                                        order("#{sort_by} #{order_by}").group('ios_apps.id')
+    results = results.page(page_num).per(page_size) if request.format.json?
+    respond_to do |format|
+      format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }
+      format.csv { render_csv(apps: results) }
+    end
+  end
+
+  def android_ad_intelligence
+    page_size = params[:pageSize] ? params[:pageSize].to_i : 20
+    page_num = params[:pageNum] ? params[:pageNum].to_i : 1
+    params[:sortBy] ||= 'first_seen_ads'
+    sort_by = if params[:sortBy] == 'first_seen_ads'
+      'min(date_seen)'
+    elsif params[:sortBy] == 'last_seen_ads'
+      'max(date_seen)'
+    end
+    order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
+
+    results = AndroidApp.joins(:android_ads).
+                                       order("#{sort_by} #{order_by}").group('android_apps.id')
     results = results.page(page_num).per(page_size) if request.format.json?
     respond_to do |format|
       format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }

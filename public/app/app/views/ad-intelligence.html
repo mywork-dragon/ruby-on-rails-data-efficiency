@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-md-6">
             <h4>
-              iOS Apps Advertising on 
+              <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>Apps Advertising on
               <i class="fa fa-facebook-official" aria-hidden="true"></i>
               Facebook
             </h4>
@@ -14,10 +14,10 @@
       </header>
       <div class="panel-heading" id="dashboardResultsTableHeading">
        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying {{appsDisplayedCount()}} of {{numApps | number}}</span>
-        
+
         <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: apps.length < 1 || !adIntelligenceCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-href="{{adIntelligenceCtrl.csvUrl}}">Export All to CSV</a>
         <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
-        
+
         <span class="ui-select pull-right">
           <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
             <option value="">Add Selected to List</option>
@@ -80,7 +80,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/ios/{{app.id}}" ng-click="onAdIntelligenceAppClick(app)">
+                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="onAdIntelligenceAppClick(app)">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -90,15 +90,16 @@
               </td>
               <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/ios/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td class="resultsTableAppUserbase">
-                <span ng-if="app.userBases.length == 1">
+                <span ng-if="appPlatform.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </span>
-                <a ng-if="app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                <a ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </a>
-                <script ng-if="app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                <script ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
                   <ul class="international-data">
                     <li ng-repeat="row in app.userBases">
                       <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
@@ -127,7 +128,7 @@
               </td>
             <!--   <td>
                 Last 30 Days: 30
-                All Time: 150 
+                All Time: 150
               </td> -->
             </tr>
           </tbody>
@@ -144,7 +145,7 @@
 
       <footer class="table-footer">
         <div class="row">
-          <div class="col-md-6 page-num-info">    
+          <div class="col-md-6 page-num-info">
           </div>
           <div class="col-md-6 text-right pagination-container">
             <uib-pagination class="pagination-sm"
@@ -169,4 +170,3 @@
     <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
   </div>
 </div>
-

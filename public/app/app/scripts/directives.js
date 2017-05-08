@@ -400,7 +400,7 @@ angular.module("app.directives", []).directive("imgHolder", [
         }
       };
     }])
-    .directive('appPlatformToggle', ["apiService", "$rootScope", "AppPlatform", 'dropdownCategoryFilter', function (apiService, $rootScope, AppPlatform, dropdownCategoryFilter) {
+    .directive('appPlatformToggle', ["apiService", "$rootScope", "$location", "AppPlatform", 'dropdownCategoryFilter', function (apiService, $rootScope, $location, AppPlatform, dropdownCategoryFilter) {
       return {
         replace: true,
         restrict: 'E',
@@ -412,18 +412,21 @@ angular.module("app.directives", []).directive("imgHolder", [
           $scope.changeAppPlatform = function (platform) {
             $scope.appPlatform.platform = platform;
             APP_PLATFORM = platform;
-            apiService.getCategories().success(function (data) {
-              $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
-              $rootScope.categoryModel = []
-            });
-            // Removes all sdk & download filters upon platform switch to iOS
-            if ($scope.appPlatform != 'android') {
-              for (var index = 0; index < $rootScope.tags.length; index++) {
-                var platformSpecificParameters = ['userbaseFiltersAnd', 'userbaseFiltersOr', 'sdkFiltersAnd', 'sdkFiltersOr', 'locationFiltersAnd', 'locationFiltersOr', 'downloads', 'categories', 'supportDesk']
-                if ($rootScope.tags[index] && platformSpecificParameters.indexOf($rootScope.tags[index].parameter) > -1) {
-                  if (($rootScope.tags[index].parameter == 'locationFiltersOr' || $rootScope.tags[index].parameter == 'locationFiltersAnd') && $rootScope.tags[index].value.status == "0") continue;
-                  $rootScope.tags.splice(index, 1);
-                  index -= 1;
+
+            if ($location.path() == '/search') {
+              apiService.getCategories().success(function (data) {
+                $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
+                $rootScope.categoryModel = []
+              });
+              // Removes all sdk & download filters upon platform switch to iOS
+              if ($scope.appPlatform != 'android') {
+                for (var index = 0; index < $rootScope.tags.length; index++) {
+                  var platformSpecificParameters = ['userbaseFiltersAnd', 'userbaseFiltersOr', 'sdkFiltersAnd', 'sdkFiltersOr', 'locationFiltersAnd', 'locationFiltersOr', 'downloads', 'categories', 'supportDesk']
+                  if ($rootScope.tags[index] && platformSpecificParameters.indexOf($rootScope.tags[index].parameter) > -1) {
+                    if (($rootScope.tags[index].parameter == 'locationFiltersOr' || $rootScope.tags[index].parameter == 'locationFiltersAnd') && $rootScope.tags[index].value.status == "0") continue;
+                    $rootScope.tags.splice(index, 1);
+                    index -= 1;
+                  }
                 }
               }
             }
