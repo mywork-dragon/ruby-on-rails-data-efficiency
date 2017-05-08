@@ -166,7 +166,7 @@ class GooglePlayService
     downloads_s = unique_itemprop('div', 'numDownloads').text.strip
     downloads_a = downloads_s.split(' - ').map{ |x| x.strip.gsub(',', '').to_i }
     
-    (downloads_a[0]..downloads_a[1])
+    (if downloads_a[0].nil? then 0 else downloads_a[0] end ..if downloads_a[1].nil? then 0 else downloads_a[1] end)
   end
 
   # Returns a string containing the content rating, or nil if data not available
