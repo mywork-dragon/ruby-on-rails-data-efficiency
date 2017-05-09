@@ -48,8 +48,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.initialPageLoadComplete = true; // hides page load spinner
         if (data.facebookAds) {
           for (var i = 0; i < data.facebookAds.length; i++) {
-            var ad = data.facebookAds[i]
-            ad.id = i
+            var ad = data.facebookAds[i];
+            ad.id = i;
           }
         }
 

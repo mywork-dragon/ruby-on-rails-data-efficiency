@@ -229,6 +229,7 @@ class AndroidApp < ActiveRecord::Base
         ratingsCount: newest_snapshot.try(:ratings_all_count),
         appIdentifier: self.app_identifier,
         displayStatus: self.display_type,
+        facebookAds: self.android_ads.take(10).as_json({no_app: true}),
         headquarters: self.headquarters
       })
     end

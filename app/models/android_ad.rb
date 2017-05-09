@@ -9,4 +9,15 @@ class AndroidAd < ActiveRecord::Base
     "https://s3.amazonaws.com/ms-android-automation-outputs/#{self.ad_id}/screenshot.png"
   end
 
+  def as_json(options={})
+    result = {
+      id: self.id,
+      ad_image: self.screenshot_url,
+      ad_attribution_sdks: self.advertised_app.ad_attribution_sdks,
+      date_seen: self.date_seen
+    }
+    result[:app] = self.source_app unless options[:no_app]
+    result
+  end
+
 end

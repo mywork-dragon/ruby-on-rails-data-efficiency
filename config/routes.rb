@@ -68,8 +68,8 @@ Rails.application.routes.draw do
   post 'api/newsfeed/add_country' => 'api#newsfeed_add_country'
   post 'api/newsfeed/remove_country' => 'api#newsfeed_remove_country'
 
-  get 'api/ios_ad_intelligence' => 'api#ios_ad_intelligence'
-  get 'api/android_ad_intelligence' => 'api#android_ad_intelligence'
+  get 'api/ad_intelligence/ios' => 'api#ios_ad_intelligence'
+  get 'api/ad_intelligence/android' => 'api#android_ad_intelligence'
 
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'

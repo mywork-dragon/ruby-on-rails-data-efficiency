@@ -30,7 +30,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/' + $scope.appPlatform.platform + '_ad_intelligence.json',
+        url: API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.json',
         params: {pageNum: $scope.currentPage, orderBy: $scope.order, sortBy: $scope.category}
       }).success(function(data) {
         $scope.apps = data.results;
@@ -71,7 +71,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
     adIntelligenceCtrl.updateCSVUrl = function() {
       var tokenParam =  $location.url().split('/ad-intelligence')[1] ? '&access_token=' : '?access_token='
-      adIntelligenceCtrl.csvUrl = API_URI_BASE + 'api/ad_intelligence.csv' + $location.url().split('/ad-intelligence')[1] + tokenParam + authToken.get()
+      adIntelligenceCtrl.csvUrl = API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.csv' + $location.url().split('/ad-intelligence')[1] + tokenParam + authToken.get()
     };
 
     // Computes class for last updated data in Last Updated column rows
