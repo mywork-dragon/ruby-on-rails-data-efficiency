@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+# Lor San Tekka needs to be added as a user on any private MightySignal repos you use
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use mysql as the database for Active Record
@@ -69,6 +71,8 @@ gem 'PageRankr', '4.2.1'
 gem 'newrelic_rpm'
 
 gem 'restforce', '2.3.0'
+gem 'metaforce', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git'
+gem 'omniauth-salesforce'
 
 gem 'httparty', '0.13.7'
 gem 'httpclient'

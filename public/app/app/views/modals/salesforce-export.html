@@ -1,0 +1,28 @@
+<div class="modal fade filter-modal" id="salesforceExportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" ng-hide="sfAdminConnected && sfUserConnected">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Export to Salesforce</h3>
+      </div>
+      <div class="modal-body">
+        <p ng-hide="sfAdminConnected">
+          A Salesforce Admin has to connect their Salesforce account with MightySignal before we can help you export MightySignal data to Salesforce.
+        </p>
+        <div ng-if="sfAdminConnected && !sfUserConnected">
+          <p>
+            Your Salesforce admin has integrated Salesforce with MightySignal but we still need your Salesforce account to make you the owner of any Accounts or Leads that you export.
+          </p>
+          <p> 
+            <a ng-click="authenticate('salesforce_user')" class="btn btn-primary">
+              <i class="fa fa-linkedin" aria-hidden="true"></i>
+              Log In Using Salesforce
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <salesforce-export-form app="appData" user="userInfo" ng-if="sfAdminConnected && sfUserConnected"></salesforce-export-form>
+  </div>
+</div>

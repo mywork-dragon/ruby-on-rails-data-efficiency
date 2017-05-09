@@ -78,9 +78,6 @@
               <strong ng-if="$root.isAdminAccount">Account Settings</strong>
               <div class="checkbox" ng-if="$root.isAdminAccount">
                 <label>
-                  <input type="checkbox" ng-checked="account.can_view_support_desk" ng-click="settingChanged('can_view_support_desk', account)"> Support Desk
-                </label>
-                <label>
                   <input type="checkbox" ng-checked="account.can_view_ad_spend" ng-click="settingChanged('can_view_ad_spend', account)">Ad Spend
                 </label>
                 <label>
@@ -98,13 +95,29 @@
                 <label>
                   <input type="checkbox" ng-checked="account.can_view_ios_live_scan" ng-click="settingChanged('can_view_ios_live_scan', account)"> iOS Live Scan
                 </label>
+                <label>
+                  <input type="checkbox" ng-checked="account.can_use_salesforce" ng-click="settingChanged('can_use_salesforce', account)"> Salesforce
+                </label>
                 <label class="select">
                   <select ng-model="account.seats_count" ng-options="i for i in range(50)" ng-change="settingChanged('seats_count', account, i)">
                   </select>
                   Seats
                 </label>
               </div>
-              <br>
+              <div class="salesforce-integration" ng-if="account.can_use_salesforce">
+                <strong>Salesforce Integration</strong>
+                <p>Use MightySignal data in Salesforce! Our Salesforce integration will require a Salesforce account with admin privileges.
+                <div class="salesforce">
+                  <a ng-hide="account.salesforce_connected" ng-click="authenticate('salesforce', account)" class="btn btn-primary">
+                    <i class="fa fa-cloud" aria-hidden="true"></i>
+                    Connect Salesforce
+                  </a>
+                  <a ng-show="account.salesforce_connected" class="btn btn-primary disabled">
+                    <i class="fa fa-cloud" aria-hidden="true"></i>
+                    Salesforce Connected
+                  </a>
+                </div>
+              </div>
               <strong ng-if="account.following.length">Following</strong>
               <div class="ui-tags-input" ng-if="account.following.length">
                 <ul class="tags">

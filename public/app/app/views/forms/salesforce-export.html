@@ -1,0 +1,80 @@
+<form class="modal-content" name="sfExportForm" novalidate ng-submit="$event.stopPropagation(); export()">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title" id="myModalLabel">Export to Salesforce</h3>
+  </div>
+  <div class="modal-body">
+    <h4 ng-show="isExporting" class="export-msg">
+      If this is your first time exporting, it will take longer because we need to create new fields for you.
+      <br>
+    </h4>
+    <div ng-show="isExporting" id="wrap_spinner">
+      <div class="loading outer">
+        <div class="loading inner"></div>
+      </div>
+    </div>
+    <div ng-hide="exportId || isExporting" class="salesforce-export-form">
+      <label>Salesforce Account</label>
+      <span>
+        <img width="20" ng-src={{user.salesforceImageUrl}} />
+        {{user.salesforceName}}
+      </span>
+      <br>
+      <br>
+      <label>Target Object</label>
+      <span class="ui-select">
+        <select ng-model="sfObject" ng-change="selectedExportClass()">
+          <option value="">Choose object</option>
+          <option value="Account">Account</option>
+          <option value="Lead">Lead</option>
+          <!-- <option value="Opportunity">Opportunity</option> -->
+        </select>
+      </span>
+      <br>
+      <div ng-if="sfObject" class="sf-form">
+        <h4>1. Choose an existing {{sfObject}}</h3>
+        <p>Use this if you want to import MightySignal data to an existing {{sfObject}}. If left blank, we will create a new {{sfObject}} object</p>
+        <angucomplete-alt id="salesforce-autocomplete"
+                           placeholder="{{placeholderText()}}"
+                           selected-object="selectedObject"
+                           remote-url="{{objectAutocompleteUrl()}}"
+                           remote-url-data-field="results"
+                           search-fields="name"
+                           title-field="name"
+                           id-field="id"
+                           clear-selected="true"
+                           minlength="1"
+                           input-class="form-control form-control-small autocomplete-filter"
+                           ng-hide="existingObject">
+        </angucomplete-alt>
+        <span class='sdk-filter' ng-if="existingObject">
+          {{existingObject.name}}
+          <a class="remove-button" ng-click="removeSelectedObject()">×</a>
+        </span>
+        <h4>2. Where should we export MightySignal data?</h3>
+        <ul class="salesforce-fields">
+          <li ng-repeat="field in sfMappingForm[sfObject]" ng-if="!field.platform || field.platform == app.platform">
+            <label>{{field.name}}</label>
+            <span ng-if="field.fields" class="ui-select">
+              <select name="{{field.name}}" ng-required="true" ng-model='sfMapping[sfObject][field.name]' ng-options="option.name for option in field.fields track by option.id">
+                <option value="">Choose field</option>
+              </select>
+            </span>
+            <input name="{{field.name}}" ng-required="true" ng-model='sfMapping[sfObject][field.name].data' ng-if="!field.fields" type="text" class="form-control">
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div ng-show="exportId">
+      <h4>Your {{sfObject}} has been {{existingObject ? 'updated' : 'created'}}!
+      <p>
+        <a href="{{salesforceSettings.salesforceUrl}}/{{exportId}}" class="btn btn-primary" target="_blank">
+          View your {{sfObject}}
+        </a>
+      </p>
+    </div>
+  </div>
+  <div class="modal-footer" ng-hide="exportId || isExporting || !sfObject">
+    <button class="btn btn-primary" ng-disabled="sfExportForm.$invalid" type="submit">Export</button>
+  </div>
+</form>

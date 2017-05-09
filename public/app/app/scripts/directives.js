@@ -286,7 +286,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               numApps: '=numApps'
             },
             template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
-            controller: function ($scope, $element) {
+            controller: function ($scope, $element) { 
 
               $scope.checkboxMasterChange = function () {
                 if ($scope.checkboxMaster) {
@@ -397,6 +397,140 @@ angular.module("app.directives", []).directive("imgHolder", [
 
           });
 
+        }
+      };
+    }])
+    .directive('salesforceExportForm', ['$http', 'authService', 'slacktivity', function ($http, authService, slacktivity) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          app: '=',
+          user: '='
+        },
+        templateUrl: '/app/app/views/forms/salesforce-export.html',
+        controller: function ($scope, $element) {
+          $scope.existingObject;
+          $scope.sfMapping = {'Lead': {}, 'Account': {}}
+          $scope.sfMappingForm = {
+            'Lead': [
+              {id: 'MightySignal Publisher ID', name: 'MightySignal Publisher ID', fields: [{id: 'MightySignal_Publisher_ID__c', name: 'New Field: MightySignal Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {platform: 'ios', id: 'App Store Publisher ID', name: 'App Store Publisher ID', fields: [{id: 'App_Store_Publisher_ID__c', name: 'New Field: App Store Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {platform: 'android', id: 'Google Play Publisher ID', name: 'Google Play Publisher ID', fields: [{id: 'Google_Play_Publisher_ID__c', name: 'New Field: Google Play Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Company', name: 'Company'}]},
+              {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
+              {id: 'SDK Summary', name: 'SDK Summary', fields: [{id: 'MightySignal_SDK_Summary__c', name: 'New Field: MightySignal SDK Summary'}]},
+              {id: 'MightySignal Link', name: 'MightySignal Link', fields: [{id: 'MightySignal_Link__c', name: 'New Field: MightySignal Link'}]},
+              {id: 'Email', name: 'Email'},
+              {id: 'FirstName', name: 'First Name'},
+              {id: 'LastName', name: 'Last Name'},
+              {id: 'Title', name: 'Title'}, 
+            ],
+            'Account': [
+              {id: 'MightySignal Publisher ID', name: 'MightySignal Publisher ID', fields: [{id: 'MightySignal_Publisher_ID__c', name: 'New Field: MightySignal Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {platform: 'ios', id: 'App Store Publisher ID', name: 'App Store Publisher ID', fields: [{id: 'App_Store_Publisher_ID__c', name: 'New Field: App Store Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {platform: 'android', id: 'Google Play Publisher ID', name: 'Google Play Publisher ID', fields: [{id: 'Google_Play_Publisher_ID__c', name: 'New Field: Google Play Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
+              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Name', name: 'Name'}]},
+              {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
+              {id: 'MightySignal Link', name: 'MightySignal Link', fields: [{id: 'MightySignal_Link__c', name: 'New Field: MightySignal Link'}]},
+              {id: 'SDK Summary', name: 'SDK Summary', fields: [{id: 'MightySignal_SDK_Summary__c', name: 'New Field: MightySignal SDK Summary'}]},
+            ],
+          }
+
+          // load salesforce settings
+          authService.accountInfo()
+          .success(function(data) {
+            $scope.salesforceSettings = data.salesforce_settings || {default_mapping: {}}
+            $scope.salesforceSettings.salesforceUrl = data.instance_url
+            if ($scope.salesforceSettings.default_object) {
+              $scope.sfObject = $scope.salesforceSettings.default_object
+              $scope.selectedExportClass()
+            }
+          })
+
+          $scope.selectedExportClass = function() {
+            $scope.removeSelectedObject()
+            var mapping = $scope.salesforceSettings.default_mapping[$scope.sfObject]
+
+            // if there is only one option for mapping, choose it by default
+            $scope.sfMappingForm[$scope.sfObject].forEach(function(field) {
+              if (field.fields && field.fields.length == 1) {
+                $scope.sfMapping[$scope.sfObject][field.name] = field.fields[0]
+              } else if (!field.fields) {
+                $scope.sfMapping[$scope.sfObject][field.name] = {id: field.id}
+              }
+
+              // populate mapping from saved salesforce settings
+              if (mapping && mapping[field.id] && (!field.platform || field.platform == $scope.app.platform)) {
+                $scope.sfMapping[$scope.sfObject][field.name] = mapping[field.id]
+                if (!$scope.sfMapping[$scope.sfObject][field.name].id) {
+                  $scope.sfMapping[$scope.sfObject][field.name].id = field.id
+                }
+              }
+            })
+          }
+
+          $scope.objectAutocompleteUrl = function() {
+            return API_URI_BASE + 'api/salesforce/search?model=' + $scope.sfObject  + '&query='
+          }
+
+          $scope.selectedObject = function ($item) {
+            $scope.existingObject = $item.originalObject;
+          }
+
+          $scope.removeSelectedObject = function() {
+            $scope.existingObject = null;
+          }
+
+          $scope.placeholderText = function() {
+            switch ($scope.sfObject) {
+              case 'Account':
+                return "Search on Account Name"
+              case 'Lead':
+                return "Search on Lead Company Name"
+            }
+          }
+
+          $scope.export = function() {
+            var params = {mapping: $scope.sfMapping[$scope.sfObject], model: $scope.sfObject}
+            if ($scope.existingObject) {
+              params.objectId = $scope.existingObject.id
+            }
+
+            params[$scope.app.platform + '_app_id'] =  $scope.app.id
+
+            var slacktivityData = {
+              "title": "Exported App to Salesforce",
+              "color": "#FFD94D", // yellow
+              "publisherName": $scope.app.publisher.name,
+              "appName": $scope.app.name,
+              "appId": $scope.app.id,
+              "appPlatform": $scope.app.platform
+            };
+            slacktivity.notifySlack(slacktivityData);
+            mixpanel.track(
+              "Exported App to Salesforce", {
+                "publisherName": $scope.app.publisher.name,
+                "appName": $scope.app.name,
+                "appId": $scope.app.id,
+                "appPlatform": $scope.app.platform
+              }
+            );
+
+            $scope.isExporting = true
+            return $http({
+              method: 'POST',
+              url: API_URI_BASE + 'api/salesforce/export',
+              params: params
+            }).success(function(data) {
+              $scope.isExporting = false
+              $scope.exportId = data.success
+            }).error(function(data) {
+              $scope.isExporting = false
+              alert('There was an error exporting your ' + $scope.sfObject + '. Please try again.')
+            });
+
+          }
         }
       };
     }])

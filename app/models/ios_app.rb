@@ -119,13 +119,17 @@ class IosApp < ActiveRecord::Base
     fb_app_data.try(:[], 'weekly_active_users').try(:to_i)
   end
 
+  def platform
+    'ios'
+  end
+
   def as_json(options={})
     newest_snapshot = self.newest_ios_app_snapshot
 
     batch_json = {
       id: self.id,
       type: self.class.name,
-      platform: 'ios',
+      platform: platform,
       releaseDate: self.release_date,
       name: self.name,
       mobilePriority: first_international_snapshot.try(:mobile_priority) || mobile_priority,
@@ -223,6 +227,10 @@ class IosApp < ActiveRecord::Base
 
   def description
     first_international_snapshot.try(:description) || newest_ios_app_snapshot.try(:description)
+  end
+
+  def last_scanned
+    get_last_ipa_snapshot(scan_success: true).try(:good_as_of_date)
   end
 
   def developer_app_store_id
@@ -466,8 +474,8 @@ class IosApp < ActiveRecord::Base
       developer.try(:identifier),
       self.fortune_rank,
       developer.try(:get_website_urls).try(:join, ', '),
-      'http://www.mightysignal.com/app/app#/app/ios/' + self.id.to_s,
-      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/ios/' + developer.id.to_s : nil,
+      self.link,
+      developer.try(:link),
       self.ratings_all_count,
       nil, #downloads for android
       hqs.map{|hq| hq[:street_number]}.join('|'),
@@ -527,12 +535,14 @@ class IosApp < ActiveRecord::Base
     end
   end
 
-  def link(stage: :production)
-    if stage == :production
-      "http://mightysignal.com/app/app#/app/ios/#{id}"
+  def link(stage: :production, utm_source: nil)
+    app_link = if stage == :production
+      "https://mightysignal.com/app/app#/app/ios/#{id}"
     elsif stage == :staging
-      "http://ms-staging.com/app/app#/app/ios/#{id}"
+      "https://staging.mightysignal.com/app/app#/app/ios/#{id}"
     end
+    app_link += "?utm_source=#{utm_source}" if utm_source
+    app_link
   end
 
   def reset_app_data

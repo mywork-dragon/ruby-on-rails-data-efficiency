@@ -8233,6 +8233,10 @@ button.dropdown-toggle .caret {
   margin: 0;
 }
 
+#adminPage .salesforce-integration {
+  margin: 20px 0;
+}
+
 .adminPageRow .resend-btn {
   margin-top: 10px;
 }
@@ -8447,6 +8451,36 @@ span.ad_seen {
   margin: 20px -15px;
 }
 
+#salesforceExportModal .social-button {
+  margin: 0;
+}
+
+#salesforceExportModal .sf-form {
+  margin: 15px 0 0 0;
+}
+
+#salesforceExportModal #wrap_spinner {
+  padding: 20px 0;
+}
+
+#salesforceExportModal .ui-select, #salesforceExportModal .angucomplete-holder {
+  margin-left: 0;
+}
+
+.salesforce-fields {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.salesforce-fields li {
+  margin: 14px 0px;
+}
+
+.salesforce-fields .ui-select {
+  margin: 0;
+}
+
 .social-button a {
   width: 100%;
   padding: 12px 0;
@@ -8577,6 +8611,19 @@ h4.red {
 .modal-content .rzslider .rz-tick-value {
   top: -25px;
   font-size: 12px;
+}
+
+.salesforce-export-form label {
+  width: 200px;
+}
+
+.salesforce-export-form input[type="text"] {
+  width: 300px;
+  display: inline-block;
+}
+
+.salesforce-export-form .angucomplete-dropdown {
+  width: 300px;
 }
 
 

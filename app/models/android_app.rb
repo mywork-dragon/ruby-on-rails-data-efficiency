@@ -154,8 +154,8 @@ class AndroidApp < ActiveRecord::Base
       developer.try(:identifier),
       self.fortune_rank,
       developer.try(:get_website_urls).try(:join, ', '),
-      'http://www.mightysignal.com/app/app#/app/android/' + self.id.to_s,
-      developer.present? ? 'http://www.mightysignal.com/app/app#/publisher/android/' + developer.id.to_s : nil,
+      self.link,
+      developer.try(:link),
       self.ratings_all_count,
       self.downloads_human,
       hqs.map{|hq| hq[:street_number]}.join('|'),
@@ -171,6 +171,14 @@ class AndroidApp < ActiveRecord::Base
     row
   end
 
+  def platform
+    'android'
+  end
+
+  def last_scanned
+    newest_successful_apk_snapshot ? newest_successful_apk_snapshot.good_as_of_date : nil
+  end
+
   def as_json(options={})
     newest_snapshot = self.newest_android_app_snapshot
 
@@ -178,7 +186,7 @@ class AndroidApp < ActiveRecord::Base
       id: self.id,
       type: self.class.name,
       name: newest_snapshot.try(:name),
-      platform: 'android',
+      platform: self.platform,
       mobilePriority: self.mobile_priority,
       adSpend: self.old_ad_spend?,
       lastUpdated: self.last_updated,
@@ -247,12 +255,14 @@ class AndroidApp < ActiveRecord::Base
     batch_json
   end
 
-  def link(stage: :production)
-    if stage == :production
-      "http://mightysignal.com/app/app#/app/android/#{id}"
+  def link(stage: :production, utm_source: nil)
+    app_link = if stage == :production
+      "https://mightysignal.com/app/app#/app/android/#{id}"
     elsif stage == :staging
-      "http://ms-staging.com/app/app#/app/android/#{id}"
+      "https://staging.mightysignal.com/app/app#/app/android/#{id}"
     end
+    app_link += "?utm_source=#{utm_source}" if utm_source
+    app_link
   end
 
   def app_available?

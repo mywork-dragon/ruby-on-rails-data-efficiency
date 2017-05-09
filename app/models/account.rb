@@ -7,6 +7,8 @@ class Account < ActiveRecord::Base
 
   has_many :api_tokens
 
+  serialize :salesforce_settings, JSON
+
   def active_users
     self.users.where(access_revoked: false).size
   end
@@ -54,7 +56,8 @@ class Account < ActiveRecord::Base
   def as_json(options={})
     super().merge(
                   type: self.class.name, 
-                  active_users: self.active_users,
+                  active_users: active_users,
+                  salesforce_connected: salesforce_uid.present?
                   )
   end
   

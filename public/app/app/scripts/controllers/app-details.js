@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
-  function($scope, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
+  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -9,9 +9,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo
     $scope.currentContactsPage = 1;
     $scope.contactsPerPage = 10;
-
-    var userInfo = {}; // User info set
-    authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
     // Facebook ads slideshow
     $scope.myInterval = 0;
@@ -28,10 +25,34 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
         $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
         $scope.canViewAdAttribution = data.can_view_ad_attribution;
         $scope.isAdminAccount = data.is_admin_account;
+        $scope.canUseSalesforce = data.can_use_salesforce;
+        $scope.sfAdminConnected = data.sf_admin_connected;
+        $scope.sfUserConnected = data.sf_user_connected;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;
       });
+
+    $scope.getSalesforceData = function() {
+      authService.userInfo().success(function(data) { 
+        $scope.userInfo = {}
+        $scope.userInfo.email = data.email; 
+        $scope.userInfo.salesforceName = data.salesforce_name;
+        $scope.userInfo.salesforceImageUrl = data.salesforce_image_url;
+      });
+    }
+
+    $scope.authenticate = function(provider) {
+      $auth.authenticate(provider, {token: authToken.get()})
+      .then(function(response) {
+        $scope.sfUserConnected = true
+        $scope.getSalesforceData();
+      })
+      .catch(function(response) {
+        $scope.sfUserConnected = false
+        alert(response.data.error)
+      });
+    };
 
     $scope.load = function() {
 
@@ -241,5 +262,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", "$http", "$rout
           $scope.contactsLoaded = false;
         });
     };
+
+    $scope.getSalesforceData();
   }
+
 ]);

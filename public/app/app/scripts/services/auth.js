@@ -108,6 +108,9 @@ angular.module("appApp")
       userInfo: function() {
         return $http.get('/auth/user/info');
       },
+      accountInfo: function() {
+        return $http.get('/auth/account/info');
+      },
       referrer: function(path) {
         if (path) { ref = path; }
         return ref;

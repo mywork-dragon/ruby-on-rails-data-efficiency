@@ -131,16 +131,23 @@ Rails.application.routes.draw do
   get 'api/android_scan_status' => 'api#android_scan_status'
 
   namespace :api, defaults: {format: 'json'} do
-    get '/admin' => 'admin#index'
-    post '/admin/update' => 'admin#update'
-    post '/admin/create_account' => 'admin#create_account'
-    post '/admin/create_user' => 'admin#create_user'
-    post '/admin/resend_invite' => 'admin#resend_invite'
-    post '/admin/unlink_accounts' => 'admin#unlink_accounts'
-    post '/admin/follow_sdks' => 'admin#follow_sdks'
-    get '/admin/export_to_csv' => 'admin#export_to_csv'
-    get '/admin/account_users' => 'admin#account_users'
-    post 'admin/ios_reset_app_data' => 'admin#ios_reset_app_data'
+    scope '/admin' do
+      get '/' => 'admin#index'
+      post 'update' => 'admin#update'
+      post 'create_account' => 'admin#create_account'
+      post 'create_user' => 'admin#create_user'
+      post 'resend_invite' => 'admin#resend_invite'
+      post 'unlink_accounts' => 'admin#unlink_accounts'
+      post 'follow_sdks' => 'admin#follow_sdks'
+      get 'export_to_csv' => 'admin#export_to_csv'
+      get 'account_users' => 'admin#account_users'
+      post 'ios_reset_app_data' => 'admin#ios_reset_app_data'
+    end
+
+    scope '/salesforce' do
+      get 'search' => 'salesforce#search'
+      post 'export' => 'salesforce#export'
+    end
   end
 
   # TODO: change from ewok to extension name
@@ -151,6 +158,7 @@ Rails.application.routes.draw do
   post 'auth/validate_token' => 'auth#validate_token'
   get 'auth/permissions' => 'auth#permissions'
   get 'auth/user/info' => 'auth#user_info'
+  get 'auth/account/info' => 'auth#account_info'
   post 'auth/:provider', to: 'auth#authenticate_provider'
 
   # API for customers

@@ -8,6 +8,19 @@ GIT
       sidekiq
 
 GIT
+  remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git
+  revision: 543dec4cec325b390e8a719f455e5a912760ed25
+  specs:
+    metaforce (1.0.7)
+      activesupport
+      hashie (~> 3.5.5)
+      listen (~> 0.6.0)
+      rb-fsevent (~> 0.9.1)
+      rubyzip (~> 1.1.7)
+      savon (~> 1.2.0)
+      thor (~> 0.19.4)
+
+GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/mighty_aws.git
   revision: 550bf4289fb96ff09188bbbd0aa3abc611b49bd4
   tag: 0.8.7
@@ -73,6 +86,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
+    akami (1.2.2)
+      gyoku (>= 0.4.0)
+      nokogiri
     arel (6.0.4)
     ast (2.3.0)
     autoprefixer-rails (6.7.6)
@@ -176,6 +192,8 @@ GEM
     googl (0.7.1)
       httparty (~> 0.10)
       json (>= 1.4.6)
+    gyoku (0.4.6)
+      builder (>= 2.1.2)
     haml (4.0.7)
       tilt
     haml-rails (0.9.0)
@@ -205,6 +223,8 @@ GEM
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
+    httpi (1.1.1)
+      rack
     i18n (0.7.0)
     i18n_data (0.7.0)
     iso_country_codes (0.7.1)
@@ -230,6 +250,7 @@ GEM
       activesupport (>= 3.0.0)
     kgio (2.11.0)
     libv8 (3.16.14.17)
+    listen (0.6.0)
     lograge (0.4.1)
       actionpack (>= 4, < 5.1)
       activesupport (>= 4, < 5.1)
@@ -268,6 +289,22 @@ GEM
       mini_portile (~> 0.6.0)
     nokogumbo (1.4.1)
       nokogiri
+    nori (1.1.5)
+    oauth2 (1.1.0)
+      faraday (>= 0.8, < 0.10)
+      jwt (~> 1.0, < 1.5.2)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
+    omniauth (1.3.1)
+      hashie (>= 1.2, < 4)
+      rack (>= 1.0, < 3)
+    omniauth-oauth2 (1.4.0)
+      oauth2 (~> 1.0)
+      omniauth (~> 1.2)
+    omniauth-salesforce (1.0.5)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.0)
     open_uri_redirections (0.2.1)
     paperclip (5.0.0)
       activemodel (>= 4.2.0)
@@ -314,6 +351,7 @@ GEM
     rainbow (2.2.1)
     raindrops (0.17.0)
     rake (12.0.0)
+    rb-fsevent (0.9.8)
     rdoc (4.3.0)
     recaptcha (4.0.1)
       json
@@ -365,6 +403,14 @@ GEM
       sass (~> 3.2.2)
       sprockets (~> 2.8, < 3.0)
       sprockets-rails (~> 2.0)
+    savon (1.2.0)
+      akami (~> 1.2.0)
+      builder (>= 2.1.2)
+      gyoku (~> 0.4.5)
+      httpi (~> 1.1.0)
+      nokogiri (>= 1.4.0)
+      nori (~> 1.1.0)
+      wasabi (~> 2.5.0)
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
@@ -439,7 +485,7 @@ GEM
       simple_oauth (~> 0.3.0)
     typhoeus (1.1.2)
       ethon (>= 0.9.0)
-    tzinfo (1.2.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uglifier (3.1.2)
       execjs (>= 0.3.0, < 3)
@@ -452,6 +498,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    wasabi (2.5.1)
+      httpi (~> 1.0)
+      nokogiri (>= 1.4.0)
     whenever (0.9.4)
       chronic (>= 0.6.3)
     www-favicon (0.0.6)
@@ -502,6 +551,7 @@ DEPENDENCIES
   jwt (= 1.0.0)
   kaminari (= 0.16.3)
   lograge (~> 0.4.1)
+  metaforce!
   mighty_aws!
   minitest (~> 5.1)
   mixpanel-ruby (= 2.1.0)
@@ -511,6 +561,7 @@ DEPENDENCIES
   net-ssh (= 2.9.1)
   newrelic_rpm
   nokogiri (= 1.6.4.1)
+  omniauth-salesforce
   open_uri_redirections
   paperclip (~> 5.0.0.beta2)
   parallel (= 1.6.0)

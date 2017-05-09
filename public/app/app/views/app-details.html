@@ -183,6 +183,25 @@
                       </select>
                     </span>
                   </li>
+                  <li ng-if="canUseSalesforce">
+                    <span class="icon fa fa-cloud"></span>
+                    <label>Add to Salesforce:</label>
+                    <div id="followButton">
+                      <button data-toggle="modal" class="btn btn-primary btn-block" data-target="#salesforceExportModal">Export</button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="appPageLinksPanel" class="panel panel-default">
+          <div class="panel-heading"><strong>Links</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
                   <li>
                     <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                     <label>App Store Page:</label>
@@ -191,7 +210,7 @@
                   </li>
                   <li id="linkedinLinksList">
                     <span class="icon fa fa-linkedin"></span>
-                    <label>LinkedIn Links:</label>
+                    <label>LinkedIn:</label>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
                     <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
@@ -511,6 +530,7 @@
     </div>
 
     <!-- Modals -->
+    <aside ng-include="'/app/app/views/modals/salesforce-export.html'"></aside>
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
     <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
     <aside ng-include="'/app/app/views/modals/app-details.html'"></aside>

@@ -223,7 +223,7 @@ class ApiController < ApplicationController
     developer = AndroidDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
-      apps, num_apps = developer.sorted_android_apps(params[:sortBy], params[:orderBy], params[:pageNum])
+      apps, num_apps = developer.sorted_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,
@@ -241,7 +241,7 @@ class ApiController < ApplicationController
     developer = IosDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
-      apps, num_apps = developer.sorted_ios_apps(params[:sortBy], params[:orderBy], params[:pageNum])
+      apps, num_apps = developer.sorted_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
-  function($scope, $rootScope, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
+  function($scope, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
 
     var adminCtrl = this
     $scope.initialPageLoadComplete = false;
@@ -31,6 +31,17 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", "$rootScope", 'slack
         alert(data.errors)
       })
     }
+
+    $scope.authenticate = function(provider, account) {
+      $auth.authenticate(provider, {token: authToken.get()})
+      .then(function(response) {
+        account.salesforce_connected = true
+      })
+      .catch(function(response) {
+        account.salesforce_connected = false
+        alert(response.data.error)
+      });
+    };
 
     $scope.unlinkAccounts = function($accountIndex, $userIndex) {
       var user = $scope.accounts[$accountIndex].users[$userIndex]

@@ -71,18 +71,41 @@ class User < ActiveRecord::Base
 
   def self.from_auth(params, token)
     params = params.with_indifferent_access
+    provider = params[:provider]
     # if the user is coming from an invite
     if token && decoded_token = AuthToken.decode(token)
-      return if User.where("#{params[:provider]}_uid" => params[:uid]).first
       user = User.find(decoded_token["user_id"])
-      if user.send("#{params[:provider]}_uid").blank?
-        user.send("#{params[:provider]}_uid=", params[:uid])
-        user.send("#{params[:provider]}_token=", params[:token])
-        user.first_name = params[:first_name]
-        user.last_name = params[:last_name]
-        user.profile_url = params["#{params[:provider]}_profile"]
-        user.save
+      # for salesforce save on account instead of user
+      case provider
+      when 'salesforce'
+        account = user.account
+        account.salesforce_uid = params[:uid]
+        account.salesforce_token = params[:token]
+        account.salesforce_refresh_token = params[:refresh_token]
+        account.salesforce_instance_url = params[:instance_url]
+        account.save
+        SalesforceWorker.perform_async(:setup_export, user.id)
         user
+      when 'salesforceuser'
+        user.salesforce_name = "#{params[:first_name]} #{params[:last_name]}"
+        user.salesforce_token = params[:token]
+        user.salesforce_uid = params[:uid]
+        user.salesforce_token = params[:token]
+        user.salesforce_image_url = params[:image_url]
+        user
+      else
+        return if User.where("#{params[:provider]}_uid" => params[:uid]).first
+        
+        if user.send("#{params[:provider]}_uid").blank?
+          user.send("#{params[:provider]}_uid=", params[:uid])
+          user.send("#{params[:provider]}_token=", params[:token])
+
+          user.first_name = params[:first_name]
+          user.last_name = params[:last_name]
+          user.profile_url = params["#{params[:provider]}_profile"]
+          user.save
+          user
+        end
       end
     # we are logging in a user that has already previously connected linkedin or google
     elsif user = User.where("#{params[:provider]}_uid" => params[:uid]).first

@@ -9,7 +9,12 @@ class SalesforceWorker
   end
 
   def add_lead(data)
-    LeadSalesforceService.add_to_salesforce(data)
+    SalesforceLeadService.add_to_salesforce(data)
+  end
+
+  def setup_export(user_id)
+    user = User.find(user_id)
+    SalesforceExportService.new(user: user).install
   end
 
 end

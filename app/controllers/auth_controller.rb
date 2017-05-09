@@ -28,7 +28,7 @@ class AuthController < ApplicationController
   end
 
   def authenticate_provider
-    @oauth = "Oauth::#{params['provider'].titleize}".constantize.new(params)     
+    @oauth = "Oauth::#{params['provider'].classify}".constantize.new(params)     
     if @oauth.authorized?
       @user = User.from_auth(@oauth.formatted_user_data, params[:token])
       if @user
@@ -63,17 +63,6 @@ class AuthController < ApplicationController
     end
   end
 
-  
-  # don't use this yet
-  def validate_token
-    # token = params[:]
-    # decoded_auth_token = AuthToken.decode(http_auth_header_content)
-    #
-    # render true if decoded_auth_token && User.find(decoded_auth_token[:user_id]) && !decoded_auth_token
-    #
-    # return false
-  end
-
   def permissions
     user = User.find(decoded_auth_token[:user_id])
 
@@ -90,12 +79,28 @@ class AuthController < ApplicationController
                is_admin_account: account.is_admin_account?,
                can_view_ios_live_scan: account.can_view_ios_live_scan,
                connected_oauth: user.connected_oauth?,
+               can_use_salesforce: user.account.can_use_salesforce?,
+               sf_admin_connected: user.account.salesforce_uid.present?,
+               sf_user_connected: user.salesforce_uid.present?,
                territories: user.territories
            }
   end
 
   def user_info
-    render json: { email: User.find(decoded_auth_token[:user_id]).email }
+    user = User.find(decoded_auth_token[:user_id])
+    render json: { 
+      email: user.email,
+      salesforce_name: user.salesforce_name,
+      salesforce_image_url: user.salesforce_image_url
+    }
+  end
+
+  def account_info
+    account = @current_user.account
+    render json: { 
+      salesforce_settings: account.salesforce_settings, 
+      instance_url: account.salesforce_instance_url 
+    }
   end
   
 end

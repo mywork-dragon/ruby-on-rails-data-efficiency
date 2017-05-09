@@ -1,4 +1,4 @@
-class LeadSalesforceService
+class SalesforceLeadService
 
   def initialize
     @client = Restforce.new(
@@ -39,7 +39,7 @@ class LeadSalesforceService
   class << self
 
     def add_to_salesforce(data)
-      LeadSalesforceService.new.add_to_salesforce(data)
+      SalesforceLeadService.new.add_to_salesforce(data)
     end
 
     def import_old_leads 

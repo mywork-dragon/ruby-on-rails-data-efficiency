@@ -31,16 +31,15 @@ angular
     'rzModule'
   ])
   .run(function ($http, $rootScope) {
+    $(document).ready(function(){ 
+      /* Disables loading spinner */
+      setTimeout(function(){
+        $('.page-loading-overlay').addClass("loaded");
+        $('#app > .load_circle_wrapper').addClass("loaded");
+      },300);
 
-      $(document).ready(function(){
-        /* Disables loading spinner */
-        setTimeout(function(){
-          $('.page-loading-overlay').addClass("loaded");
-          $('#app > .load_circle_wrapper').addClass("loaded");
-        },300);
-
-      });
-    })
+    });
+  })
   .config(['$routeProvider', function ($routeProvider) {
       $routeProvider
         .when('/login', {
@@ -147,6 +146,36 @@ angular
     $authProvider.google({
       clientId: '341121226980-egcfb2qebu8skkjq63i1cdfpvahrcuak.apps.googleusercontent.com'
     })
+
+    $authProvider.oauth2({
+      name: 'salesforce',
+      url: '/auth/salesforce',
+      clientId: '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9',
+      authorizationEndpoint: 'https://login.salesforce.com/services/oauth2/authorize',
+      redirectUri: window.location.origin,
+      optionalUrlParams: ['state'],
+      requiredUrlParams: ['scope'],
+      scope: ['api', 'refresh_token'],
+      scopeDelimiter: '%20',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 530 },
+      state: () => encodeURIComponent(Math.random().toString(36).substr(2))
+    });
+
+    $authProvider.oauth2({
+      name: 'salesforce_user',
+      url: '/auth/salesforce_user',
+      clientId: '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9',
+      authorizationEndpoint: 'https://login.salesforce.com/services/oauth2/authorize',
+      redirectUri: window.location.origin,
+      optionalUrlParams: ['state'],
+      requiredUrlParams: ['scope'],
+      scope: ['id'],
+      scopeDelimiter: '%20',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 530 },
+      state: () => encodeURIComponent(Math.random().toString(36).substr(2))
+    });
   })
   .filter('capitalize', function() {
     return function(input, all) {
