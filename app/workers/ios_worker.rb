@@ -69,6 +69,7 @@ module IosWorker
     reserver.reserve(purpose, requirements)
     device = reserver.device
     apple_account = reserver.apple_account
+    puts "#{snapshot.id}: Reserved device #{device.id}"
 
     # no devices available...fail out and save
     if device.nil?
