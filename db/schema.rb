@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20170505005650) do
     t.string   "salesforce_instance_url",  limit: 191
     t.text     "salesforce_settings",      limit: 65535
     t.string   "mightysignal_id",          limit: 191
+    t.boolean  "can_use_salesforce",                     default: false
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
