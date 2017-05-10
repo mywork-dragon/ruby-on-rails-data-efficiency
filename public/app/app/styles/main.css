@@ -8582,6 +8582,35 @@ h4.red {
   margin-left: 8px;
 }
 
+#adIntelligenceCarousel img.ad-slide {
+  width: 50%;
+}
+
+#adIntelligenceCarousel .ad-container {
+  overflow: auto;
+}
+
+#adIntelligenceCarousel img.single-ad-slide {
+  width: 50%;
+  margin: auto;
+}
+
+#adIntelligenceCarousel .carousel-inner img.ad-slide:first-child {
+  float: left;
+  padding-right: 5px;
+}
+
+#adIntelligenceCarousel .carousel-inner img.ad-slide:last-child {
+  float: right;
+  padding-left: 5px;
+}
+
+#adIntelligenceCarousel .carousel-caption {
+  left: 0;
+  right: 0;
+  bottom: 10px;
+}
+
 .modal-content .rzslider {
   width: 340px;
   margin: 30px 10px 15px 10px;

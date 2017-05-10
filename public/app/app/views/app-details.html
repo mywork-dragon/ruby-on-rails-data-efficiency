@@ -320,9 +320,12 @@
         <div class="panel panel-default" ng-if="appData.facebookAds.length && canViewAdSpend">
           <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
-            <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+            <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides" id="adIntelligenceCarousel">
               <uib-slide ng-repeat="ad in appData.facebookAds track by ad.id" index="ad.id">
-                <img ng-src="{{ad.ad_image}}" style="margin:auto; width:50%;">
+                <div class="ad-container">
+                  <img ng-src="{{ad.ad_image}}" ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}">
+                  <img ng-if="ad.ad_info_image" ng-src="{{ad.ad_info_image}}" class="ad-slide">
+                </div>
                 <div class="carousel-caption">
                   <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
                 </div>

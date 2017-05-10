@@ -1,5 +1,6 @@
 class IosApp < ActiveRecord::Base
   include AppAds
+  include MobileApp
 
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
@@ -410,11 +411,6 @@ class IosApp < ActiveRecord::Base
 
   def uninstalled_sdks
     self.sdk_response[:uninstalled_sdks]
-  end
-
-  def ad_attribution_sdks
-    attribution_sdk_ids = Tag.find(24).ios_sdks.pluck(:id)
-    self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
   end
 
   def fortune_rank

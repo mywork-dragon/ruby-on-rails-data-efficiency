@@ -1,5 +1,6 @@
 class AndroidApp < ActiveRecord::Base
   include AppAds
+  include MobileApp
 
   validates :app_identifier, uniqueness: true
   validate :validate_regions
@@ -109,11 +110,6 @@ class AndroidApp < ActiveRecord::Base
     newest_rank_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
     return false unless newest_rank_snapshot
     newest_rank_snapshot.android_app_rankings.where(android_app_id: self.id).any?
-  end
-
-  def ad_attribution_sdks
-    attribution_sdk_ids = Tag.find(24).android_sdks.pluck(:id)
-    self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
   end
 
   def ranking_change
