@@ -104,6 +104,7 @@ class AppsIndex < Chewy::Index
     field :seller_url, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_url') }
     field :seller, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_name') }
     field :user_base, index: 'not_analyzed'
+    field :user_base_display_score, value: -> (ios_app) {ios_app.user_base_display_score}
     field :user_bases, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'user_bases') }, type: 'nested', include_in_parent: true do
       field :country_code, index: 'not_analyzed'
       field :user_base, index: 'not_analyzed'
@@ -248,6 +249,7 @@ class AppsIndex < Chewy::Index
     field :seller_url, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller_url) || ''}
     field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
     field :user_base, index: 'not_analyzed'
+    field :user_base_display_score, value: -> (android_app) {android_app.user_base_display_score}
     field :ratings_all, value: ->(android_app) { android_app.newest_android_app_snapshot.try(:ratings_all_count).to_i }, type: 'integer'
     field :facebook_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].present? }
     field :paid, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:price).to_f > 0 }

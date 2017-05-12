@@ -1,9 +1,9 @@
 class FilterService
   class << self
-  
+
     def order_helper(apps_index, sort_by, order_by)
-      if ['user_base', 'mobile_priority'].include?(sort_by)
-        mapping = sort_by == 'user_base' ? IosApp.user_bases : IosApp.mobile_priorities
+      if sort_by == 'mobile_priority'
+        mapping = IosApp.mobile_priorities
         apps_index.order(
                           {
                             "_script" => {
@@ -49,7 +49,7 @@ class FilterService
           0
         when 1
           10_000
-        when 2 
+        when 2
           50_000
         when 3
           100_000
@@ -65,7 +65,7 @@ class FilterService
           200_000_000
         end
       }
-      
+
       {'gte' => range[0], 'lte' => range[1]}
     end
 
@@ -89,7 +89,7 @@ class FilterService
           date = date_filter(filter)
           case filter["status"].to_i
           when 0
-            if date 
+            if date
               sdk_query[short_filter_type] << {"nested" => {"path" => "installed_sdks", "filter" => {"and" => [{"terms" => {"installed_sdks.id" => [filter["id"]]}}, {"range" => {"installed_sdks.first_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
             else
               sdk_query[short_filter_type] << {"terms" => {"installed_sdks.id" => [filter["id"]]}}
@@ -153,7 +153,7 @@ class FilterService
         end
         apps_index = apps_index.filter(userbase_query) unless userbase_query[short_filter_type].blank?
       end
-      
+
       if company_filters['fortuneRank'].present?
         apps_index = apps_index.filter({"terms" => {"fortune_rank" => eval("[*'1'..'#{company_filters['fortuneRank'].to_i}']")}})
       end
@@ -209,7 +209,7 @@ class FilterService
             [100000000, 500000000],                       # 100M - 1B
             [1000000000]                                  # 1B - 5B
         ]
-        
+
         download_ids = app_filters['downloads'].map{|x| x['id'].to_i}
 
         filter_values_array = []

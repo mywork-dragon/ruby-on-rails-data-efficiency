@@ -3,7 +3,7 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
   serialize :screenshot_urls, Array
   serialize :ios_in_app_purchases, Hash
 
-  belongs_to :app_store  
+  belongs_to :app_store
 
   belongs_to :ios_app
   belongs_to :ios_app_current_snapshot_job

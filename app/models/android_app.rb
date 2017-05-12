@@ -381,6 +381,10 @@ class AndroidApp < ActiveRecord::Base
     apk_snapshots.where(scan_status: ApkSnapshot.scan_statuses[:scan_success]).order(:good_as_of_date).last
   end
 
+  def user_base_display_score
+    self.class.user_bases[user_base]
+  end
+
   private
 
   # delete old method

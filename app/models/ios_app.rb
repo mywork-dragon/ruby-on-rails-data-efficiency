@@ -135,7 +135,7 @@ class IosApp < ActiveRecord::Base
       name: self.name,
       mobilePriority: first_international_snapshot.try(:mobile_priority) || mobile_priority,
       userBase: self.international_userbase(user_bases: options[:user_bases]),
-      userBases: self.user_bases,
+      userBases: self.scored_user_bases,
       releasedDays: self.released_days,
       lastUpdated: self.last_updated,
       lastUpdatedDays: self.last_updated_days,
@@ -244,10 +244,28 @@ class IosApp < ActiveRecord::Base
 
   def user_bases
     if ios_app_current_snapshots.any?
-      ios_app_current_snapshots.joins(:app_store).select('app_stores.country_code, app_stores.name, user_base').map{|app| {country_code: app.country_code, user_base: app.user_base, country: app.name}}
+      ios_app_current_snapshots
+        .joins(:app_store)
+        .select('app_stores.country_code, app_stores.name, user_base')
+        .map{|app| {country_code: app.country_code, user_base: app.user_base, country: app.name} }
     else
       [{country_code: 'US', user_base: user_base, country: 'United States'}]
     end
+  end
+
+  def scored_user_bases
+    country_count = AppStore.enabled.count
+    self.user_bases.map do |userbase|
+      display_priority = AppStore.find_by(country_code: userbase[:country_code]).display_priority
+      base = userbase[:user_base] || 'weak'
+      base_score = IosApp.user_bases[base]
+      score = base_score * country_count + display_priority
+      userbase.merge({ score: score })
+    end.sort { |a, b| a[:score] <=> b[:score] }
+  end
+
+  def user_base_display_score
+    self.scored_user_bases.first[:score]
   end
 
   def rating
@@ -291,8 +309,11 @@ class IosApp < ActiveRecord::Base
   end
 
   def international_userbase(user_bases: nil)
-    intl_snapshot = first_international_snapshot(user_bases: user_bases)
-    intl_snapshot ? {user_base: intl_snapshot.try(:user_base), country_code: intl_snapshot.try(:app_store).try(:country_code)} : {user_base: self.user_base, country_code: 'US'}
+    if user_bases.present?
+      intl_snapshot = first_international_snapshot(user_bases: user_bases)
+      return intl_snapshot ? {user_base: intl_snapshot.try(:user_base), country_code: intl_snapshot.try(:app_store).try(:country_code)} : {user_base: self.user_base, country_code: 'US'}
+    end
+    scored_user_bases.first
   end
 
   def first_international_snapshot(country_code: nil, user_bases: nil)
