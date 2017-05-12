@@ -26,7 +26,6 @@ angular.module("appApp")
                 }
                 break;
               case 'updatedDaysAgo':
-              case 'oldAdSpend':
               case 'adSpend':
               case 'inAppPurchases':
               case 'price':
@@ -88,7 +87,6 @@ angular.module("appApp")
               value: value
             };
             break;
-          case 'oldAdSpend':
           case 'adSpend':
             return {
               parameter: param,

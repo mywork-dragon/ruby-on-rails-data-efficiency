@@ -5,7 +5,7 @@ class AppsIndex < Chewy::Index
       title: {
         tokenizer: 'standard',
         filter: ['lowercase', 'asciifolding']
-      }, 
+      },
       lowercase: {
         tokenizer: 'keyword',
         filter: ['lowercase']
@@ -16,11 +16,11 @@ class AppsIndex < Chewy::Index
   define_type IosApp.includes(:ios_developer, :newest_ios_app_snapshot) do
 
     crutch :current_snapshot do |collection|
-      fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'ratings_all_count', 'app_stores.country_code', 'app_stores.name', 'seller_name', 
+      fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'ratings_all_count', 'app_stores.country_code', 'app_stores.name', 'seller_name',
                 'seller_url', 'user_base', 'price', 'first_released', 'mobile_priority', 'released']
       data = IosAppCurrentSnapshot.joins(:app_store).where(ios_app_id: collection.map(&:id)).order("ios_app_id, display_priority IS NULL, display_priority ASC").
                                    pluck(*fields)
-      data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result| 
+      data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result|
         result[id] ||= {}
         result[id]['ios_app_id'] ||= id
         result[id]['ratings_all'] ||= ratings_all
@@ -56,7 +56,7 @@ class AppsIndex < Chewy::Index
       data = IpaSnapshot.where(ios_app_id: collection.map(&:id)).where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
 
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
-      data.each.with_object({}) { |(app), result| 
+      data.each.with_object({}) { |(app), result|
         id = app['ios_app_id']
         result[id] ||= {}
         result[id]['first_scanned'] = app['first_scanned']
@@ -77,7 +77,7 @@ class AppsIndex < Chewy::Index
     crutch :headquarters do |collection|
       data = ::IosApp.where(id: collection.map(&:id)).joins(:ios_developer => [{:valid_websites => :domain_datum}]).
              pluck(:id, :street_number, :street_name, :sub_premise, :city, :postal_code, :state, :state_code, :country, :country_code, :lat, :lng)
-      data.each.with_object({}) { |(id, street_number, street_name, sub_premise, city, postal_code, state, state_code, country, country_code, lat, lng), result| 
+      data.each.with_object({}) { |(id, street_number, street_name, sub_premise, city, postal_code, state, state_code, country, country_code, lat, lng), result|
         result[id] ||= []
         result[id] << {
           street_number: street_number,
@@ -86,7 +86,7 @@ class AppsIndex < Chewy::Index
           city: city,
           postal_code: postal_code,
           state: state,
-          state_code: state_code, 
+          state_code: state_code,
           country: country,
           country_code: country_code,
           lat: lat,
@@ -95,7 +95,7 @@ class AppsIndex < Chewy::Index
         result[id].uniq!
       }
     end
-    
+
     field :id
     field :app_identifier, index: 'not_analyzed'
     field :name, type: 'string', value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'name') } do
@@ -109,7 +109,7 @@ class AppsIndex < Chewy::Index
       field :user_base, index: 'not_analyzed'
       field :country, index: 'not_analyzed'
     end
-    
+
     field :old_facebook_ads, value: ->(app, crutches) { crutches.old_ad_spend[app.id].present? }
     field :facebook_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].present? }
     field :first_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'first_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
@@ -117,7 +117,7 @@ class AppsIndex < Chewy::Index
 
     field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
     field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
-    
+
     field :paid, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'price').to_f > 0 }
     field :in_app_purchases, value: ->(ios_app) {ios_app.newest_ios_app_snapshot.try(:ios_in_app_purchases).try(:any?)}
     field :mobile_priority, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'mobile_priority') }, index: 'not_analyzed'
@@ -174,7 +174,7 @@ class AppsIndex < Chewy::Index
       field :lng, type: 'float'
     end
     field :last_updated, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'last_updated') }, type: 'date', format: 'date', include_in_all: false
-    field :released, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'first_released') }, type: 'date', format: 'date', include_in_all: false  
+    field :released, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'first_released') }, type: 'date', format: 'date', include_in_all: false
   end
 
 
@@ -183,6 +183,17 @@ class AppsIndex < Chewy::Index
     crutch :old_ad_spend do |collection|
       data = AndroidFbAdAppearance.where(android_app_id: collection.map(&:id)).pluck(:android_app_id).uniq
       data.each.with_object({}) { |(id), result| result[id] = true }
+    end
+
+    crutch :ad_spend do |collection|
+      data = AndroidAd.where(advertised_app_id: collection.map(&:id)).
+      group(:advertised_app_id).select('advertised_app_id', 'max(date_seen) as last_seen_ads', 'min(date_seen) as first_seen_ads')
+      data.each.with_object({}) { |(app), result|
+        id = app['advertised_app_id']
+        result[id] ||= {}
+        result[id]['first_seen_ads'] = app['first_seen_ads']
+        result[id]['last_seen_ads'] = app['last_seen_ads']
+      }
     end
 
     # crutch :fortune_rank do |collection|
@@ -199,7 +210,7 @@ class AppsIndex < Chewy::Index
     crutch :scanned_date do |collection|
       data = ApkSnapshot.where(android_app_id: collection.map(&:id)).where("scan_status = ? OR status = ?", ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success]).
       group(:android_app_id).select('android_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
-      data.each.with_object({}) { |(app), result| 
+      data.each.with_object({}) { |(app), result|
         id = app['android_app_id']
         result[id] ||= {}
         result[id]['first_scanned'] = app['first_scanned']
@@ -210,7 +221,7 @@ class AppsIndex < Chewy::Index
     crutch :headquarters do |collection|
       data = ::AndroidApp.where(id: collection.map(&:id)).joins(:android_developer => [{:valid_websites => :domain_datum}]).
              pluck(:id, :street_number, :street_name, :sub_premise, :city, :postal_code, :state, :state_code, :country, :country_code, :lat, :lng)
-      data.each.with_object({}) { |(id, street_number, street_name, sub_premise, city, postal_code, state, state_code, country, country_code, lat, lng), result| 
+      data.each.with_object({}) { |(id, street_number, street_name, sub_premise, city, postal_code, state, state_code, country, country_code, lat, lng), result|
         result[id] ||= []
         result[id] << {
           street_number: street_number,
@@ -219,7 +230,7 @@ class AppsIndex < Chewy::Index
           city: city,
           postal_code: postal_code,
           state: state,
-          state_code: state_code, 
+          state_code: state_code,
           country: country,
           country_code: country_code,
           lat: lat,
@@ -238,7 +249,7 @@ class AppsIndex < Chewy::Index
     field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
     field :user_base, index: 'not_analyzed'
     field :ratings_all, value: ->(android_app) { android_app.newest_android_app_snapshot.try(:ratings_all_count).to_i }, type: 'integer'
-    field :facebook_ads, value: ->(app, crutches) { crutches.old_ad_spend[app.id].present? }
+    field :facebook_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].present? }
     field :paid, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:price).to_f > 0 }
     field :in_app_purchases, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:in_app_purchase_min).present?}
     field :mobile_priority, index: 'not_analyzed'

@@ -143,7 +143,7 @@ class IosApp < ActiveRecord::Base
       supportDesk: self.support_url,
       categories: self.categories,
       icon: self.icon_url,
-      adSpend: self.old_ad_spend?,
+      adSpend: self.ad_spend? || self.old_ad_spend?,
       price: first_international_snapshot.try(:price) || newest_snapshot.try(:price),
       currency: self.currency,
       rankingChange: self.ranking_change,

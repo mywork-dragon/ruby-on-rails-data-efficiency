@@ -184,7 +184,7 @@ class AndroidApp < ActiveRecord::Base
       name: newest_snapshot.try(:name),
       platform: self.platform,
       mobilePriority: self.mobile_priority,
-      adSpend: self.old_ad_spend?,
+      adSpend: self.ad_spend? || self.old_ad_spend?,
       lastUpdated: self.last_updated,
       lastUpdatedDays: self.last_updated_days,
       categories: self.categories,
@@ -307,6 +307,10 @@ class AndroidApp < ActiveRecord::Base
 
   def old_ad_spend?
     self.android_fb_ad_appearances.present?
+  end
+
+  def ad_spend?
+    self.android_ads.present?
   end
 
   def headquarters(limit=100)
