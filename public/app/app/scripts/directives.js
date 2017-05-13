@@ -286,7 +286,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               numApps: '=numApps'
             },
             template: '<input type="checkbox" ng-model="checkboxMaster" ng-click="checkboxMasterChange()">',
-            controller: function ($scope, $element) { 
+            controller: function ($scope, $element) {
 
               $scope.checkboxMasterChange = function () {
                 if ($scope.checkboxMaster) {
@@ -424,7 +424,7 @@ angular.module("app.directives", []).directive("imgHolder", [
               {id: 'Email', name: 'Email'},
               {id: 'FirstName', name: 'First Name'},
               {id: 'LastName', name: 'Last Name'},
-              {id: 'Title', name: 'Title'}, 
+              {id: 'Title', name: 'Title'},
             ],
             'Account': [
               {id: 'MightySignal Publisher ID', name: 'MightySignal Publisher ID', fields: [{id: 'MightySignal_Publisher_ID__c', name: 'New Field: MightySignal Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
@@ -652,4 +652,21 @@ angular.module("app.directives", []).directive("imgHolder", [
           });
         }
       };
+    })
+    .directive('clickOutside', function ($document) {
+      return {
+       restrict: 'A',
+       scope: {
+         clickOutside: '&'
+       },
+       link: function (scope, el, attr) {
+         $document.on('click', function (e) {
+           if (el !== e.target && !el[0].contains(e.target)) {
+              scope.$apply(function () {
+                scope.$eval(scope.clickOutside);
+              });
+            }
+         });
+       }
+      }
     });

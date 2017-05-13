@@ -10,10 +10,10 @@ angular.module("appApp")
           data: {id: id, type: type}
         }).success(function(data) {
           var action = data.following ? 'Followed' : 'Unfollowed'
-          
+
           var platform = 'ios'
           var class_name = 'app'
-          
+
           if (type == 'AndroidSdk' || type == 'AndroidApp') {
             platform = 'android'
           }
@@ -28,6 +28,16 @@ angular.module("appApp")
               source: source,
             }
           );
+        });
+      }
+    }
+  }])
+  .factory("rssService", ["$http", function($http) {
+    return {
+      fetchRssFeed: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/blog_feed',
         });
       }
     }

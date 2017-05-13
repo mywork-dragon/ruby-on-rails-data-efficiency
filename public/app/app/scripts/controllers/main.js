@@ -8,8 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService',
-    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity',
+    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService, slacktivity) {
 
       $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
@@ -44,6 +44,14 @@ angular.module('appApp')
       });
 
       $scope.clickedNavLink = function(link) {
+        if (link == "Blog") {
+          const slacktivityData = {
+            "title": "Blog Link Clicked",
+            "fallback": "Blog Link Clicked",
+            "color": "#FFD94D"
+          }
+          slacktivity.notifySlack(slacktivityData);
+        }
         mixpanel.track("Clicked Navigation Link", {
           link: link
         });
@@ -217,4 +225,35 @@ angular.module('appApp')
         $rootScope.currentPage = 1,
         $scope.currentPageApps = []
     }
-  ]);
+  ])
+  .controller("BlogCtrl", ["$scope", "rssService", "slacktivity",
+    function($scope, rssService, slacktivity) {
+      $scope.isOpen = false;
+      $scope.toggleTooltip = function(bool) {
+        $scope.isOpen = bool;
+      }
+
+      rssService.fetchRssFeed().success(function(data) {
+        if (data[0] !== "No new posts") {
+          $scope.title = data.title;
+          $scope.author = data.author;
+          $scope.link = data.link;
+          $scope.pubDate = data.pubDate;
+          $scope.newPost = true;
+        }
+      });
+
+      $scope.clickedBlogNotification = function() {
+        const slacktivityData = {
+          "title": "Blog Post Notification Clicked",
+          "fallback": "Blog Post Notification Clicked",
+          "color": "#FFD94D",
+          "blogTitle": $scope.title
+        }
+        slacktivity.notifySlack(slacktivityData);
+        mixpanel.track("Clicked Navigation Link", {
+          link: "New Blog Post"
+        });
+      }
+    }
+]);

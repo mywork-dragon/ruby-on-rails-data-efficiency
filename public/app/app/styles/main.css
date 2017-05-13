@@ -3963,7 +3963,7 @@ fieldset[disabled] .btn-danger.active {
   line-height: 1;
   text-align: center;
   font-size: 16px;
-  -webkit-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease- in-out;
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out; }
@@ -4015,7 +4015,7 @@ fieldset[disabled] .btn-danger.active {
 #nav > li:first-child > a {
   border-top: 0; }
 
-#nav > li > a {
+.nav-link {
   position: relative;
   display: block;
   padding: 20px 20px;
@@ -8658,3 +8658,71 @@ h4.red {
 
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */
+
+.label.label-danger > a {
+  text-decoration: none;
+}
+
+.medium-popover {
+  max-width: none;
+  margin-left: 20px;
+}
+
+.medium-popover.popover.right {
+  margin-left: 20px;
+}
+
+.medium-popover-header {
+  display: flex;
+  align-items: center;
+}
+
+.medium-popover-header > i {
+  font-size: 45px;
+  /*color: #0BE370;*/
+  color: #49A771;
+}
+
+.medium-popover-title {
+  margin-left: 15px;
+}
+
+.medium-popover-title > a {
+  font-size: 16px;
+  padding-bottom: 3px;
+  color: #767676;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.medium-popover-title > a:hover {
+  color: #14C767;
+  border-bottom: 1px solid #14C767;
+}
+
+.medium-popover-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 3px;
+  margin-top: 3px;
+}
+
+.medium-popover-link a {
+  color: #767676;
+  text-decoration: none;
+}
+
+.medium-popover-link i {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.tooltip.medium-tooltip .tooltip-inner {
+  border-radius: 5px;
+  max-width: none;
+}
+
+.label.label-success.blog {
+  background-color: #49A771;
+}

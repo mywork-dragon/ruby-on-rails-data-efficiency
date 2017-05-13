@@ -10,18 +10,17 @@
         data-ng-controller="MainCtrl"
         data-slim-scroll data-collapse-nav>
         <li ng-class="{active: $route.current.activeTab == 'newsfeed'}">
-            <a href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
+            <a class="nav-link" href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
         </li>
         <li ng-class="{active: $route.current.activeTab == 'search'}">
-            <a href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
+            <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
         </li>
         <li ng-if="canViewAdSpend" ng-class="{active: $route.current.activeTab == 'ad-intelligence'}">
-            <a href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span>
+            <a class="nav-link" href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-facebook-official"></i> <span>Ad Intelligence</span>
             </a>
         </li>
         <li ng-class="{active: $route.current.activeTab == 'charts'}">
-            <a href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span>
-            <span class="label label-danger">NEW</span></a>
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span></a>
         </li>
         <!--
         <li ng-if="canViewStorewideSdks" ng-class="{active: $route.current.activeTab == 'sdks'}">
@@ -34,30 +33,51 @@
         </li>
         -->
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
-            <a href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
+            <a class="nav-link" href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
               <li ng-repeat="list in $root.usersLists"><a ng-click="clickedNavLink('List')" href="#/lists/{{list.id}}" ng-class="{active: $route.current.activeTab == 'lists' && $root.currentList == list.id}" ng-click="$scope.selectedAppsForList = []; recordListViewEvent(list.name, list.id)"><i class="fa fa-angle-right"></i><span>{{list.name}}</span></a></li>
               <li id="listCreateNewButton"><a href="" data-toggle="modal" data-target="#createNewModal" ng-click="$root.focusInput=true"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
             </ul>
         </li>
         <li>
-            <a href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
+            <a class="nav-link" href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
         </li>
         <li>
-            <a href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="clickedNavLink('Chrome App')" target="_blank">
+            <a class="nav-link" href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="clickedNavLink('Chrome App')" target="_blank">
                 <i class="fa fa-chrome"></i><span>Chrome App</span>
             </a>
-        <li>
-            <a href="http://blog.mightysignal.com" target="_blank" ng-click="clickedNavLink('Blog')"><i class="fa fa-newspaper-o"></i><span>Blog</span></a>
+        <li data-ng-controller="BlogCtrl">
+            <a class="nav-link" href="http://blog.mightysignal.com" target="_blank" ng-click="clickedNavLink('Blog')">
+              <i class="fa fa-newspaper-o"></i><span>Blog</span>
+              <span ng-show="newPost" ng-mouseenter="toggleTooltip(true)" uib-popover-template="'blogBlurb.html'" popover-placement="auto right" popover-append-to-body="true" popover-is-open="isOpen" popover-class="medium-popover" class="label label-success blog">
+                NEW POST
+              </span>
+            </a>
         </li>
+        <script type="text/ng-template" id="blogBlurb.html">
+          <div click-outside="toggleTooltip(false)">
+            <div class="medium-popover-header">
+              <i class="fa fa-medium" aria-hidden="true"></i>
+              <div class="medium-popover-title">
+                <a href="{{link}}" target="_blank" ng-click="clickedBlogNotification(); toggleTooltip(false)">
+                  {{title}}
+                </a>
+                <div class="medium-popover-link">
+                  by {{author}}
+                  <i class="fa fa-times" aria-hidden="true" ng-click="toggleTooltip(false)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </script>
 		<li>
-			<a href="mailto:support@mightysignal.com" target="_blank" ng-click="clickedNavLink('Support')"><span><i class="fa fa-support"></i>Support</span></a>
+			<a class="nav-link" href="mailto:support@mightysignal.com" target="_blank" ng-click="clickedNavLink('Support')"><span><i class="fa fa-support"></i>Support</span></a>
 		</li>
         <li ng-class="{active: $route.current.activeTab == 'admin'}" ng-if="$root.isAdmin">
-            <a href="#/admin" ng-click="clickedNavLink('Admin')"><span><i class="fa fa-cog"></i>Admin</span></a>
+            <a class="nav-link" href="#/admin" ng-click="clickedNavLink('Admin')"><span><i class="fa fa-cog"></i>Admin</span></a>
         </li>
         <li ng-click="logUserOut()">
-            <a href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
+            <a class="nav-link" href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
         </li>
     </ul>
 

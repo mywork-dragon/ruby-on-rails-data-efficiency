@@ -130,6 +130,8 @@ Rails.application.routes.draw do
   post 'api/android_start_scan' => 'api#android_start_scan'
   get 'api/android_scan_status' => 'api#android_scan_status'
 
+  get 'api/blog_feed' => 'api#blog_feed'
+
   namespace :api, defaults: {format: 'json'} do
     scope '/admin' do
       get '/' => 'admin#index'

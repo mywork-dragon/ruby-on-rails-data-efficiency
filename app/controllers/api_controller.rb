@@ -968,6 +968,19 @@ class ApiController < ApplicationController
     render json: {searchParam: query, results: countries}
   end
 
+  def blog_feed
+    require 'rss'
+    require 'open-uri'
+    rss = RSS::Parser.parse(open('https://blog.mightysignal.com/feed').read, false).items
+    result = rss.select { |result| result.categories.none? { |category| category.content == "engineering" } }.first
+    pub_date = result.pubDate.to_date;
+    if Date.today - pub_date > 10
+      render json: ["No new posts"]
+      return
+    end
+    render json: { title: result.title, author: result.dc_creator, link: result.link, pubDate: pub_date }
+  end
+
   private
 
   def ios_app_enagement_json(filter_results, json_options = {})
