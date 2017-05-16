@@ -37,6 +37,22 @@ class IosMassScanService
       run_ids("Running #{ids.count} apps that have advertised on FB since #{lookback_time}", ids)
     end
 
+    def run_recently_released(lookback_time: nil, ratings_min: 0, automated: false)
+      lookback_time = lookback_time || EpfFullFeed.last(2).first.date
+      recent = IosApp.joins(:ios_app_current_snapshots)
+        .where('ios_apps.released > ?', lookback_time)
+        .where('ios_app_current_snapshots.app_store_id = ?', 1)
+        .where('ios_app_current_snapshots.ratings_all_count > ?', ratings_min)
+        .pluck(:id)
+
+      unless automated
+        puts "Got #{recent.count} apps: Continue [y/n] : "
+        return unless gets.chomp.include?('y')
+      end
+
+      run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
+    end
+
     # helper method for running scans
     def run_new(n)
       tried = (IpaSnapshot.select(:ios_app_id).distinct.pluck(:ios_app_id) +
