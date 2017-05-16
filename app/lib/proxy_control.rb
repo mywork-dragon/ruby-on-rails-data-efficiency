@@ -20,12 +20,8 @@ class ProxyControl
     def activation_routine
       puts 'Starting temporary proxies'
       MightyAws::InstanceControl.new.start_temporary_proxies
-      puts 'Allowing 15s to start running'
-      sleep 15 # let proxies spin up and start running
-      puts 'Registering temporary proxies'
-      MightyAws::Api.new.register_temp_proxies_with_proxy_lbs
-      puts 'Allowing 45s for lbs to establish healthy connections with proxies'
-      sleep 45 # register unregistered proxies. Health check is every 30 seconds
+      puts 'Allowing 4 minutes for proxy containers to spin up and register with Route53'
+      sleep 240
     end
   end
 end

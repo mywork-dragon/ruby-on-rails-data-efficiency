@@ -6,7 +6,7 @@ module ProxyBase
     elsif proxy_type == :all_static
       all_static_proxies
     elsif proxy_type == :temporary_proxies
-      temporary_proxy_load_balancers
+      { ip: 'micro-proxies.ms-internal.com', port: 8888}
     else
       general_proxies
     end
@@ -32,16 +32,6 @@ module ProxyBase
       purpose: MicroProxy.purposes[:region],
       active:true).sample
     { ip: proxy.private_ip, port: 8888, user: ENV['REGIONAL_PROXY_USER'], password: ENV['REGIONAL_PROXY_PASSWORD'] }
-  end
-
-  # load balancers that will forward address to temporary proxies
-  # TODO: hard-coded for now...move to DB
-  def temporary_proxy_load_balancers
-    elbs = [
-      'internal-01-proxy-balancer-633334655.us-east-1.elb.amazonaws.com',
-      'internal-02-proxy-balancer-1130238239.us-east-1.elb.amazonaws.com'
-    ]
-    { ip: elbs.sample, port: 8888}
   end
 
 end
