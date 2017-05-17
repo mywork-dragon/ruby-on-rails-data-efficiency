@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170505005650) do
+ActiveRecord::Schema.define(version: 20170515165951) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -2301,6 +2301,16 @@ ActiveRecord::Schema.define(version: 20170505005650) do
   add_index "proxies", ["active"], name: "index_proxies_on_active", using: :btree
   add_index "proxies", ["last_used"], name: "index_proxies_on_last_used", using: :btree
   add_index "proxies", ["private_ip"], name: "index_proxies_on_private_ip", using: :btree
+
+  create_table "saved_searches", force: :cascade do |t|
+    t.string   "name",          limit: 191
+    t.integer  "user_id",       limit: 4
+    t.text     "search_params", limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "saved_searches", ["user_id"], name: "index_saved_searches_on_user_id", using: :btree
 
   create_table "scrape_jobs", force: :cascade do |t|
     t.text     "notes",      limit: 65535
