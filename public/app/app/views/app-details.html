@@ -327,7 +327,8 @@
                   <img ng-if="ad.ad_info_image" ng-src="{{ad.ad_info_image}}" class="ad-slide">
                 </div>
                 <div class="carousel-caption">
-                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
+                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}}</p>
+                  <p>{{ad.id+1}} - {{appData.facebookAds.length}} (out of {{appData.totalCreatives}} total impressions)</p>
                 </div>
               </uib-slide>
             </uib-carousel>
