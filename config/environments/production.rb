@@ -88,12 +88,11 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp.gmail.com',
-    port:                 587,
-    domain:               'mightysignal.com',
-    user_name:            'support@mightysignal.com',
-    password:             ENV['GMAIL_SMTP_PASSWORD'].to_s,
-    authentication:       'plain',
+    address:              ENV['SES_HOST'].to_s,
+    port:                 ENV['SES_PORT'].to_i,
+    user_name:            ENV['SES_USER'].to_s,
+    password:             ENV['SES_SECRET'].to_s,
+    authentication:       :login,
     enable_starttls_auto: true  }
 
   config.env = YAML.load_file("#{Rails.root}/config/env.yml")
