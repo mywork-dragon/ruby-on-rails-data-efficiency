@@ -234,7 +234,7 @@ angular.module('appApp')
       }
 
       rssService.fetchRssFeed().success(function(data) {
-        if (data[0] !== "No new posts") {
+        if (!data.message) {
           $scope.title = data.title;
           $scope.author = data.author;
           $scope.link = data.link;
