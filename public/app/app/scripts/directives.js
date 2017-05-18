@@ -476,6 +476,13 @@ angular.module("app.directives", []).directive("imgHolder", [
 
           $scope.selectedObject = function ($item) {
             $scope.existingObject = $item.originalObject;
+            // populate email, name and title when user selects a lead
+            if ($scope.sfObject == 'Lead') {
+              $scope.sfMapping['Lead']['Title'].data = $scope.existingObject['title']
+              $scope.sfMapping['Lead']['Email'].data = $scope.existingObject['email']
+              $scope.sfMapping['Lead']['Last Name'].data = $scope.existingObject['first_name']
+              $scope.sfMapping['Lead']['First Name'].data = $scope.existingObject['last_name']
+            }
           }
 
           $scope.removeSelectedObject = function() {

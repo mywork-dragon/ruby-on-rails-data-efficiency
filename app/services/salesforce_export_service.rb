@@ -5,6 +5,7 @@ class SalesforceExportService
     @user = user
     account = @user.account
     @model_name = model_name
+    @app_model = 'MightySignal_App__c'
 
     Restforce.log = true
     @client ||= Restforce.new(
@@ -26,11 +27,11 @@ class SalesforceExportService
 
   def install
     @metadata_client.create(:custom_object, 
-      full_name: 'App__c', 
+      full_name: @app_model, 
       deploymentStatus: 'Deployed',
       sharingModel: 'ReadWrite',
-      label: 'App', 
-      pluralLabel: 'Apps',
+      label: 'MightySignal App', 
+      pluralLabel: 'MightySignal Apps',
       nameField: {
         label: 'App Name',
         type: 'Text'
@@ -46,10 +47,10 @@ class SalesforceExportService
     puts 'create app fields'
     new_fields = [
       {label: 'MightySignal App ID', type: 'Text', length: 255, externalId: true},
-      {label: 'App Store/Google Play App ID', fullName: 'App__c.App_Store_ID__c', type: 'Text', length: 255},
+      {label: 'App Store/Google Play App ID', fullName: "#{@app_model}.App_Store_ID__c", type: 'Text', length: 255},
       {label: 'MightySignal Link', type: 'Url'},
       {label: 'Platform', type: 'Text', length: 255},
-      {label: 'SDK Data', type: 'RichTextArea', length: 131072, visibleLines: 10},
+      {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
       {label: 'Monthly Active Users', type: 'Number', precision: 11, scale: 0},
@@ -58,23 +59,23 @@ class SalesforceExportService
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
-      {label: 'Account Name', type: 'Lookup', fullName: 'App__c.Account__c', referenceTo: 'Account', relationshipName: 'Apps'}
+      {label: 'Account Name', type: 'Lookup', fullName: "#{@app_model}.Account__c", referenceTo: 'Account', relationshipName: 'Apps'}
     ]
     new_fields.each do |field|
-      add_custom_field('App__c', field)
+      add_custom_field(@app_model, field)
     end
   end
 
   def uninstall
     @metadata_client.delete(:custom_object, 
-      'App__c', 
+      @app_model, 
     ).on_complete { |job| puts "Custom object deleted." }.perform
   end
 
   def search(query)
     search_queries = {
       Account: "select Id, Name from Account where Name LIKE '%#{query}%'",
-      Lead: "select Id, Company, FirstName, LastName, Title from Lead where Company LIKE '%#{query}%'",
+      Lead: "select Id, Company, FirstName, LastName, Title, Email from Lead where Company LIKE '%#{query}%'",
       Opportunity: "select Account.Id, Account.Name from Opportunity where Account.Name LIKE #{query}",
     }.with_indifferent_access
 
@@ -82,18 +83,49 @@ class SalesforceExportService
 
     results = @client.query(search_queries[@model_name])
     results = results.map{|result|
-      name = case @model_name
+      object = {}
+      case @model_name
       when 'Account'
-        result.Name
+        object[:name] = result.Name
       when 'Lead'
-        "#{result.FirstName} #{result.LastName} - #{result.Title}\n#{result.Company}"
+        object[:name] = "#{result.FirstName} #{result.LastName} - #{result.Title}\n#{result.Company}"
+        object[:title] = result.Title
+        object[:first_name] = result.FirstName
+        object[:last_name] = result.LastName
+        object[:email] = result.Email
       end
-      {name: name, id: result.Id}
+
+      object[:id] = result.Id
+      object
     }
     results
   end
 
-  def export_app(app:, mapping:, object_id:)
+  def default_mapping
+    case @model_name
+    when 'Account'
+      {"MightySignal Publisher ID"=>{"id"=>"MightySignal_Publisher_ID__c", "name"=>"New Field: MightySignal Publisher Id"}, "App Store Publisher ID"=>{"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}, "Publisher Name"=>{"id"=>"Name", "name"=>"Name"}, "Website"=>{"id"=>"Website", "name"=>"Website"}, "MightySignal Link"=>{"id"=>"MightySignal_Link__c", "name"=>"New Field: MightySignal Link"}, "SDK Summary"=>{"id"=>"MightySignal_SDK_Summary__c", "name"=>"New Field: MightySignal SDK Summary"}} 
+    when 'Lead'
+      {"SDK Summary"=>{"id"=>"MightySignal_SDK_Summary__c", "name"=>"New Field: MightySignal SDK Summary"}, "MightySignal Link"=>{"id"=>"MightySignal_Link__c", "name"=>"New Field: MightySignal Link"}, "MightySignal Publisher ID"=>{"id"=>"MightySignal_Publisher_ID__c", "name"=>"New Field: MightySignal Publisher Id"}, "App Store Publisher ID"=>{"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}, "Publisher Name"=>{"id"=>"Company", "name"=>"Company"}, "Website"=>{"id"=>"Website", "name"=>"Website"}} 
+    end
+  end
+
+  def should_skip_field?(field_name, object_id)
+    default_fields = if @model_name == 'Account'
+      ['Website', 'Name']
+    else
+      ['Website', 'Company']
+    end
+
+    if object_id && default_fields.include?(field_name)
+      existing_object = @client.find(@model_name, object_id) 
+      return existing_object[field_name].present?
+    end
+
+    false
+  end
+
+  def export_app(app:, mapping: default_mapping, object_id:)
     mapping = JSON.parse(mapping).with_indifferent_access if mapping
     update_default_mapping(mapping)
 
@@ -101,6 +133,7 @@ class SalesforceExportService
     new_object = {}
 
     mapping.each do |field, map|
+      next if should_skip_field?(map['id'], object_id)
       if !object_has_field?(map["id"])
         add_custom_field(@model_name, data[field].except(:data))
       end
@@ -174,7 +207,7 @@ class SalesforceExportService
       'Account__c' => account_id
     }
     puts new_app
-    @client.upsert('App__c', 'MightySignal_App_ID__c', new_app)
+    @client.upsert(@app_model, 'MightySignal_App_ID__c', new_app)
   end
 
   def import_android_app(app:, account_id:)
@@ -191,7 +224,7 @@ class SalesforceExportService
       'Last_Scanned_Date__c' => app.last_scanned.try(:to_date),
       'Account__c' => account_id
     }
-    @client.upsert('App__c', 'MightySignal_App_ID__c', new_app)
+    @client.upsert(@app_model, 'MightySignal_App_ID__c', new_app)
   end
 
   def object_has_field?(field)
@@ -239,7 +272,7 @@ class SalesforceExportService
         "MightySignal Link" => {data: app.ios_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal Link"},
         "Publisher Name" => {data: app.ios_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
         "Website" => {data: app.ios_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
-        "SDK Summary" => {data: developer_sdk_summary(app.ios_developer), length: 131072, type: 'RichTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
+        "SDK Summary" => {data: developer_sdk_summary(app.ios_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
       }
     when 'android'
       {
@@ -248,7 +281,7 @@ class SalesforceExportService
         "MightySignal Link" => {data: app.android_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal Link"},
         "Publisher Name" => {data: app.android_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
         "Website" => {data: app.android_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
-        "SDK Summary" => {data: developer_sdk_summary(app.android_developer), length: 131072, type: 'RichTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
+        "SDK Summary" => {data: developer_sdk_summary(app.android_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
       }
     end
   end
