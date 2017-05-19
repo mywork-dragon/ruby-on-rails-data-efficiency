@@ -1,0 +1,15 @@
+<div ng-controller="SearchCtrl as searchCtrl">
+  <script type="text/ng-template" id="search-delete.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title" id="searchDeleteModalTitle">Are You Sure?</h3>
+    </div>
+    <div class="modal-body" id="searchDeleteModalBody">
+      <h4>Are you sure you want to <b>delete</b> this saved search?</h4>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="$dismiss()">Cancel</button>
+      <button type="button" class="btn btn-danger" data-ng-click="searchCtrl.deleteSavedSearch(); $close($ctrl.id)">Delete Search</button>
+    </div>
+  </script>
+</div>

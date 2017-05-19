@@ -54,7 +54,7 @@ angular.module("appApp")
               displayName = displayName + ' > 1 Year Ago'
             }
           }
-         
+
           return filterType + ' ' + displayName;
         },
         locationDisplayText: function(filter, filterType) {
@@ -69,7 +69,7 @@ angular.module("appApp")
           } else if (filter.status == '3') {
             displayName = 'Not Available in' + displayName
           }
-                   
+
           return filterType + ' ' + displayName;
         },
         hasFilter: function(parameter) {

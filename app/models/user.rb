@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :users_countries
   has_many :website_features
 
+  has_many :saved_searches
+
   has_secure_password
   validates_uniqueness_of :email
 
@@ -95,7 +97,7 @@ class User < ActiveRecord::Base
         user
       else
         return if User.where("#{params[:provider]}_uid" => params[:uid]).first
-        
+
         if user.send("#{params[:provider]}_uid").blank?
           user.send("#{params[:provider]}_uid=", params[:uid])
           user.send("#{params[:provider]}_token=", params[:token])
@@ -129,8 +131,8 @@ class User < ActiveRecord::Base
     self.users_countries.map{ |user_country|
       country = ISO3166::Country.new(user_country.country_code)
       {
-        id: country.alpha2, 
-        name: country.name, 
+        id: country.alpha2,
+        name: country.name,
         icon: "/lib/images/flags/#{country.alpha2.downcase}.png"
       }
     }
@@ -138,10 +140,10 @@ class User < ActiveRecord::Base
 
   def weekly_batches(page_num, country_codes=nil)
     time = Time.now - page_num.months
-    following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a + 
+    following = self.followed_ios_sdks.to_a + self.followed_android_sdks.to_a +  self.followed_android_apps.to_a +
                 self.followed_ios_apps.to_a
-    
-    batches = following.map{|object| 
+
+    batches = following.map{|object|
       object.weekly_batches.where('week >= ? and week < ? and activity_type != ?', time, time + 1.month, WeeklyBatch.activity_types[:entered_top_apps]).order(week: :desc).to_a
     }.flatten
 
@@ -150,7 +152,7 @@ class User < ActiveRecord::Base
       next if country_codes && batch.sorted_activities(country_codes: country_codes).empty?
 
       batches_by_week[batch.week] ||= {}
-      if batches_by_week[batch.week][batch.platform] 
+      if batches_by_week[batch.week][batch.platform]
         batches_by_week[batch.week][batch.platform] << batch
       else
         batches_by_week[batch.week][batch.platform] = [batch]
@@ -161,21 +163,21 @@ class User < ActiveRecord::Base
   end
 
   class << self
-    
+
     # Get the user by credentials, else return nil
     # @author Jason Lew
     # @note Be careful editing this method
     def find_by_credentials(email, password)
-      
+
       user = User.find_by_email(email)
-      
+
       return nil if user.nil?
-      
+
       return user if user.authenticate(password)
-      
+
       nil
     end
-    
+
   end
 
 end

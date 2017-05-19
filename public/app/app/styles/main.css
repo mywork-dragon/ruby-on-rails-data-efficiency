@@ -8089,14 +8089,14 @@ pre {
   display: block;
 }
 
-button.dropdown-toggle {
+.categories-dropdown button.dropdown-toggle {
   background: none;
   border: none;
   padding: 5px 33px 5px 8px;
   font-size: 11px;
 }
 
-button.dropdown-toggle .caret {
+div.categories-dropdown .caret {
   display: none;
 }
 
@@ -8725,4 +8725,79 @@ h4.red {
 
 .label.label-success.blog {
   background-color: #49A771;
+}
+
+.btn-group.saved-searches {
+  width: 100%;
+}
+
+button.saved-searches {
+  margin-top: 10px;
+  width: 100%;
+}
+
+li.saved-searches {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#saved-searches-ul {
+  width: 100%;
+  padding: 0px;
+}
+
+.fa-trash-o.search {
+  display: none;
+}
+
+#saved-searches-ul > li.divider {
+  margin: 0px;
+}
+
+#saved-searches-ul > li.saved-searches:hover  {
+  background-color: #F5F5F5;
+  cursor: pointer;
+}
+
+#saved-searches-ul > li:hover > div.saved-search-menu-item {
+  background-color: #F5F5F5;
+  cursor: pointer;
+  color: #0393DD;
+}
+
+#saved-searches-ul > li:hover > .fa-trash-o.search {
+  display: block;
+}
+
+.fa-trash-o.search:hover {
+  cursor: pointer;
+  color: red;
+}
+
+.saved-search-menu-item {
+ padding: 10px;
+ flex-basis: 90%;
+}
+
+.no-search-menu-item {
+ padding: 10px;
+ text-align: center;
+}
+
+button.saved-search-button {
+  border: none;
+  width: 100%;
+  color: #0393DD;
+  background-color: inherit;
+  margin-bottom: 0px;
+  padding: 10px 0px;
+}
+
+button.saved-search-button:hover {
+  background-color: #F5F5F5;
+}
+
+button.saved-search-button:disabled {
+  color: #C1BFC0;
 }

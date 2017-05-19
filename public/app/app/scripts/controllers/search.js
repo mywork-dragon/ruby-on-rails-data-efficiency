@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService",
-    function ($scope, $timeout, $route, $sce, listApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService) {
+  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal",
+    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
@@ -91,8 +91,8 @@ angular.module('appApp')
           $scope.canViewExports = data.can_view_exports;
       });
 
-      $scope.mobileExplanation = $sce.trustAsHtml('<p>How much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>' + 
-                                                  '<p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>' + 
+      $scope.mobileExplanation = $sce.trustAsHtml('<p>How much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>' +
+                                                  '<p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>' +
                                                   'Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook. High: they have advertised on ' +
                                                   'Facebook or have updated within the past two months. Medium: Updated within last 2 - 4 months. Low: Last update > 4 months ago.</p>')
       $scope.fortuneExplanation = $sce.trustAsHtml('<p>Filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>')
@@ -102,12 +102,12 @@ angular.module('appApp')
                                                    'fashion – either they do (if an ad has been reported) or they don’t.</p>')
       $scope.userBaseExplanation = $sce.trustAsHtml('<p>An estimate of how many active users an app has.</p>' +
                                                     '<p>We derive this estimate based off of how many ratings per day an app has. Elite: 50,000 total ratings or 7 ratings per day average (for current release).' +
-                                                    'Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average' + 
-                                                    'for current release). Weak: anything less.</p>') 
+                                                    'Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average' +
+                                                    'for current release). Weak: anything less.</p>')
       $scope.updatedExplanation = $sce.trustAsHtml('<p>Length of time from last update to app, as reported on the iOS and Google Play stores.</p>')
       $scope.categoryExplanation = $sce.trustAsHtml('<p>The category/genre of the app (same as iOS App Store categories).</p>')
       $scope.sdkOperatorExplanation = $sce.trustAsHtml('<p>Pick an operator used for all SDK filters. e.g. Should we show apps with Mixpanel SDK AND Amplitude SDK installed or should we show apps with Mixpanel SDK OR Amplitude SDK installed')
-      
+
       $rootScope.categoryModel = [];
       searchCtrl.categorySettings = {
         buttonClasses: '',
@@ -137,7 +137,7 @@ angular.module('appApp')
         return API_URI_BASE + "api/sdk/autocomplete?platform=" + AppPlatform.platform + "&query="
       }
 
-      $scope.toggledPlatform = function() {
+      $scope.emptyApps = function() {
         searchCtrl.apps = [];
         searchCtrl.numApps = 0;
       }
@@ -155,7 +155,7 @@ angular.module('appApp')
       }
 
       $scope.addComplexFilter = function(filter_type, filter_operation, filter) {
-        if (filter) { 
+        if (filter) {
           var found = false // only allow unique filters
           for (var i in $scope.complexFilters[filter_type][filter_operation]) {
             var existingFilter = $scope.complexFilters[filter_type][filter_operation][i]
@@ -205,7 +205,7 @@ angular.module('appApp')
             filterService.addFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type), $scope.complexFilterDisplayText(filter_type, filter_operation, filter), false, customName);
           } else { // is location filter
             filter[filter_type] = null
-          }          
+          }
           if (old_filter[filter_type]) {
             filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type));
           }
@@ -232,7 +232,7 @@ angular.module('appApp')
         $scope.complexFilters[filter_type][filter_operation][index][filter_type] = null;
       }
 
-      $scope.selectedAndSdk = function ($item) {  
+      $scope.selectedAndSdk = function ($item) {
         $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'and')
       }
 
@@ -240,7 +240,7 @@ angular.module('appApp')
         $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'or')
       }
 
-      $scope.selectedAndLocation = function ($item) {  
+      $scope.selectedAndLocation = function ($item) {
         $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'location', 'and')
       }
 
@@ -302,7 +302,7 @@ angular.module('appApp')
             var filters = $scope.complexFilters[filterType];
             Object.keys(filters).forEach(function(filterOperation) {
               var opFilters = $scope.complexFilters[filterType][filterOperation];
-              for (var index = 0; index < opFilters.length; index++) { 
+              for (var index = 0; index < opFilters.length; index++) {
                 var found = false;
                 var filter = opFilters[index]
                 if (filter[filterType]) {
@@ -315,7 +315,7 @@ angular.module('appApp')
                 } else {
                   continue;
                 }
-               
+
                 if (!found) {
                   opFilters.splice(index, 1);
                   index--;
@@ -371,7 +371,7 @@ angular.module('appApp')
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
         if (routeParams.platform) var platform = JSON.parse(routeParams.platform);
-        
+
         $scope.filters = {company: companyParams, platform: platform, app: appParams}
 
         var allParams = appParams ? appParams : [];
@@ -507,11 +507,145 @@ angular.module('appApp')
         return start = (currentPage - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
       };
 
+      // Saved searches
+
+      savedSearchApiService.getSavedSearches().success(function(data) {
+        searchCtrl.savedSearches = {};
+        searchCtrl.searchName = "";
+        data.forEach(search => {
+          searchCtrl.savedSearches[search.id] = search;
+        })
+        searchCtrl.hasSearches = checkSearches();
+      })
+
+      function checkSearches () {
+        return Object.keys(searchCtrl.savedSearches).length > 0;
+      }
+
+      searchCtrl.onSavedSearchChange = function(id) {
+        $rootScope.tags = [];
+        $scope.emptyApps();
+        const savedSearch = searchCtrl.savedSearches[id];
+        $location.url('/search?' +  savedSearch.search_params);
+        searchCtrl.loadTableData();
+
+        /* -------- Mixpanel Analytics Start -------- */
+        const slacktivityData = {
+          "title": "Previous Saved Search Loaded",
+          "fallback": "Previous Saved Search Loaded",
+          "color": "#FFD94D",
+          "Name": savedSearch.name,
+          "Parameters": savedSearch.search_params
+        }
+        slacktivity.notifySlack(slacktivityData);
+        mixpanel.track(
+          "Previous Saved Search Loaded", {
+            "name": savedSearch.name,
+            "parameters": savedSearch.search_params
+          }
+        );
+        /* -------- Mixpanel Analytics End -------- */
+      }
+
+      searchCtrl.createSavedSearch = function(name) {
+        const queryString = searchService.queryStringParameters($rootScope.tags, 1, 100);
+        savedSearchApiService.createSavedSearch(name, queryString)
+          .success(function(data) {
+            searchCtrl.savedSearches[data.id] = data;
+            searchCtrl.searchName = "";
+            searchCtrl.hasSearches = checkSearches();
+            savedSearchApiService.toast('search-create-success');
+
+            /* -------- Analytics Start -------- */
+            const slacktivityData = {
+              "title": "New Saved Search Created",
+              "fallback": "New Saved Search Created",
+              "color": "#FFD94D",
+              "Name": data.name,
+              "Parameters": data.search_params
+            }
+            slacktivity.notifySlack(slacktivityData);
+            mixpanel.track(
+              "New Saved Search Created", {
+                "name": data.name,
+                "parameters": data.search_params
+              }
+            );
+            /* -------- Analytics End -------- */
+          })
+          .error(function(error) {
+            savedSearchApiService.toast('search-create-failure');
+          });
+      }
+
+      // searchCtrl.updateSavedSearch = function() {
+      //   const queryString = searchService.queryStringParameters($rootScope.tags);
+      //   savedSearchApiService.updateSavedSearch(searchCtrl.currentSavedSearchId, queryString)
+      //     .success(function(data) {
+      //       savedSearchApiService.toast('search-update-success');
+      //       searchCtrl.savedSearches[data.id] = data;
+      //     })
+      //     .error(function(error) {
+      //       savedSearchApiService.toast('search-update-failure');
+      //     })
+      // }
+
+      searchCtrl.setCurrentSearchId = function(id, $event) {
+        $event.stopPropagation();
+        var modalInstance = $uibModal.open({
+          animation: true,
+          ariaLabelledBy: 'searchDeleteModalTitle',
+          ariaDescribedBy: 'searchDeleteModalBoday',
+          templateUrl: 'search-delete.html',
+          controller: 'ModalInstanceCtrl',
+          controllerAs: '$ctrl',
+          resolve: {
+            id: function () {
+              return id;
+            }
+          }
+        })
+
+        modalInstance.result.then(function (id) {
+          searchCtrl.deleteSavedSearch(id)
+        })
+      }
+
+      searchCtrl.deleteSavedSearch = function(id) {
+        savedSearchApiService.deleteSavedSearch(id)
+          .success(function(data) {
+            delete searchCtrl.savedSearches[data.id];
+            savedSearchApiService.toast('search-delete-success');
+            searchCtrl.hasSearches = Object.keys(searchCtrl.savedSearches).length > 0;
+
+            /* -------- Mixpanel Analytics Start -------- */
+            const slacktivityData = {
+              "title": "Saved Search Deleted",
+              "fallback": "Saved Search Deleted",
+              "color": "#FFD94D",
+              "Name": data.name,
+              "Parameters": data.search_params
+            }
+            slacktivity.notifySlack(slacktivityData);
+            mixpanel.track(
+              "Saved Search Deleted", {
+                "name": data.name,
+                "parameters": data.search_params
+              }
+            );
+            /* -------- Mixpanel Analytics End -------- */
+
+          })
+          .error(function(error) {
+            savedSearchApiService.toast('search-delete-failure');
+          })
+      }
+
       // When orderby/sort arrows on dashboard table are clicked
       searchCtrl.sortApps = function(category, order) {
         var sign = order == 'desc' ? '-' : ''
         $scope.rowSort = sign + category
-        
+
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Table Sorting Changed", {
@@ -569,9 +703,9 @@ angular.module('appApp')
         var routeParams = $location.search();
         listApiService.updateList(routeParams.listId, $scope.filters)
         .success(function(data) {
-          $scope.notify('saved-list-success'); 
+          $scope.notify('saved-list-success');
         }).error(function() {
-          $scope.notify('saved-list-error'); 
+          $scope.notify('saved-list-error');
         })
       }
 

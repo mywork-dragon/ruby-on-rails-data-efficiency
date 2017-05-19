@@ -5,11 +5,45 @@
 
       <header class="page-main-header ng-scope">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <h4>
               I want to explore
-              <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>apps
+              <app-platform-toggle ng-click="emptyApps()"></app-platform-toggle>apps
             </h4>
+          </div>
+          <div class="col-md-2">
+            <div class="btn-group saved-searches" uib-dropdown is-open="status.isopen">
+              <button type="button" class="btn btn-primary saved-searches" uib-dropdown-toggle ng-disabled="disabled">
+                Saved Searches <span class="caret"></span>
+              </button>
+              <ul ng-if="!searchCtrl.hasSearches" id="saved-searches-ul" class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li role="menuitem">
+                  <div class="no-search-menu-item">
+                    No saved searches!
+                  </div>
+                </li>
+                <li class="divider"></li>
+                <li role="menuitem">
+                  <button
+                    class="saved-search-button"
+                    data-toggle="modal"
+                    data-target="#searchCreateModal"
+                    ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">
+                      Save new search
+                    </button>
+                </li>
+              </ul>
+              <ul ng-if="searchCtrl.hasSearches" id="saved-searches-ul" class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li class="saved-searches" role="menuitem" ng-repeat="(id, search) in searchCtrl.savedSearches track by id" ng-click="searchCtrl.onSavedSearchChange(id)">
+                  <div class="saved-search-menu-item">
+                    {{search.name}}
+                  </div>
+                  <i class="fa fa-trash-o search" ng-click="searchCtrl.setCurrentSearchId(id, $event)"></i>
+                </li>
+                <li class="divider"></li>
+                <li role="menuitem"><button class="saved-search-button" data-toggle="modal" data-target="#searchCreateModal" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Save new search</button></li>
+              </ul>
+            </div>
           </div>
         </div>
       </header>
@@ -86,7 +120,7 @@
            </span>
            -->
            <span class="ui-select">
-              <div ng-dropdown-multiselect="" options="categoryFilterOptions" selected-model="categoryModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="selectEvents" translation-texts="searchCtrl.categoryCustomText"></div>
+              <div ng-dropdown-multiselect="" class="categories-dropdown" options="categoryFilterOptions" selected-model="categoryModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="selectEvents" translation-texts="searchCtrl.categoryCustomText"></div>
            </span>
            <span class="ui-select" ng-show="canViewSupportDesk && appPlatform.platform == 'ios'">
               <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
@@ -347,6 +381,9 @@
     <aside ng-include="'/app/app/views/modals/sdk-filters.html'"></aside>
     <aside ng-include="'/app/app/views/modals/location-filters.html'"></aside>
     <aside ng-include="'/app/app/views/modals/userbase-filters.html'"></aside>
+
+    <aside ng-include="'/app/app/views/modals/search-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/search-delete.html'"></aside>
   </div>
 
 </div>

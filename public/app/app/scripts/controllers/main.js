@@ -248,7 +248,7 @@ angular.module('appApp')
           "title": "Blog Post Notification Clicked",
           "fallback": "Blog Post Notification Clicked",
           "color": "#FFD94D",
-          "blogTitle": $scope.title
+          "Blog Title": $scope.title
         }
         slacktivity.notifySlack(slacktivityData);
         mixpanel.track("Clicked Navigation Link", {

@@ -150,6 +150,13 @@ Rails.application.routes.draw do
       get 'search' => 'salesforce#search'
       post 'export' => 'salesforce#export'
     end
+
+    scope '/saved_searches' do
+      get 'get' => 'saved_searches#get_saved_searches'
+      post 'create' => 'saved_searches#create_new_saved_search'
+      put 'edit' => 'saved_searches#edit_saved_search'
+      put 'delete' => 'saved_searches#delete_saved_search'
+    end
   end
 
   # TODO: change from ewok to extension name
