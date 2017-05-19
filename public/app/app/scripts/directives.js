@@ -683,11 +683,16 @@ angular.module("app.directives", []).directive("imgHolder", [
         scope: {
           smartSrc: '@',
           smartSrcId: '@',
-          smartSrcWatch: '&'
+          smartSrcWatch: '&',
+          smartSrcLast: '@'
         },
         link: function(scope, element) {
           var unwatcher = scope.$watch(scope.smartSrcWatch, function(newId) {
-            if ((newId == scope.smartSrcId || newId + 1 == scope.smartSrcId) && scope.smartSrc) {
+            const idx = parseInt(scope.smartSrcId, 10);
+            const loadIndices = [
+              idx, idx + 1, idx - 1
+            ];
+            if ((loadIndices.includes(newId) || idx == scope.smartSrcLast) && scope.smartSrc) {
               element.attr('src', scope.smartSrc);
               unwatcher();
             }

@@ -327,12 +327,14 @@
                     smart-src="{{ad.ad_image}}"
                     smart-src-id={{ad.id}}
                     smart-src-watch="active"
+                    smart-src-last="{{appData.facebookAds.length - 1}}"
                     ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}">
                   <img
                     ng-if="ad.ad_info_image"
                     smart-src="{{ad.ad_info_image}}"
                     smart-src-id="{{ad.id}}"
                     smart-src-watch="active"
+                    smart-src-last="{{appData.facebookAds.length - 1}}"
                     class="ad-slide">
                 </div>
                 <div class="carousel-caption">
