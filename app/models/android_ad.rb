@@ -6,8 +6,7 @@ class AndroidAd < ActiveRecord::Base
   serialize :target_interests
 
   def screenshot_url
-    # "https://s3.amazonaws.com/ms-android-automation-outputs/#{self.ad_id}/screenshot.png"
-    ["http://lorempixel.com/400/700/", "http://lorempixel.com/400/700/food", "http://lorempixel.com/400/700/sports", "http://lorempixel.com/400/700/people"].sample
+    "https://s3.amazonaws.com/ms-android-automation-outputs/#{self.ad_id}/screenshot.png"
   end
 
   def as_json(options={})
