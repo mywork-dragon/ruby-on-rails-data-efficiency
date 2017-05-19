@@ -101,13 +101,31 @@ class SalesforceExportService
     results
   end
 
-  def default_mapping
+  def default_mapping(app)
+    mapping = {}
+    mapping[WEBSITE] = {"id"=>"Website", "name"=>"Website"}
+
+    case app.platform
+    when 'ios'
+      mapping[IOS_PUB_ID] = {"id"=>"MightySignal_iOS_Publisher_ID__c", "name"=>"New Field: MightySignal iOS Publisher ID"}
+      mapping[APP_STORE_PUB_ID] = {"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}
+      mapping[IOS_LINK] = {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"}
+      mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
+    when 'android'
+      mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
+      mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
+      mapping[ANDROID_LINK] = {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"}
+      mapping[ANDROID_SDK_SUMMARY] = {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
+    end
+
     case @model_name
     when 'Account'
-      {"MightySignal Publisher ID"=>{"id"=>"MightySignal_Publisher_ID__c", "name"=>"New Field: MightySignal Publisher Id"}, "App Store Publisher ID"=>{"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}, "Publisher Name"=>{"id"=>"Name", "name"=>"Name"}, "Website"=>{"id"=>"Website", "name"=>"Website"}, "MightySignal Link"=>{"id"=>"MightySignal_Link__c", "name"=>"New Field: MightySignal Link"}, "SDK Summary"=>{"id"=>"MightySignal_SDK_Summary__c", "name"=>"New Field: MightySignal SDK Summary"}} 
+      mapping[PUBLISHER_NAME] = {"id"=>"Name", "name"=>"Name"}
     when 'Lead'
-      {"SDK Summary"=>{"id"=>"MightySignal_SDK_Summary__c", "name"=>"New Field: MightySignal SDK Summary"}, "MightySignal Link"=>{"id"=>"MightySignal_Link__c", "name"=>"New Field: MightySignal Link"}, "MightySignal Publisher ID"=>{"id"=>"MightySignal_Publisher_ID__c", "name"=>"New Field: MightySignal Publisher Id"}, "App Store Publisher ID"=>{"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}, "Publisher Name"=>{"id"=>"Company", "name"=>"Company"}, "Website"=>{"id"=>"Website", "name"=>"Website"}} 
+      mapping[PUBLISHER_NAME] = {"id"=>"Company", "name"=>"Company"}
     end
+
+    mapping
   end
 
   def should_skip_field?(field_name, object_id)
@@ -125,22 +143,27 @@ class SalesforceExportService
     false
   end
 
-  def export_app(app:, mapping: default_mapping, object_id:)
-    mapping = JSON.parse(mapping).with_indifferent_access if mapping
+  def export_app(app:, mapping: nil, object_id:)
+    mapping = if mapping
+      JSON.parse(mapping).with_indifferent_access 
+    else
+      default_mapping(app).with_indifferent_access 
+    end
+
     update_default_mapping(mapping)
 
     data = data_fields(app)
     new_object = {}
 
     mapping.each do |field, map|
-      next if should_skip_field?(map['id'], object_id)
+      puts "Field is #{field} #{data}"
+      next if should_skip_field?(map['id'], object_id) || data[field].blank?
       if !object_has_field?(map["id"])
         add_custom_field(@model_name, data[field].except(:data))
       end
       new_object[map["id"]] = if map['data']
         map['data']
       else
-        puts "Field is #{field} #{data}"
         data[field][:data]
       end
     end
@@ -263,25 +286,36 @@ class SalesforceExportService
 
   private
 
+  IOS_PUB_ID = "MightySignal iOS Publisher ID"
+  ANDROID_PUB_ID = "MightySignal Android Publisher ID"
+  APP_STORE_PUB_ID = "App Store Publisher ID"
+  GOOGLE_PLAY_PUB_ID = "Google Play Publisher ID"
+  IOS_LINK = "MightySignal iOS Link"
+  ANDROID_LINK = "MightySignal Android Link"
+  PUBLISHER_NAME = "Publisher Name"
+  WEBSITE = "Website"
+  IOS_SDK_SUMMARY = "MightySignal iOS SDK Summary"
+  ANDROID_SDK_SUMMARY = "MightySignal Android SDK Summary"
+
   def data_fields(app)
     case app.platform
     when 'ios'
       {
-        "MightySignal Publisher ID" => {data: app.ios_developer.try(:id), length: 255, type: 'Text', label: "MightySignal Publisher ID"},
-        "App Store Publisher ID" => {data: app.ios_developer.try(:identifier), length: 255, type: 'Text', label: "App Store Publisher ID"},
-        "MightySignal Link" => {data: app.ios_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal Link"},
-        "Publisher Name" => {data: app.ios_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
-        "Website" => {data: app.ios_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
-        "SDK Summary" => {data: developer_sdk_summary(app.ios_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
+        IOS_PUB_ID => {data: app.ios_developer.try(:id), length: 255, type: 'Text', label: "MightySignal iOS Publisher ID"},
+        APP_STORE_PUB_ID => {data: app.ios_developer.try(:identifier), length: 255, type: 'Text', label: "App Store Publisher ID"},
+        IOS_LINK => {data: app.ios_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal iOS Link"},
+        PUBLISHER_NAME => {data: app.ios_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
+        WEBSITE => {data: app.ios_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
+        IOS_SDK_SUMMARY => {data: developer_sdk_summary(app.ios_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"}
       }
     when 'android'
       {
-        "MightySignal Publisher ID" => {data: app.android_developer.try(:id), length: 255, type: 'Text', label: "MightySignal Publisher ID"},
-        "Google Play Publisher ID" => {data: app.android_developer.try(:identifier), length: 255, type: 'Text', label: "Google Play Publisher ID"},
-        "MightySignal Link" => {data: app.android_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal Link"},
-        "Publisher Name" => {data: app.android_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
-        "Website" => {data: app.android_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
-        "SDK Summary" => {data: developer_sdk_summary(app.android_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal SDK Summary"}
+        ANDROID_PUB_ID => {data: app.android_developer.try(:id), length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
+        GOOGLE_PLAY_PUB_ID => {data: app.android_developer.try(:identifier), length: 255, type: 'Text', label: "Google Play Publisher ID"},
+        ANDROID_LINK => {data: app.android_developer.try(:link, utm_source: 'salesforce'), type: 'Url', label: "MightySignal Android Link"},
+        PUBLISHER_NAME => {data: app.android_developer.try(:name) || app.name, length: 255, type: 'Text', label: "MightySignal Publisher Name"},
+        WEBSITE => {data: app.android_developer.try(:valid_websites).try(:first).try(:url), length: 255, type: 'Text', label: "MightySignal Publisher Website"},
+        ANDROID_SDK_SUMMARY => {data: developer_sdk_summary(app.android_developer), length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
       }
     end
   end
