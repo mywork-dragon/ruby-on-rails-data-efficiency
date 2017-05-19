@@ -321,14 +321,22 @@
           <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
             <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides" id="adIntelligenceCarousel">
-              <uib-slide ng-repeat="ad in appData.facebookAds track by ad.id" index="ad.id">
+              <uib-slide ng-repeat="ad in appData.facebookAds" index="ad.id">
                 <div class="ad-container">
-                  <img ng-src="{{ad.ad_image}}" ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}">
-                  <img ng-if="ad.ad_info_image" ng-src="{{ad.ad_info_image}}" class="ad-slide">
+                  <img
+                    smart-src="{{ad.ad_image}}"
+                    smart-src-id={{ad.id}}
+                    smart-src-watch="active"
+                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}">
+                  <img
+                    ng-if="ad.ad_info_image"
+                    smart-src="{{ad.ad_info_image}}"
+                    smart-src-id="{{ad.id}}"
+                    smart-src-watch="active"
+                    class="ad-slide">
                 </div>
                 <div class="carousel-caption">
-                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}}</p>
-                  <p>{{ad.id+1}} - {{appData.facebookAds.length}} (out of {{appData.totalCreatives}} total impressions)</p>
+                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
                 </div>
               </uib-slide>
             </uib-carousel>

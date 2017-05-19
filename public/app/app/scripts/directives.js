@@ -676,4 +676,22 @@ angular.module("app.directives", []).directive("imgHolder", [
          });
        }
       }
+    })
+    .directive('smartSrc', function() {
+      return {
+        restrict: 'A',
+        scope: {
+          smartSrc: '@',
+          smartSrcId: '@',
+          smartSrcWatch: '&'
+        },
+        link: function(scope, element) {
+          var unwatcher = scope.$watch(scope.smartSrcWatch, function(newId) {
+            if ((newId == scope.smartSrcId || newId + 1 == scope.smartSrcId) && scope.smartSrc) {
+              element.attr('src', scope.smartSrc);
+              unwatcher();
+            }
+          });
+        }
+      };
     });
