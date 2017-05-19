@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'mocks/classdump_mock'
-require 'byebug'
 
 class IosSdkClassifierTest < ActiveSupport::TestCase
 

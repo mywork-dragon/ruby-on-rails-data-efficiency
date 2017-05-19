@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'byebug'
 
 class JtoolTest < ActiveSupport::TestCase
 

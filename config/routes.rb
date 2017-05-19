@@ -197,4 +197,8 @@ Rails.application.routes.draw do
 
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
+
+  post 'ios_sdk/new' => 'ios_sdk#create'
+  post 'ios_sdk/validate' => 'ios_sdk#validate'
+  get 'ios_sdk/query' => 'ios_sdk#athena_query'
 end
