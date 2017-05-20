@@ -4,8 +4,12 @@ module ProxyBase
     if proxy_type == :android_classification
       android_proxies(region)
     else
-      { ip: ENV['MICRO_PROXY_URL'], port: ENV['MICRO_PROXY_PORT'] }
+      general_proxies
     end
+  end
+
+  def general_proxies
+    { ip: ENV['MICRO_PROXY_URL'], port: ENV['MICRO_PROXY_PORT'] }
   end
 
   def android_proxies(region)
