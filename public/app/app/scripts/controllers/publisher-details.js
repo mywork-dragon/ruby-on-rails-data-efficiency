@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter) {
+angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter", "linkedInService",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter, linkedInService) {
 
     var publisherDetailsCtrl = this;
     $scope.appPlatform = $routeParams.platform
@@ -59,24 +59,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-      var linkedinLink = "";
-
-      if (linkedinLinkType == 'company') {
-        linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.publisherData.name);
-      } else {
-        linkedinLink = "https://www.linkedin.com/vsearch/p?keywords=" + linkedinLinkType + "&company=" + encodeURI($scope.publisherData.name);
-      }
-
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "LinkedIn Link Clicked", {
-          "companyName": $scope.publisherData.name,
-          "companyPosition": linkedinLinkType
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-
-      $window.open(linkedinLink);
+      linkedInService.getLink(linkedinLinkType, $scope.publisherData.name);
     };
 
     $scope.appsDisplayedCount = function() {

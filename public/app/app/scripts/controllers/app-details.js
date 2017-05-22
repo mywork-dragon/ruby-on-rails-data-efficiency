@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'slacktivity',
-  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, slacktivity) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'linkedInService', 'slacktivity',
+  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, linkedInService, slacktivity) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -34,9 +34,9 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
       });
 
     $scope.getSalesforceData = function() {
-      authService.userInfo().success(function(data) { 
+      authService.userInfo().success(function(data) {
         $scope.userInfo = {}
-        $scope.userInfo.email = data.email; 
+        $scope.userInfo.email = data.email;
         $scope.userInfo.salesforceName = data.salesforce_name;
         $scope.userInfo.salesforceImageUrl = data.salesforce_image_url;
       });
@@ -113,24 +113,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-      var linkedinLink = "";
-
-      if (linkedinLinkType == 'company') {
-        linkedinLink = "https://www.linkedin.com/vsearch/c?keywords=" + encodeURI($scope.appData.publisher.name);
-      } else {
-        linkedinLink = "https://www.linkedin.com/vsearch/f?type=all&keywords=" + encodeURI($scope.appData.publisher.name) + "+" + linkedinLinkType;
-      }
-
-      /* -------- Mixpanel Analytics Start -------- */
-      mixpanel.track(
-        "LinkedIn Link Clicked", {
-          "companyName": $scope.appData.publisher.name,
-          "companyPosition": linkedinLinkType
-        }
-      );
-      /* -------- Mixpanel Analytics End -------- */
-
-      $window.open(linkedinLink);
+      linkedInService.getLink(linkedinLinkType, $scope.appData.publisher.name);
     };
 
     $scope.linkTo = function(path) {
