@@ -128,6 +128,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
     // When orderby/sort arrows on dashboard table are clicked
     $scope.sortApps = function(category, order) {
       $scope.loadPublisher(category, order);
+      var sign = order == 'desc' ? '-' : ''
+      $scope.rowSort = sign + category;
     };
 
     $scope.contactsLoading = false;
