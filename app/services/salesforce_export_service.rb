@@ -328,9 +328,9 @@ class SalesforceExportService
 
       case @model_name
       when 'Account'
-        fields['AccountSource'] = 'MightySignal'
+        fields['AccountSource'] = 'MightySignal' if object_has_field?('AccountSource')
       when 'Lead'
-        fields['LeadSource'] = 'MightySignal'
+        fields['LeadSource'] = 'MightySignal' if object_has_field?('LeadSource')
       end
     else
       fields['Id'] = object_id
