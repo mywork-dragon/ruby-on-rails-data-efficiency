@@ -196,7 +196,6 @@ class IosApp < ActiveRecord::Base
         recommendedAge: self.recommended_age,
         description: self.description,
         facebookAds: self.ios_fb_ads.has_image.as_json({no_app: true}),
-        totalCreatives: self.ios_fb_ads.has_image.count,
         headquarters: self.headquarters,
       })
     end

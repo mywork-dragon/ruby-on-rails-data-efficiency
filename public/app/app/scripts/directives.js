@@ -683,7 +683,7 @@ angular.module("app.directives", []).directive("imgHolder", [
        }
       }
     })
-    .directive('smartSrc', function() {
+    .directive('smartSrc', ["$http", function($http) {
       return {
         restrict: 'A',
         scope: {
@@ -698,6 +698,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             const loadIndices = [
               idx, idx + 1, idx - 1
             ];
+
             if ((loadIndices.includes(newId) || idx == scope.smartSrcLast) && scope.smartSrc) {
               element.attr('src', scope.smartSrc);
               unwatcher();
@@ -705,4 +706,4 @@ angular.module("app.directives", []).directive("imgHolder", [
           });
         }
       };
-    });
+    }]);

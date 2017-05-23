@@ -328,7 +328,8 @@
                     smart-src-id={{ad.id}}
                     smart-src-watch="active"
                     smart-src-last="{{appData.facebookAds.length - 1}}"
-                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}">
+                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}"
+                    onerror="this.onerror = null; this.src = 'https://assetscdn.paytm.com/images/catalog/product/9/97/9788123923154_23843/0x1920/70/0.jpg'">
                   <img
                     ng-if="ad.ad_info_image"
                     smart-src="{{ad.ad_info_image}}"

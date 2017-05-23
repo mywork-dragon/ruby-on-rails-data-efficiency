@@ -234,7 +234,6 @@ class AndroidApp < ActiveRecord::Base
         appIdentifier: self.app_identifier,
         displayStatus: self.display_type,
         facebookAds: self.android_ads.as_json({no_app: true}),
-        totalCreatives: self.android_ads.count,
         headquarters: self.headquarters
       })
     end
