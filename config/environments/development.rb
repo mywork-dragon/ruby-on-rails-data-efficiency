@@ -64,4 +64,5 @@ Rails.application.configure do
   config.ipa_bucket_region = 'us-east-1'
 
   config.itunes_scrape_bucket = 'ms-ios-scrapes-dev'
+  config.ios_classification_models_bucket = 'ms-scratch'
 end

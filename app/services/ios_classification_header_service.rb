@@ -2,13 +2,8 @@ class IosClassificationHeaderService
   class << self
 
     def populate_backup_table
-      batch = Sidekiq::Batch.new
-      batch.description = 'IosClassificationHeaderService#populate_backup_table'
-      batch.on(:complete, 'IosClassificationHeaderService#on_complete_populate_backups')
-
-      batch.jobs do
-        IosClassificationHeaderWorker.perform_async(:queue_headers)
-      end
+      clear_backup_table
+      IosClassificationHeaderWorker.perform_async(:queue_headers)
     end
 
     def clear_backup_table
@@ -17,7 +12,7 @@ class IosClassificationHeaderService
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model.table_name}")
     end
 
-    def swap_tables
+    def swap_tables(automated: true)
       ActiveRecord::Base.logger.level = 1
       ap "BEFORE"
       print_counts
@@ -32,8 +27,11 @@ class IosClassificationHeaderService
       ].join(",\n")}"
       puts query
 
-      print 'Does the following query look ok? [y/n] : '
-      return unless gets.chomp.include?('y')
+      unless automated
+        print 'Does the following query look ok? [y/n] : '
+        return unless gets.chomp.include?('y')
+      end
+
       ActiveRecord::Base.connection.execute(query)
 
       ap "AFTER"
@@ -49,9 +47,5 @@ class IosClassificationHeaderService
         puts "#{model.to_s}: #{model.count}"
       end
     end
-  end
-
-  def on_complete_populate_backups(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Populated Backup Table')
   end
 end
