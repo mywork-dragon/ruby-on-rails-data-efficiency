@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170515165951) do
+ActiveRecord::Schema.define(version: 20170526220220) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1894,6 +1894,7 @@ ActiveRecord::Schema.define(version: 20170515165951) do
   add_index "ios_sdk_source_data", ["flagged"], name: "index_ios_sdk_source_data_on_flagged", using: :btree
   add_index "ios_sdk_source_data", ["ios_sdk_id"], name: "index_ios_sdk_source_data_on_ios_sdk_id", using: :btree
   add_index "ios_sdk_source_data", ["name", "flagged"], name: "index_ios_sdk_source_data_on_name_and_flagged", using: :btree
+  add_index "ios_sdk_source_data", ["name"], name: "index_ios_sdk_source_data_on_name", unique: true, using: :btree
 
   create_table "ios_sdk_source_groups", force: :cascade do |t|
     t.string   "name",       limit: 191
