@@ -65,7 +65,7 @@
                       <img ng-src="/lib/images/flags/{{appData.userBase.country_code.toLowerCase()}}.png" />
                       {{appData.userBase.user_base | capitalize}}
                     </span>
-                    <button ng-if="appData.platform == 'ios' && appData.userBases.length > 1" uib-popover-template="'userBaseTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                    <button ng-if="appData.platform == 'ios' && appData.userBases.length > 1" uib-popover-template="'userBaseTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
                       <img ng-src="/lib/images/flags/{{appData.userBase.country_code.toLowerCase()}}.png" />
                       {{appData.userBase.user_base | capitalize}}
                     </button>
@@ -108,7 +108,7 @@
                       <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
                       {{appData.rating.rating}} of 5
                     </span>
-                    <button ng-if="appPlatform == 'ios' && appData.ratings.length > 1" uib-popover-template="'ratingTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                    <button ng-if="appPlatform == 'ios' && appData.ratings.length > 1" uib-popover-template="'ratingTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
                       <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
                       {{appData.rating.rating}} of 5
                     </button>
@@ -121,7 +121,7 @@
                       <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
                       {{appData.ratingsCount.ratings_count}}
                     </span>
-                    <button ng-if="appPlatform == 'ios' && appData.ratingsCounts.length > 1" uib-popover-template="'ratingsCountTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                    <button ng-if="appPlatform == 'ios' && appData.ratingsCounts.length > 1" uib-popover-template="'ratingsCountTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
                       <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
                       {{appData.ratingsCount.ratings_count | number}}
                     </button>
@@ -366,7 +366,7 @@
                   <li ng-if="appData.appStores && appData.appStores.availableIn.length && appPlatform == 'ios'">
                     <span class="icon fa fa-globe"></span>
                     <label>Available in:</label>
-                     <button uib-popover-template="'appStoresTemplate.html'" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
+                     <button uib-popover-template="'appStoresTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
                   </li>
                   <li ng-if="appData.appIdentifier">
                     <span class="icon fa fa-user"></span>

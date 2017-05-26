@@ -31,7 +31,7 @@ angular
     'rzModule'
   ])
   .run(function ($http, $rootScope) {
-    $(document).ready(function(){ 
+    $(document).ready(function(){
       /* Disables loading spinner */
       setTimeout(function(){
         $('.page-loading-overlay').addClass("loaded");
@@ -133,9 +133,6 @@ angular
   .config(['$uibTooltipProvider', function($tooltipProvider){
     $tooltipProvider.setTriggers({
       'mouseenter': 'mouseleave click'
-    });
-    $tooltipProvider.options({
-      'placement': 'auto left'
     });
   }])
   .config(function($authProvider) {
