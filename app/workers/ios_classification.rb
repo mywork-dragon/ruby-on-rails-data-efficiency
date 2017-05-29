@@ -448,16 +448,17 @@ module IosClassification
     end
   end
 
+  # searches headers for SDKs
+  # if specified in ios_sdk_source_data, go with that one
   def source_search(name)
 
-    ios_sdks = []
+    ios_sdks = IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name, 'ios_sdk_source_data.flagged' => false).to_a
 
-    ios_sdks += IosSdk.joins(:cocoapod_source_datas).where('cocoapod_source_data.name' => name, 'cocoapod_source_data.flagged' => false)
-    ios_sdks += IosSdk.joins(:ios_sdk_source_datas).where('ios_sdk_source_data.name' => name, 'ios_sdk_source_data.flagged' => false)
+    return ios_sdks if ios_sdks.present?
 
-    ios_sdks.uniq!
+    ios_sdks = IosSdk.joins(:cocoapod_source_datas).where('cocoapod_source_data.name' => name, 'cocoapod_source_data.flagged' => false).to_a
 
-    ios_sdks unless ios_sdks.first.nil? # don't return empty arrays
+    ios_sdks if ios_sdks.present? # don't return empty arrays
   end
 
   def direct_search(q)

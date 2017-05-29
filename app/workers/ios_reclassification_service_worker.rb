@@ -1,7 +1,7 @@
 class IosReclassificationServiceWorker
   include Sidekiq::Worker
 
-  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_classification
+  sidekiq_options backtrace: true, retry: false, queue: :ios_reclassification
 
   def perform(ipa_snapshot_id)
     IosClassificationRunner.new(

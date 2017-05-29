@@ -121,16 +121,22 @@ class IosSdk < ActiveRecord::Base
     end
 
     def create_manual(name:, website:, kind:, favicon: nil, open_source: nil, summary: nil, github_repo_identifier: nil)
-      IosSdk.create!({
-        name: name,
-        website: website,
-        favicon: favicon || FaviconService.get_favicon_from_url(url: website),
-        open_source: open_source || /(?:bitbucket|github|sourceforge)/.match(website),
-        summary: summary,
-        github_repo_identifier: github_repo_identifier,
-        source: :manual,
-        kind: kind
-        })
+      attributes = {
+          website: website,
+          favicon: favicon || FaviconService.get_favicon_from_url(url: website),
+          open_source: open_source || /(?:bitbucket|github|sourceforge)/.match(website),
+          summary: summary,
+          github_repo_identifier: github_repo_identifier,
+          kind: kind
+      }
+      existing = IosSdk.find_by_name(name)
+      if existing
+        existing.update!(attributes)
+        existing
+      else
+        attributes.merge!({name: name, source: :manual})
+        IosSdk.create!(attributes)
+      end
     end
 
     def create_from_json(filepath)

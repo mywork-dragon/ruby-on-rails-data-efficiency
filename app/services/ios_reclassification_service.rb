@@ -27,20 +27,14 @@ class IosReclassificationService
     end
 
     def reclassify_classdump_ids(classdump_ids)
-      batch = Sidekiq::Batch.new
-      batch.description = "reclassifying snapshots" 
-      batch.on(:complete, 'IosReclassificationService#on_complete')
-
       snapshot_ids = IpaSnapshot
         .joins(:class_dumps)
         .where('class_dumps.id in (?)', classdump_ids)
         .where(success: true, scan_status: IpaSnapshot.scan_statuses[:scanned])
         .pluck(:id)
 
-      batch.jobs do
-        snapshot_ids.each do |id|
-          IosReclassificationServiceWorker.perform_async(id)
-        end
+      snapshot_ids.each do |id|
+        IosReclassificationServiceWorker.perform_async(id)
       end
     end
   end

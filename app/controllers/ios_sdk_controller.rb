@@ -7,12 +7,10 @@ class IosSdkController < ApplicationController
   def validate
     data = params.fetch('ios_sdk') # Rails autowraps inbound JSON into 'ios_sdk' root
     name = data.fetch('name')
-    raise BadRequest, "SDK #{name} already exists" if IosSdk.find_by_name(name).present?
-
     website = data.fetch('website')
-
     classes = data.fetch('classes')
-    existing = IosClassificationHeader.where(name: classes).pluck(:name)
+
+    existing = IosSdkSourceData.where(name: classes, flagged: false).pluck(:name)
     raise BadRequest, "Classes already taken: #{existing.join(', ')}" if existing.present?
 
     render json: {status: 'ok'}, status: 200
