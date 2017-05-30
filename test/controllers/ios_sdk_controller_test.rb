@@ -34,17 +34,4 @@ class IosSdkControllerTest < ActionController::TestCase
       assert_equal 2, created.ios_sdk_source_datas.count
     end
   end
-
-  def test_athena_query
-    sdk = IosSdk.create!(name: 'sup', kind: :native)
-    IosSdkSourceData.create!(name: 'my_custom_header', ios_sdk_id: sdk.id)
-    @controller.stub :authenticate_admin_account, nil do
-      res = get(:athena_query, {ios_sdk_ids: "#{sdk.id}"})
-      assert_equal 200, res.status
-      query = JSON.parse(res.body)['query']
-      assert_not_nil query
-      assert /select DISTINCT\(id\)/i.match(query)
-      assert /my_custom_header/.match(query)
-    end
-  end
 end

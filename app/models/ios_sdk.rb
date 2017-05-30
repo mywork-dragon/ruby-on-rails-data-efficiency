@@ -124,7 +124,7 @@ class IosSdk < ActiveRecord::Base
       attributes = {
           website: website,
           favicon: favicon || FaviconService.get_favicon_from_url(url: website),
-          open_source: open_source || /(?:bitbucket|github|sourceforge)/.match(website),
+          open_source: open_source || !!/(?:bitbucket|github|sourceforge)/.match(website),
           summary: summary,
           github_repo_identifier: github_repo_identifier,
           kind: kind
@@ -137,16 +137,6 @@ class IosSdk < ActiveRecord::Base
         attributes.merge!({name: name, source: :manual})
         IosSdk.create!(attributes)
       end
-    end
-
-    def create_from_json(filepath)
-      data = JSON.parse(open(filepath).read())
-      sdk = create_manual(name: data.fetch('name'), website: data.fetch('website'), summary: data['summary'], kind: :native)
-      if data['classes']
-        classes = data['classes'].class == String ? data['classes'].split.uniq : data['classes'].uniq
-        classes.map { |name| IosSdkSourceData.create!(name: name, ios_sdk_id: sdk.id) }
-      end
-      sdk
     end
 
     def csv_dump
@@ -179,19 +169,24 @@ class IosSdk < ActiveRecord::Base
       )
     end
 
-    # to plug into athena for reclassification
-    def gen_athena_query(ios_sdk_ids)
-      classes = ios_sdk_ids.map do |id|
-        sdk = IosSdk.find(id)
-        classes = sdk.cocoapod_source_datas.where(flagged: false).pluck(:name)
-        classes += sdk.ios_sdk_source_datas.where(flagged: false).pluck(:name)
-        classes
-      end.flatten.uniq
-      join_str = "(#{classes.map {|x| "'#{x}'"}.join(', ')})"
-      "select distinct(id) from classes where class in #{join_str}
-      union
-      select distinct(id) from jtool_classes where class in #{join_str}"
+    def sync_manual_data(model)
+      model.each do |name, info|
+        sdk = IosSdk.find_by_name(name)
+        if sdk.nil?
+          sdk = IosSdk.create_manual(
+            name: name,
+            website: info['website'],
+            kind: :native,
+            summary: info['summary']
+          )
+        end
+        existing = sdk.ios_sdk_source_datas.pluck(:name)
+        current = info['classes']
+        to_remove = existing - current
+        IosSdkSourceData.where(name: to_remove, ios_sdk_id: sdk.id).delete_all if to_remove.present?
+        to_add = (current - existing).map {|n| IosSdkSourceData.new(ios_sdk_id: sdk.id, name: n)}
+        IosSdkSourceData.import(to_add) if to_add.present?
+      end
     end
   end
-
 end

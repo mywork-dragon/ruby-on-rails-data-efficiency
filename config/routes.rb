@@ -205,5 +205,5 @@ Rails.application.routes.draw do
 
   post 'ios_sdk/new' => 'ios_sdk#create'
   post 'ios_sdk/validate' => 'ios_sdk#validate'
-  get 'ios_sdk/query' => 'ios_sdk#athena_query'
+  post 'ios_sdk/sync' => 'ios_sdk#sync'
 end

@@ -30,10 +30,15 @@ class IosSdkController < ApplicationController
     render json: sdk, status: 201
   end
 
-  def athena_query
-    ids = params.fetch('ios_sdk_ids').split(',').map(&:to_i)
-    q = IosSdk.gen_athena_query(ids)
-    render json: { query: q }, status: 200
+  def sync
+    bucket = params.fetch('bucket')
+    keypath = params.fetch('keypath')
+    model = JSON.parse(MightyAws::S3.new.retrieve(
+      bucket: bucket,
+      key_path: keypath
+    ))
+    IosSdk.sync_manual_data(model)
+    render json: {status: 'ok'}, status: 200
   end
 
   rescue_from BadRequest, KeyError do |exception|
