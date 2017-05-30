@@ -24,7 +24,8 @@ class WelcomeController < ApplicationController
       {image: 'yahoo.png', width: 165},
       {image: 'appsflyer.png', width: 180},
       {image: 'mixpanel.png', width: 160},
-      {image: 'zendesk.png', width: 170}
+      {image: 'zendesk.png', width: 170},
+      {image: 'adobe.png', width: 160}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
   end
 
