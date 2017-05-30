@@ -1,0 +1,78 @@
+<div class="token-modal-wrapper" ng-controller="MainCtrl">
+  <script type="text/ng-template" id="api-token.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title" id="apiTokenModalTitle">API Tokens</h3>
+    </div>
+    <div class="modal-body" id="apiTokenModalBody">
+      <h4>{{isAdminAccount ? 'Manage API tokens' : 'View your API tokens'}}</h4>
+      <div class="token-table" ng-if="!$ctrl.empty">
+        <table class="table table-bordered table-responsive">
+          <thead>
+            <tr>
+              <th ng-if="isAdminAccount">Active</th>
+              <th>Token</th>
+              <th>Window</th>
+              <th>Limit</th>
+              <th ng-if="isAdminAccount">Edit/Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="(id, token) in $ctrl.tokens track by id">
+              <td ng-if="isAdminAccount">
+                <label>
+                  <input type="checkbox" ng-checked="token.active" ng-click="$ctrl.updateToken(id, {active: !token.active})">
+                </label>
+              </td>
+              <td>{{token.token}}</td>
+              <td ng-if="$ctrl.currentlyEditing !== id">{{token.rate_window}}</td>
+              <td ng-if="$ctrl.currentlyEditing == id">
+                <span class="ui-select">
+                  <select ng-model="$ctrl.tokenWindow">
+                    <option value="">Rate</option>
+                    <option value="hourly">Hourly</option>
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </span>
+              </td>
+              <td ng-if="$ctrl.currentlyEditing !== id">{{token.rate_limit}}</td>
+              <td ng-if="$ctrl.currentlyEditing == id">
+                <input type="text" ng-model="$ctrl.tokenLimit">
+              </td>
+              <td ng-if="isAdminAccount && $ctrl.currentlyEditing !== id" >
+                <i class="fa fa-pencil" ng-click="$ctrl.toggleEditForm(id)"></i>
+                <i class="fa fa-trash-o" ng-click="$ctrl.deleteToken(id)"></i>
+              </td>
+              <td ng-if="$ctrl.currentlyEditing == id" >
+                <i class="fa fa-check" ng-click="$ctrl.updateToken(id, {rate_limit: token.rate_limit, rate_window: token.rate_window})"></i>
+                <i class="fa fa-times" ng-click="$ctrl.toggleEditForm()"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h5 ng-if="$ctrl.empty" class="token-placeholder">No tokens!</h5>
+      <div ng-if="isAdminAccount" class="generate-token">
+        <h4>Generate a new token</h4>
+        <div class="new-token-form">
+          <label for="limit">Limit: </label>
+          <input type="text" ng-model="$ctrl.rateLimit"></input>
+          <label for="window">Window: </label>
+          <span class="ui-select">
+            <select ng-model="$ctrl.rateWindow">
+              <option value="">Rate</option>
+              <option value="hourly">Hourly</option>
+              <option value="daily">Daily</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </span>
+          <button type="submit" class="btn btn-default" ng-click="$ctrl.generateToken($ctrl.rateLimit, $ctrl.rateWindow)">Generate Token</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="$dismiss()">Close</button>
+    </div>
+  </script>
+</div>

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService',
-  function($scope, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
+  function($scope, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
 
     var adminCtrl = this
     $scope.initialPageLoadComplete = false;
@@ -25,7 +25,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         method: 'POST',
         url: API_URI_BASE + 'api/admin/resend_invite',
         data: {user_id: user.id}
-      }).success(function(data) { 
+      }).success(function(data) {
         alert("Done!")
       }).error(function(data) {
         alert(data.errors)
@@ -49,7 +49,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         method: 'POST',
         url: API_URI_BASE + 'api/admin/unlink_accounts',
         data: {user_id: user.id}
-      }).success(function(data) { 
+      }).success(function(data) {
         alert("Done!")
         $scope.accounts[$accountIndex].users[$userIndex] = data.user
       }).error(function(data) {
@@ -72,7 +72,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         pageTitleService.setTitle('MightySignal - Admin');
       });
     };
-    
+
     $scope.load();
 
     $scope.loadUsers = function($index) {
@@ -102,7 +102,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
       }
     }
 
-    $scope.selectedSdk = function ($item) { 
+    $scope.selectedSdk = function ($item) {
       var index = $scope.sdks.indexOf($item.originalObject)
       if (index < 0) {
         $scope.sdks.push($item.originalObject)
@@ -121,7 +121,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
           accountIds.push(follower.id)
         }
       }
-      
+
       var sdkIds = $scope.sdks.map(function (sdk) {
         return sdk.id
       })
@@ -130,7 +130,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         method: 'POST',
         url: API_URI_BASE + 'api/admin/follow_sdks',
         data: {user_ids: userIds, sdks: $scope.sdks, account_ids: accountIds}
-      }).success(function(data) { 
+      }).success(function(data) {
         $scope.sdks = []
         $scope.sdkFollowers = []
         alert("Done!")
@@ -147,14 +147,14 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
       var data = {id: item.id, field: field, type: item.type}
 
       if (field === 'seats_count') {
-        data.value = item.seats_count 
+        data.value = item.seats_count
       }
 
       return $http({
         method: 'POST',
         url: API_URI_BASE + 'api/admin/update',
         data: data
-      }).success(function(data) { 
+      }).success(function(data) {
         item = data.account
       });
     }
@@ -164,18 +164,18 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         method: 'POST',
         url: API_URI_BASE + 'api/admin/create_user',
         data: {email: user.email, account_id: account.id}
-      }).success(function(data) { 
+      }).success(function(data) {
         account.users.push(data.user)
         form.$setPristine()
         $scope.user = {};
         alert("We have sent " + user.email + " an email with instructions for getting set up")
-        
+
         mixpanel.track("New User Invited", {
           account: account.name,
           email: user.email,
           numUsers: account.users.length
         });
-        
+
         var slacktivityData = {
           "title": "New User Invited",
           "fallback": "New User Invited",
@@ -196,7 +196,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         method: 'POST',
         url: API_URI_BASE + 'api/admin/create_account',
         data: {name: account.name}
-      }).success(function(data) { 
+      }).success(function(data) {
         $scope.accounts.push(data.account)
         form.$setPristine()
         $scope.account = {}
@@ -228,6 +228,23 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
         hiddenElement.target = '_blank';
         hiddenElement.download = 'mightysignal_sdk_report.csv';
         hiddenElement.click();
+      })
+    }
+
+    $scope.openTokenModal = function (id) {
+      $uibModal.open({
+        animation: true,
+        ariaLabelledBy: 'apiTokenModalTitle',
+        ariaDescribedBy: 'apiTokenModalBoday',
+        templateUrl: 'api-token.html',
+        controller: 'apiTokenInstanceCtrl',
+        controllerAs: '$ctrl',
+        size: 'lg',
+        resolve: {
+          id: function () {
+            return id;
+          }
+        }
       })
     }
 

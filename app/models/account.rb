@@ -1,8 +1,8 @@
 class Account < ActiveRecord::Base
   include Follower
-  
+
   has_many :users
-  
+
   has_many :api_keys
 
   has_many :api_tokens
@@ -34,7 +34,7 @@ class Account < ActiveRecord::Base
     print 'How many requests during that time frame would you like? Enter a number [default is 2500]: '
     limit = gets.strip.to_i
     limit = limit == 0 ? limit = 2500 : limit
-    
+
     puts '-------------------------'
     puts "Rate Window: #{ApiToken.rate_windows.invert[window]}"
     puts "Limit: #{limit} requests / window"
@@ -55,10 +55,11 @@ class Account < ActiveRecord::Base
 
   def as_json(options={})
     super().merge(
-                  type: self.class.name, 
+                  type: self.class.name,
                   active_users: active_users,
-                  salesforce_connected: salesforce_uid.present?
+                  salesforce_connected: salesforce_uid.present?,
+                  api_tokens: self.api_tokens
                   )
   end
-  
+
 end

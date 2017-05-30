@@ -41,7 +41,7 @@
           </angucomplete-alt>
           <div class="ui-tags-input" ng-if="sdks.length">
             <ul class="tags">
-              <li ng-repeat="sdk in sdks" class="tag-item"> 
+              <li ng-repeat="sdk in sdks" class="tag-item">
                 {{sdk.name}} - {{sdk.platform}}
                 <a class="remove-button" ng-click="removeSdk($index)">×</a>
               </li>
@@ -74,7 +74,8 @@
         <div class="panel-body" uib-collapse="account.isCollapsed">
           <div class="media">
             <div class="media-body" ng-hide="account.isLoading">
-              <button type="submit" class="btn btn-primary pull-right" ng-if="account.id == 1" ng-click="exportToCsv()">Download Microsoft CSV</button>
+              <button type="submit" class="btn btn-primary pull-right microsoft-btn" ng-if="account.id == 1" ng-click="exportToCsv()">Download Microsoft CSV</button>
+              <button type="submit" class="btn btn-primary pull-right" ng-click="openTokenModal(account.id)">API Tokens</button>
               <strong ng-if="$root.isAdminAccount">Account Settings</strong>
               <div class="checkbox" ng-if="$root.isAdminAccount">
                 <label>
@@ -229,3 +230,4 @@
   </div>
 </div>
 
+<aside ng-include="'/app/app/views/modals/api-token.html'"></aside>

@@ -3,7 +3,7 @@ class Api::AdminController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_admin, except: [:ios_reset_app_data]
-  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts]
+  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts, :generate_api_token, :delete_api_token, :update_api_token]
 
   def index
     accounts = if @current_user.account.is_admin_account?
@@ -208,4 +208,37 @@ class Api::AdminController < ApplicationController
     ios_app.reset_app_data
     render json: {app_id: app_id}
   end
+
+  def get_api_tokens
+    unless @current_user.account.is_admin_account
+      render json: @current_user.account.api_tokens.where(active: true)
+    else
+      render json: Account.find(params['account_id']).api_tokens
+    end
+  end
+
+  def generate_api_token
+    token = ApiToken.create!(
+      account_id: params['account_id'],
+      token: SecureRandom.hex,
+      rate_window: params['rate_window'],
+      rate_limit: params['rate_limit']
+    )
+
+    render json: token
+  end
+
+  def delete_api_token
+    token = ApiToken.find(params['token_id'])
+    token.destroy
+    render json: token
+  end
+
+  def update_api_token
+    token = ApiToken.find(params['id'])
+    fields = JSON.parse(params['data'])
+    token.update_attributes(fields)
+    render json: token
+  end
+
 end

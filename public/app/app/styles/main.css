@@ -8801,3 +8801,27 @@ button.saved-search-button:hover {
 button.saved-search-button:disabled {
   color: #C1BFC0;
 }
+
+/* API Tokens */
+
+.microsoft-btn {
+  margin-left: 10px;
+}
+
+.token-table .fa {
+  cursor: pointer;
+  width: 15px;
+  font-size: 15px;
+}
+
+.token-table .fa:hover {
+  color: #0393DD;
+}
+
+.new-token-form {
+  display: flex;
+  align-items: baseline;
+  width: 60%;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}

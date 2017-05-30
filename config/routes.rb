@@ -144,6 +144,10 @@ Rails.application.routes.draw do
       get 'export_to_csv' => 'admin#export_to_csv'
       get 'account_users' => 'admin#account_users'
       post 'ios_reset_app_data' => 'admin#ios_reset_app_data'
+      get 'get_api_tokens' => 'admin#get_api_tokens'
+      post 'generate_api_token' => 'admin#generate_api_token'
+      put 'delete_api_token' => 'admin#delete_api_token'
+      post 'update_api_token' => 'admin#update_api_token'
     end
 
     scope '/salesforce' do
