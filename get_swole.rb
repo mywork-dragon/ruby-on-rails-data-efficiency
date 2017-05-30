@@ -32,18 +32,13 @@ puts swole_string.light_yellow
 puts "\nWhich servers would you like to deploy to?\n\n"
 puts "Options"
 puts "-------"
-puts "scraper".light_cyan + ": Deploys to the main scraper servers."
-puts "sdk_scraper".light_cyan + ": Deploys to the SDK scraper servers."
-puts "sdk_scraper_live_scan".light_cyan + ": Deploys to the SDK scraper live scan (Android)."
 puts "darth_vader".light_cyan + ": Deploys to Vader (iOS Live Scan)."
 puts "kylo_ren".light_cyan + ": Deploys to Kylo Ren (iOS Mass Scan and Ad Spend)."
 puts "darth_maul".light_cyan + ": Deploys to Darth Maul (Dev)."
-puts "ios_live_scan".light_cyan + ": Deploys to the iOS live scan."
-puts "migration".light_cyan + ": Deploys to migration servers (to run migrations only)"
 puts "\n"
 print "Deploy to: "
 stage = gets.chomp
-valid_servers = %w(scraper sdk_scraper sdk_scraper_live_scan darth_vader kylo_ren darth_maul ios_live_scan migration)
+valid_servers = %w(darth_vader kylo_ren darth_maul)
 if !valid_servers.include?(stage)
   puts "\nInvalid input! Valid inputs are : #{valid_servers.join(' ')}\n\n"
   abort

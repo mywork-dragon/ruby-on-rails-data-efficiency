@@ -12,7 +12,7 @@ module MightyDeployer
   @targets = []
 
   def self.deploy_to(server_symbols)
-    valid_symbols = [:web, :scraper, :sdk_scraper, :sdk_scraper_live_scan, :darth_vader, :kylo_ren, :darth_maul, :staging, :ios_live_scan, :monitor, :aviato, :migration]
+    valid_symbols = [:darth_vader, :kylo_ren, :darth_maul]
     
     raise "Input an array with a combination of these values: #{valid_symbols}" unless (server_symbols - valid_symbols).empty?
 
