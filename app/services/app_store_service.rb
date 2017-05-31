@@ -18,6 +18,7 @@ class AppStoreService
     
     @json = app_store_json(id) if lookup
     @html = app_store_html(id) if scrape
+    @s3_client = ItunesS3Store.new
     
     #ld "@html: #{@html}"
     
@@ -491,12 +492,12 @@ class AppStoreService
 
   def save_html
     return NoSave unless @html_body # Nokogiri modifies the result
-    ItunesS3Store.new(@app_identifier, @country_code, data_type: :html, data_str: @html_body).store!
+    @s3_client.store!(@app_identifier, @country_code, :html, @html_body)
   end
 
   def save_json
     return NoSave unless @json
-    ItunesS3Store.new(@app_identifier, @country_code, data_type: :json, data_str: @json.to_json).store!
+    @s3_client.store!(@app_identifier, @country_code, :json, @json.to_json)
   end
 
   class << self

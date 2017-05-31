@@ -10,6 +10,7 @@ module AppStoreInternationalSnapshotModule
     @ios_app_current_snapshot_job_id = ios_app_current_snapshot_job_id
     @ios_app_ids = ios_app_ids
     @app_store = AppStore.find(app_store_id)
+    @s3_client = ItunesS3Store.new
     @bulk_store = AppStoreHelper::BulkStore.new(
       app_store_id: @app_store.id,
       ios_app_current_snapshot_job_id: @ios_app_current_snapshot_job_id,
@@ -40,6 +41,7 @@ module AppStoreInternationalSnapshotModule
     ios_app = identifier_to_app_map[extractor.app_identifier]
     extractor.verify_ios!
     @bulk_store.add_data(ios_app, app_json)
+    @s3_client.store!(extractor.app_identifier, @app_store.country_code.downcase, :json, app_json)
   rescue AppStoreHelper::ExtractorJson::NotIosApp
     if ios_app
       ios_app.update!(
