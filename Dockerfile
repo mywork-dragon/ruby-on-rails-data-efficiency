@@ -6,8 +6,9 @@ ADD container_assets/bowerrc /root/.bowerrc
 ADD Gemfile /varys/Gemfile
 ADD Gemfile.lock /varys/Gemfile.lock
 ARG exclude_gems=none
+ARG bundle_mode=
 RUN gem update bundler && bundle config build.nokogiri --use-system-libraries &&\
-  bundle install --without $exclude_gems --jobs 8
+  bundle install --without $exclude_gems $bundle_mode --jobs 8
 ADD . /varys
 
 # build web assets

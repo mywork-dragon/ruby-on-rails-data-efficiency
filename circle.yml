@@ -25,7 +25,7 @@ deployment:
     commands:
       - git reset --hard && git clean -d -x -f && rm .ruby-version
       - export CIRCLE_BRANCH=`echo $CIRCLE_TAG | awk -F '.' '{print $1}'` && ./docker-cache-shim pull 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys
-      - docker build -t varys --build-arg exclude_gems='development test' .
+      - docker build -t varys --build-arg bundle_mode='--deployment' --build-arg exclude_gems='development test' .
       - docker tag varys:latest 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
       - docker push 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
       - export CIRCLE_BRANCH=`echo $CIRCLE_TAG | awk -F '.' '{print $1}'` && ./docker-cache-shim push 250424072945.dkr.ecr.us-east-1.amazonaws.com/varys:$CIRCLE_TAG
