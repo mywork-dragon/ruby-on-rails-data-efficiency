@@ -163,6 +163,7 @@ class IosDownloadDeviceService
       @result[:trace] = error.cause.backtrace
     end
     ensure_teardown if @result[:install_success] && !@result[:teardown_success]
+    raise
   ensure
     disconnect
   end
