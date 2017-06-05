@@ -28,7 +28,7 @@ module GooglePlaySnapshotModule
       proxy_type: proxy_type
     )
   rescue GooglePlayStore::NotFound
-    @android_app.update!(display_type: :taken_down, mobile_priority: :low)
+    @android_app.update!(display_type: :taken_down)
     FailedLookup
   rescue GooglePlayStore::Unavailable
     @android_app.update!(display_type: :foreign)
@@ -116,17 +116,6 @@ module GooglePlaySnapshotModule
         :weak
       end
       @android_app.user_base = user_base
-    end
-
-    if released = @attributes[:released]
-      mobile_priority = if released > 2.months.ago
-                          :high
-                        elsif released > 4.months.ago
-                          :medium
-                        else
-                          :low
-                        end
-      @android_app.mobile_priority = mobile_priority
     end
 
     @android_app.newest_android_app_snapshot = @snapshot

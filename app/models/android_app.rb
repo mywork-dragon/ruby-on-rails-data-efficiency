@@ -37,7 +37,6 @@ class AndroidApp < ActiveRecord::Base
   has_many :follow_relationships
   has_many :followers, as: :followable, through: :follow_relationships
 
-  enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak]
 
   enum display_type: [:normal, :taken_down, :foreign, :paid]
@@ -48,6 +47,17 @@ class AndroidApp < ActiveRecord::Base
 
   ad_table :android_ads
   # update_index('apps#android_app') { self } if Rails.env.production?
+
+  def mobile_priority
+      if newest_android_app_snapshot and newest_android_app_snapshot.released
+        if newest_android_app_snapshot.released > 2.months.ago
+          return :high
+        elsif newest_android_app_snapshot.released > 4.months.ago
+          return :medium
+        end
+    end
+    :low
+  end
 
   def validate_regions
     available_regions = [nil] + MicroProxy.regions.values

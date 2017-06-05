@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20170530003008) do
+ActiveRecord::Schema.define(version: 20170602223213) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -238,7 +237,6 @@ ActiveRecord::Schema.define(version: 20170530003008) do
     t.integer  "app_id",                         limit: 4
     t.integer  "newest_android_app_snapshot_id", limit: 4
     t.integer  "user_base",                      limit: 4
-    t.integer  "mobile_priority",                limit: 4
     t.integer  "newest_apk_snapshot_id",         limit: 4
     t.integer  "display_type",                   limit: 4,   default: 0
     t.integer  "android_developer_id",           limit: 4
@@ -248,7 +246,6 @@ ActiveRecord::Schema.define(version: 20170530003008) do
   add_index "android_apps", ["android_developer_id"], name: "index_android_apps_on_android_developer_id", using: :btree
   add_index "android_apps", ["app_identifier"], name: "index_android_apps_on_app_identifier", unique: true, using: :btree
   add_index "android_apps", ["display_type"], name: "index_android_apps_on_display_type", using: :btree
-  add_index "android_apps", ["mobile_priority"], name: "index_android_apps_on_mobile_priority", using: :btree
   add_index "android_apps", ["newest_android_app_snapshot_id"], name: "index_android_apps_on_newest_android_app_snapshot_id", using: :btree
   add_index "android_apps", ["newest_apk_snapshot_id"], name: "index_android_apps_on_newest_apk_snapshot_id", using: :btree
   add_index "android_apps", ["user_base"], name: "index_android_apps_on_user_base", using: :btree
