@@ -51,12 +51,12 @@ class AndroidApp < ActiveRecord::Base
   def mobile_priority
       if newest_android_app_snapshot and newest_android_app_snapshot.released
         if newest_android_app_snapshot.released > 2.months.ago
-          return :high
+          return 'high'
         elsif newest_android_app_snapshot.released > 4.months.ago
-          return :medium
+          return 'medium'
         end
     end
-    :low
+    'low'
   end
 
   def validate_regions
