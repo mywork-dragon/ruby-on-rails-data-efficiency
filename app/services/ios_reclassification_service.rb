@@ -33,8 +33,14 @@ class IosReclassificationService
         .where(success: true, scan_status: IpaSnapshot.scan_statuses[:scanned])
         .pluck(:id)
 
-      snapshot_ids.each do |id|
-        IosReclassificationServiceWorker.perform_async(id)
+      snapshot_ids = snapshot_ids.map { |x| [x] }
+
+      snapshot_ids.each_slice(500) do |id_arrs|
+        Sidekiq::Client.push_bulk(
+          'queue' => 'ios_reclassification',
+          'class' => IosReclassificationServiceWorker,
+          'args' => id_arrs
+        )
       end
     end
   end
