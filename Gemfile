@@ -106,7 +106,7 @@ gem 'text', '1.3.1'
 
 gem 'iso_country_codes', '0.7.1'
 
-gem "bugsnag", '3.0.0'
+gem 'bugsnag', '~>5.3.2'
 
 gem 'ruby_apk', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/ruby_apk.git', branch: 'use_rubyzip_v_1_1_7'
 

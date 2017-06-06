@@ -2,7 +2,7 @@ class IosFbAdServiceWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options :retry => false, queue: :ios_fb_ads
+  sidekiq_options retry: false, queue: :ios_fb_ads
 
   def perform(ios_fb_ad_job_id, fb_account_id, bid = nil)
 
@@ -27,16 +27,7 @@ class IosFbAdServiceWorker
       Slackiq.message("Critical Error on Device #{e.ios_device_id}. It will remain unavailable for use. Error message:\n```#{e.message}```", webhook_name: :automated_alerts)
     end
 
-    # raise e
-  rescue => e
-    IosFbAdException.create!({
-      ios_fb_ad_job_id: ios_fb_ad_job_id,
-      fb_account_id: fb_account_id,
-      error: e.message,
-      backtrace: e.backtrace
-    })
-
-    # raise e
+    raise e
   ensure
     device_reserver.release if device_reserver && device_reserver.has_device?
   end

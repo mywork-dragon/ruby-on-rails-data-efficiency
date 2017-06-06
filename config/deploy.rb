@@ -35,7 +35,7 @@ set :ssh_options, {
 set :pty, false #for sidekiq-capistrano gem
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentials.yml config/env.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/s3_credentials.yml config/env.yml config/initializers/bugsnag.rb}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
