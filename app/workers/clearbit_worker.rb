@@ -80,7 +80,7 @@ class ClearbitWorker
   end
 
   def queue_ios_apps(user_base)
-    IosApp.where(id: IosAppCurrentSnapshot.where(user_base: user_base).pluck(:ios_app_id)).each do |app|
+    IosApp.where(id: IosSnapshotAccessor.new.ios_app_ids_from_user_base(user_base)).each do |app|
       next if app.headquarters.any?
       ClearbitWorker.perform_async(:enrich_app, app.id, 'ios')
     end

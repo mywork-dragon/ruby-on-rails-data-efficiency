@@ -16,10 +16,7 @@ class AppsIndex < Chewy::Index
   define_type IosApp.includes(:ios_developer, :newest_ios_app_snapshot) do
 
     crutch :current_snapshot do |collection|
-      fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'ratings_all_count', 'app_stores.country_code', 'app_stores.name', 'seller_name',
-                'seller_url', 'user_base', 'price', 'first_released', 'mobile_priority', 'released']
-      data = IosAppCurrentSnapshot.joins(:app_store).where(ios_app_id: collection.map(&:id)).order("ios_app_id, display_priority IS NULL, display_priority ASC").
-                                   pluck(*fields)
+      data = IosSnapshotAccessor.new.app_store_details_from_ios_apps(collection)
       data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result|
         result[id] ||= {}
         result[id]['ios_app_id'] ||= id
@@ -70,7 +67,7 @@ class AppsIndex < Chewy::Index
     # end
 
     crutch :categories do |collection|
-      data = IosAppCategory.joins(:ios_app_current_snapshots).where('ios_app_current_snapshots.ios_app_id' => collection.map(&:id), 'ios_app_categories_current_snapshots.kind' => 0).pluck('ios_app_current_snapshots.ios_app_id', 'ios_app_categories.name')
+      data = IosSnapshotAccessor.new.category_details_from_ios_apps(collection)
       data.each.with_object({}) { |(id, name), result| (result[id] ||= []).push(name); result[id].uniq! }
     end
 

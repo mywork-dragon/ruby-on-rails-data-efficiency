@@ -203,7 +203,7 @@ module AppStoreHelper
       else
         :low
       end
-      @snapshot_table.mobile_priorities[value]
+      IosSnapshotAccessor.new.mobile_priority_value(value)
     end
 
     def populate_snapshot_from_lookup(snapshot_row, json_attrs)
@@ -226,7 +226,7 @@ module AppStoreHelper
       cols.each do |col|
         value = data_source.send(col)
         next if value.nil?
-        if @snapshot_table.columns_hash[col].type == :string
+        if IosSnapshotAccessor.new.column_type(col) == :string
           value = DbSanitizer.truncate_string(value)
         end
         snapshot_row.send("#{col}=", value)
