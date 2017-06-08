@@ -20,15 +20,16 @@ MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', 
 MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', :purpose => :general)
 
 puts 'creating App Stores...'
-['us', 'jp'].each do |country_code|
-  AppStore.create!(country_code: country_code)
-end
+AppStore.create!(country_code: "US", display_priority: 1)
+AppStore.create!(country_code: "CN", display_priority: 2)
+AppStore.create!(country_code: "GB", display_priority: 3)
+AppStore.create!(country_code: "JP", display_priority: 4)
 
   puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..1000
     name = Faker::App.name
     ios_app = IosApp.find_or_initialize_by(app_identifier: i)
-    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"), 
+    ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"),
                                              icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,
                                              description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100),
                                             ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500), seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_app_store_identifier: Faker::Number.between(1, 50))
@@ -40,25 +41,25 @@ end
     ios_app_snapshot.save
     ios_app.set_mobile_priority
     ios_app.set_user_base
-    
+
     ios_cat = IosAppCategory.all.sample
     IosAppCategoriesSnapshot.create(ios_app_category: ios_cat, ios_app_snapshot: ios_app_snapshot, kind: IosAppCategoriesSnapshot.kinds.values.sample)
   end
-  
+
   1000.times do |i|
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
-    
+
     android_app = AndroidApp.find_or_create_by(app_identifier: name)
-    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"), 
+    android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"),
                                                      price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3,
                                                     downloads_max: 100e6, android_app_id: i+1, seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_google_play_identifier: Faker::Number.between(1, 50))
     android_app.newest_android_app_snapshot = android_app_snapshot
-    android_app.mobile_priority = (0..2).to_a.sample
+    # android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample
     android_app.save
     android_app_snapshot.android_app = android_app
     android_app_snapshot.save
-    
+
     android_cat = AndroidAppCategory.all.sample
     AndroidAppCategoriesSnapshot.create(android_app_category: android_cat, android_app_snapshot: android_app_snapshot, kind: AndroidAppCategoriesSnapshot.kinds.values.sample)
   end
@@ -80,34 +81,34 @@ end
     ios_app = IosApp.includes(websites: :company).where(id: ios_app.id).first
     company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
     company.websites << website
-    ios_app.websites << website    
+    ios_app.websites << website
     if i % 100 == 0
       puts "#{i + 1} out of #{n}"
     end
   end
-  
+
   puts "creating websites, and linking them to companies, android apps"
-  
+
   (n = 500).times do |i|
-    website = Website.find_or_create_by(url: Faker::Internet.domain_name, kind: :primary)
+    website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
     android_app = AndroidApp.all.sample
     android_app = AndroidApp.includes(websites: :company).where(id: android_app.id).first
     company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
     company.websites << website
-    android_app.websites << website    
+    android_app.websites << website
     if i % 100 == 0
       puts "#{i + 1} out of #{n}"
     end
   end
 
   puts 'creating FB Ads'
-  
+
   100.times do
     ad = IosFbAdAppearance.create
     app = IosApp.all.sample
     app.ios_fb_ad_appearances << ad
   end
-  
+
   puts 'creating Android Ads'
   100.times do
     ad = AndroidFbAdAppearance.create
@@ -117,9 +118,20 @@ end
 
   ios_apps = IosApp.all
   ios_sdks = IosSdk.all
-  30.times do 
+
+  puts 'creating tags'
+  Tag.create(name: "Major App", id: 48)
+  50.times do
+    ios_app_id = ios_apps.sample.id
+    TagRelationship.create(tag_id: 48, taggable_id: ios_app_id, taggable_type: "IosApp")
+  end
+
+  puts 'creating Ios Sdks'
+  30.times do
     IosSdk.create(name: Faker::Company.name, website: Faker::Internet.url, favicon: Faker::Avatar.image, summary: Faker::Company.catch_phrase, kind: 0)
   end
+
+  puts 'creating Activities'
   10000.times do
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
@@ -130,13 +142,14 @@ end
     ios_sdk = ios_sdks.sample
     Activity.log_activity(:install, Time.now, ios_app, ios_sdk)
   end
-  
+
   GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
 
   apk_snapshot = ApkSnapshot.create(android_app_id: 1)
 
   account = Account.create(name: 'MightySignal', can_view_support_desk: true, can_view_ad_spend: true, can_view_sdks: true, can_view_storewide_sdks: true, can_view_exports: true, can_view_ios_live_scan: true)
   user = User.create(email: 'matt@mightysignal.com', account_id: account.id, password: '12345')
+  user = User.create(email: 'dawn@mightysignal.com', account_id: account.id, password: '12345')
   # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')
 
   # android_app = AndroidApp.find(1)
