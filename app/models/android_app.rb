@@ -395,6 +395,76 @@ class AndroidApp < ActiveRecord::Base
     self.class.user_bases[user_base]
   end
 
+  def as_external_dump_json
+      app = self
+
+      # Only these attributes will be output in the final response.
+      white_list = ["id", "name", "price", "seller_url",
+          "current_version", "released", "top_dev",
+          "in_app_purchases", "required_android_version", 
+          "content_rating", "seller", "in_app_purchase_min",
+          "in_app_purchase_max", "downloads_min", "downloads_max",
+          "icon_url", "categories", "publisher", "platform", "google_play_id",
+          "user_base", "last_updated", "all_version_rating", 
+          "all_version_ratings_count", "first_scanned", "last_scanned", 
+          "description", "installed_sdks", "uninstalled_sdks",
+          "mobile_priority", "developer_google_play_identifier"]
+
+      rename = [
+          ['ratings_all_stars', 'all_version_rating'],
+          ['ratings_all_count', 'all_version_ratings_count'],
+          ['icon_url_300x300', 'icon_url'],
+          ['version', 'current_version']
+          ]
+
+      fields_from_app = [
+          ['app_identifier', 'google_play_id'],
+          ['mobile_priority', 'mobile_priority'],
+          ['user_base', 'user_base'],
+          ['last_updated', 'last_updated'],
+          ['id', 'id']
+          ]
+
+      app_obj = app.newest_android_app_snapshot.as_json || {}
+      app_obj['mightysignal_app_version'] = '1'
+      app_obj.merge!(app.sdk_response)
+      app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+
+      if app.categories
+        app_obj["categories"] = app.categories.map{|v| {"name" => v}}
+      end
+
+      if app.android_developer
+        app_obj['publisher'] = app.android_developer.as_json.slice("name", "id")
+        app_obj['publisher']['platform'] = platform
+      end
+      app_obj["platform"] = platform
+      app_obj["seller_url"] = app.newest_android_app_snapshot.try(:seller_url) || ''
+      app_obj["seller"] = app.newest_android_app_snapshot.try(:seller) || ''
+
+      fields_from_app.map do |field, new_name|
+          app_obj[new_name] = app.send(field).as_json
+      end
+
+      rename.map do |field, new_name|
+          app_obj[new_name] = app_obj[field]
+          app_obj.delete(field)
+      end
+
+      data = app.apk_snapshots.where("scan_status = ? OR status = ?", 
+        ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success]).
+        group(:android_app_id).select('android_app_id', 
+          'max(good_as_of_date) as last_scanned', 
+          'min(good_as_of_date) as first_scanned')
+
+      if data[0]
+        app_obj["first_scanned_date"] = data[0].first_scanned.utc.iso8601
+        app_obj["last_scanned_date"] = data[0].last_scanned.utc.iso8601
+      end
+      app_obj.slice(*white_list)
+  end
+
   private
 
   # delete old method

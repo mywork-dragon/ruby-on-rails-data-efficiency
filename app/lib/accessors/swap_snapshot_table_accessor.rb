@@ -27,6 +27,14 @@ class SwapSnapshotTableAccessor
     ios_app.ios_app_current_snapshots.joins(:ios_app_categories).pluck("ios_app_categories.name").uniq
   end
 
+  def categories_from_ios_app(ios_app)
+    (ios_app.ios_app_current_snapshots.flat_map do |snap|
+      snap.ios_app_categories_current_snapshots.map do |cat_snap|
+          { "name" => cat_snap.ios_app_category[:name], "type" =>  IosAppCategoriesCurrentSnapshot.kinds.invert[cat_snap.kind]}
+      end
+    end).uniq
+  end
+
   def user_base_details_from_ios_app(ios_app)
     if ios_app.ios_app_current_snapshots.any?
       ios_app.ios_app_current_snapshots

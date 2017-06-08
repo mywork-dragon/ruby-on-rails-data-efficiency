@@ -65,4 +65,7 @@ Rails.application.configure do
 
   config.itunes_scrape_bucket = 'ms-ios-scrapes-dev'
   config.ios_classification_models_bucket = 'ms-scratch'
+
+  config.application_export_bucket = 'mightysignal-applications-dev'
+
 end
