@@ -1,6 +1,6 @@
 class WeeklyBatch < ActiveRecord::Base
   validates :activity_type, presence: true
-  
+
   has_many :weekly_batches_activities
   has_many :activities, through: :weekly_batches_activities
 
@@ -19,6 +19,10 @@ class WeeklyBatch < ActiveRecord::Base
     if options[:country_codes] && is_sdk?
       batch_json[:activities_count] = self.sorted_activities(country_codes: options[:country_codes]).try(:count).try(:size)
     end
+
+    # if is_sdk?
+    #   batch_json[:major_apps] = major_apps
+    # end
 
     batch_json[:activities_count] ||= self.activities.count
     batch_json[:apps_count] = self.joined_activities.pluck(:ios_app_id).uniq.count if is_ad_platform?
@@ -45,6 +49,10 @@ class WeeklyBatch < ActiveRecord::Base
     owner_type == 'AdPlatform'
   end
 
+  def major_apps
+    self.activities.where(major_app: true).map { |a| a.other_owner(self.owner) }
+  end
+
   def platform
     if is_android?
       'android'
@@ -54,7 +62,7 @@ class WeeklyBatch < ActiveRecord::Base
       'other'
     end
   end
-  
+
   def page_size
     case self.owner_type
     when 'IosSdk', 'AndroidSdk'
@@ -91,7 +99,7 @@ class WeeklyBatch < ActiveRecord::Base
     activities = self.activities.joins('INNER JOIN weekly_batches_activities wb on wb.activity_id = activities.id').
                                  joins('INNER JOIN weekly_batches on weekly_batches.id = wb.weekly_batch_id').
                                  joins("INNER JOIN #{opposite_class.table_name} op on op.id = weekly_batches.owner_id and weekly_batches.owner_type = '#{opposite_type}'")
-    activities = activities.joins("LEFT JOIN ios_sdk_links on ios_sdk_links.source_sdk_id = op.id").where("ios_sdk_links.id is null") if opposite_type == 'IosSdk' 
+    activities = activities.joins("LEFT JOIN ios_sdk_links on ios_sdk_links.source_sdk_id = op.id").where("ios_sdk_links.id is null") if opposite_type == 'IosSdk'
     activities = activities.joins("LEFT JOIN android_sdk_links on android_sdk_links.source_sdk_id = op.id").where("android_sdk_links.id is null") if opposite_type == 'AndroidSdk'
     activities
   end

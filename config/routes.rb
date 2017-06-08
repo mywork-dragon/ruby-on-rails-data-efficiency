@@ -148,6 +148,9 @@ Rails.application.routes.draw do
       post 'generate_api_token' => 'admin#generate_api_token'
       put 'delete_api_token' => 'admin#delete_api_token'
       post 'update_api_token' => 'admin#update_api_token'
+      post 'major_apps/tag' => 'admin#tag_major_app'
+      put 'major_apps/untag' => 'admin#untag_major_app'
+
     end
 
     scope '/salesforce' do

@@ -55,7 +55,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
     };
 
     $scope.load = function() {
-
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $routeParams.platform + '_app',
@@ -80,6 +79,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};
         $scope.$broadcast('APP_DATA_FOR_APP_DATA_SERVICE_SET');
 
+        /* Sets html title attribute */
+        pageTitleService.setTitle(data.name);
+
+
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "App Page Viewed", {
@@ -103,9 +106,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
           );
           /* -------- Mixpanel Analytics End -------- */
         }
-
-        /* Sets html title attribute */
-        pageTitleService.setTitle($scope.appData.name);
       });
     };
 
@@ -137,6 +137,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
           return loggitService.logSuccess("You will stop seeing updates for this app on your Timeline");
         case "reset":
           return loggitService.logSuccess("Resetting app data. The page will refresh shortly.")
+        case "major app tagged":
+          return loggitService.logSuccess("App successfully tagged.")
+        case "major app untagged":
+          return loggitService.logSuccess("Tag successfully removed.")
       }
     };
 
@@ -173,6 +177,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
           $route.reload();
         }, 5000)
       });
+    }
+
+    $scope.handleTagButtonClick = function(id) {
+      // if ($scope.appData.isMajorApp) {
+      //   apiService.untagAsMajorApp(id, $routeParams.platform).success(function(data) {
+      //     $scope.notify('major app untagged')
+      //     $scope.appData.isMajorApp = data.isMajorApp
+      //   })
+      // } else {
+        apiService.tagAsMajorApp(id, $routeParams.platform).success(function(data) {
+          $scope.notify('major app tagged')
+          $scope.appData.isMajorApp = data.isMajorApp
+        })
+      // }
     }
 
     $scope.exportContactsToCsv = function(filter) {

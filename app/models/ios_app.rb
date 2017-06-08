@@ -34,14 +34,17 @@ class IosApp < ActiveRecord::Base
   belongs_to :ios_developer
 
   has_many :weekly_batches, as: :owner
-  has_many :follow_relationships
-  has_many :followers, as: :followable, through: :follow_relationships
+  has_many :follow_relationships, as: :followable
+  has_many :followers, through: :follow_relationships
   has_many :ios_fb_ads
 
   has_many :ios_app_rankings
 
   has_many :owner_twitter_handles, as: :owner
   has_many :twitter_handles, through: :owner_twitter_handles
+
+  has_many :tags, through: :tag_relationships
+  has_many :tag_relationships, as: :taggable
 
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
@@ -197,6 +200,7 @@ class IosApp < ActiveRecord::Base
         description: self.description,
         facebookAds: self.ios_fb_ads.has_image.as_json({no_app: true}),
         headquarters: self.headquarters,
+        isMajorApp: self.is_major_app? || self.major_app_tag?
       })
     end
 
@@ -558,20 +562,20 @@ class IosApp < ActiveRecord::Base
 
       # Only these attributes will be output in the final response.
       white_list = [
-        'last_seen_ads_date', 'last_updated', 
-        'seller_url', 
-        'current_version', 'has_in_app_purchases', 
+        'last_seen_ads_date', 'last_updated',
+        'seller_url',
+        'current_version', 'has_in_app_purchases',
         'id', 'first_seen_ads_date', 'platform',
-        'support_url', 'seller', 
-        'original_release_date', 
-        'uninstalled_sdks', 'all_version_rating', 
-        'description', 'price', 
-        'has_ad_spend', 
-        'categories', 'name', 'installed_sdks', 
-        'publisher', 'content_rating', 
+        'support_url', 'seller',
+        'original_release_date',
+        'uninstalled_sdks', 'all_version_rating',
+        'description', 'price',
+        'has_ad_spend',
+        'categories', 'name', 'installed_sdks',
+        'publisher', 'content_rating',
         'mobile_priority',
         'user_base', 'app_store_id', 'last_scanned_date',
-        'current_version_ratings_count', 
+        'current_version_ratings_count',
         'current_version_rating', 'all_version_ratings_count',
         'first_scanned_date'
          ]

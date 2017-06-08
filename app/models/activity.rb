@@ -5,14 +5,14 @@ class Activity < ActiveRecord::Base
   def self.log_activity(activity_type, time, *owners)
     # create activity, could pass in data in the future
     return if activity_type.blank? || owners.empty?
-    
+
     if Rails.env.development?
       current_week = Date.today.at_beginning_of_week + [-1, -2, -3, 0].sample.weeks
     else
       current_week = time.to_date.at_beginning_of_week
     end
 
-    # make sure we don't record same activity 
+    # make sure we don't record same activity
     if owners.count > 1
       first_owner = owners.first
       second_owner = owners.last
@@ -21,7 +21,9 @@ class Activity < ActiveRecord::Base
       end
     end
 
-    activity = Activity.create(happened_at: time)
+    is_major_app = owners.any? { |owner| owner.class.name.include?("App") && (owner.is_major_app? || owner.major_app_tag?) }
+
+    activity = Activity.create(happened_at: time, major_app: is_major_app)
     owners.each do |owner|
       # create a weekly batch for each owner and add activity to it
       current_weekly_batch = owner.weekly_batches.find_or_create_by(week: current_week, activity_type: WeeklyBatch.activity_types[activity_type])
@@ -47,12 +49,12 @@ class Activity < ActiveRecord::Base
     end
 
     return unless activity
-      
+
     weekly_batches = activity.weekly_batches.to_a
     activity.destroy
     weekly_batches.each do |batch|
       if batch.reload.activities.empty?
-        batch.destroy 
+        batch.destroy
       else
         WeeklyBatch.reset_counters(batch.id, :activities)
       end
@@ -63,7 +65,7 @@ class Activity < ActiveRecord::Base
     should_notify = false
     self.weekly_batches.each do |batch|
       if batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type)
-        should_notify = true 
+        should_notify = true
         break
       end
     end

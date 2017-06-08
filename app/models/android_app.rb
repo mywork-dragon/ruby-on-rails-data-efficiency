@@ -30,11 +30,14 @@ class AndroidApp < ActiveRecord::Base
 
   has_many :sdk_js_tags
 
+  has_many :tag_relationships, as: :taggable
+  has_many :tags, through: :tag_relationships
+
   has_many :apk_snapshot_scrape_failures
   has_many :apk_snapshot_jobs
   has_many :apk_snapshot_scrape_exceptions
   has_many :weekly_batches, as: :owner
-  has_many :follow_relationships
+  has_many :follow_relationships, as: :followable
   has_many :followers, as: :followable, through: :follow_relationships
 
   enum user_base: [:elite, :strong, :moderate, :weak]
@@ -244,7 +247,8 @@ class AndroidApp < ActiveRecord::Base
         appIdentifier: self.app_identifier,
         displayStatus: self.display_type,
         facebookAds: self.android_ads.as_json({no_app: true}),
-        headquarters: self.headquarters
+        headquarters: self.headquarters,
+        isMajorApp: self.is_major_app? || self.major_app_tag?
       })
     end
 
@@ -401,12 +405,12 @@ class AndroidApp < ActiveRecord::Base
       # Only these attributes will be output in the final response.
       white_list = ["id", "name", "price", "seller_url",
           "current_version", "released", "top_dev",
-          "in_app_purchases", "required_android_version", 
+          "in_app_purchases", "required_android_version",
           "content_rating", "seller", "in_app_purchase_min",
           "in_app_purchase_max", "downloads_min", "downloads_max",
           "icon_url", "categories", "publisher", "platform", "google_play_id",
-          "user_base", "last_updated", "all_version_rating", 
-          "all_version_ratings_count", "first_scanned", "last_scanned", 
+          "user_base", "last_updated", "all_version_rating",
+          "all_version_ratings_count", "first_scanned", "last_scanned",
           "description", "installed_sdks", "uninstalled_sdks",
           "mobile_priority", "developer_google_play_identifier"]
 
@@ -452,10 +456,10 @@ class AndroidApp < ActiveRecord::Base
           app_obj.delete(field)
       end
 
-      data = app.apk_snapshots.where("scan_status = ? OR status = ?", 
+      data = app.apk_snapshots.where("scan_status = ? OR status = ?",
         ApkSnapshot.scan_statuses[:scan_success], ApkSnapshot.scan_statuses[:scan_success]).
-        group(:android_app_id).select('android_app_id', 
-          'max(good_as_of_date) as last_scanned', 
+        group(:android_app_id).select('android_app_id',
+          'max(good_as_of_date) as last_scanned',
           'min(good_as_of_date) as first_scanned')
 
       if data[0]

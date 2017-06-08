@@ -168,7 +168,7 @@
                   <li>
                     <span class="icon fa fa-newspaper-o"></span>
                     <label>Add to Timeline:</label>
-                    <div id="followButton">
+                    <div class="appActionButton">
                       <button type="submit" class="btn btn-primary btn-block" ng-click="followApp(appData.id)" ng-if="!isFollowing">Follow App</button>
                       <button type="submit" class="btn btn-danger btn-block" ng-click="followApp(appData.id)" ng-if="isFollowing">Unfollow App</button>
                     </div>
@@ -186,8 +186,15 @@
                   <li ng-if="canUseSalesforce">
                     <span class="icon fa fa-cloud"></span>
                     <label>Add to Salesforce:</label>
-                    <div id="followButton">
+                    <div class="appActionButton">
                       <button data-toggle="modal" class="btn btn-primary btn-block" data-target="#salesforceExportModal">Export</button>
+                    </div>
+                  </li>
+                  <li ng-if="isAdminAccount">
+                    <span class="icon fa fa-star"></span>
+                    <label>Major App:</label>
+                    <div class="appActionButton">
+                      <button type="submit" ng-class="appData.isMajorApp ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-disabled="appData.isMajorApp" ng-click="handleTagButtonClick(appData.id)">{{appData.isMajorApp ? "Already major app" : "Tag as major app" }}</button>
                     </div>
                   </li>
                 </ul>

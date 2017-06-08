@@ -157,6 +157,20 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/admin/ios_reset_app_data',
           params: {appId}
         })
+      },
+      tagAsMajorApp: function (appId, platform) {
+        return $http({
+          method: 'POST',
+          url: `${API_URI_BASE}api/admin/major_apps/tag`,
+          params: { appId, platform }
+        })
+      },
+      untagAsMajorApp: function (appId, platform) {
+        return $http({
+          method: 'PUT',
+          url: `${API_URI_BASE}api/admin/major_apps/untag`,
+          params: { appId, platform }
+        })
       }
     };
   }]);

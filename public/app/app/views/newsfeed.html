@@ -78,10 +78,36 @@
                 - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
               </span>
             </strong>
+            <!-- <strong ng-if="batch.major_apps.length > 0">
+              <span ng-repeat="app in batch.major_apps">
+                <a href="#/app/{{batch.owner.platform}}/{{app.id}}" target="_blank" uib-tooltip="{{app.name}}" class="app-icon-link">
+                  <img src="{{app.icon}}" ng-show="app.icon">
+                </a>
+              </span>
+            </strong> -->
             <div class="pull-right export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'">
               <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">Export to CSV</a>
             </div>
           </div>
+          <!-- <div class="panel-body {{batch.activity_type}}" uib-collapse="!isCollapsed" ng-if="batch.major_apps.length > 0">
+            <div class="row chartPageRow topAppsPageRow">
+              <p>Including these major apps:</p>
+              <ul class="majorAppsList">
+                <li data-ng-repeat="app in batch.major_apps" class="grid">
+                  <a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" class="icon" target="_blank">
+                    <img class="major-app-icon" ng-src="{{app.icon}}">
+                  </a>
+                  <br>
+                  <span class="app-name"><a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" target="_blank">{{app.name}}</a></span>
+                  <br>
+                  <span class="app-category">{{app.publisher.name}}</span>
+                </li>
+                <li class="grid">
+                  <a href="" ng-click="isCollapsed = false; loadBatch(batch.id, batch, 1, batch.pageSize)">Click for more <i class="fa fa-arrow-right"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div> -->
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
             <div class="media">
               <div class="media-body" ng-if="batch.owner.type == 'AdPlatform'">
@@ -130,7 +156,7 @@
                           <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.app.userBase.user_base | capitalize}}
                         </span>
-                        <a ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplateAds.html'" href="javascript:void(0)" class="popover-link">
+                        <a ng-if="activity.other_owner.app.platform == 'ios' && activity.other_owner.app.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplateAds.html'" href="javascript:void(0)" class="popover-link">
                           <img ng-src="/lib/images/flags/{{activity.other_owner.app.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.app.userBase.user_base | capitalize}}
                         </a>
@@ -153,7 +179,7 @@
                       </td>
                       <td>
                         <span>
-                          Spotted {{activity.impression_count}} ads 
+                          Spotted {{activity.impression_count}} ads
                           (Last: {{calculateDaysAgo(activity.happened_at, true)}})
                           <br>
                           <a href="javascript:void(0)" ng-click="openAdModal(batch, $index)">Creative</a><span ng-if="batch.activities[$index].other_owner.ad_info_image">
@@ -215,7 +241,7 @@
                           <img ng-src="/lib/images/flags/{{activity.other_owner.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.userBase.user_base | capitalize}}
                         </span>
-                        <a ng-if="activity.other_owner.platform == 'ios' && activity.other_owner.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                        <a ng-if="activity.other_owner.platform == 'ios' && activity.other_owner.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
                           <img ng-src="/lib/images/flags/{{activity.other_owner.userBase.country_code.toLowerCase()}}.png" />
                           {{activity.other_owner.userBase.user_base | capitalize}}
                         </a>
@@ -281,7 +307,7 @@
               </div>
             </div>
           </div>
-         </div> 
+         </div>
         </div>
       </div>
       <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
@@ -291,7 +317,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="modal fade" class="follow" id="followingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -363,7 +389,7 @@
       </div>
     </div>
   </div>
-  
+
   <div ng-controller="ListCtrl">
     <!-- Modals -->
     <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
@@ -374,4 +400,3 @@
   </div>
 
 </div>
-

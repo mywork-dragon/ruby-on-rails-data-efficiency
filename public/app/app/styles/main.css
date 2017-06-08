@@ -8152,6 +8152,26 @@ div.categories-dropdown .caret {
   text-align: center;
 }
 
+.panel-body li.grid {
+  list-style: none;
+  width: 150px;
+  max-height: 150px;
+  float: left;
+  background: #fff;
+  /*margin: 20px;
+  padding: 20px;*/
+  text-align: center;
+}
+
+.panel-body .chartPageRow {
+  padding: 0px;
+}
+
+ul.majorAppsList {
+  display: flex;
+  align-items: center;
+}
+
 #topAppsPage .app-rank, #topAppsPage .app-rank-change {
   font-size: 12px;
   position: absolute;
@@ -8201,6 +8221,10 @@ div.categories-dropdown .caret {
 }
 
 .chartPage a.icon:hover {
+  text-decoration: none;
+}
+
+.panel-body a.icon:hover {
   text-decoration: none;
 }
 
@@ -8351,7 +8375,12 @@ div.categories-dropdown .caret {
   box-shadow: none;
 }
 
-#followButton {
+.major-app-icon {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.appActionButton {
   width: 175px;
   display: inline-block;
 }
@@ -8359,6 +8388,21 @@ div.categories-dropdown .caret {
 #refreshDataButton {
   width: 175px;
   display: inline-block;
+}
+
+.major-app {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 70%;
+}
+
+.major-app > div {
+  margin-left: 10px;
+}
+
+.major-app > button {
+  min-width: 56px;
 }
 
 ul.following {
@@ -8824,4 +8868,8 @@ button.saved-search-button:disabled {
   width: 60%;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+.app-icon-link:hover {
+  text-decoration: none;
 }

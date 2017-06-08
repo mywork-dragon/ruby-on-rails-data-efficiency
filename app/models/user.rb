@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
 
   has_many :saved_searches
 
+  has_many :follow_relationships, as: :follower
+  has_many :follows, through: :follow_relationships
+
   has_secure_password
   validates_uniqueness_of :email
 
