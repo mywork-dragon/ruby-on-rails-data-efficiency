@@ -28,11 +28,7 @@ class AndroidMassScanService
     end
 
     def run_recently_updated(automated: false)
-      previous_job = ApkSnapshotJob.where(
-        job_type: ApkSnapshotJob.job_types[:weekly_mass]
-      ).last
-      previous_job_id = previous_job.id if previous_job
-      apps_to_scan = apps_updated_since_job(previous_job_id)
+      apps_to_scan = apps_updated_since_job(nil)
       unless automated
         count = apps_to_scan.count
 
