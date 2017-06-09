@@ -104,6 +104,7 @@ class IosScanRunner
   def create_record
     @snapshot.update!(download_status: :starting)
     @classdump = ClassDump.create!(ipa_snapshot_id: @snapshot.id)
+    log "Creating classdump #{@classdump.id} for ios app #{@snapshot.ios_app_id}"
   end
 
   def reserve_device
