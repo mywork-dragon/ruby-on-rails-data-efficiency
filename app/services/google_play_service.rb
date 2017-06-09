@@ -234,7 +234,7 @@ class GooglePlayService
         category: ->(x) { x == 'Maps & Navigation' },
         released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015 },
         # size: ->(x) { x.to_i > 1e7 },
-        top_dev: ->(x) { x == true },
+        # top_dev: ->(x) { x == true },
         in_app_purchases: ->(x) { x == false },
         required_android_version: ->(x) { x == 'Varies with device' || x.to_i >= 4 },
         version: ->(x) { x == 'Varies with device' || x.to_i >= 3 },
