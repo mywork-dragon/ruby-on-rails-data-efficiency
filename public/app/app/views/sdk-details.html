@@ -72,7 +72,7 @@
                   <li>
                     <span class="icon fa fa-newspaper-o"></span>
                     <label>Add to Timeline:</label>
-                    <div id="followButton">
+                    <div class="actionButton">
                       <button type="submit" class="btn btn-primary btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="!isFollowing">Follow SDK</button>
                       <button type="submit" class="btn btn-danger btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="isFollowing">Unfollow SDK</button>
                     </div>
@@ -83,7 +83,7 @@
                     <div id="showSdksDetailsButton">
                       <button type="submit" class="btn btn-primary btn-block" ng-click="sdkDetailsCtrl.submitSdkQuery(sdkDetailsCtrl.sdkData.platform)">See All Apps Using {{sdkDetailsCtrl.sdkData.name}}</button>
                     </div>
-                  </li>               
+                  </li>
                 </ul>
               </div>
             </div>
