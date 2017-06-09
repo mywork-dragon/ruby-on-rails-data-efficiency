@@ -135,6 +135,9 @@ angular.module('appApp')
         onItemDeselect: function(item) {
           filterService.removeFilter('categories', item.id)
         },
+        onSelectAll: function() {
+          $rootScope.categoryFilterOptions.forEach(category => $scope.onFilterChange('categories', category.label, 'Category', false))
+        },
         onDeselectAll: function() {
           filterService.removeFilter('categories')
         }
