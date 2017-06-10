@@ -82,10 +82,13 @@ class Api::AdminController < ApplicationController
     sdks.each do |sdk|
       User.where(id: user_ids).each do |user|
         user.follow(sdk)
-      end
+      end 
 
       Account.where(id: account_ids).each do |account|
         account.follow(sdk)
+        account.users.each do |user|
+          user.follow(sdk)
+        end
       end
     end
 
