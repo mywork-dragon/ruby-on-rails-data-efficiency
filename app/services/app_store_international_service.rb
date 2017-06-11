@@ -4,7 +4,7 @@ class AppStoreInternationalService
 
   class << self
 
-    def run_snapshots(automated: false, scrape_type: :regular)
+    def run_snapshots(automated: false, scrape_type: :all)
       batch = Sidekiq::Batch.new
       batch.description = "AppStoreInternationalService.run_snapshots" 
       batch.on(
@@ -60,85 +60,6 @@ class AppStoreInternationalService
       end
     end
 
-    def run_scaling_factors(automated: false)
-      batch = Sidekiq::Batch.new
-      batch.description = "AppStoreInternationalService#run_scaling_factors" 
-      batch.on(
-        :complete,
-        'AppStoreInternationalService#on_complete_scaling_factors',
-        'automated' => automated
-      )
-
-      Slackiq.message("Starting to calculate scaling factors", webhook_name: :main)
-
-      batch.jobs do
-        AppStore.where(enabled: true).each do |app_store|
-          AppStoreInternationalScalingFactorsWorker.perform_async(app_store.id)
-        end
-      end
-    end
-
-    def run_user_bases(automated: false)
-      batch = Sidekiq::Batch.new
-      batch.description = 'AppStoreInternationalService#run_user_bases'
-      batch.on(
-        :complete,
-        'AppStoreInternationalService#on_complete_user_bases',
-        'automated' => automated
-      )
-
-      Slackiq.message("Starting to populate user bases", webhook_name: :main)
-
-      batch.jobs do
-        AppStore.where(enabled: true).each do |app_store|
-          AppStoreInternationalUserBaseWorker.perform_async(app_store.id)
-        end
-      end
-    end
-
-    def run_app_store_linking(automated: false)
-      batch = Sidekiq::Batch.new
-      batch.description = 'AppStoreInternationalService#run_app_store_linking'
-      batch.on(
-        :complete,
-        'AppStoreInternationalService#on_complete_app_store_linking',
-        'automated' => automated
-      )
-
-      Slackiq.message("Starting to link app stores to apps", webhook_name: :main)
-
-      batch.jobs do
-        AppStoreInternationalAppLinkWorker.perform_async
-      end
-    end
-
-    def run_developers(automated: false)
-      batch = Sidekiq::Batch.new
-      batch.description = 'AppStoreInternationalService#run_developers'
-      batch.on(
-        :complete,
-        'AppStoreInternationalService#on_complete_run_developers',
-        'automated' => automated
-      )
-
-      Slackiq.message("Starting to create developers", webhook_name: :main)
-
-      ids = IosApp.distinct.joins(:ios_app_current_snapshot_backups)
-        .where(ios_developer_id: nil)
-        .pluck(:id)
-
-      batch.jobs do
-        ids.each_slice(1_000) do |slice|
-          args = slice.map { |id| [:create_by_ios_app_id, id] }
-          SidekiqBatchQueueWorker.perform_async(
-            AppStoreDevelopersWorker.to_s,
-            args,
-            batch.bid
-          )
-        end
-      end
-    end
-
     def live_scrape_ios_apps(ios_app_ids, notes: 'international scrape')
       ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create!(notes: notes)
       AppStore.where(enabled: true).each do |app_store|
@@ -147,109 +68,7 @@ class AppStoreInternationalService
             ios_app_ids,
             app_store.id
           )
-          AppStoreInternationalSnapshotWorker.perform_async(
-            ios_app_current_snapshot_job.id,
-            ios_app_ids,
-            app_store.id
-          )
       end
-    end
-
-    # table pairings to be swapped. convention is production table --> backup table
-    def table_swap_map
-      {
-        IosAppCurrentSnapshot => IosAppCurrentSnapshotBackup,
-        IosAppCategoryName => IosAppCategoryNameBackup,
-        IosAppCategoriesCurrentSnapshot => IosAppCategoriesCurrentSnapshotBackup,
-        AppStoresIosApp => AppStoresIosAppBackup,
-        AppStoreScalingFactor => AppStoreScalingFactorBackup
-      }
-    end
-
-    def execute_table_swaps(automated: false)
-      Slackiq.message('Starting table swap', webhook_name: :main)
-      rev_map = table_swap_map.invert
-      correct = {}
-
-      ap "BEFORE"
-      table_swap_map.keys.each do |table|
-        puts "#{table.to_s}: #{table.count}"
-        correct[table] = table.count
-      end
-      rev_map.keys.each do |table|
-        puts "#{table.to_s}: #{table.count}"
-        correct[table] = table.count
-      end
-
-      swap_tables(automated: automated)
-
-      ap "AFTER"
-      table_swap_map.keys.each do |table|
-        puts "#{table.to_s}: #{table.count}"
-      end
-      rev_map.keys.each do |table|
-        puts "#{table.to_s}: #{table.count}"
-      end
-
-      ap "VALIDATING"
-      correct.keys.each do |table|
-        expecting = if table_swap_map.key?(table)
-                      correct[table_swap_map[table]]
-                    else
-                      correct[rev_map[table]]
-                    end
-        raise "FAILED FOR TABLE #{table.to_s}. expected #{expecting}. Received #{table.count}" unless expecting == table.count
-      end
-
-      ap "SUCCESS"
-      Slackiq.message('Successfully completed table swap', webhook_name: :main)
-    end
-
-    def swap_tables(automated: false)
-
-      unless automated
-        print 'About to swap tables. Are you sure you want to continue? [y/n]: '
-        return unless gets.chomp.include?('y')
-      end
-
-      query = table_swap_map.keys.map do |prod_table|
-        prod_table_name = prod_table.table_name
-        backup_table_name = table_swap_map[prod_table].table_name
-        tmp_table_name = "tmp_#{prod_table_name}"
-        [
-          source_dest_syntax(backup_table_name, tmp_table_name),
-          source_dest_syntax(prod_table_name, backup_table_name),
-          source_dest_syntax(tmp_table_name, prod_table_name)
-        ]
-      end.flatten.join(",\n")
-      puts
-      puts query = "RENAME TABLE #{query};"
-
-      unless automated
-        print 'Does the following query look ok? [y/n] : '
-        return unless gets.chomp.include?('y')
-      end
-
-      ActiveRecord::Base.connection.execute(query)
-    end
-
-    def source_dest_syntax(source_table, dest_table)
-      "#{source_table} to #{dest_table}"
-    end
-
-    def clear_backup_tables
-      [
-        IosAppCategoryNameBackup,
-        IosAppCurrentSnapshotBackup,
-        IosAppCategoriesCurrentSnapshotBackup,
-        AppStoresIosAppBackup,
-        AppStoreScalingFactorBackup
-      ].each {|x| reset_table(x) }
-    end
-
-    def reset_table(model_name)
-      puts "Resetting #{model_name.to_s}: #{model_name.count} rows"
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{model_name.table_name}")
     end
   end
 
@@ -257,50 +76,15 @@ class AppStoreInternationalService
     Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed')
 
     if options['automated']
-      self.class.run_scaling_factors(automated: true)
       AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
-    end
-  rescue AppStoreSnapshotService::InvalidDom
-    Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING APP STORE SCRAPE', webhook_name: :main)
-  end
 
-  def on_complete_scaling_factors(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Calculated scaling factors for app stores')
-
-    if options['automated']
-      self.class.run_user_bases(automated: true)
-    end
-  end
-
-  def on_complete_user_bases(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Populated user bases')
-
-    if options['automated']
-      self.class.run_app_store_linking(automated: true)
-    end
-  end
-
-  def on_complete_app_store_linking(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Populated app links')
-
-    if options['automated']
-      self.class.run_developers(automated: true)
-    end
-  end
-
-  def on_complete_run_developers(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Created missing developers')
-
-    if options['automated']
-      self.class.execute_table_swaps(automated: true)
-
-      # TODO: this technically should happen after table swaps AND new US store scrapes are done
-      # Because of how jobs on scrapers are used. this currently works
       if ServiceStatus.is_active?(:auto_ios_mass_scan)
         IosMassScanService.run_recently_released(automated: true)
         IosMassScanService.run_recently_updated(automated: true, n: 2000)
       end
     end
+  rescue AppStoreSnapshotService::InvalidDom
+    Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING APP STORE SCRAPE', webhook_name: :main)
   end
 
 end

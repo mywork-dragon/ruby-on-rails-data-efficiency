@@ -4,30 +4,24 @@ module AppStoreHelper
     attr_reader :snapshots, :categories, :snapshots_to_categories, :category_map
 
     class InsertMismatch < RuntimeError; end
+    class SnapshotsLockTimeout < RuntimeError; end
 
-    def initialize(app_store_id:, ios_app_current_snapshot_job_id: nil, current_tables: false)
+    def initialize(app_store_id:, ios_app_current_snapshot_job_id: nil)
       @app_store_id = app_store_id
       @ios_app_current_snapshot_job_id = ios_app_current_snapshot_job_id
-      @current_tables = current_tables
 
       snapshot_job = IosAppCurrentSnapshotJob.where(id: ios_app_current_snapshot_job_id) 
       @job_time = snapshot_job.empty? ? DateTime.now : snapshot_job.first.created_at
 
       setup_storage
-      setup_tables
     end
 
     def setup_storage
       @snapshots = {}
       @categories = {}
       @snapshots_to_categories = {}
+      @previous_snapshot_ids = []
       @category_map = nil
-    end
-
-    def setup_tables
-      @snapshot_table = @current_tables ? IosAppCurrentSnapshot : IosAppCurrentSnapshotBackup
-      @category_join_table = @current_tables ? IosAppCategoriesCurrentSnapshot : IosAppCategoriesCurrentSnapshotBackup
-      @category_name_table = @current_tables ? IosAppCategoryName : IosAppCategoryNameBackup
     end
 
     def add_data(ios_app, lookup_json, scrape_html = nil)
@@ -37,16 +31,21 @@ module AppStoreHelper
       populate_snapshots(ios_app, json_attrs, html_attrs)
       populate_categories(json_attrs)
       populate_snapshots_to_categories(ios_app, json_attrs)
+      record_previous_snapshot_ids(ios_app)
     end
 
     def save
       generate_category_map
       snapshot_rows = bulk_store_snapshots(@snapshots.values)
       attribute_categories(snapshot_rows)
-      attribute_to_store(snapshot_rows) if @current_tables
+      attribute_to_store(snapshot_rows)
     end
     
     private 
+
+    def record_previous_snapshot_ids(ios_app)
+      @previous_snapshot_ids = @previous_snapshot_ids + IosAppCurrentSnapshot.where(["ios_app_id = ? and app_store_id = ? and latest = ?", ios_app.id, @app_store_id, true]).pluck(:id)
+    end
 
     def attribute_to_store(snapshot_rows)
       app_store_join_rows = snapshot_rows.map do |snapshot|
@@ -63,15 +62,15 @@ module AppStoreHelper
       category_join_rows = snapshot_rows.map do |snapshot|
         cats = @snapshots_to_categories[snapshot.ios_app_id]
         cats.map do |info|
-          @category_join_table.new(
+          IosAppCategoriesCurrentSnapshot.new(
             ios_app_current_snapshot_id: snapshot.id,
-            kind: @category_join_table.kinds[info[:kind]],
+            kind: IosAppCategoriesCurrentSnapshot.kinds[info[:kind]],
             ios_app_category_id: @category_map[info[:category_identifier]].id
           )
         end
       end.flatten
       # don't care about failures or output
-      @category_join_table.import(category_join_rows)
+      IosAppCategoriesCurrentSnapshot.import(category_join_rows)
     end
 
     def generate_category_map
@@ -81,23 +80,26 @@ module AppStoreHelper
     end
 
     def bulk_store_snapshots(snapshot_rows)
-      insert_info = @snapshot_table.import(
-        snapshot_rows,
-        synchronize: snapshot_rows,
-        synchronize_keys: snapshot_uniqueness_index_keys
-      )
-      failed_keys = insert_info[:failed_instances].map { |conflict_row| conflict_id(conflict_row) }
-      new_rows = snapshot_rows.select do |row|
-        true unless failed_keys.any? { |key| conflict_id(row) == key }
-      end
-      raise InsertMismatch unless new_rows.count == (snapshot_rows.count - failed_keys.count)
-      new_rows
-    end
+      lock_value = ActiveRecord::Base.connection.execute("SELECT GET_LOCK('ios_snapshots_worker_lock',45);").to_a
+      raise SnapshotsLockTimeout unless lock_value[0][0] == 1
+      
+      ActiveRecord::Base.transaction do
+        IosAppCurrentSnapshot
+          .where(:id => @previous_snapshot_ids)
+          .update_all(:latest => nil)
 
-    def conflict_id(row)
-      snapshot_uniqueness_index_keys.map do |key|
-        row.send(key)
-      end.join(',')
+        insert_info = IosAppCurrentSnapshot.import!(
+          snapshot_rows,
+          synchronize: snapshot_rows,
+          synchronize_keys: snapshot_uniqueness_index_keys
+        )
+
+        returned_ids = snapshot_rows.map(&:id).compact
+        raise InsertMismatch unless returned_ids.length == snapshot_rows.length
+      end
+      snapshot_rows
+    ensure
+      ActiveRecord::Base.connection.execute("SELECT RELEASE_LOCK('ios_snapshots_worker_lock');")
     end
 
     def create_missing_categories
@@ -120,7 +122,7 @@ module AppStoreHelper
       categories = IosAppCategory.where(
         category_identifier: @categories.keys
       )
-      existing_names = @category_name_table.where(
+      existing_names = IosAppCategoryName.where(
         ios_app_category_id: categories.pluck(:id),
         app_store_id: @app_store_id
       ).pluck(:ios_app_category_id)
@@ -128,14 +130,14 @@ module AppStoreHelper
       missing_categories = categories.where.not(id: existing_names)
       missing_category_rows = missing_categories.map do |ios_app_category|
         category_identifier = ios_app_category.category_identifier
-        @category_name_table.new(
+        IosAppCategoryName.new(
           ios_app_category_id: ios_app_category.id,
           name: @categories[category_identifier],
           app_store_id: @app_store_id
         )
       end
       # do not care about collisions
-      @category_name_table.import missing_category_rows
+      IosAppCategoryName.import missing_category_rows
     end
 
     def generate_lookup_map
@@ -152,11 +154,11 @@ module AppStoreHelper
     end
 
     def snapshot_uniqueness_index_keys
-      [:ios_app_id, :app_store_id]
+      [:ios_app_id, :app_store_id, :latest]
     end
 
     def populate_snapshots(ios_app, json_attrs, html_attrs = nil)
-      snapshot_row = @snapshot_table.new(
+      snapshot_row = IosAppCurrentSnapshot.new(
         app_store_id: @app_store_id,
         ios_app_current_snapshot_job_id: @ios_app_current_snapshot_job_id,
         ios_app_id: ios_app.id,
@@ -175,23 +177,7 @@ module AppStoreHelper
       rpd = ratings_per_day_current_release(snapshot_row)
       snapshot_row.ratings_per_day_current_release = rpd
       snapshot_row.mobile_priority = mobile_priority(snapshot_row)
-      snapshot_row.user_base = if @current_tables # current tables have scaling factors calculated
-                                 user_base(snapshot_row)
-                               else
-                                 :weak # default set to weak. Will get updated later if viable
-                               end
-    end
-
-    def user_base(snapshot_row)
-      # possibly added a new country but haven't done scaling factors calc before
-      return :weak unless AppStoreScalingFactor.find_by_app_store_id(@app_store_id)
-
-      new_user_base = IosApp.user_bases.keys.find do |user_base|
-        metrics = UserBaseService::Ios.minimum_metrics_for_store(@app_store_id, user_base.to_sym)
-        true if snapshot_row.ratings_all_count >= metrics[:count] || snapshot_row.ratings_per_day_current_release >= metrics[:rpd]
-      end
-
-      new_user_base ? new_user_base.to_sym : :weak
+      snapshot_row.user_base = user_base(snapshot_row)
     end
 
     def ratings_per_day_current_release(snapshot)
@@ -210,6 +196,14 @@ module AppStoreHelper
         :low
       end
       IosSnapshotAccessor.new.mobile_priority_value(value)
+    end
+
+    def user_base(snapshot)
+      IosAppCurrentSnapshot.user_bases.each do |user_base_name, user_base_value|
+        minimum = UserBaseService::Ios.minimum_metrics_for_store(@app_store_id, user_base_name.to_sym)
+        return user_base_value if snapshot.ratings_all_count >= minimum[:count] || snapshot.ratings_per_day_current_release >= minimum[:rpd]
+      end
+      IosAppCurrentSnapshot.user_bases[:weak]
     end
 
     def populate_snapshot_from_lookup(snapshot_row, json_attrs)

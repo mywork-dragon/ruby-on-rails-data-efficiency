@@ -30,21 +30,14 @@ class AppStoreDevelopersWorker
   end
 
   def rows_by_developer_identifier
-    @rows = IosAppCurrentSnapshotBackup
-      .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
-      .where(developer_app_store_identifier: @developer_identifier) +
-    IosAppCurrentSnapshot
-          .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
-          .where(developer_app_store_identifier: @developer_identifier)
+    @rows = IosAppCurrentSnapshot
+              .select(:developer_app_store_identifier, :ios_app_id, :seller_name, :seller_url)
+              .where("developer_app_store_identifier = ? and latest = ?", @developer_identifier, true).to_a
   end
 
   def find_developer_app_store_identifier
-    current_snapshot = IosAppCurrentSnapshot.where(ios_app_id: @ios_app_id).limit(1).take
+    current_snapshot = IosAppCurrentSnapshot.where("ios_app_id = ? and latest = ?", @ios_app_id, true).limit(1).take
     return current_snapshot.developer_app_store_identifier if current_snapshot
-
-    backup_snapshot = IosAppCurrentSnapshotBackup.where(ios_app_id: @ios_app_id).limit(1).take
-    return backup_snapshot.developer_app_store_identifier if backup_snapshot
-
     raise NoDeveloperIdentifier
   end
 

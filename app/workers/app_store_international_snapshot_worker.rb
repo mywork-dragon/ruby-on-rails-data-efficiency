@@ -4,7 +4,4 @@ class AppStoreInternationalSnapshotWorker
   
   sidekiq_options retry: 1, queue: :ios_international_scrape
 
-  def initialize
-    @current_tables = false
-  end
 end
