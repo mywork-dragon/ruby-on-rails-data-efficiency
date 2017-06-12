@@ -45,4 +45,13 @@ class ItunesS3StoreTest < ActiveSupport::TestCase
     assert_equal data_json, @s3.data
     assert_equal File.join(123.to_s, 'us', 'json', "#{timestamp.utc.iso8601}.json.gz"), @s3.key_stored_to
   end
+
+  test 'raises if not valid json' do
+    @lib = ItunesS3Store.new
+    @lib.s3_client = @s3
+
+    assert_raises(JSON::ParserError) do
+      @lib.store!(123, 'us', :json, '{:blah=>"value"}')
+    end
+  end
 end

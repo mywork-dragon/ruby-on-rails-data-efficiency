@@ -41,7 +41,7 @@ module AppStoreInternationalSnapshotModule
     ios_app = identifier_to_app_map[extractor.app_identifier]
     extractor.verify_ios!
     @bulk_store.add_data(ios_app, app_json)
-    @s3_client.store!(extractor.app_identifier, @app_store.country_code.downcase, :json, app_json)
+    @s3_client.store!(extractor.app_identifier, @app_store.country_code.downcase, :json, app_json.to_json)
   rescue AppStoreHelper::ExtractorJson::NotIosApp
     if ios_app
       ios_app.update!(
