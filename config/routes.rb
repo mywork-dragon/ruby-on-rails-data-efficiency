@@ -30,18 +30,6 @@ Rails.application.routes.draw do
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout', to: 'salesforce_sessions#destroy', as: 'signout', via: [:get, :post]
 
-  post 'test_sf_post' => 'salesforce#test_sf_post'
-  post 'test_get_token' => 'salesforce#test_get_token'
-  post 'bizible_hydrate_lead' => 'bizible_salesforce#hydrate_lead'
-  post 'bizible_hydrate_opp' => 'bizible_salesforce#hydrate_opp'
-  get 'customer_salesforce_credentials' => 'customer_salesforce#salesforce_credentials'
-
-  post 'triggermail_demo_hydrate_lead' => 'triggermail_demo_salesforce#hydrate_lead'
-  post 'triggermail_hydrate_lead' => 'triggermail_salesforce#hydrate_lead'
-  post 'lead_hydration_demo_hydrate_lead' => 'lead_hydration_demo_salesforce#hydrate_lead'
-
-  get 'mturk' => 'mturk#gochime'
-
   # API Endpoints (for Front-End)
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
@@ -177,25 +165,7 @@ Rails.application.routes.draw do
   get 'auth/account/info' => 'auth#account_info'
   post 'auth/:provider', to: 'auth#authenticate_provider'
 
-  # API for customers
-  get 'ping' => 'customer_api#ping', constraints: { subdomain: 'api' }
-  get 'ios_apps' => 'customer_api#ios_apps', constraints: { subdomain: 'api' }
-  get 'android_apps' => 'customer_api#android_apps', constraints: { subdomain: 'api' }
-  get 'companies' => 'customer_api#companies', constraints: { subdomain: 'api' }
-
-  if Rails.env.development?
-    get 'app_info' => 'app#app_info'
-    get 'app_info_get_signals' => 'app#app_info_get_signals'
-  end
-
   get 'ping' => 'application#ping'
-  get 'companies' => 'results#companies'
-  get 'services' => 'results#services'
-  get 'company_result/:company_id' => 'results#company_result', as: :company_result
-  get 'service_result/:service_id' => 'results#service_result', as: :service_result
-  get 'url_search' => 'results#url_search'
-  post 'url_search' => 'results#url_search_result', as: :url_search_result
-
   get 'fb-recruiting-privacy-policy' => 'privacy_policy#fb_recruiting'
 
   # internal api for FB account reservations
