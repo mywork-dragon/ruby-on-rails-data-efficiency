@@ -17,6 +17,11 @@ class AndroidAdController < ApplicationController
 
     ad.advertised_app_identifier = params['advertised_app_identifier'].split('&')[0]
     ad.advertised_app = AndroidApp.find_by_app_identifier(ad.advertised_app_identifier)
+    if ad.advertised_app.nil?
+        ad.advertised_app = AndroidApp.create(:app_identifier => ad.advertised_app_identifier)
+        GooglePlaySnapshotLiveWorker.perform_async(nil, ad.advertised_app.id)
+        AndroidMassScanService.run_by_ids([ad.advertised_app.id])
+    end
     ad.google_account = params['google_account']
     ad.facebook_account = params['facebook_account']
     ad.ad_text = params['ad_text']
