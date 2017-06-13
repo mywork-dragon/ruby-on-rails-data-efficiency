@@ -55,6 +55,8 @@ module Varys
         :s3_protocol => :https,
         :s3_credentials => YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 's3_credentials.yml'))).result)
     }
+
+    config.dark_side_json_log_path = '/tmp/sidekiq.json.log'
   end
 end
 

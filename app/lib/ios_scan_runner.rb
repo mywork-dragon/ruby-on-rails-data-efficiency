@@ -8,6 +8,10 @@ class IosScanRunner
     @ipa_snapshot_id = ipa_snapshot_id
     @device_purpose = device_purpose
     @options = options
+    @logger = JsonLogger.new(
+      filename: Rails.application.config.dark_side_json_log_path,
+      included_keys: { ipa_snapshot_id: @ipa_snapshot_id }
+    )
   end
 
   def run
@@ -66,6 +70,7 @@ class IosScanRunner
   end
 
   def handle_error(e)
+    @logger.log_exc(e)
     @snapshot.update!(download_status: :complete, success: false)
   end
 
@@ -75,8 +80,12 @@ class IosScanRunner
 
   def download
     account_changed_lambda = -> { @reserver.account_changed } if @reserver.is_swap_required?
-    @result = IosDownloadDeviceService .new(@reserver.device, apple_account: @reserver.apple_account, account_changed_lambda: account_changed_lambda)
-      .run(@snapshot.ios_app.app_identifier, @lookup_content, @device_purpose, @classdump.id) do |inc_result|
+    @result = IosDownloadDeviceService.new(
+      @reserver.device,
+      apple_account: @reserver.apple_account,
+      logger: @logger,
+      account_changed_lambda: account_changed_lambda
+    ).run(@snapshot.ios_app.app_identifier, @lookup_content, @device_purpose, @classdump.id) do |inc_result|
       process_incomplete_result(inc_result)
     end
   end
@@ -104,6 +113,7 @@ class IosScanRunner
   def create_record
     @snapshot.update!(download_status: :starting)
     @classdump = ClassDump.create!(ipa_snapshot_id: @snapshot.id)
+    @logger.add_key(:classdump_id, @classdump.id)
     log "Creating classdump #{@classdump.id} for ios app #{@snapshot.ios_app_id}"
   end
 
@@ -114,6 +124,8 @@ class IosScanRunner
     @reserver.reserve(@device_purpose, requirements)
     validate_device!
     validate_apple_account!
+    @logger.add_key(:ios_device_id, @reserver.device.id)
+    @logger.add_key(:apple_account_id, @reserver.apple_account.id)
     @classdump.update!(
       apple_account_id: @reserver.apple_account.id,
       ios_device_id: @reserver.device.id
@@ -140,10 +152,11 @@ class IosScanRunner
     raise UnexpectedCondition if @snapshot.ios_app.nil?
     raise UnexpectedCondition if @snapshot.lookup_content.empty?
     @lookup_content = JSON.parse(@snapshot.lookup_content)
+    @logger.add_key(:ios_app_id, @snapshot.ios_app_id)
   end
 
   def log(msg)
-    puts "#{@snapshot.id}: #{msg}"
+    @logger.log(msg)
   end
 
   def build_reservation_requirements

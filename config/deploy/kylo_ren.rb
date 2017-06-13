@@ -10,7 +10,7 @@ set :ssh_options, {
   auth_methods: %w(publickey)
 }
 
-set :sidekiq_log, '/Users/kylo-ren/sidekiq.log'
-set :sidekiq_pid, '/Users/kylo-ren/sidekiq.pid'
+set :sidekiq_log, '/var/log/varys/sidekiq.log'
+set :sidekiq_pid, '/var/log/varys/sidekiq.pid'
 
 MightyDeployer.deploy_to([:kylo_ren])

@@ -66,11 +66,12 @@ class IosDownloadDeviceService
   
   class NoJbApp; end
 
-  def initialize(device, apple_account:, account_changed_lambda: nil)
+  def initialize(device, apple_account:, logger:, account_changed_lambda: nil)
     @device = device
     @bundle_info = nil
     @decrypted_path = nil
     @apple_account = apple_account
+    @logger = logger
     @account_changed_lambda = account_changed_lambda
     configure(UTIL_SRC, UTIL_DEST)
   end
@@ -154,7 +155,7 @@ class IosDownloadDeviceService
     @result[:teardown_time] = Time.now
     @result[:success] = true
   rescue => error
-    log_debug 'An error occurred. Aborting'
+    log 'An error occurred. Aborting'
     @result[:error] = error.message
     @result[:trace] = error.backtrace
     @result[:error_code] = :ssh_failure if error.class == Errno::ETIMEDOUT
@@ -215,25 +216,25 @@ class IosDownloadDeviceService
     success = false
     10.times do |n|
       open_app_in_app_store unless is_app_running?(:app_store)
-      log_debug 'Waiting 3s...'
+      log 'Waiting 3s...'
       sleep(3)
-      log_debug "Try #{n}"
+      log "Try #{n}"
       ensure_not_imessage_only_app!
       ret = run_file(:app_store, 'download_app.cy')
       if ret.nil?
-        log_debug 'Did not start downloading'
+        log 'Did not start downloading'
       elsif ret.include?('Downloading')
-        log_debug 'Download started'
+        log 'Download started'
         success = true
         break
       elsif ret.include?('Installed')
-        log_debug 'Already installed'
+        log 'Already installed'
         success = true
         break
       elsif ret.include?('Pressed button')
-        log_debug 'Pressed button'
+        log 'Pressed button'
       else
-        log_debug 'Did not start downloading'
+        log 'Did not start downloading'
       end
     end
 
@@ -256,12 +257,12 @@ class IosDownloadDeviceService
     wait_time = @purpose == :mass ? 120 : 60 # 10 vs 5 min
     wait_time.times do |n|
       open_app_in_app_store unless is_app_running?(:app_store)
-      log_debug 'Waiting 5s...'
+      log 'Waiting 5s...'
       sleep(5)
-      log_debug "Try #{n}"
+      log "Try #{n}"
       bundle_check = run_file(:springboard, 'verify_install.cy')
       if bundle_check && bundle_check.chomp.include?('Completed')
-        log_debug 'Finished install'
+        log 'Finished install'
         print_display_status(:download_complete)
         success = true
         break
@@ -274,7 +275,7 @@ class IosDownloadDeviceService
   end
 
   def install
-    log_debug 'install'
+    log 'install'
     kill_app(:app_store)
     open_url = "itms-apps://itunes.apple.com/app/id#{@app_identifier}?mt=8"
     template_file(
@@ -284,13 +285,13 @@ class IosDownloadDeviceService
     open_app_in_app_store
 
     prior_apps = current_installed_apps
-    log_debug "prior_apps: #{prior_apps.join(' ')}"
+    log "prior_apps: #{prior_apps.join(' ')}"
     press_download!
     ensure_downloaded!
 
     apps_after = current_installed_apps
     raise 'No applications installed, so download failed' if apps_after.empty?
-    log_debug "apps after: #{apps_after.join(' ')}"
+    log "apps after: #{apps_after.join(' ')}"
 
     new_app_folder = if apps_after == prior_apps
                        raise UnexpectedCondition unless apps_after.count == 1
@@ -340,7 +341,7 @@ class IosDownloadDeviceService
 
   def change_account
 
-    log_debug "change_account"
+    log "change_account"
     apple_id = @apple_account.email
     password = @apple_account.password
 
@@ -350,34 +351,34 @@ class IosDownloadDeviceService
     # open app (automatically binds common utilities)
     open_app(:settings, kill_existing: true)
 
-    log_debug 'select_app_and_itunes_stores_script'
+    log 'select_app_and_itunes_stores_script'
     run_and_validate_success(:settings, 'select_app_and_itunes_stores.cy')
     sleep(2)
 
-    log_debug 'sign_out_script'
+    log 'sign_out_script'
     run_and_validate_success(:settings, 'sign_out.cy')
     sleep(5)
 
-    log_debug 'sign_in_script'
+    log 'sign_in_script'
     run_and_validate_success(:settings, 'sign_in.cy')
     sleep(2)
 
-    log_debug 'check_sign_in_script'
+    log 'check_sign_in_script'
     ensure_signed_in
 
-    log_debug 'select_password_settings'
+    log 'select_password_settings'
     run_and_validate_success(:settings, 'select_password_settings.cy')
     sleep(3)
 
-    log_debug 'always_require_in_app_purchases'
+    log 'always_require_in_app_purchases'
     run_and_validate_success(:settings, 'always_require_in_app_purchases.cy')
     sleep(2)
 
-    log_debug 'dont_require_password'
+    log 'dont_require_password'
     run_and_validate_success(:settings, 'dont_require_password.cy')
     sleep(2)
 
-    log_debug 'check_dont_require_password'
+    log 'check_dont_require_password'
     ensure_dont_require_password
 
     kill_app(:settings)
@@ -475,18 +476,18 @@ class IosDownloadDeviceService
       'ls *.decrypted | wc -l',
       'find number of decrypted files'
     ).strip.to_i
-    log_debug "decrypted files count: #{num_decrypted}"
+    log "decrypted files count: #{num_decrypted}"
     raise 'No decrypted files found' unless num_decrypted > 0
 
     # use system scp because it's much faster
-    log_debug 'Starting download'
+    log 'Starting download'
     print_display_status(:start_scp)
 
     outpath = File.join(TEMP_DIRECTORY, "#{unique_debug_id}_decrypted")
     `mkdir #{outpath}`
 
     system_scp('/var/root/*.decrypted', outpath, to_device: false)
-    log_debug 'Download finished'
+    log 'Download finished'
 
     num_transmitted = `ls #{outpath}/*.decrypted | wc -l`.strip.to_i
 
@@ -535,7 +536,7 @@ class IosDownloadDeviceService
 
     template_type = num_execs.to_i == 1 ? :find : :bundle_info
     script_path = template_decrypt_script(template_type)
-    log_debug 'Running decryption'
+    log 'Running decryption'
     decryption_command = "pushd #{settings[:output_dir]} && sudo -u #{settings[:user]} #{script_path}"
     begin
       Timeout::timeout(30) {
@@ -551,7 +552,7 @@ class IosDownloadDeviceService
       end
     end
 
-    log_debug 'Ensure decrypted files are in /var/root'
+    log 'Ensure decrypted files are in /var/root'
     run_command(
       "pushd #{settings[:output_dir]} && find *.decrypted -exec /var/root/move_decrypted.sh \"{}\" \\\;",
       'move decrypted files to a friendly name into the root directory'
@@ -560,7 +561,7 @@ class IosDownloadDeviceService
 
   def template_decrypt_script(type)
     raise unless type == :find || type == :bundle_info
-    log_debug 'templating decrypt scripts'
+    log 'templating decrypt scripts'
     outfile = File.join(UTIL_DEST, 'decrypt.sh')
     template_script_path = File.join('/', UTIL_DEST, 'generate_decrypt_script.sh')
     if type == :find
@@ -618,17 +619,17 @@ class IosDownloadDeviceService
     tar_name = "#{unique_debug_id}.tgz"
     file_tree_name = "#{unique_debug_id}.tree.txt"
 
-    log_debug "Starting to download app contents"
+    log "Starting to download app contents"
 
     print_display_status(:building_tar)
 
     run_command("pushd #{@app_info[:path]} && find . > #{file_tree_name}", 'build the file tree in the install directory')
 
-    log_debug "Created tree file"
+    log "Created tree file"
 
     run_command("pushd #{@app_info[:path]} && find . -type f -exec grep . \"{}\" -Iq \\\; -and -print0 | tar cfz #{unique_debug_id}.tgz --null -T -", 'build the tar file')
 
-    log_debug "Created tar file"
+    log "Created tar file"
 
     print_display_status(:copying_tar)
 
@@ -768,17 +769,17 @@ class IosDownloadDeviceService
     end
 
     # run the files
-    log_debug 'deleting the apps'
+    log 'deleting the apps'
     run_file(:springboard, '1_delete_app_ios9.cy')
-    log_debug 'monitor uninstall'
+    log 'monitor uninstall'
     monitor_uninstall
-    log_debug 'restart'
+    log 'restart'
     kill_app(:springboard)
     sleep(13)
-    log_debug 'unlocking'
+    log 'unlocking'
     unlock_device
     sleep(2)
-    log_debug 'Done'
+    log 'Done'
   end
 
   def unlock_device
@@ -793,16 +794,20 @@ class IosDownloadDeviceService
     t = Time.now
     while Time.now - t < 300 # 5 minutes to delete...should only take a couple seconds
       sleep(5)
-      log_debug "check if apps are gone"
+      log "check if apps are gone"
       resp = run_file(:springboard, '2_ensure_uninstalled_ios9.cy')
       if resp && resp.include?('all gone')
         break
       else
-        log_debug resp.chomp if resp
+        log resp.chomp if resp
       end
       puts ''
     end
-    log_debug Time.now - t
+    log Time.now - t
+  end
+
+  def log(msg)
+    @logger.log(msg)
   end
 
   def unique_debug_id

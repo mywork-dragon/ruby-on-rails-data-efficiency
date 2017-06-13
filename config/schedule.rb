@@ -41,6 +41,17 @@ every :day, :at => '9:00am', roles: [:kylo_ren, :darth_vader, :darth_maul] do
   runner "IosMonitorService.delete_old_classdumps", :output => '/var/log/varys/cron.log'
 end
 
+every :week, :at => '12:05am', roles: [:kylo_ren, :darth_vader] do
+  command 'cat /dev/null > /var/log/varys/sidekiq.log', :output => '/var/log/varys/cron.log'
+  command 'cat /dev/null > /var/log/varys/sidekiq.json.log', :output => '/var/log/varys/cron.log'
+end
+
+every :month, roles: [:kylo_ren, :darth_vader] do
+  command 'cat /dev/null > /var/log/varys/fluentd.out', :output => '/var/log/varys/cron.log'
+  command 'cat /dev/null > /var/log/varys/fluentd.err', :output => '/var/log/varys/cron.log'
+  command 'cat /dev/null > /var/log/varys/cron.log', :output => '/var/log/varys/cron.log'
+end
+
 every 30.minutes, roles: [:kylo_ren] do
   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
 end
