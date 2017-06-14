@@ -138,6 +138,8 @@ Rails.application.routes.draw do
       post 'update_api_token' => 'admin#update_api_token'
       post 'major_apps/tag' => 'admin#tag_major_app'
       put 'major_apps/untag' => 'admin#untag_major_app'
+      post 'major_publishers/tag' => 'admin#tag_major_publisher'
+      put 'major_publishers/untag' => 'admin#untag_major_publisher'
 
     end
 

@@ -45,7 +45,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       }).success(function(data) {
         if (shouldReset) {
           newsfeedCtrl.weeks = _.sortBy(data.weeks, 'week').reverse();
-        } else { 
+        } else {
           newsfeedCtrl.weeks = _.sortBy(newsfeedCtrl.weeks.concat(data.weeks), 'week').reverse();
         }
 
@@ -138,7 +138,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
           countryCode: countryCode,
         });
         $scope.loadWithDelay()
-      })       
+      })
     }
 
     $scope.loadWithDelay = function() {
@@ -151,7 +151,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       }, 1500)
     }
 
-    $scope.selectedCountry = function ($item) {  
+    $scope.selectedCountry = function ($item) {
       var index = $scope.locations.indexOf($item.originalObject)
       var countryCode = $item.originalObject.id
       if (index < 0) {
@@ -166,7 +166,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
           countryCode: countryCode,
         });
         $scope.loadWithDelay()
-      })                   
+      })
     }
 
     $scope.clickedTimelineItem = function(batch, activity, clickedType) {
@@ -189,7 +189,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
 
       var platform = 'ios'
       var class_name = 'app'
-      
+
       if (type == 'AndroidSdk' || type == 'AndroidApp') {
         platform = 'android'
       }
@@ -215,6 +215,27 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     };
 
     mixpanel.track("Timeline Viewed");
+
+    $scope.majorAppIconClicked = function (activity, owner, activity_type) {
+      const slacktivityData = {
+        "title": "Major App Icon Clicked",
+        "fallback": "Major App Icon Clicked",
+        "color": "#FFD94D",
+        "app id": activity.app.id,
+        "owner id": owner.id,
+        "owner type": owner.type,
+        "activity": activity_type
+      }
+      slacktivity.notifySlack(slacktivityData);
+      mixpanel.track("Major App Icon Clicked", {
+        activityType: activity_type,
+        owner: owner.name,
+        platform: owner.platform,
+        ownerType: owner.type,
+        app: activity.app.name,
+        appId: activity.app.id
+      });
+    }
 
   }
 ]);

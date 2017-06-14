@@ -8325,9 +8325,25 @@ ul.majorAppsList {
 }
 
 .newsfeedPageRow .panel-heading img {
-  max-width: 16px;
-  height: 16px;
+  max-width: 25px;
+  height: 25px;
   margin-right: 5px;
+  border-radius: 4px;
+}
+
+.newsfeedPageRow .panel-heading.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.newsfeedPageRow .panel-heading.flex div:not(.popoverAppText) {
+  display: flex;
+  align-items: center;
+  text-transform: none;
+  font-weight: 700;
+  font-size: 14px;
+  flex-wrap: wrap;
 }
 
 .newsfeedPageRow .feed-body table .resultsTableAppIcon img {
@@ -8366,10 +8382,6 @@ ul.majorAppsList {
   border-bottom: 1px solid #ddd;
 }
 
-.newsfeedPageRow .export {
-  margin-top: -4px;
-}
-
 .newsfeedPageRow .export a {
   padding: 3px 10px;
   box-shadow: none;
@@ -8381,7 +8393,7 @@ ul.majorAppsList {
 }
 
 .actionButton {
-  width: 175px;
+  min-width: 175px;
   display: inline-block;
 }
 
@@ -8872,4 +8884,26 @@ button.saved-search-button:disabled {
 
 .app-icon-link:hover {
   text-decoration: none;
+}
+
+/*Major App Popover*/
+
+.majorAppPopover {
+  display: flex;
+  max-width: none;
+  align-items: center;
+}
+
+.popoverAppIcon {
+  max-width: 55px !important;
+  height: 55px !important;
+  margin-right: 10px !important;
+}
+
+.popoverAppText p:not(:first-child) {
+  font-weight: normal;
+}
+
+.popoverAppText p {
+  margin: 0px;
 }

@@ -45,69 +45,78 @@
             <span class="icon fa" ng-class="platform.platform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
             <span>{{platform.platform == 'ios' ? 'iOS' : 'Android'}}</span>
           </div>
-          <div data-ng-repeat="batch in platform.batches" class="panel panel-default">
-          <div class="panel-heading" ng-click="isCollapsed = !isCollapsed; loadBatch(batch.id, batch, 1, batch.pageSize)">
-            <strong ng-if="batch.owner.type == 'IosApp' || batch.owner.type == 'AndroidApp'">
-              <a href="#/app/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
-                <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
-                {{batch.owner.name}}
-              </a>
-              <span ng-if="batch.activity_type == 'install'">
-                - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">{{batch.activities_count == 1 ? 'was' : 'were'}} seen</span>
-              </span>
-              <span ng-if="batch.activity_type == 'uninstall'">
-                - {{batch.activities_count}} {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">removed</span>
-              </span>
-            </strong>
-            <strong ng-if="batch.owner.type == 'IosSdk' || batch.owner.type == 'AndroidSdk'">
-              <a href="#/sdk/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
-                <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
-                {{batch.owner.name}}
-              </a>
-              <span ng-if="batch.activity_type == 'install'">
-                - <span class="{{batch.activity_type}}">seen for the first time</span> in {{batch.activities_count}} {{batch.activities_count == 1 ? 'app' : 'apps'}}
-              </span>
-              <span ng-if="batch.activity_type == 'uninstall'">
-                - <span class="{{batch.activity_type}}">removed</span> from {{batch.activities_count}} {{batch.activities_count == 1 ? 'app' : 'apps'}}
-              </span>
-            </strong>
-            <strong ng-if="batch.owner.type == 'AdPlatform'">
-              <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
-              {{batch.owner.platform}} Ads
-              <span>
-                - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
-              </span>
-            </strong>
-            <!-- <strong ng-if="batch.major_apps.length > 0">
-              <span ng-repeat="app in batch.major_apps">
-                <a href="#/app/{{batch.owner.platform}}/{{app.id}}" target="_blank" uib-tooltip="{{app.name}}" class="app-icon-link">
-                  <img src="{{app.icon}}" ng-show="app.icon">
+          <div data-ng-repeat="batch in platform.batches" class="panel panel-default" ng-init="appWord = (batch.activities_count == 1 ? 'app' : 'apps') + (batch.major_activities.length > 0 ? ',' : '')">
+          <div class="panel-heading flex" ng-click="isCollapsed = !isCollapsed; loadBatch(batch.id, batch, 1, batch.pageSize)">
+            <div>
+              <div ng-if="batch.owner.type == 'IosApp' || batch.owner.type == 'AndroidApp'">
+                <a href="#/app/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
+                  <div>
+                    <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                    {{batch.owner.name}}&nbsp;
+                  </div>
                 </a>
-              </span>
-            </strong> -->
-            <div class="pull-right export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'">
-              <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">Export to CSV</a>
+                <div ng-if="batch.activity_type == 'install'">
+                  - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} seen</span>
+                </div>
+                <div ng-if="batch.activity_type == 'uninstall'">
+                  - {{batch.activities_count}} {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;removed</span>
+                </div>
+              </div>
+              <div ng-if="batch.owner.type == 'IosSdk' || batch.owner.type == 'AndroidSdk'">
+                <a href="#/sdk/{{batch.owner.platform}}/{{batch.owner.id}}" target="_blank">
+                  <div>
+                    <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                    {{batch.owner.name}}&nbsp;
+                  </div>
+                </a>
+                <div ng-if="batch.activity_type == 'install'">
+                  - <span class="{{batch.activity_type}}">&nbsp;seen for the first time&nbsp;</span> in {{batch.activities_count}} {{appWord}}
+                </div>
+                <span ng-if="batch.activity_type == 'uninstall'">
+                  - <span class="{{batch.activity_type}}">removed</span> from {{batch.activities_count}} {{appWord}}
+                </span>
+              </div>
+              <div ng-if="batch.owner.type == 'AdPlatform'">
+                <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                {{batch.owner.platform}} Ads&nbsp;
+                <span>
+                  - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
+                </span>
+              </div>
+              <div ng-if="batch.major_activities.length > 0">
+                &nbsp;including: &nbsp;
+                <div class="majorAppContainer">
+                  <div ng-repeat="activity in batch.major_activities" ng-init="app = activity.app">
+                    <a
+                    href="#/app/{{batch.owner.platform}}/{{app.id}}"
+                    target="_blank"
+                    class="app-icon-link"
+                    uib-popover-template="'majorAppPopover.html'"
+                    popover-placement="auto top"
+                    popover-trigger="mouseenter"
+                    popover-class="majorAppPopover"
+                    ng-click="$event.stopPropagation(); majorAppIconClicked(activity, batch.owner, batch.activity_type)"
+                    >
+                    <img ng-src="{{app.icon}}">
+                  </a>
+                </div>
+                </div>
+            </div>
+            <script type="text/ng-template" id="majorAppPopover.html">
+              <div class="majorAppPopover">
+                <img class="popoverAppIcon" ng-src="{{app.icon}}">
+                <div class="popoverAppText">
+                  <p>{{app.name}}</p>
+                  <p>{{app.publisher.name}}</p>
+                  <p>{{batch.activity_type == "install" ? "First seen" : "Last seen"}} {{calculateDaysAgo(activity.happened_at)}}</p>
+                </div>
+              </div>
+            </script>
+            </div>
+            <div class="export" ng-if="batch.owner.type != 'IosApp' && batch.owner.type != 'AndroidApp'">
+              <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">EXPORT TO CSV</a>
             </div>
           </div>
-          <!-- <div class="panel-body {{batch.activity_type}}" uib-collapse="!isCollapsed" ng-if="batch.major_apps.length > 0">
-            <div class="row chartPageRow topAppsPageRow">
-              <p>Including these major apps:</p>
-              <ul class="majorAppsList">
-                <li data-ng-repeat="app in batch.major_apps" class="grid">
-                  <a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" class="icon" target="_blank">
-                    <img class="major-app-icon" ng-src="{{app.icon}}">
-                  </a>
-                  <br>
-                  <span class="app-name"><a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" target="_blank">{{app.name}}</a></span>
-                  <br>
-                  <span class="app-category">{{app.publisher.name}}</span>
-                </li>
-                <li class="grid">
-                  <a href="" ng-click="isCollapsed = false; loadBatch(batch.id, batch, 1, batch.pageSize)">Click for more <i class="fa fa-arrow-right"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div> -->
           <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
             <div class="media">
               <div class="media-body" ng-if="batch.owner.type == 'AdPlatform'">

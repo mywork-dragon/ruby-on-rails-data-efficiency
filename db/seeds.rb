@@ -25,10 +25,19 @@ AppStore.create!(country_code: "CN", display_priority: 2)
 AppStore.create!(country_code: "GB", display_priority: 3)
 AppStore.create!(country_code: "JP", display_priority: 4)
 
+puts 'creating Developers'
+500.times do
+  IosDeveloper.create(name: Faker::Company.name)
+end
+
+500.times do
+  AndroidDeveloper.create(name: Faker::Company.name)
+end
+
   puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..1000
     name = Faker::App.name
-    ios_app = IosApp.find_or_initialize_by(app_identifier: i)
+    ios_app = IosApp.find_or_initialize_by(app_identifier: i, ios_developer_id: rand(1..500))
     ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"),
                                              icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,
                                              description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100),
@@ -49,7 +58,7 @@ AppStore.create!(country_code: "JP", display_priority: 4)
   1000.times do |i|
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
 
-    android_app = AndroidApp.find_or_create_by(app_identifier: name)
+    android_app = AndroidApp.find_or_create_by(app_identifier: name, android_developer_id: rand(1..500))
     android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"),
                                                      price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3,
                                                     downloads_max: 100e6, android_app_id: i+1, seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_google_play_identifier: Faker::Number.between(1, 50))
@@ -121,6 +130,7 @@ AppStore.create!(country_code: "JP", display_priority: 4)
 
   puts 'creating tags'
   Tag.create(name: "Major App", id: 48)
+  Tag.create(name: "Major Publisher", id: 49)
   50.times do
     ios_app_id = ios_apps.sample.id
     TagRelationship.create(tag_id: 48, taggable_id: ios_app_id, taggable_type: "IosApp")

@@ -20,9 +20,9 @@ class WeeklyBatch < ActiveRecord::Base
       batch_json[:activities_count] = self.sorted_activities(country_codes: options[:country_codes]).try(:count).try(:size)
     end
 
-    # if is_sdk?
-    #   batch_json[:major_apps] = major_apps
-    # end
+    if is_sdk?
+      batch_json[:major_activities] = major_activities
+    end
 
     batch_json[:activities_count] ||= self.activities.count
     batch_json[:apps_count] = self.joined_activities.pluck(:ios_app_id).uniq.count if is_ad_platform?
@@ -49,8 +49,13 @@ class WeeklyBatch < ActiveRecord::Base
     owner_type == 'AdPlatform'
   end
 
-  def major_apps
-    self.activities.where(major_app: true).map { |a| a.other_owner(self.owner) }
+  def major_activities
+    major_activities = self.activities.where(major_app: true).map do |activity|
+      {
+        app: activity.other_owner(self.owner),
+        happened_at: activity.happened_at
+      }
+    end.sort_by { |activity| activity[:app][:user_base] }.take(10)
   end
 
   def platform

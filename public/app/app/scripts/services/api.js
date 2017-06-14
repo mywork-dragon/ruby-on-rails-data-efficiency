@@ -171,6 +171,20 @@ angular.module("appApp")
           url: `${API_URI_BASE}api/admin/major_apps/untag`,
           params: { appId, platform }
         })
+      },
+      tagAsMajorPublisher: function (id, platform) {
+        return $http({
+          method: 'POST',
+          url: `${API_URI_BASE}api/admin/major_publishers/tag`,
+          params: { id, platform }
+        })
+      },
+      untagAsMajorPublisher: function (id, platform) {
+        return $http({
+          method: 'PUT',
+          url: `${API_URI_BASE}api/admin/major_publishers/untag`,
+          params: { id, platform }
+        })
       }
     };
   }]);

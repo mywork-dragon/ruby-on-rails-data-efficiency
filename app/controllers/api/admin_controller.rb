@@ -3,7 +3,7 @@ class Api::AdminController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_admin, except: [:ios_reset_app_data]
-  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts, :generate_api_token, :delete_api_token, :update_api_token, :tag_major_app, :untag_major_app]
+  before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts, :generate_api_token, :delete_api_token, :update_api_token, :tag_major_app, :untag_major_app, :tag_major_publisher, :untag_major_publisher]
 
   def index
     accounts = if @current_user.account.is_admin_account?
@@ -82,7 +82,7 @@ class Api::AdminController < ApplicationController
     sdks.each do |sdk|
       User.where(id: user_ids).each do |user|
         user.follow(sdk)
-      end 
+      end
 
       Account.where(id: account_ids).each do |account|
         account.follow(sdk)
@@ -245,20 +245,41 @@ class Api::AdminController < ApplicationController
   end
 
   def tag_major_app
-    id = params[:appId]
+    major_tag = Tag.find_by(name: "Major App")
+    app_id = params[:appId]
     type = params[:platform] == "ios" ? "IosApp" : "AndroidApp"
-    tag = TagRelationship.find_or_create_by(tag_id: 48, taggable_id: id, taggable_type: type)
-    app = params[:platform] == "ios" ? IosApp.find(id) : AndroidApp.find(id)
+    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: app_id, taggable_type: type)
+    app = params[:platform] == "ios" ? IosApp.find(app_id) : AndroidApp.find(app_id)
     render json: app.to_json({ details: true })
   end
 
   def untag_major_app
-    id = params[:appId]
+    major_tag = Tag.find_by(name: "Major App")
+    app_id = params[:appId]
     type = params[:platform] == "ios" ? "IosApp" : "AndroidApp"
-    tag = TagRelationship.where(tag_id: 48, taggable_id: id, taggable_type: type).first
+    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: app_id, taggable_type: type)
     tag.destroy
-    app = params[:platform] == "ios" ? IosApp.find(id) : AndroidApp.find(id)
+    app = params[:platform] == "ios" ? IosApp.find(app_id) : AndroidApp.find(app_id)
     render json: app.to_json({ details: true })
+  end
+
+  def tag_major_publisher
+    major_tag = Tag.find_by(name: "Major Publisher")
+    dev_id = params[:id]
+    type = params[:platform] == "ios" ? "IosDeveloper" : "AndroidDeveloper"
+    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: dev_id, taggable_type: type)
+    developer = params[:platform] == "ios" ? IosDeveloper.find(dev_id) : AndroidDeveloper.find(dev_id)
+    render json: { isMajorPublisher: developer.is_major_publisher? }
+  end
+
+  def untag_major_publisher
+    major_tag = Tag.find_by(name: "Major Publisher")
+    dev_id = params[:id]
+    type = params[:platform] == "ios" ? "IosDeveloper" : "AndroidDeveloper"
+    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: dev_id, taggable_type: type)
+    tag.destroy
+    developer = params[:platform] == "ios" ? IosDeveloper.find(dev_id) : AndroidDeveloper.find(dev_id)
+    render json: { isMajorPublisher: developer.is_major_publisher? }
   end
 
 end

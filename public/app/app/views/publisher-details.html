@@ -79,6 +79,13 @@
             <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info">
+                  <li ng-if="isAdminAccount">
+                    <span class="icon fa fa-star"></span>
+                    <label>Major Publisher:</label>
+                    <div class="actionButton">
+                      <button type="submit" ng-class="publisherData.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="handleTagButtonClick()">{{publisherData.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
+                    </div>
+                  </li>
                   <li id="linkedinLinksList">
                     <span class="icon fa fa-linkedin"></span>
                     <label>LinkedIn Links:</label>

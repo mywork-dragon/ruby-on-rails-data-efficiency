@@ -107,8 +107,27 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
           return loggitService.logSuccess("Items were added successfully.");
         case "add-selected-error":
           return loggitService.logError("Error! Something went wrong while adding to list.");
+        case 'major publisher tagged':
+          return loggitService.logSuccess("Publisher tagged successfully.")
+        case 'major publisher untagged':
+          return loggitService.logSuccess("Publisher untagged successfully.")
       }
     };
+
+    $scope.handleTagButtonClick = function() {
+      const id = $scope.publisherData.id;
+      if ($scope.publisherData.isMajorPublisher) {
+        apiService.untagAsMajorPublisher(id, $routeParams.platform).success(function(data) {
+          $scope.notify('major publisher untagged')
+          $scope.publisherData.isMajorPublisher = data.isMajorPublisher
+        })
+      } else {
+        apiService.tagAsMajorPublisher(id, $routeParams.platform).success(function(data) {
+          $scope.notify('major publisher tagged')
+          $scope.publisherData.isMajorPublisher = data.isMajorPublisher
+        })
+      }
+    }
 
     $scope.exportContactsToCsv = function(filter) {
       apiService.exportContactsToCsv($scope.appPlatform, $scope.publisherData.id, filter, $scope.publisherData.name)

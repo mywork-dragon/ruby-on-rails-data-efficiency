@@ -231,6 +231,7 @@ class ApiController < ApplicationController
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
+        isMajorPublisher: developer.is_major_publisher?,
         apps: apps.as_json({user: @current_user})
       }
     end
@@ -249,6 +250,7 @@ class ApiController < ApplicationController
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
+        isMajorPublisher: developer.is_major_publisher?,
         apps: apps.as_json({user: @current_user})
       }
     end

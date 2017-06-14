@@ -107,6 +107,10 @@ class AndroidApp < ActiveRecord::Base
     self.android_developer.try(:fortune_1000_rank)
   end
 
+  def major_publisher?
+    self.android_developer ? self.android_developer.is_major_publisher? : false
+  end
+
   def name
     if newest_android_app_snapshot.present?
       return newest_android_app_snapshot.name

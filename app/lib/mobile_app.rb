@@ -8,7 +8,7 @@ module MobileApp
   end
 
   def is_major_app?
-    is_in_top_200? || fortune_rank || follow_relationships.count > 10
+    is_in_top_200? || fortune_rank || follow_relationships.count > 10 || major_publisher?
   end
 
   def major_app_tag?

@@ -11,6 +11,10 @@ module MobileDeveloper
     valid_websites.joins(:domain_datum).pluck(:fortune_1000_rank).compact.min
   end
 
+  def is_major_publisher?
+    tags.any? { |tag| tag.name == "Major Publisher" }
+  end
+
   def headquarters(limit=100)
     headquarters = []
     valid_websites.joins(:domain_datum).uniq.limit(limit).
@@ -43,7 +47,7 @@ module MobileDeveloper
       sort_by: category || 'last_updated',
       order_by: order || 'desc'
     }
-    
+
     if platform == 'ios'
       filter_results = FilterService.filter_ios_apps(filter_args)
       app_class = IosApp
@@ -82,7 +86,7 @@ module MobileDeveloper
         summary[sdk_type][tag_name] += [{id: app_sdk.id, name: app_sdk.name, favicon: app_sdk.favicon, count: sdk["doc_count"]}]
       end
     end
-    
+
     summary
   end
 end

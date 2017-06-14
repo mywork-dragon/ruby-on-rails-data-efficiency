@@ -419,6 +419,10 @@ class IosApp < ActiveRecord::Base
     self.ios_developer.try(:fortune_1000_rank)
   end
 
+  def major_publisher?
+    self.ios_developer ? self.ios_developer.is_major_publisher? : false
+  end
+
   def headquarters(limit=100)
     ios_developer.try(:headquarters, limit) || []
   end

@@ -2,7 +2,7 @@ class IosDeveloper < ActiveRecord::Base
 
   belongs_to :company
   has_many :ios_apps
-  
+
   has_many :ios_developers_websites
   has_many :websites, through: :ios_developers_websites
 
@@ -13,6 +13,9 @@ class IosDeveloper < ActiveRecord::Base
   has_one :app_developer, through: :app_developers_developer
 
   has_many :developer_link_options
+
+  has_many :tag_relationships, as: :taggable
+  has_many :tags, through: :tag_relationships
 
   include DeveloperContactWebsites
   include MobileDeveloper
