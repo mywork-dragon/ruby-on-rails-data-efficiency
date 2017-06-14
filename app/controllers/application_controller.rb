@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     render json: {'error' => 'Authorization revoked'}, status: 418 # unofficial authorization revoked status code
   end
 
+  rescue_from Throttler::LimitExceeded do
+    render json: { error: 'Rate Limit Exceeded' }, status: 429
+  end
+
   def ping
     render :json => {success: true}
   end
@@ -132,4 +136,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # In Rails 4.2, custom headers are upcased, have their hyphens replaced with underscores, and prepended by HTTP
+  # https://github.com/rails/rails/blob/4-2-stable/actionpack/lib/action_dispatch/http/headers.rb
+  def authenticate_client_api_request
+    header_key = 'HTTP_MIGHTYSIGNAL_TOKEN'
+    key = request.headers[header_key]
+
+    @http_client_api_auth_token = ApiToken.find_by(token: key, active: true) if key.present?
+    raise NotAuthenticatedError if @http_client_api_auth_token.blank?
+  end
+
+  # both authenticates and ensures not exceeded given rate limit
+  def limit_client_api_call
+    authenticate_client_api_request
+    token = @http_client_api_auth_token
+    Throttler.new(token.token, token.rate_limit, token.period).increment
+  end
 end

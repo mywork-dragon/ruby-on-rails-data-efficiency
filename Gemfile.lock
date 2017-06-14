@@ -568,6 +568,7 @@ DEPENDENCIES
   rack-cors
   rails (= 4.2.6)
   recaptcha (= 4.0.1)
+  redis
   redis-rails
   restforce (= 2.3.0)
   rspec-mocks (~> 3.5)
@@ -598,4 +599,4 @@ DEPENDENCIES
   www-favicon (= 0.0.6)
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

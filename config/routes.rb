@@ -179,4 +179,12 @@ Rails.application.routes.draw do
   post 'ios_sdk/new' => 'ios_sdk#create'
   post 'ios_sdk/validate' => 'ios_sdk#validate'
   post 'ios_sdk/sync' => 'ios_sdk#sync'
+  
+  # Client-facing API
+  scope module: 'client_api' do
+    get '/rate-limit' => 'rate_limit#show'
+  end
+
+  get '404' => 'error#not_found'
+  get '500' => 'error#internal_error'
 end

@@ -184,3 +184,6 @@ end
 
 # for manipulate IPA plists
 gem 'plist', '~> 3.2'
+
+# for throttling. Let Sidekiq handle version locking
+gem 'redis'
