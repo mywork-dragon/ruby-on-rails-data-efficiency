@@ -45,7 +45,7 @@
                 <i class="fa fa-trash-o" ng-click="$ctrl.deleteToken(id)"></i>
               </td>
               <td ng-if="$ctrl.currentlyEditing == id" >
-                <i class="fa fa-check" ng-click="$ctrl.updateToken(id, {rate_limit: token.rate_limit, rate_window: token.rate_window})"></i>
+                <i class="fa fa-check" ng-click="$ctrl.updateToken(id, {rate_limit: $ctrl.tokenLimit, rate_window: $ctrl.tokenWindow})"></i>
                 <i class="fa fa-times" ng-click="$ctrl.toggleEditForm()"></i>
               </td>
             </tr>
