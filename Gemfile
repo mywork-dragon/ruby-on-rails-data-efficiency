@@ -91,7 +91,7 @@ gem 'filesize', '0.0.4'
 
 gem 'socksify', '1.6.0', require: 'socksify/http'
 
-gem 'net-ssh', '2.9.1'
+gem 'net-ssh', '~> 4.0'
 
 gem 'kaminari', '0.16.3'
 
