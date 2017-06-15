@@ -62,11 +62,15 @@ class IosMonitorService
 
       return if num_stuck == 0
 
+      logger = JsonLogger.new(
+        filename: Rails.application.config.dark_side_json_log_path,
+      )
+
       puts "#{Time.now.utc}: Rescuing #{num_stuck} phones"
       stuck_devices.each do |ios_device|
         puts "Trying device #{ios_device.id}"
         ios_device.update(disabled: true)
-        IosDownloadDeviceService.new(ios_device, apple_account: ios_device.apple_account).kill_ssh_session
+        IosDownloadDeviceService.new(ios_device, apple_account: ios_device.apple_account, logger: logger).kill_ssh_session
       end
 
       Slackiq.message("Found #{num_stuck} devices stuck: #{ids.join(', ')}. Killed SSH session and disabled. *Check device and re-enable when ready*", webhook_name: :automated_alerts)
