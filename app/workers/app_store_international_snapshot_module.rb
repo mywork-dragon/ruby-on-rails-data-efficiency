@@ -45,8 +45,7 @@ module AppStoreInternationalSnapshotModule
   rescue AppStoreHelper::ExtractorJson::NotIosApp
     if ios_app
       ios_app.update!(
-        display_type: IosApp.display_types[:not_ios],
-        app_store_available: false
+        display_type: IosApp.display_types[:not_ios]
       )
     elsif extractor.alternate_identifier
       IosApp

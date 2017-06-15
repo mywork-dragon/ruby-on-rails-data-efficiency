@@ -44,8 +44,6 @@ class AppStoreInternationalService
     def snapshot_query_by_scrape_type(scrape_type)
       if scrape_type == :all
         "display_type != #{IosApp.display_types[:not_ios]}"
-      elsif scrape_type == :regular
-        { app_store_available: true }
       elsif scrape_type == :new
         previous_week_epf_date = Date.parse(EpfFullFeed.last(2).first.name)
         ['released >= ?', previous_week_epf_date]
@@ -138,21 +136,6 @@ class AppStoreInternationalService
             batch.bid
           )
         end
-      end
-    end
-
-    def app_store_availability(new_store_updates: false)
-      batch = Sidekiq::Batch.new
-      batch.description = 'AppStoreInternationalService#app_store_availability'
-      batch.on(
-        :complete,
-        'AppStoreInternationalService#on_complete_app_store_availability'
-      )
-
-      Slackiq.message('Starting to update app store availability', webhook_name: :main)
-
-      batch.jobs do
-        AppStoreInternationalAvailabilityWorker.perform_async(new_store_updates)
       end
     end
 
@@ -310,7 +293,6 @@ class AppStoreInternationalService
 
     if options['automated']
       self.class.execute_table_swaps(automated: true)
-      self.class.app_store_availability(new_store_updates: true)
 
       # TODO: this technically should happen after table swaps AND new US store scrapes are done
       # Because of how jobs on scrapers are used. this currently works
@@ -319,10 +301,6 @@ class AppStoreInternationalService
         IosMassScanService.run_recently_updated(automated: true, n: 2000)
       end
     end
-  end
-
-  def on_complete_app_store_availability(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Updated iOS app store availabilities')
   end
 
 end

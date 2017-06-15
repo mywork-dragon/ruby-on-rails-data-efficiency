@@ -59,6 +59,10 @@ class IosApp < ActiveRecord::Base
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
                       529479190, 547702041,591981144,618783545,317469184,401626263,1094591345]
 
+  def app_store_available
+    app_stores_ios_apps.any? && display_type != IosApp.display_types[:not_ios]
+  end
+
   def invalidate_newest_ipa_snapshot
     ipa_snapshot = get_last_ipa_snapshot(scan_success: true)
 
@@ -150,7 +154,7 @@ class IosApp < ActiveRecord::Base
       price: first_international_snapshot['price'] || newest_snapshot.try(:price),
       currency: self.currency,
       rankingChange: self.ranking_change,
-      appAvailable: self.app_store_available,
+      appAvailable: app_store_available,
       appStoreLink: self.app_store_link,
       appStores: {totalCount: AppStore.enabled.count, availableIn: self.app_stores.map{|store| {name: store.name, country_code: store.country_code}}},
       isInternational: self.international?,
@@ -557,7 +561,6 @@ class IosApp < ActiveRecord::Base
     AppStoreSnapshotServiceWorker.new.perform(nil, id)
     puts 'sleeping to allow intl scrapes'
     sleep 3
-    update!(app_store_available: true) if app_stores.any?
     AppStoreDevelopersWorker.new.create_by_ios_app_id(id)
   end
 

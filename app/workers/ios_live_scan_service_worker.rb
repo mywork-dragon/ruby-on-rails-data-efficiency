@@ -10,8 +10,7 @@ class IosLiveScanServiceWorker
   def no_data(ipa_snapshot_job_id, ios_app_id, international: false)
     @ipa_snapshot_job.update!(live_scan_status: :not_available)
     @ios_app.update!(
-      display_type: :taken_down,
-      app_store_available: false
+      display_type: :taken_down
     ) if international
     puts "Not available"
   end
@@ -24,8 +23,7 @@ class IosLiveScanServiceWorker
   def not_ios(ipa_snapshot_job_id, ios_app_id)
     @ipa_snapshot_job.update!(live_scan_status: :not_available)
     @ios_app.update!(
-      display_type: :not_ios,
-      app_store_available: false
+      display_type: :not_ios
     )
     puts "Not iOS"
   end

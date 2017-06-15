@@ -17,8 +17,7 @@ class IosMassScanServiceWorker
 
   def not_ios(ipa_snapshot_job_id, ios_app_id)
     @ios_app.update!(
-      display_type: :not_ios,
-      app_store_available: false
+      display_type: :not_ios
     )
     "Not iOS"
   end
