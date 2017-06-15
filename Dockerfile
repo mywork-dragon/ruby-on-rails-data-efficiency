@@ -1,4 +1,4 @@
-FROM 250424072945.dkr.ecr.us-east-1.amazonaws.com/base:latest
+FROM 250424072945.dkr.ecr.us-east-1.amazonaws.com/base:ruby_2_4
 
 RUN mkdir /varys
 WORKDIR /varys

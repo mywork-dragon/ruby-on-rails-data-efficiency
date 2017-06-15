@@ -1076,7 +1076,7 @@ class ApiController < ApplicationController
     end
   end
 
-  def add_apps_to_enum(results: results, enum: enum, platform: platform)
+  def add_apps_to_enum(results:, enum:, platform:)
     results.each do |app|
       app_csv = if ['IosApp', 'AndroidApp'].include?(app.class.name)
         app.to_csv_row

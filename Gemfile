@@ -3,24 +3,25 @@ source 'https://rubygems.org'
 # Lor San Tekka needs to be added as a user on any private MightySignal repos you use
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.8'
 # Use mysql as the database for Active Record
 gem 'mysql2', '0.3.17'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer', '0.12.2'
+# gem 'therubyracer', '~> 0.12.3'
 
 gem 'slim', '3.0.6'
 gem 'slim-rails', '3.0.1'
-gem 'haml'
-gem 'haml-rails'
 
 gem 'foundation-rails', '5.4.3.1'
+
+# required for asset pipeline
+# for middleman/turbolinks
+# http://guides.rubyonrails.org/asset_pipeline.html
+gem 'sass-rails'
 
 # bootstrap css, read here https://github.com/twbs/bootstrap-sass
 gem 'bootstrap-sass', '3.2.0'
@@ -29,6 +30,7 @@ gem 'autoprefixer-rails'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
@@ -71,7 +73,7 @@ gem 'PageRankr', '4.2.1'
 gem 'newrelic_rpm'
 
 gem 'restforce', '2.3.0'
-gem 'metaforce', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git'
+gem 'metaforce', '~> 1.0.8', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git'
 gem 'omniauth-salesforce'
 
 gem 'httparty', '0.13.7'
@@ -83,7 +85,7 @@ source "https://ee3069b7:c6ce5996@gems.contribsys.com/" do
 end
 gem 'sidekiq-throttler', '0.5.1'
 
-gem 'sinatra', :require => false
+gem 'sinatra', '~> 1.0', :require => false
 
 gem 'filesize', '0.0.4'
 
@@ -187,3 +189,11 @@ gem 'plist', '~> 3.2'
 
 # for throttling. Let Sidekiq handle version locking
 gem 'redis'
+
+# for API docs
+gem 'middleman', '~>4.2.1'
+gem 'middleman-syntax', '~> 3.0.0'
+gem 'middleman-autoprefixer', '~> 2.7.0'
+gem "middleman-sprockets", "~> 4.1.0"
+gem 'rouge', '~> 2.0.5'
+gem 'redcarpet', '~> 3.4.0'

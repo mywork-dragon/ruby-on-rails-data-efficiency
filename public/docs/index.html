@@ -1,0 +1,1678 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>MightySignal API Docs</title>
+
+    <style>
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: #f8f8f2;
+  background-color: #272822;
+}
+.highlight .err {
+  color: #272822;
+  background-color: #f92672;
+}
+.highlight .c, .highlight .cd, .highlight .cm, .highlight .c1, .highlight .cs {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #f4bf75;
+}
+.highlight .nt {
+  color: #f4bf75;
+}
+.highlight .o, .highlight .ow {
+  color: #f8f8f2;
+}
+.highlight .p, .highlight .pi {
+  color: #f8f8f2;
+}
+.highlight .gi {
+  color: #a6e22e;
+}
+.highlight .gd {
+  color: #f92672;
+}
+.highlight .gh {
+  color: #66d9ef;
+  background-color: #272822;
+  font-weight: bold;
+}
+.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+  color: #ae81ff;
+}
+.highlight .kc {
+  color: #fd971f;
+}
+.highlight .kt {
+  color: #fd971f;
+}
+.highlight .kd {
+  color: #fd971f;
+}
+.highlight .s, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+  color: #a6e22e;
+}
+.highlight .sr {
+  color: #a1efe4;
+}
+.highlight .si {
+  color: #cc6633;
+}
+.highlight .se {
+  color: #cc6633;
+}
+.highlight .nn {
+  color: #f4bf75;
+}
+.highlight .nc {
+  color: #f4bf75;
+}
+.highlight .no {
+  color: #f4bf75;
+}
+.highlight .na {
+  color: #66d9ef;
+}
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mb, .highlight .mx {
+  color: #a6e22e;
+}
+.highlight .ss {
+  color: #a6e22e;
+}
+    </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all.js"></script>
+  </head>
+
+  <body class="index" data-languages="[&quot;shell&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" alt="Navbar" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <img src="images/logo.png" alt="Logo" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="shell">shell</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="overview">Overview</h1>
+
+<p>Welcome to the documentation for the MightySignal API. For access, please <a href="mailto:support@mightysignal.com">contact us</a> to get your API token.</p>
+
+<p>The API is accessed from <code class="prettyprint">https://api.mightysignal.com</code>. All data is returned as JSON.</p>
+
+<h1 id="authentication">Authentication</h1>
+
+<blockquote>
+<p>To authenticate:</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># You should pass the header with each request</span>
+curl <span class="s2">"https://api.mightysignal.com/&lt;your-endpoint-of-interest&gt;"</span>
+  -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre>
+<blockquote>
+<p>Make sure to replace <code class="prettyprint">&lt;your-api-token&gt;</code> with your API token.</p>
+</blockquote>
+
+<p>Authentication is done via HTTP Headers on each request with your MightySignal API token:</p>
+
+<p><code class="prettyprint">MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;</code></p>
+
+<aside class="notice">
+You must replace <code>&ltyour-api-token&gt</code> with your personal API token.
+</aside>
+
+<p><strong>All API requests must be made over HTTPS.</strong> Calls made over plain HTTP will fail with a redirect.</p>
+
+<h1 id="ios-apps">iOS Apps</h1>
+
+<h2 id="get-information-about-a-specific-app">Get information about a specific app</h2>
+
+<blockquote>
+<p>Example: Retrieve the latest information about Airbnb&rsquo;s iOS app</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app/401626263"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">258389</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"http://airbnb.com/help"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.5"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10289</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-31"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-15"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-30"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Travel"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"primary"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Lifestyle"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"secondary"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-11-10"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16.34"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"installed_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1PasswordExtension"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-04-24T22:46:33.000Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-23T16:01:41.000Z"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3761</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Coinbase"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-11T02:29:06.000Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-03-10T19:54:23.000Z"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">110570</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"http://airbnb.com/mobile"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"https://airbnbopen.com/"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"http://airbnb.com/help"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Airbnb, Inc."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626266</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">401626263</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /ios/app/&lt;app_store_id&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;app_store_id&gt;</code> is the ID from the App Store. For example, Airbnb&rsquo;s App Store ID is <code class="prettyprint">401626263</code>, which you can find by looking at its iTunes URL: <a href="https://itunes.apple.com/us/app/airbnb/id401626263">(https://itunes.apple.com/us/app/airbnb/id401626263)</a>. If you don&rsquo;t already know the iTunes URL of an app, you can find it on the <a href="http://mightysignal.com/app/app#/app/ios/258389">app&rsquo;s MightySignal page</a>.</p>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>The MightySignal ID of the app</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Name of the app</td>
+</tr>
+<tr>
+<td>mobile_priority</td>
+<td>How much the company cares about the app. Currently, the rank is a function of how recently the app has been updated, and whether they advertise on Facebook. <code class="prettyprint">high</code>: Updated within the past 2 months or advertised on Facebook. <code class="prettyprint">medium</code>: Updated within last 2-4 months. <code class="prettyprint">low</code>: Last update more than 4 months ago.</td>
+</tr>
+<tr>
+<td>user_base</td>
+<td>How large the user base is. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">moderate</code>, <code class="prettyprint">strong</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>support_url</td>
+<td>The support URL</td>
+</tr>
+<tr>
+<td>current_version_rating</td>
+<td>Average rating (out of 5) for the current version</td>
+</tr>
+<tr>
+<td>current_version_ratings_count</td>
+<td>Number of ratings for the current version</td>
+</tr>
+<tr>
+<td>all_version_rating</td>
+<td>Average rating (out of 5) for all versions</td>
+</tr>
+<tr>
+<td>all_version_ratings_count</td>
+<td>Number of ratings for all versions</td>
+</tr>
+<tr>
+<td>has_ad_spend</td>
+<td>We have detected this app advertising on Facebook. Note: If this value is not true, that doesn&rsquo;t mean that it&rsquo;s not advertising; it just means we haven&rsquo;t detected an advertisement.</td>
+</tr>
+<tr>
+<td>last_updated</td>
+<td>The last date the app was updated</td>
+</tr>
+<tr>
+<td>first_seen_ads_date</td>
+<td>The date we first saw Facebook ads for this app</td>
+</tr>
+<tr>
+<td>last_seen_ads_date</td>
+<td>The date we last saw Facebook ads for this app</td>
+</tr>
+<tr>
+<td>first_scanned_date</td>
+<td>The date we first scanned this app for SDKs</td>
+</tr>
+<tr>
+<td>last_scanned_date</td>
+<td>The date we last scanned this app for SDKs</td>
+</tr>
+<tr>
+<td>has_in_app_purchases</td>
+<td>Whether the app has in-app purchases</td>
+</tr>
+<tr>
+<td>seller</td>
+<td>Seller name</td>
+</tr>
+<tr>
+<td>categories.name</td>
+<td>The name of the category</td>
+</tr>
+<tr>
+<td>catgories.type</td>
+<td>The type of the category for this app (<code class="prettyprint">primary</code> or <code class="prettyprint">secondary</code>)</td>
+</tr>
+<tr>
+<td>original_release_date</td>
+<td>Release date of the first version of the app</td>
+</tr>
+<tr>
+<td>current_version</td>
+<td>The current version of the app</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The price (in $)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>App description</td>
+</tr>
+<tr>
+<td>installed_sdks.id</td>
+<td>MightySignal ID of the installed SDK. It&rsquo;s recommended you store this so you can reference the SDK easily.</td>
+</tr>
+<tr>
+<td>installed_sdks.name</td>
+<td>Name of the installed SDK</td>
+</tr>
+<tr>
+<td>installed_sdks.first_seen_date</td>
+<td>The first date the SDK was seen in the app.</td>
+</tr>
+<tr>
+<td>installed_sdks.last_seen_date</td>
+<td>The last date the SDK was seen in the app</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.id</td>
+<td>The MightySignal ID of the uninstalled SDK. It&rsquo;s recommended you store this so you can reference the SDK easily.</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.name</td>
+<td>Name of the uninstalled SDK</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.first_seen_date</td>
+<td>The first date the SDK was seen in the app.</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.last_seen_date</td>
+<td>The last date the SDK was seen in the app</td>
+</tr>
+<tr>
+<td>publisher.id</td>
+<td>The MightySignal ID of the publisher</td>
+</tr>
+<tr>
+<td>publisher.websites</td>
+<td>Websites listed under the publisher</td>
+</tr>
+<tr>
+<td>publisher.name</td>
+<td>Name of the publisher</td>
+</tr>
+<tr>
+<td>publisher.platform</td>
+<td><code class="prettyprint">ios</code></td>
+</tr>
+<tr>
+<td>publisher.app_store_id</td>
+<td>The App Store ID of the publisher</td>
+</tr>
+<tr>
+<td>platform</td>
+<td><code class="prettyprint">ios</code></td>
+</tr>
+<tr>
+<td>app_store_id</td>
+<td>The App Store ID of the app</td>
+</tr>
+</tbody></table>
+
+<h2 id="filter-on-ios-apps">Filter on iOS Apps</h2>
+
+<p>Using query parameters, you can do basic filtering to find iOS apps that meet your criteria</p>
+
+<blockquote>
+<p>Example: Get all apps published by Uber Technologies, Inc.</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app?publisher_id=200033"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="s2">"results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"total_results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"page"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"total_page_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"page_size"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"apps"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-05-20"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.0"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"..."</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Uber Technologies, Inc."</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">200033</span><span class="w">
+         </span><span class="p">},</span><span class="w">
+         </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">368677368</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2.134.3"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-18"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-15"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-30"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"https://support.uber.com/home"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Uber Technologies, Inc."</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.5"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">174</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"all_versions_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.5"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"all_versions_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8275</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"..."</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">596273</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Uber"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /ios/app?&lt;key1&gt;=&lt;value1&gt;,&lt;value2&gt;&amp;&lt;key2&gt;=&lt;value1&gt;,&lt;value2&gt;&amp;...</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>publisher_id</td>
+<td><strong>integer</strong> <br>If set, the result will only include apps released by this publisher</td>
+</tr>
+<tr>
+<td>installed_sdk_id</td>
+<td><strong>integer</strong> <br>If set, the result will only include apps that have the SDK installed</td>
+</tr>
+<tr>
+<td>has_ad_spend</td>
+<td><strong>boolean</strong> <br>If true, the result will only include apps that we know are advertising on Facebook</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td><strong>string</strong> <br>Order results by field. Must be one of:<br><code>first_seen_ads_date</code><br><code>last_seen_ads_date</code><br><code>first_scanned_date</code><br><code>last_scanned_date</code><br><code>last_updated</code><br><code>original_release_date</code>.<br>By default, results are in ascending order. Include <code>-</code> in front of the value to order results in descending order e.g. <code>-last_seen_ads_date</code></td>
+</tr>
+</tbody></table>
+
+<p>You can use the <a href="http://mightysignal.com/app/app">MightySignal web portal</a> to find the ids for the query parameters.</p>
+
+<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">200033</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/ios/200033">http://mightysignal.com/app/app#/publisher/ios/200033</a>, and the <code class="prettyprint">installed_sdk_id</code> for Mixpanel would be <code class="prettyprint">1896</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/ios/1896">http://mightysignal.com/app/app#/sdk/ios/1896</a>. </p>
+
+<p>Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the <a href="#filter-on-ios-apps">simple app route</a> and pluck the IDs off the response.</p>
+
+<aside class="notice">
+You can specify multiple values for a given query parameter, and they will be treated like an OR statement. For example, passing the query string <code>?installed_sdk_id=1,2&publisher_id=10</code> will only return apps by publisher with id 10 that have installed the iOS SDK with id 1 or the iOS SDK with id 2.
+</aside>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>results_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>total_results_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>page</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>total_page_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>apps</td>
+<td>An array of iOS apps. You can look at the response format <a href="#get-information-about-a-specific-app">here</a></td>
+</tr>
+</tbody></table>
+
+<h3 id="notes">Notes</h3>
+
+<ul>
+<li>Your query results will often return a large number of apps and you will be required to page through all the responses. See the <a href="#pagination">Pagination</a> section for more information.</li>
+</ul>
+
+<h1 id="android-apps">Android Apps</h1>
+
+<h2 id="get-information-about-a-specific-app">Get information about a specific app</h2>
+
+<blockquote>
+<p>Example: Retrieve the latest information about Snapchat&rsquo;s Android app</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/android/app/com.snapchat.android"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">444</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snapchat"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3.9"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8308259</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"downloads_min"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">100000000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"downloads_max"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">500000000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-30"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snapchat Inc"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+     </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Social"</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"9.38.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"description"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"installed_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Flurry"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-16T20:35:21.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-23T02:41:09.000Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Hockey App"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-16T20:35:21.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-12-16T20:35:21.000Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snapchat Inc"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"http://snapchat.com"</span><span class="w">
+     </span><span class="p">],</span><span class="w">
+     </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"google_play_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"com.snapchat.android"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /android/app/&lt;google_play_id&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;google_play_id&gt;</code> is the ID from the App Store. For example, Snapchat&rsquo;s App Store ID is <code class="prettyprint">com.snapchat.android</code>, which you can find by looking at its Google Play URL: <a href="https://play.google.com/store/apps/details?id=com.snapchat.android">(https://play.google.com/store/apps/details?id=com.snapchat.android)</a>. If you don&rsquo;t alreay know the Google Play URL of an app, you can find it on the <a href="https://play.google.com/store/apps/details?id=com.snapchat.android">app&rsquo;s MightySignal page</a>.</p>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>The MightySignal ID of the app</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Name of the app</td>
+</tr>
+<tr>
+<td>mobile_priority</td>
+<td>How much the company cares about the app. Currently, the rank is a function of how recently the app has been updated, and whether they advertise on Facebook. <code class="prettyprint">high</code>: Updated within the past 2 months or advertised on Facebook. <code class="prettyprint">medium</code>: Updated within last 2-4 months. <code class="prettyprint">low</code>: Last update more than 4 months ago.</td>
+</tr>
+<tr>
+<td>user_base</td>
+<td>How large the user base is. Can be <code class="prettyprint">elite</code>, <code class="prettyprint">moderate</code>, <code class="prettyprint">strong</code>, or <code class="prettyprint">weak</code>.</td>
+</tr>
+<tr>
+<td>all_version_rating</td>
+<td>Average rating (out of 5) for all versions</td>
+</tr>
+<tr>
+<td>all_version_ratings_count</td>
+<td>Number of ratings for all versions</td>
+</tr>
+<tr>
+<td>downloads_min</td>
+<td>The min estimated downloads</td>
+</tr>
+<tr>
+<td>downloads_max</td>
+<td>The max estimated downloads</td>
+</tr>
+<tr>
+<td>last_updated</td>
+<td>The last date the app was updated</td>
+</tr>
+<tr>
+<td>first_scanned_date</td>
+<td>The date we first scanned this app for SDKs</td>
+</tr>
+<tr>
+<td>last_scanned_date</td>
+<td>The date we last scanned this app for SDKs</td>
+</tr>
+<tr>
+<td>seller</td>
+<td>Seller name</td>
+</tr>
+<tr>
+<td>categories.name</td>
+<td>The name of the category</td>
+</tr>
+<tr>
+<td>current_version</td>
+<td>The current version of the app</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The price (in $)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>App description</td>
+</tr>
+<tr>
+<td>installed_sdks.id</td>
+<td>MightySignal ID of the installed SDK</td>
+</tr>
+<tr>
+<td>installed_sdks.name</td>
+<td>Name of the installed SDK</td>
+</tr>
+<tr>
+<td>installed_sdks.first_seen_date</td>
+<td>The first date the SDK was seen in the app. It&rsquo;s recommended you store this so you can reference the SDK easily.</td>
+</tr>
+<tr>
+<td>installed_sdks.last_seen_date</td>
+<td>The last date the SDK was seen in the app.</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.id</td>
+<td>The MightySignal ID of the uninstalled SDK. It&rsquo;s recommended you store this so you can reference the SDK easily.</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.name</td>
+<td>Name of the uninstalled SDK</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.last_seen_date</td>
+<td>The last date the SDK was seen in the app</td>
+</tr>
+<tr>
+<td>uninstalled_sdks.first_seen_date</td>
+<td>The first date the SDK was seen in the app</td>
+</tr>
+<tr>
+<td>publisher.id</td>
+<td>The MightySignal ID of the publisher</td>
+</tr>
+<tr>
+<td>publisher.name</td>
+<td>Name of the publisher</td>
+</tr>
+<tr>
+<td>publisher.websites</td>
+<td>Websites listed under the publisher</td>
+</tr>
+<tr>
+<td>publisher.platform</td>
+<td><code class="prettyprint">android</code></td>
+</tr>
+<tr>
+<td>platform</td>
+<td><code class="prettyprint">android</code></td>
+</tr>
+<tr>
+<td>google_play_id</td>
+<td>The Google Play ID of the app</td>
+</tr>
+</tbody></table>
+
+<h2 id="filter-on-android-apps">Filter on Android Apps</h2>
+
+<p>Using query parameters, you can do basic filtering to find Android apps that meet your criteria.</p>
+
+<blockquote>
+<p>Example: Get all apps published by Supercell</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/android/app?publisher_id=12"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"total_results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"page"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"total_page_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"page_size"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"apps"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.6"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+             </span><span class="s2">"..."</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Supercell"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"8.212.12"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"downloads_min"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">100000000</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"elite"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Supercell"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-04-20"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+         </span><span class="s2">"..."</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="s2">"downloads_max"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">500000000</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.6"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">26795286</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Clash of Clans"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"description"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"google_play_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"com.supercell.clashofclans"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /android/app?&lt;key1&gt;=&lt;value1&gt;,&lt;value2&gt;&amp;&lt;key2&gt;=&lt;value1&gt;,&lt;value2&gt;&amp;...</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>publisher_id</td>
+<td>null</td>
+<td>If set, the result will only include apps made by this publisher</td>
+</tr>
+<tr>
+<td>installed_sdk_id</td>
+<td>null</td>
+<td>If set, the result will only include apps that have the SDK installed</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td><strong>string</strong> <br>Order results by field. Must be one of:<br><code>first_scanned_date</code><br><code>last_scanned_date</code><br><code>last_updated</code>.<br>By default, results are in ascending order. Include <code>-</code> in front of the value to order results in descending order e.g. <code>-first_scanned_date</code></td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>You can use the <a href="http://mightysignal.com/app/app">MightySignal web portal</a> to find the ids for the query parameters.</p>
+
+<p>For example, the <code class="prettyprint">publisher_id</code> would be <code class="prettyprint">12</code> for Uber Technlogies, Inc. since its MightySignal link is <a href="http://mightysignal.com/app/app#/publisher/android/12">http://mightysignal.com/app/app#/publisher/android/12</a>, and the <code class="prettyprint">installed_sdk_id</code> for Crashlytics would be <code class="prettyprint">7</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/android/7">http://mightysignal.com/app/app#/sdk/android/7</a>. </p>
+
+<p>Alternatively, if you know of an app that meets the criteria (i.e. has a certain SDK or by a certain publisher), use the <a href="#filter-on-android-apps">simple app route</a> and pluck the IDs off the response.</p>
+
+<aside class="notice">
+You can specify multiple values for a given query parameter, and they will be treated like an OR statement. For example, passing the query string <code>?installed_sdk_id=1,2&publisher_id=10</code> will only return apps by publisher with id 10 that have installed the Android SDK with id 1 or the Android SDK with id 2.
+</aside>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>results_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>total_results_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>page</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>total_page_count</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>See <a href="#pagination">Pagination</a></td>
+</tr>
+<tr>
+<td>apps</td>
+<td>An array of Android apps. You can look at the response format <a href="#get-information-about-a-specific-app6">here</a></td>
+</tr>
+</tbody></table>
+
+<h3 id="notes">Notes</h3>
+
+<ul>
+<li>Your query results will often return a large number of apps and you will be required to page through all the responses. See the <a href="#pagination">Pagination</a> section for more information.</li>
+</ul>
+
+<h1 id="sdks">SDKs</h1>
+
+<h2 id="get-information-about-an-sdk">Get information about an SDK</h2>
+
+<blockquote>
+<p>Example: Get information about the Alamofire iOS SDK</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/sdk/153"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">153</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"apps_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">96454</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alamofire"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Elegant HTTP Networking in Swift"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"website"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/Alamofire/Alamofire"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /&lt;platform&gt;/sdk/&lt;sdk_id&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;platform&gt;</code> is either <code class="prettyprint">ios</code> or <code class="prettyprint">android</code> and <code class="prettyprint">&lt;sdk_id&gt;</code> is the MightySignal id of the SDK. </p>
+
+<p>One way to find the <code class="prettyprint">&lt;sdk_id&gt;</code> is by using the <a href="http://mightysignal.com/app/app">MightySignal web portal</a>. For example, the <code class="prettyprint">&lt;sdk_id&gt;</code> for the Mixpanel iOS SDK would be <code class="prettyprint">1896</code> since its MightySignal link is <a href="http://mightysignal.com/app/app#/sdk/ios/1896">http://mightysignal.com/app/app#/sdk/ios/1896</a>.</p>
+
+<p>You can also use the responses from the <a href="#ios-apps">iOS</a> or <a href="#android-apps">Android</a> app routes to find the <code class="prettyprint">&lt;sdk_id&gt;</code>.</p>
+
+<aside class="notice">
+SDK IDs are unique <i>by platform</i>. So, <code>/android/sdk/1</code> and <code>/ios/sdk/1</code> will return information about different SDKs 
+</aside>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>The MightySignal ID of the SDK. It&rsquo;s recommended you store this so you can reference the SDK easily.</td>
+</tr>
+<tr>
+<td>apps_count</td>
+<td>The number of apps that contain this SDK for the given platform (iOS or Android)</td>
+</tr>
+<tr>
+<td>platform</td>
+<td><code class="prettyprint">ios</code> or <code class="prettyprint">android</code></td>
+</tr>
+<tr>
+<td>summary</td>
+<td>Brief description of the SDK</td>
+</tr>
+<tr>
+<td>website</td>
+<td>Website of the SDK</td>
+</tr>
+</tbody></table>
+
+<h1 id="publishers">Publishers</h1>
+
+<p>Publishers are specific to a given platform (iOS or Android). Each iOS app has an iOS publisher, and that iOS publisher can have many iOS apps. Each Android app has an Android publisher, and that Android publisher can have many Android apps.</p>
+
+<h2 id="get-information-about-a-specific-publisher">Get information about a specific publisher</h2>
+
+<blockquote>
+<p>Example: Retrieve the latest information about Shazam (for iOS)</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/publisher/207911"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">284993479</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"http://www.shazam.com/iphone"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"http://www.shazam.com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"http://www.shazam.com/music/web/faqs.html?platform=iPhone"</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">207911</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"details"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"linkedin_handle"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"company/shazam-entertainment"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"street_number"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"26"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"crunchbase_handle"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"organization/shazam-entertainment"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"country_code"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"GB"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"ticker"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"state"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"England"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"industry_group"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Technology Hardware &amp; Equipment"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"postal_code"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"W6 7HA"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"sub_industry"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Technology Hardware, Storage &amp; Peripherals"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"facebook_handle"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"shazam"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"lng"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"-0.226008"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"google_rank"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"sector"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Information Technology"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"description"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Identify the media playing around you, explore the music and TV you love. Discover song lyrics from your favourite artists and albums on Shazam!"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"twitter_handle"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"market_cap"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"sub_premise"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"employees"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">321</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"lat"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"51.494715"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"twitter_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"14772687"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"alexa_global_rank"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">5944</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"domain"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"shazam.com"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"city"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"London"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"utc_offset"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"founded_year"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1999</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"company_type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"private"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"employees_range"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"251-1000"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"country"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"United Kingdom"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"alexa_us_rank"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">5993</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"street_name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Hammersmith Grove"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"raised"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">136000000</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"phone"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"industry"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Communications Equipment"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"logo_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"https://logo.clearbit.com/shazam.com"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"annual_revenue"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"tags"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Mobile"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"B2C"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Music"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Entertainment &amp; Recreation"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Entertainment"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"email_provider"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"time_zone"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Europe/London"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"state_code"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"England"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"tech_used"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"facebook_connect"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"wordpress"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"mailgun"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"android"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"google_apps"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"youtube"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"aws_route_53"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"nginx"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"ios"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"legal_name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Ltd."</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format-ios">HTTP Request Format (iOS)</h3>
+
+<p><code class="prettyprint">GET /ios/publisher/&lt;publisher_id&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the iOS publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/ios/207911">http://mightysignal.com/app/app#/publisher/ios/207911</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an iOS app.</p>
+
+<h3 id="http-request-format-android">HTTP Request Format (Android)</h3>
+
+<p><code class="prettyprint">GET /android/publisher/&lt;publisher_id&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the Android publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/android/1162">http://mightysignal.com/app/app#/publisher/android/1162</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an Android app.</p>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>app_store_id <em>or</em> google_play_id</td>
+<td>The App Store ID or Google Google Play ID of the publisher</td>
+</tr>
+<tr>
+<td>websites</td>
+<td>An array of all websites of all apps of the publisher</td>
+</tr>
+<tr>
+<td>name</td>
+<td>The name of the publisher</td>
+</tr>
+<tr>
+<td>platform</td>
+<td><code class="prettyprint">ios</code> or <code class="prettyprint">android</code></td>
+</tr>
+<tr>
+<td>id</td>
+<td>The MightySignal ID of the publisher</td>
+</tr>
+<tr>
+<td>details.linkedin_handle</td>
+<td>LinkedIn handle</td>
+</tr>
+<tr>
+<td>details.street_number</td>
+<td>Street number</td>
+</tr>
+<tr>
+<td>details.crunchbase_handle</td>
+<td>Crunchbase handle</td>
+</tr>
+<tr>
+<td>details.country_code</td>
+<td>Country code of the country where the publisher is located</td>
+</tr>
+<tr>
+<td>details.ticker</td>
+<td>Stock symbol</td>
+</tr>
+<tr>
+<td>details.state</td>
+<td>State where the publisher is located</td>
+</tr>
+<tr>
+<td>details.industry_group</td>
+<td>Industry</td>
+</tr>
+<tr>
+<td>details.postal_code</td>
+<td>Postal code of the publisher&rsquo;s location</td>
+</tr>
+<tr>
+<td>details.sub_industry</td>
+<td>Sub-industry</td>
+</tr>
+<tr>
+<td>details.facebook_handle</td>
+<td>Facebook handle</td>
+</tr>
+<tr>
+<td>details.lng</td>
+<td>Longitude of the publisher&rsquo;s location</td>
+</tr>
+<tr>
+<td>details.google_rank</td>
+<td>Rank on Google</td>
+</tr>
+<tr>
+<td>details.name</td>
+<td>Name</td>
+</tr>
+<tr>
+<td>details.sector</td>
+<td>Sector</td>
+</tr>
+<tr>
+<td>details.description</td>
+<td>Description</td>
+</tr>
+<tr>
+<td>details.twitter_handle</td>
+<td>Twitter handle</td>
+</tr>
+<tr>
+<td>details.market_cap</td>
+<td>Market cap</td>
+</tr>
+<tr>
+<td>details.sub_premise</td>
+<td>Location suite number</td>
+</tr>
+<tr>
+<td>details.employees</td>
+<td>Number of employees</td>
+</tr>
+<tr>
+<td>details.alexa_global_rank</td>
+<td>Global Alexa rank</td>
+</tr>
+<tr>
+<td>details.domain</td>
+<td>Domain</td>
+</tr>
+<tr>
+<td>details.city</td>
+<td>City where the publisher is located</td>
+</tr>
+<tr>
+<td>details.utc_offset</td>
+<td>UTC offset of the publisher&rsquo;s location</td>
+</tr>
+<tr>
+<td>details.founded_year</td>
+<td>Year the publisher was founded</td>
+</tr>
+<tr>
+<td>details.company_type</td>
+<td>Type of company</td>
+</tr>
+<tr>
+<td>details.employees_range</td>
+<td>Range of employees , eg. <code class="prettyprint">251-1000</code></td>
+</tr>
+<tr>
+<td>details.country</td>
+<td>Country where the publisher is located</td>
+</tr>
+<tr>
+<td>details.alexa_us_rank</td>
+<td>US Alexa rank</td>
+</tr>
+<tr>
+<td>details.street_name</td>
+<td>Street name</td>
+</tr>
+<tr>
+<td>details.raised</td>
+<td>Money raised ($)</td>
+</tr>
+<tr>
+<td>details.phone</td>
+<td>Phone number</td>
+</tr>
+<tr>
+<td>details.industry</td>
+<td>Industry</td>
+</tr>
+<tr>
+<td>details.logo_url</td>
+<td>URL of logo</td>
+</tr>
+<tr>
+<td>details.annual_revenue</td>
+<td>Annual revenue ($)</td>
+</tr>
+<tr>
+<td>details.tags</td>
+<td>Array of tags describing the publisher&rsquo;s business</td>
+</tr>
+<tr>
+<td>details.email_provider</td>
+<td>Whether the domain is an email provider</td>
+</tr>
+<tr>
+<td>details.time_zone</td>
+<td>Time zone of the location</td>
+</tr>
+<tr>
+<td>details.state_code</td>
+<td>The state code of the location</td>
+</tr>
+<tr>
+<td>details.tech_used</td>
+<td>Array of web technologies on the developer&rsquo;s website</td>
+</tr>
+<tr>
+<td>details.legal_name</td>
+<td>Legal name</td>
+</tr>
+</tbody></table>
+
+<h2 id="beta-lookup-a-publisher-by-domain">[BETA] Lookup a publisher by domain</h2>
+
+<blockquote>
+<p>Example: Retrieve the publisher who owns the domain <code class="prettyprint">snapchat.com</code></p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/publisher?domain=snapchat.com"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">249735</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snapchat, Inc."</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">446889612</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format-ios">HTTP Request Format (iOS)</h3>
+
+<p><code class="prettyprint">GET /ios/publisher?domain=&lt;domain&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;domain&gt;</code> is the domain in question. Make sure to use only the domain, and not the scheme (i.e <code class="prettyprint">http/s</code>), subdomains, or path</p>
+
+<h3 id="http-request-format-android">HTTP Request Format (Android)</h3>
+
+<p><code class="prettyprint">GET /android/publisher?domain=&lt;domain&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;domain&gt;</code> is the domain in question. Make sure to use only the domain, and not the scheme (i.e <code class="prettyprint">http/s</code>), subdomains, or path</p>
+
+<h1 id="app-companies">App Companies</h1>
+
+<p>App companies link iOS publishers and Android publishers. An app company can have many iOS publishers and Android publishers.</p>
+
+<aside class="warning">
+App company endpoints are currently in Beta. Linking publishers to companies is challenging, so some data may not be accurate.
+</aside>
+
+<h2 id="get-the-company-given-the-ios-or-android-publisher">Get the company given the iOS or Android publisher</h2>
+
+<blockquote>
+<p>Example: Retrieve the latest information about Shazam (for iOS)</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/app_company?ios_publisher_id=207911"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="s2">"android_publishers"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"http://shazam.com"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"android"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1162</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"ios_publishers"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">284993479</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"http://www.shazam.com/iphone"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"http://www.shazam.com"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"http://www.shazam.com/music/web/faqs.html?platform=iPhone"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+         </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">207911</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Shazam Entertainment Limited"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">38343</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /app_company/publisher_id?&lt;key1&gt;=&lt;value1&gt;</code></p>
+
+<p>where <code class="prettyprint">&lt;publisher_id&gt;</code> is the MightySignal ID of the iOS publisher or Android publisher. You can get it from the MightySignal publisher page (eg. <a href="http://mightysignal.com/app/app#/publisher/ios/207911">http://mightysignal.com/app/app#/publisher/ios/207911</a>, <a href="http://mightysignal.com/app/app#/publisher/android/1162">http://mightysignal.com/app/app#/publisher/android/1162</a>) or from the <code class="prettyprint">publisher.id</code> field from the JSON for an iOS or Android app.</p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ios_publisher_id</td>
+<td>The iOS publisher ID</td>
+</tr>
+<tr>
+<td>android_publisher_id</td>
+<td>The Android publisher ID</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+Pass the <code>ios_publisher_id</code> key or the <code>android_publisher_id</code> key, but not both simulatenously.
+</aside>
+
+<h3 id="response">Response</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>android_publishers.websites</td>
+<td>An array of all websites of all Android apps of the publisher</td>
+</tr>
+<tr>
+<td>android_publishers.name</td>
+<td>Name of the Android publisher</td>
+</tr>
+<tr>
+<td>android_publishers.platform</td>
+<td><code class="prettyprint">android</code></td>
+</tr>
+<tr>
+<td>android_publishers.id</td>
+<td>The MightySignal ID of the Android publisher</td>
+</tr>
+<tr>
+<td>ios_publishers.websites</td>
+<td>An array of all websites of all iOS apps of the publisher</td>
+</tr>
+<tr>
+<td>ios_publishers.name</td>
+<td>Name of the iOS publisher</td>
+</tr>
+<tr>
+<td>ios_publishers.platform</td>
+<td><code class="prettyprint">ios</code></td>
+</tr>
+<tr>
+<td>ios_publishers.id</td>
+<td>The MightySignal ID of the iOS publisher</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Name of the company</td>
+</tr>
+<tr>
+<td>id</td>
+<td>MightySignal ID of the company</td>
+</tr>
+</tbody></table>
+
+<h1 id="pagination">Pagination</h1>
+
+<blockquote>
+<p>Example: <a href="https://github.com/Alamofire/Alamofire">Alamofire</a> is a ubiquitous iOS SDK. To get all apps using Alamofire, you will need to page through the results.</p>
+
+<p>The first set of results will tell you the total number of results and pages.</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app?installed_sdk_id=153"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+        </span><span class="s2">"apps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"..."</span><span class="p">],</span><span class="w">
+        </span><span class="s2">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"results_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total_page_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">3859</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total_results_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">96454</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>You have the 25 results on the first page. There are 96,454 total apps and 3,859 pages of the current page size. To get the next set of results, pass the <code class="prettyprint">page</code> query param.</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app?installed_sdk_id=153&amp;page=2"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+        </span><span class="s2">"apps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"..."</span><span class="p">],</span><span class="w">
+        </span><span class="s2">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"results_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total_page_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">3859</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total_results_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">96454</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Routes with a large number of results will be paged and API clients will have to iterate through each page to get all results. Routes that support paging will return page meta information along with the results. Using the query parameters <code class="prettyprint">page</code> and <code class="prettyprint">page_size</code>, you can iterate through all pages.</p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td>1</td>
+<td>The page number to return (1-indexed). Unless specified, will always return the first page</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>25</td>
+<td>The number of results to return per page. (max: 50)</td>
+</tr>
+</tbody></table>
+
+<h3 id="page-meta-information">Page Meta Information</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td>The current page of results (configurable by query param)</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>The maximum number of results that was returned per page (configurable by query param)</td>
+</tr>
+<tr>
+<td>results_count</td>
+<td>The number of results on the current page</td>
+</tr>
+<tr>
+<td>total_page_count</td>
+<td>The total number of pages for <em>all</em> results given the current page size</td>
+</tr>
+<tr>
+<td>total_results_count</td>
+<td>The total number of results that meet the given query</td>
+</tr>
+</tbody></table>
+
+<h1 id="rate-limiting">Rate limiting</h1>
+
+<p>Every API token has a limited number of requests it can make in a certain timeframe. Use the rate limit route to see what your token&rsquo;s limits are.</p>
+
+<blockquote>
+<p>Example: See your token&rsquo;s limits</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/rate-limit"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"period"</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<h3 id="http-request-format">HTTP Request Format</h3>
+
+<p><code class="prettyprint">GET /rate-limit</code></p>
+
+<h3 id="rate-limit-information">Rate limit information</h3>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>count</td>
+<td>The number of requests made using the given token during the current window</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>The maximum number of requests allowable in the window for the current token</td>
+</tr>
+<tr>
+<td>period</td>
+<td>The length of the request window (in seconds)</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>This token has a limit of 2500 requests per hour (hour = 3600 seconds) and only 1 request has been made against it.</p>
+</blockquote>
+
+<aside class="notice">
+Requests to the rate limit route <b>will not</b> count against your number of requests.
+</aside>
+
+<h3 id="notes">Notes</h3>
+
+<ul>
+<li>This rate limit hopes to minimize the damage caused by abusive or misconfigured scripting clients, not to restrict legitimate use cases. Please <a href="mailto:support@mightysignal.com">let us know</a> if this limit restricts your workflow, and we can work with you to increase your limit.</li>
+</ul>
+
+<h1 id="summary-responses">Summary Responses</h1>
+
+<blockquote>
+<p>First, see a set of  apps using the Parse iOS SDK.</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app?installed_sdk_id=2362"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"apps"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.5"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Tapps Tecnologia da Informacao LTDA."</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-10"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-15"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-30"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"moderate"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"http://tappsgames.com/contact/"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+           </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+           </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+               </span><span class="s2">"..."</span><span class="w">
+           </span><span class="p">],</span><span class="w">
+           </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10795</span><span class="p">,</span><span class="w">
+           </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Tapps Tecnologia da Informacao LTDA."</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2011-07-18"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snake ~ Best Free Classic Worm and Serpent Game"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"medium"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">446768343</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.0"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.0"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1001590</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="s2">"..."</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1.6.5"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"total_results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">25849</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"results_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"total_page_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1034</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"page_size"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"page"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>The above is a summary representation of an iOS game. Notice how it only has a subset of the information (i.e. does not have installed or uninstalled SDKs). To get the full information, call the iOS app getter route with the <code class="prettyprint">app_store_id</code> from the above response.</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s2">"https://api.mightysignal.com/ios/app/446768343"</span>
+    -H <span class="s2">"MIGHTYSIGNAL-TOKEN: &lt;your-api-token&gt;"</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Snake ~ Best Free Classic Worm and Serpent Game"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"original_release_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2011-07-18"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"seller"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Tapps Tecnologia da Informacao LTDA."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"price"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"categories"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+   </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"publisher"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10795</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"websites"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="s2">"..."</span><span class="w">
+     </span><span class="p">],</span><span class="w">
+     </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Tapps Tecnologia da Informacao LTDA."</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"current_version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1.6.10"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_updated"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-02"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"first_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-15"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_seen_ads_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-30"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"first_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-05-15"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_scanned_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-08"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1001590</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="s2">"app_store_id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">446768343</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"has_in_app_purchases"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.5"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_rating"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"4.5"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"all_version_ratings_count"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1486</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"installed_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-17T18:16:57.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-13T04:12:50.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"AdColony"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"uninstalled_sdks"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"first_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-02-17T18:16:57.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Playhaven"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_seen_date"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-06-19T15:50:51.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3808</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"..."</span><span class="w">
+   </span><span class="p">],</span><span class="w">
+   </span><span class="s2">"user_base"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"moderate"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"support_url"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"http://tappsgames.com/contact/"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"mobile_priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"medium"</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"has_ad_spend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+   </span><span class="s2">"platform"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ios"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>This full response has all information, including SDK installs and uninstalls.</p>
+</blockquote>
+
+<p>Some resources have properties which are computationally intensive to calculate (eg. apps and their SDK install histories). Fetching a <i>list</i> of those resources puts a significant strain on our ability to support all API clients simultaneously.</p>
+
+<p>For that reason, certain routes show <b>summary</b> representation of responses, which means it includes a subset of the entire information about the resource. This is often enough information, but making another request to the basic GET request for that resource will return the full information.</p>
+
+<p>See the adjacent walkthrough example for a sample workflow.</p>
+
+<h1 id="bugs-questions">Bugs? Questions?</h1>
+
+<p><a href="mailto:support@mightysignal.com">Email us</a> if you have any questions or encounter any bugs.</p>
+
+<p>If reporting a bug, please include the following information to help us diagnose the problem:</p>
+
+<ul>
+<li> The request(s) called (ex. <code class="prettyprint">https://api.mightysignal.com/ios/app/1</code>)</li>
+<li> The received response</li>
+<li> The expected response or a description of what went wrong</li>
+</ul>
+
+          <h1 id="errors">Errors</h1>
+
+<p>The API uses the following error codes:</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>400</td>
+<td>Bad Request &ndash; The given request is incorrectly formatted</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized &ndash; The API key is invalid or not present</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found &ndash; The specified resource could not be found</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests &ndash; The token&rsquo;s rate limit has been exceeded</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable</td>
+</tr>
+</tbody></table>
+
+          <h1 id="changelog">CHANGELOG</h1>
+
+<ul>
+<li><strong>06/06/2016</strong> - Public API release!</li>
+<li><strong>08/19/2016</strong> - Added install and uninstall dates on both installed and uninstall sdks</li>
+<li><strong>9/6/2016</strong> - Added Publishers and App Companies endpoints</li>
+<li><strong>10/20/2016</strong> - Added support for filtering iOS apps by <code>has_ad_spend</code>. Added support for ordering app results by <code>first_scan_date</code>, <code>last_scan_date</code>, <code>first_seen_ads_date</code>, <code>last_seen_ads_date</code>, <code>last_updated</code> and <code>original_release_date</code>. Filter responses are now full responses (they include SDK data) instead of summary responses.</li>
+</ul>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="shell">shell</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
