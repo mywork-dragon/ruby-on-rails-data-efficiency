@@ -9,6 +9,10 @@ module AppStoreHelper
       @app_store_id = app_store_id
       @ios_app_current_snapshot_job_id = ios_app_current_snapshot_job_id
       @current_tables = current_tables
+
+      snapshot_job = IosAppCurrentSnapshotJob.where(id: ios_app_current_snapshot_job_id) 
+      @job_time = snapshot_job.empty? ? DateTime.now : snapshot_job.first.created_at
+
       setup_storage
       setup_tables
     end
@@ -155,7 +159,9 @@ module AppStoreHelper
       snapshot_row = @snapshot_table.new(
         app_store_id: @app_store_id,
         ios_app_current_snapshot_job_id: @ios_app_current_snapshot_job_id,
-        ios_app_id: ios_app.id
+        ios_app_id: ios_app.id,
+        latest: true,
+        last_scraped: @job_time
       )
       populate_snapshot_from_lookup(snapshot_row, json_attrs)
       populate_snapshot_from_scrape(snapshot_row, html_attrs) if html_attrs
@@ -285,6 +291,7 @@ module AppStoreHelper
         bundle_identifier
         currency
         seller_name
+        etag
       )
     end
 

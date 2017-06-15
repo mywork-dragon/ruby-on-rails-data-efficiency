@@ -7,6 +7,42 @@ module AppStoreHelper
 
     attr_reader :data
 
+    # Used in determining the etag of the snapshot. If any of these
+    # columns change after scanning the EPF we'll add a new snapshot
+    # of the app into the snapshots table.
+    SIGNIFICANT_KEYS = [
+      'artistId',
+      'collectionId',
+      'trackId',
+      'trackName',
+      'description',
+      'releaseNotes',
+      'version',
+      'price',
+      'sellerUrl',
+      'primaryGenreName',
+      'genres',
+      'fileSizeBytes',
+      'artistId',
+      'trackContentRating',
+      'minimumOsVersion',
+      'releaseDate',
+      'screenshotUrls',
+      'currentVersionReleaseDate',
+      'averageUserRatingForCurrentVersion',
+      'userRatingCountForCurrentVersion',
+      'averageUserRating',
+      'userRatingCount',
+      'artworkUrl512',
+      'artworkUrl100',
+      'artworkUrl60',
+      'bundleId',
+      'sellerName',
+      'isGameCenterEnabled',
+      'currency',
+      'primaryGenreId'
+    ]
+
     def initialize(lookup_json)
       @data = lookup_json
     end
@@ -145,6 +181,14 @@ module AppStoreHelper
       secondary = all_cats - [primary]
       
       {primary: primary, secondary: secondary}
+    end
+
+    def etag
+      md5 = Digest::MD5.new
+      SIGNIFICANT_KEYS.each do |key|
+        md5 << @data[key].to_s
+      end
+      md5.hexdigest
     end
   end
 end
