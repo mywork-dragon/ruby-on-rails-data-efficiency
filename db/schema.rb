@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608214114) do
+ActiveRecord::Schema.define(version: 20170615215308) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1332,11 +1332,14 @@ ActiveRecord::Schema.define(version: 20170608214114) do
     t.integer  "app_identifier",                  limit: 4
     t.integer  "mobile_priority",                 limit: 4
     t.integer  "user_base",                       limit: 4
-    t.datetime "created_at",                                                             null: false
-    t.datetime "updated_at",                                                             null: false
+    t.datetime "created_at",                                                                            null: false
+    t.datetime "updated_at",                                                                            null: false
     t.text     "app_link_urls",                   limit: 65535
     t.boolean  "has_in_app_purchases"
     t.text     "seller_name",                     limit: 65535
+    t.boolean  "latest",                                                                 default: true
+    t.datetime "last_scraped"
+    t.string   "etag",                            limit: 64
   end
 
   add_index "ios_app_current_snapshot_backups", ["app_identifier"], name: "index_ios_app_current_snapshot_backups_on_app_identifier", using: :btree
@@ -1387,11 +1390,14 @@ ActiveRecord::Schema.define(version: 20170608214114) do
     t.integer  "app_identifier",                  limit: 4
     t.integer  "mobile_priority",                 limit: 4
     t.integer  "user_base",                       limit: 4
-    t.datetime "created_at",                                                             null: false
-    t.datetime "updated_at",                                                             null: false
+    t.datetime "created_at",                                                                            null: false
+    t.datetime "updated_at",                                                                            null: false
     t.text     "app_link_urls",                   limit: 65535
     t.boolean  "has_in_app_purchases"
     t.text     "seller_name",                     limit: 65535
+    t.boolean  "latest",                                                                 default: true
+    t.datetime "last_scraped"
+    t.string   "etag",                            limit: 64
   end
 
   add_index "ios_app_current_snapshots", ["app_identifier"], name: "index_ios_app_current_snapshots_on_app_identifier", using: :btree
