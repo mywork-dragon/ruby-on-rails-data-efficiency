@@ -21,6 +21,39 @@ class IosDeveloper < ActiveRecord::Base
   include MobileDeveloper
 
   def platform
-    'ios'
+    :ios
+  end
+
+  def website_urls
+    websites.map(&:url).uniq
+  end
+
+  def developer_info
+    websites.map(&:domain_datum).uniq.compact
+  end
+
+  def developer_json
+    {
+      id: id,
+      name: name,
+      platform: :ios,
+      app_store_id: identifier
+    }
+  end
+
+  def api_json(options = {})
+    data = developer_json
+    data[:details] = developer_info unless options[:short_form]
+    data[:websites] = website_urls unless options[:short_form]
+    data
+  end
+
+  class << self
+    def find_by_domain(domain)
+      IosDeveloper
+        .joins(:websites)
+        .where('websites.domain = ?', domain)
+        .where('ios_developers_websites.is_valid = ?', true).distinct
+    end
   end
 end

@@ -19,6 +19,38 @@ class AndroidDeveloper < ActiveRecord::Base
   include MobileDeveloper
 
   def platform
-    'android'
+    :android
+  end
+
+  def website_urls
+    websites.map(&:url).uniq
+  end
+
+  def developer_info
+    websites.map(&:domain_datum).uniq.compact
+  end
+
+  def developer_json
+    {
+      id: id,
+      name: name,
+      platform: :android
+    }
+  end
+
+  def api_json(options = {})
+    data = developer_json
+    data[:details] = developer_info unless options[:short_form]
+    data[:websites] = website_urls unless options[:short_form]
+    data
+  end
+
+  class << self
+    def find_by_domain(domain)
+      AndroidDeveloper
+        .joins(:websites)
+        .where('websites.domain = ?', domain)
+        .where('android_developers_websites.is_valid = ?', true).distinct
+    end
   end
 end

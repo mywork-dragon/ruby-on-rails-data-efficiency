@@ -34,6 +34,12 @@ class AndroidSdk < ActiveRecord::Base
 
   attr_accessor :first_seen
   attr_accessor :last_seen
+  attr_writer :es_client
+
+  def es_client
+    @es_client ||= AppsIndex::AndroidApp
+    @es_client
+  end
 
   def get_favicon
     if self.website.present?
@@ -80,7 +86,7 @@ class AndroidSdk < ActiveRecord::Base
     batch_json = {
       id: self.id,
       type: self.class.name,
-      platform: 'android',
+      platform: :android,
       name: self.name,
       icon: self.get_favicon,
       website: self.website,
@@ -98,56 +104,79 @@ class AndroidSdk < ActiveRecord::Base
     AndroidSdk.sdk_clusters(android_sdk_ids: [self.id])
   end
 
+  # API methods
+  def api_apps_count
+    es_client.query(
+      terms: {
+        'installed_sdks.id' => [id]
+      }
+    ).total_count
+  end
+
+  def api_json(options = {})
+    include_keys = if options[:short_form]
+                     [:id, :name]
+                   else
+                     [:id, :name, :platform, :website]
+                   end
+    res = as_json.select { |k| include_keys.include?(k) }
+    res[:apps_count] = api_apps_count unless options[:short_form]
+    res
+  end
+
   class << self
 
-  def display_sdks
-    AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').where('dest_sdk_id is NULL')
-  end
-
-  def sdk_clusters(android_sdk_ids:)
-
-    dest_sdk_ids = AndroidSdk.joins('left join android_sdk_links on android_sdks.id = android_sdk_links.source_sdk_id').select('IFNULL(dest_sdk_id, android_sdks.id) as id').where(id: android_sdk_ids).to_a
-
-    dest_sdk_ids = dest_sdk_ids.map(&:id).uniq
-
-    inbound_sdk_ids = AndroidSdk.joins(:outbound_sdk).where('android_sdk_links.dest_sdk_id in (?)', dest_sdk_ids)
-
-    AndroidSdk.where(id: inbound_sdk_ids + dest_sdk_ids)
-  end
-
-  # @note with_associated: Whether to use clusters
-  def get_current_apps_with_sdks(android_sdk_ids:, with_associated: true)
-    cluster_ids = if with_associated
-      sdk_clusters(android_sdk_ids: android_sdk_ids).pluck(:id)
-    else
-      android_sdk_ids
+    def display_sdks
+      AndroidSdk
+        .joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id')
+        .where('dest_sdk_id is NULL')
     end
 
-    AndroidApp.distinct.joins(:newest_apk_snapshot).joins('inner join android_sdks_apk_snapshots on apk_snapshots.id = android_sdks_apk_snapshots.apk_snapshot_id').where('android_sdks_apk_snapshots.android_sdk_id in (?)', cluster_ids)
-  end
+    def sdk_clusters(android_sdk_ids:)
 
-  def store_current_sdks_in_s3
-    model_file = "db/android_class_model/model.json"
-    m = JSON.parse(File::open(model_file).read())
-    sdk_names = m['sdk_to_website'].keys().map {|x| x.downcase}
-    csv_string = CSV.generate do |csv|
-      csv << ['id', 'name', 'website', 'tag_name', 'apps_count']
-      AndroidSdk.pluck(:id).map do |sdk_id|
-        sdk = AndroidSdk.find(sdk_id)
-        count = sdk.get_current_apps.count
-        if sdk_names.include? sdk.name.downcase
-          csv << [sdk.id, sdk.name, sdk.website, sdk.tags.first.try(:name), count]
+      dest_sdk_ids = AndroidSdk
+        .joins('left join android_sdk_links on android_sdks.id = android_sdk_links.source_sdk_id')
+        .select('IFNULL(dest_sdk_id, android_sdks.id) as id').where(id: android_sdk_ids).to_a
+
+      dest_sdk_ids = dest_sdk_ids.map(&:id).uniq
+
+      inbound_sdk_ids = AndroidSdk.joins(:outbound_sdk).where('android_sdk_links.dest_sdk_id in (?)', dest_sdk_ids)
+
+      AndroidSdk.where(id: inbound_sdk_ids + dest_sdk_ids)
+    end
+
+    # @note with_associated: Whether to use clusters
+    def get_current_apps_with_sdks(android_sdk_ids:, with_associated: true)
+      cluster_ids = if with_associated
+        sdk_clusters(android_sdk_ids: android_sdk_ids).pluck(:id)
+      else
+        android_sdk_ids
+      end
+
+      AndroidApp.distinct.joins(:newest_apk_snapshot).joins('inner join android_sdks_apk_snapshots on apk_snapshots.id = android_sdks_apk_snapshots.apk_snapshot_id').where('android_sdks_apk_snapshots.android_sdk_id in (?)', cluster_ids)
+    end
+
+    def store_current_sdks_in_s3
+      model_file = "db/android_class_model/model.json"
+      m = JSON.parse(File::open(model_file).read())
+      sdk_names = m['sdk_to_website'].keys().map {|x| x.downcase}
+      csv_string = CSV.generate do |csv|
+        csv << ['id', 'name', 'website', 'tag_name', 'apps_count']
+        AndroidSdk.pluck(:id).map do |sdk_id|
+          sdk = AndroidSdk.find(sdk_id)
+          count = sdk.get_current_apps.count
+          if sdk_names.include? sdk.name.downcase
+            csv << [sdk.id, sdk.name, sdk.website, sdk.tags.first.try(:name), count]
+          end
         end
       end
+
+      MightyAws::S3.new.store(
+        bucket: 'ms-misc',
+        key_path: 'current_android_sdks_dump.csv.gz',
+        data_str: csv_string
+      )
     end
-
-    MightyAws::S3.new.store(
-      bucket: 'ms-misc',
-      key_path: 'current_android_sdks_dump.csv.gz',
-      data_str: csv_string
-    )
-  end
-
   end
 
 end

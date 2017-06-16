@@ -184,7 +184,11 @@ Rails.application.routes.draw do
   
   # Client-facing API
   scope module: 'client_api' do
-    get '/rate-limit' => 'rate_limit#show'
+    get 'rate-limit' => 'rate_limit#show'
+    get 'ios/sdk/:id' => 'ios_sdk#show'
+    get 'android/sdk/:id' => 'android_sdk#show'
+    get 'ios/publisher/:id' => 'ios_publisher#show'
+    get 'android/publisher/:id' => 'android_publisher#show'
   end
 
   get '404' => 'error#not_found'

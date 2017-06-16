@@ -51,4 +51,8 @@ class DomainDatum < ActiveRecord::Base
     self.tech_used = company_data["tech"] if company_data["tech"]
     self.save
   end
+
+  def as_json(_options = {})
+    super(except: [:clearbit_id, :created_at, :updated_at, :id])
+  end
 end

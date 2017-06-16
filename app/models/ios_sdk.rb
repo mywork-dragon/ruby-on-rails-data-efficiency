@@ -47,6 +47,13 @@ class IosSdk < ActiveRecord::Base
 
   update_index('ios_sdk#ios_sdk') { self if IosSdk.display_sdks.where(flagged: false).find_by_id(self.id) } if Rails.env.production?
 
+  attr_writer :es_client
+
+  def es_client
+    @es_client ||= AppsIndex::IosApp
+    @es_client
+  end
+
   def get_current_apps(limit = nil, sort = nil, with_associated: true)
 
     apps = IosSdk.get_current_apps_with_sdks(ios_sdk_ids: [self.id], with_associated: with_associated)
@@ -65,7 +72,7 @@ class IosSdk < ActiveRecord::Base
     batch_json = {
       id: self.id,
       type: self.class.name,
-      platform: 'ios',
+      platform: :ios,
       name: self.name,
       icon: self.favicon,
       openSource: self.open_source,
@@ -91,6 +98,27 @@ class IosSdk < ActiveRecord::Base
     Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id}, 
                                         'tag_relationships.taggable_type' => 'IosSdk').uniq
   end
+
+  # API methods
+  def api_apps_count
+    es_client.query(
+      terms: {
+        'installed_sdks.id' => [id]
+      }
+    ).total_count
+  end
+
+  def api_json(options = {})
+    include_keys = if options[:short_form]
+                     [:id, :name]
+                   else
+                     [:id, :name, :platform, :website]
+                   end
+    res = as_json.select { |k| include_keys.include?(k) }
+    res[:apps_count] = api_apps_count unless options[:short_form]
+    res
+  end
+
 
   class << self
 
