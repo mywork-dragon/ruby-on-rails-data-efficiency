@@ -55,7 +55,13 @@ class WeeklyBatch < ActiveRecord::Base
         app: activity.other_owner(self.owner),
         happened_at: activity.happened_at
       }
-    end.sort_by { |activity| activity[:app][:user_base] }.take(10)
+    end.sort_by { |activity| 
+      if is_ios?
+        IosApp.user_bases[activity[:app].international_userbase[:user_base]] || 3
+      else
+        activity[:app][:user_base] || 3
+      end
+    }.take(10)
   end
 
   def platform
