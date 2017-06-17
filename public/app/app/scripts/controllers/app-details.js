@@ -54,6 +54,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
       });
     };
 
+    $scope.openSalesforceModal = function() {
+      mixpanel.track(
+        "Opened Salesforce Export Modal", {
+          "appId": $routeParams.id,
+          "appName": $scope.appData.name,
+          "companyName": $scope.appData.publisher.name,
+          "appPlatform": $routeParams.platform
+        }
+      );
+    }
+
     $scope.load = function() {
       return $http({
         method: 'GET',
@@ -95,9 +106,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         /* -------- Mixpanel Analytics End -------- */
 
         if ($routeParams.from == 'ewok') {
-          /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Ewok App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.publisher.name,
+              "appPlatform": $routeParams.platform
+            }
+          );
+        }
+
+        if ($routeParams.utm_source == 'salesforce') {
+          /* -------- Mixpanel Analytics Start -------- */
+          mixpanel.track(
+            "Salesforce App Page Viewed", {
               "appId": $routeParams.id,
               "appName": $scope.appData.name,
               "companyName": $scope.appData.publisher.name,

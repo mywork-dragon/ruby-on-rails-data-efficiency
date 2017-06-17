@@ -33,7 +33,6 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
         /* Sets html title attribute */
 
-        /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Publisher Page Viewed", {
             "publisherId": $routeParams.id,
@@ -41,7 +40,16 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
             "publisherName": $scope.publisherData.name
           }
         );
-        /* -------- Mixpanel Analytics End -------- */
+
+        if ($routeParams.utm_source == 'salesforce') {
+          mixpanel.track(
+            "Salesforce Publisher Page Viewed", {
+              "publisherId": $routeParams.id,
+              "appPlatform": $scope.appPlatform,
+              "publisherName": $scope.publisherData.name
+            }
+          );
+        }
       }).error(function() {
         publisherDetailsCtrl.queryInProgress = false;
       });
