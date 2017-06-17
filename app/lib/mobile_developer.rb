@@ -48,7 +48,7 @@ module MobileDeveloper
       order_by: order || 'desc'
     }
 
-    if platform == 'ios'
+    if platform == :ios
       filter_results = FilterService.filter_ios_apps(filter_args)
       app_class = IosApp
     else
@@ -72,8 +72,8 @@ module MobileDeveloper
   end
 
   def tagged_sdk_summary
-    app_index = (platform == 'ios' ? AppsIndex::IosApp : AppsIndex::AndroidApp)
-    sdk_class = (platform == 'ios' ? IosSdk : AndroidSdk)
+    app_index = (platform == :ios ? AppsIndex::IosApp : AppsIndex::AndroidApp)
+    sdk_class = (platform == :ios ? IosSdk : AndroidSdk)
 
     summary = {}
 
