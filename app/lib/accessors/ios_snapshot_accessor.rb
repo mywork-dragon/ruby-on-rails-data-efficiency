@@ -2,7 +2,7 @@ class IosSnapshotAccessor
 
   def initialize()
     # Change delegate type to swap out implementations
-    @delegate = SwapSnapshotTableAccessor.new
+    @delegate = DiffSnapshotTableAccessor.new
   end
 
   def mobile_priority_value(mobile_priority_symbol)
