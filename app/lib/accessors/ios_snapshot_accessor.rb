@@ -64,4 +64,8 @@ class IosSnapshotAccessor
     @delegate.category_details_from_ios_apps(ios_apps)
   end
 
+  def categories_from_ios_app(ios_app)
+    @delegate.categories_from_ios_app(ios_app)
+  end
+
 end
