@@ -70,5 +70,28 @@ class AndroidAdControllerTest < ActionController::TestCase
 
   end
 
+  def test_ad_creation_sets_app_display_type
+    @advertised_app.display_type = :taken_down
+    @advertised_app.save!
+    @request.headers['Authorization'] = @token
+    verbatum_params = {
+      ad_type: 'mobile_app',
+      ad_id: 'ads/2017-02-21/00:54:15-6971ed1f-f167-4c38-ab6f-97a79d256637'
+    }
+    post(:create, {
+      source_app_identifier: 'com.facebook.katana',
+      advertised_app_identifier: 'com.mightysignal.security',
+      }.merge(verbatum_params)
+    )
+
+    ad = AndroidAd.last
+
+    assert_equal ad.ad_type, 'mobile_app'
+    assert_equal @source_app, ad.source_app
+    assert_equal @advertised_app, ad.advertised_app
+    assert_equal 'normal', ad.advertised_app.display_type
+
+  end
+
 
 end
