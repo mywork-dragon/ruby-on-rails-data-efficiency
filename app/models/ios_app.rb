@@ -613,7 +613,7 @@ class IosApp < ActiveRecord::Base
       app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
       app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
 
-      app_obj["categories"] = SwapSnapshotTableAccessor.new.categories_from_ios_app(self)
+      app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self)
 
       if app.ios_developer
         app_obj['publisher'] = app.ios_developer.as_json.slice("name", "id", "identifier")
