@@ -22,6 +22,7 @@ class AndroidAdController < ApplicationController
         GooglePlaySnapshotLiveWorker.perform_async(nil, ad.advertised_app.id)
         AndroidMassScanService.run_by_ids([ad.advertised_app.id])
     end
+    ad.advertised_app.display_type = :normal
     ad.google_account = params['google_account']
     ad.facebook_account = params['facebook_account']
     ad.ad_text = params['ad_text']
