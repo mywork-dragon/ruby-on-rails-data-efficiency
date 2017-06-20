@@ -21,6 +21,7 @@ class AndroidAdController < ApplicationController
         ad.advertised_app = AndroidApp.create(:app_identifier => ad.advertised_app_identifier)
         GooglePlaySnapshotLiveWorker.perform_async(nil, ad.advertised_app.id)
         AndroidMassScanService.run_by_ids([ad.advertised_app.id])
+        GooglePlayDevelopersWorker.new.create_by_android_app_id(ad.advertised_app.id)
     end
     ad.advertised_app.display_type = :normal
     ad.google_account = params['google_account']
