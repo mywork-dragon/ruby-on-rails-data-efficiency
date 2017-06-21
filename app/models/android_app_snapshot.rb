@@ -10,5 +10,21 @@ class AndroidAppSnapshot < ActiveRecord::Base
   
   enum status: [:failure, :success]
 
+  def api_json(_options = {})
+    {
+      name: name,
+      last_updated: released.to_s,
+      seller: seller,
+      current_version: version,
+      description: description,
+      price: price ? price / 100.0 : nil, # convert cents to dollars
+      all_version_rating: ratings_all_stars,
+      all_version_ratings_count: ratings_all_count,
+      downloads_min: downloads_min,
+      downloads_max: downloads_max,
+      categories: android_app_categories.as_json
+    }
+  end
+
   
 end

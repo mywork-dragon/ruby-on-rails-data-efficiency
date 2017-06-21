@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'mocks/elasticsearch_mock'
-require 'byebug'
 
 class AndroidSdkTest < ActiveSupport::TestCase
 

@@ -189,6 +189,15 @@ Rails.application.routes.draw do
     get 'android/sdk/:id' => 'android_sdk#show'
     get 'ios/publisher/:id' => 'ios_publisher#show'
     get 'android/publisher/:id' => 'android_publisher#show'
+    get 'android/publisher' => 'android_publisher#filter'
+    get 'ios/publisher' => 'ios_publisher#filter'
+    get 'app_company' => 'app_companies#show'
+    get 'ios/app/:app_identifier' => 'ios_app#show'
+    get(
+      'android/app/:app_identifier',
+      to: 'android_app#show',
+      constraints: { app_identifier: /[\w\.]+/ } # com.ubercab
+    )
   end
 
   get '404' => 'error#not_found'

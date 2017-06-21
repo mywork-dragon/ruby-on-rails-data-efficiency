@@ -27,6 +27,10 @@ class ElasticsearchMock
       @response = documents.map { |d| AppMock.new(d) }
     end
 
+    def first
+      @response.first
+    end
+
     def to_a
       @response
     end
@@ -49,6 +53,10 @@ class ElasticsearchMock
 
     def initialize(app_doc = {})
       @app_doc = app_doc
+    end
+
+    def attributes
+      @app_doc
     end
   end
 end

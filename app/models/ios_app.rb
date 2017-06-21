@@ -2,6 +2,8 @@ class IosApp < ActiveRecord::Base
   include AppAds
   include MobileApp
 
+  class NoESData; end
+
   validates :app_identifier, uniqueness: true
   # validates :app_stores, presence: true #can't have an IosApp if it's not connected to an App Store
 
@@ -58,6 +60,13 @@ class IosApp < ActiveRecord::Base
 
   WHITELISTED_APPS = [404249815,297606951,447188370,368677368,324684580,477128284,
                       529479190, 547702041,591981144,618783545,317469184,401626263,1094591345]
+
+  attr_writer :es_client
+  
+  def es_client
+    @es_client ||= AppsIndex::IosApp
+    @es_client
+  end
 
   def app_store_available
     app_stores_ios_apps.any? && display_type != IosApp.display_types[:not_ios]
@@ -650,6 +659,80 @@ class IosApp < ActiveRecord::Base
       app_obj.slice(*white_list)
   end
 
+  def api_json(options = {})
+    result = {
+      id: id,
+      platform: :ios,
+      app_store_id: app_identifier,
+      original_release_date: released,
+      mobile_priority: mobile_priority,
+      user_base: user_base,
+      has_ad_spend: ad_spend?
+    }
+    result[:publisher] = ios_developer.present? ? ios_developer.api_json(short_form: true) : nil
+    data = es_info
+    if data != NoESData
+      result.merge!(
+       first_scanned_date: data['first_scanned'],
+        last_scanned_date: data['last_scanned'],
+        first_seen_ads_date: data['first_seen_ads'],
+        last_seen_ads_date: data['last_seen_ads']
+      )
+    end
+    result.merge!(newest_ios_app_snapshot.api_json || {})
+    result.merge!(api_international_hash(first_international_snapshot) || {})
+    result.merge!(sdk_json || {}) unless options[:short_form]
+    result
+  end
+
+  def sdk_json
+    data = es_info
+    if data == NoESData
+      installed = uninstalled = []
+    else
+      installed = data.fetch('installed_sdks') || []
+      uninstalled = data.fetch('uninstalled_sdks') || []
+    end
+    combined = [installed, uninstalled].map do |es_sdks|
+      hydrated_sdks = IosSdk.where(id: es_sdks.map { |x| x['id'] }).map { |s| s.api_json(short_form: true) }
+      hydrated_sdks.each do |sdk|
+        es_sdk_data = es_sdks.find { |x| x['id'] == sdk[:id] }
+        sdk[:first_seen_date] = es_sdk_data['first_seen_date']
+        sdk[:last_seen_date] = es_sdk_data['last_seen_date']
+      end
+    end
+    {
+      installed_sdks: combined.first,
+      uninstalled_sdks: combined.last
+    }
+  end
+
+  def es_info
+    result = es_client.query(
+      term: { 'id' => id }
+    ).first
+    result.present? ? result.attributes : NoESData
+  end
+
+
+  # handles key conversions for public facing API
+  def api_international_hash(int_hash)
+    {
+      name: int_hash['name'],
+      last_updated: int_hash['released'].to_s,
+      seller: int_hash['seller_name'],
+      description: int_hash['description'],
+      price: int_hash['price'] ? int_hash['price'] / 100.0 : nil, # convert cents to dollars
+      current_version: int_hash['version'],
+      current_version_rating: int_hash['ratings_current_stars'],
+      current_version_ratings_count: int_hash['ratings_current_count'],
+      all_version_rating: int_hash['ratings_all_stars'],
+      all_version_ratings_count: int_hash['ratings_all_count'],
+      categories: int_hash['categories_snapshots'].as_json,
+      user_base: int_hash['user_base'],
+      mobile_priority: int_hash['mobile_priority']
+    }
+  end
 
   class << self
 

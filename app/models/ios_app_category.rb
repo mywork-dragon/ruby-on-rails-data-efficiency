@@ -12,4 +12,10 @@ class IosAppCategory < ActiveRecord::Base
   has_many :ios_app_category_name_backups
 
   has_many :app_stores, through: :ios_app_category_names
+
+  def as_json(_options = {})
+    {
+      name: name
+    }
+  end
 end

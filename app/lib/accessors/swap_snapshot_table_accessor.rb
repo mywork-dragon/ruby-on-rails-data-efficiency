@@ -73,6 +73,7 @@ class SwapSnapshotTableAccessor
     snapshot_hash['app_store'] = snapshot.try(:app_store)
     snapshot_hash['mobile_priority'] = IosAppCurrentSnapshot.mobile_priorities.key(snapshot_hash['mobile_priority'])
     snapshot_hash['user_base'] = IosAppCurrentSnapshot.user_bases.key(snapshot_hash['user_base'])
+    snapshot_hash['categories_snapshots'] = snapshot.ios_app_categories_current_snapshots
     snapshot_hash
   end
 

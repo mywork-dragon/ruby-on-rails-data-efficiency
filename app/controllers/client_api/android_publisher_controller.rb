@@ -4,13 +4,11 @@ class ClientApi::AndroidPublisherController < ApplicationController
 
   def show
     id = params.fetch(:id)
-    render json: AndroidDeveloper.find(id).api_json
+    render json: AndroidDeveloper.find(id)
   end
 
   def filter
     domain = params.fetch(:domain)
-    developers = AndroidDeveloper.find_by_domain(domain)
-    developers.map! { |d| d.api_json }
-    render json: developers
+    render json: AndroidDeveloper.find_by_domain(domain).map { |d| d.api_json }
   end
 end

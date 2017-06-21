@@ -9,8 +9,6 @@ class ClientApi::IosPublisherController < ApplicationController
 
   def filter
     domain = params.fetch(:domain)
-    developers = IosDeveloper.find_by_domain(domain)
-    developers.map! { |d| d.api_json }
-    render json: developers
+    render json: IosDeveloper.find_by_domain(domain).map { |d| d.api_json }
   end
 end

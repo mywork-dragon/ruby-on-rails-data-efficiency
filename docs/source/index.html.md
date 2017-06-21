@@ -737,7 +737,7 @@ curl "https://api.mightysignal.com/app_company?ios_publisher_id=207911"
 
 ### HTTP Request Format
 
-`GET /app_company/publisher_id?<key1>=<value1>`
+`GET /app_company?<key1>=<publisher_id>`
 
 where `<publisher_id>` is the MightySignal ID of the iOS publisher or Android publisher. You can get it from the MightySignal publisher page (eg. [http://mightysignal.com/app/app#/publisher/ios/207911](http://mightysignal.com/app/app#/publisher/ios/207911), [http://mightysignal.com/app/app#/publisher/android/1162](http://mightysignal.com/app/app#/publisher/android/1162)) or from the `publisher.id` field from the JSON for an iOS or Android app.
 

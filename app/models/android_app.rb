@@ -2,6 +2,8 @@ class AndroidApp < ActiveRecord::Base
   include AppAds
   include MobileApp
 
+  class NoESData; end
+
   validates :app_identifier, uniqueness: true
   validate :validate_regions
   belongs_to :app
@@ -50,6 +52,13 @@ class AndroidApp < ActiveRecord::Base
 
   ad_table :android_ads
   # update_index('apps#android_app') { self } if Rails.env.production?
+
+  attr_writer :es_client
+
+  def es_client
+    @es_client ||= AppsIndex::AndroidApp
+    @es_client
+  end
 
   def mobile_priority
       if newest_android_app_snapshot and newest_android_app_snapshot.released
@@ -267,6 +276,56 @@ class AndroidApp < ActiveRecord::Base
     batch_json[:rank] = self.rank if self.respond_to?(:rank)
 
     batch_json
+  end
+
+  # fetch SDK information from elasticsearch
+  def sdk_json
+    data = es_info
+    if data == NoESData
+      installed = uninstalled = []
+    else
+      installed = data.fetch('installed_sdks') || []
+      uninstalled = data.fetch('uninstalled_sdks') || []
+    end
+    combined = [installed, uninstalled].map do |es_sdks|
+      hydrated_sdks = AndroidSdk.where(id: es_sdks.map { |x| x['id'] }).map { |s| s.api_json(short_form: true) }
+      hydrated_sdks.each do |sdk|
+        es_sdk_data = es_sdks.find { |x| x['id'] == sdk[:id] }
+        sdk[:first_seen_date] = es_sdk_data['first_seen_date']
+        sdk[:last_seen_date] = es_sdk_data['last_seen_date']
+      end
+    end
+    {
+      installed_sdks: combined.first,
+      uninstalled_sdks: combined.last
+    }
+  end
+
+  def api_json(options = {})
+    result = {
+      id: id,
+      platform: :android,
+      google_play_id: app_identifier,
+      mobile_priority: mobile_priority,
+      user_base: user_base
+    }
+    result[:publisher] = android_developer.present? ? android_developer.api_json(short_form: true) : nil
+    data = es_info
+    if data != NoESData
+      result.merge!(
+        first_scanned_date: data['first_scanned'],
+        last_scanned_date: data['last_scanned'])
+    end
+    result.merge!(newest_android_app_snapshot.api_json || {})
+    result.merge!(sdk_json) unless options[:short_form]
+    result
+  end
+
+  def es_info
+    result = es_client.query(
+      term: { 'id' => id }
+    ).first
+    result.present? ? result.attributes : NoESData
   end
 
   def link(stage: :production, utm_source: nil)
@@ -500,6 +559,5 @@ class AndroidApp < ActiveRecord::Base
         end
       end
     end
-
   end
 end
