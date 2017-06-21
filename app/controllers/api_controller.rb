@@ -100,7 +100,14 @@ class ApiController < ApplicationController
                                        order("#{sort_by} #{order_by}").group('ios_apps.id')
     results = results.page(page_num).per(page_size) if request.format.json?
     respond_to do |format|
-      format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }
+      format.json { render json:
+        {
+          results: results.as_json(ads: true),
+          resultsCount: results.total_count,
+          pageNum: page_num,
+          pageSize: page_size
+        }
+      }
       format.csv { render_csv(apps: results) }
     end
   end
@@ -120,7 +127,14 @@ class ApiController < ApplicationController
                                        order("#{sort_by} #{order_by}").group('android_apps.id')
     results = results.page(page_num).per(page_size) if request.format.json?
     respond_to do |format|
-      format.json { render json: {results: results.as_json(ads: true), resultsCount: results.total_count, pageNum: page_num} }
+      format.json { render json:
+        {
+          results: results.as_json(ads: true),
+          resultsCount: results.total_count,
+          pageNum: page_num,
+          pageSize: page_size
+        }
+      }
       format.csv { render_csv(apps: results) }
     end
   end

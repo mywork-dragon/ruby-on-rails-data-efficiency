@@ -83,30 +83,35 @@ end
   end
 
   puts "creating websites, and linking them to companies, ios apps"
-
-  (n = 500).times do |i|
-    website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
-    ios_app = IosApp.all.sample
-    ios_app = IosApp.includes(websites: :company).where(id: ios_app.id).first
-    company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
-    company.websites << website
-    ios_app.websites << website
-    if i % 100 == 0
-      puts "#{i + 1} out of #{n}"
-    end
+    (n = 500).times do |i|
+      begin
+        website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
+        ios_app = IosApp.all.sample
+        ios_app = IosApp.includes(websites: :company).where(id: ios_app.id).first
+        company = ios_app.get_company.blank? ? Company.all.sample : ios_app.get_company
+        company.websites << website
+        ios_app.websites << website
+        if i % 100 == 0
+          puts "#{i + 1} out of #{n}"
+        end
+      rescue
+      end
   end
 
   puts "creating websites, and linking them to companies, android apps"
 
   (n = 500).times do |i|
-    website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
-    android_app = AndroidApp.all.sample
-    android_app = AndroidApp.includes(websites: :company).where(id: android_app.id).first
-    company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
-    company.websites << website
-    android_app.websites << website
-    if i % 100 == 0
-      puts "#{i + 1} out of #{n}"
+    begin
+      website = Website.find_or_create_by(url: Faker::Internet.domain_name + i.to_s, kind: :primary)
+      android_app = AndroidApp.all.sample
+      android_app = AndroidApp.includes(websites: :company).where(id: android_app.id).first
+      company = android_app.get_company.blank? ? Company.all.sample : android_app.get_company
+      company.websites << website
+      android_app.websites << website
+      if i % 100 == 0
+        puts "#{i + 1} out of #{n}"
+      end
+    rescue
     end
   end
 
@@ -160,6 +165,7 @@ end
   account = Account.create(name: 'MightySignal', can_view_support_desk: true, can_view_ad_spend: true, can_view_sdks: true, can_view_storewide_sdks: true, can_view_exports: true, can_view_ios_live_scan: true, is_admin_account: true)
   user = User.create(email: 'matt@mightysignal.com', account_id: account.id, password: '12345')
   user = User.create(email: 'dawn@mightysignal.com', account_id: account.id, password: '12345')
+  user = User.create(email: 'marco@mightysignal.com', account_id: account.id, password: '12345')
   FollowRelationship.create(followable_id: 14, followable_type: 'IosSdk', follower_id: 2, follower_type: 'User')
   # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')
 

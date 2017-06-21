@@ -40,6 +40,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         $rootScope.currentPage = data.pageNum;
         $scope.isLoading = false;
         adIntelligenceCtrl.updateCSVUrl();
+        $rootScope.numPerPage = data.pageSize;
       });
     };
 
