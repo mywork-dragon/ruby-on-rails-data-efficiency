@@ -96,6 +96,7 @@
                     popover-trigger="mouseenter"
                     popover-class="majorAppPopover"
                     ng-click="$event.stopPropagation(); majorAppIconClicked(activity, batch.owner, batch.activity_type)"
+                    ng-mouseover="majorAppIconHovered(activity, batch.owner, batch.activity_type)"
                     >
                     <img ng-src="{{app.icon}}">
                   </a>
