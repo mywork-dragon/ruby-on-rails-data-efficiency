@@ -466,7 +466,7 @@ class AndroidApp < ActiveRecord::Base
     android_app_snapshots.pluck(:version, :released).uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
   end
 
-  def ratings__history
+  def ratings_history
     run_length_encode_app_snapshot_fields(android_app_snapshots, [:ratings_all_count, :ratings_all_stars])
   end
 
