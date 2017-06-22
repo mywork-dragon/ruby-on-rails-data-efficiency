@@ -472,6 +472,15 @@ class IosApp < ActiveRecord::Base
     first_international_snapshot['release_notes'] || newest_ios_app_snapshot.try(:release_notes)
   end
 
+  def versions_history
+    # TODO change this to use the international snapshots table once it stores historical data.
+    ios_app_snapshots.pluck(:version, :released).uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
+  end
+
+  def ratings_history
+    run_length_encode_app_snapshot_fields(ios_app_snapshots, [:ratings_all_count, :ratings_all_stars])
+  end
+
   def to_csv_row(can_view_support_desk=false)
     # li "CREATING HASH FOR #{app.id}"
     developer = self.ios_developer
@@ -593,7 +602,8 @@ class IosApp < ActiveRecord::Base
         'user_base', 'app_store_id', 'last_scanned_date',
         'current_version_ratings_count',
         'current_version_rating', 'all_version_ratings_count',
-        'first_scanned_date'
+        'first_scanned_date',
+        'ratings_history', 'versions_history'
          ]
 
       rename = [
@@ -611,7 +621,9 @@ class IosApp < ActiveRecord::Base
           ['id', 'id'],
           ['user_base', 'user_base'],
           ['last_updated', 'last_updated'],
-          ['released', 'original_release_date']
+          ['released', 'original_release_date'],
+          ['ratings_history', 'ratings_history'],
+          ['versions_history', 'versions_history']
           ]
 
       app_obj = app.newest_ios_app_snapshot.as_json || {}

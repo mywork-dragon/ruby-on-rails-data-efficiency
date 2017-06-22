@@ -462,6 +462,18 @@ class AndroidApp < ActiveRecord::Base
     self.class.user_bases[user_base]
   end
 
+  def versions_history
+    android_app_snapshots.pluck(:version, :released).uniq.select{|x| x[0] and x[1]}.map {|x| {version: x[0], released: x[1]}}
+  end
+
+  def ratings__history
+    run_length_encode_app_snapshot_fields(android_app_snapshots, [:ratings_all_count, :ratings_all_stars])
+  end
+
+  def downloads_history
+    run_length_encode_app_snapshot_fields(android_app_snapshots, [:downloads_min, :downloads_max])
+  end
+
   def as_external_dump_json
       app = self
 
@@ -475,7 +487,9 @@ class AndroidApp < ActiveRecord::Base
           "user_base", "last_updated", "all_version_rating",
           "all_version_ratings_count", "first_scanned", "last_scanned",
           "description", "installed_sdks", "uninstalled_sdks",
-          "mobile_priority", "developer_google_play_identifier"]
+          "mobile_priority", "developer_google_play_identifier",
+          "ratings_history", "versions_history", "downloads_history"
+        ]
 
       rename = [
           ['ratings_all_stars', 'all_version_rating'],
@@ -489,7 +503,10 @@ class AndroidApp < ActiveRecord::Base
           ['mobile_priority', 'mobile_priority'],
           ['user_base', 'user_base'],
           ['last_updated', 'last_updated'],
-          ['id', 'id']
+          ['id', 'id'],
+          ['downloads_history', 'downloads_history'],
+          ['ratings_history', 'ratings_history'],
+          ['versions_history', 'versions_history']
           ]
 
       app_obj = app.newest_android_app_snapshot.as_json || {}

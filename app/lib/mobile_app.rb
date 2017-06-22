@@ -14,4 +14,20 @@ module MobileApp
   def major_app_tag?
     self.tags.any? { |tag| tag.name == "Major App" }
   end
+
+  def run_length_encode_app_snapshot_fields(snap_table, fields)
+    fields.append(:created_at)
+    rts = snap_table.pluck(*fields).reject{|x| x[-1].nil?}.group_by {|x| x.first(x.size - 1) }.values
+    output = []
+    rts.map do |bin|
+      bin = bin.select {|x| x[-1]}
+      min = bin.map{|x| x[-1]}.min
+      max = bin.map{|x| x[-1]}.max
+      record = {'start_date' => min, 'stop_date' => max}
+      (0..fields.size-2).map {|i| record[fields[i]] = bin[0][i]}
+      output.append(record)
+    end
+    output
+  end
+
 end
