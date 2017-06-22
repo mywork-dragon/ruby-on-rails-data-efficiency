@@ -10,15 +10,45 @@ class ElasticsearchMock
   # k - input hash of params
   # v - array of expected app hashes from ES
   def add_response(k, v)
-    @responses[k] = AppResponse.new(v)
+    @responses[k] = Query.new(k,v)
   end
 
   def query(terms)
     if @responses[terms]
       @responses[terms]
     else
-      raise UnregisteredQuery
+      raise UnregisteredQuery, terms
     end
+  end
+
+  class Query
+
+    attr_accessor :_query, :_order, :_limit, :_offset
+
+    def initialize(query,value)
+      @_query = query
+      @value = AppResponse.new(value)
+    end
+
+    def order(order)
+      @_order = order
+      self
+    end
+
+    def limit(limit)
+      @_limit = limit
+      self
+    end
+
+    def offset(offset)
+      @_offset = offset
+      self
+    end
+
+    [:first, :to_a, :total_count].each do |sym|
+      define_method(sym.to_sym) { @value.send(sym) }
+    end
+
   end
 
   class AppResponse

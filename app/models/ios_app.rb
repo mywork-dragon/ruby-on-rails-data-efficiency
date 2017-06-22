@@ -691,7 +691,7 @@ class IosApp < ActiveRecord::Base
         last_seen_ads_date: data['last_seen_ads']
       )
     end
-    result.merge!(newest_ios_app_snapshot.api_json || {})
+    result.merge!(newest_ios_app_snapshot.try(:api_json) || {})
     result.merge!(api_international_hash(first_international_snapshot) || {})
     result.merge!(sdk_json || {}) unless options[:short_form]
     result

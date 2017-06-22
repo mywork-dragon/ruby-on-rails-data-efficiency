@@ -316,7 +316,7 @@ class AndroidApp < ActiveRecord::Base
         first_scanned_date: data['first_scanned'],
         last_scanned_date: data['last_scanned'])
     end
-    result.merge!(newest_android_app_snapshot.api_json || {})
+    result.merge!(newest_android_app_snapshot.try(:api_json) || {})
     result.merge!(sdk_json) unless options[:short_form]
     result
   end
