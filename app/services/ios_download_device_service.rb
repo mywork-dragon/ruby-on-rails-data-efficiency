@@ -1,4 +1,6 @@
 class IosDownloadDeviceService
+  class UnexpectedCondition < RuntimeError; end
+
   include IosDeviceUtilities
 
   UTIL_SRC = File.join(Rails.root, 'server', 'ios_download_scripts')
