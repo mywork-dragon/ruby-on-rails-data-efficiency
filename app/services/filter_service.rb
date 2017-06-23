@@ -80,30 +80,42 @@ class FilterService
     def filter_apps(app_filters: {}, company_filters: {}, page_size: 50, page_num: 1, sort_by: 'name', order_by: 'asc', platform: 'ios')
       apps_index = platform == 'ios' ? AppsIndex::IosApp : AppsIndex::AndroidApp
 
-      ['sdkFiltersOr', 'sdkFiltersAnd'].each do |filter_type|
+      ['sdkFiltersOr', 'sdkFiltersAnd', 'sdkCategoryFiltersOr', 'sdkCategoryFiltersAnd'].each do |filter_type|
         next unless app_filters[filter_type].present?
 
-        short_filter_type = filter_type == 'sdkFiltersOr' ? 'or' : 'and'
-        sdk_query = {short_filter_type => []}
+        short_filter_type = ['sdkFiltersOr', 'sdkCategoryFiltersOr'].include?(filter_type) ? 'or' : 'and'
+        sdk_query = { short_filter_type => [] }
+
         app_filters[filter_type].each do |filter|
+          if !filter['selectedSdks'].nil?
+            if filter['selectedSdks'] == 'all'
+              category = Tag.find(filter['id'])
+              sdk_ids = platform == 'ios' ? category.ios_sdks.pluck(:id) : category.android_sdks.pluck(:id)
+            else
+              sdk_ids = filter['selectedSdks']
+            end
+          else
+            sdk_ids = [filter['id']]
+          end
+
           date = date_filter(filter)
           case filter["status"].to_i
           when 0
             if date
-              sdk_query[short_filter_type] << {"nested" => {"path" => "installed_sdks", "filter" => {"and" => [{"terms" => {"installed_sdks.id" => [filter["id"]]}}, {"range" => {"installed_sdks.first_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
+              sdk_query[short_filter_type] << {"nested" => {"path" => "installed_sdks", "filter" => {"and" => [{"terms" => {"installed_sdks.id" => sdk_ids}}, {"range" => {"installed_sdks.first_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
             else
-              sdk_query[short_filter_type] << {"terms" => {"installed_sdks.id" => [filter["id"]]}}
+              sdk_query[short_filter_type] << {"terms" => {"installed_sdks.id" => sdk_ids}}
             end
           when 1
             if date
-              sdk_query[short_filter_type] << {"nested" => {"path" => "uninstalled_sdks", "filter" => {"and" => [{"terms" => {"uninstalled_sdks.id" => [filter["id"]]}}, {"range" => {"uninstalled_sdks.last_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
+              sdk_query[short_filter_type] << {"nested" => {"path" => "uninstalled_sdks", "filter" => {"and" => [{"terms" => {"uninstalled_sdks.id" => sdk_ids}}, {"range" => {"uninstalled_sdks.last_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
             else
-              sdk_query[short_filter_type] << {"terms" => {"uninstalled_sdks.id" => [filter["id"]]}}
+              sdk_query[short_filter_type] << {"terms" => {"uninstalled_sdks.id" => sdk_ids}}
             end
           when 2
-            sdk_query[short_filter_type] << {"and" => [{"not" => {"terms" => {"installed_sdks.id" => [filter["id"]]}}}, {"not" => {"terms" => {"uninstalled_sdks.id" => [filter["id"]]}}}]}
+            sdk_query[short_filter_type] << {"and" => [{"not" => {"terms" => {"installed_sdks.id" => sdk_ids}}}, {"not" => {"terms" => {"uninstalled_sdks.id" => sdk_ids}}}]}
           when 3
-            sdk_query[short_filter_type] << {"not" => {"terms" => {"installed_sdks.id" => [filter["id"]]}}}
+            sdk_query[short_filter_type] << {"not" => {"terms" => {"installed_sdks.id" => sdk_ids}}}
           end
         end
         apps_index = apps_index.filter(sdk_query) unless sdk_query[short_filter_type].blank?

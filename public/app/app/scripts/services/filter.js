@@ -22,8 +22,8 @@ angular.module("appApp")
           }
           return filterType + ' ' + displayName
         },
-        sdkDisplayText: function(filter, filterType) {
-          var displayName = 'SDK'
+        sdkDisplayText: function(filter, filterOperation, filterType) {
+          var displayName = filterType == 'sdk' ? 'SDK' : 'SDK Category'
 
           if (filter.status == "0") {
             displayName = 'First Seen ' + displayName
@@ -55,7 +55,7 @@ angular.module("appApp")
             }
           }
 
-          return filterType + ' ' + displayName;
+          return filterOperation + ' ' + displayName;
         },
         locationDisplayText: function(filter, filterType) {
           var displayName = ''
@@ -99,6 +99,9 @@ angular.module("appApp")
             }
           }
         },
+        clearAllSdkCategoryTags: function () {
+          _.remove($rootScope.tags, tag => tag.parameter.includes('sdkCategoryFilters'))
+        },
         removeFilter: function(parameter, value) {
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
@@ -130,6 +133,7 @@ angular.module("appApp")
             if(tag.value.id !== undefined && tag.parameter == parameter && self.tagsAreEqual(tag, value)) {
               duplicateTag = true;
             }
+
             // Determine if tag is a duplicate for normal tags (with non-object values)
             if (tag.parameter == parameter && tag.value == value) {
               duplicateTag = true;
@@ -153,7 +157,7 @@ angular.module("appApp")
               text: displayName + ': ' + (customName ? customName : value)
             });
           }
-          var complexFilters = ['sdkFiltersOr', 'sdkFiltersAnd', 'locationFiltersAnd', 'locationFiltersOr', 'userbaseFiltersOr', 'userbaseFiltersAnd']
+          var complexFilters = ['sdkFiltersOr', 'sdkFiltersAnd', 'sdkCategoryFiltersOr', 'sdkCategoryFiltersOr', 'locationFiltersAnd', 'locationFiltersOr', 'userbaseFiltersOr', 'userbaseFiltersAnd']
           if(!limitToOneFilter && (!duplicateTag || complexFilters.indexOf(parameter) > -1) || $rootScope.tags.length < 1) {
             $rootScope.tags.push({
               parameter: parameter,

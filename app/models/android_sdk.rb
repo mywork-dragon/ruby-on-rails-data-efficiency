@@ -55,13 +55,13 @@ class AndroidSdk < ActiveRecord::Base
 
     apps = apps.order("#{sort} ASC") if sort
     apps = apps.limit(limit) if limit
-    
+
     apps
   end
 
   def self.top_200_tags #tags that have android sdks in the top 200
     sdks = AndroidSdk.joins(:tags).uniq.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id}, 
+    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id},
                                         'tag_relationships.taggable_type' => 'AndroidSdk').uniq
   end
 
@@ -95,8 +95,9 @@ class AndroidSdk < ActiveRecord::Base
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
     if options[:account]
-      batch_json[:following] = options[:account].following?(self) 
+      batch_json[:following] = options[:account].following?(self)
     end
+
     batch_json
   end
 

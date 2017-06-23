@@ -125,10 +125,10 @@ class IosSdkService
     end
 
     def get_tagged_sdk_response(ios_app_id, only_show_tagged=false, force_live_scan_enabled: false)
-      new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]}, 
+      new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]},
                            installed_sdks_count: 0, uninstalled_sdks_count: 0 }
       untagged_name = 'Others'
-      
+
       [:installed_sdks, :uninstalled_sdks].each do |type|
         sdks = get_sdk_response(ios_app_id)[type]
         sdks.each do |sdk|
@@ -166,7 +166,7 @@ class IosSdkService
 
     def partition_sdks(ios_sdks:)
       partitions = ios_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
-        if sdk.present? && (!sdk.flagged || sdk.flagged == 0) 
+        if sdk.present? && (!sdk.flagged || sdk.flagged == 0)
           if FaviconHelper.has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
             memo[:os].push(sdk)
           elsif !memo[:non_os].include?(sdk)

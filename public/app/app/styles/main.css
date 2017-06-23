@@ -8102,7 +8102,6 @@ div.categories-dropdown .caret {
 
 .dropdown-menu.dropdown-menu-form {
   font-size: 11px;
-  width: 170px;
   min-width: 0;
   margin-left: -1px;
 }
@@ -8593,6 +8592,7 @@ h4.red {
   border-radius: 0px;
   background-color: #0393dd;
   color: #fff;
+  min-width: 135px;
 }
 
 .sdk-filter .remove-button {
@@ -8886,6 +8886,15 @@ button.saved-search-button:disabled {
   text-decoration: none;
 }
 
+.popover-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.filter-and i, .filter-or i {
+  cursor: pointer;
+}
 /*Major App Popover*/
 
 .majorAppPopover {
@@ -8906,4 +8915,8 @@ button.saved-search-button:disabled {
 
 .popoverAppText p {
   margin: 0px;
+}
+
+div.modal-dialog.sdk-filters {
+  width: 725px;
 }

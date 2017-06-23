@@ -109,6 +109,10 @@ angular.module('appApp')
           $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
         });
 
+        apiService.getSdkCategories().success(data => {
+          $rootScope.sdkCategories = data;
+        })
+
         $rootScope.appIsNew = function(app) {
           app.releasedDays && 0 <= app.releasedDays && app.releasedDays <= 15
         }

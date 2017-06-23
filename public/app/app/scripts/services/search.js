@@ -14,6 +14,8 @@ angular.module("appApp")
               case 'supportDesk':
               case 'sdkFiltersOr':
               case 'sdkFiltersAnd':
+              case 'sdkCategoryFiltersOr':
+              case 'sdkCategoryFiltersAnd':
               case 'locationFiltersOr':
               case 'locationFiltersAnd':
               case 'userbaseFiltersAnd':
@@ -132,7 +134,17 @@ angular.module("appApp")
           case 'sdkFiltersOr':
           case 'sdkFiltersAnd':
             var filterTypeShort = param == 'sdkFiltersAnd' ? 'And' : 'Or'
-            var displayName = filterService.sdkDisplayText(value, filterTypeShort)
+            var displayName = filterService.sdkDisplayText(value, filterTypeShort, 'sdk')
+            return {
+              parameter: param,
+              text: displayName + ": " + value.name,
+              value: value
+            };
+            break;
+          case 'sdkCategoryFiltersOr':
+          case 'sdkCategoryFiltersAnd':
+            var filterTypeShort = param == 'sdkCategoryFiltersAnd' ? 'And' : 'Or'
+            var displayName = filterService.sdkDisplayText(value, filterTypeShort, 'sdkCategory')
             return {
               parameter: param,
               text: displayName + ": " + value.name,

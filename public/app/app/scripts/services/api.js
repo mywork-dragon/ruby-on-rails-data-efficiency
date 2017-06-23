@@ -15,6 +15,8 @@ angular.module("appApp")
               case 'supportDesk':
               case 'sdkFiltersOr':
               case 'sdkFiltersAnd':
+              case 'sdkCategoryFiltersOr':
+              case 'sdkCategoryFiltersAnd':
               case 'locationFiltersAnd':
               case 'locationFiltersOr':
               case 'userbaseFiltersAnd':
@@ -64,6 +66,12 @@ angular.module("appApp")
           method: 'GET',
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
+      },
+      getSdkCategories: function() {
+        return $http({
+          method: 'GET',
+          url: `${API_URI_BASE}api/get_${APP_PLATFORM}_sdk_categories`
+        })
       },
       getCompanyContacts: function(platform, publisherId, filter, page, contactsPerPage) {
         return $http({

@@ -130,32 +130,61 @@ end
     app.android_fb_ad_appearances << ad
   end
 
+  puts 'creating Sdks'
+  100.times do |i|
+    IosSdk.create(name: Faker::Company.name + i.to_s, website: Faker::Internet.url, favicon: Faker::Avatar.image, summary: Faker::Company.catch_phrase, kind: 0, open_source: false)
+  end
+  100.times do |i|
+    AndroidSdk.create(name: Faker::Company.name + i.to_s, website: Faker::Internet.url, favicon: Faker::Avatar.image, summary: Faker::Company.catch_phrase, kind: 0, open_source: false)
+  end
+
   ios_apps = IosApp.all
   ios_sdks = IosSdk.all
+  android_sdks = AndroidSdk.all
 
-  puts 'creating tags'
-  Tag.create(name: "Major App", id: 48)
-  Tag.create(name: "Major Publisher", id: 49)
+  puts 'creating Tags and Tag Relationships'
+  Tag.create(id: 1, name: "Payments")
+  Tag.create(id: 2, name: "Monetization")
+  Tag.create(id: 3, name: "Utilities")
+  Tag.create(id: 4, name: "Networking")
+  Tag.create(id: 5, name: "UI")
+  Tag.create(id: 6, name: "Crash Reporting")
+  Tag.create(id: 7, name: "Backend")
+  Tag.create(id: 8, name: "Analytics")
+  Tag.create(id: 9, name: "Social")
+  Tag.create(id: 10, name: "Media")
+  Tag.create(id: 11, name: "Game Engine")
+  Tag.create(id: 48, name: "Major App")
+  Tag.create(id: 49, name: "Major Publisher")
+
+  ios_sdks.each do |sdk|
+    TagRelationship.create(tag_id: rand(1..9), taggable_id: sdk.id, taggable_type: "IosSdk")
+  end
+  android_sdks.each do |sdk|
+    TagRelationship.create(tag_id: rand(1..11), taggable_id: sdk.id, taggable_type: "AndroidSdk")
+  end
+
   50.times do
     ios_app_id = ios_apps.sample.id
     TagRelationship.create(tag_id: 48, taggable_id: ios_app_id, taggable_type: "IosApp")
   end
 
-  puts 'creating Ios Sdks'
-  30.times do
-    IosSdk.create(name: Faker::Company.name, website: Faker::Internet.url, favicon: Faker::Avatar.image, summary: Faker::Company.catch_phrase, kind: 0)
-  end
-
   puts 'creating Activities'
-  10000.times do
+  (n = 10000).times do |i|
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
     Activity.log_activity(:uninstall, Time.now, ios_app, ios_sdk)
+    if i % 1000 == 0
+      puts "#{i + 1} out of #{n}"
+    end
   end
-  10000.times do
+  (n = 10000).times do |i|
     ios_app = ios_apps.sample
     ios_sdk = ios_sdks.sample
     Activity.log_activity(:install, Time.now, ios_app, ios_sdk)
+    if i % 1000 == 0
+      puts "#{i + 1} out of #{n}"
+    end
   end
 
   GoogleAccount.create!(email: 'stanleyrichardson56@gmail.com', password: 'richardsonpassword!', android_identifier: '3F6351A552536800', blocked: false, flags: 0, last_used: DateTime.now, in_use: false)
@@ -167,6 +196,7 @@ end
   user = User.create(email: 'dawn@mightysignal.com', account_id: account.id, password: '12345')
   user = User.create(email: 'marco@mightysignal.com', account_id: account.id, password: '12345')
   FollowRelationship.create(followable_id: 14, followable_type: 'IosSdk', follower_id: 2, follower_type: 'User')
+  FollowRelationship.create(followable_id: 14, followable_type: 'IosApp', follower_id: 2, follower_type: 'User')
   # sdk_com = AndroidSdkCompany.create(name: 'Test Company', website: 'http://test.com/')
 
   # android_app = AndroidApp.find(1)

@@ -70,6 +70,7 @@ angular.module('appApp')
 
       $scope.complexFilters = {
         sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+        sdkCategory: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
         location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]},
         userbase: {or: [{status: "0"}], and: [{status: "0"}]}
       }
@@ -115,8 +116,24 @@ angular.module('appApp')
         dynamicTitle: false
       }
 
+      $scope.sdkDropdownSettings = function (filter) {
+        const sdkCount = $rootScope.sdkCategories[filter.sdkCategory.name].sdks.length;
+        return {
+          buttonClasses: '',
+          scrollable: sdkCount > 10,
+          showCheckAll: sdkCount > 1,
+          showUncheckAll: sdkCount > 1,
+          template: '<img class="popover-icon" ng-src="{{option.icon}}" alt="icon" />{{option.name}}'
+        }
+      }
+
       searchCtrl.categoryCustomText = {
         buttonDefaultText: 'CATEGORIES',
+      };
+
+      searchCtrl.sdkDropdownText = {
+        buttonDefaultText: 'SDKs',
+        dynamicButtonTextSuffix: 'SDKs selected'
       };
 
       $scope.status = {
@@ -171,6 +188,8 @@ angular.module('appApp')
         switch(filter_type) {
           case 'sdk':
             return $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+          case 'sdkCategory':
+            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
           case 'location':
             return $scope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
           default:
@@ -187,7 +206,9 @@ angular.module('appApp')
         var filterOperationShort = filter_operation.substr(0, 1).toUpperCase() + filter_operation.substr(1)
         switch(filter_type) {
           case 'sdk':
-            return filterService.sdkDisplayText(filter, filterOperationShort)
+            return filterService.sdkDisplayText(filter, filterOperationShort, 'sdk')
+          case 'sdkCategory':
+            return filterService.sdkDisplayText(filter, filterOperationShort, 'sdkCategory')
           case 'location':
             return filterService.locationDisplayText(filter, filterOperationShort)
           case 'userbase':
@@ -198,7 +219,7 @@ angular.module('appApp')
       $scope.changedComplexFilter = function(filter, field, old_filter, filter_type, filter_operation) {
         old_filter = JSON.parse(old_filter)
         // if is userbase filter or location filter with different status we should remove the old filter after adding the new one
-        if ((filter_type == 'userbase' && filter[field] != 0) || (filter_type != 'sdk' && old_filter.status != filter.status))  {
+        if ((filter_type == 'userbase' && filter[field] != 0) || ((filter_type != 'sdk' && filter_type != 'sdkCategory') && old_filter.status != filter.status))  {
           if (filter_type == 'userbase' && filter[field] != 0) {
             filter[filter_type] = $scope.engagementOptions(filter.status + '-0-8')
             var customName = $scope.intToUserbase(filter[filter_type].minValue) + '-' + $scope.intToUserbase(filter[filter_type].maxValue)
@@ -232,12 +253,39 @@ angular.module('appApp')
         $scope.complexFilters[filter_type][filter_operation][index][filter_type] = null;
       }
 
+      $scope.sdkSelectEvents = {
+        onSelectionChanged: function () {
+          filterService.clearAllSdkCategoryTags();
+          ['and', 'or'].forEach(filterOperation => {
+            $scope.complexFilters.sdkCategory[filterOperation].forEach(filter => {
+              if (filter.sdkCategory) {
+                filterService.addFilter($scope.complexFilterKey('sdkCategory', filterOperation), $scope.filterToTag(filter, 'sdkCategory'), $scope.complexFilterDisplayText('sdkCategory', filterOperation, filter), false, filter.sdkCategory.name);
+              }
+            })
+          })
+        }
+      }
+
       $scope.selectedAndSdk = function ($item) {
         $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'and')
       }
 
       $scope.selectedOrSdk = function ($item) {
         $scope.selectedComplexName($item.originalObject, this.$parent.$index, 'sdk', 'or')
+      }
+
+      $scope.selectedAndSdkCategory = function (category, index) {
+        const object = _.cloneDeep(category)
+        object.selectedSdks = category.sdks.map(sdk => ({ id: sdk.id }))
+        delete object.sdks
+        $scope.selectedComplexName(object, index, 'sdkCategory', 'and')
+      }
+
+      $scope.selectedOrSdkCategory = function (category, index) {
+        const object = _.cloneDeep(category)
+        object.selectedSdks = category.sdks.map(sdk => ({ id: sdk.id }))
+        delete object.sdks
+        $scope.selectedComplexName(object, index, 'sdkCategory', 'or')
       }
 
       $scope.selectedAndLocation = function ($item) {
@@ -252,6 +300,7 @@ angular.module('appApp')
         if (typeof object === 'string' || object instanceof String) {
           object = $scope.findAppStore(object)
         }
+
         $scope.complexFilters[filter_type][filter_operation][index][filter_type] = object
         var customName = object.name
         var filter = $scope.complexFilters[filter_type][filter_operation][index]
@@ -262,6 +311,8 @@ angular.module('appApp')
         switch(filter_type) {
           case 'sdk':
             return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+          case 'sdkCategory':
+            return {id: filter.sdkCategory.id, status: filter.status, date: filter.date, name: filter.sdkCategory.name, selectedSdks: $scope.checkFilterSelectedSdks(filter)}
           case 'location':
             return {id: filter.location.id, status: filter.status, name: filter.location.name, state: filter.state}
           case 'userbase':
@@ -273,10 +324,28 @@ angular.module('appApp')
         }
       }
 
+      $scope.checkFilterSelectedSdks = function (filter) {
+        const categorySdkCount = $rootScope.sdkCategories[filter.sdkCategory.name].sdks.length;
+        const filterSdkCount = filter.sdkCategory.selectedSdks.length;
+        if (filterSdkCount == categorySdkCount) {
+          return "all";
+        }
+        return filter.sdkCategory.selectedSdks.map(sdk => sdk.id)
+      }
+
+      $scope.checkTagSelectedSdks = function (tag) {
+        if (tag.selectedSdks == "all") {
+          return $rootScope.sdkCategories[tag.name].sdks.map(sdk => ({ id: sdk.id }))
+        }
+        return tag.selectedSdks.map(id => ({ id: id }))
+      }
+
       $scope.tagToFilter = function(tag, filter_type) {
         switch(filter_type) {
           case 'sdk':
             return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+          case 'sdkCategory':
+            return {status: tag.status, date: tag.date, sdkCategory: {id: tag.id, name: tag.name, selectedSdks: $scope.checkTagSelectedSdks(tag)}}
           case 'location':
             return {status: tag.status, location: {id: tag.id, name: tag.name}, state: tag.state}
           case 'userbase':
@@ -346,6 +415,12 @@ angular.module('appApp')
             break
           case 'sdkFiltersOr':
             $scope.addComplexFilter('sdk', 'or', $scope.tagToFilter(arrayItem, 'sdk'))
+            break
+          case 'sdkCategoryFiltersAnd':
+            $scope.addComplexFilter('sdkCategory', 'and', $scope.tagToFilter(arrayItem, 'sdkCategory'))
+            break
+          case 'sdkCategoryFiltersOr':
+            $scope.addComplexFilter('sdkCategory', 'or', $scope.tagToFilter(arrayItem, 'sdkCategory'))
             break
           case 'locationFiltersOr':
             $scope.addComplexFilter('location', 'or', $scope.tagToFilter(arrayItem, 'location'))
@@ -425,21 +500,49 @@ angular.module('appApp')
             var searchQueryPairs = {};
             var searchQueryFields = [];
             var sdkNames = [];
+            let sdkCategoryFilterPresent = false;
+            let sdkFilterPresent = false;
+            const sdkCategoryFilters = { and: [], or: [] }
+            const sdkFilters = [];
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
               if(tag.parameter == 'sdkNames' && tag.parameter == 'downloads' ) {
                 sdkNames.push(tag.value.name);
+              } else if (tag.parameter == 'sdkCategoryFiltersAnd') {
+                sdkCategoryFilterPresent = true;
+                sdkCategoryFilters.and.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
+              } else if (tag.parameter == 'sdkCategoryFiltersOr') {
+                sdkCategoryFilterPresent = true;
+                sdkCategoryFilters.or.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
+              } else if (tag.parameter.includes('sdkFilters')) {
+                sdkFilterPresent = true;
+                sdkFilters.push(tag.value.name)
               }
             });
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
             searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             searchQueryPairs['platform']  = APP_PLATFORM;
+
             mixpanel.track(
               "Filter Query Successful",
               searchQueryPairs
             );
+
+            if (sdkCategoryFilterPresent) {
+              mixpanel.track(
+                "SDK Category Filter Used",
+                sdkCategoryFilters
+              )
+            }
+
+            if (sdkFilterPresent) {
+              mixpanel.track(
+                "SDK Individual Filter Used",
+                { "sdks": sdkFilters }
+              )
+            }
 
             if(searchQueryPairs['locationFiltersAnd'] || searchQueryPairs['locationFiltersOr']) {
               var slacktivityData = {
@@ -715,7 +818,10 @@ angular.module('appApp')
 
       /* Only hit api if query string params are present */
       if($location.url().split('/search')[1]) {
-        searchCtrl.loadTableData();
+        apiService.getSdkCategories().success(data => {
+          $rootScope.sdkCategories = data;
+          searchCtrl.loadTableData();
+        })
       }
 
       $scope.setTab = function() {

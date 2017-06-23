@@ -14,7 +14,7 @@ class IosSdk < ActiveRecord::Base
 
   has_many :cocoapods
   has_many :cocoapod_source_datas, through: :cocoapods
-  
+
   has_many :ios_sdk_source_datas
 
   has_many :dll_regexes
@@ -32,7 +32,7 @@ class IosSdk < ActiveRecord::Base
 
   has_many :inbound_sdk_links, class_name: 'IosSdkLink', foreign_key: :dest_sdk_id
   has_many :inbound_sdks, through: :inbound_sdk_links, source: :source_sdk
-  
+
   has_many :weekly_batches, as: :owner
   has_many :tags, through: :tag_relationships
   has_many :tag_relationships, as: :taggable
@@ -82,7 +82,7 @@ class IosSdk < ActiveRecord::Base
     }
     batch_json[:following] = options[:user].following?(self) if options[:user]
     if options[:account]
-      batch_json[:following] = options[:account].following?(self) 
+      batch_json[:following] = options[:account].following?(self)
     end
     batch_json
   end
@@ -95,7 +95,7 @@ class IosSdk < ActiveRecord::Base
 
   def self.top_200_tags #tags that have ios sdks in the top 200
     sdks = IosSdk.joins(:tags).uniq.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id}, 
+    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id},
                                         'tag_relationships.taggable_type' => 'IosSdk').uniq
   end
 

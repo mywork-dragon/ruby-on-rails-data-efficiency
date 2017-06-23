@@ -1,11 +1,12 @@
 <div class="modal fade filter-modal" id="sdkFilterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog sdk-filters">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title" id="myModalLabel">SDK Filters</h3>
       </div>
       <div class="modal-body">
+        <h4>Filter by SDK</h4>
         <div class="filter-and">
           <p>
             Matches <strong>all</strong> of the following (AND filter)
@@ -35,7 +36,7 @@
             </angucomplete-alt>
             <span class='sdk-filter' ng-if="filter.sdk">
               {{filter.sdk.name}}
-              <a class="remove-button" ng-click="removeComplexNameFilter('sdk', 'and', $index)">×</a>
+              <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdk', 'and', $index)">×</a>
             </span>
             <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'and')">
@@ -54,7 +55,7 @@
         </div>
         <div class="filter-or">
           <p>
-            Matches <strong>any</strong> of the following (OR filter) 
+            Matches <strong>any</strong> of the following (OR filter)
             <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('sdk', 'or')"></i>
           </p>
           <div ng-repeat="filter in complexFilters.sdk.or track by $index">
@@ -81,7 +82,7 @@
             </angucomplete-alt>
             <span class='sdk-filter' ng-if="filter.sdk">
               {{filter.sdk.name}}
-              <a class="remove-button" ng-click="removeComplexNameFilter('sdk', 'or', $index)">×</a>
+              <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdk', 'or', $index)">×</a>
             </span>
             <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'or')">
@@ -98,6 +99,84 @@
             <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdk.or.length > 1 || complexFilters.sdk.or[$index].sdk" ng-click="removeComplexFilter('sdk', 'or', filter)"></i>
           </div>
         </div>
+        <h4>Filter by SDK Category</h4>
+        <div class="filter-and">
+          <p>
+            Matches <strong>all</strong> of the following (SDKs added on OR basis)
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('sdkCategory', 'and')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.sdkCategory.and track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdkCategory', 'and')" class="status-{{filter.status}}">
+                <option value="0">First Seen</option>
+                <option value="1">Last Seen</option>
+                <option value="2">Never Seen</option>
+              </select>
+            </span>
+            <span class="ui-select" ng-if="!filter.sdkCategory">
+              <select ng-options="category as category.name for (name, category) in sdkCategories" ng-model="selectedCategory" ng-change="selectedAndSdkCategory(selectedCategory, $index)">
+                <option value="">SDK CATEGORY</option>
+              </select>
+            </span>
+            <span class='sdk-filter' ng-if="filter.sdkCategory">
+              {{filter.sdkCategory.name}}
+              <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdkCategory', 'and', $index)">×</a>
+            </span>
+            <span class="ui-select" ng-if="filter.sdkCategory" ng-init="sdkOptions = sdkCategories[filter.sdkCategory.name].sdks; dropdownSettings = sdkDropdownSettings(filter)">
+               <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkOptions" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
+            </span>
+            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+              <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdkCategory', 'and')">
+                <option value="0">Anytime</option>
+                <option value="1">< 1 Week Ago</option>
+                <option value="2">Between 1 Week and 1 Month Ago</option>
+                <option value="3">Between 1 Month and 3 Months Ago</option>
+                <option value="4">Between 3 Months and 6 Months Ago</option>
+                <option value="5">Between 6 Months and 9 Months Ago</option>
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdkCategory.and.length > 1 || complexFilters.sdkCategory.and[$index].sdkCategory" ng-click="removeComplexFilter('sdkCategory', 'and', filter)"></i>
+          </div>
+        </div>
+        <div class="filter-or">
+          <p>
+            Matches <strong>any</strong> of the following (OR filter)
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('sdkCategory', 'or')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.sdkCategory.or track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdkCategory', 'or')" class="status-{{filter.status}}">
+                <option value="0">First Seen</option>
+                <option value="1">Last Seen</option>
+                <option value="2">Never Seen</option>
+              </select>
+            </span>
+            <span class="ui-select" ng-if="!filter.sdkCategory">
+              <select ng-options="category as category.name for (name, category) in sdkCategories" ng-model="selectedCategory" ng-change="selectedOrSdkCategory(selectedCategory, $index)">
+                <option value="">SDK CATEGORY</option>
+              </select>
+            </span>
+            <span class='sdk-filter' ng-if="filter.sdkCategory">
+              {{filter.sdkCategory.name}}
+              <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdkCategory', 'or', $index)">×</a>
+            </span>
+            <span class="ui-select" ng-if="filter.sdkCategory" ng-init="sdkOptions = sdkCategories[filter.sdkCategory.name].sdks; dropdownSettings = sdkDropdownSettings(filter)">
+               <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkOptions" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
+            </span>
+            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+              <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdkCategory', 'or')">
+                <option value="0">Anytime</option>
+                <option value="1">< 1 Week Ago</option>
+                <option value="2">Between 1 Week and 1 Month Ago</option>
+                <option value="3">Between 1 Month and 3 Months Ago</option>
+                <option value="4">Between 3 Months and 6 Months Ago</option>
+                <option value="5">Between 6 Months and 9 Months Ago</option>
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdkCategory.or.length > 1 || complexFilters.sdkCategory.or[$index].sdkCategory" ng-click="removeComplexFilter('sdkCategory', 'or', filter)"></i>
+          </div>
+        </div>
+        <p style="font-size: 13px">Question about SDK categorization? E-mail us at <a href="mailto:support@mightysignal.com" style="color: #2a8bba">support@mightysignal.com</a></p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" type="button" data-dismiss="modal">Done</button>
