@@ -73,7 +73,7 @@ class IosMassScanService
     end
 
     def run_recently_updated(n: 5000, ratings_min: 0, automated: false)
-      recent = IosSnapshotAccessor.new.recently_updated_snapshot_ids(n, ratings_min)
+      recent = IosSnapshotAccessor.new.recently_updated_snapshot_ids(limit: n, ratings_min: ratings_min)
 
       unless automated
         print "Filtered to recent #{recent.count}. Continue? [y/n] : "

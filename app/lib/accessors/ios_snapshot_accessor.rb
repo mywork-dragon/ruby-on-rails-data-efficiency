@@ -49,7 +49,7 @@ class IosSnapshotAccessor
   end
 
   def recently_updated_snapshot_ids(limit: 5000, ratings_min: 0, app_store_id: 1, lookback_time: nil)
-    @delegate.recently_updated_snapshot_ids(limit, ratings_min, app_store_id, lookback_time)
+    @delegate.recently_updated_snapshot_ids(limit: limit, ratings_min: ratings_min, app_store_id: app_store_id, lookback_time: lookback_time)
   end
 
   def user_base_values_from_ios_app(ios_app)
