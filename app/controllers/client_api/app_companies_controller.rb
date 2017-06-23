@@ -1,6 +1,7 @@
 class ClientApi::AppCompaniesController < ApplicationController
 
-  before_action :authenticate_client_api_request, only: [:show]
+  before_action :limit_client_api_call, only: [:show]
+  after_action :bill_api_request
 
   def show
     developer_type = nil
@@ -9,6 +10,8 @@ class ClientApi::AppCompaniesController < ApplicationController
     elsif developer_id = params[:android_publisher_id]
       developer_type = 'AndroidDeveloper'
     end
+
+    ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('app_company_show')
 
     return render(json: { error: 'Unspecified publisher id' }, status: 400) if developer_type.nil?
 

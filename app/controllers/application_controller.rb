@@ -152,4 +152,9 @@ class ApplicationController < ActionController::Base
     token = @http_client_api_auth_token
     Throttler.new(token.token, token.rate_limit, token.period).increment
   end
+
+  def bill_api_request
+    ApiBillingLogger.new(request, @http_client_api_auth_token).send!
+  end
+
 end

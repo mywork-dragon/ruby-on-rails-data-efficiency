@@ -59,6 +59,7 @@ module Varys
     # Manually declare error responses in routes.rb
     config.exceptions_app = self.routes
     config.dark_side_json_log_path = '/tmp/sidekiq.json.log'
+    config.middleware.use 'RequestIdMiddleware'
   end
 end
 
