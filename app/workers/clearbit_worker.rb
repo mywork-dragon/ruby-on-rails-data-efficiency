@@ -31,7 +31,7 @@ class ClearbitWorker
     "wordpress.org"=>[58683], "amazon.com"=>[8574], "desk.com"=>[33041], "bit.ly"=>[1557358], 
     "blogspot.com"=>[], "pinterest.com"=>[262604], "tumblr.com"=>[265243], "webs.com"=>[312507], 
     "sina.com.cn"=>[12712], "sina.com"=>[12712], "weibo.com"=>[12712], "naver.com"=>[99423], 
-    "appspot.com"=>[], "apple.com"=>[47346], "itunes.com"=>[47346], "freshdesk.com"=>[39580], 
+    "appspot.com"=>[], "apple.com"=>[47346], "itunes.com"=>[47346], "freshdesk.com"=>[39580], "paypal.com"=>[57360],
     "qq.com"=>[84000, 91496, 60230], "aol.com"=>[36017], "aim.com"=>[36017], "cocos2d-x.org"=>[], "github.com"=>[], 
     "strikingly.com"=>[280303], "about.me"=>[45453], "yolasite.com"=>[], "prudential.com"=>[298823], "bnymellon.com"=>[139393]
   } 
