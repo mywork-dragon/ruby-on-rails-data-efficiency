@@ -22,7 +22,7 @@ class ContactDiscoveryService
   end
 
   def get_contacts(domain:, title: nil, limit: 20)
-    resp = mightybit_get("contacts?domain=#{domain}")
+    resp = mightybit_get("contacts?#{URI.encode_www_form('domain' => domain, 'title' => title)}")
     contacts = resp['contacts'].map do | person |
       contact = {
         clearbitId: person['contact_id'],
