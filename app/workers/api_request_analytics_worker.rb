@@ -10,14 +10,14 @@ class ApiRequestAnalyticsWorker
   end
 
   def first_request?(event_data)
-    event_data[:event_properties][:window_request_count].to_i == 1
+    event_data['event_properties']['window_request_count'].to_i == 1
   end
 
   def notify_slack(event_data)
     HTTParty.post(
       'https://hooks.slack.com/services/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',
       body: {
-        text: "#{event_data[:user_id]} started using the API!"
+        text: "#{event_data['user_id']} started using the API!"
       }.to_json,
       headers: {'Content-type' => 'application/json'})
   end

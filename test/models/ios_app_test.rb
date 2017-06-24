@@ -91,4 +91,10 @@ class IosAppTest < ActiveSupport::TestCase
     assert_base_attributes(res)
     assert_extended_attributes(res)
   end
+
+  test 'non-existing international hash does not overwrite fallback' do
+    @int_snapshot.delete
+    res = @app.api_json
+    assert_equal @snapshot.name, res[:name]
+  end
 end

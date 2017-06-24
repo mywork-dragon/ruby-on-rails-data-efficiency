@@ -6,7 +6,7 @@ class ClientApi::AndroidPublisherController < ApplicationController
   def show
     id = params.fetch(:id)
     ApiRequestAnalytics.new(request, @http_client_api_auth_token).log_request('android_publisher_show')
-    render json: AndroidDeveloper.find(id)
+    render json: AndroidDeveloper.find(id).api_json
   end
 
   def filter

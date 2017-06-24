@@ -729,6 +729,7 @@ class IosApp < ActiveRecord::Base
 
   # handles key conversions for public facing API
   def api_international_hash(int_hash)
+    return {} if int_hash.blank?
     {
       name: int_hash['name'],
       last_updated: int_hash['released'].to_s,
