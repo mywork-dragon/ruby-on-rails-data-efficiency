@@ -526,7 +526,8 @@ angular.module("app.directives", []).directive("imgHolder", [
                 "publisherName": $scope.app.publisher.name,
                 "appName": $scope.app.name,
                 "appId": $scope.app.id,
-                "appPlatform": $scope.app.platform
+                "appPlatform": $scope.app.platform,
+                "exportObject": $scope.sfObject
               }
             );
 
@@ -541,6 +542,15 @@ angular.module("app.directives", []).directive("imgHolder", [
             }).error(function(data) {
               $scope.isExporting = false
               alert('There was an error exporting your ' + $scope.sfObject + '. Please try again.')
+              mixpanel.track(
+                "Exported App to Salesforce Failed", {
+                  "publisherName": $scope.app.publisher.name,
+                  "appName": $scope.app.name,
+                  "appId": $scope.app.id,
+                  "appPlatform": $scope.app.platform,
+                  "exportObject": $scope.sfObject
+                }
+              );
             });
 
           }
