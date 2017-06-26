@@ -15,7 +15,8 @@ class ApplicationExportWorker
   end
 
   def queue_ios_apps
-    IosApp.pluck(:id).map do |id|
+    # Export all apps which are iOS apps.
+    IosApp.where.not(:display_type => IosApp.display_types[:not_ios]).pluck(:id).map do |id|
       ApplicationExportWorker.perform_async(:ios_app, id)
     end
   end
