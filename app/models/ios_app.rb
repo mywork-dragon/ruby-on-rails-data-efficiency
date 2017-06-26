@@ -603,7 +603,7 @@ class IosApp < ActiveRecord::Base
         'current_version_ratings_count',
         'current_version_rating', 'all_version_ratings_count',
         'first_scanned_date',
-        'ratings_history', 'versions_history'
+        'ratings_history', 'versions_history', 'bundle_identifier'
          ]
 
       rename = [
@@ -679,7 +679,8 @@ class IosApp < ActiveRecord::Base
       original_release_date: released,
       mobile_priority: mobile_priority,
       user_base: user_base,
-      has_ad_spend: ad_spend?
+      has_ad_spend: ad_spend?,
+      bundle_identifier: nil # set default
     }
     result[:publisher] = ios_developer.present? ? ios_developer.api_json(short_form: true) : nil
     data = es_info
@@ -743,7 +744,8 @@ class IosApp < ActiveRecord::Base
       all_version_ratings_count: int_hash['ratings_all_count'],
       categories: int_hash['categories_snapshots'].as_json,
       user_base: int_hash['user_base'],
-      mobile_priority: int_hash['mobile_priority']
+      mobile_priority: int_hash['mobile_priority'],
+      bundle_identifier: int_hash['bundle_identifier']
     }
   end
 

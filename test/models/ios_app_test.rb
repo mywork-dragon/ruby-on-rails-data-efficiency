@@ -24,7 +24,8 @@ class IosAppTest < ActiveSupport::TestCase
       mobile_priority: :high,
       user_base: :elite,
       app_store_id: @store.id,
-      released: 10.days.ago
+      released: 10.days.ago,
+      bundle_identifier: 'com.mightysignal'
     )
     @category = IosAppCategory.create!(name: 'Travel')
     IosAppCategoriesCurrentSnapshot.create!(
@@ -61,6 +62,7 @@ class IosAppTest < ActiveSupport::TestCase
     assert [FalseClass, TrueClass].include?(res[:has_ad_spend].class)
     assert_equal 1, res[:categories].count
     assert_equal 'primary', res[:categories].first[:type]
+    assert_equal @int_snapshot.bundle_identifier, res[:bundle_identifier]
   end
 
   def assert_extended_attributes(res)
