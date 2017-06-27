@@ -15,6 +15,21 @@ module MobileDeveloper
     tags.any? { |tag| tag.name == "Major Publisher" }
   end
 
+  def tag_as_major_publisher
+    major_tag = Tag.find_by(name: "Major Publisher")
+    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: self.id, taggable_type: self.class.name)
+    apps = self.class.name == "IosDeveloper" ? self.ios_apps : self.android_apps
+    apps.each { |app| app.tag_as_major_app }
+  end
+
+  def untag_as_major_publisher
+    major_tag = Tag.find_by(name: "Major Publisher")
+    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: self.id, taggable_type: self.class.name)
+    tag.destroy
+    apps = self.class.name == "IosDeveloper" ? self.ios_apps : self.android_apps
+    apps.each { |app| app.untag_as_major_app }
+  end
+
   def headquarters(limit=100)
     headquarters = []
     valid_websites.joins(:domain_datum).uniq.limit(limit).

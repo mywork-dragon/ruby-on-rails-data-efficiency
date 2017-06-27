@@ -245,40 +245,30 @@ class Api::AdminController < ApplicationController
   end
 
   def tag_major_app
-    major_tag = Tag.find_by(name: "Major App")
     app_id = params[:appId]
-    type = params[:platform] == "ios" ? "IosApp" : "AndroidApp"
-    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: app_id, taggable_type: type)
     app = params[:platform] == "ios" ? IosApp.find(app_id) : AndroidApp.find(app_id)
+    app.tag_as_major_app
     render json: app.to_json({ details: true })
   end
 
   def untag_major_app
-    major_tag = Tag.find_by(name: "Major App")
     app_id = params[:appId]
-    type = params[:platform] == "ios" ? "IosApp" : "AndroidApp"
-    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: app_id, taggable_type: type)
-    tag.destroy
     app = params[:platform] == "ios" ? IosApp.find(app_id) : AndroidApp.find(app_id)
+    app.untag_as_major_app
     render json: app.to_json({ details: true })
   end
 
   def tag_major_publisher
-    major_tag = Tag.find_by(name: "Major Publisher")
     dev_id = params[:id]
-    type = params[:platform] == "ios" ? "IosDeveloper" : "AndroidDeveloper"
-    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: dev_id, taggable_type: type)
     developer = params[:platform] == "ios" ? IosDeveloper.find(dev_id) : AndroidDeveloper.find(dev_id)
+    developer.tag_as_major_publisher
     render json: { isMajorPublisher: developer.is_major_publisher? }
   end
 
   def untag_major_publisher
-    major_tag = Tag.find_by(name: "Major Publisher")
     dev_id = params[:id]
-    type = params[:platform] == "ios" ? "IosDeveloper" : "AndroidDeveloper"
-    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: dev_id, taggable_type: type)
-    tag.destroy
     developer = params[:platform] == "ios" ? IosDeveloper.find(dev_id) : AndroidDeveloper.find(dev_id)
+    developer.untag_as_major_publisher
     render json: { isMajorPublisher: developer.is_major_publisher? }
   end
 

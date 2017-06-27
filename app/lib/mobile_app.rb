@@ -7,6 +7,19 @@ module MobileApp
     self.installed_sdks.select{|sdk| attribution_sdk_ids.include?(sdk["id"])}
   end
 
+  def tag_as_major_app
+    major_tag = Tag.find_by(name: "Major App")
+    TagRelationship.find_or_create_by(tag_id: major_tag.id, taggable_id: self.id, taggable_type: self.class.name)
+    self.activities.update_all(major_app: true)
+  end
+
+  def untag_as_major_app
+    major_tag = Tag.find_by(name: "Major App")
+    tag = TagRelationship.find_by(tag_id: major_tag.id, taggable_id: self.id, taggable_type: self.class.name)
+    tag.destroy
+    self.activities.update_all(major_app: false) unless is_major_app?
+  end
+
   def is_major_app?
     is_in_top_200? || fortune_rank || follow_relationships.count > 10 || major_publisher?
   end

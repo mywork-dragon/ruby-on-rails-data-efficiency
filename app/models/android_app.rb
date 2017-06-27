@@ -39,6 +39,7 @@ class AndroidApp < ActiveRecord::Base
   has_many :apk_snapshot_jobs
   has_many :apk_snapshot_scrape_exceptions
   has_many :weekly_batches, as: :owner
+  has_many :activities, through: :weekly_batches
   has_many :follow_relationships, as: :followable
   has_many :followers, as: :followable, through: :follow_relationships
 

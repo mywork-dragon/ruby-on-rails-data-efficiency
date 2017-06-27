@@ -36,6 +36,7 @@ class IosApp < ActiveRecord::Base
   belongs_to :ios_developer
 
   has_many :weekly_batches, as: :owner
+  has_many :activities, through: :weekly_batches
   has_many :follow_relationships, as: :followable
   has_many :followers, through: :follow_relationships
   has_many :ios_fb_ads
@@ -62,7 +63,7 @@ class IosApp < ActiveRecord::Base
                       529479190, 547702041,591981144,618783545,317469184,401626263,1094591345]
 
   attr_writer :es_client
-  
+
   def es_client
     @es_client ||= AppsIndex::IosApp
     @es_client
