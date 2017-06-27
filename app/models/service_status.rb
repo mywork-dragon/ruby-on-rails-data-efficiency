@@ -9,7 +9,8 @@ class ServiceStatus < ActiveRecord::Base
     :auto_ios_us_scrape,
     :auto_ios_intl_scrape,
     :ios_auto_sdk_creation,
-    :clearbit_contact_service
+    :clearbit_contact_service,
+    :general_maintenance
   ]
 
   class << self
@@ -40,5 +41,18 @@ class ServiceStatus < ActiveRecord::Base
 
       service_id
     end
+
+    def enable_notice
+      puts "Enter a message:"
+      message = gets.chomp
+      service = self.find_by_service(get_info(:general_maintenance))
+      service.update_attributes(:outage_message => message, :active => true)
+    end
+
+    def disable_notice
+      service = self.find_by_service(get_info(:general_maintenance))
+      service.update_attribute(:active, false)
+    end
+
   end
 end

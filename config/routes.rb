@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   match 'signout', to: 'salesforce_sessions#destroy', as: 'signout', via: [:get, :post]
 
   # API Endpoints (for Front-End)
+  get 'api/app_status' => 'api#check_app_status'
   post 'api/filter_ios_apps' => 'api#filter_ios_apps'
   post 'api/filter_android_apps' => 'api#filter_android_apps'
   post 'api/search/ios' => 'api#search_ios_apps'
@@ -183,7 +184,7 @@ Rails.application.routes.draw do
   post 'ios_sdk/new' => 'ios_sdk#create'
   post 'ios_sdk/validate' => 'ios_sdk#validate'
   post 'ios_sdk/sync' => 'ios_sdk#sync'
-  
+
   # Client-facing API
   scope module: 'client_api' do
     # app

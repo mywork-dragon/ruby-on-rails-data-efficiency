@@ -113,6 +113,10 @@ angular.module('appApp')
           $rootScope.sdkCategories = data;
         })
 
+        apiService.checkAppStatus().success(data => {
+          $rootScope.appStatus = data.error;
+        });
+
         $rootScope.appIsNew = function(app) {
           app.releasedDays && 0 <= app.releasedDays && app.releasedDays <= 15
         }

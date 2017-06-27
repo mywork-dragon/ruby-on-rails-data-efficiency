@@ -3926,8 +3926,7 @@ fieldset[disabled] .btn-danger.active {
 #nav-container {
   z-index: 11;
   position: absolute;
-  top: 0px;
-  bottom: 0;
+  height: 100%;
   left: -220px;
   width: 220px;
   padding: 0;
@@ -4158,7 +4157,6 @@ fieldset[disabled] .btn-danger.active {
 .top-header {
   z-index: 10;
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
   height: 80px;
@@ -7095,7 +7093,6 @@ label {
 
 @media (min-width: 768px) {
   #content {
-    top: 80px;
     width: auto;
     left: 220px; } }
 
@@ -8919,4 +8916,17 @@ button.saved-search-button:disabled {
 
 div.modal-dialog.sdk-filters {
   width: 725px;
+}
+
+.service-message {
+  width: 100%;
+  padding: 10px;
+  background-color: #f7f1d5;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+}
+
+.service-message p {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0px;
 }

@@ -14,6 +14,15 @@ class ApiController < ApplicationController
     @contact_service = ContactDiscoveryService.new
   end
 
+  def check_app_status
+    if ServiceStatus.is_active?(:general_maintenance)
+      message = ServiceStatus.find_by_service(ServiceStatus.get_info(:general_maintenance)).outage_message
+      render json: { error: message }
+    else
+      render json: { status: "ok" }
+    end
+  end
+
   def filter_ios_apps
 
     li 'filter_ios_apps'

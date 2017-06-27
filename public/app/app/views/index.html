@@ -60,20 +60,18 @@
 
   </head>
   <body id="app" data-custom-background="" data-off-canvas-nav="">
-
+    <div class="service-message" ng-if="appStatus">
+      <p><i class="fa fa-exclamation-triangle"></i> Notice: {{appStatus}}</p>
+    </div>
     <div id="main-content-container">
-
       <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
         <aside data-ng-include=" '/app/app/views/navigation.html' " id="nav-container" ></aside>
       </div>
-
       <div class="view-container" data-ng-controller="CustomSearchCtrl as customSearchCtrl" >
-
         <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
-
-        <section data-ng-view="" id="content" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth ? 'contentHidden' : ''"></section>
+        <section data-ng-view="" id="content" ng-style="{top: appStatus ? '130px' : '80px'}" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth ? 'contentHidden' : ''"></section>
       </div>
     </div>
     <div class="page-loading-overlay"> <div class="loader-2"></div> </div>

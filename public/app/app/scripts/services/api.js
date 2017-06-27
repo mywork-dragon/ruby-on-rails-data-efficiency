@@ -193,6 +193,12 @@ angular.module("appApp")
           url: `${API_URI_BASE}api/admin/major_publishers/untag`,
           params: { id, platform }
         })
+      },
+      checkAppStatus: function () {
+        return $http({
+          method: 'GET',
+          url: `${API_URI_BASE}api/app_status`
+        })
       }
     };
   }]);
