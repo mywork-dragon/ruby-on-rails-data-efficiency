@@ -1,14 +1,19 @@
 <div id="newsfeedPage" data-ng-controller="NewsfeedCtrl as newsfeedCtrl">
   <div>
     <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
-      <div class="btn-group pull-right" role="group" aria-label="followButtons">
-        <button type="submit" ng-if="following.length" class="btn btn-bordered-info follow-btn" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
-        <button type="submit" class="btn btn-info follow-btn" data-toggle="modal" data-target="#followMoreModal">
-          Follow new Apps & SDKs
-          &nbsp;
-          <i class="fa fa-plus-circle"></i>
-        </button>
-      </div>
+        <div class="pull-right">
+          <div class="btn-group" role="group" aria-label="followButtons">
+            <button type="submit" ng-if="following.length" class="btn btn-bordered-info follow-btn" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
+            <button type="submit" class="btn btn-info follow-btn" data-toggle="modal" data-target="#followMoreModal">
+              Follow new Apps & SDKs
+              &nbsp;
+              <i class="fa fa-plus-circle"></i>
+            </button>
+          </div>
+          <div class="timeline-video-link" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+            <a class="video-link" href="" ng-click="openVideoModal('Timeline')">How to use Timeline</a>
+          </div>
+        </div>
       <h5>Filter by App Headquarter Location</h5>
       <div class="location-filter">
         <angucomplete-alt id="sdk-autocomplete-filter"
@@ -406,6 +411,7 @@
     <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
     <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
     <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/help-video.html'"></aside>
 
   </div>
 

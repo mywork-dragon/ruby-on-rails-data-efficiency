@@ -1,5 +1,7 @@
 <div class="panel panel-default" data-ng-controller="IosLiveScanCtrl as iosLiveScanCtrl">
-  <div class="panel-heading"><strong>SDKs</strong></div>
+  <div class="panel-heading sdk-panel-header">
+    <strong>SDKs</strong>
+  </div>
   <div class="panel-body">
     <div class="media">
       <div class="media-body">
@@ -126,6 +128,9 @@
               <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
               <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
             </div>
+            <div id="showSdksButtonHelper" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+              <a class="video-link" href="" ng-click="openVideoModal('Live Scan')">How to use Live Scan</a>
+            </div>
           </li>
           <li id="showDataUpdatedMessage" ng-if="iosLiveScanCtrl.displayDataUnchangedStatus">
             <em>App data has not changed since last scan. Currently up-to-date.</em>
@@ -148,3 +153,5 @@
     </div>
   </div>
 </div>
+
+<aside ng-include="'/app/app/views/modals/help-video.html'"></aside>

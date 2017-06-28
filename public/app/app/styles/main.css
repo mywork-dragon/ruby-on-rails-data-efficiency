@@ -639,11 +639,96 @@ a.popover-link {
   margin-left: 5px;
 }
 
+.row.filter {
+  height: 50px;
+  padding: 8px;
+  margin-bottom: -8px;
+}
+
 #searchResultsControl {
-  float: right;
-  position: absolute;
-  right: 30px;
-  margin-top: 8px;
+  margin-right: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+}
+
+/* Saved Searches */
+
+.btn-group.saved-searches {
+  width: 200px;
+}
+
+button.saved-searches {
+  width: 100%;
+}
+
+li.saved-searches {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#saved-searches-ul {
+  width: 100%;
+  padding: 0px;
+}
+
+.fa-trash-o.search {
+  display: none;
+}
+
+#saved-searches-ul > li.divider {
+  margin: 0px;
+}
+
+#saved-searches-ul > li.saved-searches:hover  {
+  background-color: #F5F5F5;
+  cursor: pointer;
+}
+
+#saved-searches-ul > li:hover > div.saved-search-menu-item {
+  background-color: #F5F5F5;
+  cursor: pointer;
+  color: #0393DD;
+}
+
+#saved-searches-ul > li:hover > .fa-trash-o.search {
+  display: block;
+}
+
+.fa-trash-o.search:hover {
+  cursor: pointer;
+  color: red;
+}
+
+.saved-search-menu-item {
+ padding: 10px;
+ flex-basis: 90%;
+}
+
+.no-search-menu-item {
+ padding: 10px;
+ text-align: center;
+}
+
+button.saved-search-button {
+  border: none;
+  width: 100%;
+  color: #0393DD;
+  background-color: inherit;
+  margin-bottom: 0px;
+  padding: 10px 0px;
+}
+
+button.saved-search-button:hover {
+  background-color: #F5F5F5;
+}
+
+button.saved-search-button:disabled {
+  color: #C1BFC0;
 }
 
 .table-dynamic .filter-result-info {
@@ -5062,7 +5147,7 @@ img#appDetailsPageAppLogo {
   -o-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5); }
 
-.modal-body {
+.©-body {
   position: relative;
   padding: 20px; }
 
@@ -7730,11 +7815,12 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #showSdksButtonLi {
   border: none;
+  margin-bottom: -20px;
 }
 
 #showSdksButton {
   margin-top: 10px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   width: 60%;
   margin-left: 20%;
 }
@@ -7745,6 +7831,15 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #showSdksButtonTitle {
   text-align: center;
+}
+
+#showSdksButtonHelper {
+  text-align: center;
+}
+
+#showSdksButtonHelper a {
+  font-size: 13px;
+  color: #767676;
 }
 
 #showCompanyEmailsTextField {
@@ -8712,6 +8807,8 @@ h4.red {
 
 /* -------------------------- AnguComplete-Alt Styles End -------------------------- */
 
+/* Blog Post Popover */
+
 .label.label-danger > a {
   text-decoration: none;
 }
@@ -8780,79 +8877,36 @@ h4.red {
   background-color: #49A771;
 }
 
-.btn-group.saved-searches {
-  width: 100%;
-}
+/* Video Guides */
 
-button.saved-searches {
-  margin-top: 10px;
-  width: 100%;
-}
-
-li.saved-searches {
+#videoModalBody {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#saved-searches-ul {
+  justify-content: center;
   width: 100%;
-  padding: 0px;
+  min-height: 450px;
 }
 
-.fa-trash-o.search {
-  display: none;
+.help-video {
+  width: 80%;
 }
 
-#saved-searches-ul > li.divider {
-  margin: 0px;
+.video-link {
+  color: #767676;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 10px;
+  float: right;
+  margin-top: 10px;
 }
 
-#saved-searches-ul > li.saved-searches:hover  {
-  background-color: #F5F5F5;
-  cursor: pointer;
+#showSdksButtonHelper .video-link {
+  float: none;
 }
 
-#saved-searches-ul > li:hover > div.saved-search-menu-item {
-  background-color: #F5F5F5;
-  cursor: pointer;
-  color: #0393DD;
-}
-
-#saved-searches-ul > li:hover > .fa-trash-o.search {
-  display: block;
-}
-
-.fa-trash-o.search:hover {
-  cursor: pointer;
-  color: red;
-}
-
-.saved-search-menu-item {
- padding: 10px;
- flex-basis: 90%;
-}
-
-.no-search-menu-item {
- padding: 10px;
- text-align: center;
-}
-
-button.saved-search-button {
+.video-btn {
   border: none;
-  width: 100%;
-  color: #0393DD;
-  background-color: inherit;
-  margin-bottom: 0px;
-  padding: 10px 0px;
-}
-
-button.saved-search-button:hover {
-  background-color: #F5F5F5;
-}
-
-button.saved-search-button:disabled {
-  color: #C1BFC0;
+  box-shadow: none;
+  -webkit-box-shadow: none;
 }
 
 /* API Tokens */
@@ -8912,6 +8966,12 @@ button.saved-search-button:disabled {
 
 .popoverAppText p {
   margin: 0px;
+}
+
+.divider {
+  width: 100%;
+  height: 0px;
+  border-top: 1px solid #ebeeea;
 }
 
 div.modal-dialog.sdk-filters {

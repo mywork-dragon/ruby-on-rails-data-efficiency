@@ -3,12 +3,18 @@
     <section class="panel panel-default table-dynamic">
       <header class="page-main-header ng-scope">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <h4>
               <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>Apps Advertising on
               <i class="fa fa-facebook-official" aria-hidden="true"></i>
               Facebook
             </h4>
+          </div>
+          <div class="col-md-2">
+            <div data-ng-controller="VideoModalCtrl as videoModalCtrl">
+              <a href="" class="video-link" ng-click="openVideoModal('Ad Intelligence')">How to use Ad Intelligence</a>
+              <!-- <button type="button" class="btn btn-default video-btn" ng-click="openVideoModal('Explore')">How to use Explore</button> -->
+            </div>
           </div>
         </div>
       </header>
@@ -168,5 +174,6 @@
     <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
     <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
     <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/help-video.html'"></aside>
   </div>
 </div>
