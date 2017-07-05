@@ -8914,6 +8914,11 @@ h4.red {
   -webkit-box-shadow: none;
 }
 
+.timeline-video {
+  padding-top: 10px;
+  float: right;
+}
+
 /* API Tokens */
 
 .microsoft-btn {
