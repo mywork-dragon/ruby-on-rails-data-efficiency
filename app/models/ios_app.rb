@@ -118,7 +118,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def monthly_active_users
-    mau = fb_app_data.try(:[], 'monthly_active_users').try(:to_i)
+    mau = fb_app_data.try(:[], 'monthly_active_users').to_i
     mau <= 1 ? nil : mau
   end
 
@@ -127,7 +127,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def daily_active_users
-    dau = fb_app_data.try(:[], 'daily_active_users').try(:to_i)
+    dau = fb_app_data.try(:[], 'daily_active_users').to_i
     dau == 0 ? nil : dau
   end
 
@@ -136,7 +136,7 @@ class IosApp < ActiveRecord::Base
   end
 
   def weekly_active_users
-    wau = fb_app_data.try(:[], 'weekly_active_users').try(:to_i)
+    wau = fb_app_data.try(:[], 'weekly_active_users').to_i
     wau == 0 ? nil : wau
   end
 
