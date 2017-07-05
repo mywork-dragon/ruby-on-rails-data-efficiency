@@ -118,7 +118,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def monthly_active_users
-    fb_app_data.try(:[], 'monthly_active_users').try(:to_i)
+    mau = fb_app_data.try(:[], 'monthly_active_users').try(:to_i)
+    mau <= 1 ? nil : mau
   end
 
   def monthly_active_users_rank
@@ -126,7 +127,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def daily_active_users
-    fb_app_data.try(:[], 'daily_active_users').try(:to_i)
+    dau = fb_app_data.try(:[], 'daily_active_users').try(:to_i)
+    dau == 0 ? nil : dau
   end
 
   def daily_active_users_rank
@@ -134,7 +136,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def weekly_active_users
-    fb_app_data.try(:[], 'weekly_active_users').try(:to_i)
+    wau = fb_app_data.try(:[], 'weekly_active_users').try(:to_i)
+    wau == 0 ? nil : wau
   end
 
   def platform
@@ -189,10 +192,10 @@ class IosApp < ActiveRecord::Base
 
     if options[:engagement]
       batch_json.merge!({
-        wau: ActionController::Base.helpers.number_to_human(self.weekly_active_users),
         dau: ActionController::Base.helpers.number_to_human(self.daily_active_users),
-        dau_rank: ActionController::Base.helpers.number_to_human(self.daily_active_users_rank),
+        wau: ActionController::Base.helpers.number_to_human(self.weekly_active_users),
         mau: ActionController::Base.helpers.number_to_human(self.monthly_active_users),
+        dau_rank: ActionController::Base.helpers.number_to_human(self.daily_active_users_rank),
         mau_rank: ActionController::Base.helpers.number_to_human(self.monthly_active_users_rank),
       })
     end

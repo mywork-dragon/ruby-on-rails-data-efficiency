@@ -8996,3 +8996,9 @@ div.modal-dialog.sdk-filters {
   font-weight: 600;
   margin: 0px;
 }
+
+.beta-flag {
+  font-size: 12px;
+  color: #1ead4f;
+  font-weight: 700;
+}

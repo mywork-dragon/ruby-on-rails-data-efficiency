@@ -72,7 +72,7 @@
                   </li>
                   <li ng-if="appData.platform == 'ios' && (appData.dau !== null || appData.mau !== null || appData.wau !== null)">
                     <span class="icon fa fa-users"></span>
-                    <label>Active Users</label>
+                    <label>Active Users <span class="beta-flag">BETA</span></label>
                     <ul class="nested">
                       <li ng-if="appData.dau !== null">
                         <label>Daily Active Users:</label>
