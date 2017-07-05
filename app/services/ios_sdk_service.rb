@@ -28,8 +28,10 @@ class IosSdkService
       # return error if it violates some conditions
       app = IosApp.find(ios_app_id)
 
-      display_type_error = error_map[app.display_type.to_sym]
-      resp[:error_code] = display_type_error if display_type_error
+      if app.display_type != "normal" && app.display_type != 'taken_down'
+        resp[:error_code] = error_map[app.display_type.to_sym]
+      end
+
       resp[:error_code] = error_map[:taken_down] if !app.app_store_available
 
       price = Rails.env.production? ? app.newest_ios_app_snapshot.try(:price).to_i : 0
