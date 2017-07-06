@@ -8897,6 +8897,15 @@ h4.red {
   align-items: center;
 }
 
+.ad-video {
+  margin-top: 15px;
+}
+
+.timeline-video {
+  padding-top: 10px;
+  float: right;
+}
+
 .video-link {
   color: #767676;
   font-size: 13px;
@@ -8906,17 +8915,6 @@ h4.red {
 
 #showSdksButtonHelper .video-link {
   float: none;
-}
-
-.video-btn {
-  border: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-}
-
-.timeline-video {
-  padding-top: 10px;
-  float: right;
 }
 
 /* API Tokens */
