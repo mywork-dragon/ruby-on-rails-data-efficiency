@@ -40,6 +40,8 @@ module MobileApp
       (0..fields.size-2).map {|i| record[fields[i]] = bin[0][i]}
       output.append(record)
     end
+    output = output.sort_by {|x| x['stop_date']}
+    output[-1]['stop_date'] = nil
     output
   end
 
