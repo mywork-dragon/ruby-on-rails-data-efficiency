@@ -91,7 +91,7 @@
                 </span>
                 <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/ios/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td class="resultsTableAppUserbase">
                 <span ng-if="appPlatform.platform != 'ios'">{{app.userBase | capitalize}}</span>
                 <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
