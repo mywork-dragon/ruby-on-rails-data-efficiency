@@ -237,15 +237,23 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       });
     }
 
-    $scope.majorAppIconHovered = function (activity, owner, activity_type) {
-      mixpanel.track("Major App Icon Hovered", {
-        activityType: activity_type,
-        owner: owner.name,
-        platform: owner.platform,
-        ownerType: owner.type,
-        app: activity.app.name,
-        appId: activity.app.id
-      });
+    $scope.majorAppIconHovered = function () {
+      $scope.hoverStartTime = new Date();
+    }
+
+    $scope.majorAppIconExited = function (activity, owner, activity_type) {
+      $scope.hoverEndTime = new Date();
+      const hoverTime = $scope.hoverEndTime.getTime() - $scope.hoverStartTime.getTime();
+      if (hoverTime > 400) {
+        mixpanel.track("Major App Icon Hovered", {
+          activityType: activity_type,
+          owner: owner.name,
+          platform: owner.platform,
+          ownerType: owner.type,
+          app: activity.app.name,
+          appId: activity.app.id
+        });
+      }
     }
   }
 ]);

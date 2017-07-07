@@ -18,6 +18,11 @@ angular.module('appApp')
           }
         }
       })
+
+      mixpanel.track("Help Video Opened", {
+        videoType: type
+      });
+
     }
   }])
   .controller('VideoInstanceCtrl', function ($uibModalInstance, $sce, type) {
