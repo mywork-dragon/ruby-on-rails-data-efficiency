@@ -1,6 +1,6 @@
 module AppStoreInternationalSnapshotModule
 
-  attr_writer :s3_client, :bulk_store
+  attr_writer :bulk_store
 
   class UnrecognizedFormat < RuntimeError
     def initialize(json)
@@ -12,7 +12,6 @@ module AppStoreInternationalSnapshotModule
     @ios_app_current_snapshot_job_id = ios_app_current_snapshot_job_id
     @ios_app_ids = ios_app_ids
     @app_store = AppStore.find(app_store_id)
-    @s3_client ||= ItunesS3Store.new
     @bulk_store ||= AppStoreHelper::BulkStore.new(
       app_store_id: @app_store.id,
       ios_app_current_snapshot_job_id: @ios_app_current_snapshot_job_id
@@ -60,11 +59,6 @@ module AppStoreInternationalSnapshotModule
     extractor = AppStoreHelper::ExtractorJson.new(app_json)
     ios_app = identifier_to_app_map[extractor.app_identifier]
     extractor.verify_ios!
-
-    # Offload S3 call to separate thread so we don't have to wait for response.
-    Thread.new {
-      @s3_client.store!(extractor.app_identifier, @app_store.country_code.downcase, :json, app_json.to_json)  
-    }
 
     most_recent_snapshot = IosAppCurrentSnapshot.where(["ios_app_id = ? and app_store_id = ? and latest = ?", ios_app.id, @app_store.id, true]).first
     if most_recent_snapshot.nil? || most_recent_snapshot.etag.nil? || most_recent_snapshot.etag != extractor.etag

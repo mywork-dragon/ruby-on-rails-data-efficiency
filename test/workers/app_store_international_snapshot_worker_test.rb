@@ -13,26 +13,20 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
 
   test 'creates snapshot if not found' do
     bulk_store_mock = Minitest::Mock.new
-    s3_client_mock = Minitest::Mock.new
 
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
     worker.bulk_store = bulk_store_mock
 
     app1_response = @itunes_api_response['results'][0]
     app2_response = @itunes_api_response['results'][1]
 
     ItunesApi.stub :batch_lookup, @itunes_api_response do
-      s3_client_mock.expect :store!, nil, [418075935, 'us', :json, app1_response.to_json]
-      s3_client_mock.expect :store!, nil, [447188370, 'us', :json, app2_response.to_json]
-
       bulk_store_mock.expect :add_data, nil, [@app1, app1_response]
       bulk_store_mock.expect :add_data, nil, [@app2, app2_response]
       bulk_store_mock.expect :save, nil
       bulk_store_mock.expect :snapshots, {}
 
       worker.perform(@snapshot_job.id, [@app1.id, @app2.id], @us_store.id)
-      s3_client_mock.verify
       bulk_store_mock.verify
     end
   end
@@ -41,21 +35,13 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
     app1_snapshot = IosAppCurrentSnapshot.create(:ios_app_id => @app1.id, :app_identifier => 418075935, :app_store_id => @us_store.id, :etag => '5b5a0da2650fae231a0e97025a94a7c3', :latest => true, :name => "SHOULD REMAIN THE SAME")
     app2_snapshot = IosAppCurrentSnapshot.create(:ios_app_id => @app2.id, :app_identifier => 418075935, :app_store_id => @us_store.id, :etag => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', :latest => true, :name => "SHOULD BE OVERRIDDEN")
 
-    s3_client_mock = Minitest::Mock.new
-
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
 
     app1_response = @itunes_api_response['results'][0]
     app2_response = @itunes_api_response['results'][1]
 
     ItunesApi.stub :batch_lookup, @itunes_api_response do
-      s3_client_mock.expect :store!, nil, [418075935, 'us', :json, app1_response.to_json]
-      s3_client_mock.expect :store!, nil, [447188370, 'us', :json, app2_response.to_json]
-
       worker.perform(@snapshot_job.id, [@app1.id, @app2.id], @us_store.id)
-
-      s3_client_mock.verify
     end
 
     app1_snapshots = IosAppCurrentSnapshot.where(:ios_app_id => @app1.id).to_a
@@ -73,21 +59,14 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
     AppStoresIosApp.create(:app_store_id => @us_store.id, :ios_app_id => @app1.id)
     AppStoresIosApp.create(:app_store_id => @us_store.id, :ios_app_id => @app2.id)
 
-    s3_client_mock = Minitest::Mock.new
-
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
 
     @itunes_api_response['results'].pop
 
     app1_response = @itunes_api_response['results'][0]
 
     ItunesApi.stub :batch_lookup, @itunes_api_response do
-      s3_client_mock.expect :store!, nil, [418075935, 'us', :json, app1_response.to_json]
-
       worker.perform(@snapshot_job.id, [@app1.id, @app2.id], @us_store.id)
-
-      s3_client_mock.verify
     end
 
     assert_not_nil AppStoresIosApp.where(:app_store_id => @us_store.id).where(:ios_app_id => @app1.id).first
@@ -98,10 +77,7 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
     AppStoresIosApp.create(:app_store_id => @us_store.id, :ios_app_id => @app1.id)
     AppStoresIosApp.create(:app_store_id => @us_store.id, :ios_app_id => @app2.id)
 
-    s3_client_mock = Minitest::Mock.new
-
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
 
     @itunes_api_response['results'].clear
 
@@ -116,21 +92,14 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
   end
 
   test 'sets display type if not ios app' do
-    s3_client_mock = Minitest::Mock.new
-
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
 
     @itunes_api_response['results'][1]['kind'] = "ANDROID APP????"
 
     app1_response = @itunes_api_response['results'][0]
 
     ItunesApi.stub :batch_lookup, @itunes_api_response do
-      s3_client_mock.expect :store!, nil, [418075935, 'us', :json, app1_response.to_json]
-
       worker.perform(@snapshot_job.id, [@app1.id, @app2.id], @us_store.id)
-
-      s3_client_mock.verify
     end
 
     assert_equal "not_ios", IosApp.find(@app2.id).display_type
@@ -140,21 +109,13 @@ class AppStoreInternationalSnapshotWorkerTest < ActiveSupport::TestCase
     app1_snapshot = IosAppCurrentSnapshot.create(:ios_app_id => @app1.id, :app_identifier => 418075935, :app_store_id => @us_store.id, :etag => '5b5a0da2650fae231a0e97025a94a7c3', :latest => true, :name => "SHOULD REMAIN THE SAME")
     app2_snapshot = IosAppCurrentSnapshot.create(:ios_app_id => @app2.id, :app_identifier => 418075935, :app_store_id => @us_store.id, :etag => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', :latest => true, :name => "SHOULD BE OVERRIDDEN")
 
-    s3_client_mock = Minitest::Mock.new
-
     worker = AppStoreInternationalSnapshotWorker.new
-    worker.s3_client = s3_client_mock
 
     app1_response = @itunes_api_response['results'][0]
     app2_response = @itunes_api_response['results'][1]
 
     ItunesApi.stub :batch_lookup, @itunes_api_response do
-      s3_client_mock.expect :store!, nil, [418075935, 'us', :json, app1_response.to_json]
-      s3_client_mock.expect :store!, nil, [447188370, 'us', :json, app2_response.to_json]
-
       worker.perform(@snapshot_job.id, [@app1.id, @app2.id], @us_store.id)
-
-      s3_client_mock.verify
     end
 
     app1_snapshots = IosAppCurrentSnapshot.where(:ios_app_id => @app1.id).to_a
