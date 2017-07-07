@@ -10,7 +10,8 @@ class AppStoreInternationalService
       batch.on(
         :complete,
         'AppStoreInternationalService#on_complete_snapshots',
-        'automated' => automated
+        'automated' => automated,
+        'last_snapshot_id' => IosAppCurrentSnapshot.last.id
       )
 
       Slackiq.message('Starting to queue iOS international apps', webhook_name: :main)
@@ -73,7 +74,8 @@ class AppStoreInternationalService
   end
 
   def on_complete_snapshots(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed')
+    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed', 
+     'New Snapshots Added' => IosAppCurrentSnapshot.last.id - options['last_snapshot_id'].to_i)
 
     if options['automated']
       AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
