@@ -11,7 +11,8 @@ class AppStoreInternationalService
         :complete,
         'AppStoreInternationalService#on_complete_snapshots',
         'automated' => automated,
-        'last_snapshot_id' => IosAppCurrentSnapshot.last.id
+        'last_snapshot_id' => IosAppCurrentSnapshot.last.id,
+        'notification_title' => notification_title_by_scrape_type(scrape_type)
       )
 
       Slackiq.message('Starting to queue iOS international apps', webhook_name: :main)
@@ -22,11 +23,11 @@ class AppStoreInternationalService
       snapshot_worker = snapshot_worker_by_scrape_type(scrape_type)
 
       enabled_app_store_ids = AppStore.where(enabled: true).pluck(:id)
+      batch_size = batch_size_by_scrape_type(scrape_type)
 
       ids = IosApp.where(query).pluck(:id)
       batch.jobs do
-        # limit at 150 so http requests to iTunes API do not fail
-        ids.each_slice(150) do |slice|
+        ids.each_slice(batch_size) do |slice|
           args = enabled_app_store_ids.map do |app_store_id|
             [j.id, slice, app_store_id]
           end
@@ -40,6 +41,24 @@ class AppStoreInternationalService
       end
 
       Slackiq.message("Done queueing App Store apps", webhook_name: :main)
+    end
+
+    def batch_size_by_scrape_type(scrape_type)
+      if scrape_type == :all
+        return 150
+      else
+        # Limit batch size to 50 for non "all" scrape types so we 
+        # don't receive lock timeout errors from the batch insert.
+        return 50 
+      end
+    end
+
+    def notification_title_by_scrape_type(scrape_type)
+      if scrape_type == :all
+        return 'Entire App Store Scrape (international) completed'
+      else
+        return 'New App Store Scrape (international) completed'
+      end
     end
 
     def snapshot_query_by_scrape_type(scrape_type)
@@ -74,7 +93,7 @@ class AppStoreInternationalService
   end
 
   def on_complete_snapshots(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Entire App Store Scrape (international) completed', 
+    Slackiq.notify(webhook_name: :main, status: status, title: options['notification_title'], 
      'New Snapshots Added' => IosAppCurrentSnapshot.last.id - options['last_snapshot_id'].to_i)
 
     if options['automated']

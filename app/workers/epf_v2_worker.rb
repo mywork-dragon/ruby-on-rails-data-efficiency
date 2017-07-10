@@ -60,10 +60,11 @@ class EpfV2Worker
 
     puts 'Kicking off new apps scrape'
     AppStoreSnapshotService.run_new_apps(notes: "Run new apps #{Time.now.strftime("%m/%d/%Y")}")
-    AppStoreInternationalService.run_snapshots(scrape_type: :new)
 
     if ServiceStatus.is_active?(:auto_ios_intl_scrape)
       AppStoreInternationalService.run_snapshots(automated: true, scrape_type: :all)
+    else
+      AppStoreInternationalService.run_snapshots(scrape_type: :new)
     end
   rescue AppStoreSnapshotService::InvalidDom
     Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING NEW APPS SCRAPE', webhook_name: :main)
