@@ -118,4 +118,7 @@ Rails.application.configure do
 
   # this value is also hard-coded in schedule.rb for log rotation
   config.dark_side_json_log_path = '/var/log/varys/sidekiq.json.log'
+
+  # Bucket to store feeds
+  config.feed_bucket = 'mightysignal-feeds'
 end

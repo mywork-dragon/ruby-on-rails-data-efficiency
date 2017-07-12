@@ -75,6 +75,24 @@ class ClearbitWorker
     "cocos2d-x.org"=>[], "github.com"=>[], "strikingly.com"=>[], "about.me"=>[343529], "yolasite.com"=>[]
   }
 
+  def export_domain_data
+    s3_client = MightyAws::S3.new
+    key = "#{Date.today.iso8601}/internal/domain_data.gz"
+    file_name = '/tmp/domain_data.gz'
+
+    Zlib::GzipWriter.open(file_name) do |gz|
+      domain_data = DomainDatum.pluck(:id).map do |id|
+        dd = DomainDatum.find(id)
+        gz.write(dd.to_json)
+        gz.write("\n")
+      end
+    end
+    s3_client.upload_file(
+        bucket: Rails.application.config.feed_bucket,
+        key_path: key,
+        file_path: file_name)
+  end
+
   def perform(method, *args)
     self.send(method.to_sym, *args)
   end

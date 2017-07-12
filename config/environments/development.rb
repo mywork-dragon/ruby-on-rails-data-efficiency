@@ -68,4 +68,6 @@ Rails.application.configure do
 
   config.application_export_bucket = 'mightysignal-applications-dev'
 
+  # Bucket to store feeds
+  config.feed_bucket = 'ms-scratch'
 end
