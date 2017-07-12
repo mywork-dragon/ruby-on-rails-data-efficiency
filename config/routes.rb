@@ -143,7 +143,6 @@ Rails.application.routes.draw do
       put 'major_apps/untag' => 'admin#untag_major_app'
       post 'major_publishers/tag' => 'admin#tag_major_publisher'
       put 'major_publishers/untag' => 'admin#untag_major_publisher'
-
     end
 
     scope '/salesforce' do
@@ -176,6 +175,10 @@ Rails.application.routes.draw do
   # internal api for FB account reservations
   put 'fb_account/reserve' => 'fb_account#reserve'
   put 'fb_account/release' => 'fb_account#release'
+
+  # internal api to revtrieve info about the
+  # devices in the lab
+  get 'ios_devices' => 'ios_device#filter'
 
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
