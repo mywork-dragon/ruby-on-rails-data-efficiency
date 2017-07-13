@@ -41,7 +41,9 @@ module MobileApp
       output.append(record)
     end
     output = output.sort_by {|x| x['stop_date']}
-    output[-1]['stop_date'] = nil
+    if output.length > 0
+      output[-1]['stop_date'] = nil
+    end
     output
   end
 
