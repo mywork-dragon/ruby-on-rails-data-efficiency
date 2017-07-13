@@ -52,7 +52,7 @@ class IosApp < ActiveRecord::Base
   enum mobile_priority: [:high, :medium, :low]
   enum user_base: [:elite, :strong, :moderate, :weak] # this order matters...don't change or add more
   enum display_type: [:normal, :taken_down, :foreign, :device_incompatible, :paid, :not_ios]
-  enum source: [:epf_weekly, :ewok, :itunes_top_200]
+  enum source: [:epf_weekly, :ewok, :itunes_top_200, :epf_incremental]
 
   scope :is_ios, ->{where.not(display_type: display_types[:not_ios])}
 
@@ -579,7 +579,7 @@ class IosApp < ActiveRecord::Base
 
   def reset_app_data
     update!(display_type: :normal)
-    AppStoreInternationalService.live_scrape_ios_apps([id])
+    AppStoreInternationalService.scrape_ios_apps([id], live: true)
     AppStoreSnapshotServiceWorker.new.perform(nil, id)
     puts 'sleeping to allow intl scrapes'
     sleep 3

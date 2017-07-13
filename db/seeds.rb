@@ -20,10 +20,10 @@ MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', 
 MicroProxy.create!(:active=>true, :public_ip => 'proxy', :private_ip =>'proxy', :purpose => :general)
 
 puts 'creating App Stores...'
-AppStore.create!(country_code: "US", display_priority: 1)
-AppStore.create!(country_code: "CN", display_priority: 2)
-AppStore.create!(country_code: "GB", display_priority: 3)
-AppStore.create!(country_code: "JP", display_priority: 4)
+AppStore.create!(country_code: "US", display_priority: 1, enabled: true)
+AppStore.create!(country_code: "CN", display_priority: 2, enabled: true)
+AppStore.create!(country_code: "GB", display_priority: 3, enabled: true)
+AppStore.create!(country_code: "JP", display_priority: 4, enabled: true)
 
 puts 'creating Developers'
 500.times do
@@ -42,7 +42,7 @@ end
                                              icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,
                                              description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100),
                                             ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500), seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_app_store_identifier: Faker::Number.between(1, 50))
-    ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/(Date.tomorrow - ios_app_snapshot.released).to_f
+    ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/([1, Date.tomorrow - ios_app_snapshot.released].max).to_f
     ios_app.newest_ios_app_snapshot = ios_app_snapshot
     ios_app.app_stores << AppStore.all.sample
     ios_app.save

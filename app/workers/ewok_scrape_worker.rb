@@ -34,8 +34,9 @@ class EwokScrapeWorker
     ios_app = get_ios_app(app_identifier)
 
     batch.jobs do
-      AppStoreInternationalService.live_scrape_ios_apps(
+      AppStoreInternationalService.scrape_ios_apps(
         [ios_app.id],
+        live: true,
         notes: "Ewok scrape ios app #{ios_app.id}: #{app_identifier}"
       )
     end

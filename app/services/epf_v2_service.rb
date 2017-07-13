@@ -1,3 +1,4 @@
+# DEPRECATED
 class EpfV2Service
 
   EPF_USERNAME = ENV['EPF_USERNAME'].to_s

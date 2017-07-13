@@ -82,7 +82,7 @@ class ItunesChartWorker
       'ios_app_ids' => ios_app_ids
     )
     batch.jobs do
-      AppStoreInternationalService.live_scrape_ios_apps(ios_app_ids)
+      AppStoreInternationalService.scrape_ios_apps(ios_app_ids, live: true)
     end
 
     # TODO: make this better. Make sure intl scrapes complete before epf scan service runs

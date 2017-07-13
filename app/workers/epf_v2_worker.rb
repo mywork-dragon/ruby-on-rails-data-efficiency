@@ -1,3 +1,4 @@
+# DEPRECATED - now using combination of airflow and EpfApplicationLoader
 class EpfV2Worker
   include Sidekiq::Worker
   sidekiq_options queue: :epf, retry: false

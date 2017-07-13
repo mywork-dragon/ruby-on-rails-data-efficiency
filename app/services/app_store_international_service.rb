@@ -80,15 +80,19 @@ class AppStoreInternationalService
       end
     end
 
-    def live_scrape_ios_apps(ios_app_ids, notes: 'international scrape')
-      ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create!(notes: notes)
-      AppStore.where(enabled: true).each do |app_store|
-          AppStoreInternationalLiveSnapshotWorker.perform_async(
-            ios_app_current_snapshot_job.id,
-            ios_app_ids,
-            app_store.id
-          )
-      end
+    def scrape_ios_apps(ios_app_ids, notes: 'international scrape', live: false, job: nil)
+      ios_app_current_snapshot_job = job || IosAppCurrentSnapshotJob.create!(notes: notes)
+      worker = live ? AppStoreInternationalLiveSnapshotWorker : AppStoreInternationalSnapshotWorker
+      batch_size = batch_size_by_scrape_type(:new)
+      store_ids = AppStore.where(enabled: true).pluck(:id)
+
+      args = store_ids.map do |app_store_id|
+        ios_app_ids.each_slice(batch_size).map do |ios_app_id_group|
+          [ios_app_current_snapshot_job.id, ios_app_id_group, app_store_id]
+        end
+      end.inject(:+)
+
+      Sidekiq::Client.push_bulk('class' => worker, 'args' => args)
     end
   end
 

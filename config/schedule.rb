@@ -68,10 +68,6 @@ end
 ############################################
 # scheduler container runs in UTC
 ############################################
-#
-every :day, :at => '7:56am', roles: [:varys_scheduler] do
-  runner 'EpfV2Worker.new.run_epf_if_feed_available', :output => '/var/log/cron.log'
-end
 
 every :day, at: '1:00am', roles: [:varys_scheduler] do
   runner 'AndroidSdk.store_current_sdks_in_s3', :output => '/var/log/cron.log'

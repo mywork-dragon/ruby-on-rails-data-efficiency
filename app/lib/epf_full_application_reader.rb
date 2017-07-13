@@ -1,3 +1,4 @@
+# DEPRECATED - now using feeds service via EpfApplicationLoader
 class EpfFullApplicationReader
 
   class CommentLine; end

@@ -188,6 +188,9 @@ Rails.application.routes.draw do
   post 'ios_sdk/validate' => 'ios_sdk#validate'
   post 'ios_sdk/sync' => 'ios_sdk#sync'
 
+  put 'epf/incremental' => 'epf#load_incremental'
+  put 'epf/full' => 'epf#load_full'
+
   # Client-facing API
   scope module: 'client_api' do
     # app
