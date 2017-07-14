@@ -12,6 +12,7 @@ For this reason, we'll support **both** a **Docker-based** and **non-Docker-base
 * Install RVM: https://rvm.io/
 * Install the aws cli http://docs.aws.amazon.com/cli/latest/userguide/installing.html 
 * Add this to your bash profile eg ~/.bashrc `$(aws ecr get-login --region us-east-1)`.
+  * If you're on docker 17.06.0 or higher, make sure your aws cli is updated and add `$(aws ecr get-login --region us-east-1 --no-include-email)`
 * Clone the repository
 * Download Docker version >= 1.12.3. Check after installing:
 * Install serverless if you plan to work on the lambda tasks. https://serverless.com/framework/docs/providers/aws/guide/installation/
