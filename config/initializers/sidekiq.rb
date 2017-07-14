@@ -40,3 +40,7 @@ else Rails.env.development?
   end
   
 end
+
+if ENV['LOG_LEVEL']
+  Sidekiq::Logging.logger.level = "Logger::#{ENV['LOG_LEVEL']}".constantize
+end

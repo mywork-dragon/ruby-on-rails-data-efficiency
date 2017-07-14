@@ -47,6 +47,11 @@ Rails.application.configure do
   # Set to :debug to see everything in the log.
   config.log_level = :info
 
+  if ENV['LOG_LEVEL']
+    config.log_level = "Logger::#{ENV['LOG_LEVEL']}".constantize
+  end
+
+
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
 
