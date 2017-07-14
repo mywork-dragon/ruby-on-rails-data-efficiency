@@ -1,8 +1,14 @@
 class IosSnapshotAccessor
 
-  def initialize()
+  attr_reader :delegate
+
+  def initialize
     # Change delegate type to swap out implementations
     @delegate = DiffSnapshotTableAccessor.new
+  end
+
+  def job_snapshots_count(ios_app_current_snapshot_job_id)
+    @delegate.job_snapshots_count(ios_app_current_snapshot_job_id)
   end
 
   def mobile_priority_value(mobile_priority_symbol)

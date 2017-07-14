@@ -3,25 +3,18 @@ class IosMassScanService
   class << self
 
     def run_ids(notes, ids)
-
       ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
 
-      if Rails.env.production?
+      Slackiq.message("Starting an iOS download job for #{ids.length} apps", webhook_name: :main)
 
-        Slackiq.message("Starting an iOS download job for #{ids.length} apps", webhook_name: :main)
+      batch = Sidekiq::Batch.new
+      batch.description = 'iOS Download'
+      batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
 
-        batch = Sidekiq::Batch.new
-        batch.description = 'iOS Download'
-        batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
-
-        batch.jobs do
-          IosApp.where(id: ids).pluck(:id).each do |ios_app_id|
-            IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app_id)
-          end
+      batch.jobs do
+        IosApp.where(id: ids).pluck(:id).each do |ios_app_id|
+          IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app_id)
         end
-      else
-        ios_app_id = IosApp.where(id: ids).pluck(:id).sample
-        IosMassScanServiceWorker.new.perform(ipa_snapshot_job.id, ios_app_id)
       end
     end
 
@@ -49,36 +42,11 @@ class IosMassScanService
       run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
     end
 
-    # helper method for running scans
-    def run_new(n)
-      tried = (IpaSnapshot.select(:ios_app_id).distinct.pluck(:ios_app_id) +
-               IpaSnapshotLookupFailure.select(:ios_app_id).distinct.pluck(:ios_app_id)).uniq
-
-      puts "Found all #{tried.count} tried apps"
-
-      mb_high = IosSnapshotAccessor.new.ios_app_ids_from_store_and_priority(1, :high)
-
-      ids = []
-
-      while ids.count < n && mb_high.count > 0 do
-        id = mb_high.shift
-        ids << id unless tried.include?(id)
-      end
-
-      return if ids.count == 0
-
-      puts "Selected #{ids.count} apps in mobile priority high that haven't been tried"
-
-      run_ids("Running #{ids.count} at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", ids)
-    end
-
-    def run_recently_updated(n: 5000, ratings_min: 0, automated: false)
-      recent = IosSnapshotAccessor.new.recently_updated_snapshot_ids(limit: n, ratings_min: ratings_min)
-
-      unless automated
-        print "Filtered to recent #{recent.count}. Continue? [y/n] : "
-        return unless gets.chomp.include?('y')
-      end
+    def run_recently_updated(limit: nil, ratings_min: 0, since: (DateTime.now() - 7.days).strftime('%Y-%m-%d'))
+      recent = IosSnapshotAccessor.new.recently_updated_snapshot_ids(
+        limit: limit,
+        ratings_min: ratings_min,
+        lookback_time: DateTime.strptime(since, '%Y-%m-%d'))
 
       run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
     end

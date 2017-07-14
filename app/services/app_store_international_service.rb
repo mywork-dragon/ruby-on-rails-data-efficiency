@@ -99,17 +99,6 @@ class AppStoreInternationalService
   def on_complete_snapshots(status, options)
     Slackiq.notify(webhook_name: :main, status: status, title: options['notification_title'], 
      'New Snapshots Added' => IosAppCurrentSnapshot.last.id - options['last_snapshot_id'].to_i)
-
-    if options['automated']
-      AppStoreSnapshotService.run(automated: true) if ServiceStatus.is_active?(:auto_ios_us_scrape)
-
-      if ServiceStatus.is_active?(:auto_ios_mass_scan)
-        IosMassScanService.run_recently_released(automated: true)
-        IosMassScanService.run_recently_updated(automated: true, n: 2000)
-      end
-    end
-  rescue AppStoreSnapshotService::InvalidDom
-    Slackiq.message('NOTICE: iOS DOM INVALID. CANCELLING APP STORE SCRAPE', webhook_name: :main)
   end
 
 end

@@ -1181,14 +1181,13 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
       :app_store_id=>1,
       :ios_app_id=>ios_app_3.id,
       :user_base=>0,
-      :released=>5.days.ago,
+      :released=>20.days.ago,
       :ratings_all_count=>7)
 
-    result = @accessor.recently_updated_snapshot_ids(limit: 2, ratings_min: 5, app_store_id: 1, lookback_time: 2.weeks.ago)
+    result = @accessor.recently_updated_snapshot_ids(limit: nil, ratings_min: 5, app_store_id: 1, lookback_time: 2.weeks.ago)
     
     assert_equal 2, result.length
-    assert_equal ios_app_2.id, result[0]
-    assert_equal ios_app_1.id, result[1]
+    assert !result.include?(ios_app_3.id)
   end
 
   test 'recently_updated_snapshot_ids_lookback_time_app_store' do

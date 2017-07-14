@@ -1,6 +1,12 @@
 # Deprecated in favor of DiffSnapshotTableAccessor
 class SwapSnapshotTableAccessor
 
+  def job_snapshots_count(ios_app_current_snapshot_job_id)
+    IosAppCurrentSnapshot
+      .where(ios_app_current_snapshot_job_id: ios_app_current_snapshot_job_id)
+      .count
+  end
+
   def mobile_priority_value(mobile_priority_symbol)
     IosAppCurrentSnapshot.mobile_priorities[mobile_priority_symbol]
   end
@@ -89,11 +95,9 @@ class SwapSnapshotTableAccessor
   def recently_updated_snapshot_ids(limit: 5000, ratings_min: 0, app_store_id: 1, lookback_time: nil)
     lookback_time ||= 2.weeks.ago
     IosAppCurrentSnapshot
-        .where.not(user_base: IosApp.user_bases[:weak])
         .where(app_store_id: app_store_id)
         .where('released > ?', lookback_time)
         .where('ratings_all_count > ?', ratings_min)
-        .order(ratings_all_count: :desc)
         .limit(limit).pluck(:ios_app_id)
   end
 

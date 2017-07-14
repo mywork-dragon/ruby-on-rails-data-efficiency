@@ -24,9 +24,14 @@ class EpfV3Worker
       notify_snapshots_created: true
     )
     epf.import(incremental: false, date: date)
-    AppStoreInternationalService.run_snapshots(automated: true, scrape_type: :all)
+    AppStoreInternationalService.run_snapshots(scrape_type: :all) if ServiceStatus.is_active?(:auto_ios_intl_scrape)
+    AppStoreSnapshotService.run if ServiceStatus.is_active?(:auto_ios_us_scrape)
   end
 
   def notify_snapshots_created(ios_app_current_snapshot_job_id)
+    count = IosSnapshotAccessor.new.job_snapshots_count(ios_app_current_snapshot_job_id)
+    Slackiq.message(
+      "Snapshots created by job #{ios_app_current_snapshot_job_id}: #{count}",
+      webhook_name: :main)
   end
 end
