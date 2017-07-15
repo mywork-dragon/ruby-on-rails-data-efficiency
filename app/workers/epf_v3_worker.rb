@@ -9,7 +9,7 @@ class EpfV3Worker
   def load_incremental(date=nil)
     epf = EpfApplicationLoader.new(
       source: :epf_incremental,
-      trigger_existing_app_scrapes: true,
+      trigger_existing_app_scrapes: false,
       trigger_new_app_scrapes: true,
       notify_snapshots_created: true
     )
