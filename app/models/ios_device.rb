@@ -44,118 +44,31 @@ class IosDevice < ActiveRecord::Base
 
   class << self
 
-    def switch_account(ios_device_id:)
-      transaction do
-        # keep track of the old account
-        old_apple_account = IosDevice.find(ios_device_id).apple_account
+    def setup_device(options)
+      ios_device_model = IosDeviceModel.find_by_name(options.fetch(:model_name))
+      raise unless ios_device_model
+      ios_version_fmt = ios_version_to_fmt_version(options.fetch(:ios_version))
+      device = new(
+        purpose: nil, 
+        in_use: false, 
+        last_used: 1.month.ago, 
+        ios_device_model: ios_device_model,
+        ios_version_fmt: ios_version_fmt,
+        ios_version: options.fetch(:ios_version),
+        ip: options.fetch(:ip),
+        description: options.fetch(:description),
+        serial_number: options.fetch(:serial_number))
 
-        # select an email address to use it with
-        account = pick_email_account
+      unless options[:skip_us_account]
+        account = AppleAccount.joins('left join ios_devices on ios_devices.apple_account_id = apple_accounts.id')
+          .where(app_store_id: 1) # US-only
+          .where(kind: AppleAccount.kinds[:static]).take
 
-        raise "No email addresses available. Add a new one" if account.blank?
-
-        # create parameters for a new apple account
-        new_apple_account = AppleAccount.create!(email: account.email, password: 'Somename1')
-
-        IosDevice.find(ios_device_id).update(apple_account: new_apple_account)
-
-        puts "Apple Account".purple
-        ap "Email: #{new_apple_account.email}"
-        ap "password: Somename1"
-        puts "Email Credentials".purple
-        ap "Email: #{account.email}"
-        ap "Password: #{account.password}"
-      end
-    end
-
-    # Helper method to create new device with proxy
-    def create_with_proxy!(params)
-      skip_account = params[:skip_account]
-      params.delete(:skip_account)
-
-      transaction do
-
-        model_name = params[:model_name]
-
-        ios_device_model = check_for_model_name(model_name)
-
-        params.delete(:model_name)
-
-        ios_version_fmt = ios_version_to_fmt_version(params[:ios_version])
-
-        free_proxy = nil
-
-        OpenProxy.where(kind: OpenProxy.kinds.values_at(:aws_tinyproxy, :digital_ocean_tinyproxy)).each do |open_proxy|
-          if open_proxy.ios_devices.blank?
-            free_proxy = open_proxy
-            break
-          end
-        end
-
-        raise 'Cannot find a free open_proxy proxy' if free_proxy.nil?
-
-        ios_device = new(params.merge(ios_device_model: ios_device_model, ios_version_fmt: ios_version_fmt))
-
-        ios_device.open_proxy = free_proxy
-
-        ios_device.save!
-
-        unless skip_account
-          account = pick_email_account
-
-          raise 'Cannot find a free email address' if account.nil?
-
-          apple_account = AppleAccount.create!(email: account.email, password: 'Somename1')
-          ios_device.apple_account = apple_account
-          ios_device.save!
-
-          ap apple_account
-
-          puts "Apple Account".purple
-          ap "Email: #{apple_account.email}"
-          ap "password: Somename1"
-          puts "Email Credentials".purple
-          ap "Email: #{account.email}"
-          ap "Password: #{account.password}"
-        end
-
-        open_proxy = ios_device.open_proxy
-        puts "Proxy IP: #{open_proxy.public_ip}"
-        puts "Proxy Port: #{open_proxy.port}"
-
-        ios_device
+        device.update!(apple_account: account)
       end
 
-
-    end
-
-    # Check if the model name is in the DB
-    # @author Jason Lew
-    def check_for_model_name(model_name)
-      ios_device_model = IosDeviceModel.find_by_name(model_name)
-
-      raise "Could not find model #{model_name} in DB. Add it to the DB if it's a new model." if ios_device_model.nil?
-
-      ios_device_model
-    end
-
-    def ios_version_to_fmt_version(version)
-      semvers = version.split(".")
-      while semvers.length < 3
-        semvers << "0"
-      end
-      semvers.map {|d| "%03d" % d}.join(".")
-    end
-
-    # select an email account to use for creating a new Apple ID. Returns an ActiveRecord object that has both an email and password attribute or nil if nothing is available
-    def pick_email_account
-
-      existing = AppleAccount.pluck(:email)
-      account = IosEmailAccount.where.not(email: existing, flagged: true).take
-
-      return account if account.present?
-
-      account = GoogleAccount.where.not(email: existing).take
+      ap account
+      device
     end
 
     def reset_helper(output_str)
@@ -173,26 +86,6 @@ class IosDevice < ActiveRecord::Base
       end
 
     end
-
-    def country_map(purpose)
-      devices = self.where(purpose: self.purposes[purpose])
-
-      ret = {}
-
-      devices.each do |device|
-        apple_account = device.apple_account
-        
-        if apple_account.blank?
-          ret[device.id] = nil
-          next
-        end
-
-        ret[device.id] = apple_account.app_store.country_code
-      end
-
-      ret
-    end
-
   end
 
 end
