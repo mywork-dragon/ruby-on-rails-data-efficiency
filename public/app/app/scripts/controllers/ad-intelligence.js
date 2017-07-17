@@ -28,6 +28,10 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
       $scope.isLoading = true;
 
+      mixpanel.track("Ad Intelligence Viewed", {
+        "platform": APP_PLATFORM
+      });
+
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.json',
@@ -103,7 +107,6 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       adIntelligenceCtrl.load(1, category, order);
     };
 
-    mixpanel.track("Ad Intelligence Viewed");
     var slacktivityData = {
       "title": "Ad Intelligence Viewed",
       "fallback": "Ad Intelligence Viewed",

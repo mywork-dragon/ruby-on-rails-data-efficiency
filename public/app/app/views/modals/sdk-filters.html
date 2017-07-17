@@ -1,5 +1,5 @@
 <div class="modal fade filter-modal" id="sdkFilterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog sdk-filters">
+  <div class="modal-dialog" ng-style="sdkModalWidth">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -38,18 +38,49 @@
               {{filter.sdk.name}}
               <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdk', 'and', $index)">×</a>
             </span>
-            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+            <span class="ui-select" ng-if="requiresDateRange(filter)">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'and')">
                 <option value="0">Anytime</option>
-                <option value="1">< 1 Week Ago</option>
-                <option value="2">Between 1 Week and 1 Month Ago</option>
-                <option value="3">Between 1 Month and 3 Months Ago</option>
-                <option value="4">Between 3 Months and 6 Months Ago</option>
-                <option value="5">Between 6 Months and 9 Months Ago</option>
-                <option value="6">Between 9 Months and 1 Year Ago</option>
-                <!-- <option value="7">> 1 Year Ago</option> -->
+                <option value="1">Last Week</option>
+                <option value="2">Last Month</option>
+                <option value="3">Last 3 Months</option>
+                <option value="4">Last 6 Months</option>
+                <option value="5">Last 9 Months</option>
+                <option value="6">Last Year</option>
+                <option value="7">Custom date range</option>
+                <option ng-if="isOldFilter(filter)" value="{{filter.date}}">{{getOldFilterText(filter)}}</option>
               </select>
             </span>
+            <div class="datepicker-container" ng-show="hasCustomDateRange(filter) && requiresDateRange(filter)" uib-tooltip="Invalid date range" tooltip-enable="hasInvalidDateRange(filter)">
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.from)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.from" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdk', 'and')"></div>
+                </div>
+              </span>
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.until)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.until" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdk', 'and')"></div>
+                </div>
+              </span>
+            </div>
             <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdk.and.length > 1 || complexFilters.sdk.and[$index].sdk" ng-click="removeComplexFilter('sdk', 'and', filter)"></i>
           </div>
         </div>
@@ -84,18 +115,49 @@
               {{filter.sdk.name}}
               <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdk', 'or', $index)">×</a>
             </span>
-            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+            <span class="ui-select" ng-if="requiresDateRange(filter)">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdk', 'or')">
                 <option value="0">Anytime</option>
-                <option value="1">< 1 Week Ago</option>
-                <option value="2">Between 1 Week and 1 Month Ago</option>
-                <option value="3">Between 1 Month and 3 Months Ago</option>
-                <option value="4">Between 3 Months and 6 Months Ago</option>
-                <option value="5">Between 6 Months and 9 Months Ago</option>
-               <!--  <option value="6">Between 9 Months and 1 Year Ago</option>
-                <option value="7">> 1 Year Ago</option> -->
+                <option value="1">Last Week</option>
+                <option value="2">Last Month</option>
+                <option value="3">Last 3 Months</option>
+                <option value="4">Last 6 Months</option>
+                <option value="5">Last 9 Months</option>
+                <option value="6">Last Year</option>
+                <option value="7">Custom date range</option>
+                <option ng-if="isOldFilter(filter)" value="{{filter.date}}">{{getOldFilterText(filter)}}</option>
               </select>
             </span>
+            <div class="datepicker-container" ng-show="hasCustomDateRange(filter) && requiresDateRange(filter)" uib-tooltip="Invalid date range" tooltip-enable="hasInvalidDateRange(filter)">
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.from)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.from" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdk', 'or')"></div>
+                </div>
+              </span>
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.until)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.until" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdk', 'or')"></div>
+                </div>
+              </span>
+            </div>
             <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdk.or.length > 1 || complexFilters.sdk.or[$index].sdk" ng-click="removeComplexFilter('sdk', 'or', filter)"></i>
           </div>
         </div>
@@ -125,16 +187,49 @@
             <span class="ui-select" ng-if="filter.sdkCategory" ng-init="sdkOptions = sdkCategories[filter.sdkCategory.name].sdks; dropdownSettings = sdkDropdownSettings(filter)">
                <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkOptions" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
             </span>
-            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+            <span class="ui-select" ng-if="requiresDateRange(filter)">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdkCategory', 'and')">
                 <option value="0">Anytime</option>
-                <option value="1">< 1 Week Ago</option>
-                <option value="2">Between 1 Week and 1 Month Ago</option>
-                <option value="3">Between 1 Month and 3 Months Ago</option>
-                <option value="4">Between 3 Months and 6 Months Ago</option>
-                <option value="5">Between 6 Months and 9 Months Ago</option>
+                <option value="1">Last Week</option>
+                <option value="2">Last Month</option>
+                <option value="3">Last 3 Months</option>
+                <option value="4">Last 6 Months</option>
+                <option value="5">Last 9 Months</option>
+                <option value="6">Last Year</option>
+                <option value="7">Custom date range</option>
+                <option ng-if="isOldFilter(filter)" value="{{filter.date}}">{{getOldFilterText(filter)}}</option>
               </select>
             </span>
+            <div class="datepicker-container" ng-show="hasCustomDateRange(filter) && requiresDateRange(filter)" uib-tooltip="Invalid date range" tooltip-enable="hasInvalidDateRange(filter)">
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.from)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.from" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdkCategory', 'and')"></div>
+                </div>
+              </span>
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.until)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.until" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdkCategory', 'and')"></div>
+                </div>
+              </span>
+            </div>
             <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdkCategory.and.length > 1 || complexFilters.sdkCategory.and[$index].sdkCategory" ng-click="removeComplexFilter('sdkCategory', 'and', filter)"></i>
           </div>
         </div>
@@ -163,16 +258,49 @@
             <span class="ui-select" ng-if="filter.sdkCategory" ng-init="sdkOptions = sdkCategories[filter.sdkCategory.name].sdks; dropdownSettings = sdkDropdownSettings(filter)">
                <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkOptions" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
             </span>
-            <span class="ui-select" ng-if="['0', '1'].indexOf(filter.status) > -1">
+            <span class="ui-select" ng-if="requiresDateRange(filter)">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdkCategory', 'or')">
                 <option value="0">Anytime</option>
-                <option value="1">< 1 Week Ago</option>
-                <option value="2">Between 1 Week and 1 Month Ago</option>
-                <option value="3">Between 1 Month and 3 Months Ago</option>
-                <option value="4">Between 3 Months and 6 Months Ago</option>
-                <option value="5">Between 6 Months and 9 Months Ago</option>
+                <option value="1">Last Week</option>
+                <option value="2">Last Month</option>
+                <option value="3">Last 3 Months</option>
+                <option value="4">Last 6 Months</option>
+                <option value="5">Last 9 Months</option>
+                <option value="6">Last Year</option>
+                <option value="7">Custom date range</option>
+                <option ng-if="isOldFilter(filter)" value="{{filter.date}}">{{getOldFilterText(filter)}}</option>
               </select>
             </span>
+            <div class="datepicker-container" ng-show="hasCustomDateRange(filter) && requiresDateRange(filter)" uib-tooltip="Invalid date range" tooltip-enable="hasInvalidDateRange(filter)">
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.from)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.from" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdkCategory', 'or')"></div>
+                </div>
+              </span>
+              <span uib-dropdown auto-close="outsideClick">
+                <button
+                  uib-dropdown-toggle
+                  type="button"
+                  class="btn btn-default date-btn"
+                  ng-class="{'invalid-date': hasInvalidDateRange(filter)}"
+                  name="button"
+                >
+                  {{formatDate(filter.dateRange.until)}} <span class="caret date-caret"></span>
+                </button>
+                <div uib-dropdown-menu class="date-dropdown">
+                  <div uib-datepicker datepicker-options="dateOptions" ng-model="filter.dateRange.until" ng-change="changedComplexFilter(filter, 'dateRange', '{{filter}}', 'sdkCategory', 'or')"></div>
+                </div>
+              </span>
+            </div>
             <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.sdkCategory.or.length > 1 || complexFilters.sdkCategory.or[$index].sdkCategory" ng-click="removeComplexFilter('sdkCategory', 'or', filter)"></i>
           </div>
         </div>

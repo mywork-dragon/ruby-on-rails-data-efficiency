@@ -236,6 +236,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         .success(function(data) {
           mixpanel.track(
             "Contact Email Requested", {
+              'contact': contact,
               'email': data.email,
               'clearbitId': clearbitId
             }

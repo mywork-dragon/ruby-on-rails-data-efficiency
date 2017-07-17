@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal",
-    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal) {
+  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService",
+    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
@@ -82,6 +82,76 @@ angular.module('appApp')
         {id: 4, name: 'Weak'},
       ]
 
+      $scope.dateOptions = {
+        showWeeks: false,
+        maxDate: new Date()
+      }
+
+      $scope.sdkModalWidth = {
+        'width': '725px',
+        'transition': 'width .75s'
+      }
+
+      $scope.updateSdkModalWidth = function () {
+        const filters = $scope.complexFilters;
+        const sdkDateRangePresent = [filters.sdk.and, filters.sdk.or].some(filterGroup => filterGroup.some(filter => $scope.hasCustomDateRange(filter)))
+        const sdkCategoryDateRangePresent = [filters.sdkCategory.and, filters.sdkCategory.or].some(filterGroup => filterGroup.some(filter => $scope.hasCustomDateRange(filter)))
+        if (sdkCategoryDateRangePresent) {
+          $scope.sdkModalWidth['width'] = '925px'
+        } else if (sdkDateRangePresent) {
+          $scope.sdkModalWidth['width'] = '800px'
+        } else {
+          $scope.sdkModalWidth['width'] = '725px'
+        }
+      }
+
+      $scope.invalidDateRanges = false
+
+      $scope.checkDateRanges = function () {
+        const filters = $scope.complexFilters;
+        $scope.invalidDateRanges = [filters.sdk.and, filters.sdk.or, filters.sdkCategory.and, filters.sdkCategory.or].some(filterGroup => {
+          return filterGroup.some(filter => {
+            if ($scope.hasCustomDateRange(filter)) {
+              return $scope.hasInvalidDateRange(filter)
+            }
+            return false;
+          })
+        })
+      }
+
+      $scope.hasCustomDateRange = function (filter) {
+        return filter.date == 7;
+      }
+
+      $scope.hasInvalidDateRange = function (filter) {
+        return filter.dateRange ? filter.dateRange.from > filter.dateRange.until : false
+      }
+
+      $scope.requiresDateRange = function (filter) {
+        return ['0', '1'].includes(filter.status)
+      }
+
+      $scope.isOldFilter = function (filter) {
+        return parseInt(filter.date, 10) >= 8
+      }
+
+      $scope.getOldFilterText = function (filter) {
+        switch (filter.date) {
+          case "8":
+            return "Between 1 Week and 1 Month Ago"
+          case "9":
+            return "Between 1 Month and 3 Months Ago"
+          case "10":
+            return "Between 3 Months and 6 Months Ago"
+          case "11":
+            return "Between 6 Months and 9 Months Ago"
+          case "12":
+            return "Between 9 Months and 1 Year Ago"
+          default:
+            break;
+        }
+      }
+
       $scope.listButtonDisabled = true
       searchCtrl.apps = []
 
@@ -159,6 +229,10 @@ angular.module('appApp')
         searchCtrl.numApps = 0;
       }
 
+      $scope.formatDate = function (date) {
+        return moment(date).format('L')
+      }
+
       $scope.locationAutocompleteUrl = function(status) {
         return API_URI_BASE + "api/location/autocomplete?status=" + status + "&query="
       }
@@ -231,8 +305,15 @@ angular.module('appApp')
             filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type));
           }
         } else if (old_filter[filter_type]) { // is sdk filter and has sdk selected
-          filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
+          if (field == 'date' && $scope.hasCustomDateRange(filter)) {
+            filter.dateRange = { from: new Date(), until: new Date() }
+            filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field], dateRange: filter.dateRange}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
+          } else {
+            filterService.changeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(old_filter, filter_type), {[field]: filter[field]}, $scope.complexFilterDisplayText(filter_type, filter_operation, filter))
+          }
         }
+        $scope.updateSdkModalWidth();
+        $scope.checkDateRanges();
       }
 
       $scope.removeComplexFilter = function(filter_type, filter_operation, filter) {
@@ -245,6 +326,8 @@ angular.module('appApp')
           $scope.complexFilters[filter_type][filter_operation].splice(index, 1);
           if (!$scope.complexFilters[filter_type][filter_operation].length) $scope.addComplexFilter(filter_type, filter_operation)
         }
+        $scope.updateSdkModalWidth();
+        $scope.checkDateRanges();
       }
 
       $scope.removeComplexNameFilter = function(filter_type, filter_operation, index) {
@@ -310,9 +393,9 @@ angular.module('appApp')
       $scope.filterToTag = function(filter, filter_type) {
         switch(filter_type) {
           case 'sdk':
-            return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name}
+            return {id: filter.sdk.id, status: filter.status, date: filter.date, name: filter.sdk.name, dateRange: filter.dateRange}
           case 'sdkCategory':
-            return {id: filter.sdkCategory.id, status: filter.status, date: filter.date, name: filter.sdkCategory.name, selectedSdks: $scope.checkFilterSelectedSdks(filter)}
+            return {id: filter.sdkCategory.id, status: filter.status, date: filter.date, name: filter.sdkCategory.name, selectedSdks: $scope.checkFilterSelectedSdks(filter), dateRange: filter.dateRange}
           case 'location':
             return {id: filter.location.id, status: filter.status, name: filter.location.name, state: filter.state}
           case 'userbase':
@@ -343,9 +426,9 @@ angular.module('appApp')
       $scope.tagToFilter = function(tag, filter_type) {
         switch(filter_type) {
           case 'sdk':
-            return {status: tag.status, date: tag.date, sdk: {id: tag.id, name: tag.name}}
+            return {status: tag.status, date: tag.date, dateRange: tag.dateRange, sdk: {id: tag.id, name: tag.name}}
           case 'sdkCategory':
-            return {status: tag.status, date: tag.date, sdkCategory: {id: tag.id, name: tag.name, selectedSdks: $scope.checkTagSelectedSdks(tag)}}
+            return {status: tag.status, date: tag.date,  dateRange: tag.dateRange, sdkCategory: {id: tag.id, name: tag.name, selectedSdks: $scope.checkTagSelectedSdks(tag)}}
           case 'location':
             return {status: tag.status, location: {id: tag.id, name: tag.name}, state: tag.state}
           case 'userbase':
@@ -395,6 +478,8 @@ angular.module('appApp')
           })
         }
         $scope.listButtonDisabled = true
+        $scope.checkDateRanges()
+        $scope.updateSdkModalWidth()
       })
 
       $scope.removedTag = function(tag) {
@@ -441,7 +526,6 @@ angular.module('appApp')
       searchCtrl.loadTableData = function(isTablePageChange) {
         var routeParams = $location.search();
         var urlParams = $location.url().split('/search')[1]; // If url params not provided
-
         /* Compile Object with All Filters from Params */
         if (routeParams.app) var appParams = JSON.parse(routeParams.app);
         if (routeParams.company) var companyParams = JSON.parse(routeParams.company);
@@ -461,7 +545,6 @@ angular.module('appApp')
 
         /* Rebuild Filters Array from URL Params */
         for (var key in allParams) {
-
           var value = allParams[key];
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
@@ -500,44 +583,66 @@ angular.module('appApp')
             var searchQueryPairs = {};
             var searchQueryFields = [];
             var sdkNames = [];
-            let sdkCategoryFilterPresent = false;
-            let sdkFilterPresent = false;
+            searchQueryPairs['categoryFilter'] = false;
+            searchQueryPairs['sdkFilter'] = false;
+            searchQueryPairs['sdkCategoryFilter'] = false;
+            searchQueryPairs['locationFilter'] = false;
+
+            const categories = [];
             const sdkCategoryFilters = { and: [], or: [] }
             const sdkFilters = [];
+
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
+              if (tag.value.date == '7') {
+                mixpanel.track(
+                  "Custom Date Range Used",
+                  { dateRange: tag.value.dateRange }
+                )
+              } else if (parseInt(tag.value.date) >= 8) {
+                mixpanel.track(
+                  "Old Date Filter Used",
+                  { date: tag.value.date }
+                )
+              }
               if(tag.parameter == 'sdkNames' && tag.parameter == 'downloads' ) {
                 sdkNames.push(tag.value.name);
               } else if (tag.parameter == 'sdkCategoryFiltersAnd') {
-                sdkCategoryFilterPresent = true;
+                searchQueryPairs['sdkCategoryFilter'] = true;
                 sdkCategoryFilters.and.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
               } else if (tag.parameter == 'sdkCategoryFiltersOr') {
-                sdkCategoryFilterPresent = true;
+                searchQueryPairs['sdkCategoryFilter'] = true;
                 sdkCategoryFilters.or.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
               } else if (tag.parameter.includes('sdkFilters')) {
-                sdkFilterPresent = true;
+                searchQueryPairs['sdkFilter'] = true;
                 sdkFilters.push(tag.value.name)
+              } else if (tag.parameter == 'categories') {
+                searchQueryPairs['categoryFilter'] = true;
+                categories.push(tag.value)
+              } else if (['locationFiltersOr', 'locationFiltersAnd'].includes(tag.parameter)) {
+                searchQueryPairs['locationFilter'] = true;
               }
             });
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
             searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             searchQueryPairs['platform']  = APP_PLATFORM;
+            searchQueryPairs['categories'] = categories;
 
             mixpanel.track(
               "Filter Query Successful",
               searchQueryPairs
             );
 
-            if (sdkCategoryFilterPresent) {
+            if (searchQueryPairs['sdkCategoryFilter']) {
               mixpanel.track(
                 "SDK Category Filter Used",
                 sdkCategoryFilters
               )
             }
 
-            if (sdkFilterPresent) {
+            if (searchQueryPairs['sdkFilter']) {
               mixpanel.track(
                 "SDK Individual Filter Used",
                 { "sdks": sdkFilters }
@@ -586,9 +691,13 @@ angular.module('appApp')
 
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
-        var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
-        $location.url('/search?' + urlParams);
-        searchCtrl.loadTableData();
+        if ($scope.invalidDateRanges) {
+          loggitService.logError("Invalid date range(s)")
+        } else {
+          var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
+          $location.url('/search?' + urlParams);
+          searchCtrl.loadTableData();
+        }
       };
 
       searchCtrl.submitPageChange = function(currentPage) {
@@ -651,8 +760,11 @@ angular.module('appApp')
       }
 
       searchCtrl.createSavedSearch = function(name) {
-        const queryString = searchService.queryStringParameters($rootScope.tags, 1, 100);
-        savedSearchApiService.createSavedSearch(name, queryString)
+        if ($scope.invalidDateRanges) {
+          loggitService.logError("Invalid date range(s)")
+        } else {
+          const queryString = searchService.queryStringParameters($rootScope.tags, 1, 100);
+          savedSearchApiService.createSavedSearch(name, queryString)
           .success(function(data) {
             searchCtrl.savedSearches[data.id] = data;
             searchCtrl.searchName = "";
@@ -679,19 +791,8 @@ angular.module('appApp')
           .error(function(error) {
             savedSearchApiService.toast('search-create-failure');
           });
+        }
       }
-
-      // searchCtrl.updateSavedSearch = function() {
-      //   const queryString = searchService.queryStringParameters($rootScope.tags);
-      //   savedSearchApiService.updateSavedSearch(searchCtrl.currentSavedSearchId, queryString)
-      //     .success(function(data) {
-      //       savedSearchApiService.toast('search-update-success');
-      //       searchCtrl.savedSearches[data.id] = data;
-      //     })
-      //     .error(function(error) {
-      //       savedSearchApiService.toast('search-update-failure');
-      //     })
-      // }
 
       searchCtrl.setCurrentSearchId = function(id, $event) {
         $event.stopPropagation();

@@ -24,20 +24,31 @@ class FilterService
 
     def date_filter(filter)
       case filter["date"].to_i
-      when 1
-        {'gte' => 'now-7d/d'}
-      when 2
-        {'gte' => 'now-30d/d', 'lt' => 'now-7d/d'}
-      when 3
-        {'gte' => 'now-90d/d', 'lt' => 'now-30d/d'}
-      when 4
-       {'gte' => 'now-180d/d', 'lt' => 'now-90d/d'}
-      when 5
-        {'gte' => 'now-240d/d', 'lt' => 'now-180d/d'}
-      when 6
-        {'gte' => 'now-365d/d', 'lt' => 'now-240d/d'}
-      when 7
-        {'lt' => 'now-365d/d'}
+        when 1
+          {'gte' => 'now-7d/d'}
+        when 2
+          {'gte' => 'now-1M/d'}
+        when 3
+          {'gte' => 'now-3M/d'}
+        when 4
+          {'gte' => 'now-6M/d'}
+        when 5
+          {'gte' => 'now-9M/d'}
+        when 6
+          {'gte' => 'now-1y/d'}
+        when 7
+          {'gte' => filter["dateRange"]["from"].to_datetime, 'lte' => filter["dateRange"]["until"].to_datetime}
+        # old date ranges
+        when 8
+          {'gte' => 'now-30d/d', 'lt' => 'now-7d/d'}
+        when 9
+          {'gte' => 'now-90d/d', 'lt' => 'now-30d/d'}
+        when 10
+          {'gte' => 'now-180d/d', 'lt' => 'now-90d/d'}
+        when 11
+          {'gte' => 'now-240d/d', 'lt' => 'now-180d/d'}
+        when 12
+          {'gte' => 'now-365d/d', 'lt' => 'now-240d/d'}
       end
     end
 

@@ -36,22 +36,46 @@ angular.module("appApp")
           }
 
           if (filter.status == "0" || filter.status == "1") { // Only install or uninstall should show date
-            if (filter.date == "0") {
-              displayName = displayName + ' Anytime'
-            } else if (filter.date == '1') {
-              displayName = displayName + ' < 1 Week Ago'
-            } else if (filter.date == '2') {
-             displayName = displayName + ' Between 1 Week and 1 Month Ago'
-            } else if (filter.date == '3') {
-              displayName = displayName + ' Between 1 Month and 3 Months Ago'
-            } else if (filter.date == '4') {
-              displayName = displayName + ' Between 3 Months and 6 Months Ago'
-            } else if (filter.date == '5') {
-              displayName = displayName + ' Between 6 Months and 9 Months Ago'
-            } else if (filter.date == '6') {
-              displayName = displayName + ' Between 9 Months and 1 Year Ago'
-            } else if (filter.date == '7') {
-              displayName = displayName + ' > 1 Year Ago'
+            switch (filter.date) {
+              case "0":
+                displayName = displayName + ' Anytime'
+                break
+              case "1":
+                displayName = displayName + ' Less Than 1 Week Ago'
+                break
+              case "2":
+                displayName = displayName + ' Less Than 1 Month Ago'
+                break
+              case "3":
+                displayName = displayName + ' Less Than 3 Months Ago'
+                break
+              case "4":
+                displayName = displayName + ' Less Than 6 Months Ago'
+                break
+              case "5":
+                displayName = displayName + ' Less Than 9 Months Ago'
+                break
+              case "6":
+                displayName = displayName + ' Less Than 1 Year Ago'
+                break
+              case "7":
+                displayName = displayName + ` Between ${moment(filter.dateRange.from).format('L')} and ${moment(filter.dateRange.until).format('L')}`
+                break
+              case "8":
+                displayName = displayName + ' Between 1 Week and 1 Month Ago'
+                break
+              case "9":
+                displayName = displayName + ' Between 1 Months and 3 Months Ago'
+                break
+              case "10":
+                displayName = displayName + ' Between 3 Months and 6 Months Ago'
+                break
+              case "11":
+                displayName = displayName + ' Between 6 Months and 9 Months Ago'
+                break
+              case "12":
+                displayName = displayName + ' Between 9 Months and 1 Year Ago'
+                break
             }
           }
 
@@ -84,7 +108,7 @@ angular.module("appApp")
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
             if ($rootScope.tags[i].parameter == parameter && this.tagsAreEqual($rootScope.tags[i], oldValue)) {
-              var possible = ["status", "date", "state", "id", "name"]
+              var possible = ["status", "date", "state", "id", "name", "dateRange"]
               for (var y = 0; y < possible.length; y++) {
                 if (value[possible[y]]) {
                   $rootScope.tags[i].value[possible[y]] = value[possible[y]]
