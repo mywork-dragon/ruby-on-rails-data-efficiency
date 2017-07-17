@@ -102,7 +102,9 @@ class EpfApplicationLoader
     path = download(url)
     parse_file(path)
     if @options[:notify_snapshots_created] && @snapshot_job.present?
-      EpfV3Worker.set(queue: :ios_international_scrape).perform_async(@snapshot_job.id)
+      EpfV3Worker
+        .set(queue: :ios_international_scrape)
+        .perform_async(:notify_snapshots_created, @snapshot_job.id)
     end
   ensure
     FileUtils.rm([path]) if defined?(path) && path
@@ -110,7 +112,7 @@ class EpfApplicationLoader
 
   def trigger_new_app_scrapes(rows)
     ids = IosApp.where(app_identifier: rows.map(&:app_identifier)).pluck(:id)
-    AppStoreInternationalService.scrape_ios_apps(ids, job: snapshot_job)
+    AppStoreInternationalService.scrape_ios_apps(ids, job: snapshot_job, batch_size: 25)
   end
 
   # this is pretty dumb for now. If causes too much load, might consider
@@ -120,6 +122,6 @@ class EpfApplicationLoader
       .where(app_identifier: app_identifiers)
       .where.not(display_type: IosApp.display_types[:not_ios])
       .pluck(:id)
-    AppStoreInternationalService.scrape_ios_apps(ids, job: snapshot_job)
+    AppStoreInternationalService.scrape_ios_apps(ids, job: snapshot_job, batch_size: 150)
   end
 end

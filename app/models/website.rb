@@ -44,6 +44,8 @@ class Website < ActiveRecord::Base
     end
 
     self.domain = uri.host.gsub(/^www\./, '').downcase
+  rescue URI::InvalidURIError
+    nil
   end
 
   class << self
