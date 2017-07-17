@@ -44,6 +44,14 @@ class IosDevice < ActiveRecord::Base
 
   class << self
 
+    def ios_version_to_fmt_version(version)
+      semvers = version.split(".")
+      while semvers.length < 3
+        semvers << "0"
+      end
+      semvers.map {|d| "%03d" % d}.join(".")
+    end
+
     def setup_device(options)
       ios_device_model = IosDeviceModel.find_by_name(options.fetch(:model_name))
       raise unless ios_device_model
