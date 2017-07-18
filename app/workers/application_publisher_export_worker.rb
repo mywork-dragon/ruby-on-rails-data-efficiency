@@ -25,7 +25,7 @@ class ApplicationPublisherExportWorker
     end
   end
   
-  def queue_apps
+  def queue_jobs
     queue_ios
     queue_android
   end
