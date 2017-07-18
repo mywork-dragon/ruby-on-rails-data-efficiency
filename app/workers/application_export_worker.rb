@@ -6,7 +6,6 @@ class ApplicationExportWorker
     s3_client = MightyAws::S3.new
     dumped_json = platform.to_s.classify.constantize.find(application_id).as_external_dump_json
     key = "#{dumped_json["platform"]}/#{dumped_json["platform"]}-#{dumped_json["id"]}.json.gz"
-    puts "storing #{key}"
     s3_client.store(
       bucket: Rails.application.config.application_export_bucket,
       key_path: key,

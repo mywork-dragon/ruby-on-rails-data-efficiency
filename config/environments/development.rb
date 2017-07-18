@@ -67,6 +67,8 @@ Rails.application.configure do
   config.ios_classification_models_bucket = 'ms-scratch'
 
   config.application_export_bucket = 'mightysignal-applications-dev'
+  config.application_publisher_export_bucket = 'ms-scratch'
+
 
   # Bucket to store feeds
   config.feed_bucket = 'ms-scratch'

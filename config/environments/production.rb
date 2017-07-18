@@ -120,6 +120,7 @@ Rails.application.configure do
   config.ios_classification_models_bucket = 'ms-ios-classification'
 
   config.application_export_bucket = 'mightysignal-applications'
+  config.application_publisher_export_bucket = 'mightysignal-application-publishers'
 
   # this value is also hard-coded in schedule.rb for log rotation
   config.dark_side_json_log_path = '/var/log/varys/sidekiq.json.log'
