@@ -42,5 +42,5 @@ else Rails.env.development?
 end
 
 if ENV['LOG_LEVEL']
-  Sidekiq::Logging.logger.level = "Logger::#{ENV['LOG_LEVEL']}".constantize
+  Sidekiq::Logging.logger.level = ENV['LOG_LEVEL'].downcase.to_sym
 end

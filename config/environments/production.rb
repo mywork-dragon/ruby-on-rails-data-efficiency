@@ -48,7 +48,7 @@ Rails.application.configure do
   config.log_level = :info
 
   if ENV['LOG_LEVEL']
-    config.log_level = "Logger::#{ENV['LOG_LEVEL']}".constantize
+    config.log_level = ENV['LOG_LEVEL'].downcase.to_sym
   end
 
 
