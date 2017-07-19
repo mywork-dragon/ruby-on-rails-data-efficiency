@@ -48,7 +48,7 @@ class IosMassScanService
         ratings_min: ratings_min,
         lookback_time: DateTime.strptime(since, '%Y-%m-%d'))
 
-      run_ids("Running #{recent.count} recently updated at #{Time.now.strftime '%m/%d/%Y %H:%M %Z'}", recent)
+      run_ids("Running #{recent.count} recently updated since #{since}", recent)
     end
 
     def scan_top_by_rankings(n: 100, kind: :free)
