@@ -8,7 +8,7 @@ class AppsIndex < Chewy::Index
       },
       lowercase: {
         tokenizer: 'keyword',
-        filter: ['lowercase']
+        filter: ['lowercase', 'asciifolding']
       }
     }
   }
@@ -96,6 +96,7 @@ class AppsIndex < Chewy::Index
     field :id
     field :app_identifier, index: 'not_analyzed'
     field :name, type: 'string', value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'name') } do
+      field :title, analyzer: 'title'
       field :lowercase, analyzer: 'lowercase'
     end
     field :seller_url, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_url') }
@@ -153,6 +154,7 @@ class AppsIndex < Chewy::Index
     field :publisher_id, value: -> (ios_app){ios_app.ios_developer.try(:id)}
     field :publisher_identifier, value: -> (ios_app){ios_app.ios_developer.try(:identifier)}, index: 'not_analyzed'
     field :publisher_name, type: 'string', value: -> (ios_app){ios_app.ios_developer.try(:name)} do
+      field :title, analyzer: 'title'
       field :lowercase, analyzer: 'lowercase'
     end
     field :fortune_rank, value: -> (ios_app){ios_app.ios_developer.try(:fortune_1000_rank)}, type: 'integer'
