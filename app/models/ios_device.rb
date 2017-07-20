@@ -70,6 +70,7 @@ class IosDevice < ActiveRecord::Base
       unless options[:skip_us_account]
         account = AppleAccount.joins('left join ios_devices on ios_devices.apple_account_id = apple_accounts.id')
           .where(app_store_id: 1) # US-only
+          .where('ios_devices.id is NULL')
           .where(kind: AppleAccount.kinds[:static]).take
 
         device.update!(apple_account: account)
