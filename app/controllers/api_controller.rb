@@ -831,7 +831,7 @@ class ApiController < ApplicationController
         multi_match: {
             query: query,
             operator: 'and',
-            fields: ['name.title^2', 'seller_url', 'seller', 'publisher_name.title'],
+            fields: ['name^2', 'seller_url', 'seller'],
             type: 'cross_fields',
             fuzziness: 1
         }
