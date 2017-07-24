@@ -36,7 +36,7 @@ end
 
   puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..1000
-    name = Faker::App.name
+    name = Faker::App.name + ' ' + Faker::App.name
     ios_app = IosApp.find_or_initialize_by(app_identifier: i, ios_developer_id: rand(1..500))
     ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"),
                                              icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,

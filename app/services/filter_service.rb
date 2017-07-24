@@ -17,6 +17,10 @@ class FilterService
                           }
                         )
 
+      elsif sort_by == 'name'
+        apps_index.order('name.lowercase' => {'order' => order_by, "missing" => "_last"})
+      elsif sort_by == 'publisher_name'
+        apps_index.order('publisher_name.lowercase' => {'order' => order_by, "missing" => "_last"})
       else
         apps_index.order(sort_by => {'order' => order_by, "missing" => "_last"})
       end
