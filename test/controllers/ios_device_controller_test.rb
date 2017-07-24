@@ -46,4 +46,44 @@ class IosDeviceControllerTest < ActionController::TestCase
     end
   end
 
+  def test_enable_device
+    @controller.stub :authenticate_admin_account, nil do
+      @device1.update(:disabled => true)
+      response = put(:enable_device, {:id => @device1.id})
+      data = JSON.parse(response.body)
+      assert_equal 200, response.status
+      assert_not IosDevice.find(@device1.id).disabled
+    end
+  end
+
+  def test_disable_device
+    @controller.stub :authenticate_admin_account, nil do
+      @device1.update(:disabled => false)
+      response = put(:disable_device, {:id => @device1.id})
+      data = JSON.parse(response.body)
+      assert_equal 200, response.status
+      assert IosDevice.find(@device1.id).disabled
+    end
+  end
+
+  def test_enable_disable_device_not_found
+    @controller.stub :authenticate_admin_account, nil do
+      disable_response = put(:disable_device, {:id => 500})
+      enable_response = put(:enable_device, {:id => 500})
+      
+      assert_equal 404, disable_response.status
+      assert_equal 404, enable_response.status
+    end
+  end
+
+  def test_enable_disable_device_no_id
+    @controller.stub :authenticate_admin_account, nil do
+      response = put(:disable_device)
+      response = put(:enable_device)
+      
+      assert_equal 404, response.status
+      assert_equal 404, response.status
+    end
+  end
+
 end

@@ -179,6 +179,8 @@ Rails.application.routes.draw do
   # internal api to revtrieve info about the
   # devices in the lab
   get 'ios_devices' => 'ios_device#filter'
+  put 'ios_devices/enable' => 'ios_device#enable_device'
+  put 'ios_devices/disable' => 'ios_device#disable_device'
 
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
