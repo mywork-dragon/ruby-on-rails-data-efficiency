@@ -10,7 +10,7 @@ class AndroidAdControllerTest < ActionController::TestCase
     @token = user.generate_auth_token()
   end
 
-  def test_create_ad_impression
+  def x_test_create_ad_impression
     @request.headers['Authorization'] = @token
     verbatum_params = {
       ad_type: 'mobile_app',
@@ -50,7 +50,7 @@ class AndroidAdControllerTest < ActionController::TestCase
 
   end
 
-  def test_minimal_create_ad_impression
+  def x_test_minimal_create_ad_impression
     @request.headers['Authorization'] = @token
     verbatum_params = {
       ad_type: 'mobile_app',
@@ -70,7 +70,7 @@ class AndroidAdControllerTest < ActionController::TestCase
 
   end
 
-  def test_ad_creation_sets_app_display_type
+  def x_test_ad_creation_sets_app_display_type
     @advertised_app.display_type = :taken_down
     @advertised_app.save!
     @request.headers['Authorization'] = @token
