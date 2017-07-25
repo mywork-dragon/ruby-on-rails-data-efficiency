@@ -1,8 +1,11 @@
 import json
 import itertools
 import os
+import requests
 
-from urllib2 import Request, urlopen
+VARYS_API_ENDPOINT = os.environ['VARYS_API_ENDPOINT']
+VARYS_SECRET = os.environ['VARYS_SECRET']
+DASHBOARD_HOST = os.environ['DASHBOARD_HOST']
 
 def slack_msg(metric, device_id, device_type, os_version, device_purpose, success):
     text = "Device Now Healthy" if success else "Device Failed Health Check"
@@ -45,31 +48,7 @@ def slack_msg(metric, device_id, device_type, os_version, device_purpose, succes
         }
     ]
     })
-    q = Request("https://hooks.slack.com/services/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", body, {'Content-Type': 'application/json'})
-    f = urlopen(q)
-    f.read()    
-
-
-
-def update_dashboard(event, context):
-    dashboard_host = os.environ['DASHBOARD_HOST']
-    event_details = parse_event(event)
-    body = json.dumps({
-      "MetricName": event_details['MetricName'],
-      "DeviceId": event_details['DeviceId'],
-      "DeviceType": event_details['DeviceType'],
-      "OSVersion": event_details['OSVersion'],
-      "Status": event_details['AlarmState'],
-      "DevicePurpose": event_details['DevicePurpose']
-    })
-    q = Request("{}/devices/status".format(dashboard_host), body, {'Content-Type': 'application/json'})
-    f = urlopen(q)
-    f.read()
-
-def post_to_slack(event, context):
-    event_details = parse_event(event)
-    healthy = True if event_details['AlarmState'] == 'OK' else False
-    slack_msg(event_details['MetricName'], event_details['DeviceId'], event_details['DeviceType'], event_details['OSVersion'], event_details['DevicePurpose'], healthy)
+    requests.post("https://hooks.slack.com/services/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", data=body, headers={'Content-Type': 'application/json'})
 
 def parse_event(event):
     message = event['Records'][0]['Sns']['Message']
@@ -90,12 +69,43 @@ def parse_event(event):
         "DevicePurpose": device_purpose
     }
 
+def set_device_enabled(device_id, healthy):
+    params = {
+        "access_token": VARYS_SECRET,
+        "id": device_id
+    }
+    if healthy:
+        requests.put("{}/ios_devices/enable".format(VARYS_API_ENDPOINT), params=params, headers={'Accept': 'application/json'})
+    else:
+        requests.put("{}/ios_devices/disable".format(VARYS_API_ENDPOINT), params=params, headers={'Accept': 'application/json'})
+
 def get_device_purpose(device_id):
-    varys_api_host = os.environ['VARYS_API_ENDPOINT']
-    varys_admin_key = os.environ['VARYS_SECRET']
-    request = urlopen(Request("{}/ios_devices?access_token={}&id={}".format(varys_api_host, varys_admin_key, device_id)))
-    result_object = json.load(request)
+    params = {
+        "access_token": VARYS_SECRET,
+        "id": device_id
+    }
+    request = requests.get("{}/ios_devices".format(VARYS_API_ENDPOINT), params=params)
+    result_object = request.json()
     return result_object[0]["purpose"]
 
+def post_event_to_dashboard(event_details):
+    body = json.dumps({
+      "MetricName": event_details['MetricName'],
+      "DeviceId": event_details['DeviceId'],
+      "DeviceType": event_details['DeviceType'],
+      "OSVersion": event_details['OSVersion'],
+      "Status": event_details['AlarmState'],
+      "DevicePurpose": event_details['DevicePurpose']
+    })
+    requests.post("{}/devices/status".format(DASHBOARD_HOST), data=body, headers={'Content-Type': 'application/json'})
+
+# Lambda function handler to set device status in db and notify slack
+def handle_device_event(event, context):
+    event_details = parse_event(event)
+    healthy = True if event_details['AlarmState'] == 'OK' else False
+    set_device_enabled(event_details['DeviceId'], healthy)
+    slack_msg(event_details['MetricName'], event_details['DeviceId'], event_details['DeviceType'], event_details['OSVersion'], event_details['DevicePurpose'], healthy)
+    post_event_to_dashboard(event_details)
+
 if __name__ == "__main__":
-    post_to_slack(None, {})
+    handle_device_event(None, {})

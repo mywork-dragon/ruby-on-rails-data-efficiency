@@ -14,16 +14,9 @@ provider:
 
 functions:
   alerts:
-    handler: handler.post_to_slack
+    handler: handler.handle_device_event
     events:
       - sns: arn:aws:sns:us-east-1:250424072945:device_lab_alarms
-    environment:
-      VARYS_API_ENDPOINT: ${env:VARYS_API_ENDPOINT}
-      VARYS_SECRET: ${env:VARYS_SECRET}
-  dashboard:
-    handler: handler.update_dashboard
-    events:
-      - sns: arn:aws:sns:us-east-1:250424072945:device_lab_alarms 
     environment:
       DASHBOARD_HOST: ${env:DASHBOARD_HOST}
       VARYS_API_ENDPOINT: ${env:VARYS_API_ENDPOINT}
