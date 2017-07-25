@@ -149,7 +149,7 @@ module IosDeviceUtilities
       end
     end
     @ssh.loop
-    raise CommandTimeout.new(command_with_timeout) if exit_code == 124
+    raise CommandTimeout, "Timeout running command (124): #{command_with_timeout}" if exit_code == 124
     
     {
       :std_out => stdout_data,
