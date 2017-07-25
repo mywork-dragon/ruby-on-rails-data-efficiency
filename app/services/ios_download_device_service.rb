@@ -784,14 +784,6 @@ class IosDownloadDeviceService
     log 'Done'
   end
 
-  def unlock_device
-    if @device.ios_version_fmt >= IosDevice.ios_version_to_fmt_version('10.0')
-      run_file(:springboard, '3_unlock_device_ios10.cy')
-    else
-      run_file(:springboard, '3_unlock_device_ios9.cy')
-    end
-  end
-
   def monitor_uninstall
     t = Time.now
     while Time.now - t < 300 # 5 minutes to delete...should only take a couple seconds

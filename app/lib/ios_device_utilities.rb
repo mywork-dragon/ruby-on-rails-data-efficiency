@@ -43,6 +43,8 @@ module IosDeviceUtilities
 
   class UnregisteredApp < RuntimeError; end
   class InvalidLocation < RuntimeError; end
+  class CommandTimeout < RuntimeError; end
+  class CommandFailure < RuntimeError; end
 
   # restart: flag to indicate whether to completely overwrite ssh connection
   def connect(restart: false)
@@ -81,7 +83,7 @@ module IosDeviceUtilities
     puts "#{prefix}#{msg}"
   end
 
-  def remote_exec(command, command_attempts: nil)
+  def remote_exec(command, command_attempts: nil, timeout: 300)
     resp, attempt = nil, 0
 
     command_attempts = command_attempts || max_command_attempts
@@ -90,8 +92,10 @@ module IosDeviceUtilities
       attempt += 1
 
       resp = begin
-        @ssh.exec! command
-      rescue Net::SSH::Disconnect, IOError, Errno::ECONNRESET => e
+        exec_result = channel_exec(command, timeout)
+        exec_result = exec_result[:exit_code] == 0 ? exec_result = exec_result[:std_out] : exec_result = exec_result[:std_err]
+        exec_result
+      rescue Net::SSH::Disconnect, IOError, Errno::ECONNRESET, CommandTimeout, CommandFailure => e
         e
       rescue => e
         log_debug "Uncaught Error type: #{e.class} : #{e.message}"
@@ -99,9 +103,12 @@ module IosDeviceUtilities
 
       return nil unless resp
 
-      if [Net::SSH::Disconnect, Errno::ECONNRESET, IOError].include?(resp.class)
+      if [Net::SSH::Disconnect, Errno::ECONNRESET, IOError, CommandFailure].include?(resp.class)
         log_debug "#{resp.class}: restarting connection"
         connect(restart: true)
+      elsif resp.class == CommandTimeout
+        restart_springboard
+        raise resp
       elsif resp.match(/ST Error:/)
       else
         return resp
@@ -113,7 +120,45 @@ module IosDeviceUtilities
     failed_remote_exec(command, resp)
   end
 
-  def run_command(command, description, expected_output = nil)
+  def channel_exec(command, timeout)
+    escaped_command = command.gsub(/"/,"\\\"")
+    command_with_timeout = "timeout #{timeout}s bash -c \"#{escaped_command}\""
+    stdout_data = ""
+    stderr_data = ""
+    exit_code = nil
+    exit_signal = nil
+    @ssh.open_channel do |channel|
+      channel.exec(command_with_timeout) do |ch, success|
+        raise CommandFailure, "Error running command: #{command_with_timeout}" unless success
+
+        channel.on_data do |ch,data|
+          stdout_data+=data
+        end
+
+        channel.on_extended_data do |ch,type,data|
+          stderr_data+=data
+        end
+
+        channel.on_request("exit-status") do |ch,data|
+          exit_code = data.read_long
+        end
+
+        channel.on_request("exit-signal") do |ch, data|
+          exit_signal = data.read_long
+        end
+      end
+    end
+    @ssh.loop
+    raise CommandTimeout.new(command_with_timeout) if exit_code == 124
+    
+    {
+      :std_out => stdout_data,
+      :std_err => stderr_data,
+      :exit_code => exit_code
+    }
+  end
+
+  def run_command(command, description, expected_output = nil, timeout: 300)
     # add additional check to ensure cycript command doesn't hang indefinitely
     is_cycript = /cycript -p (\w+)/.match(command)
     
@@ -122,7 +167,7 @@ module IosDeviceUtilities
       raise "Running cycript on app #{is_cycript[1]} but app is not running or crashed" if app_count.include?('0')
     end
 
-    resp = remote_exec command
+    resp = remote_exec(command, timeout: timeout)
     if expected_output != nil && resp.chomp != expected_output
       raise "Expected output #{expected_output}. Received #{resp.chomp}"
     end
@@ -172,6 +217,21 @@ module IosDeviceUtilities
     run_command("killall #{info[:name]}", "killing #{app}")
   end
 
+  def restart_springboard
+    kill_app(:springboard)
+    sleep(13)
+    unlock_device
+    sleep(2)
+  end
+
+  def unlock_device
+    if @device.ios_version_fmt >= IosDevice.ios_version_to_fmt_version('10.0')
+      run_file(:springboard, '3_unlock_device_ios10.cy')
+    else
+      run_file(:springboard, '3_unlock_device_ios9.cy')
+    end
+  end
+
   def get_app_info(app)
     info = APPS_INFO_KEY[app]
     raise UnregisteredApp unless info
@@ -192,12 +252,13 @@ module IosDeviceUtilities
   end
 
   # filepath relative to either common scripts or specific scripts folders
-  def run_file(app, filepath, common_location: false)
+  def run_file(app, filepath, common_location: false, timeout: 300)
     info = get_app_info(app)
     path = resolve_script_path(filepath, common_location)
     run_command(
       "cycript -p #{info[:name]} #{path}",
-      "Run file #{filepath} on #{info[:name]}"
+      "Run file #{filepath} on #{info[:name]}",
+      timeout: timeout
     )
   end
 
