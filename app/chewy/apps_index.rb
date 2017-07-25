@@ -1,10 +1,20 @@
 class AppsIndex < Chewy::Index
 
   settings analysis: {
+    filter: {
+      english_possessive_stemmer: {
+        type: 'stemmer',
+        language: 'possessive_english'
+      },
+      minimal_english_stemmer: {
+        type: 'stemmer',
+        language: 'minimal_english'
+      }
+    },
     analyzer: {
       title: {
         tokenizer: 'standard',
-        filter: ['lowercase', 'asciifolding']
+        filter: ['lowercase', 'asciifolding', 'english_possessive_stemmer', 'minimal_english_stemmer']
       },
       lowercase: {
         tokenizer: 'keyword',
@@ -100,7 +110,7 @@ class AppsIndex < Chewy::Index
       field :lowercase, analyzer: 'lowercase'
     end
     field :seller_url, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_url') }
-    field :seller, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_name') }
+    field :seller, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'seller_name') }, analyzer: 'title'
     field :user_base, index: 'not_analyzed'
     field :user_base_display_score, value: -> (ios_app) {ios_app.user_base_display_score}
     field :user_bases, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'user_bases') }, type: 'nested', include_in_parent: true do
@@ -246,7 +256,7 @@ class AppsIndex < Chewy::Index
       field :title, analyzer: 'title'
     end
     field :seller_url, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller_url) || ''}
-    field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}
+    field :seller, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:seller) || ''}, analyzer: 'title'
     field :user_base, index: 'not_analyzed'
     field :user_base_display_score, value: -> (android_app) {android_app.user_base_display_score}
     field :ratings_all, value: ->(android_app) { android_app.newest_android_app_snapshot.try(:ratings_all_count).to_i }, type: 'integer'
