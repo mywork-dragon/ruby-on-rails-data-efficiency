@@ -52,9 +52,9 @@ every :month, roles: [:kylo_ren, :darth_vader] do
   command 'cat /dev/null > /var/log/varys/cron.log', :output => '/var/log/varys/cron.log'
 end
 
-every 30.minutes, roles: [:kylo_ren] do
-  rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
-end
+# every 30.minutes, roles: [:kylo_ren] do
+#   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
+# end
 
 
 every 2.hours, roles: [:kylo_ren] do # every 2 hours
