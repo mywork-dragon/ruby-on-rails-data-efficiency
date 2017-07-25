@@ -135,7 +135,7 @@
               </td>
               <td class="resultsTableAppIcon">
                   <span>
-                    <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}">
+                    <a href="#/app/{{app.type == 'IosApp' ? 'ios' : 'android'}}/{{app.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('app', app.id)">
                       <img ng-src="{{app.icon}}" />
                       {{app.name}}
                       <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -146,7 +146,7 @@
               <td class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('publisher', app.publisher.id)">{{app.publisher.name}}</a></td>
               <td>{{app.fortuneRank}}</td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>

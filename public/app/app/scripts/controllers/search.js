@@ -689,6 +689,13 @@ angular.module('appApp')
           });
       };
 
+      $scope.filterResultsExported = function () {
+        mixpanel.track("Filter Results Exported", {
+          "numApps": $rootScope.numApps,
+          "platform": APP_PLATFORM
+        })
+      }
+
       // When main Dashboard search button is clicked
       searchCtrl.submitSearch = function() {
         if ($scope.invalidDateRanges) {

@@ -54,16 +54,35 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       });
     };
 
-    $scope.loadBatch = function(id, batch, page, perPage) {
+    $scope.isSdk = function (type) {
+      return type == "IosSdk" || type == "AndroidSdk"
+    }
+
+    $scope.isApp = function (type) {
+      return type == "IosApp" || type == "AndroidApp"
+    }
+
+    $scope.loadBatch = function(id, batch, page, perPage, collapsed) {
       page = page || 1
 
-      mixpanel.track("Expanded Timeline Item", {
-        activityType: batch.activity_type,
-        owner: batch.owner.name,
-        platform: batch.owner.platform,
-        type: batch.owner.type,
-        batchId: id
-      });
+      if (!collapsed && page == 1) {
+        mixpanel.track("Expanded Timeline Item", {
+          activityType: batch.activity_type,
+          owner: batch.owner.name,
+          platform: batch.owner.platform,
+          type: batch.owner.type,
+          batchId: id
+        });
+      } else if (!collapsed && page > 1) {
+        mixpanel.track("Expanded Timeline Item Paged Through", {
+          activityType: batch.activity_type,
+          owner: batch.owner.name,
+          platform: batch.owner.platform,
+          type: batch.owner.type,
+          batchId: id,
+          page: page
+        });
+      }
 
       batch.isLoading = true
       $http({
@@ -106,8 +125,8 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       })
     }
 
-    $scope.newFollow = function(id, type, name, follow, source) {
-      newsfeedService.follow(id, type, name, source).success(function(data) {
+    $scope.newFollow = function(follow, source) {
+      newsfeedService.follow(follow, source).success(function(data) {
         follow.following = data.is_following;
         $scope.following = data.following;
       });
@@ -170,32 +189,17 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
     }
 
     $scope.clickedTimelineItem = function(batch, activity, clickedType) {
-      var other_owner = activity.other_owner
-      var type = other_owner.type
-      var id = other_owner.id
-      var activity_type = batch.activity_type
-      var name = other_owner.name
-      var platform = other_owner.platform
-      clickedType = typeof clickedType !== 'undefined' ? clickedType : other_owner.type;
-    //function(type, id, activity_type, name, platform, url) {
+      const otherOwner = activity.other_owner
+      clickedType = typeof clickedType !== 'undefined' ? clickedType : otherOwner.type;
       mixpanel.track("Clicked Timeline Item", {
-        activityType: activity_type,
+        owner: batch.owner.name,
+        activityType: batch.activity_type,
         batchId: batch.id,
-        itemName: name,
-        itemId: id,
-        itemType: type,
+        itemName: otherOwner.name,
+        itemId: otherOwner.id,
+        itemType: otherOwner.type,
         clickedType: clickedType,
       });
-
-      var platform = 'ios'
-      var class_name = 'app'
-
-      if (type == 'AndroidSdk' || type == 'AndroidApp') {
-        platform = 'android'
-      }
-      if (type == 'AndroidSdk' || type == 'IosSdk') {
-        class_name = 'sdk'
-      }
     }
 
     $scope.openAdModal = function (batch, index) {

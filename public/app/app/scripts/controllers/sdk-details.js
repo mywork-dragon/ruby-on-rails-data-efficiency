@@ -41,7 +41,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
 
         mixpanel.track(
           "SDK Details Page Viewed", {
-            "sdkName": sdkDetailsCtrl.name,
+            "sdkName": sdkDetailsCtrl.sdkData.name,
             "platform": $scope.appPlatform
           }
         );

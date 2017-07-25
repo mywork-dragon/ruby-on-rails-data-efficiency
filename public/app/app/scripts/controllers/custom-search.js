@@ -5,6 +5,7 @@ angular.module('appApp')
     function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window) {
       var customSearchCtrl = this;
       customSearchCtrl.platform = APP_PLATFORM; // default
+      customSearchCtrl.newSearch = false;
 
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {
@@ -24,6 +25,14 @@ angular.module('appApp')
             $rootScope.apps = customSearchCtrl.apps;
             $rootScope.numApps = customSearchCtrl.numApps;
             customSearchCtrl.queryInProgress = false;
+
+            if (customSearchCtrl.newSearch) {
+              mixpanel.track("Custom Search Loaded", {
+                "Query": customSearchCtrl.searchInput,
+                "Platform": customSearchCtrl.platform,
+                "Results Count": customSearchCtrl.numApps
+              })
+            }
           })
           .error(function(data) {
             customSearchCtrl.appNum = 0;
@@ -55,16 +64,20 @@ angular.module('appApp')
         $location.url(targetUrl + $httpParamSerializer(routeParams));
         customSearchCtrl.loadTableData();
       };
-      
+
       customSearchCtrl.changeAppPlatform = function(platform) {
         customSearchCtrl.platform = platform;
       };
 
       customSearchCtrl.onPageChange = function(nextPage) {
         customSearchCtrl.submitSearch(nextPage, true);
+        mixpanel.track("Custom Search Results Paged Through", {
+          "Target Page": nextPage
+        })
       };
 
       customSearchCtrl.submitSearch = function(newPageNum, keepSort) {
+        customSearchCtrl.newSearch = typeof newPageNum == 'undefined' ? true : false;
         var routeParams = $location.search();
         var payload = {
           query: customSearchCtrl.searchInput,
@@ -95,15 +108,6 @@ angular.module('appApp')
           // Set URL & process request using Custom Search Ctrl
           $location.url(targetUrl + $httpParamSerializer(payload));
           customSearchCtrl.loadTableData();
-
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Custom Search", {
-              "query": customSearchCtrl.searchInput,
-              "platform": customSearchCtrl.platform
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
         }
       };
 
@@ -154,6 +158,14 @@ angular.module('appApp')
           return "" + baseAppNum.toLocaleString() + " - " + lastPageMaxApps.toLocaleString();
         }
       };
+
+      customSearchCtrl.customSearchLinkClicked = function (type, id) {
+        mixpanel.track("Custom Search Link Clicked", {
+          "type": type,
+          "id": id,
+          "platform": APP_PLATFORM
+        })
+      }
 
     }
   ]);
