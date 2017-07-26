@@ -159,11 +159,13 @@ angular.module('appApp')
         }
       };
 
-      customSearchCtrl.customSearchLinkClicked = function (type, id) {
+      customSearchCtrl.customSearchLinkClicked = function (type, item) {
         mixpanel.track("Custom Search Link Clicked", {
           "type": type,
-          "id": id,
-          "platform": APP_PLATFORM
+          "id": item.id,
+          "name": item.name,
+          "platform": APP_PLATFORM,
+          "query": customSearchCtrl.searchInput
         })
       }
 
