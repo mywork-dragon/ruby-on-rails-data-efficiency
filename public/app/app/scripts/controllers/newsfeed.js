@@ -127,14 +127,14 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
 
     $scope.newFollow = function(followable, action) {
       const follow = {
-        id: follow.id,
-        type: follow.type,
-        name: follow.name,
+        id: followable.id,
+        type: followable.type,
+        name: followable.name,
         source: 'followModal',
         action
       }
       newsfeedService.follow(follow).success(function(data) {
-        follow.following = data.is_following;
+        followable.following = data.is_following;
         $scope.following = data.following;
       });
     }
