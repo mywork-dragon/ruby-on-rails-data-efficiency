@@ -164,7 +164,10 @@ module IosDeviceUtilities
     
     if is_cycript
       app_count = remote_exec "ps aux | grep #{is_cycript[1]} | grep -v grep | wc -l"
-      raise "Running cycript on app #{is_cycript[1]} but app is not running or crashed" if app_count.include?('0')
+      if app_count.include?('0')
+        restart_springboard
+        raise "Restarted springboard: Running cycript on app #{is_cycript[1]} but app is not running or crashed." 
+      end
     end
 
     resp = remote_exec(command, timeout: timeout)
@@ -218,8 +221,10 @@ module IosDeviceUtilities
   end
 
   def restart_springboard
+    log('restarting springboard') if self.respond_to?('log')
     kill_app(:springboard)
     sleep(13)
+    log('unlocking') if self.respond_to?('log')
     unlock_device
     sleep(2)
   end
