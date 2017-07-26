@@ -87,8 +87,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
         source: 'sdkDetails'
       }
       newsfeedService.follow(follow).success(function(data) {
-        $scope.isFollowing = data.following
-        if (data.following) {
+        $scope.isFollowing = data.is_following
+        if (data.is_following) {
           $scope.notify('followed');
         } else {
           $scope.notify('unfollowed');
