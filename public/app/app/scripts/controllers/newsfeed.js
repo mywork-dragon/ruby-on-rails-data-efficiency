@@ -125,8 +125,15 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
       })
     }
 
-    $scope.newFollow = function(follow, source) {
-      newsfeedService.follow(follow, source).success(function(data) {
+    $scope.newFollow = function(followable, action) {
+      const follow = {
+        id: follow.id,
+        type: follow.type,
+        name: follow.name,
+        source: 'followModal',
+        action
+      }
+      newsfeedService.follow(follow).success(function(data) {
         follow.following = data.is_following;
         $scope.following = data.following;
       });

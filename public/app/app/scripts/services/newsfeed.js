@@ -3,16 +3,17 @@
 angular.module("appApp")
   .factory("newsfeedService", ["$http", "slacktivity", function($http, slacktivity) {
     return {
-      follow: function(follow, source) {
+      follow: function(follow) {
         return $http({
           method: 'POST',
           url: API_URI_BASE + 'api/newsfeed/follow',
           data: {id: follow.id, type: follow.type}
         }).success(function(data) {
           mixpanel.track(
-            source, {
+            follow.action, {
               "Followed Type": follow.type,
               name: follow.name,
+              source: follow.source
             }
           );
         });

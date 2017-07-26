@@ -169,8 +169,8 @@
                     <span class="icon fa fa-newspaper-o"></span>
                     <label>Add to Timeline:</label>
                     <div class="actionButton">
-                      <button type="submit" class="btn btn-primary btn-block" ng-click="followApp(appData.id)" ng-if="!isFollowing">Follow App</button>
-                      <button type="submit" class="btn btn-danger btn-block" ng-click="followApp(appData.id)" ng-if="isFollowing">Unfollow App</button>
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="followApp(appData.id, 'Followed Item')" ng-if="!isFollowing">Follow App</button>
+                      <button type="submit" class="btn btn-danger btn-block" ng-click="followApp(appData.id, 'Unfollowed Item')" ng-if="isFollowing">Unfollow App</button>
                     </div>
                   </li>
                   <li>

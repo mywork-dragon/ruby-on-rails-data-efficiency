@@ -178,9 +178,15 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };
 
-    $scope.followApp = function(id) {
-      var appType = $routeParams.platform == 'ios' ? 'IosApp' : 'AndroidApp'
-      newsfeedService.follow(id, appType, $scope.appData.name, 'appDetails').success(function(data) {
+    $scope.followApp = function(id, action) {
+      const follow = {
+        id,
+        type: $routeParams.platform == 'ios' ? 'IosApp' : 'AndroidApp',
+        name: $scope.appData.name,
+        action,
+        source: 'appDetails'
+      }
+      newsfeedService.follow(follow).success(function(data) {
         $scope.isFollowing = data.following
         if (data.following) {
           $scope.notify('followed');

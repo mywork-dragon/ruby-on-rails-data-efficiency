@@ -78,9 +78,15 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
       $rootScope['addSelectedToDropdown'] = ""; // Resets HTML select on view to default option
     };
 
-    $scope.followSdk = function(id) {
-      var sdkType = $routeParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk'
-      newsfeedService.follow(id, sdkType, sdkDetailsCtrl.sdkData.name, 'sdkDetails').success(function(data) {
+    $scope.followSdk = function(id, action) {
+      const follow = {
+        id,
+        type: $routeParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk',
+        name: sdkDetailsCtrl.sdkData.name,
+        action,
+        source: 'sdkDetails'
+      }
+      newsfeedService.follow(follow).success(function(data) {
         $scope.isFollowing = data.following
         if (data.following) {
           $scope.notify('followed');

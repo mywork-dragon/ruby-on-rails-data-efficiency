@@ -73,8 +73,8 @@
                     <span class="icon fa fa-newspaper-o"></span>
                     <label>Add to Timeline:</label>
                     <div class="actionButton">
-                      <button type="submit" class="btn btn-primary btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="!isFollowing">Follow SDK</button>
-                      <button type="submit" class="btn btn-danger btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id)" ng-if="isFollowing">Unfollow SDK</button>
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id, 'Followed Item')" ng-if="!isFollowing">Follow SDK</button>
+                      <button type="submit" class="btn btn-danger btn-block" ng-click="followSdk(sdkDetailsCtrl.sdkData.id, 'Unfollowed Item')" ng-if="isFollowing">Unfollow SDK</button>
                     </div>
                   </li>
                   <li>
