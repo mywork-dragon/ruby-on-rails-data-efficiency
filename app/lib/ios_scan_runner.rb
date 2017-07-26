@@ -42,9 +42,7 @@ class IosScanRunner
 
   def warning_level_map
     {
-      '8' => 3000,
-      '9' => 2000,
-      '10' => 2000
+      '8' => 3000
     }
   end
 
@@ -54,8 +52,8 @@ class IosScanRunner
     apple_account = @classdump.apple_account
     ios_major_version = device.ios_version.split(".").first
     warning_level = warning_level_map[ios_major_version]
-    error_level = warning_level * 2
     return if warning_level.nil?
+    error_level = warning_level * 2
 
     downloads_count = apple_account.class_dumps.count
     alert_frequency = ['one_off', 'one_off_intl'].include?(device.purpose) ? 3 : 15
