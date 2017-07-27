@@ -127,4 +127,5 @@ Rails.application.configure do
 
   # Bucket to store feeds
   config.feed_bucket = 'mightysignal-feeds'
+  config.redshift_firehose_stream = 'redshift-ingestion'
 end

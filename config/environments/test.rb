@@ -63,4 +63,5 @@ Rails.application.configure do
 
   config.itunes_scrape_bucket = 'ms-ios-scrapes-dev'
   config.ios_classification_models_bucket = 'ms-scratch'
+  config.redshift_firehose_stream = 'no-value'
 end

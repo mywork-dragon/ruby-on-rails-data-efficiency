@@ -1,0 +1,40 @@
+class RedshiftLogger
+
+  attr_accessor :firehose, :records
+
+  def initialize(records: [], cluster: 'ms-analytics', database: 'data', table: 'analytics')
+    @records = records.map { |r| add_columns(r) }
+    @cluster = cluster
+    @database = database
+    @table = table
+    @firehose = MightyAws::Firehose.new
+    self
+  end
+
+  def add(r)
+    add_columns(r)
+    @records << r
+    self
+  end
+
+  def clear_records
+    @records = []
+  end
+
+  def add_columns(r)
+    r[:created_at] ||= DateTime.now.utc
+    r['__cluster__'] = @cluster
+    r['__database__'] = @database
+    r['__table__'] = @table
+    r
+  end
+
+  def send!
+    res = @firehose.batch_send(
+      stream_name: Rails.application.config.redshift_firehose_stream,
+      records: @records.map(&:to_json)
+    )
+    clear_records
+    res
+  end
+end

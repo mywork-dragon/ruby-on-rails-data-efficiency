@@ -11,11 +11,24 @@ class IosMassScanService
       batch.description = 'iOS Download'
       batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
 
+      apps = IosApp.where(id: ids).select(:id, :app_identifier)
+
       batch.jobs do
-        IosApp.where(id: ids).pluck(:id).each do |ios_app_id|
-          IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app_id)
+        apps.each do |ios_app|
+          IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
         end
       end
+
+      logger = RedshiftLogger.new
+      apps.map do |app|
+        {
+          name: 'ios_scan_attempt',
+          ios_scan_type: 'mass',
+          ios_app_id: app.id,
+          ios_app_identifier: app.app_identifier
+        }
+      end.each { |d| logger.add(d) }
+      logger.send!
     end
 
     def scan_latest_fb_ads(lookback_time: 1.day.ago)

@@ -7,7 +7,8 @@ class IosScanSingleServiceWorker
   def perform(ipa_snapshot_id, bid=nil)
     IosScanRunner.new(ipa_snapshot_id, :one_off, {
       start_classify: true,
-      classify_worker: IosClassificationServiceWorker
+      classify_worker: IosClassificationServiceWorker,
+      log_scan_failure: true
     }).run
   end
 

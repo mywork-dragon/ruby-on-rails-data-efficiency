@@ -69,7 +69,21 @@ class IosScanRunner
 
   def handle_error(e)
     @logger.log_exc(e)
+    log_scan_failure if @options[:log_scan_failure]
     @snapshot.update!(download_status: :complete, success: false)
+  end
+
+  def log_scan_failure
+      app = @snapshot.ios_app
+      store = @snapshot.app_store
+      RedshiftLogger.new(records: [{
+        name: 'ios_scan_failure',
+        ios_app_id: app.id,
+        ios_app_identifier: app.app_identifier,
+        ios_app_store: store.country_code
+      }]).send!
+  rescue => e
+    Bugsnag.notify(e)
   end
 
   def cleanup

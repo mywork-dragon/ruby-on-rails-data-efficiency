@@ -72,4 +72,5 @@ Rails.application.configure do
 
   # Bucket to store feeds
   config.feed_bucket = 'ms-scratch'
+  config.redshift_firehose_stream = 'no-value'
 end
