@@ -11,6 +11,7 @@ class ApiBillingLogger
   def send!
     build_event
     ApiBillingLoggerWorker.perform_async(@event)
+    RedshiftLogger.new(records: [@event], table: 'varys_api_billing').send!
   end
 
   def build_event
@@ -26,8 +27,9 @@ class ApiBillingLogger
   end
 
   def add_user_data
-    # TODO: change to uuid after migration
-    set_info(:account_uuid, @api_token.account_id)
+    account = Account.find(@api_token.account_id)
+    set_info(:account_uuid, account.id) # TODO: change to uuid after migration
+    set_info(:account_name, account.name)
   end
 
   def set_info(k, v)

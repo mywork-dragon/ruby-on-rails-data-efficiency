@@ -4,7 +4,8 @@ require 'mocks/mock_request'
 class ApiBillingLoggerTest < ActiveSupport::TestCase
   def setup
     @request = MockRequest.new
-    @api_token = ApiToken.create!(account_id: 1, token: 'asdfasdf')
+    @account = Account.create(name: 'Test')
+    @api_token = ApiToken.create!(account_id: @account.id, token: 'asdfasdf')
   end
 
   test 'build event' do
@@ -15,5 +16,7 @@ class ApiBillingLoggerTest < ActiveSupport::TestCase
     assert_equal @request.fullpath, logger.event[:request_fullpath]
     assert_kind_of String, logger.event[:request_timestamp]
     assert_equal @api_token.account_id, logger.event[:account_uuid]
+    assert_equal @api_token.account_id, logger.event[:account_uuid]
+    assert_equal @account.name, logger.event[:account_name]
   end
 end
