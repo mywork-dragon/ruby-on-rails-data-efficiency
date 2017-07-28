@@ -6,7 +6,7 @@ class IosMassClassificationServiceWorker
   def perform(ipa_snapshot_id)
     IosClassificationRunner.new(
       ipa_snapshot_id,
-      { log_scan_success: true }
+      { log_scan_result: true }
     ).run
   end
 end

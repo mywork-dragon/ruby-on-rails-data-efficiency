@@ -16,8 +16,9 @@ class IosClassificationRunner
     classify
     update_scan_status(:scanned) unless @options[:disable_status_updates]
     log_activities unless @options[:disable_activity_logging]
-    log_success if @options[:log_scan_success]
+    log_result('ios_scan_success') if @options[:log_scan_result]
   rescue
+    log_result('ios_scan_failure') if @options[:log_scan_result]
     update_scan_status(:failed)
     raise
   ensure
@@ -34,12 +35,12 @@ class IosClassificationRunner
     @classifier.save!
   end
 
-  def log_success
+  def log_result(event_name)
     snapshot = IpaSnapshot.includes(:ios_app, :app_store).find(@ipa_snapshot_id)
     app = snapshot.ios_app
     store = snapshot.app_store
     RedshiftLogger.new(records: [{
-      name: 'ios_scan_success',
+      name: event_name,
       ios_app_id: app.id,
       ios_app_identifier: app.app_identifier,
       ios_app_store: store.country_code
