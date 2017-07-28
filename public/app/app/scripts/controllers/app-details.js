@@ -93,16 +93,6 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
 
         /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "App Page Viewed", {
-            "appId": $routeParams.id,
-            "appName": $scope.appData.name,
-            "companyName": $scope.appData.publisher.name,
-            "appPlatform": $routeParams.platform
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-
         if ($routeParams.from == 'ewok') {
           mixpanel.track(
             "Ewok App Page Viewed", {
@@ -112,7 +102,17 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
               "appPlatform": $routeParams.platform
             }
           );
+        } else {
+          mixpanel.track(
+            "App Page Viewed", {
+              "appId": $routeParams.id,
+              "appName": $scope.appData.name,
+              "companyName": $scope.appData.publisher.name,
+              "appPlatform": $routeParams.platform
+            }
+          );
         }
+        /* -------- Mixpanel Analytics End -------- */
 
         if ($routeParams.utm_source == 'salesforce') {
           /* -------- Mixpanel Analytics Start -------- */

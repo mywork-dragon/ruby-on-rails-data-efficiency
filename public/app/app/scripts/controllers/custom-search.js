@@ -50,10 +50,11 @@ angular.module('appApp')
       customSearchCtrl.sortApps = function(category, order) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "Table Sorting Changed", {
+          "Custom Search Table Sorting Changed", {
             "category": category,
             "order": order,
-            "appPlatform": APP_PLATFORM
+            "appPlatform": APP_PLATFORM,
+            "Query": customSearchCtrl.searchInput
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -71,8 +72,9 @@ angular.module('appApp')
 
       customSearchCtrl.onPageChange = function(nextPage) {
         customSearchCtrl.submitSearch(nextPage, true);
-        mixpanel.track("Custom Search Results Paged Through", {
-          "Target Page": nextPage
+        mixpanel.track("Custom Search Table Paged Through", {
+          "Target Page": nextPage,
+          "Query": customSearchCtrl.searchInput
         })
       };
 

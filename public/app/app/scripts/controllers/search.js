@@ -582,19 +582,16 @@ angular.module('appApp')
             /* -------- Mixpanel Analytics Start -------- */
             var searchQueryPairs = {};
             var searchQueryFields = [];
-            var sdkNames = [];
             searchQueryPairs['categoryFilter'] = false;
-            searchQueryPairs['sdkFilter'] = false;
-            searchQueryPairs['sdkCategoryFilter'] = false;
             searchQueryPairs['locationFilter'] = false;
 
             const categories = [];
-            const sdkCategoryFilters = { and: [], or: [] }
-            const sdkFilters = [];
 
             $rootScope.tags.forEach(function(tag) {
               searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
+
+              // Tracking date filters
               if (tag.value.date == '7') {
                 mixpanel.track(
                   "Custom Date Range Used",
@@ -606,18 +603,8 @@ angular.module('appApp')
                   { date: tag.value.date }
                 )
               }
-              if(tag.parameter == 'sdkNames' && tag.parameter == 'downloads' ) {
-                sdkNames.push(tag.value.name);
-              } else if (tag.parameter == 'sdkCategoryFiltersAnd') {
-                searchQueryPairs['sdkCategoryFilter'] = true;
-                sdkCategoryFilters.and.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
-              } else if (tag.parameter == 'sdkCategoryFiltersOr') {
-                searchQueryPairs['sdkCategoryFilter'] = true;
-                sdkCategoryFilters.or.push({ category: tag.value.name, selectedSdks: tag.value.selectedSdks })
-              } else if (tag.parameter.includes('sdkFilters')) {
-                searchQueryPairs['sdkFilter'] = true;
-                sdkFilters.push(tag.value.name)
-              } else if (tag.parameter == 'categories') {
+
+              if (tag.parameter == 'categories') {
                 searchQueryPairs['categoryFilter'] = true;
                 categories.push(tag.value)
               } else if (['locationFiltersOr', 'locationFiltersAnd'].includes(tag.parameter)) {
@@ -634,20 +621,6 @@ angular.module('appApp')
               "Filter Query Successful",
               searchQueryPairs
             );
-
-            if (searchQueryPairs['sdkCategoryFilter']) {
-              mixpanel.track(
-                "SDK Category Filter Used",
-                sdkCategoryFilters
-              )
-            }
-
-            if (searchQueryPairs['sdkFilter']) {
-              mixpanel.track(
-                "SDK Individual Filter Used",
-                { "sdks": sdkFilters }
-              )
-            }
 
             if(searchQueryPairs['locationFiltersAnd'] || searchQueryPairs['locationFiltersOr']) {
               var slacktivityData = {
@@ -710,7 +683,7 @@ angular.module('appApp')
       searchCtrl.submitPageChange = function(currentPage) {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "Table Page Changed", {
+          "Explore Table Paged Through", {
             "page": currentPage,
             "tags": $rootScope.tags,
             "appPlatform": APP_PLATFORM
@@ -859,7 +832,7 @@ angular.module('appApp')
 
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "Table Sorting Changed", {
+          "Explore Table Sorting Changed", {
             "category": category,
             "order": order,
             "appPlatform": APP_PLATFORM

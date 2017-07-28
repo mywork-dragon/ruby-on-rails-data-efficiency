@@ -64,14 +64,14 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
 
     $scope.loadBatch = function(id, batch, page, perPage, collapsed) {
       page = page || 1
-
       if (!collapsed && page == 1) {
         mixpanel.track("Expanded Timeline Item", {
           activityType: batch.activity_type,
           owner: batch.owner.name,
           platform: batch.owner.platform,
           type: batch.owner.type,
-          batchId: id
+          batchId: id,
+          "Activities Count": batch.activities_count
         });
       } else if (!collapsed && page > 1) {
         mixpanel.track("Expanded Timeline Item Paged Through", {
