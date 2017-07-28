@@ -29,11 +29,15 @@ class RedshiftLogger
     r
   end
 
+  # max put batch record count: 500
   def send!
-    res = @firehose.batch_send(
-      stream_name: Rails.application.config.redshift_firehose_stream,
-      records: @records.map(&:to_json)
-    )
+    res = []
+    @records.each_slice(450) do |records|
+      res << @firehose.batch_send(
+        stream_name: Rails.application.config.redshift_firehose_stream,
+        records: records.map(&:to_json)
+      )
+    end
     clear_records
     res
   end

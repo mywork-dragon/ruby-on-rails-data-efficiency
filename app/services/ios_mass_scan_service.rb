@@ -19,6 +19,10 @@ class IosMassScanService
         end
       end
 
+      log_events(apps)
+    end
+
+    def log_events(apps)
       logger = RedshiftLogger.new
       apps.map do |app|
         {
@@ -29,6 +33,8 @@ class IosMassScanService
         }
       end.each { |d| logger.add(d) }
       logger.send!
+    rescue => e
+      Bugsnag.notify(e)
     end
 
     def scan_latest_fb_ads(lookback_time: 1.day.ago)
