@@ -1,6 +1,6 @@
 class IosDeviceReserver
 
-  DEFAULT_WAIT_TIME = 60 * 60 * 24 * 365 # 1 year
+  DEFAULT_WAIT_TIME = 1.year.to_i
   DEFAULT_SLEEP_RANGE = (7...13)
   RESERVE_TYPES = {
     one_off: :immediate_reserve,

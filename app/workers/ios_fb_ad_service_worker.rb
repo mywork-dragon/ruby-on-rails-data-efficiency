@@ -13,7 +13,7 @@ class IosFbAdServiceWorker
 
     # reserve device
     fb_account = FbAccount.find(fb_account_id)
-    device_reserver = IosDeviceReserver.new(fb_account)
+    device_reserver = IosDeviceReserver.new(fb_account, max_wait: 1.hour.to_i)
     device_reserver.reserve(:fb_ad_scrape, fb_account_id: fb_account_id)
     fb_account.update(last_scraped: Time.now)
 
