@@ -48,22 +48,24 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       });
     };
 
-    $scope.onAdIntelligenceAppClick = function(app) {
-      var slacktivityData = {
-        "title": "Ad Intelligence App Clicked",
-        "fallback": "Ad Intelligence Viewed",
-        "color": "#FFD94D", // yellow
-        "appName": app.name,
-        "appId": app.id,
-        "appPlatform": app.type
-      };
-      slacktivity.notifySlack(slacktivityData);
-      mixpanel.track(
-        "App on Ad Intelligence Clicked", {
-          "publisherName": app.publisher.name,
+    $scope.adIntelItemClicked = function(item, type) {
+      if (type == 'app') {
+        var slacktivityData = {
+          "title": "Ad Intelligence App Clicked",
+          "fallback": "Ad Intelligence Viewed",
+          "color": "#FFD94D", // yellow
           "appName": app.name,
           "appId": app.id,
           "appPlatform": app.type
+        };
+        slacktivity.notifySlack(slacktivityData);
+      }
+      mixpanel.track(
+        "Ad Intelligence Item Clicked", {
+          "name": item.name,
+          "id": item.id,
+          "platform": APP_PLATFORM,
+          type
         }
       );
     }
@@ -79,6 +81,12 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       adIntelligenceCtrl.csvUrl = API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.csv' + $location.url().split('/ad-intelligence')[1] + tokenParam + authToken.get()
     };
 
+    adIntelligenceCtrl.adExportButtonClicked = function () {
+      mixpanel.track("Ad Intelligence Exported", {
+        platform: APP_PLATFORM
+      })
+    }
+
     // Computes class for last updated data in Last Updated column rows
     adIntelligenceCtrl.getDaysAgoClass = function(days) {
       return searchService.getLastUpdatedDaysClass(days);
@@ -90,6 +98,10 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
     adIntelligenceCtrl.submitPageChange = function(currentPage) {
       adIntelligenceCtrl.load(currentPage, $scope.category, $scope.order);
+      mixpanel.track("Ad Intelligence Paged Through", {
+        "page": currentPage,
+        "platform": APP_PLATFORM
+      })
     };
 
     // When orderby/sort arrows on dashboard table are clicked
@@ -98,10 +110,10 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       $scope.rowSort = sign + category
 
       mixpanel.track(
-        "Table Sorting Changed", {
+        "Ad Intelligence Table Sorting Changed", {
           "category": category,
           "order": order,
-          "appPlatform": 'ios'
+          "appPlatform": APP_PLATFORM
         }
       );
       adIntelligenceCtrl.load(1, category, order);

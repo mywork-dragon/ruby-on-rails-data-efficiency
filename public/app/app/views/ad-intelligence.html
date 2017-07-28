@@ -18,7 +18,7 @@
       <div class="panel-heading" id="dashboardResultsTableHeading">
        <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying {{appsDisplayedCount()}} of {{numApps | number}}</span>
 
-        <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: apps.length < 1 || !adIntelligenceCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-href="{{adIntelligenceCtrl.csvUrl}}">Export All to CSV</a>
+        <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: apps.length < 1 || !adIntelligenceCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-click="adIntelligenceCtrl.adExportButtonClicked()" ng-href="{{adIntelligenceCtrl.csvUrl}}">Export All to CSV</a>
         <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
 
         <span class="ui-select pull-right">
@@ -83,7 +83,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="onAdIntelligenceAppClick(app)">
+                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="adIntelItemClicked(app, 'app')">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -91,7 +91,7 @@
                 </span>
                 <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntelItemClicked(app.publisher, 'publisher')" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
               <td class="resultsTableAppUserbase">
                 <span ng-if="appPlatform.platform != 'ios'">{{app.userBase | capitalize}}</span>
                 <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
