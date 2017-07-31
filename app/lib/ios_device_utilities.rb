@@ -50,7 +50,8 @@ module IosDeviceUtilities
   def connect(restart: false)
     disconnect unless restart
     log_debug "connecting"
-    @ssh = Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD)
+
+    @ssh = Net::SSH.start(@device.ip, DEVICE_USERNAME, :password => DEVICE_PASSWORD, :timeout => 15)
   end
 
   def disconnect
@@ -95,7 +96,7 @@ module IosDeviceUtilities
         exec_result = channel_exec(command, timeout)
         exec_result = exec_result[:exit_code] == 0 ? exec_result = exec_result[:std_out] : exec_result = exec_result[:std_err]
         exec_result
-      rescue Net::SSH::Disconnect, IOError, Errno::ECONNRESET, CommandTimeout, CommandFailure => e
+      rescue Net::SSH::Disconnect, IOError, Errno::ECONNRESET, CommandTimeout, CommandFailure, Timeout::Error => e
         e
       rescue => e
         log_debug "Uncaught Error type: #{e.class} : #{e.message}"
@@ -103,7 +104,7 @@ module IosDeviceUtilities
 
       return nil unless resp
 
-      if [Net::SSH::Disconnect, Errno::ECONNRESET, IOError, CommandFailure].include?(resp.class)
+      if [Net::SSH::Disconnect, Errno::ECONNRESET, IOError, CommandFailure, Timeout::Error].include?(resp.class)
         log_debug "#{resp.class}: restarting connection"
         connect(restart: true)
       elsif resp.class == CommandTimeout
@@ -148,7 +149,17 @@ module IosDeviceUtilities
         end
       end
     end
-    @ssh.loop
+
+    # Add ruby level time out on top of bash level timeout.
+    # If the ssh connection disconnects in the middle of a
+    # session, the loop command hangs indefinitely.
+    # Add a bit more to the ruby timeout so we can differentiate
+    # between the case in which we've lost the ssh connection
+    # and the case in which springboard has crashed.
+    Timeout::timeout(timeout + 5) {
+      @ssh.loop
+    }
+    
     raise CommandTimeout, "Timeout running command (124): #{command_with_timeout}" if exit_code == 124
     
     {
