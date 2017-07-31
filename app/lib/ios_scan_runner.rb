@@ -76,12 +76,20 @@ class IosScanRunner
   def log_scan_failure
       app = @snapshot.ios_app
       store = @snapshot.app_store
-      RedshiftLogger.new(records: [{
+
+      record = {
         name: 'ios_scan_failure',
         ios_app_id: app.id,
         ios_app_identifier: app.app_identifier,
         ios_app_store: store.country_code
-      }]).send!
+      }
+
+      if @reserver.device
+        record[:ios_device_id] = @reserver.device.id
+        record[:ios_version] = @reserver.device.ios_version    
+      end
+
+      RedshiftLogger.new(records: [record]).send!
   rescue => e
     Bugsnag.notify(e)
   end
