@@ -288,6 +288,8 @@ def process_fb_add(ad_id, loc='local', store=True):
     print "Skipping ad {} as it's not a mobile app ad.".format(ad_id)
     return
 
+  check_bounds(ad_id, ad_file)
+
   pull_in_text_field(ad, ad_id, loc, 'fb_account', 'facebook_account')
   pull_in_text_field(ad, ad_id, loc, 'google_account')
   pull_in_text_field(ad, ad_id, loc, 'android_device', 'android_device_sn')
