@@ -13,6 +13,10 @@ from pprint import pprint
 import boto3
 import botocore
 
+from mightylib.persistence.kv.s3 import S3Dict
+from mightylib.serializers import raw_serializer
+bucket = S3Dict('ms-android-automation-outputs', serializer=raw_serializer)
+
 s3_source_bucket = 'ms-android-automation-outputs'
 
 #Advertiser regex
@@ -45,6 +49,16 @@ def convert_fb_number(num_str):
   except:
     return number
   return number
+
+def extract_suggested_app_node(ad_xml):
+  suggested_node = {"value" : None}
+  tree = ET.fromstring(ad_xml)
+  def visit_node(e):
+      if e.attrib.get('text', False):
+        if e.attrib.get('text') == 'Suggested App':
+            suggested_node["value"] = e
+  in_order_traversal(tree, visit_node)
+  return suggested_node["value"]
 
 def extract_social_info(ad_text):
   out = {}
@@ -219,6 +233,45 @@ def pull_in_text_field(ad, ad_id, loc, field, as_field=None):
   value = get_ad_file(ad_id, field, loc)
   if value:
     ad[as_field] = value
+
+def bounds(bounds):
+  return map(int, filter(lambda x: x, re.split('\,|\]|\[', bounds)))
+
+def get_bounds(ad_xml):
+    suggested_node = extract_suggested_app_node(ad_xml)
+    if not hasattr(suggested_node, 'attrib'):
+        return None
+    ad_bounds=bounds(suggested_node.attrib['bounds'])
+    return ad_bounds
+
+def extract_suggested_app_node(ad_xml):
+  suggested_node = {"value" : None}
+  tree = ET.fromstring(ad_xml)
+  def visit_node(e):
+      if e.attrib.get('text', False):
+        if e.attrib.get('text') == 'Suggested App':
+            suggested_node["value"] = e
+  in_order_traversal(tree, visit_node)
+  return suggested_node["value"]
+
+def check_bounds(ad_id, ad_xml):
+  """ Check ad bounds and remove screenshots if
+  the ad isn't close to the center.
+  """
+  ad_bounds = get_bounds(ad_xml)
+  if not ad_bounds or ad_bounds[1] >= 900:  #Screenshot not good
+      print 'Oh no... bad ad'
+      bucket = S3Dict('ms-android-automation-outputs', serializer=raw_serializer)
+      screenshot_loc = '{}/screenshot.png'.format(ad_id)
+      if screenshot_loc in bucket:
+          bucket['{}/bad_screenshot.png'.format(ad_id)] = bucket[screenshot_loc]
+          del bucket['{}/screenshot.png'.format(ad_id)]
+      bucket['{}/bad_capture'.format(ad_id)] = ""
+      return False
+  else:
+      print 'Good Ad!'
+      #Continue and keep screenshot
+      return True
 
 def process_fb_add(ad_id, loc='local', store=True):
   ad = {'ad_id' : ad_id , 'ad_type': 'mobile_app', 'source_app_identifier' : 'com.facebook.katana'}
