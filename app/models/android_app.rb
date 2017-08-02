@@ -522,7 +522,7 @@ class AndroidApp < ActiveRecord::Base
       app_obj["installed_sdks"].map do |sdk|
         sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
       end
-      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+      app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date", "first_unseen_date")}
       app_obj["uninstalled_sdks"].map do |sdk|
         sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
       end
