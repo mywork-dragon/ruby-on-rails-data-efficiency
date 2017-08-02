@@ -45,7 +45,7 @@ class IosSdkTest < ActiveSupport::TestCase
     res = sdk.api_json(short_form: true)
     assert_equal sdk.id, res[:id]
     assert_equal sdk.name, res[:name]
-    assert_equal 2, res.keys.count
+    assert_equal 3, res.keys.count
   end
 
   test 'long form api_json' do
@@ -61,6 +61,6 @@ class IosSdkTest < ActiveSupport::TestCase
     assert_equal sdk.website, res[:website]
     assert_equal :ios, res[:platform]
     assert_equal 3, res[:apps_count]
-    assert_equal 5, res.keys.count
+    assert_equal 6, res.keys.count
   end
 end

@@ -115,6 +115,7 @@ class IosSdk < ActiveRecord::Base
                      [:id, :name, :platform, :website]
                    end
     res = as_json.select { |k| include_keys.include?(k) }
+    res[:categories] = tags.pluck(:name)
     res[:apps_count] = api_apps_count unless options[:short_form]
     res
   end

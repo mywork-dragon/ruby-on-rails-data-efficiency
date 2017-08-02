@@ -88,7 +88,8 @@ curl "https://api.mightysignal.com/ios/app/401626263"
     "id" : 3,
     "name" : "1PasswordExtension",
     "first_seen_date" : "2016-04-24T22:46:33.000Z",
-    "last_seen_date" : "2016-08-23T16:01:41.000Z"
+    "last_seen_date" : "2016-08-23T16:01:41.000Z",
+    "categories" : ["Authentication"]
   },
   "..."
    ],
@@ -97,7 +98,8 @@ curl "https://api.mightysignal.com/ios/app/401626263"
     "id" : 3761,
     "name" : "Coinbase",
     "first_seen_date" : "2015-12-11T02:29:06.000Z",
-    "last_seen_date" : "2016-03-10T19:54:23.000Z"
+    "last_seen_date" : "2016-03-10T19:54:23.000Z",
+    "categories" : []
   },
   "..."
   ],
@@ -301,7 +303,8 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
       "id" : 42,
       "name" : "Flurry",
       "first_seen_date" : "2015-12-16T20:35:21.000Z",
-      "last_seen_date" : "2016-05-23T02:41:09.000Z"
+      "last_seen_date" : "2016-05-23T02:41:09.000Z",
+      "categories" : ["Analytics"]
     },
     "..."
   ],
@@ -310,7 +313,8 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
       "id" : 1,
       "name" : "Hockey App",
       "first_seen_date" : "2015-12-16T20:35:21.000Z",
-      "last_seen_date" : "2015-12-16T20:35:21.000Z"
+      "last_seen_date" : "2015-12-16T20:35:21.000Z",
+      "categories" : []
     },
     "..."
   ],

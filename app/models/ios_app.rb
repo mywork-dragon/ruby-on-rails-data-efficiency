@@ -636,8 +636,13 @@ class IosApp < ActiveRecord::Base
       app_obj['mightysignal_app_version'] = '1'
       app_obj.merge!(app.sdk_response)
       app_obj["installed_sdks"] = app_obj[:installed_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
+      app_obj["installed_sdks"].map do |sdk|
+        sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
+      end
       app_obj["uninstalled_sdks"] = app_obj[:uninstalled_sdks].map{|sdk| sdk.slice("id", "name", "last_seen_date", "first_seen_date")}
-
+      app_obj["uninstalled_sdks"].map do |sdk|
+        sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
+      end
       app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self)
 
       if app.ios_developer
