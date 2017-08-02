@@ -156,10 +156,12 @@ installed_sdks.id | MightySignal ID of the installed SDK. It's recommended you s
 installed_sdks.name | Name of the installed SDK
 installed_sdks.first_seen_date | The first date the SDK was seen in the app.
 installed_sdks.last_seen_date | The last date the SDK was seen in the app
+installed_sdks.categories | The categories of this SDK.
 uninstalled_sdks.id | The MightySignal ID of the uninstalled SDK. It's recommended you store this so you can reference the SDK easily.
 uninstalled_sdks.name | Name of the uninstalled SDK
 uninstalled_sdks.first_seen_date | The first date the SDK was seen in the app.
 uninstalled_sdks.last_seen_date | The last date the SDK was seen in the app
+uninstalled_sdks.categories | The categories of this SDK.
 publisher.id | The MightySignal ID of the publisher
 publisher.websites | Websites listed under the publisher
 publisher.name | Name of the publisher
@@ -363,10 +365,12 @@ installed_sdks.id | MightySignal ID of the installed SDK
 installed_sdks.name | Name of the installed SDK
 installed_sdks.first_seen_date | The first date the SDK was seen in the app. It's recommended you store this so you can reference the SDK easily.
 installed_sdks.last_seen_date | The last date the SDK was seen in the app.
+installed_sdks.categories | The categories of this SDK.
 uninstalled_sdks.id | The MightySignal ID of the uninstalled SDK. It's recommended you store this so you can reference the SDK easily.
 uninstalled_sdks.name | Name of the uninstalled SDK
 uninstalled_sdks.last_seen_date | The last date the SDK was seen in the app
 uninstalled_sdks.first_seen_date | The first date the SDK was seen in the app
+uninstalled_sdks.categories | The categories of this SDK.
 publisher.id | The MightySignal ID of the publisher
 publisher.name | Name of the publisher
 publisher.websites | Websites listed under the publisher
@@ -512,6 +516,7 @@ apps_count | The number of apps that contain this SDK for the given platform (iO
 platform | `ios` or `android`
 summary | Brief description of the SDK
 website | Website of the SDK
+categories | The categories of this SDK.
 
 # Publishers
 
