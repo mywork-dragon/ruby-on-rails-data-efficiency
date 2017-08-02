@@ -298,6 +298,8 @@ curl "https://api.mightysignal.com/android/app/com.snapchat.android"
   "current_version" : "9.38.0.0",
   "price" : 0,
   "description" : "...",
+  "first_seen_ads_date" : "2016-01-15",
+  "last_seen_ads_date" : "2016-02-30",
   "installed_sdks" : [
     {
       "id" : 42,
@@ -412,6 +414,8 @@ curl "https://api.mightysignal.com/android/app?publisher_id=12"
       "last_updated" : "2016-04-20",
       "first_scanned_date" : "2016-05-15",
       "last_scanned_date" : "2016-07-08",
+      "first_seen_ads_date" : "2016-01-15",
+      "last_seen_ads_date" : "2016-02-30",
       "categories" : [
          "..."
       ],

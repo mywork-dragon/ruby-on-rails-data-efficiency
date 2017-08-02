@@ -315,7 +315,9 @@ class AndroidApp < ActiveRecord::Base
     if data != NoESData
       result.merge!(
         first_scanned_date: data['first_scanned'],
-        last_scanned_date: data['last_scanned'])
+        last_scanned_date: data['last_scanned'],
+        first_seen_ads_date: data['first_seen_ads'],
+        last_seen_ads_date: data['last_seen_ads'])
     end
     result.merge!(newest_android_app_snapshot.try(:api_json) || {})
     result.merge!(sdk_json) unless options[:short_form]
@@ -538,6 +540,11 @@ class AndroidApp < ActiveRecord::Base
       fields_from_app.map do |field, new_name|
           app_obj[new_name] = app.send(field).as_json
       end
+
+      app_obj['last_seen_ads_date'] = app.last_seen_ads_date
+      app_obj['first_seen_ads_date'] = app.first_seen_ads_date
+
+      app_obj['has_ad_spend'] = app.ad_spend?
 
       rename.map do |field, new_name|
           app_obj[new_name] = app_obj[field]
