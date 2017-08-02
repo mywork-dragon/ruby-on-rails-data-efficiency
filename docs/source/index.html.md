@@ -484,12 +484,14 @@ curl "https://api.mightysignal.com/ios/sdk/153"
 
 ```json
 {
-  "id": 153,
-    "apps_count": 96454,
-    "name": "Alamofire",
+    "id": 153,
     "platform": "ios",
-    "summary": "Elegant HTTP Networking in Swift",
-    "website": "https://github.com/Alamofire/Alamofire"
+    "name": "Alamofire",
+    "website": "https://github.com/Alamofire/Alamofire",
+    "categories": [
+        "Networking"
+    ],
+    "apps_count": 34253
 }
 ```
 
