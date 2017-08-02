@@ -269,6 +269,9 @@ class AppsIndex < Chewy::Index
     field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
     field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max)}
 
+    field :first_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'first_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
+    field :last_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'last_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
+
     field :first_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'first_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
     field :last_scanned, value: ->(app, crutches) { crutches.scanned_date[app.id].try(:[], 'last_scanned')  }, type: 'date', format: 'date_time', include_in_all: false
 
