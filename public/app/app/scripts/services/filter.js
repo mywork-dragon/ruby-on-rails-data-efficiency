@@ -26,13 +26,13 @@ angular.module("appApp")
           var displayName = filterType == 'sdk' ? 'SDK' : 'SDK Category'
 
           if (filter.status == "0") {
-            displayName = 'First Seen ' + displayName
+            displayName = displayName + ' First Seen'
           } else if (filter.status == '1') {
-            displayName = 'Last Seen ' + displayName
+            displayName = displayName + ' Last Seen'
           } else if (filter.status == '2') {
-            displayName = 'Never Seen ' + displayName
+            displayName = displayName + ' Never Seen'
           } else {
-            displayName = 'Uninstalled or Never Installed ' + displayName
+            displayName = displayName + ' Uninstalled or Never Installed'
           }
 
           if (filter.status == "0" || filter.status == "1") { // Only install or uninstall should show date

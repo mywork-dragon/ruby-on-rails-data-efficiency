@@ -29,14 +29,14 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
         });
       });
     };
-    
+
     $scope.deleteSelected = function(selectedApps) {
       listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];
         $scope.load();
       });
     };
-    
+
     $scope.deleteList = function() {
       listApiService.deleteList($routeParams.id).success(function() {
         listApiService.getLists().success(function(data) {
@@ -46,7 +46,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
         });
       });
     };
-    
+
     $scope.exportListToCsv = function() {
       listApiService.exportToCsv($routeParams.id)
         .success(function (content) {
@@ -57,7 +57,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
           hiddenElement.click();
         });
     };
-    
+
     $scope.updateCheckboxStatus = function(appId, appType) {
       $rootScope.selectedAppsForList.forEach(function(app) {
         if(app.id == appId && app.type == appType) {
@@ -66,11 +66,11 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
       });
       return false;
     };
-    
+
     $scope.getLastUpdatedDaysClass = function(lastUpdatedDays) {
       return searchService.getLastUpdatedDaysClass(lastUpdatedDays);
     };
-    
+
     $scope.recordListViewEvent = function(listName, listId) {
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
@@ -84,7 +84,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     };
 
     if ($rootScope.isAuthenticated) {
-      authService.userInfo().success(function(data) { 
+      authService.userInfo().success(function(data) {
         mixpanel.identify(data.email);
         mixpanel.people.set({
           "$email": data.email,
@@ -104,5 +104,5 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
 
       $scope.load();
     }
-  
+
 }]);

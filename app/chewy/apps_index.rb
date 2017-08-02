@@ -154,6 +154,7 @@ class AppsIndex < Chewy::Index
       field :favicon
       field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
       field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :first_unseen_date, type: 'date', format: 'date_time', include_in_all: false
     end
 
     field :app_stores, value: ->(app, crutches) { crutches.current_snapshot[app.id].try(:[], 'app_stores') }, type: 'nested', include_in_parent: true do
@@ -286,6 +287,7 @@ class AppsIndex < Chewy::Index
       field :favicon
       field :first_seen_date, type: 'date', format: 'date_time', include_in_all: false
       field :last_seen_date, type: 'date', format: 'date_time', include_in_all: false
+      field :first_unseen_date, type: 'date', format: 'date_time', include_in_all: false
     end
     field :publisher_id, value: -> (android_app){android_app.android_developer.try(:id)}
     field :publisher_identifier, value: -> (android_app){android_app.android_developer.try(:identifier)}, index: 'not_analyzed'

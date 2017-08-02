@@ -10,10 +10,10 @@ module AndroidSdkService
       end
 
       def get_tagged_sdk_response(android_app_id, only_show_tagged=false, force_live_scan_enabled: false)
-        new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]}, 
+        new_sdk_response = { installed_sdks: Hash.new {[]}, uninstalled_sdks: Hash.new {[]},
                              installed_sdks_count: 0, uninstalled_sdks_count: 0 }
         untagged_name = 'Others'
-        
+
         [:installed_sdks, :uninstalled_sdks].each do |type|
           sdks = get_sdk_response(android_app_id)[type]
           sdks.each do |sdk|
@@ -53,7 +53,7 @@ module AndroidSdkService
       def display_type_to_error_code(display_type)
         display_type = display_type.try(:to_sym)
         mapping = {
-          taken_down: 0, 
+          taken_down: 0,
           #foreign: 1,
           paid: 2
         }
@@ -67,112 +67,56 @@ module AndroidSdkService
           uninstalled_sdks: []
         }
 
-        snap = apk_snapshot_id.nil? ? aa.newest_successful_apk_snapshot : ApkSnapshot.find(apk_snapshot_id)
+        successful_apk_snapshots = ApkSnapshot.includes(:android_sdks).where(:android_app_id => aa.id, :scan_status => ApkSnapshot.scan_statuses["scan_success"]).to_a
+        successful_apk_snapshots.sort_by! {|x| x.good_as_of_date}
+        snap = successful_apk_snapshots.last
 
         h[:live_scan_enabled] = force_live_scan_enabled || ServiceStatus.is_active?(:android_live_scan)
         h[:error_code] = display_type_to_error_code(aa.display_type)
 
         return h if snap.nil?
 
-        installed_sdks = snap.android_sdks
-
-        first_snaps_with_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'min(first_valid_date) as first_seen', :version, :android_app_id, 'android_sdk_id').where(id: aa.apk_snapshots.scan_success, 'android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
-        last_snaps_without_current_sdks = ApkSnapshot.joins(:android_sdks_apk_snapshots).select('max(good_as_of_date) as last_seen', 'min(first_valid_date) as first_seen', 'version', 'android_sdk_id').where(id: aa.apk_snapshots.scan_success).where.not('android_sdks_apk_snapshots.android_sdk_id' => installed_sdks.pluck(:id)).group('android_sdk_id')
-
-        uninstalled_sdks = AndroidSdk.where(id: last_snaps_without_current_sdks.pluck(:android_sdk_id))
-
-        installed_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: installed_sdks).reduce({}) do |memo, map_row|
-
-          key = map_row['v']
-
-          current_snapshot = first_snaps_with_current_sdks.find { |snapshot| snapshot.android_sdk_id == map_row['k'] }
-
-          if memo[key].nil?
-            memo[key] = {
-              first_seen: current_snapshot.first_seen,
-              last_seen: current_snapshot.last_seen
-            }
-          else
-            memo[key] = {
-              first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
-              last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max
-            }
-          end
-
-          memo
-        end
-
-        #puts "installed_display_sdk_to_snap: #{installed_display_sdk_to_snap}"  #debug
-
-        uninstalled_display_sdk_to_snap = AndroidSdk.joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').select('android_sdks.id as k, IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id) as v').where(id: uninstalled_sdks).reduce({}) do |memo, map_row|
-
-          key = map_row['v']
-          current_snapshot = last_snaps_without_current_sdks.find {|snapshot| snapshot.android_sdk_id == map_row['k']}
-
-          if memo[key].nil?
-            memo[key] = {
-              first_seen: current_snapshot.first_seen,
-              last_seen: current_snapshot.last_seen
-            }
-          else
-            memo[key] = {
-              first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
-              last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max
-            }
-          end
-
-          memo
-        end
-
-        installed_display_sdks = AndroidSdk.where(id: AndroidSdk.select('IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id)').joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').where(id: installed_sdks))
-        uninstalled_display_sdks = AndroidSdk.where(id: AndroidSdk.select('IFNULL(android_sdk_links.dest_sdk_id, android_sdks.id)').joins('LEFT JOIN android_sdk_links ON android_sdk_links.source_sdk_id = android_sdks.id').where(id: uninstalled_sdks))
-
-        partioned_installed_sdks = partition_sdks(android_sdks: installed_display_sdks)
-        partioned_uninstalled_sdks = partition_sdks(android_sdks: uninstalled_display_sdks)
-
-        # format the responses
-        h[:installed_sdks] = partioned_installed_sdks.map do |sdk|
-          formatted = format_sdk(sdk)
-          apk_snap_metrics = installed_display_sdk_to_snap[sdk.id]
-          formatted['last_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:last_seen] : nil
-          formatted['first_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:first_seen] : nil
-          formatted
-        end.uniq
-
-        h[:uninstalled_sdks] = partioned_uninstalled_sdks.map do |sdk|
-          next unless installed_display_sdk_to_snap[sdk.id].nil?
-          formatted = format_sdk(sdk)
-          apk_snap_metrics = uninstalled_display_sdk_to_snap[sdk.id]
-          formatted['last_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:last_seen] : nil
-          formatted['first_seen_date'] = apk_snap_metrics ? apk_snap_metrics[:first_seen] : nil
-          formatted
-        end.compact.uniq
-        # h[:uninstalled] = {}  # show no uninstalls for now  -- TEMP
         h[:updated] = snap.good_as_of_date
-        h
-      end
 
-      def partition_sdks(android_sdks:)
-        partitions = android_sdks.reduce({os: [], non_os: []}) do |memo, sdk|
-          if sdk.present? && (!sdk.flagged || sdk.flagged == 0) 
-            if FaviconHelper.has_os_favicon?(sdk.favicon) && !memo[:os].include?(sdk)
-              memo[:os].push(sdk)
-            elsif !memo[:non_os].include?(sdk)
-              memo[:non_os].push(sdk)
+        all_sdks = Set.new(successful_apk_snapshots.flat_map {|x| x.android_sdks})
+        installed_sdks = snap.android_sdks
+        uninstalled_sdks = all_sdks - Set.new(installed_sdks)
+
+        first_seen = Hash.new {[DateTime.new(3000,1,1), nil]}
+        last_seen = Hash.new {[DateTime.new(1970,1,1), nil]}
+
+        last_snapshot_index = successful_apk_snapshots.count - 1
+
+        successful_apk_snapshots.each_with_index.map do |snap, i|
+          snap.android_sdks.map do |android_sdk|
+            if snap.first_valid_date <= first_seen[android_sdk.id][0]
+              first_seen[android_sdk.id] = [snap.first_valid_date, i]
+            end
+            if snap.good_as_of_date >= last_seen[android_sdk.id][0]
+              last_seen[android_sdk.id] = [snap.good_as_of_date, i]
             end
           end
-
-          memo
         end
 
-        %i(os non_os).each do |property|
-          # use sort_by because it's an expensive operation and it's more efficient than sort for this type
-          partitions[property] = partitions[property].sort_by do |sdk|
-            sdk.name.downcase
+
+        [[:installed_sdks, installed_sdks], [:uninstalled_sdks, uninstalled_sdks]].map do |partition, sdks|
+          partition = h[partition]
+          sdks.map do |sdk|
+            if (!sdk.flagged || sdk.flagged == 0)
+              formatted = format_sdk(sdk)
+              formatted['last_seen_date'] = last_seen[sdk.id][0]
+              formatted['first_seen_date'] = first_seen[sdk.id][0]
+
+              # If this SDK has been uninstalled set first unseen date
+              if last_seen.include?(sdk.id) and last_seen[sdk.id][1] < last_snapshot_index
+                next_index = last_seen[sdk.id][1] + 1
+                formatted['first_unseen_date'] = successful_apk_snapshots[next_index].good_as_of_date
+              end
+              partition.push(formatted)
+            end
           end
         end
-
-        (partitions[:non_os] + partitions[:os]).uniq
+       return h
       end
 
       def format_sdk(android_sdk)
