@@ -608,7 +608,8 @@ class IosApp < ActiveRecord::Base
         'current_version_rating', 'all_version_ratings_count',
         'first_scanned_date',
         'ratings_history', 'versions_history', 'bundle_identifier',
-        'countries_available_in'
+        'countries_available_in',
+        'taken_down'
          ]
 
       rename = [
@@ -672,6 +673,7 @@ class IosApp < ActiveRecord::Base
       app_obj['first_seen_ads_date'] = app.first_seen_ads_date
 
       app_obj['has_ad_spend'] = app.ios_fb_ads.any?
+      app_obj['taken_down'] = !app.app_store_available
 
       data = app.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
@@ -703,6 +705,7 @@ class IosApp < ActiveRecord::Base
         last_seen_ads_date: data['last_seen_ads']
       )
     end
+    result[:taken_down] = !app_store_available
     result.merge!(newest_ios_app_snapshot.try(:api_json) || {})
     result.merge!(api_international_hash(first_international_snapshot) || {})
     result.merge!(sdk_json || {}) unless options[:short_form]

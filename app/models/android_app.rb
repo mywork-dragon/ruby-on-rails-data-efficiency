@@ -319,6 +319,7 @@ class AndroidApp < ActiveRecord::Base
         first_seen_ads_date: data['first_seen_ads'],
         last_seen_ads_date: data['last_seen_ads'])
     end
+    result[:taken_down] = !app_available?
     result.merge!(newest_android_app_snapshot.try(:api_json) || {})
     result.merge!(sdk_json) unless options[:short_form]
     result
@@ -491,7 +492,8 @@ class AndroidApp < ActiveRecord::Base
           "all_version_ratings_count", "first_scanned", "last_scanned",
           "description", "installed_sdks", "uninstalled_sdks",
           "mobile_priority", "developer_google_play_identifier",
-          "ratings_history", "versions_history", "downloads_history"
+          "ratings_history", "versions_history", "downloads_history",
+          "taken_down"
         ]
 
       rename = [
@@ -545,6 +547,7 @@ class AndroidApp < ActiveRecord::Base
       app_obj['first_seen_ads_date'] = app.first_seen_ads_date
 
       app_obj['has_ad_spend'] = app.ad_spend?
+      app_obj['taken_down'] = !app.app_available?
 
       rename.map do |field, new_name|
           app_obj[new_name] = app_obj[field]
