@@ -607,7 +607,8 @@ class IosApp < ActiveRecord::Base
         'current_version_ratings_count',
         'current_version_rating', 'all_version_ratings_count',
         'first_scanned_date',
-        'ratings_history', 'versions_history', 'bundle_identifier'
+        'ratings_history', 'versions_history', 'bundle_identifier',
+        'countries_available_in'
          ]
 
       rename = [
@@ -644,6 +645,7 @@ class IosApp < ActiveRecord::Base
         sdk["categories"] = IosSdk.find(sdk["id"]).tags.pluck(:name)
       end
       app_obj["categories"] = IosSnapshotAccessor.new.categories_from_ios_app(self)
+      app_obj["countries_available_in"] = app.app_stores.pluck(:country_code)
 
       if app.ios_developer
         app_obj['publisher'] = app.ios_developer.as_json.slice("name", "id", "identifier")
