@@ -210,7 +210,7 @@ angular.module("appApp")
             }
           );
           /* -------- Mixpanel Analytics End -------- */
-          if (isInternational) {
+          if (appData.isInternational) {
             var slacktivityData = {
               "title": "International iOS Live Scan Success",
               "fallback": "International iOS Live Scan Success",

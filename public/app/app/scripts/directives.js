@@ -713,6 +713,7 @@ angular.module("app.directives", []).directive("imgHolder", [
             ];
 
             if ((loadIndices.includes(newId) || idx == scope.smartSrcLast) && scope.smartSrc) {
+              mixpanel.track("Facebook Ad Carousel Scrolled Through")
               element.attr('src', scope.smartSrc);
               unwatcher();
             }

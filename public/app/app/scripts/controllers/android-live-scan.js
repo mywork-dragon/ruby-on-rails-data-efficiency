@@ -5,8 +5,6 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
-    var userInfo = {}; // User info set
-    authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
     androidLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
@@ -107,7 +105,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
         "Scanning...",
         "Complete",
         "Sorry, Live Scan Failed. Please Try Again Later",
-        "Sorry, SDKs Temporarily Not Available for This App", 
+        "Sorry, SDKs Temporarily Not Available for This App",
         "Sorry, SDKs Not Available for Paid Apps",
         "App data has not changed since last scan. Currently up-to-date."
       ];

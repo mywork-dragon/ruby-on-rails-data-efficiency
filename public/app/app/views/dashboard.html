@@ -151,6 +151,7 @@
           <div class="col-md-4 filter-buttons">
             <div id="searchResultsControl">
               <button type="submit" class="btn btn-primary" ng-click="searchCtrl.submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Filter</button>
+              <button type="submit" class="btn btn-primary" ng-click="searchCtrl.clearFilters()" ng-disabled="$root.tags == 0">Clear Filters</button>
             </div>
           </div>
         </div>

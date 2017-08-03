@@ -934,6 +934,15 @@ angular.module('appApp')
         return null
       }
 
+      searchCtrl.clearFilters = function () {
+        const numFilters = $rootScope.tags.length
+        mixpanel.track("Filters Cleared", {
+          "Number of Filters": numFilters
+        })
+        $rootScope.tags = []
+        $rootScope.categoryModel = []
+      }
+
       $scope.getList()
       $scope.setTab()
       $scope.getAppStores()

@@ -67,6 +67,10 @@ angular.module('appApp')
             "$email": data.email,
             "jwtToken": authToken.get()
           });
+          mixpanel.register({
+            "Account Name": data.account_name,
+            "Account ID": data.account_id
+          })
         });
 
         // Sets user permissions

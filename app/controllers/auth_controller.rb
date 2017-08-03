@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  
+
   skip_before_filter :verify_authenticity_token
 
   before_action :set_current_user, except: [:authenticate, :authenticate_provider]
@@ -7,9 +7,9 @@ class AuthController < ApplicationController
 
   def authenticate
     li 'AuthController.authenticate'
-    
+
     user = User.find_by_credentials(params[:email], params[:password]) # you'll need to implement this
-    
+
     if user && user.linkedin_uid.blank? && user.google_uid.blank?
       li "authenticated"
       render json: { auth_token: user.generate_auth_token, email: user.email}
@@ -28,7 +28,7 @@ class AuthController < ApplicationController
   end
 
   def authenticate_provider
-    @oauth = "Oauth::#{params['provider'].classify}".constantize.new(params)     
+    @oauth = "Oauth::#{params['provider'].classify}".constantize.new(params)
     if @oauth.authorized?
       @user = User.from_auth(@oauth.formatted_user_data, params[:token])
       if @user
@@ -88,8 +88,10 @@ class AuthController < ApplicationController
 
   def user_info
     user = User.find(decoded_auth_token[:user_id])
-    render json: { 
+    render json: {
       email: user.email,
+      account_id: user.account.id,
+      account_name: user.account.name,
       salesforce_name: user.salesforce_name,
       salesforce_image_url: user.salesforce_image_url
     }
@@ -97,10 +99,10 @@ class AuthController < ApplicationController
 
   def account_info
     account = @current_user.account
-    render json: { 
-      salesforce_settings: account.salesforce_settings, 
-      instance_url: account.salesforce_instance_url 
+    render json: {
+      salesforce_settings: account.salesforce_settings,
+      instance_url: account.salesforce_instance_url
     }
   end
-  
+
 end

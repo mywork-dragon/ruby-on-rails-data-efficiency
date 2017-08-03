@@ -5,8 +5,6 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
     var iosLiveScanCtrl = this;
     var iosAppId = $routeParams.id;
-    var userInfo = {}; // User info set
-    authService.userInfo().success(function(data) { userInfo['email'] = data.email; });
 
     iosLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }

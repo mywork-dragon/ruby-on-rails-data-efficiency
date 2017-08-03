@@ -128,7 +128,7 @@
               <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
               <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
             </div>
-            <div id="showSdksButtonHelper" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+            <div id="showSdksButtonHelper" ng-if="!iosLiveScanCtrl.displayDataUnchangedStatus" data-ng-controller="VideoModalCtrl as videoModalCtrl">
               <a class="video-link" href="" ng-click="openVideoModal('Live Scan')">How to use Live Scan</a>
             </div>
           </li>
