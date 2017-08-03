@@ -92,7 +92,7 @@ class IosSdkService
             memo[key] = {
               first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
               last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max,
-              first_unseen: [memo[key][:first_unseen], first_snap_without_sdk.first_unseen].min
+              first_unseen: [memo[key][:first_unseen], first_snap_without_sdk.first_unseen].compact.min
             }
           end
 
