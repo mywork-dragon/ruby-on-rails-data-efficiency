@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803183241) do
+ActiveRecord::Schema.define(version: 20170804174303) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -643,6 +643,7 @@ ActiveRecord::Schema.define(version: 20170803183241) do
     t.integer  "display_priority", limit: 4
     t.boolean  "tos_valid",                      default: true
     t.text     "tos_url_path",     limit: 65535
+    t.integer  "storefront_id",    limit: 4
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
