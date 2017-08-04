@@ -197,3 +197,6 @@ gem 'middleman-autoprefixer', '~> 2.7.0'
 gem "middleman-sprockets", "~> 4.1.0"
 gem 'rouge', '~> 2.0.5'
 gem 'redcarpet', '~> 3.4.0'
+
+# for redshift connections
+gem 'activerecord4-redshift-adapter', '~> 0.2.3', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git'

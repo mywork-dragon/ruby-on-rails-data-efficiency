@@ -1,0 +1,21 @@
+default: &default
+  adapter: redshift
+  encoding: utf8
+  database: data
+  pool: 5
+  username: <%= ENV['REDSHIFT_DATABASE_USER'] %>
+  host: <%= ENV['REDSHIFT_DATABASE_HOST'] %>
+  password: <%= ENV['REDSHIFT_DATABASE_PASSWORD'] %>
+  port: <%= ENV['REDSHIFT_DATABASE_PORT'] %>
+
+development:
+  <<: *default
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+
+production:
+  <<: *default

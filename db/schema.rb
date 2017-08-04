@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621183335) do
+ActiveRecord::Schema.define(version: 20170803183241) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1028,51 +1028,6 @@ ActiveRecord::Schema.define(version: 20170621183335) do
   add_index "dupes", ["app_identifier"], name: "index_dupes_on_app_identifier", using: :btree
   add_index "dupes", ["count"], name: "index_dupes_on_count", using: :btree
 
-  create_table "epf_application_device_types", force: :cascade do |t|
-    t.integer  "export_date",    limit: 8
-    t.integer  "application_id", limit: 4
-    t.integer  "device_type_id", limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
-  add_index "epf_application_device_types", ["application_id", "device_type_id"], name: "index_epf_app_device_type", unique: true, using: :btree
-  add_index "epf_application_device_types", ["device_type_id"], name: "index_epf_application_device_types_on_device_type_id", using: :btree
-
-  create_table "epf_applications", force: :cascade do |t|
-    t.integer  "export_date",         limit: 8
-    t.integer  "application_id",      limit: 4
-    t.text     "title",               limit: 65535
-    t.text     "recommended_age",     limit: 65535
-    t.text     "artist_name",         limit: 65535
-    t.text     "seller_name",         limit: 65535
-    t.text     "company_url",         limit: 65535
-    t.text     "support_url",         limit: 65535
-    t.text     "view_url",            limit: 65535
-    t.text     "artwork_url_large",   limit: 65535
-    t.text     "artwork_url_small",   limit: 65535
-    t.datetime "itunes_release_date"
-    t.text     "copyright",           limit: 65535
-    t.text     "description",         limit: 65535
-    t.text     "version",             limit: 65535
-    t.text     "itunes_version",      limit: 65535
-    t.integer  "download_size",       limit: 8
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
-  end
-
-  add_index "epf_applications", ["application_id"], name: "index_epf_applications_on_application_id", unique: true, using: :btree
-
-  create_table "epf_device_types", force: :cascade do |t|
-    t.integer  "export_date",    limit: 8
-    t.integer  "device_type_id", limit: 4,     null: false
-    t.text     "name",           limit: 65535
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "epf_device_types", ["device_type_id"], name: "index_epf_device_types_on_device_type_id", unique: true, using: :btree
-
   create_table "epf_full_feeds", force: :cascade do |t|
     t.string   "name",       limit: 191
     t.datetime "created_at"
@@ -1080,18 +1035,6 @@ ActiveRecord::Schema.define(version: 20170621183335) do
   end
 
   add_index "epf_full_feeds", ["name"], name: "index_epf_full_feeds_on_name", using: :btree
-
-  create_table "epf_storefronts", force: :cascade do |t|
-    t.integer  "export_date",   limit: 8
-    t.integer  "storefront_id", limit: 4
-    t.string   "country_code",  limit: 191
-    t.text     "name",          limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-  end
-
-  add_index "epf_storefronts", ["country_code"], name: "index_epf_storefronts_on_country_code", unique: true, using: :btree
-  add_index "epf_storefronts", ["storefront_id"], name: "index_epf_storefronts_on_storefront_id", unique: true, using: :btree
 
   create_table "fb_accounts", force: :cascade do |t|
     t.string   "username",     limit: 191

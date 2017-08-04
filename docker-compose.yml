@@ -39,11 +39,16 @@ services:
       - RECAPTCHA_SECRET_KEY=dummy
       - CLEARBIT_KEY=dummy
       - MIGHTYBIT_API_TOKEN=dummy
+      - REDSHIFT_DATABASE_USER=root
+      - REDSHIFT_DATABASE_PASSWORD=root
+      - REDSHIFT_DATABASE_HOST=redshift
+      - REDSHIFT_DATABASE_PORT=5432
     depends_on:
       - db
       - redis
       - elasticsearch
       - proxy
+      - redshift
   redis:
     image: redis:2.8
     expose:
@@ -85,14 +90,27 @@ services:
       - REGIONAL_PROXY_PASSWORD=dummy
       - RECAPTCHA_SITE_KEY=dummy
       - RECAPTCHA_SECRET_KEY=dummy
+      - REDSHIFT_DATABASE_USER=root
+      - REDSHIFT_DATABASE_PASSWORD=root
+      - REDSHIFT_DATABASE_HOST=redshift
+      - REDSHIFT_DATABASE_PORT=5432
     depends_on:
       - db
       - redis
       - elasticsearch
       - proxy
+      - redshift
   elasticsearch:
     image: elasticsearch:2.3
     ports:
       - "9200:9200"
   proxy:
     image: 250424072945.dkr.ecr.us-east-1.amazonaws.com/squid:latest
+  redshift:
+    image: postgres:9.6 # just use any postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=data
+    ports:
+      - "5439:5432"

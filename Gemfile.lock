@@ -8,6 +8,14 @@ GIT
       sidekiq
 
 GIT
+  remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git
+  revision: 6485083b63fe78ca37dd0c9179a7d1050261c5d7
+  specs:
+    activerecord4-redshift-adapter (0.2.3)
+      activerecord (~> 4.2.0)
+      pg (~> 0.21)
+
+GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/metaforce.git
   revision: 9468a960d0b56b88f1abc1da47dbce7c912cd46f
   specs:
@@ -360,6 +368,7 @@ GEM
     parallel (1.6.0)
     parser (2.4.0.0)
       ast (~> 2.2)
+    pg (0.21.0)
     plist (3.3.0)
     powerpack (0.1.1)
     public_suffix (2.0.5)
@@ -556,6 +565,7 @@ DEPENDENCIES
   PageRankr (= 4.2.1)
   actionpack-action_caching
   activerecord-import (= 0.13.0)
+  activerecord4-redshift-adapter (~> 0.2.3)!
   addressable (~> 2.4)
   autoprefixer-rails
   awesome_print (= 1.6.1)
