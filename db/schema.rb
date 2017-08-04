@@ -643,7 +643,7 @@ ActiveRecord::Schema.define(version: 20170804174303) do
     t.integer  "display_priority", limit: 4
     t.boolean  "tos_valid",                      default: true
     t.text     "tos_url_path",     limit: 65535
-    t.integer  "storefront_id",    limit: 4
+    t.string   "storefront_id",    limit: 191
   end
 
   add_index "app_stores", ["country_code"], name: "index_app_stores_on_country_code", using: :btree
