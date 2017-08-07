@@ -582,13 +582,16 @@ angular.module('appApp')
             /* -------- Mixpanel Analytics Start -------- */
             var searchQueryPairs = {};
             var searchQueryFields = [];
-            searchQueryPairs['categoryFilter'] = false;
             searchQueryPairs['locationFilter'] = false;
 
-            const categories = [];
+            let categoriesPresent = false
+            const categories = []
+            let sdksPresent = false
+            const sdks = []
+            let sdkCategoriesPresent = false
+            const sdkCategories = []
 
             $rootScope.tags.forEach(function(tag) {
-              searchQueryPairs[tag.parameter] = tag.value;
               searchQueryFields.push(tag.parameter);
 
               // Tracking date filters
@@ -603,19 +606,28 @@ angular.module('appApp')
                   { date: tag.value.date }
                 )
               }
-
               if (tag.parameter == 'categories') {
-                searchQueryPairs['categoryFilter'] = true;
+                categoriesPresent = true
                 categories.push(tag.value)
               } else if (['locationFiltersOr', 'locationFiltersAnd'].includes(tag.parameter)) {
                 searchQueryPairs['locationFilter'] = true;
+              } else if (['sdkFiltersAnd', 'sdkFiltersOr'].includes(tag.parameter)) {
+                sdksPresent = true
+                sdks.push(tag.value.name)
+              } else if (['sdkCategoryFiltersAnd', 'sdkCategoryFiltersOr'].includes(tag.parameter)) {
+                sdkCategoriesPresent = true
+                sdkCategories.push(tag.value.name)
+              } else {
+                searchQueryPairs[tag.parameter] = tag.value;
               }
             });
             searchQueryPairs['tags'] = searchQueryFields;
             searchQueryPairs['numOfApps'] = data.resultsCount;
             searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
             searchQueryPairs['platform']  = APP_PLATFORM;
-            searchQueryPairs['categories'] = categories;
+            if (categoriesPresent) searchQueryPairs['categories'] = categories;
+            if (sdksPresent) searchQueryPairs['sdks'] = sdks;
+            if (sdkCategoriesPresent) searchQueryPairs['sdkCategories'] = sdkCategories
 
             mixpanel.track(
               "Filter Query Successful",
