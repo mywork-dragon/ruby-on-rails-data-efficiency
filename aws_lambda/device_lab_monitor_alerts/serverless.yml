@@ -11,6 +11,10 @@ provider:
       Action:
         - sns:*
       Resource: "arn:aws:sns:us-east-1:250424072945:device_lab_alarms"
+    - Effect: Allow
+      Action:
+        - cloudwatch:Describe*
+      Resource: "*"
 
 functions:
   alerts:

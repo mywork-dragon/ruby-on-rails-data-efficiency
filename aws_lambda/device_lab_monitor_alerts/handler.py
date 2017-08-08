@@ -3,6 +3,8 @@ import itertools
 import os
 import requests
 
+from device_alerts_cloud_watch_client import DeviceAlertsCloudWatchClient
+
 VARYS_API_ENDPOINT = os.environ['VARYS_API_ENDPOINT']
 VARYS_SECRET = os.environ['VARYS_SECRET']
 DASHBOARD_HOST = os.environ['DASHBOARD_HOST']
@@ -75,7 +77,8 @@ def set_device_enabled(device_id, healthy):
         "id": device_id
     }
     if healthy:
-        requests.put("{}/ios_devices/enable".format(VARYS_API_ENDPOINT), params=params, headers={'Accept': 'application/json'})
+        if DeviceAlertsCloudWatchClient().device_alarms_okay(device_id):
+            requests.put("{}/ios_devices/enable".format(VARYS_API_ENDPOINT), params=params, headers={'Accept': 'application/json'})
     else:
         requests.put("{}/ios_devices/disable".format(VARYS_API_ENDPOINT), params=params, headers={'Accept': 'application/json'})
 
