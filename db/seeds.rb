@@ -37,11 +37,12 @@ end
   puts "creating ios and android apps, and creating snapshots for each..."
   for i in 1..1000
     name = Faker::App.name + ' ' + Faker::App.name
-    ios_app = IosApp.find_or_initialize_by(app_identifier: i, ios_developer_id: rand(1..500))
+    developer = IosDeveloper.all.sample
+    ios_app = IosApp.find_or_initialize_by(app_identifier: i, ios_developer_id: developer.id)
     ios_app_snapshot = IosAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_350x350: Faker::Avatar.image("#{name}#{i}350", "350x350"),
                                              icon_url_175x175: Faker::Avatar.image("#{name}#{i}175"), price: Faker::Commerce.price, size: rand(1000..1000000), version: Faker::App.version,
                                              description: Faker::Lorem.paragraph, release_notes: Faker::Lorem.paragraph, ratings_current_stars: rand(0..5), ratings_current_count: rand(0..100),
-                                            ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500), seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_app_store_identifier: Faker::Number.between(1, 50))
+                                            ratings_all_stars: rand(0..5), ratings_all_count: rand(100..500), seller_url: Faker::Internet.url, seller: developer.name, developer_app_store_identifier: Faker::Number.between(1, 50))
     ios_app_snapshot.ratings_per_day_current_release = ios_app_snapshot.ratings_current_count/([1, Date.tomorrow - ios_app_snapshot.released].max).to_f
     ios_app.newest_ios_app_snapshot = ios_app_snapshot
     ios_app.app_stores << AppStore.all.sample
@@ -57,11 +58,11 @@ end
 
   1000.times do |i|
     name = "com.#{Faker::App.name.downcase}#{i}"  # this will be unique
-
-    android_app = AndroidApp.find_or_create_by(app_identifier: name, android_developer_id: rand(1..500))
+    developer = AndroidDeveloper.all.sample
+    android_app = AndroidApp.find_or_create_by(app_identifier: name, android_developer_id: developer.id)
     android_app_snapshot = AndroidAppSnapshot.create(name: name, released: Faker::Time.between(1.year.ago, Time.now), icon_url_300x300: Faker::Avatar.image("#{name}#{i}300", "300x300"),
                                                      price: Faker::Commerce.price + 1, size: rand(1000..1000000), version: Faker::App.version, description: Faker::Lorem.paragraph, downloads_min: 10e3,
-                                                    downloads_max: 100e6, android_app_id: i+1, seller_url: Faker::Internet.url, seller: Faker::Company.name, developer_google_play_identifier: Faker::Number.between(1, 50))
+                                                    downloads_max: 100e6, android_app_id: i+1, seller_url: Faker::Internet.url, seller: developer.name, developer_google_play_identifier: Faker::Number.between(1, 50))
     android_app.newest_android_app_snapshot = android_app_snapshot
     # android_app.mobile_priority = (0..2).to_a.sample
     android_app.user_base = (0..3).to_a.sample

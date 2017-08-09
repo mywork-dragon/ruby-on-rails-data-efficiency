@@ -7,7 +7,7 @@ class FilterService
         apps_index.order(
                           {
                             "_script" => {
-                              "script" => "doc['#{sort_by}'].empty ? -1 : factor[doc['#{sort_by}'].value]",
+                              "script" => "doc['#{sort_by}'].empty ? 3 : factor[doc['#{sort_by}'].value]",
                               "params" => {
                                 "factor" => mapping
                               },

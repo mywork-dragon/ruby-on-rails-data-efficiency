@@ -215,11 +215,11 @@
             <th><div class="th normal-right-padding">
               Mobile Priority
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('mobile_priority', 'asc') "
-                                    data-ng-class="{active: rowSort == 'mobile_priority'}"></span>
-                              <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('mobile_priority', 'desc') "
+                                    data-ng-click="searchCtrl.sortApps('mobile_priority', 'desc') "
                                     data-ng-class="{active: rowSort == '-mobile_priority'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('mobile_priority', 'asc') "
+                                    data-ng-class="{active: rowSort == 'mobile_priority'}"></span>
             </div></th>
             <th><div class="th normal-right-padding">
               Ad Spend
@@ -239,11 +239,11 @@
             <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
               User Base
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('user_base_display_score', 'asc') "
-                                    data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>
-                              <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('user_base_display_score', 'desc') "
+                                    data-ng-click="searchCtrl.sortApps('user_base_display_score', 'desc') "
                                     data-ng-class="{active: rowSort == '-user_base_display_score'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('user_base_display_score', 'asc') "
+                                    data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>
             </div></th>
             <th class="resultsTableAppUserbase" ng-if="appPlatform.platform == 'ios'"><div class="th normal-right-padding">
               MAU / WAU / DAU
@@ -278,11 +278,11 @@
             <th><div class="th">
               Last Updated
                               <span class="glyphicon glyphicon-chevron-up"
-                                    data-ng-click="searchCtrl.sortApps('last_updated', 'asc') "
-                                    data-ng-class="{active: rowSort == 'last_updated'}"></span>
-                              <span class="glyphicon glyphicon-chevron-down"
-                                    data-ng-click=" searchCtrl.sortApps('last_updated', 'desc') "
+                                    data-ng-click="searchCtrl.sortApps('last_updated', 'desc') "
                                     data-ng-class="{active: rowSort == '-last_updated'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('last_updated', 'asc') "
+                                    data-ng-class="{active: rowSort == 'last_updated'}"></span>
             </div></th>
           </tr>
           </thead>
@@ -369,10 +369,10 @@
           <div class="col-md-6 text-right pagination-container">
             <uib-pagination class="pagination-sm"
                         ng-class="{disabled: $root.dashboardSearchButtonDisabled}"
-                        ng-model="currentPage"
+                        ng-model="searchCtrl.currentPage"
                         total-items="searchCtrl.numApps"
                         max-size="8"
-                        ng-change="searchCtrl.submitPageChange(currentPage)"
+                        ng-change="searchCtrl.submitPageChange()"
                         items-per-page="numPerPage"
                         rotate="false"
                         boundary-links="true"></uib-pagination>

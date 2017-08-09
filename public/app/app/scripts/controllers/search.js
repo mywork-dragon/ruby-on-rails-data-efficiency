@@ -570,7 +570,6 @@ angular.module('appApp')
             searchCtrl.numApps = data.resultsCount;
             $rootScope.numApps = data.resultsCount;
             $rootScope.dashboardSearchButtonDisabled = false;
-            $rootScope.currentPage = data.pageNum;
             searchCtrl.currentPage = data.pageNum;
             searchCtrl.updateCSVUrl();
             if(!isTablePageChange) {searchCtrl.resultsSortCategory = 'name'}; // if table page change, set default sort
@@ -688,13 +687,15 @@ angular.module('appApp')
         if ($scope.invalidDateRanges) {
           loggitService.logError("Invalid date range(s)")
         } else {
-          var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
+          $scope.rowSort = null;
+          var urlParams = searchService.queryStringParameters($rootScope.tags, 1, $rootScope.numPerPage, 'name', 'asc', $scope.list);
           $location.url('/search?' + urlParams);
           searchCtrl.loadTableData();
         }
       };
 
-      searchCtrl.submitPageChange = function(currentPage) {
+      searchCtrl.submitPageChange = function() {
+        const currentPage = searchCtrl.currentPage
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Explore Table Paged Through", {
@@ -708,7 +709,6 @@ angular.module('appApp')
         var urlParams = searchService.queryStringParameters($rootScope.tags, currentPage, $rootScope.numPerPage, searchCtrl.resultsSortCategory, searchCtrl.resultsOrderBy, $scope.list);
         $location.url('/search?' + urlParams);
         searchCtrl.loadTableData(true);
-        $rootScope.currentPage = currentPage;
         var end, start;
         return start = (currentPage - 1) * $rootScope.numPerPage, end = start + $rootScope.numPerPage;
       };
@@ -733,6 +733,7 @@ angular.module('appApp')
         $scope.emptyApps();
         const savedSearch = searchCtrl.savedSearches[id];
         $location.url('/search?' +  savedSearch.search_params);
+        $scope.rowSort = null
         searchCtrl.loadTableData();
 
         /* -------- Mixpanel Analytics Start -------- */
@@ -841,7 +842,7 @@ angular.module('appApp')
 
       // When orderby/sort arrows on dashboard table are clicked
       searchCtrl.sortApps = function(category, order) {
-        var sign = order == 'desc' ? '-' : ''
+        const sign = order == 'desc' ? '-' : ''
         $scope.rowSort = sign + category
 
         /* -------- Mixpanel Analytics Start -------- */
@@ -863,7 +864,6 @@ angular.module('appApp')
           searchCtrl.apps = data.results;
           searchCtrl.numApps = data.resultsCount;
           $rootScope.dashboardSearchButtonDisabled = false;
-          $rootScope.currentPage = 1;
           searchCtrl.currentPage = 1;
           searchCtrl.resultsSortCategory = category;
           searchCtrl.resultsOrderBy = order;

@@ -48,6 +48,8 @@ angular.module('appApp')
 
       // When orderby/sort arrows on dashboard table are clicked
       customSearchCtrl.sortApps = function(category, order) {
+        const sign = order == 'desc' ? '-' : ''
+        customSearchCtrl.rowSort = sign + category
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Custom Search Table Sorting Changed", {
@@ -80,6 +82,9 @@ angular.module('appApp')
 
       customSearchCtrl.submitSearch = function(newPageNum, keepSort) {
         customSearchCtrl.newSearch = typeof newPageNum == 'undefined' ? true : false;
+        if (typeof newPageNum == 'undefined') {
+          customSearchCtrl.rowSort = null
+        }
         var routeParams = $location.search();
         var payload = {
           query: customSearchCtrl.searchInput,

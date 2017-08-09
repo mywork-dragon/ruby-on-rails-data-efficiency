@@ -26,7 +26,7 @@
       </div>
 
       <div id="results-table-wrapper">
-        <table class="table table-bordered table-striped table-responsive">
+        <table class="table table-bordered table-striped table-responsive" ng-init="row = customSearchCtrl.rowSort">
           <thead>
             <tr>
               <th class="selectAllCheckboxHeader">
@@ -65,11 +65,11 @@
               <th><div class="th normal-right-padding">
                 Mobile Priority
                 <span class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('mobile_priority', 'asc')"
-                      data-ng-class="{active: row == 'mobile_priority'}"></span>
-                <span class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('mobile_priority', 'desc')"
+                      data-ng-click="customSearchCtrl.sortApps('mobile_priority', 'desc')"
                       data-ng-class="{active: row == '-mobile_priority'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('mobile_priority', 'asc')"
+                      data-ng-class="{active: row == 'mobile_priority'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Ad Spend
@@ -89,11 +89,11 @@
               <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
                 User Base Size
                 <span class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('user_base_display_score', 'asc')"
-                      data-ng-class="{active: row == 'user_base_display_score'}"></span>
-                <span class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('user_base_display_score', 'desc')"
+                      data-ng-click="customSearchCtrl.sortApps('user_base_display_score', 'desc')"
                       data-ng-class="{active: row == '-user_base_display_score'}"></span>
+                <span class="glyphicon glyphicon-chevron-down"
+                      data-ng-click=" customSearchCtrl.sortApps('user_base_display_score', 'asc')"
+                      data-ng-class="{active: row == 'user_base_display_score'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Categories
@@ -110,20 +110,20 @@
               <th ng-if="customSearchCtrl.platform == 'android'"><div class="th normal-right-padding">
                 Downloads
                 <span class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('downloads', 'desc')"
-                      data-ng-class="{active: row == 'downloads'}"></span>
+                      data-ng-click="customSearchCtrl.sortApps('downloads_max', 'asc')"
+                      data-ng-class="{active: row == 'downloads_max'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('downloads', 'asc')"
-                      data-ng-class="{active: row == '-downloads'}"></span>
+                      data-ng-click=" customSearchCtrl.sortApps('downloads_max', 'desc')"
+                      data-ng-class="{active: row == '-downloads_max'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Last Updated
                 <span class="glyphicon glyphicon-chevron-up"
                       data-ng-click="customSearchCtrl.sortApps('last_updated', 'desc')"
-                      data-ng-class="{active: row == 'last_updated'}"></span>
+                      data-ng-class="{active: row == '-last_updated'}"></span>
                 <span class="glyphicon glyphicon-chevron-down"
                       data-ng-click=" customSearchCtrl.sortApps('last_updated', 'asc')"
-                      data-ng-class="{active: row == '-last_updated'}"></span>
+                      data-ng-class="{active: row == 'last_updated'}"></span>
               </div></th>
             </tr>
           </thead>
