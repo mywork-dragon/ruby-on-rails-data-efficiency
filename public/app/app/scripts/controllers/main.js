@@ -64,15 +64,17 @@ angular.module('appApp')
           mixpanel.identify(data.email);
           mixpanel.people.set({
             "$email": data.email,
-            "jwtToken": authToken.get()
-          });
-          mixpanel.register({
+            "jwtToken": authToken.get(),
             "Account Name": data.account_name,
             "Account ID": data.account_id
-          })
+          });
+          mixpanel.unregister("Account Name")
+          mixpanel.unregister("Account ID")
+          mixpanel.unregister("Company Name")
+          mixpanel.unregister("Company ID")
           const affiliateNetworks = [107, 136, 133, 131, 43, 123, 106, 79, 154]
           if (affiliateNetworks.includes(data.account_id)) {
-            mixpanel.register({
+            mixpanel.people.set({
               "Account Type": "Affiliate Network"
             })
           }
