@@ -60,7 +60,6 @@ angular.module('appApp')
       $scope.logUserOut = authToken.deleteToken;
 
       if($rootScope.isAuthenticated) {
-
         authService.userInfo().success(function(data) {
           mixpanel.identify(data.email);
           mixpanel.people.set({
@@ -71,6 +70,12 @@ angular.module('appApp')
             "Account Name": data.account_name,
             "Account ID": data.account_id
           })
+          const affiliateNetworks = [107, 136, 133, 131, 43, 123, 106, 79, 154]
+          if (affiliateNetworks.includes(data.account_id)) {
+            mixpanel.register({
+              "Account Type": "Affiliate Network"
+            })
+          }
         });
 
         // Sets user permissions

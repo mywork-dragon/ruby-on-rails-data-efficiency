@@ -294,7 +294,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}">
+                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="searchCtrl.exploreItemClicked(app, 'app')">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -303,7 +303,7 @@
                 <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
               <td class="resultsTableAppPublisher">
-              <a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a>
+              <a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}" ng-click="searchCtrl.exploreItemClicked(app.publisher, 'publisher')">{{app.publisher.name}}</a>
               <span ng-if="app.fortuneRank" class="fortune-rank">
                  / {{app.fortuneRank}}</span>
               </td>

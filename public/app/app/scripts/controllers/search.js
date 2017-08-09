@@ -629,10 +629,12 @@ angular.module('appApp')
             if (sdksPresent) searchQueryPairs['sdks'] = sdks;
             if (sdkCategoriesPresent) searchQueryPairs['sdkCategories'] = sdkCategories
 
-            mixpanel.track(
-              "Filter Query Successful",
-              searchQueryPairs
-            );
+            if (data.pageNum == 1) {
+              mixpanel.track(
+                "Filter Query Successful",
+                searchQueryPairs
+              );
+            }
 
             if(searchQueryPairs['locationFiltersAnd'] || searchQueryPairs['locationFiltersOr']) {
               var slacktivityData = {
@@ -953,6 +955,14 @@ angular.module('appApp')
         })
         $rootScope.tags = []
         $rootScope.categoryModel = []
+      }
+
+      searchCtrl.exploreItemClicked = function (item, type) {
+        mixpanel.track("Explore Item Clicked", {
+          name: item.name,
+          id: item.id,
+          type
+        })
       }
 
       $scope.getList()

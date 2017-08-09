@@ -28,10 +28,6 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
       $scope.isLoading = true;
 
-      mixpanel.track("Ad Intelligence Viewed", {
-        "platform": APP_PLATFORM
-      });
-
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.json',
@@ -73,6 +69,9 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
     $scope.toggledPlatform = function() {
       $scope.apps = [];
       $scope.numApps = 0;
+      mixpanel.track("Ad Intelligence Viewed", {
+        "platform": APP_PLATFORM
+      });
       adIntelligenceCtrl.load();
     }
 
@@ -125,6 +124,10 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       "color": "#FFD94D", // yellow
     };
     slacktivity.notifySlack(slacktivityData);
+
+    mixpanel.track("Ad Intelligence Viewed", {
+      "platform": APP_PLATFORM
+    });
 
     adIntelligenceCtrl.load();
   }
