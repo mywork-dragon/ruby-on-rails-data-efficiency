@@ -15,11 +15,9 @@ class AppStoreSnapshotQueueWorker
     ids.each_slice(1_000) do |slice|
       args = slice.map { |ios_app_id| [@ios_app_snapshot_job_id, ios_app_id] }
 
-      SidekiqBatchQueueWorker.perform_async(
-        AppStoreSnapshotServiceWorker.to_s,
-        args,
-        bid
-      )
+      Sidekiq::Client.push_bulk(
+        'class' => AppStoreSnapshotServiceWorker,
+        'args' => args)
     end
   end
 

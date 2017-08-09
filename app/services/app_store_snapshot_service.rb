@@ -12,20 +12,11 @@ class AppStoreSnapshotService
 
       j = IosAppSnapshotJob.create!(notes: notes)
 
-      batch = Sidekiq::Batch.new
-      batch.description = "run: #{notes}" 
-      batch.on(
-        :complete,
-        'AppStoreSnapshotService#on_complete_run',
-        'automated' => automated
-      )
-
-      batch.jobs do
-        AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
-      end
+      AppStoreSnapshotQueueWorker.perform_async(:queue_valid, j.id)
     end
     
     def run_app_ids(notes, ios_app_ids)
+      raise 'DEPRECATED'
       dom_check
 
       batch = Sidekiq::Batch.new
@@ -40,6 +31,7 @@ class AppStoreSnapshotService
     
     # Last week
     def run_new_apps(notes: 'Running new apps')
+      raise 'DEPRECATED'
       dom_check
 
       j = IosAppSnapshotJob.create!(notes: notes)
