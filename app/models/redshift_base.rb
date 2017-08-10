@@ -33,13 +33,6 @@ class RedshiftBase < ActiveRecord::Base
   end
 
   class << self
-    def cached_request(key:, expires: 12.hours, compress: true)
-      cache_key = "varys-redshift-cache:#{key}"
-      Rails.cache.fetch(cache_key, expires_in: expires, compress: compress) do
-        yield
-      end
-    end
-
     def query(sql, options={})
       CachedQuery.new(sql, options)
     end
