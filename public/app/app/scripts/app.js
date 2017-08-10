@@ -175,8 +175,8 @@ angular
     });
   })
   .filter('capitalize', function() {
-    return function(input, all) {
-      return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+    return function(input) {
+      return (angular.isString(input) && input.length > 0) ? input[0].toUpperCase() + input.substr(1).toLowerCase() : input;
     }
   })
   .filter('uniqueStrings', function() {

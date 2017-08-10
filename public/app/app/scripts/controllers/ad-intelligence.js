@@ -4,10 +4,6 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
   function($scope, authService, $http, pageTitleService, listApiService, apiService, slacktivity, searchService, sdkLiveScanService, authToken, $location, $rootScope, AppPlatform) {
 
     var adIntelligenceCtrl = this;
-    $scope.currentPage = 1;
-    $scope.order = 'desc';
-    $scope.category = 'first_seen_ads'
-    $scope.rowSort = '-first_seen_ads'
     $scope.appPlatform = AppPlatform;
 
     // Sets html title attribute
@@ -25,6 +21,8 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       $scope.currentPage = page || 1
       $scope.category = category || 'first_seen_ads'
       $scope.order = order || 'desc'
+      const sign = $scope.order == 'desc' ? '-' : ''
+      $scope.rowSort = sign + $scope.category
 
       $scope.isLoading = true;
 
@@ -105,9 +103,6 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
     // When orderby/sort arrows on dashboard table are clicked
     adIntelligenceCtrl.sortApps = function(category, order) {
-      var sign = order == 'desc' ? '-' : ''
-      $scope.rowSort = sign + category
-
       mixpanel.track(
         "Ad Intelligence Table Sorting Changed", {
           "category": category,
