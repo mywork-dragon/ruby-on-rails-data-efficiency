@@ -19,6 +19,11 @@ class RedisMock
     end
   end
 
+  def setex(k,s,v)
+    set(k,v)
+    expire(k,s)
+  end
+
   # NOTE: redis 'get' calls return strings only
   def get(k)
     run_callbacks :expire_keys do

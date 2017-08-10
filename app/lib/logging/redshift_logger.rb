@@ -2,10 +2,10 @@ class RedshiftLogger
 
   attr_accessor :firehose, :records
 
-  def initialize(records: [], cluster: 'ms-analytics', database: 'data', table: 'analytics')
-    @cluster = cluster
-    @database = database
-    @table = table
+  def initialize(records: [], cluster: nil, database: nil, table: nil)
+    @cluster = cluster || ENV['REDSHIFT_LOGGING_CLUSTER'].to_s
+    @database = database || ENV['REDSHIFT_LOGGING_DATABASE'].to_s
+    @table = table || ENV['REDSHIFT_LOGGING_TABLE'].to_s
     @records = records.map { |r| add_columns(r) }
     @firehose = MightyAws::Firehose.new
     self

@@ -3,7 +3,7 @@ require 'test_helper'
 class RedshiftLoggerTest < ActiveSupport::TestCase
 
   test 'add records puts in the default fields' do
-    logger = RedshiftLogger.new
+    logger = RedshiftLogger.new(table: 'sup', database: 'sup', cluster: 'sup')
     logger.add({a: 5})
     assert_equal 1, logger.records.count
     r = logger.records.first
@@ -15,7 +15,7 @@ class RedshiftLoggerTest < ActiveSupport::TestCase
   end
 
   test 'initialize records puts in the default fields' do
-    logger = RedshiftLogger.new(records: [{a: 5}], table: 'sup')
+    logger = RedshiftLogger.new(records: [{a: 5}], table: 'sup', database: 'sup', cluster: 'sup')
     assert_equal 1, logger.records.count
     r = logger.records.first
     assert_equal 5, r.keys.count

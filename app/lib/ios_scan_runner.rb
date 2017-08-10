@@ -89,7 +89,12 @@ class IosScanRunner
         record[:ios_version] = @reserver.device.ios_version    
       end
 
-      RedshiftLogger.new(records: [record]).send!
+      # haven't figured out ENV variables on macs yet
+      RedshiftLogger.new(
+        table: 'analytics',
+        cluster: 'ms-analytics',
+        database: 'data',
+        records: [record]).send!
   rescue => e
     Bugsnag.notify(e)
   end
