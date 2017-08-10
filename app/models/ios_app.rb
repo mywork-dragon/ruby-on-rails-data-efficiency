@@ -674,6 +674,7 @@ class IosApp < ActiveRecord::Base
 
       app_obj['has_ad_spend'] = app.ios_fb_ads.any?
       app_obj['taken_down'] = !app.app_store_available
+      app_obj['app_store_id'] = app.app_identifier
 
       data = app.ipa_snapshots.where(scan_status: IpaSnapshot.scan_statuses[:scanned]).
       group(:ios_app_id).select('ios_app_id', 'max(good_as_of_date) as last_scanned', 'min(good_as_of_date) as first_scanned')
