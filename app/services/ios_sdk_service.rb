@@ -80,7 +80,7 @@ class IosSdkService
 
           key = map_row['v']
           current_snapshot = last_snaps_without_current_sdks.find {|snapshot| snapshot.ios_sdk_id == map_row['k']}
-          first_snap_without_sdk = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).where('good_as_of_date > ?', current_snapshot.last_seen).select('min(first_valid_date) as first_unseen').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => memo['k']).first
+          first_snap_without_sdk = IpaSnapshot.joins(:ios_sdks_ipa_snapshots).where('good_as_of_date > ?', current_snapshot.last_seen).select('min(first_valid_date) as first_unseen').where(id: app.ipa_snapshots.scanned).where.not('ios_sdks_ipa_snapshots.ios_sdk_id' => map_row['k']).first
 
           if memo[key].nil?
             memo[key] = {
@@ -92,7 +92,7 @@ class IosSdkService
             memo[key] = {
               first_seen: [memo[key][:first_seen], current_snapshot.first_seen].min,
               last_seen: [memo[key][:last_seen], current_snapshot.last_seen].max,
-              first_unseen: [memo[key][:first_unseen], first_snap_without_sdk.first_unseen].compact.min
+              first_unseen: [memo[key][:first_unseen], first_snap_without_sdk.first_unseen].compact.max
             }
           end
 
