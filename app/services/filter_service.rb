@@ -123,7 +123,7 @@ class FilterService
             end
           when 1
             if date
-              sdk_query[short_filter_type] << {"nested" => {"path" => "uninstalled_sdks", "filter" => {"and" => [{"terms" => {"uninstalled_sdks.id" => sdk_ids}}, {"range" => {"uninstalled_sdks.last_seen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
+              sdk_query[short_filter_type] << {"nested" => {"path" => "uninstalled_sdks", "filter" => {"and" => [{"terms" => {"uninstalled_sdks.id" => sdk_ids}}, {"range" => {"uninstalled_sdks.first_unseen_date" => {'format' => 'date_time'}.merge(date)}} ]}}}
             else
               sdk_query[short_filter_type] << {"terms" => {"uninstalled_sdks.id" => sdk_ids}}
             end

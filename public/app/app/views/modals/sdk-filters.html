@@ -15,8 +15,8 @@
           <div ng-repeat="filter in complexFilters.sdk.and track by $index">
             <span class="ui-select">
               <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdk', 'and')" class="status-{{filter.status}}">
-                <option value="0">First Seen</option>
-                <option value="1">Last Seen</option>
+                <option value="0">Installed</option>
+                <option value="1">Uninstalled</option>
                 <option value="2">Never Seen</option>
               </select>
             </span>
@@ -92,8 +92,8 @@
           <div ng-repeat="filter in complexFilters.sdk.or track by $index">
             <span class="ui-select">
               <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdk', 'or')" class="status-{{filter.status}}">
-                <option value="0">First Seen</option>
-                <option value="1">Last Seen</option>
+                <option value="0">Installed</option>
+                <option value="1">Uninstalled</option>
                 <option value="2">Never Seen</option>
               </select>
             </span>
@@ -170,8 +170,8 @@
           <div ng-repeat="filter in complexFilters.sdkCategory.and track by $index">
             <span class="ui-select">
               <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdkCategory', 'and')" class="status-{{filter.status}}">
-                <option value="0">First Seen</option>
-                <option value="1">Last Seen</option>
+                <option value="0">Installed</option>
+                <option value="1">Uninstalled</option>
                 <option value="2">Never Seen</option>
               </select>
             </span>
@@ -241,8 +241,8 @@
           <div ng-repeat="filter in complexFilters.sdkCategory.or track by $index">
             <span class="ui-select">
               <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'sdkCategory', 'or')" class="status-{{filter.status}}">
-                <option value="0">First Seen</option>
-                <option value="1">Last Seen</option>
+                <option value="0">Installed</option>
+                <option value="1">Uninstalled</option>
                 <option value="2">Never Seen</option>
               </select>
             </span>

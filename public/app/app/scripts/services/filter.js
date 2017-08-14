@@ -26,9 +26,9 @@ angular.module("appApp")
           var displayName = filterType == 'sdk' ? 'SDK' : 'SDK Category'
 
           if (filter.status == "0") {
-            displayName = displayName + ' First Seen'
+            displayName = displayName + ' Installed'
           } else if (filter.status == '1') {
-            displayName = displayName + ' Last Seen'
+            displayName = displayName + ' Uninstalled'
           } else if (filter.status == '2') {
             displayName = displayName + ' Never Seen'
           } else {

@@ -61,10 +61,10 @@
                   </div>
                 </a>
                 <div ng-if="batch.activity_type == 'install'">
-                  - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} seen</span>
+                  - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} installed</span>
                 </div>
                 <div ng-if="batch.activity_type == 'uninstall'">
-                  - {{batch.activities_count}} {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;removed</span>
+                  - {{batch.activities_count}} {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} uninstalled</span>
                 </div>
               </div>
               <div ng-if="isSdk(batch.owner.type)">
@@ -75,10 +75,10 @@
                   </div>
                 </a>
                 <div ng-if="batch.activity_type == 'install'">
-                  - <span class="{{batch.activity_type}}">&nbsp;seen for the first time&nbsp;</span> in {{batch.activities_count}} {{appWord}}
+                  - <span class="{{batch.activity_type}}">&nbsp;installed&nbsp;</span> in {{batch.activities_count}} {{appWord}}
                 </div>
                 <span ng-if="batch.activity_type == 'uninstall'">
-                  - <span class="{{batch.activity_type}}">removed</span> from {{batch.activities_count}} {{appWord}}
+                  - <span class="{{batch.activity_type}}">uninstalled</span> from {{batch.activities_count}} {{appWord}}
                 </span>
               </div>
               <div ng-if="batch.owner.type == 'AdPlatform'">
@@ -115,7 +115,7 @@
                 <div class="popoverAppText">
                   <p>{{app.name}}</p>
                   <p>{{app.publisher.name}}</p>
-                  <p>{{batch.activity_type == "install" ? "First seen" : "Last seen"}} {{calculateDaysAgo(activity.happened_at)}}</p>
+                  <p>{{batch.activity_type == "install" ? "Installed" : "Uninstalled"}} {{calculateDaysAgo(activity.happened_at)}}</p>
                 </div>
               </div>
             </script>
