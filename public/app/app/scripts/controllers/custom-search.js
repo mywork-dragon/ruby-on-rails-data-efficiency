@@ -48,6 +48,7 @@ angular.module('appApp')
 
       // When orderby/sort arrows on dashboard table are clicked
       customSearchCtrl.sortApps = function(category, order) {
+        customSearchCtrl.newSearch = false
         const sign = order == 'desc' ? '-' : ''
         customSearchCtrl.rowSort = sign + category
         /* -------- Mixpanel Analytics Start -------- */
