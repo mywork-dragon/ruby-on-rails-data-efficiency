@@ -111,7 +111,7 @@ class GooglePlayChartWorker
 
   # relies on mass scan service to auto-classify
   def scrape_sdks(android_app_ids)
-    AndroidMassScanService.run_by_ids(android_app_ids)
+    AndroidMassScanService.run_by_ids(android_app_ids, use_batch: false)
   end
 
   def update_developers(android_app_ids)

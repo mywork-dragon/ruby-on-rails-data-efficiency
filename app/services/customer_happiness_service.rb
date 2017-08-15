@@ -36,14 +36,6 @@ class CustomerHappinessService
     feature_to_events.keys
   end
 
-  def on_complete(status, options)
-    Slackiq.notify(
-      webhook_name: :main,
-      status: status,
-      title: 'Pulling Mixpanel Data for Customer Success',
-    )
-  end
-
   private
 
   # CHANGE FEATURE TO EVENTS MAPPINGS HERE
@@ -83,13 +75,7 @@ class CustomerHappinessService
     end
 
     def pull_mixpanel_data(from_date = 7.days.ago.to_date)
-      batch = Sidekiq::Batch.new
-      batch.description = 'Customer Success Mixpanel Data Pull'
-      batch.on(:complete, 'CustomerHappinessService#on_complete')
-
-      batch.jobs do
-        MixpanelPullWorker.perform_async(from_date)
-      end
+      MixpanelPullWorker.perform_async(from_date)
     end
 
   end

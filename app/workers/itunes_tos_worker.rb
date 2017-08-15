@@ -40,20 +40,10 @@ class ItunesTosWorker
     Slackiq.message(message, webhook_name: :automated_alerts)
   end
 
-  def on_complete_check_app_stores(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Checked iTunes TOS for enabled app stores')
-  end
-
   class << self
     def check_app_stores
-      batch = Sidekiq::Batch.new
-      batch.description = 'ItunesTosWorker.check_app_stores'
-      batch.on(:complete, 'ItunesTosWorker#on_complete_check_app_stores')
-
-      batch.jobs do
-        AppStore.where(enabled: true).each do |app_store|
-          ItunesTosWorker.perform_async(:check_app_store, app_store.id)
-        end
+      AppStore.where(enabled: true).each do |app_store|
+        ItunesTosWorker.perform_async(:check_app_store, app_store.id)
       end
     end
   end

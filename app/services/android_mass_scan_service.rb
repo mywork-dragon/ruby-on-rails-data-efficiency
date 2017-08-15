@@ -54,24 +54,29 @@ class AndroidMassScanService
       end
     end
 
-    def run_by_ids(android_app_ids)
+    def run_by_ids(android_app_ids, use_batch: true)
       apk_snapshot_job = ApkSnapshotJob.create!(
         notes: "Mass Scrape by #{android_app_ids.count} ids",
         job_type: :mass
       )
 
-      batch = Sidekiq::Batch.new
-      batch.description = 'Google Play Mass Downloads'
-      batch.on(
-        :complete,
-        'AndroidMassScanService#on_complete',
-        'job_id' => apk_snapshot_job.id
-      )
 
-      batch.jobs do
-        android_app_ids.each do |id|
-          AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+      if use_batch
+        batch = Sidekiq::Batch.new
+        batch.description = 'Google Play Mass Downloads'
+        batch.on(
+          :complete,
+          'AndroidMassScanService#on_complete',
+          'job_id' => apk_snapshot_job.id
+        )
+
+        batch.jobs do
+          android_app_ids.each do |id|
+            AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+          end
         end
+      else
+        AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
       end
     end
 
