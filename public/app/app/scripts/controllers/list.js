@@ -1,12 +1,13 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService",
-  function($scope, $http, authToken, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService", "$location",
+  function($scope, $http, authToken, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService, $location) {
     $scope.AllSelectedItems = false;
     $scope.NoSelectedItems = false;
 
-    /* Sets html title attribute */
-    pageTitleService.setTitle("MightySignal");
+    if ($location.url().includes('custom')) {
+      pageTitleService.setTitle("MightySignal - Search")
+    }
 
     $scope.load = function() {
       $scope.queryInProgress = true;
@@ -72,6 +73,8 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     };
 
     $scope.recordListViewEvent = function(listName, listId) {
+      pageTitleService.setTitle(`MightySignal - ${listName}`);
+
       /* -------- Mixpanel Analytics Start -------- */
       mixpanel.track(
         "List Viewed",

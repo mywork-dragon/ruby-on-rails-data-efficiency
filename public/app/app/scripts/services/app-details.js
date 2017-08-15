@@ -28,6 +28,15 @@ angular.module("appApp")
         /* -------- Mixpanel Analytics End -------- */
 
         $window.open(linkedinLink);
+      },
+      trackLinkedinContactClick: function (contact) {
+        mixpanel.track(
+          "LinkedIn Contact Clicked", {
+            "Name": contact.fullName,
+            "Title": contact.title,
+            "LinkedIn": contact.linkedin
+          }
+        )
       }
     }
   }]);

@@ -136,6 +136,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
       linkedInService.getLink(linkedinLinkType, $scope.appData.publisher.name);
     };
 
+    $scope.onLinkedinContactClick = function (contact) {
+      linkedInService.trackLinkedinContactClick(contact)
+    }
+
     $scope.linkTo = function(path) {
       $window.location.href = path;
     };

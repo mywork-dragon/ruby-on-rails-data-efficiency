@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "slacktivity", "searchService", "$window",
-    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window) {
+  .controller('CustomSearchCtrl', ['$scope', '$rootScope', 'customSearchService', '$httpParamSerializer', '$location', 'listApiService', "slacktivity", "searchService", "$window", "pageTitleService",
+    function($scope, $rootScope, customSearchService, $httpParamSerializer, $location, listApiService, slacktivity, searchService, $window, pageTitleService) {
       var customSearchCtrl = this;
       customSearchCtrl.platform = APP_PLATFORM; // default
       customSearchCtrl.newSearch = false;
 
       /* For query load when /search/:query path hit */
       customSearchCtrl.loadTableData = function() {
-
+        pageTitleService.setTitle("MightySignal - Search")
         customSearchCtrl.queryInProgress = true;
 
         var routeParams = $location.search();

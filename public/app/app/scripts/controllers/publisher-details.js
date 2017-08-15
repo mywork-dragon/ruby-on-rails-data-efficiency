@@ -70,6 +70,10 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       linkedInService.getLink(linkedinLinkType, $scope.publisherData.name);
     };
 
+    $scope.onLinkedinContactClick = function (contact) {
+      linkedInService.trackLinkedinContactClick(contact)
+    }
+
     $scope.appsDisplayedCount = function() {
       var lastPageMaxApps = 100 * $scope.currentPage;
       var baseAppNum = 100 * ($scope.currentPage - 1) + 1;

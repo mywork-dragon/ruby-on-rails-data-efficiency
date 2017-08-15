@@ -55,7 +55,7 @@ class WeeklyBatch < ActiveRecord::Base
         app: activity.other_owner(self.owner),
         happened_at: activity.happened_at
       }
-    end.sort_by { |activity| 
+    end.sort_by { |activity|
       if is_ios?
         IosApp.user_bases[activity[:app].international_userbase[:user_base]] || 3
       else
@@ -131,7 +131,7 @@ class WeeklyBatch < ActiveRecord::Base
                                 where("web_dev.is_valid" => true, "dd.country_code" => country_codes).
                                 group('activities.id')
       end
-      activities = activities.order("op.user_base ASC")
+      activities = activities.order("op.user_base IS NULL, op.user_base ASC")
       activities = activities.limit(per_page).offset((page_num - 1) * per_page) if page_num && per_page
     else
       activities = activities.select("activities.*, op.flagged, op.favicon, op.name").order("op.name ASC")

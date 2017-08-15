@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService",
-    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService) {
+  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService",
+    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
+
+      pageTitleService.setTitle("MightySignal - Explore")
 
       $scope.refreshSlider = function () {
         $timeout(function () {

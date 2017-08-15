@@ -8,6 +8,8 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
     $scope.category = 'monthly_active_users_num'
     $scope.rowSort = '-monthly_active_users_num'
 
+    pageTitleService.setTitle("MightySignal - Charts")
+
     // Sets user permissions
     authService.permissions()
       .success(function(data) {
@@ -15,7 +17,7 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
       });
 
     chartsCtrl.loadTopApps = function(platform) {
-      var path = platform == 'ios' ? 'api/charts/top-ios-apps' : 'api/charts/top-android-apps'  
+      var path = platform == 'ios' ? 'api/charts/top-ios-apps' : 'api/charts/top-android-apps'
       return $http({
         method: 'GET',
         url: API_URI_BASE + path
@@ -26,7 +28,7 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
     };
 
     chartsCtrl.loadSdks = function(platform) {
-      var path = platform == 'ios' ? 'api/charts/ios-sdks' : 'api/charts/android-sdks'  
+      var path = platform == 'ios' ? 'api/charts/ios-sdks' : 'api/charts/android-sdks'
       return $http({
         method: 'GET',
         url: API_URI_BASE + path
@@ -93,7 +95,7 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
       );
     }
     var title;
-    
+
     switch ($route.current.action) {
       case "charts.top-ios-apps":
         $scope.initialPageLoadComplete = false;

@@ -282,7 +282,7 @@
                           <tr data-ng-repeat="contact in companyContacts">
                             <td>
                               <p ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
-                              <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank">{{contact.fullName}} - {{contact.title}}</a>
+                              <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank" ng-click="onLinkedinContactClick(contact)">{{contact.fullName}} - {{contact.title}}</a>
                             </td>
                             <td>
                               <div ng-if="contact.email"><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
