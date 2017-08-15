@@ -57,7 +57,14 @@ class IosScanValidationRunner
     )
     worker = @options[:scan_worker]
     bid = @options[:sidekiq_batch_id]
-    worker.perform_async(ipa_snapshot.id, bid)
+    if bid
+      batch = Sidekiq::Batch.new(bid)
+      batch.jobs do
+        worker.perform_async(ipa_snapshot.id, bid)
+      end
+    else
+      worker.perform_async(ipa_snapshot.id, bid)
+    end
     expiration_time = options[:recently_queued_expiration] || 24.hours.to_i
     redis.setex(recent_key, expiration_time, @app_info['version'])
     update_job(status: :initiated) if @options[:update_job_status]
