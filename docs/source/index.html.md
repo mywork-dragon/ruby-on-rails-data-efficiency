@@ -443,6 +443,7 @@ Key | Default Value | Description
 --------- | ------- | -----------
 publisher_id | null | If set, the result will only include apps made by this publisher
 installed_sdk_id | null | If set, the result will only include apps that have the SDK installed
+has_ad_spend | **boolean** <br>If true, the result will only include apps that we know are advertising on Facebook
 order_by | **string** <br>Order results by field. Must be one of:<br><code>first_scanned_date</code><br><code>last_scanned_date</code><br><code>last_updated</code>.<br>By default, results are in ascending order. Include <code>-</code> in front of the value to order results in descending order e.g. <code>-first_scanned_date</code>
 
 You can use the [MightySignal web portal](http://mightysignal.com/app/app) to find the ids for the query parameters.

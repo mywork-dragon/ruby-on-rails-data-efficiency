@@ -308,6 +308,7 @@ class AndroidApp < ActiveRecord::Base
       platform: :android,
       google_play_id: app_identifier,
       mobile_priority: mobile_priority,
+      has_ad_spend: ad_spend?,
       user_base: user_base
     }
     result[:publisher] = android_developer.present? ? android_developer.api_json(short_form: true) : nil

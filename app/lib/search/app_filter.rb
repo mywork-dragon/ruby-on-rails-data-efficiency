@@ -110,6 +110,7 @@ class AppFilter
       android: %w(
         publisher_id
         installed_sdk_id
+        has_ad_spend
       )
     }.freeze
 
