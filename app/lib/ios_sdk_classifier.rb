@@ -3,7 +3,7 @@ require_relative 'ios_sdk_classification/ios_framework_classifier'
 
 class IosSdkClassifier
 
-  DEFAULT_MAX_WAIT_ATTEMPTS = 30
+  DEFAULT_MAX_WAIT_TIME = 10.minutes.to_i
 
   class NoClassdumps < RuntimeError; end
   class Unprocessed < RuntimeError; end
@@ -53,7 +53,7 @@ class IosSdkClassifier
   end
 
   def max_waits
-    @max_waits || DEFAULT_MAX_WAIT_ATTEMPTS
+    @max_waits || DEFAULT_MAX_WAIT_TIME
   end
 
   def log_debug(str)
