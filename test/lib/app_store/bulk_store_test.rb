@@ -100,13 +100,18 @@ class BulkStoreTest < ActiveSupport::TestCase
   end
 
   test 'it correctly sets user_base' do
+    us_test_app_json = @test_app_json.clone
+    us_test_app_json['currentVersionReleaseDate'] = 10.days.ago.utc.iso8601
+
     il_test_app_json = @test_app_json.clone
     il_test_app_json['userRatingCount'] = 13
     il_test_app_json['userRatingCountForCurrentVersion'] = 1
+    il_test_app_json['currentVersionReleaseDate'] = 10.days.ago.utc.iso8601
 
     jp_test_app_json = @test_app_json.clone
     jp_test_app_json['userRatingCount'] = 11
     jp_test_app_json['userRatingCountForCurrentVersion'] = 0
+    jp_test_app_json['currentVersionReleaseDate'] = 10.days.ago.utc.iso8601
 
     ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create(:notes => 'testing')
     ios_app = IosApp.create(:app_identifier => 1234)
@@ -116,7 +121,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     us_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     il_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: il_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     jp_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: jp_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
-    us_bulk_store.add_data(ios_app, @test_app_json)
+    us_bulk_store.add_data(ios_app, us_test_app_json)
     il_bulk_store.add_data(ios_app, il_test_app_json)
     jp_bulk_store.add_data(ios_app, jp_test_app_json)
     us_bulk_store.save
