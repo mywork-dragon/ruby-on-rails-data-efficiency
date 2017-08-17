@@ -15,6 +15,7 @@ module GooglePlaySnapshotModule
     save_attributes
 
     update_android_app_columns
+    update_android_developer_identifier
     if Rails.env.production?
       save_new_similar_apps
       scrape_new_similar_apps(@similar_apps)
@@ -121,6 +122,12 @@ module GooglePlaySnapshotModule
     @android_app.newest_android_app_snapshot = @snapshot
 
     @android_app.save!
+  end
+
+  def update_android_developer_identifier
+    if @android_app.android_developer && @android_app.android_developer.identifier != @snapshot.developer_google_play_identifier
+      @android_app.android_developer.update!(identifier: @snapshot.developer_google_play_identifier)
+    end
   end
 
   def save_new_similar_apps
