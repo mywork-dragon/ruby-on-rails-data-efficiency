@@ -126,6 +126,18 @@ module GooglePlaySnapshotModule
 
   def update_android_developer_identifier
     if @android_app.android_developer && @android_app.android_developer.identifier != @snapshot.developer_google_play_identifier
+      developer = AndroidDeveloper.find_by_identifier(@snapshot.developer_google_play_identifier)
+      # If a developer exists with this identifier it must've been created by a newer app.
+      # we probably want to keep the oldest developer so we will assign the new developer's
+      # apps to the older dev.
+      if developer
+        developer.identifier = nil
+        developer.save!
+        developer.android_apps.map do |app|
+          app.android_developer = @android_app.android_developer
+          app.save!
+        end
+      end
       @android_app.android_developer.update!(identifier: @snapshot.developer_google_play_identifier)
     end
   end
