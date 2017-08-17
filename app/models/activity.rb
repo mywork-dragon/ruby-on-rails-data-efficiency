@@ -64,7 +64,7 @@ class Activity < ActiveRecord::Base
   def notify
     should_notify = false
     self.weekly_batches.each do |batch|
-      if batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type)
+      if batch.owner.try(:is_in_top_200?) && ['install', 'entered_top_apps'].include?(batch.activity_type) && (happened_at > Time.now - 2.days)
         should_notify = true
         break
       end
