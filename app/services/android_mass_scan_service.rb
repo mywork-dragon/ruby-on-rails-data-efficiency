@@ -76,7 +76,9 @@ class AndroidMassScanService
           end
         end
       else
-        AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+        android_app_ids.each do |id|
+          AndroidMassScanServiceWorker.perform_async(apk_snapshot_job.id, id)
+        end
       end
     end
 
