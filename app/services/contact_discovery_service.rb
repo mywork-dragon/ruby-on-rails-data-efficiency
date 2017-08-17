@@ -21,7 +21,7 @@ class ContactDiscoveryService
       headers: { 'Authorization' => auth_token }))
   end
 
-  def get_contacts(domain:, title: nil, limit: 20)
+  def get_contacts(domain:, title: nil, limit: 200)
     resp = mightybit_get("contacts?#{URI.encode_www_form('domain' => domain, 'title' => title)}")
     contacts = resp['contacts'].map do | person |
       contact = {
