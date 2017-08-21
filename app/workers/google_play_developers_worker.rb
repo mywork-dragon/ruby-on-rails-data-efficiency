@@ -16,7 +16,7 @@ class GooglePlayDevelopersWorker
     batch_size = 1_000
     AndroidApp
       .joins(:newest_android_app_snapshot)
-      .where(display_type: AndroidApp.display_types.values_at(:normal))
+      .where(display_type: AndroidApp.display_types.values_at(:normal, :foreign))
       .where(android_developer_id: nil)
       .find_in_batches(batch_size: batch_size)
       .with_index do |the_batch, index|
