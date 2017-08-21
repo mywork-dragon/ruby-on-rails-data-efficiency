@@ -5,7 +5,7 @@ module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
   class FailedLookup; end
 
-  def perform(android_app_snapshot_job_id, android_app_id)
+  def perform(android_app_snapshot_job_id, android_app_id, create_developer: false)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
 
@@ -16,6 +16,10 @@ module GooglePlaySnapshotModule
 
     update_android_app_columns
     update_android_developer_identifier
+
+    if create_developer
+      GooglePlayDevelopersWorker.perform_async(:create_by_android_app_id, android_app_id)
+    end
     if Rails.env.production?
       save_new_similar_apps
       scrape_new_similar_apps(@similar_apps)

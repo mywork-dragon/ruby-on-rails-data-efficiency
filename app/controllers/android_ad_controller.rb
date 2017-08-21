@@ -19,10 +19,10 @@ class AndroidAdController < ApplicationController
     ad.advertised_app = AndroidApp.find_or_create_by(app_identifier: ad.advertised_app_identifier)
 
     if ad.try(:advertised_app).newest_android_app_snapshot.nil?
-        GooglePlaySnapshotLiveWorker.perform_async(nil, ad.advertised_app.id)
+        GooglePlaySnapshotLiveWorker.perform_async(nil, ad.advertised_app.id, create_developer: true)
         AndroidMassScanService.run_by_ids([ad.advertised_app.id], use_batch: false)
-        GooglePlayDevelopersWorker.perform_async(:create_by_android_app_id, ad.advertised_app.id)
     end
+
     ad.advertised_app.display_type = :normal
     ad.advertised_app.save!
 
