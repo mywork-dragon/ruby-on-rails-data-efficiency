@@ -1081,8 +1081,8 @@ class ApiController < ApplicationController
   end
 
   def csv_header
-    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'In App Purchases', 'Categories',
-               'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID',
+    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'First Seen Ads', 'Last Seen Ads', 
+               'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID',
                'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads', 'Street Numbers', 'Street Names',
                'Cities', 'States', 'Countries', 'Postal Codes']
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC").each do |store|
