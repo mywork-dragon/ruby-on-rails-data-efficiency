@@ -1,6 +1,6 @@
 <div class="modal fade filter-modal" id="salesforceExportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" ng-hide="sfAdminConnected && sfUserConnected">
+    <div class="modal-content" ng-hide="sfAdminConnected && sfUserConnected && sfInstalled">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title" id="myModalLabel">Export to Salesforce</h3>
@@ -20,9 +20,15 @@
             </a>
           </p>
         </div>
+
+        <div ng-if="sfAdminConnected && sfUserConnected && !sfInstalled">
+          <p>
+            We are installing required MightySignal custom fields and objects on your Salesforce instance. Check back again in a few minutes.
+          </p>
+        </div>
       </div>
     </div>
 
-    <salesforce-export-form app="appData" user="userInfo" ng-if="sfAdminConnected && sfUserConnected"></salesforce-export-form>
+    <salesforce-export-form app="appData" user="userInfo" ng-if="sfAdminConnected && sfUserConnected && sfInstalled"></salesforce-export-form>
   </div>
 </div>

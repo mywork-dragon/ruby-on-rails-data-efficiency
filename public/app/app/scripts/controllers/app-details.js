@@ -28,6 +28,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         $scope.canUseSalesforce = data.can_use_salesforce;
         $scope.sfAdminConnected = data.sf_admin_connected;
         $scope.sfUserConnected = data.sf_user_connected;
+        $scope.sfInstalled = data.sf_installed;
       })
       .error(function() {
         $scope.canViewSupportDesk = false;

@@ -20,7 +20,7 @@ class Api::SalesforceController < ApplicationController
     
     response = SalesforceExportService.new(user: @current_user, 
                                 model_name: params[:model])
-                               .export_app(
+                               .export(
                                 app: app, 
                                 mapping: params[:mapping], 
                                 object_id: params[:objectId]) 

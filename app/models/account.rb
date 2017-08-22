@@ -6,8 +6,10 @@ class Account < ActiveRecord::Base
   has_many :api_keys
 
   has_many :api_tokens
+  has_many :salesforce_objects
 
   serialize :salesforce_settings, JSON
+  enum salesforce_status: [:setup, :ready] 
 
   def active_users
     self.users.where(access_revoked: false).size

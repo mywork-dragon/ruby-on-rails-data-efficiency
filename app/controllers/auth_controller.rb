@@ -82,6 +82,7 @@ class AuthController < ApplicationController
                can_use_salesforce: user.account.can_use_salesforce?,
                sf_admin_connected: user.account.salesforce_uid.present?,
                sf_user_connected: user.salesforce_uid.present?,
+               sf_installed: user.account.ready?,
                territories: user.territories
            }
   end

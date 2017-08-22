@@ -449,6 +449,9 @@ GEM
     ruby-progressbar (1.8.1)
     ruby-protocol-buffers (1.6.1)
     rubyzip (1.1.7)
+    salesforce_bulk_api (0.0.12)
+      json
+      xml-simple
     sanitize (4.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
@@ -557,6 +560,7 @@ GEM
       chronic (>= 0.6.3)
     www-favicon (0.0.6)
       hpricot
+    xml-simple (1.1.5)
 
 PLATFORMS
   ruby
@@ -634,6 +638,7 @@ DEPENDENCIES
   ruby-protocol-buffers (~> 1.6.1)
   ruby_apk!
   rubyzip (= 1.1.7)
+  salesforce_bulk_api (~> 0.0.12)
   sanitize (= 4.0.0)
   sass-rails
   sdoc (~> 0.4.0)

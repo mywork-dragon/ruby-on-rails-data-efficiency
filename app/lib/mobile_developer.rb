@@ -1,4 +1,9 @@
 module MobileDeveloper
+
+  def apps
+    platform == :ios ? ios_apps : android_apps
+  end
+
   def get_website_urls
     websites.pluck(:url).uniq
   end
