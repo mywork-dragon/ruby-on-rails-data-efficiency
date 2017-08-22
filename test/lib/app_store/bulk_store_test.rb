@@ -51,54 +51,6 @@ class BulkStoreTest < ActiveSupport::TestCase
     assert (snapshot.ratings_per_day_current_release - (53/5.0)).abs < 0.1 || (snapshot.ratings_per_day_current_release - (53/6.0)).abs < 0.1
   end
 
-  test 'it correctly sets mobile_priority high' do
-    high_mobile_priority_json = JSON.parse(File.open(File.join(Rails.root, 'test', 'data', 'test_app.json')).read)
-    high_mobile_priority_json['currentVersionReleaseDate'] = 5.days.ago.utc.iso8601
-
-    ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create(:notes => 'testing')
-    ios_app = IosApp.create(:app_identifier => 1234)
-    us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
-    bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
-    bulk_store.add_data(ios_app, high_mobile_priority_json)
-    bulk_store.save
-    
-    snapshot = IosAppCurrentSnapshot.where('app_identifier = 418075935').first
-
-    assert_equal 'high', snapshot.mobile_priority
-  end
-
-  test 'it correctly sets mobile_priority medium' do
-    high_mobile_priority_json = JSON.parse(File.open(File.join(Rails.root, 'test', 'data', 'test_app.json')).read)
-    high_mobile_priority_json['currentVersionReleaseDate'] = 3.months.ago.utc.iso8601
-
-    ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create(:notes => 'testing')
-    ios_app = IosApp.create(:app_identifier => 1234)
-    us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
-    bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
-    bulk_store.add_data(ios_app, high_mobile_priority_json)
-    bulk_store.save
-    
-    snapshot = IosAppCurrentSnapshot.where('app_identifier = 418075935').first
-
-    assert_equal 'medium', snapshot.mobile_priority
-  end
-
-  test 'it correctly sets mobile_priority low' do
-    high_mobile_priority_json = JSON.parse(File.open(File.join(Rails.root, 'test', 'data', 'test_app.json')).read)
-    high_mobile_priority_json['currentVersionReleaseDate'] = 10.months.ago.utc.iso8601
-
-    ios_app_current_snapshot_job = IosAppCurrentSnapshotJob.create(:notes => 'testing')
-    ios_app = IosApp.create(:app_identifier => 1234)
-    us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
-    bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
-    bulk_store.add_data(ios_app, high_mobile_priority_json)
-    bulk_store.save
-    
-    snapshot = IosAppCurrentSnapshot.where('app_identifier = 418075935').first
-
-    assert_equal 'low', snapshot.mobile_priority
-  end
-
   test 'it correctly sets user_base' do
     us_test_app_json = @test_app_json.clone
     us_test_app_json['currentVersionReleaseDate'] = 10.days.ago.utc.iso8601

@@ -6,23 +6,12 @@ class DiffSnapshotTableAccessor
       .count
   end
 
-  def mobile_priority_value(mobile_priority_symbol)
-    IosAppCurrentSnapshot.mobile_priorities[mobile_priority_symbol]
-  end
-
   def column_type(column_name)
     IosAppCurrentSnapshot.columns_hash[column_name].type
   end
 
   def user_base_name(user_base_value)
     IosAppCurrentSnapshot.user_bases.key(user_base_value)
-  end
-
-  def ios_app_ids_from_store_and_priority(app_store_id, mobile_priority_symbol)
-    IosAppCurrentSnapshot
-        .where(app_store_id: app_store_id, mobile_priority: IosApp.mobile_priorities[mobile_priority_symbol], latest: true)
-        .order(ratings_all_count: :desc)
-        .pluck(:ios_app_id)
   end
 
   def ios_app_ids_from_user_base(user_base_value)
@@ -111,7 +100,7 @@ class DiffSnapshotTableAccessor
 
   def app_store_details_from_ios_apps(ios_apps)
     fields = ['ios_app_id', 'ios_app_current_snapshots.name', 'ratings_all_count', 'app_stores.country_code', 'app_stores.name', 'seller_name',
-                'seller_url', 'user_base', 'price', 'first_released', 'mobile_priority', 'released']
+                'seller_url', 'user_base', 'price', 'first_released', 'released']
     IosAppCurrentSnapshot.joins(:app_store)
         .where(ios_app_id: ios_apps.map(&:id))
         .where('ios_app_current_snapshots.latest' => true)

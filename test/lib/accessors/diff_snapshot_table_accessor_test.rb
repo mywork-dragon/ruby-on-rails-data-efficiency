@@ -7,12 +7,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
     @accessor = DiffSnapshotTableAccessor.new
   end
 
-  test 'mobile_priority_value' do
-    assert_equal 0, @accessor.mobile_priority_value(:high)
-    assert_equal 1, @accessor.mobile_priority_value(:medium)
-    assert_equal 2, @accessor.mobile_priority_value(:low)
-  end
-
   test 'column_type' do
     assert_equal :string, @accessor.column_type('name')
     assert_equal :integer, @accessor.column_type('price')
@@ -28,74 +22,21 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
     assert_equal 'weak', @accessor.user_base_name(3)
   end
 
-  test 'ios_app_ids_from_store_and_priority' do
-    IosAppCurrentSnapshot.create(
-      :name=>"Test1", 
-      :mobile_priority=>1,
-      :app_store_id=>3,
-      :ios_app_id=>1,
-      :ratings_all_count=>1000,
-      :latest=>true)
-    IosAppCurrentSnapshot.create(
-      :name=>"Test2", 
-      :mobile_priority=>1,
-      :app_store_id=>1,
-      :ios_app_id=>2,
-      :ratings_all_count=>2000,
-      :latest=>true)
-    IosAppCurrentSnapshot.create(
-      :name=>"Test3", 
-      :mobile_priority=>1,
-      :app_store_id=>3,
-      :ios_app_id=>3,
-      :ratings_all_count=>3000,
-      :latest=>nil)
-    IosAppCurrentSnapshot.create(
-      :name=>"Test3", 
-      :mobile_priority=>1,
-      :app_store_id=>3,
-      :ios_app_id=>3,
-      :ratings_all_count=>4000,
-      :latest=>nil)
-    IosAppCurrentSnapshot.create(
-      :name=>"Test3", 
-      :mobile_priority=>1,
-      :app_store_id=>3,
-      :ios_app_id=>3,
-      :ratings_all_count=>5000,
-      :latest=>true)
-    IosAppCurrentSnapshot.create(
-      :name=>"Test4", 
-      :mobile_priority=>1,
-      :app_store_id=>10,
-      :ios_app_id=>4,
-      :ratings_all_count=>1000,
-      :latest=>true)
-
-    result = @accessor.ios_app_ids_from_store_and_priority(3, :medium)
-    assert_equal 2, result.length
-    assert_equal 3, result[0]
-    assert_equal 1, result[1]
-  end
-
   test 'ios_app_ids_from_user_base' do
     IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>1,
       :latest=>true,
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>2,
       :latest=>true,
       :user_base=>1)
     IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>3,
       :latest=>true,
@@ -110,7 +51,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
   test 'ios_app_ids_from_user_base_excludes_non_latest' do
     IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>1,
       :latest=>true,
@@ -118,14 +58,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>2,
       :latest=>nil,
       :user_base=>1)
     IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>2,
       :latest=>true,
@@ -133,14 +71,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>3,
       :latest=>nil,
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>3,
       :latest=>true,
@@ -160,19 +96,16 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>(ios_app.id + 1),
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
@@ -210,35 +143,30 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
       :user_base=>0)
     snapshot_a = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :latest=>true,
       :user_base=>0)
     snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>(ios_app.id + 1),
       :latest=>nil,
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
       :user_base=>1)
     snapshot_3a = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -286,19 +214,16 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
     IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>(ios_app.id + 1),
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
@@ -336,35 +261,30 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
       :user_base=>0)
     snapshot_a = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :latest=>true,
       :user_base=>0)
     snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>(ios_app.id + 1),
       :latest=>nil,
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
       :user_base=>1)
     snapshot_3a = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -417,7 +337,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
@@ -446,7 +365,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -454,7 +372,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -498,7 +415,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -528,7 +444,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0,
@@ -537,7 +452,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot2 = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0,
@@ -575,7 +489,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0,
@@ -585,7 +498,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot2 = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0,
@@ -595,7 +507,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot3 = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0,
@@ -653,14 +564,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
@@ -669,7 +578,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test1", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal unique_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "elite", result["user_base"]
@@ -691,7 +599,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -699,7 +606,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -707,7 +613,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
@@ -716,7 +621,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test1", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal unique_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "strong", result["user_base"]
@@ -738,14 +642,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>us_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>2)
@@ -754,7 +656,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test2", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal jp_app_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "moderate", result["user_base"]
@@ -776,14 +677,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>us_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -792,7 +691,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -801,7 +699,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -812,7 +709,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test2", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal jp_app_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "moderate", result["user_base"]
@@ -835,14 +731,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
@@ -851,7 +745,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test1", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal unique_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "strong", result["user_base"]
@@ -873,7 +766,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -882,7 +774,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>unique_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -891,7 +782,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
@@ -900,7 +790,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test1", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal unique_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "strong", result["user_base"]
@@ -925,14 +814,12 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>us_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
@@ -941,7 +828,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test2", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal jp_app_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "strong", result["user_base"]
@@ -965,7 +851,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     us_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>us_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -973,7 +858,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -982,7 +866,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>nil,
@@ -991,7 +874,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     jp_snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>jp_app_store.id,
       :ios_app_id=>ios_app.id,
       :latest=>true,
@@ -1002,7 +884,6 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     assert_equal Hash, result.class
     assert_equal "Test2", result["name"]
-    assert_equal "medium", result["mobile_priority"]
     assert_equal jp_app_store.id, result["app_store_id"]
     assert_equal ios_app.id, result["ios_app_id"]
     assert_equal "strong", result["user_base"]
@@ -1466,19 +1347,16 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
     snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>ios_app_2.id,
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :user_base=>1)
@@ -1524,20 +1402,17 @@ class DiffSnapshotTableAccessorTest < ActiveSupport::TestCase
 
     snapshot = IosAppCurrentSnapshot.create(
       :name=>"Test1", 
-      :mobile_priority=>1,
       :app_store_id=>3,
       :ios_app_id=>ios_app.id,
       :user_base=>0)
     snapshot_2 = IosAppCurrentSnapshot.create(
       :name=>"Test2", 
-      :mobile_priority=>1,
       :app_store_id=>1,
       :ios_app_id=>ios_app_2.id,
       :latest=>nil,
       :user_base=>1)
     snapshot_3 = IosAppCurrentSnapshot.create(
       :name=>"Test3", 
-      :mobile_priority=>1,
       :app_store_id=>2,
       :ios_app_id=>ios_app.id,
       :user_base=>1)

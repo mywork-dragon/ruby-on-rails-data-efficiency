@@ -11,20 +11,12 @@ class IosSnapshotAccessor
     @delegate.job_snapshots_count(ios_app_current_snapshot_job_id)
   end
 
-  def mobile_priority_value(mobile_priority_symbol)
-    @delegate.mobile_priority_value(mobile_priority_symbol)
-  end
-
   def user_base_name(user_base_value)
     @delegate.user_base_name(user_base_value)
   end
 
   def column_type(column_name)
     @delegate.column_type(column_name)
-  end
-
-  def ios_app_ids_from_store_and_priority(app_store_id, mobile_priority_symbol)
-    @delegate.ios_app_ids_from_store_and_priority(app_store_id, mobile_priority_symbol)
   end
 
   def ios_app_ids_from_user_base(user_base_value)

@@ -22,4 +22,8 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
     columns.each { |column_name| self.send("#{column_name}=", nil) }
   end
 
+  def mobile_priority
+    IosApp.mobile_priority_from_date(released: released)
+  end
+
 end

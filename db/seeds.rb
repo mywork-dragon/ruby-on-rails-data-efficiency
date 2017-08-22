@@ -49,7 +49,6 @@ end
     ios_app.save
     ios_app_snapshot.ios_app = ios_app
     ios_app_snapshot.save
-    ios_app.set_mobile_priority
     ios_app.set_user_base
 
     ios_cat = IosAppCategory.all.sample

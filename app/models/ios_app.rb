@@ -153,7 +153,7 @@ class IosApp < ActiveRecord::Base
       platform: platform,
       releaseDate: self.release_date,
       name: self.name,
-      mobilePriority: first_international_snapshot['mobile_priority'] || mobile_priority,
+      mobilePriority: mobile_priority,
       userBase: self.international_userbase(user_bases: options[:user_bases]),
       userBases: self.scored_user_bases,
       releasedDays: self.released_days,
@@ -528,20 +528,13 @@ class IosApp < ActiveRecord::Base
   # Mobile priority methods
   ###############################
 
-  def set_mobile_priority
-    begin
-      if ios_fb_ad_appearances.present? || newest_ios_app_snapshot.released > 2.months.ago
-        self.mobile_priority = :high
-      elsif newest_ios_app_snapshot.released > 4.months.ago
-        self.mobile_priority = :medium
-      else
-        self.mobile_priority = :low
-      end
-      self.save
-    rescue => e
-      logger.info "Warning: couldn't update mobile priority for IosApp with id #{self.id}"
-      logger.info e
-    end
+  def mobile_priority
+    snapshot = first_international_snapshot
+
+    release_date = nil
+    release_date = snapshot['released'] if snapshot
+    
+    self.class.mobile_priority_from_date(released: release_date)
   end
 
   ########################
@@ -759,12 +752,24 @@ class IosApp < ActiveRecord::Base
       all_version_ratings_count: int_hash['ratings_all_count'],
       categories: int_hash['categories_snapshots'].as_json,
       user_base: int_hash['user_base'],
-      mobile_priority: int_hash['mobile_priority'],
       bundle_identifier: int_hash['bundle_identifier']
     }
   end
 
   class << self
+
+    def mobile_priority_from_date(released: nil)
+      if released
+          if released > 2.months.ago
+            return 'high'
+          elsif released > 4.months.ago
+            return 'medium'
+          else
+            return 'low'
+          end
+      end
+      'low'
+    end
 
     def dedupe
       # find all models and group them on keys which should be common

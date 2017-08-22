@@ -186,16 +186,16 @@ module AppStoreHelper
       snapshot.ratings_current_count / (days_ago.to_f)
     end
 
+    # TODO: remove once the mobile_priority column is deleted.
     def mobile_priority(snapshot)
       released = snapshot.released
       value = if released > 2.months.ago
-        :high
+        0
       elsif released > 4.months.ago
-        :medium
+        1
       else
-        :low
+        2
       end
-      IosSnapshotAccessor.new.mobile_priority_value(value)
     end
 
     def user_base(snapshot)

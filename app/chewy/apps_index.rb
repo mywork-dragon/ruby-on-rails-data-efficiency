@@ -27,7 +27,7 @@ class AppsIndex < Chewy::Index
 
     crutch :current_snapshot do |collection|
       data = IosSnapshotAccessor.new.app_store_details_from_ios_apps(collection)
-      data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, mobile_priority, released), result|
+      data.each.with_object({}) { |(id, name, ratings_all, country_code, country_name, seller_name, seller_url, user_base, price, first_released, released), result|
         result[id] ||= {}
         result[id]['ios_app_id'] ||= id
         result[id]['ratings_all'] ||= ratings_all
@@ -35,7 +35,7 @@ class AppsIndex < Chewy::Index
         result[id]['price'] ||= price
         result[id]['seller_name'] ||= seller_name
         result[id]['seller_url'] ||= seller_url
-        result[id]['mobile_priority'] ||= ::IosApp.mobile_priorities.key(mobile_priority)
+        result[id]['mobile_priority'] ||= ::IosApp.mobile_priority_from_date(released: released)
         (result[id]['app_stores'] ||= []).push({name: country_name, country_code: country_code})
         (result[id]['user_bases'] ||= []).push({user_base: ::IosApp.user_bases.key(user_base), country_code: country_code, country: country_name})
         result[id]['first_released'] ||= first_released

@@ -21,7 +21,6 @@ class IosAppTest < ActiveSupport::TestCase
       name: 'different_name',
       ios_app_id: @app.id,
       price: 10,
-      mobile_priority: :high,
       user_base: :elite,
       app_store_id: @store.id,
       released: 10.days.ago,
@@ -45,6 +44,21 @@ class IosAppTest < ActiveSupport::TestCase
         'installed_sdks' => [ {'id' => @sdk.id, 'first_seen_date' => 'some_value'}],
         'uninstalled_sdks' => [ {'id' => @sdk.id, 'first_seen_date' => 'some_value', 'last_seen_date' => 'another_value'}]
       }]
+    )
+
+    @low_mobile_priority_app = IosApp.create!(
+      app_identifier: 123123124,
+      user_base: :elite,
+      released: 2.days.ago # ios app should retrieve released from snapshot so this value should be ignored
+    )
+    @low_mobile_priority_int_snapshot = IosAppCurrentSnapshot.create!(
+      name: 'different_name',
+      ios_app_id: @low_mobile_priority_app.id,
+      price: 10,
+      user_base: :elite,
+      app_store_id: @store.id,
+      released: 300.days.ago,
+      bundle_identifier: 'com.mightysignal'
     )
   end
 
@@ -81,6 +95,14 @@ class IosAppTest < ActiveSupport::TestCase
       refute_nil sdk[:first_seen_date]
       refute_nil sdk[:last_seen_date]
     end
+  end
+
+  test 'mobile priority low' do
+    assert_equal 'low', @low_mobile_priority_app.mobile_priority
+  end
+
+  test 'mobile priority high' do
+    assert_equal 'high', @app.mobile_priority
   end
 
   test 'short form json' do
