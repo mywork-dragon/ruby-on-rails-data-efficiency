@@ -5,7 +5,7 @@ module GooglePlaySnapshotModule
   class UnregisteredProxyType < RuntimeError; end
   class FailedLookup; end
 
-  def perform(android_app_snapshot_job_id, android_app_id, create_developer: false)
+  def perform(android_app_snapshot_job_id, android_app_id, create_developer = false)
     @android_app_snapshot_job_id = android_app_snapshot_job_id
     @android_app = AndroidApp.find(android_app_id)
 
