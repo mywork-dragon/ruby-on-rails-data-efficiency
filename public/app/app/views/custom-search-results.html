@@ -73,17 +73,11 @@
               </div></th>
               <th><div class="th normal-right-padding">
                 Ad Spend
-                <span ng-show="!canViewAdSpend || customSearchCtrl.platform == 'android'" class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'desc')"
-                      data-ng-class="{active: row == 'old_facebook_ads'}"></span>
-                <span ng-show="!canViewAdSpend || customSearchCtrl.platform == 'android'" class="glyphicon glyphicon-chevron-down"
-                      data-ng-click="customSearchCtrl.sortApps('old_facebook_ads', 'asc')"
-                      data-ng-class="{active: row == '-old_facebook_ads'}"></span>
                 <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('facebook_ads', 'desc')"
+                      data-ng-click="customSearchCtrl.sortApps('facebook_ads', 'asc')"
                       data-ng-class="{active: row == 'facebook_ads'}"></span>
                 <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('facebook_ads', 'asc')"
+                      data-ng-click=" customSearchCtrl.sortApps('facebook_ads', 'desc')"
                       data-ng-class="{active: row == '-facebook_ads'}"></span>
               </div></th>
               <th class="resultsTableAppUserbase"><div class="th normal-right-padding">

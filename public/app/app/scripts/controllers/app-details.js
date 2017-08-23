@@ -91,7 +91,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
         /* Sets html title attribute */
         pageTitleService.setTitle(data.name);
-
+        $scope.getCompanyContacts()
 
         /* -------- Mixpanel Analytics Start -------- */
         if ($routeParams.from == 'ewok') {
@@ -260,7 +260,20 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         })
     }
 
-    $scope.getCompanyContacts = function(filter, page) {
+    $scope.trackCompanyContactsRequest = function (data, filter) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Company Contacts Requested", {
+          'companyName': $scope.appData.publisher.name,
+          'requestResults': data.contacts,
+          'requestResultsCount': data.contactsCount,
+          'titleFilter': filter || ''
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+    }
+
+    $scope.getCompanyContacts = function(filter, page, clicked) {
       if (!page) {
         page = 1
       }
@@ -271,20 +284,13 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
           $scope.contactsCount = data.contactsCount;
           $scope.contactsLoading = false;
           $scope.contactsLoaded = true;
-          /* -------- Mixpanel Analytics Start -------- */
-          mixpanel.track(
-            "Company Contacts Requested", {
-              'companyName': $scope.appData.publisher.name,
-              'requestResults': data.contacts,
-              'requestResultsCount': data.contacts.length,
-              'titleFilter': filter || ''
-            }
-          );
-          /* -------- Mixpanel Analytics End -------- */
+          if (clicked) {
+            $scope.trackCompanyContactsRequest(data, filter)
+          }
         }).error(function(err) {
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
-            "Company Contacts Requested", {
+            "Company Contacts Requested Error", {
               'companyName': $scope.appData.publisher.name,
               'requestError': err,
               'titleFilter': filter || ''

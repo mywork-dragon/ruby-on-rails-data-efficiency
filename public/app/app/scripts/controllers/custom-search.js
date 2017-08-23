@@ -136,6 +136,7 @@ angular.module('appApp')
         customSearchCtrl.appNum = 0;
         customSearchCtrl.numApps = 0;
         customSearchCtrl.queryInProgress = false;
+        if (customSearchCtrl.searchInput && customSearchCtrl.searchInput != '') customSearchCtrl.submitSearch()
       });
 
       customSearchCtrl.getLastUpdatedDaysClass = function(lastUpdatedDays) {
@@ -172,7 +173,7 @@ angular.module('appApp')
           "type": type,
           "id": item.id,
           "name": item.name,
-          "platform": APP_PLATFORM,
+          "platform": customSearchCtrl.platform,
           "query": customSearchCtrl.searchInput
         })
       }

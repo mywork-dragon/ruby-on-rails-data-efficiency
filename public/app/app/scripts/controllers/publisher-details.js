@@ -30,7 +30,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         publisherDetailsCtrl.queryInProgress = false;
 
         $scope.initialPageLoadComplete = true; // hides page load spinner
-
+        $scope.getCompanyContacts()
         /* Sets html title attribute */
 
         mixpanel.track(
@@ -190,7 +190,20 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       return offset + ' - ' + (offset + $scope.contactsPerPage - 1)
     }
 
-    $scope.getCompanyContacts = function(filter, page) {
+    $scope.trackCompanyContactsRequest = function (data, filter) {
+      /* -------- Mixpanel Analytics Start -------- */
+      mixpanel.track(
+        "Company Contacts Requested", {
+          'companyName': $scope.publisherData.name,
+          'requestResults': data.contacts,
+          'requestResultsCount': data.contactsCount,
+          'titleFilter': filter || ''
+        }
+      );
+      /* -------- Mixpanel Analytics End -------- */
+    }
+
+    $scope.getCompanyContacts = function(filter, page, clicked) {
       if (!page) {
         page = 1
       }
@@ -200,24 +213,17 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         $scope.contactsCount = data.contactsCount;
         $scope.contactsLoading = false;
         $scope.contactsLoaded = true;
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "Company Contacts Requested", {
-            'companyName': $scope.publisherData.name,
-            'requestResults': data.contacts,
-            'requestResultsCount': data.contacts.length,
-            'titleFilter': filter || ''
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-      }).error(function() {
+        if (clicked) {
+          $scope.trackCompanyContactsRequest(data, filter)
+        }
+      }).error(function(err) {
         $scope.contactsLoading = false;
         $scope.contactsLoaded = false;
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
-          "Company Contacts Requested", {
+          "Company Contacts Requested Error", {
             'companyName': $scope.publisherData.name,
-            'requestResultsCount': 0,
+            'requestError': err,
             'titleFilter': filter || ''
           }
         );

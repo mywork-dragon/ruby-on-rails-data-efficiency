@@ -4,7 +4,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
   function($scope, authService, $http, pageTitleService, listApiService, apiService, slacktivity, searchService, sdkLiveScanService, authToken, $location, $rootScope, AppPlatform) {
 
     var adIntelligenceCtrl = this;
-    $scope.appPlatform = AppPlatform;
+    $scope.platform = 'ios';
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Ad Intelligence');
@@ -28,7 +28,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.json',
+        url: API_URI_BASE + 'api/ad_intelligence/' + $scope.platform + '.json',
         params: {pageNum: $scope.currentPage, orderBy: $scope.order, sortBy: $scope.category}
       }).success(function(data) {
         $scope.apps = data.results;
@@ -58,29 +58,30 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         "Ad Intelligence Item Clicked", {
           "name": item.name,
           "id": item.id,
-          "platform": APP_PLATFORM,
+          "platform": $scope.platform,
           type
         }
       );
     }
 
-    $scope.toggledPlatform = function() {
+    $scope.togglePlatform = function() {
       $scope.apps = [];
       $scope.numApps = 0;
+      $scope.platform = $scope.platform == 'ios' ? 'android' : 'ios'
       mixpanel.track("Ad Intelligence Viewed", {
-        "platform": APP_PLATFORM
+        "platform": $scope.platform
       });
       adIntelligenceCtrl.load();
     }
 
     adIntelligenceCtrl.updateCSVUrl = function() {
       var tokenParam =  $location.url().split('/ad-intelligence')[1] ? '&access_token=' : '?access_token='
-      adIntelligenceCtrl.csvUrl = API_URI_BASE + 'api/ad_intelligence/' + $scope.appPlatform.platform + '.csv' + $location.url().split('/ad-intelligence')[1] + tokenParam + authToken.get()
+      adIntelligenceCtrl.csvUrl = API_URI_BASE + 'api/ad_intelligence/' + $scope.platform + '.csv' + $location.url().split('/ad-intelligence')[1] + tokenParam + authToken.get()
     };
 
     adIntelligenceCtrl.adExportButtonClicked = function () {
       mixpanel.track("Ad Intelligence Exported", {
-        platform: APP_PLATFORM
+        platform: $scope.platform
       })
     }
 
@@ -97,7 +98,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       adIntelligenceCtrl.load(currentPage, $scope.category, $scope.order);
       mixpanel.track("Ad Intelligence Paged Through", {
         "page": currentPage,
-        "platform": APP_PLATFORM
+        "platform": $scope.platform
       })
     };
 
@@ -107,7 +108,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         "Ad Intelligence Table Sorting Changed", {
           "category": category,
           "order": order,
-          "appPlatform": APP_PLATFORM
+          "appPlatform": $scope.platform
         }
       );
       adIntelligenceCtrl.load(1, category, order);
@@ -121,7 +122,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
     slacktivity.notifySlack(slacktivityData);
 
     mixpanel.track("Ad Intelligence Viewed", {
-      "platform": APP_PLATFORM
+      "platform": $scope.platform
     });
 
     adIntelligenceCtrl.load();

@@ -96,10 +96,16 @@
                   <li id="showCompanyEmailsButtonLi">
                     <div id="showCompanyEmailsContainer">
                       <div id="showCompanyEmailsTextField">
-                        <input ng-model="companyContactFilter" type="text" class="form-control" ng-hide="contactsLoading" placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO">
+                        <input
+                          ng-model="companyContactFilter"
+                          type="text"
+                          class="form-control"
+                          ng-hide="contactsLoading"
+                          placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
+                          ng-enter="getCompanyContacts(companyContactFilter, 1, true)">
                       </div>
                       <div id="showCompanyEmailsButton">
-                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyContactFilter)">Find Contacts</button>
+                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyContactFilter, 1, true)">Find Contacts</button>
                       </div>
                     </div>
                     <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">

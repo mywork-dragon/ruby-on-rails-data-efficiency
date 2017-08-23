@@ -9035,3 +9035,14 @@ h4.red {
   margin: 0px;
   padding: 0px;
 }
+
+.login-helper {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-email-link {
+  text-decoration: underline;
+  color: #1894DA;
+}
