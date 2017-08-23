@@ -209,6 +209,7 @@ class IosSdk < ActiveRecord::Base
             summary: info['summary']
           )
         end
+        sdk.cocoapod_source_datas.where(flagged: false).update_all(flagged: true) # no longer use cocoapods info
         existing = sdk.ios_sdk_source_datas.pluck(:name)
         current = info['classes']
         to_remove = existing - current
