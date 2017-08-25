@@ -1,7 +1,7 @@
 # basically higher priority mass scan
 class IosEpfScanServiceWorker
   include Sidekiq::Worker
-  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_lookup
+  sidekiq_options retry: false, queue: :ios_mass_lookup
 
   def perform(ipa_snapshot_job_id, ios_app_id)
     options = {
