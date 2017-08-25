@@ -1,6 +1,9 @@
 module Oauth
   class Salesforce < Oauth::Base
-    ACCESS_TOKEN_URL = 'https://login.salesforce.com/services/oauth2/token'
+
+    def self.access_token_url
+      'https://login.salesforce.com/services/oauth2/token'
+    end
 
     def get_data
       response = @client.get(@parsed_response['id'], access_token: @access_token)

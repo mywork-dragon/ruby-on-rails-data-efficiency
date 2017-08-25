@@ -173,6 +173,36 @@ angular
       popupOptions: { width: 500, height: 530 },
       state: () => encodeURIComponent(Math.random().toString(36).substr(2))
     });
+
+    $authProvider.oauth2({
+      name: 'salesforce_sandbox',
+      url: '/auth/salesforce_sandbox',
+      clientId: '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9',
+      authorizationEndpoint: 'https://test.salesforce.com/services/oauth2/authorize',
+      redirectUri: window.location.origin,
+      optionalUrlParams: ['state'],
+      requiredUrlParams: ['scope'],
+      scope: ['api', 'refresh_token'],
+      scopeDelimiter: '%20',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 530 },
+      state: () => encodeURIComponent(Math.random().toString(36).substr(2))
+    });
+
+    $authProvider.oauth2({
+      name: 'salesforce_user_sandbox',
+      url: '/auth/salesforce_user_sandbox',
+      clientId: '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9',
+      authorizationEndpoint: 'https://test.salesforce.com/services/oauth2/authorize',
+      redirectUri: window.location.origin,
+      optionalUrlParams: ['state'],
+      requiredUrlParams: ['scope'],
+      scope: ['id'],
+      scopeDelimiter: '%20',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 530 },
+      state: () => encodeURIComponent(Math.random().toString(36).substr(2))
+    });
   })
   .filter('capitalize', function() {
     return function(input) {

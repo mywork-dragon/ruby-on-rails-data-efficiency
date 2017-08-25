@@ -113,6 +113,10 @@
                     <i class="fa fa-cloud" aria-hidden="true"></i>
                     Connect Salesforce
                   </a>
+                  <a ng-hide="account.salesforce_connected" ng-click="authenticate('salesforce_sandbox', account)" class="btn btn-warning">
+                    <i class="fa fa-cloud" aria-hidden="true"></i>
+                    Connect Salesforce Sandbox
+                  </a>
                   <a ng-show="account.salesforce_connected" class="btn btn-primary disabled">
                     <i class="fa fa-cloud" aria-hidden="true"></i>
                     Salesforce Connected

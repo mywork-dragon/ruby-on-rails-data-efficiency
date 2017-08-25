@@ -88,6 +88,8 @@ class User < ActiveRecord::Base
         account.salesforce_token = params[:token]
         account.salesforce_refresh_token = params[:refresh_token]
         account.salesforce_instance_url = params[:instance_url]
+        account.salesforce_settings ||= {}
+        account.salesforce_settings[:is_sandbox] = params[:is_sandbox].present?
         account.save
         SalesforceWorker.perform_async(:setup_export, user.id)
         user

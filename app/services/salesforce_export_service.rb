@@ -5,6 +5,7 @@ class SalesforceExportService
     @user = user
     @account = @user.account
     @model_name = model_name
+    @is_sandbox = @account.salesforce_settings.with_indifferent_access[:is_sandbox]
 
     @app_model = 'MightySignal_App__c'
     @sdk_model = 'MightySignal_SDK__c'
@@ -13,6 +14,9 @@ class SalesforceExportService
     client_id = '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9'
 
     Restforce.log = true
+
+    host = @is_sandbox ? 'test.salesforce.com' : 'login.salesforce.com'
+
     @client ||= Restforce.new(
       oauth_token: @account.salesforce_token,
       refresh_token: @account.salesforce_refresh_token,
@@ -20,13 +24,15 @@ class SalesforceExportService
       instance_url: @account.salesforce_instance_url,
       client_id: client_id,
       client_secret: ENV['SALESFORCE_AUTH_CLIENT_SECRET'],
-      api_version: '39.0'
+      api_version: '39.0',
+      host: host
     )
     @metadata_client ||= Metaforce.new(
                           session_id: @account.salesforce_token, 
                           authentication_handler: method(:update_metadata_token),
                           metadata_server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0", 
-                          server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0"
+                          server_url: "#{@account.salesforce_instance_url}/services/Soap/m/30.0",
+                          host: host
                         )
     @bulk_client = SalesforceBulkApi::Api.new(@client)
 

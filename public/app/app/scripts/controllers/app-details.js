@@ -34,6 +34,11 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         $scope.canViewSupportDesk = false;
       });
 
+      authService.accountInfo()
+      .success(function(data) {
+        $scope.salesforceSettings = data.salesforce_settings
+      })
+
     $scope.getSalesforceData = function() {
       authService.userInfo().success(function(data) {
         $scope.userInfo = {}

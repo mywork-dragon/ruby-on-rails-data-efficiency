@@ -1,11 +1,14 @@
 module Oauth
   class Google < Oauth::Base
-    ACCESS_TOKEN_URL = 'https://accounts.google.com/o/oauth2/token'
     DATA_URL = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
 
     def get_names
       names = data[:name].try(:split).to_a
       [data[:given_name] || names.first, data[:family_name] || names.last]
+    end
+
+    def self.access_token_url
+      'https://accounts.google.com/o/oauth2/token'
     end
 
     def get_data
