@@ -1,5 +1,7 @@
 class IosScanRunner
 
+  attr_accessor :rs_logger
+
   class UnexpectedCondition < RuntimeError; end
   class BusyDevices < RuntimeError; end
   class NoAppleAccounts < RuntimeError; end
@@ -12,10 +14,18 @@ class IosScanRunner
       filename: Rails.application.config.dark_side_json_log_path,
       included_keys: { ipa_snapshot_id: @ipa_snapshot_id }
     )
+    # haven't figured out ENV variables on macs yet
+    @rs_logger = RedshiftLogger.new(
+      table: 'analytics',
+      cluster: 'ms-analytics',
+      database: 'data')
   end
 
   def run
     load_job_info
+    if @options[:check_repeated_scan] && already_scanned?
+      return handle_already_scanned
+    end
     create_record
     reserve_device
     download
@@ -29,6 +39,17 @@ class IosScanRunner
     raise
   ensure
     release_device
+  end
+
+  def already_scanned?
+    current_version = @snapshot.version
+    previous_version = @snapshot.ios_app.newest_ipa_snapshot.try(:version)
+    current_version == previous_version
+  end
+
+  def handle_already_scanned
+    @snapshot.update!(success: true, download_status: :unchanged)
+    log_rs_metric('ios_scan_unchanged')
   end
 
   def release_device
@@ -69,32 +90,27 @@ class IosScanRunner
 
   def handle_error(e)
     @logger.log_exc(e)
-    log_scan_failure if @options[:log_scan_failure]
+    log_rs_metric('ios_scan_failure')
     @snapshot.update!(download_status: :complete, success: false)
   end
 
-  def log_scan_failure
-      app = @snapshot.ios_app
-      store = @snapshot.app_store
+  def log_rs_metric(name)
+    app = @snapshot.ios_app
+    store = @snapshot.app_store
 
-      record = {
-        name: 'ios_scan_failure',
-        ios_app_id: app.id,
-        ios_app_identifier: app.app_identifier,
-        ios_app_store: store.country_code
-      }
+    record = {
+      name: name,
+      ios_app_id: app.id,
+      ios_app_identifier: app.app_identifier,
+      ios_app_store: store.country_code
+    }
 
-      if @reserver.device
-        record[:ios_device_id] = @reserver.device.id
-        record[:ios_version] = @reserver.device.ios_version    
-      end
+    if @reserver.device
+      record[:ios_device_id] = @reserver.device.id
+      record[:ios_version] = @reserver.device.ios_version
+    end
 
-      # haven't figured out ENV variables on macs yet
-      RedshiftLogger.new(
-        table: 'analytics',
-        cluster: 'ms-analytics',
-        database: 'data',
-        records: [record]).send!
+    @rs_logger.add(record).send!
   rescue => e
     Bugsnag.notify(e)
   end
@@ -145,7 +161,6 @@ class IosScanRunner
   def reserve_device
     log("Reserving device and account #{Time.now}")
     requirements = build_reservation_requirements
-    @reserver = IosScanReserver.new(@snapshot)
     @reserver.reserve(@device_purpose, requirements)
     validate_device!
     validate_apple_account!
@@ -178,6 +193,7 @@ class IosScanRunner
     raise UnexpectedCondition if @snapshot.lookup_content.empty?
     @lookup_content = JSON.parse(@snapshot.lookup_content)
     @logger.add_key(:ios_app_id, @snapshot.ios_app_id)
+    @reserver = IosScanReserver.new(@snapshot)
   end
 
   def log(msg)

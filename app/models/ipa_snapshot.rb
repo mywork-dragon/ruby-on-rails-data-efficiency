@@ -21,7 +21,7 @@ class IpaSnapshot < ActiveRecord::Base
 
   belongs_to :app_store
 
-  enum download_status: [:starting, :retrying, :cleaning, :complete]
+  enum download_status: [:starting, :retrying, :cleaning, :complete, :unchanged]
   enum scan_status: [:scanning, :scanned, :failed, :arch_issue, :invalidated]
 
   before_create :set_dates
