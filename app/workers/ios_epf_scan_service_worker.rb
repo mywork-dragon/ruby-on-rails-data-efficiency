@@ -1,15 +1,17 @@
-class IosEpfScanServiceWorker < IosMassScanServiceWorker
-  def start_job(ipa_snapshot_job_id, ios_app_id, ipa_snapshot_id)
-    if Rails.env.production?
-      unless batch.nil?
-        batch.jobs do
-          IosScanEpfServiceWorker.perform_async(ipa_snapshot_id)
-        end
-      else
-        IosScanEpfServiceWorker.perform_async(ipa_snapshot_id)
-      end
-    else
-      IosScanEpfServiceWorker.new.perform(ipa_snapshot_id)
-    end
+# basically higher priority mass scan
+class IosEpfScanServiceWorker
+  sidekiq_options backtrace: true, retry: false, queue: :ios_mass_lookup
+
+  def perform(ipa_snapshot_job_id, ios_app_id)
+    options = {
+      scan_worker: IosScanEpfServiceWorker,
+      sidekiq_batch_id: bid,
+      log_result: true,
+      enable_international: false,
+      update_job_status: false,
+      enable_update_check: true,
+      enable_recent_queue_check: true
+    }
+    IosScanValidationRunner.new(ipa_snapshot_job_id, ios_app_id, options).run
   end
 end

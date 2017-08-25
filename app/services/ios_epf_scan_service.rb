@@ -38,7 +38,6 @@ class IosEpfScanService
         
         batch = Sidekiq::Batch.new
         batch.description = 'iOS EPF Apps'
-        batch.on(:complete, 'IosEpfScanService#on_complete_scan')
 
         batch.jobs do
           IosApp.where(id: ids).pluck(:id).each do |id|
@@ -56,6 +55,6 @@ class IosEpfScanService
   end
 
   def on_complete_scan(status, options)
-    Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS Scans')
+    # Slackiq.notify(webhook_name: :main, status: status, title: 'Completed iOS Scans')
   end
 end

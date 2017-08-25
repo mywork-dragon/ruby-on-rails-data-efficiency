@@ -8,10 +8,9 @@ class IosFbProcessingWorker
 
     begin
       IosFbAd.find(ios_fb_ad_id).update(status: :processing)
-
       process(ios_fb_ad_id)
-
       IosFbAd.find(ios_fb_ad_id).update(status: :complete)
+      log_event(ios_fb_ad_id)
     rescue => e
       IosFbAdProcessingException.create!({
         ios_fb_ad_id: ios_fb_ad_id,
@@ -36,18 +35,19 @@ class IosFbProcessingWorker
     short_url = get_short_url(ios_fb_ad.link_contents)
     app_identifier = get_app_identifier(short_url)
 
-    ios_app = IosApp.find_by_app_identifier(app_identifier)
-
-    ios_app = add_app_to_db(app_identifier) if ios_app.nil?
-
-    raise FailedLookup, "Could not find app with identifier #{app_identifier}" if ios_app.nil?
+    ios_app = get_ios_app(app_identifier)
 
     ios_fb_ad.update(ios_app_id: ios_app.id)
+    EwokService.scrape_async(app_identifier: app_identifier, store: :ios)
+    EwokService.scrape_international_async(app_identifier: app_identifier, store: :ios)
+    IosEpfScanService.scan_apps([ios_app.id], notes: 'running ad intelligence')
   end
 
-  def add_app_to_db(app_identifier)
-    EwokScrapeWorker.new.scrape_ios(app_identifier)
-    IosApp.find_by_app_identifier(app_identifier)
+  def get_ios_app(app_identifier)
+    app = IosApp.find_by_app_identifier(app_identifier)
+    app ||= IosApp.create!(app_identifier: app_identifier, source: :ad_intel)
+  rescue
+    IosApp.find_by_app_identifier!(app_identifier)
   end
 
   def get_short_url(link_contents)
@@ -77,6 +77,18 @@ class IosFbProcessingWorker
 
     app_identifier
 
+  end
+
+  def log_event(ios_fb_ad_id)
+    ad = IosFbAd.find(ios_fb_ad_id)
+    RedshiftLogger.new(records: [{
+      name: 'ios_ad_found',
+      publisher_app_identifier: 284882215, # FB
+      advertiser_app_identifier: ad.ios_app.app_identifier,
+      created_at: DateTime.now
+    }]).send!
+  rescue => e
+    Bugsnag.notify(e)
   end
 
   def test_extracting(link_contents)

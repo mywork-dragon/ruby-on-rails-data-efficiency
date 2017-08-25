@@ -35,9 +35,7 @@ db.patch
 /public/app/dist
 /public/app/app/index.html
 
-/.DS_Store
-/db/.DS_Store
-/db/migrate/.DS_Store
+*.DS_Store
 
 .env
 /public/system

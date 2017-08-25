@@ -1,5 +1,4 @@
 class IosScanMassServiceWorker
-
   include Sidekiq::Worker
 
   sidekiq_options retry: 1, queue: :ios_mass_scan

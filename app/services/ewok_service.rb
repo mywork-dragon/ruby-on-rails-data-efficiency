@@ -75,11 +75,8 @@ class EwokService
   end
 
   def on_complete_scrape_international_async(status, options)
-    if status.failures.zero?
-      # create developers. not essential, so will run on scraper queue. If fail, will get picked up during next scrape
-      app = IosApp.find_by_app_identifier(options['app_identifier'].to_i)
-      AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, app.id) if app.present?
-    end
+    app = IosApp.find_by_app_identifier(options['app_identifier'].to_i)
+    AppStoreDevelopersWorker.perform_async(:create_by_ios_app_id, app.id) if app.present?
   end
   
 

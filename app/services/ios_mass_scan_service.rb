@@ -2,18 +2,23 @@ class IosMassScanService
 
   class << self
 
-    def run_ids(notes, ids)
+    def run_ids(notes, ids, use_batch: true)
       ipa_snapshot_job = IpaSnapshotJob.create!(job_type: :mass, notes: notes)
-
-      Slackiq.message("Starting an iOS download job for #{ids.length} apps", webhook_name: :main)
-
-      batch = Sidekiq::Batch.new
-      batch.description = 'iOS Download'
-      batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
-
       apps = IosApp.where(id: ids).select(:id, :app_identifier)
 
-      batch.jobs do
+      if use_batch
+        Slackiq.message("Starting an iOS download job for #{ids.length} apps", webhook_name: :main)
+
+        batch = Sidekiq::Batch.new
+        batch.description = 'iOS Download'
+        batch.on(:complete, 'IosMassScanService#on_download_complete', 'job_id' => ipa_snapshot_job.id)
+
+        batch.jobs do
+          apps.each do |ios_app|
+            IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
+          end
+        end
+      else
         apps.each do |ios_app|
           IosMassScanServiceWorker.perform_async(ipa_snapshot_job.id, ios_app.id)
         end
