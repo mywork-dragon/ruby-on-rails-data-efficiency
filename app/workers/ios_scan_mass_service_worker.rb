@@ -7,7 +7,8 @@ class IosScanMassServiceWorker
     IosScanRunner.new(ipa_snapshot_id, :mass, {
       start_classify: true,
       classify_worker: IosMassClassificationServiceWorker,
-      check_repeated_scan: true
+      check_repeated_scan: true,
+      scan_type: :mass
     }).run
   end
 end

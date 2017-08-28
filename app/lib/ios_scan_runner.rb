@@ -102,7 +102,8 @@ class IosScanRunner
       name: name,
       ios_app_id: app.id,
       ios_app_identifier: app.app_identifier,
-      ios_app_store: store.country_code
+      ios_app_store: store.country_code,
+      ios_scan_type: @options[:scan_type]
     }
 
     if @reserver.device
