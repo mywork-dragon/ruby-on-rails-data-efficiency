@@ -496,7 +496,8 @@ class AndroidApp < ActiveRecord::Base
           "description", "installed_sdks", "uninstalled_sdks",
           "mobile_priority", "developer_google_play_identifier",
           "ratings_history", "versions_history", "downloads_history",
-          "taken_down", "last_seen_ads_date", "first_seen_ads_date"
+          "taken_down", "last_seen_ads_date", "first_seen_ads_date",
+          "last_scanned_date", "first_scanned_date"
         ]
 
       rename = [
