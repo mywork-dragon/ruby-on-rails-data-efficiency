@@ -566,6 +566,8 @@ class ApiController < ApplicationController
       return
     end
 
+    apps.each { |app| ListablesList.find_by(listable_id: app['id'], list_id: list_id, listable_type: app['type']).destroy }
+
     render json: {:status => 'success'}
   end
 
