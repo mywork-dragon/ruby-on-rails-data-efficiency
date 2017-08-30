@@ -13,7 +13,7 @@ class IosAppCurrentSnapshot < ActiveRecord::Base
   has_many :ios_app_snapshot_exceptions
   has_many :ios_in_app_purchases
 
-  enum mobile_priority: [:high, :medium, :low]
+  enum mobile_priority: [:high, :medium, :low] # this enum isn't used anymore. mobile_priority is determined by the mobile priority function
   enum user_base: [:elite, :strong, :moderate, :weak]
 
   # Sets columns to nil
