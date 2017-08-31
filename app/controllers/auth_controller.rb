@@ -32,7 +32,8 @@ class AuthController < ApplicationController
     if @oauth.authorized?
       @user = User.from_auth(@oauth.formatted_user_data, params[:token])
       if @user
-        render_success(auth_token: @user.generate_auth_token, email: @user.email)
+        regenerate = !params[:provider].include?('salesforce')
+        render_success(auth_token: @user.generate_auth_token(regenerate), email: @user.email)
       else
         message = if params[:token]
           "This MightySignal invite has been claimed already or this #{params[:provider].titleize} login is linked to another MightySignal account"

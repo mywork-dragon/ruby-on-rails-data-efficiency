@@ -122,8 +122,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  def generate_auth_token
-    payload = { user_id: self.id, refresh_token: self.generate_refresh_token }
+  def generate_auth_token(regenerate = true)
+    token = regenerate ? self.generate_refresh_token : self.refresh_token
+    payload = { user_id: self.id, refresh_token: token }
     AuthToken.encode(payload)
   end
 
