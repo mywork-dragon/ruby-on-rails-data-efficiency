@@ -133,6 +133,8 @@ class IosFbAdDeviceService
     log_debug "Rescuing Exception"
 
     store_exception(e)
+    
+    Bugsnag.notify(e)
 
     store_results
 

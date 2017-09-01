@@ -8,8 +8,8 @@ var nav = findOrThrow(shake, true, classMatcher('FBNavigationBar'), 'Could not f
 
 var buttons = select(nav, classMatcher('UIButton'));
 
-if (buttons.length != 2) {
-    throwError('Expected 2 buttons in navigation bar. Found ' + buttons.length);
+if (buttons.length < 1) {
+    throwError('Expected at least one button in navigation bar. Found ' + buttons.length);
 }
 
 var buttonsOrdered = buttons.sort(function(a, b) {
