@@ -255,7 +255,11 @@ class ApiController < ApplicationController
         fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
         isMajorPublisher: developer.is_major_publisher?,
-        apps: apps.as_json({user: @current_user})
+        apps: apps.as_json({user: @current_user}),
+        linkedin: developer.linkedin_handle,
+        companySize: developer.company_size,
+        crunchbase: developer.crunchbase_handle,
+        logo: developer.logo_url
       }
     end
     render json: @developer_json
@@ -274,7 +278,11 @@ class ApiController < ApplicationController
         fortuneRank: developer.fortune_1000_rank,
         numApps: num_apps,
         isMajorPublisher: developer.is_major_publisher?,
-        apps: apps.as_json({user: @current_user})
+        apps: apps.as_json({user: @current_user}),
+        linkedin: developer.linkedin_handle,
+        companySize: developer.company_size,
+        crunchbase: developer.crunchbase_handle,
+        logo: developer.logo_url
       }
     end
     render json: @developer_json
@@ -1083,7 +1091,7 @@ class ApiController < ApplicationController
   end
 
   def csv_header
-    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'First Seen Ads', 'Last Seen Ads', 
+    headers = ['MightySignal App ID', 'App Store/Google Play ID', 'App Name', 'App Type', 'Mobile Priority', 'Release Date', 'Last Updated', 'Ad Spend', 'First Seen Ads', 'Last Seen Ads',
                'In App Purchases', 'Categories', 'MightySignal Publisher ID', 'Publisher Name', 'App Store/Google Play Publisher ID',
                'Fortune Rank', 'Publisher Website(s)', 'MightySignal App Page', 'MightySignal Publisher Page', 'Ratings', 'Downloads', 'Street Numbers', 'Street Names',
                'Cities', 'States', 'Countries', 'Postal Codes']

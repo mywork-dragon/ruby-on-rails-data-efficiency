@@ -137,7 +137,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
             'companyName': $scope.companyData.name,
             'requestResults': data.contacts,
             'requestResultsCount': data.contacts.length,
-            'titleFilter': filter || ''
+            'titleFilter': filter || '',
+            'Source Page': 'publisher'
           }
         );
         /* -------- Mixpanel Analytics End -------- */
@@ -150,7 +151,8 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
             'websites': websites,
             'companyName': $scope.companyData.name,
             'requestResultsCount': 0,
-            'titleFilter': filter || ''
+            'titleFilter': filter || '',
+            'Source Page': 'publisher'
           }
         );
         /* -------- Mixpanel Analytics End -------- */

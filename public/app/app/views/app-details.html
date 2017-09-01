@@ -20,9 +20,52 @@
             <a ng-if="appData.publisher.id" href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">{{appData.publisher.name}}</a>
             <span ng-if="!appData.publisher.id">{{appData.publisher.name}}</span>
           </p>
+          <div class="app-details">
+            <div>
+              <i class="icon fa fa-usd"></i>
+              <span ng-if="!appData.price">Free</span>
+              <span ng-if="appData.price">{{(appData.price / 100.0) | isoCurrency:appData.currency}}</span>
+            </div>
+            <div ng-if="appData.categories.length > 0">
+              <i class="icon fa fa-tag header-category-tag"></i>
+              <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
+            </div>
+            <div ng-if="rating && ratingsCount > 0">
+              <span
+                class="app-rating"
+                ng-class="{ 'header-rating': appPlatform == 'ios' && appData.ratings.length > 1 }"
+                star-rating
+                max="5"
+                ng-model="rating"
+                uib-popover-template="'ratingTemplate.html'"
+                popover-placement="auto right"
+                popover-trigger="mouseenter"
+                popover-class="adjust-width"
+                popover-enable="appPlatform == 'ios' && appData.ratings.length > 1"
+                ></span>
+              <div
+                class="rating-count"
+                ng-class="{ 'header-rating': appPlatform == 'ios' && appData.ratings.length > 1 }"
+                uib-popover-template="'ratingsCountTemplate.html'"
+                popover-placement="auto right"
+                popover-trigger="mouseenter"
+                popover-class="adjust-width"
+                popover-enable="appPlatform == 'ios' && appData.ratings.length > 1">
+                Based on {{ratingsCount | number}}
+                <div ng-if="appPlatform == 'ios'" class="rating-flag flag flag-{{appData.rating.country_code.toLowerCase()}}"></div>
+                 ratings
+              </div>
+            </div>
+            <div ng-if="!ratingsCount || ratingsCount == 0">
+              <i class="icon fa fa-star header-category-tag"></i>
+              No ratings
+            </div>
+          </div>
         </div>
         <div class="" id="appTypeHeaderLogo">
-          <i class="fa fa-2" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+          <button type="button" class="btn btn-primary" name="button" ng-click="openAppStorePage()">
+            View in <span ng-class="{ 'fa fa-apple': appPlatform == 'ios', 'fa fa-android': appPlatform == 'android'}"></span> store
+          </button>
         </div>
       </div>
     </header>
@@ -94,41 +137,32 @@
           </div>
         </div>
 
-        <div class="panel panel-default" ng-if="appData.rating || appData.ratings.length">
-          <div class="panel-heading"><strong>Reviews</strong></div>
+        <div class="panel panel-default" ng-if="appData.facebookAds.length && canViewAdSpend">
+          <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li>
-                    <span class="icon fa fa-star"></span>
-                    <label>Aggregate Rating:</label>
-                    <span ng-if="appPlatform == 'android'">{{appData.rating}} of 5</span>
-                    <span ng-if="appPlatform == 'ios' && appData.ratings.length == 1">
-                      <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
-                      {{appData.rating.rating}} of 5
-                    </span>
-                    <button ng-if="appPlatform == 'ios' && appData.ratings.length > 1" uib-popover-template="'ratingTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
-                      <img ng-src="/lib/images/flags/{{appData.rating.country_code.toLowerCase()}}.png" />
-                      {{appData.rating.rating}} of 5
-                    </button>
-                  </li>
-                  <li ng-if="appData.ratingsCount || appData.ratingsCounts.length">
-                    <span class="icon fa fa-star"></span>
-                    <label>Ratings Count:</label>
-                    <span ng-if="appPlatform == 'android'">{{appData.ratingsCount}}</span>
-                    <span ng-if="appPlatform == 'ios' && appData.ratingsCounts.length == 1">
-                      <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
-                      {{appData.ratingsCount.ratings_count}}
-                    </span>
-                    <button ng-if="appPlatform == 'ios' && appData.ratingsCounts.length > 1" uib-popover-template="'ratingsCountTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
-                      <img ng-src="/lib/images/flags/{{appData.ratingsCount.country_code.toLowerCase()}}.png" />
-                      {{appData.ratingsCount.ratings_count | number}}
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides" id="adIntelligenceCarousel">
+              <uib-slide ng-repeat="ad in appData.facebookAds" index="ad.id">
+                <div class="ad-container">
+                  <img
+                    smart-src="{{ad.ad_image}}"
+                    smart-src-id={{ad.id}}
+                    smart-src-watch="active"
+                    smart-src-last="{{appData.facebookAds.length - 1}}"
+                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}"
+                    onerror="this.onerror = null; this.src = 'https://assetscdn.paytm.com/images/catalog/product/9/97/9788123923154_23843/0x1920/70/0.jpg'">
+                  <img
+                    ng-if="ad.ad_info_image"
+                    smart-src="{{ad.ad_info_image}}"
+                    smart-src-id="{{ad.id}}"
+                    smart-src-watch="active"
+                    smart-src-last="{{appData.facebookAds.length - 1}}"
+                    class="ad-slide">
+                </div>
+                <div class="carousel-caption">
+                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
+                </div>
+              </uib-slide>
+            </uib-carousel>
           </div>
         </div>
 
@@ -197,37 +231,153 @@
                       <button type="submit" ng-class="appData.isMajorApp ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-disabled="appData.isMajorApp" ng-click="handleTagButtonClick(appData.id)">{{appData.isMajorApp ? "Already major app" : "Tag as major app" }}</button>
                     </div>
                   </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="appPageLinksPanel" class="panel panel-default">
-          <div class="panel-heading"><strong>Links</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li>
-                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                    <label>App Store Page:</label>
-                    <a ng-if="appPlatform == 'ios'" ng-href="{{appData.appStoreLink}}" target="_blank">{{appData.appStoreLink}}</a>
-                    <a ng-if="appPlatform == 'android'" href="https://play.google.com/store/apps/details?id={{appData.appIdentifier}}" target="_blank">https://play.google.com/store/apps/details?id={{appData.appIdentifier}}</a>
-                  </li>
-                  <li id="linkedinLinksList">
-                    <span class="icon fa fa-linkedin"></span>
-                    <label>Search LinkedIn:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
-                  </li>
                   <li ng-if="appPlatform == 'ios' && isAdminAccount">
                     <span class="icon fa fa-refresh"></span>
                     <label>Reset App Data:</label>
                     <div id="refreshDataButton">
                       <button type="submit" class="btn btn-primary btn-block" ng-click="resetAppData(appData.id)">Reset</button>
                     </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>App Details</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+
+                <ul class="list-unstyled list-info" ng-init="isApple = appPlatform == 'ios'">
+                  <li>
+                    <span class="icon fa" ng-class="isApple ? 'fa-apple' : 'fa-android'"></span>
+                    <label>Platform:</label>
+                    {{isApple ? 'iOS' : 'Android'}}
+                  </li>
+                  <li ng-if="appData.appStores && appData.appStores.availableIn.length && appPlatform == 'ios'">
+                    <span class="icon fa fa-globe"></span>
+                    <label>Available in:</label>
+                     <button uib-popover-template="'appStoresTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
+                  </li>
+                  <li ng-if="appData.appIdentifier && isApple">
+                    <span class="icon fa fa-user"></span>
+                    <label>App Store ID:</label>
+                    id{{appData.appIdentifier}}
+                  </li>
+                  <li ng-if="appData.playStoreId">
+                    <span class="icon fa fa-user"></span>
+                    <label>Play Store ID:</label>
+                    {{appData.playStoreId}}
+                  </li>
+                  <li>
+                    <span class="icon fa fa-usd"></span>
+                    <label>Price:</label>
+                    <span ng-if="!appData.price">Free</span>
+                    <span ng-if="appData.price && isApple">{{(appData.price / 100.0) | isoCurrency:appData.currency}}</span>
+                    <span ng-if="appData.price && !isApple">{{(appData.price / 100.0) | currency}}</span>
+                  </li>
+                  <li ng-if="appData.downloadsMin && appData.downloadsMax && !isApple">
+                    <span class="icon fa fa-download"></span>
+                    <label>Total Downloads:</label>
+                    {{appData.downloadsMin | humanizeNum}} - {{appData.downloadsMax | humanizeNum}}
+                  </li>
+                  <li ng-if="isApple">
+                    <span class="icon fa fa-shopping-cart"></span>
+                    <label>In-App Purchases:</label>
+                    <span ng-if="appData.inAppPurchases">Yes</span>
+                    <span ng-if="!appData.inAppPurchases">No</span>
+                  </li>
+                  <li ng-if="appData.inAppPurchaseMin && appData.inAppPurchaseMax">
+                    <span class="icon fa fa-shopping-cart"></span>
+                    <label>In-App Purchases:</label>
+                    <span ng-if="appData.inAppPurchaseMin == appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}}</span>
+                    <span ng-if="appData.inAppPurchaseMin != appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}} - {{(appData.inAppPurchaseMax / 100.0) | currency}}</span>
+                  </li>
+                  <li ng-if="appData.size">
+                    <span class="icon fa fa-database"></span>
+                    <label>Size:</label>
+                    {{appData.size | filesize}}
+                  </li>
+                  <li ng-if="appData.requiredIosVersion">
+                    <span class="icon fa fa-cog"></span>
+                    <label>Required OS:</label>
+                    {{appData.requiredIosVersion}}
+                  </li>
+                  <li ng-if="appData.requiredAndroidVersion">
+                    <span class="icon fa fa-cog"></span>
+                    <label>Required OS:</label>
+                    {{appData.requiredAndroidVersion}}
+                  </li>
+                  <li ng-if="appData.recommendedAge">
+                    <span class="icon fa fa-child"></span>
+                    <label>Content Rating:</label>
+                    {{appData.recommendedAge}}
+                  </li>
+                  <li ng-if="appData.contentRating">
+                    <span class="icon fa fa-child"></span>
+                    <label>Content Rating:</label>
+                    {{appData.contentRating}}
+                  </li>
+                  <li ng-if="appData.categories.length">
+                    <span class="icon fa fa-tag"></span>
+                    <label>Categories:</label>
+                    <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
+                  </li>
+                  <li ng-if="appData.description">
+                    <span class="icon fa fa-file-text-o"></span>
+                    <label>Description:</label>
+                    <p class="appPageDescription" dd-text-collapse dd-text-collapse-max-length="200" dd-text-collapse-text="{{appData.description}}"></p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default" ng-if="appData.publisher.name">
+          <div class="panel-heading"><strong>Publisher Details</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="appData.publisher.name">
+                    <span class="icon fa fa-briefcase"></span>
+                    <label>Name:</label>
+                    {{appData.publisher.name}}
+                  </li>
+                  <li ng-if="appData.fortuneRank">
+                    <span class="icon fa fa-bar-chart"></span>
+                    <label>Fortune Rank:</label>
+                    {{appData.fortuneRank}}
+                  </li>
+                  <li ng-if="appData.publisher.crunchbase">
+                    <span class="icon fa fa-line-chart"></span>
+                    <label>Crunchbase:</label>
+                    <a href="https://www.crunchbase.com/{{appData.publisher.crunchbase}}" target="_blank" ng-click="crunchbaseLinkClicked()">crunchbase.com/{{appData.publisher.crunchbase}}</a>
+                  </li>
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-linkedin"></span>
+                    <label>Search LinkedIn:</label>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')" ng-disabled="!appData.publisher.id">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')" ng-disabled="!appData.publisher.id">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')" ng-disabled="!appData.publisher.id">Marketing Team</button>
+                  </li>
+                  <li ng-if="appData.headquarters.length">
+                    <span class="icon fa fa-home"></span>
+                    <label>Headquarters:</label>
+                    <ul class="nested">
+                      <li ng-repeat="location in appData.headquarters">
+                        <label title="{{location.domain}}">{{location.domain}}</label>
+                        {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}
+                      </li>
+                    </ul>
+                  </li>
+                  <li ng-if="appData.publisher.id">
+                    <a class="publisher-link" href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">
+                      More Publisher Details
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -250,14 +400,16 @@
                           ng-hide="contactsLoading"
                           ng-model="companyContactFilter"
                           ng-enter="getCompanyContacts(companyContactFilter, 1, true)"
-                          placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO">
+                          placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
+                          ng-disabled="!appData.publisher.id">
                       </div>
                       <div id="showCompanyEmailsButton">
                         <button
                           ng-hide="contactsLoading"
                           type="submit"
                           class="btn btn-primary btn-block"
-                          ng-click="getCompanyContacts(companyContactFilter, 1, true)">
+                          ng-click="getCompanyContacts(companyContactFilter, 1, true)"
+                          ng-disabled="!appData.publisher.id">
                             Find Contacts
                         </button>
                       </div>
@@ -293,11 +445,26 @@
                           <tbody data-ng-hide="queryInProgress">
                           <tr data-ng-repeat="contact in companyContacts">
                             <td>
-                              <p ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
-                              <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" target="_blank" ng-click="onLinkedinContactClick(contact)">{{contact.fullName}} - {{contact.title}}</a>
+                              <p class="table-text" ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
+                              <a
+                                ng-if='contact.linkedin'
+                                href="https://www.linkedin.com/{{contact.linkedin}}"
+                                target="_blank"
+                                ng-click="onLinkedinContactClick(contact)"
+                                uib-tooltip-html="linkedinTooltip"
+                              >{{contact.fullName}} - {{contact.title}}</a>
                             </td>
                             <td>
-                              <div ng-if="contact.email"><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
+                              <div ng-if="contact.email" ng-init="clicked = false">
+                                <p
+                                  class="contact-email"
+                                  uib-tooltip="{{ clicked ? 'Copied!' : 'Copy to clipboard' }}"
+                                  tooltip-placement="auto top"
+                                  ng-click-copy="{{contact.email}}"
+                                  ng-click="clicked = true; emailCopied(contact)"
+                                  ng-mouseenter="clicked = false"
+                                >{{contact.email}}</p>
+                              </div>
                               <div ng-if="!contact.email">
                                 <div class="loader" ng-if="contact.isLoading"></div>
                                 <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="getContactEmail(contact)">Get Email</button>
@@ -336,202 +503,6 @@
           </div>
         </div>
 
-        <div class="panel panel-default" ng-if="appData.facebookAds.length && canViewAdSpend">
-          <div class="panel-heading"><strong>Facebook Ads</strong></div>
-          <div class="panel-body">
-            <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides" id="adIntelligenceCarousel">
-              <uib-slide ng-repeat="ad in appData.facebookAds" index="ad.id">
-                <div class="ad-container">
-                  <img
-                    smart-src="{{ad.ad_image}}"
-                    smart-src-id={{ad.id}}
-                    smart-src-watch="active"
-                    smart-src-last="{{appData.facebookAds.length - 1}}"
-                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}"
-                    onerror="this.onerror = null; this.src = 'https://assetscdn.paytm.com/images/catalog/product/9/97/9788123923154_23843/0x1920/70/0.jpg'">
-                  <img
-                    ng-if="ad.ad_info_image"
-                    smart-src="{{ad.ad_info_image}}"
-                    smart-src-id="{{ad.id}}"
-                    smart-src-watch="active"
-                    smart-src-last="{{appData.facebookAds.length - 1}}"
-                    class="ad-slide">
-                </div>
-                <div class="carousel-caption">
-                  <p>Spotted {{calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{appData.facebookAds.length}}</p>
-                </div>
-              </uib-slide>
-            </uib-carousel>
-          </div>
-        </div>
-
-        <div class="panel panel-default">
-          <div class="panel-heading"><strong>General Details</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-
-                <ul class="list-unstyled list-info" ng-if="appPlatform == 'ios'">
-                  <li ng-if="appData.name">
-                    <span class="icon fa fa-mobile"></span>
-                    <label>App Name:</label>
-                    {{appData.name}}
-                  </li>
-                  <li ng-if="appPlatform">
-                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                    <label>Platform:</label>
-                    iOS
-                  </li>
-                  <li ng-if="appData.appStores && appData.appStores.availableIn.length && appPlatform == 'ios'">
-                    <span class="icon fa fa-globe"></span>
-                    <label>Available in:</label>
-                     <button uib-popover-template="'appStoresTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
-                  </li>
-                  <li ng-if="appData.appIdentifier">
-                    <span class="icon fa fa-user"></span>
-                    <label>App Store ID:</label>
-                    id{{appData.appIdentifier}}
-                  </li>
-                  <li>
-                    <span class="icon fa fa-usd"></span>
-                    <label>Price:</label>
-                    <span ng-if="!appData.price">Free</span>
-                    <span ng-if="appData.price">{{(appData.price / 100.0) | isoCurrency:appData.currency}}</span>
-                  </li>
-                  <li>
-                    <span class="icon fa fa-shopping-cart"></span>
-                    <label>In-App Purchases:</label>
-                     <span ng-if="appData.inAppPurchases">Yes</span>
-                    <span ng-if="!appData.inAppPurchases">No</span>
-                  </li>
-                  <li ng-if="appData.size">
-                    <span class="icon fa fa-arrows"></span>
-                    <label>Size:</label>
-                    {{appData.size | filesize}}
-                  </li>
-                  <li ng-if="appData.requiredIosVersion">
-                    <span class="icon fa fa-cog"></span>
-                    <label>Required OS:</label>
-                    {{appData.requiredIosVersion}}
-                  </li>
-                  <li ng-if="appData.recommendedAge">
-                    <span class="icon fa fa-child"></span>
-                    <label>Content Rating:</label>
-                    {{appData.recommendedAge}}
-                  </li>
-                  <li ng-if="appData.categories.length > 0">
-                    <span class="icon fa fa-child"></span>
-                    <label>Categories:</label>
-                    <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
-                  </li>
-                  <li ng-if="appData.description">
-                    <span class="icon fa fa-file-text-o"></span>
-                    <label>Description:</label>
-                    <p class="appPageDescription"><pre dd-text-collapse dd-text-collapse-max-length="110" dd-text-collapse-text="{{appData.description}}"></pre></p>
-                  </li>
-                </ul>
-
-                <ul class="list-unstyled list-info" ng-if="appPlatform == 'android'">
-                  <li ng-if="appData.name">
-                    <span class="icon fa fa-mobile"></span>
-                    <label>App Name:</label>
-                    {{appData.name}}
-                  </li>
-                  <li>
-                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                    <label>Platform:</label>
-                    Android
-                  </li>
-                  <li ng-if="appData.playStoreId">
-                    <span class="icon fa fa-user"></span>
-                    <label>Play Store ID:</label>
-                    {{appData.playStoreId}}
-                  </li>
-                  <li>
-                    <span class="icon fa fa-usd"></span>
-                    <label>Price:</label>
-                    <span ng-if="!appData.price">Free</span>
-                    <span ng-if="appData.price">{{(appData.price / 100.0) | currency}}</span>
-                  </li>
-                  <li ng-if="appData.downloadsMin && appData.downloadsMax">
-                    <span class="icon fa fa-download"></span>
-                    <label>Total Downloads:</label>
-                    {{appData.downloadsMin | humanizeNum}} - {{appData.downloadsMax | humanizeNum}}
-                  </li>
-                  <li ng-if="appData.size">
-                    <span class="icon fa fa-arrows"></span>
-                    <label>Size:</label>
-                    {{appData.size | filesize}}
-                  </li>
-                  <li ng-if="appData.inAppPurchaseMin && appData.inAppPurchaseMax">
-                    <span class="icon fa fa-shopping-cart"></span>
-                    <label>In-App Purchases:</label>
-                    <span ng-if="appData.inAppPurchaseMin == appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}}</span>
-                    <span ng-if="appData.inAppPurchaseMin != appData.inAppPurchaseMax">{{(appData.inAppPurchaseMin / 100.0) | currency}} - {{(appData.inAppPurchaseMax / 100.0) | currency}}</span>
-                  </li>
-                  <li ng-if="appData.contentRating">
-                    <span class="icon fa fa-child"></span>
-                    <label>Content Rating:</label>
-                    {{appData.contentRating}}
-                  </li>
-                  <li ng-if="appData.requiredAndroidVersion">
-                    <span class="icon fa fa-cog"></span>
-                    <label>Required OS:</label>
-                    {{appData.requiredAndroidVersion}}
-                  </li>
-                  <li ng-if="appData.categories">
-                    <span class="icon fa fa-child"></span>
-                    <label>Categories:</label>
-                    <span ng-repeat="category in appData.categories">{{category}}{{$last ? '' : ', '}}</span>
-                  </li>
-                  <li ng-if="appData.description">
-                    <span class="icon fa fa-file-text-o"></span>
-                    <label>Description:</label>
-                    <p class="appPageDescription"><pre dd-text-collapse dd-text-collapse-max-length="120" dd-text-collapse-text="{{appData.description}}"></pre></p>
-
-                  </li>
-                </ul>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel panel-default" ng-if="appData.publisher.name">
-          <div class="panel-heading"><strong>Publisher Details</strong></div>
-          <div class="panel-body">
-            <div class="media">
-              <div class="media-body">
-                <ul class="list-unstyled list-info">
-                  <li ng-if="appData.publisher.name">
-                    <span class="icon fa fa-briefcase"></span>
-                    <label>Name:</label>
-                    {{appData.publisher.name}}
-                  </li>
-                  <li ng-if="appData.fortuneRank">
-                    <span class="icon fa fa-bar-chart"></span>
-                    <label>Fortune Rank:</label>
-                    {{appData.fortuneRank}}
-                  </li>
-                  <li ng-if="appData.headquarters.length">
-                    <span class="icon fa fa-home"></span>
-                    <label>Headquarters</label>
-                    <ul class="nested">
-                      <li ng-repeat="location in appData.headquarters">
-                        <label title="{{location.domain}}">{{location.domain}}</label>
-                        {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}
-                      </li>
-                    </ul>
-                  </li>
-                  <li ng-if="appData.publisher.id">
-                    <a href="#/publisher/{{appPlatform}}/{{appData.publisher.id}}">More Publisher Details</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="panel panel-default">
           <div class="panel-heading"><strong>Latest Release</strong></div>
           <div class="panel-body">
@@ -558,9 +529,7 @@
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
 
     <!-- Modals -->

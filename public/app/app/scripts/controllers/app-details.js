@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'linkedInService', 'slacktivity',
-  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, linkedInService, slacktivity) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'contactService', 'slacktivity', '$sce',
+  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, contactService, slacktivity, $sce) {
 
     $scope.appPlatform = $routeParams.platform;
 
@@ -71,6 +71,18 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
       );
     }
 
+    $scope.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class=\"fa fa-external-link\"></span>')
+
+    $scope.emailCopied = function (contact) {
+      mixpanel.track("Email Copied", {
+        "Email": contact.email,
+        "Company": $scope.appData.publisher.name,
+        "Name": contact.fullName,
+        "Title": contact.title,
+        "Source Type": 'app'
+      })
+    }
+
     $scope.load = function() {
       return $http({
         method: 'GET',
@@ -78,6 +90,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         params: {id: $routeParams.id}
       }).success(function(data) {
         $scope.appData = data;
+        $scope.prepareRatings(data)
         if ($scope.appData.publisher && $scope.appData.publisher.websites && $scope.appData.supportDesk) {
           $scope.appData.publisher.websites.push($scope.appData.supportDesk)
         }
@@ -137,13 +150,32 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
     $scope.load();
 
+    $scope.prepareRatings = function (appData) {
+      const rating = $scope.appPlatform == 'ios' ? appData.rating.rating : appData.rating
+      $scope.rating = parseFloat(rating, 10)
+      $scope.ratingsCount = $scope.appPlatform == 'ios' ? appData.ratingsCount.ratings_count : appData.ratingsCount
+    }
+
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-      linkedInService.getLink(linkedinLinkType, $scope.appData.publisher.name);
+      if (linkedinLinkType == 'company' && $scope.appData.publisher.linkedin) {
+        contactService.getLink('linkedin', $scope.appData.publisher.linkedin, 'app');
+      } else {
+        contactService.getLink(linkedinLinkType, $scope.appData.publisher.name, 'app');
+      }
     };
 
     $scope.onLinkedinContactClick = function (contact) {
-      linkedInService.trackLinkedinContactClick(contact)
+      contactService.trackLinkedinContactClick(contact, 'app')
+    }
+
+    $scope.crunchbaseLinkClicked = function () {
+      contactService.trackCrunchbaseClick($scope.appData.publisher.name, 'app')
+    }
+
+    $scope.openAppStorePage = function () {
+      const page = $routeParams.platform == 'ios' ? $scope.appData.appStoreLink : 'https://play.google.com/store/apps/details?id=' + $scope.appData.appIdentifier
+      $window.open(page)
     }
 
     $scope.linkTo = function(path) {
@@ -272,7 +304,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
           'companyName': $scope.appData.publisher.name,
           'requestResults': data.contacts,
           'requestResultsCount': data.contactsCount,
-          'titleFilter': filter || ''
+          'titleFilter': filter || '',
+          'Source Type': 'app'
         }
       );
       /* -------- Mixpanel Analytics End -------- */
@@ -298,7 +331,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
             "Company Contacts Requested Error", {
               'companyName': $scope.appData.publisher.name,
               'requestError': err,
-              'titleFilter': filter || ''
+              'titleFilter': filter || '',
+              'Source Type': 'app'
             }
           );
           /* -------- Mixpanel Analytics End -------- */

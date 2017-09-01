@@ -7,14 +7,17 @@ angular.module("appApp")
       appDataService.displayStatus = {appId: -1, status: ""};
     }
   ])
-  .factory("linkedInService", ["$window", function($window) {
+  .factory("contactService", ["$window", function($window) {
     return {
-      getLink: function(linkType, company) {
+      getLink: function(linkType, company, source) {
         let linkedinLink = "";
 
         if (linkType == 'company') {
           linkedinLink = `https://www.linkedin.com/search/results/companies/?keywords=${company}&origin=SWITCH_SEARCH_VERTICAL`;
-        } else {
+        } else if (linkType == 'linkedin') {
+          linkedinLink = `https://www.linkedin.com/${company}`
+        }
+        else {
           linkedinLink = `https://www.linkedin.com/search/results/people/?keywords=title%3A%20(${linkType})%20AND%20company%3A%20${company}&origin=GLOBAL_SEARCH_HEADER`;
         }
 
@@ -22,19 +25,29 @@ angular.module("appApp")
         mixpanel.track(
           "LinkedIn Link Clicked", {
             "companyName": company,
-            "companyPosition": linkType
+            "companyPosition": linkType,
+            "Source Type": source
           }
         );
         /* -------- Mixpanel Analytics End -------- */
 
         $window.open(linkedinLink);
       },
-      trackLinkedinContactClick: function (contact) {
+      trackLinkedinContactClick: function (contact, source) {
         mixpanel.track(
           "LinkedIn Contact Clicked", {
             "Name": contact.fullName,
             "Title": contact.title,
-            "LinkedIn": contact.linkedin
+            "LinkedIn": contact.linkedin,
+            "Source Type": source
+          }
+        )
+      },
+      trackCrunchbaseClick: function (company, source) {
+        mixpanel.track(
+          "Crunchbase Link Clicked", {
+            "Company": company,
+            "Source Type": source
           }
         )
       }

@@ -175,7 +175,10 @@ class IosApp < ActiveRecord::Base
       publisher: {
         id: self.try(:ios_developer).try(:id),
         name: self.try(:ios_developer).try(:name) || first_international_snapshot['seller_name'],
-        websites: self.try(:ios_developer).try(:get_website_urls)
+        websites: self.try(:ios_developer).try(:get_website_urls),
+        linkedin: self.try(:ios_developer).try(:linkedin_handle),
+        companySize: self.try(:ios_developer).try(:company_size),
+        crunchbase: self.try(:ios_developer).try(:crunchbase_handle)
       },
     }
 
@@ -207,7 +210,6 @@ class IosApp < ActiveRecord::Base
         rating: self.rating,
         ratingsCount: self.ratings_count,
         ratings: self.ratings,
-        ratingsCounts: self.ratings_counts,
         inAppPurchases: newest_snapshot.try(:ios_in_app_purchases).try(:any?),
         appIdentifier: self.app_identifier,
         appStoreId: self.developer_app_store_id,
@@ -302,10 +304,6 @@ class IosApp < ActiveRecord::Base
     else
       {country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count)}
     end
-  end
-
-  def ratings_counts
-    IosSnapshotAccessor.new.store_and_rating_details_from_ios_app(self)
   end
 
   def latest_facebook_ad
@@ -535,7 +533,7 @@ class IosApp < ActiveRecord::Base
 
     release_date = nil
     release_date = snapshot['released'] if snapshot
-    
+
     self.class.mobile_priority_from_date(released: release_date)
   end
 

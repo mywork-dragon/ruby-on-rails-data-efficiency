@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter", "linkedInService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter, linkedInService) {
+angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter", "contactService", "$sce",
+  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter, contactService, $sce) {
 
     var publisherDetailsCtrl = this;
     $scope.appPlatform = $routeParams.platform
@@ -9,6 +9,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
     $scope.currentPage = 1;
     $scope.currentContactsPage = 1;
     $scope.contactsPerPage = 10;
+    $scope.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class=\"fa fa-external-link\"></span>')
 
     $scope.loadPublisher = function(category, order) {
       publisherDetailsCtrl.queryInProgress = true;
@@ -67,11 +68,29 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     /* LinkedIn Link Button Logic */
     $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-      linkedInService.getLink(linkedinLinkType, $scope.publisherData.name);
+      if (linkedinLinkType == 'company' && $scope.publisherData.linkedin) {
+        contactService.getLink('linkedin', $scope.publisherData.linkedin, 'publisher');
+      } else {
+        contactService.getLink(linkedinLinkType, $scope.publisherData.name, 'publisher');
+      }
     };
 
     $scope.onLinkedinContactClick = function (contact) {
-      linkedInService.trackLinkedinContactClick(contact)
+      contactService.trackLinkedinContactClick(contact, 'publisher')
+    }
+
+    $scope.crunchbaseLinkClicked = function () {
+      contactService.trackCrunchbaseClick($scope.publisherData.name, 'publisher')
+    }
+
+    $scope.emailCopied = function (contact) {
+      mixpanel.track("Email Copied", {
+        "Email": contact.email,
+        "Company": $scope.appData.publisher.name,
+        "Name": contact.fullName,
+        "Title": contact.title,
+        "Source Type": 'publisher'
+      })
     }
 
     $scope.appsDisplayedCount = function() {
@@ -197,7 +216,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
           'companyName': $scope.publisherData.name,
           'requestResults': data.contacts,
           'requestResultsCount': data.contactsCount,
-          'titleFilter': filter || ''
+          'titleFilter': filter || '',
+          'Source Type': 'publisher'
         }
       );
       /* -------- Mixpanel Analytics End -------- */
@@ -224,7 +244,8 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
           "Company Contacts Requested Error", {
             'companyName': $scope.publisherData.name,
             'requestError': err,
-            'titleFilter': filter || ''
+            'titleFilter': filter || '',
+            'Source Type': 'publisher'
           }
         );
         /* -------- Mixpanel Analytics End -------- */

@@ -232,7 +232,10 @@ class AndroidApp < ActiveRecord::Base
       publisher: {
         id: self.try(:android_developer).try(:id),
         name: self.try(:android_developer).try(:name),
-        websites: self.try(:android_developer).try(:get_website_urls)
+        websites: self.try(:android_developer).try(:get_website_urls),
+        linkedin: self.try(:android_developer).try(:linkedin_handle),
+        companySize: self.try(:android_developer).try(:company_size),
+        crunchbase: self.try(:android_developer).try(:crunchbase_handle)
       },
     }
 

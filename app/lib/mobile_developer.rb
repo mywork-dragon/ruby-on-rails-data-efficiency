@@ -35,6 +35,22 @@ module MobileDeveloper
     apps.each { |app| app.untag_as_major_app }
   end
 
+  def linkedin_handle
+    valid_websites.joins(:domain_datum).pluck(:linkedin_handle).uniq.compact.first
+  end
+
+  def crunchbase_handle
+    valid_websites.joins(:domain_datum).pluck(:crunchbase_handle).uniq.compact.first
+  end
+
+  def company_size
+    valid_websites.joins(:domain_datum).pluck(:employees_range).uniq.compact.first
+  end
+
+  def logo_url
+    valid_websites.joins(:domain_datum).pluck(:logo_url).uniq.compact.first
+  end
+
   def headquarters(limit=100)
     headquarters = []
     valid_websites.joins(:domain_datum).uniq.limit(limit).

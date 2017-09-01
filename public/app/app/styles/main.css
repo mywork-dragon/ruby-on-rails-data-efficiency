@@ -602,7 +602,7 @@ pre {
   padding: 8px; }
 
 ul.websites {
-  margin-left: 70px;
+  margin-left: 115px;
   list-style: none;
   margin-top: -29px;
 }
@@ -5125,11 +5125,12 @@ ul.nested {
 }
 
 img#appDetailsPageAppLogo {
-  width: 70px;
+  width: 100px;
+  border-radius: 10px;
 }
 
 #appPageLogoBox {
-  width: 70px;
+  width: 100px;
   margin-right: 15px;
 }
 
@@ -7729,6 +7730,10 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 .appPageDescription {
   margin-left: 25px;
+  font-family: inherit;
+  white-space: pre-wrap;
+  padding-left: 0px;
+  margin-top: 15px;
 }
 
 #appPageActionsPanel .panel-body .ui-select {
@@ -9045,4 +9050,72 @@ h4.red {
 .login-email-link {
   text-decoration: underline;
   color: #1894DA;
+}
+
+.publisher-header {
+  display: flex;
+  align-items: center;
+}
+
+.publisher-name {
+  font-size: 18px;
+  margin: 10px 10px 10px 15px;
+}
+
+.table-text {
+  margin: 0px;
+}
+
+.contact-email {
+  color: black;
+  margin: 0px;
+}
+
+.contact-email:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.publisher-link:hover {
+  cursor: pointer;
+}
+
+.app-details {
+  display: flex;
+}
+
+.app-details .icon {
+  color: #0393dd;
+  margin-left: 0px;
+}
+
+.app-details div {
+  margin-right: 15px;
+}
+
+.header-category-tag {
+  margin-right: 3px;
+}
+
+.app-rating {
+  color: #eec95a;
+}
+
+.rating-count {
+  display: inline-flex;
+}
+
+.header-rating:hover {
+  cursor: pointer;
+}
+
+.rating-flag {
+  margin: 2px 5px 0px 5px !important;
+}
+
+.adjust-width {
+  max-width: 800px; /* optional max width */
+  width: intrinsic; /* Safari/WebKit uses a non-standard name */
+  width: -moz-max-content; /* Firefox/Gecko */
+  width: -webkit-max-content;
 }

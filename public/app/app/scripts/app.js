@@ -130,11 +130,6 @@ angular
   .config(['$httpProvider', function($httpProvider) {
      return $httpProvider.interceptors.push("authInterceptor");
   }])
-  .config(['$uibTooltipProvider', function($tooltipProvider){
-    $tooltipProvider.setTriggers({
-      'mouseenter': 'mouseleave click'
-    });
-  }])
   .config(function($authProvider) {
     $authProvider.linkedin({
       clientId: '755ulzsox4aboj'

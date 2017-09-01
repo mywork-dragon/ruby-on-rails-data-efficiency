@@ -9,12 +9,13 @@
   <div ng-if="initialPageLoadComplete" data-ng-controller="ListCtrl">
 
     <header class="page-main-header ng-scope">
-      <div class="row">
-        <div class="col-md-12">
-          <h4>
-            {{publisherData.name}}
-          </h4>
+      <div class="row publisher-header">
+        <div class="col-md-1" id="appPageLogoBox" ng-if="publisherData.logo">
+          <img ng-src="{{publisherData.logo}}" id="appDetailsPageAppLogo" />
         </div>
+        <div class="publisher-name">
+          {{publisherData.name}}
+        </duv>
       </div>
     </header>
 
@@ -36,6 +37,23 @@
                     <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
                     <label>Platform:</label>
                     {{appPlatform == 'ios' ? 'iOS' : 'Android'}}
+                  </li>
+                  <li ng-if="publisherData.crunchbase">
+                    <span class="icon fa fa-line-chart"></span>
+                    <label>Crunchbase:</label>
+                    <a
+                      href="https://www.crunchbase.com/{{publisherData.crunchbase}}"
+                      target="_blank"
+                      ng-click="crunchbaseLinkClicked()">
+                      crunchbase.com/{{publisherData.crunchbase}}
+                    </a>
+                  </li>
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-linkedin"></span>
+                    <label>Search LinkedIn:</label>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
                   <li ng-if="publisherData.fortuneRank">
                     <span class="icon fa fa-bar-chart"></span>
@@ -74,7 +92,7 @@
       <div class="col-md-6 info-column">
 
         <div class="panel panel-default">
-          <div class="panel-heading"><strong>Actions</strong></div>
+          <div class="panel-heading"><strong>Contacts</strong></div>
           <div class="panel-body">
             <div class="media">
               <div class="media-body">
@@ -85,13 +103,6 @@
                     <div class="actionButton">
                       <button type="submit" ng-class="publisherData.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="handleTagButtonClick()">{{publisherData.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
                     </div>
-                  </li>
-                  <li id="linkedinLinksList">
-                    <span class="icon fa fa-linkedin"></span>
-                    <label>Search LinkedIn:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
                   <li id="showCompanyEmailsButtonLi">
                     <div id="showCompanyEmailsContainer">
@@ -139,11 +150,26 @@
                           <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
                             <tr data-ng-repeat="contact in companyContacts">
                               <td>
-                                <p ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
-                                <a ng-if='contact.linkedin' href="https://www.linkedin.com/{{contact.linkedin}}" ng-click="onLinkedinContactClick(contact)" target="_blank">{{contact.fullName}} - {{contact.title}}</a>
+                                <p class="table-text" ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
+                                <a
+                                  ng-if='contact.linkedin'
+                                  href="https://www.linkedin.com/{{contact.linkedin}}"
+                                  ng-click="onLinkedinContactClick(contact)" target="_blank"
+                                  uib-tooltip-html="linkedinTooltip"
+                                >{{contact.fullName}} - {{contact.title}}</a>
                               </td>
                               <td>
-                                <div ng-if="contact.email"><a href="mailto:{{contact.email}}">{{contact.email}}</a></div>
+                                <div ng-if="contact.email" ng-init="clicked = false">
+                                  <p
+                                    class="contact-email"
+                                    uib-tooltip="{{ clicked ? 'Copied!' : 'Copy to clipboard' }}"
+                                    tooltip-placement="auto top"
+                                    ng-click-copy="{{contact.email}}"
+                                    ng-click="clicked = true; emailCopied(contact)"
+                                    ng-mouseenter="clicked = false">
+                                    {{contact.email}}
+                                  </p>
+                                </div>
                                 <div ng-if="!contact.email">
                                   <div class="loader" ng-if="contact.isLoading"></div>
                                   <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="getContactEmail(contact)">Get Email</button>

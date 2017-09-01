@@ -719,4 +719,59 @@ angular.module("app.directives", []).directive("imgHolder", [
           });
         }
       };
-    }]);
+    }])
+    .directive('starRating', function() {
+			return {
+				restrict : "EA",
+				template : "<span>" +
+						 "  <span ng-repeat='star in stars' ng-class='star'>" +
+						 "    <i class='fa fa-star'></i>" + //&#9733
+						 "  </span>" +
+						 "  <span ng-repeat='half in halfStars' ng-class='star'>" +
+						 "    <i class='fa fa-star-half-o'></i>" + //&#9733
+						 "  </span>" +
+						 "  <span ng-repeat='empty in emptyStars' ng-class='star'>" +
+						 "    <i class='fa fa-star-o'></i>" + //&#9733
+						 "  </span>" +
+						 "</span>",
+				scope : {
+					ratingValue : "=ngModel",
+					max : "=?", //optional: default is 5
+				},
+				link : function(scope, elem, attrs) {
+					if (scope.max === undefined) { scope.max = 5; }
+						function updateStars() {
+							scope.stars = [];
+							scope.halfStars = [];
+              scope.emptyStars = []
+    					if(scope.ratingValue % 1 === 0) {
+    						for (var i = 0; i < scope.ratingValue; i++) {
+    							scope.stars.push({
+    								filled : i
+    							});
+    						}
+    					}
+
+    					if(scope.ratingValue % 1 !== 0) {
+    						for (var j = 0; j < scope.ratingValue -1; j++) {
+    							scope.stars.push({
+    								filled : j < scope.ratingValue -1
+    							});
+    						}
+    						scope.halfStars.push({
+    							filled : j < 1
+    						});
+    					}
+
+              const remainingStars = scope.max - scope.stars.length - scope.halfStars.length
+              for (var i = 0; i < remainingStars; i++) {
+                scope.emptyStars.push({ filled: i })
+              }
+    				}
+
+				scope.$watch("ratingValue", function(oldVal, newVal) {
+				  if (newVal) { updateStars(); }
+				});
+			}
+		};
+  	});
