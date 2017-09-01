@@ -182,6 +182,10 @@ Rails.application.routes.draw do
   put 'ios_devices/enable' => 'ios_device#enable_device'
   put 'ios_devices/disable' => 'ios_device#disable_device'
 
+  # Internal api to upload ios facebook ads for processsing
+  post 'ios_fb_ads/new' => 'ios_fb_ads#upload_ad'
+  post 'ios_fb_ad_job/new' => 'ios_fb_ads#create_scrape_job'
+
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
   post 'jobs/ios/reclassify' => 'jobs#trigger_ios_reclassification'

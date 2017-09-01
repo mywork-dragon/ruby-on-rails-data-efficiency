@@ -36,7 +36,11 @@ class IosFbAd < ActiveRecord::Base
   end
 
   def get_s3_bucket
-    "ms-ios-fb-ads" if Rails.env.production?
+    if Rails.env.production?
+      "ms-ios-fb-ads"
+    else
+      "ms-ios-fb-ads-staging"
+    end
   end
 
   def invalidate
