@@ -351,7 +351,8 @@ class IosApp < ActiveRecord::Base
   end
 
   def app_store_link
-    "https://itunes.apple.com/us/app/id#{self.app_identifier}"
+    app_store = first_international_snapshot.blank? ? 'us' : first_international_snapshot['app_store'].country_code.downcase
+    "https://itunes.apple.com/#{app_store}/app/id#{self.app_identifier}"
   end
 
   def last_updated
@@ -390,10 +391,6 @@ class IosApp < ActiveRecord::Base
     if released
       (Time.now.to_date - released.to_date).to_i
     end
-  end
-
-  def app_store_link
-    "https://itunes.apple.com/#{first_international_snapshot.try(:app_store).try(:country_code).try(:downcase) || 'us'}/app/id#{self.app_identifier}"
   end
 
   def ratings_all_count

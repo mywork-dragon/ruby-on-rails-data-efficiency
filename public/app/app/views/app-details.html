@@ -85,7 +85,7 @@
             <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info ms-insights">
-                  <li ng-if="appData.appIdentifier">
+                  <li>
                     <span class="icon fa fa-user"></span>
                     <label>MightySignal ID:</label>
                     {{appData.id}}
@@ -261,15 +261,10 @@
                     <label>Available in:</label>
                      <button uib-popover-template="'appStoresTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">{{appData.appStores.availableIn.length}} of {{appData.appStores.totalCount}} Countries</button>
                   </li>
-                  <li ng-if="appData.appIdentifier && isApple">
-                    <span class="icon fa fa-user"></span>
+                  <li ng-if="appData.appIdentifier">
+                    <span class="icon fa fa-mobile"></span>
                     <label>App Store ID:</label>
-                    id{{appData.appIdentifier}}
-                  </li>
-                  <li ng-if="appData.playStoreId">
-                    <span class="icon fa fa-user"></span>
-                    <label>Play Store ID:</label>
-                    {{appData.playStoreId}}
+                    {{appPlatform == 'ios' ? 'id' : ''}}{{appData.appIdentifier}}
                   </li>
                   <li>
                     <span class="icon fa fa-usd"></span>
