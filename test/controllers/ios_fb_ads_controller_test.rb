@@ -13,12 +13,17 @@ class IosFbAdsControllerTest < ActionController::TestCase
 
   def test_create_scrape_job
     @controller.stub :authenticate_admin_account, nil do
-      response = post(:create_scrape_job)
-      data = JSON.parse(response.body)
+      response = post(:create_scrape_job, {
+            :notes => "Battlecruiser operational."
+          })
       
+      data = JSON.parse(response.body)
+      job = IosFbAdJob.find(data["job_id"])
+
       assert_equal 200, response.status
       assert data["job_id"]
-      assert IosFbAdJob.find(data["job_id"])
+      assert job
+      assert_equal "Battlecruiser operational.", job.notes
     end
   end
 
@@ -69,6 +74,33 @@ class IosFbAdsControllerTest < ActionController::TestCase
           assert_equal @sample_ios_fb_ad.id, data["id"]
           mock_file.verify
         end
+      end
+    end
+  end
+
+  def test_start_processing_calls_perform_async
+    fb_ad = IosFbAd.create(:id => 10)
+    mock = MiniTest::Mock.new
+    mock.expect(:call, nil, [fb_ad.id.to_s])
+
+    @controller.stub :authenticate_admin_account, nil do
+      IosFbProcessingWorker.stub :perform_async, mock do
+        response = post(:start_processing, { :fb_ad_id => fb_ad.id })
+        data = JSON.parse(response.body)
+        assert_equal 200, response.status
+        assert data['success']
+      end
+      mock.verify
+    end
+  end
+
+  def test_start_processing_invalid_fb_ad_id
+    @controller.stub :authenticate_admin_account, nil do
+      assert_raise RuntimeError do
+        response = post(:start_processing, { :fb_ad_id => 1234 })
+        data = JSON.parse(response.body)
+        assert_equal 200, response.status
+        assert data['success']
       end
     end
   end

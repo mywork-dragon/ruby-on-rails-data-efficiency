@@ -5,7 +5,8 @@ class IosFbAdsController < ApplicationController
 
   def create_scrape_job
     job = IosFbAdJob.create({
-      :job_type => 0
+      :job_type => 0,
+      :notes => params[:notes]
     })
     render json: { success: true, job_id: job.id }, status: 200
   end
@@ -65,6 +66,13 @@ class IosFbAdsController < ApplicationController
     end
 
     render json: { success: true, id: fb_ad.id }, status: 200
+  end
+
+  def start_processing
+    raise "Missing required field: fb_ad_id" if params[:fb_ad_id].nil?
+    raise "Invalid fb_ad_id." unless IosFbAd.where(:id => params[:fb_ad_id]).exists?
+    IosFbProcessingWorker.perform_async(params[:fb_ad_id])
+    render json: { success: true }, status: 200
   end
   
   def ensure_required_params!(request_data)

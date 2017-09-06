@@ -185,6 +185,7 @@ Rails.application.routes.draw do
   # Internal api to upload ios facebook ads for processsing
   post 'ios_fb_ads/new' => 'ios_fb_ads#upload_ad'
   post 'ios_fb_ad_job/new' => 'ios_fb_ads#create_scrape_job'
+  post 'ios_fb_ads/process' => 'ios_fb_ads#start_processing'
 
   put 'android_ad' => 'android_ad#create'
   post 'jobs/android/reclassify' => 'jobs#trigger_android_reclassification'
