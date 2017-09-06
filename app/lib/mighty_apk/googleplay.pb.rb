@@ -469,6 +469,7 @@ module MightyApk
       optional :int32, :iabPermissionError, 38
       optional ::MightyApk::ProtocolBuffers::PurchaseStatusResponse, :purchaseStatusResponse, 39
       optional :string, :purchaseCookie, 46
+      optional :string, :dtok, 55
       optional ::MightyApk::ProtocolBuffers::Challenge, :challenge, 49
     end
 

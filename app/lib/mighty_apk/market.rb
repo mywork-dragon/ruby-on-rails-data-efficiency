@@ -13,24 +13,39 @@ module MightyApk
     end
 
     # assumes app is free...should verify?
-    def purchase!(app_identifier)
+    def purchase!(app_identifier, offer_type, version_code)
       # Returns [MightyApk::ProtocolBuffers::ResponseWrapper, region]
-      app = app_details(app_identifier)
-      offer_type = app.offer[0].offerType
-      version_code = app.details.appDetails.versionCode
       purchase_info, region = @api.purchase(app_identifier, offer_type, version_code)
       [MightyApk::ProtocolBuffers::ResponseWrapper
         .new.parse(purchase_info.body)
-        .payload.buyResponse.purchaseStatusResponse.appDeliveryData, region]
+        .payload.buyResponse, region]
+    end
+
+    def deliver!(app_identifier, offer_type, version_code, dtok, server_token)
+      delivery_info = @api.deliver(app_identifier, offer_type, version_code, dtok, server_token)
+      MightyApk::ProtocolBuffers::ResponseWrapper.new.parse(delivery_info.body).payload.deliveryResponse
     end
 
     def download!(app_identifier, destination)
-      # Returns the region which this apk was downloaded in.
-      purchase_info, region = purchase!(app_identifier)
-      cookie = purchase_info.downloadAuthCookie[0]
-      download_url = purchase_info.downloadUrl
+      # Returns the region which this apk was downloaded in
+      app = app_details(app_identifier)
+      offer_type = app.offer[0].offerType
+      version_code = app.details.appDetails.versionCode
+
+      purchase_info, region = purchase!(app_identifier, offer_type, version_code)
+
+      cookie = purchase_info.purchaseStatusResponse.appDeliveryData.downloadAuthCookie[0]
+      download_url = purchase_info.purchaseStatusResponse.appDeliveryData.downloadUrl
+
       if region != nil
         Rails.logger.info "Downloading #{app_identifier} in #{region}"
+      end
+
+      if ! download_url.present?
+        server_token = purchase_info.purchaseStatusResponse.libraryUpdate.serverToken
+        dtok = purchase_info.dtok
+        delivery_info = deliver!(app_identifier, offer_type, version_code, dtok, server_token)
+        download_url = delivery_info.appDeliveryData.downloadUrl
       end
       @api.download(download_url, cookie, destination, region)
       region

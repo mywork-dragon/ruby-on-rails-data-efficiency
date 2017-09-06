@@ -154,6 +154,7 @@ message BuyResponse {
   optional int32 iabPermissionError = 38;
   optional PurchaseStatusResponse purchaseStatusResponse = 39;
   optional string purchaseCookie = 46;
+  optional string dtok = 55;
   optional Challenge challenge = 49;
 }
 message Challenge {

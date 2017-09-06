@@ -66,9 +66,32 @@ module MightyApk
       end
     end
 
+    def deliver(app_identifier, offer_type, version_code, dtok, server_token)
+      res = self.class.proxy_request(proxy_type: :android_classification) do
+        self.class.get(
+          '/delivery',
+          headers: api_request_headers,
+          query: {
+            ot: offer_type,
+            vc: version_code,
+            doc: app_identifier,
+            st: Base64.encode64(server_token).strip,
+            dtok: dtok
+          })
+      end
+      validate(res)
+      res
+    end
+
     # uses open-uri instead of HTTParty because result was not readable by ruby_apk gem
     def download(download_url, cookie, destination, region)
-      headers = fetch_headers(cookie.name, cookie.value).merge(
+      if cookie.present?
+        headers = fetch_headers(cookie.name, cookie.value)
+      else
+        headers = api_request_headers
+      end
+
+      headers = {}.merge(
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
       )
       begin
