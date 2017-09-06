@@ -6,8 +6,9 @@
           <div class="col-md-10">
             <h4>
               <span class="btn-group" id="dashboardPlatformSwitch">
-                <button type="button" ng-class="platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform()">iOS</button>
-                <button type="button" ng-class="platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform()">Android</button>
+                <button type="button" ng-class="platform == 'all' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('all')">All</button>
+                <button type="button" ng-class="platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('ios')">iOS</button>
+                <button type="button" ng-class="platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('android')">Android</button>
               </span>
               Apps Advertising on
               <!-- <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>Apps Advertising on -->
@@ -44,6 +45,9 @@
             </th>
             <th class="resultsTableAppIcon"><div class="th">
               App Name
+            </div></th>
+            <th ng-if="platform == 'all'"><div class="th normal-right-padding appDetailsHeader">
+              App Type
             </div></th>
             <th class="resultsTableAppPublisher"><div class="th">
               Publisher
@@ -88,7 +92,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{platform}}/{{app.id}}" ng-click="adIntelItemClicked(app, 'app')" target="_blank">
+                  <a href="#/app/{{app.platform}}/{{app.id}}" ng-click="adIntelItemClicked(app, 'app', app.platform)" target="_blank">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -96,18 +100,21 @@
                 </span>
                 <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntelItemClicked(app.publisher, 'publisher')" href="#/publisher/{{platform}}/{{app.publisher.id}}" target="_blank">{{app.publisher.name}}</a></td>
+              <td ng-if="platform == 'all'" class="appTypeIndicator">
+                <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+              </td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntelItemClicked(app.publisher, 'publisher', app.platform)" href="#/publisher/{{app.platform}}/{{app.publisher.id}}" target="_blank">{{app.publisher.name}}</a></td>
               <td class="resultsTableAppUserbase">
-                <span ng-if="platform != 'ios'">{{app.userBase | capitalize}}</span>
-                <span ng-if="platform == 'ios' && app.userBases.length == 1">
+                <span ng-if="app.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="app.platform == 'ios' && app.userBases.length == 1">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </span>
-                <a ng-if="platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                <a ng-if="app.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
                   <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                   {{app.userBase.user_base | capitalize}}
                 </a>
-                <script ng-if="platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                <script ng-if="app.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
                   <ul class="international-data">
                     <li ng-repeat="row in app.userBases">
                       <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>

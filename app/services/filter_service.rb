@@ -253,6 +253,12 @@ class FilterService
       apps_index = apps_index.limit(page_size).offset((page_num - 1) * page_size)
     end
 
+    def filter_ad_spend_apps (page_size: 20, page_num: 1, sort_by: 'first_seen_ads', order_by: 'desc')
+      ad_spend_apps = AppsIndex.filter({"terms" => {"facebook_ads" => [true]}})
+      ordered_ad_spend_apps = order_helper(ad_spend_apps, sort_by, order_by)
+      ordered_ad_spend_apps.limit(page_size).offset((page_num - 1) * page_size)
+    end
+
     def android_gaming_categories
       [
        'Action',

@@ -4,7 +4,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
   function($scope, authService, $http, pageTitleService, listApiService, apiService, slacktivity, searchService, sdkLiveScanService, authToken, $location, $rootScope, AppPlatform) {
 
     var adIntelligenceCtrl = this;
-    $scope.platform = 'ios';
+    $scope.platform = 'all';
 
     // Sets html title attribute
     pageTitleService.setTitle('MightySignal - Ad Intelligence');
@@ -42,7 +42,7 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       });
     };
 
-    $scope.adIntelItemClicked = function(item, type) {
+    $scope.adIntelItemClicked = function(item, type, platform) {
       if (type == 'app') {
         var slacktivityData = {
           "title": "Ad Intelligence App Clicked",
@@ -58,16 +58,16 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         "Ad Intelligence Item Clicked", {
           "name": item.name,
           "id": item.id,
-          "platform": $scope.platform,
+          platform,
           type
         }
       );
     }
 
-    $scope.togglePlatform = function() {
+    $scope.togglePlatform = function(platform) {
       $scope.apps = [];
       $scope.numApps = 0;
-      $scope.platform = $scope.platform == 'ios' ? 'android' : 'ios'
+      $scope.platform = platform
       mixpanel.track("Ad Intelligence Viewed", {
         "platform": $scope.platform
       });

@@ -50,6 +50,7 @@ class ApiController < ApplicationController
     filter_args.delete_if{ |k, v| v.nil? }
 
     filter_results = FilterService.filter_ios_apps(filter_args)
+
     userbase_filter = (app_filters['userbaseFiltersOr'] || []).select{|filter|
       filter["status"].to_i == 0
     }.map{|filter|
@@ -92,6 +93,35 @@ class ApiController < ApplicationController
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
 
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
+  end
+
+  def combined_ad_intelligence
+    filter_args = {
+      sort_by: params[:sortBy] || 'first_seen_ads',
+      order_by: params[:orderBy] || 'desc',
+      page_num: params[:pageNum] ? params[:pageNum].to_i : 1,
+      page_size: request.format.json? ? 20 : 10000
+    }
+
+    filter_results = FilterService.filter_ad_spend_apps(filter_args)
+
+    respond_to do |format|
+      if request.format.json?
+        results = filter_results.map do |result|
+          app_id = result.attributes["id"]
+          result.class.name == 'AppsIndex::IosApp' ? IosApp.find(app_id) : AndroidApp.find(app_id)
+        end
+        format.json { render json:
+          {
+            results: results.as_json(ads: true),
+            resultsCount: filter_results.total_count,
+            pageNum: filter_args[:page_num],
+            pageSize: filter_args[:page_size]
+          }
+        }
+      end
+      format.csv { render_csv(apps: filter_results) }
+    end
   end
 
   def ios_ad_intelligence
@@ -1125,7 +1155,7 @@ class ApiController < ApplicationController
           end
 
           if results.any?
-            add_apps_to_enum(results: results, enum: y, platform: platform)
+            add_apps_to_enum(results: results, enum: y)
             filter_args[:page_num] += 1
           end
         end
@@ -1135,12 +1165,12 @@ class ApiController < ApplicationController
     end
   end
 
-  def add_apps_to_enum(results:, enum:, platform: nil)
+  def add_apps_to_enum(results:, enum:)
     results.each do |app|
       app_csv = if ['IosApp', 'AndroidApp'].include?(app.class.name)
         app.to_csv_row
       else
-        (platform == 'ios') ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
+        app.class.name == 'AppsIndex::IosApp' ? es_ios_app_to_csv(app) : es_android_app_to_csv(app)
       end
       enum << app_csv.to_csv
     end

@@ -26,6 +26,8 @@ class AndroidAdController < ApplicationController
     ad.advertised_app.display_type = :normal
     ad.advertised_app.save!
 
+    ElasticSearchWorker.perform_async(:index_android_apps, [ad.advertised_app.id])
+
     ad.google_account = params['google_account']
     ad.facebook_account = params['facebook_account']
     ad.ad_text = params['ad_text']

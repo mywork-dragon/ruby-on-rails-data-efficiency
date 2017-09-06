@@ -10,6 +10,7 @@ class IosFbProcessingWorker
       IosFbAd.find(ios_fb_ad_id).update(status: :processing)
       process(ios_fb_ad_id)
       IosFbAd.find(ios_fb_ad_id).update(status: :complete)
+      ElasticSearchWorker.perform_async(:index_ios_apps, [IosFbAd.find(ios_fb_ad_id).ios_app_id])
       log_event(ios_fb_ad_id)
     rescue => e
       IosFbAdProcessingException.create!({

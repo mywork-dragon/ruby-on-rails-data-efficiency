@@ -245,7 +245,7 @@ class AndroidApp < ActiveRecord::Base
         first_seen_ads_days: self.first_seen_ads_days,
         last_seen_ads_date: self.last_seen_ads_date,
         last_seen_ads_days: self.last_seen_ads_days,
-        latest_facebook_ad: self.latest_facebook_ad.as_json({no_app: true}),
+        # latest_facebook_ad: self.latest_facebook_ad.as_json({no_app: true}),
         ad_attribution_sdks: self.ad_attribution_sdks
       })
     end

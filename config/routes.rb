@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 
   get 'api/ad_intelligence/ios' => 'api#ios_ad_intelligence'
   get 'api/ad_intelligence/android' => 'api#android_ad_intelligence'
+  get 'api/ad_intelligence/all' => 'api#combined_ad_intelligence'
 
   get 'api/list/get_lists' => 'api#get_lists'
   get 'api/list/get_list' => 'api#get_list'
