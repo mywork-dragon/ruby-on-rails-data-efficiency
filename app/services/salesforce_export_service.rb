@@ -116,7 +116,7 @@ class SalesforceExportService
     new_fields = [
       {label: 'MightySignal App ID', type: 'Text', length: 255},
       {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
-      {label: 'App Store/Google Play App ID', fullName: "#{@app_model}.App_Store_ID__c", type: 'Text', length: 255},
+      #{label: 'App Store/Google Play App ID', fullName: "#{@app_model}.App_Store_ID__c", type: 'Text', length: 255},
       {label: 'MightySignal Link', type: 'Url'},
       {label: 'Platform', type: 'Text', length: 255},
       {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
@@ -215,12 +215,12 @@ class SalesforceExportService
     case app.platform
     when 'ios'
       mapping[IOS_PUB_ID] = {"id"=>"MightySignal_iOS_Publisher_ID__c", "name"=>"New Field: MightySignal iOS Publisher ID"}
-      mapping[APP_STORE_PUB_ID] = {"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}
+      #mapping[APP_STORE_PUB_ID] = {"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}
       mapping[IOS_LINK] = {"id"=>"MightySignal_iOS_Link__c", "name"=>"New Field: MightySignal iOS Link"}
       mapping[IOS_SDK_SUMMARY] = {"id"=>"MightySignal_iOS_SDK_Summary__c", "name"=>"New Field: MightySignal iOS SDK Summary"}
     when 'android'
       mapping[ANDROID_PUB_ID] = {"id"=>"MightySignal_Android_Publisher_ID__c", "name"=>"New Field: MightySignal Android Publisher ID"}
-      mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
+      #mapping[GOOGLE_PLAY_PUB_ID] = {"id"=>"Google_Play_Publisher_ID__c", "name"=>"New Field: Google Play Publisher ID"}
       mapping[ANDROID_LINK] = {"id"=>"MightySignal_Android_Link__c", "name"=>"New Field: MightySignal Android Link"}
       mapping[ANDROID_SDK_SUMMARY] = {"id"=>"MightySignal_Android_SDK_Summary__c", "name"=>"New Field: MightySignal Android SDK Summary"}
     end
@@ -473,8 +473,8 @@ class SalesforceExportService
 
   IOS_PUB_ID = "MightySignal iOS Publisher ID"
   ANDROID_PUB_ID = "MightySignal Android Publisher ID"
-  APP_STORE_PUB_ID = "App Store Publisher ID"
-  GOOGLE_PLAY_PUB_ID = "Google Play Publisher ID"
+  #APP_STORE_PUB_ID = "App Store Publisher ID"
+  #GOOGLE_PLAY_PUB_ID = "Google Play Publisher ID"
   IOS_LINK = "MightySignal iOS Link"
   ANDROID_LINK = "MightySignal Android Link"
   PUBLISHER_NAME = "Publisher Name"
@@ -488,12 +488,12 @@ class SalesforceExportService
       WEBSITE => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
 
       IOS_PUB_ID => {type: 'Text', label: "MightySignal iOS Publisher ID", length: 255},
-      APP_STORE_PUB_ID => {length: 255, type: 'Text', label: "App Store Publisher ID"},
+      #APP_STORE_PUB_ID => {length: 255, type: 'Text', label: "App Store Publisher ID"},
       IOS_LINK => {type: 'Url', label: "MightySignal iOS Link"},
       IOS_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal iOS SDK Summary"},
       
       ANDROID_PUB_ID => {length: 255, type: 'Text', label: "MightySignal Android Publisher ID"},
-      GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
+      #GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
       ANDROID_LINK => {type: 'Url', label: "MightySignal Android Link"},
       ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
     }  
