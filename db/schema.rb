@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815233735) do
+ActiveRecord::Schema.define(version: 20170906214754) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -1686,6 +1686,7 @@ ActiveRecord::Schema.define(version: 20170815233735) do
     t.boolean  "disabled",                          default: false
     t.integer  "open_proxy_id",       limit: 4
     t.integer  "apple_account_id",    limit: 4
+    t.string   "udid",                limit: 191
   end
 
   add_index "ios_devices", ["apple_account_id"], name: "index_ios_devices_on_apple_account_id", using: :btree
@@ -1697,6 +1698,7 @@ ActiveRecord::Schema.define(version: 20170815233735) do
   add_index "ios_devices", ["purpose", "disabled"], name: "index_ios_devices_on_purpose_and_disabled", using: :btree
   add_index "ios_devices", ["serial_number"], name: "index_ios_devices_on_serial_number", using: :btree
   add_index "ios_devices", ["softlayer_proxy_id"], name: "index_ios_devices_on_softlayer_proxy_id", using: :btree
+  add_index "ios_devices", ["udid"], name: "index_ios_devices_on_udid", using: :btree
 
   create_table "ios_email_accounts", force: :cascade do |t|
     t.string   "email",      limit: 191

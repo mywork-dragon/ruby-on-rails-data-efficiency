@@ -17,7 +17,7 @@ class IosDevice < ActiveRecord::Base
 	validates :serial_number, uniqueness: true, presence: true
 
 	# either dedicated for a one off scrape or for mass scrapes
-	enum purpose: [:one_off, :mass, :test, :fb_ad_scrape, :one_off_intl, :mass_intl]
+	enum purpose: [:one_off, :mass, :test, :fb_ad_scrape, :one_off_intl, :mass_intl, :fb_ad_scrape_webdriver]
 
   # The class dump architecture to use
   # Eg. "armv7", "arm64"
