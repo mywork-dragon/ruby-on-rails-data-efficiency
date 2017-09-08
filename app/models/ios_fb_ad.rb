@@ -60,7 +60,7 @@ class IosFbAd < ActiveRecord::Base
       id: self.id,
       ad_image: self.ad_image? ? self.ad_image : nil,
       ad_info_image: self.ad_info_image? ? self.ad_info_image : nil,
-      ad_attribution_sdks: self.ios_app.ad_attribution_sdks,
+      #ad_attribution_sdks: self.ios_app.ad_attribution_sdks,
       date_seen: self.date_seen
     }
     result[:app] = self.ios_app unless options[:no_app]

@@ -15,7 +15,7 @@ class AndroidAd < ActiveRecord::Base
     result = {
       id: self.id,
       ad_image: self.screenshot_url,
-      ad_attribution_sdks: self.advertised_app.ad_attribution_sdks,
+      # ad_attribution_sdks: self.advertised_app.ad_attribution_sdks,
       date_seen: self.date_seen
     }
     result[:app] = self.source_app unless options[:no_app]
