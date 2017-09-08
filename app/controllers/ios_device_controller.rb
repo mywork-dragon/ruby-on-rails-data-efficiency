@@ -10,6 +10,15 @@ class IosDeviceController < ApplicationController
     render json: query.all
   end
 
+  def get_device_fb_accounts
+    device = IosDevice.where(id: params.fetch(:id))
+    if device.empty?
+      render json: { success: false }, status: 404 
+    else
+      render json: { success: true, fb_accounts: device.first.fb_accounts }, status: 200
+    end
+  end
+
   def enable_device
     device = IosDevice.where(:id => params[:id])
     if device.empty?
