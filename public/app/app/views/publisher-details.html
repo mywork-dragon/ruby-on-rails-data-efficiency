@@ -13,13 +13,30 @@
         <div class="col-md-1" id="appPageLogoBox" ng-if="publisherData.logo">
           <img ng-src="{{publisherData.logo}}" id="appDetailsPageAppLogo" />
         </div>
-        <div class="publisher-name">
-          {{publisherData.name}}
+        <div class="col-md-6" ng-class="{ 'no-logo': !publisherData.logo }">
+          <h4>
+            {{publisherData.name}}
+          </h4>
+          <div class="app-details">
+            <div>
+              <i class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+              <span>{{appPlatform == 'ios' ? 'iOS' : 'Android'}} Publisher</span>
+            </div>
+            <div>
+              <i class="icon fa fa-mobile"></i>
+              <span>{{numApps}} {{numApps > 1 ? 'apps' : 'app'}}</span>
+            </div>
+          </div>
         </duv>
       </div>
     </header>
 
+
     <div class="row companyPageRow">
+      <div class="col-md-6 info-column">
+        <div ng-if="canViewStorewideSdks || canViewSdks" data-ng-include="'/app/app/views/publisher-sdks.html'"></div>
+      </div>
+
       <div class="col-md-6 info-column">
         <div class="panel panel-default">
           <div class="panel-heading"><strong>General Details</strong></div>
@@ -28,15 +45,19 @@
               <div class="media-body">
 
                 <ul class="list-unstyled list-info">
-                  <li ng-if="publisherData.name">
-                    <span class="icon fa fa-briefcase"></span>
-                    <label>Publisher Name:</label>
-                    {{publisherData.name}}
+                  <li ng-if="isAdminAccount">
+                    <span class="icon fa fa-star"></span>
+                    <label>Major Publisher:</label>
+                    <div class="actionButton">
+                      <button type="submit" ng-class="publisherData.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="handleTagButtonClick()">{{publisherData.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
+                    </div>
                   </li>
-                  <li ng-if="appPlatform">
-                    <span class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
-                    <label>Platform:</label>
-                    {{appPlatform == 'ios' ? 'iOS' : 'Android'}}
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-linkedin"></span>
+                    <label>Search LinkedIn:</label>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
                   <li ng-if="publisherData.crunchbase">
                     <span class="icon fa fa-line-chart"></span>
@@ -47,13 +68,6 @@
                       ng-click="crunchbaseLinkClicked()">
                       crunchbase.com/{{publisherData.crunchbase}}
                     </a>
-                  </li>
-                  <li id="linkedinLinksList">
-                    <span class="icon fa fa-linkedin"></span>
-                    <label>Search LinkedIn:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
                   <li ng-if="publisherData.fortuneRank">
                     <span class="icon fa fa-bar-chart"></span>
@@ -87,23 +101,12 @@
           </div>
         </div>
 
-      </div>
-
-      <div class="col-md-6 info-column">
-
         <div class="panel panel-default">
           <div class="panel-heading"><strong>Contacts</strong></div>
           <div class="panel-body">
             <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info">
-                  <li ng-if="isAdminAccount">
-                    <span class="icon fa fa-star"></span>
-                    <label>Major Publisher:</label>
-                    <div class="actionButton">
-                      <button type="submit" ng-class="publisherData.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="handleTagButtonClick()">{{publisherData.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
-                    </div>
-                  </li>
                   <li id="showCompanyEmailsButtonLi">
                     <div id="showCompanyEmailsContainer">
                       <div id="showCompanyEmailsTextField">

@@ -3,11 +3,11 @@
 angular.module("appApp")
   .factory("sdkLiveScanService", ['$http', 'slacktivity', function($http, slacktivity) {
     return {
-      checkForAndroidSdks: function(appId) {
+      checkForAndroidSdks: function (appId) {
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/android_sdks_exist',
-          params: {appId: appId}
+          params: { appId }
         })
       },
       startAndroidSdkScan: function(appId) {
@@ -28,7 +28,7 @@ angular.module("appApp")
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/ios_sdks_exist',
-          params: {appId: appId}
+          params: { appId }
         })
       },
       startIosSdkScan: function(appId) {

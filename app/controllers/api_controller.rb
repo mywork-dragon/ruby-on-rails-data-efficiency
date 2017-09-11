@@ -671,8 +671,11 @@ class ApiController < ApplicationController
   end
 
   def ios_sdks_exist
-    ios_app_id = params['appId']
-    render json: IosSdkService.get_tagged_sdk_response(ios_app_id, force_live_scan_enabled: logged_into_admin_account?).to_json
+    if params['appId']
+      render json: IosSdkService.get_tagged_sdk_response(params['appId'], force_live_scan_enabled: logged_into_admin_account?).to_json
+    elsif params['publisherId']
+      render json: IosDeveloper.find(params['publisherId']).tagged_sdk_summary
+    end
   end
 
   def ios_scan_status
@@ -694,9 +697,11 @@ class ApiController < ApplicationController
   end
 
   def android_sdks_exist
-    id = params['appId']
-    json = AndroidSdkService::App.get_tagged_sdk_response(id, force_live_scan_enabled: logged_into_admin_account?).to_json
-    render json: json
+    if params['appId']
+      render json: AndroidSdkService::App.get_tagged_sdk_response(params['appId'], force_live_scan_enabled: logged_into_admin_account?).to_json
+    elsif params['publisherId']
+      render json: AndroidDeveloper.find(params['publisherId']).tagged_sdk_summary
+    end
   end
 
   def android_start_scan

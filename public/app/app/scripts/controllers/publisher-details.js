@@ -13,7 +13,6 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     $scope.loadPublisher = function(category, order) {
       publisherDetailsCtrl.queryInProgress = true;
-
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $scope.appPlatform + '_developer',
@@ -32,6 +31,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
         $scope.initialPageLoadComplete = true; // hides page load spinner
         $scope.getCompanyContacts()
+        $scope.getSdkSummary()
         /* Sets html title attribute */
 
         mixpanel.track(
@@ -252,5 +252,38 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       });
     };
 
-  }
-]);
+    $scope.sdksLoading = true
+
+    $scope.getSdkCount = function(sdks) {
+      let count = 0
+      for (var group in sdks) {
+        count += sdks[group].length
+      }
+      return count
+    }
+
+    $scope.getSdkCategories = function(sdks) {
+      const categories = {}
+      const categoryNames = Object.keys(sdks).sort()
+      const others = _.remove(categoryNames, x => x == "Others")
+      if (others.length) { categoryNames.push("Others") }
+      categoryNames.forEach(name => categories[name] = true)
+      return categories
+    }
+
+    $scope.getSdkSummary = function () {
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/' + $scope.appPlatform + '_sdks_exist',
+        params: { publisherId: $routeParams.id }
+      }).success(function (data) {
+        $scope.installedSdks = data.installed_sdks
+        $scope.installedSdkCategories = $scope.getSdkCategories(data.installed_sdks)
+        $scope.uninstalledSdks = data.uninstalled_sdks
+        $scope.uninstalledSdkCategories = $scope.getSdkCategories(data.uninstalled_sdks)
+        $scope.installedSdksCount = $scope.getSdkCount(data.installed_sdks)
+        $scope.uninstalledSdksCount = $scope.getSdkCount(data.uninstalled_sdks)
+        $scope.sdksLoading = false
+      })
+    }
+}]);

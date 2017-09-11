@@ -7958,12 +7958,29 @@ pre {
   cursor: pointer;
 }
 
+.publisherSdkInstalledApps {
+  font-size: 10px;
+  color: #1EAD4F;
+  display: inline-block;
+  position: relative;
+  bottom: 1px;
+  margin-left: 5px;
+}
+
+.publisherSdkUninstalledApps {
+  font-size: 10px;
+  color: #ED5F5F;
+  display: inline-block;
+  position: relative;
+  bottom: 1px;
+  margin-left: 5px;
+}
+
 /* DdTextCollapse Directive Styling */
 .collapse-text-toggle {
   font-size: 12px;
   color: #0393dd;
   cursor: pointer;
-  text-transform: uppercase;
 }
 .collapse-text-toggle:hover {
   color: #222222;
@@ -9057,9 +9074,8 @@ h4.red {
   align-items: center;
 }
 
-.publisher-name {
-  font-size: 18px;
-  margin: 10px 10px 10px 15px;
+.no-logo {
+  margin-left: 15px;
 }
 
 .table-text {

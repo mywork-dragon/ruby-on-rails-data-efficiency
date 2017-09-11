@@ -1,0 +1,81 @@
+<div class="panel panel-default" data-ng-controller="PublisherDetailsCtrl as publisherDetailsCtrl">
+  <div class="panel-heading sdk-panel-header">
+    <strong>SDKs</strong>
+  </div>
+  <div class="panel-body">
+    <div class="media">
+      <div class="media-body">
+        <ul class="list-unstyled list-info" ng-if="!sdksLoading">
+          <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="installedSdksCount">
+            <div class="sdksListView">
+              <div class="row">
+                <div class="col-md-6" ng-if="installedSdksCount">
+                  <h4>Installed SDKs <span class="liveScanSdksCountDisplay">({{installedSdksCount}})</span></h4>
+                  <div ng-repeat="(category, isCollapsed) in installedSdkCategories" ng-init="sdks = installedSdks[category]">
+                    <strong class="sdk-tag">{{category}}</strong>
+                    <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="installedSdkCategories[category] = !installedSdkCategories[category]">{{isCollapsed ? 'See SDKs' : 'Hide SDKs'}}</span>
+                    <ul ng-show="sdks.length <= 10 || !installedSdkCategories[category]">
+                      <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
+                        <div class="sdkLiveScanDisplayIconSection">
+                          <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']">
+                          <i class="fa fa-circle" ng-hide="sdk['favicon']"></i>
+                        </div>
+                        <div class="sdkLiveScanDisplayTitleSection">
+                          <span ng-if="canViewStorewideSdks">
+                            <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                            <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
+                            <span class="publisherSdkInstalledApps">
+                              <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
+                            </span>
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="col-md-6 sdkOpenSourceSection" ng-show="uninstalledSdksCount">
+                  <h4>Uninstalled SDKs <span class="liveScanSdksCountDisplay">({{uninstalledSdksCount}})</span></h4>
+                  <div ng-repeat="(category, isCollapsed) in uninstalledSdkCategories" ng-init="sdks = uninstalledSdks[category]">
+                    <strong class="sdk-tag">{{category}}</strong>
+                    <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="uninstalledSdkCategories[category] = !uninstalledSdkCategories[category]">{{isCollapsed ? 'See SDKS' : 'Hide SDKs'}}</span>
+                    <ul ng-show="sdks.length <= 10 || !uninstalledSdkCategories[category]">
+                      <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
+                        <div class="sdkLiveScanDisplayIconSection">
+                          <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']">
+                          <i class="fa fa-github" ng-hide="sdk['favicon']"></i>
+                        </div>
+                        <div class="sdkLiveScanDisplayTitleSection">
+                          <span ng-if="canViewStorewideSdks">
+                            <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                            <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
+                            <span class="publisherSdkUninstalledApps">
+                              <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
+                            </span>
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li ng-if="!installedSdksCount && !uninstalledSdksCount">
+            <div style="text-align:center">
+              <strong>No SDKs</strong>
+            </div>
+          </li>
+        </ul>
+
+        <div id="wrap_spinner" ng-if="sdksLoading">
+          <div class="loading outer">
+            <div class="loading inner"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
