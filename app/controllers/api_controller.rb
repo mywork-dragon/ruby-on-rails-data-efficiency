@@ -990,8 +990,10 @@ class ApiController < ApplicationController
     sdk = AndroidSdk.find(sdk_id)
 
     @sdk_json = sdk.as_json({user: @current_user})
-    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.size
+
+    sdk_apps = sdk.get_current_apps(limit: 10, sort: 'ratings_all', order: 'desc')
+    @sdk_json[:apps] = sdk_apps[:apps].as_json({user: @current_user})
+    @sdk_json[:numOfApps] = sdk_apps[:total_count]
     render json: @sdk_json
   end
 
@@ -999,8 +1001,11 @@ class ApiController < ApplicationController
     sdk_id = params['id']
     sdk = IosSdk.find(sdk_id)
     @sdk_json = sdk.as_json({user: @current_user})
-    @sdk_json[:apps] = sdk.get_current_apps(10, 'user_base').as_json({user: @current_user})
-    @sdk_json[:numOfApps] = sdk.get_current_apps.size
+
+    sdk_apps = sdk.get_current_apps(limit: 10, sort: 'ratings_all', order: 'desc')
+    @sdk_json[:apps] = sdk_apps[:apps].as_json({user: @current_user})
+    @sdk_json[:numOfApps] = sdk_apps[:total_count]
+    
     render json: @sdk_json
   end
 

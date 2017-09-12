@@ -54,14 +54,32 @@ class IosSdk < ActiveRecord::Base
     @es_client
   end
 
-  def get_current_apps(limit = nil, sort = nil, with_associated: true)
+  def get_current_apps(limit: nil, sort: nil, order: 'desc', with_associated: true, app_ids: nil)
+    sdk_id = IosSdk.select('IFNULL(ios_sdk_links.dest_sdk_id, ios_sdks.id) as id').
+                   joins('LEFT JOIN ios_sdk_links ON ios_sdk_links.source_sdk_id = ios_sdks.id').
+                   where(id: id).first.id
 
-    apps = IosSdk.get_current_apps_with_sdks(ios_sdk_ids: [self.id], with_associated: with_associated)
+    filter_args = {
+      app_filters: {"sdkFiltersAnd" => [{"id" => sdk_id, "status" => "0", "date" => "0"}]},
+      page_num: 1,
+      order_by: order
+    }
 
-    apps = apps.order("#{sort} IS NULL, #{sort} ASC") if sort
-    apps = apps.limit(limit) if limit
-    apps
+    filter_args[:app_filters]['appIds'] = app_ids if app_ids
+    filter_args[:page_size] = limit if limit
+    filter_args[:sort_by] = sort if sort
+    
+    filter_results = FilterService.filter_ios_apps(filter_args)
+    ids = filter_results.map { |result| result.attributes["id"] }
+    apps = if ids.any?
+      collection = IosApp.where(id: ids)
+      collection = collection.order("FIELD(id, #{ids.join(',')})") if sort
+      collection
+    else
+      []
+    end
 
+    {apps: apps, total_count: filter_results.total_count} 
   end
 
   def cluster
@@ -89,8 +107,9 @@ class IosSdk < ActiveRecord::Base
 
   def top_200_apps
     newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    self.get_current_apps.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).
-                          where('rank < 201').select(:rank, 'ios_apps.*').order('rank ASC')
+    top_200_app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).
+                          where('rank < 201').select(:rank, 'ios_apps.*').order('rank ASC').pluck(:id)    
+    self.get_current_apps(app_ids: top_200_app_ids, limit: 200)[:apps]
   end
 
   def self.top_200_tags #tags that have ios sdks in the top 200

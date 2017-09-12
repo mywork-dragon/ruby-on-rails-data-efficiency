@@ -185,6 +185,10 @@ class FilterService
         apps_index = apps_index.filter({"terms" => {"fortune_rank" => eval("[*'1'..'#{company_filters['fortuneRank'].to_i}']")}})
       end
 
+      if app_filters['appIds'].present?
+        apps_index = apps_index.query({"ids" => {"values" => app_filters['appIds'].map(&:to_s)}})
+      end
+
       if app_filters['adSpend'].present?
         apps_index = apps_index.filter({"terms" => {"facebook_ads" => [true]}})
       end
@@ -249,7 +253,6 @@ class FilterService
       end
 
       apps_index = order_helper(apps_index, sort_by, order_by)
-
       apps_index = apps_index.limit(page_size).offset((page_num - 1) * page_size)
     end
 
