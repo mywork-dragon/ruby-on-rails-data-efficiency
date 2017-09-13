@@ -24,7 +24,7 @@ class WeeklyBatch < ActiveRecord::Base
       batch_json[:major_activities] = major_activities
     end
 
-    batch_json[:activities_count] ||= self.activities.count
+    batch_json[:activities_count] ||= is_app? ? self.sorted_activities.count : self.activities.count
     batch_json[:apps_count] = self.joined_activities.pluck(:ios_app_id).uniq.count if is_ad_platform?
     batch_json
   end
