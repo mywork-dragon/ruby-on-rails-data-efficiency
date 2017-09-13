@@ -26,12 +26,9 @@ class AndroidAdController < ApplicationController
     ad.advertised_app.display_type = :normal
     ad.advertised_app.save!
 
-    ElasticSearchWorker.perform_async(:index_android_apps, [ad.advertised_app.id])
-
     ad.google_account = params['google_account']
     ad.facebook_account = params['facebook_account']
     ad.ad_text = params['ad_text']
-
 
     ad.target_location = params['target_location']
     ad.target_max_age = params['target_max_age']
@@ -48,6 +45,7 @@ class AndroidAdController < ApplicationController
     end
     ad.target_proximity_to_business = params['target_proximity_to_business']
     ad.save!
+    ElasticSearchWorker.new.perform(:index_android_apps, [ad.advertised_app.id])
 
     render json: { success: true }, status: 200
   end
