@@ -10,7 +10,7 @@ class IosFbProcessingWorker
       IosFbAd.find(ios_fb_ad_id).update(status: :processing)
       process(ios_fb_ad_id)
       IosFbAd.find(ios_fb_ad_id).update(status: :complete)
-      ElasticSearchWorker.perform_async(:index_ios_apps, [IosFbAd.find(ios_fb_ad_id).ios_app_id])
+      update_es_index(ios_fb_ad_id)
       log_event(ios_fb_ad_id)
     rescue => e
       IosFbAdProcessingException.create!({
@@ -42,6 +42,12 @@ class IosFbProcessingWorker
     EwokService.scrape_async(app_identifier: app_identifier, store: :ios)
     EwokService.scrape_international_async(app_identifier: app_identifier, store: :ios)
     IosEpfScanService.scan_apps([ios_app.id], notes: 'running ad intelligence')
+  end
+
+  def update_es_index(ios_fb_ad_id)
+    ElasticSearchWorker.new.perform(:index_ios_apps, [IosFbAd.find(ios_fb_ad_id).ios_app_id])
+  rescue => e
+    Bugsnag.notify(e)
   end
 
   def get_ios_app(app_identifier)
