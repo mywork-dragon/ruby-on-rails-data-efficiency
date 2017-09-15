@@ -97,51 +97,61 @@ class ClearbitWorker
     self.send(method.to_sym, *args)
   end
 
-  def queue_ios_apps(user_base)
-    IosApp.where(id: IosSnapshotAccessor.new.ios_app_ids_from_user_base(user_base)).each do |app|
-      next if app.headquarters.any?
-      ClearbitWorker.perform_async(:enrich_app, app.id, 'ios')
-    end
-  end
-
-  def queue_android_apps(user_base)
-    AndroidApp.where(user_base: user_base).each do |app|
-      next if app.headquarters.any?
-      ClearbitWorker.perform_async(:enrich_app, app.id, 'android')
-    end
-  end
-
   def queue_n_apps_for_enrichment(n)
     ios_apps = get_n_non_enriched_apps(n / 2, IosApp.count, 'ios') {|offset, limit| IosApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
     android_apps = get_n_non_enriched_apps(n / 2, AndroidApp.count, 'android') {|offset, limit| AndroidApp.where.not(:user_base => nil).order(:user_base).offset(offset).limit(limit)}
-    ios_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'ios')}
-    android_apps.each {|app| ClearbitWorker.perform_async(:enrich_app, app.id, 'android')}
+    ios_apps.each {|app| queue_app_for_enrichment(app.id, 'ios', disable_recent_check: true)} # already checked
+    android_apps.each {|app| queue_app_for_enrichment(app.id, 'android', disable_recent_check: true)} # already checked
     puts "Queued #{ios_apps.count} iOS Apps for enrichment."
     puts "Queued #{android_apps.count} Android Apps for enrichment."
     {'ios_apps' => ios_apps, 'android_apps' => android_apps}
   end
 
-  def get_n_non_enriched_apps(n, limit, namespace)
+  def queue_app_for_enrichment(id, platform, disable_recent_check: false, delay_time: false)
+    key = enrichment_key(platform, id)
+    return if disable_recent_check == false and enriched_recently?(key)
+    mark_enriched(key)
+    if delay_time
+      ClearbitWorker.perform_in(delay_time, :enrich_app, id, platform.to_s)
+    else
+      ClearbitWorker.perform_async(:enrich_app, id, platform.to_s)
+    end
+  end
+
+  def enriched_recently?(key)
+    Sidekiq.redis do |connection|
+      connection.exists(key)
+    end
+  end
+
+  def mark_enriched(key)
+    Sidekiq.redis do |connection|
+      connection.setex(key, 6.months.to_i, 1)
+    end
+  end
+
+  def enrichment_key(namespace, identifier)
+    "cb_enrich_app_marker:#{namespace}:#{identifier}"
+  end
+
+  def get_n_non_enriched_apps(n, limit, platform)
     # Expects a block which accepts and offset and limit parameter
     # and returns apps.
-    Sidekiq.redis do |connection|
-      apps = []
-      i = 0
-      increment = n * 2
-      while apps.count < n and i < limit
-        yield(i, increment).each do |app|
-          processed_key = "cb_enrich_app_marker:#{namespace}:#{app.id}"
-          next if app.headquarters.any? or connection.exists(processed_key)
-          connection.setex(processed_key, 60.days.to_i, 1)
-          apps.append(app)
-          if apps.count >= n
-            break
-          end
+    apps = []
+    i = 0
+    increment = n * 2
+    while apps.count < n and i < limit
+      yield(i, increment).each do |app|
+        key = enrichment_key(platform, app.id)
+        next if enriched_recently?(key)
+        apps.append(app)
+        if apps.count >= n
+          break
         end
-        i += increment
       end
-      apps
+      i += increment
     end
+    apps
   end
 
   def populate_domains

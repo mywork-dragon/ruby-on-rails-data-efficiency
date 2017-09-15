@@ -11,6 +11,7 @@ class IosFbProcessingWorker
       process(ios_fb_ad_id)
       IosFbAd.find(ios_fb_ad_id).update(status: :complete)
       update_es_index(ios_fb_ad_id)
+      hydrate_domain_info(ios_fb_ad_id)
       log_event(ios_fb_ad_id)
     rescue => e
       IosFbAdProcessingException.create!({
@@ -46,6 +47,12 @@ class IosFbProcessingWorker
 
   def update_es_index(ios_fb_ad_id)
     ElasticSearchWorker.new.perform(:index_ios_apps, [IosFbAd.find(ios_fb_ad_id).ios_app_id])
+  rescue => e
+    Bugsnag.notify(e)
+  end
+
+  def hydrate_domain_info(ad_id)
+    ClearbitWorker.new.queue_app_for_enrichment(IosFbAd.find(ad_id).ios_app_id, :ios, delay_time: 1.minute) # allow scrapes to finish
   rescue => e
     Bugsnag.notify(e)
   end

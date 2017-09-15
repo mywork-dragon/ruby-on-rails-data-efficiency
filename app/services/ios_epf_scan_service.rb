@@ -34,8 +34,6 @@ class IosEpfScanService
 
       if Rails.env.production?
 
-        Slackiq.message("Starting iOS EPF Scan for #{ids.length}", webhook_name: :main)
-        
         batch = Sidekiq::Batch.new
         batch.description = 'iOS EPF Apps'
 
