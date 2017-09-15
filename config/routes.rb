@@ -51,6 +51,7 @@ Rails.application.routes.draw do
 
   get 'api/get_ios_developer' => 'api#get_ios_developer'
   get 'api/get_android_developer' => 'api#get_android_developer'
+  get 'api/get_developer_apps' => 'api#get_developer_apps'
 
   get 'api/newsfeed' => 'api#newsfeed'
   get 'api/newsfeed/details' => 'api#newsfeed_details'

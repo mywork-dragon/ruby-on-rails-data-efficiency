@@ -13,25 +13,20 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     $scope.loadPublisher = function(category, order) {
       publisherDetailsCtrl.queryInProgress = true;
-      return $http({
+        return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $scope.appPlatform + '_developer',
-        params: {id: $routeParams.id, sortBy: category, orderBy: order, pageNum: $scope.currentPage}
+        params: {id: $routeParams.id}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.publisherData = data;
-        $scope.apps = data.apps;
         $scope.numApps = data.numApps;
-        if ($scope.numApps > 0 && $scope.publisherData.websites && $scope.apps[0].supportDesk) {
-          $scope.publisherData.websites.push($scope.apps[0].supportDesk)
-        }
-        $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
         $rootScope.numApps = data.numApps;
-        publisherDetailsCtrl.queryInProgress = false;
 
         $scope.initialPageLoadComplete = true; // hides page load spinner
         $scope.getCompanyContacts()
         $scope.getSdkSummary()
+        $scope.getPublisherApps()
         /* Sets html title attribute */
 
         mixpanel.track(
@@ -55,6 +50,23 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         publisherDetailsCtrl.queryInProgress = false;
       });
     };
+
+    $scope.getPublisherApps = function (category, order) {
+      publisherDetailsCtrl.queryInProgress = true;
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/get_developer_apps',
+        params: { id: $routeParams.id, platform: $routeParams.platform, sortBy: category, orderBy: order, pageNum: $scope.currentPage }
+      }).success(function(data) {
+        $scope.apps = data.apps
+        publisherDetailsCtrl.queryInProgress = false;
+        if ($scope.numApps > 0 && $scope.publisherData.websites && $scope.apps[0].supportDesk) {
+          $scope.publisherData.websites.push($scope.apps[0].supportDesk)
+        }
+        $scope.publisherData.websites = uniqueStringsFilter($scope.publisherData.websites)
+      })
+    }
+
     $scope.loadPublisher();
 
     authService.permissions()
@@ -106,7 +118,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     $scope.submitPageChange = function(currentPage) {
       $scope.currentPage = currentPage;
-      $scope.loadPublisher();
+      $scope.getPublisherApps();
     }
 
     $scope.onAppTableAppClick = function(app) {
@@ -177,7 +189,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
     // When orderby/sort arrows on dashboard table are clicked
     $scope.sortApps = function(category, order) {
-      $scope.loadPublisher(category, order);
+      $scope.getPublisherApps(category, order);
       var sign = order == 'desc' ? '-' : ''
       $scope.rowSort = sign + category;
     };

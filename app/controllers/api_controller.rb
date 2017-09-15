@@ -276,16 +276,14 @@ class ApiController < ApplicationController
     developer = AndroidDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
-      apps, num_apps = developer.sorted_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,
         websites: developer.websites.to_a.map{|w| w.url},
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
-        numApps: num_apps,
+        numApps: developer.num_apps,
         isMajorPublisher: developer.is_major_publisher?,
-        apps: apps.as_json({user: @current_user}),
         linkedin: developer.linkedin_handle,
         companySize: developer.company_size,
         crunchbase: developer.crunchbase_handle,
@@ -299,16 +297,14 @@ class ApiController < ApplicationController
     developer = IosDeveloper.find(params['id'])
     @developer_json = {}
     if developer.present?
-      apps, num_apps = developer.sorted_apps(params[:sortBy], params[:orderBy], params[:pageNum])
       @developer_json = {
         id: developer.id,
         name: developer.name,
         websites: developer.get_website_urls,
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
-        numApps: num_apps,
+        numApps: developer.num_apps,
         isMajorPublisher: developer.is_major_publisher?,
-        apps: apps.as_json({user: @current_user}),
         linkedin: developer.linkedin_handle,
         companySize: developer.company_size,
         crunchbase: developer.crunchbase_handle,
@@ -316,6 +312,12 @@ class ApiController < ApplicationController
       }
     end
     render json: @developer_json
+  end
+
+  def get_developer_apps
+    developer = params['platform'] == 'ios' ? IosDeveloper.find(params['id']) : AndroidDeveloper.find(params['id'])
+    apps = developer.sorted_apps(params[:sortBy], params[:orderBy], params[:pageNum])
+    render json: { apps: apps.as_json({user: @current_user}) }
   end
 
   def get_company
@@ -1005,7 +1007,7 @@ class ApiController < ApplicationController
     sdk_apps = sdk.get_current_apps(limit: 10, sort: 'ratings_all', order: 'desc')
     @sdk_json[:apps] = sdk_apps[:apps].as_json({user: @current_user})
     @sdk_json[:numOfApps] = sdk_apps[:total_count]
-    
+
     render json: @sdk_json
   end
 

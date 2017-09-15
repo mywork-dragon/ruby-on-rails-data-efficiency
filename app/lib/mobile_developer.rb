@@ -78,7 +78,7 @@ module MobileDeveloper
   def sorted_apps(category, order, page)
     filter_args = {
       app_filters: {'publisherId' => self.id},
-      page_size: 100,
+      page_size: 25,
       page_num: [page.to_i, 1].max,
       sort_by: category || 'last_updated',
       order_by: order || 'desc'
@@ -94,7 +94,20 @@ module MobileDeveloper
 
     ids = filter_results.map { |result| result.attributes["id"] }
     results = ids.any? ? app_class.where(id: ids).order("FIELD(id, #{ids.join(',')})") : []
-    return results, filter_results.total_count
+    return results
+  end
+
+  def num_apps
+    filter_args = {
+      app_filters: { 'publisherId' => self.id }
+    }
+
+    if platform == :ios
+      results = FilterService.filter_ios_apps(filter_args)
+    else
+      results = FilterService.filter_android_apps(filter_args)
+    end
+    results.total_count
   end
 
   def link(stage: :production, utm_source: nil)
