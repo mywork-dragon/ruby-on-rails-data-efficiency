@@ -6,7 +6,9 @@ class Api::AdminController < ApplicationController
   before_action :authenticate_admin_account, only: [:follow_sdks, :create_account, :resend_invite, :unlink_accounts, :generate_api_token, :delete_api_token, :update_api_token, :tag_major_app, :untag_major_app, :tag_major_publisher, :untag_major_publisher]
 
   def index
-    accounts = if @current_user.account.is_admin_account?
+    accounts = if @current_user.account.is_admin_account? && params[:account_id].present?
+      [Account.find(params[:account_id])]
+    elsif @current_user.account.is_admin_account?
       Account.all
     else
       [@current_user.account]

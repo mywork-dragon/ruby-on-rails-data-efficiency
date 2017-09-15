@@ -16,7 +16,7 @@ angular.module('appApp')
       $scope.pageTitleService = pageTitleService;
 
       $scope.checkIfOwnPage = function() {
-        return _.contains(["/404", "/login", "/pages/signin"], $location.path());
+        return ["/404", "/login", "/pages/signin", "/admin/"].some(el => $location.path().indexOf(el) > -1)
       };
 
       $rootScope.isAuthenticated = authToken.isAuthenticated();

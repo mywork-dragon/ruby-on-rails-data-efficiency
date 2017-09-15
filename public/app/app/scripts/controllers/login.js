@@ -18,10 +18,6 @@ angular.module('appApp')
         $scope.message = "Log in using Google or LinkedIn"
       }
 
-      $scope.checkIfOwnPage = function() {
-        return _.contains(["/login", "/signin"], $location.path());
-      };
-
       $scope.authenticate = function(provider) {
         $auth.authenticate(provider, {token: $routeParams.token})
         .then(function(response) {

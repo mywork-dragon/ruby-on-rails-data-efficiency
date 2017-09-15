@@ -95,6 +95,9 @@ angular
           templateUrl: '/app/app/views/admin.html',
           activeTab: 'admin'
         })
+        .when('/admin/:id', {
+          templateUrl: '/app/app/views/admin.html',
+        })
         .when('/publisher/:platform/:id', {
           templateUrl: '/app/app/views/publisher-details.html',
           activeTab: 'search'

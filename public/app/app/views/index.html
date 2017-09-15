@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{{pageTitleService.title()}}</title>
+    <title ng-bind="pageTitleService.title()"></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
@@ -71,7 +71,7 @@
         <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
-        <section data-ng-view="" id="content" ng-style="{top: appStatus ? '130px' : '80px'}" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth ? 'contentHidden' : ''"></section>
+        <section data-ng-view="" id="content" ng-style="{top: appStatus ? '130px' : '80px'}" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth || checkIfOwnPage() ? 'contentHidden' : ''"></section>
       </div>
     </div>
     <div class="page-loading-overlay"> <div class="loader-2"></div> </div>

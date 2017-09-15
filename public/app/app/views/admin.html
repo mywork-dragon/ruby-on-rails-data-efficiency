@@ -7,57 +7,60 @@
 
   <div ng-if="initialPageLoadComplete">
     <div class="row adminPageRow">
-      <h4>Admin</h4>
-      <div ng-if="$root.isAdminAccount">
-        <strong>Setup new accounts</strong>
-        <form id="create-account" class="form-inline" name="accountForm">
-          <div class="form-group">
-            <label class="sr-only" for="name">Account name</label>
-            <input type="text" class="form-control" id="name" placeholder="Account name" ng-model="account.name">
+      <div ng-hide="accountId">
+        {{$scope.accountId}}
+        <h4>Admin</h4>
+        <div ng-if="$root.isAdminAccount">
+          <strong>Setup new accounts</strong>
+          <form id="create-account" class="form-inline" name="accountForm">
+            <div class="form-group">
+              <label class="sr-only" for="name">Account name</label>
+              <input type="text" class="form-control" id="name" placeholder="Account name" ng-model="account.name">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="createAccount(account, accountForm)">Create account</button>
+          </form>
+          <strong>Add SDKs to Timelines</strong>
+          <div>
+            <span class="ui-select">
+              <select ng-model="adminCtrl.sdkPlatform">
+                <option value="ios">iOS</option>
+                <option value="android">Android</option>
+              </select>
+            </span>
+            <angucomplete-alt id="sdk-autocomplete-filter"
+                             placeholder="SDK name"
+                             pause="100"
+                             selected-object="selectedSdk"
+                             remote-url="{{sdkAutocompleteUrl()}}"
+                             remote-url-data-field="results"
+                             search-fields="name"
+                             title-field="name"
+                             id-field="id"
+                             clear-selected="true"
+                             image-field="favicon"
+                             minlength="1"
+                             input-class="form-control form-control-small autocomplete-filter"  ng-hide="filter.sdk">
+            </angucomplete-alt>
+            <div class="ui-tags-input" ng-if="sdks.length">
+              <ul class="tags">
+                <li ng-repeat="sdk in sdks" class="tag-item">
+                  {{sdk.name}} - {{sdk.platform}}
+                  <a class="remove-button" ng-click="removeSdk($index)">×</a>
+                </li>
+              </ul>
+            </div>
+            <p ng-if="sdks.length > 0 && !sdkFollowers.length">
+              <br>
+              Select some users by using the checkbox next to their name
+            </p>
+            <p ng-if="sdks.length > 0 && sdkFollowers.length">
+              <br>
+              <button type="submit" class="btn btn-primary" ng-click="followSDKs()">Add {{sdks.length}} {{sdks.length == 1 ? 'SDK' : 'SDKs'}} to the Timeline of {{sdkFollowers.length}} {{sdkFollowers.length == 1 ? "user/account" : "users/accounts"}}</button>
+            </p>
           </div>
-          <button type="submit" class="btn btn-default" ng-click="createAccount(account, accountForm)">Create account</button>
-        </form>
-        <strong>Add SDKs to Timelines</strong>
-        <div>
-          <span class="ui-select">
-            <select ng-model="adminCtrl.sdkPlatform">
-              <option value="ios">iOS</option>
-              <option value="android">Android</option>
-            </select>
-          </span>
-          <angucomplete-alt id="sdk-autocomplete-filter"
-                           placeholder="SDK name"
-                           pause="100"
-                           selected-object="selectedSdk"
-                           remote-url="{{sdkAutocompleteUrl()}}"
-                           remote-url-data-field="results"
-                           search-fields="name"
-                           title-field="name"
-                           id-field="id"
-                           clear-selected="true"
-                           image-field="favicon"
-                           minlength="1"
-                           input-class="form-control form-control-small autocomplete-filter"  ng-hide="filter.sdk">
-          </angucomplete-alt>
-          <div class="ui-tags-input" ng-if="sdks.length">
-            <ul class="tags">
-              <li ng-repeat="sdk in sdks" class="tag-item">
-                {{sdk.name}} - {{sdk.platform}}
-                <a class="remove-button" ng-click="removeSdk($index)">×</a>
-              </li>
-            </ul>
-          </div>
-          <p ng-if="sdks.length > 0 && !sdkFollowers.length">
-            <br>
-            Select some users by using the checkbox next to their name
-          </p>
-          <p ng-if="sdks.length > 0 && sdkFollowers.length">
-            <br>
-            <button type="submit" class="btn btn-primary" ng-click="followSDKs()">Add {{sdks.length}} {{sdks.length == 1 ? 'SDK' : 'SDKs'}} to the Timeline of {{sdkFollowers.length}} {{sdkFollowers.length == 1 ? "user/account" : "users/accounts"}}</button>
-          </p>
         </div>
+        <br>
       </div>
-      <br>
       <div data-ng-repeat="account in accounts" ng-init="accountIndex = $index" class="panel panel-default">
         <div class="panel-heading" ng-click="loadUsers($index); account.isCollapsed = !account.isCollapsed;">
           <label ng-if="sdks.length > 0">

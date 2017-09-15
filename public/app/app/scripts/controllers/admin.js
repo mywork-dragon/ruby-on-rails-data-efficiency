@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
-  function($scope, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", '$routeParams', 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
+  function($scope, $routeParams, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
 
     var adminCtrl = this
     $scope.initialPageLoadComplete = false;
@@ -58,16 +58,23 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", 'authService', 'auth
     }
 
     $scope.load = function() {
+      $scope.accountId = $routeParams.id
+
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/admin',
-        params: {page: $scope.page}
+        params: {page: $scope.page, account_id: $scope.accountId}
       }).success(function(data) {
         $scope.accounts = data.accounts;
         for (var i = 0; i < $scope.accounts.length; i++) {
           $scope.accounts[i].isCollapsed = true;
         }
         $scope.initialPageLoadComplete = true;
+
+        if ($scope.accounts.length == 1) {
+          $scope.accounts[0].isCollapsed = false
+          $scope.loadUsers(0)
+        }
         // Sets html title attribute
         pageTitleService.setTitle('MightySignal - Admin');
       });
