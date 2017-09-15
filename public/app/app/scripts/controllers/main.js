@@ -131,6 +131,16 @@ angular.module('appApp')
         $rootScope.appIsNew = function(app) {
           app.releasedDays && 0 <= app.releasedDays && app.releasedDays <= 15
         }
+
+        $rootScope.complexFilters = {
+          sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+          sdkCategory: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+          location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]},
+          userbase: {or: [{status: "0"}], and: [{status: "0"}]}
+        }
+
+        $rootScope.categoryModel = []
+
       }
   }])
   .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",

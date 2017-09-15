@@ -28,14 +28,14 @@ angular.module('appApp')
             ceil: 8,
             showTicksValues: true,
             onEnd: function(sliderId, modelValue, highValue, pointerType) {
-              for(var i = 0; i < $scope.complexFilters.userbase.or.length; i++){
-                var filter = $scope.complexFilters.userbase.or[i]
+              for(var i = 0; i < $rootScope.complexFilters.userbase.or.length; i++){
+                var filter = $rootScope.complexFilters.userbase.or[i]
                 if (filter.userbase && filter.userbase.options && filter.userbase.options.id == sliderId) {
                   var newId = filter.status + '-' + modelValue + '-' + highValue
                   var newName = $scope.intToUserbase(modelValue) + '-' + $scope.intToUserbase(highValue)
                   filterService.changeFilter('userbaseFiltersOr', $scope.filterToTag(filter, 'userbase'), {id: newId, name: newName}, $scope.complexFilterDisplayText('userbase', 'or', filter));
-                  $scope.complexFilters.userbase.or[i].userbase.id = newId
-                  $scope.complexFilters.userbase.or[i].userbase.options.id = newId
+                  $rootScope.complexFilters.userbase.or[i].userbase.id = newId
+                  $rootScope.complexFilters.userbase.or[i].userbase.options.id = newId
                   break;
                 }
               }
@@ -70,13 +70,6 @@ angular.module('appApp')
         }
       }
 
-      $scope.complexFilters = {
-        sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
-        sdkCategory: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
-        location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]},
-        userbase: {or: [{status: "0"}], and: [{status: "0"}]}
-      }
-
       $scope.userbaseOptions = [
         {id: 1, name: 'Elite'},
         {id: 2, name: 'Strong'},
@@ -95,7 +88,7 @@ angular.module('appApp')
       }
 
       $scope.updateSdkModalWidth = function () {
-        const filters = $scope.complexFilters;
+        const filters = $rootScope.complexFilters;
         const sdkDateRangePresent = [filters.sdk.and, filters.sdk.or].some(filterGroup => filterGroup.some(filter => $scope.hasCustomDateRange(filter)))
         const sdkCategoryDateRangePresent = [filters.sdkCategory.and, filters.sdkCategory.or].some(filterGroup => filterGroup.some(filter => $scope.hasCustomDateRange(filter)))
         if (sdkCategoryDateRangePresent) {
@@ -110,7 +103,7 @@ angular.module('appApp')
       $scope.invalidDateRanges = false
 
       $scope.checkDateRanges = function () {
-        const filters = $scope.complexFilters;
+        const filters = $rootScope.complexFilters;
         $scope.invalidDateRanges = [filters.sdk.and, filters.sdk.or, filters.sdkCategory.and, filters.sdkCategory.or].some(filterGroup => {
           return filterGroup.some(filter => {
             if ($scope.hasCustomDateRange(filter)) {
@@ -181,7 +174,6 @@ angular.module('appApp')
       $scope.categoryExplanation = $sce.trustAsHtml('<p>The category/genre of the app (same as iOS App Store categories).</p>')
       $scope.sdkOperatorExplanation = $sce.trustAsHtml('<p>Pick an operator used for all SDK filters. e.g. Should we show apps with Mixpanel SDK AND Amplitude SDK installed or should we show apps with Mixpanel SDK OR Amplitude SDK installed')
 
-      $rootScope.categoryModel = [];
       searchCtrl.categorySettings = {
         buttonClasses: '',
         externalIdProp: '',
@@ -250,11 +242,11 @@ angular.module('appApp')
       $scope.addComplexFilter = function(filter_type, filter_operation, filter) {
         if (filter) {
           var found = false // only allow unique filters
-          for (var i in $scope.complexFilters[filter_type][filter_operation]) {
-            var existingFilter = $scope.complexFilters[filter_type][filter_operation][i]
+          for (var i in $rootScope.complexFilters[filter_type][filter_operation]) {
+            var existingFilter = $rootScope.complexFilters[filter_type][filter_operation][i]
             if (existingFilter[filter_type] && filter[filter_type] && $scope.filterIsEqualToFilter(existingFilter, filter, filter_type)) found = true
           }
-          if (!found) $scope.complexFilters[filter_type][filter_operation].unshift(filter)
+          if (!found) $rootScope.complexFilters[filter_type][filter_operation].unshift(filter)
         } else {
           $scope.addBlankComplexFilter(filter_type, filter_operation)
         }
@@ -263,13 +255,13 @@ angular.module('appApp')
       $scope.addBlankComplexFilter = function(filter_type, filter_operation) {
         switch(filter_type) {
           case 'sdk':
-            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+            return $rootScope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
           case 'sdkCategory':
-            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
+            return $rootScope.complexFilters[filter_type][filter_operation].push({status: "0", date: "0"})
           case 'location':
-            return $scope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
+            return $rootScope.complexFilters[filter_type][filter_operation].push({status: "0", state: '0'})
           default:
-            return $scope.complexFilters[filter_type][filter_operation].push({status: "0"})
+            return $rootScope.complexFilters[filter_type][filter_operation].push({status: "0"})
         }
       }
 
@@ -319,30 +311,30 @@ angular.module('appApp')
       }
 
       $scope.removeComplexFilter = function(filter_type, filter_operation, filter) {
-        var index = $scope.complexFilters[filter_type][filter_operation].indexOf(filter);
+        var index = $rootScope.complexFilters[filter_type][filter_operation].indexOf(filter);
         if (index > -1) {
-          var filter = $scope.complexFilters[filter_type][filter_operation][index]
+          var filter = $rootScope.complexFilters[filter_type][filter_operation][index]
           if (filter[filter_type]) {
             filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type));
           }
-          $scope.complexFilters[filter_type][filter_operation].splice(index, 1);
-          if (!$scope.complexFilters[filter_type][filter_operation].length) $scope.addComplexFilter(filter_type, filter_operation)
+          $rootScope.complexFilters[filter_type][filter_operation].splice(index, 1);
+          if (!$rootScope.complexFilters[filter_type][filter_operation].length) $scope.addComplexFilter(filter_type, filter_operation)
         }
         $scope.updateSdkModalWidth();
         $scope.checkDateRanges();
       }
 
       $scope.removeComplexNameFilter = function(filter_type, filter_operation, index) {
-        var filter = $scope.complexFilters[filter_type][filter_operation][index]
+        var filter = $rootScope.complexFilters[filter_type][filter_operation][index]
         filterService.removeFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type));
-        $scope.complexFilters[filter_type][filter_operation][index][filter_type] = null;
+        $rootScope.complexFilters[filter_type][filter_operation][index][filter_type] = null;
       }
 
       $scope.sdkSelectEvents = {
         onSelectionChanged: function () {
           filterService.clearAllSdkCategoryTags();
           ['and', 'or'].forEach(filterOperation => {
-            $scope.complexFilters.sdkCategory[filterOperation].forEach(filter => {
+            $rootScope.complexFilters.sdkCategory[filterOperation].forEach(filter => {
               if (filter.sdkCategory) {
                 filterService.addFilter($scope.complexFilterKey('sdkCategory', filterOperation), $scope.filterToTag(filter, 'sdkCategory'), $scope.complexFilterDisplayText('sdkCategory', filterOperation, filter), false, filter.sdkCategory.name);
               }
@@ -386,9 +378,9 @@ angular.module('appApp')
           object = $scope.findAppStore(object)
         }
 
-        $scope.complexFilters[filter_type][filter_operation][index][filter_type] = object
+        $rootScope.complexFilters[filter_type][filter_operation][index][filter_type] = object
         var customName = object.name
-        var filter = $scope.complexFilters[filter_type][filter_operation][index]
+        var filter = $rootScope.complexFilters[filter_type][filter_operation][index]
         filterService.addFilter($scope.complexFilterKey(filter_type, filter_operation), $scope.filterToTag(filter, filter_type), $scope.complexFilterDisplayText(filter_type, filter_operation, filter), false, object.name);
       }
 
@@ -452,10 +444,10 @@ angular.module('appApp')
 
       $scope.$watchCollection('$root.tags', function () {
         if ($rootScope.tags) {
-          Object.keys($scope.complexFilters).forEach(function(filterType) {
-            var filters = $scope.complexFilters[filterType];
+          Object.keys($rootScope.complexFilters).forEach(function(filterType) {
+            var filters = $rootScope.complexFilters[filterType];
             Object.keys(filters).forEach(function(filterOperation) {
-              var opFilters = $scope.complexFilters[filterType][filterOperation];
+              var opFilters = $rootScope.complexFilters[filterType][filterOperation];
               for (var index = 0; index < opFilters.length; index++) {
                 var found = false;
                 var filter = opFilters[index]
