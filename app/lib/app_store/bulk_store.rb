@@ -2,6 +2,7 @@ module AppStoreHelper
   class BulkStore
 
     attr_reader :snapshots, :categories, :snapshots_to_categories, :category_map
+    attr_accessor :redshift_logger
 
     class InsertMismatch < RuntimeError; end
     class SnapshotsLockTimeout < RuntimeError; end
@@ -80,7 +81,10 @@ module AppStoreHelper
     end
 
     def bulk_store_snapshots(snapshot_rows)
-      lock_value = ActiveRecord::Base.connection.execute("SELECT GET_LOCK('ios_snapshots_worker_lock',45);").to_a
+      insert_start_time = Time.now
+      success = false
+
+      lock_value = ActiveRecord::Base.connection.execute("SELECT GET_LOCK('ios_snapshots_worker_lock',120);").to_a
       raise SnapshotsLockTimeout unless lock_value[0][0] == 1
       
       ActiveRecord::Base.transaction do
@@ -97,9 +101,14 @@ module AppStoreHelper
         returned_ids = snapshot_rows.map(&:id).compact
         raise InsertMismatch unless returned_ids.length == snapshot_rows.length
       end
+
+      success = true
+
       snapshot_rows
     ensure
       ActiveRecord::Base.connection.execute("SELECT RELEASE_LOCK('ios_snapshots_worker_lock');")
+      elapsed = (Time.now - insert_start_time) * 1000
+      log_insert_statistics(snapshot_rows.length, elapsed, success)
     end
 
     def create_missing_categories
@@ -256,6 +265,19 @@ module AppStoreHelper
           kind: :secondary
         }
       end
+    end
+
+    def log_insert_statistics(num_rows, elapsed_time, success)
+      logger = @redshift_logger || RedshiftLogger.new
+      logger.add(record = {
+        name: 'ios_scrape_bulk_insert',
+        num_rows: num_rows,
+        elapsed_time: elapsed_time,
+        success: success
+      })
+      logger.send!
+    rescue => e
+      Bugsnag.notify(e)
     end
 
     def cols_from_json_attrs

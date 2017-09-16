@@ -1,9 +1,11 @@
 require 'test_helper'
+require 'mocks/redshift_logger_mock'
 
 class BulkStoreTest < ActiveSupport::TestCase
 
   def setup
     @test_app_json = JSON.parse(File.open(File.join(Rails.root, 'test', 'data', 'test_app.json')).read)
+    @redshift_logger_mock = RedshiftLoggerMock.new
   end
 
   test 'it correctly sets snapshot attributes' do
@@ -11,6 +13,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     ios_app = IosApp.create(:app_identifier => 1234)
     us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
     bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    bulk_store.redshift_logger = @redshift_logger_mock
     bulk_store.add_data(ios_app, @test_app_json)
     bulk_store.save
     
@@ -42,6 +45,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     ios_app = IosApp.create(:app_identifier => 1234)
     us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
     bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    bulk_store.redshift_logger = @redshift_logger_mock
     bulk_store.add_data(ios_app, five_days_ago)
     bulk_store.save
     
@@ -73,6 +77,9 @@ class BulkStoreTest < ActiveSupport::TestCase
     us_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     il_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: il_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     jp_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: jp_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    us_bulk_store.redshift_logger = @redshift_logger_mock
+    il_bulk_store.redshift_logger = @redshift_logger_mock
+    jp_bulk_store.redshift_logger = @redshift_logger_mock
     us_bulk_store.add_data(ios_app, us_test_app_json)
     il_bulk_store.add_data(ios_app, il_test_app_json)
     jp_bulk_store.add_data(ios_app, jp_test_app_json)
@@ -98,6 +105,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     sports_category = IosAppCategory.create(:name => 'Sports', :category_identifier => '6004')
     news_category = IosAppCategory.create(:name => 'News', :category_identifier => '6009')
     bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    bulk_store.redshift_logger = @redshift_logger_mock
     bulk_store.add_data(ios_app, @test_app_json)
     bulk_store.save
 
@@ -121,6 +129,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     ios_app = IosApp.create(:app_identifier => 1234)
     us_store = AppStore.create(:id => 1, :country_code => 'US', :name => 'United States', :enabled => true, :priority => 1, :display_priority => 1)
     bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    bulk_store.redshift_logger = @redshift_logger_mock
     bulk_store.add_data(ios_app, @test_app_json)
     bulk_store.save
 
@@ -152,6 +161,9 @@ class BulkStoreTest < ActiveSupport::TestCase
     us_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     il_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: il_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
     jp_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: jp_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    us_bulk_store.redshift_logger = @redshift_logger_mock
+    il_bulk_store.redshift_logger = @redshift_logger_mock
+    jp_bulk_store.redshift_logger = @redshift_logger_mock
     us_bulk_store.add_data(ios_app, @test_app_json)
     il_bulk_store.add_data(ios_app, @test_app_json)
     jp_bulk_store.add_data(ios_app, @test_app_json)
@@ -171,6 +183,7 @@ class BulkStoreTest < ActiveSupport::TestCase
     first_snapshot = IosAppCurrentSnapshot.create(:ios_app_id => ios_app.id, :app_store_id => 1, latest: true, :name => 'FIRST SNAPSHOT')
     first_snapshot_in_wrong_store = IosAppCurrentSnapshot.create(:ios_app_id => ios_app.id, :app_store_id => 2, latest: true, :name => 'FIRST SNAPSHOT')
     us_bulk_store = AppStoreHelper::BulkStore.new(app_store_id: us_store.id, ios_app_current_snapshot_job_id: ios_app_current_snapshot_job.id)
+    us_bulk_store.redshift_logger = @redshift_logger_mock
     us_bulk_store.add_data(ios_app, @test_app_json)
     us_bulk_store.save
 
