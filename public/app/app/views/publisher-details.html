@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="sdkLiveScanDisplayTitleSection">
                                   <span ng-if="canViewStorewideSdks">
-                                    <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                                    <a ng-href="#/sdk/{{appPlatform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                                     <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
                                     <span class="publisherSdkInstalledApps">
                                       <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="sdkLiveScanDisplayTitleSection">
                                   <span ng-if="canViewStorewideSdks">
-                                    <a href="#/sdk/ios/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                                    <a ng-href="#/sdk/{{appPlatform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                                     <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
                                     <span class="publisherSdkUninstalledApps">
                                       <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
@@ -142,7 +142,7 @@
                     <span class="icon fa fa-line-chart"></span>
                     <label>Crunchbase:</label>
                     <a
-                      href="https://www.crunchbase.com/{{publisherData.crunchbase}}"
+                      ng-href="https://www.crunchbase.com/{{publisherData.crunchbase}}"
                       target="_blank"
                       ng-click="crunchbaseLinkClicked()">
                       crunchbase.com/{{publisherData.crunchbase}}
@@ -159,7 +159,7 @@
                     <ul class="websites">
                       <li ng-repeat="website in publisherData.websites | limitTo:10">
                         <span>
-                          <a href="{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>
+                          <a ng-href="{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>
                         </span>
                       </li>
                     </ul>
@@ -235,7 +235,7 @@
                                 <p class="table-text" ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
                                 <a
                                   ng-if='contact.linkedin'
-                                  href="https://www.linkedin.com/{{contact.linkedin}}"
+                                  ng-href="https://www.linkedin.com/{{contact.linkedin}}"
                                   ng-click="onLinkedinContactClick(contact)" target="_blank"
                                   uib-tooltip-html="linkedinTooltip"
                                 >{{contact.fullName}} - {{contact.title}}</a>
@@ -384,7 +384,7 @@
                   </td>
                   <td class="resultsTableAppIcon">
                     <span>
-                      <a href="#/app/{{app.platform}}/{{app.id}}" ng-click="onAppTableAppClick(app)">
+                      <a ng-href="#/app/{{app.platform}}/{{app.id}}" ng-click="onAppTableAppClick(app)">
                         <img ng-src="{{app.icon}}" />
                         {{app.name}}
                         <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
