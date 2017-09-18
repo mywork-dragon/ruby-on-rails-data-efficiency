@@ -150,7 +150,6 @@ angular.module('appApp')
       $scope.listButtonDisabled = true
       searchCtrl.apps = []
 
-      // Sets user permissions
       authService.permissions()
         .success(function(data) {
           searchCtrl.canViewStorewideSdks = data.can_view_storewide_sdks;
@@ -195,6 +194,18 @@ angular.module('appApp')
         buttonDefaultText: 'CATEGORIES',
       };
 
+      searchCtrl.downloadsCustomText = {
+        buttonDefaultText: 'DOWNLOADS'
+      }
+
+      searchCtrl.userbaseCustomText = {
+        buttonDefaultText: 'USER BASE'
+      }
+
+      searchCtrl.mobilePriorityCustomText = {
+        buttonDefaultText: 'MOBILE PRIORITY'
+      }
+
       searchCtrl.sdkDropdownText = {
         buttonDefaultText: 'SDKs',
         dynamicButtonTextSuffix: 'SDKs selected'
@@ -231,12 +242,31 @@ angular.module('appApp')
         return API_URI_BASE + "api/location/autocomplete?status=" + status + "&query="
       }
 
-      $scope.addCategoryFilter = function(category) {
-        var found = false
-        for (var i in $rootScope.categoryModel) {
-          if ($rootScope.categoryModel[i].id == category) found = true
+      $scope.addDropdownFilter = function (parameter, item) {
+        let found = false
+        let model, value;
+        switch (parameter) {
+          case 'categories':
+            model = $rootScope.categoryModel
+            value = { id: item, label: item }
+            break;
+          case 'downloads':
+            model = $rootScope.downloadsModel
+            value = { id: item, label: $rootScope.downloadsFilterOptions[item].label };
+            break;
+          case 'mobilePriority':
+            model = $rootScope.mobilePriorityModel
+            value = { id: item, label: item }
+            break;
+          case 'userBases':
+            model = $rootScope.userbaseModel
+            value = { id: item, label: item }
+            break;
         }
-        if (!found) $rootScope.categoryModel.push({id: category, label: category})
+        for (var i in model) {
+          if (model[i].id == value) found = true
+        }
+        if (!found) model.push(value)
       }
 
       $scope.addComplexFilter = function(filter_type, filter_operation, filter) {
@@ -477,12 +507,26 @@ angular.module('appApp')
       })
 
       $scope.removedTag = function(tag) {
-        if (tag.parameter == 'categories') {
-          for(var i = $rootScope.categoryModel.length - 1; i >= 0 ; i--){
-            // only check for value if value exists
-            if($rootScope.categoryModel[i].label == tag.value){
-              $rootScope.categoryModel.splice(i, 1);
-            }
+        let model;
+        switch (tag.parameter) {
+          case 'downloads':
+            model = $rootScope.downloadsModel;
+            break;
+          case 'categories':
+            model = $rootScope.categoryModel;
+            break;
+          case 'mobilePriority':
+            model = $rootScope.mobilePriorityModel
+            break;
+          case 'userBases':
+            model = $rootScope.userbaseModel
+            break;
+          default:
+            return
+        }
+        for(var i = model.length - 1; i >= 0; i--){
+          if(model[i].id == tag.value){
+            model.splice(i, 1);
           }
         }
       }
@@ -510,9 +554,9 @@ angular.module('appApp')
           case 'userbaseFiltersOr':
             $scope.addComplexFilter('userbase', 'or', $scope.tagToFilter(arrayItem, 'userbase'))
             break
-          case 'categories':
-            $scope.addCategoryFilter(arrayItem)
-            break
+        }
+        if (['categories', 'downloads', 'mobilePriority', 'userBases'].includes(key)) {
+          $scope.addDropdownFilter(key, arrayItem)
         }
       }
 
@@ -542,7 +586,7 @@ angular.module('appApp')
           var value = allParams[key];
           if(Array.isArray(value)) {
             value.forEach(function(arrayItem) {
-              if (arrayItem) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
+              if (arrayItem != null) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
               $scope.rebuildFromURLParam(key, arrayItem)
             });
           } else {
@@ -949,6 +993,9 @@ angular.module('appApp')
         })
         $rootScope.tags = []
         $rootScope.categoryModel = []
+        $rootScope.downloadsModel = []
+        $rootScope.userbaseModel = []
+        $rootScope.mobilePriorityModel = []
       }
 
       searchCtrl.exploreItemClicked = function (item, type) {

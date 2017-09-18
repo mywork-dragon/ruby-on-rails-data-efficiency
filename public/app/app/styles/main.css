@@ -9135,3 +9135,7 @@ h4.red {
   width: -moz-max-content; /* Firefox/Gecko */
   width: -webkit-max-content;
 }
+
+.btn-group.open .dropdown-toggle {
+  box-shadow: none;
+}

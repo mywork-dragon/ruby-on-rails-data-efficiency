@@ -241,7 +241,7 @@ class FilterService
             [1000000000]                                  # 1B - 5B
         ]
 
-        download_ids = app_filters['downloads'].map{|x| x['id'].to_i}
+        download_ids = app_filters['downloads']
 
         filter_values_array = []
 

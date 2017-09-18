@@ -135,7 +135,8 @@ angular.module("appApp")
           }
         },
         tagsAreEqual: function(tag1, tag2) {
-          return (tag1.value == tag2) || (tag1.value.id && tag2.id && tag1.value.id == tag2.id && tag1.value.status == tag2.status && tag1.value.date == tag2.date && tag1.value.state == tag2.state)
+          const value = tag1.value
+          return (value == tag2) || (typeof value.id !== 'undefined' && typeof tag2.id !== 'undefined' && value.id == tag2.id && value.status == tag2.status && value.date == tag2.date && value.state == tag2.state)
         },
         addFilter: function(parameter, value, displayName, limitToOneFilter, customName) {
           /* -------- Mixpanel Analytics Start -------- */

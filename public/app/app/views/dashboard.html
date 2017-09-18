@@ -53,13 +53,8 @@
           <button data-toggle="modal" class="btn btn-primary" data-target="#locationFilterModal">Location Filters</button>
           <button data-toggle="modal" class="btn btn-primary" data-target="#userbaseFilterModal" ng-if="appPlatform.platform == 'ios'" ng-click="refreshSlider()">User Base & MAU Filters</button>
           <span class="ui-select">
-            <select ng-model="mobilePriority" ng-change="onFilterChange('mobilePriority', mobilePriority, 'Mobile Priority', false)" tooltip-placement="bottom-left" uib-tooltip-html="mobileExplanation" tooltip-popup-delay="200">
-              <option value="">Mobile Priority</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option> g
-            </select>
-           </span>
+            <div ng-dropdown-multiselect="" class="categories-dropdown" options="mobilePriorityFilterOptions" selected-model="mobilePriorityModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="mobilePrioritySelectEvents" translation-texts="searchCtrl.mobilePriorityCustomText"></div>
+          </span>
            <span class="ui-select">
               <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)" tooltip-placement="bottom-left" uib-tooltip-html="fortuneExplanation" tooltip-popup-delay="200">
                 <option value="">Fortune Rank</option>
@@ -73,14 +68,8 @@
                 <option value="true">Yes</option>
               </select>
            </span>
-           <span ng-if="appPlatform.platform == 'android'" class="ui-select">
-              <select ng-model="userBases" ng-change="onFilterChange('userBases', userBases, 'User Base Size', false)" tooltip-placement="bottom-left" uib-tooltip-html="userBaseExplanation" tooltip-popup-delay="200">
-                <option value="">User Base</option>
-                <option value="weak">Weak</option>
-                <option value="moderate">Moderate</option>
-                <option value="strong">Strong</option>
-                <option value="elite">Elite</option>
-              </select>
+           <span class="ui-select" ng-show="appPlatform.platform == 'android'">
+             <div ng-dropdown-multiselect="" class="categories-dropdown" options="userbaseFilterOptions" selected-model="userbaseModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="userbaseSelectEvents" translation-texts="searchCtrl.userbaseCustomText"></div>
            </span>
            <span class="ui-select">
               <select ng-model="price" ng-change="onFilterChange('price', price, 'Price', true)">
@@ -97,15 +86,7 @@
               </select>
            </span>
            <span class="ui-select" ng-show="appPlatform.platform == 'android'">
-              <select ng-model="downloads" ng-change="onFilterChange('downloads', downloads, 'Downloads', false)">
-                <option value="">Downloads</option>
-                <option value="0">0 - 50K</option>
-                <option value="1">50K - 500K</option>
-                <option value="2">500K - 10M</option>
-                <option value="3">10M - 100M</option>
-                <option value="4">100M - 1B</option>
-                <option value="5">1B - 5B</option>
-              </select>
+             <div ng-dropdown-multiselect="" class="categories-dropdown" options="downloadsFilterOptions" selected-model="downloadsModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="downloadsSelectEvents" translation-texts="searchCtrl.downloadsCustomText"></div>
            </span>
           <!--
            <span class="ui-select">
@@ -120,7 +101,7 @@
            </span>
            -->
            <span class="ui-select">
-              <div ng-dropdown-multiselect="" class="categories-dropdown" options="categoryFilterOptions" selected-model="categoryModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="selectEvents" translation-texts="searchCtrl.categoryCustomText"></div>
+              <div ng-dropdown-multiselect="" class="categories-dropdown" options="categoryFilterOptions" selected-model="categoryModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="categorySelectEvents" translation-texts="searchCtrl.categoryCustomText"></div>
            </span>
            <span class="ui-select" ng-show="canViewSupportDesk && appPlatform.platform == 'ios'">
               <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">

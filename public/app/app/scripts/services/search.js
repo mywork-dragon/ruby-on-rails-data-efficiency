@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module("appApp")
-  .factory("searchService", ["$httpParamSerializer", "AppPlatform", "filterService", function($httpParamSerializer, AppPlatform, filterService) {
+  .factory("searchService", ["$httpParamSerializer", "AppPlatform", "filterService", "$rootScope", function($httpParamSerializer, AppPlatform, filterService, $rootScope) {
     return {
       queryStringParameters: function(tags, currentPage, numPerPage, category, order) {
         var requestData = {app: {}, company: {}, platform: {}};
@@ -177,9 +177,10 @@ angular.module("appApp")
             };
             break;
           case 'downloads':
+            const name = $rootScope.downloadsFilterOptions[value].label
             return {
               parameter: param,
-              text: "Downloads" + ": " + value.name,
+              text: "Downloads" + ": " + name,
               value: value
             };
             break;

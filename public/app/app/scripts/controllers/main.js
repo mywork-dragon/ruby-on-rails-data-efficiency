@@ -86,11 +86,12 @@ angular.module('appApp')
             $scope.canViewSupportDesk = data.can_view_support_desk;
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
-            $scope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            $rootScope.canViewStorewideSdks = data.can_view_storewide_sdks;
             $scope.canViewAdAttribution = data.can_view_ad_attribution;
             $rootScope.isAdmin = data.is_admin;
             $rootScope.isAdminAccount = data.is_admin_account;
             $rootScope.connectedOauth = data.connected_oauth;
+            $rootScope.canViewExports = data.can_view_exports;
 
             if (!$rootScope.connectedOauth) {
               $window.location.href = "#/login?token=" + authToken.get();
@@ -120,6 +121,28 @@ angular.module('appApp')
           $rootScope.categoryFilterOptions = dropdownCategoryFilter(data);
         });
 
+        $rootScope.downloadsFilterOptions = [
+          { id: 0, label: '0 - 50K'},
+          { id: 1, label: '50K - 500K'},
+          { id: 2, label: '500K - 10M'},
+          { id: 3, label: '10M - 100M'},
+          { id: 4, label: '100M - 1B'},
+          { id: 5, label: '1B - 5B'}
+        ]
+
+        $rootScope.mobilePriorityFilterOptions = [
+          { id: 'low', label: 'Low' },
+          { id: 'medium', label: 'Medium' },
+          { id: 'high', label: 'High' }
+        ]
+
+        $rootScope.userbaseFilterOptions = [
+          { id: 'weak', label: 'Weak'},
+          { id: 'moderate', label: 'Moderate'},
+          { id: 'strong', label: 'Strong'},
+          { id: 'elite', label: 'Elite'},
+        ]
+
         apiService.getSdkCategories().success(data => {
           $rootScope.sdkCategories = data;
         })
@@ -139,75 +162,12 @@ angular.module('appApp')
           userbase: {or: [{status: "0"}], and: [{status: "0"}]}
         }
 
-        $rootScope.categoryModel = []
-
+        $rootScope.categoryModel = [];
+        $rootScope.downloadsModel = []
+        $rootScope.mobilePriorityModel = []
+        $rootScope.userbaseModel = []
       }
   }])
-  .controller("FilterCtrl", ["$scope", "apiService", "$http", "$rootScope", "filterService",
-    function($scope, apiService, $http, $rootScope, filterService) {
-
-      $scope.mixpanelAnalyticsEventTooltip = function(name) {
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "Methodology Modal Viewed",
-          { "tooltipName": name }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-      };
-
-      if(!$rootScope.tags) $rootScope.tags = [];
-
-      $scope.selectEvents = {
-        onItemSelect: function(item) {
-          $scope.onFilterChange('categories', item.label, 'Category', false)
-        },
-        onItemDeselect: function(item) {
-          filterService.removeFilter('categories', item.id)
-        },
-        onSelectAll: function() {
-          $rootScope.categoryFilterOptions.forEach(category => $scope.onFilterChange('categories', category.label, 'Category', false))
-        },
-        onDeselectAll: function() {
-          filterService.removeFilter('categories')
-        }
-      };
-
-      $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
-        if(parameter == 'downloads') {
-          var customName = "";
-          switch (value) {
-            case '0':
-              customName = "0 - 50K";
-              break;
-            case '1':
-              customName = "50K - 500K";
-              break;
-            case '2':
-              customName = "500K - 10M";
-              break;
-            case '3':
-              customName = "10M - 100M";
-              break;
-            case '4':
-              customName = "100M - 1B";
-              break;
-            case '5':
-              customName = "1B - 5B";
-              break;
-          }
-          value = {
-            id: parseInt(value, 10),
-            name: customName
-          };
-          filterService.addFilter(parameter, value, displayName, limitToOneFilter, customName);
-        } else {
-          filterService.addFilter(parameter, value, displayName, limitToOneFilter);
-        }
-        $scope[parameter] = ""; // Resets HTML select on view to default option
-      };
-
-    }
-  ])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
     function($scope, apiService, listApiService, $filter, $rootScope, loggitService, AppPlatform) {
       return $rootScope.apps = [],
