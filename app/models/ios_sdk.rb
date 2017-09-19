@@ -1,4 +1,5 @@
 class IosSdk < ActiveRecord::Base
+  include Sdk
 
   has_many :owner_twitter_handles, as: :owner
   has_many :twitter_handles, through: :owner_twitter_handles
@@ -49,6 +50,10 @@ class IosSdk < ActiveRecord::Base
 
   attr_writer :es_client
 
+  def self.app_class
+    IosApp
+  end
+
   def es_client
     @es_client ||= AppsIndex::IosApp
     @es_client
@@ -68,7 +73,7 @@ class IosSdk < ActiveRecord::Base
     filter_args[:app_filters]['appIds'] = app_ids if app_ids
     filter_args[:page_size] = limit if limit
     filter_args[:sort_by] = sort if sort
-    
+
     filter_results = FilterService.filter_ios_apps(filter_args)
     ids = filter_results.map { |result| result.attributes["id"] }
     apps = if ids.any?
@@ -79,7 +84,7 @@ class IosSdk < ActiveRecord::Base
       []
     end
 
-    {apps: apps, total_count: filter_results.total_count} 
+    {apps: apps, total_count: filter_results.total_count}
   end
 
   def cluster
@@ -103,19 +108,6 @@ class IosSdk < ActiveRecord::Base
       batch_json[:following] = options[:account].following?(self)
     end
     batch_json
-  end
-
-  def top_200_apps
-    newest_snapshot = IosAppRankingSnapshot.last_valid_snapshot
-    top_200_app_ids = IosApp.joins(:ios_app_rankings).where(ios_app_rankings: {ios_app_ranking_snapshot_id: newest_snapshot.id}).
-                          where('rank < 201').select(:rank, 'ios_apps.*').order('rank ASC').pluck(:id)    
-    self.get_current_apps(app_ids: top_200_app_ids, limit: 200)[:apps]
-  end
-
-  def self.top_200_tags #tags that have ios sdks in the top 200
-    sdks = IosSdk.joins(:tags).uniq.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id},
-                                        'tag_relationships.taggable_type' => 'IosSdk').uniq
   end
 
   # API methods

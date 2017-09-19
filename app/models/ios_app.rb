@@ -140,9 +140,10 @@ class IosApp < ActiveRecord::Base
     wau == 0 ? nil : wau
   end
 
-  def platform
+  def self.platform
     'ios'
   end
+
 
   def as_json(options={})
     newest_snapshot = self.newest_ios_app_snapshot

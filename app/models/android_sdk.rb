@@ -1,4 +1,5 @@
 class AndroidSdk < ActiveRecord::Base
+  include Sdk
 
 	belongs_to :sdk_company
   has_many :sdk_packages
@@ -36,6 +37,10 @@ class AndroidSdk < ActiveRecord::Base
   attr_accessor :last_seen
   attr_writer :es_client
 
+  def self.app_class
+    AndroidApp
+  end
+
   def es_client
     @es_client ||= AppsIndex::AndroidApp
     @es_client
@@ -72,20 +77,7 @@ class AndroidSdk < ActiveRecord::Base
       []
     end
 
-    {apps: apps, total_count: filter_results.total_count} 
-  end
-
-  def self.top_200_tags #tags that have android sdks in the top 200
-    sdks = AndroidSdk.joins(:tags).uniq.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    Tag.joins(:tag_relationships).where('tag_relationships.taggable_id' => sdks.map{|sdk| sdk.id},
-                                        'tag_relationships.taggable_type' => 'AndroidSdk').uniq
-  end
-
-  def top_200_apps
-    newest_snapshot = AndroidAppRankingSnapshot.last_valid_snapshot
-    top_200_app_ids = AndroidApp.joins(:android_app_rankings).where(android_app_rankings: {android_app_ranking_snapshot_id: newest_snapshot.id}).
-                          where('rank < 201').select(:rank, 'android_apps.*').order('rank ASC').pluck(:id)
-    self.get_current_apps(app_ids: top_200_app_ids, limit: 200)[:apps]
+    {apps: apps, total_count: filter_results.total_count}
   end
 
   def test

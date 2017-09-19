@@ -196,7 +196,7 @@ class AndroidApp < ActiveRecord::Base
     row
   end
 
-  def platform
+  def self.platform
     'android'
   end
 

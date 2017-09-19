@@ -1,10 +1,10 @@
 class WelcomeController < ApplicationController
-  
+
   protect_from_forgery except: :contact_us
   caches_action :top_ios_sdks, :top_android_sdks, :top_android_apps, :top_ios_apps, cache_path: Proc.new {|c| c.request.url }, expires_in: 24.hours
 
-  layout "marketing" 
-  
+  layout "marketing"
+
   def index
     @apps = IosApp.where(app_identifier: IosApp::WHITELISTED_APPS).to_a.shuffle
 
@@ -56,7 +56,7 @@ class WelcomeController < ApplicationController
 
   def android_app_sdks
     app_ids = AndroidAppRankingSnapshot.top_200_app_ids
-    
+
     if app_ids.include?(params[:app_identifier].to_i)
       @app = AndroidApp.find(params[:app_identifier])
       @sdks = @app.tagged_sdk_response(true)
@@ -69,7 +69,7 @@ class WelcomeController < ApplicationController
 
   def timeline
     top_200_ids = IosAppRankingSnapshot.top_200_app_ids
-    batches = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]], 
+    batches = WeeklyBatch.where(activity_type: [WeeklyBatch.activity_types[:install], WeeklyBatch.activity_types[:entered_top_apps]],
                                  owner_id: top_200_ids, owner_type: 'IosApp', week: Time.now-1.month..Time.now).order('week desc')
     batches_by_week = {}
     batches.each do |batch|
@@ -87,17 +87,16 @@ class WelcomeController < ApplicationController
   def top_ios_sdks
     @last_updated = IosAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
     @tag_label = "All"
-    @sdks = IosSdk.joins(:tags).uniq
+    @sdks = IosSdk.sdks_installed_in_top_n_apps(200)
     @tags = IosSdk.top_200_tags
 
     if params[:tag]
       @tag = Tag.find(params[:tag])
       @tag_label = @tag.name
-      @sdks = @tag.ios_sdks
+      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
     end
-    
-    sdk_array = @sdks.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    @sdks = Kaminari.paginate_array(sdk_array).page(params[:page]).per(20)
+
+    @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
 
   def top_ios_apps
@@ -113,17 +112,16 @@ class WelcomeController < ApplicationController
   def top_android_sdks
     @last_updated = AndroidAppRankingSnapshot.last_valid_snapshot.try(:created_at) || Time.now
     @tag_label = "All"
-    @sdks = AndroidSdk.joins(:tags).uniq
+    @sdks = AndroidSdk.sdks_installed_in_top_n_apps(200)
     @tags = AndroidSdk.top_200_tags
-    
+
     if params[:tag]
       @tag = Tag.find(params[:tag])
       @tag_label = @tag.name
-      @sdks = @tag.android_sdks
+      @sdks = @sdks.select {|sdk| sdk.tags.include? @tag}
     end
 
-    sdk_array = @sdks.to_a.reject {|sdk| sdk.top_200_apps.size == 0}.sort_by {|a| a.top_200_apps.size}.reverse
-    @sdks = Kaminari.paginate_array(sdk_array).page(params[:page]).per(20)
+    @sdks = Kaminari.paginate_array(@sdks).page(params[:page]).per(20)
   end
 
   def top_android_apps
@@ -137,7 +135,7 @@ class WelcomeController < ApplicationController
             end
   end
 
-  def subscribe 
+  def subscribe
     message = params[:message]
     if message == 'Timeline'
       destination = timeline_path(form: 'timeline')
@@ -164,18 +162,18 @@ class WelcomeController < ApplicationController
     sdk = params['sdk']
     message = params['message']
 
-    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message).merge({lead_source: "Web Form"})    
-   
-    if company.blank?   
-      email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i   
-      lead_options[:company] = email.match(email_regex).to_s[1..-1]   
+    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message).merge({lead_source: "Web Form"})
+
+    if company.blank?
+      email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+      lead_options[:company] = email.match(email_regex).to_s[1..-1]
     end
-    
+
     if verify_recaptcha
       Lead.create_lead(lead_options)
       flash[:success] = "We will be in touch soon!"
     end
     redirect_to root_path(form: 'lead')
   end
-  
+
 end
