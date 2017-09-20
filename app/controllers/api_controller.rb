@@ -125,29 +125,28 @@ class ApiController < ApplicationController
   end
 
   def ios_ad_intelligence
-    page_size = params[:pageSize] ? params[:pageSize].to_i : 20
-    page_num = params[:pageNum] ? params[:pageNum].to_i : 1
-    params[:sortBy] ||= 'first_seen_ads'
-    sort_by = if params[:sortBy] == 'first_seen_ads'
-      'min(date_seen)'
-    elsif params[:sortBy] == 'last_seen_ads'
-      'max(date_seen)'
-    end
-    order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
+    filter_args = {
+      sort_by: params[:sortBy] || 'first_seen_ads',
+      order_by: params[:orderBy] || 'desc',
+      page_num: params[:pageNum] ? params[:pageNum].to_i : 1,
+      page_size: request.format.json? ? 20 : 10000
+    }
 
-    results = IosApp.joins(:ios_fb_ads).
-                                       order("#{sort_by} #{order_by}").group('ios_apps.id')
-    results = results.page(page_num).per(page_size) if request.format.json?
+    filter_results = FilterService.filter_ios_ad_spend_apps(filter_args)
+
     respond_to do |format|
-      format.json { render json:
-        {
-          results: results.as_json(ads: true),
-          resultsCount: results.total_count,
-          pageNum: page_num,
-          pageSize: page_size
+      if request.format.json?
+        results = filter_results.map { |result| IosApp.find(result.attributes["id"]) }
+        format.json { render json:
+          {
+            results: results.as_json(ads: true),
+            resultsCount: filter_results.total_count,
+            pageNum: filter_args[:page_num],
+            pageSize: filter_args[:page_size]
+          }
         }
-      }
-      format.csv { render_csv(apps: results) }
+      end
+      format.csv { render_csv(apps: filter_results) }
     end
   end
 
@@ -159,6 +158,8 @@ class ApiController < ApplicationController
       'min(date_seen)'
     elsif params[:sortBy] == 'last_seen_ads'
       'max(date_seen)'
+    else params[:sortBy] == 'user_base'
+      'user_base IS NULL, user_base'
     end
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
 

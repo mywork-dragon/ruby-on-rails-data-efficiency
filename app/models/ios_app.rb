@@ -273,7 +273,7 @@ class IosApp < ActiveRecord::Base
   def scored_user_bases
     country_count = AppStore.enabled.count
     self.user_bases.map do |userbase|
-      display_priority = AppStore.find_by(country_code: userbase[:country_code]).display_priority
+      display_priority = AppStore.find_by(country_code: userbase[:country_code]).display_priority - 1
       base = userbase[:user_base] || 'weak'
       base_score = IosApp.user_bases[base]
       score = base_score * country_count + display_priority
