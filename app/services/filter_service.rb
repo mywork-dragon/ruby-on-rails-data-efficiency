@@ -241,15 +241,9 @@ class FilterService
             [1000000000]                                  # 1B - 5B
         ]
 
-        download_ids = app_filters['downloads']
+        downloads_values = app_filters['downloads'].inject([]) { |values, id| values += download_min_values[id] }
 
-        filter_values_array = []
-
-        download_ids.each do |id|
-          filter_values_array += download_min_values[id]
-        end
-
-        apps_index = apps_index.filter({"terms" => {"downloads_min" => filter_values_array, "execution" => "or"}})
+        apps_index = apps_index.filter({"terms" => {"downloads_min" => downloads_values, "execution" => "or"}})
       end
 
       apps_index = order_helper(apps_index, sort_by, order_by)

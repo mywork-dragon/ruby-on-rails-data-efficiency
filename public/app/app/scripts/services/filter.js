@@ -129,7 +129,7 @@ angular.module("appApp")
         removeFilter: function(parameter, value) {
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
             // only check for value if value exists
-            if ($rootScope.tags[i].parameter == parameter && (!value || this.tagsAreEqual($rootScope.tags[i], value))) {
+            if ($rootScope.tags[i].parameter == parameter && (value == null || this.tagsAreEqual($rootScope.tags[i], value))) {
               $rootScope.tags.splice(i, 1);
             }
           }
