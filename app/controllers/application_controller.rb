@@ -157,4 +157,9 @@ class ApplicationController < ActionController::Base
     ApiBillingLogger.new(request, @http_client_api_auth_token).send!
   end
 
+  def append_info_to_payload(payload)
+    super
+    payload[:request_id] = request.uuid
+  end
+
 end

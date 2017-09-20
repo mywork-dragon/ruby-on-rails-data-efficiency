@@ -82,6 +82,9 @@ Rails.application.configure do
   # config.log_formatter = ::Logger::Formatter.new
   config.lograge.enabled = true
   config.lograge.formatter = Lograge::Formatters::Json.new
+  config.lograge.custom_options = lambda do |event|
+    { request_id: event.payload[:request_id] }
+  end
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
