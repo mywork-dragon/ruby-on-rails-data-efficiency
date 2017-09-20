@@ -620,7 +620,7 @@ class SalesforceExportService
   end
 
   def refresh_token(response)
-    puts "Did try to get refresh token #{response["access_token"]}"
+    puts "Did try to get refresh token"
     @user.account.update_attributes(salesforce_token: response["access_token"])
   end
 
