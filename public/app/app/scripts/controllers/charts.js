@@ -138,5 +138,15 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
 
     mixpanel.track(title)
 
+    $scope.topChartsItemClicked = function (app, type) {
+      const item = type == 'app' ? app : app.publisher;
+      mixpanel.track("Top Charts Item Clicked", {
+        "Name": item.name,
+        "Id": item.id,
+        platform: app.platform,
+        type
+      })
+    }
+
   }
 ]);

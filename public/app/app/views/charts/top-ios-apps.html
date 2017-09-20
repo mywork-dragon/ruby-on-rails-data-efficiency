@@ -27,12 +27,11 @@
             <img ng-src="{{app.icon}}" width="50" height="50">
           </a>
           <br>
-          <span class="app-name"><a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" target="_blank">{{app.name}}</a></span>
+          <span class="app-name"><a ng-href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" target="_blank" ng-click="topChartsItemClicked(app, 'app')">{{app.name}}</a></span>
           <br>
-          <span class="app-category">{{app.publisher.name}}</span>
+          <span class="app-category"><a ng-href="#/publisher/{{app.platform}}/{{app.publisher.id}}" title="{{app.publisher.name}}" target="_blank" ng-click="topChartsItemClicked(app, 'publisher')">{{app.publisher.name}}</a></span>
         </li>
       </ul>
     </div>
   </div>
 </div>
-
