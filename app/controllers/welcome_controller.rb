@@ -36,7 +36,7 @@ class WelcomeController < ApplicationController
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
       @sdks = @app.tagged_sdk_response(true)
     elsif !IosApp::WHITELISTED_APPS.include?(params[:app_identifier].to_i)
-      redirect_to action: :index
+      return redirect_to action: :index
     else
       @app = IosApp.find_by_app_identifier(params[:app_identifier])
       sdk_response = @app.sdk_response
@@ -49,8 +49,8 @@ class WelcomeController < ApplicationController
     end
 
     respond_to do |format|
-      format.js
       format.html
+      format.js
     end
   end
 
