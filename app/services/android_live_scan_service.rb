@@ -15,6 +15,18 @@ class AndroidLiveScanService
       else
         AndroidLiveScanServiceWorker.new.perform(job.id, android_app.id)
       end
+
+      begin
+            RedshiftLogger.new(records: [{
+              name: 'android_scan_attempt',
+              android_scan_type: 'live',
+              android_app_id: android_app.id,
+              android_app_identifier: android_app.app_identifier
+            }]).send!
+      rescue => e
+        Bugsnag.notify(e)
+      end
+
       job.id
     end
 

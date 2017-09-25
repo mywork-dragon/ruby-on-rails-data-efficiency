@@ -25,6 +25,22 @@ class AndroidMassScanService
           batch.bid
         )
       end
+      log_events(apps)
+    end
+
+    def log_events(apps)
+      logger = RedshiftLogger.new
+      apps.map do |app|
+        {
+          name: 'android_scan_attempt',
+          android_scan_type: 'mass',
+          android_app_id: app.id,
+          android_app_identifier: app.app_identifier
+        }
+      end.each { |d| logger.add(d) }
+      logger.send!
+    rescue => e
+      Bugsnag.notify(e)
     end
 
     def run_recently_updated(automated: false)
@@ -41,7 +57,7 @@ class AndroidMassScanService
         notes: "Mass Scrape for #{Date.today}",
         job_type: :weekly_mass
       )
-      
+
       batch = Sidekiq::Batch.new
       batch.description = 'Google Play Mass Downloads'
       batch.on(

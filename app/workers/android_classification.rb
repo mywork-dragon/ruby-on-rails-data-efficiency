@@ -49,6 +49,29 @@ module AndroidClassification
       last_updated: DateTime.now
     }
     info.merge!({ last_scanned: DateTime.now }) if status == :scan_success
+
+    if [:scan_success, :scan_failure].include? status
+      scan_status = "android_#{status.to_s}"
+      if @apk_snapshot.apk_snapshot_job.job_type == 'one_off'
+        scan_type = 'live'
+      else
+        scan_type = 'mass'
+      end
+      begin
+        RedshiftLogger.new(records: [{
+          name: scan_status,
+          android_app_id: @apk_snapshot.android_app.id,
+          android_app_identifier: @apk_snapshot.android_app.app_identifier,
+          android_scan_type: scan_type,
+          google_account: @apk_snapshot.google_account.email,
+          android_identifier: @apk_snapshot.google_account.android_identifier
+        }]).send!
+      rescue => e
+        Bugsnag.notify(e)
+      end
+
+    end
+
     @apk_snapshot.update!(info)
   end
 
