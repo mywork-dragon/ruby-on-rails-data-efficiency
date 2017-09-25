@@ -9139,3 +9139,7 @@ h4.red {
 .btn-group.open .dropdown-toggle {
   box-shadow: none;
 }
+
+.help-tooltip {
+  font-weight: bold;
+}

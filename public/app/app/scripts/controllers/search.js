@@ -156,23 +156,6 @@ angular.module('appApp')
           $scope.canViewExports = data.can_view_exports;
       });
 
-      $scope.mobileExplanation = $sce.trustAsHtml('<p>How much the company cares about the app. Use this to filter out apps that are not actively being developed or marketed.</p>' +
-                                                  '<p>The Mobile Priority ranking is continuously improving as we collect more data and refine the algorithm.</p>' +
-                                                  'Currently, the rank is a function of how recently their app has been updated, and whether they advertise on Facebook. High: they have advertised on ' +
-                                                  'Facebook or have updated within the past two months. Medium: Updated within last 2 - 4 months. Low: Last update > 4 months ago.</p>')
-      $scope.fortuneExplanation = $sce.trustAsHtml('<p>Filters for companies in either the Fortune 500 or Fortune 1000 lists.</p>')
-      $scope.adSpendExplanation = $sce.trustAsHtml('<p>Whether the company is paying for ads on Facebook to download the app. This is the leading indicator that the app has marketing budget.</p>' +
-                                                   '<p>We determine this via a network of hundreds of people who report to us what mobile app adds they see when on Facebook.</p>' +
-                                                   '<p>We are continuing to refine this tool to give more specifics. As of its current state, we’re denoting whether a company advertises on Facebook in a binary' +
-                                                   'fashion – either they do (if an ad has been reported) or they don’t.</p>')
-      $scope.userBaseExplanation = $sce.trustAsHtml('<p>An estimate of how many active users an app has.</p>' +
-                                                    '<p>We derive this estimate based off of how many ratings per day an app has. Elite: 50,000 total ratings or 7 ratings per day average (for current release).' +
-                                                    'Strong: 10,000 total ratings or 1 rating per day average (for current release). Moderate: 100 total ratings or 0.1 average rating per day average' +
-                                                    'for current release). Weak: anything less.</p>')
-      $scope.updatedExplanation = $sce.trustAsHtml('<p>Length of time from last update to app, as reported on the iOS and Google Play stores.</p>')
-      $scope.categoryExplanation = $sce.trustAsHtml('<p>The category/genre of the app (same as iOS App Store categories).</p>')
-      $scope.sdkOperatorExplanation = $sce.trustAsHtml('<p>Pick an operator used for all SDK filters. e.g. Should we show apps with Mixpanel SDK AND Amplitude SDK installed or should we show apps with Mixpanel SDK OR Amplitude SDK installed')
-
       searchCtrl.categorySettings = {
         buttonClasses: '',
         externalIdProp: '',
