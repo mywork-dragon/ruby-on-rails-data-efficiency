@@ -1,3 +1,4 @@
+# DEPRECATED - 9/25/2017
 class IosFbAdServiceWorker
 
   include Sidekiq::Worker

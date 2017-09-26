@@ -52,19 +52,6 @@ every :month, roles: [:kylo_ren, :darth_vader] do
   command 'cat /dev/null > /var/log/varys/cron.log', :output => '/var/log/varys/cron.log'
 end
 
-# every 30.minutes, roles: [:kylo_ren] do
-#   rake "dark_side:mass_tunnel", :output => '/var/log/varys/cron.log'
-# end
-
-
-every 2.hours, roles: [:kylo_ren] do # every 2 hours
-  runner "IosFbAdService.begin_scraping", :output => '/var/log/varys/cron.log'
-end
-
-every "0 1,3,5,7,9,11,13,15,17,19,21,23 * * *", roles: [:kylo_ren] do # every 2 hours at the 30 minute mark
-  runner "IosFbCleaningService.clean_devices", :output => '/var/log/varys/cron.log'
-end
-
 ############################################
 # scheduler container runs in UTC
 ############################################

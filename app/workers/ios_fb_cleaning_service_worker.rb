@@ -1,3 +1,4 @@
+# DEPRECATED - 9/25/2017
 class IosFbCleaningServiceWorker
 
   include Sidekiq::Worker

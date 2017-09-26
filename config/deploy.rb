@@ -74,7 +74,7 @@ set :scraper_queue, %w(critical default)
 set :scraper_master_queue, %w(scraper_master critical default)  #needs to go after scraper_queue definition
 set :web_queue, %w(mailers)
 set :darth_vader_queue, %w(ios_live_scan ios_live_scan_test)
-set :kylo_ren_queue, %w(ios_fb_ads ios_epf_mass_scan ios_mass_scan kylo)
+set :kylo_ren_queue, %w(ios_epf_mass_scan ios_mass_scan)
 set :darth_maul_queue, %w(maul)
 set :ios_live_scan_queue, %w(ios_live_scan_cloud)
 set :monitor_queue, %w(monitor)
