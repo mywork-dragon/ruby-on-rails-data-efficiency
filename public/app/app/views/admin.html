@@ -66,7 +66,7 @@
           <label ng-if="sdks.length > 0">
             <input type="checkbox" ng-click="checkedSdkFollower(account); $event.stopPropagation();">
           </label>
-          {{account.name}}
+          {{account.id}}. {{account.name}}
           <span ng-if="$root.isAdminAccount" class="pull-right {{account.active_users > account.seats_count ? 'red' : ''}}">
             {{account.active_users}} {{account.active_users == 1 ? 'User' : 'Users'}} / {{account.seats_count}} Seats
           </span>
