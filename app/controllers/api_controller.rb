@@ -51,13 +51,10 @@ class ApiController < ApplicationController
 
     filter_results = FilterService.filter_ios_apps(filter_args)
 
-    userbase_filter = (app_filters['userbaseFiltersOr'] || []).select{|filter|
-      filter["status"].to_i == 0
-    }.map{|filter|
-      filter["name"].try(:downcase)
-    }
+    userbase_filter = app_filters['userBases'] || []
 
-    apps_json = ios_app_enagement_json(filter_results, {user: @current_user, user_bases: userbase_filter})
+    app_ids = filter_results.map { |result| result.attributes["id"].to_i }
+    apps_json = app_ids.any? ? IosApp.where(id: app_ids).order("FIELD(id, #{app_ids.join(',')})").as_json({user: @current_user, user_bases: userbase_filter}) : []
 
     results_count = filter_results.total_count # the total number of potential results for query (independent of paging)
 
@@ -263,7 +260,7 @@ class ApiController < ApplicationController
   def get_ios_app
     appId = params['id']
     ios_app = IosApp.find(appId)
-    render json: ios_app.to_json({user: @current_user, details: true, engagement: true})
+    render json: ios_app.to_json({user: @current_user, details: true})
   end
 
   def get_android_app
@@ -766,15 +763,14 @@ class ApiController < ApplicationController
     filter_results = FilterService.filter_ios_apps(filter_args)
     filter_results = FilterService.order_helper(filter_results, filter_args[:sort_by], filter_args[:order_by])
 
+    ids = filter_results.map { |result| result.attributes["id"] }
+    apps = IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") if ids.any?
+
     respond_to do |format|
       format.json {
-        apps_json = ios_app_enagement_json(filter_results)
-        render json: {apps: apps_json}
+        render json: {apps: apps.as_json(engagement: true)}
       }
       format.csv {
-        apps = []
-        ids = filter_results.map { |result| result.attributes["id"] }
-        apps = IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})") if ids.any?
         render_csv(apps: apps)
       }
     end
@@ -1086,29 +1082,6 @@ class ApiController < ApplicationController
   end
 
   private
-
-  def ios_app_enagement_json(filter_results, json_options = {})
-    engagement_map = {}
-    ids = filter_results.map {|result|
-      app_id = result.attributes["id"].to_i
-      engagement_map[app_id] = {
-        wau: result.attributes['weekly_active_users_num'],
-        mau: result.attributes['monthly_active_users_num'],
-        dau: result.attributes['daily_active_users_num']
-      }
-      app_id
-    }
-
-    results = ids.any? ? IosApp.where(id: ids).includes(:ios_developer, :newest_ios_app_snapshot).order("FIELD(id, #{ids.join(',')})") : []
-    results_json = results.map{|app|
-      app_json = app.as_json(json_options)
-      app_json[:wau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:wau])
-      app_json[:dau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:dau])
-      app_json[:mau] = ActionController::Base.helpers.number_to_human(engagement_map[app.id][:mau])
-      app_json
-    }
-    results_json
-  end
 
   def render_csv(filter_args: nil, apps: nil)
     set_file_headers

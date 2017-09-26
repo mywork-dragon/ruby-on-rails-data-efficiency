@@ -51,7 +51,7 @@
         <span class="dashboard-tag-filter-selects">
           <button ng-if="searchCtrl.canViewStorewideSdks" data-toggle="modal" class="btn btn-primary" data-target="#sdkFilterModal" ng-click="updateSdkModalWidth()">SDK Filters</button>
           <button data-toggle="modal" class="btn btn-primary" data-target="#locationFilterModal">Location Filters</button>
-          <button data-toggle="modal" class="btn btn-primary" data-target="#userbaseFilterModal" ng-if="appPlatform.platform == 'ios'" ng-click="refreshSlider()">User Base & MAU Filters</button>
+          <!-- <button data-toggle="modal" class="btn btn-primary" data-target="#userbaseFilterModal" ng-if="appPlatform.platform == 'ios'" ng-click="refreshSlider()">User Base & MAU Filters</button> -->
           <span class="ui-select">
             <div ng-dropdown-multiselect="" class="categories-dropdown" options="mobilePriorityFilterOptions" selected-model="mobilePriorityModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="mobilePrioritySelectEvents" translation-texts="searchCtrl.mobilePriorityCustomText"></div>
           </span>
@@ -68,7 +68,7 @@
                 <option value="true">Yes</option>
               </select>
            </span>
-           <span class="ui-select" ng-show="appPlatform.platform == 'android'">
+           <span class="ui-select">
              <div ng-dropdown-multiselect="" class="categories-dropdown" options="userbaseFilterOptions" selected-model="userbaseModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="userbaseSelectEvents" translation-texts="searchCtrl.userbaseCustomText"></div>
            </span>
            <span class="ui-select">
@@ -226,7 +226,7 @@
                                     data-ng-click=" searchCtrl.sortApps('user_base_display_score', 'asc') "
                                     data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>
             </div></th>
-            <th class="resultsTableAppUserbase" ng-if="appPlatform.platform == 'ios'"><div class="th normal-right-padding">
+            <!-- <th class="resultsTableAppUserbase" ng-if="appPlatform.platform == 'ios'"><div class="th normal-right-padding">
               MAU / WAU / DAU
               <span class="glyphicon glyphicon-chevron-up"
                     data-ng-click="searchCtrl.sortApps('monthly_active_users_num', 'asc') "
@@ -234,7 +234,7 @@
               <span class="glyphicon glyphicon-chevron-down"
                     data-ng-click=" searchCtrl.sortApps('monthly_active_users_num', 'desc') "
                     data-ng-class="{active: rowSort == '-monthly_active_users_num'}"></span>
-            </div></th>
+            </div></th> -->
             <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
               Downloads
                               <span class="glyphicon glyphicon-chevron-up"
@@ -316,9 +316,9 @@
                   </ul>
                 </script>
               </td>
-              <td class="resultsTableAppUserbase" ng-show="appPlatform.platform == 'ios'">
+              <!-- <td class="resultsTableAppUserbase" ng-show="appPlatform.platform == 'ios'">
                 <span ng-if="app.dau || app.mau || app.wau">{{app.mau}} / {{app.wau}} / {{app.dau}}</span>
-              </td>
+              </td> -->
               <td ng-show="appPlatform.platform == 'android'">{{app.downloadsMin | humanizeNum}} - {{app.downloadsMax | humanizeNum}}</td>
               <td>{{app.categories.join(', ')}}</td>
               <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
