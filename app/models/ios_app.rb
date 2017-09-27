@@ -490,7 +490,7 @@ class IosApp < ActiveRecord::Base
     row = [
       self.id,
       self.app_identifier,
-      newest_snapshot.try(:name),
+      self.name,
       'IosApp',
       self.mobile_priority,
       self.release_date,
