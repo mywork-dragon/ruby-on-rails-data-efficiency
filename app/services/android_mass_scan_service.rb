@@ -11,7 +11,7 @@ class AndroidMassScanService
         .select(:id)
         .joins(:newest_android_app_snapshot)
         .where('released >= ? or android_apps.created_at >= ?', date, date)
-        .where(display_type: AndroidApp.display_types[:normal])
+        .where(display_type: [AndroidApp.display_types[:normal], AndroidApp.display_types[:foreign]])
 
       query
     end
