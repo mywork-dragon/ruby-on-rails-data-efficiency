@@ -99,6 +99,7 @@ class User < ActiveRecord::Base
         user.salesforce_uid = params[:uid]
         user.salesforce_token = params[:token]
         user.salesforce_image_url = params[:image_url]
+        user.save
         user
       else
         return if User.where("#{params[:provider]}_uid" => params[:uid]).first
