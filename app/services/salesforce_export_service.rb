@@ -501,14 +501,14 @@ class SalesforceExportService
       case app.platform
       when 'ios'
         fields[IOS_PUB_ID][:data] = app.ios_developer.try(:id)
-        fields[APP_STORE_PUB_ID][:data] = app.ios_developer.try(:identifier)
+        #fields[APP_STORE_PUB_ID][:data] = app.ios_developer.try(:identifier)
         fields[IOS_LINK][:data] = app.ios_developer.try(:link, utm_source: 'salesforce')
         fields[PUBLISHER_NAME][:data] = app.ios_developer.try(:name) || app.name
         fields[WEBSITE][:data] = app.ios_developer.try(:valid_websites).try(:first).try(:url)
         fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(app.ios_developer)
       when 'android'
         fields[ANDROID_PUB_ID][:data] = app.android_developer.try(:id)
-        fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
+        #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
         fields[ANDROID_LINK][:data] = app.android_developer.try(:link, utm_source: 'salesforce')
         fields[PUBLISHER_NAME][:data] = app.android_developer.try(:name) || app.name
         fields[WEBSITE][:data] = app.android_developer.try(:valid_websites).try(:first).try(:url)
