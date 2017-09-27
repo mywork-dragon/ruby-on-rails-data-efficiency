@@ -500,7 +500,8 @@ class AndroidApp < ActiveRecord::Base
           "mobile_priority", "developer_google_play_identifier",
           "ratings_history", "versions_history", "downloads_history",
           "taken_down", "last_seen_ads_date", "first_seen_ads_date",
-          "last_scanned_date", "first_scanned_date"
+          "last_scanned_date", "first_scanned_date",
+          "download_regions"
         ]
 
       rename = [
@@ -512,6 +513,7 @@ class AndroidApp < ActiveRecord::Base
 
       fields_from_app = [
           ['app_identifier', 'google_play_id'],
+          ['regions', 'download_regions'],
           ['mobile_priority', 'mobile_priority'],
           ['user_base', 'user_base'],
           ['last_updated', 'last_updated'],
