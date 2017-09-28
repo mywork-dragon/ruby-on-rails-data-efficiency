@@ -50,7 +50,7 @@ module AndroidClassification
     }
     info.merge!({ last_scanned: DateTime.now }) if status == :scan_success
 
-    if [:scan_success, :scan_failure].include? status
+    if not rescan and [:scan_success, :scan_failure].include? status
       scan_status = "android_#{status.to_s}"
       if @apk_snapshot.apk_snapshot_job.job_type == 'one_off'
         scan_type = 'live'
