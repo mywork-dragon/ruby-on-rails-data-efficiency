@@ -271,7 +271,7 @@ class SalesforceExportService
       # Skip if is 
       next if should_skip_field?(field, map, data, object_id)
       
-      add_custom_field(@model_name, data[field].except(:data))
+      add_custom_field(@model_name, data[field].except(:data)) if data[field][:type]
       
       new_object[map["id"]] = if map['data']
         map['data']
@@ -496,7 +496,8 @@ class SalesforceExportService
       #GOOGLE_PLAY_PUB_ID => {length: 255, type: 'Text', label: "Google Play Publisher ID"},
       ANDROID_LINK => {type: 'Url', label: "MightySignal Android Link"},
       ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
-    }  
+    }
+
     if app
       case app.platform
       when 'ios'
@@ -513,6 +514,13 @@ class SalesforceExportService
         fields[PUBLISHER_NAME][:data] = app.android_developer.try(:name) || app.name
         fields[WEBSITE][:data] = app.android_developer.try(:valid_websites).try(:first).try(:url)
         fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(app.android_developer)
+      end
+
+      if @model_name == 'Lead'
+        fields['Title'] = {label: 'Title'}
+        fields['Email'] = {label: 'Email'}
+        fields['Last Name'] = {label: 'Last Name'}
+        fields['First Name'] = {label: 'First Name'}
       end
     end
 

@@ -416,8 +416,6 @@ angular.module("app.directives", []).directive("imgHolder", [
             'Lead': [
               {platform: 'ios', id: 'MightySignal iOS Publisher ID', name: 'MightySignal iOS Publisher ID', fields: [{id: 'MightySignal_iOS_Publisher_ID__c', name: 'New Field: MightySignal iOS Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {platform: 'android', id: 'MightySignal Android Publisher ID', name: 'MightySignal Android Publisher ID', fields: [{id: 'MightySignal_Android_Publisher_ID__c', name: 'New Field: MightySignal Android Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {platform: 'ios', id: 'App Store Publisher ID', name: 'App Store Publisher ID', fields: [{id: 'App_Store_Publisher_ID__c', name: 'New Field: App Store Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {platform: 'android', id: 'Google Play Publisher ID', name: 'Google Play Publisher ID', fields: [{id: 'Google_Play_Publisher_ID__c', name: 'New Field: Google Play Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Company', name: 'Company'}]},
               {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
               {platform: 'ios', id: 'MightySignal iOS SDK Summary', name: 'MightySignal iOS SDK Summary', fields: [{id: 'MightySignal_iOS_SDK_Summary__c', name: 'New Field: MightySignal iOS SDK Summary'}]},
@@ -432,8 +430,6 @@ angular.module("app.directives", []).directive("imgHolder", [
             'Account': [
               {platform: 'ios', id: 'MightySignal iOS Publisher ID', name: 'MightySignal iOS Publisher ID', fields: [{id: 'MightySignal_iOS_Publisher_ID__c', name: 'New Field: MightySignal iOS Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {platform: 'android', id: 'MightySignal Android Publisher ID', name: 'MightySignal Android Publisher ID', fields: [{id: 'MightySignal_Android_Publisher_ID__c', name: 'New Field: MightySignal Android Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {platform: 'ios', id: 'App Store Publisher ID', name: 'App Store Publisher ID', fields: [{id: 'App_Store_Publisher_ID__c', name: 'New Field: App Store Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {platform: 'android', id: 'Google Play Publisher ID', name: 'Google Play Publisher ID', fields: [{id: 'Google_Play_Publisher_ID__c', name: 'New Field: Google Play Publisher ID'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Name', name: 'Name'}]},
               {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
               {platform: 'ios', id: 'MightySignal iOS SDK Summary', name: 'MightySignal iOS SDK Summary', fields: [{id: 'MightySignal_iOS_SDK_Summary__c', name: 'New Field: MightySignal iOS SDK Summary'}]},
