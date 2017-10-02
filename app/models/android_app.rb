@@ -513,7 +513,7 @@ class AndroidApp < ActiveRecord::Base
 
       fields_from_app = [
           ['app_identifier', 'google_play_id'],
-          ['regions', 'download_regions'],
+          ['region_codes', 'download_regions'],
           ['mobile_priority', 'mobile_priority'],
           ['user_base', 'user_base'],
           ['last_updated', 'last_updated'],
