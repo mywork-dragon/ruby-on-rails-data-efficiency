@@ -44,23 +44,14 @@
               <th><div class="th normal-right-padding appDetailsHeader">
                 App Type
               </div></th>
-              <th class="resultsTableAppPublisher"><div class="th normal-right-padding">
-                Publisher
-                <span class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('publisher_name', 'asc')"
-                      data-ng-class="{active: row == 'publisher_name'}"></span>
-                <span class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('publisher_name', 'desc')"
-                      data-ng-class="{active: row == '-publisher_name'}"></span>
-              </div></th>
-              <th><div class="th normal-right-padding">
-                Fortune Rank <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Fortune 500 or 1000 companies"></span>
-                <span class="glyphicon glyphicon-chevron-up"
-                      data-ng-click="customSearchCtrl.sortApps('fortune_rank', 'asc')"
-                      data-ng-class="{active: row == 'fortune_rank'}"></span>
-                <span class="glyphicon glyphicon-chevron-down"
-                      data-ng-click=" customSearchCtrl.sortApps('fortune_rank', 'desc')"
-                      data-ng-class="{active: row == '-fortune_rank'}"></span>
+              <th class="resultsTableAppPublisher"><div class="th">
+                Publisher / Fortune Rank <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Fortune 500 or 1000 companies"></span>
+                                <span class="glyphicon glyphicon-chevron-up"
+                                      data-ng-click="customSearchCtrl.sortApps('publisher_name', 'asc') "
+                                      data-ng-class="{active: row == 'publisher_name'}"></span>
+                                <span class="glyphicon glyphicon-chevron-down"
+                                      data-ng-click=" customSearchCtrl.sortApps('publisher_name', 'desc') "
+                                      data-ng-class="{active: row == '-publisher_name'}"></span>
               </div></th>
               <th><div class="th normal-right-padding">
                 Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="How actively the app is being developed or marketed, based on Facebook ad spend and time since last update"></span>
@@ -140,8 +131,11 @@
               <td class="appTypeIndicator">
                 <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
               </td>
-              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('publisher', app.publisher)">{{app.publisher.name}}</a></td>
-              <td>{{app.fortuneRank}}</td>
+              <td class="resultsTableAppPublisher">
+              <a ng-if="app.publisher.name" href="#/publisher/{{customSearchCtrl.platform}}/{{app.publisher.id}}" ng-click="customSearchCtrl.customSearchLinkClicked('publisher', app.publisher)">{{app.publisher.name}}</a>
+              <span ng-if="app.fortuneRank" class="fortune-rank">
+                 / {{app.fortuneRank}}</span>
+              </td>
               <td class="dashboardMobilePriorityView">
                 <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
               </td>
