@@ -184,8 +184,8 @@
               {{filter.sdkCategory.name}}
               <a class="remove-button pull-right" ng-click="removeComplexNameFilter('sdkCategory', 'and', $index)">×</a>
             </span>
-            <span class="ui-select" ng-if="filter.sdkCategory" ng-init="sdkOptions = sdkCategories[filter.sdkCategory.name].sdks; dropdownSettings = sdkDropdownSettings(filter)">
-               <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkOptions" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
+            <span class="ui-select" ng-if="filter.sdkCategory" ng-init="dropdownSettings = sdkDropdownSettings(filter)">
+               <div ng-dropdown-multiselect="" class="categories-dropdown" options="sdkCategories[filter.sdkCategory.name].sdks" selected-model="filter.sdkCategory.selectedSdks" events="sdkSelectEvents" extra-settings="dropdownSettings" checkboxes="true" translation-texts="searchCtrl.sdkDropdownText"></div>
             </span>
             <span class="ui-select" ng-if="requiresDateRange(filter)">
               <select ng-model="filter.date" ng-change="changedComplexFilter(filter, 'date', '{{filter}}', 'sdkCategory', 'and')">

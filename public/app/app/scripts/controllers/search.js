@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService",
-    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService) {
+  .controller('SearchCtrl', ["$scope", '$timeout', '$route', '$sce', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService", "$q",
+    function ($scope, $timeout, $route, $sce, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService, $q) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
@@ -559,32 +559,18 @@ angular.module('appApp')
           allParams[attribute] = companyParams[attribute];
         }
 
-        searchCtrl.appPlatform.platform = platform.appPlatform;
-        var APP_PLATFORM = platform.appPlatform;
-
-        $rootScope.tags = [];
-
-        /* Rebuild Filters Array from URL Params */
-        for (var key in allParams) {
-          var value = allParams[key];
-          if(Array.isArray(value)) {
-            value.forEach(function(arrayItem) {
-              if (arrayItem != null) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
-              $scope.rebuildFromURLParam(key, arrayItem)
-            });
-          } else {
-            $rootScope.tags.push(searchService.searchFilters(key, value));
-          }
-        }
-
-        $rootScope.dashboardSearchButtonDisabled = true;
-        $rootScope.searchError = false
-        var submitSearchStartTime = new Date().getTime();
-        $scope.queryInProgress = true;
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + urlParams
-        })
+        const checkPlatform = $scope.checkPlatformPromise(platform.appPlatform)
+        checkPlatform.then(function () {
+          $rootScope.tags = [];
+          $scope.rebuildFiltersFromUrl(allParams)
+          $rootScope.dashboardSearchButtonDisabled = true;
+          $rootScope.searchError = false
+          var submitSearchStartTime = new Date().getTime();
+          $scope.queryInProgress = true;
+          return $http({
+            method: 'POST',
+            url: API_URI_BASE + 'api/filter_' + APP_PLATFORM + '_apps' + urlParams
+          })
           .success(function(data) {
             $scope.listButtonDisabled = false
             searchCtrl.apps = data.results;
@@ -599,87 +585,7 @@ angular.module('appApp')
             var submitSearchEndTime = new Date().getTime();
             var submitSearchElapsedTime = submitSearchEndTime - submitSearchStartTime;
 
-            /* -------- Mixpanel Analytics Start -------- */
-            var searchQueryPairs = {};
-            var searchQueryFields = [];
-            searchQueryPairs['locationFilter'] = false;
-
-            let categoriesPresent = false
-            const categories = []
-            let sdksPresent = false
-            const sdks = []
-            let sdkCategoriesPresent = false
-            const sdkCategories = []
-
-            $rootScope.tags.forEach(function(tag) {
-              searchQueryFields.push(tag.parameter);
-
-              // Tracking date filters
-              if (tag.value.date == '7') {
-                mixpanel.track(
-                  "Custom Date Range Used",
-                  { dateRange: tag.value.dateRange }
-                )
-              } else if (parseInt(tag.value.date) >= 8) {
-                mixpanel.track(
-                  "Old Date Filter Used",
-                  { date: tag.value.date }
-                )
-              }
-              if (tag.parameter == 'categories') {
-                categoriesPresent = true
-                categories.push(tag.value)
-              } else if (['locationFiltersOr', 'locationFiltersAnd'].includes(tag.parameter)) {
-                searchQueryPairs['locationFilter'] = true;
-              } else if (['sdkFiltersAnd', 'sdkFiltersOr'].includes(tag.parameter)) {
-                sdksPresent = true
-                sdks.push(tag.value.name)
-              } else if (['sdkCategoryFiltersAnd', 'sdkCategoryFiltersOr'].includes(tag.parameter)) {
-                sdkCategoriesPresent = true
-                sdkCategories.push(tag.value.name)
-              } else {
-                searchQueryPairs[tag.parameter] = tag.value;
-              }
-            });
-            searchQueryPairs['tags'] = searchQueryFields;
-            searchQueryPairs['numOfApps'] = data.resultsCount;
-            searchQueryPairs['elapsedTimeInMS'] = submitSearchElapsedTime;
-            searchQueryPairs['platform']  = APP_PLATFORM;
-            if (categoriesPresent) searchQueryPairs['categories'] = categories;
-            if (sdksPresent) searchQueryPairs['sdks'] = sdks;
-            if (sdkCategoriesPresent) searchQueryPairs['sdkCategories'] = sdkCategories
-
-            if (data.pageNum == 1) {
-              mixpanel.track(
-                "Filter Query Successful",
-                searchQueryPairs
-              );
-            }
-
-            if(searchQueryPairs['locationFiltersAnd'] || searchQueryPairs['locationFiltersOr']) {
-              var slacktivityData = {
-                "title": "Location Filter Query",
-                "fallback": "Location Filter Query",
-                "color": "#FFD94D", // yellow
-                "locationFiltersAnd": JSON.stringify(searchQueryPairs['locationFiltersAnd']),
-                "locationFiltersOr": JSON.stringify(searchQueryPairs['locationFiltersOr']),
-                "numOfApps": data.resultsCount
-              };
-              slacktivity.notifySlack(slacktivityData);
-            }
-
-            if(searchQueryPairs['userbaseFiltersAnd'] || searchQueryPairs['userbaseFiltersOr']) {
-              var slacktivityData = {
-                "title": "MAU/Userbase Filter Query",
-                "fallback": "MAU/Userbase Filter Query",
-                "color": "#FFD94D", // yellow
-                "userbaseFiltersAnd": JSON.stringify(searchQueryPairs['userbaseFiltersAnd']),
-                "userbaseFiltersOr": JSON.stringify(searchQueryPairs['userbaseFiltersOr']),
-                "numOfApps": data.resultsCount
-              };
-              slacktivity.notifySlack(slacktivityData);
-            }
-            /* -------- Slacktivity Alerts End -------- */
+            if (data.pageNum == 1) { $scope.trackFilterQueryAnalytics(submitSearchElapsedTime, data.resultsCount) }
           })
           .error(function(data, status) {
             $rootScope.dashboardSearchButtonDisabled = false;
@@ -694,7 +600,95 @@ angular.module('appApp')
               }
             );
           });
+        })
       };
+
+      $scope.rebuildFiltersFromUrl = function (urlParams) {
+        /* Rebuild Filters Array from URL Params */
+        for (var key in urlParams) {
+          var value = urlParams[key];
+          if(Array.isArray(value)) {
+            value.forEach(function(arrayItem) {
+              if (arrayItem != null) $rootScope.tags.push(searchService.searchFilters(key, arrayItem));
+              $scope.rebuildFromURLParam(key, arrayItem)
+            });
+          } else {
+            $rootScope.tags.push(searchService.searchFilters(key, value));
+          }
+        }
+      }
+
+      $scope.trackFilterQueryAnalytics = function (elapsedTime, resultsCount) {
+        /* -------- Mixpanel Analytics Start -------- */
+        var searchQueryPairs = {};
+        var searchQueryFields = [];
+        searchQueryPairs['locationFilter'] = false;
+
+        let categoriesPresent = false
+        const categories = []
+        let sdksPresent = false
+        const sdks = []
+        let sdkCategoriesPresent = false
+        const sdkCategories = []
+
+        $rootScope.tags.forEach(function(tag) {
+          searchQueryFields.push(tag.parameter);
+
+          // Tracking date filters
+          if (tag.value.date == '7') {
+            mixpanel.track(
+              "Custom Date Range Used",
+              { dateRange: tag.value.dateRange }
+            )
+          } else if (parseInt(tag.value.date) >= 8) {
+            mixpanel.track(
+              "Old Date Filter Used",
+              { date: tag.value.date }
+            )
+          }
+          if (tag.parameter == 'categories') {
+            categoriesPresent = true
+            categories.push(tag.value)
+          } else if (['locationFiltersOr', 'locationFiltersAnd'].includes(tag.parameter)) {
+            searchQueryPairs['locationFilter'] = true;
+          } else if (['sdkFiltersAnd', 'sdkFiltersOr'].includes(tag.parameter)) {
+            sdksPresent = true
+            sdks.push(tag.value.name)
+          } else if (['sdkCategoryFiltersAnd', 'sdkCategoryFiltersOr'].includes(tag.parameter)) {
+            sdkCategoriesPresent = true
+            sdkCategories.push(tag.value.name)
+          } else {
+            searchQueryPairs[tag.parameter] = tag.value;
+          }
+        });
+        searchQueryPairs['tags'] = searchQueryFields;
+        searchQueryPairs['numOfApps'] = resultsCount;
+        searchQueryPairs['elapsedTimeInMS'] = elapsedTime;
+        searchQueryPairs['platform']  = APP_PLATFORM;
+        if (categoriesPresent) searchQueryPairs['categories'] = categories;
+        if (sdksPresent) searchQueryPairs['sdks'] = sdks;
+        if (sdkCategoriesPresent) searchQueryPairs['sdkCategories'] = sdkCategories
+
+        mixpanel.track(
+          "Filter Query Successful",
+          searchQueryPairs
+        );
+      }
+
+      $scope.checkPlatformPromise = function (newPlatform) {
+        return $q(function (resolve, reject) {
+          if (APP_PLATFORM != newPlatform) {
+            searchCtrl.appPlatform.platform = newPlatform;
+            APP_PLATFORM = newPlatform;
+            apiService.getSdkCategories().success(data => {
+              $rootScope.sdkCategories = data;
+              resolve()
+            })
+          } else {
+            resolve()
+          }
+        })
+      }
 
       $scope.filterResultsExported = function () {
         mixpanel.track("Filter Results Exported", {
@@ -751,6 +745,12 @@ angular.module('appApp')
 
       searchCtrl.onSavedSearchChange = function(id) {
         $rootScope.tags = [];
+        $rootScope.complexFilters = {
+          sdk: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+          sdkCategory: {or: [{status: "0", date: "0"}], and: [{status: "0", date: "0"}]},
+          location: {or: [{status: "0", state: '0'}], and: [{status: "0", state: '0'}]},
+          userbase: {or: [{status: "0"}], and: [{status: "0"}]}
+        }
         $scope.emptyApps();
         const savedSearch = searchCtrl.savedSearches[id];
         $location.url('/search?' +  savedSearch.search_params);
