@@ -92,6 +92,33 @@ class ApiController < ApplicationController
     render json: {results: results.as_json({user: @current_user}), resultsCount: results_count, pageNum: page_num}
   end
 
+  def new_advertiser_counts
+    now = DateTime.now
+    sunday = now - now.wday
+    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => sunday}}}
+    render json: {
+      total: AppsIndex.filter(week_filter).total_count,
+      ios: AppsIndex::IosApp.filter(week_filter).total_count,
+      android: AppsIndex::AndroidApp.filter(week_filter).total_count
+    }
+  end
+
+  def new_advertisers_csv
+    now = DateTime.now
+    sunday = now - now.wday
+    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => sunday}}}
+    apps_index = case params[:platform]
+      when 'combined'
+        AppsIndex
+      when 'ios'
+        AppsIndex::IosApp
+      when 'android'
+        AppsIndex::AndroidApp
+    end
+    new_advertisers = apps_index.filter(week_filter).order('first_seen_ads' => {'order' => 'desc'}).limit(200)
+    render_csv(apps: new_advertisers)
+  end
+
   def combined_ad_intelligence
     filter_args = {
       sort_by: params[:sortBy] || 'first_seen_ads',

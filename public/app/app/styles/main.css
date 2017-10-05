@@ -8935,6 +8935,7 @@ h4.red {
   font-size: 13px;
   text-decoration: underline;
   padding-left: 10px;
+  float: right;
 }
 
 #showSdksButtonHelper .video-link {
@@ -9142,4 +9143,77 @@ h4.red {
 
 .help-tooltip {
   font-weight: bold;
+}
+
+/* New Advertiser Counts */
+
+.new-advertiser-header {
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px
+}
+
+.new-advertiser-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  background-color: #fafafa;
+  height: 175px;
+  width: 180px;
+  border-color: #ededed;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  transition: height .5s, width .5s;
+  transition-timing-function: ease;
+}
+
+.advertiser-csv-btn {
+  visibility: hidden;
+  margin-top: 10px;
+}
+
+.new-advertiser-container:hover {
+  height: 220px;
+  width: 203px;
+}
+
+.new-advertiser-container:hover .advertiser-csv-btn {
+  visibility: visible;
+}
+
+.advertiser-count {
+  font-size: 50px;
+}
+
+#advertiser-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fafafa;
+  border-color: #ededed;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  transition: height .5s, width .5s;
+  transition-timing-function: ease;
+  margin-left: 15px;
+  margin-right: 15px;
+  padding: 30px;
+  height: 220px;
+  width: 203px;
+}
+
+#advertiser-total .advertiser-csv-btn {
+  visibility: visible;
+}
+
+.android-advertisers {
+  color: #a4c639;
+}
+
+.sunday-label {
+  width: 150px;
+  text-align: center;
 }

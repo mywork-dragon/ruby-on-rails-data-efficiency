@@ -1,22 +1,55 @@
 <div id="adIntelligencePage" data-ng-controller="AdIntelligenceCtrl as adIntelligenceCtrl">
   <div class="page page-table" data-ng-controller="TableCtrl">
+    <h4>
+      <i class="fa fa-facebook-official" aria-hidden="true"></i>
+      Facebook Advertisers
+    </h4>
+    <div class="row new-advertiser-header" ng-if="newAdvertiserCounts">
+      <div class="new-advertiser-container" ng-mouseenter="shrinkTotalContainer()" ng-mouseleave="expandTotalContainer()">
+        <div class="advertiser-count">
+          {{newAdvertiserCounts.ios}}
+        </div>
+        <div>
+          new <span class="fa fa-apple"></span> advertisers
+        </div>
+        <button class="btn btn-primary advertiser-csv-btn" ng-disabled="!newAdvertiserCounts.ios" ng-click="getNewAdvertisersCsv('ios')">GET CSV</button>
+      </div>
+      <div id="advertiser-total">
+        <div class="advertiser-count">
+          {{newAdvertiserCounts.total}}
+        </div>
+        <div class="sunday-label">
+          total new advertisers since Sunday
+        </div>
+        <button class="btn btn-primary advertiser-csv-btn" ng-disabled="!newAdvertiserCounts.total" ng-click="getNewAdvertisersCsv('combined')">GET CSV</button>
+      </div>
+      <div class="new-advertiser-container" ng-mouseenter="shrinkTotalContainer()" ng-mouseleave="expandTotalContainer()">
+        <div class="advertiser-count">
+          {{newAdvertiserCounts.android}}
+        </div>
+        <div>
+          new <span class="fa fa-android android-advertisers"></span> advertisers
+        </div>
+        <button class="btn btn-primary advertiser-csv-btn" ng-disabled="!newAdvertiserCounts.android" ng-click="getNewAdvertisersCsv('android')">GET CSV</button>
+      </div>
+    </div>
     <section class="panel panel-default table-dynamic">
       <header class="page-main-header ng-scope">
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-8">
             <h4>
               <span class="btn-group" id="dashboardPlatformSwitch">
                 <button type="button" ng-class="platform == 'all' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('all')">All</button>
                 <button type="button" ng-class="platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('ios')">iOS</button>
                 <button type="button" ng-class="platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="togglePlatform('android')">Android</button>
               </span>
-              Apps Advertising on
-              <!-- <app-platform-toggle ng-click="toggledPlatform()"></app-platform-toggle>Apps Advertising on -->
+              Advertising Apps
+              <!-- Apps Advertising on
               <i class="fa fa-facebook-official" aria-hidden="true"></i>
-              Facebook
+              Facebook -->
             </h4>
           </div>
-          <div class="col-md-2 ad-video" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+          <div class="col-md-4 ad-video" data-ng-controller="VideoModalCtrl as videoModalCtrl">
             <a href="" class="video-link" ng-click="openVideoModal('Ad Intelligence')">How to use Ad Intelligence</a>
           </div>
         </div>

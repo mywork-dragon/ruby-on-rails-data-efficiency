@@ -23,7 +23,6 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       $scope.order = order || 'desc'
       const sign = $scope.order == 'desc' ? '-' : ''
       $scope.rowSort = sign + $scope.category
-
       $scope.isLoading = true;
 
       return $http({
@@ -41,6 +40,29 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         $rootScope.numPerPage = data.pageSize;
       });
     };
+
+    $scope.getNewAdvertiserCounts = function () {
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/new_advertiser_counts'
+      }).success(function(data) {
+        $scope.newAdvertiserCounts = data
+      })
+    }
+
+    $scope.getNewAdvertisersCsv = function (platform) {
+      return $http({
+        method: 'GET',
+        url: API_URI_BASE + 'api/export_new_advertisers',
+        params: { platform }
+      }).success(function(data) {
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/csv,' + encodeURI(data);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = `${platform}_new_advertisers.csv`;
+        hiddenElement.click();
+      })
+    }
 
     $scope.adIntelItemClicked = function(item, type, platform) {
       if (type == 'app') {
@@ -125,6 +147,19 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
       "platform": $scope.platform
     });
 
+    $scope.getNewAdvertiserCounts()
     adIntelligenceCtrl.load();
+
+    $scope.shrinkTotalContainer = function () {
+      $("#advertiser-total").width("120px")
+      $("#advertiser-total").height("115px")
+      $("#advertiser-total > .advertiser-csv-btn").css("visibility", "hidden")
+    }
+
+    $scope.expandTotalContainer = function () {
+      $("#advertiser-total").width("143px")
+      $("#advertiser-total").height("160px")
+      $("#advertiser-total > .advertiser-csv-btn").css("visibility", "visible")
+    }
   }
 ]);
