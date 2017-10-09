@@ -48,7 +48,7 @@
                           <h4>Installed SDKs <span class="liveScanSdksCountDisplay">({{installedSdksCount}})</span></h4>
                           <div ng-repeat="(category, isCollapsed) in installedSdkCategories" ng-init="sdks = installedSdks[category]">
                             <strong class="sdk-tag">{{category}}</strong>
-                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="installedSdkCategories[category] = !installedSdkCategories[category]">{{isCollapsed ? 'See SDKs' : 'Hide SDKs'}}</span>
+                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="installedSdkCategories[category] = !installedSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
                             <ul ng-show="sdks.length <= 10 || !installedSdkCategories[category]">
                               <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
                                 <div class="sdkLiveScanDisplayIconSection">
@@ -73,7 +73,7 @@
                           <h4>Uninstalled SDKs <span class="liveScanSdksCountDisplay">({{uninstalledSdksCount}})</span></h4>
                           <div ng-repeat="(category, isCollapsed) in uninstalledSdkCategories" ng-init="sdks = uninstalledSdks[category]">
                             <strong class="sdk-tag">{{category}}</strong>
-                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="uninstalledSdkCategories[category] = !uninstalledSdkCategories[category]">{{isCollapsed ? 'See SDKS' : 'Hide SDKs'}}</span>
+                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="uninstalledSdkCategories[category] = !uninstalledSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
                             <ul ng-show="sdks.length <= 10 || !uninstalledSdkCategories[category]">
                               <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
                                 <div class="sdkLiveScanDisplayIconSection">
