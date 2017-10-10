@@ -6,6 +6,48 @@
     <div class="media">
       <div class="media-body">
         <ul class="list-unstyled list-info" ng-if="!androidLiveScanCtrl.sdkLiveScanPageLoading">
+          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData || androidLiveScanCtrl.sdkQueryInProgress">
+            <div id="sdkScanErrorMessage">
+              <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 1-2 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
+            </div>
+            <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
+              <uib-progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
+              <p>{{androidLiveScanCtrl.scanStatusMessage}}</p>
+            </div>
+          </li>
+          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && !androidLiveScanCtrl.hideLiveScanButton && canViewSdks">
+            <div id="showSdksButtonTitle" ng-show="!androidLiveScanCtrl.failedLiveScan">
+              <ul class="scan-date">
+                <li>
+                  <span class="scan-date-title">
+                    Latest Update:
+                  </span>
+                  {{appData.lastUpdated | date : 'shortDate'}}
+                </li>
+                <li>
+                  <span class="scan-date-title">
+                    Latest SDK Scan:
+                  </span>
+                  {{androidLiveScanCtrl.sdkData.lastUpdated ? (androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate') : "None"}}
+                </li>
+                <li>
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan</button>
+                    <button type="submit" class="btn btn-block disabled" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-hide="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
+                  </div>
+                </li>
+                <li id="live-scan-hint-li" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+                  <span class="fa fa-question-circle live-scan-hint" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="How To Use Live Scan" ng-click="openVideoModal('Live Scan')"></span>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li ng-if="!canViewSdks && androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>App Has Not Been Scanned</strong>
+            </div>
+          </li>
 
           <div id="sdkScanErrorCodeStatus" ng-if="androidLiveScanCtrl.sdkData.errorCode != null">
             <p><strong>{{androidLiveScanCtrl.errorCodeMessage}}</strong></p>
@@ -78,7 +120,7 @@
             </div>
           </li>
 
-          <li ng-if="androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.lastUpdated && androidLiveScanCtrl.sdkData.errorCode == null">
+          <li id="no-sdks-message" ng-if="androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.lastUpdated && androidLiveScanCtrl.sdkData.errorCode == null">
             <div style="text-align:center">
               <strong>No SDKs in App</strong>
             </div>
@@ -91,37 +133,6 @@
             </div>
           </li>
           -->
-
-          <li id="appPageSdkScanStatus" ng-if="androidLiveScanCtrl.noSdkData || androidLiveScanCtrl.sdkQueryInProgress">
-            <div id="sdkScanErrorMessage">
-              <h5 class="sdkScanGeneralInfo" ng-if="!androidLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 1-2 minutes.</em></h5>
-              <!-- <h5 class="sdkScanGeneralInfo" ng-if="androidLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5> -->
-            </div>
-            <div data-ng-show="androidLiveScanCtrl.sdkQueryInProgress">
-              <uib-progressbar class="progress-striped active" max="100" value="androidLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
-              <p>{{androidLiveScanCtrl.scanStatusMessage}}</p>
-            </div>
-          </li>
-          <li id="showSdksButtonLi" ng-if="!androidLiveScanCtrl.sdkQueryInProgress && !androidLiveScanCtrl.hideLiveScanButton && canViewSdks">
-            <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.sdkData.lastUpdated && !androidLiveScanCtrl.failedLiveScan">
-              Last Scanned on {{androidLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
-            </div>
-            <div id="showSdksButtonTitle" ng-show="androidLiveScanCtrl.versionUnchanged">
-              App data has not changed since last scan. Currently up-to-date.
-            </div>
-            <div id="showSdksButton">
-              <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan</button>
-              <button type="submit" class="btn btn-block disabled" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-hide="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
-            </div>
-            <div id="showSdksButtonHelper" data-ng-controller="VideoModalCtrl as videoModalCtrl">
-              <a href="" ng-click="openVideoModal('Live Scan')">How to use Live Scan</a>
-            </div>
-          </li>
-          <li ng-if="!canViewSdks && androidLiveScanCtrl.noSdkSnapshot && androidLiveScanCtrl.sdkData.errorCode == null">
-            <div style="text-align:center">
-              <strong>App Has Not Been Scanned</strong>
-            </div>
-          </li>
 
         </ul>
 

@@ -7651,14 +7651,19 @@ span#dashboardResultsTableHeadingNumDisplayed {
 
 #sdkScanErrorCodeStatus {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  padding-bottom: 0px;
+  border-bottom: none;
 }
 
-#appPageSdkScanStatus, #showDataUpdatedMessage {
+#appPageSdkScanStatus {
   padding: 0;
+  border-bottom: none;
 }
 
-#appPageSdkScanStatus div, #showDataUpdatedMessage {
+#appPageSdkScanStatus div {
   text-align: center;
 }
 
@@ -7820,15 +7825,13 @@ span#dashboardResultsTableHeadingNumDisplayed {
 }
 
 #showSdksButtonLi {
+  padding-top: 0px;
   border: none;
-  margin-bottom: -20px;
+  padding-bottom: 0px;
 }
 
 #showSdksButton {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 60%;
-  margin-left: 20%;
+  min-width: 150px;
 }
 
 #showSdksDetailsButton {
@@ -7922,8 +7925,13 @@ pre {
   border-bottom: none;
 }
 
+#sdkLiveScanDisplay {
+  border-top: 1px solid #eee;
+  margin-top: 15px;
+}
+
 .iosSdkLiveScanDisplay {
-  padding-top: 0 !important;
+  border-top: 1px solid #eee;
 }
 
 .sdksListView h4 {
@@ -9216,4 +9224,45 @@ h4.red {
 .sunday-label {
   width: 150px;
   text-align: center;
+}
+
+.scan-date {
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-date > li {
+  display: inline-block;
+  border: none;
+  padding: 0px 10px 0px 10px;
+}
+
+.scan-date-title {
+  font-weight: bold;
+}
+
+.updatedSdks {
+  color: #1EAD4F;
+  font-weight: bold;
+}
+
+.notUpdatedSdks {
+  color: #ED5F5F;
+  font-weight: bold;
+}
+
+#live-scan-hint-li {
+  padding-left: 0px;
+}
+
+.live-scan-hint {
+  cursor: pointer;
+}
+
+#no-sdks-message {
+  border-top: 1px solid #eee;
+  margin-top: 15px;
+  padding-top: 20px;
 }

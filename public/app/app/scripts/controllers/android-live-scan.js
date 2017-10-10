@@ -6,6 +6,15 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
     var androidLiveScanCtrl = this;
     var androidAppId = $routeParams.id;
 
+    androidLiveScanCtrl.notify = function (type) {
+      switch (type) {
+        case 'data-unchanged':
+          return loggitService.logSuccess("App has not changed since last scan. SDKs are currently up to date!")
+        case 'updated':
+          return loggitService.logSuccess("SDKs up to date!")
+      }
+    }
+
     androidLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
       catch(err) {}
@@ -40,9 +49,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
           androidLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length && !data.uninstalled_sdks.length;
 
           var errorCodeMessages = [
-            "Sorry, SDKs Not Available - App is Not Available in Any Google Play Store We're Scanning",   // taken down
-            "Sorry, SDKs Not Available - App is Not Available in Any Google Play Store We're Scanning",   // foreign
-            "Sorry, SDKs Not Available for Paid Apps"                     // paid app
+            "Sorry, Live Scan Not Available - App is Not Available in Any Google Play Store We're Scanning",   // taken down
+            "Sorry, Live Scan Not Available - App is Not Available in Any Google Play Store We're Scanning",   // foreign
+            "Sorry, Live Scan Not Available for Paid Apps"                     // paid app
           ];
 
           if (data.error_code != null) {
@@ -143,7 +152,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.scanStatusPercentage = 100;
                 androidLiveScanCtrl.noSdkData = false;
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId, true); // Loads new sdks on page
-
+                androidLiveScanCtrl.notify('updated')
                 $interval.cancel(interval); // Exits interval loop
 
                 // Run for any qualifying status
@@ -172,9 +181,9 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.errorCodeMessage = statusMessage;
 
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId);
-                androidLiveScanCtrl.versionUnchanged = true;
                 androidLiveScanCtrl.hideLiveScanButton = false;
                 sdkLiveScanService.androidLiveScanUnchangedVersionSuccess($routeParams.platform, androidAppId);
+                androidLiveScanCtrl.notify('data-unchanged')
                 break;
             }
 
@@ -186,7 +195,4 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
       }, msDelay, numRepeat);
 
     };
-
-  }
-
-]);
+}]);

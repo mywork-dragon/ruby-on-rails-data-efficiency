@@ -6,6 +6,15 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     var iosLiveScanCtrl = this;
     var iosAppId = $routeParams.id;
 
+    iosLiveScanCtrl.notify = function (type) {
+      switch (type) {
+        case 'data-unchanged':
+          return loggitService.logSuccess("App has not changed since last scan. SDKs are currently up to date!")
+        case 'updated':
+          return loggitService.logSuccess("SDKs up to date!")
+      }
+    }
+
     iosLiveScanCtrl.isEmpty = function(obj) {
       try { return Object.keys(obj).length === 0; }
       catch(err) {}
@@ -51,11 +60,11 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
           iosLiveScanCtrl.noSdkSnapshot = !data.installed_sdks.length && !data.uninstalled_sdks.length;
 
           var errorCodeMessages = [
-            "Sorry, SDKs Not Available for Paid Apps",
-            "Sorry, SDKs Not Available - App is Not Available in Any App Store We're Scanning",
-            "Sorry, SDKs Temporarily Not Available for This App",
-            "Sorry, SDKs Temporarily Not Available for This App",
-            "Sorry, SDKs Not Available for This App"
+            "Sorry, Live Scan Not Available for Paid Apps",
+            "Sorry, Live Scan Not Available - App is Not Available in Any App Store We're Scanning",
+            "Sorry, Live Scan Temporarily Not Available for This App",
+            "Sorry, Live Scan Not Available for iPad Apps",
+            "Sorry, Live Scan Not Available for Mac App"
           ];
 
           if (data.error_code != null) {
@@ -84,10 +93,8 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
     iosLiveScanCtrl.checkForIosSdks(iosAppId); // Call for initial SDKs load
 
     iosLiveScanCtrl.getSdks = function() {
-
       // Reset all view-changing vars
       iosLiveScanCtrl.sdkQueryInProgress = true;
-      iosLiveScanCtrl.displayDataUnchangedStatus = false;
       iosLiveScanCtrl.failedLiveScan = false;
       iosLiveScanCtrl.errorCodeMessage = null;
       iosLiveScanCtrl.sdkData = null;
@@ -150,7 +157,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
                 iosLiveScanCtrl.scanStatusPercentage = 5;
                 break;
               case 1:
-                iosLiveScanCtrl.displayDataUnchangedStatus = true;
+                iosLiveScanCtrl.notify('data-unchanged')
                 iosLiveScanCtrl.checkForIosSdks(iosAppId, true); // Loads new sdks on page
                 break;
               case 5:
@@ -168,6 +175,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 10:
                 iosLiveScanCtrl.scanStatusPercentage = 100;
                 iosLiveScanCtrl.noSdkData = false;
+                iosLiveScanCtrl.notify('updated');
                 iosLiveScanCtrl.checkForIosSdks(iosAppId, true, 10); // Loads new sdks on page
                 break;
               case 11:

@@ -6,10 +6,52 @@
     <div class="media">
       <div class="media-body">
         <ul class="list-unstyled list-info" ng-if="!iosLiveScanCtrl.sdkLiveScanPageLoading">
+          <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData || iosLiveScanCtrl.sdkQueryInProgress">
+            <div id="sdkScanErrorMessage">
+              <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
+              <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
+            </div>
+            <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress">
+              <uib-progressbar class="progress-striped active" max="100" value="iosLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
+              <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
+            </div>
+          </li>
+          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && !iosLiveScanCtrl.hideLiveScanButton && canViewSdks && canViewIosLiveScan">
+            <div id="showSdksButtonTitle" ng-show="!iosLiveScanCtrl.failedLiveScan">
+              <ul class="scan-date">
+                <li>
+                  <span class="scan-date-title">
+                    Latest Update:
+                  </span>
+                  {{appData.lastUpdated | date : 'shortDate'}}
+                </li>
+                <li>
+                  <span class="scan-date-title">
+                    Latest SDK Scan:
+                  </span>
+                  {{iosLiveScanCtrl.sdkData.lastUpdated ? (iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate') : "None"}}
+                </li>
+                <li>
+                  <div id="showSdksButton">
+                    <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
+                    <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
+                  </div>
+                </li>
+                <li id="live-scan-hint-li" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+                  <span class="fa fa-question-circle live-scan-hint" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="How To Use Live Scan" ng-click="openVideoModal('Live Scan')"></span>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li ng-if="(!canViewSdks || !canViewIosLiveScan) && iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.errorCode == null">
+            <div style="text-align:center">
+              <strong>App Has Not Been Scanned</strong>
+            </div>
+          </li>
 
-          <div id="sdkScanErrorCodeStatus" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
-            <p><strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong></p>
-          </div>
+          <li id="sdkScanErrorCodeStatus" ng-if="iosLiveScanCtrl.sdkData.errorCode != null">
+            <strong>{{iosLiveScanCtrl.errorCodeMessage}}</strong>
+          </li>
 
           <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="iosLiveScanCtrl.sdkData && !iosLiveScanCtrl.noSdkSnapshot">
             <div class="sdksListView">
@@ -96,7 +138,7 @@
             </div>
           </li>
 
-          <li ng-if="iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.lastUpdated && iosLiveScanCtrl.sdkData.errorCode == null">
+          <li id="no-sdks-message" ng-if="iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.lastUpdated && iosLiveScanCtrl.sdkData.errorCode == null">
             <div style="text-align:center">
               <strong>No SDKs in App</strong>
             </div>
@@ -109,37 +151,6 @@
             </div>
           </li>
           -->
-
-          <li id="appPageSdkScanStatus" ng-if="iosLiveScanCtrl.noSdkData || iosLiveScanCtrl.sdkQueryInProgress">
-            <div id="sdkScanErrorMessage">
-              <h5 class="sdkScanGeneralInfo" ng-if="!iosLiveScanCtrl.failedLiveScan"><em>Note: We are currently live scanning the SDKs. This may take 2-3 minutes.</em></h5>
-              <h5 class="sdkScanGeneralInfo" ng-if="iosLiveScanCtrl.failedLiveScan"><strong>Error - Please Try Again</strong></h5>
-            </div>
-            <div data-ng-show="iosLiveScanCtrl.sdkQueryInProgress">
-              <uib-progressbar class="progress-striped active" max="100" value="iosLiveScanCtrl.scanStatusPercentage" type="primary"></uib-progressbar>
-              <p>{{iosLiveScanCtrl.scanStatusMessage}}</p>
-            </div>
-          </li>
-          <li id="showSdksButtonLi" ng-if="!iosLiveScanCtrl.sdkQueryInProgress && !iosLiveScanCtrl.hideLiveScanButton && canViewSdks && canViewIosLiveScan">
-            <div id="showSdksButtonTitle" ng-show="iosLiveScanCtrl.sdkData.lastUpdated && !iosLiveScanCtrl.failedLiveScan">
-              Last Scanned on {{iosLiveScanCtrl.sdkData.lastUpdated | date : 'shortDate'}}
-            </div>
-             <div id="showSdksButton">
-              <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
-              <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
-            </div>
-            <div id="showSdksButtonHelper" ng-if="!iosLiveScanCtrl.displayDataUnchangedStatus" data-ng-controller="VideoModalCtrl as videoModalCtrl">
-              <a class="video-link" href="" ng-click="openVideoModal('Live Scan')">How to use Live Scan</a>
-            </div>
-          </li>
-          <li id="showDataUpdatedMessage" ng-if="iosLiveScanCtrl.displayDataUnchangedStatus">
-            <em>App data has not changed since last scan. Currently up-to-date.</em>
-          </li>
-          <li ng-if="(!canViewSdks || !canViewIosLiveScan) && iosLiveScanCtrl.noSdkSnapshot && iosLiveScanCtrl.sdkData.errorCode == null">
-            <div style="text-align:center">
-              <strong>App Has Not Been Scanned</strong>
-            </div>
-          </li>
 
         </ul>
 
