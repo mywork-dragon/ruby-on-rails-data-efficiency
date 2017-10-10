@@ -61,7 +61,13 @@ angular.module('appApp').controller("AdIntelligenceCtrl", ["$scope", "authServic
         hiddenElement.target = '_blank';
         hiddenElement.download = `${platform}_new_advertisers.csv`;
         hiddenElement.click();
+
+        mixpanel.track("New Advertisers CSV Exported", {
+          count: $scope.newAdvertiserCounts[platform],
+          platform
+        })
       })
+
     }
 
     $scope.adIntelItemClicked = function(item, type, platform) {

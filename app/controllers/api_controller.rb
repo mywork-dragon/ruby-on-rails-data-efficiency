@@ -97,7 +97,7 @@ class ApiController < ApplicationController
     sunday = now - now.wday
     week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => sunday}}}
     render json: {
-      total: AppsIndex.filter(week_filter).total_count,
+      combined: AppsIndex.filter(week_filter).total_count,
       ios: AppsIndex::IosApp.filter(week_filter).total_count,
       android: AppsIndex::AndroidApp.filter(week_filter).total_count
     }

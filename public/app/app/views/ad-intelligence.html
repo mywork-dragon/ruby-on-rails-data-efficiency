@@ -16,12 +16,12 @@
       </div>
       <div id="advertiser-total">
         <div class="advertiser-count">
-          {{newAdvertiserCounts.total}}
+          {{newAdvertiserCounts.combined}}
         </div>
         <div class="sunday-label">
           total new advertisers since Sunday
         </div>
-        <button class="btn btn-primary advertiser-csv-btn" ng-disabled="!newAdvertiserCounts.total" ng-click="getNewAdvertisersCsv('combined')">GET CSV</button>
+        <button class="btn btn-primary advertiser-csv-btn" ng-disabled="!newAdvertiserCounts.combined" ng-click="getNewAdvertisersCsv('combined')">GET CSV</button>
       </div>
       <div class="new-advertiser-container" ng-mouseenter="shrinkTotalContainer()" ng-mouseleave="expandTotalContainer()">
         <div class="advertiser-count">
