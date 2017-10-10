@@ -87,6 +87,17 @@ class IosSdk < ActiveRecord::Base
     {apps: apps, total_count: filter_results.total_count}
   end
 
+  def migrate_to_display_sdk(dest_sdk_id)
+    dest_sdk = IosSdk.find(dest_sdk_id)
+    dest_tags = dest_sdk.tags
+    cur_tags = tags
+    (cur_tags - dest_tags).each do |t|
+      TagRelationship.create(tag: t, taggable: dest_sdk)
+    end
+    self.tag_relationships.delete_all
+    IosSdkLink.create!(source_sdk_id: id, dest_sdk_id: dest_sdk_id)
+  end
+
   def cluster
     IosSdk.sdk_clusters(ios_sdk_ids: [self.id])
   end

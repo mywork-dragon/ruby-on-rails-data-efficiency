@@ -7,6 +7,20 @@ class IosSdkTest < ActiveSupport::TestCase
     @model = {'my_sdk' => { 'summary' => 'hi', 'website' => 'google.com', 'classes' => ['header1']}}
   end
 
+  test 'migrating to display sdk' do
+    tags = 2.times.map do |i|
+      Tag.create!(name: "#{i}_tag")
+    end
+    older = IosSdk.create!(name: 'older', kind: :native)
+    newer = IosSdk.create!(name: 'newer', kind: :native)
+    TagRelationship.create!(tag: tags.first, taggable: older)
+    TagRelationship.create!(tag: tags.second, taggable: newer)
+    older.migrate_to_display_sdk(newer.id)
+    assert_equal(tags.map(&:id).sort, newer.tags.pluck(:id).sort)
+    assert_empty(older.reload.tags)
+    refute_empty(IosSdkLink.where(source_sdk: older, dest_sdk: newer))
+  end
+
   test 'it creates an SDK manually' do
     name = 'sup'
     sdk = IosSdk.create_manual(name: name, website: 'http://google.com', kind: :native)
