@@ -897,46 +897,22 @@ class ApiController < ApplicationController
     send_data list_csv
   end
 
-  def search_ios_apps
+  def get_custom_search_params
     query = params['query'] || ""
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
-
-    result_ids = AppsIndex::IosApp.query(
-        multi_match: {
-            query: query,
-            operator: 'and',
-            fields: ['name.title^2', 'seller_url', 'seller'],
-            type: 'cross_fields',
-            fuzziness: 1
-        }
-    ).boost_factor(
-        3,
-        filter: { term: {user_base: 'elite'} }
-    ).boost_factor(
-        2,
-        filter: { term: {user_base: 'strong'} }
-    ).boost_factor(
-        1,
-        filter: { term: {user_base: 'moderate'} }
-    )
-    result_ids = FilterService.order_helper(result_ids, params[:sortBy], params[:orderBy]) if params[:sortBy] && params[:orderBy]
-    result_ids = result_ids.limit(num_per_page).offset((page - 1) * num_per_page)
-
-    total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
-    result_ids = result_ids.map { |result| result.attributes["id"] }
-
-    ios_apps = result_ids.any? ? IosApp.where(id: result_ids).order("FIELD(id, #{result_ids.join(',')})").is_ios : []
-
-    render json: {appData: ios_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+    return query, page, num_per_page
   end
 
-  def search_android_apps
-    query = params['query'] || ""
-    page = !params['page'].nil? ? params['page'].to_i : 1
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+  def search_ios_apps
+    func = Proc.new {|ids| ids.any? ? IosApp.where(id: ids).order("FIELD(id, #{ids.join(',')})").is_ios : []}
+    search_app_platform(AppsIndex::IosApp, func)
+  end
 
-    result_ids = AppsIndex::AndroidApp.query(
+  def search_app_platform(app_index, app_id_load_function)
+    query, page, num_per_page = get_custom_search_params
+
+    result_ids = app_index.query(
       multi_match: {
         query: query,
         operator: 'and',
@@ -960,19 +936,24 @@ class ApiController < ApplicationController
     total_apps_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    android_apps = result_ids.map{ |id| AndroidApp.find_by_id(id) }.compact
+    apps = app_id_load_function.call(result_ids)
 
-    render json: {appData: android_apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+    render json: {appData: apps.as_json({user: @current_user}), totalAppsCount: total_apps_count, numPerPage: num_per_page, page: page}
+  end
+
+  def search_android_apps
+    search_app_platform(AppsIndex::AndroidApp, Proc.new {|ids| ids.map { |id| AndroidApp.find_by_id(id) }.compact})
   end
 
   def search_ios_sdk
-    query = params['query'] || ""
-    page = !params['page'].nil? ? params['page'].to_i : 1
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+    search_sdk_platform(IosSdk, IosSdkIndex::IosSdk)
+  end
 
+  def search_sdk_platform(sdk_class, sdk_index)
+    query, page, num_per_page = get_custom_search_params
     query = query.downcase
 
-    result_ids = IosSdkIndex::IosSdk.query(
+    result_ids = sdk_index.query(
       query_string: {
         query: "#{query}*",
         default_field: 'name',
@@ -986,37 +967,13 @@ class ApiController < ApplicationController
     total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
     result_ids = result_ids.map { |result| result.attributes["id"] }
 
-    sdks = result_ids.map {|id| IosSdk.find_by_id(id) }.compact
-
-    # sdks = IosSdk.where(id: result_ids)
+    sdks = result_ids.map{ |id| sdk_class.find_by_id(id) }.compact
 
     render json: {sdkData: sdks.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
   end
 
   def search_android_sdk
-    query = params['query'] || ""
-    page = !params['page'].nil? ? params['page'].to_i : 1
-    num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
-
-    query = query.downcase
-
-    result_ids = AndroidSdkIndex::AndroidSdk.query(
-      query_string: {
-        query: "#{query}*",
-        default_field: 'name',
-        analyze_wildcard: true
-      }
-    ).boost_factor(
-      5,
-      filter: { term: { name: query } }
-    ).limit(num_per_page).offset((page - 1) * num_per_page)
-
-    total_sdks_count = result_ids.total_count # the total number of potential results for query (independent of paging)
-    result_ids = result_ids.map { |result| result.attributes["id"] }
-
-    sdks = result_ids.map{ |id| AndroidSdk.find_by_id(id) }.compact
-
-    render json: {sdkData: sdks.as_json(user: @current_user), totalSdksCount: total_sdks_count, numPerPage: num_per_page, page: page}
+    search_sdk_platform(AndroidSdk, AndroidSdkIndex::AndroidSdk)
   end
 
   def get_android_sdk
