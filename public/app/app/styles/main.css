@@ -7925,12 +7925,8 @@ pre {
   border-bottom: none;
 }
 
-#sdkLiveScanDisplay {
-  border-top: 1px solid #eee;
-  margin-top: 15px;
-}
-
 .iosSdkLiveScanDisplay {
+  margin-top: 15px;
   border-top: 1px solid #eee;
 }
 

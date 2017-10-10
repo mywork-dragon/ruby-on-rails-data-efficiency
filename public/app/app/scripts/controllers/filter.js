@@ -75,12 +75,12 @@ angular.module('appApp')
         }
       };
 
-      $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter) {
+      $scope.onFilterChange = function(parameter, value, displayName, limitToOneFilter, customName) {
         if(parameter == 'downloads') {
           const tagText = $rootScope.downloadsFilterOptions[value].label
           filterService.addFilter(parameter, value, displayName, limitToOneFilter, tagText);
         } else {
-          filterService.addFilter(parameter, value, displayName, limitToOneFilter);
+          filterService.addFilter(parameter, value, displayName, limitToOneFilter, customName);
         }
         $scope[parameter] = ""; // Resets HTML select on view to default option
       };

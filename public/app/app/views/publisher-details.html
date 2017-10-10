@@ -41,7 +41,7 @@
             <div class="media">
               <div class="media-body">
                 <ul class="list-unstyled list-info" ng-if="!sdksLoading">
-                  <li id="sdkLiveScanDisplay" class="iosSdkLiveScanDisplay" ng-show="installedSdksCount">
+                  <li id="sdkLiveScanDisplay" ng-show="installedSdksCount">
                     <div class="sdksListView">
                       <div class="row">
                         <div class="col-md-6" ng-if="installedSdksCount">
@@ -327,7 +327,7 @@
                     App Type
                   </div></th>
                   <th><div class="th normal-right-padding">
-                    Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="How actively the app is being developed or marketed, based on Facebook ad spend and time since last update"></span>
+                    Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="mobilePriorityExplanation"></span>
                     <span class="glyphicon glyphicon-chevron-up"
                           data-ng-click="sortApps('mobile_priority', 'desc') "
                           data-ng-class="{active: rowSort == '-mobile_priority'}"></span>
@@ -345,7 +345,7 @@
                           data-ng-class="{active: rowSort == '-facebook_ads'}"></span>
                   </div></th>
                   <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
-                    User Base Size
+                    User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
                     <span class="glyphicon glyphicon-chevron-up"
                           data-ng-click="sortApps('user_base_display_score', 'asc') "
                           data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>

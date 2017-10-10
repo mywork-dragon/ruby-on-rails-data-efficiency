@@ -92,7 +92,7 @@ angular.module("appApp")
           case 'adSpend':
             return {
               parameter: param,
-              text: "Reported Ad Spend" + ": " + value,
+              text: "Facebook Ads: Yes",
               value: value
             };
             break;

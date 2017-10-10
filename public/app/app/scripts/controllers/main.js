@@ -8,8 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity',
-    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService, slacktivity) {
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity', '$sce',
+    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService, slacktivity, $sce) {
 
       $scope.$route = $route; // for use in determining active tab (for CSS styling)
 
@@ -166,6 +166,19 @@ angular.module('appApp')
         $rootScope.downloadsModel = []
         $rootScope.mobilePriorityModel = []
         $rootScope.userbaseModel = []
+
+        $rootScope.mobilePriorityExplanation = $sce.trustAsHtml('<p>How actively the app is being developed, based on how recently the app has been updated.</p>' +
+                                                            '<p>High: Updated within the past 2 months.</p>' +
+                                                            '<p>Medium: 2-4 months.</p>' +
+                                                            '<p>Low: More than 4 months ago.</p>')
+
+        $rootScope.userbaseExplanation = $sce.trustAsHtml('<p>An estimate of how many active users an app has, based on ratings for the current release.</p>' +
+                                                      '<p>Elite: 50,000 total ratings or average of 7 ratings per day.</p>' +
+                                                      '<p>Strong: 10,000 total ratings or average of 1 rating per day.</p>' +
+                                                      '<p>Moderate: 100 total ratings or average of 0.1 rating per day.</p>' +
+                                                      '<p>Weak: Anything less.</p>')
+
+
       }
   }])
   .controller("TableCtrl", ["$scope", "apiService", "listApiService", "$filter", "$rootScope", "loggitService", "AppPlatform",
