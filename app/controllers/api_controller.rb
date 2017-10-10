@@ -898,7 +898,7 @@ class ApiController < ApplicationController
   end
 
   def search_ios_apps
-    query = params['query']
+    query = params['query'] || ""
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
@@ -932,7 +932,7 @@ class ApiController < ApplicationController
   end
 
   def search_android_apps
-    query = params['query']
+    query = params['query'] || ""
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
 
@@ -966,9 +966,11 @@ class ApiController < ApplicationController
   end
 
   def search_ios_sdk
-    query = params['query'].downcase
+    query = params['query'] || ""
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+    query = query.downcase
 
     result_ids = IosSdkIndex::IosSdk.query(
       query_string: {
@@ -992,9 +994,11 @@ class ApiController < ApplicationController
   end
 
   def search_android_sdk
-    query = params['query'].downcase
+    query = params['query'] || ""
     page = !params['page'].nil? ? params['page'].to_i : 1
     num_per_page = !params['numPerPage'].nil? ? params['numPerPage'].to_i : 100
+
+    query = query.downcase
 
     result_ids = AndroidSdkIndex::AndroidSdk.query(
       query_string: {
