@@ -11,3 +11,6 @@ two:
 three:
   name: Education
   category_id: EDUCATION
+
+four:
+  name: Random
