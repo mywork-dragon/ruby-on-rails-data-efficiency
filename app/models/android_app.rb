@@ -383,8 +383,14 @@ class AndroidApp < ActiveRecord::Base
   end
 
   def categories
-    if newest_snapshot = self.newest_android_app_snapshot
-      newest_snapshot.android_app_categories.map{|c| c.name}
+    android_app_snapshot_categories.map {|cat| cat.display_name}
+  end
+
+  def android_app_snapshot_categories
+    if self.newest_android_app_snapshot
+      self.newest_android_app_snapshot.android_app_categories
+    else
+      []
     end
   end
 
@@ -536,8 +542,8 @@ class AndroidApp < ActiveRecord::Base
         sdk["categories"] = AndroidSdk.find(sdk["id"]).tags.pluck(:name)
       end
 
-      if app.categories
-        app_obj["categories"] = app.categories.map{|v| {"name" => v}}
+      if app.android_app_snapshot_categories
+        app_obj["categories"] = app.android_app_snapshot_categories.map{|x| x.as_json}
       end
 
       if app.android_developer

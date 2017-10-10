@@ -5,7 +5,31 @@ class AndroidAppCategory < ActiveRecord::Base
 
   def as_json(_options = {})
     {
-      name: name
+      name: name,
+      id: category_id
     }
+  end
+
+  def parent_category_prefixes
+    {'GAME_' => 'Games', 'FAMILY_' => 'Family'}
+  end
+
+  def parent_category
+    # Infer the parent category from the category ID.
+    parent_category_prefixes.each do |prefix, display_name|
+        if category_id.starts_with? prefix
+            return {name: display_name, id: prefix}
+        end
+    end
+    nil
+  end
+
+  def display_name
+    parent = parent_category
+    if !parent.nil?
+        return "#{name} (#{parent[:name]})"
+    else
+        return name
+    end
   end
 end

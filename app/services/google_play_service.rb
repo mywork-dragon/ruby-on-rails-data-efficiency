@@ -13,7 +13,8 @@ class GooglePlayService
       price
       seller
       seller_url
-      category
+      category_name
+      category_id
       released
       size
       top_dev
@@ -81,8 +82,12 @@ class GooglePlayService
     nil
   end
 
-  def category
+  def category_name
     unique_itemprop('span', 'genre').text.strip
+  end
+
+  def category_id
+    @html.css('.document-subtitle.category').first['href'].split('/')[-1]
   end
 
   def released
@@ -231,7 +236,8 @@ class GooglePlayService
         price: ->(x) { x == 0 },
         seller: ->(x) { x == 'Uber Technologies, Inc.' },
         seller_url: ->(x) { x == 'http://uber.com' },
-        category: ->(x) { x == 'Maps & Navigation' },
+        category_name: ->(x) { x == 'Maps & Navigation' },
+        category_id: ->(x) { x == 'MAPS_AND_NAVIGATION' },
         released: ->(x) { date_split = x.to_s.split('-'); date_split.count == 3 && date_split.first.to_i >= 2015 },
         # size: ->(x) { x.to_i > 1e7 },
         # top_dev: ->(x) { x == true },

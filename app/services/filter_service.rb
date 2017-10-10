@@ -221,6 +221,10 @@ class FilterService
         end
       end
 
+      if app_filters['category_ids'].present?
+        apps_index = apps_index.filter({"terms" => {"category_ids" => app_filters['category_ids'], "execution" => "or"}})
+      end
+
       if app_filters['categories'].present?
         if platform == 'android'
           app_filters['categories'] += android_gaming_categories if app_filters['categories'].include?('Games')

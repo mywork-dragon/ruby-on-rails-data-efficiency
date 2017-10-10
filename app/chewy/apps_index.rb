@@ -211,9 +211,16 @@ class AppsIndex < Chewy::Index
     #   data.each.with_object({}) { |(id, rank), result| result[id] ||= rank }
     # end
 
+    # deprecated TODO remove
     crutch :categories do |collection|
       data = AndroidAppCategory.joins(:android_app_snapshots).where('android_app_snapshots.android_app_id' => collection.map(&:id), 'android_app_categories_snapshots.kind' => 0).
                                 order('android_app_snapshots.created_at DESC').pluck('android_app_snapshots.android_app_id', 'android_app_categories.name')
+      data.each.with_object({}) { |(id, name), result| result[id] ||= name }
+    end
+
+    crutch :category_ids do |collection|
+      data = AndroidAppCategory.joins(:android_app_snapshots).where('android_app_snapshots.android_app_id' => collection.map(&:id), 'android_app_categories_snapshots.kind' => 0).
+                                order('android_app_snapshots.created_at DESC').pluck('android_app_snapshots.android_app_id', 'android_app_categories.category_id')
       data.each.with_object({}) { |(id, name), result| result[id] ||= name }
     end
 
@@ -265,7 +272,8 @@ class AppsIndex < Chewy::Index
     field :paid, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:price).to_f > 0 }
     field :in_app_purchases, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:in_app_purchase_min).present?}
     field :mobile_priority, index: 'not_analyzed'
-    field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed'
+    field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed' # deprecated TODO remove
+    field :category_ids, value: ->(app, crutches) { [crutches.category_ids[app.id]].compact }, index: 'not_analyzed'
     field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
     field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max)}
 

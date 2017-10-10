@@ -86,10 +86,14 @@ module GooglePlaySnapshotModule
   end
 
   def create_category_joins
-    if category = @attributes[:category]
+    if @attributes[:category_id]
+      category_id = @attributes[:category_id]
       categories_snapshot_primary = AndroidAppCategoriesSnapshot.new
       categories_snapshot_primary.android_app_snapshot = @snapshot
-      categories_snapshot_primary.android_app_category = AndroidAppCategory.find_or_create_by(name: category)
+      categories_snapshot_primary.android_app_category = AndroidAppCategory.find_or_create_by(category_id: category_id)
+      if categories_snapshot_primary.android_app_category.name.nil? and @attributes[:category_name]
+        categories_snapshot_primary.android_app_category.update!(:name => @attributes[:category_name])
+      end
       categories_snapshot_primary.kind = :primary
       categories_snapshot_primary.save!
     end

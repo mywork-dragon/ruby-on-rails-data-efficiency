@@ -388,6 +388,10 @@ class ApiController < ApplicationController
     render json: categories
   end
 
+  def get_android_category_objects
+    render json: AndroidAppCategory.all.map {|x| x.as_json}
+  end
+
   def get_android_categories
     # AndroidAppCategory.select(:name).joins(:android_app_categories_snapshots).group('android_app_categories.id').where('android_app_categories.name <> "Category:"').order('name asc').to_a.map{|cat| cat.name}
     categories = [

@@ -43,4 +43,13 @@ class ApiControllerTest < ActionController::TestCase
     assert_not JSON.parse(@response.body)['live_scan_enabled']
   end
 
+  test "test get_android_category_objects returns categories" do
+    get(:get_android_category_objects)
+    categories = JSON.parse(@response.body).sort_by {|x| x["id"]}
+    # From Fixtures
+    assert_equal categories[0], {"name" => 'Education', "id" => 'EDUCATION'}
+    assert_equal categories[1], {"name" => 'Sports', "id" => 'GAME_SPORTS'}
+    assert_equal categories[2], {"name" => 'Sports', "id" => 'SPORTS'}
+  end
+
 end
