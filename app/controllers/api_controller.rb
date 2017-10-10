@@ -389,7 +389,7 @@ class ApiController < ApplicationController
   end
 
   def get_android_category_objects
-    render json: AndroidAppCategory.all.map {|x| x.as_json}
+    render json: AndroidAppCategory.where.not(category_id: nil).map {|x| x.as_json}
   end
 
   def get_android_categories
