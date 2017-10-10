@@ -56,10 +56,6 @@ end
 # scheduler container runs in UTC
 ############################################
 
-every :day, at: '1:00am', roles: [:varys_scheduler] do
-  runner 'AndroidSdk.store_current_sdks_in_s3', :output => '/var/log/cron.log'
-end
-
 every :day, at: '2:00am', roles: [:varys_scheduler] do
   runner 'GooglePlayChartScraperService.scrape_google_play_top_free', :output => '/var/log/cron.log'
 end
