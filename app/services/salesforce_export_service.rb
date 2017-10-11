@@ -99,7 +99,7 @@ class SalesforceExportService
     supported_models.each do |model|
       @model_name = model
       
-      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null"
+      query = "select Id, MightySignal_iOS_Publisher_ID__c, MightySignal_Android_Publisher_ID__c from #{model} where (MightySignal_iOS_Publisher_ID__c != null or MightySignal_Android_Publisher_ID__c != null)"
       query += " and IsConverted = false" if model == 'Lead'
 
       @client.query(query).each do |object|
