@@ -93,9 +93,7 @@ class ApiController < ApplicationController
   end
 
   def new_advertiser_counts
-    now = DateTime.now
-    sunday = now - now.wday
-    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => sunday}}}
+    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => "now-7d/d"}}}
     render json: {
       combined: AppsIndex.filter(week_filter).total_count,
       ios: AppsIndex::IosApp.filter(week_filter).total_count,
@@ -104,9 +102,7 @@ class ApiController < ApplicationController
   end
 
   def new_advertisers_csv
-    now = DateTime.now
-    sunday = now - now.wday
-    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => sunday}}}
+    week_filter = {"range" => {"first_seen_ads" => {"format" => "date_time", "gte" => "now-7d/d"}}}
     apps_index = case params[:platform]
       when 'combined'
         AppsIndex
