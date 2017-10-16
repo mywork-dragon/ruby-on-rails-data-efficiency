@@ -1,7 +1,7 @@
 module MobileDeveloper
 
   def apps
-    platform == :ios ? ios_apps : android_apps
+    ios? ? ios_apps : android_apps
   end
 
   def get_website_urls
@@ -84,7 +84,7 @@ module MobileDeveloper
       order_by: order || 'desc'
     }
 
-    if platform == :ios
+    if ios?
       filter_results = FilterService.filter_ios_apps(filter_args)
       app_class = IosApp
     else
@@ -102,12 +102,20 @@ module MobileDeveloper
       app_filters: { 'publisherId' => self.id }
     }
 
-    if platform == :ios
+    if ios?
       results = FilterService.filter_ios_apps(filter_args)
     else
       results = FilterService.filter_android_apps(filter_args)
     end
     results.total_count
+  end
+
+  def ios?
+    platform == :ios
+  end
+
+  def android?
+    platform == :android
   end
 
   def link(stage: :production, utm_source: nil)
@@ -121,8 +129,8 @@ module MobileDeveloper
   end
 
   def tagged_sdk_summary
-    app_index = (platform == :ios ? AppsIndex::IosApp : AppsIndex::AndroidApp)
-    sdk_class = (platform == :ios ? IosSdk : AndroidSdk)
+    app_index = (ios? ? AppsIndex::IosApp : AppsIndex::AndroidApp)
+    sdk_class = (ios? ? IosSdk : AndroidSdk)
 
     summary = {}
 

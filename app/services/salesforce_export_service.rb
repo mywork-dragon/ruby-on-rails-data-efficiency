@@ -36,9 +36,7 @@ class SalesforceExportService
                         )
     @bulk_client = SalesforceBulkApi::Api.new(@client)
 
-    @upsert_records = {}
-    @create_records = {}
-    @update_records = {}
+    reset_bulk_data
   end
 
   def install
@@ -239,15 +237,14 @@ class SalesforceExportService
     mapping
   end
 
-  def should_skip_field?(field, map, data, object_id)
+  def should_skip_field?(field, map, data, existing_object)
     default_fields = if @model_name == 'Account'
       ['Website', 'Name']
     else
       ['Website', 'Company']
     end
 
-    if object_id && default_fields.include?(map['id'])
-      existing_object = @client.find(@model_name, object_id) 
+    if existing_object && default_fields.include?(map['id'])
       return existing_object[map['id']].present?
     end
 
@@ -269,11 +266,13 @@ class SalesforceExportService
     data = data_fields(app)
     new_object = {}
 
+    existing_object = @client.find(@model_name, object_id) if object_id
+
     mapping.each do |field, map|
       puts "Field is #{field} #{data}"
 
       # Skip if is 
-      next if should_skip_field?(field, map, data, object_id)
+      next if should_skip_field?(field, map, data, existing_object)
       
       add_custom_field(@model_name, data[field].except(:data)) if data[field][:type]
       
@@ -345,7 +344,8 @@ class SalesforceExportService
       'Account__c' => account_id
     }
 
-    import_app(new_app: new_app, app: app)
+    @upsert_records[@app_model] ||= []
+    @upsert_records[@app_model] << new_app
   end
 
   def import_android_app(app:, account_id:)
@@ -364,38 +364,61 @@ class SalesforceExportService
       'Account__c' => account_id
     }
 
-    import_app(new_app: new_app, app: app)
+    @upsert_records[@app_model] ||= []
+    @upsert_records[@app_model] << new_app
   end
 
-  def import_app(new_app: , app:)
-    sf_app = @client.query("select Id from #{@app_model} where MightySignal_Key__c = '#{app.platform}#{app.id.to_s}'").first
-    app_id = if sf_app
-      new_app['Id'] = sf_app.Id
-      @client.update!(@app_model, new_app)
-      sf_app.Id
-    else
-      @client.create!(@app_model, new_app)
-    end
-
-    sdk_response = app.tagged_sdk_response
-
-    sdk_response[:installed_sdks].each do |tag|
-      tag[:sdks].each do |sdk|
-        sdk_id = import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-        import_sdk_app(sdk_id: sdk_id, app_id: app_id, installed: sdk['first_seen_date'].try(:to_date))
+  def import_publisher(publisher, export_id)
+    publisher.apps.each do |app|
+      if publisher.ios?
+        import_ios_app(app: app, account_id: export_id)
+      else
+        import_android_app(app: app, account_id: export_id)
       end
     end
 
-    sdk_response[:uninstalled_sdks].each do |tag|
-      tag[:sdks].each do |sdk|
-        sdk_id = import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
-        import_sdk_app(sdk_id: sdk_id, app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date))
+    sdk_app_map = {}
+    results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
+    results['batches'].first['response'].each_with_index do |app, i|
+      app_id = app["id"].first
+      record = @upsert_records[@app_model][i]
+      app = publisher.ios? ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
+
+      sdk_response = app.tagged_sdk_response
+
+      sdk_response[:installed_sdks].each do |tag|
+        tag[:sdks].each do |sdk|
+          import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
+          sdk_app_map[sdk['id']] ||= []
+          sdk_app_map[sdk['id']] << {app_id: app_id, installed: sdk['first_seen_date'].try(:to_date)}
+        end
+      end
+
+      sdk_response[:uninstalled_sdks].each do |tag|
+        tag[:sdks].each do |sdk|
+          import_sdk(platform: app.platform, sdk: sdk, category: tag[:name])
+          sdk_app_map[sdk['id']] ||= []
+          sdk_app_map[sdk['id']] << {app_id: app_id, uninstalled: sdk['last_seen_date'].try(:to_date)}
+        end
+      end
+    end
+
+    results = @bulk_client.upsert(@sdk_model, @upsert_records[@sdk_model], 'MightySignal_Key__c', true)
+    results['batches'].first['response'].each_with_index do |sdk, i|
+      sdk_id = sdk["id"].first
+      record = @upsert_records[@sdk_model][i]
+
+      sdk_apps = sdk_app_map[record['MightySignal_SDK_ID__c']]
+      sdk_apps.each do |sdk_app|
+        sdk_app[:sdk_id] = sdk_id
+        import_sdk_app(**sdk_app)
       end
     end
 
     @bulk_client.upsert(@sdk_join_model, @upsert_records[@sdk_join_model], 'MightySignal_Key__c')
 
-    app_id
+    reset_bulk_data
+
   end
 
   def import_sdk(platform:, sdk:, category:)
@@ -408,14 +431,10 @@ class SalesforceExportService
       'Website__c' => sdk['website'],
       'Category__c' => category
     }
-    sf_sdk = @client.query("select Id from #{@sdk_model} where MightySignal_Key__c = '#{platform}#{sdk['id']}'").first
-    if sf_sdk
-      new_sdk['Id'] = sf_sdk.Id
-      @client.update!(@sdk_model, new_sdk)
-      sf_sdk.Id
-    else
-      @client.create!(@sdk_model, new_sdk)
-    end
+    
+    @upsert_records[@sdk_model] ||= []
+    @upsert_records[@sdk_model] << new_sdk
+    @upsert_records[@sdk_model] = @upsert_records[@sdk_model].uniq
   end
 
   def import_sdk_app(sdk_id:, app_id:, installed: nil, uninstalled: nil)
@@ -529,6 +548,12 @@ class SalesforceExportService
     end
 
     fields
+  end
+
+  def reset_bulk_data
+    @upsert_records = {}
+    @create_records = {}
+    @update_records = {}
   end
 
   def supported_models
