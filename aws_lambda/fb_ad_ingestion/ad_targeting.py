@@ -15,6 +15,8 @@ import botocore
 
 from mightylib.persistence.kv.s3 import S3Dict
 from mightylib.serializers import raw_serializer
+from ad_bounds import AdBounds
+
 bucket = S3Dict('ms-android-automation-outputs', serializer=raw_serializer)
 
 s3_source_bucket = 'ms-android-automation-outputs'
@@ -49,16 +51,6 @@ def convert_fb_number(num_str):
   except:
     return number
   return number
-
-def extract_suggested_app_node(ad_xml):
-  suggested_node = {"value" : None}
-  tree = ET.fromstring(ad_xml)
-  def visit_node(e):
-      if e.attrib.get('text', False):
-        if e.attrib.get('text') == 'Suggested App':
-            suggested_node["value"] = e
-  in_order_traversal(tree, visit_node)
-  return suggested_node["value"]
 
 def extract_social_info(ad_text):
   out = {}
@@ -234,32 +226,11 @@ def pull_in_text_field(ad, ad_id, loc, field, as_field=None):
   if value:
     ad[as_field] = value
 
-def bounds(bounds):
-  return map(int, filter(lambda x: x, re.split('\,|\]|\[', bounds)))
-
-def get_bounds(ad_xml):
-    suggested_node = extract_suggested_app_node(ad_xml)
-    if not hasattr(suggested_node, 'attrib'):
-        return None
-    ad_bounds=bounds(suggested_node.attrib['bounds'])
-    return ad_bounds
-
-def extract_suggested_app_node(ad_xml):
-  suggested_node = {"value" : None}
-  tree = ET.fromstring(ad_xml)
-  def visit_node(e):
-      if e.attrib.get('text', False):
-        if e.attrib.get('text') == 'Suggested App':
-            suggested_node["value"] = e
-  in_order_traversal(tree, visit_node)
-  return suggested_node["value"]
-
-def check_bounds(ad_id, ad_xml):
+def flag_if_not_centered(ad_id, ad_xml):
   """ Check ad bounds and remove screenshots if
   the ad isn't close to the center.
   """
-  ad_bounds = get_bounds(ad_xml)
-  if not ad_bounds or ad_bounds[1] >= 900:  #Screenshot not good
+  if not AdBounds(ad_xml).check():
       print 'Oh no... bad ad'
       bucket = S3Dict('ms-android-automation-outputs', serializer=raw_serializer)
       screenshot_loc = '{}/screenshot.png'.format(ad_id)
@@ -273,7 +244,7 @@ def check_bounds(ad_id, ad_xml):
       #Continue and keep screenshot
       return True
 
-def process_fb_add(ad_id, loc='local', store=True):
+def process_fb_ad(ad_id, loc='local', store=True):
   ad = {'ad_id' : ad_id , 'ad_type': 'mobile_app', 'source_app_identifier' : 'com.facebook.katana'}
   if loc == 'local':
     day, ad_suffix = filename.split("/")[-2:]
@@ -288,7 +259,7 @@ def process_fb_add(ad_id, loc='local', store=True):
     print "Skipping ad {} as it's not a mobile app ad.".format(ad_id)
     return
 
-  check_bounds(ad_id, ad_file)
+  flag_if_not_centered(ad_id, ad_file)
 
   pull_in_text_field(ad, ad_id, loc, 'fb_account', 'facebook_account')
   pull_in_text_field(ad, ad_id, loc, 'google_account')
@@ -330,7 +301,7 @@ def handle_s3_event(event, context):
     if key_parts[-1] in ['package', 'ad.xml', 'targeting.xml']:
       ad_id = '/'.join(key_parts[:-1])
       print "Processing ad {}".format(ad_id)
-      process_fb_add(ad_id, loc='s3')
+      process_fb_ad(ad_id, loc='s3')
 
 
 if __name__ == "__main__":
@@ -343,7 +314,7 @@ if __name__ == "__main__":
   print 'processing', len(files), 'files'
   for filename in files:
     try:
-      ad = process_fb_add(filename, store=args.store is not None)
+      ad = process_fb_ad(filename, store=args.store is not None)
       if ad:
         pprint(ad)
         print
