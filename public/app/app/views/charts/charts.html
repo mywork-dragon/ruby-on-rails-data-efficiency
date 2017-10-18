@@ -1,0 +1,52 @@
+<div class="chartPage" data-ng-controller="ChartsCtrl">
+  <ui-view>
+    <div>
+      <div class="row chartPageRow">
+        <h4>MightySignal Charts</h4>
+        <ul>
+          <li class="grid">
+            <a ui-sref="charts.top-ios-apps" class="icon">
+              <img src="/lib/images/apple-app-store-icon.png" width="50" height="50">
+            </a>
+            <br>
+            <br>
+            <a ui-sref="charts.top-ios-apps"><span>iTunes Top 200 Apps</span></a>
+          </li>
+          <li class="grid">
+            <a ui-sref="charts.top-android-apps" class="icon">
+              <img src="/lib/images/google_play.png" width="50" height="50">
+            </a>
+            <br>
+            <br>
+            <a ui-sref="charts.top-android-apps"><span>Google Play Top 200 Apps</span></a>
+          </li>
+          <li class="grid">
+            <a href="#/charts/ios-sdks" class="icon">
+              <img src="/lib/images/apple-xxl.png" width="50" height="50">
+            </a>
+            <br>
+            <br>
+            <a href="#/charts/ios-sdks"><span>iOS SDKs</span></a>
+          </li>
+          <li class="grid">
+            <a href="#/charts/android-sdks" class="icon">
+              <img src="/lib/images/android-png-0.png" width="50" height="50">
+            </a>
+            <br>
+            <br>
+            <a href="#/charts/android-sdks"><span>Android SDKs</span></a>
+          </li>
+          <li class="grid">
+            <a href="#/charts/ios-engagement" class="icon">
+              <img src="/lib/images/Users.png" width="50" height="50">
+            </a>
+            <br>
+            <br>
+            <a href="#/charts/ios-engagement"><span>iOS Apps by MAUs</span></a>
+            <span class="label label-danger">BETA</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ui-view>
+</div>

@@ -28,8 +28,171 @@ angular
     'satellizer',
     'bootstrapLightbox',
     'isoCurrency',
-    'rzModule'
+    'rzModule',
+    'ui.router'
   ])
+  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    var adIntelligenceState = {
+      name: 'ad-intelligence',
+      url: '/ad-intelligence',
+      templateUrl: '/app/app/views/ad-intelligence.html'
+    }
+
+    var adminState  = {
+      name: 'admin',
+      url: '/admin',
+      templateUrl: '/app/app/views/admin.html'
+    }
+
+    var androidSdksState = {
+      name: 'charts.android-sdks',
+      url: '/android-sdks',
+      templateUrl: '/app/app/views/charts/android-sdks.html'
+    }
+
+    var appAdIntelState = {
+      name: 'app.ad-intelligence',
+      url: '/ad-intelligence',
+      templateUrl: '/app/app/apps/views/ad-intelligence.html'
+    }
+
+    var appInfoState = {
+      name: 'app.info',
+      url: '',
+      templateUrl: '/app/app/apps/views/info.html'
+    }
+
+    var appState = {
+      name: 'app',
+      url: '/app/{platform}/{id}',
+      abstract: true,
+      templateUrl: '/app/app/apps/views/header.html',
+      controller: 'AppController as app'
+    }
+
+    var chartsState = {
+      name: 'charts',
+      url: '/charts',
+      templateUrl: '/app/app/views/charts/charts.html'
+    }
+
+    var customSearchState = {
+      name: 'custom-search',
+      url: '/search/custom',
+      templateUrl: '/app/app/views/custom-search-results.html'
+    }
+
+    var exploreState = {
+      name: 'explore',
+      url: '/search',
+      templateUrl: '/app/app/views/dashboard.html'
+    }
+
+    var iosEngagementState = {
+      name: 'charts.ios-engagement',
+      url: '/ios-engagement',
+      templateUrl: '/app/app/views/charts/ios-engagement.html'
+    }
+
+    var iosSdksState = {
+      name: 'charts.ios-sdks',
+      url: '/ios-sdks',
+      templateUrl: '/app/app/views/charts/ios-sdks.html'
+    }
+
+    var listState = {
+      name: 'list',
+      url: '/lists/{id}',
+      templateUrl: '/app/app/views/list.html'
+    }
+
+    var loginState = {
+      name: 'login',
+      url: '/login',
+      templateUrl: '/app/app/views/signin.html'
+    }
+
+    var publisherState = {
+      name: 'publisher',
+      url: '/publisher/{platform}/{id}',
+      abstract: true,
+      templateUrl: '/app/app/publishers/views/header.html',
+      controller: 'PublisherController as publisher'
+    }
+
+    var publisherAdIntelState = {
+      name: 'publisher.ad-intelligence',
+      url: '/ad-intelligence',
+      templateUrl: '/app/app/publishers/views/ad-intelligence.html'
+    }
+
+    var publisherInfoState = {
+      name: 'publisher.info',
+      url: '',
+      templateUrl: '/app/app/publishers/views/info.html'
+    }
+
+    var sdkState = {
+      name: 'sdk',
+      url: '/sdk/{platform}/{id}',
+      templateUrl: '/app/app/views/sdk-details.html',
+      controller: 'SdkDetailsCtrl as sdkDetailsCtrl'
+    }
+
+    var sdkSearchState = {
+      name: 'sdk-search',
+      url: '/search/sdk/{platform}',
+      templateUrl: '/app/app/views/sdk-search.html'
+    }
+
+    var singleAdminState = {
+      name: 'single-admin',
+      url: '/admin/:id',
+      templateUrl: '/app/app/views/admin.html'
+    }
+
+    var timelineState = {
+      name: 'timeline',
+      url: '/timeline',
+      templateUrl: '/app/app/views/newsfeed.html'
+    }
+
+    var topAndroidAppsState = {
+      name: 'charts.top-android-apps',
+      url: '/top-android-apps',
+      templateUrl: '/app/app/views/charts/top-android-apps.html'
+    }
+
+    var topIosAppsState = {
+      name: 'charts.top-ios-apps',
+      url: '/top-ios-apps',
+      templateUrl: '/app/app/views/charts/top-ios-apps.html'
+    }
+
+    $stateProvider.state(loginState)
+    $stateProvider.state(timelineState)
+    $stateProvider.state(exploreState)
+    $stateProvider.state(customSearchState)
+    $stateProvider.state(chartsState)
+    $stateProvider.state(topIosAppsState)
+    $stateProvider.state(topAndroidAppsState)
+    $stateProvider.state(iosSdksState)
+    $stateProvider.state(androidSdksState)
+    $stateProvider.state(iosEngagementState)
+    $stateProvider.state(adIntelligenceState)
+    $stateProvider.state(adminState)
+    $stateProvider.state(singleAdminState)
+    $stateProvider.state(appState)
+    $stateProvider.state(appInfoState)
+    // $stateProvider.state(appAdIntelState)
+    $stateProvider.state(publisherState)
+    $stateProvider.state(publisherInfoState)
+    // $stateProvider.state(publisherAdIntelState)
+    $stateProvider.state(sdkSearchState)
+    $stateProvider.state(listState)
+    $stateProvider.state(sdkState)
+    $urlRouterProvider.otherwise('/timeline')
+  }])
   .run(function ($http, $rootScope) {
     $(document).ready(function(){
       /* Disables loading spinner */
@@ -37,99 +200,8 @@ angular
         $('.page-loading-overlay').addClass("loaded");
         $('#app > .load_circle_wrapper').addClass("loaded");
       },300);
-
     });
   })
-  .config(['$routeProvider', function ($routeProvider) {
-      $routeProvider
-        .when('/login', {
-          templateUrl: '/app/app/views/signin.html'
-        })
-        .when('/search', {
-          templateUrl: '/app/app/views/dashboard.html',
-          activeTab: 'search',
-          reloadOnSearch: false
-        })
-        .when('/charts', {
-          templateUrl: '/app/app/views/charts.html',
-          activeTab: 'charts',
-        })
-        .when('/charts/top-ios-apps', {
-          templateUrl: '/app/app/views/charts/top-ios-apps.html',
-          activeTab: 'charts',
-          action: 'charts.top-ios-apps'
-        })
-        .when('/charts/top-android-apps', {
-          templateUrl: '/app/app/views/charts/top-android-apps.html',
-          activeTab: 'charts',
-          action: 'charts.top-android-apps'
-        })
-        .when('/charts/ios-sdks', {
-          templateUrl: '/app/app/views/charts/ios-sdks.html',
-          activeTab: 'charts',
-          action: 'charts.ios-sdks'
-        })
-        .when('/charts/android-sdks', {
-          templateUrl: '/app/app/views/charts/android-sdks.html',
-          activeTab: 'charts',
-          action: 'charts.android-sdks'
-        })
-        .when('/charts/ios-engagement', {
-          templateUrl: '/app/app/views/charts/ios-engagement.html',
-          activeTab: 'charts',
-          action: 'charts.ios-engagement'
-        })
-        .when('/search/sdk/:platform', {
-          templateUrl: '/app/app/views/sdk-search.html',
-          activeTab: 'search'
-        })
-        .when('/timeline', {
-          templateUrl: '/app/app/views/newsfeed.html',
-          activeTab: 'newsfeed'
-        })
-        .when('/ad-intelligence', {
-          templateUrl: '/app/app/views/ad-intelligence.html',
-          activeTab: 'ad-intelligence'
-        })
-        .when('/admin', {
-          templateUrl: '/app/app/views/admin.html',
-          activeTab: 'admin'
-        })
-        .when('/admin/:id', {
-          templateUrl: '/app/app/views/admin.html',
-        })
-        .when('/publisher/:platform/:id', {
-          templateUrl: '/app/app/views/publisher-details.html',
-          activeTab: 'search'
-        })
-        .when('/search/custom', {
-          templateUrl: '/app/app/views/custom-search-results.html',
-          activeTab: 'search'
-        })
-        .when('/app/:platform/:id', {
-          templateUrl: '/app/app/views/app-details.html',
-          controller: 'AppDetailsCtrl',
-          activeTab: 'search'
-        })
-        .when('/company/:id', {
-          templateUrl: '/app/app/views/company-details.html',
-          controller: 'CompanyDetailsCtrl',
-          activeTab: 'search'
-        })
-        .when('/lists/:id', {
-          templateUrl: '/app/app/views/list.html',
-          activeTab: 'lists'
-        })
-        .when('/sdk/:platform/:id', {
-          templateUrl: '/app/app/views/sdk-details.html',
-          controller: 'SdkDetailsCtrl as sdkDetailsCtrl',
-          activeTab: 'sdks'
-        })
-        .otherwise({
-          redirectTo: '/timeline',
-          activeTab: 'newsfeed'
-        });
-  }])
   .config(['$httpProvider', function($httpProvider) {
      return $httpProvider.interceptors.push("authInterceptor");
   }])

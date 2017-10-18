@@ -748,18 +748,19 @@ angular.module("app.directives", []).directive("imgHolder", [
 							scope.stars = [];
 							scope.halfStars = [];
               scope.emptyStars = []
-    					if(scope.ratingValue % 1 === 0) {
-    						for (var i = 0; i < scope.ratingValue; i++) {
+              scope.starCount = parseFloat(scope.ratingValue, 10)
+    					if(scope.starCount % 1 === 0) {
+    						for (var i = 0; i < scope.starCount; i++) {
     							scope.stars.push({
     								filled : i
     							});
     						}
     					}
 
-    					if(scope.ratingValue % 1 !== 0) {
-    						for (var j = 0; j < scope.ratingValue -1; j++) {
+    					if(scope.starCount % 1 !== 0) {
+    						for (var j = 0; j < scope.starCount -1; j++) {
     							scope.stars.push({
-    								filled : j < scope.ratingValue -1
+    								filled : j < scope.starCount -1
     							});
     						}
     						scope.halfStars.push({

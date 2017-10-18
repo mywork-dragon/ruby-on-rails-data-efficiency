@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter", "contactService", "$sce",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter, contactService, $sce) {
+angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", "$stateParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService", "uniqueStringsFilter", "contactService", "$sce",
+  function($scope, $http, $stateParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService, uniqueStringsFilter, contactService, $sce) {
 
     var publisherDetailsCtrl = this;
-    $scope.appPlatform = $routeParams.platform
+    $scope.appPlatform = $stateParams.platform
     $scope.initialPageLoadComplete = false; // shows page load spinner
     $scope.currentPage = 1;
     $scope.currentContactsPage = 1;
@@ -16,7 +16,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
         return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_' + $scope.appPlatform + '_developer',
-        params: {id: $routeParams.id}
+        params: {id: $stateParams.id}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.publisherData = data;
@@ -31,16 +31,16 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
 
         mixpanel.track(
           "Publisher Page Viewed", {
-            "publisherId": $routeParams.id,
+            "publisherId": $stateParams.id,
             "appPlatform": $scope.appPlatform,
             "publisherName": $scope.publisherData.name
           }
         );
 
-        if ($routeParams.utm_source == 'salesforce') {
+        if ($stateParams.utm_source == 'salesforce') {
           mixpanel.track(
             "Salesforce Publisher Page Viewed", {
-              "publisherId": $routeParams.id,
+              "publisherId": $stateParams.id,
               "appPlatform": $scope.appPlatform,
               "publisherName": $scope.publisherData.name
             }
@@ -56,7 +56,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_developer_apps',
-        params: { id: $routeParams.id, platform: $routeParams.platform, sortBy: category, orderBy: order, pageNum: $scope.currentPage }
+        params: { id: $stateParams.id, platform: $stateParams.platform, sortBy: category, orderBy: order, pageNum: $scope.currentPage }
       }).success(function(data) {
         $scope.apps = data.apps
         publisherDetailsCtrl.queryInProgress = false;
@@ -79,13 +79,13 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       });
 
     /* LinkedIn Link Button Logic */
-    $scope.onLinkedinButtonClick = function(linkedinLinkType) {
-      if (linkedinLinkType == 'company' && $scope.publisherData.linkedin) {
-        contactService.getLink('linkedin', $scope.publisherData.linkedin, 'publisher');
-      } else {
-        contactService.getLink(linkedinLinkType, $scope.publisherData.name, 'publisher');
-      }
-    };
+    // $scope.onLinkedinButtonClick = function(linkedinLinkType) {
+    //   if (linkedinLinkType == 'company' && $scope.publisherData.linkedin) {
+    //     contactService.getLink('linkedin', $scope.publisherData.linkedin, 'publisher');
+    //   } else {
+    //     contactService.getLink(linkedinLinkType, $scope.publisherData.name, 'publisher');
+    //   }
+    // };
 
     $scope.onLinkedinContactClick = function (contact) {
       contactService.trackLinkedinContactClick(contact, 'publisher')
@@ -157,20 +157,20 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       }
     };
 
-    $scope.handleTagButtonClick = function() {
-      const id = $scope.publisherData.id;
-      if ($scope.publisherData.isMajorPublisher) {
-        apiService.untagAsMajorPublisher(id, $routeParams.platform).success(function(data) {
-          $scope.notify('major publisher untagged')
-          $scope.publisherData.isMajorPublisher = data.isMajorPublisher
-        })
-      } else {
-        apiService.tagAsMajorPublisher(id, $routeParams.platform).success(function(data) {
-          $scope.notify('major publisher tagged')
-          $scope.publisherData.isMajorPublisher = data.isMajorPublisher
-        })
-      }
-    }
+    // $scope.handleTagButtonClick = function() {
+    //   const id = $scope.publisherData.id;
+    //   if ($scope.publisherData.isMajorPublisher) {
+    //     apiService.untagAsMajorPublisher(id, $stateParams.platform).success(function(data) {
+    //       $scope.notify('major publisher untagged')
+    //       $scope.publisherData.isMajorPublisher = data.isMajorPublisher
+    //     })
+    //   } else {
+    //     apiService.tagAsMajorPublisher(id, $stateParams.platform).success(function(data) {
+    //       $scope.notify('major publisher tagged')
+    //       $scope.publisherData.isMajorPublisher = data.isMajorPublisher
+    //     })
+    //   }
+    // }
 
     $scope.exportContactsToCsv = function(filter) {
       apiService.exportContactsToCsv($scope.appPlatform, $scope.publisherData.id, filter, $scope.publisherData.name)
@@ -287,7 +287,7 @@ angular.module('appApp').controller("PublisherDetailsCtrl", ["$scope", "$http", 
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/' + $scope.appPlatform + '_sdks_exist',
-        params: { publisherId: $routeParams.id }
+        params: { publisherId: $stateParams.id }
       }).success(function (data) {
         $scope.installedSdks = data.installed_sdks
         $scope.installedSdkCategories = $scope.getSdkCategories(data.installed_sdks)

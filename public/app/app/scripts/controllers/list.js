@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$routeParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$window", "authService", "$location",
-  function($scope, $http, authToken, $routeParams, $rootScope, listApiService, searchService, pageTitleService, $window, authService, $location) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$stateParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$state", "authService", "$location",
+  function($scope, $http, authToken, $stateParams, $rootScope, listApiService, searchService, pageTitleService, $state, authService, $location) {
     $scope.AllSelectedItems = false;
     $scope.NoSelectedItems = false;
 
@@ -11,11 +11,11 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
 
     $scope.load = function() {
       $scope.queryInProgress = true;
-      listApiService.getList($routeParams.id).success(function(data) {
+      listApiService.getList($stateParams.id).success(function(data) {
         $scope.queryInProgress = false;
         $rootScope.apps = data.results;
         $rootScope.numApps = data.resultsCount;
-        $rootScope.currentList = $routeParams.id;
+        $rootScope.currentList = $stateParams.id;
       }).error(function() {
         $scope.queryInProgress = false;
       });
@@ -32,24 +32,24 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     };
 
     $scope.deleteSelected = function(selectedApps) {
-      listApiService.deleteSelected($routeParams.id, selectedApps).success(function() {
+      listApiService.deleteSelected($stateParams.id, selectedApps).success(function() {
         $rootScope.selectedAppsForList = [];
         $scope.load();
       });
     };
 
     $scope.deleteList = function() {
-      listApiService.deleteList($routeParams.id).success(function() {
+      listApiService.deleteList($stateParams.id).success(function() {
         listApiService.getLists().success(function(data) {
           $rootScope.usersLists = data;
-          $window.location.href = "#/timeline";
+          $state.go('timeline')
           $(".modal-backdrop").remove();
         });
       });
     };
 
     $scope.exportListToCsv = function() {
-      listApiService.exportToCsv($routeParams.id)
+      listApiService.exportToCsv($stateParams.id)
         .success(function (content) {
           var hiddenElement = document.createElement('a');
           hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);

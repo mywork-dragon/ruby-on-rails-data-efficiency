@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService",
-  function($scope, $http, $routeParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService) {
+angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$stateParams", "$window", "pageTitleService", "$rootScope", "apiService", "listApiService", "loggitService", "authService", "searchService",
+  function($scope, $http, $stateParams, $window, pageTitleService, $rootScope, apiService, listApiService, loggitService, authService, searchService) {
 
     $scope.initialPageLoadComplete = false; // shows page load spinner
 
@@ -12,7 +12,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
       return $http({
         method: 'GET',
         url: API_URI_BASE + 'api/get_company',
-        params: {id: $routeParams.id}
+        params: {id: $stateParams.id}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         $scope.companyData = data;
@@ -29,7 +29,7 @@ angular.module('appApp').controller("CompanyDetailsCtrl", ["$scope", "$http", "$
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
           "Company Page Viewed", {
-            "companyId": $routeParams.id,
+            "companyId": $stateParams.id,
             "appPlatform": APP_PLATFORM,
             "companyName": $scope.companyData.name,
             "fortuneRank": $scope.companyData.fortuneRank,

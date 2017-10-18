@@ -1,9 +1,16 @@
 'use strict';
 
-angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$routeParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'contactService', 'slacktivity', '$sce',
-  function($scope, $auth, authToken, $http, $routeParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, contactService, slacktivity, $sce) {
+angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authToken', "$http", "$stateParams", "$window", "$timeout", "$route", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "appDataService", 'newsfeedService', 'sdkLiveScanService', 'contactService', '$sce', '$location',
+  function($scope, $auth, authToken, $http, $stateParams, $window, $timeout, $route, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, appDataService, newsfeedService, sdkLiveScanService, contactService, $sce, $location) {
 
-    $scope.appPlatform = $routeParams.platform;
+    $scope.appPlatform = $stateParams.platform;
+
+    // $scope.activeSection = $route.current.activeSection;
+
+    $scope.changePath = function (newSection) {
+      const newPath = `app/${$scope.appPlatform}/${$scope.appData.id}/${newSection}`
+      $location.path(newPath, false)
+    }
 
     $scope.initialPageLoadComplete = false; // shows page load spinner
     $scope.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo
@@ -34,10 +41,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
         $scope.canViewSupportDesk = false;
       });
 
-      authService.accountInfo()
-      .success(function(data) {
-        $scope.salesforceSettings = data.salesforce_settings
-      })
+    authService.accountInfo()
+    .success(function(data) {
+      $scope.salesforceSettings = data.salesforce_settings
+    })
 
     $scope.getSalesforceData = function() {
       authService.userInfo().success(function(data) {
@@ -63,10 +70,10 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
     $scope.openSalesforceModal = function() {
       mixpanel.track(
         "Opened Salesforce Export Modal", {
-          "appId": $routeParams.id,
+          "appId": $stateParams.id,
           "appName": $scope.appData.name,
           "companyName": $scope.appData.publisher.name,
-          "appPlatform": $routeParams.platform
+          "appPlatform": $stateParams.platform
         }
       );
     }
@@ -86,61 +93,62 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
     $scope.load = function() {
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/get_' + $routeParams.platform + '_app',
-        params: {id: $routeParams.id}
+        url: API_URI_BASE + 'api/get_ios_app',
+        params: {id: 1}
       }).success(function(data) {
-        $scope.appData = data;
-        $scope.prepareRatings(data)
+        $scope.appData = app;
+        $scope.prepareRatings(app)
         if ($scope.appData.publisher && $scope.appData.publisher.websites && $scope.appData.supportDesk) {
           $scope.appData.publisher.websites.push($scope.appData.supportDesk)
         }
-        $scope.isFollowing = data.following
+        $scope.isFollowing = app.following
         $scope.initialPageLoadComplete = true; // hides page load spinner
-        if (data.facebookAds) {
-          for (var i = 0; i < data.facebookAds.length; i++) {
-            var ad = data.facebookAds[i];
+        if (app.facebookAds) {
+          for (var i = 0; i < app.facebookAds.length; i++) {
+            var ad = app.facebookAds[i];
             ad.id = i;
           }
         }
+        debugger
 
         // Updates displayStatus for use in android-live-scan ctrl
-        appDataService.displayStatus = {appId: $routeParams.id, status: data.displayStatus};
+        // appDataService.displayStatus = {appId: $stateParams.id, status: app.displayStatus};
         $scope.$broadcast('APP_DATA_FOR_APP_DATA_SERVICE_SET');
 
         /* Sets html title attribute */
-        pageTitleService.setTitle(data.name);
-        $scope.getCompanyContacts()
+        pageTitleService.setTitle(app.name);
+        // $scope.getCompanyContacts()
 
         /* -------- Mixpanel Analytics Start -------- */
-        if ($routeParams.from == 'ewok') {
+        if ($stateParams.from == 'ewok') {
           mixpanel.track(
             "Ewok App Page Viewed", {
-              "appId": $routeParams.id,
+              "appId": $stateParams.id,
               "appName": $scope.appData.name,
               "companyName": $scope.appData.publisher.name,
-              "appPlatform": $routeParams.platform
+              "appPlatform": $stateParams.platform
             }
           );
         } else {
           mixpanel.track(
             "App Page Viewed", {
-              "appId": $routeParams.id,
+              "appId": $stateParams.id,
               "appName": $scope.appData.name,
               "companyName": $scope.appData.publisher.name,
-              "appPlatform": $routeParams.platform
+              "appPlatform": $stateParams.platform
             }
           );
         }
         /* -------- Mixpanel Analytics End -------- */
 
-        if ($routeParams.utm_source == 'salesforce') {
+        if ($stateParams.utm_source == 'salesforce') {
           /* -------- Mixpanel Analytics Start -------- */
           mixpanel.track(
             "Salesforce App Page Viewed", {
-              "appId": $routeParams.id,
+              "appId": $stateParams.id,
               "appName": $scope.appData.name,
               "companyName": $scope.appData.publisher.name,
-              "appPlatform": $routeParams.platform
+              "appPlatform": $stateParams.platform
             }
           );
           /* -------- Mixpanel Analytics End -------- */
@@ -174,7 +182,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
     }
 
     $scope.openAppStorePage = function () {
-      const page = $routeParams.platform == 'ios' ? $scope.appData.appStoreLink : 'https://play.google.com/store/apps/details?id=' + $scope.appData.appIdentifier
+      const page = $stateParams.platform == 'ios' ? $scope.appData.appStoreLink : 'https://play.google.com/store/apps/details?id=' + $scope.appData.appIdentifier
       $window.open(page)
     }
 
@@ -208,8 +216,8 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
     $scope.addSelectedTo = function(list) {
       var selectedApp = [{
-        id: $routeParams.id,
-        type: $routeParams.platform
+        id: $stateParams.id,
+        type: $stateParams.platform
       }];
       listApiService.addSelectedTo(list, selectedApp, $scope.appPlatform).success(function() {
         $scope.notify('add-selected-success');
@@ -223,7 +231,7 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
     $scope.followApp = function(id, action) {
       const follow = {
         id,
-        type: $routeParams.platform == 'ios' ? 'IosApp' : 'AndroidApp',
+        type: $stateParams.platform == 'ios' ? 'IosApp' : 'AndroidApp',
         name: $scope.appData.name,
         action,
         source: 'appDetails'
@@ -249,12 +257,12 @@ angular.module('appApp').controller("AppDetailsCtrl", ["$scope", '$auth', 'authT
 
     $scope.handleTagButtonClick = function(id) {
       // if ($scope.appData.isMajorApp) {
-      //   apiService.untagAsMajorApp(id, $routeParams.platform).success(function(data) {
+      //   apiService.untagAsMajorApp(id, $stateParams.platform).success(function(data) {
       //     $scope.notify('major app untagged')
       //     $scope.appData.isMajorApp = data.isMajorApp
       //   })
       // } else {
-        apiService.tagAsMajorApp(id, $routeParams.platform).success(function(data) {
+        apiService.tagAsMajorApp(id, $stateParams.platform).success(function(data) {
           $scope.notify('major app tagged')
           $scope.appData.isMajorApp = data.isMajorApp
         })

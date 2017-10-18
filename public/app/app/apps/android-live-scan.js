@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
+angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "$stateParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
+  function($scope, $http, $stateParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
 
     var androidLiveScanCtrl = this;
-    var androidAppId = $routeParams.id;
+    var androidAppId = $stateParams.id;
 
     androidLiveScanCtrl.notify = function (type) {
       switch (type) {
@@ -56,12 +56,12 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
           if (data.error_code != null) {
             androidLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
-            sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($routeParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
+            sdkLiveScanService.androidLiveScanHiddenSdksAnalytics($stateParams.platform, androidAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
           }
 
           // LS Success Analytics - MixPanel & Slacktivity
           if(calledAfterSuccess) {
-            sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($routeParams.platform, appId, androidLiveScanCtrl.sdkData);
+            sdkLiveScanService.androidLiveScanSuccessRequestAnalytics($stateParams.platform, appId, androidLiveScanCtrl.sdkData);
           }
 
           /* Initializes all Bootstrap tooltips */
@@ -129,7 +129,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
             // Reset 'query in progress' if polling times out
             if(intervalCount == numRepeat) {
               androidLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, -1, "Timeout"); // Failed analytics response - MixPanel & Slacktivity
+              sdkLiveScanService.androidLiveScanFailRequestAnalytics($stateParams.platform, androidAppId, -1, "Timeout"); // Failed analytics response - MixPanel & Slacktivity
             }
 
             if(!statusCode && statusCode !== 0) { statusCode = 4 } // If status is null, treat as failed (status 4)
@@ -171,7 +171,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
                 androidLiveScanCtrl.failedLiveScan = true;
                 androidLiveScanCtrl.sdkData = { 'errorCode': data.status };
                 androidLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.androidLiveScanFailRequestAnalytics($routeParams.platform, androidAppId, statusCode, statusMessage); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.androidLiveScanFailRequestAnalytics($stateParams.platform, androidAppId, statusCode, statusMessage); // Failed analytics response - MixPanel & Slacktivity
                 break;
               case 7: //unchanged
                 androidLiveScanCtrl.noSdkData = false;
@@ -182,7 +182,7 @@ angular.module('appApp').controller("AndroidLiveScanCtrl", ["$scope", "$http", "
 
                 androidLiveScanCtrl.checkForAndroidSdks(androidAppId);
                 androidLiveScanCtrl.hideLiveScanButton = false;
-                sdkLiveScanService.androidLiveScanUnchangedVersionSuccess($routeParams.platform, androidAppId);
+                sdkLiveScanService.androidLiveScanUnchangedVersionSuccess($stateParams.platform, androidAppId);
                 androidLiveScanCtrl.notify('data-unchanged')
                 break;
             }

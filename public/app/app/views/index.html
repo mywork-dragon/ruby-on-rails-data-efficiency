@@ -71,7 +71,13 @@
         <div data-ng-if="!checkIfOwnPage()" data-ng-cloak="" class="no-print">
           <section data-ng-include=" '/app/app/views/header.html' " id="header" class="top-header"></section>
         </div>
-        <section data-ng-view="" id="content" ng-style="{top: appStatus ? '130px' : '80px'}" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth || checkIfOwnPage() ? 'contentHidden' : ''"></section>
+        <ui-view id="content" ng-style="{top: appStatus ? '130px' : '80px'}" class="animate-fade-up" ng-class="!$root.isAuthenticated || !$root.connectedOauth || checkIfOwnPage() ? 'contentHidden' : ''">
+          <div id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </ui-view>
       </div>
     </div>
     <div class="page-loading-overlay"> <div class="loader-2"></div> </div>
@@ -107,6 +113,7 @@
     <script src="/app/bower_components/slacktivity/slacktivity.js"></script>
     <script src="/app/bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js"></script>
     <script src="/app/bower_components/iso-currency/dist/isoCurrency.min.js"></script>
+    <script src="/app/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 
     <!-- Custom Angular Scripts -->
     <script src="/app/app/scripts/app.js"></script>
@@ -117,14 +124,16 @@
     <script src="/app/app/scripts/services/search.js"></script>
     <script src="/app/app/scripts/services/newsfeed.js"></script>
     <script src="/app/app/scripts/services/custom-search.js"></script>
-    <script src="/app/app/scripts/services/app-details.js"></script>
     <script src="/app/app/scripts/services/sdk-search.js"></script>
     <script src="/app/app/scripts/services/sdk-live-scan.js"></script>
     <script src="/app/app/scripts/services/general.js"></script>
     <script src="/app/app/scripts/services/filter.js"></script>
     <script src="/app/app/scripts/services/saved-search.js"></script>
     <script src="/app/app/scripts/services/api-token.js"></script>
+    <script src="/app/app/scripts/services/app.service.js"></script>
+    <script src="/app/app/scripts/services/publisher.service.js"></script>
     <script src="/app/app/scripts/services/click-copy.js"></script>
+    <script src="/app/app/scripts/services/contact.service.js"></script>
     <script src="/app/app/scripts/controllers/main.js"></script>
     <script src="/app/app/scripts/controllers/login.js"></script>
     <script src="/app/app/scripts/controllers/search.js"></script>
@@ -132,11 +141,8 @@
     <script src="/app/app/scripts/controllers/sdk-search.js"></script>
     <script src="/app/app/scripts/controllers/chart.js"></script>
     <script src="/app/app/scripts/controllers/list.js"></script>
-    <script src="/app/app/scripts/controllers/app-details.js"></script>
-    <script src="/app/app/scripts/controllers/publisher-details.js"></script>
+    <script src="/app/app/publishers/publisher.controller.js"></script>
     <script src="/app/app/scripts/controllers/newsfeed.js"></script>
-    <script src="/app/app/scripts/controllers/ios-live-scan.js"></script>
-    <script src="/app/app/scripts/controllers/android-live-scan.js"></script>
     <script src="/app/app/scripts/controllers/company-details.js"></script>
     <script src="/app/app/scripts/controllers/sdk-details.js"></script>
     <script src="/app/app/scripts/controllers/admin.js"></script>
@@ -147,6 +153,13 @@
     <script src="/app/app/scripts/controllers/help-video.js"></script>
     <script src="/app/app/scripts/controllers/api-token.js"></script>
     <script src="/app/app/scripts/controllers/filter.js"></script>
+
+    <!-- App Component Scripts -->
+    <script src="/app/app/apps/ad-intelligence.js"></script>
+    <script src="/app/app/apps/android-live-scan.js"></script>
+    <script src="/app/app/apps/app.controller.js"></script>
+    <script src="/app/app/apps/details.js"></script>
+    <script src="/app/app/apps/ios-live-scan.js"></script>
 
     <!-- Custom Scripts -->
     <script src="/app/app/js/ng-infinite-scroll.min.js"></script>

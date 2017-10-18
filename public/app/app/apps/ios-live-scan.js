@@ -1,15 +1,15 @@
 'use strict';
 
-angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$routeParams", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout",
-  function($scope, $http, $routeParams, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout) {
+angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$window", "pageTitleService", "listApiService", "loggitService", "$rootScope", "apiService", "authService", "sdkLiveScanService", "$interval", "$timeout", "$stateParams",
+  function($scope, $http, $window, pageTitleService, listApiService, loggitService, $rootScope, apiService, authService, sdkLiveScanService, $interval, $timeout, $stateParams) {
 
     var iosLiveScanCtrl = this;
-    var iosAppId = $routeParams.id;
+    var iosAppId = $stateParams.id;
 
     iosLiveScanCtrl.notify = function (type) {
       switch (type) {
         case 'data-unchanged':
-          return loggitService.logSuccess("App has not changed since last scan. SDKs are currently up to date!")
+          return loggitService.log("App has not changed since last scan. SDKs are currently up to date!")
         case 'updated':
           return loggitService.logSuccess("SDKs up to date!")
       }
@@ -69,12 +69,12 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
           if (data.error_code != null) {
             iosLiveScanCtrl.errorCodeMessage = errorCodeMessages[data.error_code];
-            sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, iosAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
+            sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($stateParams.platform, iosAppId, data.error_code, errorCodeMessages[data.error_code]); // Failed analytics response - MixPanel & Slacktivity
           }
 
           // LS Success Analytics - MixPanel & Slacktivity
           if(calledAfterSuccess) {
-            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($routeParams.platform, appId, iosLiveScanCtrl.sdkData);
+            sdkLiveScanService.iosLiveScanSuccessRequestAnalytics($stateParams.platform, appId, iosLiveScanCtrl.sdkData);
           }
 
           /* Initializes all Bootstrap tooltips */
@@ -145,7 +145,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
             // Reset 'query in progress' if pulling times out
             if(intervalCount == numRepeat) {
               iosLiveScanCtrl.sdkQueryInProgress = false;
-              sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, -1); // Failed analytics response - MixPanel & Slacktivity
+              sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosAppId, -1); // Failed analytics response - MixPanel & Slacktivity
             }
 
             if(!data.status && data.status !== 0) { data.status = 11 } // If status is null, treat as failed (status 10)
@@ -181,7 +181,7 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
               case 11:
                 iosLiveScanCtrl.noSdkData = true;
                 iosLiveScanCtrl.failedLiveScan = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, data.status); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosAppId, data.status); // Failed analytics response - MixPanel & Slacktivity
                 break;
             }
 
@@ -198,10 +198,10 @@ angular.module('appApp').controller("IosLiveScanCtrl", ["$scope", "$http", "$rou
 
               if(data.status < 4 ) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($routeParams.platform, iosAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
+                sdkLiveScanService.iosLiveScanHiddenSdksAnalytics($stateParams.platform, iosAppId, data.status, statusCodeMessages[data.status]); // Failed analytics response - MixPanel & Slacktivity
               } else if (data.status == 4) {
                 iosLiveScanCtrl.hideLiveScanButton = true;
-                sdkLiveScanService.iosLiveScanFailRequestAnalytics($routeParams.platform, iosAppId, data.status); // Failed anal
+                sdkLiveScanService.iosLiveScanFailRequestAnalytics($stateParams.platform, iosAppId, data.status); // Failed anal
               }
 
             } else if(data.status == 1 || data.status == 10 || data.status == 11) { // if status 1, 9 or 10

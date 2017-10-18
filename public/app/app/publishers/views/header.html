@@ -1,0 +1,39 @@
+<div id="publisher-page">
+  <div id="wrap_spinner" ng-if="!publisher.publisherFetchComplete">
+    <div class="loading outer">
+      <div class="loading inner"></div>
+    </div>
+  </div>
+  <div ng-if="publisher.publisherFetchComplete">
+    <header class="page-main-header ng-scope">
+      <div class="row publisher-header">
+        <div class="col-md-1" id="appPageLogoBox" ng-if="publisher.logo">
+          <img ng-src="{{publisher.logo}}" id="appDetailsPageAppLogo" />
+        </div>
+        <div class="col-md-6" ng-class="{ 'no-logo': !publisher.logo }">
+          <h4>
+            {{publisher.name}}
+          </h4>
+          <div class="app-details">
+            <div>
+              <i class="icon fa" ng-class="publisher.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+              <span>{{publisher.platform == 'ios' ? 'iOS' : 'Android'}} Publisher</span>
+            </div>
+            <div>
+              <i class="icon fa fa-mobile"></i>
+              <span>{{publisher.numApps == 0 ? 'No' : (publisher.numApps | number)}} {{publisher.numApps == 1 ? 'app' : 'apps'}}</span>
+            </div>
+          </div>
+        </duv>
+      </div>
+    </header>
+    <!-- <ul class="nav nav-tabs nav-justified">
+      <li class="uib-tab nav-item" ng-repeat="tab in publisher.tabs" ui-sref="{{tab.route}}" ui-sref-active="active">
+        <a class="nav-link">
+          <uib-tab-heading>{{tab.title}}</uib-tab-heading>
+        </a>
+      </li>
+    </ul> -->
+    <ui-view></ui-view>
+  </div>
+</div>

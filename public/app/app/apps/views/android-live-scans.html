@@ -23,7 +23,7 @@
                   <span class="scan-date-title">
                     Latest Update:
                   </span>
-                  {{appData.lastUpdated | date : 'shortDate'}}
+                  {{app.lastUpdated | date : 'shortDate'}}
                 </li>
                 <li>
                   <span class="scan-date-title">
@@ -33,8 +33,8 @@
                 </li>
                 <li>
                   <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan</button>
-                    <button type="submit" class="btn btn-block disabled" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.appData.id)" ng-hide="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.app.id)" ng-show="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan</button>
+                    <button type="submit" class="btn btn-block disabled" ng-click="androidLiveScanCtrl.getSdks(androidLiveScanCtrl.app.id)" ng-hide="androidLiveScanCtrl.sdkData && androidLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
                   </div>
                 </li>
                 <li id="live-scan-hint-li" data-ng-controller="VideoModalCtrl as videoModalCtrl">

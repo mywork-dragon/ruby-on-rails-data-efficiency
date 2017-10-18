@@ -7681,8 +7681,12 @@ span#dashboardResultsTableHeadingNumDisplayed {
   text-align: center;
 }
 
-#appPage > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner, #adminPage > #wrap_spinner, .chartPage > #wrap_spinner {
+#appPage > #wrap_spinner, #publisher-page > #wrap_spinner, #companyPage > #wrap_spinner, #newsfeedPage > #wrap_spinner, #adminPage > #wrap_spinner, .chartPage > #wrap_spinner {
   text-align: center;
+  margin-top: 10%;
+}
+
+#content > #wrap_spinner {
   margin-top: 10%;
 }
 
@@ -9261,4 +9265,11 @@ h4.red {
   border-top: 1px solid #eee;
   margin-top: 15px;
   padding-top: 20px;
+}
+
+
+/* Tabs */
+
+a.nav-link {
+  cursor: pointer;
 }

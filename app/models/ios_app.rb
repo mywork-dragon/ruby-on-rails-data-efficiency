@@ -209,7 +209,6 @@ class IosApp < ActiveRecord::Base
         currentVersion: self.version,
         currentVersionDescription: self.release_notes,
         rating: self.rating,
-        ratingsCount: self.ratings_count,
         ratings: self.ratings,
         inAppPurchases: newest_snapshot.try(:ios_in_app_purchases).try(:any?),
         appIdentifier: self.app_identifier,
@@ -288,7 +287,7 @@ class IosApp < ActiveRecord::Base
   def rating
     intl_snapshot = first_international_snapshot
     if intl_snapshot
-      {rating: intl_snapshot['ratings_all_stars'], country_code: intl_snapshot['app_store'].try(:country_code)}
+      {rating: intl_snapshot['ratings_all_stars'], country_code: intl_snapshot['app_store'].try(:country_code), count: intl_snapshot['ratings_all_count']}
     else
       {country_code: 'US', rating: newest_ios_app_snapshot.try(:ratings_all_stars)}
     end
@@ -298,14 +297,14 @@ class IosApp < ActiveRecord::Base
     IosSnapshotAccessor.new.store_and_rating_details_from_ios_app(self)
   end
 
-  def ratings_count
-    intl_snapshot = first_international_snapshot
-    if intl_snapshot
-      {ratings_count: intl_snapshot['ratings_all_count'], country_code: intl_snapshot['app_store'].try(:country_code)}
-    else
-      {country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count)}
-    end
-  end
+  # def ratings_count
+  #   intl_snapshot = first_international_snapshot
+  #   if intl_snapshot
+  #     {ratings_count: intl_snapshot['ratings_all_count'], country_code: intl_snapshot['app_store'].try(:country_code)}
+  #   else
+  #     {country_code: 'US', ratings_count: newest_ios_app_snapshot.try(:ratings_all_count)}
+  #   end
+  # end
 
   def latest_facebook_ad
     latest_ad

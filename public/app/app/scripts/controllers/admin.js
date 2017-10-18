@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", '$routeParams', 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
-  function($scope, $routeParams, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", '$stateParams', 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
+  function($scope, $stateParams, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
 
     var adminCtrl = this
     $scope.initialPageLoadComplete = false;
@@ -58,7 +58,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", '$routeParams', 'aut
     }
 
     $scope.load = function() {
-      $scope.accountId = $routeParams.id
+      $scope.accountId = $stateParams.id
 
       return $http({
         method: 'GET',

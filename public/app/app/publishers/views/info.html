@@ -1,36 +1,5 @@
-<div id="companyPage" data-ng-controller="PublisherDetailsCtrl as publisherDetailsCtrl">
-
-  <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
-    <div class="loading outer">
-      <div class="loading inner"></div>
-    </div>
-  </div>
-
-  <div ng-if="initialPageLoadComplete" data-ng-controller="ListCtrl">
-
-    <header class="page-main-header ng-scope">
-      <div class="row publisher-header">
-        <div class="col-md-1" id="appPageLogoBox" ng-if="publisherData.logo">
-          <img ng-src="{{publisherData.logo}}" id="appDetailsPageAppLogo" />
-        </div>
-        <div class="col-md-6" ng-class="{ 'no-logo': !publisherData.logo }">
-          <h4>
-            {{publisherData.name}}
-          </h4>
-          <div class="app-details">
-            <div>
-              <i class="icon fa" ng-class="appPlatform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
-              <span>{{appPlatform == 'ios' ? 'iOS' : 'Android'}} Publisher</span>
-            </div>
-            <div>
-              <i class="icon fa fa-mobile"></i>
-              <span>{{numApps == 0 ? 'No' : (numApps | number)}} {{numApps == 1 ? 'app' : 'apps'}}</span>
-            </div>
-          </div>
-        </duv>
-      </div>
-    </header>
-
+<div id="companyPage">
+  <div data-ng-controller="ListCtrl">
     <div class="row companyPageRow">
       <div ng-if="canViewStorewideSdks || canViewSdks" class="col-md-6 info-column">
         <div class="panel panel-default">
@@ -40,16 +9,16 @@
           <div class="panel-body">
             <div class="media">
               <div class="media-body">
-                <ul class="list-unstyled list-info" ng-if="!sdksLoading">
-                  <li id="sdkLiveScanDisplay" ng-show="installedSdksCount">
+                <ul class="list-unstyled list-info" ng-if="publisher.sdkFetchComplete">
+                  <li id="sdkLiveScanDisplay" ng-show="publisher.installedSdksCount">
                     <div class="sdksListView">
                       <div class="row">
-                        <div class="col-md-6" ng-if="installedSdksCount">
-                          <h4>Installed SDKs <span class="liveScanSdksCountDisplay">({{installedSdksCount}})</span></h4>
-                          <div ng-repeat="(category, isCollapsed) in installedSdkCategories" ng-init="sdks = installedSdks[category]">
+                        <div class="col-md-6" ng-if="publisher.installedSdksCount">
+                          <h4>Installed SDKs <span class="liveScanSdksCountDisplay">({{publisher.installedSdksCount}})</span></h4>
+                          <div ng-repeat="(category, isCollapsed) in publisher.installedSdkCategories" ng-init="sdks = publisher.installedSdks[category]">
                             <strong class="sdk-tag">{{category}}</strong>
-                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="installedSdkCategories[category] = !installedSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
-                            <ul ng-show="sdks.length <= 10 || !installedSdkCategories[category]">
+                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="publisher.installedSdkCategories[category] = !publisher.installedSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
+                            <ul ng-show="sdks.length <= 10 || !publisher.installedSdkCategories[category]">
                               <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
                                 <div class="sdkLiveScanDisplayIconSection">
                                   <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']">
@@ -57,7 +26,7 @@
                                 </div>
                                 <div class="sdkLiveScanDisplayTitleSection">
                                   <span ng-if="canViewStorewideSdks">
-                                    <a ng-href="#/sdk/{{appPlatform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                                    <a ng-href="#/sdk/{{publisher.platform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                                     <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
                                     <span class="publisherSdkInstalledApps">
                                       <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
@@ -69,12 +38,12 @@
                           </div>
                         </div>
 
-                        <div class="col-md-6 sdkOpenSourceSection" ng-show="uninstalledSdksCount">
-                          <h4>Uninstalled SDKs <span class="liveScanSdksCountDisplay">({{uninstalledSdksCount}})</span></h4>
-                          <div ng-repeat="(category, isCollapsed) in uninstalledSdkCategories" ng-init="sdks = uninstalledSdks[category]">
+                        <div class="col-md-6 sdkOpenSourceSection" ng-show="publisher.uninstalledSdksCount">
+                          <h4>Uninstalled SDKs <span class="liveScanSdksCountDisplay">({{publisher.uninstalledSdksCount}})</span></h4>
+                          <div ng-repeat="(category, isCollapsed) in publisher.uninstalledSdkCategories" ng-init="sdks = publisher.uninstalledSdks[category]">
                             <strong class="sdk-tag">{{category}}</strong>
-                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="uninstalledSdkCategories[category] = !uninstalledSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
-                            <ul ng-show="sdks.length <= 10 || !uninstalledSdkCategories[category]">
+                            <span class="collapse-text-toggle" ng-if="sdks.length > 10" ng-click="publisher.uninstalledSdkCategories[category] = !publisher.uninstalledSdkCategories[category]">{{isCollapsed ? 'See ' + sdks.length + ' SDKs' : 'Hide ' + sdks.length + ' SDKs'}}</span>
+                            <ul ng-show="sdks.length <= 10 || !publisher.uninstalledSdkCategories[category]">
                               <li class="sdkLiveScanDisplayList" ng-repeat="sdk in sdks">
                                 <div class="sdkLiveScanDisplayIconSection">
                                   <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']">
@@ -82,7 +51,7 @@
                                 </div>
                                 <div class="sdkLiveScanDisplayTitleSection">
                                   <span ng-if="canViewStorewideSdks">
-                                    <a ng-href="#/sdk/{{appPlatform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
+                                    <a ng-href="#/sdk/{{publisher.platform}}/{{sdk['id']}}" ng-show="{{sdk['id']}}">{{sdk['name']}}</a>
                                     <strong ng-hide="sdk['id']">{{sdk['name']}}</strong>
                                     <span class="publisherSdkUninstalledApps">
                                       <strong>{{sdk['count']}} {{sdk['count'] > 1 ? 'apps' : 'app'}}</strong>
@@ -97,14 +66,14 @@
                     </div>
                   </li>
 
-                  <li ng-if="!installedSdksCount && !uninstalledSdksCount">
+                  <li ng-if="!publisher.installedSdksCount && !publisher.uninstalledSdksCount">
                     <div style="text-align:center">
                       <strong>No SDKs</strong>
                     </div>
                   </li>
                 </ul>
 
-                <div id="wrap_spinner" ng-if="sdksLoading">
+                <div id="wrap_spinner" ng-if="!publisher.sdkFetchComplete">
                   <div class="loading outer">
                     <div class="loading inner"></div>
                   </div>
@@ -128,47 +97,47 @@
                     <span class="icon fa fa-star"></span>
                     <label>Major Publisher:</label>
                     <div class="actionButton">
-                      <button type="submit" ng-class="publisherData.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="handleTagButtonClick()">{{publisherData.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
+                      <button type="submit" ng-class="publisher.isMajorPublisher ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-click="publisher.handleTagButtonClick()">{{publisher.isMajorPublisher ? "Untag as major publisher" : "Tag as major publisher" }}</button>
                     </div>
                   </li>
                   <li id="linkedinLinksList">
                     <span class="icon fa fa-linkedin"></span>
                     <label>Search LinkedIn:</label>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('company')">Company</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('sales')">Sales Team</button>
-                    <button type="submit" class="btn btn-default btn-sm" ng-click="onLinkedinButtonClick('marketing')">Marketing Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="publisher.onLinkedinButtonClick('company')">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="publisher.onLinkedinButtonClick('sales')">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="publisher.onLinkedinButtonClick('marketing')">Marketing Team</button>
                   </li>
-                  <li ng-if="publisherData.crunchbase">
+                  <li ng-if="publisher.crunchbase">
                     <span class="icon fa fa-line-chart"></span>
                     <label>Crunchbase:</label>
                     <a
-                      ng-href="https://www.crunchbase.com/{{publisherData.crunchbase}}"
+                      ng-href="https://www.crunchbase.com/{{publisher.crunchbase}}"
                       target="_blank"
-                      ng-click="crunchbaseLinkClicked()">
-                      crunchbase.com/{{publisherData.crunchbase}}
+                      ng-click="publisher.trackCrunchbaseClick()">
+                      crunchbase.com/{{publisher.crunchbase}}
                     </a>
                   </li>
-                  <li ng-if="publisherData.fortuneRank">
+                  <li ng-if="publisher.fortuneRank">
                     <span class="icon fa fa-bar-chart"></span>
                     <label>Fortune Rank:</label>
-                    {{publisherData.fortuneRank}}
+                    {{publisher.fortuneRank}}
                   </li>
-                  <li ng-if="publisherData.websites">
+                  <li ng-if="publisher.websites">
                     <span class="icon fa fa-globe"></span>
-                    <label>Website<span ng-if="publisherData.websites.length > 1">s</span>:</label>
+                    <label>Website<span ng-if="publisher.websites.length > 1">s</span>:</label>
                     <ul class="websites">
-                      <li ng-repeat="website in publisherData.websites | limitTo:10">
+                      <li ng-repeat="website in publisher.websites | limitTo:10">
                         <span>
                           <a ng-href="{{website}}" class="companyPageWebsiteLink" target="_blank">{{website}}</a>
                         </span>
                       </li>
                     </ul>
                   </li>
-                  <li ng-if="publisherData.headquarters.length">
+                  <li ng-if="publisher.headquarters.length">
                     <span class="icon fa fa-home"></span>
                     <label>Headquarters</label>
                     <ul class="nested">
-                      <li ng-repeat="location in publisherData.headquarters">
+                      <li ng-repeat="location in publisher.headquarters">
                         <label title="{{location.domain}}">{{location.domain}}</label>
                         {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}
                       </li>
@@ -193,25 +162,31 @@
                           ng-model="companyContactFilter"
                           type="text"
                           class="form-control"
-                          ng-hide="contactsLoading"
+                          ng-if="publisher.contactFetchComplete"
                           placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
-                          ng-enter="getCompanyContacts(companyContactFilter, 1, true)">
+                          ng-enter="publisher.getCompanyContacts(companyContactFilter); publisher.trackCompanyContactsRequest(companyContactFilter)">
                       </div>
                       <div id="showCompanyEmailsButton">
-                        <button ng-hide="contactsLoading" type="submit" class="btn btn-primary btn-block" ng-click="getCompanyContacts(companyContactFilter, 1, true)">Find Contacts</button>
+                        <button
+                          ng-if="publisher.contactFetchComplete"
+                          type="submit"
+                          class="btn btn-primary btn-block"
+                          ng-click="publisher.getCompanyContacts(companyContactFilter); publisher.trackCompanyContactsRequest(companyContactFilter)">
+                          Find Contacts
+                        </button>
                       </div>
                     </div>
-                    <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                    <div id="loadingSpinnerContainer" data-ng-if="!publisher.contactFetchComplete">
                       <div class="loading outer">
                         <div class="loading inner"></div>
                       </div>
                     </div>
-                  <div data-ng-controller="TableCtrl" ng-show="contactsLoaded && !contactsLoading">
+                  <div data-ng-controller="TableCtrl" ng-if="publisher.contactFetchComplete">
                       <br>
                       <!-- Company Apps Table -->
-                      <div class="panel-heading" id="companyContactsTableHeading">
-                        <strong><span ng-if="companyContacts.length">{{contactsCount}} Contacts</span></strong>
-                        <button type="submit" class="btn btn-default btn-sm pull-right" ng-if="canViewExports" ng-click="exportContactsToCsv(companyContactFilter)">Export Contacts to CSV</button>
+                      <div class="panel-heading" id="companyContactsTableHeading" ng-if="publisher.contactsCount">
+                        <strong><span ng-if="publisher.contacts.length">{{publisher.contactsCount}} Contacts</span></strong>
+                        <button type="submit" class="btn btn-default btn-sm pull-right" ng-if="canViewExports" ng-click="publisher.exportContactsToCsv(companyContactFilter)">Export Contacts to CSV</button>
                         <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
                       </div>
 
@@ -229,15 +204,15 @@
                           </tr>
                           </thead>
 
-                          <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
-                            <tr data-ng-repeat="contact in companyContacts">
+                          <tbody data-ng-hide="!publisher.contactFetchComplete">
+                            <tr data-ng-repeat="contact in publisher.contacts">
                               <td>
                                 <p class="table-text" ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
                                 <a
                                   ng-if='contact.linkedin'
                                   ng-href="https://www.linkedin.com/{{contact.linkedin}}"
-                                  ng-click="onLinkedinContactClick(contact)" target="_blank"
-                                  uib-tooltip-html="linkedinTooltip"
+                                  ng-click="publisher.trackLinkedinContactClick(contact)" target="_blank"
+                                  uib-tooltip-html="publisher.linkedinTooltip"
                                 >{{contact.fullName}} - {{contact.title}}</a>
                               </td>
                               <td>
@@ -247,35 +222,35 @@
                                     uib-tooltip="{{ clicked ? 'Copied!' : 'Copy to clipboard' }}"
                                     tooltip-placement="auto top"
                                     ng-click-copy="{{contact.email}}"
-                                    ng-click="clicked = true; emailCopied(contact)"
+                                    ng-click="clicked = true; publisher.trackCopiedEmail(contact)"
                                     ng-mouseenter="clicked = false">
                                     {{contact.email}}
                                   </p>
                                 </div>
                                 <div ng-if="!contact.email">
                                   <div class="loader" ng-if="contact.isLoading"></div>
-                                  <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="getContactEmail(contact)">Get Email</button>
+                                  <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="publisher.getContactEmail(contact)">Get Email</button>
                                 </div>
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                        <div class="tableStatusMessage" ng-show="contactsLoading || companyContacts.length < 1">
-                          <h5 data-ng-hide="companyContacts.length > 0 || !contactsLoaded">Sorry, No Contacts Available</h5>
-                          <div id="loadingSpinnerContainer" data-ng-show="contactsLoading">
+                        <div class="tableStatusMessage" ng-show="!publisher.contactFetchComplete || !publisher.contacts.length">
+                          <h5 data-ng-hide="publisher.contacts.length || !publisher.contactFetchComplete">Sorry, No Contacts Available</h5>
+                          <div id="loadingSpinnerContainer" data-ng-show="!publisher.contactFetchComplete">
                             <div class="loading outer">
                               <div class="loading inner"></div>
                             </div>
                           </div>
                         </div>
-                        <div class="row" ng-if="contactsCount > contactsPerPage">
+                        <div class="row" ng-if="publisher.contactsCount > 10">
                           <div class="col-md-12 text-right pagination-container">
                             <uib-pagination class="pagination-sm"
-                                        ng-model="currentContactsPage"
-                                        total-items="contactsCount"
+                                        ng-model="publisher.currentContactsPage"
+                                        total-items="publisher.contactsCount"
                                         max-size="8"
-                                        ng-change="getCompanyContacts(companyContactFilter, currentContactsPage)"
-                                        items-per-page="contactsPerPage"
+                                        ng-change="publisher.getCompanyContacts(companyContactFilter)"
+                                        items-per-page="10"
                                         rotate="false"
                                         boundary-links="true"></uib-pagination>
 
@@ -297,9 +272,9 @@
         <!-- Company Apps Table -->
         <section class="panel panel-default table-dynamic" data-ng-controller="ListCtrl">
           <div class="panel-heading" id="listViewTableHeading">
-            <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisherData.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| {{numApps | number}} apps</span>
+            <strong><i class="fa fa-list panel-ico"></i>Apps Owned by {{publisher.name}}</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="publisher.numApps">| {{publisher.numApps | number}} apps</span>
             <span class="ui-select pull-right">
-              <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="addMixedSelectedTo(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
+              <select id="addSelectedToDropDown" ng-model="addSelectedToDropdown" ng-change="publisher.addAppsToList(addSelectedToDropdown, selectedAppsForList)" ng-disabled="selectedAppsForList < 1">
                 <option value="">Add Selected to List</option>
                 <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
               </select>
@@ -312,16 +287,16 @@
               <thead>
                 <tr>
                   <th class="selectAllCheckboxHeader">
-                    <select-all-checkbox-two apps="apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
+                    <select-all-checkbox-two apps="publisher.apps" selected-apps-for-list="selectedAppsForList"></select-all-checkbox-two>
                   </th>
                   <th class="resultsTableAppIcon"><div class="th normal-right-padding">
                     App Name
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('name', 'asc') "
-                          data-ng-class="{active: rowSort == 'name'}"></span>
+                          data-ng-click="publisher.sortApps('name', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'name'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('name', 'desc') "
-                          data-ng-class="{active: rowSort == '-name'}"></span>
+                          data-ng-click="publisher.sortApps('name', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-name'}"></span>
                   </div></th>
                   <th><div class="th normal-right-padding appDetailsHeader">
                     App Type
@@ -329,38 +304,38 @@
                   <th><div class="th normal-right-padding">
                     Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="mobilePriorityExplanation"></span>
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('mobile_priority', 'desc') "
-                          data-ng-class="{active: rowSort == '-mobile_priority'}"></span>
+                          data-ng-click="publisher.sortApps('mobile_priority', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-mobile_priority'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('mobile_priority', 'asc') "
-                          data-ng-class="{active: rowSort == 'mobile_priority'}"></span>
+                          data-ng-click="publisher.sortApps('mobile_priority', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'mobile_priority'}"></span>
                   </div></th>
                   <th><div class="th normal-right-padding">
                     Ad Spend <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Based on Facebook ads seen"></span>
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('facebook_ads', 'asc') "
-                          data-ng-class="{active: rowSort == 'facebook_ads'}"></span>
+                          data-ng-click="publisher.sortApps('facebook_ads', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'facebook_ads'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('facebook_ads', 'desc') "
-                          data-ng-class="{active: rowSort == '-facebook_ads'}"></span>
+                          data-ng-click="publisher.sortApps('facebook_ads', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-facebook_ads'}"></span>
                   </div></th>
                   <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
                     User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('user_base_display_score', 'asc') "
-                          data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>
+                          data-ng-click="publisher.sortApps('user_base_display_score', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-user_base_display_score'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('user_base_display_score', 'desc') "
-                          data-ng-class="{active: rowSort == '-user_base_display_score'}"></span>
+                          data-ng-click="publisher.sortApps('user_base_display_score', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'user_base_display_score'}"></span>
                   </div></th>
                   <th><div class="th normal-right-padding">
                     Categories
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('categories', 'asc') "
-                          data-ng-class="{active: rowSort == 'categories'}"></span>
+                          data-ng-click="publisher.sortApps('categories', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'categories'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('categories', 'desc') "
-                          data-ng-class="{active: rowSort == '-categories'}"></span>
+                          data-ng-click="publisher.sortApps('categories', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-categories'}"></span>
                   </div></th>
                   <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
                     Support Desk
@@ -368,23 +343,23 @@
                   <th><div class="th normal-right-padding">
                     Last Updated
                     <span class="glyphicon glyphicon-chevron-up"
-                          data-ng-click="sortApps('last_updated', 'desc') "
-                          data-ng-class="{active: rowSort == '-last_updated'}"></span>
+                          data-ng-click="publisher.sortApps('last_updated', 'desc') "
+                          data-ng-class="{active: publisher.rowSort == '-last_updated'}"></span>
                     <span class="glyphicon glyphicon-chevron-down"
-                          data-ng-click="sortApps('last_updated', 'asc') "
-                          data-ng-class="{active: rowSort == 'last_updated'}"></span>
+                          data-ng-click="publisher.sortApps('last_updated', 'asc') "
+                          data-ng-class="{active: publisher.rowSort == 'last_updated'}"></span>
                   </div></th>
                 </tr>
               </thead>
 
-              <tbody data-ng-hide="publisherDetailsCtrl.queryInProgress">
-                <tr data-ng-repeat="app in apps" class="{{!app.appAvailable ? 'faded' : ''}}">
+              <tbody data-ng-if="publisher.appFetchComplete">
+                <tr data-ng-repeat="app in publisher.apps" class="{{!app.appAvailable ? 'faded' : ''}}">
                   <td class="dashboardTableDataCheckbox">
-                    <checkable-checkbox-two app="app" apps="apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
+                    <checkable-checkbox-two app="app" apps="publisher.apps" selected-apps-for-list="selectedAppsForList"></checkable-checkbox-two>
                   </td>
                   <td class="resultsTableAppIcon">
                     <span>
-                      <a ng-href="#/app/{{app.platform}}/{{app.id}}" ng-click="onAppTableAppClick(app)">
+                      <a ng-href="#/app/{{app.platform}}/{{app.id}}" ng-click="publisher.trackAppClick(app)">
                         <img ng-src="{{app.icon}}" />
                         {{app.name}}
                         <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
@@ -409,7 +384,7 @@
                       <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                       {{app.userBase.user_base | capitalize}}
                     </span>
-                    <a ng-if="app.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                    <a ng-if="app.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link" popover-placement="auto right">
                       <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
                       {{app.userBase.user_base | capitalize}}
                     </a>
@@ -427,7 +402,7 @@
                   <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
                   <td>
                     <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
-                      <span ng-class="getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                      <span ng-class="publisher.getLastUpdatedDaysClass(app.lastUpdatedDays)">
                         <strong>{{app.lastUpdatedDays}}</strong>
                       </span> days ago
                     </span>
@@ -435,9 +410,9 @@
                 </tr>
               </tbody>
             </table>
-            <div id="dashboardTableStatusMessage" data-ng-show="publisherDetailsCtrl.queryInProgress || !(apps.length > 0)">
-              <h5 data-ng-hide="apps.length > 0 || publisherDetailsCtrl.queryInProgress">No Items</h5>
-              <div data-ng-show="publisherDetailsCtrl.queryInProgress" id="wrap_spinner">
+            <div id="dashboardTableStatusMessage" data-ng-show="!publisher.appFetchComplete || !publisher.apps.length">
+              <h5 data-ng-hide="publisher.apps.length > 0 || publisher.appFetchComplete">No Items</h5>
+              <div data-ng-hide="publisher.appFetchComplete" id="wrap_spinner">
                 <div class="loading outer">
                   <div class="loading inner"></div>
                 </div>
@@ -445,17 +420,17 @@
             </div>
 
           </div>
-          <footer class="table-footer" ng-if="numApps > 100">
+          <footer class="table-footer" ng-if="publisher.numApps > 25">
             <div class="row">
               <div class="col-md-6">
               </div>
               <div class="col-md-6 text-right pagination-container">
                 <uib-pagination class="pagination-sm"
-                            ng-model="currentPage"
-                            total-items="numApps"
+                            ng-model="publisher.currentAppPage"
+                            total-items="publisher.numApps"
                             max-size="8"
-                            ng-change="submitPageChange(currentPage)"
-                            items-per-page="100"
+                            ng-change="publisher.getPublisherApps()"
+                            items-per-page="25"
                             rotate="false"
                             boundary-links="true"></uib-pagination>
 

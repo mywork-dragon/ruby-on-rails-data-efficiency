@@ -73,50 +73,6 @@ angular.module("appApp")
           url: `${API_URI_BASE}api/get_${APP_PLATFORM}_sdk_categories`
         })
       },
-      getCompanyContacts: function(platform, publisherId, filter, page, contactsPerPage) {
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/company/contacts',
-          data: {
-            platform: platform,
-            publisherId: publisherId,
-            filter: filter,
-            page: page,
-            perPage: contactsPerPage
-          }
-        });
-      },
-      getContactEmail: function(clearbitId) {
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/company/contact',
-          data: {
-            contactId: clearbitId,
-          }
-        });
-      },
-      exportContactsToCsv: function(platform, publisherId, filter, companyName) {
-        /* -------- Mixpanel Analytics Start -------- */
-        mixpanel.track(
-          "Exported Contacts CSV", {
-            'filter': filter,
-            'companyName': companyName,
-            'publisherId': publisherId,
-            'platform': platform
-          }
-        );
-        /* -------- Mixpanel Analytics End -------- */
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/contacts/export_to_csv',
-          data: {
-            platform: platform,
-            publisherId: publisherId,
-            filter: filter,
-            companyName: companyName
-          }
-        });
-      },
       exportNewestChartToCsv: function() {
         /* -------- Mixpanel Analytics Start -------- */
         mixpanel.track(
@@ -157,41 +113,6 @@ angular.module("appApp")
         return $http({
           method: 'GET',
           url: API_URI_BASE + 'api/sdk/scanned_count'
-        })
-      },
-      iosResetAppData: function(appId) {
-        return $http({
-          method: 'POST',
-          url: API_URI_BASE + 'api/admin/ios_reset_app_data',
-          params: {appId}
-        })
-      },
-      tagAsMajorApp: function (appId, platform) {
-        return $http({
-          method: 'POST',
-          url: `${API_URI_BASE}api/admin/major_apps/tag`,
-          params: { appId, platform }
-        })
-      },
-      untagAsMajorApp: function (appId, platform) {
-        return $http({
-          method: 'PUT',
-          url: `${API_URI_BASE}api/admin/major_apps/untag`,
-          params: { appId, platform }
-        })
-      },
-      tagAsMajorPublisher: function (id, platform) {
-        return $http({
-          method: 'POST',
-          url: `${API_URI_BASE}api/admin/major_publishers/tag`,
-          params: { id, platform }
-        })
-      },
-      untagAsMajorPublisher: function (id, platform) {
-        return $http({
-          method: 'PUT',
-          url: `${API_URI_BASE}api/admin/major_publishers/untag`,
-          params: { id, platform }
         })
       },
       checkAppStatus: function () {

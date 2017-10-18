@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", "$routeParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService', 'slacktivity',
-  function($scope, $q, $http, $routeParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity) {
+angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", "$stateParams", "$window", 'loggitService', "pageTitleService", "authService", 'newsfeedService', 'slacktivity',
+  function($scope, $q, $http, $stateParams, $window, loggitService, pageTitleService, authService, newsfeedService, slacktivity) {
 
     var sdkDetailsCtrl = this; // same as sdkCtrl = sdkDetailsCtrl
 
-    $scope.appPlatform = $routeParams.platform;
+    $scope.appPlatform = $stateParams.platform;
 
     $scope.tags = []
     $scope.editMode = false
@@ -22,8 +22,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
 
       return $http({
         method: 'GET',
-        url: API_URI_BASE + 'api/sdk/' + $routeParams.platform,
-        params: {id: $routeParams.id}
+        url: API_URI_BASE + 'api/sdk/' + $stateParams.platform,
+        params: {id: $stateParams.id}
       }).success(function(data) {
         pageTitleService.setTitle(data.name);
         sdkDetailsCtrl.sdkData = data;
@@ -66,8 +66,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
 
     sdkDetailsCtrl.addSelectedTo = function(list) {
       var selectedApp = [{
-        id: $routeParams.id,
-        type: $routeParams.platform == 'IosApp' ? 'ios' : 'android'
+        id: $stateParams.id,
+        type: $stateParams.platform == 'IosApp' ? 'ios' : 'android'
       }];
       listApiService.addSelectedTo(list, selectedApp, $scope.appPlatform).success(function() {
         $scope.notify('add-selected-success');
@@ -81,7 +81,7 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
     $scope.followSdk = function(id, action) {
       const follow = {
         id,
-        type: $routeParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk',
+        type: $stateParams.platform == 'ios' ? 'IosSdk' : 'AndroidSdk',
         name: sdkDetailsCtrl.sdkData.name,
         action,
         source: 'sdkDetails'
@@ -124,8 +124,8 @@ angular.module('appApp').controller("SdkDetailsCtrl", ['$scope', '$q', "$http", 
     $scope.saveTags = function() {
       return $http({
         method: 'POST',
-        url: API_URI_BASE + 'api/sdk/' + $routeParams.platform + '/tags',
-        params: {tags: JSON.stringify($scope.tags), id: $routeParams.id}
+        url: API_URI_BASE + 'api/sdk/' + $stateParams.platform + '/tags',
+        params: {tags: JSON.stringify($scope.tags), id: $stateParams.id}
       }).success(function(data) {
         sdkDetailsCtrl.sdkData.tags = data.tags
         $scope.editMode = false

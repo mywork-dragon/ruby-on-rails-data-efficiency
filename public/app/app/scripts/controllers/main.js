@@ -8,10 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "$route", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity', '$sce',
-    function ($scope, $location, authService, authToken, $rootScope, $route, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService, slacktivity, $sce) {
-
-      $scope.$route = $route; // for use in determining active tab (for CSS styling)
+  .controller('MainCtrl', ["$scope", "$location", "authService", "authToken", "$rootScope", "pageTitleService", "apiService", "$window", 'dropdownCategoryFilter', 'filterService', 'slacktivity', '$sce',
+    function ($scope, $location, authService, authToken, $rootScope, pageTitleService, apiService, $window, dropdownCategoryFilter, filterService, slacktivity, $sce) {
 
       $scope.pageTitleService = pageTitleService;
 
@@ -86,12 +84,28 @@ angular.module('appApp')
             $scope.canViewSupportDesk = data.can_view_support_desk;
             $scope.canViewAdSpend = data.can_view_ad_spend;
             $scope.canViewSdks = data.can_view_sdks;
-            $rootScope.canViewStorewideSdks = data.can_view_storewide_sdks;
             $scope.canViewAdAttribution = data.can_view_ad_attribution;
+            $scope.canUseSalesforce = data.can_use_salesforce;
+            $scope.sfAdminConnected = data.sf_admin_connected;
+            $scope.sfUserConnected = data.sf_user_connected;
+            $scope.sfInstalled = data.sf_installed;
+
+            $rootScope.canViewSupportDesk = data.can_view_support_desk;
+            $rootScope.canViewAdSpend = data.can_view_ad_spend;
+            $rootScope.canViewSdks = data.can_view_sdks;
+            $rootScope.canViewAdSpend = data.can_view_ad_spend;
+            $rootScope.canViewSdks = data.can_view_sdks;
+            $rootScope.canViewStorewideSdks = data.can_view_storewide_sdks;
+            $rootScope.canViewIosLiveScan = data.can_view_ios_live_scan;
             $rootScope.isAdmin = data.is_admin;
             $rootScope.isAdminAccount = data.is_admin_account;
             $rootScope.connectedOauth = data.connected_oauth;
             $rootScope.canViewExports = data.can_view_exports;
+            $rootScope.canUseSalesforce = data.can_use_salesforce;
+            $rootScope.sfAdminConnected = data.sf_admin_connected;
+            $rootScope.sfUserConnected = data.sf_user_connected;
+            $rootScope.sfInstalled = data.sf_installed;
+
 
             if (!$rootScope.connectedOauth) {
               $window.location.href = "#/login?token=" + authToken.get();

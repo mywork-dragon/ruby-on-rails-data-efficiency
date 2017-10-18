@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('appApp')
-  .controller('SearchCtrl', ["$scope", '$timeout', '$route', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService", "$q",
-    function ($scope, $timeout, $route, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService, $q) {
+  .controller('SearchCtrl', ["$scope", '$timeout', 'listApiService', 'savedSearchApiService', "$location", "authToken", "$rootScope", "$http", "$window", "searchService", "AppPlatform", "apiService", "authService", 'slacktivity', "filterService", "$uibModal", "loggitService", "pageTitleService", "$q",
+    function ($scope, $timeout, listApiService, savedSearchApiService, $location, authToken, $rootScope, $http, $window, searchService, AppPlatform, apiService, authService, slacktivity, filterService, $uibModal, loggitService, pageTitleService, $q) {
 
       var searchCtrl = this; // same as searchCtrl = $scope
       searchCtrl.appPlatform = AppPlatform;
@@ -940,16 +940,6 @@ angular.module('appApp')
         })
       }
 
-      $scope.setTab = function() {
-        var routeParams = $location.search();
-
-        if (routeParams.listId) {
-          $route.current.activeTab = 'lists'
-        } else {
-          $route.current.activeTab = 'search'
-        }
-      }
-
       $scope.getAppStores = function() {
         $http({
           method: 'get',
@@ -990,7 +980,6 @@ angular.module('appApp')
       }
 
       $scope.getList()
-      $scope.setTab()
       $scope.getAppStores()
     }
   ]);

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slacktivity', '$route', "authService", "$http", "pageTitleService", "listApiService", "apiService",
-  function($scope, authToken, slacktivity, $route, authService, $http, pageTitleService, listApiService, apiService) {
+angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slacktivity', "authService", "$http", "pageTitleService", "listApiService", "apiService", "$state",
+  function($scope, authToken, slacktivity, authService, $http, pageTitleService, listApiService, apiService, $state) {
 
     var chartsCtrl = this;
     $scope.order = 'desc';
@@ -96,7 +96,7 @@ angular.module('appApp').controller("ChartsCtrl", ["$scope", 'authToken', 'slack
     }
     var title;
 
-    switch ($route.current.action) {
+    switch ($state.current.name) {
       case "charts.top-ios-apps":
         $scope.initialPageLoadComplete = false;
         chartsCtrl.loadTopApps('ios')

@@ -23,7 +23,7 @@
                   <span class="scan-date-title">
                     Latest Update:
                   </span>
-                  {{appData.lastUpdated | date : 'shortDate'}}
+                  {{app.lastUpdated | date : 'shortDate'}}
                 </li>
                 <li>
                   <span class="scan-date-title">
@@ -33,7 +33,7 @@
                 </li>
                 <li>
                   <div id="showSdksButton">
-                    <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.appData.id)">Live Scan</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-show="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled" ng-click="iosLiveScanCtrl.getSdks(iosLiveScanCtrl.app.id)">Live Scan</button>
                     <button type="submit" class="btn btn-block disabled" ng-hide="iosLiveScanCtrl.sdkData && iosLiveScanCtrl.sdkData.liveScanEnabled">Live Scan Temporarily Unavailable</button>
                   </div>
                 </li>
