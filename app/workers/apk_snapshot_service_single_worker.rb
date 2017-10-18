@@ -3,7 +3,6 @@ class ApkSnapshotServiceSingleWorker
   include Sidekiq::Worker
 
   sidekiq_options backtrace: true, retry: false, queue: :android_live_scan
-  # sidekiq_options backtrace: true, retry: false, queue: :sdk   # use this to test on scrapers
 
   RETRIES = 2
 
@@ -27,12 +26,6 @@ class ApkSnapshotServiceSingleWorker
 
   def update_live_scan_status_code?
     true
-  end
-
-  class << self
-    def test(id = 1)
-      new.perform(1, nil, id)
-    end
   end
 
 end
