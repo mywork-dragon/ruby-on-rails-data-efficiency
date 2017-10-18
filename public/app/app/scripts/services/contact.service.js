@@ -70,7 +70,7 @@
         url: API_URI_BASE + 'api/company/contact',
         data: { contactId: clearbitId }
       })
-      .then(function(data) {
+      .then(function(response) {
         return response.data;
       })
     }
