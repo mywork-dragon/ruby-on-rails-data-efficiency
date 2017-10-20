@@ -13,7 +13,7 @@ class SalesforceExportService
 
     client_id = '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9'
 
-    Restforce.log = true
+    #Restforce.log = true
 
     host = @is_sandbox ? 'test.salesforce.com' : 'login.salesforce.com'
 
@@ -114,7 +114,6 @@ class SalesforceExportService
   end
 
   def create_app_fields
-    puts 'create app fields'
     new_fields = [
       {label: 'MightySignal App ID', type: 'Text', length: 255},
       {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
@@ -138,7 +137,6 @@ class SalesforceExportService
   end
 
   def create_sdk_fields
-    puts 'create sdk fields'
     new_fields = [
       {label: 'MightySignal SDK ID', type: 'Text', length: 255},
       {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
@@ -153,7 +151,6 @@ class SalesforceExportService
   end
 
   def create_sdkapp_fields
-    puts 'create sdkapp fields'
     new_fields = [
       {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
       {label: 'MightySignal SDK', type: 'MasterDetail', referenceTo: 'MightySignal_SDK__c', relationshipName: 'SDK'},
@@ -187,8 +184,6 @@ class SalesforceExportService
       Lead: "select Id, Company, FirstName, LastName, Title, Email from Lead where Company LIKE '%#{query}%'",
       Opportunity: "select Account.Id, Account.Name from Opportunity where Account.Name LIKE #{query}",
     }.with_indifferent_access
-
-    puts "Query is #{query} #{search_queries[@model_name]}"
 
     results = @client.query(search_queries[@model_name])
     results = results.map{|result|
@@ -269,7 +264,6 @@ class SalesforceExportService
     existing_object = @client.find(@model_name, object_id) if object_id
 
     mapping.each do |field, map|
-      puts "Field is #{field} #{data}"
 
       # Skip if is 
       next if should_skip_field?(field, map, data, existing_object)
@@ -285,16 +279,12 @@ class SalesforceExportService
 
     new_object = new_object.merge(new_object_fields(object_id))
 
-    puts "Publisher to export #{@model_name} #{new_object.to_json}"
-
     export = if object_id.present?
       @client.update!(@model_name, new_object)
       object_id
     else
       @client.create!(@model_name, new_object)
     end
-
-    puts "Export id is #{export}"
 
     # apps only belong to accounts for now, run in background job
     if @model_name == 'Account'
@@ -463,7 +453,6 @@ class SalesforceExportService
     field_options[:fullName] ||= "#{model}.#{salesforce_field(field_options[:label])}"
 
     return if object_has_field?(model, field_options[:fullName].split('.').last)
-    puts "Add custom field #{field_options[:fullName]}"
 
     @metadata_client.create(:custom_field, 
       field_options
@@ -657,7 +646,6 @@ class SalesforceExportService
   end
 
   def refresh_token(response)
-    puts "Did try to get refresh token"
     @user.account.update_attributes(salesforce_token: response["access_token"])
   end
 
