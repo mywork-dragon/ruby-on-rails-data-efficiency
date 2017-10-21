@@ -33,25 +33,14 @@ class MockRankingsAccessor
   def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, from: 0)
     load_newcomers_data if @newcomers_data.nil?
 
-    newcomers_data_dict = {}
+    return_list = []
     @newcomers_data.each do |newcomer_datum|
       if matches_filters(newcomer_datum, platforms, countries, categories, rank_types)
-        app_id = newcomer_datum["app_identifier"]
-        if newcomers_data_dict[app_id].nil?
-          newcomers_data_dict[app_id] = [copy_newcomer_record(newcomer_datum)]
-        else
-          newcomers_data_dict[app_id].push(copy_newcomer_record(newcomer_datum))
-        end
+        return_list.push(copy_newcomer_record(newcomer_datum))
       end
     end
 
-    return_list = []
-    newcomers_data_dict.each do |key, value|
-      return_list.push({
-        "app_identifier" => key,
-        "charts" => value
-        })
-    end
+    return_list.sort! { |a, b| (a["rank"].to_i <=> b["rank"].to_i) }
     return_list.slice(from, size)
   end
 
@@ -63,6 +52,7 @@ private
 
   def copy_newcomer_record(record)
     {
+      "app_identifier" => record["app_identifier"],
       "date" => 1.days.ago,
       "platform" => record["platform"],
       "country" => record["country"],
