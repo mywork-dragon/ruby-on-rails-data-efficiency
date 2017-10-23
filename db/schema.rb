@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171019184533) do
+ActiveRecord::Schema.define(version: 20171023222005) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -27,9 +27,9 @@ ActiveRecord::Schema.define(version: 20171019184533) do
     t.integer  "seats_count",              limit: 4,     default: 5
     t.boolean  "can_view_ad_attribution",                default: false
     t.string   "salesforce_uid",           limit: 191
-    t.string   "salesforce_token",         limit: 191
-    t.string   "salesforce_refresh_token", limit: 191
-    t.string   "salesforce_instance_url",  limit: 191
+    t.text     "salesforce_token",         limit: 65535
+    t.text     "salesforce_refresh_token", limit: 65535
+    t.text     "salesforce_instance_url",  limit: 65535
     t.text     "salesforce_settings",      limit: 65535
     t.string   "mightysignal_id",          limit: 191
     t.boolean  "can_use_salesforce",                     default: false
@@ -2482,22 +2482,22 @@ ActiveRecord::Schema.define(version: 20171019184533) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id",           limit: 4
-    t.boolean  "tos_accepted",                     default: false
-    t.boolean  "access_revoked",                   default: false
-    t.boolean  "is_admin",                         default: false
+    t.boolean  "tos_accepted",                       default: false
+    t.boolean  "access_revoked",                     default: false
+    t.boolean  "is_admin",                           default: false
     t.string   "google_uid",           limit: 191
-    t.string   "google_token",         limit: 191
+    t.text     "google_token",         limit: 65535
     t.string   "linkedin_uid",         limit: 191
-    t.string   "linkedin_token",       limit: 191
+    t.text     "linkedin_token",       limit: 65535
     t.datetime "last_active"
     t.string   "first_name",           limit: 191
     t.string   "last_name",            limit: 191
-    t.string   "profile_url",          limit: 191
+    t.text     "profile_url",          limit: 65535
     t.string   "refresh_token",        limit: 191
     t.string   "salesforce_uid",       limit: 191
-    t.string   "salesforce_token",     limit: 191
+    t.text     "salesforce_token",     limit: 65535
     t.string   "salesforce_name",      limit: 191
-    t.string   "salesforce_image_url", limit: 191
+    t.text     "salesforce_image_url", limit: 65535
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
