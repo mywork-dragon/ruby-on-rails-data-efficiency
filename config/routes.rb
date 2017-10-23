@@ -61,6 +61,10 @@ Rails.application.routes.draw do
   post 'api/newsfeed/add_country' => 'api#newsfeed_add_country'
   post 'api/newsfeed/remove_country' => 'api#newsfeed_remove_country'
 
+  # Ad intel v2 routes
+  get 'api/ad_intelligence/v2/query' => 'ad_intelligence#ad_intelligence_query'
+  get 'api/ad_intelligence/v2/ad_sources' => 'ad_intelligence#available_sources'
+
   get 'api/ad_intelligence/ios' => 'api#ios_ad_intelligence'
   get 'api/ad_intelligence/android' => 'api#android_ad_intelligence'
   get 'api/ad_intelligence/all' => 'api#combined_ad_intelligence'
