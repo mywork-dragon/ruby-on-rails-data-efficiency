@@ -51,6 +51,7 @@
 
     // Bound Functions
     publisher.addAppsToList = addAppsToList;
+    publisher.exportContactsToCsv = exportContactsToCsv;
     publisher.getCompanyContacts = getCompanyContacts;
     publisher.getContactEmail = getContactEmail;
     publisher.getLastUpdatedDaysClass = getLastUpdatedDaysClass;
