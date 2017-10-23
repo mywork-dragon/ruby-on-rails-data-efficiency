@@ -129,8 +129,8 @@ class ApiController < ApplicationController
       if request.format.json?
         results = filter_results.map do |result|
           app_id = result.attributes["id"]
-          result.class.name == 'AppsIndex::IosApp' ? IosApp.find(app_id) : AndroidApp.find(app_id)
-        end
+          result.class.name == 'AppsIndex::IosApp' ? IosApp.find_by(id: app_id) : AndroidApp.find_by(id: app_id)
+        end.compact
         format.json { render json:
           {
             results: results.as_json(ads: true),
