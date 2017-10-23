@@ -45,6 +45,26 @@ class AndroidAdController < ApplicationController
     end
     ad.target_proximity_to_business = params['target_proximity_to_business']
     ad.save!
+    RedshiftLogger.new(records: [{
+        id: "fb-#{ad.ad_id}",
+        created_at: ad.date_seen,
+        data_type: 'native',
+        platform: 'android',
+        ad_network: 'facebook',
+        ad_format: 'facebook_news_feed',
+        app_identifier: ad.advertised_app_identifier,
+        publisher_app_identifier: 'com.facebook.katana',
+        device_device_id: ad.android_device_sn,
+        ad_network_config_identifier: "android-device-sn-#{ad.android_device_sn}",
+        ad_text: ad.ad_text,
+        images: [
+            {
+                "url" => "s3://ms-android-automation-outputs/#{ad.ad_id}/screenshot.png",
+                "file_extension" => "png",
+                "filename" => "screenshot.png"
+            }
+        ].to_json,
+        }], table: 'mobile_ads').send!
     ElasticSearchWorker.new.perform(:index_android_apps, [ad.advertised_app.id])
 
     render json: { success: true }, status: 200

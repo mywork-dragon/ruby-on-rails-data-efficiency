@@ -101,6 +101,26 @@ class IosFbProcessingWorker
       advertiser_app_identifier: ad.ios_app.app_identifier,
       created_at: DateTime.now
     }]).send!
+    RedshiftLogger.new(records: [{
+        id: "fb-ios-#{ad.id}",
+        created_at: ad.date_seen,
+        data_type: 'native',
+        platform: 'ios',
+        ad_network: 'facebook',
+        ad_format: 'facebook_news_feed',
+        app_identifier: ad.ios_app.app_identifier.to_s,
+        publisher_app_identifier: 'com.facebook.katana',
+        device_device_id: ad.ios_device.serial_number,
+        ad_network_config_identifier: "fb-account-id-#{ad.fb_account_id}",
+        raw: ad.ad_info_html,
+        images: [
+            {
+                "url" => "s3://#{ad.get_s3_bucket}/#{ad.ad_image.path}",
+                "file_extension" => "png",
+                "filename" => "screenshot.png"
+            }
+        ].to_json,
+        }], table: 'mobile_ads').send!
   rescue => e
     Bugsnag.notify(e)
   end
