@@ -87,7 +87,7 @@
 
           var eventName;
 
-          if ($stateParams.from == 'ewok') {
+          if ($stateParams.utm_source == 'ewok') {
             eventName = "Ewok App Page Viewed"
           } else if ($stateParams.utm_source == 'salesforce') {
             eventName = "Salesforce App Page Viewed"

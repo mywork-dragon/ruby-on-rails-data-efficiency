@@ -64,7 +64,7 @@ angular
 
     var appState = {
       name: 'app',
-      url: '/app/{platform}/{id}',
+      url: '/app/{platform}/{id}?utm_source',
       abstract: true,
       templateUrl: '/app/app/apps/views/header.html',
       controller: 'AppController as app'
@@ -108,7 +108,7 @@ angular
 
     var loginState = {
       name: 'login',
-      url: '/login',
+      url: '/login?token&msg',
       templateUrl: '/app/app/views/signin.html'
     }
 
