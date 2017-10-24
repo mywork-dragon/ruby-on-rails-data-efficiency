@@ -3,7 +3,7 @@ class AdDataAccessor
 
   def available_sources(account)
     # Returns a list of ad intel data sources (networks).
-    # Returns: 
+    # Returns:
     #   [{id:'facebook', name:'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com', 'can_access': true},...]
     return [
         {
@@ -33,7 +33,7 @@ class AdDataAccessor
   end
 
   def query(
-    account, 
+    account,
     platforms:['ios', 'android'],
     source_ids: nil,
     sort_by: 'first_seen_ads_date',
@@ -47,7 +47,7 @@ class AdDataAccessor
     #   sort_by: A field to sort the result set by one of first_seen_ads_date, last_seen_ads_date or user_base_display_score.
     #   order_by: Order by asc or desc,
     #   source_ids: A list of source_ids from available_sources to which this query applies to nil => all supported.
-    # Returns: 
+    # Returns:
     # [
     #     {
     #         "id": 215,
@@ -122,6 +122,7 @@ class AdDataAccessor
         android_apps.each do |app|
           results.append({
               'id' => app.id,
+              'name' => app.name,
               'platform' => app.platform,
               'app_available' => app.app_available?,
               'categories' => app.android_app_snapshot_categories.map{|x| x.as_json},
@@ -146,6 +147,7 @@ class AdDataAccessor
         ios_apps.each do |app|
           results.append({
               'id' => app.id,
+              'name' => app.name,
               'platform' => app.platform,
               'app_available' => app.app_store_available,
               'categories' => snapaccessor.categories_from_ios_app(app).map {|x| {'name' => x['name'], 'type' => x['type'], 'id' => x['name']}},

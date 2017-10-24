@@ -17,8 +17,8 @@ class AdIntelligenceController < ApplicationController
 
     results = AdDataAccessor.new.query(
       @current_user.account,
-      platforms: params[:platforms],
-      source_ids: params[:sourceIds],
+      platforms: JSON.parse(params[:platforms]),
+      source_ids: JSON.parse(params[:sourceIds]),
       sort_by: params[:sortBy],
       order_by: order_by,
       page_size: page_size,
