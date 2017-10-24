@@ -4,7 +4,7 @@ class AdDataAccessor
   def available_sources(account)
     # Returns a list of ad intel data sources (networks).
     # Returns: 
-    #   [{source_id:'facebook', source_name:'Facebook', source_icon: 'https://www.google.com/s2/favicons?domain=facebook.com'},...]
+    #   [{id:'facebook', name:'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com', 'can_access': true},...]
     return [
         {
           id:'facebook',
@@ -46,7 +46,7 @@ class AdDataAccessor
     #   platforms: The platforms to filter this query by.
     #   sort_by: A field to sort the result set by one of first_seen_ads_date, last_seen_ads_date or user_base_display_score.
     #   order_by: Order by asc or desc,
-    #   sources: A list of source_ids from available_sources to which this query applies to nil => all supported.
+    #   source_ids: A list of source_ids from available_sources to which this query applies to nil => all supported.
     # Returns: 
     # [
     #     {
