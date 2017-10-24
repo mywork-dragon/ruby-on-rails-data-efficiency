@@ -15,7 +15,7 @@ class AdIntelligenceController < ApplicationController
     params[:sortBy] ||= 'first_seen_ads_date'
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
 
-    results = AdDataAccessor.new.query(
+    results, results_count = AdDataAccessor.new.query(
       @current_user.account,
       platforms: JSON.parse(params[:platforms]),
       source_ids: JSON.parse(params[:sourceIds]),
@@ -28,7 +28,7 @@ class AdIntelligenceController < ApplicationController
       format.json { render json:
         {
           results: results,
-          resultsCount: results.count,
+          resultsCount: results_count,
           pageNum: page_num,
           pageSize: page_size
         }

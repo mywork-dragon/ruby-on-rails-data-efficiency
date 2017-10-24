@@ -116,9 +116,11 @@ class AdDataAccessor
 
 
     results = []
+    results_count = 0;
     if source_ids.include? 'facebook'
       if platforms.include? 'android'
-        android_apps = AndroidApp.joins(:android_ads).group('android_apps.id').limit(page_size).offset(page_number*page_size)
+        android_apps = AndroidApp.joins(:android_ads).group('android_apps.id').page(page_number).per(page_size)
+        results_count += android_apps.total_count
         android_apps.each do |app|
           results.append({
               'id' => app.id,
@@ -142,7 +144,8 @@ class AdDataAccessor
       end
       if platforms.include? 'ios'
         snapaccessor = IosSnapshotAccessor.new
-        filter_results = FilterService.filter_ios_ad_spend_apps(page_size: page_size, page_num: page_number + 1)
+        filter_results = FilterService.filter_ios_ad_spend_apps(page_size: page_size, page_num: page_number)
+        results_count += filter_results.total_count
         ios_apps = filter_results.map { |result| IosApp.find(result.attributes['id']) }
         ios_apps.each do |app|
           results.append({
@@ -169,9 +172,10 @@ class AdDataAccessor
     end
     results = results[0..page_size-1]
     if order_by == 'desc'
-      results.sort_by {|x| x[sort_by]}.reverse
+      results = results.sort_by {|x| x[sort_by]}.reverse
     else
-      results.sort_by {|x| x[sort_by]}
+      results = results.sort_by {|x| x[sort_by]}
     end
+    return results, results_count
   end
 end
