@@ -599,7 +599,8 @@ class IosApp < ActiveRecord::Base
         'first_scanned_date',
         'ratings_history', 'versions_history', 'bundle_identifier',
         'countries_available_in',
-        'taken_down'
+        'taken_down',
+        'icon_url'
          ]
 
       rename = [
@@ -619,7 +620,8 @@ class IosApp < ActiveRecord::Base
           ['last_updated', 'last_updated'],
           ['released', 'original_release_date'],
           ['ratings_history', 'ratings_history'],
-          ['versions_history', 'versions_history']
+          ['versions_history', 'versions_history'],
+          ['icon_url', 'icon_url']
           ]
 
       app_obj = app.newest_ios_app_snapshot.as_json || {}
