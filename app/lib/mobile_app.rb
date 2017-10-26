@@ -11,6 +11,18 @@ module MobileApp
       self.class.platform
     end
 
+    def publisher
+      ios? ? ios_developer : android_developer
+    end
+
+    def ios?
+      platform == 'ios'
+    end
+
+    def android?
+      platform == 'android'
+    end
+
     def ad_attribution_sdks
       tag = Tag.where(id: 24).first
       return [] unless tag

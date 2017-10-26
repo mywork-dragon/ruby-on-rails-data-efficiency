@@ -205,11 +205,13 @@ class SalesforceExportService
     results
   end
 
-  def default_mapping(app)
+  def default_mapping(app: nil, publisher: nil)
     mapping = {}
     mapping[WEBSITE] = {"id"=>"Website", "name"=>"Website"}
 
-    case app.platform
+    platform = app.try(:platform) || publisher.try(:platform)
+
+    case platform.to_s
     when 'ios'
       mapping[IOS_PUB_ID] = {"id"=>"MightySignal_iOS_Publisher_ID__c", "name"=>"New Field: MightySignal iOS Publisher ID"}
       #mapping[APP_STORE_PUB_ID] = {"id"=>"App_Store_Publisher_ID__c", "name"=>"New Field: App Store Publisher ID"}
@@ -248,17 +250,20 @@ class SalesforceExportService
   end
 
   def export(app: nil, mapping: nil, object_id: nil, publisher: nil)
-    app = publisher.apps.first if publisher
+    app ||= publisher.apps.first if publisher
+    publisher ||=  app.publisher if app
+
+    return unless publisher
     
     mapping = if mapping
       JSON.parse(mapping).with_indifferent_access 
     else
-      default_mapping(app).with_indifferent_access 
+      default_mapping(app: app, publisher: publisher).with_indifferent_access 
     end
 
     update_default_mapping(mapping)
 
-    data = data_fields(app)
+    data = data_fields(app: app, publisher: publisher)
     new_object = {}
 
     existing_object = @client.find(@model_name, object_id) if object_id
@@ -287,7 +292,7 @@ class SalesforceExportService
     end
 
     # apps only belong to accounts for now, run in background job
-    if @model_name == 'Account'
+    if @model_name == 'Account' && app
       if app.is_a? IosApp
         SalesforceWorker.perform_async(:export_ios_apps, app.id, export, @user.id, @model_name)
       elsif app.is_a? AndroidApp
@@ -494,7 +499,7 @@ class SalesforceExportService
   IOS_SDK_SUMMARY = "MightySignal iOS SDK Summary"
   ANDROID_SDK_SUMMARY = "MightySignal Android SDK Summary"
 
-  def data_fields(app=nil)
+  def data_fields(app: nil, publisher: nil)
     fields = { 
       PUBLISHER_NAME => {length: 255, type: 'Text', label: "MightySignal Publisher Name"},
       WEBSITE => {length: 255, type: 'Text', label: "MightySignal Publisher Website"},
@@ -510,22 +515,24 @@ class SalesforceExportService
       ANDROID_SDK_SUMMARY => {length: 131072, type: 'LongTextArea', visibleLines: 10, label: "MightySignal Android SDK Summary"}
     }
 
-    if app
-      case app.platform
+    publisher ||= app.try(:publisher)
+
+    if publisher
+      case publisher.platform.to_s
       when 'ios'
-        fields[IOS_PUB_ID][:data] = app.ios_developer.try(:id)
+        fields[IOS_PUB_ID][:data] = publisher.try(:id)
         #fields[APP_STORE_PUB_ID][:data] = app.ios_developer.try(:identifier)
-        fields[IOS_LINK][:data] = app.ios_developer.try(:link, utm_source: 'salesforce')
-        fields[PUBLISHER_NAME][:data] = app.ios_developer.try(:name) || app.name
-        fields[WEBSITE][:data] = app.ios_developer.try(:valid_websites).try(:first).try(:url)
-        fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(app.ios_developer)
+        fields[IOS_LINK][:data] = publisher.try(:link, utm_source: 'salesforce')
+        fields[PUBLISHER_NAME][:data] = publisher.try(:name) || app.try(:name)
+        fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
+        fields[IOS_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
       when 'android'
-        fields[ANDROID_PUB_ID][:data] = app.android_developer.try(:id)
+        fields[ANDROID_PUB_ID][:data] = publisher.try(:id)
         #fields[GOOGLE_PLAY_PUB_ID][:data] = app.android_developer.try(:identifier)
-        fields[ANDROID_LINK][:data] = app.android_developer.try(:link, utm_source: 'salesforce')
-        fields[PUBLISHER_NAME][:data] = app.android_developer.try(:name) || app.name
-        fields[WEBSITE][:data] = app.android_developer.try(:valid_websites).try(:first).try(:url)
-        fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(app.android_developer)
+        fields[ANDROID_LINK][:data] = publisher.try(:link, utm_source: 'salesforce')
+        fields[PUBLISHER_NAME][:data] = publisher.try(:name) || app.try(:name)
+        fields[WEBSITE][:data] = publisher.try(:valid_websites).try(:first).try(:url)
+        fields[ANDROID_SDK_SUMMARY][:data] = developer_sdk_summary(publisher)
       end
 
       if @model_name == 'Lead'
