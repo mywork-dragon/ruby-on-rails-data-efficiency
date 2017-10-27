@@ -55,8 +55,8 @@
             <td class="appTypeIndicator">
               <i class="fa fa-2" ng-class="sdk.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
             </td>
-            <td ng-if="sdk.website">
-              <a href="{{sdk.website}}" target="_blank">{{sdk.website}}</a>
+            <td>
+              <a ng-if="sdk.website" href="{{sdk.website}}" target="_blank">{{sdk.website}}</a>
             </td>
             <td ng-if="sdkSearchCtrl.platform == 'iosSdks'">{{sdk.summary}}</td>
           </tr>
