@@ -141,7 +141,7 @@ angular
 
     var sdkSearchState = {
       name: 'sdk-search',
-      url: '/search/sdk/{platform}',
+      url: '/search/sdk/{platform}?query',
       templateUrl: '/app/app/views/sdk-search.html'
     }
 
