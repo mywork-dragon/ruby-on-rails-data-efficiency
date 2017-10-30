@@ -1,6 +1,6 @@
 class Account < ActiveRecord::Base
   include Follower
-
+  include AdDataPermissions
   has_many :users
 
   has_many :api_keys
@@ -9,7 +9,9 @@ class Account < ActiveRecord::Base
   has_many :salesforce_objects
 
   serialize :salesforce_settings, JSON
-  enum salesforce_status: [:setup, :ready] 
+  enum salesforce_status: [:setup, :ready]
+
+  serialize :ad_data_permissions, JSON
 
   def active_users
     self.users.where(access_revoked: false).size

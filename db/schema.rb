@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171023222005) do
+ActiveRecord::Schema.define(version: 20171030163015) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20171023222005) do
     t.string   "mightysignal_id",          limit: 191
     t.boolean  "can_use_salesforce",                     default: false
     t.integer  "salesforce_status",        limit: 4,     default: 0
+    t.text     "ad_data_permissions",      limit: 65535
   end
 
   add_index "accounts", ["name"], name: "index_accounts_on_name", using: :btree
