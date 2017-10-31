@@ -204,7 +204,7 @@ class ApiController < ApplicationController
     country_codes = params[:country_codes]
     weeks = @current_user.weekly_batches(page, country_codes)
     newsfeed_json = {
-      following: @current_user.following.as_json({user: @current_user}),
+      following: @current_user.following_as_json({user: @current_user}),
       weeks: weeks.map{|week, platforms| {
         week: week.to_s,
         label: view_context.week_formatter(week),
