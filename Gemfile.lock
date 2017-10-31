@@ -9,9 +9,9 @@ GIT
 
 GIT
   remote: https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git
-  revision: 6485083b63fe78ca37dd0c9179a7d1050261c5d7
+  revision: 884cc27bb3e3b2c1f2679068d7b636dc2d256b0c
   specs:
-    activerecord4-redshift-adapter (0.2.3)
+    activerecord4-redshift-adapter (0.2.4)
       activerecord (~> 4.2.0)
       pg (~> 0.21)
 
@@ -569,7 +569,7 @@ DEPENDENCIES
   PageRankr (= 4.2.1)
   actionpack-action_caching
   activerecord-import (= 0.13.0)
-  activerecord4-redshift-adapter (~> 0.2.3)!
+  activerecord4-redshift-adapter (~> 0.2.4)!
   addressable (~> 2.4)
   autoprefixer-rails
   awesome_print (= 1.6.1)
@@ -661,4 +661,4 @@ DEPENDENCIES
   www-favicon (= 0.0.6)
 
 BUNDLED WITH
-   1.15.1
+   1.15.4

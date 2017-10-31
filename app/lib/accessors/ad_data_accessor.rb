@@ -1,35 +1,8 @@
 class AdDataAccessor
   MAX_PAGE_SIZE = 100
 
-  def available_sources(account)
-    # Returns a list of ad intel data sources (networks).
-    # Returns:
-    #   [{id:'facebook', name:'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com', 'can_access': true},...]
-    return {
-        'facebook' => {
-          id:'facebook',
-          name:'Facebook',
-          icon: 'https://www.google.com/s2/favicons?domain=facebook.com',
-          can_access: true
-        },
-        'chartboost' => {
-          id:'chartboost',
-          name:'ChartBoost',
-          icon: 'https://www.google.com/s2/favicons?domain=chartboost.com',
-          can_access: false
-        },
-        'applovin' => {
-          id:'applovin',
-          name:'Applovin',
-          icon: 'https://www.google.com/s2/favicons?domain=applovin.com',
-          can_access: false
-        }
-      }
-  end
-
-  def restrict_sources(account, source_ids)
-    enabled_sources = available_sources(account).select{|x, v| v[:can_access]}.keys
-    source_ids.select {|source_id| enabled_sources.include? source_id}
+  def initialize
+    @delegate = RedshiftAdDataAccessor.new
   end
 
   def query(
@@ -107,75 +80,21 @@ class AdDataAccessor
     #         "ad_sources" : ['facebook']
     #     },
     # ]
-    page_size = [page_size, MAX_PAGE_SIZE].min
-    page_number = [page_number, 0].max
+    page_size = [page_size.to_i, MAX_PAGE_SIZE].min
+    page_number = [page_number.to_i, 0].max
     if source_ids.nil?
-      source_ids = available_sources(account).map {|x| x[:id]}
+      source_ids = account.available_ad_sources.values.map {|x| x[:id]}
     end
-    source_ids = restrict_sources(account, source_ids)
+    source_ids = account.restrict_ad_sources(source_ids)
+    platforms = platforms.select {|x| AdDataPermissions::APP_PLATFORMS.include? x}
 
-
-    results = []
-    results_count = 0;
-    if source_ids.include? 'facebook'
-      if platforms.include? 'android'
-        android_apps = AndroidApp.joins(:android_ads).group('android_apps.id').page(page_number).per(page_size)
-        results_count += android_apps.total_count
-        android_apps.each do |app|
-          results.append({
-              'id' => app.id,
-              'name' => app.name,
-              'platform' => app.platform,
-              'app_available' => app.app_available?,
-              'categories' => app.android_app_snapshot_categories.map{|x| x.as_json},
-              'user_base_display_score' => app.user_base_display_score,
-              'user_base' => app.user_base,
-              'icon' => app.icon_url,
-              'publisher' =>  app.android_developer.as_json.slice('name', 'id'),
-              'first_seen_ads_date' => app.first_seen_ads_date,
-              'first_seen_ads_days' => app.first_seen_ads_days,
-              'last_seen_ads_date' => app.last_seen_ads_date,
-              'last_seen_ads_days' => app.last_seen_ads_days,
-              'ad_attribution_sdks' => app.ad_attribution_sdks,
-              'ad_formats' => [{'id' => 'facebook_news_feed', 'name' => 'Facebook News Feed'}],
-              'ad_sources' => [{'id' => 'facebook'}]
-            })
-        end
-      end
-      if platforms.include? 'ios'
-        snapaccessor = IosSnapshotAccessor.new
-        filter_results = FilterService.filter_ios_ad_spend_apps(page_size: page_size, page_num: page_number)
-        results_count += filter_results.total_count
-        ios_apps = filter_results.map { |result| IosApp.find(result.attributes['id']) }
-        ios_apps.each do |app|
-          results.append({
-              'id' => app.id,
-              'name' => app.name,
-              'platform' => app.platform,
-              'app_available' => app.app_store_available,
-              'categories' => snapaccessor.categories_from_ios_app(app).map {|x| {'name' => x['name'], 'type' => x['type'], 'id' => x['name']}},
-              'user_base_display_score' => app.user_base_display_score,
-              'user_base' => app.user_base,
-              'user_bases' => app.scored_user_bases,
-              'icon' => app.icon_url,
-              'publisher' =>  app.ios_developer.as_json.slice('name', 'id'),
-              'first_seen_ads_date' => app.first_seen_ads_date,
-              'first_seen_ads_days' => app.first_seen_ads_days,
-              'last_seen_ads_date' => app.last_seen_ads_date,
-              'last_seen_ads_days' => app.last_seen_ads_days,
-              'ad_attribution_sdks' => app.ad_attribution_sdks,
-              'ad_formats' => [{'id' => 'facebook_news_feed', 'name' => 'Facebook News Feed'}],
-              'ad_sources' => [{'id' => 'facebook'}]
-            })
-        end
-      end
-    end
-    results = results[0..page_size-1]
-    if order_by == 'desc'
-      results = results.sort_by {|x| x[sort_by]}.reverse
-    else
-      results = results.sort_by {|x| x[sort_by]}
-    end
-    return results, results_count
+    @delegate.query(
+      platforms:platforms,
+      source_ids: source_ids,
+      sort_by: sort_by,
+      order_by: order_by,
+      page_size: page_size,
+      page_number:page_number
+      )
   end
 end

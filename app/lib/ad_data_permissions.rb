@@ -1,11 +1,32 @@
 module AdDataPermissions
   # Requires a JSON serialized field named ad_data_permissions.
-  AD_DATA_NETWORK_IDS = ['facebook', 'applovin', 'chartboost']
 
   AD_DATA_TIERS = {
     'tier-1' => ['facebook'],
     'tier-2' => ['facebook', 'applovin', 'chartboost']
   }
+
+  APP_PLATFORMS = ['ios', 'android']
+
+  AD_DATA_SOURCES = [
+    {
+      id:'facebook',
+      name:'Facebook',
+      icon: 'https://www.google.com/s2/favicons?domain=facebook.com'
+    },
+    {
+      id:'chartboost',
+      name:'ChartBoost',
+      icon: 'https://www.google.com/s2/favicons?domain=chartboost.com'
+    },
+    {
+      id:'applovin',
+      name:'Applovin',
+      icon: 'https://www.google.com/s2/favicons?domain=applovin.com'
+    }
+  ]
+
+  AD_DATA_NETWORK_IDS = AD_DATA_SOURCES.map {|x| x[:id]}
 
   def self.included base
     base.send :include, InstanceMethods
@@ -13,6 +34,24 @@ module AdDataPermissions
   end
 
   module InstanceMethods
+
+    def restrict_ad_sources(source_ids)
+      enabled_sources = self.available_ad_sources.select{|x, v| v[:can_access]}.keys
+      source_ids.select {|source_id| enabled_sources.include? source_id}
+    end
+
+    def available_ad_sources
+      # Returns a list of ad intel data sources (networks).
+      # Returns:
+      #   [{id:'facebook', name:'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com', 'can_access': true},...]
+      h = {}
+      AdDataPermissions::AD_DATA_SOURCES.map do |source|
+        h[source[:id]] = source.clone
+        h[source[:id]][:can_access] = self.can_access_ad_network(source[:id])
+      end
+      h
+    end
+
     def can_access_ad_network(network)
       enabled_ad_networks.include? network
     end

@@ -74,6 +74,13 @@ module MobileApp
 
   module ClassMethods
 
+    def ad_attribution_sdk_ids
+      tag = Tag.where(id: 24).first
+      return [] unless tag
+
+      return tag.send("#{platform}_sdks").pluck(:id)
+    end
+
     def rankings_table
       "#{platform}_app_rankings".to_sym
     end
