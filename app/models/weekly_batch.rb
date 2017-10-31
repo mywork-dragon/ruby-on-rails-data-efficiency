@@ -8,7 +8,7 @@ class WeeklyBatch < ActiveRecord::Base
 
   enum activity_type: [:install, :uninstall, :ad_seen, :entered_top_apps]
 
-  def as_json(options={})
+  def _as_json(options)
     batch_json = {
       id: self.id,
       page: options[:page] || 1,
@@ -26,7 +26,20 @@ class WeeklyBatch < ActiveRecord::Base
 
     batch_json[:activities_count] ||= is_app? ? self.sorted_activities.count : self.activities.count
     batch_json[:apps_count] = self.joined_activities.pluck(:ios_app_id).uniq.count if is_ad_platform?
-    batch_json
+    JSON.parse batch_json.to_json
+  end
+
+  def as_json(options={})
+    option_sha1 = Digest::SHA1.hexdigest(options.to_json)
+    key = "weekly_batch:as_json:#{self.id}:#{option_sha1}"
+    if Date.today - self.week > 1.weeks
+      expire_time = 24.hours
+    else
+      expire_time = 60.minutes
+    end
+    Rails.cache.fetch(key, expires: expire_time, compress: true) do
+      _as_json(options)
+    end
   end
 
   def is_ios?
