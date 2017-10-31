@@ -26,22 +26,24 @@ class RankingsAccessor
   #
   #
   # Return Format:
-  #
-  #   [
-  #       {
-  #           app_identifier: xxxxx,
-  #           weekly_change: xxxxx,
-  #           monthly_change: xxxxx,
-  #           highest_rank: xxxxx,
-  #           platform: xxxxxx,
-  #           country: xxxxxx,
-  #           category: xxxxxx,
-  #           ranking_type: xxxxxx
-  #       },
-  #       ...
-  #   ]
-  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, from: 0, sort_by: "weekly_change", desc: true)
-    return @delegate.get_trending(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, size: size, from: from, sort_by: sort_by, desc: desc)
+  #   {
+  #       total: xxxxx,
+  #       apps: [
+  #           {
+  #               app_identifier: xxxxx,
+  #               weekly_change: xxxxx,
+  #               monthly_change: xxxxx,
+  #               highest_rank: xxxxx,
+  #               platform: xxxxxx,
+  #               country: xxxxxx,
+  #               category: xxxxxx,
+  #               ranking_type: xxxxxx
+  #           },
+  #           ...
+  #       ]
+  #   }
+  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true)
+    return @delegate.get_trending(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, size: size, page_num: page_num, sort_by: sort_by, desc: desc)
   end
 
   # Returns a list of apps that have shown up for the first time on a specific chart, within the specifed lookback time.
@@ -62,24 +64,27 @@ class RankingsAccessor
   #
   # Return Format:
   #
-  #   [
-  #        {
-  #            app_identifier: xxxxx,
-  #            date: xxxxx,
-  #            platform: xxxx,
-  #            category: xxxx,
-  #            ranking_type: xxxx,
-  #            country: xxxxx,
-  #            rank: xxxxx
-  #        },
-  #        ...
-  #   ]
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, from: 0)
-    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, from: from)
+  #   {
+  #       total: xxxxx,
+  #       apps: [
+  #            {
+  #                app_identifier: xxxxx,
+  #                date: xxxxx,
+  #                platform: xxxx,
+  #                category: xxxx,
+  #                ranking_type: xxxx,
+  #                country: xxxxx,
+  #                rank: xxxxx
+  #            },
+  #            ...
+  #       ]
+  #   }
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1)
+    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num)
   end
 
-  def get_chart(platform:, country:, category:, rank_type:, size: 20, from: 0)
-    return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type)
+  def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 0)
+    return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type, size: 20, page_num: 1)
   end
 
 end

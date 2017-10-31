@@ -10,7 +10,7 @@ class MockRankingsAccessor
     @s3_client ||= MightyAws::S3.new
   end
 
-  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, from: 0, sort_by: "weekly_change", desc: true)
+  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true)
     load_trending_data if @trending_data.nil?
 
     trending_data_dict = {}
@@ -26,11 +26,14 @@ class MockRankingsAccessor
     trending_list = trending_data_dict.values
     reverser = desc ? -1 : 1
     trending_list.sort! { |a, b| (a[sort_by].to_i <=> b[sort_by].to_i) * reverser }
-    trending_list.slice(from, size)
+    {
+      "total" => trending_data_dict.values.size,
+      "apps" => trending_list.slice((size * (page_num - 1)), size)
+    }
   end
 
   # Ignores lookback_time, all data is always 1 day ago
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, from: 0)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1)
     load_newcomers_data if @newcomers_data.nil?
 
     return_list = []
@@ -41,10 +44,13 @@ class MockRankingsAccessor
     end
 
     return_list.sort! { |a, b| (a["rank"].to_i <=> b["rank"].to_i) }
-    return_list.slice(from, size)
+    {
+      "total" => return_list.size,
+      "apps" => return_list.slice((size * (page_num - 1)), size)
+    }
   end
 
-  def get_chart(platform:, country:, category:, rank_type:)
+  def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 1)
     nil # TODO
   end
 
