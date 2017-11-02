@@ -8,6 +8,11 @@ class WeeklyBatch < ActiveRecord::Base
 
   enum activity_type: [:install, :uninstall, :ad_seen, :entered_top_apps]
 
+  def clear_cache
+    key = "weekly_batch:as_json:#{self.id}:*"
+    Rails.cache.delete_matched(key)
+  end
+
   def _as_json(options)
     batch_json = {
       id: self.id,

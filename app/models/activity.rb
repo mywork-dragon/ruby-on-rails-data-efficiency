@@ -29,7 +29,7 @@ class Activity < ActiveRecord::Base
       current_weekly_batch = owner.weekly_batches.find_or_create_by(week: current_week, activity_type: WeeklyBatch.activity_types[activity_type])
       current_weekly_batch.activities << activity
     end
-
+    self.weekly_batches.map {|batch| batch.clear_cache}
     activity.notify
   end
 
@@ -57,6 +57,7 @@ class Activity < ActiveRecord::Base
         batch.destroy
       else
         WeeklyBatch.reset_counters(batch.id, :activities)
+        batch.clear_cache
       end
     end
   end
