@@ -3,7 +3,7 @@ class RankingsAccessor
   attr_reader :delegate
 
   def initialize
-    @delegate = MockRankingsAccessor.new
+    @delegate = RedshiftRankingsAccessor.new
   end
 
   # Returns a list of apps that have moved postions on a top chart. If an app appears on more than one top
