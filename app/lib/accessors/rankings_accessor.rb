@@ -42,8 +42,8 @@ class RankingsAccessor
   #           ...
   #       ]
   #   }
-  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true)
-    return @delegate.get_trending(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, size: size, page_num: page_num, sort_by: sort_by, desc: desc)
+  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
+    return @delegate.get_trending(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, size: size, page_num: page_num, sort_by: sort_by, desc: desc, max_rank: max_rank)
   end
 
   # Returns a list of apps that have shown up for the first time on a specific chart, within the specifed lookback time.
@@ -79,8 +79,8 @@ class RankingsAccessor
   #            ...
   #       ]
   #   }
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1)
-    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: 500)
+    return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num, max_rank: max_rank)
   end
 
   def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 0)

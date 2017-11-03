@@ -1,7 +1,7 @@
 class RedshiftRankingsAccessor
   include RankingsParamDenormalizer
 
-  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true)
+  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
     
     # Validate parameters
 
@@ -15,7 +15,7 @@ class RedshiftRankingsAccessor
 
     # Perform queries
 
-    where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, sort_by: sort_by)
+    where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, sort_by: sort_by, max_rank: max_rank)
     order_by_clause = desc ? "ORDER BY #{sort_by} DESC" : "ORDER BY #{sort_by} ASC"
 
     get_trending_query = "SELECT * FROM daily_trends #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
@@ -27,7 +27,7 @@ class RedshiftRankingsAccessor
     }
   end
 
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: max_rank)
 
     # Validate parameters
 
@@ -41,7 +41,7 @@ class RedshiftRankingsAccessor
 
     # Perform queries
 
-    where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, lookback_time: lookback_time)
+    where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, lookback_time: lookback_time, max_rank: max_rank)
     order_by_clause = "ORDER BY created_at DESC"
 
     get_newcomers_query = "SELECT * FROM daily_newcomers #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
@@ -134,7 +134,7 @@ private
     end
   end
 
-  def build_where_clauses(platforms, countries, categories, rank_types, sort_by: nil, lookback_time: nil)
+  def build_where_clauses(platforms, countries, categories, rank_types, sort_by: nil, lookback_time: nil, max_rank: nil)
     where_clauses = []
     where_clauses.push("platform IN ('#{platforms.join("','")}')") if platforms.any?
     where_clauses.push("country IN ('#{countries.join("','")}')") if countries.any?
@@ -142,6 +142,7 @@ private
     where_clauses.push("ranking_type IN ('#{rank_types.join("','")}')") if rank_types.any?
     where_clauses.push("#{sort_by} IS NOT NULL") if sort_by.present?
     where_clauses.push("created_at > '#{lookback_time.strftime("%Y-%m-%d")}'") if lookback_time.present?
+    where_clauses.push("rank < #{max_rank}") if max_rank.present?
     return where_clauses.any? ? " WHERE " + where_clauses.join(" AND ") : ""
   end
 
