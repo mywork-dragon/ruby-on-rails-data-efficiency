@@ -110,7 +110,7 @@ module AndroidSdkService
               # If this SDK has been uninstalled set first unseen date
               if last_seen.include?(sdk.id) and last_seen[sdk.id][1] < last_snapshot_index
                 next_index = last_seen[sdk.id][1] + 1
-                formatted['first_unseen_date'] = successful_apk_snapshots[next_index].good_as_of_date
+                formatted['first_unseen_date'] = successful_apk_snapshots[next_index].first_valid_date
               end
               partition.push(formatted)
             end
