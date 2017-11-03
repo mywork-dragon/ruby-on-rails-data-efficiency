@@ -29,7 +29,9 @@ class AuthController < ApplicationController
 
   def authenticate_provider
     @oauth = "Oauth::#{params['provider'].classify}".constantize.new(params)
+
     if @oauth.authorized?
+      email = @oauth.formatted_user_data.try(:[], :email)
       @user = User.from_auth(@oauth.formatted_user_data, params[:token])
       if @user
         regenerate = !params[:provider].include?('salesforce')
@@ -41,10 +43,10 @@ class AuthController < ApplicationController
           opposite = params[:provider] == 'linkedin' ? 'Google' : 'LinkedIn'
           "We could not find a MightySignal account associated with this #{params['provider'].titleize} login. Try using #{opposite} login or email & password if you have not logged in using LinkedIn or Google previously."
         end
-        render_error message
+        render_error(message: message, email: email)
       end
     else
-      render_error("There was an error with #{params['provider'].titleize}. Please try again.")
+      render_error(message: "There was an error with #{params['provider'].titleize}. Please try again.")
     end
   end
 
@@ -52,8 +54,8 @@ class AuthController < ApplicationController
     render json: data, status: status, callback: params[:callback]
   end
 
-  def render_error(message, status = :unprocessable_entity)
-    render_data({ error: message }, status)
+  def render_error(message: nil, email: nil, status: :unprocessable_entity)
+    render_data({ error: message, email: email }, status)
   end
 
   def render_success(data, status = :ok)

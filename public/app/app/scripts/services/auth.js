@@ -54,7 +54,10 @@ angular.module("appApp")
           // If on production
           if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
             mixpanel.track(
-              "Login Success"
+              "Login Success",
+              {
+                "provider": 'email' 
+              }
             );
             /* -------- Mixpanel Analytics End -------- */
             /* -------- Slacktivity Alerts -------- */
@@ -62,7 +65,8 @@ angular.module("appApp")
               "title": "User Login Success",
               "fallback": "User Login Success",
               "Login Status": "Success",
-              "User Email": email
+              "User Email": email,
+              "Provider": 'email'
             });
           }
           /* -------- Slacktivity Alerts End -------- */
@@ -76,7 +80,7 @@ angular.module("appApp")
         });
         return d.promise;
       },
-      loginWithToken: function(auth_token, email) {
+      loginWithToken: function(auth_token, email, provider) {
         var d = $q.defer();
         mixpanel.identify(email);
         mixpanel.people.set({
@@ -86,7 +90,11 @@ angular.module("appApp")
         // If on production
         if (API_URI_BASE.indexOf('mightysignal.com') >= 0) {
           mixpanel.track(
-            "Login Success"
+            "Login Success",
+            {
+              "provider": provider,
+              "email": email
+            }
           );
           /* -------- Mixpanel Analytics End -------- */
           /* -------- Slacktivity Alerts -------- */
@@ -94,13 +102,32 @@ angular.module("appApp")
             "title": "User Login Success",
             "fallback": "User Login Success",
             "Login Status": "Success",
-            "User Email": email
+            "User Email": email,
+            "Provider": provider
           });
         }
         /* -------- Slacktivity Alerts End -------- */
 
         authToken.setToken(auth_token);
         $rootScope.$broadcast(authEvents.loginSuccess);
+      },
+      loginFailed: function(message, provider, email) {
+        mixpanel.track(
+          "Login Failed",
+          {
+            "provider": provider,
+            "message": message,
+            "email": email
+          }
+        );
+        window.Slacktivity.send({
+          "title": "User Login Failed",
+          "fallback": "User Login Failed",
+          "Login Status": "Failed",
+          "color": "#E82020",
+          "User Email": email,
+          "Provider": provider
+        });
       },
       permissions: function() {
         return $http.get('/auth/permissions');

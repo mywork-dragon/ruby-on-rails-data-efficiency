@@ -13,18 +13,19 @@
             <div class="form-container">
                 <h4 ng-if="message" ng-bind-html="message" class="message {{redMessage ? 'red' : nil}}"></h4>
                 <div class="google social-button">
-                    <a ng-click="authenticate('google')" class="btn btn-default">
+                    <a ng-click="authenticate('google')" class="btn btn-primary">
                         <i class="fa fa-google-plus" aria-hidden="true"></i>
                         Log In Using Google
                     </a>
                 </div>
                 <div class="linkedin social-button">
-                    <a ng-click="authenticate('linkedin')" class="btn btn-default">
+                    <a ng-click="authenticate('linkedin')" class="btn btn-primary">
                         <i class="fa fa-linkedin" aria-hidden="true"></i>
                         Log In Using LinkedIn
                     </a>
                 </div>
                 <div ng-if="!token">
+                    <br>
                     <h4 class="message">OR email/password if you have not logged in with Google / LinkedIn before.</h4>
                     <form class="form-horizontal" ng-enter="onLoginButtonClick()">
                         <fieldset>

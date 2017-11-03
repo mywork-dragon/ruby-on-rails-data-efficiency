@@ -6,9 +6,10 @@ angular.module('appApp')
 
       $scope.pageTitleService = pageTitleService;
       $scope.user = {}
+      $scope.token = $stateParams.token
       $scope.redMessage = false
 
-      if ($stateParams.token) {
+      if ($scope.token) {
         $scope.message = "Please link either your Google or LinkedIn account now. You will use that account to login in the future."
         $scope.redMessage = true
       } else if ($stateParams.msg) {
@@ -19,10 +20,11 @@ angular.module('appApp')
       }
 
       $scope.authenticate = function(provider) {
-        $auth.authenticate(provider, {token: $stateParams.token})
+
+        $auth.authenticate(provider, {token: $scope.token})
         .then(function(response) {
           // Signed in
-          authService.loginWithToken(response.data.auth_token, response.data.email)
+          authService.loginWithToken(response.data.auth_token, response.data.email, provider)
           $rootScope.connectedOauth = true
           listApiService.getLists().success(function(data) {
             $rootScope.usersLists = data;
@@ -32,6 +34,7 @@ angular.module('appApp')
         })
         .catch(function(response) {
           alert(response.data.error)
+          authService.loginFailed(response.data.error, provider, response.data.email)
         });
       };
 
@@ -46,6 +49,7 @@ angular.module('appApp')
         },
         function(data){
           alert(data);
+          authService.loginFailed(data, 'email', $scope.user.email)
         });
       };
 
