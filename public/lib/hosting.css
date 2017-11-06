@@ -1120,3 +1120,87 @@ a.anchor{
   border: 1px solid transparent;
   border-radius: 4px;
 }
+
+/* ========= Mighty Report ========= */
+
+.mighty-report {
+	--report-font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
+}
+
+.mighty-report .main-div {
+	background-color: white;
+	border: 1px solid #ddd;
+}
+
+.mighty-report .top-icon {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.mighty-report .title {
+	font: var(--report-font);
+	font-size: 2.5rem;
+  font-weight: 200;
+  line-height: 1.2;
+}
+
+.mighty-report .subtitle {
+	font: var(--report-font);
+ 	font-size: 1.875rem;
+  fnt-weight: 200;
+  line-height: 1.2;
+}
+
+.mighty-report .email-div {
+	background-color: #E5F5FE;
+	border-radius: 5px;
+}
+
+.mighty-report .enter-email-text {
+	font: var(--report-font);
+	font-size: 1.25rem;
+  font-weight: 200;
+  line-height: 1.4;
+  color: black;
+}
+
+.mighty-report .email {
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+}
+
+.mighty-report #get-your-report-button {
+		font: var(--report-font);
+		font-size: 1.1em;
+		white-space: normal;
+		text-align: center;
+		padding-left: 0%;
+    padding-right: 0%;
+	  background-color: #0079BD;
+    border-color: #0079BD;
+    border-bottom-color: #005a8a;
+    font-weight: 400;
+    width: 50%;
+}
+
+.mighty-report .example-reports-include {
+	font: var(--report-font);
+	font-size: 1.875rem;
+  font-weight: 200;
+  line-height: 1.2;
+  color: #222222;
+}
+
+.mighty-report .example-reports {
+	font: var(--report-font);
+	font-size: 1.25rem;
+  font-weight: 200;
+  line-height: 1.4;
+  color: #222222;
+}
+
+.mighty-report .logo {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}

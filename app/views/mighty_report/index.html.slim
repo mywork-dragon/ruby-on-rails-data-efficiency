@@ -1,0 +1,68 @@
+.row.header
+  .mighty-report
+    .column.large-10.large-offset-1
+      .main-div.text-center.block
+        .row
+        .column.large-2.large-offset-3.top-icon
+          img src=@report_icon width=100
+        .column.large-2.top-icon
+          img src=@pie_chart_icon width=100
+        .column.large-2.top-icon
+          img src=@loss_chart_icon width=100
+
+        .column.large-12
+          h1.title Free Report on the Mobile App Ecosystem
+          h2.subtitle Companies like Adobe, Amplitude, and Yahoo use MightySignal's unique data to figure out what's going on in mobile. What do <b>you</b> want to know?
+        
+        .column.large-12
+          p
+        
+        .column.large-8.large-offset-2.email-div
+          .column.large-12
+            p 
+          .column.large-12
+            p.enter-email-text Enter your email address to get started.
+          = form_tag get_report_path, method: 'post', data: {form: 'mighty-report'}, id: "submit-email-form" do |f|
+            .column.large-8.large-offset-2
+              input.email name='email' type='email' placeholder="you@mobilecompany.com" title="ay Please input your work email."
+            .column.large-12
+              p 
+            .column.large-12
+              button.btn.btn-primary.btn-lg id='get-your-report-button' data-loading-text='Processing...' type='submit' GET YOUR REPORT
+          .column.large-12
+            p
+            p 
+
+        .column.large-12
+          p 
+        .column.large-12
+          p 
+        .column.large-12.your-report
+
+            p.example-reports-include Example reports include:
+
+
+            p.example-reports  
+              img src=@medal_report_icon width=40
+              |     Top apps that your competitors' SDKs are installed in
+            
+            p.example-reports 
+              img src=@smartphone_ad_report_icon width=40
+              |     Which apps are advertising on which mobile ad networks
+
+            p.example-reports
+              img src=@pie_chart_report_icon width=40
+              |     Market share of your SDK
+            p.example-reports ...or custom data for your needs!
+
+
+        .column.large-12
+          p 
+        .column.large-12
+          p 
+
+        hr
+          - @logos.each do |logo|
+            .column.large-2.logo
+              img src=logo[:image] width=logo[:width]
+

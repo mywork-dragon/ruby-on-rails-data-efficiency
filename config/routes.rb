@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   get 'challenge/backend' => 'challenge#backend'
   get 'challenge/frontend' => 'challenge#frontend'
   get 'challenge/payment_seed' => 'challenge#payment_seed'
+  get 'mighty_report' => 'mighty_report#index'
+  post 'get_mighty_report' => 'mighty_report#get_report', as: :get_report
 
   get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
   get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'

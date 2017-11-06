@@ -60,4 +60,15 @@ $(document).ready(function() {
                 $(this).parent().find('.secondProfileImage').hide();
             });
 
+    $('.mighty-report #submit-email-form').submit(function(event) {
+        var x = $('.mighty-report #submit-email-form')[0]["email"].value
+        if (x.includes("@gmail.com")) {
+            alert("Please input your work email.");
+            return false;
+        }
+    });
+
 });
+
+
+
