@@ -28,8 +28,8 @@ class Activity < ActiveRecord::Base
       # create a weekly batch for each owner and add activity to it
       current_weekly_batch = owner.weekly_batches.find_or_create_by(week: current_week, activity_type: WeeklyBatch.activity_types[activity_type])
       current_weekly_batch.activities << activity
+      current_weekly_batch.clear_cache
     end
-    self.weekly_batches.map {|batch| batch.clear_cache}
     activity.notify
   end
 
