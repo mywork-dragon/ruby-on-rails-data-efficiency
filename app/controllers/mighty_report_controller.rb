@@ -21,6 +21,8 @@ class MightyReportController < ApplicationController
     @medal_report_icon = mighty_report_folder + 'medal.svg'
     @pie_chart_report_icon = mighty_report_folder + 'pie-chart.svg'
     @smartphone_ad_report_icon = mighty_report_folder + 'smartphone-ad.svg'
+
+    @ad_source = params['ad_source']
   end
 
   def get_report
@@ -28,7 +30,14 @@ class MightyReportController < ApplicationController
 
     if email.present?
       lead_source = 'Mighty Report'
-      Lead.create_lead({email: email, message: lead_source, lead_source: lead_source})
+
+      lead_data = {email: email, message: lead_source, lead_source: lead_source}
+
+      ad_source = params['ad_source']
+      lead_data.merge!(ad_source: ad_source) if ad_source.present?
+
+      Lead.create_lead(lead_data)
+
       flash[:success] = "Thanks for requesting the report. We'll be in touch soon!"
     else
       flash[:error] = "Please enter your email."

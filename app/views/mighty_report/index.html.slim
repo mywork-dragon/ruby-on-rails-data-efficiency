@@ -23,6 +23,8 @@
           .column.large-12
             p.enter-email-text Enter your email address to get started.
           = form_tag get_report_path, method: 'post', data: {form: 'mighty-report'}, id: "submit-email-form" do |f|
+            = hidden_field_tag :ad_source, @ad_source
+
             .column.large-8.large-offset-2
               input.email name='email' type='email' placeholder="you@mobilecompany.com" title="ay Please input your work email."
             .column.large-12
