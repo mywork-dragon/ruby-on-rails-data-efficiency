@@ -66,10 +66,16 @@
           </div>
         </script>
   		<li>
-  			<a class="nav-link" href="http://support.mightysignal.com/" ng-click="clickedNavLink('Support')" target="_blank"><span><i class="fa fa-support"></i>Support</span></a>
+                <a class="nav-link" href="http://support.mightysignal.com/" ng-click="clickedNavLink('Support')" target="_blank">
+                        <i class="fa fa-support"></i>
+                        <span>Support</span>
+                </a>
   		</li>
       <li ng-if="$root.isAdmin" ui-sref="admin" ui-sref-active="active">
-          <a class="nav-link" href="#/admin" ng-click="clickedNavLink('Admin')"><span><i class="fa fa-cog"></i>Admin</span></a>
+          <a class="nav-link" href="#/admin" ng-click="clickedNavLink('Admin')">
+                  <i class="fa fa-cog"></i>
+                  <span>Admin</span>
+          </a>
       </li>
       <li ng-click="logUserOut()">
           <a class="nav-link" href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
