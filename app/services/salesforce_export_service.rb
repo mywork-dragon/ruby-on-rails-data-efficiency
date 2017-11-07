@@ -291,6 +291,8 @@ class SalesforceExportService
       @client.create!(@model_name, new_object)
     end
 
+    SalesforceLogger.new(@account, publisher, @model_name, object_id.blank?).send!
+
     # apps only belong to accounts for now, run in background job
     if @model_name == 'Account' && app
       if app.is_a? IosApp
