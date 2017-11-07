@@ -23,7 +23,7 @@ class RedshiftRankingsAccessor
 
     {
       "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => RedshiftBase.query(get_trending_query, expires: 30.minutes).fetch()  # Note: the returned entries will have denormalized country and rank type attributes.
+      "apps" => normalize_app_records(RedshiftBase.query(get_trending_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -49,7 +49,7 @@ class RedshiftRankingsAccessor
 
     {
       "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => RedshiftBase.query(get_newcomers_query, expires: 30.minutes).fetch()  # Note: the returned entries will have denormalized country and rank type attributes.
+      "apps" => normalize_app_records(RedshiftBase.query(get_newcomers_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -88,6 +88,18 @@ class RedshiftRankingsAccessor
   end
 
 private
+
+  def normalize_app_records(records)
+    records.map do |record|
+      if record["platform"] == "ios"
+        record["country"] = ios_to_country_code(record["country"])
+        record["ranking_type"] = ios_to_rank_type(record["ranking_type"])
+      elsif record["platform"] == "android"
+        record["ranking_type"] = android_to_rank_type(record["ranking_type"])
+      end
+      record
+    end
+  end
 
   def generate_denormalized_countries(platforms, countries)
     denormalized_countries = []

@@ -6,12 +6,24 @@ module RankingsParamDenormalizer
     @@ITUNES_COUNTRY_MAP[country_code.to_s]
   end
 
+  def ios_to_country_code(ios_storefront)
+    @@ITUNES_COUNTRY_MAP_INVERTED[ios_storefront.to_s]
+  end
+
   def rank_type_to_ios(rank_type)
     @@ITUNES_RANKING_TYPES[rank_type.to_s]
   end
 
+  def ios_to_rank_type(ios_rank_type)
+    @@ITUNES_RANKING_TYPES_INVERTED[ios_rank_type.to_s]
+  end
+
   def rank_type_to_android(rank_type)
     @@PLAY_STORE_RANKING_TYPES[rank_type.to_s]
+  end
+
+  def android_to_rank_type(android_rank_type)
+    @@PLAY_STORE_RANKING_TYPES_INVERTED[android_rank_type.to_s]
   end
 
   class << self
@@ -185,6 +197,10 @@ module RankingsParamDenormalizer
        "ZA" => "143472", 
        "ZW" => "143605"
     }
+
+    @@PLAY_STORE_RANKING_TYPES_INVERTED = @@PLAY_STORE_RANKING_TYPES.invert
+    @@ITUNES_RANKING_TYPES_INVERTED = @@ITUNES_RANKING_TYPES.invert
+    @@ITUNES_COUNTRY_MAP_INVERTED = @@ITUNES_COUNTRY_MAP.invert
 
   end
 
