@@ -1,7 +1,7 @@
 class RedshiftRankingsAccessor
   include RankingsParamDenormalizer
 
-  def get_trending(platforms:[], countries:[], categories:[], rank_types:[], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
+  def get_trending(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
     
     # Validate parameters
 
@@ -27,7 +27,7 @@ class RedshiftRankingsAccessor
     }
   end
 
-  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:[], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: max_rank)
+  def get_newcomers(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: 500)
 
     # Validate parameters
 
