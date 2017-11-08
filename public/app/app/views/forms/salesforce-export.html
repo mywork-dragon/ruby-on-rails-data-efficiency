@@ -32,7 +32,7 @@
       </span>
       <br>
       <div ng-if="sfObject" class="sf-form">
-        <h4>1. Choose an existing {{sfObject}}</h3>
+        <h4>Choose an existing {{sfObject}}</h3>
         <p>Use this if you want to import MightySignal data to an existing {{sfObject}}. If left blank, we will create a new {{sfObject}} object</p>
         <angucomplete-alt id="salesforce-autocomplete"
                            placeholder="{{placeholderText()}}"
@@ -51,11 +51,11 @@
           {{existingObject.name}}
           <a class="remove-button" ng-click="removeSelectedObject()">×</a>
         </span>
-        <h4>2. Where should we export MightySignal data?</h3>
-        <ul class="salesforce-fields">
+        <h4 ng-if="sfMappingForm[sfObject].length && sfObject == 'Lead'">Complete your {{sfObject}}</h4>
+        <ul class="salesforce-fields" ng-if="sfMappingForm[sfObject].length && sfObject == 'Lead'">
           <li ng-repeat="field in sfMappingForm[sfObject]" ng-if="!field.platform || field.platform == app.platform">
-            <label>{{field.name}}</label>
-            <span ng-if="field.fields" class="ui-select">
+            <label ng-if="!field.fields">{{field.name}}</label>
+            <span ng-if="field.fields && false" class="ui-select">
               <select name="{{field.name}}" ng-required="true" ng-model='sfMapping[sfObject][field.name]' ng-options="option.name for option in field.fields track by option.id">
                 <option value="">Choose field</option>
               </select>

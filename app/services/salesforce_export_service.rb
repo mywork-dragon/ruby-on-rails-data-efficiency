@@ -10,6 +10,7 @@ class SalesforceExportService
     @app_model = 'MightySignal_App__c'
     @sdk_model = 'MightySignal_SDK__c'
     @sdk_join_model = 'MightySignal_SDK_App__c'
+    @app_ownership_model = 'MightySignal_App_Ownership__c'
 
     client_id = '3MVG9i1HRpGLXp.pUhSTB.tZbHDa3jGq5LTNGRML_QgvmjyWLmLUJVgg4Mgly3K_uil7kNxjFa0jOD54H3Ex9'
 
@@ -88,6 +89,22 @@ class SalesforceExportService
       create_sdkapp_fields
     }.perform
 
+    @metadata_client.create(:custom_object, 
+      full_name: @app_ownership_model, 
+      deploymentStatus: 'Deployed',
+      sharingModel: 'ReadWrite',
+      label: 'MightySignal AppOwnership', 
+      pluralLabel: 'MightySignal AppOwnerships',
+      nameField: {
+        label: 'MightySignal AppOwnership Name',
+        type: 'Text'
+      }
+    ).on_complete { |job|
+      create_app_ownership_fields
+    }.on_error {|job|
+      create_app_ownership_fields
+    }.perform
+
     create_main_fields
 
     @account.update_attributes(salesforce_status: :ready)
@@ -123,9 +140,6 @@ class SalesforceExportService
       {label: 'SDK Data', type: 'LongTextArea', length: 131072, visibleLines: 10},
       {label: 'Mobile Priority', type: 'Text', length: 255},
       {label: 'User Base', type: 'Text', length: 255},
-      {label: 'Monthly Active Users', type: 'Number', precision: 11, scale: 0},
-      {label: 'Weekly Active Users', type: 'Number', precision: 11, scale: 0},
-      {label: 'Daily Active Users', type: 'Number', precision: 11, scale: 0},
       {label: 'Ad Spend', type: 'Checkbox', defaultValue: false},
       {label: 'Release Date', type: 'Date'},
       {label: 'Last Scanned Date', type: 'Date'},
@@ -160,6 +174,19 @@ class SalesforceExportService
     ]
     new_fields.each do |field|
       add_custom_field(@sdk_join_model, field)
+    end
+  end
+
+  def create_app_ownership_fields
+    puts 'create appownership fields'
+    new_fields = [
+      {label: 'MightySignal Key', type: 'Text', length: 255, externalId: true},
+      {label: 'Lead', type: 'Lookup', referenceTo: 'Lead', relationshipName: 'Lead'},
+      {label: 'Account', type: 'Lookup', referenceTo: 'Account', relationshipName: 'Account'},
+      {label: 'MightySignal App', type: 'MasterDetail', referenceTo: 'MightySignal_App__c', relationshipName: 'Lead_App'},
+    ]
+    new_fields.each do |field|
+      add_custom_field(@app_ownership_model, field)
     end
   end
 
@@ -235,7 +262,7 @@ class SalesforceExportService
   end
 
   def should_skip_field?(field, map, data, existing_object)
-    default_fields = if @model_name == 'Account'
+    default_fields = if account_import?
       ['Website', 'Name']
     else
       ['Website', 'Company']
@@ -293,13 +320,10 @@ class SalesforceExportService
 
     SalesforceLogger.new(@account, publisher, @model_name, object_id.blank?).send!
 
-    # apps only belong to accounts for now, run in background job
-    if @model_name == 'Account' && app
-      if app.is_a? IosApp
-        SalesforceWorker.perform_async(:export_ios_apps, app.id, export, @user.id, @model_name)
-      elsif app.is_a? AndroidApp
-        SalesforceWorker.perform_async(:export_android_apps, app.id, export, @user.id, @model_name)
-      end
+    if app.is_a? IosApp
+      SalesforceWorker.perform_async(:export_ios_apps, app.id, export, @user.id, @model_name)
+    elsif app.is_a? AndroidApp
+      SalesforceWorker.perform_async(:export_android_apps, app.id, export, @user.id, @model_name)
     end
 
     export
@@ -321,7 +345,7 @@ class SalesforceExportService
     account.save
   end
 
-  def import_ios_app(app:, account_id:)
+  def import_ios_app(app:, account_id: nil)
     new_app = {
       'Name' => app.name,
       'MightySignal_App_ID__c' => app.id.to_s,
@@ -332,20 +356,18 @@ class SalesforceExportService
       'SDK_Data__c' => sdk_display(app),
       'Mobile_Priority__c' => app.mobile_priority,
       'User_Base__c' => app.international_userbase[:user_base],
-      'Monthly_Active_Users__c' => app.monthly_active_users,
-      'Daily_Active_Users__c' => app.daily_active_users,
-      'Weekly_Active_Users__c' => app.weekly_active_users,
       'Ad_Spend__c' => app.ad_spend?,
       'Release_Date__c' => app.release_date,
-      'Last_Scanned_Date__c' => app.last_scanned.try(:to_date),
-      'Account__c' => account_id
+      'Last_Scanned_Date__c' => app.last_scanned.try(:to_date)
     }
+
+    new_app['Account__c'] = account_id if account_id && account_import?
 
     @upsert_records[@app_model] ||= []
     @upsert_records[@app_model] << new_app
   end
 
-  def import_android_app(app:, account_id:)
+  def import_android_app(app:, account_id: nil)
     new_app = {
       'Name' => app.name,
       'MightySignal_App_ID__c' => app.id.to_s,
@@ -357,12 +379,24 @@ class SalesforceExportService
       'Mobile_Priority__c' => app.mobile_priority,
       'User_Base__c' => app.user_base,
       'Ad_Spend__c' => app.old_ad_spend?,
-      'Last_Scanned_Date__c' => app.last_scanned.try(:to_date),
-      'Account__c' => account_id
+      'Last_Scanned_Date__c' => app.last_scanned.try(:to_date)
     }
+
+    new_app['Account__c'] = account_id if account_id && account_import?
 
     @upsert_records[@app_model] ||= []
     @upsert_records[@app_model] << new_app
+  end
+
+  def import_app_ownership(app_id, lead_id)
+    new_app_ownership = {
+      'MightySignal_Key__c' => app_id + lead_id,
+      'MightySignal_App__c' => app_id,
+      'Lead__c' => lead_id,
+    }
+
+    @upsert_records[@app_ownership_model] ||= []
+    @upsert_records[@app_ownership_model] << new_app_ownership
   end
 
   def import_publisher(publisher, export_id)
@@ -378,6 +412,10 @@ class SalesforceExportService
     results = @bulk_client.upsert(@app_model, @upsert_records[@app_model], 'MightySignal_Key__c', true)
     results['batches'].first['response'].each_with_index do |app, i|
       app_id = app["id"].first
+      
+      # leads use app ownership, accounts have id directly on app object
+      import_app_ownership(app_id, export_id) if lead_import?
+      
       record = @upsert_records[@app_model][i]
       app = publisher.ios? ? IosApp.find(record['MightySignal_App_ID__c']) : AndroidApp.find(record['MightySignal_App_ID__c'])
 
@@ -413,6 +451,7 @@ class SalesforceExportService
     end
 
     @bulk_client.upsert(@sdk_join_model, @upsert_records[@sdk_join_model], 'MightySignal_Key__c')
+    @bulk_client.upsert(@app_ownership_model, @upsert_records[@app_ownership_model], 'MightySignal_Key__c')
 
     reset_bulk_data
 
@@ -483,9 +522,9 @@ class SalesforceExportService
     }
   end
 
-  def self.sf_for(account_name)
+  def self.sf_for(account_name, model_name = 'Account')
     account = Account.where(name: account_name).first
-    SalesforceExportService.new(user: account.users.first)
+    SalesforceExportService.new(user: account.users.first, model_name: model_name)
   end
 
   private
@@ -656,6 +695,14 @@ class SalesforceExportService
 
   def refresh_token(response)
     @user.account.update_attributes(salesforce_token: response["access_token"])
+  end
+
+  def account_import?
+    @model_name == 'Account'
+  end
+
+  def lead_import?
+    @model_name == 'Lead'
   end
 
   def update_metadata_token(client, options)
