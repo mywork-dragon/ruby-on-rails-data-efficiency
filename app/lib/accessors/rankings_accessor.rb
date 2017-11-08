@@ -33,7 +33,7 @@ class RankingsAccessor
   #               app_identifier: xxxxx,
   #               weekly_change: xxxxx,
   #               monthly_change: xxxxx,
-  #               highest_rank: xxxxx,
+  #               rank: xxxxx,
   #               platform: xxxxxx,
   #               country: xxxxxx,
   #               category: xxxxxx,
@@ -50,7 +50,7 @@ class RankingsAccessor
   # If any of the platforms, countries, categories, rank_types parameters are left out, it is treated as a wildcard. If
   # an app shows up for the first time on multiple charts, this function will return an object for each of the charts.
   #
-  # The return list is sorted by highest rank.
+  # The return list is sorted by created_at (i.e. date that the app entered the chart).
   #
   #
   #
@@ -69,7 +69,7 @@ class RankingsAccessor
   #       apps: [
   #            {
   #                app_identifier: xxxxx,
-  #                date: xxxxx,
+  #                created_at: xxxxx,
   #                platform: xxxx,
   #                category: xxxx,
   #                ranking_type: xxxx,
@@ -83,6 +83,37 @@ class RankingsAccessor
     return @delegate.get_newcomers(platforms:platforms, countries:countries, categories:categories, rank_types:rank_types, lookback_time: lookback_time, size: size, page_num: page_num, max_rank: max_rank)
   end
 
+  # Returns the raw chart with the give parameters.
+  #
+  # The return list is sorted by rank.
+  #
+  #
+  #
+  # Possible values for parameters:
+  #   
+  #   platform: "ios", "android"
+  #   country: two letter code of country based on "ISO 3166-1 alpha-2" standard
+  #   category: these values ARE NOT NORMALIZED between platforms. For iOS, this is the category id (e.g. "7015"), 
+  #               on Android this is the human readable category name ("GAME")
+  #   rank_type: "free", "paid", "grossing"
+  #
+  # Return Format:
+  #
+  #   {
+  #       total: xxxxx,
+  #       apps: [
+  #            {
+  #                app_identifier: xxxxx,
+  #                created_at: xxxxx,
+  #                platform: xxxx,
+  #                category: xxxx,
+  #                ranking_type: xxxx,
+  #                country: xxxxx,
+  #                rank: xxxxx
+  #            },
+  #            ...
+  #       ]
+  #   }
   def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 0)
     return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type, size: 20, page_num: 1)
   end

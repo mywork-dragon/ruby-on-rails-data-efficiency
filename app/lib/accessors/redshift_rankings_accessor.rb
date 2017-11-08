@@ -83,8 +83,13 @@ class RedshiftRankingsAccessor
     
     # Perform queries
 
-    query = "SELECT * FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}' ORDER BY rank ASC OFFSET #{(page_num - 1) * size} LIMIT #{size}"
-    RedshiftBase.query(query, expires: 30.minutes).fetch()
+    get_chart_query = "SELECT * FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}' ORDER BY rank ASC OFFSET #{(page_num - 1) * size} LIMIT #{size}"
+    get_total_query = "SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}'"
+
+    {
+      "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(RedshiftBase.query(get_chart_query, expires: 30.minutes).fetch())
+    }
   end
 
 private
