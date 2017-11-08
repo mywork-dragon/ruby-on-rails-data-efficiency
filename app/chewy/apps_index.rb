@@ -274,8 +274,8 @@ class AppsIndex < Chewy::Index
     field :mobile_priority, index: 'not_analyzed'
     field :categories, value: ->(app, crutches) { [crutches.categories[app.id]].compact }, index: 'not_analyzed' # deprecated TODO remove
     field :category_ids, value: ->(app, crutches) { [crutches.category_ids[app.id]].compact }, index: 'not_analyzed'
-    field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min)}
-    field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max)}
+    field :downloads_min, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_min).to_i}, type: 'integer'
+    field :downloads_max, value: ->(android_app) {android_app.newest_android_app_snapshot.try(:downloads_max).to_i}, type: 'integer'
 
     field :first_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'first_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
     field :last_seen_ads, value: ->(app, crutches) { crutches.ad_spend[app.id].try(:[], 'last_seen_ads')  }, type: 'date', format: 'date_time', include_in_all: false
