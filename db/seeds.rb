@@ -117,17 +117,15 @@ end
 
   puts 'creating FB Ads'
 
-  100.times do
-    ad = IosFbAdAppearance.create
+  1000.times do
     app = IosApp.all.sample
-    app.ios_fb_ad_appearances << ad
+    IosFbAd.create(ios_app_id: app.id, date_seen: Faker::Date.between(1.year.ago, Date.today))
   end
 
   puts 'creating Android Ads'
-  100.times do
-    ad = AndroidFbAdAppearance.create
+  1000.times do
     app = AndroidApp.all.sample
-    app.android_fb_ad_appearances << ad
+    AndroidAd.create(advertised_app_id: app.id, date_seen: Faker::Date.between(1.year.ago, Date.today))
   end
 
   puts 'creating Sdks'

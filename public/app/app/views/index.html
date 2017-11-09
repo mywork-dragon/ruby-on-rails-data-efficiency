@@ -117,7 +117,6 @@
 
     <!-- Custom Angular Scripts -->
     <script src="/app/app/scripts/app.js"></script>
-    <script src="/app/app/scripts/directives.js"></script>
     <script src="/app/app/scripts/services/api.js"></script>
     <script src="/app/app/scripts/services/auth.js"></script>
     <script src="/app/app/scripts/services/list.js"></script>
@@ -134,6 +133,7 @@
     <script src="/app/app/scripts/services/publisher.service.js"></script>
     <script src="/app/app/scripts/services/click-copy.js"></script>
     <script src="/app/app/scripts/services/contact.service.js"></script>
+    <script src="/app/app/scripts/services/ad-intelligence.service.js"></script>
     <script src="/app/app/scripts/controllers/main.js"></script>
     <script src="/app/app/scripts/controllers/login.js"></script>
     <script src="/app/app/scripts/controllers/search.js"></script>
@@ -141,13 +141,14 @@
     <script src="/app/app/scripts/controllers/sdk-search.js"></script>
     <script src="/app/app/scripts/controllers/chart.js"></script>
     <script src="/app/app/scripts/controllers/list.js"></script>
-    <script src="/app/app/publishers/publisher.controller.js"></script>
     <script src="/app/app/scripts/controllers/newsfeed.js"></script>
     <script src="/app/app/scripts/controllers/company-details.js"></script>
     <script src="/app/app/scripts/controllers/sdk-details.js"></script>
     <script src="/app/app/scripts/controllers/admin.js"></script>
     <script src="/app/app/scripts/controllers/charts.js"></script>
-    <script src="/app/app/scripts/controllers/ad-intelligence.js"></script>
+    <script src="/app/app/scripts/controllers/table.controller.js"></script>
+    <script src="/app/app/ad-intelligence/adIntelMixpanel.service.js"></script>
+    <script src="/app/app/ad-intelligence/ad-intelligence.controller.js"></script>
     <script src="/app/app/scripts/controllers/modal-search.js"></script>
     <script src="/app/app/scripts/controllers/search-delete.js"></script>
     <script src="/app/app/scripts/controllers/help-video.js"></script>
@@ -158,8 +159,14 @@
     <script src="/app/app/apps/ad-intelligence.js"></script>
     <script src="/app/app/apps/android-live-scan.js"></script>
     <script src="/app/app/apps/app.controller.js"></script>
-    <script src="/app/app/apps/details.js"></script>
     <script src="/app/app/apps/ios-live-scan.js"></script>
+
+    <!-- Publisher Component Scripts -->
+    <script src="/app/app/publishers/publisher.controller.js"></script>
+
+    <!-- Directives -->
+    <script src="/app/app/scripts/directives/directives.js"></script>
+    <script src="/app/app/scripts/directives/fallback-src.directive.js"></script>
 
     <!-- Custom Scripts -->
     <script src="/app/app/js/ng-infinite-scroll.min.js"></script>

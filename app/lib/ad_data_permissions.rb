@@ -3,7 +3,7 @@ module AdDataPermissions
 
   AD_DATA_TIERS = {
     'tier-1' => ['facebook'],
-    'tier-2' => ['facebook', 'applovin', 'chartboost']
+    'tier-2' => ['facebook', 'applovin', 'chartboost', 'unity-ads']
   }
 
   APP_PLATFORMS = ['ios', 'android']
@@ -23,10 +23,16 @@ module AdDataPermissions
       id:'applovin',
       name:'Applovin',
       icon: 'https://www.google.com/s2/favicons?domain=applovin.com'
+    },
+    {
+      id:'unity-ads',
+      name:'Unity',
+      icon: 'https://www.google.com/s2/favicons?domain=unity3d.com'
     }
   ]
 
   AD_DATA_NETWORK_IDS = AD_DATA_SOURCES.map {|x| x[:id]}
+  AD_DATA_NETWORK_ID_TO_NAME = AD_DATA_SOURCES.map {|x| [x[:id], x[:name]]}.to_h
 
   def self.included base
     base.send :include, InstanceMethods
@@ -46,8 +52,10 @@ module AdDataPermissions
       #   [{id:'facebook', name:'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com', 'can_access': true},...]
       h = {}
       AdDataPermissions::AD_DATA_SOURCES.map do |source|
-        h[source[:id]] = source.clone
-        h[source[:id]][:can_access] = self.can_access_ad_network(source[:id])
+        if visible_ad_networks.include? source[:id]
+          h[source[:id]] = source.clone
+          h[source[:id]][:can_access] = self.can_access_ad_network(source[:id])
+        end
       end
       h
     end
@@ -75,7 +83,12 @@ module AdDataPermissions
     end
 
     def hidden_ad_networks
-      ad_permissions['hidden_ad_networks']
+      hidden = ad_permissions['hidden_ad_networks']
+      # AD_INTEL_TO_DO remove this and reenable account_test.rb tests.
+      if ad_permissions['enabled_ad_network_tiers'].include? 'tier-1'
+        hidden += (Set.new(AD_DATA_TIERS['tier-2']) - Set.new(AD_DATA_TIERS['tier-1'])).to_a
+      end
+      hidden
     end
 
     def enable_ad_network!(value)
@@ -126,7 +139,7 @@ module AdDataPermissions
           'enabled_ad_networks' => [],
           'hidden_ad_networks' => [],
           'disabled_ad_networks' => [],
-          'enabled_ad_network_tiers' => []
+          'enabled_ad_network_tiers' => ['tier-1'] # Enable tier-1 by default
         }
       end
       ad_data_permissions

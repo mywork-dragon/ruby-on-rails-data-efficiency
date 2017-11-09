@@ -66,10 +66,12 @@
       </div>
     </div>
   </header>
-  <!-- <ul class="nav nav-tabs nav-justified">
+  <!-- <ul class="nav nav-tabs nav-justified" ng-if="app.adSpend">
     <li class="uib-tab nav-item" ng-repeat="tab in app.tabs" ui-sref="{{tab.route}}" ui-sref-active="active">
       <a class="nav-link">
-        <uib-tab-heading>{{tab.title}}</uib-tab-heading>
+        <uib-tab-heading>
+          <span ng-bind-html="tab.title"></span>
+        </uib-tab-heading>
       </a>
     </li>
   </ul> -->

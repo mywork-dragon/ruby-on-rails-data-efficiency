@@ -2,6 +2,10 @@ class RedshiftBase < ActiveRecord::Base
   self.abstract_class = true
   establish_connection Rails.application.config.redshift_db_config[Rails.env.to_s]
 
+  def self.sanitize_sql_statement(array)
+    self.send(:sanitize_sql_array, array)
+  end
+
   class CachedQuery
     def initialize(sql, expires: 12.hours, key: nil, force: false, compress: true)
       @expires = expires

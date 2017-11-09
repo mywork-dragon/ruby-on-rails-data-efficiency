@@ -9,8 +9,8 @@
     <div class="row adminPageRow">
       <div ng-hide="accountId">
         {{$scope.accountId}}
-        <h4>Admin</h4>
-        <div ng-if="$root.isAdminAccount">
+        <h4 class="page-title">Admin</h4>
+        <div ng-if="$root.isAdminAccount" class="admin-setup">
           <strong>Setup new accounts</strong>
           <form id="create-account" class="form-inline" name="accountForm">
             <div class="form-group">

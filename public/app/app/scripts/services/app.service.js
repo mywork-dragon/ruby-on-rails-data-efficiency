@@ -20,7 +20,6 @@ function appService ($http, loggitService) {
     .then(function(response) {
       return response.data;
     })
-
   }
 
   function resetAppData (appId) {

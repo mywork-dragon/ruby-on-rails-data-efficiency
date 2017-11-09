@@ -19,7 +19,6 @@
     'uniqueStringsFilter'
   ];
 
-  /* @ngInject */
   function PublisherController (
     publisherService,
     loggitService,

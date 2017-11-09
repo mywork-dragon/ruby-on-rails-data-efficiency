@@ -35,7 +35,8 @@ angular
     var adIntelligenceState = {
       name: 'ad-intelligence',
       url: '/ad-intelligence',
-      templateUrl: '/app/app/views/ad-intelligence.html'
+      templateUrl: '/app/app/ad-intelligence/views/ad-intelligence.html',
+      controller: 'AdIntelligenceController as adIntel'
     }
 
     var adminState  = {

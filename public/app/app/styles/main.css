@@ -106,6 +106,11 @@ h4, .h4 {
   padding-bottom: 10px;
   margin-bottom: 20px; }
 
+h4.page-title {
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+
 mark, .mark {
   background-color: #fffbef;
   padding: .2em; }
@@ -544,6 +549,10 @@ pre {
 .page-main-header h4 {
   margin-bottom: 0;
   border-bottom: none; }
+
+  #adIntelligencePage .page-main-header {
+    border: none;
+  }
 
 @media (max-width: 480px) {
   .page-main-header .text-right {
@@ -6620,7 +6629,7 @@ button.toast-close-button {
   display: none; }
 
 .page {
-  padding: 15px; }
+  padding: 20px; }
 
 .page-form-ele h3 {
   margin: 0; }
@@ -8372,6 +8381,10 @@ ul.majorAppsList {
   cursor: pointer;
 }
 
+.admin-setup {
+  padding: 15px;
+}
+
 .adminPageRow .tags, .newsfeedPageRow .tags {
   padding: 0;
   background: none;
@@ -8439,9 +8452,13 @@ ul.majorAppsList {
   margin: 0 10px 10px 0;
 }
 
-.newsfeedPageRow, .adminPageRow, .chartPageRow {
+.adminPageRow, .chartPageRow {
   padding: 20px;
   margin: 0;
+}
+
+.newsfeedPageRow {
+  padding: 20px;
 }
 
 .newsfeedPageRow .panel-heading, .adminPageRow .panel-heading  {
@@ -8929,8 +8946,8 @@ h4.red {
   align-items: center;
 }
 
-.ad-video {
-  margin-top: 15px;
+.header-help-prompt {
+  float: right;
 }
 
 .timeline-video {
@@ -9272,4 +9289,143 @@ h4.red {
 
 a.nav-link {
   cursor: pointer;
+}
+
+/* Ad Network Button Group */
+
+/*.ad-network-btn {
+  width: 130px;
+}*/
+
+.ad-network-btn-container {
+  display: flex;
+  /*justify-content: space-between;*/
+}
+
+.ad-network-btn-container img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.creative-table-row:hover {
+  cursor: pointer;
+}
+
+.creative-thumbnail {
+  object-fit: cover; /* Do not scale the image */
+  object-position: 50% 20%; /* Center the image within the element */
+  height: 75px;
+  width: 145px;
+}
+
+td.thumbnail-cell {
+  width: 150px;
+}
+
+.table>tbody>tr>td.creative-cell {
+  vertical-align: middle;
+}
+
+.carousel-container {
+  margin-bottom: 20px;
+}
+
+tr.creative-table-row.active > td {
+  background-color: #ECECEC !important;
+}
+
+.tier-label {
+  float: right;
+}
+
+.tooltip-network-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+/* Network Modal */
+
+.network-modal-header {
+  clear: both;
+  text-align: center;
+  margin: 25px;
+}
+
+.network-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.network-cta > a {
+  margin-bottom: 20px;
+}
+
+.network-cta > a:visited {
+  text-decoration: none;
+}
+
+.network-cta > a:hover {
+  text-decoration: none;
+}
+
+div.network-cta > p {
+  margin: 25px;
+}
+
+.network-prompt {
+  text-align: center;
+  margin-top: 10px;
+  border: 1px solid #767676;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: border-color 1s, color 1s;
+}
+
+.network-prompt:hover {
+  border-color: #0393DD;
+  color: #0393DD;
+}
+
+.network-prompt-btn {
+  float: right;
+  margin: 10px;
+}
+
+.network-prompt-link {
+  float: right;
+  margin: 15px;
+  color: #767676;
+  text-decoration: underline;
+}
+
+.network-modal-list {
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-network-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-network-container img {
+  height: 75px;
+  width: 75px;
+}
+
+.network-modal-label {
+  margin-top: 10px;
+}
+
+.fake-disabled {
+  opacity: 0.65;
+}
+
+.network-full-logo {
+  width: 100%;
 }

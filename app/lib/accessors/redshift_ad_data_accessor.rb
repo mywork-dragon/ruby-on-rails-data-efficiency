@@ -3,10 +3,13 @@ class RedshiftAdDataAccessor
   def query(
     platforms:['ios', 'android'],
     source_ids: [],
+    first_seen_ads_date: nil,
+    last_seen_ads_date: nil,
     sort_by: 'first_seen_ads_date',
     order_by: 'desc',
     page_size: 20,
-    page_number:0)
+    page_number:0,
+    extra_fields:[])
     # Filters and sorts apps by ad intel data.
     # Params:
     #   platforms: The platforms to filter this query by.
@@ -16,15 +19,28 @@ class RedshiftAdDataAccessor
     # Returns:
     # See AdDataAccessor
 
-    platforms_sql = ""
+    platforms_sql = nil
 
     if platforms.count != AdDataPermissions::APP_PLATFORMS.count
-      platforms_sql = "AND apps.platform in ('#{platforms.join("','")}')"
+      platforms_sql = "mobile_ad_data_summaries.platform in ('#{platforms.join("','")}')"
     end
-    source_ids_sql = "AND mobile_ad_data_summaries.ad_network in ('#{source_ids.join("','")}')"
+    source_ids_sql = "mobile_ad_data_summaries.ad_network in ('#{source_ids.join("','")}')"
+
+    where_clauses = [platforms_sql, source_ids_sql]
+    if ! first_seen_ads_date.nil?
+      where_clauses.append(RedshiftBase::sanitize_sql_statement(["first_seen_ads_date > ?", first_seen_ads_date]))
+    end
+    if ! last_seen_ads_date.nil?
+      where_clauses.append(RedshiftBase::sanitize_sql_statement(["last_seen_ads_date > ?", last_seen_ads_date]))
+    end
+
+    where_sql = where_clauses.compact.join(" AND ")
 
     if ![nil, 'first_seen_ads_date', 'last_seen_ads_date', 'user_base_display_score'].include? sort_by
       raise "Unsupported sort_by option"
+    end
+    if sort_by == 'user_base_display_score'
+      sort_by = 'user_base_score'
     end
     if ![nil, 'desc', 'asc'].include? order_by
       raise "Unsupported order_by option"
@@ -40,82 +56,56 @@ class RedshiftAdDataAccessor
     limit_sql = "LIMIT #{page_size}"
     offset = page_size * page_number
     offset_sql = "OFFSET #{offset}"
-
+    extra_fields_sql = (extra_fields.map{|f, as_f| "#{f} as #{as_f}"} + [""]).join(",")
     sql = "
-      SELECT apps.id,
-             apps.name,
-             apps.platform,
-             apps.primary_category,
-             apps.categories,
-             not BOOL_OR(apps.taken_down) as available,
-             apps.user_base_score as user_base_display_score,
-             apps.user_base,
-             apps.icon_url,
-             apps.publisher_id,
-             apps.publisher_name,
-             min(mobile_ad_data_summaries.first_seen_ads_date) AS first_seen_ads_date,
-             datediff(DAY, min(mobile_ad_data_summaries.first_seen_ads_date)::TIMESTAMP, GETDATE()) AS first_seen_ads_days,
-             max(mobile_ad_data_summaries.last_seen_ads_date) AS last_seen_ads_date,
-             datediff(DAY, max(mobile_ad_data_summaries.last_seen_ads_date)::TIMESTAMP, GETDATE()) AS last_seen_ads_days,
-             listagg(DISTINCT mobile_ad_data_summaries.ad_network, ',') AS ad_networks,
-             listagg(DISTINCT mobile_ad_data_summaries.ad_formats, ',') AS ad_formats,
-             count(*) OVER() AS full_count
-      FROM mobile_ad_data_summaries,
-           apps
-      WHERE mobile_ad_data_summaries.app_identifier = apps.app_identifier
-        AND mobile_ad_data_summaries.platform = apps.platform 
-        #{platforms_sql}
-        #{source_ids_sql}
-      GROUP BY apps.id,
-               apps.name,
-               apps.platform,
-               apps.primary_category,
-               apps.categories,
-               apps.user_base_score,
-               apps.user_base,
-               apps.icon_url,
-               apps.publisher_id,
-               apps.publisher_name
-      #{sort_by_sql}
-      #{limit_sql}
-      #{offset_sql}
+        WITH advertised_apps as (
+        SELECT
+            app_identifier,
+            platform,
+            min(mobile_ad_data_summaries.first_seen_ads_date) AS first_seen_ads_date,
+            datediff(DAY,
+            min(mobile_ad_data_summaries.first_seen_ads_date)::TIMESTAMP,
+            GETDATE()) AS first_seen_ads_days,
+            max(mobile_ad_data_summaries.last_seen_ads_date) AS last_seen_ads_date,
+            datediff(DAY,
+            max(mobile_ad_data_summaries.last_seen_ads_date)::TIMESTAMP,
+            GETDATE()) AS last_seen_ads_days,
+            listagg(DISTINCT mobile_ad_data_summaries.ad_network,
+            ',') AS ad_networks,
+            listagg(DISTINCT mobile_ad_data_summaries.ad_formats,
+            ',') AS ad_formats
+        FROM
+            mobile_ad_data_summaries
+            WHERE
+            #{where_sql}
+        GROUP BY
+            app_identifier, platform
+        )
+        select
+            #{extra_fields_sql}
+            advertised_apps.app_identifier,
+            advertised_apps.platform,
+            advertised_apps.first_seen_ads_date,
+            advertised_apps.first_seen_ads_days,
+            advertised_apps.last_seen_ads_date,
+            advertised_apps.last_seen_ads_days,
+            advertised_apps.ad_networks,
+            advertised_apps.ad_formats,
+            count(*) OVER() AS full_count
+        from apps, advertised_apps where apps.app_identifier = advertised_apps.app_identifier
+        AND apps.platform = advertised_apps.platform
+        #{sort_by_sql}
+        #{limit_sql}
+        #{offset_sql}
       "
     results = RedshiftBase.query(sql, expires: 15.minutes).fetch
-    output = []
     full_count = 0
-
-    results.each do |app|
-      full_count = app['full_count']
-      if app['categories']
-        categories = JSON.parse(app['categories']).values
-        categories.each do |cat|
-          if cat['id'].nil?
-            cat['id'] = cat['name']
-          end
-        end 
-      else
-        categories = {}
-      end
-      output.append(
-      {
-      'id' => app['id'],
-      'name' =>  app['name'],
-      'platform' =>  app['platform'],
-      'app_available' => app['available'],
-      'categories' => categories,
-      'user_base_display_score' =>  app['user_base_display_score'],
-      'user_base' => app['user_base'],
-      'icon' => app['icon_url'],
-      'publisher' =>  {"id" => app['publisher_id'], "name" => app['publisher_name']},
-      'first_seen_ads_date' => app['first_seen_ads_date'],
-      'first_seen_ads_days' => app['first_seen_ads_days'],
-      'last_seen_ads_date' => app['last_seen_ads_date'],
-      'last_seen_ads_days' => app['last_seen_ads_days'],
-      'ad_attribution_sdks' => "#{app['platform']}_app".classify.constantize.find(app['id']).ad_attribution_sdks,
-      'ad_formats' => Set.new(app['ad_formats'].split(',')).to_a.map{|x| {"id" => x, "name" => x.split('_').map{|x| x.capitalize}.join(" ")}},
-      'ad_sources' => app['ad_networks'].split(',').map {|network_id| {"id" => network_id}}
-      })
+    if results.count
+      full_count = results[0]['full_count']
     end
-    return output, full_count
+    results.each do |result|
+      result.delete('full_count')
+    end
+    return results, full_count
   end
 end

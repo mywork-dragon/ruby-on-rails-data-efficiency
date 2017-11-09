@@ -21,7 +21,8 @@
     'authService',
     '$auth',
     'authToken',
-    '$timeout'
+    '$timeout',
+    '$scope'
   ];
 
   function AppController (
@@ -40,20 +41,25 @@
     authService,
     $auth,
     authToken,
-    $timeout
+    $timeout,
+    $scope
   ) {
     var app = this;
 
+    app.activeCreative = {};
     app.activeSlide = 0;
+    app.facebookAds = [];
     app.appFetchComplete = false;
     app.contactFetchComplete = false;
+    app.tableCreatives = [];
     app.currentContactsPage = 1;
+    app.currentCreativesPage = 1;
     app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class=\"fa fa-external-link\"></span>')
     app.noWrapSlides = false;
     app.slideInterval = 0;
     app.tabs = [
       { title: 'General Information', index: 0, route: 'app.info' },
-      { title: 'Ad Intelligence', index: 1, route: 'app.ad-intelligence'}
+      { title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'), index: 1, route: 'app.ad-intelligence'}
     ]
     app.userInfo = {}
 
@@ -61,6 +67,7 @@
     app.addToList = addToList;
     app.authenticateSalesforce = authenticateSalesforce;
     app.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
+    app.changeActiveCreative = changeActiveCreative;
     app.exportContactsToCsv = exportContactsToCsv;
     app.followApp = followApp;
     app.getCompanyContacts = getCompanyContacts;
@@ -68,6 +75,7 @@
     app.handleTagButtonClick = handleTagButtonClick;
     app.onLinkedinButtonClick = onLinkedinButtonClick;
     app.openAppStorePage = openAppStorePage;
+    app.populateCreativesTable = populateCreativesTable;
     app.resetAppData = resetAppData;
     app.trackCompanyContactsRequest = trackCompanyContactsRequest;
     app.trackCopiedEmail = trackCopiedEmail;
@@ -83,6 +91,8 @@
           getCompanyContacts()
           addAdIds()
           getSalesforceData()
+          populateCreativesTable();
+          app.activeCreative = app.facebookAds[0]
           pageTitleService.setTitle(app.name)
 
           var eventName;
@@ -142,6 +152,11 @@
         alert(response.data.error)
       });
     };
+
+    function changeActiveCreative (ad) {
+      app.activeCreative = ad;
+      app.activeSlide = ad.id;
+    }
 
     function exportContactsToCsv (filter) {
       contactService.exportContactsToCsv(app.platform, app.publisher.id, filter, app.publisher.name)
@@ -240,6 +255,14 @@
       $window.open(page)
     }
 
+    function populateCreativesTable () {
+      const start = (app.currentCreativesPage - 1) * 10;
+      const end = start + 10;
+      app.tableCreatives = app.facebookAds.slice(start, end);
+      app.activeSlide = start;
+      app.activeCreative = app.facebookAds[start]
+    }
+
     function resetAppData () {
       loggitService.log("Resetting app data. The page will refresh shortly.")
       appService.resetAppData(app.id)
@@ -296,5 +319,16 @@
         }
       );
     }
+
+    $scope.$watch('app.activeSlide', function(newId, oldId) {
+      if (app.facebookAds.length) {
+        const isInTable = _.any(app.tableCreatives, ad => ad.id == newId)
+        if (!isInTable) {
+          app.currentCreativesPage = Math.ceil((newId + 1)/10)
+          populateCreativesTable()
+        }
+        changeActiveCreative(app.facebookAds[newId])
+      }
+    })
   }
 })();

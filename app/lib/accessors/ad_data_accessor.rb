@@ -1,18 +1,62 @@
 class AdDataAccessor
-  MAX_PAGE_SIZE = 100
+  MAX_PAGE_SIZE = 20000
 
   def initialize
     @delegate = RedshiftAdDataAccessor.new
   end
 
+  def raw_query(
+    account,
+    platforms:['ios', 'android'],
+    source_ids: nil,
+    first_seen_ads_date: nil,
+    last_seen_ads_date: nil,
+    sort_by: 'first_seen_ads_date',
+    order_by: 'desc',
+    page_size: 20,
+    page_number:0,
+    extra_fields:[])
+    page_size = [page_size.to_i, MAX_PAGE_SIZE].min
+    page_number = [page_number.to_i, 0].max
+    if source_ids.nil?
+      source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+    end
+    source_ids = account.restrict_ad_sources(source_ids)
+    platforms = platforms.select {|x| AdDataPermissions::APP_PLATFORMS.include? x}
+
+    results, full_count = @delegate.query(
+      platforms:platforms,
+      source_ids: source_ids,
+      first_seen_ads_date: first_seen_ads_date,
+      last_seen_ads_date: last_seen_ads_date,
+      sort_by: sort_by,
+      order_by: order_by,
+      page_size: page_size,
+      page_number:page_number,
+      extra_fields:extra_fields
+    )
+    results = results.map do |app|
+      app['ad_formats'] = Set.new(app['ad_formats'].split(',')).to_a.map{|x| {"id" => x, "name" => x.split('_').map{|x| x.capitalize}.join(" ")}}
+      app['ad_sources'] = app['ad_networks'].split(',').map {|network_id| {"id" => network_id, "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[network_id]}}
+      app.delete('ad_networks')
+      app
+    end
+    return results, full_count
+  end
+
+
+
   def query(
     account,
     platforms:['ios', 'android'],
     source_ids: nil,
+    first_seen_ads_date: nil,
+    last_seen_ads_date: nil,
     sort_by: 'first_seen_ads_date',
     order_by: 'desc',
     page_size: 20,
-    page_number:0)
+    page_number:0,
+    extra_fields:[])
     # Filters and sorts apps by ad intel data.
     # Params:
     #   account: The account with which to scope the query by (some accounts can access a subset of data).
@@ -80,21 +124,64 @@ class AdDataAccessor
     #         "ad_sources" : ['facebook']
     #     },
     # ]
-    page_size = [page_size.to_i, MAX_PAGE_SIZE].min
-    page_number = [page_number.to_i, 0].max
-    if source_ids.nil?
-      source_ids = account.available_ad_sources.values.map {|x| x[:id]}
-    end
-    source_ids = account.restrict_ad_sources(source_ids)
-    platforms = platforms.select {|x| AdDataPermissions::APP_PLATFORMS.include? x}
+    results, full_count = raw_query(
+        account,
+        platforms:platforms,
+        source_ids: source_ids,
+        first_seen_ads_date: first_seen_ads_date,
+        last_seen_ads_date: last_seen_ads_date,
+        sort_by: sort_by,
+        order_by: order_by,
+        page_size: page_size,
+        page_number:page_number,
+        extra_fields:extra_fields
+        )
 
-    @delegate.query(
-      platforms:platforms,
-      source_ids: source_ids,
-      sort_by: sort_by,
-      order_by: order_by,
-      page_size: page_size,
-      page_number:page_number
+    output = []
+
+    results.each do |app|
+      app_model = "#{app['platform']}_app".classify.constantize.find_by_app_identifier(app['app_identifier'])
+      if app_model.nil?
+        next
+      end
+
+      # Skip apps for which we have no data.
+      if app['platform'] == 'ios'
+        if  app_model.first_international_snapshot.empty?
+          next
+        end
+        snap_accessor = IosSnapshotAccessor.new
+        categories = snap_accessor.categories_from_ios_app(app_model).map do |x|
+          x['id'] = x['name']
+          x
+        end
+        app_available = app_model.app_store_available
+        user_bases = app_model.scored_user_bases
+      elsif app['platform'] == 'android'
+        if app_model.newest_apk_snapshot_id.nil?
+          next
+        end
+        app_available = app_model.app_available?
+
+        categories = app_model.android_app_snapshot_categories
+        user_bases = {}
+      end
+      publisher = app_model.send("#{app['platform']}_developer".to_sym)
+      app = app.merge(
+        {
+        'id' => app_model.id,
+        'name' =>  app_model.name,
+        'app_available' => app_available,
+        'categories' => categories,
+        'user_bases' =>  user_bases,
+        'user_base' => app_model.user_base,
+        'icon' => app_model.icon_url,
+        'publisher' =>  publisher ? {"id" => publisher.id, "name" => publisher.name} : {},
+        'ad_attribution_sdks' => app_model.ad_attribution_sdks
+        }
       )
+      output.append(app)
+    end
+    return output, full_count
   end
 end
