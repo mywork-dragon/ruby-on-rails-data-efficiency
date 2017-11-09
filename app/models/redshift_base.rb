@@ -24,7 +24,7 @@ class RedshiftBase < ActiveRecord::Base
       if @force
         _get_response
       else
-        Rails.cache.fetch(@key, expires: @expires, compress: @compress) do
+        Rails.cache.fetch(@key, expires_in: @expires, compress: @compress) do
           _get_response
         end
       end
