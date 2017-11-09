@@ -16,6 +16,7 @@ class AdIntelligenceController < ApplicationController
     page_num = params[:pageNum] ? params[:pageNum].to_i : 1
     first_seen_ads_date = params[:firstSeenAds] ? DateTime.parse(params[:firstSeenAds]) : nil
     last_seen_ads_date = params[:lastSeenAds] ? DateTime.parse(params[:lastSeenAds]) : nil
+    user_page_num = page_num
     page_num = page_num - 1
     params[:sortBy] ||= 'first_seen_ads_date'
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
@@ -39,7 +40,7 @@ class AdIntelligenceController < ApplicationController
         render json: {
           results: results,
           resultsCount: results_count,
-          pageNum: page_num,
+          pageNum: user_page_num,
           pageSize: page_size
         }
 
