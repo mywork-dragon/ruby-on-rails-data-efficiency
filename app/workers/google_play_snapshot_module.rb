@@ -36,7 +36,7 @@ module GooglePlaySnapshotModule
     @android_app.update!(display_type: :taken_down)
     FailedLookup
   rescue GooglePlayStore::Unavailable
-    @android_app.update!(display_type: :foreign)
+    @android_app.update!(display_type: :taken_down)
     FailedLookup
   end
 

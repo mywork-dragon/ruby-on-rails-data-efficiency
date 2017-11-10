@@ -58,7 +58,7 @@ module ApkWorker
     android_app.update!(display_type: :taken_down)
     raise e
   rescue MightyApk::MarketApi::UnsupportedCountry => e
-    android_app.update!(display_type: :foreign)
+    #android_app.update!(display_type: :foreign)
     raise e
   rescue MightyApk::MarketApi::Unauthorized => e
     google_account.update!(blocked: true)
