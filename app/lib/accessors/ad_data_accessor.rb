@@ -89,7 +89,7 @@ class AdDataAccessor
 
     signer = Aws::S3::Presigner.new
     grouped_creatives = Hash.new{{"creatives" => [], "count" => 0}}
-    app_id_to_apps = apps.map {|app| [app.app_identifier, app.id]}.to_h
+    app_id_to_apps = apps.map {|app| [app.app_identifier.to_s, app.id]}.to_h
 
     creatives.each do |creative|
         parsed_url = URI.parse(creative['url'])
