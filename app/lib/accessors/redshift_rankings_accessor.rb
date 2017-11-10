@@ -1,6 +1,8 @@
 class RedshiftRankingsAccessor
   include RankingsParamDenormalizer
 
+  attr_writer :query_class_override # Make override available for testing
+
   def get_trending(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
     
     # Validate parameters
@@ -22,8 +24,8 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT COUNT(app_identifier) FROM daily_trends #{where_clauses}"
 
     {
-      "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(RedshiftBase.query(get_trending_query, expires: 30.minutes).fetch())
+      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(query_class().query(get_trending_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -48,8 +50,8 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT COUNT(app_identifier) FROM daily_newcomers #{where_clauses}"
 
     {
-      "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(RedshiftBase.query(get_newcomers_query, expires: 30.minutes).fetch())
+      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(query_class().query(get_newcomers_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -87,12 +89,16 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}'"
 
     {
-      "total" => RedshiftBase.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(RedshiftBase.query(get_chart_query, expires: 30.minutes).fetch())
+      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(query_class().query(get_chart_query, expires: 30.minutes).fetch())
     }
   end
 
 private
+
+  def query_class
+    @query_class_override || RedshiftBase
+  end
 
   def normalize_app_records(records)
     records.map do |record|
@@ -108,7 +114,7 @@ private
 
   def generate_denormalized_countries(platforms, countries)
     denormalized_countries = []
-    if platforms.include?  'ios'
+    if platforms.include?  'ios' or platforms.empty?
       countries.each do |country_code|
         denormalized_countries.push(country_code_to_ios(country_code))
       end
@@ -119,8 +125,8 @@ private
   def generate_denormalized_rank_types(platforms, rank_types)
     denormalized_rank_types = []
     rank_types.each do |rank_type|
-      denormalized_rank_types.push(rank_type_to_ios(rank_type)) if platforms.include? 'ios'
-      denormalized_rank_types.push(rank_type_to_android(rank_type)) if platforms.include? 'android'
+      denormalized_rank_types.push(rank_type_to_ios(rank_type)) if platforms.include? 'ios' or platforms.empty?
+      denormalized_rank_types.push(rank_type_to_android(rank_type)) if platforms.include? 'android' or platforms.empty?
     end
     denormalized_rank_types
   end

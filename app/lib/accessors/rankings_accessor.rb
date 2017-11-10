@@ -114,8 +114,8 @@ class RankingsAccessor
   #            ...
   #       ]
   #   }
-  def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 0)
-    return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type, size: 20, page_num: 1)
+  def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 1)
+    return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type, size: size, page_num: page_num)
   end
 
 end
