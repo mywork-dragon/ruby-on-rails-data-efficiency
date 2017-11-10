@@ -100,16 +100,11 @@ class IosMassScanService
     # 36 - "Overall" genre
     def scan_top_epf_rankings(max_rank: 1000, genre_id: 36)
       store_ids = AppStore.where(enabled: true).pluck(:storefront_id)
-      date = RedshiftBase.query(
-        'select created_at from epf_free_application_popularity_per_genre order by created_at desc limit 1'
-      ).fetch.first['created_at']
       app_store_ids = RedshiftBase.query(
-        "select distinct(application_id) from epf_free_application_popularity_per_genre " +
-        "where convert(integer, storefront_id) in (#{store_ids.join(', ')}) and genre_id = #{genre_id} " +
-        "and convert(integer, application_rank) <= #{max_rank} and created_at = '#{date}'"
-      ).fetch.map { |x| x['application_id'] }
+        "SELECT DISTINCT(app_identifier) FROM daily_raw_charts WHERE platform='ios' AND category='#{genre_id}' AND country in ('#{store_ids.join("', '")}') AND rank <= #{max_rank}"
+      ).fetch.map { |x| x['app_identifier'] }
       app_ids = IosApp.where(app_identifier: app_store_ids).pluck(:id)
-      run_ids("Running the EPF top #{max_rank} for rankings on date #{date}", app_ids)
+      run_ids("Running the EPF top #{max_rank} for rankings on date #{DateTime.now}", app_ids)
     end
 
   end
