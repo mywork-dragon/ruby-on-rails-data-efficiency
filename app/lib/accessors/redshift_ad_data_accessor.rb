@@ -1,5 +1,78 @@
 class RedshiftAdDataAccessor
 
+  def fetch_creatives(
+    app_identifiers,
+    platform,
+    source_ids: nil,
+    first_seen_creative_date: nil,
+    last_seen_creative_date: nil,
+    sort_by: 'first_seen_creative_date',
+    order_by: 'desc',
+    page_size: 20,
+    page_number:0)
+
+    if ![nil, 'count', 'first_seen_creative_date', 'last_seen_creative_date'].include? sort_by
+      raise "Unsupported sort_by option"
+    end
+
+    if ![nil, 'desc', 'asc'].include? order_by
+      raise "Unsupported order_by option"
+    end
+
+    if !sort_by.nil?
+      sort_by_sql = "ORDER BY #{sort_by}"
+      if !order_by.nil?
+        sort_by_sql = "#{sort_by_sql} #{order_by}"
+      end
+    end
+
+    limit_sql = "LIMIT #{page_size}"
+    offset = page_size * page_number
+    offset_sql = "OFFSET #{offset}"
+
+    first_seen_creative_date_sql = ""
+    if !first_seen_creative_date.nil?
+      first_seen_creative_date_sql = RedshiftBase::sanitize_sql_statement(["AND first_seen_creative_date > ?", first_seen_creative_date])
+    end
+    last_seen_creative_date_sql = ""
+    if !last_seen_creative_date.nil?
+      last_seen_creative_date_sql = RedshiftBase::sanitize_sql_statement(["AND last_seen_creative_date > ?", last_seen_creative_date])
+    end
+
+    _sql = "
+      SELECT last_seen_creative as first_seen_creative_date,
+             first_seen_creative as last_seen_creative_date,
+             app_identifier,
+             ad_network,
+             platform,
+             url,
+             \"count\",
+             count(*) OVER() AS full_count
+      FROM mobile_ad_creative_summaries
+      WHERE 
+        app_identifier in (?)
+        AND platform = ?
+        AND ad_network in (?)
+        #{first_seen_creative_date_sql}
+        #{last_seen_creative_date_sql}
+      #{sort_by_sql}
+      #{limit_sql}
+      #{offset_sql}
+    "
+    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifiers, platform, source_ids])
+    
+    results = RedshiftBase.query(sql, expires: 15.minutes).fetch
+    full_count = 0
+    if results.count > 0
+      full_count = results[0]['full_count']
+    end
+    results.each do |result|
+      result.delete('full_count')
+    end
+    return results, full_count
+  end
+
+
   def query(
     platforms:['ios', 'android'],
     source_ids: [],
@@ -100,7 +173,7 @@ class RedshiftAdDataAccessor
       "
     results = RedshiftBase.query(sql, expires: 15.minutes).fetch
     full_count = 0
-    if results.count
+    if results.count > 0
       full_count = results[0]['full_count']
     end
     results.each do |result|

@@ -66,6 +66,7 @@ Rails.application.routes.draw do
   # Ad intel v2 routes
   get 'api/ad_intelligence/v2/query' => 'ad_intelligence#ad_intelligence_query'
   get 'api/ad_intelligence/v2/ad_sources' => 'ad_intelligence#available_sources'
+  get 'api/ad_intelligence/v2/creatives' => 'ad_intelligence#creatives'
 
   get 'api/ad_intelligence/ios' => 'api#ios_ad_intelligence'
   get 'api/ad_intelligence/android' => 'api#android_ad_intelligence'

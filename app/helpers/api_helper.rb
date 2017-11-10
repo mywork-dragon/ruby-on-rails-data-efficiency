@@ -3,8 +3,7 @@ module ApiHelper
     AppStore.enabled.order("display_priority IS NULL, display_priority ASC")
   end
 
-  def set_file_headers
-    file_name = "mightysignal_apps.csv"
+  def set_file_headers(file_name:"mightysignal_apps.csv")
     headers["Content-Type"] = "text/csv"
     headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
   end

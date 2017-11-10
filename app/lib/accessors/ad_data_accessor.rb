@@ -5,6 +5,122 @@ class AdDataAccessor
     @delegate = RedshiftAdDataAccessor.new
   end
 
+  SUFFIX_TYPE_MAP = {
+    'png' => 'image',
+    'tif' => 'image',
+    'tiff' => 'image',
+    'gif' => 'image',
+    'jpg' => 'image',
+    'jpeg' => 'image',
+    'bmp' => 'image',
+    'svg' => 'image',
+    'webp' => 'image',
+    'bpg' => 'image',
+    'jif' => 'image',
+    'jiff' => 'image',
+    'jp2' => 'image',
+    'jpx' => 'image',
+    'j2k' => 'image',
+    'j2c' => 'image',
+    'ico' => 'image',
+
+    'webm' => 'video',
+    'mp4' => 'video',
+    'ogg' => 'video'
+  }
+
+  def fetch_creatives(
+    account,
+    apps,
+    platform,
+    source_ids: nil,
+    first_seen_creative_date: nil,
+    last_seen_creative_date: nil,
+    sort_by: 'first_seen_creative_date',
+    order_by: 'desc',
+    page_size: 20,
+    page_number:0,
+    force_cache: false)
+    # Fetch creatives for apps return format is below:
+    # [
+    #   {
+    #     "86": {
+    #       "creatives": [
+    #         {
+    #           "first_seen_creative_date": "2017-07-27T13:22:23.000+00:00",
+    #           "last_seen_creative_date": "2017-07-27T13:22:23.000+00:00",
+    #           "app_identifier": "com.ubercab",
+    #           "ad_network": "facebook",
+    #           "platform": "android",
+    #           "url": "[some url]",
+    #           "count": 1,
+    #           "suffix": "png",
+    #           "type": "image" => Us this to determine how to render. 
+    #         },
+    #         ...
+    #       ],
+    #       "full_count": 4 => Numebr of creatives for app 86
+    #     }
+    #   },
+    #   46 => Number of total creatives available. 
+    # ]
+
+    page_size = [page_size.to_i, MAX_PAGE_SIZE].min
+    page_number = [page_number.to_i, 0].max
+    if source_ids.nil?
+    source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+    end
+    source_ids = account.restrict_ad_sources(source_ids)
+    if ! AdDataPermissions::APP_PLATFORMS.include? platform
+      raise "Unsupported platform" 
+    end
+
+    creatives, full_count = @delegate.fetch_creatives(
+      apps.map {|app| app.app_identifier},
+      platform,
+      source_ids: source_ids,
+      first_seen_creative_date: first_seen_creative_date,
+      last_seen_creative_date: last_seen_creative_date,
+      sort_by: sort_by,
+      order_by: order_by,
+      page_size: page_size,
+      page_number:page_number
+    )
+
+    signer = Aws::S3::Presigner.new
+    grouped_creatives = Hash.new{{"creatives" => [], "count" => 0}}
+    app_id_to_apps = apps.map {|app| [app.app_identifier, app.id]}.to_h
+
+    creatives.each do |creative|
+        parsed_url = URI.parse(creative['url'])
+        if parsed_url.scheme == 's3'
+            # Expose S3 assets by creating presigned urls. 
+            # Cache these so we don't hit the AWS API every request.
+            get_url_key = "AdDataAccessor:fetch_creatives:s3_get_key#{Digest::SHA1.hexdigest(creative['url'])}"
+            new_url = Rails.cache.fetch(get_url_key, expires_in: 6.days, force: force_cache) do
+                signer.presigned_url(
+                    :get_object, 
+                    bucket: parsed_url.host, 
+                    key: parsed_url.path[1..-1],
+                    expires_in: 1.weeks
+                    )
+            end
+
+            creative['url'] = new_url
+        end
+        creative['suffix'] = parsed_url.path.split('.')[-1].downcase
+        creative['type'] = SUFFIX_TYPE_MAP[creative['suffix']]
+        # Need to actually set the default value back to the original key.
+        group = grouped_creatives[app_id_to_apps[creative['app_identifier']]]
+        grouped_creatives[app_id_to_apps[creative['app_identifier']]] = group
+        group['creatives']  += [creative]
+        group['count']  += 1
+    end
+
+    return grouped_creatives, full_count
+  end
+
+
   def raw_query(
     account,
     platforms:['ios', 'android'],

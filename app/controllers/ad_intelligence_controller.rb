@@ -5,6 +5,68 @@ class AdIntelligenceController < ApplicationController
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_ad_intelligence
 
+  def creatives
+    expires_in 1.minutes
+    page_size = [params[:pageSize] ? params[:pageSize].to_i : 10, AdDataAccessor::MAX_PAGE_SIZE].min
+    page_num = params[:pageNum] ? params[:pageNum].to_i : 1
+    user_page_num = page_num
+    page_num = page_num - 1
+    first_seen_date = params[:firstSeenCreative] ? DateTime.parse(params[:firstSeenCreative]) : nil
+    last_seen_date = params[:lastSeenCreative] ? DateTime.parse(params[:lastSeenCreative]) : nil
+    source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
+    params[:sortBy] ||= 'first_seen_creative_date'
+    order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
+    platform = params[:platform]
+    app_ids = JSON.parse(params[:appIds])
+
+    if platform == 'ios'
+      app_model = IosApp
+    elsif platform == 'android'
+      app_model = AndroidApp
+    else
+      return render :nothing => true, :status => 404
+    end
+
+    apps = app_ids.map do |id|
+      app_model.find(id)
+    end
+
+    results, results_count = AdDataAccessor.new.fetch_creatives(
+      @current_user.account,
+      apps,
+      platform,
+      source_ids: source_ids,
+      first_seen_creative_date: first_seen_date,
+      last_seen_creative_date: last_seen_date,
+      sort_by: params[:sortBy],
+      order_by: order_by,
+      page_size: page_size,
+      page_number: page_num)
+
+    respond_to do |format|
+      format.json {
+        render json: {
+          results: results,
+          resultsCount: results_count,
+          pageNum: user_page_num,
+          pageSize: page_size
+        }
+      }
+
+      format.csv {
+        set_file_headers(file_name:"mightysignal_creatives.csv")
+        set_streaming_headers
+        self.response_body = CSV.generate(headers:results.values[0]['creatives'][0].keys, write_headers: true) do |csv|
+          results.values.map do |app|
+            app['creatives'].map do |creative|
+              csv << creative
+            end
+          end
+        end
+      }
+    end
+  end
+
   def available_sources
     expires_in 1.minutes
     render json: @current_user.account.available_ad_sources
