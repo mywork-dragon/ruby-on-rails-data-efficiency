@@ -118,4 +118,20 @@ class RankingsAccessor
     return @delegate.get_chart(platform: platform, country: country, category: category, rank_type:rank_type, size: size, page_num: page_num)
   end
 
+  def ios_countries
+    return @delegate.ios_countries
+  end
+
+  def ios_categories
+    return @delegate.ios_categories
+  end
+
+  def android_countries
+    return @delegate.android_countries
+  end
+
+  def android_categories
+    return @delegate.android_categories
+  end
+
 end

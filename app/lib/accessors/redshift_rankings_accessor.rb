@@ -94,10 +94,32 @@ class RedshiftRankingsAccessor
     }
   end
 
+  def ios_countries
+    storefront_ids = get_chart_param("country", "ios")
+    storefront_ids.map { |storefront_id| ios_to_country_code(storefront_id) }.compact
+  end
+
+  def ios_categories
+    get_chart_param("category", "ios")
+  end
+
+  def android_countries
+    get_chart_param("country", "android")
+  end
+
+  def android_categories
+    get_chart_param("category", "android")
+  end
+
 private
 
   def query_class
     @query_class_override || RedshiftBase
+  end
+
+  def get_chart_param(param, platform)
+    query_result = query_class().query("SELECT DISTINCT #{param} FROM daily_raw_charts WHERE platform='#{platform}'", expires: 1.days).fetch()
+    query_result.map { |row| row["#{param}"] }
   end
 
   def normalize_app_records(records)
