@@ -5,35 +5,12 @@ class AdDataAccessor
     @delegate = RedshiftAdDataAccessor.new
   end
 
-  SUFFIX_TYPE_MAP = {
-    'png' => 'image',
-    'tif' => 'image',
-    'tiff' => 'image',
-    'gif' => 'image',
-    'jpg' => 'image',
-    'jpeg' => 'image',
-    'bmp' => 'image',
-    'svg' => 'image',
-    'webp' => 'image',
-    'bpg' => 'image',
-    'jif' => 'image',
-    'jiff' => 'image',
-    'jp2' => 'image',
-    'jpx' => 'image',
-    'j2k' => 'image',
-    'j2c' => 'image',
-    'ico' => 'image',
-
-    'webm' => 'video',
-    'mp4' => 'video',
-    'ogg' => 'video'
-  }
-
   def fetch_creatives(
     account,
     apps,
     platform,
     source_ids: nil,
+    formats: nil,
     first_seen_creative_date: nil,
     last_seen_creative_date: nil,
     sort_by: 'first_seen_creative_date',
@@ -59,7 +36,7 @@ class AdDataAccessor
     #         },
     #         ...
     #       ],
-    #       "full_count": 4 => Numebr of creatives for app 86
+    #       "full_count": 4 => number of creatives for app 86
     #     }
     #   },
     #   46 => Number of total creatives available. 
@@ -79,6 +56,7 @@ class AdDataAccessor
       apps.map {|app| app.app_identifier},
       platform,
       source_ids: source_ids,
+      formats: formats,
       first_seen_creative_date: first_seen_creative_date,
       last_seen_creative_date: last_seen_creative_date,
       sort_by: sort_by,
@@ -98,18 +76,24 @@ class AdDataAccessor
             # Cache these so we don't hit the AWS API every request.
             get_url_key = "AdDataAccessor:fetch_creatives:s3_get_key#{Digest::SHA1.hexdigest(creative['url'])}"
             new_url = Rails.cache.fetch(get_url_key, expires_in: 6.days, force: force_cache) do
-                signer.presigned_url(
-                    :get_object, 
+                params = {
                     bucket: parsed_url.host, 
                     key: parsed_url.path[1..-1],
                     expires_in: 1.weeks
+                }
+                if creative['type'] == 'playable'
+                    creative['content-type'] = 'set'
+                    params[:response_content_type] = 'text/html'
+                end
+                signer.presigned_url(
+                    :get_object,
+                    params
                     )
             end
 
             creative['url'] = new_url
         end
         creative['suffix'] = parsed_url.path.split('.')[-1].downcase
-        creative['type'] = SUFFIX_TYPE_MAP[creative['suffix']]
         # Need to actually set the default value back to the original key.
         group = grouped_creatives[app_id_to_apps[creative['app_identifier']]]
         grouped_creatives[app_id_to_apps[creative['app_identifier']]] = group

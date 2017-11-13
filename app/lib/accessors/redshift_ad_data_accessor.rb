@@ -4,6 +4,7 @@ class RedshiftAdDataAccessor
     app_identifiers,
     platform,
     source_ids: nil,
+    formats: nil,
     first_seen_creative_date: nil,
     last_seen_creative_date: nil,
     sort_by: 'first_seen_creative_date',
@@ -39,12 +40,18 @@ class RedshiftAdDataAccessor
       last_seen_creative_date_sql = RedshiftBase::sanitize_sql_statement(["AND last_seen_creative_date > ?", last_seen_creative_date])
     end
 
+    format_sql = ""
+    if !formats.nil?
+      format_sql = RedshiftBase::sanitize_sql_statement(["AND format in (?)", formats])
+    end
+
     _sql = "
       SELECT last_seen_creative as first_seen_creative_date,
              first_seen_creative as last_seen_creative_date,
              app_identifier,
              ad_network,
              platform,
+             format as type,
              url,
              \"count\",
              count(*) OVER() AS full_count
@@ -53,6 +60,7 @@ class RedshiftAdDataAccessor
         app_identifier in (?)
         AND platform = ?
         AND ad_network in (?)
+        #{format_sql}
         #{first_seen_creative_date_sql}
         #{last_seen_creative_date_sql}
       #{sort_by_sql}
