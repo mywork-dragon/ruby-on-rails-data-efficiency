@@ -11,6 +11,7 @@ class ContactUsMailer < ActionMailer::Base
     @crm = options[:crm]
     @sdk = options[:sdk]
     @message = options[:message]
+    @ad_source = options[:ad_source]
     mail(to: "founders@mightysignal.com", bcc: "h1p1t0g3w9o9d5j9@mightysignal.slack.com", reply_to: @email, subject: 'MightySignal Interest')
   end
   

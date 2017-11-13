@@ -144,7 +144,12 @@ class WelcomeController < ApplicationController
     end
 
     if params[:email].present?
-      Lead.create_lead({email: params[:email], message: message, lead_source: message})
+      lead_data = {email: params[:email], message: message, lead_source: message}
+
+      ad_source = params['ad_source']
+      lead_data.merge!(ad_source: ad_source) if ad_source.present?
+
+      Lead.create_lead(lead_data)
       flash[:success] = "We will be in touch soon!"
     else
       flash[:error] = "Please enter your email"
@@ -161,16 +166,17 @@ class WelcomeController < ApplicationController
     crm = params['crm']
     sdk = params['sdk']
     message = params['message']
+    ad_source = params['ad_source']
 
-    lead_options = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message).merge({lead_source: "Web Form"})
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source).merge({lead_source: "Web Form"})
 
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-      lead_options[:company] = email.match(email_regex).to_s[1..-1]
+      lead_data[:company] = email.match(email_regex).to_s[1..-1]
     end
 
     if verify_recaptcha
-      Lead.create_lead(lead_options)
+      Lead.create_lead(lead_data)
       flash[:success] = "We will be in touch soon!"
     end
     redirect_to root_path(form: 'lead')

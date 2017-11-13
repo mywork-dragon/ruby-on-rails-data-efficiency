@@ -57,11 +57,11 @@ html lang="en"
         .collapse.navbar-collapse.navbar-ex1-collapse
           ul.nav.navbar-nav.navbar-right
             li.active
-              a href="/#home"  HOME
+              = link_to 'HOME', root_path(anchor: 'home')
             li
-              a href="/#about_anchor"  ABOUT
+              = link_to 'ABOUT', root_path(anchor: 'about_anchor')
             li
-              a href="/#contact_anchor"  CONTACT
+              = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
             /! <li><a href="/team.html">COMPANY</a></li
             li
               a href="http://blog.mightysignal.com" target="_blank"  BLOG

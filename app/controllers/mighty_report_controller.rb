@@ -21,8 +21,6 @@ class MightyReportController < ApplicationController
     @medal_report_icon = mighty_report_folder + 'medal.svg'
     @pie_chart_report_icon = mighty_report_folder + 'pie-chart.svg'
     @smartphone_ad_report_icon = mighty_report_folder + 'smartphone-ad.svg'
-
-    @ad_source = params['ad_source']
   end
 
   def get_report

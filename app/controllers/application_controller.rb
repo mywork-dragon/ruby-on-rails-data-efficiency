@@ -29,6 +29,15 @@ class ApplicationController < ActionController::Base
   def ping
     render :json => {success: true}
   end
+
+  def default_url_options
+    # the allowed parameters to pass around the app
+    allowed_params = ['ad_source']
+
+    query_parameters = request.query_parameters
+
+    query_parameters.slice(*allowed_params)
+  end
   
   private
   
