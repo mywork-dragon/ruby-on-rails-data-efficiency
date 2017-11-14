@@ -42,7 +42,7 @@ class AdDataAccessor
             "id" => result['ad_network'],
             "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[result['ad_network']],
             "ad_formats" => _process_ad_formats(result['ad_formats']),
-            "creative_formats" => result['creative_formats'] ? result['creative_formats'] : [],
+            "creative_formats" => result['creative_formats'] ? result['creative_formats'].split(',').uniq : [],
             "number_of_creatives" => result['number_of_creatives'] ? result['number_of_creatives'] : 0,
             "first_seen_ads_date" => result['first_seen_ads_date'],
             "last_seen_ads_date" => result['last_seen_ads_date']
