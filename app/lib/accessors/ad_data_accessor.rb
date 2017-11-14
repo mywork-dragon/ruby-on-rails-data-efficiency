@@ -5,6 +5,72 @@ class AdDataAccessor
     @delegate = RedshiftAdDataAccessor.new
   end
 
+  def fetch_app_summaries(
+    account,
+    apps,
+    platform,
+    source_ids: nil
+    )
+    if source_ids.nil?
+    source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+    end
+    source_ids = account.restrict_ad_sources(source_ids)
+    if ! AdDataPermissions::APP_PLATFORMS.include? platform
+      raise "Unsupported platform" 
+    end
+
+    results = @delegate.fetch_app_summaries(
+      apps.map {|app| app.app_identifier},
+      platform,
+      source_ids: source_ids
+    )
+    grouped_results = Hash.new{{
+        "ad_networks" => [],
+        "creative_types" =>  Set.new,
+        "first_seen_ads_date" => nil,
+        "last_seen_ads_date" => nil,
+        "ad_attribution_sdks" => nil # Fill in later
+        }}
+
+    app_id_to_apps = apps.map {|app| [app.app_identifier.to_s, app.id]}.to_h
+    results.each do |result|
+        id = app_id_to_apps[result['app_identifier']]
+        app_record = grouped_results[id]
+        grouped_results[id] = app_record
+        app_record['ad_networks'].append(
+        {
+            "id" => result['ad_network'],
+            "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[result['ad_network']],
+            "ad_formats" => _process_ad_formats(result['ad_formats']),
+            "creative_formats" => result['creative_formats'] ? result['creative_formats'] : [],
+            "number_of_creatives" => result['number_of_creatives'] ? result['number_of_creatives'] : 0,
+            "first_seen_ads_date" => result['first_seen_ads_date'],
+            "last_seen_ads_date" => result['last_seen_ads_date']
+            })
+
+        if ! result['creative_formats'].nil?
+            result['creative_formats'].split(',').each { |x| app_record['creative_types'].add(x) }
+        end
+
+        if app_record['first_seen_ads_date'].nil? or result['first_seen_ads_date'] <= app_record['first_seen_ads_date']
+            app_record['first_seen_ads_date'] = result['first_seen_ads_date']
+        end
+
+        if app_record['last_seen_ads_date'].nil? or result['last_seen_ads_date'] >= app_record['last_seen_ads_date']
+            app_record['last_seen_ads_date'] = result['last_seen_ads_date']
+        end
+    end
+
+    app_model = "#{platform}_app".classify.constantize
+
+    grouped_results.each do |app_id, record|
+        app = app_model.find(app_id)
+        record['ad_attribution_sdks'] = app.ad_attribution_sdks
+    end
+
+    grouped_results
+  end
+
   def fetch_creatives(
     account,
     apps,
@@ -136,7 +202,7 @@ class AdDataAccessor
       extra_fields:extra_fields
     )
     results = results.map do |app|
-      app['ad_formats'] = Set.new(app['ad_formats'].split(',')).to_a.map{|x| {"id" => x, "name" => x.split('_').map{|x| x.capitalize}.join(" ")}}
+      app['ad_formats'] = _process_ad_formats(app['ad_formats'])
       app['ad_sources'] = app['ad_networks'].split(',').map {|network_id| {"id" => network_id, "name" => AdDataPermissions::AD_DATA_NETWORK_ID_TO_NAME[network_id]}}
       app.delete('ad_networks')
       app
@@ -283,5 +349,9 @@ class AdDataAccessor
       output.append(app)
     end
     return output, full_count
+  end
+
+  def _process_ad_formats(ad_formats)
+    Set.new(ad_formats.split(',')).to_a.map{|x| {"id" => x, "name" => x.split('_').map{|x| x.capitalize}.join(" ")}}
   end
 end

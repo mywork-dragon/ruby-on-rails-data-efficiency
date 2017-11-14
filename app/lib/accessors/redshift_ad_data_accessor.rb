@@ -1,5 +1,36 @@
 class RedshiftAdDataAccessor
 
+  def fetch_app_summaries(
+    app_identifiers,
+    platform,
+    source_ids: nil
+    )
+
+    _sql = "
+            SELECT mobile_ad_data_summaries.app_identifier,
+                   mobile_ad_data_summaries.platform,
+                   min(first_seen_ads_date) AS first_seen_ads_date,
+                   max(last_seen_ads_date) AS last_seen_ads_date,
+                   LISTAGG(DISTINCT mobile_ad_creative_summaries.format, ',') AS creative_formats,
+                   LISTAGG(DISTINCT mobile_ad_data_summaries.ad_formats, ',') AS ad_formats,
+                   count(mobile_ad_creative_summaries.url) AS number_of_creatives,
+                   mobile_ad_data_summaries.ad_network AS ad_network
+            FROM mobile_ad_data_summaries
+            LEFT JOIN mobile_ad_creative_summaries ON mobile_ad_creative_summaries.platform = mobile_ad_data_summaries.platform
+            AND mobile_ad_creative_summaries.app_identifier = mobile_ad_data_summaries.app_identifier
+            AND mobile_ad_creative_summaries.ad_network = mobile_ad_data_summaries.ad_network
+            WHERE mobile_ad_data_summaries.app_identifier in (?)
+              AND mobile_ad_data_summaries.platform = ?
+              AND mobile_ad_data_summaries.ad_network in (?)
+            GROUP BY mobile_ad_data_summaries.app_identifier,
+                     mobile_ad_data_summaries.platform,
+                     mobile_ad_data_summaries.ad_network;
+    "
+
+    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifiers, platform, source_ids])
+    RedshiftBase.query(sql, expires: 15.minutes).fetch
+  end
+
   def fetch_creatives(
     app_identifiers,
     platform,

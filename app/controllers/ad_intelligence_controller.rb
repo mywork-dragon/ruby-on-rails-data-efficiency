@@ -5,8 +5,41 @@ class AdIntelligenceController < ApplicationController
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_ad_intelligence
 
+
+  def ad_intel_app_summaries
+    expires_in 15.minutes
+    source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
+    platform = params[:platform]
+    app_ids = JSON.parse(params[:appIds])
+
+    if platform == 'ios'
+      app_model = IosApp
+    elsif platform == 'android'
+      app_model = AndroidApp
+    else
+      return render :nothing => true, :status => 404
+    end
+
+    apps = app_ids.map do |id|
+      app_model.find(id)
+    end
+
+    results = AdDataAccessor.new.fetch_app_summaries(
+      @current_user.account,
+      apps,
+      platform,
+      source_ids: source_ids
+      )
+
+    respond_to do |format|
+      format.json {
+        render json: results
+      }
+    end
+  end
+
   def creatives
-    expires_in 1.minutes
+    expires_in 15.minutes
     page_size = [params[:pageSize] ? params[:pageSize].to_i : 10, AdDataAccessor::MAX_PAGE_SIZE].min
     page_num = params[:pageNum] ? params[:pageNum].to_i : 1
     user_page_num = page_num
