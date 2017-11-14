@@ -111,6 +111,14 @@ class RedshiftRankingsAccessor
     get_chart_param("category", "android")
   end
 
+  def unique_newcomers(platform:, lookback_time:, page_size:, page_num:, count:false)
+    if count
+      return query_class().query("SELECT COUNT(DISTINCT app_identifier) FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}'", expires: 1.minutes).fetch()[0]["count"]
+    end
+
+    return query_class().query("SELECT DISTINCT app_identifier FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}' OFFSET #{page_num} LIMIT #{page_size}", expires: 1.minutes).fetch()
+  end
+
 private
 
   def query_class

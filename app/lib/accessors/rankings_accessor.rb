@@ -134,4 +134,10 @@ class RankingsAccessor
     return @delegate.android_categories
   end
 
+  # Returns unique app_identifiers in the daily_newcomers_swap table. Currently used to kick off
+  # scrapes for missing Android apps.
+  def unique_newcomers(platform:, lookback_time:, page_size:, page_num:, count: false)
+    return @delegate.unique_newcomers(platform: platform, lookback_time: lookback_time, page_size: page_size, page_num: page_num, count: count)
+  end
+
 end

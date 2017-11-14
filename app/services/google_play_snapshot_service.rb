@@ -11,6 +11,35 @@ class GooglePlaySnapshotService
       ProxyControl.start_proxies
     end
 
+    def start_scrape_from_newcomer_rankings
+      page_size = 1000
+
+      rankings_accessor = RankingsAccessor.new
+
+      count_result = rankings_accessor.unique_newcomers(platform: "android", lookback_time: 1.days.ago, page_size: page_size, page_num: 1, count: true)
+      num_pages = (count_result / page_size) + 1
+
+      j = AndroidAppSnapshotJob.create!(notes: "Scrape from Newcomer Rankings #{Time.now.strftime("%m/%d/%Y")}")
+
+      (1..num_pages).each do |page_num|
+        page_result = rankings_accessor.unique_newcomers(platform: "android", lookback_time: 1.days.ago, page_size: page_size, page_num: page_num)
+        newcomer_app_identifiers = page_result.map { |row| row["app_identifier"] }
+        existing = AndroidApp.where(app_identifier: newcomer_app_identifiers).pluck(:app_identifier)
+        missing = newcomer_app_identifiers - existing
+        new_app_rows = missing.map { |ai| AndroidApp.new(app_identifier: ai, regions: []) }
+
+        AndroidApp.import!(
+          new_app_rows,
+          synchronize: new_app_rows,
+          synchronize_keys: [:app_identifier]
+        )
+
+        new_app_rows.map(&:id).compact.each do |app_id|
+          GooglePlaySnapshotMassWorker.perform_async(j.id, app_id)
+        end
+      end
+    end
+
     def start_scrape(
       notes: "Full scrape #{Time.now.strftime("%m/%d/%Y")}",
       description: 'Run current Android apps',
