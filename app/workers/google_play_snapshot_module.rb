@@ -156,10 +156,7 @@ module GooglePlaySnapshotModule
                       # will miss apps until fixed
                       # https://github.com/MightySignal/varys/issues/745
                       existing = AndroidApp.where(app_identifier: similar_apps).pluck(:app_identifier)
-                      missing = similar_apps.select do |similar_ai|
-                        index = existing.index { |existing_ai| existing_ai.casecmp(similar_ai) == 0 }
-                        index.nil?
-                      end.uniq(&:downcase)
+                      missing = (similar_apps - existing).uniq
                       rows = missing.map { |ai| AndroidApp.new(app_identifier: ai, regions: []) }
                       AndroidApp.import rows
                       AndroidApp.where(app_identifier: missing)
