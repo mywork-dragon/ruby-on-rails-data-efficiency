@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030163015) do
+ActiveRecord::Schema.define(version: 20171114013605) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name",                     limit: 191
@@ -86,10 +86,11 @@ ActiveRecord::Schema.define(version: 20171030163015) do
   add_index "android_ads", ["advertised_app_id"], name: "index_android_ads_on_advertised_app_id", using: :btree
 
   create_table "android_app_categories", force: :cascade do |t|
-    t.string   "name",        limit: 191
+    t.string   "name",             limit: 191
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "category_id", limit: 191
+    t.string   "category_id",      limit: 191
+    t.boolean  "is_ranking_label",             default: false
   end
 
   add_index "android_app_categories", ["category_id"], name: "index_android_app_categories_on_category_id", unique: true, using: :btree
@@ -1145,6 +1146,7 @@ ActiveRecord::Schema.define(version: 20171030163015) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "category_identifier", limit: 4
+    t.boolean  "is_ranking_label",                default: false
   end
 
   add_index "ios_app_categories", ["category_identifier"], name: "index_ios_app_categories_on_category_identifier", unique: true, using: :btree
