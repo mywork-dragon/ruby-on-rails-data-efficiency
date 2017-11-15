@@ -43,6 +43,8 @@ services:
       - REDSHIFT_DATABASE_PASSWORD=root
       - REDSHIFT_DATABASE_HOST=redshift
       - REDSHIFT_DATABASE_PORT=5432
+      - SCREENSHOTLAYER_ACCESS_KEY=nop
+      - SCREENSHOTLAYER_SECRET_KEYWORD=nop
     depends_on:
       - db
       - redis

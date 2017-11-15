@@ -3,6 +3,7 @@ class AdDataAccessor
 
   def initialize
     @delegate = RedshiftAdDataAccessor.new
+    @thumbnail_service = ThumbnailService.new
   end
 
   def fetch_app_summaries(
@@ -158,6 +159,13 @@ class AdDataAccessor
             end
 
             creative['url'] = new_url
+        end
+        if ['html', 'playable'].include? creative['type']
+            creative['thumbnail'] = @thumbnail_service.screenshot_url(
+                creative['url'],
+                width: "250",
+                format: "png",
+                delay: "1")
         end
         creative['suffix'] = parsed_url.path.split('.')[-1].downcase
         # Need to actually set the default value back to the original key.
