@@ -116,7 +116,7 @@ class RedshiftRankingsAccessor
       return query_class().query("SELECT COUNT(DISTINCT app_identifier) FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}'", expires: 1.minutes).fetch()[0]["count"]
     end
 
-    return query_class().query("SELECT DISTINCT app_identifier FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}' OFFSET #{page_num} LIMIT #{page_size}", expires: 1.minutes).fetch()
+    return query_class().query("SELECT DISTINCT app_identifier FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}' OFFSET #{(page_num - 1) * page_size} LIMIT #{page_size}", expires: 1.minutes).fetch()
   end
 
 private
