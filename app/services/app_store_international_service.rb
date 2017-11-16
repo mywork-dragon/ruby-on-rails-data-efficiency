@@ -80,6 +80,53 @@ class AppStoreInternationalService
       end
     end
 
+    def start_scrape_from_newcomer_rankings
+      page_size = 1000
+      lookback_time = 1.days.ago
+
+      rankings_accessor = RankingsAccessor.new
+
+      count_result = rankings_accessor.unique_newcomers(platform: "ios", lookback_time: 1.days.ago, page_size: page_size, page_num: 1, count: true)
+      num_pages = (count_result / page_size) + 1
+
+      snapshot_job = IosAppCurrentSnapshotJob.create!(notes: "Scrape from Newcomer Rankings #{Time.now.strftime("%m/%d/%Y")}")
+
+      (1..num_pages).each do |page_num|
+        page_result = rankings_accessor.unique_newcomers(platform: "ios", lookback_time: 1.days.ago, page_size: page_size, page_num: page_num)
+        newcomer_app_identifiers = page_result.map { |row| row["app_identifier"] }
+
+        # For each newcomer app, check if they have an entry in the ios_apps table. Create entry if missing.
+
+        existing = IosApp.where(app_identifier: newcomer_app_identifiers).to_a
+
+        missing_ios_app_entry_identifiers = newcomer_app_identifiers.map(&:to_i) - existing.map(&:app_identifier)
+        missing_ios_app_entries = missing_ios_app_entry_identifiers.map do |app_identifier|
+          IosApp.new(
+            app_identifier: app_identifier,
+            source: :rankings 
+          )
+        end
+
+        IosApp.import!(
+          missing_ios_app_entries,
+          synchronize: missing_ios_app_entries,
+          synchronize_keys: [:app_identifier]
+        )
+
+        app_ids_to_scrape = missing_ios_app_entries.map(&:id)
+
+        # For each of the existing apps, check if there's an international snapshot. For the apps without a snapshot,
+        # add to the scrape list.
+        
+        existing.each do |ios_app|
+          app_snapshot = ios_app.first_international_snapshot
+          app_ids_to_scrape.push(ios_app.id) if app_snapshot.nil? or app_snapshot.empty?
+        end
+        
+        scrape_ios_apps(app_ids_to_scrape, live: true, job: snapshot_job)
+      end
+    end
+
     def scrape_ios_apps(ios_app_ids, notes: 'international scrape', live: false, job: nil, batch_size: nil)
       ios_app_current_snapshot_job = job || IosAppCurrentSnapshotJob.create!(notes: notes)
       worker = live ? AppStoreInternationalLiveSnapshotWorker : AppStoreInternationalSnapshotWorker
