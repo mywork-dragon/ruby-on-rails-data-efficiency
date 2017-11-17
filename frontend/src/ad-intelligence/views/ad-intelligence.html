@@ -1,0 +1,282 @@
+<div id="adIntelligencePage">
+  <div class="page page-table" data-ng-controller="TableCtrl">
+    <h4 class="page-title">
+      Ad Intelligence
+      <div class="header-help-prompt" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+        <a href="" class="video-link" ng-click="openVideoModal('Ad Intelligence')">How to use Ad Intelligence</a>
+      </div>
+    </h4>
+    <header class="page-main-header ng-scope">
+      <div class="row">
+        <div ng-class="adIntel.enabledNetworkCount < adIntel.networkCount ? 'col-md-9' : 'col-md-12'">
+          <h4>
+            <span class="btn-group" id="dashboardPlatformSwitch">
+              <button
+              ng-repeat="(platform, label) in adIntel.platforms"
+              class="btn"
+              type="button"
+              ng-class="adIntel.platform == platform  ? 'btn-primary' : 'btn-default'"
+              ng-click="adIntel.togglePlatform(platform)"
+              >{{label}}</button>
+            </span>
+            Apps <span>Advertising On</span>
+            <span ng-if="adIntel.networkCount == 1">
+              <i class="fa fa-facebook-official" aria-hidden="true"></i>
+              Facebook
+            </span>
+            <span class="btn-group" id="dashboardPlatformSwitch" ng-if="adIntel.networkCount > 1">
+              <button
+              class="btn ad-network-btn"
+              ng-class="{'fake-disabled': !network.can_access, 'btn-primary': network.active, 'btn-default': !network.active}"
+              type="button"
+              ng-repeat="(id, network) in adIntel.adNetworks"
+              ng-if="network.can_access"
+              ng-disabled="!adIntel.appFetchComplete"
+              ng-click="network.active = network.can_access ? !network.active : false; adIntel.toggleAdNetwork(id)"
+              data-toggle="modal"
+              data-target="{{ network.can_access ? '' : '#newAdIntelModal'}}"
+              >
+              <div class="ad-network-btn-container">
+                <img ng-if="network.icon" ng-src="{{network.active && id == 'applovin' ? '/app/app/images/' + id + '_selected.png' : '/app/app/images/' + id + '.png'}}" fallback-src="{{network.icon}}">
+                <div class="ad-network-btn-name">
+                  {{network.name}}
+                </div>
+              </div>
+            </button>
+            <button
+            class="btn ad-network-btn"
+            ng-class="{'fake-disabled': !network.can_access, 'btn-primary': network.active, 'btn-default': !network.active}"
+            type="button"
+            ng-repeat="(id, network) in adIntel.adNetworks"
+            ng-if="!network.can_access"
+            ng-disabled="!adIntel.appFetchComplete"
+            ng-click="network.active = network.can_access ? !network.active : false; adIntel.toggleAdNetwork(id)"
+            data-toggle="modal"
+            data-target="{{ network.can_access ? '' : '#newAdIntelModal'}}"
+            >
+            <div class="ad-network-btn-container">
+              <img ng-if="network.icon" ng-src="{{network.active && id == 'applovin' ? '/app/app/images/' + id + '_selected.png' : '/app/app/images/' + id + '.png'}}" fallback-src="{{network.icon}}">
+              <div class="ad-network-btn-name">
+                {{network.name}}
+              </div>
+            </div>
+          </button>
+        </span>
+      </h4>
+    </div>
+    <div class="col-md-3" ng-if="adIntel.enabledNetworkCount < adIntel.networkCount">
+      <button class="btn btn-primary network-prompt-btn" ng-click="adIntel.toggleAdNetwork()" data-toggle="modal" data-target="#newAdIntelModal">
+        <i class="fa fa-unlock-alt fa-fw"></i>
+        Unlock More Ad Networks
+      </button>
+      <!-- <a href="" class="network-prompt-link" data-toggle="modal" data-target="#newAdIntelModal">Unlock More Networks</a> -->
+    </div>
+  </div>
+</header>
+    <section class="panel panel-default table-dynamic">
+      <div class="panel-heading" id="dashboardResultsTableHeading">
+       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="adIntel.numApps">| Displaying {{appsDisplayedCount()}} of {{adIntel.numApps | number}}</span>
+
+        <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: adIntel.apps.length < 1 || adIntel.csvUrl == ''}" target="_blank" ng-if="canViewExports" ng-click="adIntel.trackCsvExport(adIntel.platform)" ng-href="{{adIntel.csvUrl}}">Export All to CSV</a>
+        <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
+
+        <span class="ui-select pull-right">
+          <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
+            <option value="">Add Selected to List</option>
+            <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </span>
+      </div>
+
+      <div id="results-table-wrapper" data-ng-controller="ListCtrl">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th class="selectAllCheckboxHeader">
+              <select-all-checkbox apps="apps" num-apps="numApps"></select-all-checkbox>
+            </th>
+            <th class="resultsTableAppIcon"><div class="th">
+              App Name
+            </div></th>
+            <th ng-if="adIntel.platform == 'all'"><div class="th normal-right-padding appDetailsHeader">
+              App Type
+            </div></th>
+            <th class="resultsTableAppPublisher"><div class="th">
+              Publisher
+            </div></th>
+            <th class="resultsTableAppUserbase" ng-if="adIntel.platform == 'all' || adIntel.platform == 'ios'"><div class="th normal-right-padding">
+              User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntel.sortApps('user_base_display_score', 'desc') "
+                                    data-ng-class="{active: adIntel.rowSort == '-user_base_display_score'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntel.sortApps('user_base_display_score', 'asc') "
+                                    data-ng-class="{active: adIntel.rowSort == 'user_base_display_score'}"></span>
+            </div></th>
+            <th class="resultsTableAppUserbase" ng-if="adIntel.platform == 'android'"><div class="th normal-right-padding">
+              User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntel.sortApps('user_base', 'desc') "
+                                    data-ng-class="{active: adIntel.rowSort == '-user_base'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntel.sortApps('user_base', 'asc') "
+                                    data-ng-class="{active: adIntel.rowSort == 'user_base'}"></span>
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Category
+            </div></th>
+            <th ng-if="adIntel.networkCount > 1">
+              <div class="th normal-right-padding">
+                Ad Networks
+              </div>
+            </th>
+            <th ng-if="canViewAdAttribution">
+              <div class="th normal-right-padding">
+              Ad Attribution SDKs
+              </div>
+            </th>
+            <!-- <th>
+              <div class="th normal-right-padding">
+                Formats
+              </div>
+            </th> -->
+            <th><div class="th">
+              First Seen Ads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntel.sortApps('first_seen_ads_date', 'desc') "
+                                    ng-class="{active: adIntel.rowSort == '-first_seen_ads_date'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntel.sortApps('first_seen_ads_date', 'asc') "
+                                    ng-class="{active: adIntel.rowSort == 'first_seen_ads_date'}"></span>
+            </div></th>
+            <th><div class="th">
+              Last Seen Ads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntel.sortApps('last_seen_ads_date', 'desc') "
+                                    ng-class="{active: adIntel.rowSort == '-last_seen_ads_date'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntel.sortApps('last_seen_ads_date', 'asc') "
+                                    ng-class="{active: adIntel.rowSort == 'last_seen_ads_date'}"></span>
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="!adIntel.appFetchComplete">
+            <tr data-ng-repeat="app in adIntel.apps" class="{{app.app_available ? '' : 'faded'}}">
+              <td class="dashboardTableDataCheckbox">
+                <checkable-checkbox app="app" apps="adIntel.apps"></checkable-checkbox>
+              </td>
+              <td class="resultsTableAppIcon">
+                <span>
+                  <a href="#/app/{{app.platform}}/{{app.id}}" ng-click="adIntel.trackItemClick(app, 'app', app.platform)" target="_blank">
+                    <img ng-src="{{app.icon}}" />
+                    {{app.name}}
+                    <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                  </a>
+                </span>
+                <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
+              </td>
+              <td ng-if="adIntel.platform == 'all'" class="appTypeIndicator">
+                <i class="fa fa-2" ng-class="app.platform == 'ios' ? 'fa-apple' : 'fa-android'"></i>
+              </td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" ng-click="adIntel.trackItemClick(app.publisher, 'publisher', app.platform)" href="#/publisher/{{app.platform}}/{{app.publisher.id}}" target="_blank">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="app.platform != 'ios'">{{app.user_base | capitalize}}</span>
+                <span ng-if="app.platform == 'ios' && app.user_bases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.user_bases[0].country_code.toLowerCase()}}.png" />
+                  {{app.user_bases[0].user_base | capitalize}}
+                </span>
+                <a ng-if="app.platform == 'ios' && app.user_bases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.user_bases[0].country_code.toLowerCase()}}.png" />
+                  {{app.user_bases[0].user_base | capitalize}}
+                </a>
+                <script ng-if="app.platform == 'ios' && app.user_bases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.user_bases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
+              <td>
+                <span>
+                  {{adIntel.formatCategories(app)}}
+                </span>
+              </td>
+              <td ng-if="adIntel.networkCount > 1">
+                <span ng-repeat="(id, network) in adIntel.adNetworks" ng-init="isSource = adIntel.checkIfAdSource(id, app.ad_sources)">
+                  <img
+                    ng-if="isSource && network.can_access"
+                    ng-src="{{'/app/app/images/' + id + '.png'}}"
+                    fallback-src="{{network.icon}}"
+                    width="16"
+                    height="16"
+                    uib-tooltip="{{network.name}}">
+                </span>
+              </td>
+              <td ng-if="canViewAdAttribution && !app.ad_attribution_sdks.length">None</td>
+              <td ng-if="canViewAdAttribution && app.ad_attribution_sdks.length">
+                <a ng-repeat="sdk in app.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
+                  <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
+                </a>
+              </td>
+              <!-- <td>
+                <span ng-repeat="format in app.ad_formats" uib-tooltip="{{format.name}}">
+                  <i class="fa fa-{{format.icon}} fa-fw"></i>
+                </span>
+              </td> -->
+              <td>
+                <span ng-class="adIntel.getDaysAgoClass(app.first_seen_ads_days)">
+                  <strong>{{adIntel.calculateDaysAgo(app.first_seen_ads_date)}}</strong>
+                </span> ago
+              </td>
+              <td>
+                <span ng-class="adIntel.getDaysAgoClass(app.last_seen_ads_days)">
+                  <strong>{{adIntel.calculateDaysAgo(app.last_seen_ads_date)}}</strong>
+                </span> ago
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" data-ng-show="!adIntel.numApps || !adIntel.appFetchComplete">
+          <h5 data-ng-show="adIntel.numApps == 0 && adIntel.appFetchComplete">No Results</h5>
+          <div data-ng-show="!adIntel.appFetchComplete" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <uib-pagination
+              class="pagination-sm"
+              ng-model="adIntel.currentPage"
+              total-items="adIntel.numApps"
+              max-size="8"
+              ng-change="adIntel.getApps(); adIntel.trackPageThrough(adIntel.currentPage, adIntel.platform)"
+              items-per-page="20"
+              rotate="false"
+              boundary-links="true"></uib-pagination>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- Modals -->
+  <aside><list-create></list-create></aside>
+  <aside><list-delete></list-delete></aside>
+  <aside><list-delete-selected></list-delete-selected></aside>
+  <aside><export-permissions></export-permissions></aside>
+  <!-- <aside><help-video></help-video></aside> -->
+  <!-- TODO: convert to component -->
+  <aside ng-include="'ad-intelligence/views/new-ad-intel-modal.html'"></aside>
+</div>

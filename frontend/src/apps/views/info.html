@@ -1,0 +1,440 @@
+<div id="appPage" data-ng-controller="ListCtrl">
+    <div class="">
+      <div class="col-md-6 info-column">
+
+        <!-- Android Live Scan View -->
+        <div ng-if="app.platform == 'android' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'apps/views/android-live-scans.html'"></div>
+
+        <!-- iOS Live Scan View -->
+        <div ng-if="app.platform == 'ios' && (canViewStorewideSdks || canViewSdks)" data-ng-include="'apps/views/ios-live-scans.html'"></div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>MightySignal Insights</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info ms-insights">
+                  <li>
+                    <span class="icon fa fa-user"></span>
+                    <label>MightySignal ID:</label>
+                    {{app.id}}
+                  </li>
+                  <li>
+                    <span class="icon glyphicon glyphicon-envelope"></span>
+                    <label>Ad Spend:</label>
+                    {{app.adSpend ? 'Yes' : 'No'}}
+                  </li>
+                  <li ng-if="app.mobilePriority">
+                    <span class="icon glyphicon glyphicon-home"></span>
+                    <label>Mobile Priority:</label>
+                    <span>{{app.mobilePriority | capitalize}}</span>
+                  </li>
+                  <li ng-if="app.userBase">
+                    <span class="icon fa fa-users"></span>
+                    <label>User Base Size:</label>
+                    <span ng-if="app.platform == 'android'">{{app.userBase | capitalize}}</span>
+                    <span ng-if="app.platform == 'ios' && app.userBases.length == 1">
+                      <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                      {{app.userBase.user_base | capitalize}}
+                    </span>
+                    <button ng-if="app.platform == 'ios' && app.userBases.length > 1" uib-popover-template="'userBaseTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">
+                      <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                      {{app.userBase.user_base | capitalize}}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend">
+          <div class="panel-heading"><strong>Facebook Ads</strong></div>
+          <div class="panel-body">
+            <uib-carousel active="app.activeSlide" interval="app.slideInterval" no-wrap="app.noWrapSlides" id="adIntelligenceCarousel">
+              <uib-slide ng-repeat="ad in app.facebookAds" index="ad.id">
+                <div class="ad-container">
+                  <img
+                    smart-src="{{ad.ad_image}}"
+                    smart-src-id={{ad.id}}
+                    smart-src-watch="app.activeSlide"
+                    smart-src-last="{{app.facebookAds.length - 1}}"
+                    ng-class="{'ad-slide': ad.ad_info_image, 'single-ad-slide': !ad.ad_info_image}"
+                    onerror="this.onerror = null; this.src = 'https://assetscdn.paytm.com/images/catalog/product/9/97/9788123923154_23843/0x1920/70/0.jpg'">
+                  <img
+                    ng-if="ad.ad_info_image"
+                    smart-src="{{ad.ad_info_image}}"
+                    smart-src-id="{{ad.id}}"
+                    smart-src-watch="app.activeSlide"
+                    smart-src-last="{{app.facebookAds.length - 1}}"
+                    class="ad-slide">
+                </div>
+                <div class="carousel-caption">
+                  <p>Spotted {{app.calculateDaysAgo(ad.date_seen)}} - {{ad.id+1}} of {{app.facebookAds.length}}</p>
+                </div>
+              </uib-slide>
+            </uib-carousel>
+          </div>
+        </div>
+
+        <!-- Support Platform Optional Display Panel -->
+        <div class="panel panel-default" ng-show="canViewSupportDesk && app.supportDesk"> <!-- && app.supportDesk"> -->
+          <div class="panel-heading"><strong>Support Desk</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="app.supportDesk | supportDeskName">
+                    <span class="icon fa fa-question-circle"></span>
+                    <label>Name:</label>
+                    <span ng-if="app.supportDesk">{{app.supportDesk | supportDeskName}}</span>
+                  </li>
+                  <li ng-if="app.supportDesk">
+                    <span class="icon fa fa-question-circle"></span>
+                    <label>Portal:</label>
+                    <a href="{{app.supportDesk}}" target="_blank">{{app.supportDesk}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 info-column">
+
+        <div id="appPageActionsPanel" class="panel panel-default">
+          <div class="panel-heading"><strong>Actions</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <!-- <li ng-if="app.platform == 'ios'"> -->
+                  <li>
+                    <span class="icon fa fa-newspaper-o"></span>
+                    <label>Add to Timeline:</label>
+                    <div class="actionButton">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="app.followApp(app.id, 'Followed Item')" ng-if="!app.following">Follow App</button>
+                      <button type="submit" class="btn btn-danger btn-block" ng-click="app.followApp(app.id, 'Unfollowed Item')" ng-if="app.following">Unfollow App</button>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="icon fa fa-plus"></span>
+                    <label>Add to List:</label>
+                    <span class="ui-select">
+                      <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="app.addToList(addSelectedToDropdown)">
+                        <option value="">Add Selected to List</option>
+                        <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+                      </select>
+                    </span>
+                  </li>
+                  <li ng-if="canUseSalesforce">
+                    <span class="icon fa fa-cloud"></span>
+                    <label>Add to Salesforce:</label>
+                    <div class="actionButton">
+                      <button data-toggle="modal" class="btn btn-primary btn-block" ng-click="app.trackSalesforceModalOpen()" data-target="#salesforceExportModal">Export</button>
+                    </div>
+                  </li>
+                  <li ng-if="isAdminAccount">
+                    <span class="icon fa fa-star"></span>
+                    <label>Major App:</label>
+                    <div class="actionButton">
+                      <button type="submit" ng-class="app.isMajorApp ? 'btn btn-danger btn-block' : 'btn btn-primary btn-block'" ng-disabled="app.isMajorApp" ng-click="app.handleTagButtonClick()">{{app.isMajorApp ? "Already major app" : "Tag as major app" }}</button>
+                    </div>
+                  </li>
+                  <li ng-if="app.platform == 'ios' && isAdminAccount">
+                    <span class="icon fa fa-refresh"></span>
+                    <label>Reset App Data:</label>
+                    <div id="refreshDataButton">
+                      <button type="submit" class="btn btn-primary btn-block" ng-click="app.resetAppData()">Reset</button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>App Details</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+
+                <ul class="list-unstyled list-info" ng-init="isApple = app.platform == 'ios'">
+                  <li>
+                    <span class="icon fa" ng-class="isApple ? 'fa-apple' : 'fa-android'"></span>
+                    <label>Platform:</label>
+                    {{isApple ? 'iOS' : 'Android'}}
+                  </li>
+                  <li ng-if="app.appStores && app.appStores.availableIn.length && app.platform == 'ios'">
+                    <span class="icon fa fa-globe"></span>
+                    <label>Available in:</label>
+                     <button uib-popover-template="'appStoresTemplate.html'" popover-placement="auto right" popover-trigger="mouseenter" type="button" class="btn btn-default">{{app.appStores.availableIn.length}} of {{app.appStores.totalCount}} Countries</button>
+                  </li>
+                  <li ng-if="app.appIdentifier">
+                    <span class="icon fa fa-mobile"></span>
+                    <label>App Store ID:</label>
+                    {{app.platform == 'ios' ? 'id' : ''}}{{app.appIdentifier}}
+                  </li>
+                  <li>
+                    <span class="icon fa fa-usd"></span>
+                    <label>Price:</label>
+                    <span ng-if="!app.price">Free</span>
+                    <span ng-if="app.price && isApple">{{(app.price / 100.0) | isoCurrency:app.currency}}</span>
+                    <span ng-if="app.price && !isApple">{{(app.price / 100.0) | currency}}</span>
+                  </li>
+                  <li ng-if="app.downloadsMin && app.downloadsMax && !isApple">
+                    <span class="icon fa fa-download"></span>
+                    <label>Total Downloads:</label>
+                    {{app.downloadsMin | humanizeNum}} - {{app.downloadsMax | humanizeNum}}
+                  </li>
+                  <li ng-if="isApple">
+                    <span class="icon fa fa-shopping-cart"></span>
+                    <label>In-App Purchases:</label>
+                    <span ng-if="app.inAppPurchases">Yes</span>
+                    <span ng-if="!app.inAppPurchases">No</span>
+                  </li>
+                  <li ng-if="app.inAppPurchaseMin && app.inAppPurchaseMax">
+                    <span class="icon fa fa-shopping-cart"></span>
+                    <label>In-App Purchases:</label>
+                    <span ng-if="app.inAppPurchaseMin == app.inAppPurchaseMax">{{(app.inAppPurchaseMin / 100.0) | currency}}</span>
+                    <span ng-if="app.inAppPurchaseMin != app.inAppPurchaseMax">{{(app.inAppPurchaseMin / 100.0) | currency}} - {{(app.inAppPurchaseMax / 100.0) | currency}}</span>
+                  </li>
+                  <li ng-if="app.size">
+                    <span class="icon fa fa-database"></span>
+                    <label>Size:</label>
+                    {{app.size | filesize}}
+                  </li>
+                  <li ng-if="app.requiredIosVersion">
+                    <span class="icon fa fa-cog"></span>
+                    <label>Required OS:</label>
+                    {{app.requiredIosVersion}}
+                  </li>
+                  <li ng-if="app.requiredAndroidVersion">
+                    <span class="icon fa fa-cog"></span>
+                    <label>Required OS:</label>
+                    {{app.requiredAndroidVersion}}
+                  </li>
+                  <li ng-if="app.recommendedAge">
+                    <span class="icon fa fa-child"></span>
+                    <label>Content Rating:</label>
+                    {{app.recommendedAge}}
+                  </li>
+                  <li ng-if="app.contentRating">
+                    <span class="icon fa fa-child"></span>
+                    <label>Content Rating:</label>
+                    {{app.contentRating}}
+                  </li>
+                  <li ng-if="app.categories.length">
+                    <span class="icon fa fa-tag"></span>
+                    <label>Categories:</label>
+                    <span ng-repeat="category in app.categories">{{category}}{{$last ? '' : ', '}}</span>
+                  </li>
+                  <li ng-if="app.description">
+                    <span class="icon fa fa-file-text-o"></span>
+                    <label>Description:</label>
+                    <p class="appPageDescription" dd-text-collapse dd-text-collapse-max-length="200" dd-text-collapse-text="{{app.description}}"></p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default" ng-if="app.publisher.name">
+          <div class="panel-heading"><strong>Publisher Details</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="app.publisher.name">
+                    <span class="icon fa fa-briefcase"></span>
+                    <label>Name:</label>
+                    {{app.publisher.name}}
+                  </li>
+                  <li ng-if="app.fortuneRank">
+                    <span class="icon fa fa-bar-chart"></span>
+                    <label>Fortune Rank:</label>
+                    {{app.fortuneRank}}
+                  </li>
+                  <li ng-if="app.publisher.crunchbase">
+                    <span class="icon fa fa-line-chart"></span>
+                    <label>Crunchbase:</label>
+                    <a href="https://www.crunchbase.com/{{app.publisher.crunchbase}}" target="_blank" ng-click="app.trackCrunchbaseClick()">crunchbase.com/{{app.publisher.crunchbase}}</a>
+                  </li>
+                  <li id="linkedinLinksList">
+                    <span class="icon fa fa-linkedin"></span>
+                    <label>Search LinkedIn:</label>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="app.onLinkedinButtonClick('company')" ng-disabled="!app.publisher.id">Company</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="app.onLinkedinButtonClick('sales')" ng-disabled="!app.publisher.id">Sales Team</button>
+                    <button type="submit" class="btn btn-default btn-sm" ng-click="app.onLinkedinButtonClick('marketing')" ng-disabled="!app.publisher.id">Marketing Team</button>
+                  </li>
+                  <li ng-if="app.headquarters.length">
+                    <span class="icon fa fa-home"></span>
+                    <label>Headquarters:</label>
+                    <ul class="nested">
+                      <li ng-repeat="location in app.headquarters">
+                        <label title="{{location.domain}}">{{location.domain}}</label>
+                        {{location.street_number}} {{location.street_name}}{{location.street_name ? ',' : ''}} {{location.city}}{{location.city ? ',' : ''}} {{location.state_code}} {{location.postal_code}}{{location.postal_code ? ',' : ''}} {{location.country_code}}
+                      </li>
+                    </ul>
+                  </li>
+                  <li ng-if="app.publisher.id">
+                    <a class="publisher-link" ui-sref="publisher.info({ id: app.publisher.id, platform: app.platform })">
+                      More Publisher Details
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="appPageContactsPanel" class="panel panel-default">
+          <div class="panel-heading"><strong>Contacts</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li id="showCompanyEmailsButtonLi">
+                    <div id="showCompanyEmailsContainer">
+                      <div id="showCompanyEmailsTextField">
+                        <input
+                          type="text"
+                          class="form-control"
+                          ng-if="app.contactFetchComplete"
+                          ng-model="companyContactFilter"
+                          ng-enter="app.getCompanyContacts(companyContactFilter); app.trackCompanyContactsRequest(companyContactFilter)"
+                          placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
+                          ng-disabled="!app.publisher.id">
+                      </div>
+                      <div id="showCompanyEmailsButton">
+                        <button
+                          ng-is="app.contactFetchComplete"
+                          type="submit"
+                          class="btn btn-primary btn-block"
+                          ng-click="app.getCompanyContacts(companyContactFilter); app.trackCompanyContactsRequest(companyContactFilter)"
+                          ng-disabled="!app.publisher.id">
+                            Find Contacts
+                        </button>
+                      </div>
+                    </div>
+                    <div id="loadingSpinnerContainer" data-ng-show="!app.contactFetchComplete">
+                      <div class="loading outer">
+                        <div class="loading inner"></div>
+                      </div>
+                    </div>
+                    <div data-ng-controller="TableCtrl" ng-show="app.contactFetchComplete">
+                      <br>
+                      <!-- Company Apps Table -->
+                      <div class="panel-heading" id="companyContactsTableHeading">
+                        <strong><span ng-if="app.contacts.length">{{app.contactsCount}} Contacts</span></strong>
+                        <button type="submit" class="btn btn-default btn-sm pull-right" ng-if="canViewExports" ng-click="app.exportContactsToCsv(companyContactFilter)">Export Contacts to CSV</button>
+                        <button type="submit" class="btn btn-primary pull-right" ng-if="!canViewExports" data-toggle="modal" data-target="#exportPermissions">Export Contacts to CSV</button>
+                      </div>
+
+                      <div id="results-table-wrapper">
+
+                        <table id="companyDetailsTable" class="table table-bordered table-striped table-responsive">
+                          <thead>
+                          <tr>
+                            <th><div class="th normal-right-padding">
+                              Contact
+                            </div></th>
+                            <th><div class="th normal-right-padding">
+                              Email
+                            </div></th>
+                          </tr>
+                          </thead>
+
+                          <tbody data-ng-hide="!app.contactFetchComplete">
+                          <tr data-ng-repeat="contact in app.contacts">
+                            <td>
+                              <p class="table-text" ng-if='!contact.linkedin'>{{contact.fullName}} - {{contact.title}}</p>
+                              <a
+                                ng-if='contact.linkedin'
+                                href="https://www.linkedin.com/{{contact.linkedin}}"
+                                target="_blank"
+                                ng-click="app.trackLinkedinContactClick(contact)"
+                                uib-tooltip-html="linkedinTooltip"
+                              >{{contact.fullName}} - {{contact.title}}</a>
+                            </td>
+                            <td>
+                              <div ng-if="contact.email" ng-init="clicked = false">
+                                <p
+                                  class="contact-email"
+                                  uib-tooltip="{{ clicked ? 'Copied!' : 'Copy to clipboard' }}"
+                                  tooltip-placement="auto top"
+                                  ng-click-copy="{{contact.email}}"
+                                  ng-click="clicked = true; app.trackCopiedEmail(contact)"
+                                  ng-mouseenter="clicked = false"
+                                >{{contact.email}}</p>
+                              </div>
+                              <div ng-if="!contact.email">
+                                <div class="loader" ng-if="contact.isLoading"></div>
+                                <button ng-if="!contact.isLoading" type="submit" class="btn btn-default btn-sm" ng-click="app.getContactEmail(contact)">Get Email</button>
+                              </div>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                        <div class="tableStatusMessage" ng-show="!app.contactFetchComplete || !app.contacts.length">
+                          <h5 data-ng-hide="app.contacts.length || !app.contactFetchComplete">Sorry, No Contacts Available</h5>
+                          <div id="loadingSpinnerContainer" data-ng-show="!app.contactFetchComplete">
+                            <div class="loading outer">
+                              <div class="loading inner"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row" ng-if="app.contactsCount > 10">
+                          <div class="col-md-12 text-right pagination-container">
+                            <uib-pagination class="pagination-sm"
+                                        ng-model="app.currentContactsPage"
+                                        total-items="app.contactsCount"
+                                        max-size="8"
+                                        ng-change="app.getCompanyContacts(companyContactFilter)"
+                                        items-per-page="10"
+                                        rotate="false"
+                                        boundary-links="true"></uib-pagination>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>Latest Release</strong></div>
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-body">
+                <ul class="list-unstyled list-info">
+                  <li ng-if="app.currentVersion">
+                    <span class="icon fa fa-cog"></span>
+                    <label>Latest Version:</label>
+                    {{app.currentVersion}}
+                  </li>
+                  <li ng-if="app.lastUpdated">
+                    <span class="icon fa fa-calendar"></span>
+                    <label>Release Date:</label>
+                    {{app.lastUpdated | date : 'shortDate'}}
+                  </li>
+                  <li ng-if="app.currentVersionDescription">
+                    <span class="icon fa fa-file-text-o"></span>
+                    <label>Release Notes:</label>
+                    <p class="appPageDescription">{{app.currentVersionDescription}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,344 @@
+<div id="newsfeedPage" data-ng-controller="NewsfeedCtrl as newsfeedCtrl" class="page">
+  <h4 class="page-title">Timeline
+    <div class="header-help-prompt" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+      <a class="video-link" href="" ng-click="openVideoModal('Timeline')">How to use Timeline</a>
+    </div>
+  </h4>
+  <div>
+    <div class="row newsfeedPageRow" infinite-scroll="loadMoreBatches()" infinite-scroll-container="'#content'" infinite-scroll-distance="1" infinite-scroll-parent="true">
+        <div class="pull-right">
+          <div class="btn-group" role="group" aria-label="followButtons">
+            <button type="submit" ng-if="following.length" class="btn btn-bordered-info follow-btn" data-toggle="modal" data-target="#followingModal">Following {{following.length}}</button>
+            <button type="submit" class="btn btn-info follow-btn" data-toggle="modal" data-target="#followMoreModal">
+              Follow new Apps & SDKs
+              &nbsp;
+              <i class="fa fa-plus-circle"></i>
+            </button>
+          </div>
+        </div>
+      <h5>Filter by App Headquarter Location</h5>
+      <div class="location-filter">
+        <angucomplete-alt id="sdk-autocomplete-filter"
+                         placeholder="Country"
+                         pause="100"
+                         selected-object="selectedCountry"
+                         remote-url="{{locationAutocompleteUrl()}}"
+                         remote-url-data-field="results"
+                         search-fields="name"
+                         title-field="name"
+                         id-field="id"
+                         clear-selected="true"
+                         image-field="icon"
+                         minlength="1"
+                         input-class="form-control form-control-small autocomplete-filter">
+        </angucomplete-alt>
+        <div class="ui-tags-input" ng-if="locations.length">
+          <ul class="tags">
+            <li ng-repeat="location in locations" class="tag-item">
+              <img ng-src="{{location.icon}}" />
+              {{location.name}}
+              <a class="remove-button" ng-click="removeLocation($index)">×</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <h4 class="empty-message" ng-hide="newsfeedCtrl.weeks.length || !initialPageLoadComplete">
+        You are not following any apps/SDKs or your headquarter filters are too specific. Follow some more apps/SDKs to see your Timeline!
+      </h4>
+      <div ng-if="initialPageLoadComplete || newsfeedCtrl.weeks.length" ng-repeat="week in newsfeedCtrl.weeks" >
+        <h4 class="week">{{week.label}}</h4>
+        <div data-ng-repeat="platform in week.platforms">
+          <div class="platform">
+            <span class="icon fa" ng-class="platform.platform == 'ios' ? 'fa-apple' : 'fa-android'"></span>
+            <span>{{platform.platform == 'ios' ? 'iOS' : 'Android'}}</span>
+          </div>
+          <div data-ng-repeat="batch in platform.batches" class="panel panel-default" ng-init="appWord = (batch.activities_count == 1 ? 'app' : 'apps') + (batch.major_activities.length > 0 ? ',' : '')">
+          <div class="panel-heading flex" ng-click="isCollapsed = !isCollapsed; loadBatch(batch.id, batch, 1, batch.pageSize, isCollapsed)">
+            <div>
+              <div ng-if="isApp(batch.owner.type)">
+                <a href="#/app/{{batch.owner.platform}}/{{batch.owner.id}}" ng-click="$event.stopPropagation();" target="_blank">
+                  <div>
+                    <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                    {{batch.owner.name}}&nbsp;
+                  </div>
+                </a>
+                <div ng-if="batch.activity_type == 'install'">
+                  - {{batch.activities_count}} new {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} installed</span>
+                </div>
+                <div ng-if="batch.activity_type == 'uninstall'">
+                  - {{batch.activities_count}} {{batch.activities_count == 1 ? 'SDK' : 'SDKs'}} <span class="{{batch.activity_type}}">&nbsp;{{batch.activities_count == 1 ? 'was' : 'were'}} uninstalled</span>
+                </div>
+              </div>
+              <div ng-if="isSdk(batch.owner.type)">
+                <a href="#/sdk/{{batch.owner.platform}}/{{batch.owner.id}}" ng-click="$event.stopPropagation();" target="_blank">
+                  <div>
+                    <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                    {{batch.owner.name}}&nbsp;
+                  </div>
+                </a>
+                <div ng-if="batch.activity_type == 'install'">
+                  - <span class="{{batch.activity_type}}">&nbsp;installed&nbsp;</span> in {{batch.activities_count}} {{appWord}}
+                </div>
+                <span ng-if="batch.activity_type == 'uninstall'">
+                  - <span class="{{batch.activity_type}}">uninstalled</span> from {{batch.activities_count}} {{appWord}}
+                </span>
+              </div>
+              <div ng-if="batch.owner.type == 'AdPlatform'">
+                <img ng-src="{{batch.owner.icon}}" ng-show="batch.owner.icon">
+                {{batch.owner.platform}} Ads&nbsp;
+                <span>
+                  - <span class="{{batch.activity_type}}">spotted {{batch.activities_count}} {{batch.activities_count == 1 ? 'ad' : 'ads'}}</span> for {{batch.apps_count}} {{batch.apps_count == 1 ? 'app' : 'apps'}}
+                </span>
+              </div>
+              <div ng-if="batch.major_activities.length > 0">
+                &nbsp;including: &nbsp;
+                <div class="majorAppContainer">
+                  <div ng-repeat="activity in batch.major_activities" ng-init="app = activity.app">
+                    <a
+                    href="#/app/{{batch.owner.platform}}/{{app.id}}"
+                    target="_blank"
+                    class="app-icon-link"
+                    uib-popover-template="'majorAppPopover.html'"
+                    popover-placement="auto top"
+                    popover-trigger="mouseenter"
+                    popover-class="majorAppPopover"
+                    ng-click="$event.stopPropagation(); majorAppIconClicked(activity, batch.owner, batch.activity_type)"
+                    ng-mouseenter="majorAppIconHovered()"
+                    ng-mouseleave="majorAppIconExited(activity, batch.owner, batch.activity_type)"
+                    >
+                    <img ng-src="{{app.icon}}">
+                  </a>
+                </div>
+                </div>
+            </div>
+            <script type="text/ng-template" id="majorAppPopover.html">
+              <div class="majorAppPopover">
+                <img class="popoverAppIcon" ng-src="{{app.icon}}">
+                <div class="popoverAppText">
+                  <p>{{app.name}}</p>
+                  <p>{{app.publisher.name}}</p>
+                  <p>{{batch.activity_type == "install" ? "Installed" : "Uninstalled"}} {{calculateDaysAgo(activity.happened_at)}}</p>
+                </div>
+              </div>
+            </script>
+            </div>
+            <div class="export" ng-if="!isApp(batch.owner.type)">
+              <a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="$event.stopPropagation(); exportBatch(batch.id, batch);">EXPORT TO CSV</a>
+            </div>
+          </div>
+          <div class="panel-body feed-body {{batch.activity_type}}" uib-collapse="isCollapsed">
+            <div class="media">
+              <div class="media-body" ng-if="isSdk(batch.owner.type)">
+                <table class="table table-striped table-responsive">
+                  <thead>
+                    <tr>
+                      <th><div class="th normal-right-padding">
+                        App Name
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Publisher
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="mobilePriorityExplanation"></span>
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        Ad Spend <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Based on Facebook ads seen"></span>
+                      </div></th>
+                      <th><div class="th normal-right-padding">
+                        User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
+                      </div></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr data-ng-repeat="activity in batch.activities" ng-init="otherOwner = activity.other_owner">
+                      <td class="resultsTableAppIcon">
+                          <span>
+                            <a
+                              ng-href="{{isSdk(otherOwner.type) ? '#/sdk/' + otherOwner.platform + '/' + otherOwner.id : '#/app/' + otherOwner.platform + '/' + otherOwner.id}}"
+                              target="_blank"
+                              ng-click="clickedTimelineItem(batch, activity)"
+                            >
+                              <img ng-src="{{otherOwner.icon}}" ng-show="otherOwner.icon">
+                              {{otherOwner.name}}
+                            </a>
+                          </span>
+                          <span class="badge badge-primary" ng-if="0 <= otherOwner.releasedDays && otherOwner.releasedDays <= 15">New</span>
+                      </td>
+                      <td>
+                        <a ng-if="otherOwner.publisher.name && otherOwner.publisher.id" href="#/publisher/{{otherOwner.platform}}/{{otherOwner.publisher.id}}" ng-click="clickedTimelineItem(batch, activity, 'Publisher')" target="_blank">{{otherOwner.publisher.name}}</a>
+                        <span ng-if="otherOwner.publisher.name && !otherOwner.publisher.id">{{otherOwner.publisher.name}}</span>
+                      </td>
+                      <td class="dashboardMobilePriorityView">
+                        <span ng-if="otherOwner.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + otherOwner.mobilePriority"></i>{{otherOwner.mobilePriority | capitalize}}</span>
+                      </td>
+                      <td class="dashboardAdSpendView">
+                        <span ng-if="!isNaN(otherOwner.adSpend)">
+                          <i class="fa fa-circle" ng-class="'status-' + otherOwner.adSpend"></i>{{otherOwner.adSpend ? 'Yes' : 'No'}}
+                        </span>
+                      </td>
+                      <td>
+                        <span ng-if="otherOwner.platform != 'ios'">{{otherOwner.userBase | capitalize}}</span>
+                        <span ng-if="otherOwner.platform == 'ios' && otherOwner.userBases.length == 1">
+                          <img ng-src="/lib/images/flags/{{otherOwner.userBase.country_code.toLowerCase()}}.png" />
+                          {{otherOwner.userBase.user_base | capitalize}}
+                        </span>
+                        <a ng-if="otherOwner.platform == 'ios' && otherOwner.userBases.length > 1" popover-trigger="mouseenter" popover-placement="auto left" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                          <img ng-src="/lib/images/flags/{{otherOwner.userBase.country_code.toLowerCase()}}.png" />
+                          {{otherOwner.userBase.user_base | capitalize}}
+                        </a>
+                        <script ng-if="otherOwner.platform == 'ios' && otherOwner.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                          <ul class="international-data">
+                            <li ng-repeat="row in otherOwner.userBases">
+                              <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                              <span class="country">{{row.country}}:</span>
+                              <span>{{row.user_base | capitalize}}</span>
+                            </li>
+                          </ul>
+                        </script>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="media-body" ng-if="isApp(batch.owner.type)">
+                <div class="row">
+                  <div class="col-md-6">
+                    <ul ng-show="batch.activities">
+                      <li ng-repeat="activity in batch.activities.slice(0, 10)" ng-init="otherOwner = activity.other_owner">
+                        <a ng-href="{{ isSdk(otherOwner.type) ? '#/sdk/' + otherOwner.platform + '/' + otherOwner.id : '#/app/' + otherOwner.platform + '/' + otherOwner.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
+                          <img ng-src="{{otherOwner.icon}}" ng-show="otherOwner.icon">
+                          {{otherOwner.name}}
+                        </a>
+                         - {{calculateDaysAgo(activity.happened_at)}}
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-md-6">
+                    <ul ng-show="batch.activities">
+                      <li ng-repeat="activity in batch.activities.slice(10,21)" ng-init="otherOwner = activity.other_owner">
+                        <a ng-href="{{ isSdk(otherOwner.type) ? '#/sdk/' + otherOwner.platform + '/' + otherOwner.id : '#/app/' + otherOwner.platform + '/' + otherOwner.id}}" target="_blank" ng-click="clickedTimelineItem(batch, activity)">
+                          <img ng-src="{{otherOwner.icon}}" ng-show="otherOwner.icon">
+                          {{otherOwner.name}}
+                        </a>
+                         - {{calculateDaysAgo(activity.happened_at)}}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div data-ng-show="batch.isLoading && !batch.activities" id="wrap_spinner">
+                <div class="loading outer">
+                  <div class="loading inner"></div>
+                </div>
+              </div>
+              <div class="row" ng-if="batch.activities_count > batch.pageSize">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6 text-right pagination-container">
+                  <uib-pagination class="pagination-sm"
+                              ng-model="batch.currentPage"
+                              total-items="batch.apps_count || batch.activities_count"
+                              max-size="8"
+                              ng-change="loadBatch(batch.id, batch, batch.currentPage, batch.pageSize, isCollapsed)"
+                              items-per-page="batch.pageSize"
+                              rotate="false"
+                              boundary-links="true"></uib-pagination>
+
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>
+        </div>
+      </div>
+      <div id="wrap_spinner" ng-if="!initialPageLoadComplete">
+        <div class="loading outer">
+          <div class="loading inner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" class="follow" id="followingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">Following</h3>
+        </div>
+        <div class="modal-body">
+          <ul class="following">
+            <li ng-repeat="follow in following">
+              <a ng-if="isSdk(follow.type)" href="#/sdk/{{follow.platform}}/{{follow.id}}" target="_blank">
+                <img ng-src="{{follow.icon}}" ng-show="follow.icon">
+                {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} SDK
+              </a>
+              <a ng-if="isApp(follow.type)" href="#/app/{{follow.platform}}/{{follow.id}}" target="_blank">
+                <img ng-src="{{follow.icon}}" ng-show="follow.icon">
+                {{follow.name}} - {{follow.platform == 'ios' ? 'iOS' : 'Android'}} App
+              </a>
+              <div id="followButton">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(follow, 'Followed Item')" ng-if="!follow.following">Follow</button>
+                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(follow, 'Unfollowed Item')" ng-if="follow.following">Unfollow</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="followMoreModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-ng-controller="ModalSearchCtrl as modalSearchCtrl">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">Follow new Apps & SDKs</h3>
+        </div>
+        <div class="modal-body">
+          <div id="mainSearchBox" class="pull-right">
+            <div class="input-group">
+              <input type="text" class="form-control" ng-model="modalSearchCtrl.searchInput" ng-change="modalSearchCtrl.changeSearchInput()" placeholder="{{modalSearchCtrl.searchPlaceholderText()}}" autofocus>
+            </div>
+          </div>
+          <div class="pull-left">
+            <custom-platform-select custom-search-platform="modalSearchCtrl.platform"></custom-platform-select>
+          </div>
+          <div data-ng-show="modalSearchCtrl.queryInProgress" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+          <ul class="following" ng-hide="modalSearchCtrl.queryInProgress">
+            <li data-ng-repeat="result in modalSearchCtrl.results">
+              <a ng-if="isSdk(result.type)" href="#/sdk/{{result.type == 'IosSdk' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+                <img ng-src="{{result.icon}}" ng-show="result.icon">
+                {{result.name}}
+              </a>
+              <a ng-if="isApp(result.type)" href="#/app/{{result.type == 'IosApp' ? 'ios' : 'android'}}/{{result.id}}" target="_blank">
+                <img ng-src="{{result.icon}}" ng-show="result.icon">
+                {{result.name}}
+              </a>
+              <div id="followButton">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="newFollow(result, 'Followed Item')" ng-if="!result.following">Follow</button>
+                <button type="submit" class="btn btn-danger btn-block" ng-click="newFollow(result, 'Unfollowed Item')" ng-if="result.following">Unfollow</button>
+              </div>
+            </li>
+            <li ng-show="modalSearchCtrl.results && !modalSearchCtrl.results.length">Oh no. There were no results.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <!-- Modals -->
+    <aside><list-create></list-create></aside>
+    <aside><list-delete></list-delete></aside>
+    <aside><list-delete-selected></list-delete-selected></aside>
+    <aside><export-permissions></export-permissions></aside>
+    <!-- <aside><help-video></help-video></aside> -->
+  </div>
+
+</div>

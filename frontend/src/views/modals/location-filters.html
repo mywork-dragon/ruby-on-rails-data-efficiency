@@ -1,0 +1,110 @@
+<div class="modal fade filter-modal" id="locationFilterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Location Filters</h3>
+        <p>Note: Headquarter data is not available for every app</p>
+      </div>
+      <div class="modal-body">
+        <div class="filter-and">
+          <p>
+            Matches <strong>all</strong> of the following (AND filter)
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('location', 'and')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.location.and track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'location', 'and')">
+                <option value="0">Headquartered in</option>
+                <option value="1" ng-if="searchCtrl.appPlatform.platform == 'ios'">Only Available in</option>
+                <option value="2" ng-if="searchCtrl.appPlatform.platform == 'ios'">Available in</option>
+                <option value="3" ng-if="searchCtrl.appPlatform.platform == 'ios'">Not Available in</option>
+              </select>
+            </span>
+            <angucomplete-alt id="location-autocomplete-filter"
+                             placeholder="Country"
+                             pause="100"
+                             selected-object="selectedAndLocation"
+                             remote-url="{{locationAutocompleteUrl(filter.status)}}"
+                             remote-url-data-field="results"
+                             search-fields="name"
+                             title-field="name"
+                             id-field="id"
+                             clear-selected="true"
+                             image-field="icon"
+                             minlength="1"
+                             input-class="form-control form-control-small autocomplete-filter"  ng-hide="filter.location || filter.status != 0">
+            </angucomplete-alt>
+            <span class="ui-select" ng-if="['0'].indexOf(filter.status) < 0 && availableAppStores && !filter.location">
+              <select ng-model="filter.location" ng-options="country.id as country.name for country in availableAppStores" ng-change="selectedComplexName(filter.location, $index, 'location', 'and')">
+                <option value="">Choose Country</option>
+              </select>
+            </span>
+            <span class='sdk-filter' ng-if="filter.location">
+              {{filter.location.name}}
+              <a class="remove-button" ng-click="removeComplexNameFilter('location', 'and', $index)">×</a>
+            </span>
+            <span class="sdk-filter" ng-if="!filter.location.states && filter.state && filter.state != '0'">{{filter.state}}</span>
+            <span class="ui-select" ng-if="['0'].indexOf(filter.status) > -1 && filter.location.states">
+              <select ng-model="filter.state" ng-change="changedComplexFilter(filter, 'state', '{{filter}}', 'location', 'and')">
+                <option value="0">Any State</option>
+                <option ng-repeat="state in filter.location.states" value="{{state.state_code}}">{{state.state}}</option>
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.location.and.length > 1 || complexFilters.location.and[$index].location" ng-click="removeComplexFilter('location', 'and', filter)"></i>
+          </div>
+        </div>
+        <div class="filter-or">
+          <p>
+            Matches <strong>any</strong> of the following (OR filter) 
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="addComplexFilter('location', 'or')"></i>
+          </p>
+          <div ng-repeat="filter in complexFilters.location.or track by $index">
+            <span class="ui-select">
+              <select ng-model="filter.status" ng-change="changedComplexFilter(filter, 'status', '{{filter}}', 'location', 'or')">
+                <option value="0">Headquartered in</option>
+                <option value="1" ng-if="searchCtrl.appPlatform.platform == 'ios'">Only Available in</option>
+                <option value="2" ng-if="searchCtrl.appPlatform.platform == 'ios'">Available in</option>
+                <option value="3" ng-if="searchCtrl.appPlatform.platform == 'ios'">Not Available in</option>
+              </select>
+            </span>
+            <angucomplete-alt id="location-autocomplete-filter"
+                             placeholder="Country"
+                             pause="100"
+                             selected-object="selectedOrLocation"
+                             remote-url="{{locationAutocompleteUrl()}}"
+                             remote-url-data-field="results"
+                             search-fields="name"
+                             title-field="name"
+                             id-field="id"
+                             clear-selected="true"
+                             image-field="icon"
+                             minlength="1"
+                             input-class="form-control form-control-small autocomplete-filter" ng-hide="filter.location || filter.status != 0">
+            </angucomplete-alt>
+            <span class="ui-select" ng-if="['0'].indexOf(filter.status) < 0 && availableAppStores && !filter.location">
+              <select ng-model="filter.location" ng-options="{id: country.id, name: country.name} as country.name for country in availableAppStores" ng-change="selectedComplexName(filter.location, $index, 'location', 'or')">
+                <option value="">Choose Country</option>
+              </select>
+            </span>
+            <span class='sdk-filter' ng-if="filter.location">
+              {{filter.location.name}}
+              <a class="remove-button" ng-click="removeComplexNameFilter('location', 'or', $index)">×</a>
+            </span>
+            <span class="sdk-filter" ng-if="!filter.location.states && filter.state && filter.state != '0'">{{filter.state}}</span>
+            <span class="ui-select" ng-if="['0'].indexOf(filter.status) > -1 && filter.location.states">
+              <select ng-model="filter.state" ng-change="changedComplexFilter(filter, 'state', '{{filter}}', 'location', 'or')">
+                <option value="0">Any State</option>
+                <option ng-repeat="state in filter.location.states" value="{{state.state_code}}">{{state.state}}</option>
+              </select>
+            </span>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-if="complexFilters.location.or.length > 1 || complexFilters.location.or[$index].location" ng-click="removeComplexFilter('location', 'or', filter)"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>

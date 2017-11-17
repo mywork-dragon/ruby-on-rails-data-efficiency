@@ -1,0 +1,166 @@
+<div id="engagementPage" data-ng-controller="EngagementCtrl as EngagementCtrl">
+  <div class="page page-table" data-ng-controller="TableCtrl">
+    <section class="panel panel-default table-dynamic">
+      <header class="page-main-header ng-scope">
+        <div class="row">
+          <div class="col-md-6">
+            <h4>
+              Breakout Apps  
+            </h4>
+          </div>
+        </div>
+      </header>
+      <div class="panel-heading" id="dashboardResultsTableHeading">
+       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="numApps">| Displaying {{appsDisplayedCount()}} of {{numApps | number}}</span>
+        
+        <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: apps.length < 1 || !adIntelligenceCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-href="{{adIntelligenceCtrl.csvUrl}}">Export All to CSV</a>
+        <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
+        
+        <span class="ui-select pull-right">
+          <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
+            <option value="">Add Selected to List</option>
+            <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </span>
+      </div>
+
+      <div id="results-table-wrapper" data-ng-controller="ListCtrl">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th class="selectAllCheckboxHeader">
+              <select-all-checkbox apps="apps" num-apps="numApps"></select-all-checkbox>
+            </th>
+            <th class="resultsTableAppIcon"><div class="th">
+              App Name
+            </div></th>
+            <th class="resultsTableAppPublisher"><div class="th">
+              Publisher
+            </div></th>
+            <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
+              User Base Size
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Category
+            </div></th>
+            <th ng-if="canViewAdAttribution"><div class="th normal-right-padding">
+              Ad Attribution SDKs
+            </div></th>
+            <th><div class="th">
+              First Seen Ads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntelligenceCtrl.sortApps('first_seen_ads', 'asc') "
+                                    ng-class="{active: rowSort == 'first_seen_ads'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntelligenceCtrl.sortApps('first_seen_ads', 'desc') "
+                                    ng-class="{active: rowSort == '-first_seen_ads'}"></span>
+            </div></th>
+            <th><div class="th">
+              Last Seen Ads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="adIntelligenceCtrl.sortApps('last_seen_ads', 'asc') "
+                                    ng-class="{active: rowSort == 'last_seen_ads'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" adIntelligenceCtrl.sortApps('last_seen_ads', 'desc') "
+                                    ng-class="{active: rowSort == '-last_seen_ads'}"></span>
+            </div></th>
+          <!--   <th><div class="th">
+              Impressions
+            </div></th> -->
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="isLoading">
+            <tr data-ng-repeat="app in apps" class="{{app.appAvailable ? '' : 'faded'}}">
+              <td class="dashboardTableDataCheckbox">
+                <checkable-checkbox app="app" apps="apps"></checkable-checkbox>
+              </td>
+              <td class="resultsTableAppIcon">
+                <span>
+                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="onAdIntelligenceAppClick(app)">
+                    <img ng-src="{{app.icon}}" />
+                    {{app.name}}
+                    <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                  </a>
+                </span>
+                <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
+              </td>
+              <td class="resultsTableAppPublisher"><a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}">{{app.publisher.name}}</a></td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </span>
+                <a ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </a>
+                <script ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.userBases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
+              <td>{{app.categories.join(', ')}}</td>
+              <td ng-if="canViewAdAttribution && !app.ad_attribution_sdks.length">None</td>
+              <td ng-if="canViewAdAttribution && app.ad_attribution_sdks.length">
+                <a ng-repeat="sdk in app.ad_attribution_sdks" uib-tooltip="{{sdk['name']}}" ng-href="{{'#/sdk/ios/' + sdk['id']}}" target="_blank">
+                  <img ng-src="{{sdk['favicon']}}" ng-show="sdk['favicon']" width="16" height="16">
+                </a>
+              </td>
+              <td>
+                <span ng-class="adIntelligenceCtrl.getDaysAgoClass(app.first_seen_ads_days)">
+                  <strong>{{adIntelligenceCtrl.calculateDaysAgo(app.first_seen_ads_date)}}</strong>
+                </span> ago
+              </td>
+              <td>
+                <span ng-class="adIntelligenceCtrl.getDaysAgoClass(app.last_seen_ads_days)">
+                  <strong>{{adIntelligenceCtrl.calculateDaysAgo(app.last_seen_ads_date)}}</strong>
+                </span> ago
+              </td>
+            <!--   <td>
+                Last 30 Days: 30
+                All Time: 150 
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" data-ng-show="numApps == 0 || isLoading">
+          <h5 data-ng-hide="numApps > 0 || isLoading">No Results</h5>
+          <div data-ng-show="isLoading" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">    
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <uib-pagination class="pagination-sm"
+                        ng-model="currentPage"
+                        total-items="numApps"
+                        max-size="8"
+                        ng-change="adIntelligenceCtrl.submitPageChange(currentPage)"
+                        items-per-page="numPerPage"
+                        rotate="false"
+                        boundary-links="true"></uib-pagination>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- Template not used? -->
+  <!-- <aside ng-include="'/views/modals/list-create.html'"></aside> -->
+  <!-- <aside ng-include="'/views/modals/export-permissions.html'"></aside> -->
+</div>
+

@@ -1,0 +1,382 @@
+<div id="dashboardPage" data-ng-controller="SearchCtrl as searchCtrl">
+  <div class="page page-table" data-ng-controller="TableCtrl">
+
+    <section class="panel panel-default table-dynamic" ng-controller="FilterCtrl">
+
+      <header class="page-main-header ng-scope">
+        <div class="row">
+          <div class="col-md-10">
+            <h4>
+              I want to explore
+              <app-platform-toggle ng-click="emptyApps()"></app-platform-toggle>apps
+            </h4>
+          </div>
+          <div class="col-md-2">
+            <div class="btn-group saved-searches" uib-dropdown is-open="status.isopen">
+              <button type="button" class="btn btn-primary saved-searches" uib-dropdown-toggle ng-disabled="disabled">
+                Saved Searches <span class="caret"></span>
+              </button>
+              <ul ng-if="!searchCtrl.hasSearches" id="saved-searches-ul" class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li role="menuitem">
+                  <div class="no-search-menu-item">
+                    No saved searches!
+                  </div>
+                </li>
+                <li class="divider"></li>
+                <li role="menuitem">
+                  <button
+                  class="saved-search-button"
+                  data-toggle="modal"
+                  data-target="#searchCreateModal"
+                  ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">
+                  Save new search
+                  </button>
+                </li>
+              </ul>
+              <ul ng-if="searchCtrl.hasSearches" id="saved-searches-ul" class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li class="saved-searches" role="menuitem" ng-repeat="(id, search) in searchCtrl.savedSearches track by id" ng-click="searchCtrl.onSavedSearchChange(id)">
+                  <div class="saved-search-menu-item">
+                    {{search.name}}
+                  </div>
+                  <i class="fa fa-trash-o search" ng-click="searchCtrl.setCurrentSearchId(id, $event)"></i>
+                </li>
+                <li class="divider"></li>
+                <li role="menuitem"><button class="saved-search-button" data-toggle="modal" data-target="#searchCreateModal" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Save new search</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="panel-heading">
+        <span class="dashboard-tag-filter-selects">
+          <button ng-if="searchCtrl.canViewStorewideSdks" data-toggle="modal" class="btn btn-primary" data-target="#sdkFilterModal" ng-click="updateSdkModalWidth()">SDK Filters</button>
+          <button data-toggle="modal" class="btn btn-primary" data-target="#locationFilterModal">Location Filters</button>
+          <!-- <button data-toggle="modal" class="btn btn-primary" data-target="#userbaseFilterModal" ng-if="appPlatform.platform == 'ios'" ng-click="refreshSlider()">User Base & MAU Filters</button> -->
+          <span class="ui-select">
+            <div ng-dropdown-multiselect="" class="categories-dropdown" options="mobilePriorityFilterOptions" selected-model="mobilePriorityModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="mobilePrioritySelectEvents" translation-texts="searchCtrl.mobilePriorityCustomText"></div>
+          </span>
+           <span class="ui-select">
+              <select ng-model="fortuneRank" ng-change="onFilterChange('fortuneRank', fortuneRank, 'Fortune Rank', true)">
+                <option value="">Fortune Rank</option>
+                <option value="500">Fortune 500</option>
+                <option value="1000">Fortune 1000</option>
+              </select>
+           </span>
+           <span class="ui-select" ng-show="canViewAdSpend">
+              <select ng-model="adSpend" ng-change="onFilterChange('adSpend',adSpend, 'Facebook Ads', false, 'Yes')">
+                <option value="">Facebook Ads</option>
+                <option value="true">Yes</option>
+              </select>
+           </span>
+           <span class="ui-select">
+             <div ng-dropdown-multiselect="" class="categories-dropdown" options="userbaseFilterOptions" selected-model="userbaseModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="userbaseSelectEvents" translation-texts="searchCtrl.userbaseCustomText"></div>
+           </span>
+           <span class="ui-select">
+              <select ng-model="price" ng-change="onFilterChange('price', price, 'Price', true)">
+                <option value="">Price</option>
+                <option value="free">Free</option>
+                <option value="paid">Paid</option>
+              </select>
+           </span>
+           <span class="ui-select">
+              <select ng-model="inAppPurchases" ng-change="onFilterChange('inAppPurchases', inAppPurchases, 'In App Purchases', true)">
+                <option value="">In App Purchases</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+           </span>
+           <span class="ui-select" ng-show="appPlatform.platform == 'android'">
+             <div ng-dropdown-multiselect="" class="categories-dropdown" options="downloadsFilterOptions" selected-model="downloadsModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="downloadsSelectEvents" translation-texts="searchCtrl.downloadsCustomText"></div>
+           </span>
+          <!--
+           <span class="ui-select">
+                <select ng-model="updatedDaysAgo" ng-change="onFilterChange('updatedDaysAgo', updatedDaysAgo, 'Last Updated', true)">
+                  <option value="">Last Updated</option>
+                  <option value="7">Within 7 Days</option>
+                  <option value="30">Within 1 Month</option>
+                  <option value="90">Within 3 Months</option>
+                  <option value="180">Within 6 Months</option>
+                  <option value="360">Within 12 Months</option>
+                </select>
+           </span>
+           -->
+           <span class="ui-select">
+              <div ng-dropdown-multiselect="" class="categories-dropdown" options="categoryFilterOptions" selected-model="categoryModel" checkboxes="true" extra-settings="searchCtrl.categorySettings" events="categorySelectEvents" translation-texts="searchCtrl.categoryCustomText"></div>
+           </span>
+           <span class="ui-select" ng-show="canViewSupportDesk && appPlatform.platform == 'ios'">
+              <select ng-model="supportDesk" ng-change="onFilterChange('supportDesk', supportDesk, 'Support Desk', false)">
+                <option value="">Support Desk</option>
+                <option value="zendesk">Zendesk</option>
+                <option value="helpshift">HelpShift</option>
+                <option value="uservoice">UserVoice</option>
+                <option value="freshdesk">FreshDesk</option>
+                <option value="desk">Desk</option>
+              </select>
+           </span>
+        </span>
+      </div>
+      <div id="dashboard-tag-display" class="table-filters">
+        <div class="row" ng-if="tags.length > 0">
+          <div class="col-md-12">
+            <tags-input ng-model="tags" on-tag-removed="removedTag($tag)" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+            </tags-input>
+          </div>
+        </div>
+        <div class="row divider" ng-if="tags.length > 0">
+
+        </div>
+        <div class="row filter">
+          <div class="col-md-8 explore-video" data-ng-controller="VideoModalCtrl as videoModalCtrl">
+            <a href="" class="video-link" ng-click="openVideoModal('Explore')">How to use Explore</a>
+          </div>
+          <div class="col-md-4 filter-buttons">
+            <div id="searchResultsControl">
+              <button type="submit" class="btn btn-primary" ng-click="searchCtrl.submitSearch()" ng-disabled="$root.dashboardSearchButtonDisabled || $root.tags < 1">Filter</button>
+              <button type="submit" class="btn btn-primary" ng-click="searchCtrl.clearFilters()" ng-disabled="$root.tags == 0">Clear Filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="row companyPageRow" ng-if="searchCtrl.canViewStorewideSdks">
+      <div class="alert ng-isolate-scope alert-info alert-dismissable" role="alert" type="info">
+        <div><span class="ng-binding ng-scope">
+					SDK filter results from scanning the top
+					<strong ng-if="appPlatform.platform == 'ios'">{{scannedIosSdkNum | number}}</strong>
+					<strong ng-if="appPlatform.platform == 'android'">{{scannedAndroidSdkNum | number}}</strong>
+					{{appPlatform.platform == 'ios' ? 'iOS' : 'Android'}} apps.
+				</span></div>
+
+      </div>
+    </div>
+
+    <section class="panel panel-default table-dynamic">
+      <div class="panel-heading" id="dashboardResultsTableHeading">
+       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="searchCtrl.numApps">| Displaying {{appsDisplayedCount()}} of {{searchCtrl.numApps | number}}</span>
+
+        <a class="btn btn-primary pull-right export-btn" ng-class="{disabled: searchCtrl.apps.length < 1 || !searchCtrl.csvUrl}" target="_blank" ng-if="canViewExports" ng-click="filterResultsExported()" ng-href="{{searchCtrl.csvUrl}}">Export All to CSV</a>
+        <a class="btn btn-primary pull-right export-btn" data-toggle="modal" data-target="#exportPermissions" ng-if="!canViewExports">Export All to CSV</a>
+
+        <span class="ui-select pull-right">
+          <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
+            <option value="">Add Selected to List</option>
+            <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </span>
+      </div>
+
+      <div id="results-table-wrapper" data-ng-controller="ListCtrl">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th class="selectAllCheckboxHeader">
+              <select-all-checkbox apps="searchCtrl.apps" num-apps="searchCtrl.numApps"></select-all-checkbox>
+            </th>
+            <th class="resultsTableAppIcon"><div class="th">
+              App Name
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('name', 'asc') "
+                                    data-ng-class="{active: rowSort == 'name'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('name', 'desc') "
+                                    data-ng-class="{active: rowSort == '-name'}"></span>
+            </div></th>
+            <th class="resultsTableAppPublisher"><div class="th">
+              Publisher / Fortune Rank <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Fortune 500 or 1000 companies"></span>
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('publisher_name', 'asc') "
+                                    data-ng-class="{active: rowSort == 'publisher_name'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('publisher_name', 'desc') "
+                                    data-ng-class="{active: rowSort == '-publisher_name'}"></span>
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Mobile Priority <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="mobilePriorityExplanation"></span>
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('mobile_priority', 'desc') "
+                                    data-ng-class="{active: rowSort == '-mobile_priority'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('mobile_priority', 'asc') "
+                                    data-ng-class="{active: rowSort == 'mobile_priority'}"></span>
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Ad Spend <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Based on Facebook ads seen"></span>
+                              <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('old_facebook_ads', 'asc') "
+                                    data-ng-class="{active: rowSort == 'old_facebook_ads'}"></span>
+                              <span ng-show="!canViewAdSpend || appPlatform.platform == 'android'" class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click="searchCtrl.sortApps('old_facebook_ads', 'desc') "
+                                    data-ng-class="{active: rowSort == '-old_facebook_ads'}"></span>
+                              <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('facebook_ads', 'asc') "
+                                    data-ng-class="{active: rowSort == 'facebook_ads'}"></span>
+                              <span ng-show="canViewAdSpend" class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('facebook_ads', 'desc') "
+                                    data-ng-class="{active: rowSort == '-facebook_ads'}"></span>
+            </div></th>
+            <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
+              User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('user_base_display_score', 'desc') "
+                                    data-ng-class="{active: rowSort == '-user_base_display_score'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('user_base_display_score', 'asc') "
+                                    data-ng-class="{active: rowSort == 'user_base_display_score'}"></span>
+            </div></th>
+            <!-- <th class="resultsTableAppUserbase" ng-if="appPlatform.platform == 'ios'"><div class="th normal-right-padding">
+              MAU / WAU / DAU
+              <span class="glyphicon glyphicon-chevron-up"
+                    data-ng-click="searchCtrl.sortApps('monthly_active_users_num', 'asc') "
+                    data-ng-class="{active: rowSort == 'monthly_active_users_num'}"></span>
+              <span class="glyphicon glyphicon-chevron-down"
+                    data-ng-click=" searchCtrl.sortApps('monthly_active_users_num', 'desc') "
+                    data-ng-class="{active: rowSort == '-monthly_active_users_num'}"></span>
+            </div></th> -->
+            <th ng-show="appPlatform.platform == 'android'"><div class="th normal-right-padding">
+              Downloads
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('downloads_max', 'asc') "
+                                    data-ng-class="{active: rowSort == 'downloads_max'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('downloads_max', 'desc') "
+                                    data-ng-class="{active: rowSort == '-downloads_max'}"></span>
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Category
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('categories', 'asc') "
+                                    data-ng-class="{active: rowSort == 'categories'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('categories', 'desc') "
+                                    data-ng-class="{active: rowSort == '-categories'}"></span>
+            </div></th>
+            <th ng-show="canViewSupportDesk"><div class="th normal-right-padding">
+              Support Desk
+            </div></th>
+            <th><div class="th">
+              Last Updated
+                              <span class="glyphicon glyphicon-chevron-up"
+                                    data-ng-click="searchCtrl.sortApps('last_updated', 'desc') "
+                                    data-ng-class="{active: rowSort == '-last_updated'}"></span>
+                              <span class="glyphicon glyphicon-chevron-down"
+                                    data-ng-click=" searchCtrl.sortApps('last_updated', 'asc') "
+                                    data-ng-class="{active: rowSort == 'last_updated'}"></span>
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody data-ng-hide="$root.dashboardSearchButtonDisabled">
+            <tr data-ng-repeat="app in searchCtrl.apps" class="{{app.appAvailable ? '' : 'faded'}}">
+              <td class="dashboardTableDataCheckbox">
+                <checkable-checkbox app="app" apps="searchCtrl.apps"></checkable-checkbox>
+              </td>
+              <td class="resultsTableAppIcon">
+                <span>
+                  <a href="#/app/{{appPlatform.platform}}/{{app.id}}" ng-click="searchCtrl.exploreItemClicked(app, 'app')" target="_blank">
+                    <img ng-src="{{app.icon}}" />
+                    {{app.name}}
+                    <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                  </a>
+                </span>
+                <span class="badge badge-primary" ng-if="$root.appIsNew(app)">New</span>
+              </td>
+              <td class="resultsTableAppPublisher">
+              <a ng-if="app.publisher.name" href="#/publisher/{{appPlatform.platform}}/{{app.publisher.id}}" ng-click="searchCtrl.exploreItemClicked(app.publisher, 'publisher')" target="_blank">{{app.publisher.name}}</a>
+              <span ng-if="app.fortuneRank" class="fortune-rank">
+                 / {{app.fortuneRank}}</span>
+              </td>
+              <td class="dashboardMobilePriorityView">
+                <span ng-if="app.mobilePriority"><i class="fa fa-circle" ng-class="'status-' + app.mobilePriority"></i>{{app.mobilePriority | capitalize}}</span>
+              </td>
+              <td class="dashboardAdSpendView">
+                <span ng-if="!isNaN(app.adSpend)">
+                  <i class="fa fa-circle" ng-class="'status-' + app.adSpend"></i>{{app.adSpend ? 'Yes' : 'No'}}
+                </span>
+              </td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="appPlatform.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="appPlatform.platform == 'ios' && app.userBases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </span>
+                <a ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" popover-placement="auto left" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </a>
+                <script ng-if="appPlatform.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.userBases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
+              <!-- <td class="resultsTableAppUserbase" ng-show="appPlatform.platform == 'ios'">
+                <span ng-if="app.dau || app.mau || app.wau">{{app.mau}} / {{app.wau}} / {{app.dau}}</span>
+              </td> -->
+              <td ng-show="appPlatform.platform == 'android'">{{app.downloadsMin | humanizeNum}} - {{app.downloadsMax | humanizeNum}}</td>
+              <td>{{app.categories.join(', ')}}</td>
+              <td ng-show="canViewSupportDesk">{{app.supportDesk | supportDeskName}}</td>
+              <td>
+                <span ng-show="app.lastUpdatedDays >= 0 && app.lastUpdatedDays != null">
+                  <span ng-class="searchCtrl.getLastUpdatedDaysClass(app.lastUpdatedDays)">
+                    <strong>{{app.lastUpdatedDays}}</strong>
+                  </span> days ago
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" data-ng-show="$root.dashboardSearchButtonDisabled || !(searchCtrl.numApps > 0)">
+          <h5 data-ng-hide="$root.appNum > 0 || $root.dashboardSearchButtonDisabled || $root.searchError">No Results</h5>
+          <h5 data-ng-show="$root.searchError">There was an error. Please try again.</h5>
+          <div data-ng-show="$root.dashboardSearchButtonDisabled" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <uib-pagination class="pagination-sm"
+                        ng-class="{disabled: $root.dashboardSearchButtonDisabled}"
+                        ng-model="searchCtrl.currentPage"
+                        total-items="searchCtrl.numApps"
+                        max-size="8"
+                        ng-change="searchCtrl.submitPageChange()"
+                        items-per-page="numPerPage"
+                        rotate="false"
+                        boundary-links="true"></uib-pagination>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <div ng-controller="ListCtrl">
+    <!-- Modals -->
+    <aside><list-create></list-create></aside>
+    <aside><list-delete></list-delete></aside>
+    <aside><list-delete-selected></list-delete-selected></aside>
+    <aside><export-permissions></export-permissions></aside>
+
+    <aside ng-include="'views/modals/sdk-filters.html'"></aside>
+    <aside ng-include="'views/modals/location-filters.html'"></aside>
+    <aside ng-include="'views/modals/userbase-filters.html'"></aside>
+
+    <aside ng-include="'views/modals/search-create.html'"></aside>
+    <!-- <aside ng-include="'views/modals/search-delete.html'"></aside> -->
+    <!-- <aside><help-video></help-video></aside> -->
+  </div>
+
+</div>

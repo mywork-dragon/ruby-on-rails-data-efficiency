@@ -28,6 +28,10 @@ server {
 		return 301 https://$host$request_uri;
 	}
 
+    location = /app/app {
+        return 301 $uri/;
+    }
+
 	location /docs {
 		root /varys/public;
 	}

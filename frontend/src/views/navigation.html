@@ -1,0 +1,97 @@
+<!-- DECPRECATED -->
+<!-- DECPRECATED -->
+<!-- DECPRECATED -->
+<!-- DECPRECATED -->
+
+<!-- Logo -->
+<div class="logo" data-ng-controller="MainCtrl">
+    <a href="#/" ng-click="clickedNavLink('Home')">
+        <img src="/app/app/images/mighty_signal_logo_white.png" height="50px"/>
+    </a>
+</div>
+<div id="nav-wrapper">
+    <ul id="nav"
+        data-ng-controller="MainCtrl"
+        data-slim-scroll data-collapse-nav>
+        <li ui-sref="timeline" ui-sref-active="active">
+            <a class="nav-link" href="#/timeline" ng-click="clickedNavLink('Timeline')"> <i class="fa fa-line-chart"></i> <span>Timeline</span></a>
+        </li>
+        <li ui-sref="explore" ui-sref-active="active">
+            <a class="nav-link" href="#/search" ng-click="clickedNavLink('Explore')"> <i class="fa fa-globe"></i> <span>Explore</span></a>
+        </li>
+        <li ng-if="canViewAdSpend" ui-sref="ad-intelligence" ui-sref-active="active">
+            <a class="nav-link" href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-signal"></i> <span>Ad Intelligence</span>
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Popular Apps')"> <i class="fa fa-fire"></i><span>Popular Apps</span></a>
+            <ul>
+              <li><a ui-sref="newcomer-apps" ui-sref-active="active" ng-click="clickedNavLink('Newcomers')" href="#/popular-apps/newcomers"><i class="fa fa-angle-right"></i><span>Newcomers</span></a></li>
+              <li><a ui-sref="trending-apps" ui-sref-active="active" ng-click="clickedNavLink('Trending')" href="#/popular-apps/trending"><i class="fa fa-angle-right"></i><span>Trending</span></a></li>
+              <li><a ui-sref="top-app-chart({ country: 'US', platform: 'ios', category: 36, rankType: 'free' })" ui-sref-active="active" ng-click="clickedNavLink('Charts')" href="#/popular-apps/charts/ios/free/US/36"><i class="fa fa-angle-right"></i><span>Charts</span></a></li>
+            </ul>
+        </li>
+<!--         <li ng-class="{active: $route.current.activeTab == 'charts'}">
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i><span>Charts</span></a>
+        </li> -->
+        <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
+            <a class="nav-link" href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
+            <ul>
+              <li ng-repeat="list in $root.usersLists">
+                <a ng-click="clickedNavLink('List'); recordListViewEvent(list.name, list.id); $scope.selectedAppsForList = []" ui-sref="list({ id: list.id })" ui-sref-active="active">
+                  <i class="fa fa-angle-right"></i>
+                  <span>{{list.name}}</span>
+                </a>
+              </li>
+              <li id="listCreateNewButton"><a href="" data-toggle="modal" data-target="#createNewModal" ng-click="$root.focusInput=true"><i class="fa fa-plus"></i><span>Create New List</span></a></li>
+            </ul>
+        </li>
+        <li>
+            <a class="nav-link" href="http://api.mightysignal.com/docs" ng-click="clickedNavLink('API')" target="_blank"><i class="fa fa-cogs"></i><span>API</span></a>
+        </li>
+        <li>
+            <a class="nav-link" href="https://chrome.google.com/webstore/detail/button-by-mightysignal/nponojnbpofjpgnddkfpkdjkcmlglbch?hl=en" ng-click="clickedNavLink('Chrome App')" target="_blank">
+                <i class="fa fa-chrome"></i><span>Chrome App</span>
+            </a>
+        <li data-ng-controller="BlogCtrl">
+            <a class="nav-link" href="http://blog.mightysignal.com" target="_blank" ng-click="clickedNavLink('Blog')">
+              <i class="fa fa-newspaper-o"></i><span>Blog</span>
+              <span ng-show="newPost" ng-mouseenter="toggleTooltip(true)" uib-popover-template="'blogBlurb.html'" popover-placement="auto right" popover-append-to-body="true" popover-is-open="isOpen" popover-class="medium-popover" class="label label-success blog">
+                NEW POST
+              </span>
+            </a>
+        </li>
+        <script type="text/ng-template" id="blogBlurb.html">
+          <div click-outside="toggleTooltip(false)">
+            <div class="medium-popover-header">
+              <i class="fa fa-medium" aria-hidden="true"></i>
+              <div class="medium-popover-title">
+                <a href="{{link}}" target="_blank" ng-click="clickedBlogNotification(); toggleTooltip(false)">
+                  {{title}}
+                </a>
+                <div class="medium-popover-link">
+                  by {{author}}
+                  <i class="fa fa-times" aria-hidden="true" ng-click="toggleTooltip(false)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </script>
+  		<li>
+                <a class="nav-link" href="http://support.mightysignal.com/" ng-click="clickedNavLink('Support')" target="_blank">
+                        <i class="fa fa-support"></i>
+                        <span>Support</span>
+                </a>
+  		</li>
+      <li ng-if="$root.isAdmin" ui-sref="admin" ui-sref-active="active">
+          <a class="nav-link" href="#/admin" ng-click="clickedNavLink('Admin')">
+                  <i class="fa fa-cog"></i>
+                  <span>Admin</span>
+          </a>
+      </li>
+      <li ng-click="logUserOut()">
+          <a class="nav-link" href="#/logout" ng-click="event.preventDefault()" ng-click="clickedNavLink('Log Out')"><i class="fa fa-sign-out"></i><span>Log Out</span></a>
+      </li>
+    </ul>
+
+</div>

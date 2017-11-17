@@ -1,0 +1,24 @@
+<div class="modal fade" id="searchCreateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Save your search parameters</h3>
+      </div>
+      <form>
+        <div class="modal-body">
+          <div class="add-task">
+            <input type="text" focus-me="$root.focusInput" placeholder="New saved search name..." class="form-control ng-pristine ng-valid ng-touched" ng-model="searchCtrl.searchName">
+            <a type="text" class="submit-button">
+              <i class="fa fa-plus-circle"></i>
+            </a>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-dismiss="modal" ng-click="searchCtrl.createSavedSearch(searchCtrl.searchName)">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
