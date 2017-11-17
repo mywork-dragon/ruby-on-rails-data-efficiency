@@ -1,5 +1,24 @@
 class RedshiftAdDataAccessor
 
+  def has_ad_spend_data(
+    app_identifier,
+    platform,
+    source_ids: nil
+    )
+
+    _sql = "
+            SELECT 1
+            FROM mobile_ad_data_summaries
+            WHERE mobile_ad_data_summaries.app_identifier = ?
+              AND mobile_ad_data_summaries.platform = ?
+              AND mobile_ad_data_summaries.ad_network in (?)
+            LIMIT 1
+    "
+
+    sql = RedshiftBase::sanitize_sql_statement([_sql, app_identifier, platform, source_ids])
+    !RedshiftBase.query(sql, expires: 15.minutes).fetch.empty?
+  end
+
   def fetch_app_summaries(
     app_identifiers,
     platform,

@@ -6,6 +6,23 @@ class AdDataAccessor
     @thumbnail_service = ThumbnailService.new
   end
 
+  def has_ad_spend_data(
+    account,
+    app,
+    source_ids: nil
+    )
+    if source_ids.nil?
+        source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+    end
+    source_ids = account.restrict_ad_sources(source_ids)
+
+    @delegate.has_ad_spend_data(
+      app.app_identifier,
+      app.platform,
+      source_ids: source_ids
+    )
+  end
+
   def fetch_app_summaries(
     account,
     apps,
