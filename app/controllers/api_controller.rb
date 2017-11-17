@@ -204,7 +204,7 @@ class ApiController < ApplicationController
     country_codes = params[:country_codes]
     weeks = @current_user.weekly_batches(page, country_codes)
     newsfeed_json = {
-      following: @current_user.following_as_json({user: @current_user}),
+      following: @current_user.following.as_json({user: @current_user}),
       weeks: weeks.map{|week, platforms| {
         week: week.to_s,
         label: view_context.week_formatter(week),
@@ -300,6 +300,7 @@ class ApiController < ApplicationController
       @developer_json = {
         id: developer.id,
         name: developer.name,
+        platform: 'android',
         websites: developer.websites.to_a.map{|w| w.url},
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
@@ -321,6 +322,7 @@ class ApiController < ApplicationController
       @developer_json = {
         id: developer.id,
         name: developer.name,
+        platform: 'ios',
         websites: developer.get_website_urls,
         headquarters: developer.headquarters,
         fortuneRank: developer.fortune_1000_rank,
@@ -385,7 +387,34 @@ class ApiController < ApplicationController
   end
 
   def get_android_category_objects
-    render json: AndroidAppCategory.where.not(category_id: nil).map {|x| x.as_json}
+    ra = RankingsAccessor.new
+    render json: AndroidAppCategory.where(category_id: ra.android_categories)
+  end
+
+  def get_ios_category_objects
+    ra = RankingsAccessor.new
+    render json: IosAppCategory.where(category_identifier: ra.ios_categories)
+  end
+
+  def get_ranking_countries
+    countries_hash = Hash.new{|h, k| h[k] = []}
+    countries = []
+
+    ra = RankingsAccessor.new
+    ra.ios_countries.each do |country_code|
+      countries_hash[country_code] << 'ios'
+    end
+
+    ra.android_countries.each do |country_code|
+      countries_hash[country_code] << 'android'
+    end
+
+    countries_hash.each do |country_code, platforms|
+      country = ISO3166::Country.new(country_code)
+      country_name = country.unofficial_names[0] || country.name
+      countries << {id: country_code, name: country_name, platforms: platforms}
+    end
+    render json: countries
   end
 
   def get_android_categories

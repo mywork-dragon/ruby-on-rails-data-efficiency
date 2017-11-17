@@ -15,7 +15,9 @@ class IosAppCategory < ActiveRecord::Base
 
   def as_json(_options = {})
     {
-      name: name
+      name: name,
+      id: category_identifier,
+      platform: 'ios'
     }
   end
 end

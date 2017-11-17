@@ -30,6 +30,21 @@ angular.module('appApp')
         }
       };
 
+      $scope.chartSelectEvents = {
+        onItemSelect: function(item) {
+          $scope.onFilterChange('charts', item.id, 'Chart', false)
+        },
+        onItemDeselect: function(item) {
+          filterService.removeFilter('charts', item.id)
+        },
+        onSelectAll: function() {
+          $rootScope.chartFilterOptions.forEach(chart => $scope.onFilterChange('charts', chart.id, 'Chart', false))
+        },
+        onDeselectAll: function() {
+          filterService.removeFilter('charts')
+        }
+      };
+
       $scope.downloadsSelectEvents = {
         onItemSelect: function(item) {
           $scope.onFilterChange('downloads', item.id, 'Downloads', false)

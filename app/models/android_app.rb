@@ -542,7 +542,7 @@ class AndroidApp < ActiveRecord::Base
       end
 
       if app.android_app_snapshot_categories
-        app_obj["categories"] = app.android_app_snapshot_categories.map{|x| x.as_json}
+        app_obj["categories"] = app.android_app_snapshot_categories.map{|x| x.as_json.slice(:id, :name)}
       end
 
       if app.android_developer

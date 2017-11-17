@@ -20,7 +20,7 @@ angular.module('appApp')
       }),
       $rootScope.selectedAppsForList = [],
       $scope.addSelectedTo = function(list, selectedApps) {
-        listApiService.addSelectedTo(list, selectedApps, $scope.appPlatform.platform).success(function() {
+        listApiService.addMixedSelectedTo(list, selectedApps).success(function() {
           $scope.notify('add-selected-success');
           $rootScope.selectedAppsForList = [];
         }).error(function() {

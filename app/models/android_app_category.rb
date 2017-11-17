@@ -5,8 +5,9 @@ class AndroidAppCategory < ActiveRecord::Base
 
   def as_json(_options = {})
     {
-      name: name,
-      id: category_id
+      name: display_name,
+      id: category_id,
+      platform: 'android'
     }
   end
 

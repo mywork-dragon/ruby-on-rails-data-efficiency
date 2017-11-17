@@ -1,0 +1,71 @@
+<span class="ui-select ui-select-fake" popover-class="select-modal" uib-popover-template="'mobileCategoryTemplate.html'" popover-placement="auto bottom" popover-trigger="outsideClick">
+  <span>Category</span>
+  <script type="text/ng-template" id="mobileCategoryTemplate.html">
+    <div id="categorySelect">
+      <div ng-if="isLoading" id="wrap_spinner">
+        <div class="loading outer">
+          <div class="loading inner"></div>
+        </div>
+      </div>
+      <input type="text" ng-model="searchQuery" ng-change="searchChanged(searchQuery)" class="form-control" placeholder="Filter categories" ng-hide="isLoading">
+      <br>
+      <div class="check-options" ng-hide="isLoading">
+        <a href="javascript:void(0)" ng-click="checkAll()" class="btn btn-default btn-xs">
+          <i class="fa fa-check"></i>
+          Check All
+        </a>
+        <a href="javascript:void(0)" ng-click="uncheckAll()" class="btn btn-default btn-xs">
+          <i class="fa fa-times"></i>
+          Uncheck All
+        </a>
+      </div>
+      <uib-tabset active="activePill" vertical="true" type="pills" ng-hide="isLoading">
+        <uib-tab ng-click="switchTabs('popular')" index="0" heading="Popular">
+          <ul>
+            <li ng-repeat="category in popularCategoriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="categoryModel[category.id]" ng-change="checkCategory(category)">
+                <i class="fa fa-{{category.platform == 'ios' ? 'apple' : 'android'}}"></i>
+                {{category.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('all')" index="1" heading="All">
+
+          <ul>
+            <li ng-repeat="category in categoriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="categoryModel[category.id]" ng-change="checkCategory(category)">
+                <i class="fa fa-{{category.platform == 'ios' ? 'apple' : 'android'}}"></i>
+                {{category.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('ios')" index="2" heading="iOS">
+          <ul>
+            <li ng-repeat="category in iosCategoriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="categoryModel[category.id]" ng-change="checkCategory(category)">
+                <i class="fa fa-{{category.platform == 'ios' ? 'apple' : 'android'}}"></i>
+                {{category.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('android')" index="3" heading="Android">
+          <ul>
+            <li ng-repeat="category in androidCategoriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="categoryModel[category.id]" ng-change="checkCategory(category)">
+                <i class="fa fa-{{category.platform == 'ios' ? 'apple' : 'android'}}"></i>
+                {{category.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+  </script>
+</span>

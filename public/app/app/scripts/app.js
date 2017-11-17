@@ -77,6 +77,39 @@ angular
       templateUrl: '/app/app/views/charts/charts.html'
     }
 
+    var trendingState = {
+      name: 'trending-apps',
+      url: '/popular-apps/trending',
+      templateUrl: '/app/app/views/popular-apps/trending.html',
+      controller: 'PopularAppsController as popularApps',
+      data: {
+        type: 'trending'
+      },
+      onExit: ['$rootScope', function($rootScope) {
+                 $rootScope.tags = [];
+              }]
+    }
+
+    var newcomerState = {
+      name: 'newcomer-apps',
+      url: '/popular-apps/newcomers',
+      templateUrl: '/app/app/views/popular-apps/newcomers.html',
+      controller: 'PopularAppsController as popularApps',
+      data: {
+        type: 'newcomers'
+      },
+      onExit: ['$rootScope', function($rootScope) {
+                 $rootScope.tags = [];
+              }]
+    }
+
+    var topAppChartState = {
+      name: 'top-app-chart',
+      url: '/popular-apps/charts/{platform}/{rankType}/{country}/{category}?page',
+      templateUrl: '/app/app/views/popular-apps/top-app-chart.html',
+      controller: 'TopChartController as topChart',
+    }
+
     var customSearchState = {
       name: 'custom-search',
       url: '/search/custom',
@@ -175,6 +208,9 @@ angular
     $stateProvider.state(exploreState)
     $stateProvider.state(customSearchState)
     $stateProvider.state(chartsState)
+    $stateProvider.state(trendingState)
+    $stateProvider.state(newcomerState)
+    $stateProvider.state(topAppChartState)
     $stateProvider.state(topIosAppsState)
     $stateProvider.state(topAndroidAppsState)
     $stateProvider.state(iosSdksState)

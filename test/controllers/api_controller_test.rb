@@ -44,12 +44,25 @@ class ApiControllerTest < ActionController::TestCase
   end
 
   test "test get_android_category_objects returns categories" do
+    mock_response =  ["AUTO_AND_VEHICLES", "COMICS", "COMMUNICATION", "DATING", "FAMILY_CREATE", 
+                      "FAMILY_EDUCATION", "GAME_CARD", "GAME_SPORTS", "HEALTH_AND_FITNESS", "LIBRARIES_AND_DEMO", "MAPS_AND_NAVIGATION", "SHOPPING", "TOOLS", "TRAVEL_AND_LOCAL", 
+                      "BOOKS_AND_REFERENCE", "BUSINESS", "EDUCATION", "FAMILY_PRETEND", "GAME_ARCADE", 
+                      "GAME_CASINO", "GAME_CASUAL", "GAME_MUSIC", "GAME_PUZZLE", "GAME_WORD", 
+                      "PARENTING", "PERSONALIZATION", "VIDEO_PLAYERS", "WEATHER", "ART_AND_DESIGN", 
+                      "ENTERTAINMENT", "FAMILY", "FAMILY_ACTION", "FAMILY_BRAINGAMES", "GAME_ADVENTURE", 
+                      "GAME_BOARD", "GAME_EDUCATIONAL", "GAME_ROLE_PLAYING", "GAME_SIMULATION", 
+                      "GAME_STRATEGY", "GAME_TRIVIA", "HOUSE_AND_HOME", "MEDICAL", "MUSIC_AND_AUDIO", "NEWS_AND_MAGAZINES", 
+                      "PHOTOGRAPHY", "PRODUCTIVITY", "ANDROID_WEAR", "BEAUTY", "EVENTS", "FAMILY_MUSICVIDEO", "FINANCE", 
+                      "FOOD_AND_DRINK", "GAME", "GAME_ACTION", "GAME_RACING", "LIFESTYLE", "OVERALL", "SOCIAL", "SPORTS"]
+    
+    RankingsAccessor.any_instance.stub(:android_categories) { mock_response }
     get(:get_android_category_objects)
     categories = JSON.parse(@response.body).sort_by {|x| x["id"]}
+
     # From Fixtures
-    assert_equal categories[0], {"name" => 'Education', "id" => 'EDUCATION'}
-    assert_equal categories[1], {"name" => 'Sports', "id" => 'GAME_SPORTS'}
-    assert_equal categories[2], {"name" => 'Sports', "id" => 'SPORTS'}
+    assert_equal categories[0], {"name" => 'Education', "id" => 'EDUCATION', "platform" => 'android'}
+    assert_equal categories[1], {"name" => 'Sports (Games)', "id" => 'GAME_SPORTS', "platform" => 'android'}
+    assert_equal categories[2], {"name" => 'Sports', "id" => 'SPORTS', "platform" => 'android'}
   end
 
 end

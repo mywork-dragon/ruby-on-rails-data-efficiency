@@ -47,7 +47,9 @@ Rails.application.routes.draw do
   get 'api/get_company' => 'api#get_company'
   get 'api/get_ios_categories' => 'api#get_ios_categories'
   get 'api/get_android_categories' => 'api#get_android_categories'
+  get 'api/ranking_countries' => 'api#get_ranking_countries'
   get 'api/android_category_objects' => 'api#get_android_category_objects'
+  get 'api/ios_category_objects' => 'api#get_ios_category_objects'
   get 'api/download_fortune_1000_csv' => 'api#download_fortune_1000_csv'
   get 'api/get_ios_sdk_categories' => 'api#get_ios_sdk_categories'
   get 'api/get_android_sdk_categories' => 'api#get_android_sdk_categories'
@@ -161,6 +163,12 @@ Rails.application.routes.draw do
     scope '/salesforce' do
       get 'search' => 'salesforce#search'
       post 'export' => 'salesforce#export'
+    end
+
+    scope '/popular_apps' do
+      get 'trending' => 'popular_apps#trending'
+      get 'newcomers' => 'popular_apps#newcomers'
+      get 'top_app_chart' => 'popular_apps#top_app_chart'
     end
 
     scope '/saved_searches' do

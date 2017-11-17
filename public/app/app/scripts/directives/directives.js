@@ -553,6 +553,266 @@ angular.module("app.directives", []).directive("imgHolder", [
         }
       };
     }])
+    .directive('categorySelect', ['$http', '$rootScope', 'apiService', 'filterService', function ($http, $rootScope, apiService, filterService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          categoryModel: '=category',
+          categorySelectLoaded: '=loaded'
+        },
+        templateUrl: '/app/app/views/popular-apps/category-select.html',
+        controller: function ($scope, $element) {
+          // load ios/android categories
+          $scope.selectedTab = 'popular'
+          $scope.searchQuery = ''
+          $scope.searchChanged = searchChanged
+          $scope.checkCategory = checkCategory
+          $scope.checkAll = checkAll
+          $scope.uncheckAll = uncheckAll
+          $scope.switchTabs = switchTabs
+          $scope.categorySelectLoaded = false
+          $scope.filterKey = 'categories'
+          $scope.popularCategoryIds = ['36', 'OVERALL', '6014', 'GAME', '6008', 'SOCIAL', '6005', '6016', 'SHOPPING', '6024',
+                                      'PHOTOGRAPHY', '6011', 'MUSIC_AND_AUDIO', 'LIFESTYLE', '6012', 'ENTERTAINMENT', '6016']
+
+          $scope.$watchCollection('$root.tags', function () {
+            for(var id in $scope.categoryModel) {
+              $scope.categoryModel[id] = $rootScope.tags.some(tag => tag.value == id && tag.parameter == $scope.filterKey)
+            }
+          })
+
+          activate()
+
+          function activate() {
+            $scope.isLoading = true
+            getIosCategories()
+            .then(getAndroidCategories)
+            .then(function () {
+              $scope.categories = $scope.iosCategories.concat($scope.androidCategories)
+              $scope.categories.sort((a, b) => a.name.localeCompare(b.name))
+              $scope.categoriesFiltered = $scope.categories
+
+              $scope.popularCategories = $scope.categories.filter(category => $scope.popularCategoryIds.includes(category.id.toString()))
+              $scope.popularCategoriesFiltered = $scope.popularCategories
+
+              setDefaultCategories()
+              $scope.isLoading = false
+
+              // to tell main controller this directive is done loading
+              $scope.categorySelectLoaded = true
+            })
+          }
+
+          function switchTabs(tab) {
+            $scope.selectedTab = tab;
+          }
+          
+          function getIosCategories() {
+            return apiService.getIosCategories()
+            .then(function(data) {
+              $scope.iosCategories = data
+              $scope.iosCategoriesFiltered = data
+            })
+          }
+
+          function getAndroidCategories() {
+            return apiService.getAndroidCategories()
+            .then(function(data) {
+              $scope.androidCategories = data
+              $scope.androidCategoriesFiltered = data
+            })
+          }
+
+          function checkAll() {
+            selectedCollection()
+            .forEach(function(category) {
+              $scope.categoryModel[category.id] = true
+              filterService.addFilter($scope.filterKey, category.id, 'Category', false, categoryDisplayName(category))
+            })
+          }
+
+          function uncheckAll() {
+            selectedCollection()
+            .forEach(function(category) { 
+              $scope.categoryModel[category.id] = false
+              filterService.removeFilter($scope.filterKey, category.id)
+            })
+          }
+
+          function selectedCollection() {
+            switch ($scope.selectedTab) {
+              case 'popular':
+                return $scope.popularCategoriesFiltered
+              case 'all':
+                return $scope.categoriesFiltered
+              case 'ios':
+                return $scope.iosCategoriesFiltered
+              case 'android':
+                return $scope.androidCategoriesFiltered
+            }
+          }
+
+          function checkCategory(category) {
+            if (filterService.hasFilter($scope.filterKey, category.id)) {
+              $scope.categoryModel[category.id] = false
+              filterService.removeFilter($scope.filterKey, category.id)
+            } else {
+              $scope.categoryModel[category.id] = true
+              filterService.addFilter($scope.filterKey, category.id, 'Category', false, categoryDisplayName(category));
+            }
+          }
+
+          function categoryDisplayName(category) {
+            return category.name + ' - ' + (category.platform == 'ios' ? 'iOS' : 'Android');
+          }
+
+          function setDefaultCategories() {
+            for(var category of $scope.categories.filter(category => category.id == 36 || category.id == "OVERALL")) {
+              checkCategory(category)
+            }
+          }
+
+          function searchChanged(query) {
+            $scope.searchQuery = query
+            query = query.toLowerCase()
+            $scope.popularCategoriesFiltered = $scope.popularCategories.filter(category => category.name.toLowerCase().includes(query))
+            $scope.categoriesFiltered = $scope.categories.filter(category => category.name.toLowerCase().includes(query))
+            $scope.iosCategoriesFiltered = $scope.iosCategories.filter(category => category.name.toLowerCase().includes(query))
+            $scope.androidCategoriesFiltered = $scope.androidCategories.filter(category => category.name.toLowerCase().includes(query))
+          }
+         
+        }
+      };
+    }])
+    .directive('countrySelect', ['$http', '$rootScope', 'apiService', 'filterService', function ($http, $rootScope, apiService, filterService) {
+      return {
+        replace: true,
+        restrict: 'E',
+        scope: {
+          countryModel: '=country',
+          countrySelectLoaded: '=loaded'
+        },
+        templateUrl: '/app/app/views/popular-apps/country-select.html',
+        controller: function ($scope, $element) {
+          // load ios/android categories
+          $scope.selectedTab = 'popular'
+          $scope.searchQuery = ''
+          $scope.searchChanged = searchChanged
+          $scope.checkCountry = checkCountry
+          $scope.checkAll = checkAll
+          $scope.uncheckAll = uncheckAll
+          $scope.switchTabs = switchTabs
+          $scope.countrySelectLoaded = false
+          $scope.filterKey = 'countries'
+          $scope.popularCountryIds = ['US', 'CA', 'GB', 'FR', 'AU']
+
+          $scope.$watchCollection('$root.tags', function () {
+            for(var id in $scope.countryModel) {
+              $scope.countryModel[id] = $rootScope.tags.some(tag => tag.value == id && tag.parameter == $scope.filterKey)
+            }
+          })
+
+          activate()
+
+          function activate() {
+            $scope.isLoading = true;
+            getCountries()
+            .then(function () {
+              $scope.countries.sort((a, b) => a.name.localeCompare(b.name))
+              $scope.countriesFiltered = $scope.countries
+
+              $scope.popularCountries = $scope.countries.filter(country => $scope.popularCountryIds.includes(country.id))
+              $scope.popularCountriesFiltered = $scope.popularCountries
+              
+              $scope.iosCountries = $scope.countries.filter(country => country.platforms.includes('ios'))
+              $scope.androidCountries = $scope.countries.filter(country => country.platforms.includes('android'))
+              
+              $scope.iosCountriesFiltered = $scope.iosCountries
+              $scope.androidCountriesFiltered = $scope.androidCountries
+              setDefaultCountries()
+              $scope.isLoading = false;
+              // to tell main controller this directive is done loading
+              $scope.countrySelectLoaded = true
+            })
+          }
+
+          function switchTabs(tab) {
+            $scope.selectedTab = tab;
+          }
+          
+          function getCountries() {
+            return apiService.getCountries()
+            .then(function(data) {
+              $scope.countries = data
+            })
+          }
+
+          function checkAll() {
+            selectedCollection()
+            .forEach(function(country) {
+              $scope.countryModel[country.id] = true
+              filterService.addFilter($scope.filterKey, country.id, 'Country', false, countryDisplayName(country))
+            })
+          }
+
+          function uncheckAll() {
+            selectedCollection()
+            .forEach(function(country) { 
+              $scope.countryModel[country.id] = false
+              filterService.removeFilter($scope.filterKey, country.id)
+            })
+          }
+
+          function selectedCollection() {
+            switch ($scope.selectedTab) {
+              case 'popular':
+                return $scope.popularCountriesFiltered
+              case 'all':
+                return $scope.countriesFiltered
+              case 'ios':
+                return $scope.iosCountriesFiltered
+              case 'android':
+                return $scope.androidCountriesFiltered
+            }
+          }
+
+          function checkCountry(country) {
+            if (filterService.hasFilter($scope.filterKey, country.id)) {
+              $scope.countryModel[country.id] = false
+              filterService.removeFilter($scope.filterKey, country.id)
+            } else {
+              $scope.countryModel[country.id] = true
+              filterService.addFilter($scope.filterKey, country.id, 'Country', false, countryDisplayName(country));
+            }
+          }
+
+          function countryDisplayName(country) {
+            var display = country.name
+            if (country.platforms.length == 1) {
+              display += ' - ' + (country.platforms[0] == 'ios' ? 'iOS' : 'Android')
+            }
+            return  display
+          }
+
+          function setDefaultCountries() {
+            for(var country of $scope.countries.filter(country => country.id == "US")) {
+              checkCountry(country)
+            }
+          }
+
+          function searchChanged(query) {
+            $scope.searchQuery = query
+            query = query.toLowerCase()
+            $scope.popularCountriesFiltered = $scope.popularCountries.filter(country => country.name.toLowerCase().includes(query))
+            $scope.countriesFiltered = $scope.countries.filter(country => country.name.toLowerCase().includes(query))
+            $scope.iosCountriesFiltered = $scope.iosCountries.filter(country => country.name.toLowerCase().includes(query))
+            $scope.androidCountriesFiltered = $scope.androidCountries.filter(country => country.name.toLowerCase().includes(query))
+          }
+         
+        }
+      };
+    }])
     .directive('appPlatformToggle', ["apiService", "$rootScope", "$location", "AppPlatform", 'dropdownCategoryFilter', function (apiService, $rootScope, $location, AppPlatform, dropdownCategoryFilter) {
       return {
         replace: true,

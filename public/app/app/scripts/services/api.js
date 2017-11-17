@@ -67,6 +67,33 @@ angular.module("appApp")
           url: API_URI_BASE + 'api/get_' + APP_PLATFORM + '_categories'
         });
       },
+      getIosCategories: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/ios_category_objects'
+        })
+        .then(function(response) {
+          return response.data;
+        });
+      },
+      getAndroidCategories: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/android_category_objects'
+        })
+        .then(function(response) {
+          return response.data
+        });
+      },
+      getCountries: function() {
+        return $http({
+          method: 'GET',
+          url: API_URI_BASE + 'api/ranking_countries'
+        })
+        .then(function(response) {
+          return response.data;
+        });
+      },
       getSdkCategories: function() {
         return $http({
           method: 'GET',

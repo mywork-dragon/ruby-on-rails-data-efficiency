@@ -96,11 +96,11 @@ angular.module("appApp")
 
           return filterType + ' ' + displayName;
         },
-        hasFilter: function(parameter) {
+        hasFilter: function(parameter, value) {
           for(var i = $rootScope.tags.length - 1; i >= 0 ; i--){
-              if($rootScope.tags[i].parameter == parameter){
-                  return true;
-              }
+            if(($rootScope.tags[i].parameter == parameter) && (!value || $rootScope.tags[i].value == value)){
+              return true;
+            }
           }
           return false
         },

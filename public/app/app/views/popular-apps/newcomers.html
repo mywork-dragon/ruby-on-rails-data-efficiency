@@ -1,0 +1,212 @@
+<div id="trendingPage">
+  <div class="page page-table" data-ng-controller="TableCtrl">
+
+    <section id="dashboardPage" class="panel panel-default table-dynamic" ng-controller="FilterCtrl">
+
+      <header class="page-main-header ng-scope">
+        <div class="row">
+          <div class="col-md-10">
+            <h4>
+               <span class="btn-group" id="dashboardPlatformSwitch">
+                <button type="button" ng-class="popularApps.platform == 'all' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="popularApps.togglePlatform('all')">All</button>
+                <button type="button" ng-class="popularApps.platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="popularApps.togglePlatform('ios')">iOS</button>
+                <button type="button" ng-class="popularApps.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="popularApps.togglePlatform('android')">Android</button>
+              </span>
+              Apps that Entered a Top Chart
+            </h4>
+          </div>
+        </div>
+      </header>
+      <div class="panel-heading">
+        <span class="dashboard-tag-filter-selects">
+          <span class="ui-select">
+            <div ng-dropdown-multiselect="" class="categories-dropdown" options="chartFilterOptions" selected-model="popularApps.chartModel" checkboxes="true" extra-settings="popularApps.chartSettings" events="chartSelectEvents" translation-texts="popularApps.chartCustomText"></div>
+          </span>
+          <span class="ui-select">
+            <select ng-model="maxRank" ng-change="onFilterChange('maxRank', maxRank, 'Max Rank', true)">
+              <option value="">Max Rank</option>
+              <option value="10">10</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+            </select>
+          </span>
+          <category-select category="popularApps.categoryModel" loaded="popularApps.categorySelectLoaded"></category-select>
+          <country-select country="popularApps.countryModel" loaded="popularApps.countrySelectLoaded"></country-select>
+        </span>
+      </div>
+      <div id="dashboard-tag-display" class="table-filters">
+        <div class="row" ng-if="tags.length > 0">
+          <div class="col-md-12">
+            <tags-input ng-model="tags" on-tag-removed="removedTag($tag)" type="text" class="ui-tags-input ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-max-tags ng-valid-min-tags">
+            </tags-input>
+          </div>
+        </div>
+        <div class="row divider" ng-if="tags.length > 0">
+
+        </div>
+        <div class="row filter">
+          <div class="col-md-8 explore-video">
+          </div>
+          <div class="col-md-4 filter-buttons">
+            <div id="searchResultsControl">
+              <button type="submit" class="btn btn-primary" ng-click="popularApps.submitFilters()" ng-disabled="$root.tags < 1">Filter</button>
+              <button type="submit" class="btn btn-primary" ng-click="popularApps.clearFilters()" ng-disabled="$root.tags == 0">Clear Filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="panel panel-default table-dynamic">
+      <div class="panel-heading" id="dashboardResultsTableHeading">
+       <strong><i class="fa fa-list panel-ico"></i>Results</strong> <span id="dashboardResultsTableHeadingNumDisplayed" ng-if="popularApps.numApps">| Displaying {{appsDisplayedCount()}} of {{popularApps.numApps | number}}</span>
+
+        <span class="ui-select pull-right">
+          <select id="addSelectedToDropDown" ng-model="$root.addSelectedToDropdown" ng-change="addSelectedTo(addSelectedToDropdown, $root.selectedAppsForList)" ng-disabled="$root.selectedAppsForList < 1">
+            <option value="">Add Selected to List</option>
+            <option ng-repeat="option in $root.usersLists" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </span>
+      </div>
+
+      <div id="results-table-wrapper" data-ng-controller="ListCtrl">
+
+        <table class="table table-bordered table-striped table-responsive">
+          <thead>
+          <tr>
+            <th class="selectAllCheckboxHeader">
+              <select-all-checkbox apps="popularApps.apps" num-apps="popularApps.numApps"></select-all-checkbox>
+            </th>
+            <th class="resultsTableAppIcon"><div class="th">
+              App Name
+            </div></th>
+            <th><div class="th normal-right-padding appDetailsHeader">
+              App Type
+            </div></th>
+            <th class="resultsTableAppPublisher"><div class="th">
+              Publisher / Fortune Rank <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip="Fortune 500 or 1000 companies"></span>
+            </div></th>
+            <th class="resultsTableAppUserbase"><div class="th normal-right-padding">
+              User Base <span class="fa fa-question-circle" tooltip-class="help-tooltip" tooltip-append-to-body="true" tooltip-placement="auto right" uib-tooltip-html="userbaseExplanation"></span>
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Chart
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Rank
+            </div></th>
+            <th><div class="th normal-right-padding">
+              Entered Chart
+            </div></th>
+          </tr>
+          </thead>
+
+          <tbody ng-hide="popularApps.isLoading">
+            <tr data-ng-repeat="app in popularApps.apps" class="
+            {{app && app.appAvailable ? '' : 'faded'}}">
+              <td class="dashboardTableDataCheckbox">
+                <checkable-checkbox app="app" apps="popularApps.apps"></checkable-checkbox>
+              </td>
+              <td class="resultsTableAppIcon">
+                <span>
+                  <a href="#/app/{{app.platform}}/{{app.id}}" ng-click="popularApps.trackAppClick(app)" target="_blank">
+                    <img ng-src="{{app.icon}}" />
+                    {{app.name}}
+                    <i ng-if="app.price" class="fa fa-2 fa-usd"></i>
+                  </a>
+                </span>
+                <span class="badge badge-primary" ng-if="app && $root.appIsNew(app)">New</span>
+              </td>
+              <td class="appTypeIndicator">
+                <i class="fa fa-2" ng-class="app.type == 'IosApp' ? 'fa-apple' : 'fa-android'"></i>
+              </td>
+              <td class="resultsTableAppPublisher">
+                <a ng-if="app.publisher.name" href="#/publisher/{{app.platform}}/{{app.publisher.id}}" ng-click="popularApps.trackPublisherClick(app)" target="_blank">{{app.publisher.name}}</a>
+                <span ng-if="app.fortuneRank" class="fortune-rank">
+                   / {{app.fortuneRank}}</span>
+              </td>
+              <td class="resultsTableAppUserbase">
+                <span ng-if="app.platform != 'ios'">{{app.userBase | capitalize}}</span>
+                <span ng-if="app.platform == 'ios' && app.userBases.length == 1">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </span>
+                <a ng-if="app.platform == 'ios' && app.userBases.length > 1" popover-trigger="mouseenter" uib-popover-template="'userBaseTemplate.html'" popover-placement="auto left" href="javascript:void(0)" class="popover-link">
+                  <img ng-src="/lib/images/flags/{{app.userBase.country_code.toLowerCase()}}.png" />
+                  {{app.userBase.user_base | capitalize}}
+                </a>
+                <script ng-if="app.platform == 'ios' && app.userBases.length > 1" type="text/ng-template" id="userBaseTemplate.html">
+                  <ul class="international-data">
+                    <li ng-repeat="row in app.userBases">
+                      <div class="flag flag-{{row.country_code.toLowerCase()}} pull-left"></div>
+                      <span class="country">{{row.country}}:</span>
+                      <span>{{row.user_base | capitalize}}</span>
+                    </li>
+                  </ul>
+                </script>
+              </td>
+              <td>
+                <a ng-href="{{popularApps.linkToChart(app)}}" target="_blank" ng-click="popularApps.trackChartClick(app)">
+                  <img ng-src="/lib/images/flags/{{app.trending.country.toLowerCase()}}.png" />
+                  Top {{app.trending.ranking_type | capitalize}} {{app.trending.category_name}} Apps
+                </a>
+              </td>
+              <td class="app-rank">
+                <span class="{{app.trending.rank_color}}">
+                  {{app.trending.rank}}
+                </span>
+              </td>
+              <td>
+                {{popularApps.calculateDaysAgo(app.trending.created_at)}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="dashboardTableStatusMessage" ng-show="popularApps.isLoading || !popularApps.apps.length">
+          <h5 ng-hide="popularApps.isLoading || popularApps.error || popularApps.apps.length">No Results</h5>
+          <h5 ng-if="popularApps.error">There was an error. Please try again.</h5>
+          <div ng-if="popularApps.isLoading" id="wrap_spinner">
+            <div class="loading outer">
+              <div class="loading inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="table-footer">
+        <div class="row">
+          <div class="col-md-6 page-num-info">
+          </div>
+          <div class="col-md-6 text-right pagination-container">
+            <uib-pagination class="pagination-sm"
+                        ng-model="popularApps.currentPage"
+                        total-items="popularApps.numApps"
+                        max-size="8"
+                        ng-change="popularApps.pageChanged()"
+                        items-per-page="popularApps.numPerPage"
+                        rotate="false"
+                        boundary-links="true"></uib-pagination>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <div ng-controller="ListCtrl">
+    <!-- Modals -->
+    <aside ng-include="'/app/app/views/modals/list-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/list-delete-selected.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/export-permissions.html'"></aside>
+
+    <aside ng-include="'/app/app/views/modals/location-filters.html'"></aside>
+
+    <aside ng-include="'/app/app/views/modals/search-create.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/search-delete.html'"></aside>
+    <aside ng-include="'/app/app/views/modals/help-video.html'"></aside>
+  </div>
+
+</div>

@@ -1,0 +1,65 @@
+<div id="topAppsPage" class="chartPage">
+
+  <div class="row chartPageRow topAppsPageRow">
+    <div id="chartFilters">
+      <span class="btn-group" id="dashboardPlatformSwitch">
+        <button type="button" ng-class="topChart.platform == 'ios' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="topChart.togglePlatform('ios')">iOS</button>
+        <button type="button" ng-class="topChart.platform == 'android' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="topChart.togglePlatform('android')">Android</button>
+      </span>
+      <span class="btn-group" id="dashboardPlatformSwitch">
+        <button type="button" ng-class="topChart.rankType == 'free' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="topChart.toggleRankType('free')">Free</button>
+        <button type="button" ng-class="topChart.rankType == 'paid' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="topChart.toggleRankType('paid')">Paid</button>
+        <button type="button" ng-class="topChart.rankType == 'grossing' ? 'btn-primary' : 'btn-default'" class="btn" ng-click="topChart.toggleRankType('grossing')">Grossing</button>
+      </span>
+      <span class="ui-select" ng-if="topChart.category">
+        <select ng-if="topChart.platform == 'ios'" ng-model="topChart.category" ng-options="category as category.name for category in topChart.iosCategories track by category.id" ng-change="topChart.changedCategory()"></select>
+        <select ng-if="topChart.platform == 'android'" ng-model="topChart.category" ng-options="category as category.name for category in topChart.androidCategories track by category.id" ng-change="topChart.changedCategory()"></select>
+      </span>
+      <span class="ui-select" ng-if="topChart.country">
+        <select ng-if="topChart.platform == 'ios'" ng-model="topChart.country" ng-options="country as country.name for country in topChart.iosCountries track by country.id" ng-change="topChart.changedCountry()"></select>
+        <select ng-if="topChart.platform == 'android'" ng-model="topChart.country" ng-options="country as country.name for country in topChart.androidCountries track by country.id" ng-change="topChart.changedCountry()"></select>
+      </span>
+    </div>
+    <h4 ng-if="topChart.rankType">
+      <img ng-src="/lib/images/flags/{{topChart.country.id.toLowerCase()}}.png" />
+      Top {{topChart.rankType | capitalize}} {{topChart.platform == 'ios' ? 'iOS' : 'Android'}} {{topChart.category.name}} Apps
+    </h4>
+    <div id="wrap_spinner" ng-if="topChart.isLoading">
+      <div class="loading outer">
+        <div class="loading inner"></div>
+      </div>
+    </div>
+    <div ng-hide="topChart.isLoading">
+      <ul>
+        <li data-ng-repeat="app in topChart.apps" class="grid">
+          <span class="app-rank">{{app.trending.rank}}</span>
+          <span class="badge badge-primary app-rank-change" ng-if="0 <= app.releasedDays && app.releasedDays <= 7">New</span>
+          <a href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" ng-click="topChart.trackAppClick(app)" class="icon" target="_blank">
+            <img ng-src="{{app.icon}}" width="50" height="50">
+          </a>
+          <br>
+          <span class="app-name"><a ng-href="#/app/{{app.platform}}/{{app.id}}" title="{{app.name}}" target="_blank" ng-click="topChart.trackAppClick(app)">{{app.name}}</a></span>
+          <br>
+          <span class="app-category"><a ng-href="#/publisher/{{app.platform}}/{{app.publisher.id}}" title="{{app.publisher.name}}" target="_blank" ng-click="topChart.trackPublisherClick(app)">{{app.publisher.name}}</a></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <footer class="table-footer">
+    <div class="row">
+      <div class="col-md-6 page-num-info">
+      </div>
+      <div class="col-md-6 text-right pagination-container">
+        <uib-pagination class="pagination-sm"
+                    ng-model="topChart.currentPage"
+                    total-items="topChart.numApps"
+                    max-size="8"
+                    ng-change="topChart.pageChanged()"
+                    items-per-page="topChart.numPerPage"
+                    rotate="false"
+                    boundary-links="true"></uib-pagination>
+      </div>
+    </div>
+  </footer>
+
+</div>

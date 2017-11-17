@@ -1,0 +1,74 @@
+<span class="ui-select ui-select-fake" popover-class="select-modal country-select" uib-popover-template="'mobileCountryTemplate.html'" popover-placement="auto bottom" popover-trigger="outsideClick">
+  <span>Country</span>
+  <script type="text/ng-template" id="mobileCountryTemplate.html">
+    <div id="countrySelect">
+      <div ng-if="isLoading" id="wrap_spinner">
+        <div class="loading outer">
+          <div class="loading inner"></div>
+        </div>
+      </div>
+      <input type="text" ng-model="searchQuery" ng-change="searchChanged(searchQuery)" class="form-control" placeholder="Filter countries" ng-hide="isLoading">
+      <br>
+      <div class="check-options" ng-hide="isLoading">
+        <a href="javascript:void(0)" ng-click="checkAll()" class="btn btn-default btn-xs">
+          <i class="fa fa-check"></i>
+          Check All
+        </a>
+        <a href="javascript:void(0)" ng-click="uncheckAll()" class="btn btn-default btn-xs">
+          <i class="fa fa-times"></i>
+          Uncheck All
+        </a>
+      </div>
+      <uib-tabset active="activePill" vertical="true" type="pills" ng-hide="isLoading">
+        <uib-tab ng-click="switchTabs('popular')" index="0" heading="Popular">
+          <ul>
+            <li ng-repeat="country in popularCountriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="countryModel[country.id]" ng-change="checkCountry(country)">
+                <i class="fa fa-apple" ng-if="country.platforms.includes('ios')"></i>
+                <i class="fa fa-android" ng-if="country.platforms.includes('android')"></i>
+                {{country.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('all')" index="1" heading="All">
+          <ul>
+            <li ng-repeat="country in countriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="countryModel[country.id]" ng-change="checkCountry(country)">
+                <i class="fa fa-apple" ng-if="country.platforms.includes('ios')"></i>
+                <i class="fa fa-android" ng-if="country.platforms.includes('android')"></i>
+                {{country.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('ios')" index="2" heading="iOS">
+          <ul>
+            <li ng-repeat="country in iosCountriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="countryModel[country.id]" ng-change="checkCountry(country)">
+                <i class="fa fa-apple" ng-if="country.platforms.includes('ios')"></i>
+                <i class="fa fa-android" ng-if="country.platforms.includes('android')"></i>
+                {{country.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+        <uib-tab ng-click="switchTabs('android')" index="3" heading="Android">
+          <ul>
+            <li ng-repeat="country in androidCountriesFiltered">
+              <label>
+                <input type="checkbox" ng-model="countryModel[country.id]" ng-change="checkCountry(country)">
+                <i class="fa fa-apple" ng-if="country.platforms.includes('ios')"></i>
+                <i class="fa fa-android" ng-if="country.platforms.includes('android')"></i>
+                {{country.name}}
+              </label>
+            </li>
+          </ul>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+  </script>
+</span>

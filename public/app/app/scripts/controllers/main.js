@@ -149,6 +149,12 @@ angular.module('appApp')
           { id: 'high', label: 'High' }
         ]
 
+        $rootScope.chartFilterOptions = [
+          { id: 'free', label: 'Top Free Apps' },
+          { id: 'paid', label: 'Top Paid Apps' },
+          { id: 'grossing', label: 'Top Grossing Apps' }
+        ]
+
         $rootScope.userbaseFilterOptions = [
           { id: 'weak', label: 'Weak'},
           { id: 'moderate', label: 'Moderate'},

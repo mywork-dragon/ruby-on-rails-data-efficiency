@@ -19,9 +19,17 @@
             <a class="nav-link" href="#/ad-intelligence" ng-click="clickedNavLink('Ad Intelligence')"> <i class="fa fa-signal"></i> <span>Ad Intelligence</span>
             </a>
         </li>
-        <li ui-sref="charts" ui-sref-active="active">
-            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i> <span>Charts</span></a>
+        <li>
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Popular Apps')"> <i class="fa fa-fire"></i><span>Popular Apps</span></a>
+            <ul>
+              <li><a ui-sref="newcomer-apps" ui-sref-active="active" ng-click="clickedNavLink('Newcomers')" href="#/popular-apps/newcomers"><i class="fa fa-angle-right"></i><span>Newcomers</span></a></li>
+              <li><a ui-sref="trending-apps" ui-sref-active="active" ng-click="clickedNavLink('Trending')" href="#/popular-apps/trending"><i class="fa fa-angle-right"></i><span>Trending</span></a></li>
+              <li><a ui-sref="top-app-chart({ country: 'US', platform: 'ios', category: 36, rankType: 'free' })" ui-sref-active="active" ng-click="clickedNavLink('Charts')" href="#/popular-apps/charts/ios/free/US/36"><i class="fa fa-angle-right"></i><span>Charts</span></a></li>
+            </ul>
         </li>
+<!--         <li ng-class="{active: $route.current.activeTab == 'charts'}">
+            <a class="nav-link" href="#/charts" ng-click="clickedNavLink('Charts')"> <i class="fa fa-area-chart"></i><span>Charts</span></a>
+        </li> -->
         <li data-ng-controller="ListCtrl" id="lists-sidebar-navigation">
             <a class="nav-link" href="#"><i class="fa fa-check-square-o"></i><span>Lists</span></a>
             <ul>
