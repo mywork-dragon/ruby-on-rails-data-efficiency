@@ -72,14 +72,14 @@ every :day, at: '3:00pm', roles: [:varys_scheduler] do
   runner 'CustomerHappinessService.pull_mixpanel_data', :output => '/var/log/cron.log'
 end
 
-every :wednesday, :at => '8:00am', roles: [:varys_scheduler] do
-  runner 'ElasticSearchWorker.perform_async(:update_ios)', :output => '/var/log/cron.log'
-end
+# every :wednesday, :at => '8:00am', roles: [:varys_scheduler] do
+#   runner 'ElasticSearchWorker.perform_async(:update_ios)', :output => '/var/log/cron.log'
+# end
 
 every :day, at: '3:00am', roles: [:varys_scheduler] do
   runner 'GooglePlayChartService.run_gplay_top_free', :output => '/var/log/cron.log'
 end
 
-every :day, at: '4:00am', roles: [:varys_scheduler] do
-  runner 'FbMauScrapeWorker.scrape_all', :output => '/var/log/cron.log'
-end
+# every :day, at: '4:00am', roles: [:varys_scheduler] do
+#   runner 'FbMauScrapeWorker.scrape_all', :output => '/var/log/cron.log'
+# end
