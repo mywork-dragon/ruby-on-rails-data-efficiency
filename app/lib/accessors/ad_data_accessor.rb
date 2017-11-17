@@ -47,7 +47,8 @@ class AdDataAccessor
         "creative_types" =>  Set.new,
         "first_seen_ads_date" => nil,
         "last_seen_ads_date" => nil,
-        "ad_attribution_sdks" => nil # Fill in later
+        "ad_attribution_sdks" => nil, # Fill in later
+        "number_of_creatives" => 0
         }}
 
     app_id_to_apps = apps.map {|app| [app.app_identifier.to_s, app.id]}.to_h
@@ -65,6 +66,8 @@ class AdDataAccessor
             "first_seen_ads_date" => result['first_seen_ads_date'],
             "last_seen_ads_date" => result['last_seen_ads_date']
             })
+
+        app_record["number_of_creatives"] += result['number_of_creatives'] ? result['number_of_creatives'] : 0
 
         if ! result['creative_formats'].nil?
             result['creative_formats'].split(',').each { |x| app_record['creative_types'].add(x) }
