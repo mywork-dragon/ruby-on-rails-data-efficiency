@@ -9,8 +9,14 @@ class WeeklyBatch < ActiveRecord::Base
   enum activity_type: [:install, :uninstall, :ad_seen, :entered_top_apps]
 
   def clear_cache
-    key = "weekly_batch:as_json:#{self.id}:*"
-    Rails.cache.delete_matched(key)
+    # Compensate for the slowness of delete_matched.
+    # Idk why it's slow but it's not the keys call.
+    # This was making a 1-3 second job take 1-3 minutes,
+    # while the direct redis calls don't effect performance.
+    prefix_to_delete = "weekly_batch:as_json:#{self.id}:*"
+    prefix = Rails.application.config.cache_prefix[:namespace]
+    keys_to_delete = Rails.cache.data.keys("#{prefix}:#{prefix_to_delete}").map {|x| "#{prefix}:#{x}" }
+    keys_to_delete.map {|key| Rails.cache.data.del(key)}
   end
 
   def _as_json(options)
