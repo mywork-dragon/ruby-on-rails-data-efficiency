@@ -918,11 +918,6 @@ angular.module('appApp')
         searchCtrl.csvUrl = API_URI_BASE + 'api/search/export_to_csv.csv' + $location.url().split('/search')[1] + '&access_token=' + authToken.get()
       };
 
-      apiService.getScannedSdkNum().success(function(data) {
-        $scope.scannedAndroidSdkNum = data.scannedAndroidSdkNum;
-        $scope.scannedIosSdkNum = data.scannedIosSdkNum;
-      });
-
       $scope.getList = function() {
         var routeParams = $location.search();
         if (!routeParams.listId) return
