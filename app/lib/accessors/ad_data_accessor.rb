@@ -212,8 +212,9 @@ class AdDataAccessor
     extra_fields:[])
     page_size = [page_size.to_i, MAX_PAGE_SIZE].min
     page_number = [page_number.to_i, 0].max
+    visible_source_ids = account.available_ad_sources.values.map {|x| x[:id]}
     if source_ids.nil?
-      source_ids = account.available_ad_sources.values.map {|x| x[:id]}
+      source_ids = visible_source_ids
     end
     source_ids = account.restrict_ad_sources(source_ids)
     platforms = platforms.select {|x| AdDataPermissions::APP_PLATFORMS.include? x}
@@ -221,6 +222,7 @@ class AdDataAccessor
     results, full_count = @delegate.query(
       platforms:platforms,
       source_ids: source_ids,
+      visible_source_ids: visible_source_ids,
       first_seen_ads_date: first_seen_ads_date,
       last_seen_ads_date: last_seen_ads_date,
       sort_by: sort_by,

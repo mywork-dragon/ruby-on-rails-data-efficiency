@@ -134,6 +134,7 @@ class RedshiftAdDataAccessor
   def query(
     platforms:['ios', 'android'],
     source_ids: [],
+    visible_source_ids: [],
     first_seen_ads_date: nil,
     last_seen_ads_date: nil,
     sort_by: 'first_seen_ads_date',
@@ -184,14 +185,19 @@ class RedshiftAdDataAccessor
       end
     end
 
+    enabled_network_sql = RedshiftBase::sanitize_sql_statement(["mobile_ad_data_summaries.ad_network in (?)", visible_source_ids])
+
     limit_sql = "LIMIT #{page_size}"
     offset = page_size * page_number
     offset_sql = "OFFSET #{offset}"
     extra_fields_sql = (extra_fields.map{|f, as_f| "#{f} as #{as_f}"} + [""]).join(",")
     sql = "
-        WITH advertised_apps as (
+        WITH selected_apps as (
+          select app_identifier from mobile_ad_data_summaries where #{where_sql}
+        ),
+        advertised_apps as (
         SELECT
-            app_identifier,
+            mobile_ad_data_summaries.app_identifier,
             platform,
             min(mobile_ad_data_summaries.first_seen_ads_date) AS first_seen_ads_date,
             datediff(DAY,
@@ -206,11 +212,12 @@ class RedshiftAdDataAccessor
             listagg(DISTINCT mobile_ad_data_summaries.ad_formats,
             ',') AS ad_formats
         FROM
-            mobile_ad_data_summaries
+            mobile_ad_data_summaries, selected_apps
             WHERE
-            #{where_sql}
+            mobile_ad_data_summaries.app_identifier = selected_apps.app_identifier
+            AND #{enabled_network_sql}
         GROUP BY
-            app_identifier, platform
+            mobile_ad_data_summaries.app_identifier, platform
         )
         select
             #{extra_fields_sql}
