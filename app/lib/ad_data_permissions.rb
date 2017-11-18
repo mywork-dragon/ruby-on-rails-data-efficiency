@@ -3,7 +3,7 @@ module AdDataPermissions
 
   AD_DATA_TIERS = {
     'tier-1' => ['facebook'],
-    'tier-2' => ['facebook', 'applovin', 'chartboost', 'unity-ads']
+    'tier-2' => ['facebook', 'applovin', 'chartboost', 'unity-ads', 'mopub']
   }
 
   APP_PLATFORMS = ['ios', 'android']
@@ -28,6 +28,11 @@ module AdDataPermissions
       id:'unity-ads',
       name:'Unity',
       icon: 'https://www.google.com/s2/favicons?domain=unity3d.com'
+    },
+    {
+      id:'mopub',
+      name:'MoPub',
+      icon: 'https://www.google.com/s2/favicons?domain=mopub.com'
     }
   ]
 
