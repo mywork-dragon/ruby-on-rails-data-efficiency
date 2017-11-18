@@ -85,6 +85,7 @@ class AppStoreInternationalService
       lookback_time = 1.days.ago
 
       rankings_accessor = RankingsAccessor.new
+      ios_snapshot_accessor = IosSnapshotAccessor.new
 
       count_result = rankings_accessor.unique_newcomers(platform: "ios", lookback_time: 1.days.ago, page_size: page_size, page_num: 1, count: true)
       num_pages = (count_result / page_size) + 1
@@ -113,15 +114,13 @@ class AppStoreInternationalService
           synchronize_keys: [:app_identifier]
         )
 
-        app_ids_to_scrape = missing_ios_app_entries.map(&:id)
-
         # For each of the existing apps, check if there's an international snapshot. For the apps without a snapshot,
         # add to the scrape list.
-        
-        existing.each do |ios_app|
-          app_snapshot = ios_app.first_international_snapshot
-          app_ids_to_scrape.push(ios_app.id) if app_snapshot.nil? or app_snapshot.empty?
-        end
+        existing_app_ids = existing.map(&:id)
+        app_ids_with_snapshot = ios_snapshot_accessor.app_ids_with_latest_snapshot(existing_app_ids)
+        app_ids_missing_snapshots = existing_app_ids - app_ids_with_snapshot
+
+        app_ids_to_scrape = missing_ios_app_entries.map(&:id) + app_ids_missing_snapshots
         
         scrape_ios_apps(app_ids_to_scrape, live: true, job: snapshot_job)
       end

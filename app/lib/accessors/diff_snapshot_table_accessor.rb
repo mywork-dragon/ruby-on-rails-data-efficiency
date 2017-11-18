@@ -115,4 +115,8 @@ class DiffSnapshotTableAccessor
       'ios_app_categories_current_snapshots.kind' => 0).pluck('ios_app_current_snapshots.ios_app_id', 'ios_app_categories.name')
   end
 
+  def app_ids_with_latest_snapshot(ios_app_ids)
+    IosAppCurrentSnapshot.where(:ios_app_id => ios_app_ids).where(:latest => true).pluck(:ios_app_id)
+  end
+
 end
