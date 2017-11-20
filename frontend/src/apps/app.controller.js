@@ -98,6 +98,7 @@ import '../components/list-create/list-create.directive'; // gross
           getCompanyContacts()
           addAdIds()
           getSalesforceData()
+          setUpSalesforce()
           populateCreativesTable();
           app.activeCreative = app.facebookAds[0]
           pageTitleService.setTitle(app.name)
@@ -151,11 +152,11 @@ import '../components/list-create/list-create.directive'; // gross
     function authenticateSalesforce (provider) {
       $auth.authenticate(provider, { token: authToken.get() })
       .then(function(response) {
-        app.sfUserConnected = true
+        $scope.sfUserConnected = true
         getSalesforceData();
       })
       .catch(function(response) {
-        app.sfUserConnected = false
+        $scope.sfUserConnected = false
         alert(response.data.error)
       });
     };
@@ -280,7 +281,7 @@ import '../components/list-create/list-create.directive'; // gross
         });
     }
 
-    function setUpSalesforce () {
+    function setUpSalesforce () { 
       authService.accountInfo()
         .success(function(data) {
           app.salesforceSettings = data.salesforce_settings

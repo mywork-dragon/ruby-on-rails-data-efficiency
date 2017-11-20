@@ -14,13 +14,13 @@
             Your Salesforce admin has integrated Salesforce with MightySignal but we still need your Salesforce account to make you the owner of any Accounts or Leads that you export.
           </p>
           <p ng-hide="app.salesforceSettings.is_sandbox">
-            <a ng-click="app.authenticate('salesforce_user')" class="btn btn-primary">
+            <a ng-click="app.authenticateSalesforce('salesforce_user')" class="btn btn-primary">
               <i class="fa fa-cloud" aria-hidden="true"></i>
               Log In Using Salesforce
             </a>
           </p>
            <p ng-if="app.salesforceSettings.is_sandbox">
-            <a ng-click="app.authenticate('salesforce_user_sandbox')" class="btn btn-warning">
+            <a ng-click="app.authenticateSalesforce('salesforce_user_sandbox')" class="btn btn-warning">
               <i class="fa fa-cloud" aria-hidden="true"></i>
               Log In Using Salesforce Sandbox
             </a>
