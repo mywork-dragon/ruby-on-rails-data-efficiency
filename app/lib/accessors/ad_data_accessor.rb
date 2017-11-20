@@ -169,7 +169,7 @@ class AdDataAccessor
                     expires_in: 1.weeks,
                     secure: false # Allows html ads to load non https content.
                 }
-                if creative['type'] == 'playable'
+                if ['html', 'playable'].include? creative['type']
                     creative['content-type'] = 'set'
                     params[:response_content_type] = 'text/html'
                 end
