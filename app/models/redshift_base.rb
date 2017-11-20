@@ -1,4 +1,7 @@
 class RedshiftBase < ActiveRecord::Base
+  # TODO: Migrate off of this class in favor of RedshiftDBConnection. And delete
+  # once migration is completed.
+  
   self.abstract_class = true
   establish_connection Rails.application.config.redshift_db_config[Rails.env.to_s]
 
