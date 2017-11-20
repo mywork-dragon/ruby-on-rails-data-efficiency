@@ -281,11 +281,15 @@ class SalesforceExportService
     publisher ||=  app.publisher if app
 
     return unless publisher
-    
+
+    initial_mapping = default_mapping(app: app, publisher: publisher).with_indifferent_access
+
     mapping = if mapping
-      JSON.parse(mapping).with_indifferent_access 
+      custom_mapping = JSON.parse(mapping).with_indifferent_access 
+      custom_mapping = initial_mapping.merge(custom_mapping)
+      custom_mapping
     else
-      default_mapping(app: app, publisher: publisher).with_indifferent_access 
+      initial_mapping 
     end
 
     update_default_mapping(mapping)

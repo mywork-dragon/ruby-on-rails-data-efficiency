@@ -421,8 +421,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             'Lead': [
               {platform: 'ios', id: 'MightySignal iOS Publisher ID', name: 'MightySignal iOS Publisher ID', fields: [{id: 'MightySignal_iOS_Publisher_ID__c', name: 'New Field: MightySignal iOS Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {platform: 'android', id: 'MightySignal Android Publisher ID', name: 'MightySignal Android Publisher ID', fields: [{id: 'MightySignal_Android_Publisher_ID__c', name: 'New Field: MightySignal Android Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Company', name: 'Company'}]},
-              {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
+              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'Company', name: 'Company'}, {id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}]},
+              {id: 'Website', name: 'Website', fields: [{id: 'Website', name: 'Website'}, {id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}]},
               {platform: 'ios', id: 'MightySignal iOS SDK Summary', name: 'MightySignal iOS SDK Summary', fields: [{id: 'MightySignal_iOS_SDK_Summary__c', name: 'New Field: MightySignal iOS SDK Summary'}]},
               {platform: 'android', id: 'MightySignal Android SDK Summary', name: 'MightySignal Android SDK Summary', fields: [{id: 'MightySignal_Android_SDK_Summary__c', name: 'New Field: MightySignal Android SDK Summary'}]},
               {platform: 'ios', id: 'MightySignal iOS Link', name: 'MightySignal iOS Link', fields: [{id: 'MightySignal_iOS_Link__c', name: 'New Field: MightySignal iOS Link'}]},
@@ -435,8 +435,8 @@ angular.module("app.directives", []).directive("imgHolder", [
             'Account': [
               {platform: 'ios', id: 'MightySignal iOS Publisher ID', name: 'MightySignal iOS Publisher ID', fields: [{id: 'MightySignal_iOS_Publisher_ID__c', name: 'New Field: MightySignal iOS Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
               {platform: 'android', id: 'MightySignal Android Publisher ID', name: 'MightySignal Android Publisher ID', fields: [{id: 'MightySignal_Android_Publisher_ID__c', name: 'New Field: MightySignal Android Publisher Id'}, {id: 'AccountNumber', name: 'Account Number'}]},
-              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}, {id: 'Name', name: 'Name'}]},
-              {id: 'Website', name: 'Website', fields: [{id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}, {id: 'Website', name: 'Website'}]},
+              {id: 'Publisher Name', name: 'Publisher Name', fields: [{id: 'Name', name: 'Name'}, {id: 'MightySignal_Publisher_Name__c', name: 'New Field: MightySignal Publisher Name'}]},
+              {id: 'Website', name: 'Website', fields: [{id: 'Website', name: 'Website'}, {id: 'MightySignal_Publisher_Website__c', name: 'New Field: MightySignal Publisher Website'}]},
               {platform: 'ios', id: 'MightySignal iOS SDK Summary', name: 'MightySignal iOS SDK Summary', fields: [{id: 'MightySignal_iOS_SDK_Summary__c', name: 'New Field: MightySignal iOS SDK Summary'}]},
               {platform: 'android', id: 'MightySignal Android SDK Summary', name: 'MightySignal Android SDK Summary', fields: [{id: 'MightySignal_Android_SDK_Summary__c', name: 'New Field: MightySignal Android SDK Summary'}]},
               {platform: 'ios', id: 'MightySignal iOS Link', name: 'MightySignal iOS Link', fields: [{id: 'MightySignal_iOS_Link__c', name: 'New Field: MightySignal iOS Link'}]},
