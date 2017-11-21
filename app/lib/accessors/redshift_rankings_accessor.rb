@@ -1,7 +1,9 @@
 class RedshiftRankingsAccessor
   include RankingsParamDenormalizer
 
-  attr_writer :query_class_override # Make override available for testing
+  def initialize(connection: nil)
+    @connection = connection || RedshiftDbConnection.new
+  end
 
   def get_trending(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], size: 20, page_num: 1, sort_by: "weekly_change", desc: true, max_rank: 500)
     
@@ -24,8 +26,8 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT COUNT(app_identifier) FROM daily_trends #{where_clauses}"
 
     {
-      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(query_class().query(get_trending_query, expires: 30.minutes).fetch())
+      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(@connection.query(get_trending_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -50,8 +52,8 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT COUNT(app_identifier) FROM daily_newcomers #{where_clauses}"
 
     {
-      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(query_class().query(get_newcomers_query, expires: 30.minutes).fetch())
+      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(@connection.query(get_newcomers_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -89,8 +91,8 @@ class RedshiftRankingsAccessor
     get_total_query = "SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}'"
 
     {
-      "total" => query_class().query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(query_class().query(get_chart_query, expires: 30.minutes).fetch())
+      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
+      "apps" => normalize_app_records(@connection.query(get_chart_query, expires: 30.minutes).fetch())
     }
   end
 
@@ -113,17 +115,13 @@ class RedshiftRankingsAccessor
 
   def unique_newcomers(platform:, lookback_time:, page_size:, page_num:, count:false)
     if count
-      return query_class().query("SELECT COUNT(DISTINCT app_identifier) FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}'", expires: 1.minutes).fetch()[0]["count"]
+      return @connection.query("SELECT COUNT(DISTINCT app_identifier) FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}'", expires: 1.minutes).fetch()[0]["count"]
     end
 
-    return query_class().query("SELECT DISTINCT app_identifier FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}' ORDER BY app_identifier OFFSET #{(page_num - 1) * page_size} LIMIT #{page_size}", expires: 1.minutes).fetch()
+    return @connection.query("SELECT DISTINCT app_identifier FROM daily_newcomers_swap WHERE platform='#{platform}' AND created_at > '#{lookback_time.strftime("%Y-%m-%d")}' ORDER BY app_identifier OFFSET #{(page_num - 1) * page_size} LIMIT #{page_size}", expires: 1.minutes).fetch()
   end
 
 private
-
-  def query_class
-    @query_class_override || RedshiftBase
-  end
 
   def get_chart_param(param, platform)
     query_result = query_class().query("SELECT DISTINCT #{param} FROM daily_raw_charts WHERE platform='#{platform}'", expires: 1.days).fetch()

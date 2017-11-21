@@ -7,6 +7,6 @@ class RankingsAccessorTest < ActiveSupport::TestCase
     # Using RankingsAccessor.any_instance.stub method in tests monkey patches 
     # __android_categories_without_any_instance__ method.
     assert_equal [], (x.public_methods(false) - x.delegate.public_methods(false)) - [:delegate, :__android_categories_without_any_instance__]
-    assert_equal [:query_class_override=], (x.delegate.public_methods(false) -  x.public_methods(false))
+    assert_equal [], (x.delegate.public_methods(false) -  x.public_methods(false))
   end
 end

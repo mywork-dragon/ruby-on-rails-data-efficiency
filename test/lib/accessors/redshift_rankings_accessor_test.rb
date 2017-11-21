@@ -1,12 +1,12 @@
 require 'test_helper'
 require 'mocks/mock_cached_query'
-require 'mocks/redshift_base_mock'
+require 'mocks/redshift_db_connection_mock'
 
 class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
 
   def setup
-    @accessor = RedshiftRankingsAccessor.new
-    @accessor.query_class_override = RedshiftBaseMock
+    @connection_mock = RedshiftDbConnectionMock.new
+    @accessor = RedshiftRankingsAccessor.new(connection: @connection_mock)
 
     @mock_count_response = MockCachedQuery.new(return_value: [{
       "count" => 10
@@ -78,8 +78,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_trending_default_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_trends  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500 ORDER BY weekly_change DESC OFFSET 0 LIMIT 20", @mock_trending_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_trends  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500 ORDER BY weekly_change DESC OFFSET 0 LIMIT 20", @mock_trending_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500", @mock_count_response)
     
     result = @accessor.get_trending
 
@@ -91,8 +91,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_trending_single_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_trends  WHERE country IN ('143441','143442','US','FR') AND ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500 ORDER BY weekly_change DESC OFFSET 0 LIMIT 20", @mock_trending_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE country IN ('143441','143442','US','FR') AND ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_trends  WHERE country IN ('143441','143442','US','FR') AND ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500 ORDER BY weekly_change DESC OFFSET 0 LIMIT 20", @mock_trending_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE country IN ('143441','143442','US','FR') AND ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND weekly_change IS NOT NULL AND rank < 500", @mock_count_response)
     
     result = @accessor.get_trending(countries: ["US", "FR"])
 
@@ -104,8 +104,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_trending_multiple_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_trends  WHERE category IN ('36','OVERALL') AND ranking_type IN ('38','topgrossing') AND monthly_change IS NOT NULL AND rank < 20 ORDER BY monthly_change ASC OFFSET 10 LIMIT 5", @mock_trending_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE category IN ('36','OVERALL') AND ranking_type IN ('38','topgrossing') AND monthly_change IS NOT NULL AND rank < 20", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_trends  WHERE category IN ('36','OVERALL') AND ranking_type IN ('38','topgrossing') AND monthly_change IS NOT NULL AND rank < 20 ORDER BY monthly_change ASC OFFSET 10 LIMIT 5", @mock_trending_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_trends  WHERE category IN ('36','OVERALL') AND ranking_type IN ('38','topgrossing') AND monthly_change IS NOT NULL AND rank < 20", @mock_count_response)
     
     result = @accessor.get_trending(categories: ["36", "OVERALL"], rank_types: ["grossing"], size: 5, page_num: 3, sort_by: "monthly_change", desc: false, max_rank: 20)
 
@@ -127,8 +127,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_newcomers_default_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500 ORDER BY created_at DESC OFFSET 0 LIMIT 20", @mock_newcomer_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500 ORDER BY created_at DESC OFFSET 0 LIMIT 20", @mock_newcomer_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free','30','topselling_paid','38','topgrossing') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500", @mock_count_response)
     
     result = @accessor.get_newcomers
 
@@ -142,8 +142,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_newcomers_single_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_newcomers  WHERE platform IN ('ios') AND ranking_type IN ('27','30','38') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500 ORDER BY created_at DESC OFFSET 0 LIMIT 20", @mock_newcomer_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE platform IN ('ios') AND ranking_type IN ('27','30','38') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_newcomers  WHERE platform IN ('ios') AND ranking_type IN ('27','30','38') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500 ORDER BY created_at DESC OFFSET 0 LIMIT 20", @mock_newcomer_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE platform IN ('ios') AND ranking_type IN ('27','30','38') AND created_at > '#{14.days.ago.strftime("%Y-%m-%d")}' AND rank < 500", @mock_count_response)
     
     result = @accessor.get_newcomers(platforms:["ios"])
 
@@ -157,8 +157,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_newcomers_multiple_params_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free') AND created_at > '#{5.days.ago.strftime("%Y-%m-%d")}' AND rank < 50 ORDER BY created_at DESC OFFSET 580 LIMIT 20", @mock_newcomer_apps_response)
-    RedshiftBaseMock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free') AND created_at > '#{5.days.ago.strftime("%Y-%m-%d")}' AND rank < 50", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free') AND created_at > '#{5.days.ago.strftime("%Y-%m-%d")}' AND rank < 50 ORDER BY created_at DESC OFFSET 580 LIMIT 20", @mock_newcomer_apps_response)
+    @connection_mock.set_result("SELECT COUNT(app_identifier) FROM daily_newcomers  WHERE ranking_type IN ('27','topselling_free') AND created_at > '#{5.days.ago.strftime("%Y-%m-%d")}' AND rank < 50", @mock_count_response)
     
     result = @accessor.get_newcomers(rank_types:["free"], lookback_time: 5.days.ago, max_rank: 50, page_num: 30)
 
@@ -182,8 +182,8 @@ class RedshiftRankingsAccessorTest < ActiveSupport::TestCase
   end
 
   test 'get_raw_charts_test' do
-    RedshiftBaseMock.set_result("SELECT * FROM daily_raw_charts WHERE platform='android' AND country='KR' AND category='SPORTS' AND ranking_type='topgrossing' ORDER BY rank ASC OFFSET 20 LIMIT 10", @mock_get_chart_response)
-    RedshiftBaseMock.set_result("SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='android' AND country='KR' AND category='SPORTS' AND ranking_type='topgrossing'", @mock_count_response)
+    @connection_mock.set_result("SELECT * FROM daily_raw_charts WHERE platform='android' AND country='KR' AND category='SPORTS' AND ranking_type='topgrossing' ORDER BY rank ASC OFFSET 20 LIMIT 10", @mock_get_chart_response)
+    @connection_mock.set_result("SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='android' AND country='KR' AND category='SPORTS' AND ranking_type='topgrossing'", @mock_count_response)
     
     result = @accessor.get_chart(platform: "android", country: "KR", category: "SPORTS", rank_type: "grossing", size: 10, page_num: 3)
 
