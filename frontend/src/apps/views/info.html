@@ -51,7 +51,7 @@
         <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend">
           <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
-            <uib-carousel active="app.activeSlide" interval="app.slideInterval" no-wrap="app.noWrapSlides" id="adIntelligenceCarousel">
+            <uib-carousel active="app.activeSlide" id="adIntelligenceCarousel">
               <uib-slide ng-repeat="ad in app.facebookAds" index="ad.id">
                 <div class="ad-container">
                   <img
@@ -304,8 +304,8 @@
                           type="text"
                           class="form-control"
                           ng-if="app.contactFetchComplete"
-                          ng-model="companyContactFilter"
-                          ng-enter="app.getCompanyContacts(companyContactFilter); app.trackCompanyContactsRequest(companyContactFilter)"
+                          ng-model="app.companyContactFilter"
+                          ng-enter="app.getCompanyContacts(app.companyContactFilter); app.trackCompanyContactsRequest(app.companyContactFilter)"
                           placeholder="(Optional) Find contacts by job title. e.g. Sales, marketing, CEO"
                           ng-disabled="!app.publisher.id">
                       </div>
@@ -314,7 +314,7 @@
                           ng-is="app.contactFetchComplete"
                           type="submit"
                           class="btn btn-primary btn-block"
-                          ng-click="app.getCompanyContacts(companyContactFilter); app.trackCompanyContactsRequest(companyContactFilter)"
+                          ng-click="app.getCompanyContacts(app.companyContactFilter); app.trackCompanyContactsRequest(app.companyContactFilter)"
                           ng-disabled="!app.publisher.id">
                             Find Contacts
                         </button>

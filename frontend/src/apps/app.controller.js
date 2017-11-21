@@ -55,15 +55,12 @@ import '../components/list-create/list-create.directive'; // gross
 
     app.activeCreative = {};
     app.activeSlide = 0;
-    app.facebookAds = [];
     app.appFetchComplete = false;
+    app.companyContactFilter = "";
     app.contactFetchComplete = false;
-    app.tableCreatives = [];
     app.currentContactsPage = 1;
-    app.currentCreativesPage = 1;
+    app.facebookAds = [];
     app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class=\"fa fa-external-link\"></span>')
-    app.noWrapSlides = false;
-    app.slideInterval = 0;
     app.tabs = [
       { title: 'General Information', index: 0, route: 'app.info' },
       { title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'), index: 1, route: 'app.ad-intelligence'}
@@ -281,7 +278,7 @@ import '../components/list-create/list-create.directive'; // gross
         });
     }
 
-    function setUpSalesforce () { 
+    function setUpSalesforce () {
       authService.accountInfo()
         .success(function(data) {
           app.salesforceSettings = data.salesforce_settings
