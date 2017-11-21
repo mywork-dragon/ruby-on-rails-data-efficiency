@@ -22,13 +22,11 @@ class RedshiftRankingsAccessor
     where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, sort_by: sort_by, max_rank: max_rank)
     order_by_clause = desc ? "ORDER BY #{sort_by} DESC" : "ORDER BY #{sort_by} ASC"
 
-    get_trending_query = "SELECT * FROM daily_trends #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
-    get_total_query = "SELECT COUNT(app_identifier) FROM daily_trends #{where_clauses}"
-
-    {
-      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(@connection.query(get_trending_query, expires: 30.minutes).fetch())
-    }
+    get_trending_query = "SELECT *, count(*) OVER() FROM daily_trends #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
+    raw_result = @connection.query(get_trending_query, expires: 30.minutes).fetch()
+    counts_extracted = extract_count(raw_result)
+    counts_extracted["apps"] = normalize_app_records(counts_extracted["apps"])
+    counts_extracted
   end
 
   def get_newcomers(platforms:[], countries:[], categories:[], rank_types:["free", "paid", "grossing"], lookback_time: 14.days.ago, size: 20, page_num: 1, max_rank: 500)
@@ -48,13 +46,11 @@ class RedshiftRankingsAccessor
     where_clauses = build_where_clauses(platforms, denormalized_countries, categories, denormalized_rank_types, lookback_time: lookback_time, max_rank: max_rank)
     order_by_clause = "ORDER BY created_at DESC"
 
-    get_newcomers_query = "SELECT * FROM daily_newcomers #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
-    get_total_query = "SELECT COUNT(app_identifier) FROM daily_newcomers #{where_clauses}"
-
-    {
-      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(@connection.query(get_newcomers_query, expires: 30.minutes).fetch())
-    }
+    get_newcomers_query = "SELECT *, count(*) OVER() FROM daily_newcomers #{where_clauses} #{order_by_clause} OFFSET #{(page_num - 1) * size} LIMIT #{size}"
+    raw_result = @connection.query(get_newcomers_query, expires: 30.minutes).fetch()
+    counts_extracted = extract_count(raw_result)
+    counts_extracted["apps"] = normalize_app_records(counts_extracted["apps"])
+    counts_extracted
   end
 
   def get_chart(platform:, country:, category:, rank_type:, size: 20, page_num: 1)
@@ -87,13 +83,11 @@ class RedshiftRankingsAccessor
     
     # Perform queries
 
-    get_chart_query = "SELECT * FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}' ORDER BY rank ASC OFFSET #{(page_num - 1) * size} LIMIT #{size}"
-    get_total_query = "SELECT count(app_identifier) FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}'"
-
-    {
-      "total" => @connection.query(get_total_query, expires: 30.minutes).fetch()[0]["count"],
-      "apps" => normalize_app_records(@connection.query(get_chart_query, expires: 30.minutes).fetch())
-    }
+    get_chart_query = "SELECT *, count(*) OVER() FROM daily_raw_charts WHERE platform='#{platform}' AND country='#{denormalized_country}' AND category='#{category}' AND ranking_type='#{denormalized_rank_type}' ORDER BY rank ASC OFFSET #{(page_num - 1) * size} LIMIT #{size}"
+    raw_result = @connection.query(get_chart_query, expires: 30.minutes).fetch()
+    counts_extracted = extract_count(raw_result)
+    counts_extracted["apps"] = normalize_app_records(counts_extracted["apps"])
+    counts_extracted
   end
 
   def ios_countries
@@ -122,6 +116,20 @@ class RedshiftRankingsAccessor
   end
 
 private
+
+  def extract_count(results)
+    return_info = {
+      "total" => 0,
+      "apps" => []
+    }
+
+    if results.any?
+      return_info["total"] = results[0]["count"]
+      return_info["apps"] = results.each { |result| result.delete("count") }
+    end
+
+    return_info
+  end
 
   def get_chart_param(param, platform)
     query_result = query_class().query("SELECT DISTINCT #{param} FROM daily_raw_charts WHERE platform='#{platform}'", expires: 1.days).fetch()
