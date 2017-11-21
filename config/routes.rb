@@ -70,6 +70,8 @@ Rails.application.routes.draw do
   get 'api/ad_intelligence/v2/ad_sources' => 'ad_intelligence#available_sources'
   get 'api/ad_intelligence/v2/creatives' => 'ad_intelligence#creatives'
   get 'api/ad_intelligence/v2/app_summaries' => 'ad_intelligence#ad_intel_app_summaries'
+  get 'api/ad_intelligence/v2/publisher_creatives' => 'ad_intelligence#ad_intel_publisher_creatives'
+  get 'api/ad_intelligence/v2/publisher_summary' => 'ad_intelligence#ad_intel_app_summaries'
 
   get 'api/ad_intelligence/ios' => 'api#ios_ad_intelligence'
   get 'api/ad_intelligence/android' => 'api#android_ad_intelligence'

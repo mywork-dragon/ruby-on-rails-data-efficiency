@@ -101,7 +101,7 @@ class RedshiftAdDataAccessor
              app_identifier,
              ad_network,
              platform,
-             format as type,
+             format,
              url,
              \"count\",
              count(*) OVER() AS full_count

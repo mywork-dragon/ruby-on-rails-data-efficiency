@@ -5,23 +5,96 @@ class AdIntelligenceController < ApplicationController
   before_action :set_current_user, :authenticate_request
   before_action :authenticate_ad_intelligence
 
+  def _get_platform
+    if ['ios', 'android'].include? params[:platform]  
+      return params[:platform]
+    else
+      raise ActionController::RoutingError, 'Not Found'
+    end
+  end
+
+  def _get_publisher_and_apps
+    publisher_id = params[:publisher_id]
+    platform = _get_platform
+    if platform == 'ios'
+      publisher = IosDeveloper.find(publisher_id)
+      apps = publisher.ios_apps
+    elsif platform == 'android'
+      publisher = AndroidDeveloper.find(publisher_id)
+      apps = publisher.android_apps
+      else
+        raise ActionController::RoutingError, 'Not Found'
+      end
+    return publisher, apps
+  end
+
+  def _get_apps
+    app_ids = JSON.parse(params[:appIds])
+    if params[:platform] == 'ios'
+      app_model = IosApp
+    elsif params[:platform] == 'android'
+      app_model = AndroidApp
+    else
+      raise ActionController::RoutingError, 'Not Found'
+    end
+    app_ids.map do |id|
+      app_model.find(id)
+    end
+  end
+
+  def ad_intel_publisher_creatives
+    #expires_in 15.minutes
+    page_size = [params[:pageSize] ? params[:pageSize].to_i : 10, AdDataAccessor::MAX_PAGE_SIZE].min
+    page_num = params[:pageNum] ? params[:pageNum].to_i : 1
+    user_page_num = page_num
+    page_num = page_num - 1
+    first_seen_date = params[:firstSeenCreative] ? DateTime.parse(params[:firstSeenCreative]) : nil
+    last_seen_date = params[:lastSeenCreative] ? DateTime.parse(params[:lastSeenCreative]) : nil
+    params[:sortBy] ||= 'first_seen_creative_date'
+    source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
+    order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
+    platform = _get_platform
+
+    publisher, apps = _get_publisher_and_apps
+
+    results, results_count = AdDataAccessor.new.fetch_creatives(
+      @current_user.account,
+      apps,
+      platform,
+      source_ids: source_ids,
+      first_seen_creative_date: first_seen_date,
+      last_seen_creative_date: last_seen_date,
+      sort_by: params[:sortBy],
+      order_by: order_by,
+      page_size: page_size,
+      page_number: page_num,
+      group_by_app_id: false)
+
+    respond_to do |format|
+      format.json {
+        render json: {
+          results: results,
+          resultsCount: results_count,
+          pageNum: user_page_num,
+          pageSize: page_size
+        }
+      }
+    end
+
+
+  end
 
   def ad_intel_app_summaries
     expires_in 15.minutes
     source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
-    platform = params[:platform]
-    app_ids = JSON.parse(params[:appIds])
+    platform = _get_platform
 
-    if platform == 'ios'
-      app_model = IosApp
-    elsif platform == 'android'
-      app_model = AndroidApp
+    if !params[:publisher_id].nil?
+      # Grab apps from publisher
+      publisher, apps = _get_publisher_and_apps
     else
-      return render :nothing => true, :status => 404
-    end
-
-    apps = app_ids.map do |id|
-      app_model.find(id)
+      # Get apps from params
+      apps = _get_apps
     end
 
     results = AdDataAccessor.new.fetch_app_summaries(
@@ -49,20 +122,9 @@ class AdIntelligenceController < ApplicationController
     source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
     params[:sortBy] ||= 'first_seen_creative_date'
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
-    platform = params[:platform]
-    app_ids = JSON.parse(params[:appIds])
+    platform = _get_platform
 
-    if platform == 'ios'
-      app_model = IosApp
-    elsif platform == 'android'
-      app_model = AndroidApp
-    else
-      return render :nothing => true, :status => 404
-    end
-
-    apps = app_ids.map do |id|
-      app_model.find(id)
-    end
+    apps = _get_apps
 
     results, results_count = AdDataAccessor.new.fetch_creatives(
       @current_user.account,

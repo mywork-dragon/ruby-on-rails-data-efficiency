@@ -87,6 +87,7 @@ class AdDataAccessor
     grouped_results.each do |app_id, record|
         app = app_model.find(app_id)
         record['ad_attribution_sdks'] = app.ad_attribution_sdks
+        record['icon'] = app.icon_url
     end
 
     grouped_results
@@ -104,7 +105,8 @@ class AdDataAccessor
     order_by: 'desc',
     page_size: 20,
     page_number:0,
-    force_cache: false)
+    force_cache: false,
+    group_by_app_id: true)
     # Fetch creatives for apps return format is below:
     # [
     #   {
@@ -169,7 +171,7 @@ class AdDataAccessor
                     expires_in: 1.weeks,
                     secure: false # Allows html ads to load non https content.
                 }
-                if ['html', 'playable'].include? creative['type']
+                if ['html', 'playable'].include? creative['format']
                     creative['content-type'] = 'set'
                     params[:response_content_type] = 'text/html'
                 end
@@ -181,7 +183,7 @@ class AdDataAccessor
 
             creative['url'] = new_url
         end
-        if ['html', 'playable'].include? creative['type']
+        if ['html', 'playable'].include? creative['format']
             creative['thumbnail'] = @thumbnail_service.screenshot_url(
                 creative['url'],
                 width: "250",
@@ -192,11 +194,15 @@ class AdDataAccessor
         # Need to actually set the default value back to the original key.
         group = grouped_creatives[app_id_to_apps[creative['app_identifier']]]
         grouped_creatives[app_id_to_apps[creative['app_identifier']]] = group
+        creative['app_id'] = app_id_to_apps[creative['app_identifier']]
         group['creatives']  += [creative]
         group['count']  += 1
     end
-
-    return grouped_creatives, full_count
+    if group_by_app_id
+        return grouped_creatives, full_count
+    else
+        return creatives, full_count
+    end
   end
 
 
