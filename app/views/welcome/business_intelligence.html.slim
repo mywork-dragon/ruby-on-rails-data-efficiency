@@ -1,0 +1,67 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | Business Intelligence
+  #subtitle
+    | Integrate data into Salesforce and other internal platforms.
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@sfdc_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | Salesforce Integration
+      .description
+        | Store MightySignal data directly in Salesforce so your reps have all important data in one place. Generate reports based on SDK makeup alongside your current data. Set alerts for when existing accounts install competitive SDKs. Score and tier your leads based on MightySignal data.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Integrate with SFDC', button_id: 'bi-sfdc'
+  - 4.times do
+    .row
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | API
+      .description
+        ' Our
+        a href='https://api.mightysignal.com/docs' target="_blank" API
+        '
+        | allows you to programatically ingest MightySignal data into any system you want, giving you ultimately flexibility to accomplish your business goals. Unlock new potential by utilizing the data inside tools/technologies such as Redshift, Marketo, and HubSpot.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Send API Requests', button_id: 'bi-api'
+    .column.medium-5.end.graphic
+      img src=@api_graphic width=1500
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@feeds_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | Data Feed
+      .description
+        | Our Data Feed is like an API on steroids. It's the solution for your BI needs when you need to work with our data at massive scale.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Feed Me!', button_id: 'bi-feed'
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+  - content_for :repuso_g2crowd_widget
+    = render 'shared/repuso_g2crowd_widget_tag'

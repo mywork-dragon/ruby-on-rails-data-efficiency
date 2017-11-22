@@ -14,19 +14,24 @@ class WelcomeController < ApplicationController
       #{image: 'radiumone.png', width: 190},
       #{image: 'swrve.png', width: 150},
       #{image: 'mparticle.png', width: 180},
-      {image: 'tune.png', width: 135},
+      # {image: 'tune.png', width: 135},
       {image: 'amplitude.png', width: 170},
       {image: 'microsoft.png', width: 160},
-      #{image: 'ironsrc.png', width: 170},
+      # {image: 'ironsrc.png', width: 170},
       #{image: 'vungle.png', width: 125},
       #{image: 'realm.png', width: 135},
       #{image: 'neumob.png', width: 170},
-      {image: 'yahoo.png', width: 165},
+      # {image: 'yahoo.png', width: 165},
       {image: 'appsflyer.png', width: 180},
       {image: 'mixpanel.png', width: 160},
       {image: 'zendesk.png', width: 170},
       {image: 'adobe.png', width: 160}
     ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}.sample(5)
+
+    icons_folder = '/lib/images/icons/'
+    @funnel_icon = icons_folder + 'funnel.svg'
+    @networking_icon = icons_folder + 'networking.svg'
+    @team_icon = icons_folder + 'team.svg'
   end
 
   def ios_app_sdks
@@ -135,6 +140,33 @@ class WelcomeController < ApplicationController
             end
   end
 
+  def lead_generation
+    get_logos
+
+    @live_scan_graphic = graphics_folder + 'live_scan.png'
+    @explore_graphic = graphics_folder + 'explore.png'
+    @new_advertisers_graphic = graphics_folder + 'new_advertisers.png'
+  end
+
+  def business_intelligence
+    get_logos
+
+    @sfdc_graphic = graphics_folder + 'sfdc_integration.png'
+    @api_graphic = graphics_folder + 'api.png'
+    @feeds_graphic = graphics_folder + 'feeds.png'
+  end
+
+  def user_acquisition
+    redirect_to root_path
+
+    # maybe add this all back later
+    # get_logos
+
+    # @game_ad_graphic = graphics_folder + 'game_ad.png'
+    # @target_graphic = graphics_folder + 'target.jpg'
+    # @ad_network_graphic = graphics_folder + 'ad_network.png'
+  end
+
   def subscribe
     message = params[:message]
     if message == 'Timeline'
@@ -158,6 +190,33 @@ class WelcomeController < ApplicationController
   end
 
   def contact_us
+    if Rails.env.development? || verify_recaptcha
+      lead_data = lead_data_from_params
+      lead_data[:lead_source] = 'Web Form'
+      lead_data[:web_form_button_id] = params['button_id']
+
+      Lead.create_lead(lead_data)
+      redirect_to well_be_in_touch_path(form: 'lead')
+      return
+    end
+    redirect_to root_path(form: 'lead')
+  end
+
+  def contact_us_from_modal
+    lead_data = lead_data_from_params
+    lead_data[:lead_source] = 'Web Form'
+    lead_data[:web_form_button_id] = params['button_id']
+    Lead.create_lead(lead_data)
+
+    redirect_to well_be_in_touch_path
+  end
+
+  def well_be_in_touch
+  end
+
+  protected
+
+  def lead_data_from_params
     first_name = params['first_name']
     last_name = params['last_name']
     email = params['email']
@@ -168,18 +227,29 @@ class WelcomeController < ApplicationController
     message = params['message']
     ad_source = params['ad_source']
 
-    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source).merge({lead_source: "Web Form"})
+    lead_data = params.slice(:first_name, :last_name, :company, :email, :phone, :crm, :sdk, :message, :ad_source)
 
     if company.blank?
       email_regex = /@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
       lead_data[:company] = email.match(email_regex).to_s[1..-1]
     end
 
-    if verify_recaptcha
-      Lead.create_lead(lead_data)
-      flash[:success] = "We will be in touch soon!"
-    end
-    redirect_to root_path(form: 'lead')
+    lead_data
+  end
+
+  def graphics_folder
+    '/lib/images/graphics/'
+  end
+
+  def get_logos
+    @logos = [
+      {image: 'ironsrc_color.png', width: 170},
+      {image: 'appsflyer_color.png', width: 170},
+      {image: 'zendesk_color.png', width: 170},
+      {image: 'adobe_color.png', width: 170},
+      {image: 'amplitude_color.png', width: 170},
+      {image: 'verizon_color.png', width: 170}
+    ].each{|logo| logo[:image] =  '/lib/images/logos/' + logo[:image]}
   end
 
 end

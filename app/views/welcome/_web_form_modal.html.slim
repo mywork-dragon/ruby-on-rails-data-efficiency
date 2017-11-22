@@ -1,0 +1,37 @@
+div class="modal fade" id="webFormModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  .modal-dialog.modal-lg
+    .modal-content
+      .web-form-modal
+        .row
+          .column
+            p
+          .title Contact MightySignal
+          .column
+            p
+          .column.medium-6.medium-offset-3.end
+            form accept-charset="UTF-8" action=contact_us_from_modal_path method="post" data-form="modal-lead-form"
+              div style="display:none" 
+                input name="utf8" type="hidden" value="✓" /
+                input name="authenticity_token" type="hidden" value="udIpuT/O1gQ9vhaZWLI74Y0l6Bp3ZE7PIgagl31VbmY=" /
+                = hidden_field_tag('button_id', nil, id: 'button-id-field')
+              .form-group
+                input#first_name.form-control name="first_name" placeholder=("First Name") type="text" /
+              .form-group
+                input#last_name.form-control name="last_name" placeholder=("Last Name") type="text" /
+              .form-group
+                input#company.form-control name="company" placeholder="Company" type="text" /
+              .form-group
+                input#email.form-control name="email" placeholder="Email" type="email" /
+              .form-group
+                input#phone.form-control name="phone" placeholder=("Phone Number") type="text" /
+              .form-group
+                textarea#message.form-control name="message" placeholder=("Your Message")
+              / = recaptcha_tags
+              br
+              .form-group.text-center
+                p
+                  input#submit_contact_btn.btn.btn-primary.btn-lg.lead-form-btn name="commit" type="submit" value="Submit" /
+                span.loading
+
+- content_for :web_form_modal
+  script src="/lib/web_form_modal.js" 

@@ -1,0 +1,65 @@
+.solution-page
+  - 4.times
+    .row
+      p
+  #title
+    | Lead Generation
+  #subtitle
+    | Use real-time SDK and ad intelligence to find new customers.
+  - 2.times
+    .row
+      p
+
+  .row
+    .column.medium-5.medium-offset-1.graphic
+      img src=@live_scan_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | Accurate, Real-Time SDK Data
+      .description
+        | MightySignal's unique Live Scan technology can instantly scan the SDKs inside an app, ensuring that our customers always have the most up-to-date and accurate SDK data. The Live Scan is the core unit of technology that powers all of MightySignal's best-in-class SDK intelligence. Whether you want to track competitive SDKs or see who's using your partners, our accurate SDK data will help you generate more leads and close more revenue.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Live Scan Any App', button_id: 'lead-generation-data'
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.about-graphic
+      .name
+        | Discover Mobile Budget
+      .description
+        | You'll be able to see who's actively acquiring users through advertising--a leading indicator that they have budget for more advertising as well as for other services. This data is available in real-time and with high accuracy.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'See Who Has $', button_id: 'lead-generation-mobile-budget'
+    .column.medium-5.end.graphic
+      img src=@new_advertisers_graphic width=1500
+  - 4.times do
+    .row 
+      p
+  .row
+    .column.medium-5.medium-offset-1.graphic
+        img src=@explore_graphic width=1500
+    .column.medium-5.end.about-graphic
+      .name
+        | Sales-Centric Interface
+      .description
+        | Our platform was made with salespeople in mind. You can easily run reports to find leads based on criteria of your choosing. The data is always returned instantly, thus enchancing your sales workflow.
+      row
+        p
+      row
+        = render 'contact_us_button', title: 'Explore Mighty Data', button_id: 'lead-generation-interface'
+  - 4.times do
+    .row 
+      p
+  .row
+    = render 'logos'
+
+
+  = render 'web_form_modal' 
+
+- content_for :repuso_g2crowd_widget
+  = render 'shared/repuso_g2crowd_widget_tag'

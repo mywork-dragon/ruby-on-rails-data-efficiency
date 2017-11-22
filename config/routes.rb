@@ -23,8 +23,15 @@ Rails.application.routes.draw do
   get 'top-android-sdks' => 'welcome#top_android_sdks', as: 'top-android-sdks'
   get 'top-android-apps' => 'welcome#top_android_apps', as: 'top-android-apps'
 
+  get 'lead-generation' => 'welcome#lead_generation', as: 'lead-generation'
+  get 'business-intelligence' => 'welcome#business_intelligence', as: 'business-intelligence'
+  get 'user-acquisition' => 'welcome#user_acquisition', as: 'user-acquisition'
+
+  get 'well-be-in-touch' => 'welcome#well_be_in_touch', as: 'well-be-in-touch'
+
   post 'subscribe' => 'welcome#subscribe', as: :subscribe
   post 'contact_us' => 'welcome#contact_us', as: :contact_us
+  post 'contact_us_from_modal' => 'welcome#contact_us_from_modal', as: :contact_us_from_modal
   post 'try_it_out' => 'welcome#try_it_out', as: :try_it_out
   get '/privacy', to: redirect('/legal/privacy.pdf')
 

@@ -15,8 +15,11 @@ class Lead < ActiveRecord::Base
     lead.lead_data = data
     lead.save
 
-    EmailWorker.perform_async(:contact_us, data)
-    SalesforceWorker.perform_async(:add_lead, data)
+    unless Rails.env.development?
+      EmailWorker.perform_async(:contact_us, data)
+      SalesforceWorker.perform_async(:add_lead, data)
+    end
+
     lead
   end
 end

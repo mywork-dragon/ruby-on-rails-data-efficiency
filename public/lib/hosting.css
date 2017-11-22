@@ -1121,6 +1121,106 @@ a.anchor{
   border-radius: 4px;
 }
 
+.landing-page {
+}
+
+.landing-page .solution {
+	text-align: center;
+	border: 2px solid #ddd;
+	color: black;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.landing-page .solution:hover {
+    border: 2px solid #0095D9;
+}
+
+.landing-page .solution .title {
+    font-size: 1.25rem;
+}
+
+.landing-page input {
+	border-radius: 4px;
+}
+
+.landing-page textarea {
+	resize: vertical;
+}
+
+.solution-page {
+	text-align: center;
+	font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
+
+}
+
+.solution-page #title {
+	font-size: 5.0rem;
+}
+
+.solution-page #subtitle {
+	font-size: 2.0rem;
+}
+
+.solution-page .graphic {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.solution-page .about-graphic {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+
+.solution-page .about-graphic .name {
+	text-align: left;
+	font-size: 2.5rem;
+}
+.solution-page .about-graphic .description {
+	text-align: left;
+	font-size: 1.25rem;
+}
+
+.solution-page .logo {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+
+/* ========= Modal Web Form ========= */
+.web-form-modal {
+	font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
+}
+
+.web-form-modal input {
+	border-radius: 4px;
+}
+
+.web-form-modal textarea {
+	resize: vertical;
+}
+
+.web-form-modal .title {
+	font-size: 2.5rem;
+	color: #243E5D;
+}
+
+/* ========= We'll Be in Touch Page ========= */
+
+.well-be-in-touch-page {
+	font: 300 100%/1.5 "Ek Mukta", "Helvetica Neue", "Arial", sans-serif;
+	text-align: center;
+}
+
+.well-be-in-touch-page .headline {
+	font-size: 2.5rem;
+}
+
+.well-be-in-touch-page .links {
+	font-size: 1.5rem;
+}
+
 /* ========= Mighty Report ========= */
 
 .mighty-report {
@@ -1147,7 +1247,7 @@ a.anchor{
 .mighty-report .subtitle {
 	font: var(--report-font);
  	font-size: 1.875rem;
-  fnt-weight: 200;
+  font-weight: 200;
   line-height: 1.2;
 }
 

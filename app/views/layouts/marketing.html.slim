@@ -59,7 +59,7 @@ html lang="en"
             li.active
               = link_to 'HOME', root_path(anchor: 'home')
             li
-              = link_to 'ABOUT', root_path(anchor: 'about_anchor')
+              = link_to 'SOLUTIONS', root_path(anchor: 'solutions_anchor')
             li
               = link_to 'CONTACT', root_path(anchor: 'contact_anchor')
             /! <li><a href="/team.html">COMPANY</a></li
@@ -68,8 +68,8 @@ html lang="en"
             li
               a href=top_ios_sdks_path
                 |TOP SDKS
-            li
-              a href="http://www.angel.co/mightysignal/jobs" target="_blank"  JOBS
+            / li
+            /   a href="http://www.angel.co/mightysignal/jobs" target="_blank"  JOBS
             li
               a href="/app/app/"  LOGIN
             /! <li><a href="whmcs/register.php" role="button" class="btn btn-success">Sign Up</a></li
@@ -139,3 +139,5 @@ html lang="en"
     script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5747610ff96fe6ad"
     script type="text/javascript" id="hs-script-loader" async='true' defer='true' src="//js.hs-scripts.com/565753.js"
     = render 'shared/linkedin_insight_tag'
+    = yield :repuso_g2crowd_widget
+    = yield :web_form_modal
