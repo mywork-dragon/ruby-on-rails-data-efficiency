@@ -176,8 +176,7 @@ class AdDataAccessor
                 params = {
                     bucket: parsed_url.host, 
                     key: parsed_url.path[1..-1],
-                    expires_in: 1.weeks,
-                    secure: false # Allows html ads to load non https content.
+                    expires_in: 1.weeks
                 }
                 if ['html', 'playable'].include? creative['format']
                     creative['content-type'] = 'set'
