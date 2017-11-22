@@ -154,7 +154,15 @@ class AdDataAccessor
       page_number:page_number
     )
 
-    signer = Aws::S3::Presigner.new
+    signer_options = {}
+    if ENV['AWS_PRESIGNER_ACCESS_KEY_ID']
+        signer_options[:client] = Aws::S3::Client.new(
+          access_key_id: ENV['AWS_PRESIGNER_ACCESS_KEY_ID'],
+          secret_access_key: ENV['AWS_PRESIGNER_SECRET_ACCESS_KEY']
+        )
+    end
+    signer = Aws::S3::Presigner.new(signer_options)
+
     grouped_creatives = Hash.new{{"creatives" => [], "count" => 0}}
     app_id_to_apps = apps.map {|app| [app.app_identifier.to_s, app.id]}.to_h
 
