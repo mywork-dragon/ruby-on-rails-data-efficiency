@@ -9400,6 +9400,13 @@ div.network-cta > p {
   object-fit: contain;
 }
 
+.html-help-prompt {
+  width: 100%;
+  text-align: center;
+  margin: 10px;
+  font-size: 13px;
+}
+
 .single-creative-pad {
   height: 75px;
 }

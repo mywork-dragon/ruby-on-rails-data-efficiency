@@ -30,18 +30,25 @@
                 </button>
               </div>
             </div>
-            <div ng-repeat="creative in gallery.creatives">
-              <div class="active-creative-media-ctnr" ng-if="creative.format != 'html'" ng-show="gallery.activeSlide == creative.id">
-                <img ng-src="{{creative.url}}" ng-if="creative.format == 'image'" fallback-src="images/fallback-elephant.png">
-                <video ng-class="'creative-video video-' + creative.id" controls ng-if="creative.format == 'video'">
-                  <source ng-src="{{gallery.trustSrc(creative.url)}}" type="video/mp4">
-                  <img ng-src="images/fallback-elephant.png" alt="">
-                </video>
-              </div>
+          </div>
+          <div ng-repeat="creative in gallery.creatives">
+            <div class="active-creative-media-ctnr" ng-if="creative.format != 'html'" ng-show="gallery.activeSlide == creative.id">
+              <img ng-src="{{creative.url}}" ng-if="creative.format == 'image'" fallback-src="images/fallback-elephant.png">
+              <video ng-class="'creative-video video-' + creative.id" controls ng-if="creative.format == 'video'">
+                <source ng-src="{{gallery.trustSrc(creative.url)}}" type="video/mp4">
+                <img ng-src="images/fallback-elephant.png" alt="">
+              </video>
             </div>
-            <div class="active-creative-media-ctnr" ng-if="gallery.activeCreative.format == 'html'">
-              <iframe ng-src="{{gallery.trustSrc(gallery.activeCreative.url)}}" width="600px" height="400px"></iframe>
-            </div>
+          </div>
+          <div class="active-creative-media-ctnr" ng-if="gallery.activeCreative.format == 'html'">
+            <iframe ng-src="{{gallery.trustSrc(gallery.activeCreative.url)}}" width="600px" height="400px"></iframe>
+          </div>
+          <div class="html-help-prompt" ng-if="gallery.activeCreative.format == 'html'">
+            Trouble loading? Click
+            <a ng-href="{{gallery.getAltUrl(gallery.activeCreative.url)}}" target="_blank" style="color: #0393DD;">
+            here
+            </a>
+            to open in a new window
           </div>
             <ul class="list-unstyled list-info" ng-if="gallery.creativesCount">
               <li>

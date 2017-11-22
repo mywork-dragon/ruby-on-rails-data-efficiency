@@ -27,9 +27,7 @@ function appService ($http, loggitService) {
       }
     })
     .then(response => response.data)
-    .catch(error => {
-      return {"698":{"ad_networks":[{"id":"mopub","name":"MoPub","ad_formats":[{"id":"interstitial","name":"Interstitial"}],"creative_formats":["html"],"number_of_creatives":1,"first_seen_ads_date":"2017-11-19T05:00:59.468+00:00","last_seen_ads_date":"2017-11-19T05:00:59.468+00:00"},{"id":"applovin","name":"Applovin","ad_formats":[{"id":"interstitial","name":"Interstitial"}],"creative_formats":["html","video"],"number_of_creatives":6587,"first_seen_ads_date":"2017-10-16T23:45:19.125+00:00","last_seen_ads_date":"2017-11-22T01:40:56.382+00:00"}],"creative_formats":["html","video"],"first_seen_ads_date":"2017-10-16T23:45:19.125+00:00","last_seen_ads_date":"2017-11-22T01:40:56.382+00:00","ad_attribution_sdks":[{"id":5,"name":"Adjust","website":"http://adjust.com","favicon":"https://www.google.com/s2/favicons?domain=adjust.com","last_seen_date":"2017-11-19T20:57:01.000Z","first_seen_date":"2017-07-26T11:30:23.000Z"}],"number_of_creatives":6588,"icon":"https://is3-ssl.mzstatic.com/image/thumb/Purple111/v4/8e/99/9d/8e999d2e-8b04-3c0c-3f6d-9761e6349334/source/100x100bb.jpg"}}
-    })
+    .catch(error => {})
   }
 
   function getApp (platform, id) {

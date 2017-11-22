@@ -76,6 +76,7 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
   gallery.changeActiveSlide = changeActiveSlide;
   // gallery.filterCreatives = filterCreatives;
   gallery.getCreatives = getCreatives;
+  gallery.getAltUrl = galleryUtils.getAltUrl;
   gallery.rotateIframe = galleryUtils.rotateIframe;
   gallery.trackCreativeClick = appMixpanelService.trackCreativeClick;
   gallery.trackCreativePageThrough = appMixpanelService.trackCreativePageThrough;
@@ -97,19 +98,19 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
 
   function changeActiveSlide (id) {
     const lastPossiblePage = Math.ceil(gallery.creativesCount / gallery.pageSize)
-    if (id == gallery.creatives.length) {
+    if (id === gallery.creatives.length) {
       gallery.activeSlide = 0
       gallery.activeCreative = gallery.creatives[0]
-      if (gallery.currentPage == lastPossiblePage && lastPossiblePage != 1) {
+      if (gallery.currentPage === lastPossiblePage && lastPossiblePage !== 1) {
         gallery.currentPage = 1
         getCreatives()
-      } else if (gallery.currentPage < lastPossiblePage && lastPossiblePage != 1) {
+      } else if (gallery.currentPage < lastPossiblePage && lastPossiblePage !== 1) {
         gallery.currentPage += 1
         getCreatives()
       }
-    } else if (id == -1) {
-      if (lastPossiblePage != 1) {
-        gallery.currentPage = gallery.currentPage == 1 ? lastPossiblePage : gallery.currentPage - 1
+    } else if (id === -1) {
+      if (lastPossiblePage !== 1) {
+        gallery.currentPage = gallery.currentPage === 1 ? lastPossiblePage : gallery.currentPage - 1
         gallery.activeSlide = id;
         getCreatives()
       } else {
@@ -126,7 +127,7 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
   // function filterCreatives (filters) {
   //   gallery.filters = galleryUtils.initializefilters(gallery.networks, gallery.formats)
   //   filters.forEach(filter => {
-  //     const newFilter = gallery.filterOptions[filter.field].find(option => option.id == filter.id)
+  //     const newFilter = gallery.filterOptions[filter.field].find(option => option.id === filter.id)
   //     gallery.filters[filter.field].splice(0)
   //     gallery.filters[filter.field].push(newFilter)
   //     appMixpanelService.trackCreativeFilterAdded(filter)
@@ -145,7 +146,7 @@ function creativesController($stateParams, galleryUtils, appMixpanelService) {
         gallery.creativesCount = data.resultsCount;
         gallery.currentPage = data.pageNum;
         gallery.creativeFetchComplete = true;
-        gallery.activeSlide = gallery.activeSlide == -1 ? gallery.creatives.length - 1 : gallery.activeSlide;
+        gallery.activeSlide = gallery.activeSlide === -1 ? gallery.creatives.length - 1 : gallery.activeSlide;
         gallery.activeCreative = gallery.creatives[gallery.activeSlide]
       })
   }
