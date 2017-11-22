@@ -55,6 +55,7 @@ angular
     var appAdIntelState = {
       name: 'app.ad-intelligence',
       url: '/ad-intelligence',
+      controller: 'AppAdIntelligenceController as appAdIntel',
       template: require('../apps/views/ad-intelligence.html')
     }
 
@@ -222,7 +223,7 @@ angular
     $stateProvider.state(singleAdminState)
     $stateProvider.state(appState)
     $stateProvider.state(appInfoState)
-    // $stateProvider.state(appAdIntelState)
+    $stateProvider.state(appAdIntelState)
     $stateProvider.state(publisherState)
     $stateProvider.state(publisherInfoState)
     // $stateProvider.state(publisherAdIntelState)

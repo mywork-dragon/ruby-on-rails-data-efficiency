@@ -6,7 +6,7 @@ class AdIntelligenceController < ApplicationController
   before_action :authenticate_ad_intelligence
 
   def _get_platform
-    if ['ios', 'android'].include? params[:platform]  
+    if ['ios', 'android'].include? params[:platform]
       return params[:platform]
     else
       raise ActionController::RoutingError, 'Not Found'
@@ -121,6 +121,7 @@ class AdIntelligenceController < ApplicationController
     last_seen_date = params[:lastSeenCreative] ? DateTime.parse(params[:lastSeenCreative]) : nil
     source_ids = params[:sourceIds] ? JSON.parse(params[:sourceIds]) : nil
     params[:sortBy] ||= 'first_seen_creative_date'
+    formats = params[:formats] ? JSON.parse(params[:formats]) : nil
     order_by = ['desc', 'asc'].include?(params[:orderBy]) ? params[:orderBy] : 'desc'
     platform = _get_platform
 
@@ -136,7 +137,8 @@ class AdIntelligenceController < ApplicationController
       sort_by: params[:sortBy],
       order_by: order_by,
       page_size: page_size,
-      page_number: page_num)
+      page_number: page_num,
+      formats: formats)
 
     respond_to do |format|
       format.json {
@@ -182,7 +184,7 @@ class AdIntelligenceController < ApplicationController
 
     respond_to do |format|
 
-      format.json { 
+      format.json {
         results, results_count = AdDataAccessor.new.query(
           @current_user.account,
           platforms: JSON.parse(params[:platforms]),
@@ -230,7 +232,7 @@ class AdIntelligenceController < ApplicationController
 
         self.response_body  = render_csv(apps: android_apps_e + ios_apps_e, additional_fields: ['Ad Formats', 'Ad Networks', 'Last Seen Ads', 'First Seen Ads']) do |header, csv_row|
           # This block adds to the standard CSV rows we generate.
-          app_index_key = "#{csv_row[header.index('App Type')]}:#{csv_row[header.index('MightySignal App ID')]}" 
+          app_index_key = "#{csv_row[header.index('App Type')]}:#{csv_row[header.index('MightySignal App ID')]}"
           app_hash  = app_index[app_index_key]
 
           csv_row.append(app_hash['ad_formats'].map {|x| x['name']}.join('|'))

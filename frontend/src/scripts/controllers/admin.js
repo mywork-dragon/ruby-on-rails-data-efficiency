@@ -4,8 +4,8 @@ import moment from 'moment';
 
 const API_URI_BASE = window.API_URI_BASE;
 
-angular.module('appApp').controller("AdminCtrl", ["$scope", '$stateParams', 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal",
-  function($scope, $stateParams, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal) {
+angular.module('appApp').controller("AdminCtrl", ["$scope", '$stateParams', 'authService', 'authToken', "$rootScope", '$auth', 'slacktivity', "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', "apiTokenService", "$uibModal", 'csvUtils',
+  function($scope, $stateParams, authService, authToken, $rootScope, $auth, slacktivity, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, apiTokenService, $uibModal, csvUtils) {
 
     var adminCtrl = this
     $scope.initialPageLoadComplete = false;
@@ -234,11 +234,7 @@ angular.module('appApp').controller("AdminCtrl", ["$scope", '$stateParams', 'aut
         method: 'GET',
         url: API_URI_BASE + 'api/admin/export_to_csv'
       }).success(function(data) {
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:attachment/csv,' + encodeURI(data);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'mightysignal_sdk_report.csv';
-        hiddenElement.click();
+        csvUtils.downloadCsv(data, 'mightysignal_sdk_report')
       })
     }
 

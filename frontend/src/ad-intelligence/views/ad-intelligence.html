@@ -37,7 +37,7 @@
               data-target="{{ network.can_access ? '' : '#newAdIntelModal'}}"
               >
               <div class="ad-network-btn-container">
-                <img ng-if="network.icon" ng-src="{{network.active && id == 'applovin' ? '/app/app/images/' + id + '_selected.png' : '/app/app/images/' + id + '.png'}}" fallback-src="{{network.icon}}">
+                <img ng-if="network.icon" ng-src="{{adIntel.getNetworkIcon(network)}}" fallback-src="{{network.icon}}">
                 <div class="ad-network-btn-name">
                   {{network.name}}
                 </div>
@@ -169,7 +169,7 @@
               </td>
               <td class="resultsTableAppIcon">
                 <span>
-                  <a href="#/app/{{app.platform}}/{{app.id}}" ng-click="adIntel.trackItemClick(app, 'app', app.platform)" target="_blank">
+                  <a href="#/app/{{app.platform}}/{{app.id}}{{adIntel.networkCount == 1 ? '' : '/ad-intelligence'}}" ng-click="adIntel.trackItemClick(app, 'app', app.platform)" target="_blank">
                     <img ng-src="{{app.icon}}" />
                     {{app.name}}
                     <i ng-if="app.price" class="fa fa-2 fa-usd"></i>

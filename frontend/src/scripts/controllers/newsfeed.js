@@ -10,8 +10,8 @@ import '../../components/help-video/help-video.directive'; // gross
 
 const API_URI_BASE = window.API_URI_BASE;
 
-angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', 'slacktivity', 'Lightbox',
-  function($scope, authService, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, slacktivity, Lightbox) {
+angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$http", "pageTitleService", "listApiService", "apiService", 'sdkLiveScanService', 'newsfeedService', 'slacktivity', 'Lightbox', 'csvUtils',
+  function($scope, authService, $http, pageTitleService, listApiService, apiService, sdkLiveScanService, newsfeedService, slacktivity, Lightbox, csvUtils) {
 
     var newsfeedCtrl = this;
     $scope.initialPageLoadComplete = false;
@@ -113,7 +113,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         return
       }
       var ownerName = batch.owner.name || 'facebook_ads'
-      var exportFileName = ownerName.toLowerCase() + '_' + batch.activity_type + '.csv'
+      var exportFileName = ownerName.toLowerCase() + '_' + batch.activity_type
       mixpanel.track("Exported Timeline Item", {
         activityType: batch.activity_type,
         owner: batch.owner.name,
@@ -127,11 +127,7 @@ angular.module('appApp').controller("NewsfeedCtrl", ["$scope", "authService", "$
         url: API_URI_BASE + 'api/newsfeed/export',
         params: {batchId: id, 'country_codes[]': newsfeedCtrl.countryCodes()}
       }).success(function(content) {
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = exportFileName;
-        hiddenElement.click();
+        csvUtils.downloadCsv(content, exportFileName)
       })
     }
 

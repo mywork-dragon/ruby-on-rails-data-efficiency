@@ -2,8 +2,11 @@ import angular from 'angular';
 import mixpanel from 'mixpanel-browser';
 import _ from 'lodash';
 
+import './appMixpanel.service.js';
+
 import '../components/export-permissions/export-permissions.directive'; // gross
 import '../components/list-create/list-create.directive'; // gross
+import '../components/creative-gallery/gallery.utils' // gross?
 
 (function() {
   'use strict';
@@ -29,7 +32,11 @@ import '../components/list-create/list-create.directive'; // gross
     '$auth',
     'authToken',
     '$timeout',
-    '$scope'
+    '$scope',
+    'appMixpanelService',
+    'galleryUtils',
+    'csvUtils',
+    'adIntelService'
   ];
 
   function AppController (
@@ -49,21 +56,28 @@ import '../components/list-create/list-create.directive'; // gross
     $auth,
     authToken,
     $timeout,
-    $scope
+    $scope,
+    appMixpanelService,
+    galleryUtils,
+    csvUtils,
+    adIntelService
   ) {
     var app = this;
 
-    app.activeCreative = {};
     app.activeSlide = 0;
     app.appFetchComplete = false;
     app.companyContactFilter = "";
     app.contactFetchComplete = false;
     app.currentContactsPage = 1;
-    app.facebookAds = [];
+    app.facebookOnly = true;
     app.linkedinTooltip = $sce.trustAsHtml('LinkedIn profile <span class=\"fa fa-external-link\"></span>')
     app.tabs = [
       { title: 'General Information', index: 0, route: 'app.info' },
-      { title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'), index: 1, route: 'app.ad-intelligence'}
+      {
+        title: $sce.trustAsHtml('Ad Intelligence <span style="color:#1EAD4F;font-weight:bold">NEW</span>'),
+        index: 1,
+        route: 'app.ad-intelligence'
+      }
     ]
     app.userInfo = {}
 
@@ -71,7 +85,6 @@ import '../components/list-create/list-create.directive'; // gross
     app.addToList = addToList;
     app.authenticateSalesforce = authenticateSalesforce;
     app.calculateDaysAgo = sdkLiveScanService.calculateDaysAgo;
-    app.changeActiveCreative = changeActiveCreative;
     app.exportContactsToCsv = exportContactsToCsv;
     app.followApp = followApp;
     app.getCompanyContacts = getCompanyContacts;
@@ -79,56 +92,29 @@ import '../components/list-create/list-create.directive'; // gross
     app.handleTagButtonClick = handleTagButtonClick;
     app.onLinkedinButtonClick = onLinkedinButtonClick;
     app.openAppStorePage = openAppStorePage;
-    app.populateCreativesTable = populateCreativesTable;
     app.resetAppData = resetAppData;
-    app.trackCompanyContactsRequest = trackCompanyContactsRequest;
-    app.trackCopiedEmail = trackCopiedEmail;
-    app.trackCrunchbaseClick = trackCrunchbaseClick;
-    app.trackLinkedinContactClick = trackLinkedinContactClick;
-    app.trackSalesforceModalOpen = trackSalesforceModalOpen;
+    app.trackCompanyContactsRequest = appMixpanelService.trackCompanyContactsRequest;
+    app.trackCopiedEmail = appMixpanelService.trackCopiedEmail;
+    app.trackCrunchbaseClick = appMixpanelService.trackCrunchbaseClick;
+    app.trackLinkedinContactClick = appMixpanelService.trackLinkedinContactClick;
+    app.trackSalesforceModalOpen = appMixpanelService.trackSalesforceModalOpen;
+    app.trackTabClick = appMixpanelService.trackTabClick;
 
     activate();
 
     function activate() {
+      adIntelService.getAdSources().then(data => {
+        const adSources = Object.keys(data)
+        app.facebookOnly = adSources.length == 1 && adSources[0] == 'facebook'
+      })
       getApp()
         .then(function() {
           getCompanyContacts()
-          addAdIds()
           getSalesforceData()
           setUpSalesforce()
-          populateCreativesTable();
-          app.activeCreative = app.facebookAds[0]
           pageTitleService.setTitle(app.name)
-
-          var eventName;
-
-          if ($stateParams.utm_source == 'ewok') {
-            eventName = "Ewok App Page Viewed"
-          } else if ($stateParams.utm_source == 'salesforce') {
-            eventName = "Salesforce App Page Viewed"
-          } else {
-            eventName = "App Page Viewed"
-          }
-
-          return eventName;
+          appMixpanelService.trackAppPageView(app)
         })
-        .then(function (name) {
-          mixpanel.track(name, {
-            "appId": app.id,
-            "appName": app.name,
-            "companyName": app.publisher.name,
-            "appPlatform": app.platform
-          })
-        })
-    }
-
-    function addAdIds () {
-      if (app.facebookAds) {
-        for (var i = 0; i < app.facebookAds.length; i++) {
-          var ad = app.facebookAds[i];
-          ad.id = i;
-        }
-      }
     }
 
     function addToList (list) {
@@ -158,19 +144,10 @@ import '../components/list-create/list-create.directive'; // gross
       });
     };
 
-    function changeActiveCreative (ad) {
-      app.activeCreative = ad;
-      app.activeSlide = ad.id;
-    }
-
     function exportContactsToCsv (filter) {
       contactService.exportContactsToCsv(app.platform, app.publisher.id, filter, app.publisher.name)
         .then(function (content) {
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = 'contacts.csv';
-          hiddenElement.click();
+          csvUtils.downloadCsv(content, 'contacts')
         });
     }
 
@@ -196,11 +173,8 @@ import '../components/list-create/list-create.directive'; // gross
     function getApp () {
       return appService.getApp($stateParams.platform, $stateParams.id)
         .then(function(data) {
-          for (var value in data) {
-            if (data.hasOwnProperty(value)) {
-              app[value] = data[value]
-            }
-          }
+          Object.assign(app, data)
+          app.facebookAds = galleryUtils.addAdIds(data.facebookAds)
           app.appFetchComplete = true;
         })
     }
@@ -220,12 +194,7 @@ import '../components/list-create/list-create.directive'; // gross
       var clearbitId = contact.clearbitId
       contactService.getContactEmail(clearbitId)
         .then(function(data) {
-          mixpanel.track(
-            "Contact Email Requested", {
-              'email': data.email,
-              'clearbitId': clearbitId
-            }
-          );
+          appMixpanelService.trackEmailRequest(data.email, clearbitId)
           contact.email = data.email
           contact.isLoading = false
         })
@@ -260,14 +229,6 @@ import '../components/list-create/list-create.directive'; // gross
       $window.open(page)
     }
 
-    function populateCreativesTable () {
-      const start = (app.currentCreativesPage - 1) * 10;
-      const end = start + 10;
-      app.tableCreatives = app.facebookAds.slice(start, end);
-      app.activeSlide = start;
-      app.activeCreative = app.facebookAds[start]
-    }
-
     function resetAppData () {
       loggitService.log("Resetting app data. The page will refresh shortly.")
       appService.resetAppData(app.id)
@@ -284,56 +245,5 @@ import '../components/list-create/list-create.directive'; // gross
           app.salesforceSettings = data.salesforce_settings
         })
     }
-
-    function trackCompanyContactsRequest (filter) {
-      mixpanel.track(
-        "Company Contacts Requested", {
-          'companyName': app.publisher.name,
-          'requestResultsCount': app.publisher.contactsCount,
-          'titleFilter': filter || '',
-          'Source Type': 'app'
-        }
-      );
-    }
-
-    function trackCopiedEmail (contact) {
-      mixpanel.track("Email Copied", {
-        "Email": contact.email,
-        "Company": app.publisher.name,
-        "Name": contact.fullName,
-        "Title": contact.title,
-        "Source Type": 'publisher'
-      })
-    }
-
-    function trackCrunchbaseClick () {
-      contactService.trackCrunchbaseClick(app.publisher.name, 'app')
-    }
-
-    function trackLinkedinContactClick (contact) { // fixed
-      contactService.trackLinkedinContactClick(contact, 'app')
-    }
-
-    function trackSalesforceModalOpen () {
-      mixpanel.track(
-        "Opened Salesforce Export Modal", {
-          "appId": app.id,
-          "appName": app.name,
-          "companyName": app.publisher.name,
-          "appPlatform": app.platform
-        }
-      );
-    }
-
-    $scope.$watch('app.activeSlide', function(newId, oldId) {
-      if (app.facebookAds.length) {
-        const isInTable = _.any(app.tableCreatives, ad => ad.id == newId)
-        if (!isInTable) {
-          app.currentCreativesPage = Math.ceil((newId + 1)/10)
-          populateCreativesTable()
-        }
-        changeActiveCreative(app.facebookAds[newId])
-      }
-    })
   }
 })();

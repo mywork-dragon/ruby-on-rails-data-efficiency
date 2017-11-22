@@ -965,30 +965,6 @@ angular.module("app.directives", []).directive("imgHolder", [
        }
       }
     }])
-    .directive('smartSrc', ["$http", function($http) {
-      return {
-        restrict: 'A',
-        scope: {
-          smartSrc: '@',
-          smartSrcId: '@',
-          smartSrcWatch: '&',
-          smartSrcLast: '@'
-        },
-        link: function(scope, element) {
-          var unwatcher = scope.$watch(scope.smartSrcWatch, function(newId) {
-            const idx = parseInt(scope.smartSrcId, 10);
-            const loadIndices = [
-              idx, idx + 1, idx - 1
-            ];
-
-            if ((loadIndices.includes(newId) || idx == scope.smartSrcLast) && scope.smartSrc) {
-              element.attr('src', scope.smartSrc);
-              unwatcher();
-            }
-          });
-        }
-      };
-    }])
     .directive('starRating', function() {
 			return {
 				restrict : "EA",
@@ -1044,4 +1020,29 @@ angular.module("app.directives", []).directive("imgHolder", [
 				});
 			}
 		};
-  	});
+	})
+  .directive('smartSrc', ["$http", function($http) {
+    return {
+      restrict: 'A',
+      scope: {
+        smartSrc: '@',
+        smartSrcId: '@',
+        smartSrcWatch: '&',
+        smartSrcLast: '@'
+      },
+      link: function(scope, element) {
+        var unwatcher = scope.$watch(scope.smartSrcWatch, function(newId) {
+          const idx = parseInt(scope.smartSrcId, 10);
+          const loadIndices = [
+            idx, idx + 1, idx - 1
+          ];
+
+          if ((loadIndices.includes(newId) || idx == scope.smartSrcLast) && scope.smartSrc) {
+            element.attr('src', scope.smartSrc);
+            unwatcher();
+          }
+        });
+      }
+    };
+  }])
+;

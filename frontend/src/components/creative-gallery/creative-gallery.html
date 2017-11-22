@@ -1,0 +1,188 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><strong>Creatives</strong></div>
+    <div class="panel-body" ng-if="gallery.initialCreativeFetchComplete">
+      <div class="empty-data-ctnr" ng-if="!gallery.totalCreatives">
+        <img ng-src="images/mighty_signal_elephant.png" alt="">
+        No Creatives
+      </div>
+      <div ng-if="gallery.totalCreatives">
+        <div class="col-md-6">
+          <div class="single-creative-pad" ng-if="gallery.creativesCount <= 1 && gallery.activeCreative.format != 'html'"></div>
+          <div class="active-creative-media-ctnr" ng-if="!gallery.creativesCount">
+            <div class="empty-data-ctnr" style="font-size: 50px;">
+              <i class="fa fa-picture-o"></i>
+            </div>
+          </div>
+          <div ng-if="gallery.creativesCount > 1 || gallery.activeCreative.format == 'html'">
+            <div class="carousel-controls">
+              <div class="iframe-control" ng-if="gallery.activeCreative.format == 'html'">
+                <button class="btn btn-bordered-info" ng-click="gallery.rotateIframe()">
+                  <i class="fa fa-rotate-right"></i>
+                  Rotate
+                </button>
+              </div>
+              <div class="control-wrapper" ng-if="gallery.creativesCount > 1">
+                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id - 1)">
+                  <i class="fa fa-chevron-left"></i>
+                </button>
+                <button class="btn btn-bordered-info" ng-click="gallery.changeActiveSlide(gallery.activeCreative.id + 1)">
+                  <i class="fa fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div ng-repeat="creative in gallery.creatives">
+              <div class="active-creative-media-ctnr" ng-if="creative.format != 'html'" ng-show="gallery.activeSlide == creative.id">
+                <img ng-src="{{creative.url}}" ng-if="creative.format == 'image'" fallback-src="images/fallback-elephant.png">
+                <video ng-class="'creative-video video-' + creative.id" controls ng-if="creative.format == 'video'">
+                  <source ng-src="{{gallery.trustSrc(creative.url)}}" type="video/mp4">
+                  <img ng-src="images/fallback-elephant.png" alt="">
+                </video>
+              </div>
+            </div>
+            <div class="active-creative-media-ctnr" ng-if="gallery.activeCreative.format == 'html'">
+              <iframe ng-src="{{gallery.trustSrc(gallery.activeCreative.url)}}" width="600px" height="400px"></iframe>
+            </div>
+          </div>
+            <ul class="list-unstyled list-info" ng-if="gallery.creativesCount">
+              <li>
+                <span class="icon fa fa-cloud"></span>
+                <label>Network:</label>
+                {{gallery.activeCreative.ad_network | capitalize}}
+              </li>
+              <li>
+                <span class="icon fa fa-image"></span>
+                <label>Format:</label>
+                {{gallery.activeCreative.format | capitalize}}
+              </li>
+              <li ng-if="gallery.activeCreative.first_seen_creative_date == gallery.activeCreative.last_seen_creative_date">
+                <span class="icon fa fa-calendar-check-o"></span>
+                <label>Date Seen:</label>
+                {{gallery.activeCreative.first_seen_creative_date | date : shortDate}}
+              </li>
+              <li ng-if="gallery.activeCreative.first_seen_creative_date != gallery.activeCreative.last_seen_creative_date">
+                <span class="icon fa fa-calendar-check-o"></span>
+                <label>First Seen:</label>
+                {{gallery.activeCreative.first_seen_creative_date | date : shortDate}}
+              </li>
+              <li ng-if="gallery.activeCreative.first_seen_creative_date != gallery.activeCreative.last_seen_creative_date">
+                <span class="icon fa fa-calendar-plus-o"></span>
+                <label>Last Seen:</label>
+                {{gallery.activeCreative.last_seen_creative_date | date : shortDate}}
+              </li>
+              <li ng-if="gallery.activeCreative.first_seen_creative_date != gallery.activeCreative.last_seen_creative_date">
+                <span class="icon fa fa-bar-chart"></span>
+                <label>Times Seen:</label>
+                {{gallery.activeCreative.count}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <div class="creative-gallery-filters">
+              <span class="ui-select">
+                <div
+                ng-dropdown-multiselect=""
+                class="categories-dropdown"
+                options="gallery.filterOptions.formats"
+                selected-model="gallery.filters.formats"
+                checkboxes="true"
+                extra-settings="gallery.dropdownSettings.format"
+                events="gallery.dropdownEvents"
+                translation-texts="gallery.dropdownText.format">
+              </div>
+            </span>
+            <span class="ui-select">
+              <div
+              ng-dropdown-multiselect=""
+              class="categories-dropdown"
+              options="gallery.filterOptions.networks"
+              selected-model="gallery.filters.networks"
+              checkboxes="true"
+              extra-settings="gallery.dropdownSettings.network"
+              events="gallery.dropdownEvents"
+              translation-texts="gallery.dropdownText.network">
+            </div>
+          </span>
+        </div>
+        <div class="table-responsive creative-table">
+          <div class="empty-creative-ctnr" ng-if="!gallery.creativeFetchComplete">
+            <div id="loadingSpinnerContainer">
+              <div class="loading outer">
+                <div class="loading inner"></div>
+              </div>
+            </div>
+          </div>
+          <div data-ng-controller="TableCtrl" ng-show="gallery.creativeFetchComplete">
+            <div class="empty-data-ctnr" ng-if="!gallery.creativesCount">
+              No Results
+            </div>
+            <table class="table table-striped responsive table-hover" ng-if="gallery.creativesCount">
+              <thead>
+                <tr>
+                  <th>Preview</th>
+                  <th>Network</th>
+                  <th>First Seen</th>
+                  <th>Last Seen</th>
+                  <th>Format</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="creative in gallery.creatives" ng-click="gallery.changeActiveSlide(creative.id); gallery.trackCreativeClick(creative)" class="creative-table-row" ng-class="{'active': gallery.activeSlide == creative.id}">
+                  <td class="thumbnail-cell creative-cell" ng-if="creative.format != 'video'">
+                    <div class="play-button" ng-if="creative.format == 'html'">
+                      <i class="fa fa-play-circle-o"></i>
+                    </div>
+                    <img class="creative-thumbnail" ng-src="{{creative.thumbnail ? creative.thumbnail : creative.url}}" fallback-src="images/fallback-elephant.png">
+                  </td>
+                  <td class="creative-cell thumbnail-cell video-cell" ng-if="creative.format =='video'" ng-click="gallery.autoPlay(creative.id)">
+                    <div class="play-button">
+                      <i class="fa fa-play-circle-o"></i>
+                    </div>
+                    <video ng-if="creative.format == 'video'" class="creative-thumbnail">
+                      <source ng-src="{{gallery.trustSrc(creative.url + '#t=6')}}" type="video/mp4">
+                    </video>
+                  </td>
+                  <td class="creative-cell">
+                    <img ng-src="{{'images/' + creative.ad_network + '.png'}}" width="16px" height="16px">
+                    {{creative.ad_network | capitalize}}
+                  </td>
+                  <td class="creative-cell">
+                    {{creative.first_seen_creative_date | date : shortDate}}
+                  </td>
+                  <td class="creative-cell">
+                    {{creative.last_seen_creative_date | date : shortDate}}
+                  </td>
+                  <td class="creative-cell">
+                    {{creative.format | capitalize}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+            <div class="row" ng-if="gallery.totalCreatives > 8">
+              <div class="col-md-12 text-right pagination-container">
+                <uib-pagination
+                class="pagination-sm"
+                ng-model="gallery.currentPage"
+                total-items="gallery.creativesCount"
+                max-size="5"
+                ng-change="gallery.activeSlide = 0; gallery.getCreatives(); gallery.trackCreativePageThrough(gallery.currentPage)"
+                items-per-page="gallery.pageSize"
+                boundary-links="gallery.creativesCount > 50"
+                ng-disabled="!gallery.creativeFetchComplete">
+              </uib-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body" ng-if="!gallery.initialCreativeFetchComplete">
+    <div class="empty-creative-ctnr">
+      <div id="loadingSpinnerContainer">
+        <div class="loading outer">
+          <div class="loading inner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,8 +3,8 @@ import mixpanel from 'mixpanel-browser';
 
 const API_URI_BASE = window.API_URI_BASE;
 
-angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService",
-  function($scope, $http, pageTitleService, listApiService, apiService) {
+angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleService", "listApiService", "apiService", "csvUtils",
+  function($scope, $http, pageTitleService, listApiService, apiService, csvUtils) {
 
     var chartCtrl = this; // same as chartCtrl = $scope
 
@@ -38,11 +38,7 @@ angular.module('appApp').controller("ChartCtrl", ["$scope", "$http", "pageTitleS
     chartCtrl.exportListToCsv = function() {
       apiService.exportNewestChartToCsv()
         .success(function (content) {
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = 'mightysignal_newest_apps.csv';
-          hiddenElement.click();
+          csvUtils.downloadCsv(content, 'mightysignal_newest_apps')
         });
     };
 

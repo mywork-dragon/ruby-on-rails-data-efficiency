@@ -44,7 +44,7 @@ class AdDataAccessor
     )
     grouped_results = Hash.new{{
         "ad_networks" => [],
-        "creative_types" =>  Set.new,
+        "creative_formats" =>  Set.new,
         "first_seen_ads_date" => nil,
         "last_seen_ads_date" => nil,
         "ad_attribution_sdks" => nil, # Fill in later
@@ -70,7 +70,7 @@ class AdDataAccessor
         app_record["number_of_creatives"] += result['number_of_creatives'] ? result['number_of_creatives'] : 0
 
         if ! result['creative_formats'].nil?
-            result['creative_formats'].split(',').each { |x| app_record['creative_types'].add(x) }
+            result['creative_formats'].split(',').each { |x| app_record['creative_formats'].add(x) }
         end
 
         if app_record['first_seen_ads_date'].nil? or result['first_seen_ads_date'] <= app_record['first_seen_ads_date']

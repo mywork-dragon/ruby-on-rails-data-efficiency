@@ -1446,7 +1446,7 @@ input.input-dark:focus {
   height: 0;
   border-top: 6px solid;
   border-right: 6px solid transparent;
-  border-left: 6px solid transparent; 
+  border-left: 6px solid transparent;
   pointer-events: none; }
 
 .ui-spinner {
@@ -9175,78 +9175,7 @@ h4.red {
   font-weight: bold;
 }
 
-/* New Advertiser Counts */
-
-.new-advertiser-header {
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 25px
-}
-
-.new-advertiser-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px;
-  background-color: #fafafa;
-  height: 175px;
-  width: 180px;
-  border-color: #ededed;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  justify-content: space-between;
-  transition: height .5s, width .5s;
-  transition-timing-function: ease;
-}
-
-.advertiser-csv-btn {
-  visibility: hidden;
-  margin-top: 10px;
-}
-
-.new-advertiser-container:hover {
-  height: 220px;
-  width: 203px;
-}
-
-.new-advertiser-container:hover .advertiser-csv-btn {
-  visibility: visible;
-}
-
-.advertiser-count {
-  font-size: 50px;
-}
-
-#advertiser-total {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #fafafa;
-  border-color: #ededed;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  justify-content: space-between;
-  transition: height .5s, width .5s;
-  transition-timing-function: ease;
-  margin-left: 15px;
-  margin-right: 15px;
-  padding: 30px;
-  height: 220px;
-  width: 203px;
-}
-
-#advertiser-total .advertiser-csv-btn {
-  visibility: visible;
-}
-
-.android-advertisers {
-  color: #a4c639;
-}
-
-.sunday-label {
-  width: 150px;
-  text-align: center;
-}
+/*Live Scan View Update*/
 
 .scan-date {
   padding: 0px;
@@ -9289,22 +9218,42 @@ h4.red {
   padding-top: 20px;
 }
 
+/* App/Publisher Page Tabs */
 
-/* Tabs */
+/*.app-header.page-main-header {
+  border-bottom: none;
+}*/
+
+.nav-tabs-justified > li > a, .nav-tabs.nav-justified > li > a {
+  font-weight: bold;
+}
+
+.nav-tabs-justified > .active > a, .nav-tabs.nav-justified > .active > a {
+  border-top: 2px solid #0393DD;
+}
+
+.nav-tabs-justified > .active > a, .nav-tabs.nav-justified > .active > a:hover {
+  border-top: 2px solid #0393DD;
+}
 
 a.nav-link {
   cursor: pointer;
 }
 
-/* Ad Network Button Group */
+.uib-tab:not(.active) > a {
+  background-color: #eee;
+}
 
-/*.ad-network-btn {
-  width: 130px;
-}*/
+.uib-tab:not(.active) > a:hover {
+  background-color: #f3f3f3;
+  color: #0393DD;
+
+}
+
+/* Ad Network Button Group */
 
 .ad-network-btn-container {
   display: flex;
-  /*justify-content: space-between;*/
 }
 
 .ad-network-btn-container img {
@@ -9313,44 +9262,11 @@ a.nav-link {
   margin-right: 5px;
 }
 
-.creative-table-row:hover {
-  cursor: pointer;
+.fake-disabled {
+  opacity: 0.65;
 }
 
-.creative-thumbnail {
-  object-fit: cover; /* Do not scale the image */
-  object-position: 50% 20%; /* Center the image within the element */
-  height: 75px;
-  width: 145px;
-}
-
-td.thumbnail-cell {
-  width: 150px;
-}
-
-.table>tbody>tr>td.creative-cell {
-  vertical-align: middle;
-}
-
-.carousel-container {
-  margin-bottom: 20px;
-}
-
-tr.creative-table-row.active > td {
-  background-color: #ECECEC !important;
-}
-
-.tier-label {
-  float: right;
-}
-
-.tooltip-network-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 10px;
-}
-
-/* Network Modal */
+/* Ad Network Marketing Modal */
 
 .network-modal-header {
   clear: both;
@@ -9427,12 +9343,191 @@ div.network-cta > p {
   margin-top: 10px;
 }
 
-.fake-disabled {
-  opacity: 0.65;
-}
-
 .network-full-logo {
   width: 100%;
+}
+
+/* App Ad Intelligence Tab */
+
+.ad-intel-row {
+  display: flex;
+}
+
+.row-panel {
+  flex: 1;
+  padding: 15px;
+}
+
+.row-panel > .panel {
+  height: 100%;
+}
+
+.creative-gallery-filters {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0px;
+}
+
+.list-info.ad-intel-list li label {
+  width: 150px;
+}
+
+.ad-network-table {
+  border: none;
+}
+
+.creative-table {
+  min-height: 600px;
+}
+
+.ad-intel-spinner-ctnr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
+.active-creative-media-ctnr {
+  margin-bottom: 20px;
+  max-height: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+.active-creative-media-ctnr > img, .active-creative-media-ctnr > video {
+  width: 100%;
+  object-fit: contain;
+}
+
+.single-creative-pad {
+  height: 75px;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 0px;
+}
+
+.carousel-controls button {
+  margin: 5px 0px 10px 5px;
+  border: 1px solid #cbd5dd;
+  border-radius: 0px;
+  opacity: 1;
+  color: #767676;
+  -webkit-box-shadow: none;
+}
+
+.control-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.control-wrapper:hover {
+  cursor: pointer;
+}
+
+.control-wrapper div {
+  width: 35px;
+  height: 35px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-controls .left-control {
+  border-right: 1px solid gray;
+}
+
+.creative-table-row:hover {
+  cursor: pointer;
+}
+
+.creative-thumbnail {
+  height: 75px;
+  width: 145px;
+}
+
+img.creative-thumbnail {
+  object-fit: cover; /* Do not scale the image */
+  object-position: 50% 40%; /* Center the image within the element */
+}
+
+video.creative-thumbnail {
+  object-fit: contain;
+}
+
+.thumbnail-cell {
+  position: relative;
+}
+
+.play-button {
+  width:50%;
+  height:50%;
+  position:absolute;
+  left:0%;
+  right:0%;
+  top:0%;
+  bottom:0%;
+  margin:auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 45px;
+}
+
+.play-button i {
+  color: #ffffff;
+}
+
+.thumbnail-cell:hover .play-button > i {
+  color: #dbd9d9;
+}
+
+td.thumbnail-cell {
+  width: 150px;
+}
+
+.table>tbody>tr>td.creative-cell {
+  vertical-align: middle;
+}
+
+tr.creative-table-row.active > td {
+  background-color: #ECECEC !important;
+}
+
+/*.format-icon:hover {
+  cursor: pointer;
+}*/
+
+.empty-data-ctnr {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #223B58;
+  position: relative;
+}
+
+.empty-data-ctnr > img {
+  margin-bottom: 20px;
+  width: 200px;
+}
+
+.empty-creative-ctnr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  flex-direction: column;
 }
 /* Popular Apps */
 

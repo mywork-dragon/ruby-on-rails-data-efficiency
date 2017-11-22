@@ -48,7 +48,7 @@
           </div>
         </div>
 
-        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend">
+        <div class="panel panel-default" ng-if="app.facebookAds.length && canViewAdSpend && app.facebookOnly">
           <div class="panel-heading"><strong>Facebook Ads</strong></div>
           <div class="panel-body">
             <uib-carousel active="app.activeSlide" id="adIntelligenceCarousel">
@@ -132,7 +132,7 @@
                     <span class="icon fa fa-cloud"></span>
                     <label>Add to Salesforce:</label>
                     <div class="actionButton">
-                      <button data-toggle="modal" class="btn btn-primary btn-block" ng-click="app.trackSalesforceModalOpen()" data-target="#salesforceExportModal">Export</button>
+                      <button data-toggle="modal" class="btn btn-primary btn-block" ng-click="app.trackSalesforceModalOpen(app)" data-target="#salesforceExportModal">Export</button>
                     </div>
                   </li>
                   <li ng-if="isAdminAccount">
@@ -261,7 +261,7 @@
                   <li ng-if="app.publisher.crunchbase">
                     <span class="icon fa fa-line-chart"></span>
                     <label>Crunchbase:</label>
-                    <a href="https://www.crunchbase.com/{{app.publisher.crunchbase}}" target="_blank" ng-click="app.trackCrunchbaseClick()">crunchbase.com/{{app.publisher.crunchbase}}</a>
+                    <a href="https://www.crunchbase.com/{{app.publisher.crunchbase}}" target="_blank" ng-click="app.trackCrunchbaseClick(app)">crunchbase.com/{{app.publisher.crunchbase}}</a>
                   </li>
                   <li id="linkedinLinksList">
                     <span class="icon fa fa-linkedin"></span>

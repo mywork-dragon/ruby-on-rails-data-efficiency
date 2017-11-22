@@ -24,7 +24,8 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     '$stateParams',
     '$rootScope',
     '$sce',
-    'uniqueStringsFilter'
+    'uniqueStringsFilter',
+    'csvUtils'
   ];
 
   function PublisherController (
@@ -38,7 +39,8 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     $stateParams,
     $rootScope,
     $sce,
-    uniqueStringsFilter
+    uniqueStringsFilter,
+    csvUtils
   ) {
     var publisher = this;
 
@@ -107,11 +109,7 @@ import '../components/export-permissions/export-permissions.directive'; // gross
     function exportContactsToCsv (filter) {
       contactService.exportContactsToCsv(publisher.platform, publisher.id, filter, publisher.name)
         .then(function (content) {
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = 'contacts.csv';
-          hiddenElement.click();
+          csvUtils.downloadCsv(content, 'contacts')
         });
     }
 

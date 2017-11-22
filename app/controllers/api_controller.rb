@@ -120,7 +120,8 @@ class ApiController < ApplicationController
       sort_by: params[:sortBy] || 'first_seen_ads',
       order_by: params[:orderBy] || 'desc',
       page_num: params[:pageNum] ? params[:pageNum].to_i : 1,
-      page_size: request.format.json? ? 20 : 10000
+      page_size: request.format.json? ? 20 : 10000,
+      ad_networks: params[:adNetworks] ? JSON.parse(params[:adNetworks]) : [1]
     }
 
     filter_results = FilterService.filter_ad_spend_apps(filter_args)
@@ -283,14 +284,14 @@ class ApiController < ApplicationController
   def get_ios_app
     appId = params['id']
     ios_app = IosApp.find(appId)
-    render json: ios_app.to_json({user: @current_user, details: true})
+    render json: ios_app.to_json({user: @current_user, details: true, ads: true})
   end
 
   def get_android_app
     appId = params['id']
     android_app = AndroidApp.find(appId)
 
-    render json: android_app.to_json({user: @current_user, details: true})
+    render json: android_app.to_json({user: @current_user, details: true, ads: true})
   end
 
   def get_android_developer

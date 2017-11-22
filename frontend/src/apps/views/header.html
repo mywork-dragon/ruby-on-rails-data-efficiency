@@ -4,7 +4,7 @@
   </div>
 </div>
 <div ng-if="app.appFetchComplete">
-  <header class="page-main-header ng-scope">
+  <header class="app-header page-main-header ng-scope">
     <div class="row">
       <div class="col-md-1" id="appPageLogoBox">
         <img ng-src="{{app.icon}}" id="appDetailsPageAppLogo" />
@@ -66,15 +66,15 @@
       </div>
     </div>
   </header>
-  <!-- <ul class="nav nav-tabs nav-justified" ng-if="app.adSpend">
-    <li class="uib-tab nav-item" ng-repeat="tab in app.tabs" ui-sref="{{tab.route}}" ui-sref-active="active">
+  <ul class="nav nav-tabs nav-justified" ng-if="!app.facebookOnly">
+    <li class="uib-tab nav-item" ng-repeat="tab in app.tabs" ui-sref="{{tab.route}}" ui-sref-active="active" ng-click="app.trackTabClick(tab, app)">
       <a class="nav-link">
         <uib-tab-heading>
           <span ng-bind-html="tab.title"></span>
         </uib-tab-heading>
       </a>
     </li>
-  </ul> -->
+  </ul>
   <ui-view></ui-view>
 
   <!-- Modals -->

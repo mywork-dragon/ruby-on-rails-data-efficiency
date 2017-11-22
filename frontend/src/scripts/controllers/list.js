@@ -7,8 +7,8 @@ import '../../components/list-delete/list-delete.directive'; // gross
 import '../../components/list-delete-selected/list-delete-selected.directive'; // gross
 import '../../components/export-permissions/export-permissions.directive'; // gross
 
-angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$stateParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$state", "authService", "$location",
-  function($scope, $http, authToken, $stateParams, $rootScope, listApiService, searchService, pageTitleService, $state, authService, $location) {
+angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken", "$stateParams", "$rootScope", "listApiService", "searchService", "pageTitleService", "$state", "authService", "$location", "csvUtils",
+  function($scope, $http, authToken, $stateParams, $rootScope, listApiService, searchService, pageTitleService, $state, authService, $location, csvUtils) {
     $scope.AllSelectedItems = false;
     $scope.NoSelectedItems = false;
 
@@ -60,11 +60,7 @@ angular.module('appApp').controller("ListCtrl", ["$scope", "$http", "authToken",
     $scope.exportListToCsv = function() {
       listApiService.exportToCsv($stateParams.listId)
         .success(function (content) {
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:attachment/csv,' + encodeURI(content);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = 'mightysignal_list.csv';
-          hiddenElement.click();
+          csvUtils.downloadCsv(content, 'mightysignal_list')
         });
     };
 

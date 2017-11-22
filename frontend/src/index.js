@@ -58,12 +58,13 @@ require('./scripts/controllers/modal-search.js');
 require('./scripts/controllers/search-delete.js');
 require('./scripts/controllers/help-video.js');
 require('./scripts/controllers/api-token.js');
+require('./scripts/utils/csv.utils.js');
 
 /* App Component Scripts */
-require('./apps/ad-intelligence.js');
 require('./apps/android-live-scan.js');
 require('./apps/app.controller.js');
 require('./apps/ios-live-scan.js');
+require('./apps/ad-intel.controller.js');
 
 /* Publisher Component Scripts */
 require('./publishers/publisher.controller.js');

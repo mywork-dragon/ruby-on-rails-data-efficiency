@@ -58,11 +58,10 @@ const API_URI_BASE = window.API_URI_BASE;
 
     adIntel.calculateDaysAgo = calculateDaysAgo;
     adIntel.checkIfAdSource = checkIfAdSource;
-    adIntel.expandTotalContainer = expandTotalContainer;
     adIntel.formatCategories = formatCategories;
     adIntel.getApps = getApps;
     adIntel.getDaysAgoClass = getDaysAgoClass;
-    adIntel.shrinkTotalContainer = shrinkTotalContainer;
+    adIntel.getNetworkIcon = getNetworkIcon;
     adIntel.sortApps = sortApps;
     adIntel.toggleAdNetwork = toggleAdNetwork;
     adIntel.togglePlatform = togglePlatform;
@@ -83,12 +82,6 @@ const API_URI_BASE = window.API_URI_BASE;
 
     function checkIfAdSource (id, sources) {
       return sources.some(source => source.id == id)
-    }
-
-    function expandTotalContainer () {
-      $("#advertiser-total").width("143px")
-      $("#advertiser-total").height("160px")
-      $("#advertiser-total > .advertiser-csv-btn").css("visibility", "visible")
     }
 
     function formatCategories (app) {
@@ -142,6 +135,16 @@ const API_URI_BASE = window.API_URI_BASE;
       return searchService.getLastUpdatedDaysClass(days);
     };
 
+    function getNetworkIcon (network) {
+      let icon = `images/${network.id}.png`;
+      if (network.active && network.id == 'applovin') {
+        icon = 'images/applovin-inverted.png'
+      } else if (network.active && network.id == 'mopub') {
+        icon = 'images/mopub-inverted.png'
+      }
+      return icon;
+    }
+
     function calculateDaysAgo (date) {
       return sdkLiveScanService.calculateDaysAgo(date).split(' ago')[0];
     };
@@ -153,12 +156,6 @@ const API_URI_BASE = window.API_URI_BASE;
       adIntel.order = order;
       const sign = order == 'desc' ? '-' : '';
       adIntel.rowSort = sign + category;
-    }
-
-    function shrinkTotalContainer () {
-      $("#advertiser-total").width("120px")
-      $("#advertiser-total").height("115px")
-      $("#advertiser-total > .advertiser-csv-btn").css("visibility", "hidden")
     }
 
     function sortApps (category, order) {
