@@ -17,7 +17,7 @@ class AdDataAccessor
     source_ids = account.restrict_ad_sources(source_ids)
 
     @delegate.has_ad_spend_data(
-      app.app_identifier,
+      app.app_identifier.to_s,
       app.platform,
       source_ids: source_ids
     )
@@ -38,7 +38,7 @@ class AdDataAccessor
     end
 
     results = @delegate.fetch_app_summaries(
-      apps.map {|app| app.app_identifier},
+      apps.map {|app| app.app_identifier.to_s},
       platform,
       source_ids: source_ids
     )
@@ -142,7 +142,7 @@ class AdDataAccessor
     end
 
     creatives, full_count = @delegate.fetch_creatives(
-      apps.map {|app| app.app_identifier},
+      apps.map {|app| app.app_identifier.to_s},
       platform,
       source_ids: source_ids,
       formats: formats,
