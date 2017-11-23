@@ -7,12 +7,12 @@ class DbConnection
   end
 
   # Lazily establish db connection.
-  def connection
+  def exec
     raise "Abstract method!"
   end
 
   def query(sql, options={})
-    CachedQuery.new(sql, connection, @default_options.merge(options))
+    CachedQuery.new(sql, self, @default_options.merge(options))
   end
 
   def sanitize_sql_statement(array)

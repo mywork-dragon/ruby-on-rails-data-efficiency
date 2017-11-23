@@ -203,3 +203,4 @@ gem 'redcarpet', '~> 3.4.0'
 gem 'activerecord4-redshift-adapter', '~> 0.2.4', git: 'https://11eba4fe4c8c978205e15b6553a02f82a35bed67:x-oauth-basic@github.com/MightySignal/activerecord4-redshift-adapter.git'
 
 gem 'pg', '~> 0.21'
+gem 'connection_pool', '~> 2.2'

@@ -25,7 +25,7 @@ class CachedQuery
   end
 
   def _get_response
-    res = @connection.exec(@sql)
+    res = @connection.get_connection {|conn| conn.exec(@sql) }
     res.to_a
   end
 end
