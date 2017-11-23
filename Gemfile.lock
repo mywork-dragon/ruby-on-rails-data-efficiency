@@ -624,6 +624,7 @@ DEPENDENCIES
   open_uri_redirections
   paperclip (~> 5.0.0.beta2)
   parallel (= 1.6.0)
+  pg (~> 0.21)
   plist (~> 3.2)
   rack-cors
   rails (= 4.2.8)
@@ -661,4 +662,4 @@ DEPENDENCIES
   www-favicon (= 0.0.6)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

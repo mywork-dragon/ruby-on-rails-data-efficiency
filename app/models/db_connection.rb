@@ -8,8 +8,7 @@ class DbConnection
 
   # Lazily establish db connection.
   def connection
-    @connection ||= ActiveRecord::Base::establish_connection(@db_config).connection
-    @connection
+    raise "Abstract method!"
   end
 
   def query(sql, options={})
