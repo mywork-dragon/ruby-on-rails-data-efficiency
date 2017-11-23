@@ -132,7 +132,7 @@ private
   end
 
   def get_chart_param(param, platform)
-    query_result = query_class().query("SELECT DISTINCT #{param} FROM daily_raw_charts WHERE platform='#{platform}'", expires: 1.days).fetch()
+    query_result = @connection.query("SELECT DISTINCT #{param} FROM daily_raw_charts WHERE platform='#{platform}'", expires: 1.days).fetch()
     query_result.map { |row| row["#{param}"] }
   end
 
