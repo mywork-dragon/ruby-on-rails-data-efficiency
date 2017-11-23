@@ -7,7 +7,7 @@ class DbConnection
   end
 
   # Lazily establish db connection.
-  def exec
+  def get_connection
     raise "Abstract method!"
   end
 
