@@ -8,7 +8,12 @@ class RedshiftDbConnection < DbConnection
   # Lazily establish db connection.
   def get_connection
     if @@pool[@db_config].nil?
-      @@pool[@db_config] = ConnectionPool.new(size: 2, timeout: 15) do
+      pool_options = {
+        size: 2,
+        timeout: 15,
+        health_check: lambda {|conn| conn.exec("select 1")}
+        }
+      @@pool[@db_config] = HealthyPools.new(pool_options) do
         connection = PG.connect(
            dbname: @db_config['database'],
            port: @db_config['port'],

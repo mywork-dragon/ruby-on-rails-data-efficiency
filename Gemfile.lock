@@ -212,6 +212,7 @@ GEM
     hamster (3.0.0)
       concurrent-ruby (~> 1.0)
     hashie (3.5.5)
+    healthy_pools (2.2.5)
     hpricot (0.8.6)
     http (1.0.4)
       addressable (~> 2.3)
@@ -585,7 +586,6 @@ DEPENDENCIES
   clearbit
   coffee-rails (~> 4.0.0)
   colorize (= 0.7.7)
-  connection_pool (~> 2.2)
   countries
   diff_dirs (= 0.1.2)
   domainator (= 2.0.0)
@@ -597,6 +597,7 @@ DEPENDENCIES
   foundation-rails (= 5.4.3.1)
   fuzzy_match (= 2.1.0)
   googl (= 0.7.1)
+  healthy_pools (= 2.2.5)
   httparty (= 0.13.7)
   httpclient
   iso_country_codes (= 0.7.1)
