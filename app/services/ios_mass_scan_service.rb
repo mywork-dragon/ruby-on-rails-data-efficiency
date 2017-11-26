@@ -100,7 +100,7 @@ class IosMassScanService
     # 36 - "Overall" genre
     def scan_top_epf_rankings(max_rank: 1000, genre_id: 36)
       store_ids = AppStore.where(enabled: true).pluck(:storefront_id)
-      app_store_ids = RedshiftBase.query(
+      app_store_ids = RedshiftDbConnection.new.query(
         "SELECT DISTINCT(app_identifier) FROM daily_raw_charts WHERE platform='ios' AND category='#{genre_id}' AND country in ('#{store_ids.join("', '")}') AND rank <= #{max_rank}"
       ).fetch.map { |x| x['app_identifier'] }
       app_ids = IosApp.where(app_identifier: app_store_ids).pluck(:id)
